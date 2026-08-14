@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin — never municipal. [2026-08-14] SPECIAL WAVE 3 (his: 'if you gonna give me special items you have to come up with something new' — the old specials are full): sleeping giants under the turf, inland whale bones, door trees, giant eggs, floating stones, sky stairs ending in air, singing stones bored by wind, giant feathers planted like monuments, petrified waves, cocoon trees, battle marks, tar pools. [2026-08-14] STYLE FIX: the pixel-quality clause used to read 'every detail drawn at least a few pixels wide' — which is an instruction to UPSCALE, the exact defect he keeps rejecting. Now demands true 1:1 native-resolution pixel art with single-pixel detail, plus his own suggested 'high quality and detailed'. [2026-08-14] WALL DECOR = PLANT ONLY: the cliff_* descriptions named 'a vertical rock face', so the model drew the mountain into the sprite and every piece was unplaceable. All six rewritten to hanging-free-in-air with an explicit NO rock/cliff/wall/mountain/ground clause. [2026-08-14] WALL DECOR SILHOUETTE RULE: no rectangles, no straight edges, no filled panels — ragged trailing edges and a torn bottom, or the piece reads as an image rather than an object. [2026-08-14] FRAMING + DENSITY: style_base now demands the whole object sit inside the frame with margin (he saw pieces cropped at the edge); hanging wall decor tapers to a narrow point at the top instead of a flat cut (a cut top is unplaceable) and hangs SPARSE with gaps showing through rather than as a solid leaf wall. [2026-08-14] cliff_roots = ROOTS ONLY (his: 'the roots form a tree that is just cut') — no trunk/stump/root ball, thin trailing strands; cliff_ledgetrees PAUSED (repeatedly cut at frame edge). [2026-08-14] WALL GROWTH = NETWORK, NOT CURTAIN: vines/roots/mosses rewritten as sparse open graphs of runners and scattered patches that thin out at every edge — no top line, no origin, designed to be scattered and overlapped to clothe a whole wall. [2026-08-14] PROMPT LENGTH: the 1-direction endpoint (>168px) 422s on long descriptions — accumulated rules had reached 2010 chars. style_base compressed 1146->430 and the wall descriptions tightened; every law kept, wording halved. Watch total length when adding rules. [2026-08-14] WALL PROMPT REWRITE: dropped 'sparse open network/web/graph' language (it produced spider-web twig diagrams) for lush fantasy RPG nature — ivy on a ruin wall, gnarled roots over stone, deep moss cushions — with unevenness and edgelessness expressed as natural growth rather than geometry. [2026-08-14] JUNGLE + NO CORNERS: modifiers rewritten to spread across the frame (the old ones anchored growth in a corner), and wall growth is now lush wild jungle overgrowth — layered leaves, hanging creepers, tropical abundance — sparse in COVERAGE, never in character. [2026-08-14] CLIMBERS: roots/vines are now ONE long winding strand clinging to the face — coiling, doubling back, gripping with side-roots, leaves sprouting at points along it, origin out of frame. Replaces the parallel-strands reading. [2026-08-14] MOSS RECONCEIVED as a 64px DETAIL (small moss on a protruding rock knob, not a hanging drape — 'this looks like graphics to a different game'); ROOTS now slender and strictly VERTICAL, never diagonal, still no tree anywhere.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features \u2014 layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets \u2014 different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks \u2014 working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player \u2014 the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA \u2014 the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added \u2014 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect \u2014 the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces \u2014 those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count \u2014 the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each \u2014 lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families \u2014 cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS \u2014 open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin \u2014 never municipal. [2026-08-14] SPECIAL WAVE 3 (his: 'if you gonna give me special items you have to come up with something new' \u2014 the old specials are full): sleeping giants under the turf, inland whale bones, door trees, giant eggs, floating stones, sky stairs ending in air, singing stones bored by wind, giant feathers planted like monuments, petrified waves, cocoon trees, battle marks, tar pools. [2026-08-14] STYLE FIX: the pixel-quality clause used to read 'every detail drawn at least a few pixels wide' \u2014 which is an instruction to UPSCALE, the exact defect he keeps rejecting. Now demands true 1:1 native-resolution pixel art with single-pixel detail, plus his own suggested 'high quality and detailed'. [2026-08-14] WALL DECOR = PLANT ONLY: the cliff_* descriptions named 'a vertical rock face', so the model drew the mountain into the sprite and every piece was unplaceable. All six rewritten to hanging-free-in-air with an explicit NO rock/cliff/wall/mountain/ground clause. [2026-08-14] WALL DECOR SILHOUETTE RULE: no rectangles, no straight edges, no filled panels \u2014 ragged trailing edges and a torn bottom, or the piece reads as an image rather than an object. [2026-08-14] FRAMING + DENSITY: style_base now demands the whole object sit inside the frame with margin (he saw pieces cropped at the edge); hanging wall decor tapers to a narrow point at the top instead of a flat cut (a cut top is unplaceable) and hangs SPARSE with gaps showing through rather than as a solid leaf wall. [2026-08-14] cliff_roots = ROOTS ONLY (his: 'the roots form a tree that is just cut') \u2014 no trunk/stump/root ball, thin trailing strands; cliff_ledgetrees PAUSED (repeatedly cut at frame edge). [2026-08-14] WALL GROWTH = NETWORK, NOT CURTAIN: vines/roots/mosses rewritten as sparse open graphs of runners and scattered patches that thin out at every edge \u2014 no top line, no origin, designed to be scattered and overlapped to clothe a whole wall. [2026-08-14] PROMPT LENGTH: the 1-direction endpoint (>168px) 422s on long descriptions \u2014 accumulated rules had reached 2010 chars. style_base compressed 1146->430 and the wall descriptions tightened; every law kept, wording halved. Watch total length when adding rules. [2026-08-14] WALL PROMPT REWRITE: dropped 'sparse open network/web/graph' language (it produced spider-web twig diagrams) for lush fantasy RPG nature \u2014 ivy on a ruin wall, gnarled roots over stone, deep moss cushions \u2014 with unevenness and edgelessness expressed as natural growth rather than geometry. [2026-08-14] JUNGLE + NO CORNERS: modifiers rewritten to spread across the frame (the old ones anchored growth in a corner), and wall growth is now lush wild jungle overgrowth \u2014 layered leaves, hanging creepers, tropical abundance \u2014 sparse in COVERAGE, never in character. [2026-08-14] CLIMBERS: roots/vines are now ONE long winding strand clinging to the face \u2014 coiling, doubling back, gripping with side-roots, leaves sprouting at points along it, origin out of frame. Replaces the parallel-strands reading. [2026-08-14] MOSS RECONCEIVED as a 64px DETAIL (small moss on a protruding rock knob, not a hanging drape \u2014 'this looks like graphics to a different game'); ROOTS now slender and strictly VERTICAL, never diagonal, still no tree anywhere.",
   "style_base": "cozy painterly RPG pixel art in the style of Grave Seasons, muted-but-warm palette, soft lighting with ambient occlusion, subtle dark outlines not hard black, HIGH QUALITY DETAILED true 1:1 pixel art at native resolution, crisp single-pixel detail, NOT upscaled, no chunky doubled pixels, no blur, no anti-aliasing, no text or letters, no people, a single centered prop fully inside the frame with margin, nothing cropped, transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -104,7 +104,7 @@
       "demand": 1.0,
       "quota": 77,
       "_always": "maintainer 2026-08-14: 'Trees are ofc always welcomed.' Quota doubled and demand 0.35 so trees stay near the front of every plan; 42 varieties x 24 modifiers means ~1000 distinct tree prompts before anything repeats.",
-      "_parked": "maintainer 2026-08-14: 'maybe you can generate less trees so we can focus on getting this right' — parked at 77. Trees are the strongest group (23 approved / 2 rejected); unpark by raising quota when the wall-growth concept is settled."
+      "_parked": "maintainer 2026-08-14: 'maybe you can generate less trees so we can focus on getting this right' \u2014 parked at 77. Trees are the strongest group (23 approved / 2 rejected); unpark by raising quota when the wall-growth concept is settled."
     },
     {
       "rank": 2,
@@ -208,10 +208,10 @@
         "luminous white flowers blooming against the stone"
       ],
       "animation_idea": "votive candle flame flickering while a pale soul-wisp bobs slowly",
-      "lore_fit": "A grave with a legible name is a spoken fact holding its shape — the first defense against the Quiet.",
+      "lore_fit": "A grave with a legible name is a spoken fact holding its shape \u2014 the first defense against the Quiet.",
       "modifier_pool": "structure",
       "quota": 10,
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 10"
+      "_saturated": "maintainer said enough (3 note(s)) \u2014 frozen at 10"
     },
     {
       "rank": 4,
@@ -251,10 +251,10 @@
         "coals glowing through the weave in stripes"
       ],
       "animation_idea": "flames licking upward with sparks drifting off",
-      "lore_fit": "A tended brazier is sacred infrastructure — the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
+      "lore_fit": "A tended brazier is sacred infrastructure \u2014 the broken re-form beside its heat, and talk around it firms the ground like frost leaving the earth.",
       "modifier_pool": "structure",
       "quota": 14,
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 14"
+      "_saturated": "maintainer said enough (2 note(s)) \u2014 frozen at 14"
     },
     {
       "rank": 5,
@@ -291,7 +291,7 @@
       "lore_fit": "Lantern courtesy is how neighbors tell each other a path is still remembered, so a lit post means the way beyond it has not gone soft.",
       "modifier_pool": "structure",
       "quota": 12,
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 12"
+      "_saturated": "maintainer said enough (3 note(s)) \u2014 frozen at 12"
     },
     {
       "rank": 6,
@@ -328,10 +328,10 @@
         "glowworms clustered in the carved lettering"
       ],
       "animation_idea": "rune glow pulsing slowly brighter and dimmer",
-      "lore_fit": "Waystones are facts pressed toward mineral — direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
+      "lore_fit": "Waystones are facts pressed toward mineral \u2014 direction and distance worn down to one carved certainty that even the Quiet chews slowly.",
       "modifier_pool": "structure",
       "quota": 13,
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 13"
+      "_saturated": "maintainer said enough (3 note(s)) \u2014 frozen at 13"
     },
     {
       "rank": 7,
@@ -369,7 +369,7 @@
       "lore_fit": "Torch posts line the roads between fires, planted by walkers who wanted the dark stretches between remembered places to stay short.",
       "modifier_pool": "structure",
       "quota": 15,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 15"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 15"
     },
     {
       "rank": 8,
@@ -407,10 +407,10 @@
         "soft halo around one true arrow"
       ],
       "animation_idea": "loosest arm creaking and rocking slightly",
-      "lore_fit": "Written place-names are load-bearing in Nangijala — a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
+      "lore_fit": "Written place-names are load-bearing in Nangijala \u2014 a signpost literally keeps its destinations from going soft, and a faded arm means somewhere is being forgotten.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 9,
@@ -463,7 +463,7 @@
       "art_size": 128,
       "variety": [
         "split-rail birch, bark on",
-        "slanted roundpole gärdsgård run",
+        "slanted roundpole g\u00e4rdsg\u00e5rd run",
         "weathered grey picket run",
         "woven hazel wattle hurdle",
         "white-painted pickets, peeling",
@@ -487,7 +487,7 @@
       "lore_fit": "Fences are the boundary lines neighbors argued over and therefore remember hardest, standing firm in fields long after the fields themselves have gone soft.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 11,
@@ -526,7 +526,7 @@
       "lore_fit": "Every remembered village drew water somewhere, so the well is the certainty a whole street agreed on, deep enough that soul-light pools where the memory does.",
       "modifier_pool": "structure",
       "quota": 12,
-      "_saturated": "maintainer: enough of these (2 note(s)) — frozen at 12, 2026-08-14"
+      "_saturated": "maintainer: enough of these (2 note(s)) \u2014 frozen at 12, 2026-08-14"
     },
     {
       "rank": 12,
@@ -563,7 +563,7 @@
       "lore_fit": "Farmstead boundary hedges are each era's remembered property lines, still clipped because their gardeners still speak of clipping them.",
       "modifier_pool": "nature",
       "quota": 4,
-      "_throttled": "maintainer approval 2/34 (6%) over 34 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 2/34 (6%) over 34 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 13,
@@ -607,7 +607,7 @@
       "lore_fit": "Briar roses bloomed over Cherry Valley in every story the dead tell of it, so here they bloom in stubborn thorny plenty, keeping the Quiet out at the meadow edges.",
       "modifier_pool": "nature",
       "quota": 12,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 12"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 12"
     },
     {
       "rank": 14,
@@ -649,14 +649,14 @@
       "lore_fit": "A rung bell says a name out loud across the whole valley at once, firming the world like talk around a tended fire.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 1/20 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 1/20 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 15,
       "id": "streetlights",
       "prefix": "streetlight",
       "name": "Road Light",
-      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME — a fire basket, a horn lantern with a candle, an oil cresset — no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn",
+      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn",
       "world_height_m": [
         2.0,
         3.4
@@ -710,7 +710,7 @@
         "charred wood where the flame licks",
         "a spare torch bundle leaning against it"
       ],
-      "_reformed": "maintainer 2026-08-14: 'I always get streetlamps looking the same. This is an RPG after all, so think more candle and fire then lamp.' Concept rebuilt around open flame, candle, cresset and horn lantern — hand-made materials only, no glass-and-iron lamppost. Unfrozen with 40 quota and 18 varieties x 12 modifiers so no two read alike."
+      "_reformed": "maintainer 2026-08-14: 'I always get streetlamps looking the same. This is an RPG after all, so think more candle and fire then lamp.' Concept rebuilt around open flame, candle, cresset and horn lantern \u2014 hand-made materials only, no glass-and-iron lamppost. Unfrozen with 40 quota and 18 varieties x 12 modifiers so no two read alike."
     },
     {
       "rank": 16,
@@ -749,10 +749,10 @@
         "sparks drifting up from the flame"
       ],
       "animation_idea": "flame flickering with tiny sparks drifting upward",
-      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure — a tended fire small enough to keep one memory warm.",
+      "lore_fit": "A sheltered ever-burning flame is sacred infrastructure \u2014 a tended fire small enough to keep one memory warm.",
       "modifier_pool": "structure",
       "quota": 9,
-      "_saturated": "maintainer: enough of these (3 note(s), incl. on pieces he APPROVED) — frozen at 9, 2026-08-14"
+      "_saturated": "maintainer: enough of these (3 note(s), incl. on pieces he APPROVED) \u2014 frozen at 9, 2026-08-14"
     },
     {
       "rank": 17,
@@ -788,10 +788,10 @@
         "pale foxfire crust on the rotting side"
       ],
       "animation_idea": "loose straws lifting off and drifting away in the breeze",
-      "lore_fit": "A haystack is a whole summer's work remembered at once — the proof a homestead would live through winter, and proof keeps its shape.",
+      "lore_fit": "A haystack is a whole summer's work remembered at once \u2014 the proof a homestead would live through winter, and proof keeps its shape.",
       "modifier_pool": "structure",
       "quota": 6,
-      "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 18,
@@ -830,7 +830,7 @@
       "lore_fit": "The cherry and apple orchards are Nangijala's heart-image, rows of remembered harvests whose keeping firms up whole valleys at once.",
       "modifier_pool": "nature",
       "quota": 0,
-      "_retired": "maintainer verdicts 1/27 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 1/27 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 19,
@@ -873,7 +873,7 @@
       "lore_fit": "Roadside shrines let every passing walker spend a moment of remembering, keeping the road itself firm.",
       "modifier_pool": "structure",
       "quota": 6,
-      "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 20,
@@ -960,7 +960,7 @@
       "lore_fit": "These are the told-aloud stations where stories must be retold, because what is spoken of holds its shape.",
       "modifier_pool": "structure",
       "quota": 8,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 8"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 8"
     },
     {
       "rank": 22,
@@ -1002,7 +1002,7 @@
       "lore_fit": "Setting out the food the dead loved re-tells who they were, feeding the memory rather than the body.",
       "modifier_pool": "structure",
       "quota": 10,
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 10"
+      "_saturated": "maintainer said enough (2 note(s)) \u2014 frozen at 10"
     },
     {
       "rank": 23,
@@ -1040,7 +1040,7 @@
         "tips glowing like small candle flames"
       ],
       "animation_idea": "heart-light pulsing like a slow breath",
-      "lore_fit": "Soulstones are what remains when a thing thins far enough — one fact pressed to mineral — and here they surface right out of the ground.",
+      "lore_fit": "Soulstones are what remains when a thing thins far enough \u2014 one fact pressed to mineral \u2014 and here they surface right out of the ground.",
       "modifier_pool": "nature"
     },
     {
@@ -1083,7 +1083,7 @@
         "shelf undersides shedding pale spore light downward"
       ],
       "animation_idea": "the young shoot at its edge trembling and mushroom caps quivering in the breeze",
-      "lore_fit": "A stump is a tree half-forgotten — felled in someone's memory yet too well-known to go soft — its rings a readable record of kept years.",
+      "lore_fit": "A stump is a tree half-forgotten \u2014 felled in someone's memory yet too well-known to go soft \u2014 its rings a readable record of kept years.",
       "modifier_pool": "nature",
       "demand": 0.7
     },
@@ -1124,7 +1124,7 @@
         "phosphorescent rime edging every leaf"
       ],
       "animation_idea": "the whole clump of foliage rustling in a light breeze",
-      "lore_fit": "Berry bushes are remembered hands-first — every picker who filled a pail keeps their bush standing at the field edge.",
+      "lore_fit": "Berry bushes are remembered hands-first \u2014 every picker who filled a pail keeps their bush standing at the field edge.",
       "modifier_pool": "nature",
       "demand": 0.8
     },
@@ -1165,7 +1165,7 @@
       "lore_fit": "A scarecrow is an almost-person somebody made from remembered clothes, watched closely here in case it starts keeping a memory of its own.",
       "modifier_pool": "structure",
       "quota": 5,
-      "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 27,
@@ -1205,7 +1205,7 @@
       "lore_fit": "Every homestead's goods rode a cart at least once, so the half-remembered roads keep their carts even where the horses that pulled them are gone.",
       "modifier_pool": "structure",
       "quota": 7,
-      "_saturated": "maintainer: enough of these (1 note(s), incl. on pieces he APPROVED) — frozen at 7, 2026-08-14"
+      "_saturated": "maintainer: enough of these (1 note(s), incl. on pieces he APPROVED) \u2014 frozen at 7, 2026-08-14"
     },
     {
       "rank": 28,
@@ -1244,7 +1244,7 @@
       "lore_fit": "Winter stores were counted and re-counted aloud until spring, and anything counted that often holds its shape for centuries.",
       "modifier_pool": "structure",
       "quota": 8,
-      "_saturated": "maintainer: enough of these (1 note(s), incl. on pieces he APPROVED) — frozen at 8, 2026-08-14"
+      "_saturated": "maintainer: enough of these (1 note(s), incl. on pieces he APPROVED) \u2014 frozen at 8, 2026-08-14"
     },
     {
       "rank": 29,
@@ -1320,7 +1320,7 @@
       "lore_fit": "The living told their bees of every death in the family, so the hives of Nangijala already know everyone's name and never go quiet.",
       "modifier_pool": "structure",
       "quota": 4,
-      "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 31,
@@ -1444,7 +1444,7 @@
       "lore_fit": "Cattails are the torches of half-remembered childhood games, so they keep sprouting wherever the dead recall playing by the water.",
       "modifier_pool": "nature",
       "quota": 6,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 6"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 6"
     },
     {
       "rank": 34,
@@ -1483,7 +1483,7 @@
       "lore_fit": "Wild Rose Valley is named for its briars, and every posy the living once picked still blooms here exactly where its picker remembers kneeling.",
       "modifier_pool": "nature",
       "quota": 7,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 7"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 7"
     },
     {
       "rank": 35,
@@ -1600,7 +1600,7 @@
         "ground around the base lit in the crystal's color"
       ],
       "animation_idea": "inner light slowly pulsing while tiny sparks drift off the tips",
-      "lore_fit": "Bright mineral the valleys remember from every tale of treasure — distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
+      "lore_fit": "Bright mineral the valleys remember from every tale of treasure \u2014 distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
       "modifier_pool": "nature"
     },
     {
@@ -1680,7 +1680,7 @@
       "lore_fit": "Fairy rings are pure folk memory, and in Nangijala a circle everyone told stories about keeps its shape better than almost anything else.",
       "modifier_pool": "nature",
       "quota": 11,
-      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 11, 2026-08-14"
+      "_saturated": "maintainer: enough of these (1 note(s)) \u2014 frozen at 11, 2026-08-14"
     },
     {
       "rank": 40,
@@ -1909,7 +1909,7 @@
       "lore_fit": "Moss creeps over whatever goes unspoken, padding the world's softening edges so the Quiet arrives gently.",
       "modifier_pool": "nature",
       "quota": 5,
-      "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 46,
@@ -1984,7 +1984,7 @@
       "lore_fit": "A miller's whole certainty pressed into one small mill, grinding away in a field for bread nobody needs to eat.",
       "modifier_pool": "structure",
       "quota": 3,
-      "_throttled": "maintainer approval 3/17 (18%) over 17 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 3/17 (18%) over 17 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 48,
@@ -2023,7 +2023,7 @@
       "lore_fit": "Midsummer is the one memory every generation of the dead shares, so a maypole still dressed keeps a whole village green firm against the Quiet.",
       "modifier_pool": "structure",
       "quota": 2,
-      "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
+      "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts \u2014 quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals."
     },
     {
       "rank": 49,
@@ -2059,7 +2059,7 @@
         "small coal brazier beside the counter"
       ],
       "animation_idea": "the canopy edge fluttering and hanging goods swinging",
-      "lore_fit": "Market day is remembering out loud — prices, names and gossip repeated weekly for lifetimes — so stalls stand firm even in villages gone half-Quiet.",
+      "lore_fit": "Market day is remembering out loud \u2014 prices, names and gossip repeated weekly for lifetimes \u2014 so stalls stand firm even in villages gone half-Quiet.",
       "modifier_pool": "structure"
     },
     {
@@ -2096,7 +2096,7 @@
         "smoke of soft light curling from the crown"
       ],
       "animation_idea": "hearth flames flickering while thin smoke curls from the crown",
-      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften — the fire everyone gathered at stands long after the walls are gone.",
+      "lore_fit": "When a house goes unspoken of, the hearth is the last part to soften \u2014 the fire everyone gathered at stands long after the walls are gone.",
       "modifier_pool": "structure"
     },
     {
@@ -2133,7 +2133,7 @@
         "cold aurora shimmer hanging under the arch"
       ],
       "animation_idea": "briar rose vines swaying against the stonework",
-      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall — an opening still held open by the habit of walking through.",
+      "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall \u2014 an opening still held open by the habit of walking through.",
       "modifier_pool": "structure"
     },
     {
@@ -2280,7 +2280,7 @@
         "trickle of glowing pebbles down one side"
       ],
       "animation_idea": "a loose pebble occasionally trickling down the slope",
-      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten — memory ground down but not yet gone to the Quiet.",
+      "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten \u2014 memory ground down but not yet gone to the Quiet.",
       "modifier_pool": "nature"
     },
     {
@@ -2533,10 +2533,10 @@
         "soft aurora shimmer across the thinned surface"
       ],
       "animation_idea": "the faded half slowly flickering between half-visible and almost gone",
-      "lore_fit": "These are the Quiet made visible — furniture nobody speaks of anymore, caught halfway between remembered and gone.",
+      "lore_fit": "These are the Quiet made visible \u2014 furniture nobody speaks of anymore, caught halfway between remembered and gone.",
       "modifier_pool": "indoor",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 63,
@@ -2647,7 +2647,7 @@
         "sap channels lit like slow embers"
       ],
       "animation_idea": "amber ring-light breathing slowly while spore motes rise",
-      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay — trees pressed down into their own stone monuments.",
+      "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay \u2014 trees pressed down into their own stone monuments.",
       "modifier_pool": "nature"
     },
     {
@@ -2943,7 +2943,7 @@
       "lore_fit": "Midsummer is remembered by every generation of the dead at once, so garlands stay strung year-round, marking ground made firm by festivals and talk.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 74,
@@ -3202,7 +3202,7 @@
       "lore_fit": "Every fence post is somebody's certainty, and the birds of the dead still build on what the living remember standing upright.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/5 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/5 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 81,
@@ -3382,7 +3382,7 @@
         "opening rimmed in soft ember light"
       ],
       "animation_idea": "crystal lining glinting as the interior glow flickers",
-      "lore_fit": "Memory keeps its brightest part hidden — a plain stone that cracks open to show the light it has been holding all along.",
+      "lore_fit": "Memory keeps its brightest part hidden \u2014 a plain stone that cracks open to show the light it has been holding all along.",
       "modifier_pool": "nature"
     },
     {
@@ -3536,7 +3536,7 @@
         "whole figure translucent, lit from within"
       ],
       "animation_idea": "moths slowly circling the statue's head",
-      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered — hardest of all for the Quiet to take.",
+      "lore_fit": "A statue is a memory somebody already pressed into stone while alive, so here it stands twice-remembered \u2014 hardest of all for the Quiet to take.",
       "modifier_pool": "structure"
     },
     {
@@ -3797,7 +3797,7 @@
       "lore_fit": "Doves carried messages and meant home, so the dead keep their cotes stocked and something white still flies between the remembered farms.",
       "modifier_pool": "structure",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 97,
@@ -3836,7 +3836,7 @@
       "lore_fit": "The toys of remembered nurseries wander out into the meadows, still rocking because somewhere a grown soul still speaks of being small.",
       "modifier_pool": "indoor",
       "quota": 0,
-      "_retired": "maintainer verdicts 0/10 approved — concept dead 2026-08-14"
+      "_retired": "maintainer verdicts 0/10 approved \u2014 concept dead 2026-08-14"
     },
     {
       "rank": 98,
@@ -3997,12 +3997,12 @@
         "a long straightish run with two sharp kinks",
         "wandering diagonally with leaf clusters low and high"
       ],
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_web": "maintainer 2026-08-14: 'I'm kinda looking more for a sparse web... they should come and go. We should be able to place several to cover a wall... I want the scenery to not have a well defined start.' A hanging curtain implies a rod at the top and can only sit at a cliff edge; a spreading network with no origin can be scattered and overlapped anywhere on a face.",
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
-      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
-      "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals — not a bundle of parallel strands."
+      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
+      "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals \u2014 not a bundle of parallel strands."
     },
     {
       "rank": 102,
@@ -4117,7 +4117,7 @@
       "animation_idea": "the rocking chair rocking slowly on its own",
       "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready.",
       "modifier_pool": "indoor",
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 8"
+      "_saturated": "maintainer said enough (1 note(s)) \u2014 frozen at 8"
     },
     {
       "rank": 105,
@@ -4150,7 +4150,7 @@
         "a little nightlight lantern beside the pillow"
       ],
       "animation_idea": "the quilt rising and falling as if someone breathes beneath it",
-      "lore_fit": "The dead still sleep — not because they must, but because dreams are where the living visit.",
+      "lore_fit": "The dead still sleep \u2014 not because they must, but because dreams are where the living visit.",
       "modifier_pool": "indoor"
     },
     {
@@ -4356,8 +4356,8 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 1, 2026-08-14"
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
+      "_saturated": "maintainer: enough of these (1 note(s)) \u2014 frozen at 1, 2026-08-14"
     },
     {
       "rank": 112,
@@ -4392,7 +4392,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 113,
@@ -4427,7 +4427,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 114,
@@ -4463,7 +4463,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 115,
@@ -4499,7 +4499,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 116,
@@ -4534,7 +4534,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 117,
@@ -4569,7 +4569,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 118,
@@ -4604,7 +4604,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 119,
@@ -4639,7 +4639,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 120,
@@ -4674,7 +4674,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 121,
@@ -4709,7 +4709,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 122,
@@ -4744,8 +4744,8 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "_saturated": "maintainer said enough (3 note(s)) — frozen at 0"
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
+      "_saturated": "maintainer said enough (3 note(s)) \u2014 frozen at 0"
     },
     {
       "rank": 123,
@@ -4780,7 +4780,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 124,
@@ -4815,7 +4815,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 125,
@@ -4850,7 +4850,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 126,
@@ -4885,7 +4885,7 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 127,
@@ -4917,8 +4917,8 @@
         "a warm ember cupped in the palm"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 128,
@@ -4950,8 +4950,8 @@
         "glow-moss cushion shining softly"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 129,
@@ -4983,8 +4983,8 @@
         "silver mist over the surface"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 130,
@@ -5016,8 +5016,8 @@
         "lanterns glowing in slow waves"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 131,
@@ -5049,8 +5049,8 @@
         "one shard blazing like a star"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 132,
@@ -5082,9 +5082,9 @@
         "a pale gate-glow beneath the arch"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "_saturated": "maintainer said enough (2 note(s)) — frozen at 0"
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type.",
+      "_saturated": "maintainer said enough (2 note(s)) \u2014 frozen at 0"
     },
     {
       "rank": 133,
@@ -5116,8 +5116,8 @@
         "light spilling out onto the grass"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 134,
@@ -5149,8 +5149,8 @@
         "glowing runes scratched by pilgrims"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 135,
@@ -5182,8 +5182,8 @@
         "glow-moss lighting the path beneath"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 136,
@@ -5215,8 +5215,8 @@
         "aurora colors shifting through the ice"
       ],
       "animation_idea": "subtle idle motion",
-      "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
-      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type."
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives.",
+      "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated \u2014 breadth of types, not depth per type."
     },
     {
       "rank": 137,
@@ -5249,7 +5249,7 @@
         "light outlining the whole frame"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5282,7 +5282,7 @@
         "the prow stone shining like a lamp"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5315,7 +5315,7 @@
         "light running along the ribbons in waves"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5348,7 +5348,7 @@
         "the wet face shining silver"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5382,7 +5382,7 @@
         "the sword blade glowing faintly"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5415,7 +5415,7 @@
         "light spilling from the mouth"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5448,7 +5448,7 @@
         "light leaking from the frame's carvings"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5481,7 +5481,7 @@
         "knots shining like beads"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5514,7 +5514,7 @@
         "one star burning brighter than the rest"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5547,7 +5547,7 @@
         "one pair shining brighter"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5580,7 +5580,7 @@
         "the sound-holes lit from within"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5613,7 +5613,7 @@
         "light caught in the clouded glass"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5646,7 +5646,7 @@
         "one tablet blazing on the reading slab"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5679,7 +5679,7 @@
         "the moss lining shining softly"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5712,7 +5712,7 @@
         "the ring at the top shining"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5745,7 +5745,7 @@
         "the carved seeds shining"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5778,7 +5778,7 @@
         "a soft aura around the whole stand"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5811,7 +5811,7 @@
         "the rockpool lit from beneath"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — variety of TYPES is the point",
+      "_special": "SPECIAL: 3 max \u2014 variety of TYPES is the point",
       "lore_fit": "A one-off landmark; a place is remembered by it."
     },
     {
@@ -5820,31 +5820,31 @@
       "prefix": "cliff_root",
       "name": "Cliff Root",
       "quota": 70,
-      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically — never sideways, never diagonal — small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background",
+      "description": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger, trailing down the bare stone, gently winding as they go, holding on with tiny hair-fine side-roots, mostly bare woody strand with just one or two small leaf sprouts along the way, delicate and understated, sparse, plenty of empty space around them, the tree far above and out of sight, no trunk, no stump, no root crown, NOT a big root, not thick, not gnarled, fantasy RPG nature art, no border, transparent background",
       "world_height_m": [
-        5.0,
-        12.0
+        0.9,
+        2.0
       ],
-      "art_size": 256,
+      "art_size": 128,
       "variety": [
-        "pale bleached roots",
-        "dark wet roots",
-        "moss-furred roots",
-        "roots with ferns rooted between them",
-        "fine hair-roots in a dense veil",
-        "two great roots twined together"
+        "pale bleached rootlets",
+        "dark wet rootlets",
+        "faintly moss-furred rootlets",
+        "rootlets with one tiny fern",
+        "hair-fine rootlets, barely there",
+        "reddish young rootlets"
       ],
       "modifiers": [
-        "two thin roots side by side, one longer",
-        "a single slender root with slight bends",
-        "three fine roots, widely spaced",
-        "one root with a small leaf cluster halfway",
-        "thin roots close together near the top, spreading below",
-        "one root crossing another once",
-        "very fine roots with sparse leaves",
-        "a slightly thicker root with two hair-thin ones",
-        "long straight roots with gentle waves",
-        "roots with tiny ferns where they grip"
+        "two thin strands side by side, one longer",
+        "a single wiry strand with slight bends",
+        "three hair-fine strands, widely spaced",
+        "one strand with a small leaf sprout halfway",
+        "strands drifting apart as they descend",
+        "one strand crossing another once, lightly",
+        "very fine strands, almost no leaves",
+        "short broken strands with gaps between them",
+        "long thin strands with gentle waves",
+        "a strand fading out before the bottom"
       ],
       "glow_concepts": [
         "soul-light running up the roots",
@@ -5854,13 +5854,13 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces.",
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_web": "maintainer 2026-08-14: 'I'm kinda looking more for a sparse web... they should come and go. We should be able to place several to cover a wall... I want the scenery to not have a well defined start.' A hanging curtain implies a rod at the top and can only sit at a cliff edge; a spreading network with no origin can be scattered and overlapped anywhere on a face.",
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
-      "_tree_hidden": "maintainer 2026-08-14: 'the root is not sparse enough and still forms the beginning of a tree at the top. We don't want to see or know where the tree is. It might be at the top of the mountain.' The tree must be OUT OF FRAME — independent strands that never converge.",
-      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
-      "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals — not a bundle of parallel strands.",
+      "_tree_hidden": "maintainer 2026-08-14: 'the root is not sparse enough and still forms the beginning of a tree at the top. We don't want to see or know where the tree is. It might be at the top of the mountain.' The tree must be OUT OF FRAME \u2014 independent strands that never converge.",
+      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
+      "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals \u2014 not a bundle of parallel strands.",
       "_vertical": "maintainer 2026-08-14: 'The roots still form a tree... its also tilted wrong. The roots should go kinda straight up not sideways like this and they should be thinner.'"
     },
     {
@@ -5905,11 +5905,11 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces.",
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_framing": "maintainer 2026-08-14: 'it renders outside the frame too often or quits abruptly... the roots often stop at the top and will be hard to place... leaves a bit too thick, would be better if more sparse (but still a big image)'.",
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
-      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps."
+      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps."
     },
     {
       "rank": 157,
@@ -5917,7 +5917,7 @@
       "prefix": "cliff_shrub",
       "name": "Cliff Shrub",
       "quota": 60,
-      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom — never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind — ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it",
+      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it",
       "world_height_m": [
         1.5,
         4.0
@@ -5953,9 +5953,9 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces.",
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
-      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps."
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps."
     },
     {
       "rank": 158,
@@ -5963,30 +5963,30 @@
       "prefix": "cliff_moss",
       "name": "Cliff Moss",
       "quota": 50,
-      "description": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background",
+      "description": "a SMALL SUBTLE DETAIL for a rock face: a thin sparse patch of soft moss and lichen clinging flat against bare stone, low and hugging the rock, only a few little cushions with plenty of bare grey stone showing between them, ragged uneven edges that fade out, delicate and understated, NOT a mound, NOT a boulder, no big rock shape, nothing filling the frame, fantasy RPG nature art, no border, transparent background",
       "world_height_m": [
         0.3,
         0.8
       ],
       "art_size": 64,
       "variety": [
-        "mossy stone knob",
-        "lichen-crusted little ledge",
-        "small mossy outcrop",
-        "tiny stone shelf with moss",
-        "moss-topped rock nub"
+        "thin moss patch on grey stone",
+        "pale lichen crust with a little moss",
+        "scattered moss flecks",
+        "a faint green film of moss",
+        "moss caught in a shallow crack"
       ],
       "modifiers": [
-        "moss only on the upper face",
-        "a single cushion and bare stone elsewhere",
-        "moss spilling slightly over one edge",
-        "pale lichen ringing the moss",
-        "a fern sprout in a crack",
-        "frost-touched moss",
-        "two small cushions apart",
-        "moss thin and patchy",
-        "rust-orange lichen with green moss",
-        "wet dark stone under the moss"
+        "moss only along the upper edge",
+        "one small cushion, bare stone elsewhere",
+        "moss trailing off into single specks",
+        "pale lichen ringing a little moss",
+        "one tiny fern sprout in a crack",
+        "frost-touched, mostly bare",
+        "two small cushions far apart",
+        "thin and patchy, more stone than moss",
+        "rust-orange lichen with a touch of green",
+        "damp dark stone barely greened"
       ],
       "glow_concepts": [
         "the moss glowing soft green",
@@ -5996,12 +5996,12 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces.",
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_web": "maintainer 2026-08-14: 'I'm kinda looking more for a sparse web... they should come and go. We should be able to place several to cover a wall... I want the scenery to not have a well defined start.' A hanging curtain implies a rod at the top and can only sit at a cliff edge; a spreading network with no origin can be scattered and overlapped anywhere on a face.",
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
-      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
-      "_small": "maintainer 2026-08-14: 'Yes it would be cool to have moss on the mountain wall, but not like this. That should be small sparse moss pieces on rocks sticking out and this is small details. This looks like graphics to a different game.' Big hanging moss drapes were entirely the wrong idea — moss is a 64px DETAIL on a small protruding rock, scattered over a wall by maps2."
+      "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
+      "_small": "maintainer 2026-08-14: 'Yes it would be cool to have moss on the mountain wall, but not like this. That should be small sparse moss pieces on rocks sticking out and this is small details. This looks like graphics to a different game.' Big hanging moss drapes were entirely the wrong idea \u2014 moss is a 64px DETAIL on a small protruding rock, scattered over a wall by maps2."
     },
     {
       "rank": 159,
@@ -6009,7 +6009,7 @@
       "prefix": "cliff_ledgetree",
       "name": "Cliff Ledge Tree",
       "quota": 0,
-      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom — never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind — ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it",
+      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it",
       "world_height_m": [
         4.0,
         9.0
@@ -6039,8 +6039,8 @@
       "animation_idea": "slow drift or fall",
       "_wall": "MOUNTAIN-WALL DECOR: rendered tall and narrow, layered over the wall tiles by maps2",
       "lore_fit": "The mountains are the oldest memories; green and water still work down their faces.",
-      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
-      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
+      "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
+      "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_paused": "maintainer 2026-08-14: rejected three times for 'this image is cut at the left side'. A tree leaning far out sideways fights the fit-in-frame rule by design; paused at its current count rather than burning budget on a concept that needs a rethink."
     },
     {
@@ -6049,7 +6049,7 @@
       "prefix": "sleeping_giant",
       "name": "Sleeping Giant",
       "quota": 3,
-      "description": "a grassy hillock that is unmistakably a sleeping figure under the turf — the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass",
+      "description": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass",
       "world_height_m": [
         2.0,
         3.5
@@ -6074,7 +6074,7 @@
         "soul-light seeping along the spine"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6108,7 +6108,7 @@
         "light pooling in the open jaw"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6142,7 +6142,7 @@
         "light in the little window"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6176,7 +6176,7 @@
         "a pulse of warm light inside"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6210,7 +6210,7 @@
         "the undersides shining softly"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6244,7 +6244,7 @@
         "soul-lights drifting off the top step"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6278,7 +6278,7 @@
         "glow-moss inside each bore"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6312,7 +6312,7 @@
         "an iridescent shimmer moving across it"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6346,7 +6346,7 @@
         "light rippling across the face"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6380,7 +6380,7 @@
         "light travelling along the silk strands"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6414,7 +6414,7 @@
         "light in the grass between them"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     },
     {
@@ -6448,7 +6448,7 @@
         "soul-light trapped under the skin"
       ],
       "animation_idea": "subtle idle motion",
-      "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
+      "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
     }
   ],
@@ -6516,6 +6516,6 @@
   },
   "goal": {
     "target_pieces": 1000,
-    "note": "maintainer 2026-08-14: 'I think the goal is to generate 1000 scenery objects!' Generation STOPS at 1000 — no open-ended catalog, no scheduler. He tops up credits, the agent runs a bounded pass, he reviews. Count is live pieces on disk (his rejections delete, so the 1000 are all pieces that survived review)."
+    "note": "maintainer 2026-08-14: 'I think the goal is to generate 1000 scenery objects!' Generation STOPS at 1000 \u2014 no open-ended catalog, no scheduler. He tops up credits, the agent runs a bounded pass, he reviews. Count is live pieces on disk (his rejections delete, so the 1000 are all pieces that survived review)."
   }
 }
