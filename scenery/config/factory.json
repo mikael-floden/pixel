@@ -5818,7 +5818,7 @@
       "prefix": "cliff_root",
       "name": "Cliff Root",
       "quota": 70,
-      "description": "thick gnarled old tree roots creeping down over stone, heavy woody roots with moss and small ferns growing where they meet, a few fine rootlets trailing off, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it",
+      "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight — the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it",
       "world_height_m": [
         5.0,
         12.0
@@ -5833,16 +5833,16 @@
         "two great roots twined together"
       ],
       "modifiers": [
-        "heavy growth on one side thinning to bare on the other",
-        "a long drift down across the frame",
-        "clustered thickly at the top corner, trailing below",
-        "a broad patch with smaller islands around it",
-        "dense in the middle, ragged at both ends",
-        "a diagonal band of growth",
-        "one thick tendril reaching far out alone",
-        "gathering low, sparse above",
-        "a wide loose spread with big gaps",
-        "an old thick growth with young shoots around it"
+        "three or four long strands, widely spaced",
+        "one thick root with two thin ones far off",
+        "roots drifting apart as they descend",
+        "a single root crossing the frame diagonally",
+        "strands closer together on one side",
+        "roots angling across rather than straight down",
+        "one root branching low, the rest plain",
+        "widely spaced with a fern between two",
+        "long and lazy with slow curves",
+        "a pair of roots twisting around each other once"
       ],
       "glow_concepts": [
         "soul-light running up the roots",
@@ -5855,7 +5855,8 @@
       "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
       "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_web": "maintainer 2026-08-14: 'I'm kinda looking more for a sparse web... they should come and go. We should be able to place several to cover a wall... I want the scenery to not have a well defined start.' A hanging curtain implies a rod at the top and can only sit at a cliff edge; a spreading network with no origin can be scattered and overlapped anywhere on a face.",
-      "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless."
+      "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
+      "_tree_hidden": "maintainer 2026-08-14: 'the root is not sparse enough and still forms the beginning of a tree at the top. We don't want to see or know where the tree is. It might be at the top of the mountain.' The tree must be OUT OF FRAME — independent strands that never converge."
     },
     {
       "rank": 156,

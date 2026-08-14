@@ -328,6 +328,15 @@ button { font: inherit; cursor: pointer; }
 
 /* ---- animation player ---- */
 .player { display: flex; flex-direction: column; gap: 10px; }
+/* NARROW-SCREEN CROP BUG (scenery agent, 2026-08-14 — maintainer lost 200+
+   good pieces to it): the stage clamps to viewport width on a phone while the
+   canvas is drawn at full art size and CENTRED, so an oversized sprite's left
+   and right edges sat outside the scroll view and read as art that had been
+   cut off. He rejected piece after piece for "the image is cut at the left
+   side" when every sprite was complete (measured: content bbox had margin on
+   all four sides). The canvas now scales down to fit a narrow stage instead of
+   overflowing centred; on a wide screen nothing changes. */
+.player-stage > canvas { max-width: 100%; height: auto; }
 .player-stage {
   align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
   padding: 8px; max-width: 100%; overflow: auto;
