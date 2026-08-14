@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:12:31+00:00",
+  "id": "grave_027",
+  "group": "graves",
+  "rank": 3,
+  "index": 27,
+  "name": "Twin stones, shared mound 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "twin stones, shared mound",
+  "modifier": "moss-capped",
+  "glow_concept": null,
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, twin stones, shared mound, moss-capped, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_027/sprite.webp",
+  "placement": {
+    "world_height_m": 0.55,
+    "world_px_height": 21,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5baca5b2-d893-460d-bc4a-6c44b5ff11f7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

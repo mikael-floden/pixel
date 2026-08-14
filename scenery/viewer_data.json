@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 576,
+  "scenery_count": 577,
   "target_count": 2437,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 4,
@@ -1021,7 +1021,7 @@
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 9,
+    "graves": 10,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 1,
@@ -6378,6 +6378,28 @@
       "status": "complete",
       "pixellab_object_id": "0df4a9c4-fb77-4c9a-832b-7156851646f3",
       "sprite": "graves/grave_026/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_027",
+      "rel": "graves/grave_027",
+      "name": "Twin stones, shared mound 027",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, twin stones, shared mound, moss-capped, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.55,
+        "world_px_height": 21,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5baca5b2-d893-460d-bc4a-6c44b5ff11f7",
+      "sprite": "graves/grave_027/sprite.webp",
       "rotations": {},
       "animations": []
     },
