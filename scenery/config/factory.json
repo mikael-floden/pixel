@@ -6502,7 +6502,15 @@
         "a plain rectangular window in whitewashed plaster and wood",
         "a diamond-leaded lattice window in a dark rectangular frame",
         "an arched window set in cut stone",
-        "a round porthole window ringed in stone"
+        "a round porthole window ringed in stone",
+        "a rectangular window with a deep stone sill and iron catch",
+        "a small-paned rectangular window in sun-bleached blue wood",
+        "a rectangular window framed in rough-hewn logs",
+        "a rectangular window in soot-darkened timber",
+        "a rectangular window under a slate drip-ledge",
+        "a rectangular window in flaking green-painted wood",
+        "a rectangular window set deep in a thick clay wall",
+        "a rectangular window with a rope-hung shutter"
       ],
       "modifiers": [
         "glass intact but dusty and dark",
@@ -6520,7 +6528,15 @@
         "ivy creeping across one corner",
         "cobwebs strung in the corners of the panes",
         "a cracked and sagging sill beneath",
-        "frost and grime clouding the glass"
+        "frost and grime clouding the glass",
+        "an unlit candle stub on the sill",
+        "a bird's nest tucked in the upper corner",
+        "moss creeping along the bottom of the frame",
+        "rain streaks and old water stains",
+        "a cracked pane patched with cloth",
+        "one shutter closed and one open",
+        "a clay pot of dry herbs on the sill",
+        "paint peeling and curling from the frame"
       ],
       "name": "Window",
       "lore_fit": "Houses in Nangijala are shut up as often as they are lived in; a dark window is how a wall tells you nobody is home.",
@@ -6529,6 +6545,20 @@
         "warm candlelight behind the panes",
         "a low hearth-glow seeping through",
         "a single lamp burning in an upper pane"
+      ],
+      "size_bands": [
+        [
+          0.75,
+          48
+        ],
+        [
+          1.05,
+          64
+        ],
+        [
+          99,
+          96
+        ]
       ]
     }
   ],

@@ -56,20 +56,38 @@ def _seed(*parts):
     return zlib.crc32(("::".join(str(p) for p in parts)).encode()) % (2 ** 31)
 
 
-def placement(cfg, world_height_m):
+def placement(cfg, world_height_m, img=None):
     """Turn a real-world height into the in-world PIXEL height a piece should
-    occupy beside a character, so props compose at a believable scale."""
+    occupy beside a character, so props compose at a believable scale.
+
+    `world_px_height` is the height of the VISIBLE ART. Scaling the whole
+    canvas to it renders every piece short by however much transparent margin
+    the model happened to leave — measured 2026-08-14 across the first windows,
+    content filled 68-82% of the canvas and the fraction varied per piece, so
+    two windows both declared 1.2m came out visibly different sizes. Pass `img`
+    and the manifest also carries `content_box` and `canvas_render_px`: render
+    the canvas at THAT height and the art lands at world_px_height exactly."""
     sc = cfg["scale"]
     wh = float(world_height_m)
     ppm = sc["character_height_px"] / sc["character_height_m"]
-    return {
+    out = {
         "world_height_m": round(wh, 3),
         "world_px_height": max(1, round(wh * ppm)),
         "character_height_px": sc["character_height_px"],
         "character_height_m": sc["character_height_m"],
-        "note": "Render the sprite scaled so its height == world_px_height; a "
-                "character is character_height_px tall.",
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a "
+                "character is character_height_px tall. With content_box "
+                "present, render the whole canvas at canvas_render_px.",
     }
+    if img is not None:
+        box = img.getbbox()
+        if box:
+            ch = max(1, box[3] - box[1])
+            out["content_box"] = list(box)
+            out["content_px_height"] = ch
+            out["canvas_render_px"] = max(1, round(out["world_px_height"]
+                                                   * img.size[1] / ch))
+    return out
 
 
 # --- io / discovery ---------------------------------------------------------

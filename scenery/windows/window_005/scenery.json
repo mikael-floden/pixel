@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:22:56+00:00",
+  "id": "window_005",
+  "group": "windows",
+  "rank": 25,
+  "index": 5,
+  "name": "A wide rectangular window in mossy fieldstone 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "a wide rectangular window in mossy fieldstone",
+  "modifier": "moss creeping along the bottom of the frame",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a wide rectangular window in mossy fieldstone, moss creeping along the bottom of the frame, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_005/rotations/south-east.webp",
+    "south-west": "windows/window_005/rotations/south-west.webp",
+    "south": "windows/window_005/sprite.webp"
+  },
+  "size": 48,
+  "sprite": "windows/window_005/sprite.webp",
+  "placement": {
+    "world_height_m": 0.74,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      6,
+      9,
+      45,
+      40
+    ],
+    "content_px_height": 31,
+    "canvas_render_px": 43
+  },
+  "pixellab_object_id": "e5113bbc-0e69-4fed-86fc-16577a12cd4d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

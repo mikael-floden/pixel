@@ -96,6 +96,27 @@ def _group_scale_phrase(group: dict, height_m: float) -> str:
     return str(ladder[-1][1])
 
 
+def _art_size(group: dict, height_m: float) -> int:
+    """Canvas size for a piece — fixed per group, or chosen by its height.
+
+    A FIXED canvas means the art's pixel density depends on how tall the piece
+    is: on a 128px canvas a 0.6m window is drawn at ~143 px/metre while a 1.9m
+    one is drawn at ~47, against a player whose art is 53 px/metre. The game
+    then has to rescale each piece by a different non-integer factor, which is
+    exactly how a 1:1 pixel grid turns into "THE PIXELS ARE TO BIG".
+
+    A group with `size_bands` [[max_height_m, canvas], ...] picks its canvas
+    from the piece's height instead, so every piece lands near the player's
+    density and the whole domain rescales by one consistent factor."""
+    bands = group.get("size_bands")
+    if not bands:
+        return int(group["art_size"])
+    for entry in bands:
+        if height_m < float(entry[0]):
+            return int(entry[1])
+    return int(bands[-1][1])
+
+
 def quota_for(rank: int, rule: dict) -> int:
     return max(int(rule.get("floor", 2)),
                int(rule.get("base", 102)) + int(rule.get("step", -2)) * rank)
@@ -177,7 +198,8 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
         "prompt": prompt,
         "prompt_body": body,
         "prompt_tail": tail,
-        "size": int(group["art_size"]),
+        "size_reason": ("height band" if group.get("size_bands") else "fixed"),
+        "size": _art_size(group, height),
         "world_height_m": height,
     }
 
