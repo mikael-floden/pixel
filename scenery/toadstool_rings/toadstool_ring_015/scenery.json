@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:46:29+00:00",
+  "id": "toadstool_ring_015",
+  "group": "toadstool_rings",
+  "rank": 39,
+  "index": 15,
+  "name": "Ring of golden waxcaps 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "ring of golden waxcaps",
+  "modifier": "with thick exposed roots",
+  "glow_concept": null,
+  "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, ring of golden waxcaps, with thick exposed roots, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "toadstool_rings/toadstool_ring_015/sprite.webp",
+  "placement": {
+    "world_height_m": 0.22,
+    "world_px_height": 8,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "5e53c746-358f-44c2-80e7-23df86efe400",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

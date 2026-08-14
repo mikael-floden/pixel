@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 552,
+  "scenery_count": 553,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -279,7 +279,7 @@
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
       "quota": 24,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 40,
@@ -994,7 +994,7 @@
     "sundials": 2,
     "tables": 9,
     "telegraph_poles": 4,
-    "toadstool_rings": 11,
+    "toadstool_rings": 12,
     "torch_posts": 17,
     "trailing_planters": 2,
     "trees": 24,
@@ -10940,6 +10940,28 @@
       "status": "complete",
       "pixellab_object_id": "a80a91dc-8a10-4c5b-9c8b-e375213919d8",
       "sprite": "toadstool_rings/toadstool_ring_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "toadstool_ring_015",
+      "rel": "toadstool_rings/toadstool_ring_015",
+      "name": "Ring of golden waxcaps 015",
+      "category": "toadstool_rings",
+      "lights": "LIGHTS_OFF",
+      "description": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, ring of golden waxcaps, with thick exposed roots, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.22,
+        "world_px_height": 8,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "5e53c746-358f-44c2-80e7-23df86efe400",
+      "sprite": "toadstool_rings/toadstool_ring_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
