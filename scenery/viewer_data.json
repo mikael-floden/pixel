@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 491,
+  "scenery_count": 492,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 4,
@@ -945,7 +945,7 @@
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 9,
+    "graves": 10,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 1,
@@ -5553,6 +5553,28 @@
       "status": "complete",
       "pixellab_object_id": "ea8124a0-f256-4436-9305-c123afa8a00b",
       "sprite": "graves/grave_020/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_023",
+      "rel": "graves/grave_023",
+      "name": "Moss-covered fieldstone 023",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, moss-covered fieldstone, with climbing flowers at one corner, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "356ccc83-59a3-488d-bc0c-32fdd3b99bfe",
+      "sprite": "graves/grave_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
