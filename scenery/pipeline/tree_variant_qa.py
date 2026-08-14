@@ -408,10 +408,17 @@ def check_variant(source_img, variant_img, state, source_lights,
         if g_var < GLOW_FLOOR:
             fails.append(f"LIT variant does not glow: {g_var:.3f} < "
                          f"{GLOW_FLOOR}")
-        elif g_var - g_src < GLOW_LIT_DELTA:
-            fails.append(f"LIT variant is no glowier than its source: "
-                         f"{g_var:.3f} vs {g_src:.3f} "
-                         f"(need +{GLOW_LIT_DELTA})")
+        elif source_lights == "LIGHTS_OFF" and g_var - g_src < GLOW_LIT_DELTA:
+            # The +delta is the ADD-GLOW test and applies ONLY when the source
+            # is dark. Requiring it of a LIT variant whose source ALREADY
+            # glows was measurably wrong: it hard-failed 27 of 84 known-good
+            # same-variety orderings (every LIGHTS_ON -> LIGHTS_ON pair, e.g.
+            # tree_020 -> tree_062, both plainly glowing), because two lit
+            # trees have no reason to differ in glow at all. That is the
+            # window-silhouette mistake in a new costume — measuring a
+            # difference the brief never asked for.
+            fails.append(f"glow was not added: {g_var:.3f} vs dark source "
+                         f"{g_src:.3f} (need +{GLOW_LIT_DELTA})")
     else:
         if source_lights == "LIGHTS_ON":
             # REMOVE GLOW: the source glows, this must not.
