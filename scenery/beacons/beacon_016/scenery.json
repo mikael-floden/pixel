@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:44:39+00:00",
+  "id": "beacon_016",
+  "group": "beacons",
+  "rank": 46,
+  "index": 16,
+  "name": "Chain-hoisted cage beacon 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "chain-hoisted cage beacon",
+  "modifier": "with climbing flowers at one corner",
+  "glow_concept": "burning soulstone shining like a fixed star",
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, chain-hoisted cage beacon, with climbing flowers at one corner, tall, about three times human height, self-emissive at night, softly radiating light: burning soulstone shining like a fixed star",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_016/sprite.webp",
+  "placement": {
+    "world_height_m": 3.94,
+    "world_px_height": 148,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
