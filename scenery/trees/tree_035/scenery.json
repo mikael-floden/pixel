@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:10:27+00:00",
+  "id": "tree_035",
+  "group": "trees",
+  "rank": 1,
+  "index": 35,
+  "name": "Broad chestnut with a deep round canopy 035",
+  "lights": "LIGHTS_OFF",
+  "variety": "broad chestnut with a deep round canopy",
+  "modifier": "young and vigorous",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, broad chestnut with a deep round canopy, young and vigorous, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_035/sprite.webp",
+  "placement": {
+    "world_height_m": 4.54,
+    "world_px_height": 171,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "6ef67205-a5e3-4acc-834f-2ac97176860d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
