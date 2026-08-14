@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:46:19+00:00",
+  "id": "stump_020",
+  "group": "stumps",
+  "rank": 24,
+  "index": 20,
+  "name": "Moss-capped stump 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-capped stump",
+  "modifier": "asymmetric, wind-shaped",
+  "glow_concept": "ring of glowing mushrooms around the base",
+  "prompt": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, moss-capped stump, asymmetric, wind-shaped, small, knee-high, self-emissive at night, softly radiating light: ring of glowing mushrooms around the base",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stumps/stump_020/sprite.webp",
+  "placement": {
+    "world_height_m": 0.68,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0c234ce6-c34c-42f8-bb64-e444bd0a4138",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

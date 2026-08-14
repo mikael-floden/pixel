@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 551,
+  "scenery_count": 552,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "id": "stumps",
       "name": "Stump",
       "quota": 54,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 25,
@@ -990,7 +990,7 @@
     "stones": 21,
     "story_posts": 8,
     "streetlights": 5,
-    "stumps": 12,
+    "stumps": 13,
     "sundials": 2,
     "tables": 9,
     "telegraph_poles": 4,
@@ -10390,6 +10390,28 @@
       "status": "complete",
       "pixellab_object_id": "e49077a1-f664-4f25-b891-c3159fa7a53c",
       "sprite": "stumps/stump_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stump_020",
+      "rel": "stumps/stump_020",
+      "name": "Moss-capped stump 020 \u00b7 lit",
+      "category": "stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, moss-capped stump, asymmetric, wind-shaped, small, knee-high, self-emissive at night, softly radiating light: ring of glowing mushrooms around the base",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.68,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0c234ce6-c34c-42f8-bb64-e444bd0a4138",
+      "sprite": "stumps/stump_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
