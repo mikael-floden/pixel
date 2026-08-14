@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:58:05+00:00",
+  "id": "cliff_fall_008",
+  "group": "cliff_falls",
+  "rank": 156,
+  "index": 8,
+  "name": "A fine misting veil 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "a fine misting veil",
+  "modifier": "splitting into two threads midway",
+  "glow_concept": "the water glowing white as it falls",
+  "prompt": "a tall narrow ribbon of falling water breaking into white mist at its foot, water only, falling free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind, the top gathering and TAPERING to a narrow root or stem point so it reads as continuing upward rather than being cut off \u2014 never a flat horizontal cut across the top \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, a fine misting veil, splitting into two threads midway, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_falls/cliff_fall_008/sprite.webp",
+  "placement": {
+    "world_height_m": 10.19,
+    "world_px_height": 384,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cafe4223-08ea-4890-b671-9f999474c73d",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
