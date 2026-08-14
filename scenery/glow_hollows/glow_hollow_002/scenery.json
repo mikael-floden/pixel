@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:03:49+00:00",
+  "id": "glow_hollow_002",
+  "group": "glow_hollows",
+  "rank": 133,
+  "index": 2,
+  "name": "Birch log 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "birch log",
+  "modifier": "two openings both glowing",
+  "glow_concept": "light spilling out onto the grass",
+  "prompt": "a hollow fallen log whose interior glows, moss-covered outside, a small warm world visible through the opening, birch log, two openings both glowing, waist-high, self-emissive at night, softly radiating light: light spilling out onto the grass",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "glow_hollows/glow_hollow_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.81,
+    "world_px_height": 30,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "49132aa4-3553-4f8c-b6a4-d953ac914010",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
