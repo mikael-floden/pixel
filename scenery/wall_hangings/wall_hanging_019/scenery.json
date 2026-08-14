@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:47:10+00:00",
+  "id": "wall_hanging_019",
+  "group": "wall_hangings",
+  "rank": 110,
+  "index": 19,
+  "name": "Hunting bow and quiver on pegs 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "hunting bow and quiver on pegs",
+  "modifier": "lovingly repaired with mismatched parts",
+  "glow_concept": null,
+  "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, hunting bow and quiver on pegs, lovingly repaired with mismatched parts, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "wall_hangings/wall_hanging_019/sprite.webp",
+  "placement": {
+    "world_height_m": 0.84,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "69097aea-0820-48fc-a023-c54d35e26d1f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
