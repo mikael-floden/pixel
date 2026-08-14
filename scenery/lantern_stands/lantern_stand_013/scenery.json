@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:50:47+00:00",
+  "id": "lantern_stand_013",
+  "group": "lantern_stands",
+  "rank": 29,
+  "index": 13,
+  "name": "Rusted harbor crane stand 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "rusted harbor crane stand",
+  "modifier": "with climbing flowers at one corner",
+  "glow_concept": null,
+  "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, rusted harbor crane stand, with climbing flowers at one corner, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_013/sprite.webp",
+  "placement": {
+    "world_height_m": 2.1,
+    "world_px_height": 79,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f6bdab44-794a-4b82-aac4-ffd0294f6507",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
