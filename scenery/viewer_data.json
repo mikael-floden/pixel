@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 569,
+  "scenery_count": 570,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -83,7 +83,7 @@
       "id": "wells",
       "name": "Well",
       "quota": 80,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 12,
@@ -1007,7 +1007,7 @@
     "wayside_shrines": 7,
     "waystones": 11,
     "web_frames": 1,
-    "wells": 12,
+    "wells": 13,
     "windmills": 3,
     "wisteria_snags": 2,
     "witch_rings": 1,
@@ -13338,6 +13338,28 @@
       "status": "complete",
       "pixellab_object_id": "c7a41cc6-070e-49b5-bddd-70d2091cca4c",
       "sprite": "wells/well_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "well_016",
+      "rel": "wells/well_016",
+      "name": "Rough granite blocks, thatched roof 016 \u00b7 lit",
+      "category": "wells",
+      "lights": "LIGHTS_ON",
+      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, rough granite blocks, thatched roof, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: hanging tin lantern lit under the roof peak",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.29,
+        "world_px_height": 86,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cb4c2d5f-bcee-4f89-8af6-58bf77e82b08",
+      "sprite": "wells/well_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
