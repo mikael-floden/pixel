@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 481,
+  "scenery_count": 482,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 11,
@@ -817,7 +817,7 @@
     "driftwood_logs": 2,
     "fading_relics": 1,
     "fallen_logs": 8,
-    "fences": 7,
+    "fences": 8,
     "ferns": 7,
     "fish_drying_racks": 5,
     "flame_niches": 7,
@@ -4313,6 +4313,28 @@
       "status": "complete",
       "pixellab_object_id": "fb642fb5-3006-4b39-9c46-ed460dec661f",
       "sprite": "fences/fence_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_015",
+      "rel": "fences/fence_015",
+      "name": "Moss-eaten collapsing rails 015",
+      "category": "fences",
+      "lights": "LIGHTS_OFF",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, moss-eaten collapsing rails, bird-favored, with droppings and a nest, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.17,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e3af1081-4663-4aed-a4af-1fbb6285a8a6",
+      "sprite": "fences/fence_015/sprite.webp",
       "rotations": {},
       "animations": []
     },

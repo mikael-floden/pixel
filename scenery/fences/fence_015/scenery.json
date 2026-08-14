@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:36:25+00:00",
+  "id": "fence_015",
+  "group": "fences",
+  "rank": 10,
+  "index": 15,
+  "name": "Moss-eaten collapsing rails 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-eaten collapsing rails",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, moss-eaten collapsing rails, bird-favored, with droppings and a nest, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_015/sprite.webp",
+  "placement": {
+    "world_height_m": 1.17,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e3af1081-4663-4aed-a4af-1fbb6285a8a6",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
