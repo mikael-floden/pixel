@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:48:20+00:00",
+  "id": "beacon_015",
+  "group": "beacons",
+  "rank": 46,
+  "index": 15,
+  "name": "Basket-topped tripod beacon 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "basket-topped tripod beacon",
+  "modifier": "weathered silver-grey",
+  "glow_concept": null,
+  "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, basket-topped tripod beacon, weathered silver-grey, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "beacons/beacon_015/sprite.webp",
+  "placement": {
+    "world_height_m": 4.29,
+    "world_px_height": 162,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
