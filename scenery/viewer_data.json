@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 537,
+  "scenery_count": 538,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -55,7 +55,7 @@
       "id": "torch_posts",
       "name": "Torch Post",
       "quota": 88,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 8,
@@ -996,7 +996,7 @@
     "tables": 7,
     "telegraph_poles": 4,
     "toadstool_rings": 8,
-    "torch_posts": 13,
+    "torch_posts": 14,
     "trailing_planters": 2,
     "trees": 21,
     "wall_hangings": 6,
@@ -11073,6 +11073,28 @@
       "status": "complete",
       "pixellab_object_id": "c3106603-9642-4b8d-ae11-2ac01976ed94",
       "sprite": "torch_posts/torch_post_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "torch_post_019",
+      "rel": "torch_posts/torch_post_019",
+      "name": "Resin-knot pine torch 019",
+      "category": "torch_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, resin-knot pine torch, leaning slightly, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.67,
+        "world_px_height": 63,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "da36656a-e8f8-4da7-9d21-73248e396018",
+      "sprite": "torch_posts/torch_post_019/sprite.webp",
       "rotations": {},
       "animations": []
     },
