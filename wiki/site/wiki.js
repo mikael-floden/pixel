@@ -179,11 +179,14 @@ function noteWidget(domain, id) {
 // second whole-entity verdict — he reported on 2026-08-14 that he could not
 // give feedback per animation at all, on a page that had carried it for six
 // weeks. A two-word label is the middle ground.
-function facetPanel(labelText, box) {
+function facetPanel(box, namePill) {
   if (!state.admin) return null;
   return h("div", { class: "facet-fb", style: "margin-top:12px" },
-    h("span", { class: "muted facet-label" }, labelText), box);
+    h("span", { class: "muted facet-label" }, "Judging"), namePill, box);
 }
+/** The pill that says exactly which generated file the row below judges. */
+const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir}` },
+  `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
     starsWidget(domain, id),
@@ -522,7 +525,7 @@ function makePlayer(entity, kind, opts = {}) {
           if (!anims[s]?.dirs?.[cur.dir]) {
             cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           }
-          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onStateChange?.(s);
+          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onFacetChange?.();
         },
       }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""))));
   }
@@ -539,7 +542,11 @@ function makePlayer(entity, kind, opts = {}) {
     dirPad.replaceChildren(...state.data.directions.filter(clipForDir).map((d) =>
       h("button", {
         class: d === cur.dir ? "on" : "", title: d,
-        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); },
+        // A DIRECTION IS A FACET TOO (maintainer 2026-08-14: "you can
+        // regenerate an animation for a direction, you don't regenerate for
+        // all directions … maybe the SE direction on the state LIGHTS_ON is
+        // bad"), so the feedback row follows this click as well as the state.
+        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); onFacetChange?.(); },
       }, DIR_LABEL[d])));
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
@@ -586,7 +593,7 @@ function makePlayer(entity, kind, opts = {}) {
       "Show shadow") : null,
   );
 
-  let onStateChange = null;
+  let onFacetChange = null;
   if (!anims[cur.state]?.dirs?.[cur.dir]) {
     cur.dir = state.data.directions.find((d) => anims[cur.state]?.dirs?.[d]) ?? cur.dir;
     renderDirPad();
@@ -609,7 +616,10 @@ function makePlayer(entity, kind, opts = {}) {
     el: rootEl,
     destroy: () => cancelAnimationFrame(rafTimer),
     getState: () => cur.state,
-    set onStateChange(fn) { onStateChange = fn; },
+    getDir: () => cur.dir,
+    /** Fires whenever the state OR the direction changes — i.e. whenever the
+     *  thing on screen is a different piece of generated art. */
+    set onFacetChange(fn) { onFacetChange = fn; },
     // Show/hide the admin size reference without rebuilding the page — the
     // toggle must not reset the clip, the zoom, or the scroll.
     humanToggle(on) {
@@ -1549,12 +1559,21 @@ function viewMonster(id) {
   const player = makePlayer(m, "monster");
   activePlayers.push(player);
   const facetBox = h("div", {});
-  // Per-animation feedback widgets, WITHOUT the "Feedback on this animation
-  // (state)" caption (maintainer 2026-07-30: remove the text).
+  const facetPill = h("span", {});
+  // ONE ANIMATION IN ONE DIRECTION is the unit that gets regenerated, so it is
+  // the unit that gets judged (maintainer 2026-08-14). "Walk is fine except
+  // north-east" was previously unsayable — the only verdict available covered
+  // all eight directions at once.
   const renderFacet = () => {
-    facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${player.getState()}`));
+    const st = player.getState(), dir = player.getDir();
+    facetPill.replaceChildren(facetName(st, dir));
+    facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
+      reject: "✕ redo",
+      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
+      rejectedLabel: "to be redone",
+    }));
   };
-  player.onStateChange = renderFacet;
+  player.onFacetChange = renderFacet;
   renderFacet();
   return h("div", {},
     crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", state.data.domains.monsters, m.id),
@@ -1587,7 +1606,7 @@ function viewMonster(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,
-      facetPanel("This animation:", facetBox)),
+      facetPanel(facetBox, facetPill)),
     zoneMapPanel(m.id),
     // What it drops, each row a link to that item's page.
     dropsPanel(m.id),
@@ -1742,11 +1761,19 @@ function viewCharacter(id) {
   const player = makePlayer(c, "character");
   activePlayers.push(player);
   const facetBox = h("div", {});
-  // No "Feedback on this animation (state)" caption — same rule as monsters.
+  const facetPill = h("span", {});
+  // Per animation AND direction, same as monsters — a walk that breaks only
+  // when facing north-west is regenerated for north-west alone.
   const renderFacet = () => {
-    facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${player.getState()}`));
+    const st = player.getState(), dir = player.getDir();
+    facetPill.replaceChildren(facetName(st, dir));
+    facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${st}#${dir}`, {
+      reject: "✕ redo",
+      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
+      rejectedLabel: "to be redone",
+    }));
   };
-  player.onStateChange = renderFacet;
+  player.onFacetChange = renderFacet;
   renderFacet();
   // (the old Movement-sounds panel listed catalog takes; the entity card
   //  below replaces it with the character's OWN sound events, played by the
@@ -1811,7 +1838,7 @@ function viewCharacter(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
       player.el,
-      facetPanel("This animation:", facetBox)),
+      facetPanel(facetBox, facetPill)),
     // Standing in the world? Then the map showing roughly where.
     npcMapPanel(c),
     // The character's OWN sound events — their jump/fall voice today — with
@@ -2277,14 +2304,16 @@ function viewObject(id) {
   // monster and character pages have had since 2026-07-30 — a LIGHTS_ON that
   // came out wrong is now rejectable without condemning the whole piece.
   const facetBox = h("div", {});
+  const facetPill = h("span", {});
   const renderFacet = () => {
-    const st = player?.getState();
-    if (!st) return;
-    facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}`, {
-      // The state's own art, so a re-rolled state goes stale on its own terms.
+    const st = player?.getState(), dir = player?.getDir();
+    if (!st || !dir) return;
+    facetPill.replaceChildren(facetName(st, dir));
+    facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}#${dir}`, {
+      // The piece's art hash, so a re-rolled piece can be told from this one.
       stamp: { art: o.artHash ?? null },
       reject: "✕ redo",
-      rejectTitle: `Reject just this state (${stateLabel(st)}) — the scenery agent regenerates it, the piece stays`,
+      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
       rejectedLabel: "to be redone",
     }));
   };
@@ -2292,7 +2321,7 @@ function viewObject(id) {
     player = makePlayer(o, "object", ref ? { humanRef: { ...ref, on: humanOn } } : {});
     activePlayers.push(player);
     playerEl = player.el;
-    player.onStateChange = renderFacet;
+    player.onFacetChange = renderFacet;
     renderFacet();
   }
   const humanBtn = ref && player ? h("button", {
@@ -2341,7 +2370,7 @@ function viewObject(id) {
           playerEl,
           // Under the preview, never over it: the whole piece is judged in the
           // header, this judges the one state on screen.
-          facetPanel("This state:", facetBox))
+          facetPanel(facetBox, facetPill))
       : h("p", { class: "muted" }, "No animations."),
     entitySoundsCard("objects", o),
     storyCard({ label: "The story", art: refPic(o), name: o.name, paras: o.loreStory, related: o.loreRelated }));   // always last

@@ -7,11 +7,15 @@
 // placed in the same card but UNDER the preview (since the entire entity is
 // rated OVER the card)."
 //
-// A verdict on a whole creature cannot say "the die animation is wrong, the
-// rest is fine", and a verdict on a whole scenery piece cannot say "LIGHTS_ON
-// came out wrong, keep the piece". The key convention is `<path>#<facet>` —
-// the monster and character pages have used it since 2026-07-30; the scenery
-// page gained it today, and all three now say in words what they judge.
+// Maintainer, same day, sharpening it: "what I'm actually asking for is a
+// feedback system on direction + state/animation. Not state/animation alone.
+// This is because you can regenerate an animation for a direction. You don't
+// regenerate for all directions … maybe the SE direction on the state
+// LIGHTS_ON is bad."
+//
+// So the judged unit is ONE generated file: state × direction. The key is
+// `<path>#<state>#<direction>`, and the row re-aims itself when either the
+// state row or the direction pad is clicked.
 //
 // This gate NEVER presses Commit: it captures the save payload at the network
 // boundary instead, so the maintainer's own review data is never written.
@@ -41,6 +45,7 @@ const facet = () => p.evaluate(() => {
   return {
     present: true,
     label: f.querySelector(".facet-label")?.textContent ?? null,
+    pill: f.querySelector(".pill")?.textContent ?? null,
     stars: f.querySelectorAll(".stars button").length,
     approve: [...f.querySelectorAll("button")].some((x) => /approve/i.test(x.textContent)),
     reject: [...f.querySelectorAll("button")].find((x) => /✕/.test(x.textContent))?.textContent ?? null,
@@ -51,6 +56,7 @@ const facet = () => p.evaluate(() => {
     sameCard: f.closest(".panel") === document.querySelector(".player-stage")?.closest(".panel"),
     verdictClasses: [...f.querySelectorAll("button")].map((x) => x.className).join("|"),
     facetName: document.querySelector(".seg-states button.on")?.textContent ?? null,
+    dirOn: document.querySelector(".dirpad button.on")?.textContent ?? null,
   };
 });
 
@@ -65,7 +71,8 @@ ok(s1.underPreview, "under the preview");
 ok(s1.entityAbove, "while the whole-piece verdict stays above it, in the header");
 ok(s1.stars === 5 && s1.approve && s1.comment, `with rate, accept and comment (${s1.stars} stars, approve=${s1.approve}, comment=${s1.comment})`);
 ok(/redo/.test(s1.reject ?? ""), `and a reject that says what it means for ONE state (“${s1.reject}”)`);
-ok(/^This state:/.test(s1.label ?? ""), `labelled for what it judges (“${s1.label}”)`);
+ok(/Judging/.test(s1.label ?? ""), `labelled for what it judges (“${s1.label}”)`);
+ok(s1.pill === "Lights Off · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
 
 // A VERDICT FOLLOWS THE STATE. Approving Lights Off must not colour Lights On.
 await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /approve/.test(x.textContent)).click());
@@ -78,6 +85,23 @@ const s2 = await facet();
 console.log("scenery, Lights On :", JSON.stringify({ facetName: s2.facetName, verdictClasses: s2.verdictClasses }));
 ok(s2.facetName === "Lights On", `switching state switches what the row judges (${s2.facetName})`);
 ok(!/approved/.test(s2.verdictClasses), "and the other state arrives unjudged — verdicts are per state, not per piece");
+// THE DIRECTION IS HALF THE UNIT. Approving S must leave SE unjudged.
+await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /Off/.test(x.textContent)).click());
+await p.waitForTimeout(400);
+await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "SE").click());
+await p.waitForTimeout(400);
+const sSE = await facet();
+console.log("scenery, Lights Off · SE:", JSON.stringify({ pill: sSE.pill, dirOn: sSE.dirOn, verdictClasses: sSE.verdictClasses }));
+ok(sSE.pill === "Lights Off · SE", `pressing a direction re-aims the row (“${sSE.pill}”)`);
+ok(!/approved/.test(sSE.verdictClasses), "and SE is unjudged though S of the same state was approved");
+await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /✕/.test(x.textContent)).click());
+await p.waitForTimeout(250);
+await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "S").click());
+await p.waitForTimeout(400);
+const backS = await facet();
+ok(/approved/.test(backS.verdictClasses), "coming back to S shows its own approval, not SE's rejection");
+await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /On/.test(x.textContent)).click());
+await p.waitForTimeout(400);
 await p.evaluate(() => [...document.querySelectorAll(".facet-fb button")].find((x) => /✕/.test(x.textContent)).click());
 await p.waitForTimeout(250);
 const head = await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row button")].map((x) => x.className).join("|"));
@@ -90,8 +114,11 @@ await p.waitForTimeout(1000);
 const keys = Object.keys(posted[0]?.set ?? {});
 console.log("saved keys:", JSON.stringify(posted[0] ?? null).slice(0, 300));
 ok(posted.length === 1 && posted[0].file === "feedback/objects", `it saves into the domain's own feedback file (${posted[0]?.file})`);
-ok(keys.length === 2, `two facets judged, two entries (${keys.length})`);
-ok(keys.every((k) => /^scenery\/.+#(lights_on|lights_off)$/.test(k)), `each keyed <path>#<state> (${keys.join(", ")})`);
+ok(keys.length === 3, `three facets judged, three entries (${keys.length})`);
+ok(keys.every((k) => /^scenery\/.+#(lights_on|lights_off)#(south|south-east|south-west)$/.test(k)),
+  `each keyed <path>#<state>#<direction> (${keys.join(", ")})`);
+ok(new Set(keys.map((k) => k.split("#")[1])).size === 2 && new Set(keys.map((k) => k.split("#")[2])).size === 2,
+  "spanning two states and two directions — neither axis collapses into the other");
 ok(new Set(keys.map((k) => k.split("#")[0])).size === 1, "both on the same piece, so the piece is not being rejected by proxy");
 ok(!keys.includes("scenery/windows/window_058"), "and nothing was written against the piece itself");
 
@@ -102,7 +129,7 @@ await p.waitForTimeout(1600);
 const lone = await facet();
 console.log("lone static:", JSON.stringify({ label: lone.label, facetName: lone.facetName, underPreview: lone.underPreview }));
 ok(lone.present && lone.underPreview, "a piece with only Static has it too");
-ok(lone.facetName === "Static", `judging the state that is on screen (${lone.facetName})`);
+ok(lone.facetName === "Static" && lone.pill === "Static · S", `judging what is on screen (${lone.pill})`);
 
 // ----------------------------------------------------- monsters + characters
 // Same feature, same place, same words — this is one wiki.
@@ -112,9 +139,18 @@ for (const [url, what, expectFacet] of [[`${W}#/monsters/mammoth`, "monster", "I
   const f = await facet();
   console.log(`${what}:`, JSON.stringify({ label: f.label, under: f.underPreview, same: f.sameCard, stars: f.stars, comment: f.comment, facetName: f.facetName }));
   ok(f.present && f.sameCard && f.underPreview, `the ${what} animation card has the row under the preview too`);
-  ok(/^This animation:/.test(f.label ?? ""), `and says so in words (“${f.label}”) — it read as a second whole-entity verdict before`);
+  ok(/Judging/.test(f.label ?? "") && /·/.test(f.pill ?? ""), `naming the animation AND the direction (“${f.pill}”) — it read as a whole-entity verdict before`);
   ok(f.stars === 5 && f.approve && f.comment, `rate, accept and comment on the ${what}'s animation as well`);
   if (expectFacet) ok(f.facetName === expectFacet, `pointed at the state on screen (${f.facetName})`);
+  // Eight directions, eight separately regenerable files.
+  const dirSwap = await p.evaluate(async () => {
+    const before = document.querySelector(".facet-fb .pill")?.textContent;
+    [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "NE")?.click();
+    await new Promise((r) => setTimeout(r, 400));
+    return { before, after: document.querySelector(".facet-fb .pill")?.textContent };
+  });
+  ok(dirSwap.after !== dirSwap.before && /NE$/.test(dirSwap.after ?? ""),
+    `and the ${what}'s row follows the direction pad too (${dirSwap.before} → ${dirSwap.after})`);
 }
 
 // The public sees none of this — it is a Game Master's tool.
