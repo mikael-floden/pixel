@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:38:08+00:00",
+  "id": "fern_012",
+  "group": "ferns",
+  "rank": 42,
+  "index": 12,
+  "name": "Tall royal fern clump 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tall royal fern clump",
+  "modifier": "with a small sapling beside it",
+  "glow_concept": "frond tips glowing like green candle flames",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, tall royal fern clump, with a small sapling beside it, small, knee-high, self-emissive at night, softly radiating light: frond tips glowing like green candle flames",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.41,
+    "world_px_height": 15,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "3539b596-8bc1-44b0-b90f-59d2ab9880d7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
