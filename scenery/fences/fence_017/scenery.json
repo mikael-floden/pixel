@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:48:24+00:00",
+  "id": "fence_017",
+  "group": "fences",
+  "rank": 10,
+  "index": 17,
+  "name": "Snow-topped winter rails 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "snow-topped winter rails",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": null,
+  "prompt": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, snow-topped winter rails, reinforced with iron bands, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "fences/fence_017/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "ce26a8ac-6250-4b4d-b18e-fbf7b371467d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

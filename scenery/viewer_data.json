@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 520,
+  "scenery_count": 521,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 11,
@@ -817,7 +817,7 @@
     "driftwood_logs": 2,
     "fading_relics": 1,
     "fallen_logs": 8,
-    "fences": 9,
+    "fences": 10,
     "ferns": 7,
     "fish_drying_racks": 5,
     "flame_niches": 8,
@@ -4577,6 +4577,28 @@
       "status": "complete",
       "pixellab_object_id": "60f24d73-39ba-4661-a4cf-1b175693ee3f",
       "sprite": "fences/fence_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_017",
+      "rel": "fences/fence_017",
+      "name": "Snow-topped winter rails 017",
+      "category": "fences",
+      "lights": "LIGHTS_OFF",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, snow-topped winter rails, reinforced with iron bands, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.77,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "ce26a8ac-6250-4b4d-b18e-fbf7b371467d",
+      "sprite": "fences/fence_017/sprite.webp",
       "rotations": {},
       "animations": []
     },
