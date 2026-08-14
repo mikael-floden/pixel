@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:27:30+00:00",
+  "id": "dragon_ribcage_004",
+  "group": "dragon_ribcages",
+  "rank": 117,
+  "index": 4,
+  "name": "Bleached white ribcage 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "bleached white ribcage",
+  "modifier": "ivy climbing one side",
+  "glow_concept": "glowing lichen mapping the bone",
+  "prompt": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, ivy climbing one side, tall, about three times human height, self-emissive at night, softly radiating light: glowing lichen mapping the bone",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "dragon_ribcages/dragon_ribcage_004/sprite.webp",
+  "placement": {
+    "world_height_m": 3.28,
+    "world_px_height": 123,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "bb12c523-484a-41bf-a745-152d8dfd96de",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

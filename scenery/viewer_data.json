@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 509,
+  "scenery_count": 510,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -825,7 +825,7 @@
       "id": "dragon_ribcages",
       "name": "Dragon Ribcage",
       "quota": 6,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 118,
@@ -927,6 +927,7 @@
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
     "dock_pilings": 8,
+    "dragon_ribcages": 1,
     "driftwood_logs": 1,
     "fairy_stumps": 1,
     "fallen_logs": 8,
@@ -4127,6 +4128,28 @@
       "status": "complete",
       "pixellab_object_id": "9627f9af-33c6-4938-812e-d24f0482037d",
       "sprite": "dock_pilings/dock_piling_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dragon_ribcage_004",
+      "rel": "dragon_ribcages/dragon_ribcage_004",
+      "name": "Bleached white ribcage 004 \u00b7 lit",
+      "category": "dragon_ribcages",
+      "lights": "LIGHTS_ON",
+      "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, ivy climbing one side, tall, about three times human height, self-emissive at night, softly radiating light: glowing lichen mapping the bone",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.28,
+        "world_px_height": 123,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "bb12c523-484a-41bf-a745-152d8dfd96de",
+      "sprite": "dragon_ribcages/dragon_ribcage_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
