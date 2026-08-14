@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:08:57+00:00",
+  "id": "cliff_vine_021",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 21,
+  "name": "Frost-silvered winter fall 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "frost-silvered winter fall",
+  "modifier": "strands drifting apart toward one side",
+  "glow_concept": null,
+  "prompt": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-silvered winter fall, strands drifting apart toward one side, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
+  "placement": {
+    "world_height_m": 8.85,
+    "world_px_height": 333,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

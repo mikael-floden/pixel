@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 666,
+  "scenery_count": 667,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 102,
@@ -1241,7 +1241,7 @@
     "cliff_mosses": 9,
     "cliff_roots": 2,
     "cliff_shrubs": 11,
-    "cliff_vines": 9,
+    "cliff_vines": 10,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4888,6 +4888,28 @@
       "status": "complete",
       "pixellab_object_id": "c7aca407-eaa2-4fd3-91a1-1c7393b87521",
       "sprite": "cliff_vines/cliff_vine_019/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_021",
+      "rel": "cliff_vines/cliff_vine_021",
+      "name": "Frost-silvered winter fall 021",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-silvered winter fall, strands drifting apart toward one side, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.85,
+        "world_px_height": 333,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
+      "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
       "rotations": {},
       "animations": []
     },
