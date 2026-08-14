@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 670,
+  "scenery_count": 664,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 11
+      "done": 9
     },
     {
       "rank": 102,
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 3
+      "done": 2
     },
     {
       "rank": 156,
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 10
+      "done": 7
     },
     {
       "rank": 159,
@@ -1238,10 +1238,10 @@
     "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 10,
-    "cliff_roots": 3,
+    "cliff_mosses": 7,
+    "cliff_roots": 2,
     "cliff_shrubs": 11,
-    "cliff_vines": 11,
+    "cliff_vines": 9,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4386,28 +4386,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_009",
-      "rel": "cliff_mosses/cliff_moss_009",
-      "name": "Moss with tiny ferns through it 009",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss with tiny ferns through it, one heavy strand with fine ones branching off, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 5.58,
-        "world_px_height": 210,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bf34019a-774c-48e2-a5c9-8e8885348db7",
-      "sprite": "cliff_mosses/cliff_moss_009/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_011",
       "rel": "cliff_mosses/cliff_moss_011",
       "name": "Black wet moss 011",
@@ -4452,50 +4430,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_014",
-      "rel": "cliff_mosses/cliff_moss_014",
-      "name": "Deep emerald cushion moss 014 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like small islands linked by threads, wide bare gaps between the patches, MOSTLY EMPTY SPACE \u2014 NO main stem, NO trunk, NO single origin, NO starting line or bar across the top, nothing it hangs from, no defined beginning or end anywhere; the growth simply THINS OUT and dissolves into a few isolated leaves and tendrils toward every edge, so copies can be scattered and overlapped freely across a wall, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, the whole thing inside the frame with margin, nothing cropped, deep emerald cushion moss, sparse at the top, gathering lower, towering, many times human height, self-emissive at night, softly radiating light: the moss glowing soft green",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 11.8,
-        "world_px_height": 444,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "a2d0d78e-bdab-45eb-875f-f40c341822b3",
-      "sprite": "cliff_mosses/cliff_moss_014/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_016",
-      "rel": "cliff_mosses/cliff_moss_016",
-      "name": "Frost-tipped winter moss 016 \u00b7 lit",
-      "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like small islands linked by threads, wide bare gaps between the patches, MOSTLY EMPTY SPACE \u2014 NO main stem, NO trunk, NO single origin, NO starting line or bar across the top, nothing it hangs from, no defined beginning or end anywhere; the growth simply THINS OUT and dissolves into a few isolated leaves and tendrils toward every edge, so copies can be scattered and overlapped freely across a wall, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, the whole thing inside the frame with margin, nothing cropped, frost-tipped winter moss, strands drifting apart toward one side, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 6.0,
-        "world_px_height": 226,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "70de2774-3e06-4cfa-ad27-5808e5b1d087",
-      "sprite": "cliff_mosses/cliff_moss_016/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_moss_018",
       "rel": "cliff_mosses/cliff_moss_018",
       "name": "Rust-orange lichen patches 018 \u00b7 lit",
@@ -4536,28 +4470,6 @@
       "status": "complete",
       "pixellab_object_id": "293a957a-9364-4cae-a005-11cb66af588e",
       "sprite": "cliff_roots/cliff_root_013/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_root_014",
-      "rel": "cliff_roots/cliff_root_014",
-      "name": "Fine hair-roots in a dense veil 014 \u00b7 lit",
-      "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, fine hair-roots in a dense veil, strands drifting apart toward one side, towering, many times human height, self-emissive at night, softly radiating light: soul-light running up the roots",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.99,
-        "world_px_height": 451,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "d7b37e99-9c0b-473d-862f-2ecc256669c6",
-      "sprite": "cliff_roots/cliff_root_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -4914,28 +4826,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_019",
-      "rel": "cliff_vines/cliff_vine_019",
-      "name": "Moss-heavy dripping fall 019",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss-heavy dripping fall, two loose clusters joined by a single runner, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.45,
-        "world_px_height": 393,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "c7aca407-eaa2-4fd3-91a1-1c7393b87521",
-      "sprite": "cliff_vines/cliff_vine_019/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_021",
       "rel": "cliff_vines/cliff_vine_021",
       "name": "Frost-silvered winter fall 021",
@@ -5020,28 +4910,6 @@
       "status": "complete",
       "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
       "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_030",
-      "rel": "cliff_vines/cliff_vine_030",
-      "name": "Dark green ivy fall 030 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dark green ivy fall, a long diagonal drift of growth, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 7.2,
-        "world_px_height": 271,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "0ea63223-90a4-4339-9f18-4d5b6497f80f",
-      "sprite": "cliff_vines/cliff_vine_030/sprite.webp",
       "rotations": {},
       "animations": []
     },
