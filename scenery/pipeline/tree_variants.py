@@ -202,14 +202,39 @@ def anchor_entry(man, anchor):
 
 
 def git_push(msg):
+    """Commit + push this batch, and NEVER leave the tree mid-rebase.
+
+    The wiki agent is editing this same domain concurrently (adding a `type`
+    field, 2026-08-14). A rebase that stops on a conflict leaves the tree in a
+    rebase state, and the next batch's `git add -A scenery` would happily stage
+    conflict markers and commit them into the manifests. So a failed rebase is
+    aborted immediately and the commits simply stay local until the next batch
+    — the art is committed either way, only the push is deferred.
+
+    viewer_data.json is the one file guaranteed to conflict, and it is entirely
+    derived from the manifests, so it is rebuilt after any abort rather than
+    merged."""
     root = os.path.dirname(factory.ROOT)
-    subprocess.run(["git", "add", "-A", "scenery"], cwd=root, capture_output=True)
-    subprocess.run(["git", "commit", "-q", "-m", msg], cwd=root, capture_output=True)
-    subprocess.run(["git", "fetch", "origin", "main", "-q"], cwd=root, capture_output=True)
-    subprocess.run(["git", "rebase", "origin/main", "-q"], cwd=root, capture_output=True)
-    r = subprocess.run(["git", "push", "-u", "origin", "main"], cwd=root,
-                       capture_output=True, text=True)
-    return r.returncode == 0
+
+    def git(*a, **kw):
+        return subprocess.run(["git", *a], cwd=root, capture_output=True, text=True, **kw)
+
+    if os.path.exists(os.path.join(root, ".git", "rebase-merge")) or \
+            os.path.exists(os.path.join(root, ".git", "rebase-apply")):
+        git("rebase", "--abort")
+    git("add", "-A", "scenery")
+    git("commit", "-q", "-m", msg)
+    git("fetch", "origin", "main", "-q")
+    if git("rebase", "origin/main", "-q").returncode != 0:
+        git("rebase", "--abort")
+        try:
+            viewer_build.build()
+        except Exception:
+            pass
+        print("  ! rebase conflicted (concurrent edit) — kept local, will retry",
+              flush=True)
+        return False
+    return git("push", "-u", "origin", "main").returncode == 0
 
 
 def main():
