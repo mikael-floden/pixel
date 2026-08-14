@@ -33,9 +33,11 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
     "LIT_1": {
-      "sprite": "trees/tree_012/sprite.webp",
-      "pixellab_object_id": "fdf53bee-ba53-42a3-acd4-dfd1b1c535d5",
-      "glow_score": 0.0788
+      "sprite": "trees/tree_012/lit_1/sprite.webp",
+      "pixellab_object_id": "4327be6b-85c0-4469-8512-043a16331529",
+      "glow_concept": "iron lantern hung from a low branch",
+      "difference_from_source": 0.6125,
+      "glow_score": 0.1347
     },
     "LIT_2": {
       "sprite": "trees/tree_012/lit_2/sprite.webp",
