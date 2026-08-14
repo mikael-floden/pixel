@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:35:48+00:00",
+  "id": "giant_snail_shell_004",
+  "group": "giant_snail_shells",
+  "rank": 116,
+  "index": 4,
+  "name": "Chalk-white shell 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "chalk-white shell",
+  "modifier": "home to nesting birds",
+  "glow_concept": "glow-snails clustered on the rim",
+  "prompt": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, chalk-white shell, home to nesting birds, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-snails clustered on the rim",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_snail_shells/giant_snail_shell_004/sprite.webp",
+  "placement": {
+    "world_height_m": 1.22,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cc6abfc6-6981-49f1-8c5d-1a9bd7911d2d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
