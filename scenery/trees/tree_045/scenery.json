@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:13:01+00:00",
+  "id": "tree_045",
+  "group": "trees",
+  "rank": 1,
+  "index": 45,
+  "name": "Sycamore with peeling patchwork bark 045",
+  "lights": "LIGHTS_OFF",
+  "variety": "sycamore with peeling patchwork bark",
+  "modifier": "with bracket fungi steps",
+  "glow_concept": null,
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, sycamore with peeling patchwork bark, with bracket fungi steps, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_045/sprite.webp",
+  "placement": {
+    "world_height_m": 3.53,
+    "world_px_height": 133,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f7674a51-a2b6-4cb0-a5c7-b3186bf58ff5",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
