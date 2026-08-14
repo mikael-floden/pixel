@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:37:12+00:00",
+  "id": "well_017",
+  "group": "wells",
+  "rank": 11,
+  "index": 17,
+  "name": "Whitewashed stone, red-painted roof 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "whitewashed stone, red-painted roof",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, whitewashed stone, red-painted roof, bird-favored, with droppings and a nest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.79,
+    "world_px_height": 67,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "8916dd49-ca5f-44ca-85d3-6fbe311c8b05",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
