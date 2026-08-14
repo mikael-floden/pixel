@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 644,
+  "scenery_count": 645,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 160,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 1,
+    "cliff_ledgetrees": 2,
     "cliff_mosses": 5,
     "cliff_roots": 4,
     "cliff_shrubs": 5,
@@ -4295,6 +4295,28 @@
       "status": "complete",
       "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
       "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_005",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_005",
+      "name": "Dead silvered snag 005",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_OFF",
+      "description": "a small windbent tree leaning far out sideways, its roots wrapped over a single small flat stone slab at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dead silvered snag, sharing the ledge with a boulder, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 7.32,
+        "world_px_height": 276,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "39792554-3788-4a51-a276-a142d9a862c0",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_005/sprite.webp",
       "rotations": {},
       "animations": []
     },
