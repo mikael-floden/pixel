@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 603,
+  "scenery_count": 604,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -769,7 +769,7 @@
       "id": "house_clutter",
       "name": "House Clutter",
       "quota": 50,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 110,
@@ -1191,7 +1191,7 @@
     "honey_trees": 2,
     "hop_poles": 2,
     "hot_springs": 1,
-    "house_clutter": 8,
+    "house_clutter": 9,
     "ivy_posts": 5,
     "lantern_posts": 14,
     "lantern_stands": 6,
@@ -7614,6 +7614,28 @@
       "status": "complete",
       "pixellab_object_id": "63cc528e-9398-4444-a73e-f0dbd4003ec4",
       "sprite": "house_clutter/clutter_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "clutter_012",
+      "rel": "house_clutter/clutter_012",
+      "name": "Spilled sewing box mid-tidy 012 \u00b7 lit",
+      "category": "house_clutter",
+      "lights": "LIGHTS_ON",
+      "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, spilled sewing box mid-tidy, built from driftwood planks, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.5,
+        "world_px_height": 19,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a6c35a81-bbaa-465c-81a5-621fb0ae27a4",
+      "sprite": "house_clutter/clutter_012/sprite.webp",
       "rotations": {},
       "animations": []
     },

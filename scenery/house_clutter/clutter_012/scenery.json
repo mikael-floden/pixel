@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:44:20+00:00",
+  "id": "clutter_012",
+  "group": "house_clutter",
+  "rank": 109,
+  "index": 12,
+  "name": "Spilled sewing box mid-tidy 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "spilled sewing box mid-tidy",
+  "modifier": "built from driftwood planks",
+  "glow_concept": "embers glowing in a small warming pot",
+  "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, spilled sewing box mid-tidy, built from driftwood planks, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "house_clutter/clutter_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a6c35a81-bbaa-465c-81a5-621fb0ae27a4",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
