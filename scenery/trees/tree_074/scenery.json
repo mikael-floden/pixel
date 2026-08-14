@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:54:43+00:00",
+  "id": "tree_074",
+  "group": "trees",
+  "rank": 1,
+  "index": 74,
+  "name": "Field maple, modest and round 074 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "field maple, modest and round",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "teal bioluminescent moss patches up the trunk",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, field maple, modest and round, leaning noticeably to one side, towering, many times human height, self-emissive at night, softly radiating light: teal bioluminescent moss patches up the trunk",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_074/sprite.webp",
+  "placement": {
+    "world_height_m": 4.84,
+    "world_px_height": 182,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c3288bfa-cc18-45f2-92a7-d9e69446bec6",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
