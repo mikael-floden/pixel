@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 588,
+  "scenery_count": 589,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -153,7 +153,7 @@
       "id": "story_posts",
       "name": "Story Post",
       "quota": 60,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 22,
@@ -1227,7 +1227,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 23,
-    "story_posts": 9,
+    "story_posts": 10,
     "streetlights": 5,
     "stumps": 13,
     "sundials": 2,
@@ -10827,6 +10827,28 @@
       "status": "complete",
       "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
       "sprite": "story_posts/story_post_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "story_post_015",
+      "rel": "story_posts/story_post_015",
+      "name": "Oak post, spiral scenes 015",
+      "category": "story_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, oak post, spiral scenes, bird-favored, with droppings and a nest, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 2.03,
+        "world_px_height": 76,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fdf14180-60c2-47f8-9b19-657c4201e629",
+      "sprite": "story_posts/story_post_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
