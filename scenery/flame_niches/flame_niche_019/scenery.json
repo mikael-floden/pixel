@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:30:36+00:00",
+  "id": "flame_niche_019",
+  "group": "flame_niches",
+  "rank": 16,
+  "index": 19,
+  "name": "Rune-bordered niche 019",
+  "lights": "LIGHTS_OFF",
+  "variety": "rune-bordered niche",
+  "modifier": "with climbing flowers at one corner",
+  "glow_concept": null,
+  "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, rune-bordered niche, with climbing flowers at one corner, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "flame_niches/flame_niche_019/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "64fd0952-6ef1-49ff-9294-a6e9f07c32ed",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
