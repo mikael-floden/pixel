@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 552,
+  "scenery_count": 553,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 32,
@@ -965,7 +965,7 @@
     "maypoles": 2,
     "meteor_stones": 1,
     "moss_clumps": 5,
-    "mushrooms": 10,
+    "mushrooms": 11,
     "offering_tables": 7,
     "orchard_trees": 2,
     "overgrown_archways": 2,
@@ -7883,6 +7883,28 @@
       "status": "complete",
       "pixellab_object_id": "367752a4-ae7f-42df-8387-ce890ce4b9c6",
       "sprite": "mushrooms/mushroom_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_014",
+      "rel": "mushrooms/mushroom_014",
+      "name": "Honey-brown clustered sheathed stems 014 \u00b7 lit",
+      "category": "mushrooms",
+      "lights": "LIGHTS_ON",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, honey-brown clustered sheathed stems, with thick exposed roots, tiny, only ankle-high, self-emissive at night, softly radiating light: translucent stems glowing from within like candles",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.28,
+        "world_px_height": 11,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "b47b73f3-e29e-43f3-ad85-0bd4b84378ad",
+      "sprite": "mushrooms/mushroom_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
