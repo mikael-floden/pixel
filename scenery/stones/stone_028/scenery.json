@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:51:25+00:00",
+  "id": "stone_028",
+  "group": "stones",
+  "rank": 2,
+  "index": 28,
+  "name": "Pitted volcanic rock 028 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "pitted volcanic rock",
+  "modifier": "with berries scattered beneath it",
+  "glow_concept": "thin runes etched glowing warm amber",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, pitted volcanic rock, with berries scattered beneath it, waist-high, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_028/sprite.webp",
+  "placement": {
+    "world_height_m": 0.84,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "b38c0197-072f-4dfe-a544-32dc1515f5ee",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
