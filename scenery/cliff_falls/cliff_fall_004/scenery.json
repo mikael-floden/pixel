@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:09:39+00:00",
+  "id": "cliff_fall_004",
+  "group": "cliff_falls",
+  "rank": 156,
+  "index": 4,
+  "name": "A broad white curtain 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "a broad white curtain",
+  "modifier": "landing in a small rock basin",
+  "glow_concept": "the whole fall shining like moonlight",
+  "prompt": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a broad white curtain, landing in a small rock basin, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_falls/cliff_fall_004/sprite.webp",
+  "placement": {
+    "world_height_m": 9.43,
+    "world_px_height": 355,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "44ab6785-f6f0-4ca4-908d-f44a28f98a19",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
