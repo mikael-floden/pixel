@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:56:58+00:00",
+  "id": "well_023",
+  "group": "wells",
+  "rank": 11,
+  "index": 23,
+  "name": "Briar roses climbing the posts 023",
+  "lights": "LIGHTS_OFF",
+  "variety": "briar roses climbing the posts",
+  "modifier": "old and settling into the ground",
+  "glow_concept": null,
+  "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, briar roses climbing the posts, old and settling into the ground, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "wells/well_023/sprite.webp",
+  "placement": {
+    "world_height_m": 1.45,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "87cd4c7d-f069-4226-859a-6b5b529dcf27",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
