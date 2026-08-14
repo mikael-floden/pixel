@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-14T14:41:55.614Z",
+  "updated_at": "2026-08-14T14:42:38.352Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -10718,6 +10718,18 @@
       "updated_at": "2026-08-14T14:41:54.594Z",
       "status": "approved",
       "art": "0290855b0f5c005e"
+    },
+    "scenery/trees/tree_034#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-14T14:42:02.277Z",
+      "status": "approved",
+      "art": "ae6c2536d06456bd"
+    },
+    "scenery/trees/tree_034#lit_2#south": {
+      "status": "rejected",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-14T14:42:37.720Z",
+      "note": "Buggy graphics around the light (transparent chess pattern bug)."
     }
   }
 }
