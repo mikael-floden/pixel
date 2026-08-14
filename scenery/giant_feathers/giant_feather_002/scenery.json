@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:37:09+00:00",
+  "id": "giant_feather_002",
+  "group": "giant_feathers",
+  "rank": 167,
+  "index": 2,
+  "name": "Ancient giant feather 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ancient giant feather",
+  "modifier": "black raven-feather",
+  "glow_concept": "an iridescent shimmer moving across it",
+  "prompt": "a single enormous feather planted quill-down in the earth like a monument, barbs taller than a person, faintly iridescent, ancient giant feather, black raven-feather, large, twice human height, self-emissive at night, softly radiating light: an iridescent shimmer moving across it",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "giant_feathers/giant_feather_002/sprite.webp",
+  "placement": {
+    "world_height_m": 2.82,
+    "world_px_height": 106,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "36f4623c-9af1-416f-bd0f-941579402362",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

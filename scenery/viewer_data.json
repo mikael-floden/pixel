@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 726,
+  "scenery_count": 727,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1175,7 +1175,7 @@
       "id": "giant_feathers",
       "name": "Giant Feather",
       "quota": 3,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 168,
@@ -1261,6 +1261,7 @@
     "frozen_springs": 1,
     "geodes": 1,
     "giant_fallen_bells": 1,
+    "giant_feathers": 1,
     "giant_mushrooms": 2,
     "giant_skulls": 1,
     "giant_snail_shells": 3,
@@ -8037,6 +8038,28 @@
       "status": "complete",
       "pixellab_object_id": "714c2112-1200-40bc-86d9-cea7d00824af",
       "sprite": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "giant_feather_002",
+      "rel": "giant_feathers/giant_feather_002",
+      "name": "Ancient giant feather 002 \u00b7 lit",
+      "category": "giant_feathers",
+      "lights": "LIGHTS_ON",
+      "description": "a single enormous feather planted quill-down in the earth like a monument, barbs taller than a person, faintly iridescent, ancient giant feather, black raven-feather, large, twice human height, self-emissive at night, softly radiating light: an iridescent shimmer moving across it",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.82,
+        "world_px_height": 106,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "36f4623c-9af1-416f-bd0f-941579402362",
+      "sprite": "giant_feathers/giant_feather_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
