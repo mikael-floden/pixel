@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 612,
+  "scenery_count": 610,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 14,
-      "done": 17
+      "done": 16
     },
     {
       "rank": 5,
@@ -97,7 +97,7 @@
       "id": "briar_thickets",
       "name": "Briar Thicket",
       "quota": 76,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 14,
@@ -237,7 +237,7 @@
       "id": "cattail_clumps",
       "name": "Cattail Clump",
       "quota": 36,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 34,
@@ -930,7 +930,7 @@
       "id": "bone_arbors",
       "name": "Bone Arbor",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 133,
@@ -1138,16 +1138,15 @@
     "beehives": 4,
     "bell_posts": 1,
     "effect": 1,
-    "bone_arbors": 1,
     "bone_piles": 2,
-    "braziers": 17,
-    "briar_thickets": 12,
+    "braziers": 16,
+    "briar_thickets": 13,
     "broken_columns": 2,
     "bushes": 9,
     "cairns": 15,
     "light": 1,
     "carts": 7,
-    "cattail_clumps": 7,
+    "cattail_clumps": 6,
     "cauldron_camps": 2,
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
@@ -2251,28 +2250,6 @@
       ]
     },
     {
-      "id": "bone_arbor_004",
-      "rel": "bone_arbors/bone_arbor_004",
-      "name": "Whale-bone 004 \u00b7 lit",
-      "category": "bone_arbors",
-      "lights": "LIGHTS_ON",
-      "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it, whale-bone, rib-and-antler weave, large, twice human height, self-emissive at night, softly radiating light: a pale gate-glow beneath the arch",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.39,
-        "world_px_height": 90,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4d9435ea-ee31-4449-b716-e5b4783fd519",
-      "sprite": "bone_arbors/bone_arbor_004/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "bone_pile_001",
       "rel": "bone_piles/bone_pile_001",
       "name": "Scattered leg bones 001",
@@ -2647,28 +2624,6 @@
       "animations": []
     },
     {
-      "id": "brazier_023",
-      "rel": "braziers/brazier_023",
-      "name": "Antlered iron brazier 023",
-      "category": "braziers",
-      "lights": "LIGHTS_OFF",
-      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, antlered iron brazier, overgrown at the base, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.06,
-        "world_px_height": 40,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "788bf9f1-e87f-487d-96d4-fab2e3836296",
-      "sprite": "braziers/brazier_023/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "brazier_025",
       "rel": "braziers/brazier_025",
       "name": "Soot-black courtyard brazier 025",
@@ -2951,6 +2906,28 @@
       "status": "complete",
       "pixellab_object_id": "5d0dd9ef-0141-4bed-8e70-cbf1fd1707c6",
       "sprite": "briar_thickets/briar_thicket_024/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "briar_thicket_027",
+      "rel": "briar_thickets/briar_thicket_027",
+      "name": "Berry-laden bramble mound 027",
+      "category": "briar_thickets",
+      "lights": "LIGHTS_OFF",
+      "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, berry-laden bramble mound, with a rabbit burrow at the base, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.27,
+        "world_px_height": 48,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "28d8a790-cf4a-4097-a1e7-50b6b6194482",
+      "sprite": "briar_thickets/briar_thicket_027/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -3813,28 +3790,6 @@
       "status": "complete",
       "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "cattail_clump_014",
-      "rel": "cattail_clumps/cattail_clump_014",
-      "name": "Slim young cattails 014 \u00b7 lit",
-      "category": "cattail_clumps",
-      "lights": "LIGHTS_ON",
-      "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, slim young cattails, with a bird nest tucked in it, roughly six feet tall, human height, self-emissive at night, softly radiating light: seed heads smoldering like ember torches",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.55,
-        "world_px_height": 58,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "600351ec-5609-4044-b896-02d78c43f90f",
-      "sprite": "cattail_clumps/cattail_clump_014/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:37:16+00:00",
+  "id": "briar_thicket_027",
+  "group": "briar_thickets",
+  "rank": 13,
+  "index": 27,
+  "name": "Berry-laden bramble mound 027",
+  "lights": "LIGHTS_OFF",
+  "variety": "berry-laden bramble mound",
+  "modifier": "with a rabbit burrow at the base",
+  "glow_concept": null,
+  "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, berry-laden bramble mound, with a rabbit burrow at the base, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "briar_thickets/briar_thicket_027/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "28d8a790-cf4a-4097-a1e7-50b6b6194482",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
