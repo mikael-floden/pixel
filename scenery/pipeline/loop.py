@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import subprocess
 import time
 
@@ -220,6 +221,42 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
     img = factory._normalize(img, size)
     rel = f"{group['id']}/{spec['id']}"
     factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")
+
+    # MULTI-DIRECTION GROUPS. The domain is SOUTH-only because scenery never
+    # rotates, but a window is mounted on a WALL and the game has walls facing
+    # three ways: "I want you to generate the window with SE, S and SW. We will
+    # need all 3 directions in the game" (maintainer 2026-08-14). The <=168px
+    # path already generates a real 8-direction object and throws seven
+    # rotations away, so the extra facings cost NOTHING — same one generation.
+    # Every kept facing gets placed, so every kept facing must pass the edge
+    # gate; the pixel-grid gate already ran on SOUTH, which is representative.
+    rotations = {}
+    keep = [d for d in (group.get("keep_directions") or []) if d != "south"]
+    if keep and pixellab_directions == 8:
+        have = client.download_object_rotations(oid)
+        missing = [d for d in keep if d not in have]
+        if missing:
+            raise PixelLabError(
+                f"{spec['id']}: object {oid} is missing rotation(s) {missing}")
+        for d in keep:
+            rot = have[d]
+            rbleed = factory.edge_bleed(rot)
+            if rbleed > factory.EDGE_BLEED_MAX:
+                try:
+                    client.delete_object(oid)
+                except Exception:
+                    pass
+                shutil.rmtree(factory.piece_dir(rel), ignore_errors=True)
+                print(f"  x GATE {group['id']}/{spec['id']}: {d} facing cropped "
+                      f"({rbleed:.0%} of a border is art) — re-rolling")
+                raise PixelLabError(
+                    f"GATE {spec['id']}: EDGE CROP on {d} ({rbleed:.0%} of a "
+                    f"border is opaque, max {factory.EDGE_BLEED_MAX:.0%})")
+            factory.save_webp(factory._normalize(rot, size),
+                              f"{factory.piece_dir(rel)}/rotations/{d}.webp")
+            rotations[d] = f"{rel}/rotations/{d}.webp"
+        rotations["south"] = f"{rel}/sprite.webp"
+
     from datetime import datetime, timezone
     factory.write_manifest(rel, {
         "format": "scenery-piece@2",
@@ -236,6 +273,10 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
         "prompt": spec["prompt"],
         "view": cfg.get("view", "low top-down"),
         "direction": "south",
+        # `sprite` stays SOUTH so every existing consumer keeps working; a
+        # multi-direction piece additionally publishes `rotations`.
+        "directions": sorted(rotations) if rotations else ["south"],
+        "rotations": rotations or None,
         "size": size,
         "sprite": f"{rel}/sprite.webp",
         "placement": factory.placement(cfg, spec["world_height_m"]),

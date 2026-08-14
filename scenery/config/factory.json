@@ -6450,6 +6450,86 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max \u2014 new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by."
+    },
+    {
+      "id": "windows",
+      "prefix": "window",
+      "rank": 25,
+      "quota": 140,
+      "art_size": 128,
+      "world_height_m": [
+        0.5,
+        1.9
+      ],
+      "lights": "LIGHTS_OFF",
+      "keep_directions": [
+        "south-east",
+        "south",
+        "south-west"
+      ],
+      "scale_phrases": [
+        [
+          0.7,
+          "a SMALL window, about half a person tall"
+        ],
+        [
+          1.1,
+          "a modest window, about two thirds of a person tall"
+        ],
+        [
+          1.6,
+          "a tall window, nearly a person's height"
+        ],
+        [
+          99,
+          "a large window, taller than a person"
+        ]
+      ],
+      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background",
+      "variety": [
+        "a square wooden-framed window of four panes, paint faded",
+        "a tall narrow wooden window with a weathered sill",
+        "an arched window set in cut stone",
+        "a square window in rough stone masonry",
+        "a round porthole window ringed in stone",
+        "a diamond-leaded lattice window in a dark wood frame",
+        "a wide mullioned window of six panes in old timber",
+        "a cottage window in peeling white-painted wood",
+        "a heavy stone window under a carved lintel",
+        "a crooked old window in warped rotting timber",
+        "a narrow slit window in thick stone",
+        "a tall gothic arched window in grey stone",
+        "a simple plank-framed window from a poor hut",
+        "a window in dark stained oak with a thick sill",
+        "a wide window in mossy fieldstone",
+        "a shuttered window in bleached grey timber"
+      ],
+      "modifiers": [
+        "glass intact but dusty and dark",
+        "one pane cracked in a spider-web",
+        "one pane missing, a jagged dark hole",
+        "several panes broken out, empty gaps",
+        "all the glass gone, only the empty frame",
+        "boarded over with nailed planks",
+        "closed wooden shutters",
+        "one shutter hanging loose from its hinge",
+        "iron bars across the glass",
+        "a window box of dead brown plants",
+        "a window box with a few hardy flowers",
+        "heavy dark curtains drawn shut within",
+        "ivy creeping across one corner",
+        "cobwebs strung in the corners of the panes",
+        "a cracked and sagging sill beneath",
+        "frost and grime clouding the glass"
+      ],
+      "name": "Window",
+      "lore_fit": "Houses in Nangijala are shut up as often as they are lived in; a dark window is how a wall tells you nobody is home.",
+      "animation_idea": "shutter creaking in the wind; curtain stirring behind cracked glass",
+      "glow_concepts": [
+        "warm candlelight behind the panes",
+        "a low hearth-glow seeping through",
+        "a single lamp burning in an upper pane"
+      ]
     }
   ],
   "modifier_pools": {

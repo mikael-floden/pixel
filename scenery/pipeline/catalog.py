@@ -78,6 +78,24 @@ def _scale_phrase(height_m: float) -> str:
     return "towering, many times human height"
 
 
+def _group_scale_phrase(group: dict, height_m: float) -> str:
+    """A group may override the size cue with its own ladder.
+
+    The default ladder measures a prop STANDING ON THE GROUND ("knee-high",
+    "waist-high"), which is exactly wrong for something mounted on a wall: a
+    1.0m window is not "waist-high", it is a window about two thirds of a
+    person tall, and the ground-relative phrasing invites the model to draw it
+    down at waist level. Groups set `scale_phrases` as [[max_height_m, phrase],
+    ...] to describe their own size instead."""
+    ladder = group.get("scale_phrases")
+    if not ladder:
+        return _scale_phrase(height_m)
+    for entry in ladder:
+        if height_m < float(entry[0]):
+            return str(entry[1])
+    return str(ladder[-1][1])
+
+
 def quota_for(rank: int, rule: dict) -> int:
     return max(int(rule.get("floor", 2)),
                int(rule.get("base", 102)) + int(rule.get("step", -2)) * rank)
@@ -112,7 +130,12 @@ def piece_id(group: dict, index: int) -> str:
 
 def piece_spec(cfg: dict, group: dict, index: int) -> dict:
     """The full deterministic spec for piece `index` (1-based) of a group."""
-    lights_on = index % 2 == 0            # odd -> LIGHTS_OFF, even -> LIGHTS_ON
+    # Half-and-half LIGHTS_ON/LIGHTS_OFF is the domain default, but a group can
+    # pin itself: windows are generated "lights off inside the house (they are
+    # not home)" (maintainer 2026-08-14), so a lit variant would be wrong art,
+    # not just an unwanted one.
+    forced = (group.get("lights") or "").upper()
+    lights_on = (index % 2 == 0) if not forced else (forced == "LIGHTS_ON")
     variety = _pick(group.get("variety") or [group["description"]],
                     group["id"], "variety", index)
     glow = _pick(group.get("glow_concepts") or ["softly glowing"],
@@ -123,7 +146,7 @@ def piece_spec(cfg: dict, group: dict, index: int) -> dict:
 
     off_clause = cfg["lights"]["off_clause"]
     on_clause = cfg["lights"]["on_clause"]
-    scale = _scale_phrase(height)
+    scale = _group_scale_phrase(group, height)
     # SECOND VARIATION AXIS (maintainer 2026-08-14: "I don't want to get the
     # same images over and over"): an independent composition modifier, cycled
     # on its own stride, multiplies each variety into dozens of visually
