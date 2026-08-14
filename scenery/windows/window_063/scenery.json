@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:54:28+00:00",
+  "id": "window_063",
+  "group": "windows",
+  "rank": 25,
+  "index": 63,
+  "name": "A rectangular window with a rope-hung shutter 063",
+  "lights": "LIGHTS_OFF",
+  "variety": "a rectangular window with a rope-hung shutter",
+  "modifier": "iron bars across the glass",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window with a rope-hung shutter, iron bars across the glass, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_063/rotations/south-east.webp",
+    "south-west": "windows/window_063/rotations/south-west.webp",
+    "south": "windows/window_063/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_063/sprite.webp",
+  "placement": {
+    "world_height_m": 1.22,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      17,
+      3,
+      92,
+      93
+    ],
+    "content_px_height": 90,
+    "canvas_render_px": 49
+  },
+  "pixellab_object_id": "477b1744-64e7-48a3-8fe5-900017831593",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
