@@ -172,16 +172,17 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
 
     # THE GATE: art the model drew small and upscaled never reaches his queue.
     ones = factory.single_pixel_fraction(img)
-    if ones is not None and ones < factory.PIXEL_GRID_MIN:
+    gate_min = factory.pixel_grid_min(size)
+    if ones is not None and ones < gate_min:
         try:
             client.delete_object(oid)
         except Exception:
             pass
         print(f"  x GATE {group['id']}/{spec['id']}: pixels too big "
-              f"(single-px {ones:.3f} < {factory.PIXEL_GRID_MIN}) — re-rolling")
+              f"(single-px {ones:.3f} < {gate_min} at {size}px) — re-rolling")
         raise PixelLabError(
-            f"{spec['id']}: PIXEL GRID FAIL (single-pixel fraction {ones:.3f} < "
-            f"{factory.PIXEL_GRID_MIN}) — upscaled art, rejected before saving")
+            f"GATE {spec['id']}: PIXEL GRID FAIL (single-pixel fraction "
+            f"{ones:.3f} < {gate_min} at {size}px) — upscaled art, not saved")
 
     img = factory._normalize(img, size)
     rel = f"{group['id']}/{spec['id']}"
@@ -471,10 +472,17 @@ def main():
                     print(f"  = {pieces} done in {mins:.1f} min "
                           f"({pieces / mins if mins else 0:.1f}/min)")
                 except PixelLabError as e:
-                    consec_fail += 1
+                    # A gate rejection is the system WORKING: the piece was
+                    # upscaled and died as designed. Only real errors (network,
+                    # API, missing sprite) count toward the outage breaker —
+                    # otherwise a strict gate stalls the run it is protecting
+                    # (measured 2026-08-14: six gate kills in a row ended a
+                    # 110-piece pass after three deliveries).
+                    if not str(e).startswith("GATE "):
+                        consec_fail += 1
+                        print(f"  ! finalize {f['group']['id']}/{f['spec']['id']} "
+                              f"failed: {str(e)[:140]}")
                     skipped.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])
-                    print(f"  ! finalize {f['group']['id']}/{f['spec']['id']} failed: "
-                          f"{str(e)[:140]}")
             elif st == "failed" or (time.monotonic() - f["at"]) > 1500:
                 consec_fail += 1
                 skipped.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])

@@ -289,23 +289,28 @@ def single_pixel_fraction(img):
     return sum(1 for r in runs if r == 1) / len(runs)
 
 
-# THE OPERATING POINT, set by the cost asymmetry he stated himself:
-# "EVERY TIME I COMPLAIN ABOUT THE PIXELART IT'S BECAUSE THE PIXELS ARE TO BIG
-# (NOT 1 PIXEL PER PIXEL)." One failure mode, so tune hard for it.
+# THE OPERATING POINT — PER CANVAS SIZE, because a single global threshold was
+# provably wrong. "EVERY TIME I COMPLAIN ABOUT THE PIXELART IT'S BECAUSE THE
+# PIXELS ARE TO BIG (NOT 1 PIXEL PER PIXEL)" names one defect, but how much
+# single-pixel detail a CLEAN piece carries depends on its canvas: his 4-5 star
+# medians run 0.774 at 48px down to 0.633 at 128px. A flat 0.65 therefore sat
+# ABOVE the median of his own starred 128px art and was killing pieces he
+# loves — it discarded 15 of 18 rolls on a 192-256px pass and stalled the run.
 #
-# A false flag costs $0.09 for a re-roll of a piece he NEVER SEES. A miss puts
-# upscaled art in his review queue and costs his trust — which today reads
-# "HOW HARD CAN IT BE!!!". Those are not comparable, so the threshold sits far
-# past the statistically "balanced" point:
-#
-#   T=0.50  catch 56%   re-roll  1.5%
-#   T=0.65  catch 89%   re-roll 31%    <- chosen
-#   T=0.68  catch 95%   re-roll 46%
-#
-# 0.65 catches 89% of everything he has ever called broken, for ~$0.028 extra
-# per delivered piece (~31% of rolls discarded). At 0.68 the re-roll rate
-# nearly doubles for six more points of recall; that is the next step if any
-# upscaled piece still reaches him. Calibrated on 62 of his broken-art
-# complaints vs 265 of his 4-5 star pieces (medians 0.491 vs 0.688), and the
-# metric is canvas-size-neutral (starred medians 0.63-0.77 across 48-256px).
-PIXEL_GRID_MIN = 0.65
+# Each threshold is the 5th percentile of HIS starred pieces at that size,
+# minus a hair: by construction it spares ~95% of art he has blessed while
+# still catching the upscaled failures (26 of 28 at 96px, 13 of 20 at 128px).
+# Sizes with no labelled failures (48/192/256) get the same rule for safety.
+PIXEL_GRID_MIN_BY_SIZE = {
+    48: 0.453, 64: 0.581, 96: 0.597, 128: 0.507,
+    160: 0.526, 192: 0.551, 256: 0.586,
+}
+PIXEL_GRID_MIN = 0.55          # fallback for any canvas not in the table
+
+
+def pixel_grid_min(size):
+    """Threshold for this canvas size (nearest smaller entry, else fallback)."""
+    if size in PIXEL_GRID_MIN_BY_SIZE:
+        return PIXEL_GRID_MIN_BY_SIZE[size]
+    smaller = [k for k in PIXEL_GRID_MIN_BY_SIZE if k <= size]
+    return PIXEL_GRID_MIN_BY_SIZE[max(smaller)] if smaller else PIXEL_GRID_MIN
