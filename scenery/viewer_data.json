@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 514,
+  "scenery_count": 515,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -69,7 +69,7 @@
       "id": "cairns",
       "name": "Cairn",
       "quota": 84,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 10,
@@ -912,7 +912,7 @@
     "briar_thickets": 10,
     "broken_columns": 2,
     "bushes": 8,
-    "cairns": 9,
+    "cairns": 10,
     "light": 1,
     "carts": 5,
     "cattail_clumps": 5,
@@ -2826,6 +2826,28 @@
       "status": "complete",
       "pixellab_object_id": "1814ebf2-0b71-47f6-98c0-82be021c2e60",
       "sprite": "cairns/cairn_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cairn_017",
+      "rel": "cairns/cairn_017",
+      "name": "Stacked slate slab cairn 017",
+      "category": "cairns",
+      "lights": "LIGHTS_OFF",
+      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, stacked slate slab cairn, grown around a half-buried stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.37,
+        "world_px_height": 52,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
+      "sprite": "cairns/cairn_017/sprite.webp",
       "rotations": {},
       "animations": []
     },
