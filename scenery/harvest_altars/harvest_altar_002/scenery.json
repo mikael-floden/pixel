@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:12:49+00:00",
+  "id": "harvest_altar_002",
+  "group": "harvest_altars",
+  "rank": 124,
+  "index": 2,
+  "name": "Gourd-and-candle altar 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "gourd-and-candle altar",
+  "modifier": "snow settling on the gourds",
+  "glow_concept": "the offerings glowing with kept memory",
+  "prompt": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields, gourd-and-candle altar, snow settling on the gourds, waist-high, self-emissive at night, softly radiating light: the offerings glowing with kept memory",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "harvest_altars/harvest_altar_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.98,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0bc1c3b8-1505-4373-84ae-ee609cb8050c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
