@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:14:06+00:00",
+  "id": "tree_056",
+  "group": "trees",
+  "rank": 1,
+  "index": 56,
+  "name": "Small-leaved lime, heart-leaf shade tree 056 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "small-leaved lime, heart-leaf shade tree",
+  "modifier": "wrapped in thin creeper vines",
+  "glow_concept": "blue-white soul-light spilling from a knot hole",
+  "prompt": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, small-leaved lime, heart-leaf shade tree, wrapped in thin creeper vines, tall, about three times human height, self-emissive at night, softly radiating light: blue-white soul-light spilling from a knot hole",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "trees/tree_056/sprite.webp",
+  "placement": {
+    "world_height_m": 3.54,
+    "world_px_height": 133,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "d2ee62d8-3437-45aa-9b7c-23db437ca8a7",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
