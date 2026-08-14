@@ -629,11 +629,29 @@ function buildObjects() {
     const preview = art(`scenery/${rel}/sprite`);
     const stillOnly = !Object.keys(anims).length && !!preview;
     if (stillOnly) {
-      const dims = imageSize(join(ROOT, preview));
-      if (dims) {
+      // A still can face more than one way. Since 2026-08-14 the scenery domain
+      // ships a `rotations` map (south / south-east / south-west so far) beside
+      // the sprite, and the maintainer reviews the DIRECTIONS a piece has, not
+      // just its front: "the animation preview should make it possible to
+      // review the directions the Scenery has". Each rotation becomes its own
+      // one-frame clip, so the viewer's existing direction pad — which shows
+      // exactly the directions that have a clip — does the rest untouched.
+      // Paths in `rotations` are relative to scenery/ and the extension is
+      // resolved against the disk, same as the animation strips above.
+      const rots = Object.entries(oj.rotations ?? {})
+        .map(([dir, p]) => [dir, art(`scenery/${String(p).replace(/\.(png|webp)$/i, "")}`)])
+        .filter(([dir, p]) => DIRS.includes(dir) && p);
+      const dirs = {};
+      for (const dir of DIRS) {
+        const strip = rots.find(([d]) => d === dir)?.[1] ?? (dir === "south" ? preview : null);
+        if (!strip) continue;
+        const dims = imageSize(join(ROOT, strip));
+        if (dims) dirs[dir] = { frames: 1, strip, fw: dims.w, fh: dims.h };
+      }
+      if (Object.keys(dirs).length) {
         anims.still = {
           description: "No animation was generated for this piece — this is the sprite as it is placed in the world.",
-          dirs: { south: { frames: 1, strip: preview, fw: dims.w, fh: dims.h } },
+          dirs,
         };
       }
     }

@@ -32,15 +32,44 @@ ok(still.every((o) => Object.keys(o.animations).length === 1 && o.animations.sti
 ok(real.every((o) => !o.animations.still),
   `a piece with real animation is untouched (${real.map((o) => `${o.id}: ${Object.keys(o.animations).join("+")}`).join(", ")})`);
 ok(real.length === 3, `the three generated pieces are still the only animated ones (${real.length})`);
-// The still must BE the sprite, one frame, one direction — not a guess.
+// The still must BE the sprite, and every direction one frame — not a guess.
 const bad = still.filter((o) => {
   const d = o.animations.still.dirs;
   const s = d.south;
-  return Object.keys(d).length !== 1 || !s || s.frames !== 1 || s.strip !== o.preview;
+  return !s || s.strip !== o.preview || Object.values(d).some((c) => c.frames !== 1);
 });
-ok(bad.length === 0, `each still is 1 frame, south, and is the sprite itself${bad.length ? ` — ${bad.slice(0, 3).map((o) => o.id).join(", ")}` : ""}`);
-ok(still.every((o) => o.animations.still.dirs.south.bb),
-  "and it is measured, so it draws cropped at true scale rather than padded");
+ok(bad.length === 0, `each still is 1 frame per direction, and its south IS the sprite${bad.length ? ` — ${bad.slice(0, 3).map((o) => o.id).join(", ")}` : ""}`);
+ok(still.every((o) => Object.values(o.animations.still.dirs).every((c) => c.bb)),
+  "and every one is measured, so it draws cropped at true scale rather than padded");
+
+// ROTATIONS. Since 2026-08-14 the scenery domain ships a `rotations` map beside
+// the sprite (maintainer: "the scenery may now have a SE, S and SW direction —
+// the animation preview should make it possible to review the directions the
+// Scenery has"), so a still is no longer one-sided by definition. The ground
+// truth is scenery.json on disk: what the builder publishes must be exactly
+// what the scenery agent generated, or the maintainer reviews art that isn't
+// there — or, worse, never sees art that is.
+const SCEN = new URL("../../scenery/", import.meta.url);
+const onDisk = new Map();
+for (const o of objs) {
+  const rel = o.path.replace(/^scenery\//, "");
+  let j = null;
+  try { j = JSON.parse(readFileSync(new URL(`${rel}/scenery.json`, SCEN), "utf8")); } catch { /* legacy layout */ }
+  if (j) onDisk.set(o.id, Object.keys(j.rotations ?? {}));
+}
+const rot = still.filter((o) => Object.keys(o.animations.still.dirs).length > 1);
+const diskRot = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1).length;
+console.log(`rotations: ${rot.length} of ${still.length} stills face more than one way; disk says ${diskRot}`
+  + ` (the legacy animated pieces carry rotations too, and rightly get no still)`);
+ok(rot.length > 0, "the pieces with rotations reach the wiki at all");
+const missed = still.filter((o) => (onDisk.get(o.id) ?? []).length > 1
+  && Object.keys(o.animations.still.dirs).length !== (onDisk.get(o.id) ?? []).length);
+ok(missed.length === 0, `every direction on disk is published${missed.length ? ` — short on: ${missed.slice(0, 3).map((o) => o.id).join(", ")}` : ` (${rot.length} pieces)`}`);
+ok(rot.every((o) => new Set(Object.values(o.animations.still.dirs).map((c) => c.strip)).size
+  === Object.keys(o.animations.still.dirs).length),
+  "each direction points at its OWN file — not one sprite relabelled three times");
+ok(still.every((o) => (onDisk.get(o.id) ?? []).length > 1 || Object.keys(o.animations.still.dirs).length === 1),
+  "and a piece with no rotations map is still a lone south — nothing invented");
 // Whole-frame vs measured: the padding really is being cropped, or the viewer
 // is no better than the thumbnail it was added to improve on.
 const cropped = still.filter((o) => { const s = o.animations.still.dirs.south;
@@ -93,6 +122,57 @@ ok(anim.transport.length >= 3 && anim.states >= 1 && anim.dirpad === 8,
 ok(!tiny.assign, "a still is never offered as a sound event to assign");
 // The fixed stage: paging scenery must not move the layout.
 ok(tiny.stage === big.stage && big.stage === anim.stage, `one stage for the whole domain (${tiny.stage})`);
+
+// ------------------------------------------------- reviewing the DIRECTIONS
+// A rotated still gets a pad and nothing else: still nothing to play, still no
+// state to choose. And the pad must not push the art down — it rides BELOW the
+// stage with the zoom buttons, so a 3-view piece and a 1-view piece put the
+// viewer in the same place while paging ‹ › (maintainer 2026-08-13).
+const rotId = rot[0].id;
+const many = await look(rotId);
+console.log(`still (${rotId}, ${Object.keys(rot[0].animations.still.dirs).join("+")}):`, JSON.stringify(many));
+ok(many.dirpad === Object.keys(rot[0].animations.still.dirs).length,
+  `a rotated still offers one button per direction it has (${many.dirpad})`);
+ok(many.transport.length === 0 && many.states === 0,
+  `and still offers nothing to play or choose (${many.transport.length} transport, ${many.states} states)`);
+ok(/Still · \d+ views/.test(many.title.join(" ")), `headed with the count (${many.title.join(", ")})`);
+ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
+const padPos = await p.evaluate(() => {
+  const st = document.querySelector(".player-stage").getBoundingClientRect();
+  const pad = document.querySelector(".dirpad").getBoundingClientRect();
+  const zoom = [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "2×");
+  return { padTop: Math.round(pad.top), stageBottom: Math.round(st.bottom), stageTop: Math.round(st.top),
+    sameRow: !!zoom && Math.abs(zoom.getBoundingClientRect().top - pad.top) < 14 };
+});
+console.log("pad position:", JSON.stringify(padPos));
+ok(padPos.padTop >= padPos.stageBottom - 2, "the pad sits under the stage, so the art never shifts down for it");
+ok(padPos.sameRow, "on the same row as zoom — one control strip, not a new one");
+// THE BUTTONS MUST ACTUALLY SHOW DIFFERENT ART. Three views that all draw the
+// same pixels would be worse than none: it would read as confirmation.
+const views = await p.evaluate(async () => {
+  const out = [];
+  // Re-query on every pass: pressing a direction re-renders the whole pad, so
+  // a node captured before the click is a detached copy of the old one.
+  const dirs = [...document.querySelectorAll(".dirpad button")].map((x) => x.title);
+  for (const dir of dirs) {
+    const btn = () => [...document.querySelectorAll(".dirpad button")].find((x) => x.title === dir);
+    btn().click();
+    await new Promise((r) => setTimeout(r, 500));
+    const b = btn();
+    const cv = document.querySelector(".player-stage canvas");
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let sum = 0, painted = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 8) { painted++; sum += d[i] + d[i + 1] * 3 + d[i + 2] * 7; }
+    out.push({ dir: b.title, label: b.textContent, on: b.classList.contains("on"), w: cv.width, painted, sum });
+  }
+  return out;
+});
+console.log("views:", JSON.stringify(views));
+ok(views.every((v) => v.painted > 50), `every direction actually draws (${views.map((v) => v.painted).join(", ")})`);
+ok(new Set(views.map((v) => v.sum)).size === views.length, "and each one draws DIFFERENT pixels — three real views, not one repeated");
+ok(views.every((v) => v.on), "the pressed direction is the highlighted one");
+ok(views.map((v) => v.label).join(" ") === views.map((v) => v.dir).map((d) => ({ south: "S", "south-east": "SE", "south-west": "SW", east: "E", west: "W", north: "N", "north-east": "NE", "north-west": "NW" })[d]).join(" "),
+  `labelled by compass point (${views.map((v) => v.label).join(" ")})`);
 // Zoom really re-scales — otherwise "true scale" is a claim, not a feature.
 await p.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
 await p.waitForTimeout(1500);
@@ -113,12 +193,16 @@ await p.goto(`${W}#/objects`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
 const list = await p.evaluate(() => {
   const subs = [...document.querySelectorAll(".card-sub")].map((x) => x.textContent);
-  return { n: subs.length, static: subs.filter((s) => s === "static").length, still: subs.filter((s) => /still/i.test(s)).length,
-    other: [...new Set(subs.filter((s) => s !== "static"))] };
+  return { n: subs.length, static: subs.filter((s) => /^static/.test(s)).length, still: subs.filter((s) => /still/i.test(s)).length,
+    views: subs.filter((s) => /^static · \d+ views$/.test(s)).length,
+    other: [...new Set(subs.filter((s) => !/^static/.test(s)))] };
 });
 console.log("list:", JSON.stringify(list));
 ok(list.still === 0, "no card claims a “still” animation");
 ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
+// Static and multi-view are not opposites — the card says both, so you know a
+// piece has more to look at before you open it.
+ok(list.views === rot.length, `and the ${rot.length} rotated ones say how many views they have (${list.views})`);
 ok(list.other.length > 0 && list.other.every((s) => !/still/i.test(s)), `and the animated ones name their real states (${list.other.join(", ")})`);
 
 // PAGING ‹ › MUST NOT MOVE THE VIEWER (maintainer 2026-08-13: "The scenery

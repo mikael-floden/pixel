@@ -550,15 +550,33 @@ function makePlayer(entity, kind, opts = {}) {
   // holding a single button are all controls that cannot do anything. Zoom
   // stays, because looking at the piece at a known scale is the entire reason
   // the maintainer wanted the viewer here.
+  //
+  // The DIRECTION pad is judged separately. A still with south / south-east /
+  // south-west has three things to look at (maintainer 2026-08-14: "the
+  // scenery may now have a SE, S and SW direction — the animation preview
+  // should make it possible to review the directions the Scenery has"), so
+  // hiding the pad because nothing MOVES would hide two thirds of the art.
+  const maxDirs = Math.max(0, ...stateNames.map((s) => Object.keys(anims[s]?.dirs ?? {}).length));
   const singleStill = stateNames.length === 1
-    && Object.keys(anims[stateNames[0]]?.dirs ?? {}).length === 1
+    && maxDirs <= 1
     && (Object.values(anims[stateNames[0]]?.dirs ?? {})[0]?.frames ?? 1) <= 1;
+  // Nothing to transport, but more than one way to face: drop play/step/speed
+  // and the one-button state row, keep the pad.
+  const stillMultiDir = !singleStill && stateNames.length === 1 && maxDirs > 1
+    && Object.values(anims[stateNames[0]]?.dirs ?? {}).every((d) => (d?.frames ?? 1) <= 1);
+  const noTransport = singleStill || stillMultiDir;
   const controls2 = h("div", { class: "player-controls" },
-    singleStill ? null : playBtn,
-    singleStill ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
-    singleStill ? null : h("button", { class: "ghost-btn", title: "Next frame", onclick: () => step(1) }, "⏭"),
-    singleStill ? null : frameNo,
-    singleStill ? null : speedSeg,
+    // For a still the pad rides BELOW the stage, with the zoom buttons. Above
+    // it, an extra row would push the art down on exactly the pieces that have
+    // rotations and leave it up on the ones that don't — the "viewer in the
+    // same place when I press next next next" complaint, reintroduced by a
+    // control row. Animated entities keep their pad where it has always been.
+    noTransport && maxDirs > 1 ? dirPad : null,
+    noTransport ? null : playBtn,
+    noTransport ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
+    noTransport ? null : h("button", { class: "ghost-btn", title: "Next frame", onclick: () => step(1) }, "⏭"),
+    noTransport ? null : frameNo,
+    noTransport ? null : speedSeg,
     zoomSeg,
     entity.shadow ? h("label", { class: "chk" },
       Object.assign(h("input", { type: "checkbox" }), { checked: cur.shadow, onchange: (e) => { cur.shadow = e.target.checked; draw(); } }),
@@ -572,8 +590,8 @@ function makePlayer(entity, kind, opts = {}) {
   }
   loadClip();
   const rootEl = h("div", { class: "player" },
-    singleStill ? null : h("div", { class: "player-controls" }, stateSeg),
-    singleStill ? null : h("div", { class: "player-controls" }, dirPad),
+    noTransport ? null : h("div", { class: "player-controls" }, stateSeg),
+    noTransport || maxDirs <= 1 ? null : h("div", { class: "player-controls" }, dirPad),
     stage, overflowNote, controls2);
   return {
     el: rootEl,
@@ -2043,6 +2061,13 @@ const OBJ_FILTER_KEY = "wiki-obj-filter";
 // were carrying his verdict on art he had never seen. `added` is the date the
 // CURRENT sprite arrived (build.mjs, by content hash), so an older verdict is
 // a verdict about something else.
+// The scenery domain began shipping a `rotations` map on 2026-08-14 — south,
+// south-east and south-west so far — and the builder turns each one into a
+// one-frame clip on the synthesised `still`. So "how many ways does this piece
+// face" is just how many directions that still has.
+const stillDirList = (o) => Object.keys(o?.animations?.still?.dirs ?? {});
+const stillDirs = (o) => stillDirList(o).length;
+
 /** Card/page badges for a scenery piece, honest about stale verdicts. */
 function objBadges(o) {
   const v = objVerdict(o);
@@ -2102,7 +2127,10 @@ function viewObjects() {
     h("div", { class: "card-name" }, o.name),
     // The synthesised `still` must not read as an animation here — the
     // list is where you scan for what actually moves.
-    h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length ? "static" : Object.keys(o.animations).join(", ")),
+    h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length
+      // Static, but not necessarily one-sided: say so before you open it.
+      ? (stillDirs(o) > 1 ? `static · ${stillDirs(o)} views` : "static")
+      : Object.keys(o.animations).join(", ")),
     // A stale verdict must not wear the badge of a live one — "remove" on a
     // piece regenerated since that call would read as a decision about the
     // art on screen.
@@ -2250,7 +2278,13 @@ function viewObject(id) {
     objectHead(o),
     hasAnims
       ? h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, o.stillOnly ? "Still" : "Animations", humanBtn),
+          // "Still · 3 views" rather than a longer sentence: the note below is
+          // a fixed piece of copy on EVERY still, and lengthening it for the
+          // pieces that have rotations would wrap to another line and push the
+          // stage down on just those pieces. The S/SE/SW pad under the stage
+          // is the affordance; the title only says how many there are.
+          h("div", { class: "panel-title" },
+            o.stillOnly ? (stillDirs(o) > 1 ? `Still · ${stillDirs(o)} views` : "Still") : "Animations", humanBtn),
           o.stillOnly ? h("p", { class: "muted", style: "margin:0 0 8px" }, "This piece has no animation — shown at its true size, padding cropped away.") : null,
           playerEl)
       : h("p", { class: "muted" }, "No animations."),
