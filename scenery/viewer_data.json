@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 759,
+  "scenery_count": 760,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 8,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 11,
+    "cliff_mosses": 12,
     "cliff_roots": 12,
     "cliff_shrubs": 12,
     "cliff_vines": 77,
@@ -4649,6 +4649,28 @@
       "status": "complete",
       "pixellab_object_id": "cdd8d84c-c786-4703-a32c-8ab33db3a9cd",
       "sprite": "cliff_mosses/cliff_moss_039/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_041",
+      "rel": "cliff_mosses/cliff_moss_041",
+      "name": "Tiny stone shelf with moss 041",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_OFF",
+      "description": "a SMALL detail piece: a little knob of grey rock jutting out, with sparse soft moss and a touch of lichen growing on its top and shoulders, just a few cushions and some bare stone showing, small and modest, fantasy RPG nature art, no border, no straight edges, transparent background, tiny stone shelf with moss, a single cushion and bare stone elsewhere, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.74,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "943719c9-f06e-4577-b64d-770a5bb89a7b",
+      "sprite": "cliff_mosses/cliff_moss_041/sprite.webp",
       "rotations": {},
       "animations": []
     },
