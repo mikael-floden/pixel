@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:52:55+00:00",
+  "id": "cliff_vine_060",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 60,
+  "name": "White-flowering bindweed fall 060 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white-flowering bindweed fall",
+  "modifier": "a broad patch with smaller islands around it",
+  "glow_concept": "glowworm colonies strung in the foliage",
+  "prompt": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, white-flowering bindweed fall, a broad patch with smaller islands around it, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_060/sprite.webp",
+  "placement": {
+    "world_height_m": 9.66,
+    "world_px_height": 364,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "16f04c23-2d88-4d8c-8103-9945ff271800",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
