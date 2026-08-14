@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:34:03+00:00",
+  "id": "cliff_moss_005",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 5,
+  "name": "Black wet moss 005",
+  "lights": "LIGHTS_OFF",
+  "variety": "black wet moss",
+  "modifier": "spreading in wide blotches",
+  "glow_concept": null,
+  "prompt": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, black wet moss, spreading in wide blotches, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_005/sprite.webp",
+  "placement": {
+    "world_height_m": 3.15,
+    "world_px_height": 119,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1ba88abd-4ce9-4e4c-86c3-d8abc61d105b",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
