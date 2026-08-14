@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 584,
+  "scenery_count": 585,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 17
+      "done": 18
     },
     {
       "rank": 5,
@@ -908,7 +908,7 @@
     "bell_posts": 1,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 17,
+    "braziers": 18,
     "briar_thickets": 13,
     "broken_columns": 2,
     "bushes": 8,
@@ -2449,6 +2449,28 @@
       "status": "complete",
       "pixellab_object_id": "f9d7b3c3-f051-4c82-a255-495e666ccbe6",
       "sprite": "braziers/brazier_019/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "brazier_021",
+      "rel": "braziers/brazier_021",
+      "name": "Wrought basket-legged brazier 021",
+      "category": "braziers",
+      "lights": "LIGHTS_OFF",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, wrought basket-legged brazier, reinforced with iron bands, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.86,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "47f1c7ea-198b-49d4-a3f7-83e05e4a2d96",
+      "sprite": "braziers/brazier_021/sprite.webp",
       "rotations": {},
       "animations": []
     },

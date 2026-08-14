@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:55:08+00:00",
+  "id": "brazier_021",
+  "group": "braziers",
+  "rank": 4,
+  "index": 21,
+  "name": "Wrought basket-legged brazier 021",
+  "lights": "LIGHTS_OFF",
+  "variety": "wrought basket-legged brazier",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": null,
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, wrought basket-legged brazier, reinforced with iron bands, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_021/sprite.webp",
+  "placement": {
+    "world_height_m": 0.86,
+    "world_px_height": 32,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "47f1c7ea-198b-49d4-a3f7-83e05e4a2d96",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
