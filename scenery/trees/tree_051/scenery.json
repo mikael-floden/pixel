@@ -32,10 +32,28 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
+    "LIT_1": {
+      "sprite": "trees/tree_051/lit_1/sprite.webp",
+      "pixellab_object_id": "ae3e44f8-fe3c-4c5e-9bf5-f06988a2bf98",
+      "difference_from_source": 0.1943,
+      "glow_score": 0.0719
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_051/sprite.webp",
       "pixellab_object_id": "057e056f-a359-48ff-a86b-f4a51a3383e4",
       "glow_score": 0.0007
+    },
+    "NOT_LIT_4": {
+      "sprite": "trees/tree_051/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8db7d9fd-c4d3-4745-aeee-f3eb8f84979a",
+      "difference_from_source": 0.2939,
+      "glow_score": 0.001
+    },
+    "NOT_LIT_5": {
+      "sprite": "trees/tree_051/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5d26fcfe-b632-417a-afff-921f4d8d6c91",
+      "difference_from_source": 0.2287,
+      "glow_score": 0.002
     }
   }
 }
