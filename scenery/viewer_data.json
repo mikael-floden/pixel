@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 608,
+  "scenery_count": 609,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -825,7 +825,7 @@
       "id": "dragon_ribcages",
       "name": "Dragon Ribcage",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 118,
@@ -1161,7 +1161,7 @@
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
     "dock_pilings": 12,
-    "dragon_ribcages": 1,
+    "dragon_ribcages": 2,
     "driftwood_logs": 1,
     "fairy_stumps": 2,
     "fallen_logs": 9,
@@ -5024,6 +5024,28 @@
       "status": "complete",
       "pixellab_object_id": "4a0cefd2-42c4-4993-a021-2d3936ea6bf0",
       "sprite": "dock_pilings/dock_piling_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "dragon_ribcage_001",
+      "rel": "dragon_ribcages/dragon_ribcage_001",
+      "name": "Bleached white ribcage 001",
+      "category": "dragon_ribcages",
+      "lights": "LIGHTS_OFF",
+      "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, bleached white by seasons, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.06,
+        "world_px_height": 78,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "710e2e38-4231-49aa-9d6f-6f65849a1a97",
+      "sprite": "dragon_ribcages/dragon_ribcage_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

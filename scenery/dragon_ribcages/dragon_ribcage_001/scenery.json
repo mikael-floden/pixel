@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:35:25+00:00",
+  "id": "dragon_ribcage_001",
+  "group": "dragon_ribcages",
+  "rank": 117,
+  "index": 1,
+  "name": "Bleached white ribcage 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "bleached white ribcage",
+  "modifier": "bleached white by seasons",
+  "glow_concept": null,
+  "prompt": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, bleached white by seasons, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "dragon_ribcages/dragon_ribcage_001/sprite.webp",
+  "placement": {
+    "world_height_m": 2.06,
+    "world_px_height": 78,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "710e2e38-4231-49aa-9d6f-6f65849a1a97",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
