@@ -170,6 +170,17 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
     if img is None:
         raise PixelLabError(f"{spec['id']}: no downloadable SOUTH sprite (object {oid})")
 
+    # THE GATE: art the model drew small and upscaled never reaches his queue.
+    ones = factory.single_pixel_fraction(img)
+    if ones is not None and ones < factory.PIXEL_GRID_MIN:
+        try:
+            client.delete_object(oid)
+        except Exception:
+            pass
+        raise PixelLabError(
+            f"{spec['id']}: PIXEL GRID FAIL (single-pixel fraction {ones:.3f} < "
+            f"{factory.PIXEL_GRID_MIN}) — upscaled art, rejected before saving")
+
     img = factory._normalize(img, size)
     rel = f"{group['id']}/{spec['id']}"
     factory.save_webp(img, f"{factory.piece_dir(rel)}/sprite.webp")

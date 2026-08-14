@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 581,
+  "scenery_count": 582,
   "target_count": 3035,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 11,
@@ -1004,7 +1004,7 @@
     "driftwood_logs": 1,
     "fairy_stumps": 1,
     "fallen_logs": 9,
-    "fences": 3,
+    "fences": 4,
     "ferns": 12,
     "fish_drying_racks": 4,
     "flame_niches": 8,
@@ -5088,6 +5088,28 @@
       "status": "complete",
       "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
       "sprite": "fences/fence_006/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fence_030",
+      "rel": "fences/fence_030",
+      "name": "Stone-footed post and rail 030 \u00b7 lit",
+      "category": "fences",
+      "lights": "LIGHTS_ON",
+      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, stone-footed post and rail, with climbing flowers at one corner, waist-high, self-emissive at night, softly radiating light: small tin lantern hung on the end post",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.86,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "3c0f0c43-1ea8-428e-aa06-3ec0fdf5b6e5",
+      "sprite": "fences/fence_030/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -248,3 +248,50 @@ def _normalize(img, size):
     canvas = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
     canvas.alpha_composite(img, ((tw - img.width) // 2, (th - img.height) // 2))
     return canvas
+
+
+# --- the pixel-grid gate ------------------------------------------------------
+
+def single_pixel_fraction(img):
+    """Fraction of same-color runs (rows + columns, opaque area) that are
+    exactly ONE pixel long.
+
+    True 1:1 pixel art is dense with single-pixel detail; art the model drew
+    small and upscaled ("THE PIXELS ARE TO BIG" — maintainer, 2026-08-14)
+    has almost none, because every feature is k pixels wide. Calibrated on
+    his own labels: 39 pieces he explicitly called not-pixel-art (median
+    0.485) vs 259 of his 4-5 star pieces (median 0.691). Returns None when
+    the sprite is too sparse to judge."""
+    px = img.convert("RGBA").load()
+    w, h = img.size
+    runs = []
+    for axis in (0, 1):
+        outer, inner = (h, w) if axis == 0 else (w, h)
+        for a in range(outer):
+            run, prev = 0, None
+            for b in range(inner):
+                c = px[b, a] if axis == 0 else px[a, b]
+                if c[3] < 16:
+                    if run and prev is not None:
+                        runs.append(run)
+                    run, prev = 0, None
+                    continue
+                if c == prev:
+                    run += 1
+                else:
+                    if run and prev is not None:
+                        runs.append(run)
+                    run, prev = 1, c
+            if run and prev is not None:
+                runs.append(run)
+    if len(runs) < 50:
+        return None
+    return sum(1 for r in runs if r == 1) / len(runs)
+
+
+# Reject below this. 0.50 catches 56% of the art he called broken while
+# false-flagging 1.5% of his starred pieces — and a false flag costs only a
+# $0.09 re-roll, while a miss costs his trust. Deliberately NOT tuned higher:
+# above 0.55 the false-flag rate climbs past 6% and starts killing art he
+# loves. Raise it only with new labelled data.
+PIXEL_GRID_MIN = 0.50
