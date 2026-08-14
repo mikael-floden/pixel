@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 531,
+  "scenery_count": 532,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "id": "stumps",
       "name": "Stump",
       "quota": 54,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 25,
@@ -991,7 +991,7 @@
     "stones": 17,
     "story_posts": 8,
     "streetlights": 8,
-    "stumps": 8,
+    "stumps": 9,
     "sundials": 2,
     "tables": 7,
     "telegraph_poles": 4,
@@ -10237,6 +10237,28 @@
       "status": "complete",
       "pixellab_object_id": "89eeeb4a-3148-488a-8091-b1d3fa831d80",
       "sprite": "stumps/stump_014/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "stump_016",
+      "rel": "stumps/stump_016",
+      "name": "Split stump with lion's mane 016 \u00b7 lit",
+      "category": "stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, split stump with lion's mane, with fallen leaves collected at its base, small, knee-high, self-emissive at night, softly radiating light: shelf undersides shedding pale spore light downward",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.39,
+        "world_px_height": 15,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e3c90473-e9db-4156-8e0c-446f44d00807",
+      "sprite": "stumps/stump_016/sprite.webp",
       "rotations": {},
       "animations": []
     },
