@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:59:42+00:00",
+  "id": "cliff_shrub_002",
+  "group": "cliff_shrubs",
+  "rank": 157,
+  "index": 2,
+  "name": "Wind-flattened juniper 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "wind-flattened juniper",
+  "modifier": "a bird nest in its crown",
+  "glow_concept": "light in the crack at its root",
+  "prompt": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, wind-flattened juniper, a bird nest in its crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: light in the crack at its root",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.71,
+    "world_px_height": 64,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
