@@ -32,10 +32,46 @@
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "states": {
+    "LIT_1": {
+      "sprite": "trees/tree_057/lit_1/sprite.webp",
+      "pixellab_object_id": "396b206c-3081-4c95-bc4e-3d3d5eec2470",
+      "difference_from_source": 0.1916,
+      "glow_score": 0.1011
+    },
+    "LIT_2": {
+      "sprite": "trees/tree_057/lit_2/sprite.webp",
+      "pixellab_object_id": "8f04c8df-c60c-4082-a24f-cdc40e6aa15d",
+      "difference_from_source": 0.4374,
+      "glow_score": 0.0789
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_057/sprite.webp",
       "pixellab_object_id": "9ae248b0-ca6b-4ddb-bc6c-6df4bc0064df",
       "glow_score": 0.0679
+    },
+    "NOT_LIT_2": {
+      "sprite": "trees/tree_057/not_lit_2/sprite.webp",
+      "pixellab_object_id": "041b1a8f-3c2b-4c78-8d5b-972f37c36267",
+      "difference_from_source": 0.2593,
+      "glow_score": 0.0641
+    },
+    "NOT_LIT_3": {
+      "sprite": "trees/tree_057/not_lit_3/sprite.webp",
+      "pixellab_object_id": "9bd22f80-8c3c-49db-88ee-63f4549f981c",
+      "difference_from_source": 0.2505,
+      "glow_score": 0.0711
+    },
+    "NOT_LIT_4": {
+      "sprite": "trees/tree_057/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c7695472-7728-4407-a9f4-3d0a37b63849",
+      "difference_from_source": 0.7743,
+      "glow_score": 0.0626
+    },
+    "NOT_LIT_5": {
+      "sprite": "trees/tree_057/not_lit_5/sprite.webp",
+      "pixellab_object_id": "e055937d-b96e-4e69-9362-fa47e464cc77",
+      "difference_from_source": 0.4384,
+      "glow_score": 0.0661
     }
   }
 }
