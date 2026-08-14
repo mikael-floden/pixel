@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 615,
+  "scenery_count": 616,
   "target_count": 2317,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -167,7 +167,7 @@
       "id": "soulstone_outcrops",
       "name": "Soulstone Outcrop",
       "quota": 56,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 24,
@@ -1219,7 +1219,7 @@
     "sheaf_poles": 2,
     "shipwreck_prows": 1,
     "signposts": 5,
-    "soulstone_outcrops": 8,
+    "soulstone_outcrops": 9,
     "soulstone_plinths": 1,
     "spring_basins": 2,
     "standing_stones": 5,
@@ -10364,6 +10364,28 @@
       "status": "complete",
       "pixellab_object_id": "0930f8e2-999d-41ff-87ef-b6373d46999c",
       "sprite": "soulstone_outcrops/soulstone_outcrop_019/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_020",
+      "rel": "soulstone_outcrops/soulstone_outcrop_020",
+      "name": "Soulstone with inscribed word 020 \u00b7 lit",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_ON",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone with inscribed word, with thick exposed roots, roughly six feet tall, human height, self-emissive at night, softly radiating light: a single word glowing in the surface",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.47,
+        "world_px_height": 55,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "0aa13ea9-b53e-4112-a0e7-bbc634df5aac",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_020/sprite.webp",
       "rotations": {},
       "animations": []
     },

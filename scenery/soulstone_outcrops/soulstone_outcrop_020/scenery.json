@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:48:20+00:00",
+  "id": "soulstone_outcrop_020",
+  "group": "soulstone_outcrops",
+  "rank": 23,
+  "index": 20,
+  "name": "Soulstone with inscribed word 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soulstone with inscribed word",
+  "modifier": "with thick exposed roots",
+  "glow_concept": "a single word glowing in the surface",
+  "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone with inscribed word, with thick exposed roots, roughly six feet tall, human height, self-emissive at night, softly radiating light: a single word glowing in the surface",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "soulstone_outcrops/soulstone_outcrop_020/sprite.webp",
+  "placement": {
+    "world_height_m": 1.47,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "0aa13ea9-b53e-4112-a0e7-bbc634df5aac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
