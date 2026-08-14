@@ -1,5 +1,59 @@
 # CLAUDE.md — Nangijala working notes
 
+## THE CONTENT SPLIT — what ships vs what is staging (2026-08-14)
+
+The art domains are autonomous factories that generate far more than the game
+uses: **scenery ships 2,644 files of which the game reads THREE.** Since
+2026-08-14 the image contains only what the published worlds can actually
+reach (maintainer: "the content that is not in the game doesn't have to be part
+of the built container... the real game will only ever include what's inside
+the actual real game").
+
+- **`games2/config/publish.json`** is the ONLY hand-maintained part: it names
+  the published worlds, the playable characters and the three game-referenced
+  scenery pieces. Everything else is DERIVED.
+- **`games2/scripts/shipset.mjs`** closes over those roots — a published world
+  drags in its `paths[]` tiles, its NPCs' character art and its spawn zones'
+  monsters. Add an NPC to a shipped world and its art ships with no edit.
+  `--report` prints the savings table, `--check` fails on a reachable-but-
+  missing file, `--emit <dir>` materialises the curated asset root.
+- The Dockerfile's **`curate` stage** runs `--emit` and the final image copies
+  from it, one layer per domain as before. **Measured: 212.7 MB → 59.7 MB.**
+
+**FILTERING THE ASSET ROOT FILTERS EVERYTHING DOWNSTREAM FOR FREE**, which is
+why this is a build stage and not a `.dockerignore` edit: the image rebuilds
+every manifest from `ASSETS_ROOT` (`build:client` → `npm run manifest`) and
+rebuilds the wiki registry from the same root. So `worlds.json` lists only
+published worlds, `monsters.json` only reachable monsters, and the wiki's
+public `data.json` only in-game entities. A normal player is never TOLD staging
+content exists, so they cannot list or request it.
+
+**THE TRAP, found by simulating the curated root before shipping it:** a domain
+is not just its entities. `monsters/config/roster.json` was outside the closure,
+so the first curated build emitted `[monsters] 0 monsters` — a game with no
+monsters that would have built, deployed and looked fine. Hence
+`entityDomains`: every contributing domain ships its root-level files and its
+`config/` tree wholesale. Missing a descriptor does not 404 a sprite, it
+**silently empties a manifest**. When in doubt this script INCLUDES and warns —
+a spare file wastes bytes, a dropped one 404s in production.
+
+**Staging content is still reachable for us, never for players:**
+- **dev** — `npm run dev` reads the working tree, so all 11 worlds and every
+  generated asset stay fully playable locally. Every verify gate is unaffected.
+- **admin in prod** — the repo is public, so staging art can be fetched
+  straight from GitHub. Measured 2026-08-14: `raw.githubusercontent.com` sends
+  `access-control-allow-origin: *` but only `max-age=300` **even for a
+  commit-pinned ref** (it is NOT immutable — do not assume otherwise), while
+  `cdn.jsdelivr.net/gh/<owner>/<repo>@<sha>/<path>` returns byte-identical
+  content with `max-age=31536000, immutable` and CORS. So the sha-pinned
+  jsDelivr URL preserves the same immutability contract the in-image
+  `?v=<sha>` trick gives (see `assetver.ts`), with raw as the fallback for
+  commits the CDN has not picked up. **Not yet wired up — see the plan below.**
+
+Still to do: the admin staging fetch in the client + wiki, and packing the used
+tiles into WebP atlases. Both are designed around the same digest the ship set
+already emits, so a deploy whose digest is unchanged must not redo the work.
+
 ## What this is
 
 **Nangijala** is a browser-based **multiplayer** (MMO-style) pixel-art RPG.

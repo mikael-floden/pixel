@@ -4,6 +4,49 @@
 # BUILD FROM THE REPO ROOT (needs the sibling art domains):
 #   docker build -f games2/Dockerfile -t nangijala .
 #   docker run -p 8080:8080 nangijala        # → http://localhost:8080
+# ---------------------------------------------------------------- curate ----
+# THE CONTAINER SPLIT (maintainer 2026-08-14: "the content that is not in the
+# game doesn't have to be part of the built container"). The art domains are
+# autonomous factories that generate far more than the game uses — scenery
+# ships 2,644 files of which the game reads THREE. This stage computes the
+# reachable set from games2/config/publish.json and materialises ONLY that.
+#
+# Measured: 212.7 MB of art on disk → 57.4 MB in the image.
+#
+# It also filters everything downstream for free, which is the real reason it
+# is a stage and not a .dockerignore edit: the final image rebuilds every
+# manifest from ASSETS_ROOT (`npm run build:client` → `npm run manifest`) and
+# rebuilds the wiki registry from the same root, so worlds.json lists only
+# published worlds, monsters.json only reachable monsters, and the wiki's
+# public data.json only in-game entities. The client is never TOLD staging
+# content exists, so a normal player cannot list or request it.
+#
+# CACHING: this stage's inputs are the art domains + the policy + the script.
+# An art-only push re-runs it (a few seconds of hard-links), but the per-domain
+# `COPY --from=curate` lines below are content-addressed, so a domain whose
+# curated output is byte-identical contributes an identical layer and uploads
+# nothing.
+FROM node:22-slim AS curate
+WORKDIR /src
+# Policy + script first: they change far less often than the art, and putting
+# them above the art COPYs keeps this layer cached across art pushes.
+COPY games2/config/publish.json games2/config/publish.json
+COPY games2/scripts/shipset.mjs games2/scripts/shipset.mjs
+COPY scenery/ scenery/
+COPY characters2/ characters2/
+COPY tiles2/ tiles2/
+COPY maps2/ maps2/
+COPY sounds/ sounds/
+COPY music/ music/
+COPY monsters/ monsters/
+COPY items/ items/
+COPY lore/ lore/
+COPY wiki/ wiki/
+COPY live/ live/
+# --check fails the BUILD on a reachable-but-missing file, which is the one
+# error that would otherwise become a silent 404 in production.
+RUN ASSETS_ROOT=/src node games2/scripts/shipset.mjs --emit /shipped --check --report
+
 FROM node:22-slim
 
 WORKDIR /app
@@ -19,17 +62,19 @@ COPY games2/server/package.json server/
 COPY games2/client/package.json client/
 RUN npm ci
 
-# Art assets (sibling domains) baked in under a fixed ASSETS_ROOT.
-COPY scenery/ /assets/scenery/
-COPY characters2/ /assets/characters2/
-COPY tiles2/ /assets/tiles2/
-COPY maps2/ /assets/maps2/
-COPY sounds/ /assets/sounds/
-COPY music/ /assets/music/
-COPY monsters/ /assets/monsters/
-COPY items/ /assets/items/
-COPY lore/ /assets/lore/
-COPY wiki/ /assets/wiki/
+# Art assets, CURATED — only what the published worlds can actually reach.
+# Still one layer per domain (not a single COPY of /shipped) so an active
+# domain re-uploads tens of MB rather than all art, exactly as before the split.
+COPY --from=curate /shipped/scenery/ /assets/scenery/
+COPY --from=curate /shipped/characters2/ /assets/characters2/
+COPY --from=curate /shipped/tiles2/ /assets/tiles2/
+COPY --from=curate /shipped/maps2/ /assets/maps2/
+COPY --from=curate /shipped/sounds/ /assets/sounds/
+COPY --from=curate /shipped/music/ /assets/music/
+COPY --from=curate /shipped/monsters/ /assets/monsters/
+COPY --from=curate /shipped/items/ /assets/items/
+COPY --from=curate /shipped/lore/ /assets/lore/
+COPY --from=curate /shipped/wiki/ /assets/wiki/
 # The composer's foley takes and music beds — the wiki's sound-effect and
 # music pages play them. Only these two folders; the engine sources are not
 # assets. The beds are ~18 MB and the client bundles its own copies for the

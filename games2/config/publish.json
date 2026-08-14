@@ -1,0 +1,77 @@
+{
+  "$comment": [
+    "THE PUBLICATION POLICY — what is IN THE GAME (maintainer 2026-08-14).",
+    "",
+    "This file is the ONLY hand-maintained part of the split. Everything else is",
+    "derived by scripts/shipset.mjs, which closes over these roots: a published",
+    "world drags in its own tiles, its NPCs' character art and its spawn zones'",
+    "monsters automatically. Add an NPC to a shipped world and its art ships with",
+    "no edit here.",
+    "",
+    "Anything NOT reachable from these roots is STAGING content: it stays in git,",
+    "stays reviewable in the wiki for a signed-in admin (fetched from GitHub), and",
+    "never enters the deployed image.",
+    "",
+    "Editing this file changes what production serves. The shipset digest changes",
+    "with it, which is what makes the image and the tile atlas rebuild."
+  ],
+
+  "worlds": ["the_island2"],
+
+  "$comment_worlds": [
+    "The real game. The other nine worlds under maps2/worlds are generator",
+    "fixtures and renderer test beds (glow_test, ring_test, trans_demo,",
+    "prop_demo, occlusion_test, house_demo, monster_demo, demo_isle, demo_lost).",
+    "They stay in the repo — the verify gates run against them on the dev server,",
+    "which reads the working tree, not the image — but they are not the game."
+  ],
+
+  "playableCharacters": ["humans/default_boy", "humans/default_girl"],
+
+  "monsters": [],
+  "$comment_monsters": [
+    "Monsters reachable from a published world's spawns.json are found",
+    "automatically. This list is only for monsters the ENGINE names directly",
+    "with no spawn zone — leave empty unless something 404s."
+  ],
+
+  "scenery": ["campfire", "grave_cross", "blood_spatter"],
+  "$comment_scenery": [
+    "The three pieces WorldScene loads by hardcoded path. The v2 factory's other",
+    "~2,640 pieces are staging content until the maps2 agent places them."
+  ],
+
+  "entityDomains": ["characters2", "monsters", "tiles2", "scenery"],
+  "$comment_entityDomains": [
+    "Domains where individual entities are selected by closure. Their ROOT-level",
+    "files and config/ trees ship wholesale regardless — those are descriptors the",
+    "manifest builders read (monsters/config/roster.json,",
+    "characters2/animation_map.json, tiles2/emission.json). Omitting one does not",
+    "404 a sprite, it silently empties a manifest: the first curated root built a",
+    "game with ZERO monsters for exactly this reason."
+  ],
+
+  "alwaysShip": ["items", "lore", "live", "wiki", "sounds", "music"],
+  "$comment_alwaysShip": [
+    "Domains where per-entity closure buys little: items and lore are small and",
+    "wholly in-game, live/ is runtime tuning state, wiki/ is the wiki itself.",
+    "sounds/ and music/ are catalog-driven at runtime rather than referenced by",
+    "the worlds, so they ship whole minus the excludes below — tightening those",
+    "two to a real catalog closure is a follow-up, not a guess to make here."
+  ],
+
+  "exclude": [
+    "^tiles2/[^/]+/raw/",
+    "^music/.*\\.wav$",
+    "^characters2/_experiments/",
+    "^wiki/tools/",
+    "^maps2/(pipeline|spec)/",
+    "^[^/]+/pipeline/",
+    "^[^/]+/README\\.md$"
+  ],
+  "$comment_exclude": [
+    "Applied last, so these carve out of the wholesale alwaysShip includes.",
+    "tiles2/*/raw and the music masters were already excluded by .dockerignore —",
+    "kept here so ONE file is the source of truth for what ships."
+  ]
+}
