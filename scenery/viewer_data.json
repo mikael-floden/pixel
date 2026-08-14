@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 607,
+  "scenery_count": 608,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -832,7 +832,7 @@
       "id": "honey_trees",
       "name": "Honey Tree",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 119,
@@ -1188,7 +1188,7 @@
     "haystacks": 6,
     "hearths": 7,
     "hedges": 2,
-    "honey_trees": 1,
+    "honey_trees": 2,
     "hop_poles": 2,
     "hot_springs": 1,
     "house_clutter": 9,
@@ -7373,6 +7373,28 @@
       "status": "complete",
       "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
       "sprite": "hedges/hedge_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "honey_tree_001",
+      "rel": "honey_trees/honey_tree_001",
+      "name": "Hollow beech hive-tree 001",
+      "category": "honey_trees",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout hollow tree trunk with wild honeycomb bulging from its split, bees drifting around, bark dark with old honey runs, hollow beech hive-tree, two combs at different heights, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.64,
+        "world_px_height": 62,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "1ee732f3-47ee-4899-a5ab-7d00c4024512",
+      "sprite": "honey_trees/honey_tree_001/sprite.webp",
       "rotations": {},
       "animations": []
     },

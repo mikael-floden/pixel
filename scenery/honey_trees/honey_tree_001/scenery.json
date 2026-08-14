@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:34:33+00:00",
+  "id": "honey_tree_001",
+  "group": "honey_trees",
+  "rank": 118,
+  "index": 1,
+  "name": "Hollow beech hive-tree 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "hollow beech hive-tree",
+  "modifier": "two combs at different heights",
+  "glow_concept": null,
+  "prompt": "a stout hollow tree trunk with wild honeycomb bulging from its split, bees drifting around, bark dark with old honey runs, hollow beech hive-tree, two combs at different heights, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "honey_trees/honey_tree_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.64,
+    "world_px_height": 62,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "1ee732f3-47ee-4899-a5ab-7d00c4024512",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
