@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 633,
+  "scenery_count": 634,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 160,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 3,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 3,
+    "cliff_ledgetrees": 4,
     "cliff_mosses": 4,
     "cliff_roots": 4,
     "cliff_shrubs": 5,
@@ -4383,6 +4383,28 @@
       "status": "complete",
       "pixellab_object_id": "51e8f0b2-79a2-4569-a679-8cea0f93e21f",
       "sprite": "cliff_ledgetrees/cliff_ledgetree_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_003",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_003",
+      "name": "Gnarled oak on a wide ledge 003",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_OFF",
+      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, gnarled oak on a wide ledge, half its roots in air, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 6.41,
+        "world_px_height": 241,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "e03863a4-1244-4e45-9cad-b3e6ff5b9497",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_003/sprite.webp",
       "rotations": {},
       "animations": []
     },
