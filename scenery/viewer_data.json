@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 652,
+  "scenery_count": 653,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1105,7 +1105,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 158,
@@ -1241,7 +1241,7 @@
     "cliff_ledgetrees": 3,
     "cliff_mosses": 6,
     "cliff_roots": 5,
-    "cliff_shrubs": 6,
+    "cliff_shrubs": 7,
     "cliff_vines": 10,
     "crystal_trees": 1,
     "crystals": 8,
@@ -4779,6 +4779,28 @@
       "status": "complete",
       "pixellab_object_id": "417337fd-d090-4022-970d-971c3342d7e8",
       "sprite": "cliff_shrubs/cliff_shrub_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_shrub_012",
+      "rel": "cliff_shrubs/cliff_shrub_012",
+      "name": "Dark holly bush 012 \u00b7 lit",
+      "category": "cliff_shrubs",
+      "lights": "LIGHTS_ON",
+      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dark holly bush, two shrubs from one crack, tall, about three times human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 3.6,
+        "world_px_height": 136,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "35f5a2be-17f1-4763-bfac-2da72640424f",
+      "sprite": "cliff_shrubs/cliff_shrub_012/sprite.webp",
       "rotations": {},
       "animations": []
     },
