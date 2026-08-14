@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:10:53+00:00",
+  "id": "hot_spring_002",
+  "group": "hot_springs",
+  "rank": 113,
+  "index": 2,
+  "name": "Rust-terraced spring 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rust-terraced spring",
+  "modifier": "with a flat sitting stone at the edge",
+  "glow_concept": "glowing mineral rings",
+  "prompt": "a natural hot spring pool ringed by mineral-crusted rocks, steam rising off milky turquoise water, rust-terraced spring, with a flat sitting stone at the edge, waist-high, self-emissive at night, softly radiating light: glowing mineral rings",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "hot_springs/hot_spring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.97,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "61e71c59-c139-4d7b-83f2-0399f086cd12",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
