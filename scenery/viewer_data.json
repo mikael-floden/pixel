@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 512,
+  "scenery_count": 513,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -720,7 +720,7 @@
       "id": "cliff_features",
       "name": "Cliff Feature",
       "quota": 30,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 103,
@@ -806,7 +806,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 2,
     "chimney_stacks": 2,
-    "cliff_features": 7,
+    "cliff_features": 8,
     "cliff_fragments": 2,
     "cliff_vines": 7,
     "crystals": 8,
@@ -3476,6 +3476,28 @@
       "status": "complete",
       "pixellab_object_id": "89b281fd-10ce-48a0-98b9-9c2b7a433a98",
       "sprite": "cliff_features/cliff_feature_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_feature_009",
+      "rel": "cliff_features/cliff_feature_009",
+      "name": "Spiral fossil embedded in the stone face 009",
+      "category": "cliff_features",
+      "lights": "LIGHTS_OFF",
+      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, spiral fossil embedded in the stone face, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.42,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "d07ef316-7979-4e3e-bc25-48f2bdafcdc4",
+      "sprite": "cliff_features/cliff_feature_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
