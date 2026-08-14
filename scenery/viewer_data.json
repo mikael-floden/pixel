@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 479,
+  "scenery_count": 480,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -111,7 +111,7 @@
       "id": "streetlights",
       "name": "Streetlight",
       "quota": 72,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 16,
@@ -870,7 +870,7 @@
     "stone_fountains": 2,
     "stones": 14,
     "story_posts": 7,
-    "streetlights": 6,
+    "streetlights": 7,
     "stumps": 8,
     "sundials": 2,
     "tables": 7,
@@ -9346,6 +9346,28 @@
       "status": "complete",
       "pixellab_object_id": "1ced41c8-0514-4225-9798-33d3bdc70149",
       "sprite": "streetlights/streetlight_018/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_020",
+      "rel": "streetlights/streetlight_020",
+      "name": "Verdigris copper-headed lamp 020 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, verdigris copper-headed lamp, bird-favored, with droppings and a nest, tall, about three times human height, self-emissive at night, softly radiating light: pale blue soul-light orb hovering inside",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 3.46,
+        "world_px_height": 130,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2d1b0c6b-8d8a-4995-976f-422d1a8b46bc",
+      "sprite": "streetlights/streetlight_020/sprite.webp",
       "rotations": {},
       "animations": []
     },
