@@ -856,7 +856,11 @@ function aggroPill(st) {
 /** A row of mutually exclusive sort buttons. Its own fixed-height row, so the
  *  grid below it never shifts as the order changes. */
 function sortBar(key, options, current, onPick) {
-  const row = h("div", { class: "sortbar" });
+  // The row carries its storage key: three of these stack on the Scenery page
+  // (type, sort, review status) and several share chip ids like "all", so
+  // anything selecting a chip — including the gates — needs to say which row
+  // it means.
+  const row = h("div", { class: "sortbar", "data-bar": key });
   row.append(...options.map(([id, label, title]) => h("button", {
     class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
     onclick: () => { try { localStorage.setItem(key, id); } catch { /* private mode */ } onPick(id); },
@@ -2095,6 +2099,18 @@ function viewTileInstance(typeId, rel) {
 // visitors always get the full domain in its natural order.
 const OBJ_SORT_KEY = "wiki-obj-sort";
 const OBJ_FILTER_KEY = "wiki-obj-filter";
+const OBJ_TYPE_KEY = "wiki-obj-type";
+// WHAT KIND OF THING IT IS (maintainer 2026-08-14: "on scenery it's hard to
+// find the objects I'm looking for — can you make a filter on type"). The
+// taxonomy is NOT the wiki's: every group in scenery/config/factory.json
+// carries a `type`, and build.mjs copies it onto the piece. Adding a type
+// there makes it appear here on the next build with no change to this file —
+// which is the point, because the scenery agent owns what its pieces are.
+const OBJ_TYPES = {
+  TREE: "Trees", WINDOW: "Windows", MOUNTAIN_WALL: "Mountain wall", TOWN: "Town",
+  INDOOR: "Indoor", NATURE: "Nature", OTHER: "Other",
+};
+const objTypeLabel = (t) => OBJ_TYPES[t] ?? titleish(t ?? "other");
 // A VERDICT BELONGS TO THE ART IT WAS GIVEN ON. The scenery agent deletes
 // rejected pieces and regenerates them AT THE SAME PATH, and the feedback
 // store is keyed by path — so without this, brand-new art silently inherits
@@ -2160,15 +2176,24 @@ const OBJ_SORTS = {
 function objectQueue() {
   const all = state.data.domains.objects;
   const read = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
-  if (!state.admin) return { list: all, sort: "group", filter: "all", active: false, total: all.length };
+  // The TYPE filter is for everyone — it is a way to find things, not a review
+  // tool — so it is read before the admin gate. Sort and review-status stay
+  // admin-only. All three ride the same pager: "if I filter on TREES and click
+  // on a tree, next next next should only display trees."
+  const typed = read(OBJ_TYPE_KEY, "all");
+  const type = typed === "all" || all.some((o) => o.type === typed) ? typed : "all";
+  const byType = type === "all" ? all : all.filter((o) => o.type === type);
+  if (!state.admin) {
+    return { list: byType, sort: "group", filter: "all", type, active: type !== "all", total: all.length };
+  }
   const sort = OBJ_SORTS[read(OBJ_SORT_KEY, "group")] ? read(OBJ_SORT_KEY, "group") : "group";
   const filter = OBJ_FILTERS[read(OBJ_FILTER_KEY, "all")] ? read(OBJ_FILTER_KEY, "all") : "all";
-  let list = all;
-  if (filter !== "all") list = all.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o)));
+  let list = byType;
+  if (filter !== "all") list = list.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o)));
   // `added` is the commit that introduced the piece (build.mjs). Undated art
   // sorts last rather than first — a missing date is not a claim of newness.
   if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
-  return { list, sort, filter, active: filter !== "all" || sort !== "group", total: all.length };
+  return { list, sort, filter, type, active: filter !== "all" || sort !== "group" || type !== "all", total: all.length };
 }
 function viewObjects() {
   const q = objectQueue();
@@ -2191,6 +2216,15 @@ function viewObjects() {
   return h("div", {},
     sectionHead("objects"),
     h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
+    // Counted chips, and only the types the domain actually has — an empty
+    // "Indoor 0" is a dead end you can press.
+    sortBar(OBJ_TYPE_KEY, [
+      ["all", `all ${q.total}`, "Every kind of scenery"],
+      ...Object.keys(OBJ_TYPES)
+        .map((t) => [t, t, state.data.domains.objects.filter((o) => o.type === t).length])
+        .filter(([, , n]) => n > 0)
+        .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),
+    ], q.type, () => route()),
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
     // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
     // legitimately empty the page: the maintainer reviewed the whole domain,
@@ -2199,17 +2233,25 @@ function viewObjects() {
     // can't see more scenery art" (2026-08-13). With the counts on the chips
     // the pieces are never unaccounted for, whatever is selected.
     state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) =>
-      [id, `${f.label} ${state.data.domains.objects.filter((o) => f.match(objVerdict(o))).length}`, f.title]), q.filter, () => route()) : null,
-    state.admin && q.filter !== "all"
-      ? h("p", { class: "muted", style: "margin:-6px 0 12px" }, `${list.length} of ${q.total} pieces — ‹ › inside a piece walks this set only.`)
+      // Counted WITHIN the chosen type: with Trees selected, "needs review 12"
+      // has to mean twelve trees, or the two bars contradict each other.
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.match(objVerdict(o))).length}`,
+        q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.filter, () => route()) : null,
+    q.active
+      ? h("p", { class: "muted", style: "margin:-6px 0 12px" },
+          `${list.length} of ${q.total} pieces${q.type === "all" ? "" : ` · ${objTypeLabel(q.type)} only`} — ‹ › inside a piece walks this set only.`)
       : null,
     // An empty grid must never be mistaken for missing art.
     state.admin && !list.length ? h("div", { class: "panel empty-queue" },
       h("p", {}, state.query
-        ? `No piece matches “${state.query}”${q.filter === "all" ? "" : ` in “${OBJ_FILTERS[q.filter].label}”`}.`
-        : OBJ_FILTERS[q.filter].empty),
+        ? `No piece matches “${state.query}”${q.filter === "all" ? "" : ` in “${OBJ_FILTERS[q.filter].label}”`}${q.type === "all" ? "" : ` among ${objTypeLabel(q.type)}`}.`
+        : q.type === "all" ? OBJ_FILTERS[q.filter].empty
+          : `No ${objTypeLabel(q.type)} piece is “${OBJ_FILTERS[q.filter].label}”. The art is all still here — the other types have their own.`),
       h("button", {
-        class: "ghost-btn", onclick: () => { try { localStorage.setItem(OBJ_FILTER_KEY, "all"); } catch { /* private mode */ } route(); },
+        class: "ghost-btn", onclick: () => {
+          try { localStorage.setItem(OBJ_FILTER_KEY, "all"); localStorage.setItem(OBJ_TYPE_KEY, "all"); } catch { /* private mode */ }
+          route();
+        },
       }, `Show all ${q.total} pieces`)) : null,
     // Newest-first cuts ACROSS groups, so the group headings would be noise —
     // one flat grid in the chosen order instead.
@@ -2349,8 +2391,13 @@ function viewObject(id) {
       title: "The Scenery overview sets this — click to go there and change it",
     },
       h("span", { class: "pill warn" }, "filtered"),
-      q.filter === "all" ? `${OBJ_SORTS[q.sort].label} · all ${q.total}`
-        : `${OBJ_FILTERS[q.filter].label} only · ${q.list.length} of ${q.total}`,
+      // Each active narrowing named once, then the count. "Trees only · needs
+      // review only · 12 of 764" — every word of it is why ‹ › stops where it
+      // stops.
+      [q.type === "all" ? null : `${objTypeLabel(q.type)} only`,
+        q.filter === "all" ? null : `${OBJ_FILTERS[q.filter].label} only`,
+        q.sort === "group" ? null : OBJ_SORTS[q.sort].label,
+        `${q.list.length} of ${q.total}`].filter(Boolean).join(" · "),
       inQueue ? null : h("span", { class: "pill err" }, "this one is outside the filter")) : null,
     objectHead(o),
     hasAnims
@@ -3304,8 +3351,8 @@ function viewItems() {
       : (Number(a.value) || 0) - (Number(b.value) || 0) || String(a.name).localeCompare(String(b.name))));
 
   const typeSeg = h("span", { class: "seg" });
-  for (const [t, text] of [["", "All"], ...present.map((t) => [t, typeLabel(t)])]) {
-    const b = h("button", { title: t ? typeLabel(t) : "Everything" }, text);
+  for (const [t, text] of [["", "All"], ...present.map((t) => [t, objTypeLabel(t)])]) {
+    const b = h("button", { title: t ? objTypeLabel(t) : "Everything" }, text);
     if (t === itemView.type) b.classList.add("on");
     b.addEventListener("click", () => { itemView.type = t; route(); });
     typeSeg.append(b);

@@ -595,6 +595,20 @@ function buildObjects() {
       if (m) entries.push([`${top}/${child}`, top, m]);
     }
   }
+  // TYPE comes from the scenery domain's own catalog: every group in
+  // scenery/config/factory.json carries a `type` (TREE / WINDOW /
+  // MOUNTAIN_WALL / TOWN / INDOOR / NATURE / OTHER) so the wiki can offer a
+  // type filter without inventing the taxonomy here. A piece may override its
+  // group by putting its own `type` in scenery.json — the piece wins, the
+  // group is the default, and anything unrecognised falls to OTHER rather
+  // than vanishing from every filter.
+  const TYPES = ["TREE", "WINDOW", "MOUNTAIN_WALL", "TOWN", "INDOOR", "NATURE", "OTHER"];
+  const factory = readJson(join(base, "config", "factory.json")) ?? {};
+  const groupType = new Map((factory.groups ?? []).map((g) => [g.id, g.type]));
+  const typeOf = (oj, group) => {
+    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "OTHER").toUpperCase();
+    return TYPES.includes(t) ? t : "OTHER";
+  };
   const objects = [];
   for (const [rel, group, oj] of entries) {
     const id = rel.split("/").pop();
@@ -656,8 +670,20 @@ function buildObjects() {
       // a monster's idle/walk/angry, so the maintainer switches between them
       // with the same control in the same place. The piece's own `lights` value
       // names the state the base sprite is in, and that one leads.
+      // ORDER: the state that IS the piece's own sprite leads, because that is
+      // the picture every card, thumbnail and review queue shows — opening the
+      // viewer on a different one would mean judging a picture you did not
+      // click. The scenery agent's naming is not fixed (LIGHTS_ON/LIGHTS_OFF
+      // on windows, LIT_1..NOT_LIT_5 on trees since 2026-08-14), so this
+      // matches on the FILE, falling back to the `lights` value and then to
+      // whatever order the manifest lists.
       const states = Object.entries(oj.states ?? {}).filter(([, st]) => st && typeof st === "object");
-      const ordered = [...states.filter(([n]) => n === oj.lights), ...states.filter(([n]) => n !== oj.lights)];
+      const isBase = ([, st]) => art(`scenery/${String(st.sprite ?? "").replace(/\.(png|webp)$/i, "")}`) === preview;
+      const ordered = [
+        ...states.filter(isBase),
+        ...states.filter((e) => !isBase(e) && e[0] === oj.lights),
+        ...states.filter((e) => !isBase(e) && e[0] !== oj.lights),
+      ];
       for (const [name, st] of ordered) {
         const dirs = dirsFrom(st.rotations, st.sprite);
         // The UI title-cases this; the CAPS key is the scenery domain's.
@@ -680,6 +706,7 @@ function buildObjects() {
       id,
       name: oj.name ?? titleCase(id),
       category: group ?? oj.category ?? "misc",
+      type: typeOf(oj, group),
       lights: oj.lights ?? null,
       description: oj.description ?? oj.prompt ?? "",
       path: `scenery/${rel}`,

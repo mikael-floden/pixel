@@ -63,7 +63,12 @@ const go = async (hash) => {
   await p.reload({ waitUntil: "load" });
   await p.waitForTimeout(1700);
 };
-const pick = async (v) => { await p.evaluate((s) => document.querySelector(`[data-sort="${s}"]`)?.click(), v); await p.waitForTimeout(800); };
+// Chip ids repeat across the three bars ("all" is a type AND a review status),
+// so every pick names its bar by storage key.
+const pick = async (v, bar = "wiki-obj-filter") => {
+  await p.evaluate(([s, b]) => document.querySelector(`[data-bar="${b}"] [data-sort="${s}"]`)?.click(), [v, bar]);
+  await p.waitForTimeout(800);
+};
 const overview = () => p.evaluate(() => ({
   bars: [...document.querySelectorAll(".sortbar")].map((r) => [...r.querySelectorAll("button")].map((x) => (x.classList.contains("sel") ? "*" : "") + x.textContent).join(" ")),
   heads: document.querySelectorAll("h2").length,
@@ -74,12 +79,14 @@ const overview = () => p.evaluate(() => ({
 await go("#/objects");
 ok(injected > 0, `the injected verdicts really were served (${injected}x)`);
 const base = await overview();
-ok(base.bars.length === 2, `admin gets both a sort row and a filter row (${base.bars.join(" | ")})`);
+// Three rows since 2026-08-14: what KIND of thing (everyone), how it is
+// ordered, and where it stands in review (admin).
+ok(base.bars.length === 3, `admin gets the type, sort and review rows (${base.bars.join(" | ")})`);
 ok(base.heads > 3, `the default is still the grouped view (${base.heads} group headings)`);
 ok(base.names.length === objs.length, `showing everything by default (${base.names.length}/${objs.length})`);
 
 // --- newest first
-await pick("newest");
+await pick("newest", "wiki-obj-sort");
 const nw = await overview();
 console.log("newest:", JSON.stringify({ heads: nw.heads, first: nw.names.slice(0, 3) }));
 ok(nw.heads === 0, "newest-first drops the group headings — the order cuts across groups");
@@ -244,7 +251,9 @@ ok(s.outside, "and is labelled as outside the current filter");
     cards: document.querySelectorAll(".card").length,
     msg: document.querySelector(".empty-queue p")?.textContent ?? null,
     btn: document.querySelector(".empty-queue button")?.textContent ?? null,
-    chips: [...(document.querySelectorAll(".sortbar")[1]?.querySelectorAll("button") ?? [])].map((x) => x.textContent),
+    // The REVIEW chips: last bar. A type bar was added above the sort bar on
+    // 2026-08-14, so counting from the top would read the wrong row.
+    chips: [...([...document.querySelectorAll(".sortbar")].pop()?.querySelectorAll("button") ?? [])].map((x) => x.textContent),
   }));
   console.log("empty queue:", JSON.stringify(e));
   ok(e.cards === 0 && !!e.msg, "an empty filter says WHY it is empty instead of showing a blank page");
@@ -274,7 +283,11 @@ await pub.goto(`${W}#/objects`, { waitUntil: "load" });
 await pub.waitForTimeout(1700);
 const pv = await pub.evaluate(() => ({ bars: document.querySelectorAll(".sortbar").length, cards: document.querySelectorAll(".card").length, note: !!document.querySelector(".queue-note") }));
 console.log("public:", JSON.stringify(pv));
-ok(pv.bars === 0 && !pv.note, "no sort or filter controls for the public");
+// The public keeps the type bar — it is a way to find things, not a review
+// tool — and gets neither the sort nor the review-status row.
+ok(pv.bars === 1 && !pv.note, `the visitor gets the type bar only (${pv.bars} bars)`);
+ok(await pub.evaluate(() => !!document.querySelector('[data-bar="wiki-obj-type"]')
+  && !document.querySelector('[data-bar="wiki-obj-filter"]')), "and it is the type row, not a review row");
 ok(pv.cards === objs.length, `and the public still sees the whole domain (${pv.cards}/${objs.length})`);
 
 console.log("page errors:", errs.length ? errs : "none");

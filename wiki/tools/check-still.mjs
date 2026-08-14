@@ -172,7 +172,7 @@ console.log("stage offset inside the panel:", JSON.stringify(offsets));
 ok(new Set(offsets).size === 1 && offsets[0] > 0,
   `the preview sits at one height across every shape of piece (${offsets.join(", ")})`);
 ok(tiny.states1[0] === "Static", `a piece with nothing else reads "Static" (${JSON.stringify(tiny.states1)})`);
-ok(/Preview\d+ directions/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
+ok(/Preview\d+ (states|directions)/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
 ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
 // THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on
 // monsters and players the direction is OVER the preview … please make it
@@ -273,10 +273,14 @@ const stInfo = await p.evaluate(async () => {
 console.log(`states (${stId}):`, JSON.stringify(stInfo));
 ok(stInfo.labels.length === Object.keys(withStates[0].animations).length,
   `every state is a button (${stInfo.labels.join(", ")})`);
-ok(stInfo.labels.every((l) => /^[A-Z][a-z]+( [A-Z][a-z]+)*$/.test(l)),
+// Words and numbers, never the raw key: LIGHTS_ON -> "Lights On",
+// NOT_LIT_3 -> "Not Lit 3".
+ok(stInfo.labels.every((l) => /^[A-Z][a-z]*( [A-Za-z0-9]+)*$/.test(l) && !/_/.test(l)),
   `and reads as words, not as a CAPS key (${stInfo.labels.join(", ")})`);
 ok(stInfo.aboveStage && stInfo.aboveDirs, "the state row sits over the preview and above the direction pad, like a monster's");
-ok(/\d+ states × \d+ directions/.test(stInfo.pill ?? ""), `the pill counts both, like a monster's (${stInfo.pill})`);
+// "2 states × 3 directions" when it has both, "7 states" when it faces one
+// way — it counts what is there, and says nothing about what is not.
+ok(/^\d+ states( × \d+ directions)?$/.test(stInfo.pill ?? ""), `the pill counts what there is, like a monster's (${stInfo.pill})`);
 ok(stInfo.transport === 0, `still nothing to play — states are not frames (${stInfo.transport} transport buttons)`);
 ok(stInfo.after !== stInfo.before, `switching state really changes the art (${stInfo.before} → ${stInfo.after})`);
 
@@ -308,7 +312,9 @@ ok(list.still === 0, "no card claims a “still” animation");
 ok(list.static === still.length, `all ${still.length} static pieces still read “static” (${list.static})`);
 // Static and multi-view are not opposites — the card says both, so you know a
 // piece has more to look at before you open it.
-ok(list.views + list.states === rot.length, `and the ${rot.length} rotated ones say what they have (${list.views} by views, ${list.states} by states)`);
+// A card says what a piece has: extra views, extra states, or both.
+const richer = still.filter((o) => dirCount(o) > 1 || Object.keys(o.animations).length > 1).length;
+ok(list.views + list.states === richer, `every piece with more than one of anything says so (${list.views} by views, ${list.states} by states, ${richer} expected)`);
 ok(list.states === withStates.length, `including the ${withStates.length} with states (${list.states})`);
 ok(list.other.length > 0 && list.other.every((s) => !/still/i.test(s)), `and the animated ones name their real states (${list.other.join(", ")})`);
 
