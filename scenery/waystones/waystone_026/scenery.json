@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:17:33+00:00",
+  "id": "waystone_026",
+  "group": "waystones",
+  "rank": 6,
+  "index": 26,
+  "name": "Rounded granite milestone 026 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "rounded granite milestone",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": "glowworms clustered in the carved lettering",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, rounded granite milestone, reinforced with iron bands, waist-high, self-emissive at night, softly radiating light: glowworms clustered in the carved lettering",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_026/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
