@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 541,
+  "scenery_count": 542,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -223,7 +223,7 @@
       "id": "mushrooms",
       "name": "Mushroom",
       "quota": 40,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 32,
@@ -964,7 +964,7 @@
     "maypoles": 2,
     "meteor_stones": 1,
     "moss_clumps": 5,
-    "mushrooms": 11,
+    "mushrooms": 12,
     "offering_tables": 7,
     "orchard_trees": 2,
     "overgrown_archways": 2,
@@ -7640,6 +7640,28 @@
       "status": "complete",
       "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
       "sprite": "mushrooms/mushroom_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "mushroom_011",
+      "rel": "mushrooms/mushroom_011",
+      "name": "Tiny bonnet mushroom troop 011",
+      "category": "mushrooms",
+      "lights": "LIGHTS_OFF",
+      "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, tiny bonnet mushroom troop, with a rabbit burrow at the base, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.33,
+        "world_px_height": 12,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "2ba5b1a4-07d3-4ac3-8701-6ed4ef578047",
+      "sprite": "mushrooms/mushroom_011/sprite.webp",
       "rotations": {},
       "animations": []
     },
