@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 600,
+  "scenery_count": 601,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -13,7 +13,7 @@
       "id": "trees",
       "name": "Tree",
       "quota": 200,
-      "done": 28
+      "done": 29
     },
     {
       "rank": 2,
@@ -1321,7 +1321,7 @@
     "toadstool_rings": 11,
     "torch_posts": 15,
     "trailing_planters": 2,
-    "trees": 28,
+    "trees": 29,
     "wall_hangings": 8,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
@@ -13068,6 +13068,28 @@
       "status": "complete",
       "pixellab_object_id": "4c2f99f3-2673-4b8b-9d48-6c08a55b4a63",
       "sprite": "trees/tree_030/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "tree_032",
+      "rel": "trees/tree_032",
+      "name": "Field maple, modest and round 032 \u00b7 lit",
+      "category": "trees",
+      "lights": "LIGHTS_ON",
+      "description": "a single tree with a visible trunk, root flare at the base, and a full crown of foliage, field maple, modest and round, wrapped in thin creeper vines, towering, many times human height, self-emissive at night, softly radiating light: pale blossoms shining faintly across the branches",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 4.93,
+        "world_px_height": 186,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "638b487b-635e-4207-aad4-7082ffdd8aa3",
+      "sprite": "trees/tree_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
