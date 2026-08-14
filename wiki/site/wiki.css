@@ -204,7 +204,13 @@ button { font: inherit; cursor: pointer; }
 }
 .verdict button.approved { background: var(--good-soft); color: var(--good); border-color: transparent; font-weight: 600; }
 .verdict button.rejected { background: var(--bad-soft); color: var(--bad); border-color: transparent; font-weight: 600; }
-.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+/* min-height reserves the verdict line whether or not there IS a verdict: to a
+   reader the row is a pill or nothing, so it collapsed to 0px on an unjudged
+   piece and stood 22px on an approved one — and paging ‹ › through a
+   half-reviewed library moved the animation viewer by exactly that, the
+   jumping this page was rebuilt to stop (maintainer 2026-08-07). Admin rows
+   hold buttons and are taller; a minimum can only ever help them. */
+.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 22px; }
 .fb-note {
   width: 100%; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
@@ -855,11 +861,6 @@ input[type="range"] { accent-color: var(--accent); }
 }
 .empty-queue { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .empty-queue p { margin: 0; }
-/* "Your standing verdict is about art that is no longer here." */
-.stale-verdict {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  margin: 6px 0; font-size: 12.5px; color: var(--accent-ink);
-}
 /* "You are inside a filtered walk" — sits between the crumb row and the piece,
    so the reason ‹ › skips most of the domain is on screen, not remembered. */
 .queue-note {

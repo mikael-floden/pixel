@@ -129,10 +129,17 @@ ok(un.names.length === objs.length - APPROVED.length - REJECTED.length,
   ok(un2.names.length === objs.length - APPROVED.length - REJECTED.length,
     `the queue counts it exactly once (${un2.names.length})`);
   await go(`#/objects/${victim.id}`);
-  const banner = await p.evaluate(() => document.querySelector(".stale-verdict")?.textContent ?? null);
-  console.log("stale banner:", JSON.stringify(banner));
-  ok(banner && /re-review/.test(banner) && /regenerated since/.test(banner),
-    "and its own page says so above the approve/remove buttons");
+  // The notice rides in the header's FIXED-HEIGHT pill row, not on a line of
+  // its own: as its own line it grew the header only for stale pieces, so
+  // paging ‹ › moved the animation viewer 22px whenever one went by. The
+  // sentence is the pill's tooltip.
+  const badge = await p.evaluate(() => {
+    const pill = [...document.querySelectorAll(".obj-sub .pill")].find((x) => x.textContent === "re-review");
+    return pill ? { text: pill.textContent, title: pill.getAttribute("title") } : null;
+  });
+  console.log("stale badge:", JSON.stringify(badge));
+  ok(!!badge && /regenerated since/.test(badge.title ?? ""),
+    "and its own page flags it beside the title, explaining itself on hover");
   delete entries[victim.path];
 
   // A VERDICT IS ABOUT BYTES, NOT ABOUT A DATE (maintainer 2026-08-14: "Why

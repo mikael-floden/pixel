@@ -648,8 +648,21 @@ function sectionIcon(slug, size = 48) {
   return h("img", { class: "sect-icon", src: `icons/${icon}.webp`, alt: "", width: String(size), height: String(size), loading: "lazy" });
 }
 /** Page heading with its icon beside it. */
+// EVERY SECTION PAGE CARRIES A WAY BACK UP (maintainer 2026-08-14: "When you
+// stand on Creatures, Races, Scenery, Music etc (a top headline). You have no
+// back button to get to Overview the way you can go back from a Scenery
+// entity to the Scenery overview"). An entity page has had its "← Scenery"
+// crumb since the start; a section page was the one rung of the ladder with
+// nothing above it, so the only way home was the ☰ menu.
+//
+// It lives HERE rather than in the twelve callers on purpose: sectionHead is
+// what every section page already opens with, so one crumb covers Creatures,
+// Races, World, Scenery, Sound Effects, Music, Items, Lore and Parameters —
+// and any section added later gets it without anyone remembering to.
 function sectionHead(slug) {
-  return h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, label(slug)));
+  return h("div", {},
+    h("a", { class: "crumb", href: "#/" }, "← Overview"),
+    h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, label(slug))));
 }
 function renderNav() {
   const cur = location.hash.replace(/^#\/?/, "").split("/")[0];
@@ -2110,20 +2123,23 @@ function objectHead(o) {
     h("div", { class: "meta" },
       h("h1", { class: "obj-title", title: o.name }, title),
       // One unconditional row — pills when the name carries tags, the button
-      // when there is text — so its height never depends on the piece.
+      // when there is text — so its height never depends on the piece. The
+      // re-review notice rides IN it for the same reason: as its own line it
+      // grew the header only for the pieces that had it, so paging ‹ › moved
+      // the animation viewer 22px whenever a stale verdict went by — the very
+      // jumping the maintainer had this header rebuilt to stop. The full
+      // sentence lives in the pill's tooltip, and the card badge says it too.
       h("div", { class: "obj-sub" },
         ...nameTags.map((t) => h("span", { class: "pill" }, t)),
+        (() => {
+          const v = objVerdict(o);
+          return v.stale ? h("span", {
+            class: "pill warn",
+            title: `You marked this “${v.status}” on ${String(v.at).slice(0, 16).replace("T", " ")}, but the art here has been regenerated since — this is a different piece.`,
+          }, "re-review") : null;
+        })(),
         moreBtn),
       descP,
-      // Loud, and above the buttons: the standing verdict is about art that no
-      // longer exists here, so approving/removing without looking would be
-      // ratifying a decision made about a different piece.
-      (() => {
-        const v = objVerdict(o);
-        return v.stale ? h("p", { class: "stale-verdict" },
-          h("span", { class: "pill warn" }, "re-review"),
-          `you marked this “${v.status}” on ${String(v.at).slice(0, 16).replace("T", " ")} — the art here has been regenerated since`) : null;
-      })(),
       feedbackRow("objects", o.path, { stamp: { art: o.artHash ?? null } })));
 }
 // The Man's idle/south frame 0 + measured content box — everything the size
