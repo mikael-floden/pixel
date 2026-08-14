@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:53:10+00:00",
+  "id": "fern_011",
+  "group": "ferns",
+  "rank": 42,
+  "index": 11,
+  "name": "Frost-silvered fern 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "frost-silvered fern",
+  "modifier": "with bracket fungi steps",
+  "glow_concept": null,
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, frost-silvered fern, with bracket fungi steps, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.53,
+    "world_px_height": 20,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "c380e269-5f2c-46df-91df-9116a4eee8b2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
