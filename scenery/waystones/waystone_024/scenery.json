@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:29:31+00:00",
+  "id": "waystone_024",
+  "group": "waystones",
+  "rank": 6,
+  "index": 24,
+  "name": "Lichen-ringed old stone 024 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lichen-ringed old stone",
+  "modifier": "bird-favored, with droppings and a nest",
+  "glow_concept": "warm handprint glow where travelers touch",
+  "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, lichen-ringed old stone, bird-favored, with droppings and a nest, waist-high, self-emissive at night, softly radiating light: warm handprint glow where travelers touch",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "waystones/waystone_024/sprite.webp",
+  "placement": {
+    "world_height_m": 1.03,
+    "world_px_height": 39,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "e84514f7-deab-4c96-8d9b-deb670b8008b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
