@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 588,
+  "scenery_count": 589,
   "target_count": 2415,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -27,7 +27,7 @@
       "id": "graves",
       "name": "Grave",
       "quota": 96,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 4,
@@ -1147,7 +1147,7 @@
     "grass_tufts": 8,
     "decor": 1,
     "gravel_piles": 2,
-    "graves": 13,
+    "graves": 14,
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 1,
@@ -6615,6 +6615,28 @@
       "status": "complete",
       "pixellab_object_id": "5f47e264-31fb-4a38-b4eb-60ee43646983",
       "sprite": "graves/grave_029/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "grave_031",
+      "rel": "graves/grave_031",
+      "name": "Marble stone, gilded name 031",
+      "category": "graves",
+      "lights": "LIGHTS_OFF",
+      "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, patched with mismatched materials, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.34,
+        "world_px_height": 50,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "67095ddd-cbd6-40f5-af84-0bbba97edfc9",
+      "sprite": "graves/grave_031/sprite.webp",
       "rotations": {},
       "animations": []
     },
