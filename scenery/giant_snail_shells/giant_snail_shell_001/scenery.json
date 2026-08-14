@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:34:02+00:00",
+  "id": "giant_snail_shell_001",
+  "group": "giant_snail_shells",
+  "rank": 116,
+  "index": 1,
+  "name": "Chalk-white shell 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "chalk-white shell",
+  "modifier": "with a tiny door fitted in the opening",
+  "glow_concept": null,
+  "prompt": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, chalk-white shell, with a tiny door fitted in the opening, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_snail_shells/giant_snail_shell_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.31,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2c0784e2-518e-4b41-969b-969d23686714",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
