@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:20:37+00:00",
+  "id": "giant_fallen_bell_001",
+  "group": "giant_fallen_bells",
+  "rank": 111,
+  "index": 1,
+  "name": "Green-bronze giant bell 001",
+  "lights": "LIGHTS_OFF",
+  "variety": "green-bronze giant bell",
+  "modifier": "upright but leaning, rim buried",
+  "glow_concept": null,
+  "prompt": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground, green-bronze giant bell, upright but leaning, rim buried, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "giant_fallen_bells/giant_fallen_bell_001/sprite.webp",
+  "placement": {
+    "world_height_m": 1.22,
+    "world_px_height": 46,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "813a8fc8-5660-4602-9e0d-2c1815383a36",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
