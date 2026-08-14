@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 599,
+  "scenery_count": 600,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 160,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 1,
+    "cliff_ledgetrees": 2,
     "cliff_mosses": 2,
     "cliff_roots": 1,
     "cliff_shrubs": 3,
@@ -4295,6 +4295,28 @@
       "status": "complete",
       "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
       "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_001",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_001",
+      "name": "Wind-bent pine 001",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_OFF",
+      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, wind-bent pine, roots spilling over the ledge lip, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 7.27,
+        "world_px_height": 274,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "8bb02f8f-aeef-4586-a8b7-9d9bb98f9572",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
