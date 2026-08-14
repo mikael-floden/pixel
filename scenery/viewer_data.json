@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 636,
+  "scenery_count": 637,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1105,7 +1105,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "quota": 60,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 158,
@@ -1240,7 +1240,7 @@
     "cliff_fragments": 2,
     "cliff_mosses": 3,
     "cliff_roots": 2,
-    "cliff_shrubs": 3,
+    "cliff_shrubs": 4,
     "cliff_vines": 8,
     "crystal_trees": 1,
     "crystals": 8,
@@ -4470,6 +4470,28 @@
       "status": "complete",
       "pixellab_object_id": "11507fd0-3719-4b61-859c-b3a01c849160",
       "sprite": "cliff_shrubs/cliff_shrub_007/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_shrub_009",
+      "rel": "cliff_shrubs/cliff_shrub_009",
+      "name": "Stunted twisted pine 009",
+      "category": "cliff_shrubs",
+      "lights": "LIGHTS_OFF",
+      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, stunted twisted pine, growing from a narrow crack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 2.07,
+        "world_px_height": 78,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "71c12f50-72ff-40c7-af12-bcedbafc8c32",
+      "sprite": "cliff_shrubs/cliff_shrub_009/sprite.webp",
       "rotations": {},
       "animations": []
     },
