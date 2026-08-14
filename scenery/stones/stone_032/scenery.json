@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T03:17:24+00:00",
+  "id": "stone_032",
+  "group": "stones",
+  "rank": 2,
+  "index": 32,
+  "name": "Snow-dusted winter stone 032 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "snow-dusted winter stone",
+  "modifier": "with butterflies resting on it",
+  "glow_concept": "ring of ghost-blue lichen circles",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, snow-dusted winter stone, with butterflies resting on it, waist-high, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "stones/stone_032/sprite.webp",
+  "placement": {
+    "world_height_m": 0.91,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "f7416e48-d7d7-4dd7-9708-546a32325f70",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
