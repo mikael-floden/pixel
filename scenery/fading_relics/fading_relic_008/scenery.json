@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:21:42+00:00",
+  "id": "fading_relic_008",
+  "group": "fading_relics",
+  "rank": 62,
+  "index": 8,
+  "name": "Translucent writing desk 008 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "translucent writing desk",
+  "modifier": "draped with a knitted throw",
+  "glow_concept": "soft aurora shimmer across the thinned surface",
+  "prompt": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, translucent writing desk, draped with a knitted throw, large, twice human height, self-emissive at night, softly radiating light: soft aurora shimmer across the thinned surface",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "fading_relics/fading_relic_008/sprite.webp",
+  "placement": {
+    "world_height_m": 1.96,
+    "world_px_height": 74,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fd4d39b0-e53b-4c59-ac79-f8289febe6c2",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

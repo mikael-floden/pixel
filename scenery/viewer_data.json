@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 437,
+  "scenery_count": 438,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -440,7 +440,7 @@
       "id": "fading_relics",
       "name": "Fading Relic",
       "quota": 2,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 63,
@@ -814,6 +814,7 @@
     "cupboards_and_shelves": 6,
     "dock_pilings": 8,
     "driftwood_logs": 2,
+    "fading_relics": 1,
     "fallen_logs": 8,
     "fences": 3,
     "ferns": 7,
@@ -3802,6 +3803,28 @@
       "status": "complete",
       "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fading_relic_008",
+      "rel": "fading_relics/fading_relic_008",
+      "name": "Translucent writing desk 008 \u00b7 lit",
+      "category": "fading_relics",
+      "lights": "LIGHTS_ON",
+      "description": "the ghost of a piece of old furniture standing alone on grass, strongly translucent and spectral, its lower half dissolving into drifting mist and scattered motes of light, see-through pale blue glow, translucent writing desk, draped with a knitted throw, large, twice human height, self-emissive at night, softly radiating light: soft aurora shimmer across the thinned surface",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.96,
+        "world_px_height": 74,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fd4d39b0-e53b-4c59-ac79-f8289febe6c2",
+      "sprite": "fading_relics/fading_relic_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
