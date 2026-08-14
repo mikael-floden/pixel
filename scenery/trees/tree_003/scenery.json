@@ -43,10 +43,24 @@
       "difference_from_source": 0.3238,
       "glow_score": 0.0573
     },
+    "LIT_3": {
+      "sprite": "trees/tree_003/lit_3/sprite.webp",
+      "pixellab_object_id": "48d05d28-2500-405c-ad76-6fa68ba31c7d",
+      "glow_concept": "golden sap veins glowing through bark cracks",
+      "difference_from_source": 0.927,
+      "glow_score": 0.0342
+    },
     "NOT_LIT_1": {
       "sprite": "trees/tree_003/sprite.webp",
       "pixellab_object_id": "894f3263-3ed9-4599-8450-75b494f5e98a",
       "glow_score": 0.0233
+    },
+    "NOT_LIT_10": {
+      "sprite": "trees/tree_003/not_lit_10/sprite.webp",
+      "pixellab_object_id": "58c89a09-4d73-4ae9-9cea-99e786af555b",
+      "glow_concept": null,
+      "difference_from_source": 0.8945,
+      "glow_score": 0.0144
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_003/not_lit_2/sprite.webp",
@@ -69,6 +83,34 @@
       "pixellab_object_id": "81b8c031-780d-4095-8e64-e0f209f4181c",
       "difference_from_source": 0.3055,
       "glow_score": 0.027
+    },
+    "NOT_LIT_6": {
+      "sprite": "trees/tree_003/not_lit_6/sprite.webp",
+      "pixellab_object_id": "0369faf9-8c10-46a1-b6f5-a5b6d7c7f6c0",
+      "glow_concept": null,
+      "difference_from_source": 0.6844,
+      "glow_score": 0.0128
+    },
+    "NOT_LIT_7": {
+      "sprite": "trees/tree_003/not_lit_7/sprite.webp",
+      "pixellab_object_id": "d5b5d151-0afe-4b7e-bd14-08eb0d34213b",
+      "glow_concept": null,
+      "difference_from_source": 0.8441,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_8": {
+      "sprite": "trees/tree_003/not_lit_8/sprite.webp",
+      "pixellab_object_id": "c0dedcc7-489f-427f-a695-0fd82e5a9195",
+      "glow_concept": null,
+      "difference_from_source": 0.8446,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_9": {
+      "sprite": "trees/tree_003/not_lit_9/sprite.webp",
+      "pixellab_object_id": "9b5f5ec1-c4cf-4b73-81c2-3a54b9d51187",
+      "glow_concept": null,
+      "difference_from_source": 0.7969,
+      "glow_score": 0.0187
     }
   },
   "must_be_imbplemented_with_random_hflip": true
