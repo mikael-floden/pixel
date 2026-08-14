@@ -328,33 +328,47 @@ button { font: inherit; cursor: pointer; }
 
 /* ---- animation player ---- */
 .player { display: flex; flex-direction: column; gap: 10px; }
-/* NARROW-SCREEN CROP BUG (scenery agent, 2026-08-14 — maintainer lost 200+
-   good pieces to it): the stage clamps to viewport width on a phone while the
-   canvas is drawn at full art size and CENTRED, so an oversized sprite's left
-   and right edges sat outside the scroll view and read as art that had been
-   cut off. He rejected piece after piece for "the image is cut at the left
-   side" when every sprite was complete (measured: content bbox had margin on
-   all four sides). The canvas now scales down to fit a narrow stage instead of
-   overflowing centred; on a wide screen nothing changes. */
-.player-stage > canvas { max-width: 100%; height: auto; }
+/* NARROW-SCREEN CROP BUG (diagnosed by the scenery agent and independently
+   here, 2026-08-14 — the maintainer lost 200+ good pieces to it): the stage
+   clamps to viewport width on a phone while the canvas is drawn at full art
+   size and CENTRED, so an oversized sprite's left and right edges sat outside
+   the scroll view and read as art that had been cut off. He rejected piece
+   after piece for "the image is cut at the left side" when every sprite was
+   complete (measured: content bbox had margin on all four sides).
+
+   The scenery agent's fix squeezed the canvas with `max-width:100%` and this
+   file carried it briefly. It is REMOVED, on the maintainer's explicit
+   instruction the same day: "I want the default to review in x2 because
+   that's what the game uses." Squeezing renders a 512px canvas at ~313px —
+   about 1.2x, not 2x, and a fractional nearest-neighbour DOWNSCALE drops
+   pixel rows unevenly, so the art is judged at a size and a fidelity the game
+   never shows. The same objection retired an autoScale() that stepped the
+   default down to fit.
+
+   So the piece is drawn at true 2x and is ALLOWED to overflow — what is fixed
+   is that the overflow is now reachable (`safe center` below, so it runs
+   right into real scroll space instead of into negative scroll space nothing
+   can reach) and ANNOUNCED (the .stage-wide caption under the stage). Nothing
+   is ever hidden; a handful of giant pieces need a swipe, or one tap on 1x. */
 .player-stage {
   align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
   padding: 8px; max-width: 100%; overflow: auto;
-  /* `safe` centring: when the content overflows, fall back to start-alignment.
-     A plain centred flex child that overflows puts half its width in NEGATIVE
-     scroll space, which no scrollbar can reach — that is how a big piece lost
-     its left edge with no way to bring it back. Belt and braces beside
-     autoScale(): if anything ever overflows again, it overflows RIGHT, where
-     it can at least be scrolled to. */
-  justify-content: safe center;
   /* fixed per-domain stage: the creature is centred in it, so paging
      through monsters keeps the layout perfectly still */
-  display: flex; align-items: center; justify-content: center;
+  /* `safe` centring, and it must be THIS declaration — an earlier one in the
+     same rule is simply overridden and does nothing. A plain centred flex
+     child that overflows puts half its width in NEGATIVE scroll space, which
+     no scrollbar can reach: that is exactly how a big piece lost its left
+     edge with no way to bring it back. `safe` falls back to start-alignment
+     the moment the content overflows, so it runs RIGHT into real scroll
+     space and every pixel is reachable. */
+  display: flex; align-items: center; justify-content: safe center;
 }
 .player-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .player-controls .frame-no { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 52px; }
 /* min-height so the row keeps its line even for a state with no directions at
    all — the panels below must not move when you step between states. */
+.stage-wide { margin: 6px 0 0; font-size: 12.5px; max-width: 100%; }
 .dirpad { display: inline-flex; flex-wrap: wrap; gap: 3px; min-height: 28px; }
 .dirpad button {
   width: 37px; padding: 4px 0; border: 1px solid var(--border); background: var(--surface);
