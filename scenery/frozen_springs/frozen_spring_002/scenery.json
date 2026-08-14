@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:11:58+00:00",
+  "id": "frozen_spring_002",
+  "group": "frozen_springs",
+  "rank": 120,
+  "index": 2,
+  "name": "White rimed spring 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white rimed spring",
+  "modifier": "icicles fringing the lip",
+  "glow_concept": "a cold blue glow in the ice heart",
+  "prompt": "a small spring frozen mid-flow, ice caught in smooth rounded spills over its stones, frost ferns on every surface, white rimed spring, icicles fringing the lip, waist-high, self-emissive at night, softly radiating light: a cold blue glow in the ice heart",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
+  "placement": {
+    "world_height_m": 1.12,
+    "world_px_height": 42,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

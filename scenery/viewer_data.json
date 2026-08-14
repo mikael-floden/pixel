@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 504,
+  "scenery_count": 505,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -846,7 +846,7 @@
       "id": "frozen_springs",
       "name": "Frozen Spring",
       "quota": 6,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 121,
@@ -934,6 +934,7 @@
     "flame_niches": 8,
     "flower_stands": 5,
     "flower_trellises": 2,
+    "frozen_springs": 1,
     "geodes": 1,
     "giant_fallen_bells": 1,
     "giant_mushrooms": 2,
@@ -5153,6 +5154,28 @@
       "status": "complete",
       "pixellab_object_id": "281d9446-194a-4ea8-8363-9e4234d700f8",
       "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "frozen_spring_002",
+      "rel": "frozen_springs/frozen_spring_002",
+      "name": "White rimed spring 002 \u00b7 lit",
+      "category": "frozen_springs",
+      "lights": "LIGHTS_ON",
+      "description": "a small spring frozen mid-flow, ice caught in smooth rounded spills over its stones, frost ferns on every surface, white rimed spring, icicles fringing the lip, waist-high, self-emissive at night, softly radiating light: a cold blue glow in the ice heart",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.12,
+        "world_px_height": 42,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
+      "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
