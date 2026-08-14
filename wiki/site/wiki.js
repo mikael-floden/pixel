@@ -2299,7 +2299,10 @@ function viewObject(id) {
           // one wiki (maintainer 2026-08-14: "it's the same wiki so we want
           // the same look and feel").
           h("div", { class: "panel-title" },
-            o.stillOnly ? "Still" : "Animations",
+            // "Preview", not "Still" — maintainer 2026-08-14: "Still sounds so
+            // boring". It is also the truer word now: the card holds states
+            // and directions, not one frozen picture.
+            o.stillOnly ? "Preview" : "Animations",
             stillShape(o) ? h("span", { class: "pill" }, stillShape(o)) : null,
             humanBtn),
           playerEl)

@@ -128,7 +128,9 @@ console.log("still (small):", JSON.stringify(tiny));
 console.log("still (giant):", JSON.stringify(big));
 console.log("animated:     ", JSON.stringify(anim));
 ok(!tiny.noAnims && !big.noAnims, "the dead-end “No animations.” line is gone");
-ok(tiny.title.includes("Still") && big.title.includes("Still"), "a lone static piece is headed Still, with no pill to add");
+ok(tiny.title.includes("Preview") && big.title.includes("Preview"),
+  `a lone static piece is headed Preview, with no pill to add (${tiny.title.join(", ")})`);
+ok(!objs.some((o) => o.stillOnly) || !tiny.title.some((t) => /Still/.test(t)), "and never “Still” anywhere on the card");
 // The pill rides along on animated pieces too, so match the word, not the
 // whole node text ("Animations" + "8 directions").
 ok(anim.title.some((t) => /^Animations/.test(t)), `a generated piece is still headed Animations (${anim.title[0]})`);
@@ -170,7 +172,7 @@ console.log("stage offset inside the panel:", JSON.stringify(offsets));
 ok(new Set(offsets).size === 1 && offsets[0] > 0,
   `the preview sits at one height across every shape of piece (${offsets.join(", ")})`);
 ok(tiny.states1[0] === "Static", `a piece with nothing else reads "Static" (${JSON.stringify(tiny.states1)})`);
-ok(/Still\d+ directions/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
+ok(/Preview\d+ directions/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
 ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
 // THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on
 // monsters and players the direction is OVER the preview … please make it
