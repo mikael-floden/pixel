@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:34:52+00:00",
+  "id": "bell_post_022",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 22,
+  "name": "Ship's bell on driftwood post 022 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "ship's bell on driftwood post",
+  "modifier": "moss-capped",
+  "glow_concept": "soulstone clapper glinting inside the bell mouth",
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, ship's bell on driftwood post, moss-capped, large, twice human height, self-emissive at night, softly radiating light: soulstone clapper glinting inside the bell mouth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_022/sprite.webp",
+  "placement": {
+    "world_height_m": 2.2,
+    "world_px_height": 83,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "26ac5356-dad5-41b9-adea-267abac7c702",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
