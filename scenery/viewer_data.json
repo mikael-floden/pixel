@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 581,
-  "target_count": 3035,
+  "scenery_count": 575,
+  "target_count": 2437,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 15
+      "done": 14
     },
     {
       "rank": 5,
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 12
+      "done": 11
     },
     {
       "rank": 7,
@@ -61,7 +61,7 @@
       "rank": 8,
       "id": "signposts",
       "name": "Signpost",
-      "quota": 86,
+      "quota": 5,
       "done": 5
     },
     {
@@ -75,21 +75,21 @@
       "rank": 10,
       "id": "fences",
       "name": "Fence",
-      "quota": 82,
+      "quota": 5,
       "done": 5
     },
     {
       "rank": 11,
       "id": "wells",
       "name": "Well",
-      "quota": 80,
-      "done": 13
+      "quota": 13,
+      "done": 12
     },
     {
       "rank": 12,
       "id": "hedges",
       "name": "Hedge",
-      "quota": 78,
+      "quota": 4,
       "done": 4
     },
     {
@@ -110,7 +110,7 @@
       "rank": 15,
       "id": "streetlights",
       "name": "Streetlight",
-      "quota": 72,
+      "quota": 5,
       "done": 5
     },
     {
@@ -124,7 +124,7 @@
       "rank": 17,
       "id": "haystacks",
       "name": "Haystack",
-      "quota": 68,
+      "quota": 6,
       "done": 6
     },
     {
@@ -138,7 +138,7 @@
       "rank": 19,
       "id": "wayside_shrines",
       "name": "Wayside Shrine",
-      "quota": 64,
+      "quota": 6,
       "done": 6
     },
     {
@@ -187,7 +187,7 @@
       "rank": 26,
       "id": "scarecrows",
       "name": "Scarecrow",
-      "quota": 50,
+      "quota": 5,
       "done": 5
     },
     {
@@ -215,7 +215,7 @@
       "rank": 30,
       "id": "beehives",
       "name": "Beehive",
-      "quota": 42,
+      "quota": 4,
       "done": 4
     },
     {
@@ -278,7 +278,7 @@
       "rank": 39,
       "id": "toadstool_rings",
       "name": "Toadstool Ring",
-      "quota": 24,
+      "quota": 11,
       "done": 11
     },
     {
@@ -320,7 +320,7 @@
       "rank": 45,
       "id": "moss_clumps",
       "name": "Moss Clump",
-      "quota": 12,
+      "quota": 5,
       "done": 5
     },
     {
@@ -328,20 +328,20 @@
       "id": "beacons",
       "name": "Beacon",
       "quota": 10,
-      "done": 12
+      "done": 11
     },
     {
       "rank": 47,
       "id": "windmills",
       "name": "Windmill",
-      "quota": 8,
+      "quota": 3,
       "done": 3
     },
     {
       "rank": 48,
       "id": "maypoles",
       "name": "Maypole",
-      "quota": 6,
+      "quota": 2,
       "done": 2
     },
     {
@@ -741,7 +741,7 @@
       "id": "beds",
       "name": "Bed",
       "quota": 30,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 106,
@@ -776,7 +776,7 @@
       "id": "wall_hangings",
       "name": "Wall Hanging",
       "quota": 40,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 111,
@@ -970,17 +970,17 @@
     "aqueduct_fragments": 2,
     "barrels": 7,
     "beached_rowboats": 2,
-    "beacons": 12,
+    "beacons": 11,
     "beast_skulls": 2,
     "beaver_lodges": 1,
-    "beds": 5,
+    "beds": 4,
     "bee_logs": 1,
     "beehives": 4,
     "bell_posts": 1,
     "effect": 1,
     "bone_arbors": 1,
     "bone_piles": 2,
-    "braziers": 15,
+    "braziers": 14,
     "briar_thickets": 12,
     "broken_columns": 2,
     "bushes": 8,
@@ -1078,16 +1078,16 @@
     "torch_posts": 15,
     "trailing_planters": 2,
     "trees": 25,
-    "wall_hangings": 7,
+    "wall_hangings": 6,
     "washing_lines": 7,
     "wasp_nest_trees": 3,
     "water_lily_clumps": 3,
     "water_pumps": 2,
     "waterwheels": 3,
     "wayside_shrines": 6,
-    "waystones": 12,
+    "waystones": 11,
     "web_frames": 1,
-    "wells": 13,
+    "wells": 12,
     "windmills": 3,
     "wisteria_snags": 3,
     "witch_rings": 1,
@@ -1777,28 +1777,6 @@
       "animations": []
     },
     {
-      "id": "beacon_018",
-      "rel": "beacons/beacon_018",
-      "name": "Rune-carved warning beacon 018 \u00b7 lit",
-      "category": "beacons",
-      "lights": "LIGHTS_ON",
-      "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, rune-carved warning beacon, recently maintained, tall, about three times human height, self-emissive at night, softly radiating light: slow red ember eye pulsing in the cage",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.53,
-        "world_px_height": 133,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7193df8f-74d7-4a23-99fa-5ba46429a321",
-      "sprite": "beacons/beacon_018/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "beast_skull_001",
       "rel": "beast_skulls/beast_skull_001",
       "name": "Cracked half-buried skull 001",
@@ -1949,28 +1927,6 @@
       "status": "complete",
       "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
       "sprite": "beds/bed_006/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "bed_010",
-      "rel": "beds/bed_010",
-      "name": "Trundle nursery cot 010 \u00b7 lit",
-      "category": "beds",
-      "lights": "LIGHTS_ON",
-      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, trundle nursery cot, lovingly repaired with mismatched parts, roughly six feet tall, human height, self-emissive at night, softly radiating light: a candle on the headboard shelf",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.2,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "98ff2594-bd55-4260-8f25-9255ff763970",
-      "sprite": "beds/bed_010/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -2507,28 +2463,6 @@
       "status": "complete",
       "pixellab_object_id": "b139c76e-4830-4655-8f9c-0518bf2a4cb9",
       "sprite": "braziers/brazier_018/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "brazier_021",
-      "rel": "braziers/brazier_021",
-      "name": "Wrought basket-legged brazier 021",
-      "category": "braziers",
-      "lights": "LIGHTS_OFF",
-      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, wrought basket-legged brazier, reinforced with iron bands, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.86,
-        "world_px_height": 32,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "47f1c7ea-198b-49d4-a3f7-83e05e4a2d96",
-      "sprite": "braziers/brazier_021/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -12586,28 +12520,6 @@
       "animations": []
     },
     {
-      "id": "wall_hanging_015",
-      "rel": "wall_hangings/wall_hanging_015",
-      "name": "Weather-house with two doors 015",
-      "category": "wall_hangings",
-      "lights": "LIGHTS_OFF",
-      "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, weather-house with two doors, with carved decorative trim, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.81,
-        "world_px_height": 30,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4b1bc17d-c6c0-40d4-8f01-750062448f84",
-      "sprite": "wall_hangings/wall_hanging_015/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "wall_hanging_016",
       "rel": "wall_hangings/wall_hanging_016",
       "name": "Hunting horn hanging on a strap 016 \u00b7 lit",
@@ -13356,28 +13268,6 @@
       "animations": []
     },
     {
-      "id": "waystone_021",
-      "rel": "waystones/waystone_021",
-      "name": "Sea-smoothed coastal stone 021",
-      "category": "waystones",
-      "lights": "LIGHTS_OFF",
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, with climbing flowers at one corner, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.14,
-        "world_px_height": 43,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "1192ff88-d6ef-4a19-831f-19761f99d1bd",
-      "sprite": "waystones/waystone_021/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "waystone_022",
       "rel": "waystones/waystone_022",
       "name": "White quartz-veined stone 022 \u00b7 lit",
@@ -13704,28 +13594,6 @@
       "status": "complete",
       "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
       "sprite": "wells/well_019/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "well_023",
-      "rel": "wells/well_023",
-      "name": "Briar roses climbing the posts 023",
-      "category": "wells",
-      "lights": "LIGHTS_OFF",
-      "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, briar roses climbing the posts, old and settling into the ground, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.45,
-        "world_px_height": 55,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "87cd4c7d-f069-4226-859a-6b5b529dcf27",
-      "sprite": "wells/well_023/sprite.webp",
       "rotations": {},
       "animations": []
     },
