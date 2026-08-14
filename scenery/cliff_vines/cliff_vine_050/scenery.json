@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:35:51+00:00",
+  "id": "cliff_vine_050",
+  "group": "cliff_vines",
+  "rank": 101,
+  "index": 50,
+  "name": "Berry-dotted bramble fall 050 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "berry-dotted bramble fall",
+  "modifier": "growth trailing off in three directions",
+  "glow_concept": "glowworm colonies strung in the foliage",
+  "prompt": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, berry-dotted bramble fall, growth trailing off in three directions, towering, many times human height, self-emissive at night, softly radiating light: glowworm colonies strung in the foliage",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_vines/cliff_vine_050/sprite.webp",
+  "placement": {
+    "world_height_m": 11.89,
+    "world_px_height": 448,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7b8fd11c-88c7-400f-9b9d-ec9c9d27ffcc",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
