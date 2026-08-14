@@ -1,0 +1,51 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T06:49:27+00:00",
+  "id": "window_047",
+  "group": "windows",
+  "rank": 25,
+  "index": 47,
+  "name": "A round porthole window ringed in stone 047",
+  "lights": "LIGHTS_OFF",
+  "variety": "a round porthole window ringed in stone",
+  "modifier": "glass intact but dusty and dark",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a round porthole window ringed in stone, glass intact but dusty and dark, a modest window, about two thirds of a person tall, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "rotations": {
+    "south-east": "windows/window_047/rotations/south-east.webp",
+    "south-west": "windows/window_047/rotations/south-west.webp",
+    "south": "windows/window_047/sprite.webp"
+  },
+  "size": 80,
+  "sprite": "windows/window_047/sprite.webp",
+  "placement": {
+    "world_height_m": 1.08,
+    "world_px_height": 41,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      10,
+      8,
+      72,
+      74
+    ],
+    "content_px_height": 66,
+    "canvas_render_px": 50
+  },
+  "pixellab_object_id": "ef5b320e-978a-4877-9b3f-bb60ede37e6c",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
