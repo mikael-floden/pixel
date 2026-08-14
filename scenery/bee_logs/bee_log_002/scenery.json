@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:13:49+00:00",
+  "id": "bee_log_002",
+  "group": "bee_logs",
+  "rank": 126,
+  "index": 2,
+  "name": "Single keeper's bee log 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "single keeper's bee log",
+  "modifier": "end capped with a carved bee",
+  "glow_concept": "comb glowing amber in the knothole",
+  "prompt": "a fallen log fitted as a wild beehive, entrance holes drilled in a row, comb visible in a knothole, bees busy around it, single keeper's bee log, end capped with a carved bee, small, knee-high, self-emissive at night, softly radiating light: comb glowing amber in the knothole",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "bee_logs/bee_log_002/sprite.webp",
+  "placement": {
+    "world_height_m": 0.66,
+    "world_px_height": 25,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "50f20143-fcfd-4672-ab61-e8fcebca0a7d",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
