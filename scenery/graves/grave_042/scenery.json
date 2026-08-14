@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:45:06+00:00",
+  "id": "grave_042",
+  "group": "graves",
+  "rank": 3,
+  "index": 42,
+  "name": "Headstone with carved bird 042 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "headstone with carved bird",
+  "modifier": "weathered silver-grey",
+  "glow_concept": "bioluminescent moss veining the cracks",
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, headstone with carved bird, weathered silver-grey, small, knee-high, self-emissive at night, softly radiating light: bioluminescent moss veining the cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_042/sprite.webp",
+  "placement": {
+    "world_height_m": 0.74,
+    "world_px_height": 28,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "a4a38a45-0f42-4486-84e0-610abbb6373f",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
