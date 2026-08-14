@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 610,
+  "scenery_count": 611,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -874,7 +874,7 @@
       "id": "harvest_altars",
       "name": "Harvest Altar",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 125,
@@ -1184,7 +1184,7 @@
     "graves": 14,
     "hanging_baskets": 2,
     "hanging_willows": 2,
-    "harvest_altars": 1,
+    "harvest_altars": 2,
     "haystacks": 6,
     "hearths": 7,
     "hedges": 2,
@@ -7065,6 +7065,28 @@
       "status": "complete",
       "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
       "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "harvest_altar_001",
+      "rel": "harvest_altars/harvest_altar_001",
+      "name": "Sheaf-and-apple altar 001",
+      "category": "harvest_altars",
+      "lights": "LIGHTS_OFF",
+      "description": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields, sheaf-and-apple altar, picked over by birds, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.02,
+        "world_px_height": 38,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "443aa067-988f-49e0-8560-83650d3341b6",
+      "sprite": "harvest_altars/harvest_altar_001/sprite.webp",
       "rotations": {},
       "animations": []
     },
