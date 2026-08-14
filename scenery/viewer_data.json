@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 760,
+  "scenery_count": 761,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1091,7 +1091,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "quota": 70,
-      "done": 12
+      "done": 13
     },
     {
       "rank": 156,
@@ -1239,7 +1239,7 @@
     "cliff_features": 6,
     "cliff_fragments": 2,
     "cliff_mosses": 12,
-    "cliff_roots": 12,
+    "cliff_roots": 13,
     "cliff_shrubs": 12,
     "cliff_vines": 77,
     "crystal_trees": 1,
@@ -4979,6 +4979,28 @@
       "status": "complete",
       "pixellab_object_id": "690e1d5f-efb5-4d59-9a5c-3ea1dceb9cc3",
       "sprite": "cliff_roots/cliff_root_068/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_root_073",
+      "rel": "cliff_roots/cliff_root_073",
+      "name": "Roots with ferns rooted between them 073",
+      "category": "cliff_roots",
+      "lights": "LIGHTS_OFF",
+      "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, roots with ferns rooted between them, one root with a small leaf cluster halfway, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 8.06,
+        "world_px_height": 303,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "fea5780b-5326-4420-9e36-fdef7d1c53f9",
+      "sprite": "cliff_roots/cliff_root_073/sprite.webp",
       "rotations": {},
       "animations": []
     },
