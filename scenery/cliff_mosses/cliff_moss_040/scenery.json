@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:55:07+00:00",
+  "id": "cliff_moss_040",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 40,
+  "name": "Frost-tipped winter moss 040 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "frost-tipped winter moss",
+  "modifier": "heavy growth on one side thinning to bare on the other",
+  "glow_concept": "glow-lichen in bright rings",
+  "prompt": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-tipped winter moss, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_040/sprite.webp",
+  "placement": {
+    "world_height_m": 5.34,
+    "world_px_height": 201,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "9631ac02-4908-437b-9a2e-43768a51ad11",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}

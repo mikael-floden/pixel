@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 735,
+  "scenery_count": 736,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 16
+      "done": 17
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 5,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 16,
+    "cliff_mosses": 17,
     "cliff_roots": 27,
     "cliff_shrubs": 11,
     "cliff_vines": 33,
@@ -4740,6 +4740,28 @@
       "status": "complete",
       "pixellab_object_id": "d8e58e06-5aaf-42dd-a914-451243243757",
       "sprite": "cliff_mosses/cliff_moss_038/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_040",
+      "rel": "cliff_mosses/cliff_moss_040",
+      "name": "Frost-tipped winter moss 040 \u00b7 lit",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_ON",
+      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, frost-tipped winter moss, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 5.34,
+        "world_px_height": 201,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9631ac02-4908-437b-9a2e-43768a51ad11",
+      "sprite": "cliff_mosses/cliff_moss_040/sprite.webp",
       "rotations": {},
       "animations": []
     },
