@@ -230,6 +230,11 @@ def main():
     ap.add_argument("--parallel", type=int, default=0,
                     help="PixelLab jobs in flight at once (default: config "
                          "budget.parallel_jobs, 8).")
+    ap.add_argument("--plan", default=None,
+                    help="Explicit allocation 'group:count,group:count' — the "
+                         "run generates exactly this mix (star-weighted runs), "
+                         "bypassing quota fairness. Fresh ids + retirement "
+                         "still apply.")
     args = ap.parse_args()
 
     cfg = factory.load_config()
@@ -314,6 +319,14 @@ def main():
         PARALLEL = 1
     POLL_S = 5
     in_flight = []        # [{spec, group, oid, dirs, at}]
+    plan_alloc = None
+    if args.plan:
+        plan_alloc = {}
+        for part in args.plan.split(","):
+            gid, n = part.split(":")
+            plan_alloc[gid.strip()] = int(n)
+        print(f"star plan: {sum(plan_alloc.values())} pieces across "
+              f"{len(plan_alloc)} groups")
     submitted = 0
     pending_push = 0
     last_push = time.monotonic()
@@ -343,12 +356,31 @@ def main():
                 done.setdefault(gid, set()).update(ids)
             for f in in_flight:
                 done.setdefault(f["group"]["id"], set()).add(f["spec"]["id"])
-            nxt = catalog.next_batch(cfg, done, factory.load_retired())
-            if nxt is None:
-                stop_submitting = "catalog complete"
-                break
-            group, specs = nxt
-            spec = specs[0]
+            if plan_alloc is not None:
+                # star-weighted mode: next group = largest remaining allocation
+                # (deterministic tie-break by name); indices via the normal
+                # fresh-id machinery, retirement honored, quota bypassed.
+                live = [(n, gid) for gid, n in plan_alloc.items() if n > 0]
+                if not live:
+                    stop_submitting = "plan complete"
+                    break
+                _, gid = max(live, key=lambda t: (t[0], t[1]))
+                group = next(x for x in cfg["groups"] if x["id"] == gid)
+                idxs = catalog.next_indices(
+                    group, done.get(gid, set()),
+                    factory.load_retired().get(gid, set()), 1)
+                if not idxs:
+                    plan_alloc[gid] = 0
+                    continue
+                spec = catalog.piece_spec(cfg, group, idxs[0])
+                plan_alloc[gid] -= 1
+            else:
+                nxt = catalog.next_batch(cfg, done, factory.load_retired())
+                if nxt is None:
+                    stop_submitting = "catalog complete"
+                    break
+                group, specs = nxt
+                spec = specs[0]
             try:
                 oid, dirs = submit_piece(client, cfg, group, spec)
             except PixelLabError as e:
