@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:53:52+00:00",
+  "id": "chair_014",
+  "group": "chairs_and_benches",
+  "rank": 104,
+  "index": 14,
+  "name": "Upturned crate used as a seat 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "upturned crate used as a seat",
+  "modifier": "freshly made and neat",
+  "glow_concept": "a knitted blanket glowing faintly with kept warmth",
+  "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, upturned crate used as a seat, freshly made and neat, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "chairs_and_benches/chair_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.92,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

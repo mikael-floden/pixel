@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 577,
+  "scenery_count": 578,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -734,7 +734,7 @@
       "id": "chairs_and_benches",
       "name": "Chair",
       "quota": 40,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 105,
@@ -917,7 +917,7 @@
     "carts": 6,
     "cattail_clumps": 5,
     "cauldron_camps": 1,
-    "chairs_and_benches": 6,
+    "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chimney_stacks": 1,
     "cliff_features": 6,
@@ -3685,6 +3685,28 @@
       "status": "complete",
       "pixellab_object_id": "1777a67d-7416-4f83-afba-38ab50806038",
       "sprite": "chairs_and_benches/chair_012/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "chair_014",
+      "rel": "chairs_and_benches/chair_014",
+      "name": "Upturned crate used as a seat 014 \u00b7 lit",
+      "category": "chairs_and_benches",
+      "lights": "LIGHTS_ON",
+      "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, upturned crate used as a seat, freshly made and neat, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.92,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
+      "sprite": "chairs_and_benches/chair_014/sprite.webp",
       "rotations": {},
       "animations": []
     },
