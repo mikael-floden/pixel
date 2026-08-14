@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 473,
+  "scenery_count": 474,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -34,7 +34,7 @@
       "id": "braziers",
       "name": "Brazier",
       "quota": 94,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 5,
@@ -795,7 +795,7 @@
     "bell_posts": 6,
     "effect": 1,
     "bone_piles": 2,
-    "braziers": 8,
+    "braziers": 9,
     "briar_thickets": 7,
     "broken_columns": 2,
     "bushes": 8,
@@ -2087,6 +2087,28 @@
       "status": "complete",
       "pixellab_object_id": "a7275c53-c269-4aae-9f69-bac7e899c506",
       "sprite": "braziers/brazier_008/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "brazier_010",
+      "rel": "braziers/brazier_010",
+      "name": "Soot-black courtyard brazier 010 \u00b7 lit",
+      "category": "braziers",
+      "lights": "LIGHTS_ON",
+      "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, soot-black courtyard brazier, leaning slightly, roughly six feet tall, human height, self-emissive at night, softly radiating light: silver-white soul-fire burning without smoke",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.29,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "dac737c8-a67f-42cd-b2af-976ab4f995ef",
+      "sprite": "braziers/brazier_010/sprite.webp",
       "rotations": {},
       "animations": []
     },

@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:34:26+00:00",
+  "id": "brazier_010",
+  "group": "braziers",
+  "rank": 4,
+  "index": 10,
+  "name": "Soot-black courtyard brazier 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soot-black courtyard brazier",
+  "modifier": "leaning slightly",
+  "glow_concept": "silver-white soul-fire burning without smoke",
+  "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, soot-black courtyard brazier, leaning slightly, roughly six feet tall, human height, self-emissive at night, softly radiating light: silver-white soul-fire burning without smoke",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "braziers/brazier_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.29,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "dac737c8-a67f-42cd-b2af-976ab4f995ef",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
