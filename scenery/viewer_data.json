@@ -18032,6 +18032,13 @@
           "pixellab_object_id": "ded2c906-787a-4e5b-b938-e6386454601b",
           "glow_score": 0.0009
         },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_019/not_lit_10/sprite.webp",
+          "pixellab_object_id": "61e21019-50f5-4dc8-ac11-ce211429675d",
+          "glow_concept": null,
+          "difference_from_source": 0.8298,
+          "glow_score": 0.0006
+        },
         "NOT_LIT_2": {
           "sprite": "trees/tree_019/not_lit_2/sprite.webp",
           "pixellab_object_id": "49045b5d-9ef9-410f-829c-3808104ca41a",
@@ -18128,11 +18135,25 @@
           "difference_from_source": 0.775,
           "glow_score": 0.1238
         },
+        "LIT_4": {
+          "sprite": "trees/tree_020/lit_4/sprite.webp",
+          "pixellab_object_id": "ccfad633-5d1f-4a76-8984-db5774f37949",
+          "glow_concept": "swarm of fireflies drifting through the crown",
+          "difference_from_source": 0.5792,
+          "glow_score": 0.0207
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_020/not_lit_1/sprite.webp",
           "pixellab_object_id": "3d22d994-4e47-4001-896f-3fb0ba2bcc71",
           "difference_from_source": 0.2873,
           "glow_score": 0.025
+        },
+        "NOT_LIT_10": {
+          "sprite": "trees/tree_020/not_lit_10/sprite.webp",
+          "pixellab_object_id": "0a3dd81d-7469-445d-a57d-a15011d97d48",
+          "glow_concept": null,
+          "difference_from_source": 0.5629,
+          "glow_score": 0.0222
         },
         "NOT_LIT_2": {
           "sprite": "trees/tree_020/not_lit_2/sprite.webp",
@@ -18158,6 +18179,13 @@
           "difference_from_source": 0.1462,
           "glow_score": 0.0258
         },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_020/not_lit_6/sprite.webp",
+          "pixellab_object_id": "b119d3fd-ecab-487a-af9c-5e13b286adb8",
+          "glow_concept": null,
+          "difference_from_source": 0.8062,
+          "glow_score": 0.0
+        },
         "NOT_LIT_7": {
           "sprite": "trees/tree_020/not_lit_7/sprite.webp",
           "pixellab_object_id": "55b55aa8-9494-443a-98bc-9ce0b8148c9d",
@@ -18171,6 +18199,13 @@
           "glow_concept": null,
           "difference_from_source": 0.6014,
           "glow_score": 0.0
+        },
+        "NOT_LIT_9": {
+          "sprite": "trees/tree_020/not_lit_9/sprite.webp",
+          "pixellab_object_id": "20f2f058-9cb8-496e-a4b2-6948f80d0fcb",
+          "glow_concept": null,
+          "difference_from_source": 0.3528,
+          "glow_score": 0.0198
         }
       },
       "animations": []
@@ -18210,6 +18245,20 @@
           "difference_from_source": 0.369,
           "glow_score": 0.095
         },
+        "LIT_3": {
+          "sprite": "trees/tree_021/lit_3/sprite.webp",
+          "pixellab_object_id": "fe9045e3-eab9-467c-8bb1-c0e694ddbbf5",
+          "glow_concept": "pale blossoms shining faintly across the branches",
+          "difference_from_source": 0.5542,
+          "glow_score": 0.1278
+        },
+        "LIT_4": {
+          "sprite": "trees/tree_021/lit_4/sprite.webp",
+          "pixellab_object_id": "c30c549d-f4ae-4519-8ed0-bb851d9415f9",
+          "glow_concept": "iron lantern hung from a low branch",
+          "difference_from_source": 0.2284,
+          "glow_score": 0.0274
+        },
         "NOT_LIT_1": {
           "sprite": "trees/tree_021/sprite.webp",
           "pixellab_object_id": "9b840da0-7297-4754-8683-9b0fae83c9c5",
@@ -18238,6 +18287,34 @@
           "pixellab_object_id": "3c6f266b-0dd3-4780-ab33-d39342ee7c7f",
           "difference_from_source": 0.4573,
           "glow_score": 0.0046
+        },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_021/not_lit_6/sprite.webp",
+          "pixellab_object_id": "bac50514-aca7-4610-8e81-ff8a6a89f2cb",
+          "glow_concept": null,
+          "difference_from_source": 0.2394,
+          "glow_score": 0.005
+        },
+        "NOT_LIT_7": {
+          "sprite": "trees/tree_021/not_lit_7/sprite.webp",
+          "pixellab_object_id": "8bb9c822-5baf-4459-b95c-4c4bd8f1d5eb",
+          "glow_concept": null,
+          "difference_from_source": 0.2186,
+          "glow_score": 0.0004
+        },
+        "NOT_LIT_8": {
+          "sprite": "trees/tree_021/not_lit_8/sprite.webp",
+          "pixellab_object_id": "8d6af155-2319-4c85-bf18-618f7cea2f30",
+          "glow_concept": null,
+          "difference_from_source": 0.3604,
+          "glow_score": 0.0028
+        },
+        "NOT_LIT_9": {
+          "sprite": "trees/tree_021/not_lit_9/sprite.webp",
+          "pixellab_object_id": "bdfb92c5-8eb5-4b6b-9b76-d3cf6505847a",
+          "glow_concept": null,
+          "difference_from_source": 0.37,
+          "glow_score": 0.0027
         }
       },
       "animations": []
@@ -18304,6 +18381,13 @@
           "sprite": "trees/tree_022/not_lit_5/sprite.webp",
           "pixellab_object_id": "1cd9a7d1-2643-4e45-a140-60122b8d80b8",
           "difference_from_source": 0.2345,
+          "glow_score": 0.0
+        },
+        "NOT_LIT_6": {
+          "sprite": "trees/tree_022/not_lit_6/sprite.webp",
+          "pixellab_object_id": "2ecb2e64-beb9-4176-b177-879059a8cb04",
+          "glow_concept": null,
+          "difference_from_source": 0.7779,
           "glow_score": 0.0
         }
       },
