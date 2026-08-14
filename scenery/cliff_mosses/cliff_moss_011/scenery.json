@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:10:09+00:00",
+  "id": "cliff_moss_011",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 11,
+  "name": "Black wet moss 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "black wet moss",
+  "modifier": "growth trailing off in three directions",
+  "glow_concept": null,
+  "prompt": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, black wet moss, growth trailing off in three directions, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_011/sprite.webp",
+  "placement": {
+    "world_height_m": 5.67,
+    "world_px_height": 213,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "7eab3b6d-8c5a-459e-bc88-be98620b928e",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
