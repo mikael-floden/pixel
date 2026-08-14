@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:46:00+00:00",
+  "id": "haystack_017",
+  "group": "haystacks",
+  "rank": 17,
+  "index": 17,
+  "name": "Short hay-drying rack row 017",
+  "lights": "LIGHTS_OFF",
+  "variety": "short hay-drying rack row",
+  "modifier": "moss-capped",
+  "glow_concept": null,
+  "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, short hay-drying rack row, moss-capped, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "haystacks/haystack_017/sprite.webp",
+  "placement": {
+    "world_height_m": 1.76,
+    "world_px_height": 66,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "61eaa4e7-477b-4197-aca5-0592c1e85b50",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
