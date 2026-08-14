@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:24:00+00:00",
+  "id": "cliff_root_018",
+  "group": "cliff_roots",
+  "rank": 155,
+  "index": 18,
+  "name": "Moss-furred roots 018 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "moss-furred roots",
+  "modifier": "a few isolated tufts drifting away from the main spread",
+  "glow_concept": "glow-moss packed between them",
+  "prompt": "a SPARSE OPEN WEB of fine thin roots spreading and branching every way, runners crossing and rejoining like a loose graph, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, moss-furred roots, a few isolated tufts drifting away from the main spread, towering, many times human height, self-emissive at night, softly radiating light: glow-moss packed between them",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 256,
+  "sprite": "cliff_roots/cliff_root_018/sprite.webp",
+  "placement": {
+    "world_height_m": 11.48,
+    "world_px_height": 432,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "afd623f2-4b08-49c7-8c37-4890601c2cc5",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
