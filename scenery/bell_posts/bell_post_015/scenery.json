@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:25:23+00:00",
+  "id": "bell_post_015",
+  "group": "bell_posts",
+  "rank": 14,
+  "index": 15,
+  "name": "Storm-bent old post, heavy bell 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "storm-bent old post, heavy bell",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": null,
+  "prompt": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, storm-bent old post, heavy bell, reinforced with iron bands, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "bell_posts/bell_post_015/sprite.webp",
+  "placement": {
+    "world_height_m": 2.31,
+    "world_px_height": 87,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "81ba6caa-e086-4ba2-a397-d6d7d8239d40",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

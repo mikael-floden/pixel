@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 448,
+  "scenery_count": 449,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -104,7 +104,7 @@
       "id": "bell_posts",
       "name": "Bell Post",
       "quota": 74,
-      "done": 3
+      "done": 4
     },
     {
       "rank": 15,
@@ -792,7 +792,7 @@
     "beaver_lodges": 1,
     "beds": 4,
     "beehives": 4,
-    "bell_posts": 3,
+    "bell_posts": 4,
     "effect": 1,
     "bone_piles": 2,
     "braziers": 8,
@@ -1749,6 +1749,28 @@
       "status": "complete",
       "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
       "sprite": "bell_posts/bell_post_004/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "bell_post_015",
+      "rel": "bell_posts/bell_post_015",
+      "name": "Storm-bent old post, heavy bell 015",
+      "category": "bell_posts",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout heavy timber post with a thick crossarm and a large bronze bell hanging from it, solid wide base, storm-bent old post, heavy bell, reinforced with iron bands, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.31,
+        "world_px_height": 87,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "81ba6caa-e086-4ba2-a397-d6d7d8239d40",
+      "sprite": "bell_posts/bell_post_015/sprite.webp",
       "rotations": {},
       "animations": []
     },
