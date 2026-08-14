@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:13:13+00:00",
+  "id": "spirit_gate_006",
+  "group": "spirit_gates",
+  "rank": 114,
+  "index": 6,
+  "name": "Lichen-gold gate 006 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lichen-gold gate",
+  "modifier": "fern-crowned",
+  "glow_concept": "the gap shimmering faintly",
+  "prompt": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass, lichen-gold gate, fern-crowned, large, twice human height, self-emissive at night, softly radiating light: the gap shimmering faintly",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "spirit_gates/spirit_gate_006/sprite.webp",
+  "placement": {
+    "world_height_m": 2.53,
+    "world_px_height": 95,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "cda04781-1574-4b2d-a7e2-0b5e0ddc41fc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

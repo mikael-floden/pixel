@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 578,
+  "scenery_count": 579,
   "target_count": 2437,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -804,7 +804,7 @@
       "id": "spirit_gates",
       "name": "Spirit Gate",
       "quota": 7,
-      "done": 0
+      "done": 1
     },
     {
       "rank": 115,
@@ -1063,6 +1063,7 @@
     "signposts": 5,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
+    "spirit_gates": 1,
     "spring_basins": 2,
     "standing_stones": 5,
     "statues": 2,
@@ -9634,6 +9635,28 @@
       "status": "complete",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "spirit_gate_006",
+      "rel": "spirit_gates/spirit_gate_006",
+      "name": "Lichen-gold gate 006 \u00b7 lit",
+      "category": "spirit_gates",
+      "lights": "LIGHTS_ON",
+      "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass, lichen-gold gate, fern-crowned, large, twice human height, self-emissive at night, softly radiating light: the gap shimmering faintly",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.53,
+        "world_px_height": 95,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cda04781-1574-4b2d-a7e2-0b5e0ddc41fc",
+      "sprite": "spirit_gates/spirit_gate_006/sprite.webp",
       "rotations": {},
       "animations": []
     },
