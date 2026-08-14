@@ -560,13 +560,9 @@ function makePlayer(entity, kind, opts = {}) {
   const maxFrames = Math.max(0, ...stateNames.flatMap((s) => Object.values(anims[s]?.dirs ?? {}).map((d) => d?.frames ?? 1)));
   // Each control is judged by what it would DO here, one at a time:
   //   transport — nothing moves at one frame, whatever else the piece has;
-  //   state row — a lone state is not a choice (but an animated piece keeps
-  //     its row, because the row also NAMES the animation you are watching);
-  //   direction pad — shown whenever there is more than one way to face.
-  // A still scenery piece with LIGHTS_ON/LIGHTS_OFF × S/SE/SW therefore gets
-  // the state row and the pad and no transport at all.
+  // The state row and the direction pad are ALWAYS drawn (they also name what
+  // you are looking at), so the stage keeps one height across every piece.
   const noTransport = maxFrames <= 1;
-  const hideStates = noTransport && stateNames.length <= 1;
   const controls2 = h("div", { class: "player-controls" },
     noTransport ? null : playBtn,
     noTransport ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
@@ -586,13 +582,17 @@ function makePlayer(entity, kind, opts = {}) {
   }
   loadClip();
   const rootEl = h("div", { class: "player" },
-    hideStates ? null : h("div", { class: "player-controls" }, stateSeg),
+    // BOTH ROWS, ALWAYS. A row that appears only on the pieces that have
+    // something in it moves the preview up and down as you page ‹ › — the
+    // maintainer reviews hundreds of pieces in a row and the art has to stay
+    // put. A lone state reads "Static"; a lone direction shows just "S".
+    h("div", { class: "player-controls" }, stateSeg),
     // ONE PLACE FOR THE DIRECTION PAD, whatever the entity (maintainer
     // 2026-08-14: "on monsters and players the direction is OVER the preview
     // — please make it similar looking"). A still's pad sat under the stage
     // for a while so a rotated piece wouldn't push the art down; he'd rather
     // have it look the same everywhere, so above the stage it is.
-    maxDirs <= 1 ? null : h("div", { class: "player-controls" }, dirPad),
+    h("div", { class: "player-controls" }, dirPad),
     stage, overflowNote, controls2);
   return {
     el: rootEl,
@@ -2302,7 +2302,6 @@ function viewObject(id) {
             o.stillOnly ? "Still" : "Animations",
             stillShape(o) ? h("span", { class: "pill" }, stillShape(o)) : null,
             humanBtn),
-          o.stillOnly ? h("p", { class: "muted", style: "margin:0 0 8px" }, "This piece has no animation — shown at its true size, padding cropped away.") : null,
           playerEl)
       : h("p", { class: "muted" }, "No animations."),
     entitySoundsCard("objects", o),

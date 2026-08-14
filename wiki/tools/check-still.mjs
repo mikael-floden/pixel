@@ -111,7 +111,14 @@ const look = async (id) => {
       transport: [...document.querySelectorAll(".player-controls button")].map((x) => x.textContent).filter((t) => ["⏸", "▶", "⏮", "⏭"].includes(t)),
       dirpad: document.querySelectorAll(".dirpad button").length,
       states: document.querySelectorAll(".seg-states button").length,
-      noAnims: /No animations\./.test(txt), assign: /Assign a sound/.test(txt) };
+      noAnims: /No animations\./.test(txt), assign: /Assign a sound/.test(txt),
+      noteText: /no animation —/i.test(txt),
+      states1: [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent),
+      // What the maintainer actually watches: where the art sits inside its
+      // own panel. The page scroll differs per piece, so measure the offset.
+      stageOffset: (() => { const st = document.querySelector(".player-stage");
+        const pan = [...document.querySelectorAll(".panel")].find((x) => x.querySelector(".player-stage"));
+        return st && pan ? Math.round(st.getBoundingClientRect().top - pan.getBoundingClientRect().top) : -1; })() };
   });
 };
 const tiny = await look("mushroom_005");
@@ -129,7 +136,12 @@ ok(tiny.painted > 100 && big.painted > 5000, `both actually draw (${tiny.painted
 // The controls a one-frame clip cannot use are not offered; the one it exists
 // for is.
 ok(tiny.transport.length === 0 && big.transport.length === 0, `no play/step buttons on a single frame (${tiny.transport.join("")})`);
-ok(tiny.states === 0 && tiny.dirpad === 0, "no state row and no direction pad for a lone south still");
+// EVERY PIECE SHOWS BOTH ROWS (maintainer 2026-08-14: "always render a state
+// even if the state only has Static … otherwise the preview will jump up and
+// down when I press next next next"). A row that comes and goes with the
+// piece's shape moves the art, and he pages through hundreds in a row.
+ok(tiny.states === 1 && tiny.dirpad === 1, `a lone still still gets both rows, one button each (${tiny.states} state, ${tiny.dirpad} dir)`);
+ok(!tiny.noteText && !big.noteText, "and no 'this piece has no animation' line — it was one more thing to lay out");
 ok(tiny.zoom.length === 4 && big.zoom.length === 4, `zoom survives — it is the reason the viewer is here (${tiny.zoom.join(" ")})`);
 ok(anim.transport.length >= 3 && anim.states >= 1 && anim.dirpad === 8,
   `the animated piece keeps everything (${anim.transport.length} transport, ${anim.states} states, ${anim.dirpad} dirs)`);
@@ -149,8 +161,15 @@ const many = await look(rotId);
 console.log(`still (${rotId}):`, JSON.stringify(many));
 ok(many.dirpad === dirCount(objs.find((o) => o.id === rotId)),
   `a rotated still offers one button per direction it has (${many.dirpad})`);
-ok(many.transport.length === 0 && many.states === 0,
-  `and still offers nothing to play or choose (${many.transport.length} transport, ${many.states} states)`);
+ok(many.transport.length === 0, `and still offers nothing to play (${many.transport.length} transport)`);
+// THE ART SITS AT THE SAME HEIGHT WHATEVER THE PIECE HAS. This is the whole
+// reason both rows are unconditional — 1 state/1 dir, 1 state/3 dirs, 2
+// states/3 dirs and a real animation must all land on the same offset.
+const offsets = [tiny.stageOffset, big.stageOffset, many.stageOffset, anim.stageOffset];
+console.log("stage offset inside the panel:", JSON.stringify(offsets));
+ok(new Set(offsets).size === 1 && offsets[0] > 0,
+  `the preview sits at one height across every shape of piece (${offsets.join(", ")})`);
+ok(tiny.states1[0] === "Static", `a piece with nothing else reads "Static" (${JSON.stringify(tiny.states1)})`);
 ok(/Still\d+ directions/.test(many.title.join(" ")), `headed like a monster, with a pill counting the views (${many.title.join(", ")})`);
 ok(many.stage === tiny.stage, "the stage is unchanged — rotations do not resize the viewer");
 // THE PAD LOOKS AND SITS THE SAME EVERYWHERE (maintainer 2026-08-14: "on

@@ -666,10 +666,13 @@ function buildObjects() {
       if (!Object.keys(anims).length) {
         const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
         if (Object.keys(dirs).length) {
-          anims.still = {
-            description: "No animation was generated for this piece — this is the sprite as it is placed in the world.",
-            dirs,
-          };
+          // Named "static" because the viewer ALWAYS shows a state row now —
+          // one button reading "Static" for a piece with nothing else, so the
+          // preview sits at the same height on every piece while paging
+          // (maintainer 2026-08-14: "always render a state even if the state
+          // only has Static … otherwise the preview will jump up and down when
+          // I press next next next").
+          anims.static = { description: "", dirs };
         }
       }
     }
