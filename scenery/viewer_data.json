@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 454,
+  "scenery_count": 455,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -62,7 +62,7 @@
       "id": "signposts",
       "name": "Signpost",
       "quota": 86,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 9,
@@ -861,7 +861,7 @@
     "rusted_machines": 2,
     "scarecrows": 5,
     "sheaf_poles": 2,
-    "signposts": 4,
+    "signposts": 5,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
     "spring_basins": 2,
@@ -7850,6 +7850,28 @@
       "status": "complete",
       "pixellab_object_id": "bccbc74b-ff97-4d51-bee1-4e2b8e4a8c8d",
       "sprite": "signposts/signpost_010/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "signpost_020",
+      "rel": "signposts/signpost_020",
+      "name": "White-painted village signpost 020 \u00b7 lit",
+      "category": "signposts",
+      "lights": "LIGHTS_ON",
+      "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, white-painted village signpost, old and settling into the ground, large, twice human height, self-emissive at night, softly radiating light: arrow edges limned with firefly light",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.39,
+        "world_px_height": 90,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "15d4940c-542c-4f5c-b37a-72f7efacf18b",
+      "sprite": "signposts/signpost_020/sprite.webp",
       "rotations": {},
       "animations": []
     },

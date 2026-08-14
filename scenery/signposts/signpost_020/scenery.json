@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T00:27:49+00:00",
+  "id": "signpost_020",
+  "group": "signposts",
+  "rank": 8,
+  "index": 20,
+  "name": "White-painted village signpost 020 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "white-painted village signpost",
+  "modifier": "old and settling into the ground",
+  "glow_concept": "arrow edges limned with firefly light",
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, white-painted village signpost, old and settling into the ground, large, twice human height, self-emissive at night, softly radiating light: arrow edges limned with firefly light",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_020/sprite.webp",
+  "placement": {
+    "world_height_m": 2.39,
+    "world_px_height": 90,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "15d4940c-542c-4f5c-b37a-72f7efacf18b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
