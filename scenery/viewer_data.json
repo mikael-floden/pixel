@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 769,
+  "scenery_count": 770,
   "target_count": 1982,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1112,7 +1112,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "quota": 50,
-      "done": 27
+      "done": 28
     },
     {
       "rank": 159,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 7,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_mosses": 27,
+    "cliff_mosses": 28,
     "cliff_roots": 36,
     "cliff_shrubs": 11,
     "cliff_vines": 45,
@@ -4872,6 +4872,28 @@
       "status": "complete",
       "pixellab_object_id": "59673669-fa31-4783-8fe8-621349136392",
       "sprite": "cliff_mosses/cliff_moss_036/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_moss_037",
+      "rel": "cliff_mosses/cliff_moss_037",
+      "name": "Grey-green lichen crust 037",
+      "category": "cliff_mosses",
+      "lights": "LIGHTS_OFF",
+      "description": "soft deep moss and colourful lichen growing in rich uneven cushions over old stone, thick emerald pads with pale and rust-coloured crusts around them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, grey-green lichen crust, gathering low, sparse above, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 192,
+      "placement": {
+        "world_height_m": 9.78,
+        "world_px_height": 368,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "029c03a0-43ae-4b50-b673-cd670a2b67a6",
+      "sprite": "cliff_mosses/cliff_moss_037/sprite.webp",
       "rotations": {},
       "animations": []
     },
