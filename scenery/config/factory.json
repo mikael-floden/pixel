@@ -4756,6 +4756,326 @@
       "animation_idea": "subtle idle motion",
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it."
+    },
+    {
+      "rank": 127,
+      "id": "stone_giant_hands",
+      "prefix": "stone_giant_hand",
+      "name": "Stone Giant Hand",
+      "quota": 5,
+      "description": "a colossal weathered stone hand emerging from the earth, fingers half-curled, moss in the knuckle creases",
+      "world_height_m": [
+        1.6,
+        2.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "grey granite",
+        "dark basalt",
+        "pale sandstone"
+      ],
+      "modifiers": [
+        "palm-up cupping rainwater",
+        "two fingers pointing skyward",
+        "fist except one finger",
+        "hand holding a young tree",
+        "half-buried to the knuckles"
+      ],
+      "glow_concepts": [
+        "soul-light seeping between the fingers",
+        "glowing moss tracing the lifeline",
+        "a warm ember cupped in the palm"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 128,
+      "id": "antler_thrones",
+      "prefix": "antler_throne",
+      "name": "Antler Throne",
+      "quota": 5,
+      "description": "a wild throne woven from shed antlers and dark wood, moss-cushioned, standing alone in the grass",
+      "world_height_m": [
+        1.2,
+        2.0
+      ],
+      "art_size": 64,
+      "variety": [
+        "elk-antler",
+        "stag-antler",
+        "great-moose antler"
+      ],
+      "modifiers": [
+        "draped with a wolf pelt",
+        "white-bleached antlers",
+        "flowers threaded through the tines",
+        "half-reclaimed by ivy",
+        "a crown left on the seat"
+      ],
+      "glow_concepts": [
+        "antler tips glowing like candles",
+        "a pale aura where a king once sat",
+        "glow-moss cushion shining softly"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 129,
+      "id": "moon_pools",
+      "prefix": "moon_pool",
+      "name": "Moon Pool",
+      "quota": 5,
+      "description": "a small perfectly round pool of still dark water reflecting a full moon that is not in the sky",
+      "world_height_m": [
+        0.4,
+        0.8
+      ],
+      "art_size": 64,
+      "variety": [
+        "dark still water",
+        "ink-black water",
+        "mirror-calm water"
+      ],
+      "modifiers": [
+        "ringed with white pebbles",
+        "lily on the reflected moon",
+        "stone steps into the water",
+        "frost-rimmed in green grass",
+        "twin pools, two moons"
+      ],
+      "glow_concepts": [
+        "the reflected moon glowing bright",
+        "moonlight rippling outward",
+        "silver mist over the surface"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 130,
+      "id": "lantern_trees",
+      "prefix": "lantern_tree",
+      "name": "Lantern Tree",
+      "quota": 5,
+      "description": "a broad tree hung with dozens of small memory lanterns on ribbons, each a different shape and color",
+      "world_height_m": [
+        2.2,
+        3.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "old oak",
+        "spreading beech",
+        "gnarled apple"
+      ],
+      "modifiers": [
+        "lanterns nearly touching the grass",
+        "one branch bare, one overloaded",
+        "paper and iron lanterns mixed",
+        "ribbons faded by seasons",
+        "a ladder left leaning"
+      ],
+      "glow_concepts": [
+        "every lantern lit warm",
+        "only one lantern burning",
+        "lanterns glowing in slow waves"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 131,
+      "id": "crystal_trees",
+      "prefix": "crystal_tree",
+      "name": "Crystal Tree",
+      "quota": 5,
+      "description": "a small tree whose branches have grown translucent crystal shards instead of leaves, bark silvered",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 64,
+      "variety": [
+        "silver-barked",
+        "black-barked",
+        "white-barked"
+      ],
+      "modifiers": [
+        "rose-quartz crown",
+        "amethyst clusters",
+        "clear glass-like shards",
+        "half leaves half crystal",
+        "wind-fallen shards ringing the roots"
+      ],
+      "glow_concepts": [
+        "the crystals glowing from within",
+        "light refracting in slow colors",
+        "one shard blazing like a star"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 132,
+      "id": "bone_arbors",
+      "prefix": "bone_arbor",
+      "name": "Bone Arbor",
+      "quota": 5,
+      "description": "an arch woven from great weathered bones and antlers, garden-arbor shaped, wildflowers climbing it",
+      "world_height_m": [
+        1.8,
+        2.6
+      ],
+      "art_size": 128,
+      "variety": [
+        "rib-bone",
+        "antler-crown",
+        "whale-bone"
+      ],
+      "modifiers": [
+        "rib-and-antler weave",
+        "bleached white arch",
+        "moss-greened old bones",
+        "ravens perched on the crown",
+        "half-collapsed on one side"
+      ],
+      "glow_concepts": [
+        "soul-light threading the weave",
+        "flowers glowing along the climb",
+        "a pale gate-glow beneath the arch"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 133,
+      "id": "glow_hollows",
+      "prefix": "glow_hollow",
+      "name": "Glow Hollow",
+      "quota": 5,
+      "description": "a hollow fallen log whose interior glows, moss-covered outside, a small warm world visible through the opening",
+      "world_height_m": [
+        0.5,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "oak log",
+        "birch log",
+        "mossy pine log"
+      ],
+      "modifiers": [
+        "glowworm colony inside",
+        "tiny mushroom garden within",
+        "a fox curled in the warmth",
+        "two openings both glowing",
+        "rain pooled at the entrance"
+      ],
+      "glow_concepts": [
+        "warm amber inner light",
+        "cool blue-green glowworm light",
+        "light spilling out onto the grass"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 134,
+      "id": "giant_skulls",
+      "prefix": "giant_skull",
+      "name": "Giant Skull",
+      "quota": 5,
+      "description": "the huge weathered skull of an ancient beast resting in the meadow, horned and moss-patched, big enough to walk into",
+      "world_height_m": [
+        1.4,
+        2.4
+      ],
+      "art_size": 128,
+      "variety": [
+        "horned beast skull",
+        "tusked skull",
+        "crested skull"
+      ],
+      "modifiers": [
+        "one horn broken",
+        "flowers growing from the eye socket",
+        "half-buried jaw",
+        "birds nesting in the crown",
+        "ivy through the teeth"
+      ],
+      "glow_concepts": [
+        "eye sockets glowing softly",
+        "soul-light pooling under the jaw",
+        "glowing runes scratched by pilgrims"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 135,
+      "id": "root_arches",
+      "prefix": "root_arch",
+      "name": "Root Arch",
+      "quota": 5,
+      "description": "a living archway formed by two trees whose roots and branches have grown together over a worn path",
+      "world_height_m": [
+        1.8,
+        2.8
+      ],
+      "art_size": 128,
+      "variety": [
+        "oak-pair",
+        "willow-pair",
+        "beech-pair"
+      ],
+      "modifiers": [
+        "hand-holds worn smooth by travelers",
+        "lanterns hung in the join",
+        "moss curtain hanging from the crown",
+        "one tree autumn one spring",
+        "braided triple trunks"
+      ],
+      "glow_concepts": [
+        "the join glowing where they grew together",
+        "fireflies gathering under the arch",
+        "glow-moss lighting the path beneath"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
+    },
+    {
+      "rank": 136,
+      "id": "frost_flowers",
+      "prefix": "frost_flower",
+      "name": "Frost Flower",
+      "quota": 5,
+      "description": "a giant flower made entirely of ice and frost, petals like blown glass, growing impossibly from green grass",
+      "world_height_m": [
+        0.6,
+        1.1
+      ],
+      "art_size": 64,
+      "variety": [
+        "rose-form",
+        "lily-form",
+        "thistle-form"
+      ],
+      "modifiers": [
+        "petals mid-bloom",
+        "one petal shattered on the ground",
+        "twin blooms sharing a stem",
+        "frost ferns radiating from the base",
+        "a bud just opening"
+      ],
+      "glow_concepts": [
+        "moonlight caught in the petals",
+        "a cold blue heart-glow",
+        "aurora colors shifting through the ice"
+      ],
+      "animation_idea": "subtle idle motion",
+      "lore_fit": "Experimental special \u2014 small bet; the maintainer's stars decide if it lives."
     }
   ],
   "modifier_pools": {
