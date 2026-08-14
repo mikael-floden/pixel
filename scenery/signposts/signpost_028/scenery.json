@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:17:02+00:00",
+  "id": "signpost_028",
+  "group": "signposts",
+  "rank": 8,
+  "index": 28,
+  "name": "Tar-lettered harbor signpost 028 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "tar-lettered harbor signpost",
+  "modifier": "reinforced with iron bands",
+  "glow_concept": "painted place-names glowing like embers",
+  "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, tar-lettered harbor signpost, reinforced with iron bands, large, twice human height, self-emissive at night, softly radiating light: painted place-names glowing like embers",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 128,
+  "sprite": "signposts/signpost_028/sprite.webp",
+  "placement": {
+    "world_height_m": 2.3,
+    "world_px_height": 87,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2a01fa09-625f-4910-9887-295ea32e140b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
