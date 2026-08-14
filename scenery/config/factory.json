@@ -6455,11 +6455,11 @@
       "id": "windows",
       "prefix": "window",
       "rank": 25,
-      "quota": 140,
+      "quota": 400,
       "art_size": 128,
       "world_height_m": [
-        0.6,
-        1.2
+        1.05,
+        1.4
       ],
       "lights": "LIGHTS_OFF",
       "keep_directions": [
@@ -6548,12 +6548,8 @@
       ],
       "size_bands": [
         [
-          0.75,
-          48
-        ],
-        [
-          1.05,
-          64
+          1.22,
+          80
         ],
         [
           99,
