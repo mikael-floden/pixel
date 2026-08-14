@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-14T13:25:13.577Z",
+  "updated_at": "2026-08-14T13:26:14.242Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -9558,6 +9558,30 @@
       "updated_at": "2026-08-14T13:25:11.462Z",
       "status": "approved",
       "art": "46a441944f1e14e0"
+    },
+    "scenery/trees/tree_074#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-14T13:25:40.074Z",
+      "status": "approved",
+      "art": "0b33dd48d2f9dfb1"
+    },
+    "scenery/trees/tree_074#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-14T13:25:44.385Z",
+      "status": "approved",
+      "art": "0b33dd48d2f9dfb1"
+    },
+    "scenery/trees/tree_074#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-14T13:25:49.782Z",
+      "status": "approved",
+      "art": "0b33dd48d2f9dfb1"
+    },
+    "scenery/trees/tree_074#not_lit_2#south": {
+      "status": "rejected",
+      "art": "0b33dd48d2f9dfb1",
+      "updated_at": "2026-08-14T13:26:13.978Z",
+      "note": "All trees should not lean right"
     }
   }
 }
