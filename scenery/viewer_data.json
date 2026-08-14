@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 511,
+  "scenery_count": 512,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 13,
@@ -951,7 +951,7 @@
     "harvest_altars": 1,
     "haystacks": 7,
     "hearths": 7,
-    "hedges": 8,
+    "hedges": 9,
     "honey_trees": 1,
     "hop_poles": 2,
     "hot_springs": 1,
@@ -6367,6 +6367,28 @@
       "status": "complete",
       "pixellab_object_id": "962e9b5c-cad0-4e16-84e8-0c396d1eb892",
       "sprite": "hedges/hedge_030/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "hedge_032",
+      "rel": "hedges/hedge_032",
+      "name": "Hedge with bird nest tuft 032 \u00b7 lit",
+      "category": "hedges",
+      "lights": "LIGHTS_ON",
+      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, hedge with bird nest tuft, asymmetric, wind-shaped, roughly six feet tall, human height, self-emissive at night, softly radiating light: firefly colony blinking through the leaves",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 1.25,
+        "world_px_height": 47,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "717986fd-b076-46fb-a095-db9619e76dd0",
+      "sprite": "hedges/hedge_032/sprite.webp",
       "rotations": {},
       "animations": []
     },
