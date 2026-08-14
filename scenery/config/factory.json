@@ -6464,5 +6464,9 @@
       "with climbing flowers at one corner",
       "snow-dusted"
     ]
+  },
+  "goal": {
+    "target_pieces": 1000,
+    "note": "maintainer 2026-08-14: 'I think the goal is to generate 1000 scenery objects!' Generation STOPS at 1000 — no open-ended catalog, no scheduler. He tops up credits, the agent runs a bounded pass, he reviews. Count is live pieces on disk (his rejections delete, so the 1000 are all pieces that survived review)."
   }
 }

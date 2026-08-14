@@ -10,8 +10,14 @@ name: Scenery factory loop
 # disable from the Actions tab.
 
 on:
-  schedule:
-    - cron: "30 2 * * *"        # daily 02:30 UTC — one ~100-piece pass
+  # SCHEDULE DISABLED 2026-08-14 (maintainer): "you can cancel the scheduler
+  # now already. We will do this together until we hit 1000 scenery objects."
+  # The catalog has a finite goal now, so generation is driven by hand — he
+  # tops up credits, the agent runs a bounded pass, he reviews it. Re-enable
+  # by restoring the cron line if autonomous daily generation is ever wanted
+  # again (it also skipped three days running, so it needs a fallback line).
+  #  schedule:
+  #    - cron: "30 2 * * *"
   workflow_dispatch:
     inputs:
       max_pieces:

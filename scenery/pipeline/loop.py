@@ -401,6 +401,12 @@ def main():
             stop_submitting = "time budget"
         if stop_submitting is None and submitted >= max_pieces:
             stop_submitting = f"piece cap ({max_pieces})"
+        # THE GOAL (maintainer 2026-08-14): stop at 1000 live pieces, full stop.
+        goal = int((cfg.get("goal") or {}).get("target_pieces") or 0)
+        if stop_submitting is None and goal:
+            live = sum(len(v) for v in factory.done_by_group().values())
+            if live + len(in_flight) >= goal:
+                stop_submitting = f"GOAL REACHED — {live} live pieces of {goal}"
         # --- keep the pipeline full ----------------------------------------
         while stop_submitting is None and len(in_flight) < PARALLEL \
                 and submitted < max_pieces:
