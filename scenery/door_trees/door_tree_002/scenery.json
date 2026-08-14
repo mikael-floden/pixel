@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:35:13+00:00",
+  "id": "door_tree_002",
+  "group": "door_trees",
+  "rank": 162,
+  "index": 2,
+  "name": "Weathered door tree 002 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "weathered door tree",
+  "modifier": "door standing slightly open",
+  "glow_concept": "warm light spilling from the gap",
+  "prompt": "a living tree with a real wooden door fitted into its trunk, hinges set into the bark, a worn step of stone at its foot, weathered door tree, door standing slightly open, tall, about three times human height, self-emissive at night, softly radiating light: warm light spilling from the gap",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "door_trees/door_tree_002/sprite.webp",
+  "placement": {
+    "world_height_m": 3.73,
+    "world_px_height": 140,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "2604059e-3886-4aca-91f8-0f58adeb1d02",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
