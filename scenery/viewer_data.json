@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 614,
+  "scenery_count": 615,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1119,7 +1119,7 @@
       "id": "cliff_ledgetrees",
       "name": "Cliff Ledge Tree",
       "quota": 45,
-      "done": 2
+      "done": 3
     },
     {
       "rank": 160,
@@ -1238,7 +1238,7 @@
     "cliff_falls": 2,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_ledgetrees": 2,
+    "cliff_ledgetrees": 3,
     "cliff_mosses": 3,
     "cliff_roots": 2,
     "cliff_shrubs": 4,
@@ -4361,6 +4361,28 @@
       "status": "complete",
       "pixellab_object_id": "51e8f0b2-79a2-4569-a679-8cea0f93e21f",
       "sprite": "cliff_ledgetrees/cliff_ledgetree_002/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_ledgetree_004",
+      "rel": "cliff_ledgetrees/cliff_ledgetree_004",
+      "name": "Autumn-gold larch 004 \u00b7 lit",
+      "category": "cliff_ledgetrees",
+      "lights": "LIGHTS_ON",
+      "description": "a whole small tree growing from a ledge partway up a vertical rock face, leaning out over the drop, its roots wrapping the ledge stone, autumn-gold larch, with a rope swing hanging from it, towering, many times human height, self-emissive at night, softly radiating light: lanterns hung in its branches",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 5.41,
+        "world_px_height": 204,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "7855d514-918a-4dd4-9b56-7e645d2e9b0d",
+      "sprite": "cliff_ledgetrees/cliff_ledgetree_004/sprite.webp",
       "rotations": {},
       "animations": []
     },
