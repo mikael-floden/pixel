@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 587,
+  "scenery_count": 588,
   "target_count": 2651,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -860,7 +860,7 @@
       "id": "fairy_stumps",
       "name": "Fairy Stump",
       "quota": 3,
-      "done": 1
+      "done": 2
     },
     {
       "rank": 123,
@@ -1163,7 +1163,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 1,
     "driftwood_logs": 1,
-    "fairy_stumps": 1,
+    "fairy_stumps": 2,
     "fallen_logs": 9,
     "fences": 3,
     "ferns": 12,
@@ -4980,6 +4980,28 @@
       "status": "complete",
       "pixellab_object_id": "8c378e40-3c31-4e43-ba8a-33eaf158f93c",
       "sprite": "fairy_stumps/fairy_stump_001/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "fairy_stump_008",
+      "rel": "fairy_stumps/fairy_stump_008",
+      "name": "Mossy pine fairy stump 008 \u00b7 lit",
+      "category": "fairy_stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a broad old tree stump fitted with tiny carved doors, steps and round windows, a little inhabited world, mossy pine fairy stump, a spiral stair around the outside, waist-high, self-emissive at night, softly radiating light: a thumb-sized lantern by the door",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.75,
+        "world_px_height": 28,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "cb04f77c-c1c9-420e-af65-799b4430c874",
+      "sprite": "fairy_stumps/fairy_stump_008/sprite.webp",
       "rotations": {},
       "animations": []
     },
