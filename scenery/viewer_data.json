@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 502,
+  "scenery_count": 503,
   "target_count": 3031,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -48,7 +48,7 @@
       "id": "waystones",
       "name": "Waystone",
       "quota": 90,
-      "done": 9
+      "done": 10
     },
     {
       "rank": 7,
@@ -886,7 +886,7 @@
     "water_pumps": 2,
     "waterwheels": 2,
     "wayside_shrines": 7,
-    "waystones": 9,
+    "waystones": 10,
     "web_frames": 1,
     "wells": 8,
     "windmills": 3,
@@ -11612,6 +11612,28 @@
       "status": "complete",
       "pixellab_object_id": "1b14d3a5-4c60-4f8d-8fd4-5b599de69fc9",
       "sprite": "waystones/waystone_016/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "waystone_017",
+      "rel": "waystones/waystone_017",
+      "name": "Chiseled numeral milestone 017",
+      "category": "waystones",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, chiseled numeral milestone, patched with mismatched materials, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.7,
+        "world_px_height": 26,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9304b8d5-1f19-41f1-9a0b-21f4befd6d87",
+      "sprite": "waystones/waystone_017/sprite.webp",
       "rotations": {},
       "animations": []
     },
