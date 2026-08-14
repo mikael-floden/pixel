@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 522,
+  "scenery_count": 516,
   "target_count": 2985,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -76,7 +76,7 @@
       "id": "fences",
       "name": "Fence",
       "quota": 82,
-      "done": 9
+      "done": 7
     },
     {
       "rank": 11,
@@ -90,7 +90,7 @@
       "id": "hedges",
       "name": "Hedge",
       "quota": 78,
-      "done": 9
+      "done": 8
     },
     {
       "rank": 13,
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 50,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 102,
@@ -804,7 +804,7 @@
       "id": "spirit_gates",
       "name": "Spirit Gate",
       "quota": 7,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 115,
@@ -881,7 +881,7 @@
       "id": "sunken_statues",
       "name": "Sunken Statue",
       "quota": 6,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 126,
@@ -922,7 +922,7 @@
     "chimney_stacks": 1,
     "cliff_features": 6,
     "cliff_fragments": 2,
-    "cliff_vines": 6,
+    "cliff_vines": 5,
     "crystals": 8,
     "cup_fungi": 2,
     "cupboards_and_shelves": 6,
@@ -931,7 +931,7 @@
     "driftwood_logs": 1,
     "fairy_stumps": 1,
     "fallen_logs": 8,
-    "fences": 9,
+    "fences": 7,
     "ferns": 7,
     "fish_drying_racks": 4,
     "flame_niches": 9,
@@ -951,7 +951,7 @@
     "harvest_altars": 1,
     "haystacks": 8,
     "hearths": 7,
-    "hedges": 9,
+    "hedges": 8,
     "honey_trees": 1,
     "hop_poles": 2,
     "hot_springs": 1,
@@ -984,7 +984,6 @@
     "signposts": 10,
     "soulstone_outcrops": 8,
     "soulstone_plinths": 1,
-    "spirit_gates": 1,
     "spring_basins": 2,
     "standing_stones": 5,
     "statues": 2,
@@ -994,7 +993,6 @@
     "streetlights": 8,
     "stumps": 8,
     "sundials": 2,
-    "sunken_statues": 1,
     "tables": 7,
     "telegraph_poles": 4,
     "toadstool_rings": 8,
@@ -3604,28 +3602,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_012",
-      "rel": "cliff_vines/cliff_vine_012",
-      "name": "Yellow honeysuckle cascade 012 \u00b7 lit",
-      "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, yellow honeysuckle cascade, unusually broad and squat, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 6.23,
-        "world_px_height": 235,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "84b12e92-280a-4482-aeff-63ba6f065112",
-      "sprite": "cliff_vines/cliff_vine_012/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "cliff_vine_014",
       "rel": "cliff_vines/cliff_vine_014",
       "name": "Berry-dotted bramble fall 014 \u00b7 lit",
@@ -4546,50 +4522,6 @@
       "status": "complete",
       "pixellab_object_id": "3a431c82-a55a-4ac9-8323-51722b6cd392",
       "sprite": "fences/fence_021/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_022",
-      "rel": "fences/fence_022",
-      "name": "Briar rose climbing one post 022 \u00b7 lit",
-      "category": "fences",
-      "lights": "LIGHTS_ON",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, briar rose climbing one post, moss-capped, waist-high, self-emissive at night, softly radiating light: carved farm-mark rune shining on a post",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.11,
-        "world_px_height": 42,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "f9fb841f-ba73-401f-bdcd-828ad0eae41f",
-      "sprite": "fences/fence_022/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "fence_024",
-      "rel": "fences/fence_024",
-      "name": "Run with small wicket gate 024 \u00b7 lit",
-      "category": "fences",
-      "lights": "LIGHTS_ON",
-      "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, run with small wicket gate, leaning slightly, waist-high, self-emissive at night, softly radiating light: golden glow where hands wore the top rail smooth",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.0,
-        "world_px_height": 38,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "bc1e74b4-f930-4aad-a652-a6b173cc69d4",
-      "sprite": "fences/fence_024/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -6367,28 +6299,6 @@
       "status": "complete",
       "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
       "sprite": "hedges/hedge_008/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "hedge_025",
-      "rel": "hedges/hedge_025",
-      "name": "Gap-toothed old hedge 025",
-      "category": "hedges",
-      "lights": "LIGHTS_OFF",
-      "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, gap-toothed old hedge, lightly snow-dusted, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "e60e4fe5-9262-4226-a874-fe023bf300aa",
-      "sprite": "hedges/hedge_025/sprite.webp",
       "rotations": {},
       "animations": []
     },
@@ -9143,28 +9053,6 @@
       "animations": []
     },
     {
-      "id": "spirit_gate_002",
-      "rel": "spirit_gates/spirit_gate_002",
-      "name": "Dark basalt gate 002 \u00b7 lit",
-      "category": "spirit_gates",
-      "lights": "LIGHTS_ON",
-      "description": "two massive rough standing stones leaning together with a heavy lintel stone across their tops, a doorway to nowhere in the grass, dark basalt gate, half-fallen, lintel tilted, large, twice human height, self-emissive at night, softly radiating light: the gap shimmering faintly",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.5,
-        "world_px_height": 94,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "4179dfd2-3a5c-4598-b347-3fc05f218752",
-      "sprite": "spirit_gates/spirit_gate_002/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
       "id": "spring_basin_003",
       "rel": "spring_basins/spring_basin_003",
       "name": "Moss-rimmed old basin 003",
@@ -10283,28 +10171,6 @@
       "status": "complete",
       "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
       "sprite": "sundials/sundial_003/sprite.webp",
-      "rotations": {},
-      "animations": []
-    },
-    {
-      "id": "sunken_statue_002",
-      "rel": "sunken_statues/sunken_statue_002",
-      "name": "Laughing buried head 002 \u00b7 lit",
-      "category": "sunken_statues",
-      "lights": "LIGHTS_ON",
-      "description": "a giant weathered stone head half-buried in the meadow at a gentle tilt, features soft with age and moss, laughing buried head, split diagonally, both halves near, large, twice human height, self-emissive at night, softly radiating light: glowing moss marking old tear lines",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.54,
-        "world_px_height": 96,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "8b24494f-b734-4060-a080-199aa1d4b1fe",
-      "sprite": "sunken_statues/sunken_statue_002/sprite.webp",
       "rotations": {},
       "animations": []
     },
