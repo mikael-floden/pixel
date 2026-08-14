@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T02:29:43+00:00",
+  "id": "grave_037",
+  "group": "graves",
+  "rank": 3,
+  "index": 37,
+  "name": "Moss-covered fieldstone 037",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-covered fieldstone",
+  "modifier": "half-repainted",
+  "glow_concept": null,
+  "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, moss-covered fieldstone, half-repainted, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "graves/grave_037/sprite.webp",
+  "placement": {
+    "world_height_m": 0.71,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "377eafa9-31c6-406d-9f3b-fa8a32cebdc1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
