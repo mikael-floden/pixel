@@ -87,13 +87,17 @@ symptom. Currently excluded from the image while remaining in the repo:
 tiles2/maps2/wiki, 2026-07-31).
 
 **OFF-GITHUB BACKUP.** No human keeps a clone — the agents are the only ones
-who touch git — so GitHub is a single point of failure. `.github/workflows/
-backup-gdrive.yml` drops a nightly `git archive HEAD` zip (current state, no
-history; 274 MB) into the maintainer's personal Drive via rclone, keeping the
-newest 14. A GitHub runner does the whole job; the only human step is a
-one-time Google OAuth consent. Note the archive ships **tracked files only**,
-which is what keeps the gitignored `.env` out of cloud storage — a `tar` of the
-working tree would leak `PIXELLAB_API_KEY`. Setup + restore: `.github/BACKUP.md`.
+who touch git — so GitHub is a single point of failure.
+`.github/workflows/backup-gcs.yml` stores a nightly `git archive HEAD` zip
+(current state, no history; 274 MB) in a GCS bucket, kept 30 days by a
+lifecycle rule. **No secrets exist for it**: it reuses the deploy's keyless
+Workload Identity Federation. The SA holds `objectCreator`+`objectViewer` on
+that bucket and NOT `objectAdmin`, so CI can write and verify a backup but
+*cannot* delete one — which is what keeps "backups live in the same GCP
+project as prod" from meaning "one compromised pipeline loses both". Note the
+archive ships **tracked files only**, which is what keeps the gitignored `.env`
+out of cloud storage — a `tar` of the working tree would leak
+`PIXELLAB_API_KEY`. ~0.8 kr/month. Setup + restore: `.github/BACKUP.md`.
 
 The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
 cleanly. The only real cross-domain hazard is editing a *shared* file at once;

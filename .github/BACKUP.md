@@ -1,14 +1,12 @@
-# Off-GitHub backup → Google Drive
+# Off-GitHub backup → Google Cloud Storage
 
 Nobody on this project keeps a local clone — the agents are the only ones who
 touch git. That makes GitHub a single point of failure: an account lockout, a
-bad force-push, or a repo deletion takes everything. This puts a nightly zip
-somewhere with a **different blast radius**: a Drive folder the maintainer owns
-personally, outside both GitHub and the GCP project.
+bad force-push, or a repo deletion takes everything.
 
-**Folder:** [nangijala-backups](https://drive.google.com/drive/folders/1BQH6i16t0rpRN0BEq74RQisI5yd1sFSg)
-**Workflow:** `.github/workflows/backup-gdrive.yml` — daily 08:17 UTC, or run
-it by hand from the Actions tab.
+**Workflow:** `.github/workflows/backup-gcs.yml` — daily 08:17 UTC, or run it
+by hand from the Actions tab.
+**Setup:** `.github/gcs-backup-bootstrap.sh`, once.
 
 ## What's in the zip
 
@@ -19,88 +17,92 @@ Deliberately absent, and each for a reason:
 
 | Not included | Why |
 |---|---|
-| `.git/` | 2.3 GB of history. GitHub is the history; this is the *current state* snapshot the maintainer asked for. |
+| `.git/` | 2.3 GB of history. GitHub is the history; this is the *current state* snapshot that was asked for. |
 | `node_modules/` | Gitignored. `npm ci` rebuilds it. |
 | **`.env`** | Gitignored — so `PIXELLAB_API_KEY` **cannot** ride along into cloud storage. A plain `tar` of the working tree *would* have leaked it. |
 
-## One-time setup
+## Setup
 
-Three secrets and one variable, in **Settings → Secrets and variables → Actions**.
+```
+PROJECT_ID=your-gcp-project ./.github/gcs-backup-bootstrap.sh
+```
 
-The variable is already known:
+Then set the one repo variable it prints (Settings → Secrets and variables →
+Actions → **Variables**):
 
 | Kind | Name | Value |
 |---|---|---|
-| Variable | `GDRIVE_FOLDER_ID` | `1BQH6i16t0rpRN0BEq74RQisI5yd1sFSg` |
+| Variable | `GCS_BACKUP_BUCKET` | `<project-id>-nangijala-backups` |
 
-The secrets come from one `rclone` login. **This step needs a computer with a
-browser** — it's a Google OAuth consent screen, so it can't be done from a
-phone or from CI.
+**There are no secrets.** The workflow authenticates with the same keyless
+Workload Identity Federation the deploy already uses, so there is nothing to
+store, rotate, or leak. That is the whole reason this is a bucket and not
+personal Drive: Drive sits outside that trust boundary and would have needed a
+long-lived OAuth refresh token in repo secrets, plus a browser consent screen
+to mint it. (A service account can't own consumer-Drive files either — service
+accounts have no Drive storage quota — so impersonation isn't a way around it.)
 
-1. Install rclone locally: <https://rclone.org/install/>
-2. Run `rclone config` and answer:
-   - `n` (new remote), name it **`gd`**
-   - storage: **`drive`**
-   - `client_id` / `client_secret`: **press Enter to leave blank** to start.
-     (rclone then uses its shared OAuth app, which is rate-limited but fine for
-     one upload a night. If uploads ever get throttled, make your own OAuth
-     client in the GCP console and fill these in — that's the only reason to.)
-   - scope: **`1`** (full access — needed because the workflow also *deletes*
-     old backups, and because the folder above was created by another app)
-   - root folder / service account: leave blank
-   - `y` for auto config → a browser opens → approve
-   - `n` to team drive, then `y` to confirm, `q` to quit
-3. Print the credentials:
-   ```
-   rclone config show gd
-   ```
-4. Copy each value into a GitHub **secret**:
+## The append-only design
 
-   | Secret | From `rclone config show gd` |
-   |---|---|
-   | `GDRIVE_CLIENT_ID` | `client_id` (leave the secret unset if you left it blank) |
-   | `GDRIVE_CLIENT_SECRET` | `client_secret` (same) |
-   | `GDRIVE_TOKEN` | the whole `token = {...}` JSON blob, braces included |
+The obvious objection to a bucket is that it lives in the **same GCP project as
+production**, so one compromised pipeline could take both. That is answered
+directly by the permissions:
 
-5. Actions tab → **backup to gdrive** → **Run workflow**. It prints what it
-   uploaded and everything currently in the folder.
+- the deploy SA gets **`objectCreator` + `objectViewer`**, scoped to this
+  bucket — write a new snapshot, read one back to verify;
+- it does **not** get `objectAdmin`. CI cannot delete or overwrite an existing
+  backup. Not "shouldn't" — *cannot*;
+- retention is the bucket's own **lifecycle rule** (30 days), which nothing in
+  CI can reach.
 
-## Retention and quota
+So a compromised deploy pipeline can add junk to the bucket. It cannot destroy
+the history. Public access prevention is on, and access is uniform
+bucket-level.
 
-Keeps the newest **14** (override with the `keep` input on a manual run).
-14 × 274 MB ≈ **3.8 GB** against Google's free 15 GB.
+The honest cost of append-only: since CI can't prune, deletion is age-based
+rather than keep-newest-N. If backups stopped uploading for 30 straight days,
+the last one would age out and the bucket would empty. GitHub emails on
+workflow failure, so that needs a month of ignored failures — accepted in
+exchange for backups CI can't wipe.
 
-Pruning deletes **permanently**, not to Trash — Drive's Trash keeps counting
-against quota for 30 days, so trashing would free nothing for a month.
+## Cost
+
+30 daily snapshots × 274 MB ≈ **8.2 GB**, Nearline, one region:
+
+**≈ 0.8 kr/month.** Against the ~350 kr/month the project already spends, this
+is free in practice.
+
+Nearline (not Archive) is deliberate: Archive is cheaper per GB but has a
+**365-day minimum storage duration**, so deleting at 30 days would bill an
+early-deletion charge for the other 335. Nearline's 30-day minimum exactly
+matches the lifecycle, so nothing is ever deleted early.
 
 ## Restoring
 
-Download the newest zip, unzip, and:
-
 ```
-cd games2 && npm ci
+gcloud storage ls gs://<bucket>                    # pick a snapshot
+gcloud storage cp gs://<bucket>/nangijala-....zip .
+unzip nangijala-....zip -d restored && cd restored/games2 && npm ci
 ```
 
-That's a complete working tree — the game builds and the art domains are all
+That's a complete working tree — the game builds and every art domain is
 there. You get no git history this way; if that's what you need, clone from
-GitHub instead. These zips are the safety net for when GitHub *isn't* there.
+GitHub. These zips are the safety net for when GitHub *isn't* there.
 
-## Why not just upload from a chat session
+## Verification, because a silent bad backup is worse than none
 
-The Claude Drive connector's only upload path is inline content — the bytes
-have to pass through the model's context. Base64 of a 274 MB zip is ~382 MB of
-text, about **477× a full context window**. And a backup has to run unattended
-at 08:17 UTC, which a chat session by definition doesn't. rclone streams runner
-→ Drive directly and needs nobody present.
+The workflow refuses to trust its own output at three points:
 
-## Alternative worth knowing about
+1. `unzip -t` on the real archive, plus entry (>20,000) and byte (>50 MB)
+   floors — a broken checkout or empty tree fails loudly instead of uploading.
+2. `gcloud storage cp` validates a CRC32C checksum end to end, so a corrupted
+   transfer fails the step rather than landing quietly.
+3. The object is read back from GCS and size-compared against the local file —
+   `cp` exiting 0 is not proof the object is readable at the far end.
 
-A Google Cloud Storage bucket would need **zero new credentials** — the deploy
-workflow already authenticates to GCP keylessly via Workload Identity
-Federation, so it'd just be a new permission on the existing service account.
-At Archive-class pricing 3.8 GB costs well under 1 kr/month.
+## A second copy, if you want one
 
-It is deliberately **not** what we did: GCS lives in the same Google Cloud
-project as production, so a billing suspension or a compromised project takes
-the backups with it. Drive is a separate blast radius, which is the entire
-point. Worth adding as a *second* copy, not as a replacement.
+This covers "GitHub is gone". It does not cover "the Google account is gone".
+If that matters, the cheapest addition is a copy into a **different** cloud
+account — not a second bucket in the same project, which shares the failure it
+is meant to protect against.

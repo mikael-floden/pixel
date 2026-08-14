@@ -1,0 +1,120 @@
+name: backup to gcs
+
+# OFF-GITHUB BACKUP (maintainer 2026-08-14: "usually every person in the team
+# has a backup of the entire project — since only AI agents use git here, I
+# want something that zips and sends the project" somewhere safe).
+#
+# WHY THIS EXISTS: with no human clone anywhere, GitHub is a single point of
+# failure — an account lockout, a bad force-push, or a repo deletion takes the
+# whole project with it.
+#
+# WHAT IT SHIPS: `git archive HEAD` — the current state of every TRACKED file,
+# no history (the maintainer: "only has to contain the current state"). That
+# definition is load-bearing:
+#   • no .git/ (2.3 GB of history; GitHub is the history)
+#   • no node_modules/ (gitignored — `npm ci` restores it)
+#   • no .env, so PIXELLAB_API_KEY can never ride along into cloud storage.
+#     A tar of the working tree WOULD have leaked it.
+# Measured 2026-08-14: 42,920 entries, ~325 MB uncompressed, 274 MB zipped.
+#
+# NO CREDENTIALS EXIST FOR THIS. It authenticates through the same keyless
+# Workload Identity Federation the deploy already uses, so there is no secret
+# to store, rotate or leak. Setup is one bucket: .github/gcs-backup-bootstrap.sh.
+#
+# APPEND-ONLY BY CONSTRUCTION: the SA holds objectCreator + objectViewer on the
+# bucket and NOT objectAdmin, so this job can write a snapshot and read it back
+# to verify, but cannot delete or overwrite one. Retention is the bucket's own
+# lifecycle rule (30 days), which nothing here can reach. That is what stops
+# "the backups live in the same GCP project as prod" from meaning "one
+# compromised pipeline loses both".
+
+on:
+  schedule:
+    # 08:17 UTC — after the art loops' 02:30 pass has normally finished, so the
+    # snapshot catches the day's generated art. Off-round minute on purpose.
+    - cron: "17 8 * * *"
+  workflow_dispatch: {}
+
+# One backup at a time; a scheduled and a manual run racing would upload two
+# near-identical 274 MB snapshots for no benefit.
+concurrency:
+  group: backup-gcs
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45 # measured ~5 min; a ceiling to catch a hung upload
+    permissions:
+      contents: read
+      id-token: write # required for Workload Identity Federation
+    steps:
+      # Shallow: we archive HEAD's tree, so history would be pure download cost.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build the snapshot zip
+        run: |
+          set -euo pipefail
+          NAME="nangijala-$(date -u +%Y%m%d-%H%M)-$(git rev-parse --short HEAD).zip"
+          echo "NAME=$NAME" >> "$GITHUB_ENV"
+          git archive --format=zip -9 -o "$NAME" HEAD
+          ls -lh "$NAME"
+
+      # A backup that silently stores a truncated zip is WORSE than no backup,
+      # because it looks like success until the day you need it. Test the real
+      # archive, then floor-check entries and bytes so a "valid but nearly
+      # empty" zip fails loudly too.
+      - name: Verify the zip before trusting it
+        run: |
+          set -euo pipefail
+          unzip -t "$NAME" > /dev/null
+          ENTRIES=$(unzip -l "$NAME" | tail -1 | awk '{print $2}')
+          BYTES=$(stat -c%s "$NAME")
+          echo "entries=$ENTRIES bytes=$BYTES"
+          # Real archive is ~42,900 entries / ~274 MB. These floors catch a
+          # broken checkout or an empty tree, not normal growth or shrinkage.
+          [ "$ENTRIES" -gt 20000 ] || { echo "only $ENTRIES entries — refusing to upload"; exit 1; }
+          [ "$BYTES" -gt 50000000 ] || { echo "only $BYTES bytes — refusing to upload"; exit 1; }
+          echo "BYTES=$BYTES" >> "$GITHUB_ENV"
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      # No setup-gcloud step: the SDK is preinstalled on ubuntu-latest and the
+      # auth step exports credentials the CLI picks up on its own — the same
+      # reasoning (and the same 19s saving) documented in nangijala-deploy.yml.
+      # `gcloud storage cp` validates a CRC32C checksum end to end, so a
+      # corrupted transfer fails the step rather than landing silently.
+      - name: Upload to the backup bucket
+        run: |
+          set -euo pipefail
+          gcloud storage cp "$NAME" "gs://${{ vars.GCS_BACKUP_BUCKET }}/$NAME"
+
+      # cp exiting 0 is not proof the object is readable at the far end at the
+      # right size. Ask GCS what it actually has.
+      - name: Confirm it is really there, at the right size
+        run: |
+          set -euo pipefail
+          REMOTE=$(gcloud storage objects describe \
+            "gs://${{ vars.GCS_BACKUP_BUCKET }}/$NAME" --format='value(size)')
+          echo "local=$BYTES remote=${REMOTE:-MISSING}"
+          [ "$REMOTE" = "$BYTES" ] || { echo "size mismatch or missing — backup NOT trustworthy"; exit 1; }
+          echo "verified $NAME ($BYTES bytes)"
+
+      - name: Summary
+        run: |
+          {
+            echo "### Backup stored"
+            echo ""
+            echo "\`$NAME\` — $(numfmt --to=iec "$BYTES") → \`gs://${{ vars.GCS_BACKUP_BUCKET }}\`"
+            echo ""
+            echo "Currently retained (lifecycle deletes at 30 days):"
+            echo ""
+            gcloud storage ls --long "gs://${{ vars.GCS_BACKUP_BUCKET }}/" \
+              | sed 's/^/    /'
+          } >> "$GITHUB_STEP_SUMMARY"
