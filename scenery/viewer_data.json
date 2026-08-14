@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 656,
+  "scenery_count": 657,
   "target_count": 2150,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -713,7 +713,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "quota": 70,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 102,
@@ -1242,7 +1242,7 @@
     "cliff_mosses": 5,
     "cliff_roots": 5,
     "cliff_shrubs": 6,
-    "cliff_vines": 7,
+    "cliff_vines": 8,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -4845,6 +4845,28 @@
       "status": "complete",
       "pixellab_object_id": "9cf7568d-0747-494a-9ab6-e81b7ec16fd2",
       "sprite": "cliff_vines/cliff_vine_011/sprite.webp",
+      "rotations": {},
+      "animations": []
+    },
+    {
+      "id": "cliff_vine_013",
+      "rel": "cliff_vines/cliff_vine_013",
+      "name": "Blue-flowered creeper fall 013",
+      "category": "cliff_vines",
+      "lights": "LIGHTS_OFF",
+      "description": "an enormous curtain of climbing vine falling down a vertical rock face, a very tall narrow sheet of dense overlapping leaves hanging far down the cliff, thick woody stems gripping the stone, the fall much taller than it is wide, blue-flowered creeper fall, with a bird nest deep in the leaves, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 256,
+      "placement": {
+        "world_height_m": 7.24,
+        "world_px_height": 273,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "9a811d0e-08ea-4a85-91d2-bef331167179",
+      "sprite": "cliff_vines/cliff_vine_013/sprite.webp",
       "rotations": {},
       "animations": []
     },
