@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T04:05:16+00:00",
+  "id": "cliff_moss_016",
+  "group": "cliff_mosses",
+  "rank": 158,
+  "index": 16,
+  "name": "Frost-tipped winter moss 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "frost-tipped winter moss",
+  "modifier": "strands drifting apart toward one side",
+  "glow_concept": "glow-lichen in bright rings",
+  "prompt": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like small islands linked by threads, wide bare gaps between the patches, MOSTLY EMPTY SPACE \u2014 NO main stem, NO trunk, NO single origin, NO starting line or bar across the top, nothing it hangs from, no defined beginning or end anywhere; the growth simply THINS OUT and dissolves into a few isolated leaves and tendrils toward every edge, so copies can be scattered and overlapped freely across a wall, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, the whole thing inside the frame with margin, nothing cropped, frost-tipped winter moss, strands drifting apart toward one side, towering, many times human height, self-emissive at night, softly radiating light: glow-lichen in bright rings",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 192,
+  "sprite": "cliff_mosses/cliff_moss_016/sprite.webp",
+  "placement": {
+    "world_height_m": 6.0,
+    "world_px_height": 226,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "70de2774-3e06-4cfa-ad27-5808e5b1d087",
+  "pixellab_directions": 1,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-1-direction-object (single, S-only)"
+}
