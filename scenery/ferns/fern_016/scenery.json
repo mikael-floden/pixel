@@ -1,0 +1,33 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-14T01:48:16+00:00",
+  "id": "fern_016",
+  "group": "ferns",
+  "rank": 42,
+  "index": 16,
+  "name": "Lady fern fountain 016 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "lady fern fountain",
+  "modifier": "leaning noticeably to one side",
+  "glow_concept": "central fiddlehead coil glowing as it unrolls",
+  "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, lady fern fountain, leaning noticeably to one side, small, knee-high, self-emissive at night, softly radiating light: central fiddlehead coil glowing as it unrolls",
+  "view": "low top-down",
+  "direction": "south",
+  "size": 64,
+  "sprite": "ferns/fern_016/sprite.webp",
+  "placement": {
+    "world_height_m": 0.43,
+    "world_px_height": 16,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "pixellab_object_id": "fa9bfe98-1997-490c-b232-4a387bfe4e19",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
