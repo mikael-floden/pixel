@@ -4,8 +4,8 @@
   "group": "beacons",
   "rank": 46,
   "index": 8,
-  "name": "Moss-footed forgotten beacon 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Moss-footed forgotten beacon 008",
+  "lights": null,
   "variety": "moss-footed forgotten beacon",
   "glow_concept": "pillar of pale soul-light rising skyward",
   "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, moss-footed forgotten beacon, tall, about three times human height, self-emissive at night, softly radiating light: pillar of pale soul-light rising skyward",
@@ -35,6 +35,46 @@
       "sprite": "beacons/beacon_008/sprite.webp",
       "pixellab_object_id": "576e2114-e90b-454d-aa04-c507a15c8a6b",
       "generated_at": "2026-08-13T21:45:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_008/lit_2/sprite.webp",
+      "pixellab_object_id": "d8d733dc-a779-4851-8a79-ca912fc65918",
+      "generated_at": "2026-08-15T19:54:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5262,
+      "glow_score": 0.1233
+    },
+    "LIT_3": {
+      "sprite": "beacons/beacon_008/lit_3/sprite.webp",
+      "pixellab_object_id": "37dfa728-e014-45ea-96da-2fc19789cf04",
+      "generated_at": "2026-08-15T19:54:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6242,
+      "glow_score": 0.1345
+    },
+    "LIT_4": {
+      "sprite": "beacons/beacon_008/lit_4/sprite.webp",
+      "pixellab_object_id": "2f9b832d-7ac8-4ae4-83a0-492663cb487f",
+      "generated_at": "2026-08-15T19:54:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5629,
+      "glow_score": 0.0995
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "18eda246-27bd-426b-a93b-5d874607c955",
+      "generated_at": "2026-08-15T19:54:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5914,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5dd78a46-c02d-4d07-a2f9-4f22a1bb8284",
+      "generated_at": "2026-08-15T19:54:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2852,
+      "glow_score": 0.0
     }
   }
 }
