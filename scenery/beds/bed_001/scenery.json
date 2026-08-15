@@ -5,7 +5,7 @@
   "rank": 105,
   "index": 1,
   "name": "Sturdy iron-frame bed with brass knobs 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "sturdy iron-frame bed with brass knobs",
   "glow_concept": null,
   "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, sturdy iron-frame bed with brass knobs, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:44:59+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "beds/bed_001/lit_1/sprite.webp",
+      "pixellab_object_id": "709ddfde-3ad2-4f5e-8cdd-247e4799ff2b",
+      "generated_at": "2026-08-15T20:05:55+00:00",
+      "glow_concept": "a candle on the headboard shelf",
+      "difference_from_source": 0.6287,
+      "glow_score": 0.2179
+    },
+    "LIT_2": {
+      "sprite": "beds/bed_001/lit_2/sprite.webp",
+      "pixellab_object_id": "01595486-a7e1-49b1-999b-5002710c012b",
+      "generated_at": "2026-08-15T20:05:56+00:00",
+      "glow_concept": "moonglow pooling on the quilt",
+      "difference_from_source": 0.993,
+      "glow_score": 0.1378
+    },
     "NOT_LIT_1": {
       "sprite": "beds/bed_001/sprite.webp",
       "pixellab_object_id": "b4a5d405-3d00-4ffc-a125-197229985c88",
@@ -51,6 +67,14 @@
       "glow_concept": null,
       "difference_from_source": 0.6105,
       "glow_score": 0.1387
+    },
+    "NOT_LIT_4": {
+      "sprite": "beds/bed_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "193e5e5e-0827-4037-b892-3377f357afc0",
+      "generated_at": "2026-08-15T20:06:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5168,
+      "glow_score": 0.3105
     }
   }
 }
