@@ -6,7 +6,7 @@
   "rank": 25,
   "index": 901,
   "name": "Gooseberry bush 901",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "gooseberry bush",
   "glow_concept": null,
   "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, gooseberry bush, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -33,6 +33,22 @@
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "bushes/bush_901/lit_1/sprite.webp",
+      "pixellab_object_id": "a0d13b5f-2dd0-4d0b-b006-e065ba6fbb75",
+      "generated_at": "2026-08-15T21:19:49+00:00",
+      "glow_concept": "berries glowing like scattered tiny lanterns",
+      "difference_from_source": 0.8939,
+      "glow_score": 0.0134
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_901/lit_2/sprite.webp",
+      "pixellab_object_id": "6f0aec64-0dcd-44b5-8555-af25b7f8a594",
+      "generated_at": "2026-08-15T21:20:00+00:00",
+      "glow_concept": "fireflies nesting deep in the foliage",
+      "difference_from_source": 0.7867,
+      "glow_score": 0.0065
+    },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_901/sprite.webp",
       "pixellab_object_id": "4fc112ce-34ba-4a1d-9bfc-959f18f77e9e",
@@ -44,6 +60,22 @@
       "generated_at": "2026-08-15T21:19:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7846,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "bushes/bush_901/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a4e6142b-c761-4085-9d4d-5a7b962c08c6",
+      "generated_at": "2026-08-15T21:20:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8541,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "bushes/bush_901/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d9810a51-2894-445f-9e9d-11dfcf003116",
+      "generated_at": "2026-08-15T21:19:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8099,
       "glow_score": 0.0
     }
   }

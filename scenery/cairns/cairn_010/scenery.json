@@ -4,8 +4,8 @@
   "group": "cairns",
   "rank": 9,
   "index": 10,
-  "name": "Wide low memorial cairn 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Wide low memorial cairn 010",
+  "lights": null,
   "variety": "wide low memorial cairn",
   "glow_concept": "wisps of soul-light circling the peak",
   "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
@@ -35,6 +35,38 @@
       "sprite": "cairns/cairn_010/sprite.webp",
       "pixellab_object_id": "6c3d78bd-1999-42ef-95c3-1d1dbb69c255",
       "generated_at": "2026-08-13T21:29:31+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cairns/cairn_010/lit_2/sprite.webp",
+      "pixellab_object_id": "ae6b0f1a-81e2-44e4-a8a1-b8da3785cf98",
+      "generated_at": "2026-08-15T21:21:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2326,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "cairns/cairn_010/lit_3/sprite.webp",
+      "pixellab_object_id": "16854ea1-45d6-424b-8295-8907eee971a8",
+      "generated_at": "2026-08-15T21:21:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8632,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "cairns/cairn_010/lit_4/sprite.webp",
+      "pixellab_object_id": "144571de-e73b-47c4-b719-e64d12c58cea",
+      "generated_at": "2026-08-15T21:22:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5644,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "cairns/cairn_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "cf3f9c4d-12b4-4cb9-a6e3-25751e9a1a57",
+      "generated_at": "2026-08-15T21:22:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9133,
+      "glow_score": 0.0
     }
   }
 }

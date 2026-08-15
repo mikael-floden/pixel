@@ -4,8 +4,8 @@
   "group": "cairns",
   "rank": 9,
   "index": 12,
-  "name": "Cairn ringed with small offerings 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Cairn ringed with small offerings 012",
+  "lights": null,
   "variety": "cairn ringed with small offerings",
   "glow_concept": "cold blue soul-light seeping from under the base",
   "prompt": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, cairn ringed with small offerings, waist-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
@@ -35,6 +35,30 @@
       "sprite": "cairns/cairn_012/sprite.webp",
       "pixellab_object_id": "ef45a715-1e05-4e5d-a524-cebdabe43aac",
       "generated_at": "2026-08-13T21:38:02+00:00"
+    },
+    "LIT_3": {
+      "sprite": "cairns/cairn_012/lit_3/sprite.webp",
+      "pixellab_object_id": "74564b16-34c7-4a73-bb20-507e3c11cb44",
+      "generated_at": "2026-08-15T21:23:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4821,
+      "glow_score": 0.085
+    },
+    "LIT_4": {
+      "sprite": "cairns/cairn_012/lit_4/sprite.webp",
+      "pixellab_object_id": "2c20ebab-2f05-4156-8281-9f891b0b01cf",
+      "generated_at": "2026-08-15T21:24:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8112,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cairns/cairn_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "32c1a8fc-0fef-48dd-b93a-2a9ce06de6b4",
+      "generated_at": "2026-08-15T21:24:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9211,
+      "glow_score": 0.0
     }
   }
 }
