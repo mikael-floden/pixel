@@ -1077,11 +1077,25 @@ function sortBar(key, options, current, onPick) {
   // (type, sort, review status) and several share chip ids like "all", so
   // anything selecting a chip — including the gates — needs to say which row
   // it means.
-  const row = h("div", { class: "sortbar", "data-bar": key });
+  const row = h("div", { class: "sortbar", "data-bar": key, role: "radiogroup" });
   row.append(...options.map(([id, label, title]) => h("button", {
     class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
+    role: "radio", "aria-checked": id === current ? "true" : "false",
     onclick: () => { try { localStorage.setItem(key, id); } catch { /* private mode */ } onPick(id); },
   }, label)));
+  // The strip pans instead of wrapping, so the chosen chip can start off
+  // screen — 8 types do not fit a phone. Bring it into view once laid out.
+  requestAnimationFrame(() => {
+    const on = row.querySelector(".sel");
+    if (!on || row.scrollWidth <= row.clientWidth) return;
+    // Measured with rects, not offsetLeft: the strip is not a positioned
+    // ancestor, so offsetLeft is relative to whatever is, and the arithmetic
+    // would be off by that element's own left edge.
+    const pad = 12;
+    const rr = row.getBoundingClientRect(), br = on.getBoundingClientRect();
+    if (br.left < rr.left + pad) row.scrollLeft -= (rr.left + pad) - br.left;
+    else if (br.right > rr.right - pad) row.scrollLeft += br.right - (rr.right - pad);
+  });
   return row;
 }
 const MONSTER_SORT_KEY = "wiki-monster-sort";

@@ -949,19 +949,42 @@ input[type="range"] { accent-color: var(--accent); }
    order you choose and however few rows a search leaves. */
 /* The section sort row, same control as the picker's. Its own fixed-height
    row so the grid below can reorder without anything above it moving. */
-.sortbar { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; }
-.picker-sort { display: flex; gap: 6px; margin-top: 8px; }
+/* PICK ONE FROM THIS SET — the same control the animation preview uses for
+   states, directions, speed and zoom (maintainer 2026-08-15: "when sorting and
+   filtering in the wiki we use buttons for things that should have been a
+   radio button ... I mean our design for 'you can only select one in this
+   set'"). As separate pills they read as independent toggles, so a row of them
+   invites you to press two — and neither sorting nor filtering can honour
+   that. One bordered strip with hairline dividers says it in the shape.
+   It PANS rather than wraps, exactly like the state row: buttons keep their
+   size, the strip scrolls, and the half-cut chip at the edge is the
+   affordance. sortBar() scrolls the selected one into view. */
+.sortbar {
+  display: inline-flex; max-width: 100%; margin: 0 0 10px;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface);
+  overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.picker-sort {
+  display: flex; width: 100%; margin-top: 8px;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface);
+  overflow: hidden;
+}
+.sortbar::-webkit-scrollbar { display: none; }
 .sortbar-btn,
 .picker-sort-btn {
   flex: 1; padding: 7px 8px; font-size: 12.5px; line-height: 1.2;
-  border: 1px solid var(--border); border-radius: 9px;
-  background: transparent; color: var(--muted);
+  border: none; border-right: 1px solid var(--border); border-radius: 0;
+  background: transparent; color: var(--muted); white-space: nowrap;
 }
+.sortbar-btn:last-child,
+.picker-sort-btn:last-child { border-right: none; }
 /* On a page the bar is not sharing a fixed modal width, so the buttons hug
    their text instead of stretching across a desktop column. */
-.sortbar-btn { flex: 0 0 auto; padding: 7px 14px; }
+.sortbar-btn { flex: 0 0 auto; padding: 7px 13px; }
+/* The selected chip wears the seg's own on-state, so the two controls cannot
+   drift apart: same fill, same ink, same weight. */
 .sortbar-btn.sel,
-.picker-sort-btn.sel { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
+.picker-sort-btn.sel { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 /* Card pill row: replaces the habitat line, so it keeps that line's rhythm. */
 .card-pills { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 /* Scenery header at ONE height per piece (maintainer 2026-08-13: paging must

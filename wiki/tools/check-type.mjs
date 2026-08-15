@@ -68,6 +68,44 @@ ok(bars[0].length === Object.values(counts).filter((n) => n > 0).length + 1,
 ok(bars[0].every((t) => /\d+$/.test(t)), `every chip carries its count (${bars[0].join(" | ")})`);
 ok(!bars[0].some((t) => /_/.test(t)), "and reads as English — MOUNTAIN_WALL is “Mountain wall” here");
 
+// ONE CONTROL, ONE CHOICE (maintainer 2026-08-15: "when sorting and filtering
+// in the wiki we use buttons for things that should have been a radio button
+// ... our design for 'you can only select one in this set'"). Separate pills
+// read as independent toggles and invite you to press two; neither sorting nor
+// filtering can honour that. Every bar is the same strip the animation
+// preview uses for states and zoom — one border round the set, hairline
+// dividers, exactly one chip filled — and it PANS rather than wrapping.
+const shape = await p.evaluate(() => [...document.querySelectorAll(".sortbar")].map((r) => {
+  const cs = getComputedStyle(r);
+  const btns = [...r.querySelectorAll("button")];
+  const sel = r.querySelector(".sel");
+  const rr = r.getBoundingClientRect();
+  const seg = getComputedStyle(document.querySelector(".seg") ?? r);
+  return {
+    bar: r.dataset.bar, chips: btns.length,
+    rows: Math.round(rr.height / 34),
+    bordered: cs.borderTopWidth !== "0px" && cs.borderTopStyle !== "none",
+    radius: cs.borderTopLeftRadius,
+    chipBorders: [...new Set(btns.map((x) => getComputedStyle(x).borderTopWidth))],
+    dividers: btns.slice(0, -1).every((x) => getComputedStyle(x).borderRightWidth !== "0px"),
+    selected: btns.filter((x) => x.classList.contains("sel")).length,
+    selFill: sel ? getComputedStyle(sel).backgroundColor : null,
+    segFill: seg.backgroundColor,
+    role: r.getAttribute("role"), checked: r.querySelectorAll('[aria-checked="true"]').length,
+    inView: (() => { if (!sel) return null; const br = sel.getBoundingClientRect();
+      return br.left >= rr.left - 1 && br.right <= rr.right + 1; })(),
+  };
+}));
+console.log("bar shape:", JSON.stringify(shape));
+ok(shape.length === 3, `three pick-one strips: type, sort, review (${shape.length})`);
+ok(shape.every((s2) => s2.rows === 1), `each is ONE row — it pans, it does not wrap (${shape.map((s2) => s2.rows).join(", ")})`);
+ok(shape.every((s2) => s2.bordered && parseFloat(s2.radius) >= 6), "with one border around the whole set, not one per chip");
+ok(shape.every((s2) => s2.chipBorders.every((v) => v === "0px")), `the chips carry no borders of their own (${shape[0].chipBorders.join(", ")})`);
+ok(shape.every((s2) => s2.dividers), "just hairline dividers between them");
+ok(shape.every((s2) => s2.selected === 1), `exactly one chip is selected in every bar (${shape.map((s2) => s2.selected).join(", ")})`);
+ok(shape.every((s2) => s2.role === "radiogroup" && s2.checked === 1), "and a screen reader is told the same: a radiogroup with one checked");
+ok(shape.every((s2) => s2.inView !== false), "the chosen chip is scrolled into view, even when the strip is wider than the phone");
+
 // PICKING A TYPE NARROWS THE PAGE.
 await p.evaluate(() => [...document.querySelectorAll(".sortbar button")].find((x) => /^Trees/.test(x.textContent)).click());
 await p.waitForTimeout(1300);
