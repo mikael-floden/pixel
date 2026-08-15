@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 814,
+  "scenery_count": 815,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 44
+      "done": 45
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 44,
+    "stones": 45,
     "story_posts": 8,
     "streetlights": 7,
     "stumps": 13,
@@ -18324,6 +18324,40 @@
       "pixellab_object_id": "a673f78c-7d70-412e-bfe5-4e64a5a404a0",
       "sprite": "stones/stone_048/sprite.webp",
       "art_hash": "95a025042d5b40b7",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_049",
+      "rel": "stones/stone_049",
+      "name": "Old millstone half-buried 049",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, old millstone half-buried, with thick exposed roots, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.57,
+        "world_px_height": 21,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          3,
+          10,
+          61,
+          55
+        ],
+        "content_px_height": 45,
+        "canvas_render_px": 30
+      },
+      "status": "complete",
+      "pixellab_object_id": "676a9a1e-2f16-4a9e-9c04-30d3a8bce048",
+      "sprite": "stones/stone_049/sprite.webp",
+      "art_hash": "16a8c36ab01c4d3f",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
