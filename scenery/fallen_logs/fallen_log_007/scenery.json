@@ -30,10 +30,45 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "fallen_logs/fallen_log_007/lit_1/sprite.webp",
+      "pixellab_object_id": "a9ad02da-7d85-49ea-bf13-ba7fc4d4e671",
+      "glow_concept": "blue foxfire glowing in the bark cracks",
+      "difference_from_source": 0.8543,
+      "glow_score": 0.0809
+    },
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_007/lit_2/sprite.webp",
+      "pixellab_object_id": "34a49115-1f30-4ca5-84bb-1979823c2364",
+      "glow_concept": "rows of shelf fungi glowing pale green",
+      "difference_from_source": 0.9716,
+      "glow_score": 0.195
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_007/lit_3/sprite.webp",
+      "pixellab_object_id": "d1512058-6002-4084-a8d2-3c2bb530d94e",
+      "glow_concept": "luminous moss carpeting the upper side",
+      "difference_from_source": 0.9368,
+      "glow_score": 0.2484
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_007/lit_4/sprite.webp",
+      "pixellab_object_id": "429e7a09-e7a6-4fd5-88c1-7d1e446379b4",
+      "glow_concept": "ember-orange glow inside the hollow end",
+      "difference_from_source": 0.8864,
+      "glow_score": 0.1103
+    },
     "NOT_LIT_1": {
       "sprite": "fallen_logs/fallen_log_007/sprite.webp",
       "pixellab_object_id": "918fcefb-9715-4aa0-a7b9-d9525f7abf31",
       "glow_score": 0.0069
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_007/not_lit_10/sprite.webp",
+      "pixellab_object_id": "afb17eab-b430-4c64-b5cf-8a12fce8497f",
+      "glow_concept": null,
+      "difference_from_source": 0.7299,
+      "glow_score": 0.0946
     },
     "NOT_LIT_2": {
       "sprite": "fallen_logs/fallen_log_007/not_lit_2/sprite.webp",
@@ -69,6 +104,13 @@
       "glow_concept": null,
       "difference_from_source": 0.9843,
       "glow_score": 0.0075
+    },
+    "NOT_LIT_7": {
+      "sprite": "fallen_logs/fallen_log_007/not_lit_7/sprite.webp",
+      "pixellab_object_id": "351d0061-cc23-48f5-b088-fc5ac30f01ae",
+      "glow_concept": null,
+      "difference_from_source": 0.943,
+      "glow_score": 0.0027
     },
     "NOT_LIT_8": {
       "sprite": "fallen_logs/fallen_log_007/not_lit_8/sprite.webp",
