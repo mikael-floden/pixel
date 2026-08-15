@@ -100,5 +100,11 @@ STAY_UNLIT = ""
 # suppresses residual flicker without naming it. "stone cold" and "dull
 # colours" were both rejected while drafting — the first smuggles in a material
 # noun that starts turning things to stone, the second re-opens the palette.
-MAKE_LIT = "This time it should glow and give off its own light in the dark:"
+# "...while everything else keeps its own colours" was added after the second
+# pilot: two of four dark->lit barrels came back as pale ice/stone, the whole
+# body recoloured to match the light instead of merely being lit by it. The
+# other two kept their wood and added glowing runes, which is the wanted
+# result. Preservation stated positively, as always.
+MAKE_LIT = ("This time it should glow and give off its own light in the dark, "
+            "while everything else keeps its own colours:")
 MAKE_UNLIT = "This time it has gone out. It is dark now, quiet and still."

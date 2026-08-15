@@ -143,6 +143,33 @@ def plan_for(man):
     return anchor, [s for s in targets if s != anchor and s not in have]
 
 
+def ensure_anchor(rel, man, anchor):
+    """Write the anchor into `states` BEFORE generating anything.
+
+    THE RESUME BUG THIS EXISTS TO PREVENT, and it is not subtle. plan_for finds
+    the anchor by sprite identity and falls back to `lights`. Nothing used to
+    write the anchor entry, so on a resumed run no state matched the piece
+    sprite — and by then finalize had called demote_piece_lights, which nulls
+    `lights` on any piece holding both lit and unlit states. Null falls to the
+    NOT_LIT branch, so every LIGHTS_ON piece silently changed anchor on the
+    second run: it would plan NOT_LIT_3, NOT_LIT_4 and LIT_1 on top of the five
+    it already had, ending at EIGHT states with an inverted split and ordering
+    roughly 1,029 generations nobody asked for — about a hundred dollars.
+
+    A 3,220-state run WILL be interrupted and resumed, so this is not a corner
+    case; it is the normal path. Persisting the anchor makes plan_for
+    idempotent, which is the property the whole resumable design rests on."""
+    states = dict(man.get("states") or {})
+    if anchor in states:
+        return man
+    states[anchor] = {"sprite": man["sprite"],
+                      "pixellab_object_id": man.get("pixellab_object_id"),
+                      "generated_at": man.get("generated_at") or _now()}
+    man["states"] = {k: states[k] for k in sorted(states)}
+    factory.write_manifest(rel, man)
+    return man
+
+
 def glow_for(man, cfg, state):
     """Which glow concept a LIT state should draw, from the group's own pool.
 
@@ -188,7 +215,15 @@ def finalize(client, rel, man, state, oid, source_img, siblings, glow_used):
     if not url:
         raise PixelLabError(f"{rel}/{state}: state object has no sprite")
     size = int(man.get("size") or 64)
-    img = factory._normalize(client._download(url).convert("RGBA"), size)
+    # A CDN URL can 404 for a few seconds after a job completes (the client
+    # already retries, then gives up and returns None). Letting that None reach
+    # .convert() raises AttributeError, which NOTHING here catches — it kills
+    # the whole unattended run and abandons every paid job still in flight.
+    # Raising PixelLabError instead routes it into the normal retry path.
+    raw = client._download(url)
+    if raw is None:
+        raise PixelLabError(f"RETRY {rel}/{state}: sprite download came back empty")
+    img = factory._normalize(raw.convert("RGBA"), size)
 
     diff = tv.difference(source_img, img)
     if diff < tv.MIN_DIFFERENCE:
@@ -260,6 +295,11 @@ def main():
     if args.limit:
         work = work[:args.limit]
 
+    # Persist every anchor FIRST, before a single job is submitted. Costs
+    # nothing, and it is what makes plan_for idempotent across resumes.
+    if not args.dry_run:
+        work = [(rel, ensure_anchor(rel, man, anchor), anchor, todo_)
+                for rel, man, anchor, todo_ in work]
     todo = [(rel, man, anchor, st) for rel, man, anchor, todo_ in work for st in todo_]
     print(f"{len(work)} piece(s) need states; {len(todo)} state(s) to generate")
     if args.dry_run:
@@ -297,14 +337,33 @@ def main():
                 out[s] = p
         return out
 
+    throttled = 0          # consecutive passes where 429 blocked every submit
     while queue or flight:
-        if deadline and time.monotonic() > deadline and not flight:
-            print("time limit reached")
-            break
         drain = os.path.exists(stop_file) or (deadline and time.monotonic() > deadline)
+        # THE LOOP MUST BE ABLE TO END. When submission stops for any reason —
+        # the stop file, the deadline, the error breaker, exhausted credit —
+        # the queue stays non-empty while flight drains to nothing, and the
+        # `if flight: sleep` at the bottom then never fires: a tight spin at
+        # 100% CPU writing an unbounded log, forever, on an unattended run.
+        if not flight and (drain or errors >= ERROR_STOP):
+            print(f"stopping with {len(queue)} state(s) not started "
+                  f"({'drain' if drain else 'error breaker'}) — resumable")
+            break
+        if not flight and throttled >= 20:
+            print(f"stopping: PixelLab has refused new jobs {throttled} passes "
+                  f"running; {len(queue)} state(s) left, resumable")
+            break
+        before = len(flight)
         while queue and len(flight) < PARALLEL and not drain and errors < ERROR_STOP:
             rel, man, anchor, state = queue.pop(0)
-            glow = glow_for(man, cfg, state) if state.startswith("LIT_") else None
+            # A glow concept is only USED when the state crosses from dark to
+            # lit — a lit->lit variant keeps the light it already has and gets
+            # no lighting clause at all. Computing one anyway meant finalize
+            # recorded a glow_concept in the manifest that no prompt ever saw,
+            # so "concept X is ugly" could be traced back to art that was never
+            # drawn from it.
+            crossing_to_lit = state.startswith("LIT_") and not anchor.startswith("LIT_")
+            glow = glow_for(man, cfg, state) if crossing_to_lit else None
             try:
                 src = Image.open(os.path.join(factory.ROOT, man["sprite"])).convert("RGBA")
             except OSError:
@@ -328,6 +387,11 @@ def main():
                 fail += 1
                 print(f"  x {rel} {state}: {msg[:150]}", flush=True)
 
+        # A 429 means the ACCOUNT's job slots are full — not our error, and the
+        # item goes back on the queue. But it must still be BOUNDED, or a
+        # permanently-full account spins here forever submitting nothing.
+        throttled = throttled + 1 if (queue and len(flight) == before
+                                      and not drain) else 0
         if errors >= ERROR_STOP:
             print(f"  ! {errors} consecutive submit errors — stopping, "
                   f"draining {len(flight)} in flight")
@@ -365,6 +429,12 @@ def main():
                     print(f"  x {rel} {state}: gave up after {MAX_PROMPT_TRIES} prompts",
                           flush=True)
                     continue
+                # A gate retry must obey the same brakes as a fresh submit —
+                # otherwise the stop file, the deadline and an empty wallet all
+                # stop NEW work while retries keep quietly ordering paid jobs.
+                if drain or errors >= ERROR_STOP:
+                    queue.append((rel, man, anchor, state))   # resume owns it
+                    continue
                 try:
                     entry[2] = tv.submit(client, man["pixellab_object_id"],
                                          prompt_for(state, anchor, glow, nxt), state)
@@ -372,16 +442,26 @@ def main():
                     still.append(entry)
                 except PixelLabError as e:
                     if "429" in str(e) or "concurrent" in str(e):
-                        still.append(entry)      # slots full; try again next tick
+                        # DO NOT keep the old object id. The gate already
+                        # DELETED it, so polling it 404s forever and the entry
+                        # holds a flight slot that never clears — which also
+                        # means the run can never finish. Hand it back to the
+                        # queue instead, where a fresh submit will be made.
+                        queue.append((rel, man, anchor, state))
                     else:
                         fail += 1
         flight = still
 
         if since_commit >= COMMIT_EVERY:
             viewer_build.build()
-            commit_push(f"scenery: +{since_commit} state variants "
-                        f"({ok}/{len(todo)} this run)", push=not args.no_push)
-            since_commit = 0
+            # Only reset the counter if the commit actually happened. It can
+            # refuse (a rebase in progress), and resetting anyway meant those
+            # states stopped counting toward the next commit AND toward the
+            # tail commit — so a whole batch could sit uncommitted at the end
+            # of the run, which is exactly what "commit often" is for.
+            if commit_push(f"scenery: +{since_commit} state variants "
+                           f"({ok}/{len(todo)} this run)", push=not args.no_push):
+                since_commit = 0
             b = balance(client)
             if b is not None:
                 print(f"  balance ${b:.2f}", flush=True)

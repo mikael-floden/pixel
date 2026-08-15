@@ -5,7 +5,7 @@
   "rank": 28,
   "index": 3,
   "name": "Small ale keg on trestle 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "small ale keg on trestle",
   "glow_concept": null,
   "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, small ale keg on trestle, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -30,5 +30,46 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T07:17:36+00:00",
-  "states": {}
+  "states": {
+    "LIT_1": {
+      "sprite": "barrels/barrel_003/lit_1/sprite.webp",
+      "pixellab_object_id": "d60fefed-ad06-4459-ac4b-5471c92da462",
+      "generated_at": "2026-08-15T19:22:29+00:00",
+      "glow_concept": "glowing rune brand scorched into the staves",
+      "difference_from_source": 0.7727,
+      "glow_score": 0.0286
+    },
+    "LIT_2": {
+      "sprite": "barrels/barrel_003/lit_2/sprite.webp",
+      "pixellab_object_id": "e31e02f1-4177-4af6-82e3-a2438a1e65da",
+      "generated_at": "2026-08-15T19:22:30+00:00",
+      "glow_concept": "pale soulstone hoops instead of iron",
+      "difference_from_source": 0.8219,
+      "glow_score": 0.1394
+    },
+    "NOT_LIT_2": {
+      "sprite": "barrels/barrel_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "852dbbd5-69a1-4eb1-b0c4-c95e6fd76a6d",
+      "generated_at": "2026-08-15T19:20:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5879,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "barrels/barrel_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "480b4198-08cc-40e7-a13f-9174e2448155",
+      "generated_at": "2026-08-15T19:20:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2302,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "barrels/barrel_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4c883422-4965-4b23-9760-313fda2f8cb5",
+      "generated_at": "2026-08-15T19:20:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2153,
+      "glow_score": 0.007
+    }
+  }
 }
