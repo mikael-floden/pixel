@@ -52,7 +52,11 @@ PARALLEL = 8
 # batch either way; only the PUSH (and therefore the deploy) is batched. 60
 # turns a 497-piece run into ~8 deploys instead of ~40.
 COMMIT_EVERY = 60
-MAX_PROMPT_TRIES = 10
+# Must cover the WHOLE fallback list. Two blunt shape-forcing prompts were
+# appended ("give it a DIFFERENT TRUNK SHAPE", "change the whole shape") and the
+# cap stayed at 10, so those two were never reached -- hanging_willow_002 gave
+# up with the strongest prompts unused.
+MAX_PROMPT_TRIES = len(LEAD_FALLBACKS)
 
 # The maintainer, watching a third of first attempts come back as the same
 # picture: "maybe it's as easy as telling the AI this should be a new looking
