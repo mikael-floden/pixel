@@ -6,8 +6,8 @@
   "type": "NATURE",
   "rank": 20,
   "index": 14,
-  "name": "Fresh-fallen birch trunk 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fresh-fallen birch trunk 014",
+  "lights": null,
   "variety": "fresh-fallen birch trunk",
   "modifier": "with fallen leaves collected at its base",
   "glow_concept": "blue foxfire glowing in the bark cracks",
@@ -49,6 +49,110 @@
       "sprite": "fallen_logs/fallen_log_014/sprite.webp",
       "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
       "glow_score": 0.1816
+    },
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_014/lit_2/sprite.webp",
+      "pixellab_object_id": "4db1b7f4-3328-497e-b6d2-5a981c3cffb6",
+      "generated_at": "2026-08-15T19:32:47+00:00",
+      "glow_concept": "ember-orange glow inside the hollow end",
+      "difference_from_source": 0.5315,
+      "glow_score": 0.286
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_014/lit_3/sprite.webp",
+      "pixellab_object_id": "12ab45bc-3af0-45ad-9de1-345740646c8e",
+      "generated_at": "2026-08-15T19:32:22+00:00",
+      "glow_concept": "soulstone crystals erupting from a split",
+      "difference_from_source": 0.9478,
+      "glow_score": 0.4317
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_014/lit_4/sprite.webp",
+      "pixellab_object_id": "79406a5f-3cf8-4f6e-89cd-14267a73ad8c",
+      "generated_at": "2026-08-15T19:32:35+00:00",
+      "glow_concept": "a lit traveler's lantern resting on top",
+      "difference_from_source": 0.7865,
+      "glow_score": 0.3772
+    },
+    "NOT_LIT_1": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "374e59eb-658f-4b94-8c68-37a77b822fef",
+      "generated_at": "2026-08-15T19:27:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4669,
+      "glow_score": 0.172
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_10/sprite.webp",
+      "pixellab_object_id": "67912ea3-b98c-42d4-9434-8e8d00684210",
+      "generated_at": "2026-08-15T19:31:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.335,
+      "glow_score": 0.1758
+    },
+    "NOT_LIT_2": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "eb6672ec-e77f-4119-b628-14383d987a94",
+      "generated_at": "2026-08-15T19:27:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6608,
+      "glow_score": 0.115
+    },
+    "NOT_LIT_3": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_3/sprite.webp",
+      "pixellab_object_id": "374d83b3-15c6-48d7-ae4c-62750b65ed9c",
+      "generated_at": "2026-08-15T19:32:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3301,
+      "glow_score": 0.1927
+    },
+    "NOT_LIT_4": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f25cf68f-2e58-49b8-9bd2-9c63e0151056",
+      "generated_at": "2026-08-15T19:31:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3177,
+      "glow_score": 0.1604
+    },
+    "NOT_LIT_5": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5e0a90c8-994e-4719-973a-4fa1051b5a65",
+      "generated_at": "2026-08-15T19:29:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.52,
+      "glow_score": 0.1937
+    },
+    "NOT_LIT_6": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_6/sprite.webp",
+      "pixellab_object_id": "83d6f50a-f6c5-401a-8254-989bb8a82070",
+      "generated_at": "2026-08-15T19:29:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5257,
+      "glow_score": 0.1876
+    },
+    "NOT_LIT_7": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_7/sprite.webp",
+      "pixellab_object_id": "54021b3c-a352-4734-9301-654903cb7891",
+      "generated_at": "2026-08-15T19:29:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3173,
+      "glow_score": 0.2012
+    },
+    "NOT_LIT_8": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_8/sprite.webp",
+      "pixellab_object_id": "60f8a353-af02-4773-8d6a-3d833e2c6cf2",
+      "generated_at": "2026-08-15T19:29:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5491,
+      "glow_score": 0.1615
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_014/not_lit_9/sprite.webp",
+      "pixellab_object_id": "d8e69aa9-8d8e-4624-a602-cdecc98b9347",
+      "generated_at": "2026-08-15T19:30:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5285,
+      "glow_score": 0.139
     }
   }
 }

@@ -4,8 +4,8 @@
   "group": "anchors",
   "rank": 92,
   "index": 6,
-  "name": "Tarred black anchor 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tarred black anchor 006",
+  "lights": null,
   "variety": "tarred black anchor",
   "glow_concept": "ship's name on the stock shining softly",
   "prompt": "a large rusted ship anchor standing propped ashore, one fluke sunk into the ground and a length of heavy chain pooled at its base, tarred black anchor, roughly six feet tall, human height, self-emissive at night, softly radiating light: ship's name on the stock shining softly",
@@ -35,6 +35,46 @@
       "sprite": "anchors/anchor_006/sprite.webp",
       "pixellab_object_id": "a9e1d481-9d40-4333-8b1f-ade49363b79e",
       "generated_at": "2026-08-13T21:26:04+00:00"
+    },
+    "LIT_2": {
+      "sprite": "anchors/anchor_006/lit_2/sprite.webp",
+      "pixellab_object_id": "42305a8a-13cf-4a18-b362-0060fd2edc9b",
+      "generated_at": "2026-08-15T19:28:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2448,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "anchors/anchor_006/lit_3/sprite.webp",
+      "pixellab_object_id": "df795912-e960-40cd-9c20-0361109193ce",
+      "generated_at": "2026-08-15T19:28:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7904,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "anchors/anchor_006/lit_4/sprite.webp",
+      "pixellab_object_id": "ed012399-5f23-4ec4-a23c-acecf173b398",
+      "generated_at": "2026-08-15T19:28:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.522,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "anchors/anchor_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4926d183-7d12-42cb-a9ff-1299da0ba2cc",
+      "generated_at": "2026-08-15T19:30:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5151,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "anchors/anchor_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6b107400-b5f7-4d18-a38a-fa59df591292",
+      "generated_at": "2026-08-15T19:30:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.483,
+      "glow_score": 0.0
     }
   }
 }
