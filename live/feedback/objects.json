@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-15T09:41:01.327Z",
+  "updated_at": "2026-08-15T09:55:58.557Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -10097,8 +10097,9 @@
     "scenery/trees/tree_051#not_lit_5#south": {
       "status": "rejected",
       "art": "d21a74e0cb05abe1",
-      "updated_at": "2026-08-15T01:08:56.842Z",
-      "note": "Remove the cave/nest at the bottom"
+      "updated_at": "2026-08-15T09:54:40.665Z",
+      "note": "Remove the cave/nest at the bottom",
+      "rating": 1
     },
     "scenery/trees/tree_058#lit_1#south": {
       "rating": 5,
@@ -10107,10 +10108,11 @@
       "art": "5ae362191c0eb5e9"
     },
     "scenery/trees/tree_058#lit_2#south": {
-      "status": "approved",
+      "status": "rejected",
       "art": "5ae362191c0eb5e9",
-      "updated_at": "2026-08-15T01:10:51.948Z",
-      "rating": 5
+      "updated_at": "2026-08-15T09:56:00.003Z",
+      "rating": 1,
+      "note": "Redo"
     },
     "scenery/trees/tree_058#not_lit_1#south": {
       "status": "approved",
@@ -14168,6 +14170,12 @@
       "updated_at": "2026-08-15T09:40:10.163Z",
       "status": "approved",
       "art": "db4dea899b586478"
+    },
+    "scenery/trees/tree_051#not_lit_6#south": {
+      "status": "approved",
+      "art": "d21a74e0cb05abe1",
+      "updated_at": "2026-08-15T09:54:46.416Z",
+      "rating": 3
     }
   }
 }
