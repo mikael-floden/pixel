@@ -997,8 +997,10 @@ function crumbRow(backHref, backLabel, base, list, id) {
   const nav = i >= 0 && list.length > 1
     ? h("span", { class: "detail-nav" },
         h("span", { class: "detail-count" }, `${i + 1} / ${list.length}`),
-        h("a", { class: "nav-btn", href: `#/${base}/${prev.id}`, title: `Previous: ${prev.name}`, "aria-label": `Previous: ${prev.name}` }, "‹"),
-        h("a", { class: "nav-btn", href: `#/${base}/${next.id}`, title: `Next: ${next.name}`, "aria-label": `Next: ${next.name}` }, "›"))
+        h("a", { class: "nav-btn", href: `#/${base}/${prev.id}`, title: `Previous: ${prev.name}`, "aria-label": `Previous: ${prev.name}`,
+          onclick: () => { keepScrollY = window.scrollY; } }, "‹"),
+        h("a", { class: "nav-btn", href: `#/${base}/${next.id}`, title: `Next: ${next.name}`, "aria-label": `Next: ${next.name}`,
+          onclick: () => { keepScrollY = window.scrollY; } }, "›"))
     : null;
   return h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: backHref }, backLabel), nav);
 }
@@ -1175,6 +1177,11 @@ function loreSlot(text, all) {
 // Set by a "Read next" link, consumed by the next navigation. Null for every
 // other kind of link, which simply starts at the top.
 let pendingScroll = null;
+// ‹ › KEEPS THE SCROLL (maintainer 2026-08-15). Reviewing a tall piece means
+// scrolling down to see all of it; landing at the top of the next one and
+// scrolling again, hundreds of times, is the actual cost. The pager stamps
+// where the reader is standing and the next render puts them back there.
+let keepScrollY = null;
 const loreList = () => state.data.domains.lore ?? [];   // build.mjs sorted it; never re-sort
 // One table for every category decision — the group heading AND the chip under
 // the picture. An unknown category never throws and never prints a raw slug.
@@ -4113,6 +4120,15 @@ function initChrome() {
   // (games2/client/src/wikipanel.ts). Unset = follow the OS.
   const saved = localStorage.getItem("wiki-theme");
   if (saved) document.documentElement.dataset.theme = saved;
+  // The sticky crumb row sits directly under the sticky topbar, so it needs
+  // the topbar's REAL height — it changes with the phone's font size, and a
+  // hardcoded value would either gap or overlap.
+  const measureBar = () => {
+    const bar = $("#topbar")?.getBoundingClientRect().height;
+    if (bar) document.documentElement.style.setProperty("--topbar-h", `${Math.round(bar)}px`);
+  };
+  measureBar();
+  window.addEventListener("resize", measureBar);
   // sidebar (mobile) — a drawer of its own: scrim right of it closes it, and
   // the game drawer hosting us mirrors the state (double-dark game strip that
   // closes the menu first; see wikipanel.ts).
@@ -4213,6 +4229,17 @@ function initChrome() {
         window.scrollTo(0, Math.max(0, card.getBoundingClientRect().top + window.scrollY - bar - 8));
         return;
       }
+    }
+    if (keepScrollY != null) {
+      const want = keepScrollY; keepScrollY = null;
+      // Clamp to what the new page can actually scroll, and try again once the
+      // art has laid out — a piece drawn at a different size changes the page
+      // height after this frame.
+      const put = () => window.scrollTo(0, Math.min(want, Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
+      put();
+      requestAnimationFrame(put);
+      setTimeout(put, 300);
+      return;
     }
     if (restoreSpot(spot)) return;
     window.scrollTo(0, 0);

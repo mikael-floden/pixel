@@ -100,6 +100,57 @@ const ent = await p.evaluate(() => {
 console.log("entity crumb:", JSON.stringify(ent));
 ok(ent.href === "#/objects", `an entity page still goes back to its SECTION, not to Overview (${ent.href})`);
 
+// THE PAGER STAYS ON SCREEN, AND KEEPS YOUR PLACE (maintainer 2026-08-15: "I
+// would like the breadcrumb and prev/next button to be visible at top even
+// if/when the player scrolls down on the page. And when/if the player presses
+// next/prev the page should switch to the new page, but keep the current
+// scroll from top ... so I can scroll down a bit and see the entire tree and
+// easily go to the next page with the same scroll").
+const objId = (await p.evaluate(async () => {
+  const d = await (await fetch("data.json")).json();
+  return [...d.domains.objects].sort((a, b2) => Object.keys(b2.animations).length - Object.keys(a.animations).length)[0].id;
+}));
+await p.goto(`${W}#/objects/${objId}`, { waitUntil: "load" });
+await p.waitForTimeout(2200);
+const where = () => p.evaluate(() => {
+  const cr = document.querySelector(".crumb-row")?.getBoundingClientRect();
+  const bar = document.querySelector("#topbar").getBoundingClientRect();
+  return { y: Math.round(window.scrollY), id: location.hash.split("/").pop(),
+    crumbTop: cr ? Math.round(cr.top) : null, barBottom: Math.round(bar.bottom),
+    onScreen: !!cr && cr.top >= 0 && cr.bottom <= window.innerHeight,
+    navOnScreen: (() => { const n = document.querySelector(".detail-nav")?.getBoundingClientRect();
+      return !!n && n.top >= 0 && n.bottom <= window.innerHeight; })(),
+    maxScroll: Math.max(0, document.documentElement.scrollHeight - window.innerHeight) };
+});
+const top = await where();
+await p.evaluate(() => window.scrollTo(0, 700));
+await p.waitForTimeout(400);
+const deep = await where();
+console.log("scrolled:", JSON.stringify(deep));
+ok(deep.y > 300, `the page really scrolls (${deep.y}px)`);
+ok(deep.onScreen && deep.navOnScreen, "the crumb and the ‹ › buttons are still on screen after scrolling down");
+ok(Math.abs(deep.crumbTop - deep.barBottom) <= 2,
+  `and they sit exactly under the topbar, not over it or below it (${deep.crumbTop} vs ${deep.barBottom})`);
+ok(deep.crumbTop < top.crumbTop, "which is lower than where they started — they stuck, they did not merely stay put");
+// Pressing › keeps the reader where they were standing.
+const walk = [deep];
+for (let i = 0; i < 3; i++) {
+  await p.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await p.waitForTimeout(900);
+  walk.push(await where());
+}
+console.log("paging while scrolled:", JSON.stringify(walk.map((w) => ({ id: w.id, y: w.y }))));
+ok(new Set(walk.map((w) => w.id)).size === walk.length, "each press really moves to a new piece");
+ok(walk.every((w) => Math.abs(w.y - Math.min(deep.y, w.maxScroll)) <= 4),
+  `and every one of them keeps the scroll (${walk.map((w) => w.y).join(", ")} — clamped only by how tall the page is)`);
+ok(walk.every((w) => w.onScreen && w.navOnScreen), "with the pager still on screen on each of them");
+// Going BACK up the ladder is not paging — it starts at the top, as it always did.
+await p.evaluate(() => document.querySelector(".crumb").click());
+await p.waitForTimeout(1200);
+const listed = await p.evaluate(() => ({ y: Math.round(window.scrollY), hash: location.hash }));
+console.log("crumb to the section:", JSON.stringify(listed));
+ok(listed.hash === "#/objects" && listed.y === 0, `the crumb still lands at the top of the section (y=${listed.y})`);
+
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

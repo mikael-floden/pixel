@@ -574,7 +574,19 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 #login-dialog input { width: 100%; margin-top: 8px; }
 
 /* ---- detail prev/next navigation ---- */
-.crumb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+/* THE WAY OUT AND THE WAY ON STAY PUT (maintainer 2026-08-15: "I would like
+   the breadcrumb and prev/next button to be visible at top even if/when the
+   player scrolls down on the page ... so I can scroll down a bit and see the
+   entire tree and easily go to the next page with the same scroll"). It sticks
+   directly under the topbar, whose real height is measured into --topbar-h at
+   boot and on every resize — hardcoding it would leave a gap or a cover-up on
+   any font size but the one it was written for. Opaque, or the page would
+   scroll through it. */
+.crumb-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  position: sticky; top: var(--topbar-h, 56px); z-index: 15;
+  background: var(--bg); margin: -6px 0 0; padding: 6px 0 8px;
+}
 .detail-nav { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .detail-count { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .nav-btn {
