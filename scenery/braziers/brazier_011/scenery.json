@@ -6,7 +6,7 @@
   "rank": 4,
   "index": 11,
   "name": "Woven iron strap basket 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "woven iron strap basket",
   "modifier": "overgrown at the base",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "braziers/brazier_011/lit_1/sprite.webp",
+      "pixellab_object_id": "e8121a82-cff1-4ed9-8f66-6b7c580a0c9a",
+      "generated_at": "2026-08-15T20:41:01+00:00",
+      "glow_concept": "coals glowing through the weave in stripes",
+      "difference_from_source": 0.6498,
+      "glow_score": 0.0505
+    },
+    "LIT_2": {
+      "sprite": "braziers/brazier_011/lit_2/sprite.webp",
+      "pixellab_object_id": "54e2d2fb-2595-46f0-917d-307afa65c715",
+      "generated_at": "2026-08-15T20:41:12+00:00",
+      "glow_concept": "roaring orange wood flame above the bowl",
+      "difference_from_source": 0.7332,
+      "glow_score": 0.2019
+    },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_011/sprite.webp",
       "pixellab_object_id": "b15c4f6b-1a44-463a-b0d3-796f404ee4a3",
       "generated_at": "2026-08-14T00:56:49+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f8e0311b-a4db-422f-9249-e9c1bd6416fd",
+      "generated_at": "2026-08-15T20:40:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6682,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "braziers/brazier_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "9ad5fb46-cd34-45d5-a073-a9cd8f4429e8",
+      "generated_at": "2026-08-15T20:40:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8026,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "braziers/brazier_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e62a435a-a6f5-4ab0-8cb3-b99236662149",
+      "generated_at": "2026-08-15T20:40:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8434,
+      "glow_score": 0.0
     }
   }
 }

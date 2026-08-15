@@ -6122,9 +6122,9 @@
     {
       "id": "brazier_010",
       "rel": "braziers/brazier_010",
-      "name": "Soot-black courtyard brazier 010 \u00b7 lit",
+      "name": "Soot-black courtyard brazier 010",
       "category": "braziers",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, soot-black courtyard brazier, leaning slightly, roughly six feet tall, human height, self-emissive at night, softly radiating light: silver-white soul-fire burning without smoke",
       "view": "low top-down",
       "size": 64,
@@ -6150,6 +6150,24 @@
           "generated_at": "2026-08-14T00:34:26+00:00",
           "art_hash": "678e94b004525d4c"
         },
+        "LIT_2": {
+          "sprite": "braziers/brazier_010/lit_2/sprite.webp",
+          "pixellab_object_id": "7d2b1682-e9e8-44b6-b7f1-77a3372a361f",
+          "generated_at": "2026-08-15T20:39:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5875,
+          "glow_score": 0.0372,
+          "art_hash": "0808c0334295cd94"
+        },
+        "LIT_3": {
+          "sprite": "braziers/brazier_010/lit_3/sprite.webp",
+          "pixellab_object_id": "aa30a078-3cf4-49ab-8ce7-38dcfc85962e",
+          "generated_at": "2026-08-15T20:39:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.467,
+          "glow_score": 0.0538,
+          "art_hash": "c3eb7ff748dbbb82"
+        },
         "LIT_4": {
           "sprite": "braziers/brazier_010/lit_4/sprite.webp",
           "pixellab_object_id": "bee72f21-e03a-4e04-9b90-3ffa0978691d",
@@ -6158,6 +6176,24 @@
           "difference_from_source": 0.618,
           "glow_score": 0.0741,
           "art_hash": "726ed1e26767b106"
+        },
+        "NOT_LIT_1": {
+          "sprite": "braziers/brazier_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9c881bc4-656c-4ee5-b1de-c7b72da8cd62",
+          "generated_at": "2026-08-15T20:39:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7571,
+          "glow_score": 0.0,
+          "art_hash": "3b216c8780c5019b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "79a6bb38-6740-4e37-981a-2369daea55c3",
+          "generated_at": "2026-08-15T20:39:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7494,
+          "glow_score": 0.0,
+          "art_hash": "af4273f8c63a6331"
         }
       },
       "animations": []
@@ -6167,7 +6203,7 @@
       "rel": "braziers/brazier_011",
       "name": "Woven iron strap basket 011",
       "category": "braziers",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, woven iron strap basket, overgrown at the base, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -6187,11 +6223,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "braziers/brazier_011/lit_1/sprite.webp",
+          "pixellab_object_id": "e8121a82-cff1-4ed9-8f66-6b7c580a0c9a",
+          "generated_at": "2026-08-15T20:41:01+00:00",
+          "glow_concept": "coals glowing through the weave in stripes",
+          "difference_from_source": 0.6498,
+          "glow_score": 0.0505,
+          "art_hash": "f289a4a19c33683c"
+        },
+        "LIT_2": {
+          "sprite": "braziers/brazier_011/lit_2/sprite.webp",
+          "pixellab_object_id": "54e2d2fb-2595-46f0-917d-307afa65c715",
+          "generated_at": "2026-08-15T20:41:12+00:00",
+          "glow_concept": "roaring orange wood flame above the bowl",
+          "difference_from_source": 0.7332,
+          "glow_score": 0.2019,
+          "art_hash": "d3d4cc30094b357a"
+        },
         "NOT_LIT_1": {
           "sprite": "braziers/brazier_011/sprite.webp",
           "pixellab_object_id": "b15c4f6b-1a44-463a-b0d3-796f404ee4a3",
           "generated_at": "2026-08-14T00:56:49+00:00",
           "art_hash": "96b546ac23f6b5be"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f8e0311b-a4db-422f-9249-e9c1bd6416fd",
+          "generated_at": "2026-08-15T20:40:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6682,
+          "glow_score": 0.0,
+          "art_hash": "5a188cd4e190bf89"
+        },
+        "NOT_LIT_3": {
+          "sprite": "braziers/brazier_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "9ad5fb46-cd34-45d5-a073-a9cd8f4429e8",
+          "generated_at": "2026-08-15T20:40:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8026,
+          "glow_score": 0.0,
+          "art_hash": "fdffe8b9e9dbc9f5"
+        },
+        "NOT_LIT_4": {
+          "sprite": "braziers/brazier_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e62a435a-a6f5-4ab0-8cb3-b99236662149",
+          "generated_at": "2026-08-15T20:40:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8434,
+          "glow_score": 0.0,
+          "art_hash": "11bdae2e303d78ee"
         }
       },
       "animations": []
@@ -6199,9 +6280,9 @@
     {
       "id": "brazier_012",
       "rel": "braziers/brazier_012",
-      "name": "Ship's cresset basket 012 \u00b7 lit",
+      "name": "Ship's cresset basket 012",
       "category": "braziers",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, ship's cresset basket, patched with mismatched materials, waist-high, self-emissive at night, softly radiating light: molten soulstone shards glowing among coals",
       "view": "low top-down",
       "size": 64,
@@ -6226,6 +6307,51 @@
           "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
           "generated_at": "2026-08-14T00:47:18+00:00",
           "art_hash": "2f66486bed67fe47"
+        },
+        "LIT_2": {
+          "sprite": "braziers/brazier_012/lit_2/sprite.webp",
+          "pixellab_object_id": "318c1b67-36db-44de-bc94-4db11089c499",
+          "generated_at": "2026-08-15T20:41:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.653,
+          "glow_score": 0.1872,
+          "art_hash": "809db557598786de"
+        },
+        "LIT_3": {
+          "sprite": "braziers/brazier_012/lit_3/sprite.webp",
+          "pixellab_object_id": "78399ee2-8056-4569-a59f-df170398d338",
+          "generated_at": "2026-08-15T20:41:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8652,
+          "glow_score": 0.0245,
+          "art_hash": "420f4891eab3815b"
+        },
+        "LIT_4": {
+          "sprite": "braziers/brazier_012/lit_4/sprite.webp",
+          "pixellab_object_id": "ae11fdc7-bbbf-41d7-a426-91dc224c28aa",
+          "generated_at": "2026-08-15T20:41:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6371,
+          "glow_score": 0.0105,
+          "art_hash": "22d099875bd19c47"
+        },
+        "NOT_LIT_1": {
+          "sprite": "braziers/brazier_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "27f381b7-e551-41d4-9b0f-3e626a3c040e",
+          "generated_at": "2026-08-15T20:41:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2412,
+          "glow_score": 0.0043,
+          "art_hash": "ba716850e9efbf30"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1f1beaa2-bfd2-40ae-a04b-d114818ef1da",
+          "generated_at": "2026-08-15T20:42:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5945,
+          "glow_score": 0.0,
+          "art_hash": "33457306f874be75"
         }
       },
       "animations": []
@@ -6233,9 +6359,9 @@
     {
       "id": "brazier_014",
       "rel": "braziers/brazier_014",
-      "name": "Bronze bowl on tripod 014 \u00b7 lit",
+      "name": "Bronze bowl on tripod 014",
       "category": "braziers",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, bronze bowl on tripod, recently maintained, roughly six feet tall, human height, self-emissive at night, softly radiating light: coals glowing through the weave in stripes",
       "view": "low top-down",
       "size": 64,
@@ -6260,6 +6386,51 @@
           "pixellab_object_id": "674545b9-6d65-4d0e-9175-3adb0314a817",
           "generated_at": "2026-08-14T01:34:48+00:00",
           "art_hash": "599ee4652aee9a75"
+        },
+        "LIT_2": {
+          "sprite": "braziers/brazier_014/lit_2/sprite.webp",
+          "pixellab_object_id": "56d154cb-e7c6-4c14-86fc-bb62267f00f9",
+          "generated_at": "2026-08-15T20:42:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5812,
+          "glow_score": 0.0123,
+          "art_hash": "3a2b53ace4e5cdd4"
+        },
+        "LIT_3": {
+          "sprite": "braziers/brazier_014/lit_3/sprite.webp",
+          "pixellab_object_id": "7c249aa9-f121-4be0-818c-2607488d342f",
+          "generated_at": "2026-08-15T20:42:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6077,
+          "glow_score": 0.0447,
+          "art_hash": "e27137f0beca3c46"
+        },
+        "LIT_4": {
+          "sprite": "braziers/brazier_014/lit_4/sprite.webp",
+          "pixellab_object_id": "9636c8ab-5440-472d-b055-d73448ab4bb4",
+          "generated_at": "2026-08-15T20:42:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6484,
+          "glow_score": 0.0,
+          "art_hash": "06e94e54b844ea96"
+        },
+        "NOT_LIT_1": {
+          "sprite": "braziers/brazier_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4706e7c0-1ba6-4f92-b557-f99e060672f8",
+          "generated_at": "2026-08-15T20:43:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.712,
+          "glow_score": 0.0,
+          "art_hash": "85db245ddd2ec186"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9a179e56-0178-49ed-a24f-9b94b2045909",
+          "generated_at": "2026-08-15T20:43:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5071,
+          "glow_score": 0.0,
+          "art_hash": "e680413218d92f6a"
         }
       },
       "animations": []
@@ -6269,7 +6440,7 @@
       "rel": "braziers/brazier_015",
       "name": "Cast-iron drum brazier 015",
       "category": "braziers",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, cast-iron drum brazier, snow-dusted, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -6289,11 +6460,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "braziers/brazier_015/lit_1/sprite.webp",
+          "pixellab_object_id": "a149be10-f53b-466d-a22b-3ac073f1df28",
+          "generated_at": "2026-08-15T20:44:16+00:00",
+          "glow_concept": "molten soulstone shards glowing among coals",
+          "difference_from_source": 0.5313,
+          "glow_score": 0.2066,
+          "art_hash": "29852f85858d2e97"
+        },
+        "LIT_2": {
+          "sprite": "braziers/brazier_015/lit_2/sprite.webp",
+          "pixellab_object_id": "ef5fb891-78e8-4d14-b7b0-115bf242d736",
+          "generated_at": "2026-08-15T20:44:17+00:00",
+          "glow_concept": "column of drifting gold sparks",
+          "difference_from_source": 0.6135,
+          "glow_score": 0.2387,
+          "art_hash": "de610af7dea86aab"
+        },
         "NOT_LIT_1": {
           "sprite": "braziers/brazier_015/sprite.webp",
           "pixellab_object_id": "36e85fe7-ecd9-4545-bc46-d88b0f1464e1",
           "generated_at": "2026-08-14T01:37:10+00:00",
           "art_hash": "10b4e87e0ce315e5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "52c41945-3a74-4af7-bcd3-e52e828f16d0",
+          "generated_at": "2026-08-15T20:43:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5661,
+          "glow_score": 0.0666,
+          "art_hash": "a2e2e73bc7d671f0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "braziers/brazier_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ef25ab68-24d0-4a03-accb-c404e23bb3c4",
+          "generated_at": "2026-08-15T20:43:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6917,
+          "glow_score": 0.0128,
+          "art_hash": "ad79db127bb20a4a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "braziers/brazier_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "006357cc-0cfe-41e1-86ed-775dc276fd00",
+          "generated_at": "2026-08-15T20:43:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.576,
+          "glow_score": 0.0225,
+          "art_hash": "4f5f8c71bad2f876"
         }
       },
       "animations": []
@@ -6328,6 +6544,15 @@
           "pixellab_object_id": "b139c76e-4830-4655-8f9c-0518bf2a4cb9",
           "generated_at": "2026-08-14T01:44:38+00:00",
           "art_hash": "b31dbb65109301d6"
+        },
+        "LIT_2": {
+          "sprite": "braziers/brazier_018/lit_2/sprite.webp",
+          "pixellab_object_id": "98982d7f-6e43-476b-8d68-9fcbd760f505",
+          "generated_at": "2026-08-15T20:44:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7972,
+          "glow_score": 0.0909,
+          "art_hash": "da59c07a58895a35"
         }
       },
       "animations": []

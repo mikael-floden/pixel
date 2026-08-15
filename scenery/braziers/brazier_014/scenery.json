@@ -5,8 +5,8 @@
   "group": "braziers",
   "rank": 4,
   "index": 14,
-  "name": "Bronze bowl on tripod 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Bronze bowl on tripod 014",
+  "lights": null,
   "variety": "bronze bowl on tripod",
   "modifier": "recently maintained",
   "glow_concept": "coals glowing through the weave in stripes",
@@ -36,6 +36,46 @@
       "sprite": "braziers/brazier_014/sprite.webp",
       "pixellab_object_id": "674545b9-6d65-4d0e-9175-3adb0314a817",
       "generated_at": "2026-08-14T01:34:48+00:00"
+    },
+    "LIT_2": {
+      "sprite": "braziers/brazier_014/lit_2/sprite.webp",
+      "pixellab_object_id": "56d154cb-e7c6-4c14-86fc-bb62267f00f9",
+      "generated_at": "2026-08-15T20:42:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5812,
+      "glow_score": 0.0123
+    },
+    "LIT_3": {
+      "sprite": "braziers/brazier_014/lit_3/sprite.webp",
+      "pixellab_object_id": "7c249aa9-f121-4be0-818c-2607488d342f",
+      "generated_at": "2026-08-15T20:42:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6077,
+      "glow_score": 0.0447
+    },
+    "LIT_4": {
+      "sprite": "braziers/brazier_014/lit_4/sprite.webp",
+      "pixellab_object_id": "9636c8ab-5440-472d-b055-d73448ab4bb4",
+      "generated_at": "2026-08-15T20:42:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6484,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "braziers/brazier_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4706e7c0-1ba6-4f92-b557-f99e060672f8",
+      "generated_at": "2026-08-15T20:43:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.712,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9a179e56-0178-49ed-a24f-9b94b2045909",
+      "generated_at": "2026-08-15T20:43:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5071,
+      "glow_score": 0.0
     }
   }
 }
