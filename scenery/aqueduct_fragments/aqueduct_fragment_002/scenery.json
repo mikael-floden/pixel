@@ -4,8 +4,8 @@
   "group": "aqueduct_fragments",
   "rank": 56,
   "index": 2,
-  "name": "Moss-blackened arch 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Moss-blackened arch 002",
+  "lights": null,
   "variety": "moss-blackened arch",
   "glow_concept": "glowing drips falling from the underside of the arch",
   "prompt": "a freestanding fragment of a stone aqueduct, one arch on weathered piers with a broken water channel on top, moss-blackened arch, tall, about two people high, self-emissive at night, softly radiating light: glowing drips falling from the underside of the arch",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.2165,
       "glow_score": 0.0389
+    },
+    "LIT_4": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_002/lit_4/sprite.webp",
+      "pixellab_object_id": "a417bb22-54f8-4142-8add-960853614d8a",
+      "generated_at": "2026-08-15T19:37:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4975,
+      "glow_score": 0.0283
+    },
+    "NOT_LIT_1": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d2ae12db-eda8-4d89-ae25-f9b062e8c482",
+      "generated_at": "2026-08-15T19:37:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7675,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e0b012dc-38e0-4e40-a038-b79a3956c483",
+      "generated_at": "2026-08-15T19:37:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3576,
+      "glow_score": 0.0
     }
   }
 }

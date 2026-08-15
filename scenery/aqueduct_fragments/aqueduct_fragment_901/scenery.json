@@ -5,7 +5,7 @@
   "rank": 56,
   "index": 901,
   "name": "Lone square pier 901",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "lone square pier",
   "glow_concept": null,
   "prompt": "a freestanding fragment of a stone aqueduct, one arch on weathered piers with a broken water channel on top, lone square pier, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -33,10 +33,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T19:46:47+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_901/lit_1/sprite.webp",
+      "pixellab_object_id": "8dbfcf7c-8b46-4290-bf78-f57a8ca7d397",
+      "generated_at": "2026-08-15T19:38:59+00:00",
+      "glow_concept": "glowing drips falling from the underside of the arch",
+      "difference_from_source": 0.9239,
+      "glow_score": 0.0194
+    },
+    "LIT_2": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_901/lit_2/sprite.webp",
+      "pixellab_object_id": "3c1f0a7d-eb2f-44c8-81e1-a847a1ae2a9c",
+      "generated_at": "2026-08-15T19:38:49+00:00",
+      "glow_concept": "soulstone veins glowing through cracked masonry",
+      "difference_from_source": 0.6325,
+      "glow_score": 0.0138
+    },
     "NOT_LIT_1": {
       "sprite": "aqueduct_fragments/aqueduct_fragment_901/sprite.webp",
       "pixellab_object_id": "e40e3715-1ec1-493d-bd99-7d2007f45a7b",
       "generated_at": "2026-08-13T19:46:47+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_901/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c36b1f1c-f2e0-4089-a1ec-21db9ce0c88e",
+      "generated_at": "2026-08-15T19:37:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2466,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_901/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c248c0d1-d61b-4fbc-ac3e-b5596ef9f619",
+      "generated_at": "2026-08-15T19:37:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.315,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "aqueduct_fragments/aqueduct_fragment_901/not_lit_4/sprite.webp",
+      "pixellab_object_id": "bbfb6d4e-0516-449a-b1d9-1cd2ae336263",
+      "generated_at": "2026-08-15T19:38:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3764,
+      "glow_score": 0.0
     }
   }
 }

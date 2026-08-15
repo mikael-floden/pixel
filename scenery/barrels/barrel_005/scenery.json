@@ -5,7 +5,7 @@
   "rank": 28,
   "index": 5,
   "name": "Tar-blackened herring barrel 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "tar-blackened herring barrel",
   "glow_concept": null,
   "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, tar-blackened herring barrel, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T11:18:21+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "barrels/barrel_005/lit_1/sprite.webp",
+      "pixellab_object_id": "98634610-c8be-4c3f-817c-7c33d6b45ba3",
+      "generated_at": "2026-08-15T19:40:02+00:00",
+      "glow_concept": "foxfire fungus fringing the damp base",
+      "difference_from_source": 0.7508,
+      "glow_score": 0.0707
+    },
+    "LIT_2": {
+      "sprite": "barrels/barrel_005/lit_2/sprite.webp",
+      "pixellab_object_id": "9bfc222d-bd06-4586-914d-c0277d863ccb",
+      "generated_at": "2026-08-15T19:40:50+00:00",
+      "glow_concept": "bunghole leaking warm amber light",
+      "difference_from_source": 0.263,
+      "glow_score": 0.0559
+    },
     "NOT_LIT_1": {
       "sprite": "barrels/barrel_005/sprite.webp",
       "pixellab_object_id": "65a19bf5-b6e5-4ea0-9741-17c65ba1987d",
       "generated_at": "2026-08-13T11:18:21+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "barrels/barrel_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d87014ed-bb8c-47c7-9de9-5636a482fc02",
+      "generated_at": "2026-08-15T19:41:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5072,
+      "glow_score": 0.0021
+    },
+    "NOT_LIT_3": {
+      "sprite": "barrels/barrel_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c72bfc7c-5a30-40fa-96c6-ae5af0f888d7",
+      "generated_at": "2026-08-15T19:39:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1646,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "barrels/barrel_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "679632a6-be5f-4bb9-9252-3127d42d7a75",
+      "generated_at": "2026-08-15T19:39:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4206,
+      "glow_score": 0.0
     }
   }
 }
