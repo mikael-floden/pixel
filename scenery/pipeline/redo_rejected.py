@@ -138,7 +138,21 @@ def rejected_states():
 
 def main():
     dry = "--dry-run" in sys.argv
+    # --skip-groups a,b : hold a group back without touching his feedback file.
+    # Needed when a rejection is real but regenerating CANNOT fix it — owl_snags
+    # 2026-08-15, where the owl he keeps rejecting is in the base sprite every
+    # variant is edited from, so each retry reproduces it and bills him again.
+    skip = set()
+    for i, a in enumerate(sys.argv):
+        if a == "--skip-groups" and i + 1 < len(sys.argv):
+            skip = {g.strip() for g in sys.argv[i + 1].split(",") if g.strip()}
     todo = rejected_states()
+    if skip:
+        held = [t for t in todo if t[0].split("/")[0] in skip]
+        todo = [t for t in todo if t[0].split("/")[0] not in skip]
+        if held:
+            print(f"holding {len(held)} state(s) in {sorted(skip)} — "
+                  f"regenerating cannot fix them")
     print(f"{len(todo)} rejected variant(s)")
     for rel, st, note in todo:
         print(f"  {rel} {st}  — {note[:80]}")
