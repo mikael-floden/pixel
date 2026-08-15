@@ -10,10 +10,14 @@
 #
 # HOW TO RUN — from a PHONE, deliberately (the maintainer has no laptop):
 #   1. Open https://shell.cloud.google.com in the phone browser (or the
-#      Google Cloud app's Cloud Shell) — it is already authenticated as you.
-#   2. Paste:
-#        curl -sS https://raw.githubusercontent.com/mikael-floden/pixel/main/games2/deploy/ar-cleanup.sh | PROJECT_ID=<your-project> bash
-#      (or run it with no PROJECT_ID to be prompted.)
+#      Google Cloud app's Cloud Shell) — it is already authenticated as you
+#      and already knows the project.
+#   2. Paste ONE line:
+#
+#        curl -sS https://raw.githubusercontent.com/mikael-floden/pixel/main/games2/deploy/ar-cleanup.sh | bash
+#
+#      Nothing to fill in. Override with PROJECT_ID=… / REGION=… / AR_REPO=…
+#      before `bash` only if the defaults below are wrong.
 #
 # WHAT IT KEEPS, and why it can never break a rollback or the live service:
 #   • the newest 15 versions are ALWAYS kept (KEEP overrides every delete
@@ -24,9 +28,19 @@
 #     newest, so they are structurally inside the keep set.
 set -euo pipefail
 
-PROJECT_ID="${PROJECT_ID:-}"
-if [ -z "$PROJECT_ID" ]; then
-  read -r -p "GCP project id: " PROJECT_ID
+# PROJECT: derived, never prompted. Cloud Shell exports DEVSHELL_PROJECT_ID for
+# the active project, and gcloud knows it too — so the paste needs no editing
+# and no lookup. Deliberately NOT `read`: the documented invocation pipes this
+# script into bash, which means stdin is the SCRIPT, and an interactive read
+# there either hangs or swallows the next line of the program.
+# `|| true` matters: under `set -e` a failing command substitution inside an
+# assignment kills the script THERE, so without it a missing/erroring gcloud
+# exits silently with no diagnostic — verified by piping this script into bash
+# with gcloud off PATH.
+PROJECT_ID="${PROJECT_ID:-${DEVSHELL_PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}}"
+if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "(unset)" ]; then
+  echo "No project found. Re-run as:  PROJECT_ID=your-project bash ar-cleanup.sh" >&2
+  exit 1
 fi
 REGION="${REGION:-europe-north1}"
 AR_REPO="${AR_REPO:-nangijala}"
@@ -49,7 +63,7 @@ cat > "$POLICY" <<'JSON'
   {
     "name": "delete-older-than-14d",
     "action": { "type": "Delete" },
-    "condition": { "tagState": "any", "olderThan": "1209600s" }
+    "condition": { "tagState": "any", "olderThan": "14d" }
   }
 ]
 JSON
