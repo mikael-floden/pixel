@@ -4,8 +4,8 @@
   "group": "bell_posts",
   "rank": 14,
   "index": 4,
-  "name": "Stone pillar, bell arm 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Stone pillar, bell arm 004",
+  "lights": null,
   "variety": "stone pillar, bell arm",
   "glow_concept": "small oil lamp hung beside the bell",
   "prompt": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, stone pillar, bell arm, large, well above head height of a person, self-emissive at night, softly radiating light: small oil lamp hung beside the bell",
@@ -35,6 +35,46 @@
       "sprite": "bell_posts/bell_post_004/sprite.webp",
       "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
       "generated_at": "2026-08-13T08:45:02+00:00"
+    },
+    "LIT_2": {
+      "sprite": "bell_posts/bell_post_004/lit_2/sprite.webp",
+      "pixellab_object_id": "1b6dcaa3-3027-4d47-9acd-eece21f4b9a2",
+      "generated_at": "2026-08-15T20:24:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7114,
+      "glow_score": 0.0113
+    },
+    "LIT_3": {
+      "sprite": "bell_posts/bell_post_004/lit_3/sprite.webp",
+      "pixellab_object_id": "a79d9384-01d8-4222-ae03-5212e50c96e1",
+      "generated_at": "2026-08-15T20:24:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8869,
+      "glow_score": 0.018
+    },
+    "LIT_4": {
+      "sprite": "bell_posts/bell_post_004/lit_4/sprite.webp",
+      "pixellab_object_id": "1ce626f8-ff13-4fb5-a542-10193d117e5e",
+      "generated_at": "2026-08-15T20:23:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6174,
+      "glow_score": 0.0239
+    },
+    "NOT_LIT_1": {
+      "sprite": "bell_posts/bell_post_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "a1523d43-d71d-41e5-9bd1-d93f9ae3a167",
+      "generated_at": "2026-08-15T20:23:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3302,
+      "glow_score": 0.0108
+    },
+    "NOT_LIT_2": {
+      "sprite": "bell_posts/bell_post_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "55b29bf3-0f05-4fd0-b735-6c0cae83ada0",
+      "generated_at": "2026-08-15T20:23:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8872,
+      "glow_score": 0.0008
     }
   }
 }
