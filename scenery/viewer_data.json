@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 802,
+  "scenery_count": 803,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -166,7 +166,7 @@
       "name": "Fallen Log",
       "type": "NATURE",
       "quota": 62,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 21,
@@ -1428,7 +1428,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fallen_logs": 13,
+    "fallen_logs": 14,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
@@ -10140,6 +10140,40 @@
       "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
       "sprite": "fallen_logs/fallen_log_014/sprite.webp",
       "art_hash": "6f7b82ba61061a44",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_015",
+      "rel": "fallen_logs/fallen_log_015",
+      "name": "Half-buried mossy log 015",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_OFF",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, half-buried mossy log, grown around a half-buried stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.55,
+        "world_px_height": 21,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          33,
+          18,
+          96,
+          115
+        ],
+        "content_px_height": 97,
+        "canvas_render_px": 28
+      },
+      "status": "complete",
+      "pixellab_object_id": "52d37a5e-4af1-49ab-a652-c3655ed462e3",
+      "sprite": "fallen_logs/fallen_log_015/sprite.webp",
+      "art_hash": "c5f4f8de6563e416",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
