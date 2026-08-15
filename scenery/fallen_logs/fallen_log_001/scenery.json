@@ -30,10 +30,101 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "fallen_logs/fallen_log_001/lit_1/sprite.webp",
+      "pixellab_object_id": "9ecd94cb-5b07-44c4-888d-f03ef2312a28",
+      "glow_concept": "luminous moss carpeting the upper side",
+      "difference_from_source": 0.945,
+      "glow_score": 0.2629
+    },
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_001/lit_2/sprite.webp",
+      "pixellab_object_id": "cf23fa8d-ab48-43ca-947c-a9f145df7584",
+      "glow_concept": "ember-orange glow inside the hollow end",
+      "difference_from_source": 0.9224,
+      "glow_score": 0.099
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_001/lit_3/sprite.webp",
+      "pixellab_object_id": "c41d9465-cb0f-4bde-9912-ac4bc03e733c",
+      "glow_concept": "soulstone crystals erupting from a split",
+      "difference_from_source": 0.9645,
+      "glow_score": 0.079
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_001/lit_4/sprite.webp",
+      "pixellab_object_id": "51aab59b-0ed4-4fd3-ab0e-853da41325e2",
+      "glow_concept": "a lit traveler's lantern resting on top",
+      "difference_from_source": 0.9488,
+      "glow_score": 0.1706
+    },
     "NOT_LIT_1": {
       "sprite": "fallen_logs/fallen_log_001/sprite.webp",
       "pixellab_object_id": "3957b845-86a0-4d17-97ca-670c92c91dff",
       "glow_score": 0.0153
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_10/sprite.webp",
+      "pixellab_object_id": "6f834171-5ff3-4d23-8ccc-3b843c04a430",
+      "glow_concept": null,
+      "difference_from_source": 0.9403,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7fe07d6c-b060-46ea-a578-042f60b3f648",
+      "glow_concept": null,
+      "difference_from_source": 0.9208,
+      "glow_score": 0.0467
+    },
+    "NOT_LIT_3": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "295b10e2-696d-418b-82a2-c62315a171e3",
+      "glow_concept": null,
+      "difference_from_source": 0.9869,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "67c0c2b1-e6c8-4216-8afc-9b685fac214b",
+      "glow_concept": null,
+      "difference_from_source": 0.9226,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_5": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "ccef34b3-bd90-4e47-a3db-d0e92dd36133",
+      "glow_concept": null,
+      "difference_from_source": 0.9819,
+      "glow_score": 0.0178
+    },
+    "NOT_LIT_6": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_6/sprite.webp",
+      "pixellab_object_id": "d1eb35f3-c7c0-4f97-83a4-b8d19bf276a8",
+      "glow_concept": null,
+      "difference_from_source": 0.6917,
+      "glow_score": 0.0617
+    },
+    "NOT_LIT_7": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_7/sprite.webp",
+      "pixellab_object_id": "f40998ab-173f-4f75-abcc-1a1c5d75f205",
+      "glow_concept": null,
+      "difference_from_source": 0.9133,
+      "glow_score": 0.0204
+    },
+    "NOT_LIT_8": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_8/sprite.webp",
+      "pixellab_object_id": "e455277b-aa06-4232-a715-e7796e0e4f79",
+      "glow_concept": null,
+      "difference_from_source": 0.9692,
+      "glow_score": 0.0036
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_001/not_lit_9/sprite.webp",
+      "pixellab_object_id": "efb26aa6-6660-4b24-b064-791ee4601088",
+      "glow_concept": null,
+      "difference_from_source": 0.9823,
+      "glow_score": 0.0023
     }
   }
 }
