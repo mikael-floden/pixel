@@ -31,6 +31,14 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "owl_snags/owl_snag_001/lit_1/sprite.webp",
+      "pixellab_object_id": "ef2df40e-8042-4315-be65-f1446f821113",
+      "generated_at": "2026-08-15T21:43:58+00:00",
+      "glow_concept": "soulstone knot where a branch broke off",
+      "difference_from_source": 0.5992,
+      "glow_score": 0.0843
+    },
     "LIT_2": {
       "sprite": "owl_snags/owl_snag_001/lit_2/sprite.webp",
       "pixellab_object_id": "b2c9a511-0241-4b27-b5e1-601af9d4e30a",
@@ -61,6 +69,14 @@
       "glow_score": 0.1167,
       "generated_at": "2026-08-13T01:56:36+00:00"
     },
+    "NOT_LIT_10": {
+      "sprite": "owl_snags/owl_snag_001/not_lit_10/sprite.webp",
+      "pixellab_object_id": "fbf384f6-573c-458b-9e7d-a7d9fc3b9f74",
+      "generated_at": "2026-08-15T21:43:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5321,
+      "glow_score": 0.1018
+    },
     "NOT_LIT_2": {
       "sprite": "owl_snags/owl_snag_001/not_lit_2/sprite.webp",
       "pixellab_object_id": "16539885-0ed7-4a10-ac26-64ea2976b9f3",
@@ -85,6 +101,22 @@
       "difference_from_source": 0.2657,
       "glow_score": 0.1094
     },
+    "NOT_LIT_5": {
+      "sprite": "owl_snags/owl_snag_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "fd48ba99-b640-40cf-8d16-f0ac1d9a048e",
+      "generated_at": "2026-08-15T21:43:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4053,
+      "glow_score": 0.1417
+    },
+    "NOT_LIT_6": {
+      "sprite": "owl_snags/owl_snag_001/not_lit_6/sprite.webp",
+      "pixellab_object_id": "ce433fb7-d38a-4711-8706-b2df53a25c03",
+      "generated_at": "2026-08-15T21:44:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8126,
+      "glow_score": 0.1284
+    },
     "NOT_LIT_7": {
       "sprite": "owl_snags/owl_snag_001/not_lit_7/sprite.webp",
       "pixellab_object_id": "3bed3d2e-3b7a-4f0a-af29-8cbcaf1fe579",
@@ -100,6 +132,14 @@
       "glow_concept": null,
       "difference_from_source": 0.7036,
       "glow_score": 0.1022
+    },
+    "NOT_LIT_9": {
+      "sprite": "owl_snags/owl_snag_001/not_lit_9/sprite.webp",
+      "pixellab_object_id": "36f7ba91-de1b-4211-8bb0-2f148779391f",
+      "generated_at": "2026-08-15T21:44:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2792,
+      "glow_score": 0.1129
     }
   },
   "generated_at": "2026-08-13T01:56:36+00:00"
