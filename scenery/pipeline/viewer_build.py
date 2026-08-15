@@ -9,11 +9,30 @@ domain-relative so it works on GitHub Pages and locally.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 
 import catalog
 import factory
+
+
+def _art_hash(rel_path):
+    """md5[:16] of a sprite — the SAME digest the wiki records on a verdict.
+
+    A verdict stores the hash of the art it was made against. Publishing the
+    CURRENT hash lets any consumer tell, with no extra bookkeeping, whether a
+    verdict still describes the art on screen. When they differ the art has
+    been regenerated since, so the verdict is spent and must not keep showing
+    as an outstanding rejection (maintainer 2026-08-14: "You must consume that
+    review so the comment and reject is not still present in the wiki for me").
+    This is why it is a published hash rather than a consumed-list: a list has
+    to be maintained and can drift, a hash comparison cannot."""
+    try:
+        with open(os.path.join(ROOT, rel_path), "rb") as f:
+            return hashlib.md5(f.read()).hexdigest()[:16]
+    except OSError:
+        return None
 
 ROOT = factory.ROOT
 DATA_PATH = os.path.join(ROOT, "viewer_data.json")
@@ -74,6 +93,7 @@ def build():
             "status": meta.get("status"),
             "pixellab_object_id": meta.get("pixellab_object_id"),
             "sprite": meta.get("sprite", f"{rel}/sprite.webp"),
+            "art_hash": _art_hash(meta.get("sprite", f"{rel}/sprite.webp")),
             # The TYPE this domain owns (config `types`). Published per piece so
             # a consumer never has to join against the catalog to filter by it.
             # A piece may override its group; otherwise it inherits.
@@ -93,7 +113,10 @@ def build():
             # right because the silhouettes match exactly — so a viewer should
             # switch states in place, the way it switches animations, rather
             # than treating them as separate pieces.
-            "states": meta.get("states") or {},
+            "states": {
+                k: {**v, "art_hash": _art_hash(v.get("sprite", ""))}
+                for k, v in (meta.get("states") or {}).items()
+            },
             "animations": anims,
         })
 
