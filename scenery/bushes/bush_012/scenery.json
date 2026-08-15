@@ -5,8 +5,8 @@
   "group": "bushes",
   "rank": 25,
   "index": 12,
-  "name": "White-flowering elderberry 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White-flowering elderberry 012",
+  "lights": null,
   "variety": "white-flowering elderberry",
   "glow_concept": "inner lantern glow silhouetting the leaves",
   "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, white-flowering elderberry, roughly six feet tall, human height, self-emissive at night, softly radiating light: inner lantern glow silhouetting the leaves",
@@ -35,6 +35,30 @@
       "sprite": "bushes/bush_012/sprite.webp",
       "pixellab_object_id": "40a3bcc9-c4c5-45e8-ae7a-cf1b8478f0ab",
       "generated_at": "2026-08-13T23:34:52+00:00"
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_012/lit_2/sprite.webp",
+      "pixellab_object_id": "a7f73807-9bba-4f00-92c4-25571d2f4a6d",
+      "generated_at": "2026-08-15T21:12:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.993,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "bushes/bush_012/lit_3/sprite.webp",
+      "pixellab_object_id": "01cd7888-c5a4-4f7f-b842-861c0056c53b",
+      "generated_at": "2026-08-15T21:12:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.813,
+      "glow_score": 0.1192
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ae9977d9-9219-4255-a48d-921cf7eeb249",
+      "generated_at": "2026-08-15T21:13:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8646,
+      "glow_score": 0.0
     }
   }
 }

@@ -4,8 +4,8 @@
   "group": "bushes",
   "rank": 25,
   "index": 8,
-  "name": "Bare winter twig bush 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Bare winter twig bush 008",
+  "lights": null,
   "variety": "bare winter twig bush",
   "glow_concept": "fireflies nesting deep in the foliage",
   "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, bare winter twig bush, waist-high, self-emissive at night, softly radiating light: fireflies nesting deep in the foliage",
@@ -35,6 +35,46 @@
       "sprite": "bushes/bush_008/sprite.webp",
       "pixellab_object_id": "f5f452ee-fe85-4f66-8e64-abf087faf0f9",
       "generated_at": "2026-08-13T21:42:07+00:00"
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_008/lit_2/sprite.webp",
+      "pixellab_object_id": "12721299-aced-442a-8d85-3a6f1703cc6c",
+      "generated_at": "2026-08-15T21:10:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8959,
+      "glow_score": 0.0154
+    },
+    "LIT_3": {
+      "sprite": "bushes/bush_008/lit_3/sprite.webp",
+      "pixellab_object_id": "ae7a1a2a-26d2-4c6e-8a2b-77cabeb003a0",
+      "generated_at": "2026-08-15T21:10:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7845,
+      "glow_score": 0.0366
+    },
+    "LIT_4": {
+      "sprite": "bushes/bush_008/lit_4/sprite.webp",
+      "pixellab_object_id": "f39764cc-0e55-4787-8a6a-e6b07dc0ba23",
+      "generated_at": "2026-08-15T21:10:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6961,
+      "glow_score": 0.0309
+    },
+    "NOT_LIT_1": {
+      "sprite": "bushes/bush_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "1ba270ab-3875-40de-b40e-8f618fb22481",
+      "generated_at": "2026-08-15T21:10:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.796,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "96daecbb-7ca2-4ac5-b5ac-2161ed69a752",
+      "generated_at": "2026-08-15T21:10:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6762,
+      "glow_score": 0.0
     }
   }
 }
