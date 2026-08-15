@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 817,
+  "scenery_count": 818,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -198,7 +198,7 @@
       "name": "Stump",
       "type": "NATURE",
       "quota": 54,
-      "done": 13
+      "done": 14
     },
     {
       "rank": 25,
@@ -1492,7 +1492,7 @@
     "stones": 45,
     "story_posts": 8,
     "streetlights": 7,
-    "stumps": 13,
+    "stumps": 14,
     "sundials": 2,
     "tables": 10,
     "telegraph_poles": 4,
@@ -20833,6 +20833,40 @@
           "art_hash": "f420aade6025b8e2"
         }
       },
+      "animations": []
+    },
+    {
+      "id": "stump_022",
+      "rel": "stumps/stump_022",
+      "name": "Sprouting stump with shoots 022 \u00b7 lit",
+      "category": "stumps",
+      "lights": "LIGHTS_ON",
+      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, sprouting stump with shoots, heavily weathered and gnarled, small, knee-high, self-emissive at night, softly radiating light: a single candle burning on the cut face",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.6,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          7,
+          9,
+          57,
+          58
+        ],
+        "content_px_height": 49,
+        "canvas_render_px": 30
+      },
+      "status": "complete",
+      "pixellab_object_id": "1397101e-5249-4d9c-9320-ae8eaf4b19af",
+      "sprite": "stumps/stump_022/sprite.webp",
+      "art_hash": "23aa4eb289179cee",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
       "animations": []
     },
     {
