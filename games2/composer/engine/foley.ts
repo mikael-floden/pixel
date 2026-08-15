@@ -9,8 +9,15 @@
 
 import { withAudioV } from "./assetver";
 
-// foley/<surface>/<surface>__takeNN.wav → hashed bundle URLs.
-const files = import.meta.glob("../foley/*/*.wav", {
+// foley/<surface>/<surface>__takeNN.{ogg,wav} → hashed bundle URLs.
+//
+// OPUS IS THE SHIPPING FORMAT since 2026-08-08: the library was 48.3 MB of raw
+// PCM in the deployed image beside music beds that were already ogg/m4a, which
+// is exactly the standard CLAUDE.md applies to art with webp. Opus is ~9% of
+// wav, so foley/ went 53 MB -> 8.1 MB. A handful of takes whose AUDIBLE level
+// did not survive the encode keep their .wav and are matched here too — the
+// glob takes both so a straggler can never silently 404.
+const files = import.meta.glob("../foley/*/*.{ogg,wav}", {
   query: "?url",
   import: "default",
   eager: true,
@@ -30,7 +37,7 @@ for (const path of Object.keys(files).sort()) {
 export function composerFoley(surface: string): string[] | null {
   const takes = bySurface.get(surface);
   // Vite already content-hashes these bundle urls; the ?v=<sha> stamp is what
-  // flips the server from no-cache to immutable for a .wav (its hashed-asset
+  // flips the server from no-cache to immutable for a take (its hashed-asset
   // rule only covers .js/.css), so a footstep set downloads once per deploy.
   return takes && takes.length > 0 ? takes.map(withAudioV) : null;
 }
@@ -53,10 +60,10 @@ export function composerFoleyTake(set: string, take: string | number): string | 
   // `take: composer/foley/ui_tick/ui_tick__take04.wav`. Accept that verbatim
   // (a request should wire in as DATA, not as a transcription step) alongside
   // a bare take name and a 1-based index.
-  const want = String(take).trim().replace(/^.*\//, "").replace(/\.wav$/i, "");
+  const want = String(take).trim().replace(/^.*\//, "").replace(/\.(ogg|wav)$/i, "");
   const hit =
-    rows.find((r) => r.name.replace(/\.wav$/i, "") === want) ??
-    rows.find((r) => r.name.replace(/\.wav$/i, "").endsWith(`__${want}`)) ??
+    rows.find((r) => r.name.replace(/\.(ogg|wav)$/i, "") === want) ??
+    rows.find((r) => r.name.replace(/\.(ogg|wav)$/i, "").endsWith(`__${want}`)) ??
     // a bare index: "3" / 3 means the THIRD take, 1-based like the filenames
     (/^\d+$/.test(want) ? rows[Number(want) - 1] : undefined);
   return hit ? withAudioV(hit.url) : null;
@@ -66,9 +73,9 @@ export function composerFoleySurfaces(): string[] {
   return [...bySurface.keys()];
 }
 
-// Candidate pools (foley/<set>/pool/*.wav) for the human audition page
+// Candidate pools (foley/<set>/pool/*) for the human audition page
 // (/#foley): every generated candidate, not just the auto-selected takes.
-const poolFiles = import.meta.glob("../foley/*/pool/*.wav", {
+const poolFiles = import.meta.glob("../foley/*/pool/*.{ogg,wav}", {
   query: "?url",
   import: "default",
   eager: true,

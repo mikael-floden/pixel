@@ -49,6 +49,14 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python games2/composer/foley/pipeline/generate.py ${{ github.event.inputs.surfaces }}
 
+      # SHIP OPUS, NEVER RAW PCM. The generator writes wav masters; this turns
+      # them into the ~9%-the-size opus the game actually loads, and deletes a
+      # master only once its opus has been decoded back and checked in the
+      # AUDIBLE band. Without this step every new round would quietly put
+      # uncompressed audio back into the deployed image.
+      - name: Compress the takes to opus
+        run: python games2/composer/foley/pipeline/to-opus.py
+
       - name: Commit + push
         id: push
         run: |
