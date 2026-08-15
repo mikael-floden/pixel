@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 812,
+  "scenery_count": 813,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -126,7 +126,7 @@
       "name": "Road Light",
       "type": "TOWN",
       "quota": 40,
-      "done": 6
+      "done": 7
     },
     {
       "rank": 16,
@@ -1491,7 +1491,7 @@
     "stone_fountains": 2,
     "stones": 44,
     "story_posts": 8,
-    "streetlights": 6,
+    "streetlights": 7,
     "stumps": 13,
     "sundials": 2,
     "tables": 10,
@@ -18730,6 +18730,40 @@
       "pixellab_object_id": "444192d5-0baa-4422-b18c-35dae55bc787",
       "sprite": "streetlights/streetlight_034/sprite.webp",
       "art_hash": "9668259d19eb38e0",
+      "type": "TOWN",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_036",
+      "rel": "streetlights/streetlight_036",
+      "name": "Paper-and-wood festival lantern on a pole 036 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn, paper-and-wood festival lantern on a pole, leaning from an old knock, large, twice human height, self-emissive at night, softly radiating light: a low guttering flame nearly out",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.58,
+        "world_px_height": 97,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          32,
+          13,
+          78,
+          88
+        ],
+        "content_px_height": 75,
+        "canvas_render_px": 124
+      },
+      "status": "complete",
+      "pixellab_object_id": "ef57cb8e-e12a-4ea7-bc56-5f7ef7bf7809",
+      "sprite": "streetlights/streetlight_036/sprite.webp",
+      "art_hash": "d17c51c71dfd5c66",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
