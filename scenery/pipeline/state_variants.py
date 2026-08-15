@@ -208,7 +208,8 @@ def prompt_for(state, anchor, glow, attempt=0):
     return " ".join(p for p in parts if p)
 
 
-def finalize(client, rel, man, state, oid, source_img, siblings, glow_used):
+def finalize(client, rel, man, state, oid, source_img, siblings, glow_used,
+             anchor_lit=False):
     """Gate the new art against the source AND every sibling, then write it."""
     detail = client.get_object(oid)
     url = client.sprite_url(detail)
@@ -244,6 +245,26 @@ def finalize(client, rel, man, state, oid, source_img, siblings, glow_used):
             client.delete_object(oid)
             raise PixelLabError(f"RETRY {rel}/{state}: too close to {other} "
                                 f"(structure {osd:.2f}, need {tv.SIBLING_MIN:.2f})")
+
+    # DID THE LIGHT ACTUALLY CHANGE? Only checkable when the state CROSSES
+    # conditions, where we know which way it must move. glow_score was being
+    # recorded and never read, so nothing stopped a still-glowing sprite being
+    # filed under NOT_LIT_* — and that state is exactly what the game renders
+    # when the object is meant to be dark. Relative to the source rather than
+    # an absolute floor, because a moss patch and a brazier live at completely
+    # different brightnesses.
+    want_lit = state.startswith("LIT_")
+    if want_lit != anchor_lit:
+        gs, src_gs = tv.glow_score(img), tv.glow_score(source_img)
+        if want_lit and gs <= src_gs * 1.15:
+            client.delete_object(oid)
+            raise PixelLabError(f"RETRY {rel}/{state}: asked for a lit version "
+                                f"but it is no brighter ({gs:.3f} vs {src_gs:.3f})")
+        if not want_lit and gs >= max(src_gs * 0.85, 0.01):
+            client.delete_object(oid)
+            raise PixelLabError(f"RETRY {rel}/{state}: asked for an unlit "
+                                f"version but it still glows ({gs:.3f} vs "
+                                f"{src_gs:.3f})")
 
     out = f"{tv.state_dir(rel, state)}/sprite.webp"
     factory.save_webp(img, os.path.join(factory.ROOT, out))
@@ -411,7 +432,8 @@ def main():
             if status == "completed":
                 try:
                     d = finalize(client, rel, man, state, oid, src,
-                                 siblings_of(rel, state), glow)
+                                 siblings_of(rel, state), glow,
+                                 anchor.startswith("LIT_"))
                     ok += 1
                     since_commit += 1
                     print(f"  = {rel} {state} ({d:.0%} different)", flush=True)
