@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:51:57+00:00",
+  "id": "stone_033",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 33,
+  "name": "Stone with carved initials 033",
+  "lights": "LIGHTS_OFF",
+  "variety": "stone with carved initials",
+  "modifier": "scarred by an old lightning strike",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, scarred by an old lightning strike, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_033/sprite.webp",
+  "placement": {
+    "world_height_m": 0.72,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      6,
+      8,
+      59,
+      57
+    ],
+    "content_px_height": 49,
+    "canvas_render_px": 35
+  },
+  "pixellab_object_id": "57ad368b-0106-4e21-a5d6-eb78d921b1c8",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
