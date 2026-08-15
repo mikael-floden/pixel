@@ -5,8 +5,8 @@
   "group": "cairns",
   "rank": 9,
   "index": 24,
-  "name": "Wide low memorial cairn 024 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Wide low memorial cairn 024",
+  "lights": null,
   "variety": "wide low memorial cairn",
   "modifier": "heavily weathered and gnarled",
   "glow_concept": "topmost stone glowing like a lantern",
@@ -36,6 +36,30 @@
       "sprite": "cairns/cairn_024/sprite.webp",
       "pixellab_object_id": "4fb51ce1-bd36-41ea-ae65-1236c3cbc0b8",
       "generated_at": "2026-08-14T01:41:04+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cairns/cairn_024/lit_2/sprite.webp",
+      "pixellab_object_id": "76015efe-67a0-4e80-b8a0-c15610ac247c",
+      "generated_at": "2026-08-15T21:37:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.828,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "cairns/cairn_024/lit_4/sprite.webp",
+      "pixellab_object_id": "2945b1aa-8b00-42b1-9021-f4aceac2c2b1",
+      "generated_at": "2026-08-15T21:37:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.621,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "cairns/cairn_024/not_lit_1/sprite.webp",
+      "pixellab_object_id": "32d18f4a-85e3-461d-b4f6-3b55c5dd7aa8",
+      "generated_at": "2026-08-15T21:38:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8279,
+      "glow_score": 0.0
     }
   }
 }

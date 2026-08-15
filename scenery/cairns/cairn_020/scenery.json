@@ -5,8 +5,8 @@
   "group": "cairns",
   "rank": 9,
   "index": 20,
-  "name": "Moss-grown ancient cairn 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Moss-grown ancient cairn 020",
+  "lights": null,
   "variety": "moss-grown ancient cairn",
   "modifier": "with a small sapling beside it",
   "glow_concept": "wisps of soul-light circling the peak",
@@ -36,6 +36,46 @@
       "sprite": "cairns/cairn_020/sprite.webp",
       "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
       "generated_at": "2026-08-14T00:53:12+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cairns/cairn_020/lit_2/sprite.webp",
+      "pixellab_object_id": "a44f91aa-daa4-42b7-b4c8-db0ec928702d",
+      "generated_at": "2026-08-15T21:33:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9025,
+      "glow_score": 0.1446
+    },
+    "LIT_3": {
+      "sprite": "cairns/cairn_020/lit_3/sprite.webp",
+      "pixellab_object_id": "f26961ab-bdd8-4149-b78e-500a2a7e9754",
+      "generated_at": "2026-08-15T21:33:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7916,
+      "glow_score": 0.0354
+    },
+    "LIT_4": {
+      "sprite": "cairns/cairn_020/lit_4/sprite.webp",
+      "pixellab_object_id": "3b6f827c-777c-427f-9331-ec51aabfd5fc",
+      "generated_at": "2026-08-15T21:33:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8369,
+      "glow_score": 0.0449
+    },
+    "NOT_LIT_1": {
+      "sprite": "cairns/cairn_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "50f474d7-b316-4281-8723-20c81d9b8b92",
+      "generated_at": "2026-08-15T21:34:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3434,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cairns/cairn_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1a80d322-4996-4485-b46c-bdae327b7144",
+      "generated_at": "2026-08-15T21:34:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8417,
+      "glow_score": 0.0
     }
   }
 }

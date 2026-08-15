@@ -9290,6 +9290,15 @@
           "difference_from_source": 0.8949,
           "glow_score": 0.0,
           "art_hash": "eaf9550c129cd8d3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a4c2d410-5d42-460f-9562-ece5f7ca4e07",
+          "generated_at": "2026-08-15T21:38:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8354,
+          "glow_score": 0.0,
+          "art_hash": "f9b0efc7a73268cb"
         }
       },
       "animations": []
@@ -9328,11 +9337,29 @@
           "glow_score": 0.0496,
           "art_hash": "262ad1fbf4332207"
         },
+        "LIT_2": {
+          "sprite": "cairns/cairn_017/lit_2/sprite.webp",
+          "pixellab_object_id": "5fc9de6f-5fbc-4ae1-823b-a8f525285e34",
+          "generated_at": "2026-08-15T21:32:42+00:00",
+          "glow_concept": "warm light spilling from gaps between stones",
+          "difference_from_source": 0.7792,
+          "glow_score": 0.1134,
+          "art_hash": "5673dda82a804190"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_017/sprite.webp",
           "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
           "generated_at": "2026-08-14T01:28:18+00:00",
           "art_hash": "178feef4bb378e89"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a6cd8874-3f23-4c9e-90f9-c22b53d3fea1",
+          "generated_at": "2026-08-15T21:33:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5692,
+          "glow_score": 0.0,
+          "art_hash": "89dad7754698610d"
         },
         "NOT_LIT_3": {
           "sprite": "cairns/cairn_017/not_lit_3/sprite.webp",
@@ -9360,7 +9387,7 @@
       "rel": "cairns/cairn_019",
       "name": "Massive boulder-based cairn 019",
       "category": "cairns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, massive boulder-based cairn, split into a double form, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -9380,6 +9407,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cairns/cairn_019/lit_1/sprite.webp",
+          "pixellab_object_id": "800da4b1-3c77-47d6-b50f-8bb8865bd15a",
+          "generated_at": "2026-08-15T21:32:09+00:00",
+          "glow_concept": "warm light spilling from gaps between stones",
+          "difference_from_source": 0.9018,
+          "glow_score": 0.0913,
+          "art_hash": "acdd8cb1e3c2e225"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_019/lit_2/sprite.webp",
+          "pixellab_object_id": "df40b81a-828d-4b7b-992d-89bada4ee6c5",
+          "generated_at": "2026-08-15T21:32:52+00:00",
+          "glow_concept": "chalk name-marks shining white on each stone",
+          "difference_from_source": 0.4761,
+          "glow_score": 0.0664,
+          "art_hash": "149c20f1126c4b76"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_019/sprite.webp",
           "pixellab_object_id": "8d1e665a-6b45-40c6-ab0d-b597544f4531",
@@ -9394,6 +9439,24 @@
           "difference_from_source": 0.3369,
           "glow_score": 0.0,
           "art_hash": "237bf1b8f030d5f6"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_019/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0e7f2688-f6a8-4587-8099-dbcb1570fc45",
+          "generated_at": "2026-08-15T21:32:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5846,
+          "glow_score": 0.0,
+          "art_hash": "20374dcbb382c96f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_019/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a723571d-3715-461f-b827-142bf145459e",
+          "generated_at": "2026-08-15T21:32:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7045,
+          "glow_score": 0.0,
+          "art_hash": "ec577523130c4a05"
         }
       },
       "animations": []
@@ -9401,9 +9464,9 @@
     {
       "id": "cairn_020",
       "rel": "cairns/cairn_020",
-      "name": "Moss-grown ancient cairn 020 \u00b7 lit",
+      "name": "Moss-grown ancient cairn 020",
       "category": "cairns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, moss-grown ancient cairn, with a small sapling beside it, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps of soul-light circling the peak",
       "view": "low top-down",
       "size": 64,
@@ -9428,6 +9491,51 @@
           "pixellab_object_id": "d9a19b9d-e477-42b3-9cec-e881b4cde372",
           "generated_at": "2026-08-14T00:53:12+00:00",
           "art_hash": "ad6dde6ab65f1443"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_020/lit_2/sprite.webp",
+          "pixellab_object_id": "a44f91aa-daa4-42b7-b4c8-db0ec928702d",
+          "generated_at": "2026-08-15T21:33:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9025,
+          "glow_score": 0.1446,
+          "art_hash": "180f2db850b726f1"
+        },
+        "LIT_3": {
+          "sprite": "cairns/cairn_020/lit_3/sprite.webp",
+          "pixellab_object_id": "f26961ab-bdd8-4149-b78e-500a2a7e9754",
+          "generated_at": "2026-08-15T21:33:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7916,
+          "glow_score": 0.0354,
+          "art_hash": "5b2fa12f933b9190"
+        },
+        "LIT_4": {
+          "sprite": "cairns/cairn_020/lit_4/sprite.webp",
+          "pixellab_object_id": "3b6f827c-777c-427f-9331-ec51aabfd5fc",
+          "generated_at": "2026-08-15T21:33:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8369,
+          "glow_score": 0.0449,
+          "art_hash": "268279b562cfc82d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "50f474d7-b316-4281-8723-20c81d9b8b92",
+          "generated_at": "2026-08-15T21:34:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3434,
+          "glow_score": 0.0,
+          "art_hash": "0dfd06f1aa970a15"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1a80d322-4996-4485-b46c-bdae327b7144",
+          "generated_at": "2026-08-15T21:34:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8417,
+          "glow_score": 0.0,
+          "art_hash": "2a9f34a54377f160"
         }
       },
       "animations": []
@@ -9437,7 +9545,7 @@
       "rel": "cairns/cairn_021",
       "name": "Rounded fieldstone cairn 021",
       "category": "cairns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, rounded fieldstone cairn, one side die-back, the other thriving, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -9457,11 +9565,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cairns/cairn_021/lit_1/sprite.webp",
+          "pixellab_object_id": "5e77ab6b-74db-47ea-a822-28f919eabc14",
+          "generated_at": "2026-08-15T21:35:14+00:00",
+          "glow_concept": "wisps of soul-light circling the peak",
+          "difference_from_source": 0.6324,
+          "glow_score": 0.1247,
+          "art_hash": "8d4f1eadf0e7ed9d"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_021/lit_2/sprite.webp",
+          "pixellab_object_id": "5946334a-fd14-4b11-a045-b454461e2d72",
+          "generated_at": "2026-08-15T21:35:36+00:00",
+          "glow_concept": "cold blue soul-light seeping from under the base",
+          "difference_from_source": 0.4784,
+          "glow_score": 0.1219,
+          "art_hash": "4a40e92f4b608bc3"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_021/sprite.webp",
           "pixellab_object_id": "45672381-2d66-4d2d-be0d-a0bb0a3d646e",
           "generated_at": "2026-08-14T01:44:28+00:00",
           "art_hash": "eeceafbae4761bd6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_021/not_lit_2/sprite.webp",
+          "pixellab_object_id": "47e9b481-72b4-446b-9194-62f0de5a1c15",
+          "generated_at": "2026-08-15T21:34:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6689,
+          "glow_score": 0.0,
+          "art_hash": "1086f19d92a76537"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_021/not_lit_3/sprite.webp",
+          "pixellab_object_id": "02f2b966-7f44-4099-9558-2121856080b6",
+          "generated_at": "2026-08-15T21:35:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8575,
+          "glow_score": 0.0,
+          "art_hash": "82c35fce7659e84b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_021/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c663a658-bca8-474a-a461-586ae86b0cda",
+          "generated_at": "2026-08-15T21:35:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7775,
+          "glow_score": 0.0053,
+          "art_hash": "b142739220e2bd1c"
         }
       },
       "animations": []
@@ -9469,9 +9622,9 @@
     {
       "id": "cairn_022",
       "rel": "cairns/cairn_022",
-      "name": "Waist-high dome cairn 022 \u00b7 lit",
+      "name": "Waist-high dome cairn 022",
       "category": "cairns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, waist-high dome cairn, wrapped in thin creeper vines, small, knee-high, self-emissive at night, softly radiating light: cold blue soul-light seeping from under the base",
       "view": "low top-down",
       "size": 64,
@@ -9496,6 +9649,51 @@
           "pixellab_object_id": "6db390f7-7240-49a3-aa34-afb53ac6c4b7",
           "generated_at": "2026-08-14T01:36:11+00:00",
           "art_hash": "30a396d539ddf09e"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_022/lit_2/sprite.webp",
+          "pixellab_object_id": "69c064a1-dc25-46b6-9ae1-6e68ea1ee69a",
+          "generated_at": "2026-08-15T21:35:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6926,
+          "glow_score": 0.0,
+          "art_hash": "c71d8fb28e94eaed"
+        },
+        "LIT_3": {
+          "sprite": "cairns/cairn_022/lit_3/sprite.webp",
+          "pixellab_object_id": "fb42617b-dd0c-4bd4-b83f-31b1a1447c03",
+          "generated_at": "2026-08-15T21:35:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7792,
+          "glow_score": 0.0,
+          "art_hash": "63c335b89b0ae50c"
+        },
+        "LIT_4": {
+          "sprite": "cairns/cairn_022/lit_4/sprite.webp",
+          "pixellab_object_id": "a01da071-0c5b-4766-8300-3260a22d64d6",
+          "generated_at": "2026-08-15T21:36:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6884,
+          "glow_score": 0.0,
+          "art_hash": "227045c5bec59a8f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "674b4555-4f35-4448-9ce7-610f76e037dc",
+          "generated_at": "2026-08-15T21:37:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8907,
+          "glow_score": 0.0,
+          "art_hash": "9d2517411011f759"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ce65504a-0fd4-48a6-8437-5007b662215b",
+          "generated_at": "2026-08-15T21:36:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9217,
+          "glow_score": 0.0,
+          "art_hash": "04e878bd977d8361"
         }
       },
       "animations": []
@@ -9503,9 +9701,9 @@
     {
       "id": "cairn_024",
       "rel": "cairns/cairn_024",
-      "name": "Wide low memorial cairn 024 \u00b7 lit",
+      "name": "Wide low memorial cairn 024",
       "category": "cairns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, wide low memorial cairn, heavily weathered and gnarled, roughly six feet tall, human height, self-emissive at night, softly radiating light: topmost stone glowing like a lantern",
       "view": "low top-down",
       "size": 64,
@@ -9530,6 +9728,33 @@
           "pixellab_object_id": "4fb51ce1-bd36-41ea-ae65-1236c3cbc0b8",
           "generated_at": "2026-08-14T01:41:04+00:00",
           "art_hash": "e584a974eeaddf24"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_024/lit_2/sprite.webp",
+          "pixellab_object_id": "76015efe-67a0-4e80-b8a0-c15610ac247c",
+          "generated_at": "2026-08-15T21:37:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.828,
+          "glow_score": 0.0,
+          "art_hash": "9521a1588f84537a"
+        },
+        "LIT_4": {
+          "sprite": "cairns/cairn_024/lit_4/sprite.webp",
+          "pixellab_object_id": "2945b1aa-8b00-42b1-9021-f4aceac2c2b1",
+          "generated_at": "2026-08-15T21:37:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.621,
+          "glow_score": 0.0,
+          "art_hash": "d633922e01050c08"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "32d18f4a-85e3-461d-b4f6-3b55c5dd7aa8",
+          "generated_at": "2026-08-15T21:38:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8279,
+          "glow_score": 0.0,
+          "art_hash": "8b00b154059c3f7b"
         }
       },
       "animations": []
