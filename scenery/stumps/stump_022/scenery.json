@@ -6,8 +6,8 @@
   "type": "NATURE",
   "rank": 24,
   "index": 22,
-  "name": "Sprouting stump with shoots 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Sprouting stump with shoots 022",
+  "lights": null,
   "variety": "sprouting stump with shoots",
   "modifier": "heavily weathered and gnarled",
   "glow_concept": "a single candle burning on the cut face",
@@ -49,6 +49,22 @@
       "sprite": "stumps/stump_022/sprite.webp",
       "pixellab_object_id": "1397101e-5249-4d9c-9320-ae8eaf4b19af",
       "glow_score": 0.1179
+    },
+    "NOT_LIT_1": {
+      "sprite": "stumps/stump_022/not_lit_1/sprite.webp",
+      "pixellab_object_id": "db21780b-4fad-447d-8973-997d85e35bbb",
+      "generated_at": "2026-08-15T19:52:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9122,
+      "glow_score": 0.0816
+    },
+    "NOT_LIT_4": {
+      "sprite": "stumps/stump_022/not_lit_4/sprite.webp",
+      "pixellab_object_id": "2fac4b48-57d2-4ecc-9c36-2fb08a99c581",
+      "generated_at": "2026-08-15T19:51:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7898,
+      "glow_score": 0.0005
     }
   }
 }
