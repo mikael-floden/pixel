@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:58:55+00:00",
+  "id": "fallen_log_013",
+  "group": "fallen_logs",
+  "type": "NATURE",
+  "rank": 20,
+  "index": 13,
+  "name": "Log with honey fungus clumps 013",
+  "lights": "LIGHTS_OFF",
+  "variety": "log with honey fungus clumps",
+  "modifier": "split into a double form",
+  "glow_concept": null,
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, log with honey fungus clumps, split into a double form, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_013/sprite.webp",
+  "placement": {
+    "world_height_m": 0.89,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      24,
+      16,
+      104,
+      116
+    ],
+    "content_px_height": 100,
+    "canvas_render_px": 44
+  },
+  "pixellab_object_id": "ef0af572-27eb-4073-afc6-7e687dcf804b",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
