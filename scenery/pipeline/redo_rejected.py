@@ -109,11 +109,23 @@ def rejected_states():
     e = json.load(open(FEEDBACK)).get("entries") or {}
     out = []
     for k, v in e.items():
-        if not k.startswith("scenery/trees/") or "#" not in k:
+        if not k.startswith("scenery/") or "#" not in k:
             continue
         if v.get("status") != "rejected":
             continue
         rel, state = k.split("#")[0][len("scenery/"):], k.split("#")[1].upper()
+        # MATCH ON THE STATE NAME, NOT THE PATH. This used to require
+        # "scenery/trees/", which is the same mistake the maintainer already
+        # corrected once: "'variants for every tree' meant EVERY TREE, not the
+        # group named `trees`". Every tree FAMILY carries LIT_/NOT_LIT_ states
+        # now — owl_snags, ancient_trees, honey_trees, wisteria_snags — and
+        # with the path filter this function silently returned zero for all of
+        # them. His 2026-08-15 round was 38 rejections across 6 groups and NOT
+        # ONE was in `trees`; every one would have been reported as nothing to
+        # do. LIT_/NOT_LIT_ is what this script knows how to regenerate
+        # (windows' LIGHTS_ON/OFF belong to lights_on.py), so that is the test.
+        if not (state.startswith("LIT_") or state.startswith("NOT_LIT_")):
+            continue
         ent = ((factory.read_manifest(rel) or {}).get("states") or {}).get(state)
         if not ent or not os.path.exists(os.path.join(factory.ROOT, ent.get("sprite", ""))):
             continue
@@ -136,6 +148,24 @@ def main():
     client = PixelLabClient()
     cfg = factory.load_config()
     note_for = {(rel, st): corrective(note) for rel, st, note in todo}
+    # A NOTE ON ONE STATE IS EVIDENCE ABOUT THE PIECE. He is not going to type
+    # "No owl" eleven times — on owl_snag_001 he wrote it eight times, typo'd
+    # it once ("Own"), and left two states bare; on ancient_tree_002, six "no
+    # door" notes and two bare. Read per-state only, those bare ones regenerate
+    # with no correction at all and come back with the same fault. So every
+    # rejected state of a piece inherits its siblings' correction unless it
+    # carries its own. Only when the piece's notes AGREE — a piece with two
+    # different complaints has no single fix to spread, and guessing which one
+    # applies to an unnoted state is worse than leaving it to the gate.
+    by_piece = {}
+    for (rel, st), extra in note_for.items():
+        if extra:
+            by_piece.setdefault(rel, set()).add(extra)
+    for (rel, st), extra in list(note_for.items()):
+        if not extra and len(by_piece.get(rel, ())) == 1:
+            inherited = next(iter(by_piece[rel]))
+            note_for[(rel, st)] = inherited
+            print(f"  {rel} {st}: no note — inheriting the piece's:{inherited[:70]}")
     for (rel, st), extra in sorted(note_for.items()):
         if extra:
             print(f"  correction for {rel} {st}:{extra}")
