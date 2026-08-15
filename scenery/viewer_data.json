@@ -1594,7 +1594,118 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "ancient_trees/ancient_tree_001/lit_1/sprite.webp",
+          "pixellab_object_id": "daec88df-2ba9-4a70-ab36-bf2db30ce65b",
+          "glow_concept": "glowing runes spiraling up the trunk",
+          "difference_from_source": 0.2104,
+          "glow_score": 0.0192,
+          "art_hash": "0bd3407244204ae1"
+        },
+        "LIT_2": {
+          "sprite": "ancient_trees/ancient_tree_001/lit_2/sprite.webp",
+          "pixellab_object_id": "e7724487-c23b-4086-b58d-a7cdc4d5d270",
+          "glow_concept": "soulstone veins shining through split bark",
+          "difference_from_source": 0.1993,
+          "glow_score": 0.0165,
+          "art_hash": "332e5f8564459901"
+        },
+        "LIT_3": {
+          "sprite": "ancient_trees/ancient_tree_001/lit_3/sprite.webp",
+          "pixellab_object_id": "e406bf76-9f42-4bd9-912d-662be81c6f62",
+          "glow_concept": "hollow heart glowing like embers inside",
+          "difference_from_source": 0.1995,
+          "glow_score": 0.0079,
+          "art_hash": "223456fba3ac9bec"
+        },
+        "LIT_4": {
+          "sprite": "ancient_trees/ancient_tree_001/lit_4/sprite.webp",
+          "pixellab_object_id": "96b1c2bb-6931-467d-aace-9457f55e1ad9",
+          "glow_concept": "crown wreathed in drifting golden memory-motes",
+          "difference_from_source": 0.3916,
+          "glow_score": 0.0121,
+          "art_hash": "2dba72162b4f8b4c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
+          "pixellab_object_id": "3108a036-f421-4028-8ff8-9d1229ada84b",
+          "glow_score": 0.0001,
+          "art_hash": "efee6317fb901f85"
+        },
+        "NOT_LIT_10": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_10/sprite.webp",
+          "pixellab_object_id": "cbc7302c-1788-4d37-985f-8575eb4e2c13",
+          "glow_concept": null,
+          "difference_from_source": 0.2462,
+          "glow_score": 0.0001,
+          "art_hash": "92b733ec70a692ed"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c8337319-f34c-4e9f-afba-b60471f3d34b",
+          "glow_concept": null,
+          "difference_from_source": 0.293,
+          "glow_score": 0.0001,
+          "art_hash": "6d2142bd6ca6718c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "81ca8ce1-696d-4ba8-bfc5-e019a95152c9",
+          "glow_concept": null,
+          "difference_from_source": 0.5003,
+          "glow_score": 0.0002,
+          "art_hash": "f6f27966441298ca"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7e890906-5ff7-4fbd-9fcd-b408aa65a270",
+          "glow_concept": null,
+          "difference_from_source": 0.2515,
+          "glow_score": 0.0,
+          "art_hash": "929d5ad88f5d6d6c"
+        },
+        "NOT_LIT_5": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_5/sprite.webp",
+          "pixellab_object_id": "ad5540ac-69e3-45bd-b505-d2e2dacc99aa",
+          "glow_concept": null,
+          "difference_from_source": 0.2278,
+          "glow_score": 0.0001,
+          "art_hash": "b095d6ced95ff016"
+        },
+        "NOT_LIT_6": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_6/sprite.webp",
+          "pixellab_object_id": "bf602057-bc61-4ab1-8bc8-4cde7bef4e0b",
+          "glow_concept": null,
+          "difference_from_source": 0.2174,
+          "glow_score": 0.0,
+          "art_hash": "a0fa2efbd6679294"
+        },
+        "NOT_LIT_7": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_7/sprite.webp",
+          "pixellab_object_id": "c92026c0-58b1-4be8-a794-a69c000dcd7a",
+          "glow_concept": null,
+          "difference_from_source": 0.2232,
+          "glow_score": 0.0005,
+          "art_hash": "3e94ada02662cb04"
+        },
+        "NOT_LIT_8": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_8/sprite.webp",
+          "pixellab_object_id": "9b12f5bd-1613-4263-bbce-4aa3633707cc",
+          "glow_concept": null,
+          "difference_from_source": 0.301,
+          "glow_score": 0.0001,
+          "art_hash": "de171969efb9cdfc"
+        },
+        "NOT_LIT_9": {
+          "sprite": "ancient_trees/ancient_tree_001/not_lit_9/sprite.webp",
+          "pixellab_object_id": "c7c7b8cf-dcea-46df-a324-a93402b8e9ec",
+          "glow_concept": null,
+          "difference_from_source": 0.4368,
+          "glow_score": 0.0,
+          "art_hash": "70bb7e496fe37896"
+        }
+      },
       "animations": []
     },
     {
@@ -1620,7 +1731,86 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "ancient_trees/ancient_tree_002/sprite.webp",
+          "pixellab_object_id": "9f1d7925-8f87-480b-8cce-eec6601b3698",
+          "glow_score": 0.0102,
+          "art_hash": "ba869feeea238b28"
+        },
+        "LIT_3": {
+          "sprite": "ancient_trees/ancient_tree_002/lit_3/sprite.webp",
+          "pixellab_object_id": "486553e4-3342-4ed5-ae53-b4cb441b44e9",
+          "glow_concept": "candlelit shrines tucked between the roots",
+          "difference_from_source": 0.3064,
+          "glow_score": 0.0401,
+          "art_hash": "8731195b27273a67"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "54886c82-89cf-4f21-bf18-b26e8c1fe900",
+          "glow_concept": null,
+          "difference_from_source": 0.136,
+          "glow_score": 0.004,
+          "art_hash": "f4667846df34be02"
+        },
+        "NOT_LIT_10": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_10/sprite.webp",
+          "pixellab_object_id": "a36d5550-692d-4699-9228-bccdb950c100",
+          "glow_concept": null,
+          "difference_from_source": 0.2002,
+          "glow_score": 0.0027,
+          "art_hash": "f79beaa1c778bd65"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e9dfe29f-319b-4307-b918-26d747b93e80",
+          "glow_concept": null,
+          "difference_from_source": 0.3846,
+          "glow_score": 0.0008,
+          "art_hash": "b14c2b927e80293c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_4/sprite.webp",
+          "pixellab_object_id": "059185c4-5f6e-49c4-bdc6-1db6662a92dd",
+          "glow_concept": null,
+          "difference_from_source": 0.2699,
+          "glow_score": 0.0001,
+          "art_hash": "4dfd0f30e6b597eb"
+        },
+        "NOT_LIT_5": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_5/sprite.webp",
+          "pixellab_object_id": "d4382c66-2007-43f2-8709-03a5c4b9b96b",
+          "glow_concept": null,
+          "difference_from_source": 0.394,
+          "glow_score": 0.0094,
+          "art_hash": "dba16c45a3f898cb"
+        },
+        "NOT_LIT_7": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_7/sprite.webp",
+          "pixellab_object_id": "c882ab56-7972-4cde-8ac3-44b36b52a68c",
+          "glow_concept": null,
+          "difference_from_source": 0.3688,
+          "glow_score": 0.0015,
+          "art_hash": "2b61a49074b36bb8"
+        },
+        "NOT_LIT_8": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_8/sprite.webp",
+          "pixellab_object_id": "15ba7e68-403c-4a0f-bacd-f3ec8bd14898",
+          "glow_concept": null,
+          "difference_from_source": 0.3877,
+          "glow_score": 0.0047,
+          "art_hash": "d93a8bc6a87b2dcf"
+        },
+        "NOT_LIT_9": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_9/sprite.webp",
+          "pixellab_object_id": "d1d8d386-531e-4d44-9af1-8c64d9b45a03",
+          "glow_concept": null,
+          "difference_from_source": 0.2626,
+          "glow_score": 0.0025,
+          "art_hash": "ab98ab0b4970dfdd"
+        }
+      },
       "animations": []
     },
     {
@@ -2530,7 +2720,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "bee_logs/bee_log_002/sprite.webp",
+          "pixellab_object_id": "50f20143-fcfd-4672-ab61-e8fcebca0a7d",
+          "glow_score": 0.048,
+          "art_hash": "e1afece84636cd92"
+        }
+      },
       "animations": []
     },
     {
@@ -7218,7 +7415,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
+          "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
+          "glow_score": 0.117,
+          "art_hash": "de2a06175766b0f0"
+        }
+      },
       "animations": []
     },
     {
@@ -8024,7 +8228,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
+          "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
+          "glow_score": 0.0708,
+          "art_hash": "7f30d02860cf3c08"
+        }
+      },
       "animations": []
     },
     {
@@ -8050,7 +8261,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_001/sprite.webp",
+          "pixellab_object_id": "3957b845-86a0-4d17-97ca-670c92c91dff",
+          "glow_score": 0.0153,
+          "art_hash": "8986a41fd4dde518"
+        }
+      },
       "animations": []
     },
     {
@@ -8076,7 +8294,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_002/sprite.webp",
+          "pixellab_object_id": "9a054548-8a90-4147-83e7-102e7be275c4",
+          "glow_score": 0.1844,
+          "art_hash": "627e1b4b8945d026"
+        }
+      },
       "animations": []
     },
     {
@@ -8102,7 +8327,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_003/sprite.webp",
+          "pixellab_object_id": "abd878e1-c177-44c4-9e22-e92bf6e038b9",
+          "glow_score": 0.4569,
+          "art_hash": "1f886c338d38377d"
+        }
+      },
       "animations": []
     },
     {
@@ -8128,7 +8360,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_004/sprite.webp",
+          "pixellab_object_id": "88520ebe-aa8e-42d1-b1df-8a9beb63766a",
+          "glow_score": 0.1887,
+          "art_hash": "c8fcbae106116742"
+        }
+      },
       "animations": []
     },
     {
@@ -8154,7 +8393,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_005/sprite.webp",
+          "pixellab_object_id": "3a86f8e1-2fa3-49e2-b61f-d6e78f0e252a",
+          "glow_score": 0.0067,
+          "art_hash": "597fe7b047c43b2e"
+        }
+      },
       "animations": []
     },
     {
@@ -8180,7 +8426,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_006/sprite.webp",
+          "pixellab_object_id": "3b85d944-5c82-4ed5-8508-57d76bfa1461",
+          "glow_score": 0.0507,
+          "art_hash": "d1e31c9de4e8c9f0"
+        }
+      },
       "animations": []
     },
     {
@@ -8206,7 +8459,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_007/sprite.webp",
+          "pixellab_object_id": "918fcefb-9715-4aa0-a7b9-d9525f7abf31",
+          "glow_score": 0.0069,
+          "art_hash": "d747c3146ac13fe8"
+        }
+      },
       "animations": []
     },
     {
@@ -8232,7 +8492,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_008/sprite.webp",
+          "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
+          "glow_score": 0.0439,
+          "art_hash": "7f22ba073f423ac4"
+        }
+      },
       "animations": []
     },
     {
@@ -8258,7 +8525,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_010/sprite.webp",
+          "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
+          "glow_score": 0.0149,
+          "art_hash": "39be67398cee9627"
+        }
+      },
       "animations": []
     },
     {
@@ -10121,7 +10395,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
+          "pixellab_object_id": "bc058401-ac27-4f9b-938d-0b913fcdef2d",
+          "glow_score": 0.0386,
+          "art_hash": "ff61dd2c22930668"
+        }
+      },
       "animations": []
     },
     {
@@ -10147,7 +10428,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
+          "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
+          "glow_score": 0.0099,
+          "art_hash": "4e97b252b7f1366f"
+        }
+      },
       "animations": []
     },
     {
@@ -10589,7 +10877,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "honey_trees/honey_tree_002/sprite.webp",
+          "pixellab_object_id": "d5972c66-793a-4fbb-a0db-868654ef5e68",
+          "glow_score": 0.0932,
+          "art_hash": "fe9b8d8285d7ec23"
+        }
+      },
       "animations": []
     },
     {
@@ -12513,7 +12808,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "orchard_trees/orchard_tree_027/sprite.webp",
+          "pixellab_object_id": "ab2a56b8-5f11-49f6-979e-20520a1894c3",
+          "glow_score": 0.0096,
+          "art_hash": "d35c448af9bfa9d1"
+        }
+      },
       "animations": []
     },
     {
@@ -12591,7 +12893,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "owl_snags/owl_snag_001/sprite.webp",
+          "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
+          "glow_score": 0.1167,
+          "art_hash": "8a94f1e4ce5bb0b4"
+        }
+      },
       "animations": []
     },
     {
@@ -12617,7 +12926,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "owl_snags/owl_snag_002/sprite.webp",
+          "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
+          "glow_score": 0.0017,
+          "art_hash": "c5082b96a346a560"
+        }
+      },
       "animations": []
     },
     {
@@ -12643,7 +12959,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "petrified_stumps/petrified_stump_002/sprite.webp",
+          "pixellab_object_id": "f6cf3c2d-548b-494a-bccd-f649e023e61e",
+          "glow_score": 0.1374,
+          "art_hash": "8650c6efa9bdc357"
+        }
+      },
       "animations": []
     },
     {
@@ -12669,7 +12992,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
+          "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
+          "glow_score": 0.0,
+          "art_hash": "9900ada41a654cb3"
+        }
+      },
       "animations": []
     },
     {
@@ -15243,7 +15573,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_001/sprite.webp",
+          "pixellab_object_id": "70b6c22d-3046-4d04-82b4-5e3935efedc4",
+          "glow_score": 0.1315,
+          "art_hash": "37f906ec1aabf5f3"
+        }
+      },
       "animations": []
     },
     {
@@ -15269,7 +15606,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_002/sprite.webp",
+          "pixellab_object_id": "d5b7d532-5b0f-4830-8742-cf1fab186408",
+          "glow_score": 0.0626,
+          "art_hash": "671546b1173263c7"
+        }
+      },
       "animations": []
     },
     {
@@ -15295,7 +15639,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_003/sprite.webp",
+          "pixellab_object_id": "c052321a-648c-461e-b7e0-5ab1811782c9",
+          "glow_score": 0.2943,
+          "art_hash": "3b141866a8d0342c"
+        }
+      },
       "animations": []
     },
     {
@@ -15321,7 +15672,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_005/sprite.webp",
+          "pixellab_object_id": "c5e61e87-cab7-4451-b8b5-4a2bc9a6ea22",
+          "glow_score": 0.1473,
+          "art_hash": "c3a3a50c643e9340"
+        }
+      },
       "animations": []
     },
     {
@@ -15347,7 +15705,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_007/sprite.webp",
+          "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
+          "glow_score": 0.1499,
+          "art_hash": "bbdc807b2eb01df1"
+        }
+      },
       "animations": []
     },
     {
@@ -15373,7 +15738,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_009/sprite.webp",
+          "pixellab_object_id": "17b4f7db-a651-4bd7-b4f2-dcb80587c4e2",
+          "glow_score": 0.1356,
+          "art_hash": "fa32511b2013d7c1"
+        }
+      },
       "animations": []
     },
     {
@@ -15399,7 +15771,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_010/sprite.webp",
+          "pixellab_object_id": "82ee60a0-e940-4c59-8952-24ca4207903c",
+          "glow_score": 0.2007,
+          "art_hash": "a868c6221e1ae229"
+        }
+      },
       "animations": []
     },
     {
@@ -15425,7 +15804,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_011/sprite.webp",
+          "pixellab_object_id": "101362b9-6637-46a8-bac1-3c44fc5956f6",
+          "glow_score": 0.1467,
+          "art_hash": "35a8b84c28c99e06"
+        }
+      },
       "animations": []
     },
     {
@@ -15451,7 +15837,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_012/sprite.webp",
+          "pixellab_object_id": "2dd24fca-86f0-4350-86c5-13d106887dad",
+          "glow_score": 0.2079,
+          "art_hash": "e7ab0fdd6e23ba95"
+        }
+      },
       "animations": []
     },
     {
@@ -15477,7 +15870,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_013/sprite.webp",
+          "pixellab_object_id": "614aed5a-505c-4aa0-aba3-bc8f6fbc372b",
+          "glow_score": 0.1065,
+          "art_hash": "bda436446428a201"
+        }
+      },
       "animations": []
     },
     {
@@ -15503,7 +15903,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_014/sprite.webp",
+          "pixellab_object_id": "89eeeb4a-3148-488a-8091-b1d3fa831d80",
+          "glow_score": 0.1219,
+          "art_hash": "a8f9a21273a0dc40"
+        }
+      },
       "animations": []
     },
     {
@@ -15529,7 +15936,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_016/sprite.webp",
+          "pixellab_object_id": "e3c90473-e9db-4156-8e0c-446f44d00807",
+          "glow_score": 0.1772,
+          "art_hash": "9a8b7ccbca21e326"
+        }
+      },
       "animations": []
     },
     {
@@ -15555,7 +15969,14 @@
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_020/sprite.webp",
+          "pixellab_object_id": "0c234ce6-c34c-42f8-bb64-e444bd0a4138",
+          "glow_score": 0.1327,
+          "art_hash": "2839e604cf8a930a"
+        }
+      },
       "animations": []
     },
     {
@@ -26450,7 +26871,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_001/sprite.webp",
+          "pixellab_object_id": "a6c1f6ee-0fb0-470f-9aa9-9275fd491818",
+          "glow_score": 0.0774,
+          "art_hash": "7bb520c62791e8a4"
+        }
+      },
       "animations": []
     },
     {
@@ -26476,7 +26904,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_002/sprite.webp",
+          "pixellab_object_id": "b4cef6f6-7c0a-4283-8726-b99a31b99648",
+          "glow_score": 0.0367,
+          "art_hash": "64235fa6d860b077"
+        }
+      },
       "animations": []
     },
     {
@@ -26502,7 +26937,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/sprite.webp",
+          "pixellab_object_id": "62ad44a2-64f3-427d-8d37-9b30bdc0933e",
+          "glow_score": 0.0079,
+          "art_hash": "d192b632750f4f51"
+        }
+      },
       "animations": []
     },
     {
@@ -29989,7 +30431,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "NOT_LIT_1": {
+          "sprite": "wisteria_snags/wisteria_snag_001/sprite.webp",
+          "pixellab_object_id": "1a894063-b8ae-458b-b7d8-867e4f2c7b3f",
+          "glow_score": 0.0742,
+          "art_hash": "c7a58bc63601be39"
+        }
+      },
       "animations": []
     },
     {
@@ -30015,7 +30464,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "wisteria_snags/wisteria_snag_004/sprite.webp",
+          "pixellab_object_id": "7786fb91-7793-4a42-8338-3092ede5e04f",
+          "glow_score": 0.1839,
+          "art_hash": "2e904b5bd7e5c22b"
+        }
+      },
       "animations": []
     },
     {
@@ -30041,7 +30497,14 @@
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "wisteria_snags/wisteria_snag_006/sprite.webp",
+          "pixellab_object_id": "68fefe47-8dfa-4df4-ad47-c4634c9b2902",
+          "glow_score": 0.2834,
+          "art_hash": "c8782e3af6a1453d"
+        }
+      },
       "animations": []
     },
     {

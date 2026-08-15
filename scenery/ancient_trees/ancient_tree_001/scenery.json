@@ -31,10 +31,101 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "ancient_trees/ancient_tree_001/lit_1/sprite.webp",
+      "pixellab_object_id": "daec88df-2ba9-4a70-ab36-bf2db30ce65b",
+      "glow_concept": "glowing runes spiraling up the trunk",
+      "difference_from_source": 0.2104,
+      "glow_score": 0.0192
+    },
+    "LIT_2": {
+      "sprite": "ancient_trees/ancient_tree_001/lit_2/sprite.webp",
+      "pixellab_object_id": "e7724487-c23b-4086-b58d-a7cdc4d5d270",
+      "glow_concept": "soulstone veins shining through split bark",
+      "difference_from_source": 0.1993,
+      "glow_score": 0.0165
+    },
+    "LIT_3": {
+      "sprite": "ancient_trees/ancient_tree_001/lit_3/sprite.webp",
+      "pixellab_object_id": "e406bf76-9f42-4bd9-912d-662be81c6f62",
+      "glow_concept": "hollow heart glowing like embers inside",
+      "difference_from_source": 0.1995,
+      "glow_score": 0.0079
+    },
+    "LIT_4": {
+      "sprite": "ancient_trees/ancient_tree_001/lit_4/sprite.webp",
+      "pixellab_object_id": "96b1c2bb-6931-467d-aace-9457f55e1ad9",
+      "glow_concept": "crown wreathed in drifting golden memory-motes",
+      "difference_from_source": 0.3916,
+      "glow_score": 0.0121
+    },
     "NOT_LIT_1": {
       "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
       "pixellab_object_id": "3108a036-f421-4028-8ff8-9d1229ada84b",
       "glow_score": 0.0001
+    },
+    "NOT_LIT_10": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_10/sprite.webp",
+      "pixellab_object_id": "cbc7302c-1788-4d37-985f-8575eb4e2c13",
+      "glow_concept": null,
+      "difference_from_source": 0.2462,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_2": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c8337319-f34c-4e9f-afba-b60471f3d34b",
+      "glow_concept": null,
+      "difference_from_source": 0.293,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_3": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "81ca8ce1-696d-4ba8-bfc5-e019a95152c9",
+      "glow_concept": null,
+      "difference_from_source": 0.5003,
+      "glow_score": 0.0002
+    },
+    "NOT_LIT_4": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7e890906-5ff7-4fbd-9fcd-b408aa65a270",
+      "glow_concept": null,
+      "difference_from_source": 0.2515,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_5": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "ad5540ac-69e3-45bd-b505-d2e2dacc99aa",
+      "glow_concept": null,
+      "difference_from_source": 0.2278,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_6": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_6/sprite.webp",
+      "pixellab_object_id": "bf602057-bc61-4ab1-8bc8-4cde7bef4e0b",
+      "glow_concept": null,
+      "difference_from_source": 0.2174,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_7": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_7/sprite.webp",
+      "pixellab_object_id": "c92026c0-58b1-4be8-a794-a69c000dcd7a",
+      "glow_concept": null,
+      "difference_from_source": 0.2232,
+      "glow_score": 0.0005
+    },
+    "NOT_LIT_8": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_8/sprite.webp",
+      "pixellab_object_id": "9b12f5bd-1613-4263-bbce-4aa3633707cc",
+      "glow_concept": null,
+      "difference_from_source": 0.301,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_9": {
+      "sprite": "ancient_trees/ancient_tree_001/not_lit_9/sprite.webp",
+      "pixellab_object_id": "c7c7b8cf-dcea-46df-a324-a93402b8e9ec",
+      "glow_concept": null,
+      "difference_from_source": 0.4368,
+      "glow_score": 0.0
     }
   }
 }
