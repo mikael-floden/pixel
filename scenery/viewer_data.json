@@ -3636,9 +3636,9 @@
     {
       "id": "beacon_010",
       "rel": "beacons/beacon_010",
-      "name": "Tarred timber mast beacon 010 \u00b7 lit",
+      "name": "Tarred timber mast beacon 010",
       "category": "beacons",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, tarred timber mast beacon, tall, about three times human height, self-emissive at night, softly radiating light: great orange signal blaze in the cage",
       "view": "low top-down",
       "size": 192,
@@ -3690,6 +3690,24 @@
           "difference_from_source": 0.6407,
           "glow_score": 0.0747,
           "art_hash": "af16988ec53f1306"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beacons/beacon_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d78926e6-870c-4fc8-88ba-8d4c9001a107",
+          "generated_at": "2026-08-15T19:55:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2183,
+          "glow_score": 0.0,
+          "art_hash": "4b637f4162832c23"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6b4a83c2-cd8a-4c26-9b74-f6ac83411744",
+          "generated_at": "2026-08-15T19:55:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5119,
+          "glow_score": 0.0,
+          "art_hash": "4b26725bb5394dda"
         }
       },
       "animations": []
@@ -3699,7 +3717,7 @@
       "rel": "beacons/beacon_011",
       "name": "Stone cairn base beacon 011",
       "category": "beacons",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, stone cairn base beacon, reinforced with iron bands, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -3719,11 +3737,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beacons/beacon_011/lit_1/sprite.webp",
+          "pixellab_object_id": "b0c1c6d0-02f5-42a6-b60a-8137e12b8176",
+          "generated_at": "2026-08-15T19:55:45+00:00",
+          "glow_concept": "spark column streaming off downwind",
+          "difference_from_source": 0.4804,
+          "glow_score": 0.0583,
+          "art_hash": "1ca3f94387b06f39"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_011/lit_2/sprite.webp",
+          "pixellab_object_id": "23bca049-82a0-486f-ac1f-da6518b1911e",
+          "generated_at": "2026-08-15T19:56:16+00:00",
+          "glow_concept": "great orange signal blaze in the cage",
+          "difference_from_source": 0.8448,
+          "glow_score": 0.0677,
+          "art_hash": "4c0d8e66d8433b39"
+        },
         "NOT_LIT_1": {
           "sprite": "beacons/beacon_011/sprite.webp",
           "pixellab_object_id": "45c26a75-d86c-48a5-9f69-47c35a55c656",
           "generated_at": "2026-08-14T01:36:29+00:00",
           "art_hash": "f31446edbbb3d78f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8665e013-7a82-4ad5-adeb-7be9966b72cb",
+          "generated_at": "2026-08-15T19:55:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3587,
+          "glow_score": 0.0,
+          "art_hash": "d75a267e1cefe454"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beacons/beacon_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "67bf8729-247f-46c4-9c27-8df24faf223a",
+          "generated_at": "2026-08-15T19:56:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4943,
+          "glow_score": 0.0,
+          "art_hash": "4964f3a375523f0a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beacons/beacon_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d29372be-bebd-4c98-88d2-d5d972bb9643",
+          "generated_at": "2026-08-15T19:55:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5919,
+          "glow_score": 0.0,
+          "art_hash": "de9710c89284d497"
         }
       },
       "animations": []
@@ -3731,9 +3794,9 @@
     {
       "id": "beacon_012",
       "rel": "beacons/beacon_012",
-      "name": "Iron lattice mast beacon 012 \u00b7 lit",
+      "name": "Iron lattice mast beacon 012",
       "category": "beacons",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, iron lattice mast beacon, tall, about three times human height, self-emissive at night, softly radiating light: spark column streaming off downwind",
       "view": "low top-down",
       "size": 192,
@@ -3758,6 +3821,51 @@
           "pixellab_object_id": "4232b2da-04c7-43b3-ad48-dce817bad86e",
           "generated_at": "2026-08-13T23:41:33+00:00",
           "art_hash": "cd18fe0e34cb4a7f"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_012/lit_2/sprite.webp",
+          "pixellab_object_id": "a4ab98ee-2bb4-48ed-b966-852a656831d7",
+          "generated_at": "2026-08-15T19:55:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4115,
+          "glow_score": 0.0642,
+          "art_hash": "c24f157c05dd6c24"
+        },
+        "LIT_3": {
+          "sprite": "beacons/beacon_012/lit_3/sprite.webp",
+          "pixellab_object_id": "018bb33c-80cb-4a3b-9cc8-fb3b47189208",
+          "generated_at": "2026-08-15T19:56:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7626,
+          "glow_score": 0.0598,
+          "art_hash": "d8aed2fc2b95d47a"
+        },
+        "LIT_4": {
+          "sprite": "beacons/beacon_012/lit_4/sprite.webp",
+          "pixellab_object_id": "c22a676e-2efe-4e5c-9fdc-cd45f9893110",
+          "generated_at": "2026-08-15T19:56:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6444,
+          "glow_score": 0.0454,
+          "art_hash": "58ec2d4b1d2adedf"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beacons/beacon_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "1e245db4-485f-418a-a9a9-774dec9dccdf",
+          "generated_at": "2026-08-15T19:56:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2712,
+          "glow_score": 0.0,
+          "art_hash": "ccd08fbb652d3529"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1983fa15-dc5b-49fd-9326-c77ade6f3809",
+          "generated_at": "2026-08-15T19:56:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2975,
+          "glow_score": 0.0,
+          "art_hash": "9aa910441d0795aa"
         }
       },
       "animations": []
@@ -3765,9 +3873,9 @@
     {
       "id": "beacon_014",
       "rel": "beacons/beacon_014",
-      "name": "Hilltop signal beacon 014 \u00b7 lit",
+      "name": "Hilltop signal beacon 014",
       "category": "beacons",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, hilltop signal beacon, half-repainted, tall, about three times human height, self-emissive at night, softly radiating light: cold green marsh-fire flame",
       "view": "low top-down",
       "size": 192,
@@ -3792,6 +3900,51 @@
           "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
           "generated_at": "2026-08-14T01:38:25+00:00",
           "art_hash": "5b6d244a407f9966"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_014/lit_2/sprite.webp",
+          "pixellab_object_id": "0a542000-e97b-4890-8839-6f98549fb4d2",
+          "generated_at": "2026-08-15T19:56:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8103,
+          "glow_score": 0.0528,
+          "art_hash": "114e45ef9dadf97b"
+        },
+        "LIT_3": {
+          "sprite": "beacons/beacon_014/lit_3/sprite.webp",
+          "pixellab_object_id": "6bddc4c7-9e39-4f9c-a25d-85ab0da9f992",
+          "generated_at": "2026-08-15T19:56:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8047,
+          "glow_score": 0.0558,
+          "art_hash": "10086fbfbc026243"
+        },
+        "LIT_4": {
+          "sprite": "beacons/beacon_014/lit_4/sprite.webp",
+          "pixellab_object_id": "877d92f1-31d7-45a8-8d55-23a05b61f436",
+          "generated_at": "2026-08-15T19:57:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8116,
+          "glow_score": 0.0366,
+          "art_hash": "931a2b698010c0bf"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beacons/beacon_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "495174c7-57f8-4289-b408-7ead368b7d97",
+          "generated_at": "2026-08-15T19:57:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3684,
+          "glow_score": 0.0,
+          "art_hash": "f567aa01061a123d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c1d4422f-53c1-44a3-82f7-7e31732998ad",
+          "generated_at": "2026-08-15T19:57:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2127,
+          "glow_score": 0.0,
+          "art_hash": "53601d129fd22c54"
         }
       },
       "animations": []

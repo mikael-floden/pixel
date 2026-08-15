@@ -6,7 +6,7 @@
   "rank": 46,
   "index": 11,
   "name": "Stone cairn base beacon 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "stone cairn base beacon",
   "modifier": "reinforced with iron bands",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_011/lit_1/sprite.webp",
+      "pixellab_object_id": "b0c1c6d0-02f5-42a6-b60a-8137e12b8176",
+      "generated_at": "2026-08-15T19:55:45+00:00",
+      "glow_concept": "spark column streaming off downwind",
+      "difference_from_source": 0.4804,
+      "glow_score": 0.0583
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_011/lit_2/sprite.webp",
+      "pixellab_object_id": "23bca049-82a0-486f-ac1f-da6518b1911e",
+      "generated_at": "2026-08-15T19:56:16+00:00",
+      "glow_concept": "great orange signal blaze in the cage",
+      "difference_from_source": 0.8448,
+      "glow_score": 0.0677
+    },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_011/sprite.webp",
       "pixellab_object_id": "45c26a75-d86c-48a5-9f69-47c35a55c656",
       "generated_at": "2026-08-14T01:36:29+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8665e013-7a82-4ad5-adeb-7be9966b72cb",
+      "generated_at": "2026-08-15T19:55:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3587,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "beacons/beacon_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "67bf8729-247f-46c4-9c27-8df24faf223a",
+      "generated_at": "2026-08-15T19:56:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4943,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "beacons/beacon_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d29372be-bebd-4c98-88d2-d5d972bb9643",
+      "generated_at": "2026-08-15T19:55:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5919,
+      "glow_score": 0.0
     }
   }
 }

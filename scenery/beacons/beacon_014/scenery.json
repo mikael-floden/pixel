@@ -5,8 +5,8 @@
   "group": "beacons",
   "rank": 46,
   "index": 14,
-  "name": "Hilltop signal beacon 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Hilltop signal beacon 014",
+  "lights": null,
   "variety": "hilltop signal beacon",
   "modifier": "half-repainted",
   "glow_concept": "cold green marsh-fire flame",
@@ -36,6 +36,46 @@
       "sprite": "beacons/beacon_014/sprite.webp",
       "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
       "generated_at": "2026-08-14T01:38:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_014/lit_2/sprite.webp",
+      "pixellab_object_id": "0a542000-e97b-4890-8839-6f98549fb4d2",
+      "generated_at": "2026-08-15T19:56:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8103,
+      "glow_score": 0.0528
+    },
+    "LIT_3": {
+      "sprite": "beacons/beacon_014/lit_3/sprite.webp",
+      "pixellab_object_id": "6bddc4c7-9e39-4f9c-a25d-85ab0da9f992",
+      "generated_at": "2026-08-15T19:56:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8047,
+      "glow_score": 0.0558
+    },
+    "LIT_4": {
+      "sprite": "beacons/beacon_014/lit_4/sprite.webp",
+      "pixellab_object_id": "877d92f1-31d7-45a8-8d55-23a05b61f436",
+      "generated_at": "2026-08-15T19:57:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8116,
+      "glow_score": 0.0366
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "495174c7-57f8-4289-b408-7ead368b7d97",
+      "generated_at": "2026-08-15T19:57:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3684,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c1d4422f-53c1-44a3-82f7-7e31732998ad",
+      "generated_at": "2026-08-15T19:57:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2127,
+      "glow_score": 0.0
     }
   }
 }
