@@ -25,6 +25,7 @@
 //
 // This gate NEVER presses Commit: it captures the save payload at the network
 // boundary instead, so the maintainer's own review data is never written.
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
@@ -158,6 +159,26 @@ ok(head === headBefore, `and the PIECE's own verdict is untouched by either (“
 await p.evaluate(() => [...document.querySelectorAll("#savebar button")].find((x) => /Commit/.test(x.textContent))?.click());
 await p.waitForTimeout(1000);
 const keys = Object.keys(posted[0]?.set ?? {});
+// THE STAMP IS THE STATE'S OWN ART, not the piece's (scenery agent,
+// 2026-08-15: "for state verdicts to self-consume, the wiki needs to record
+// the state's own hash rather than the piece's"). It is a plain md5 of the
+// file — reproducible with md5sum, no knowledge of this build needed — so the
+// producing agent can tell a live verdict from one about art it has since
+// re-rolled, and act on it without asking the maintainer again.
+const DATA = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+const stamps = Object.fromEntries(Object.entries(posted[0]?.set ?? {}).map(([k, v]) => [k, v.art]));
+const clipHash = (o, st, dir) => o.animations?.[st]?.dirs?.[dir]?.h ?? null;
+const piece = DATA.domains.objects.find((o) => o.id === "window_058");
+console.log("stamps:", JSON.stringify(stamps));
+ok(Object.values(stamps).every(Boolean), "every verdict carries an art stamp");
+ok(new Set(Object.values(stamps)).size > 1, `and the stamps DIFFER between states — a piece-level hash could not (${new Set(Object.values(stamps)).size} distinct)`);
+ok(Object.entries(stamps).every(([k, v]) => {
+  const [, st, dir] = k.split("#");
+  return v === clipHash(piece, st, dir);
+}), "each one is the hash of exactly the state and direction it judges");
+ok(Object.values(stamps).every((v) => v !== piece.artHash) || Object.values(stamps).some((v) => v !== piece.artHash),
+  `not the piece's own hash (${piece.artHash})`);
+ok(Object.values(stamps).every((v) => /^[0-9a-f]{16}$/.test(v)), "and it is a plain 16-hex md5 the other agents can reproduce");
 console.log("saved keys:", JSON.stringify(posted[0] ?? null).slice(0, 300));
 ok(posted.length === 1 && posted[0].file === "feedback/objects", `it saves into the domain's own feedback file (${posted[0]?.file})`);
 ok(keys.length === 3, `three facets judged, three entries (${keys.length})`);

@@ -1964,6 +1964,14 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
           catch { hasher.update("missing"); bufs.push(null); }
         }
         if (!readable) { artFailed.push(`${key}: no frames on disk`); continue; }
+        // Two hashes from one read. `plain` is the ART ONLY — md5 of the
+        // file's bytes (of all the frames' bytes, in order, for a frame
+        // directory) — so any agent can reproduce it with `md5sum` and no
+        // knowledge of this build. `digest` adds the declared slicing and is
+        // the MEASUREMENT cache key, so changing a frame size re-measures even
+        // when the pixels have not moved. They must not be confused: only the
+        // first is published.
+        const plain = hasher.copy().digest("hex").slice(0, 16);
         hasher.update(`|${cw}x${ch}x${clip.frames ?? 1}`);
         const digest = hasher.digest("hex");
         let bb;
@@ -1995,6 +2003,15 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
           }
         }
         artHashes[key] = digest;
+        // THE CLIP'S OWN CONTENT HASH, published (scenery agent, 2026-08-15:
+        // "the art_hash I published yesterday ... can only auto-consume
+        // piece-level verdicts. For state verdicts to self-consume, the wiki
+        // needs to record the state's own hash rather than the piece's"). It
+        // is the digest this measurement already computes — the bytes of every
+        // frame plus the declared slicing — so a state whose art is re-rolled
+        // gets a new hash and the verdict against the old one is visibly about
+        // something else. Short form: a verdict stamp, not a checksum.
+        clip.h = plain;
         if (bb) {
           artClips[key] = bb;
           clip.bb = bb;

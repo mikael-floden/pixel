@@ -1798,6 +1798,10 @@ function viewMonster(id) {
     facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
+      // The hash of exactly this animation in exactly this direction, so the
+      // producing agent can tell a live verdict from one about art it has
+      // since regenerated.
+      stamp: { art: m.animations?.[st]?.dirs?.[dir]?.h ?? null },
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -2002,6 +2006,10 @@ function viewCharacter(id) {
     facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
+      // The hash of exactly this animation in exactly this direction, so the
+      // producing agent can tell a live verdict from one about art it has
+      // since regenerated.
+      stamp: { art: c.animations?.[st]?.dirs?.[dir]?.h ?? null },
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -2584,8 +2592,14 @@ function viewObject(id) {
     facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
-      // The piece's art hash, so a re-rolled piece can be told from this one.
-      stamp: { art: o.artHash ?? null },
+      // THIS STATE'S OWN ART HASH — plain md5 of the file, published per clip
+      // by build.mjs. The piece's hash used to be stamped here, which meant a
+      // verdict on LIGHTS_ON could not be told apart from one on LIGHTS_OFF
+      // and the producing agent could not auto-consume it (scenery agent,
+      // 2026-08-15: "for state verdicts to self-consume, the wiki needs to
+      // record the state's own hash rather than the piece's"). Falls back to
+      // the piece's while a clip is still unmeasured.
+      stamp: { art: o.animations?.[st]?.dirs?.[dir]?.h ?? o.artHash ?? null },
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
       rejectedLabel: "to be redone",
