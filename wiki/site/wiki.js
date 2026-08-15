@@ -20,7 +20,34 @@
 // pieces nothing places yet, the unspawned monsters — is not on this origin at
 // all. An admin re-points ROOT at GitHub and gets everything.
 let ROOT = new URL("../../", location.href);
+
+/** COMPOSER AUDIO LIVES IN THE REPO, NOT THE IMAGE (2026-08-15). The foley
+ *  takes and music beds are 94 MB that ONLY these wiki pages play — nothing in
+ *  the game loads /assets/composer (the in-world score is bundled into the
+ *  client JS). Shipping them meant every player's container carried 94 MB for
+ *  a page only the Game Master opens, so the image drops them and the wiki
+ *  streams them from the public repo instead.
+ *
+ *  Unlike the admin registry swap below this applies to EVERYONE, because the
+ *  sound pages are not admin-only. Resolved lazily and cached: the base needs
+ *  one GitHub API call, and a page that never plays a sound never makes it.
+ *  Local checkouts (file://, dev server) keep serving them from disk — the
+ *  override wins, and `composerBase` is only consulted when the local origin
+ *  is the deployed game. */
+let composerBase = null;
+async function composerRoot() {
+  if (composerBase) return composerBase;
+  composerBase = (await stagingSha().then((sha) => stagingBase(sha))) ?? ROOT;
+  return composerBase;
+}
+
 const assetUrl = (rel) => new URL(rel, ROOT).href;
+
+/** Same as assetUrl but for composer audio, which the deployed image lacks.
+ *  Async because the base is resolved once on first use. */
+async function composerUrl(rel) {
+  return new URL(rel, await composerRoot()).href;
+}
 
 /** The repo, as a CDN base. jsDelivr rather than raw.githubusercontent because
  *  a sha-pinned jsDelivr URL answers `cache-control: max-age=31536000,
@@ -744,7 +771,7 @@ function destroyPlayers() { activePlayers.forEach((p) => p.destroy()); activePla
 /* ---------------------------------------------------------------- audio */
 const audioEl = () => $("#shared-audio");
 let playingBtn = null;
-function playTake(files, btn) {
+async function playTake(files, btn) {
   const a = audioEl();
   // ogg first: Chrome and Firefox both decode it and it is the smaller file;
   // m4a is Safari's (no ogg); mp3/wav are the fallbacks. Same order as the
@@ -752,7 +779,8 @@ function playTake(files, btn) {
   const src = files.ogg ?? files.m4a ?? files.mp3 ?? files.wav;
   if (playingBtn === btn && !a.paused) { a.pause(); return; }
   if (playingBtn) { playingBtn.classList.remove("playing"); playingBtn.textContent = "▶"; }
-  a.src = assetUrl(src);
+  // composer/** is not in the image (see composerRoot) — it streams from the repo.
+  a.src = src.startsWith("composer/") ? await composerUrl(src) : assetUrl(src);
   a.play().catch((e) => toast(`Playback failed: ${e.message}`));
   playingBtn = btn;
   btn.classList.add("playing"); btn.textContent = "⏸";
@@ -2828,7 +2856,7 @@ const sfxEngine = {
     const p = (async () => {
       for (const file of cands) {
         try {
-          const r = await fetch(assetUrl(file));
+          const r = await fetch(file.startsWith("composer/") ? await composerUrl(file) : assetUrl(file));
           if (!r.ok) continue;
           const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
           if (buf) return { buf, file };

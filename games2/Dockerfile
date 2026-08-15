@@ -52,100 +52,76 @@ COPY live/ live/
 # there would describe the output rather than the decision that produced it.
 RUN ASSETS_ROOT=/src node games2/scripts/shipset.mjs --emit /shipped --check --report --write
 
-FROM node:22-slim
-
+# ----------------------------------------------------------------- build ----
+# EVERYTHING that is only needed to PRODUCE the artefacts lives here and is
+# thrown away: the full npm ci (phaser alone is 148 MB), typescript, vite,
+# esbuild, playwright. Measured 2026-08-15: the old single-stage image kept all
+# of it at runtime — 258 MB of node_modules of which 36 MB is actually used to
+# serve the game, plus a ~200 MB base. The art split we did first was real but
+# it was never where the weight was.
+FROM node:22-slim AS build
 WORKDIR /app
 
-# Layer order = change frequency (cheapest cache invalidation): deps almost
-# never change; art domains change per-domain between deploys (each gets its
-# OWN layer so one active domain re-uploads ~tens of MB, not all art); game
-# SOURCE changes every deploy so it comes LAST — with BuildKit+registry-side
-# layer dedup a code-only deploy uploads only the small source/build layers.
 COPY games2/package.json games2/package-lock.json ./
 COPY games2/shared/package.json shared/
 COPY games2/server/package.json server/
 COPY games2/client/package.json client/
 RUN npm ci
 
-# Art assets, CURATED — only what the published worlds can actually reach.
-# Still one layer per domain (not a single COPY of /shipped) so an active
-# domain re-uploads tens of MB rather than all art, exactly as before the split.
-COPY --from=curate /shipped/scenery/ /assets/scenery/
-COPY --from=curate /shipped/characters2/ /assets/characters2/
-COPY --from=curate /shipped/tiles2/ /assets/tiles2/
-COPY --from=curate /shipped/maps2/ /assets/maps2/
-COPY --from=curate /shipped/sounds/ /assets/sounds/
-COPY --from=curate /shipped/music/ /assets/music/
-COPY --from=curate /shipped/monsters/ /assets/monsters/
-COPY --from=curate /shipped/items/ /assets/items/
-COPY --from=curate /shipped/lore/ /assets/lore/
-COPY --from=curate /shipped/wiki/ /assets/wiki/
-# The composer's foley takes and music beds — the wiki's sound-effect and
-# music pages play them. Only these two folders; the engine sources are not
-# assets. The beds are ~18 MB and the client bundles its own copies for the
-# in-world score, so this is a deliberate second copy: without it the wiki
-# lists five generated tracks it cannot play (maintainer 2026-08-06).
-# foley/ is copied WHOLE, `<set>/pool/` included (~8 MB of the ~21). Those are
-# the 91 generated recordings the composer scored but did not pick, and the
-# wiki now lets the Game Master audition and cast them — excluding them here
-# (or in .dockerignore) 404s every one in the deployed wiki.
-COPY games2/composer/foley/ /assets/composer/foley/
-COPY games2/composer/music/ /assets/composer/music/
-# live/ = runtime tuning/feedback state. The baked copy is only the BOOT
-# FALLBACK — the server fetches the current live/** from GitHub main at boot
-# and on every live-notify ping (pushes to live/** do NOT redeploy).
-COPY live/ /assets/live/
+# Curated art — the manifests and the wiki registry are rebuilt FROM this root,
+# which is what keeps staging content out of every generated list.
+COPY --from=curate /shipped/ /assets/
 ENV ASSETS_ROOT=/assets
 
-# Game source (changes every deploy — keep below the art layers).
 COPY games2/ ./
-
-# The ship-set summary, from the curate stage's FULL-tree computation. It is
-# gitignored (generated) so the COPY above cannot carry it, and `npm run
-# manifest` does not build it — without this line /shipset.json falls through
-# to the SPA's index.html and parses as HTML, which is exactly what production
-# served on the first curated deploy. Must land BEFORE build:client, since vite
-# copies client/public into the bundle.
 COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
 
-# THE ATLAS PRUNE GUARD. The committed tile atlases (client/public/atlases,
-# built by scripts/build-atlas.py, content-addressed by a digest over the tile
-# list AND every tile's bytes) are only ever VERIFIED at deploy — never built,
-# which is what keeps the packing work from being redone on every push. A
-# stale atlas (tiles2 regenerated a tile in place, or a world's set changed)
-# is DELETED here, so the client's index fetch 404s and it falls back to
-# individual tiles: slower, never wrong pixels, never a red pipeline. --strict
-# because in THIS context /assets is the curated full set, so an absent tile
-# really is absent.
-# --ship also removes atlases for worlds this image does NOT publish: since
-# 2026-08-15 dev maps are staging content, so their ~16 MB of sheets would be
-# dead weight (client/public is copied wholesale, which is how they arrive).
-# An admin who joins a dev map streams its tiles from the repo instead.
+# Committed tile atlases are only ever VERIFIED at deploy, never rebuilt (that
+# is what stops the packing job repeating on every push). A stale one is
+# pruned so the client falls back to per-file tiles; --ship also drops atlases
+# for worlds this image does not publish.
 RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict --ship
 
-# The deployed commit, baked into the bundle so testers can see which version
-# they're running (bottom-left in-game + console) and into the wiki's build
-# stamp (topbar, under the build date). Also exposed at runtime via GIT_SHA so
-# /version lets clients detect a newer deploy and prompt a refresh. Declared
-# BEFORE the wiki rebuild on purpose — the wiki build layer re-runs per deploy
-# (a few seconds) so its stamp always matches the image.
 ARG GIT_SHA=dev
 ENV VITE_GIT_SHA=$GIT_SHA
-ENV GIT_SHA=$GIT_SHA
 
-# Rebuild the wiki's registry from the art baked into THIS image, so the
-# in-game wiki (/assets/wiki/site/) can never go stale vs the deployed art.
-# Never let a wiki build hiccup brick the game deploy — on failure the image
-# ships the committed data.json instead.
+# Wiki registry from the art baked into THIS image, so it can never go stale
+# against the deployed art. Never let a wiki hiccup brick the game deploy.
 RUN node /assets/wiki/build.mjs --games2 /app || echo "[wiki] build failed; shipping committed data.json"
-
-# Build the client bundle.
 RUN npm run build:client
 
+# --------------------------------------------------------------- runtime ----
+# Alpine + PROD DEPS ONLY. What actually serves the game: @colyseus/*, express,
+# compression and tsx (which runs the TypeScript server directly) — 36 MB,
+# against 258 MB before. phaser and colyseus.js are vite-BUNDLED into the
+# client JS, so they are devDependencies now and never reach this stage.
+FROM node:22-alpine AS runtime
+WORKDIR /app
 ENV NODE_ENV=production
+
+COPY games2/package.json games2/package-lock.json ./
+COPY games2/shared/package.json shared/
+COPY games2/server/package.json server/
+COPY games2/client/package.json client/
+RUN npm ci --omit=dev && npm cache clean --force
+
+# The server runs TypeScript straight from source via tsx, so shared/ and
+# server/ ship as SOURCE — no build output to copy.
+COPY games2/shared/ shared/
+COPY games2/server/ server/
+# The built client bundle only — not client/src, not node_modules.
+COPY --from=build /app/client/dist client/dist
+# Curated art. composer/ is deliberately ABSENT: 94 MB that only the wiki's
+# sound and music pages play, now fetched from the repo (wiki.js resolves
+# composer/** against the CDN), so no player carries it.
+COPY --from=curate /shipped/ /assets/
+ENV ASSETS_ROOT=/assets
+
+ARG GIT_SHA=dev
+ENV GIT_SHA=$GIT_SHA
 ENV SERVE_CLIENT=1
 ENV PORT=8080
 EXPOSE 8080
 
-# tsx (a dependency) runs the TypeScript server directly.
+# tsx (a server dependency) runs the TypeScript server directly.
 CMD ["npm", "run", "start", "-w", "server"]

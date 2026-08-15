@@ -8,11 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nangijala/shared": "*",
-    "colyseus.js": "^0.16.0",
-    "phaser": "^3.87.0"
+    "@nangijala/shared": "*"
   },
   "devDependencies": {
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "phaser": "^3.87.0",
+    "colyseus.js": "^0.16.0"
   }
 }
