@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-15T18:05:33.441Z",
+  "updated_at": "2026-08-15T18:05:50.974Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -15286,10 +15286,11 @@
       "rating": 5
     },
     "scenery/ancient_trees/ancient_tree_002#lit_1#south": {
-      "status": "rejected",
-      "updated_at": "2026-08-15T18:04:07.378Z",
-      "rating": 1,
-      "art": "ba869feeea238b28"
+      "status": "approved",
+      "updated_at": "2026-08-15T18:05:47.029Z",
+      "art": "ba869feeea238b28",
+      "rating": 5,
+      "note": "No door"
     },
     "scenery/bee_logs/bee_log_002#lit_1#south": {
       "rating": 2,
@@ -16185,6 +16186,17 @@
       "updated_at": "2026-08-15T18:05:35.547Z",
       "rating": 1,
       "note": "No door"
+    },
+    "scenery/ancient_trees/ancient_tree_002#lit_3#south": {
+      "status": "rejected",
+      "art": "8731195b27273a67",
+      "updated_at": "2026-08-15T18:05:37.773Z"
+    },
+    "scenery/ancient_trees/ancient_tree_002#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T18:05:51.729Z",
+      "status": "approved",
+      "art": "a4e81c88e04f0439"
     }
   }
 }
