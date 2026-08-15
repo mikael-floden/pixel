@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 815,
+  "scenery_count": 816,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -190,7 +190,7 @@
       "name": "Soulstone Outcrop",
       "type": "NATURE",
       "quota": 56,
-      "done": 8
+      "done": 9
     },
     {
       "rank": 24,
@@ -1483,7 +1483,7 @@
     "signposts": 5,
     "sky_stairs": 2,
     "sleeping_giants": 1,
-    "soulstone_outcrops": 8,
+    "soulstone_outcrops": 9,
     "soulstone_plinths": 1,
     "spring_basins": 2,
     "standing_stones": 5,
@@ -16766,6 +16766,40 @@
       "pixellab_object_id": "0930f8e2-999d-41ff-87ef-b6373d46999c",
       "sprite": "soulstone_outcrops/soulstone_outcrop_019/sprite.webp",
       "art_hash": "af1322aff9078161",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "soulstone_outcrop_021",
+      "rel": "soulstone_outcrops/soulstone_outcrop_021",
+      "name": "Pearl-grey rounded soulstone 021",
+      "category": "soulstone_outcrops",
+      "lights": "LIGHTS_OFF",
+      "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, pearl-grey rounded soulstone, lightly snow-dusted, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.6,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          7,
+          10,
+          57,
+          54
+        ],
+        "content_px_height": 44,
+        "canvas_render_px": 33
+      },
+      "status": "complete",
+      "pixellab_object_id": "bf373a20-6165-48ea-bcd3-7fddef46fb18",
+      "sprite": "soulstone_outcrops/soulstone_outcrop_021/sprite.webp",
+      "art_hash": "af97e50e093e3697",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
