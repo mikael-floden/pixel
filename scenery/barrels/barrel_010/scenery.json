@@ -5,8 +5,8 @@
   "group": "barrels",
   "rank": 28,
   "index": 10,
-  "name": "Cracked-stave double-banded barrel 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Cracked-stave double-banded barrel 010",
+  "lights": null,
   "variety": "cracked-stave double-banded barrel",
   "glow_concept": "pale soulstone hoops instead of iron",
   "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, cracked-stave double-banded barrel, waist-high, self-emissive at night, softly radiating light: pale soulstone hoops instead of iron",
@@ -35,6 +35,22 @@
       "sprite": "barrels/barrel_010/sprite.webp",
       "pixellab_object_id": "bbd23dff-c544-4ec4-8865-8fb169f4d5a6",
       "generated_at": "2026-08-13T23:35:28+00:00"
+    },
+    "LIT_4": {
+      "sprite": "barrels/barrel_010/lit_4/sprite.webp",
+      "pixellab_object_id": "9a2b71e6-0178-4b63-ac2f-f696d1166111",
+      "generated_at": "2026-08-15T19:44:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8539,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "barrels/barrel_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8dc40f37-fca4-4a1f-9f9e-c975c7cf9957",
+      "generated_at": "2026-08-15T19:44:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9105,
+      "glow_score": 0.0
     }
   }
 }
