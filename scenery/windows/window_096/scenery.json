@@ -1,0 +1,53 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:59:07+00:00",
+  "id": "window_096",
+  "group": "windows",
+  "type": "WINDOW",
+  "rank": 25,
+  "index": 96,
+  "name": "An arched window set in cut stone 096",
+  "lights": "LIGHTS_OFF",
+  "variety": "an arched window set in cut stone",
+  "modifier": "heavy dark curtains drawn shut within",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, an arched window set in cut stone, heavy dark curtains drawn shut within, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "must_be_imbplemented_with_random_hflip": false,
+  "rotations": {
+    "south-east": "windows/window_096/rotations/south-east.webp",
+    "south-west": "windows/window_096/rotations/south-west.webp",
+    "south": "windows/window_096/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_096/sprite.webp",
+  "placement": {
+    "world_height_m": 1.25,
+    "world_px_height": 47,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      24,
+      17,
+      74,
+      81
+    ],
+    "content_px_height": 64,
+    "canvas_render_px": 70
+  },
+  "pixellab_object_id": "2185cb0b-53d0-445f-bbfc-6195e0aa8b41",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
