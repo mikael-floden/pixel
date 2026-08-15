@@ -333,17 +333,23 @@ async function discardAll() {
 // The colours are the theme's own --good/--bad, which are dark on the light
 // theme and light on the dark one, exactly as he asked.
 const FACET_DOMAIN = { monster: "monsters", character: "characters", object: "objects" };
-function facetMark(domain, path, state, dirs) {
+function facetMark(domain, path, state, dirs, entity) {
   if (!domain || !path || !dirs.length) return { cls: "", title: null };
-  let approved = 0, rejected = 0;
+  let approved = 0, rejected = 0, stale = 0;
   for (const d of dirs) {
-    const st = fb(domain, `${path}#${state}#${d}`).status;
-    if (st === "approved") approved++;
-    else if (st === "rejected") rejected++;
+    const e = fb(domain, `${path}#${state}#${d}`);
+    // Regenerated since it was judged: it reads as unjudged, because that is
+    // what it is now — a colour saying "settled" about art he has never seen
+    // is the same lie as a stale piece badge.
+    if (entity && (e.status || e.rating) && facetStale(entity, state, d, e)) { stale++; continue; }
+    if (e.status === "approved") approved++;
+    else if (e.status === "rejected") rejected++;
   }
   const of = dirs.length === 1 ? "" : ` of ${dirs.length} directions`;
-  if (rejected) return { cls: "judged-no", title: `${rejected}${of} rejected` };
+  const note = stale ? ` — ${stale} regenerated since, needs another look` : "";
+  if (rejected) return { cls: "judged-no", title: `${rejected}${of} rejected${note}` };
   if (approved === dirs.length) return { cls: "judged-ok", title: `approved${of ? ` (all ${dirs.length} directions)` : ""}` };
+  if (stale) return { cls: "", title: `judged before the art was regenerated${of} — needs another look` };
   if (approved) return { cls: "", title: `${approved}${of} approved — not finished` };
   return { cls: "", title: "not reviewed yet" };
 }
@@ -601,7 +607,7 @@ function makePlayer(entity, kind, opts = {}) {
   const fbDomain = state.admin ? FACET_DOMAIN[kind] : null;
   function renderStateSeg() {
     stateSeg.replaceChildren(...stateNames.map((s) => {
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {})) : { cls: "", title: null };
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
       return h("button", {
         class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
@@ -632,7 +638,7 @@ function makePlayer(entity, kind, opts = {}) {
       // The direction is where a verdict actually lives, so it is marked
       // exactly, not summarised: this one file is approved, rejected or not
       // looked at yet.
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, cur.state, [d]) : { cls: "", title: null };
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, cur.state, [d], entity) : { cls: "", title: null };
       return h("button", {
         class: [d === cur.dir ? "on" : "", mark.cls].filter(Boolean).join(" "),
         title: mark.title ? `${d} — ${mark.title}` : d,
@@ -2414,7 +2420,11 @@ function objBadges(o) {
   // the one state you cannot infer from the piece's own verdict.
   const t = state.admin ? facetTally(o) : { done: 0, total: 0 };
   const partly = t.done > 0 && t.done < t.total
-    ? [h("span", { class: "pill warn", title: `You have judged ${t.done} of this piece's ${t.total} states — the rest are untouched` }, `${t.done}/${t.total}`)]
+    ? [h("span", { class: "pill warn",
+        title: t.stale
+          ? `You have judged ${t.done} of this piece's ${t.total} states; ${t.stale} more were regenerated after you judged them and need another look`
+          : `You have judged ${t.done} of this piece's ${t.total} states — the rest are untouched` },
+        `${t.done}/${t.total}`)]
     : [];
   if (!v.stale) return [...partly, ...entityBadge("objects", o.path)];
   return [...partly, h("span", {
@@ -2445,16 +2455,39 @@ function objVerdict(o) {
 // means I don't care and this object is not partly reviewed").
 // A facet counts as TOUCHED on a status OR a rating: giving one state four
 // stars is starting on it, whether or not approve was pressed after.
+// A VERDICT IS ABOUT THE ART IT WAS GIVEN TO. Reject a state, the scenery
+// agent regenerates it, and the old rejection is a judgement of a picture that
+// no longer exists — so the state needs looking at again and the piece is
+// partly reviewed once more (maintainer 2026-08-15: "I reject one state and
+// the AI generates a new state. The new filter will now let me see the tree
+// that has a new state that still needs review").
+//
+// THE STAMP MUST BE A REAL FACET STAMP BEFORE IT CAN GO STALE. Verdicts given
+// before per-clip hashes existed carry the PIECE's hash — 921 of the 1,013 on
+// file today — and treating those as mismatches would re-queue nearly every
+// verdict he has ever given, which is the mass re-review he was rightly
+// furious about in August. A stamp equal to the piece's own hash is ambiguous
+// (a legacy stamp, or genuinely the base state, whose clip IS the sprite), so
+// it is trusted. Only a stamp that once matched THIS clip and no longer does
+// is stale. New verdicts all carry the clip's own hash, so the rule sharpens
+// itself as he reviews.
+function facetStale(o, st, dir, e) {
+  const h = o?.animations?.[st]?.dirs?.[dir]?.h;
+  if (!e.art || !h) return false;
+  return e.art !== h && e.art !== o.artHash;
+}
 function facetTally(o) {
-  let done = 0, total = 0;
+  let done = 0, total = 0, stale = 0;
   for (const [st, anim] of Object.entries(o?.animations ?? {})) {
     for (const dir of Object.keys(anim.dirs ?? {})) {
       total++;
       const e = fb("objects", `${o.path}#${st}#${dir}`);
-      if (e.status || e.rating) done++;
+      if (!(e.status || e.rating)) continue;
+      if (facetStale(o, st, dir, e)) { stale++; continue; }   // judged, but about art that is gone
+      done++;
     }
   }
-  return { done, total };
+  return { done, total, stale };
 }
 /** Started on its states, not finished with them. Untouched pieces are NOT in. */
 function partlyReviewed(o) {

@@ -254,6 +254,58 @@ ok(un.names.length === objs.length - APPROVED.length - REJECTED.length,
   console.log("after finishing it:", JSON.stringify(after2.slice(0, 6)));
   ok(!after2.includes(started.id), "finishing the last state takes the piece out of the set");
   for (const o of [started, finished, untouched, ratingOnly]) for (const f of facets(o)) delete entries[f];
+
+  // THE REVIEW LOOP, END TO END (maintainer 2026-08-15): "I reject one state
+  // and the AI generates a new state. The new filter will now let me see the
+  // tree that has a new state that still needs review."
+  //
+  // A finished piece: every state judged, every verdict stamped with THAT
+  // state's own art hash. Then one state is regenerated — the file changes, so
+  // the build publishes a different `h` for that clip — and the verdict about
+  // the old picture must stop counting. The piece is partly reviewed again.
+  {
+    const target = many.find((o) => facets(o).length >= 4 && o !== started && o !== finished);
+    const fl = facets(target);
+    const clipH = (f) => { const [, st, dir] = f.split("#"); return target.animations[st].dirs[dir].h; };
+    for (const f of fl) entries[f] = { status: "approved", art: clipH(f), updated_at: "2026-08-15T00:00:00Z" };
+    await go("#/objects");
+    await pick("partial");
+    const before = await p.evaluate(() => [...document.querySelectorAll(".card")].map((c) => c.getAttribute("href").split("/").pop()));
+    ok(!before.includes(target.id), `a piece judged state by state, with matching stamps, is finished (${target.id})`);
+    // The scenery agent re-rolls ONE state: same path, new bytes, new hash.
+    const [, rst, rdir] = fl[1].split("#");
+    await p.route("**/wiki/site/data.json", async (route) => {
+      const j = JSON.parse(await (await route.fetch()).text());
+      const t = j.domains.objects.find((x) => x.id === target.id);
+      t.animations[rst].dirs[rdir].h = "cafebabe12345678";      // regenerated art
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(j) });
+    });
+    await p.reload({ waitUntil: "load" });
+    await p.waitForTimeout(1600);
+    await pick("partial");
+    const after3 = await p.evaluate(() => ({
+      ids: [...document.querySelectorAll(".card")].map((c) => c.getAttribute("href").split("/").pop()),
+      badge: [...document.querySelectorAll(".card")].map((c) => c.querySelector(".card-badges")?.textContent),
+    }));
+    console.log("after one state was regenerated:", JSON.stringify(after3.ids.slice(0, 4)), JSON.stringify(after3.badge.slice(0, 4)));
+    ok(after3.ids.includes(target.id),
+      `regenerating one state brings the piece back to partly reviewed (${target.id})`);
+    ok(after3.badge.some((b2) => new RegExp(`${fl.length - 1}/${fl.length}`).test(b2 ?? "")),
+      `and the card counts it as one short (${fl.length - 1}/${fl.length})`);
+    // The chip on its page must not still read settled for that state.
+    await go(`#/objects/${target.id}`);
+    const chip = await p.evaluate((st) => {
+      const b2 = [...document.querySelectorAll(".seg-states button")].find((x) => x.title.toLowerCase().startsWith(st.replace(/_/g, " ")));
+      return b2 ? { cls: b2.className, title: b2.title } : null;
+    }, rst);
+    console.log("its chip:", JSON.stringify(chip));
+    ok(chip && !/judged-ok|judged-no/.test(chip.cls),
+      `the state's own chip drops its colour — it is unreviewed art again (${chip?.cls || "none"})`);
+    ok(/regenerated/.test(chip?.title ?? ""), `and says why on hover ("${chip?.title}")`);
+    await p.unroute("**/wiki/site/data.json");
+    for (const f of fl) delete entries[f];
+    await go("#/objects");
+  }
   await pick("all");
 }
 
