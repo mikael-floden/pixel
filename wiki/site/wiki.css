@@ -125,7 +125,47 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2)
 #build-stamp .stamp-sha { font-family: var(--mono); font-size: 10.5px; opacity: 0.85; }
 .mute-game { display: inline-block; margin: 0 0 14px; }
 #content { padding: 24px 26px 120px; max-width: 1180px; }
-.loading { color: var(--muted); padding: 40px 0; }
+/* THE WAIT SHOULD LOOK LIKE THE REST OF IT (maintainer 2026-08-15: "when
+   opening the wiki it can take some time to load ... you have an ugly looking
+   loading screen. It would be better if that loading screen is a centered and
+   45% from top centered loading bar that follows the UI/UX CSS design").
+   The wiki's own furniture: the serif brand word, the accent, the rounded
+   pill, quiet borders, and the theme's tokens so it is right in both.
+   Positioned against the VIEWPORT rather than the content column, so it does
+   not drift with the page's padding, and it disappears the moment the first
+   view replaces #content. */
+.loading {
+  position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  width: min(280px, 74vw); text-align: center; color: var(--muted);
+}
+.loading-brand { font-family: var(--serif); font-size: 21px; font-weight: 600; color: var(--ink); }
+.loading-note { font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.loading-bar {
+  width: 100%; height: 6px; border-radius: 999px; overflow: hidden;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+/* An honest indeterminate sweep: nothing here knows how much is left, so it
+   must not pretend to be a percentage. It travels edge to edge INSIDE the
+   track and turns around — a first cut ran it from -105% to 255%, which put
+   the fill outside the clipped track for a good part of every cycle and left
+   the bar looking flat and dead exactly when you happened to look at it. */
+.loading-bar span {
+  display: block; width: 40%; height: 100%; border-radius: 999px;
+  background: var(--accent); animation: loading-sweep 1.05s ease-in-out infinite alternate;
+}
+@keyframes loading-sweep {
+  from { transform: translateX(0); }
+  to   { transform: translateX(150%); }   /* 150% of the fill = the track's far edge */
+}
+/* A reader who asked for less motion gets NO motion — this stylesheet already
+   enforces that globally (`* { animation: none !important }` further down), so
+   a pulse here could never run and a 40%-wide sliver would simply sit frozen,
+   reading as a hung page. Instead the bar fills its track and dims: a plain
+   "something is happening" mark that does not pretend to be a percentage. */
+@media (prefers-reduced-motion: reduce) {
+  .loading-bar span { width: 100%; opacity: 0.55; }
+}
 
 /* ---- cards & grids ---- */
 .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
