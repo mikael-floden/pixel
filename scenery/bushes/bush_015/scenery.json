@@ -7,7 +7,7 @@
   "rank": 25,
   "index": 15,
   "name": "Spindle bush with pink lantern fruits 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "spindle bush with pink lantern fruits",
   "modifier": "on a low grassy hummock",
   "glow_concept": null,
@@ -45,10 +45,50 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "bushes/bush_015/lit_1/sprite.webp",
+      "pixellab_object_id": "b4eb9ab0-07d8-466b-853e-ce2b4f5bc70f",
+      "generated_at": "2026-08-15T21:15:29+00:00",
+      "glow_concept": "phosphorescent rime edging every leaf",
+      "difference_from_source": 0.907,
+      "glow_score": 0.0615
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_015/lit_2/sprite.webp",
+      "pixellab_object_id": "c078c890-aeea-453e-a652-54dc2a791a49",
+      "generated_at": "2026-08-15T21:16:08+00:00",
+      "glow_concept": "berries glowing like scattered tiny lanterns",
+      "difference_from_source": 0.9155,
+      "glow_score": 0.0456
+    },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_015/sprite.webp",
       "pixellab_object_id": "d1938865-20b2-49c7-b367-9f30f3da46d7",
       "generated_at": "2026-08-15T18:06:36+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7f0c1c71-4887-4f98-abb4-c6eecdf6850d",
+      "generated_at": "2026-08-15T21:14:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5638,
+      "glow_score": 0.0147
+    },
+    "NOT_LIT_3": {
+      "sprite": "bushes/bush_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e25f35b8-daba-47bf-9a35-ee86eaf619cf",
+      "generated_at": "2026-08-15T21:15:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6763,
+      "glow_score": 0.0198
+    },
+    "NOT_LIT_4": {
+      "sprite": "bushes/bush_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "6e77ef38-c6de-4c20-adfa-75c6f98e8798",
+      "generated_at": "2026-08-15T21:15:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8277,
+      "glow_score": 0.0059
     }
   }
 }

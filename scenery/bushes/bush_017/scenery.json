@@ -7,7 +7,7 @@
   "rank": 25,
   "index": 17,
   "name": "Low blueberry shrub 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "low blueberry shrub",
   "modifier": "split into a double form",
   "glow_concept": null,
@@ -45,10 +45,50 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "bushes/bush_017/lit_1/sprite.webp",
+      "pixellab_object_id": "31ece0d9-c938-4b13-bfbe-485f8544a58f",
+      "generated_at": "2026-08-15T21:17:51+00:00",
+      "glow_concept": "fireflies nesting deep in the foliage",
+      "difference_from_source": 0.7567,
+      "glow_score": 0.0366
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_017/lit_2/sprite.webp",
+      "pixellab_object_id": "5d454e0e-d62f-4101-aa8a-bc39512f4de6",
+      "generated_at": "2026-08-15T21:17:52+00:00",
+      "glow_concept": "pale luminescent flowers dotting the surface",
+      "difference_from_source": 0.9162,
+      "glow_score": 0.1112
+    },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_017/sprite.webp",
       "pixellab_object_id": "260c4550-5fe1-47a0-930a-9c19b2246f96",
       "generated_at": "2026-08-15T18:14:00+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5ede3ce5-dd38-4804-b231-f7db17be6d5c",
+      "generated_at": "2026-08-15T21:17:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3413,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "bushes/bush_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c92931a1-5f7c-4dbd-8d36-752d899756b4",
+      "generated_at": "2026-08-15T21:17:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7573,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "bushes/bush_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "32a2d00c-f107-4752-bc01-a8634f6a9186",
+      "generated_at": "2026-08-15T21:17:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.47,
+      "glow_score": 0.0078
     }
   }
 }

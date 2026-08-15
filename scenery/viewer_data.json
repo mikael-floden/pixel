@@ -8143,6 +8143,24 @@
           "glow_score": 0.1192,
           "art_hash": "c8ccbecc5cc4dcbd"
         },
+        "LIT_4": {
+          "sprite": "bushes/bush_012/lit_4/sprite.webp",
+          "pixellab_object_id": "341c8be2-1db7-49ad-8ad2-db5352ebd088",
+          "generated_at": "2026-08-15T21:14:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.832,
+          "glow_score": 0.0044,
+          "art_hash": "9e04570ff29391a9"
+        },
+        "NOT_LIT_1": {
+          "sprite": "bushes/bush_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "92f1d050-dee7-4153-80ec-c1f549c42e7c",
+          "generated_at": "2026-08-15T21:13:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9244,
+          "glow_score": 0.0,
+          "art_hash": "3f0caaa4c07e3224"
+        },
         "NOT_LIT_2": {
           "sprite": "bushes/bush_012/not_lit_2/sprite.webp",
           "pixellab_object_id": "ae9977d9-9219-4255-a48d-921cf7eeb249",
@@ -8158,9 +8176,9 @@
     {
       "id": "bush_014",
       "rel": "bushes/bush_014",
-      "name": "Juniper sprawling low 014 \u00b7 lit",
+      "name": "Juniper sprawling low 014",
       "category": "bushes",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, juniper sprawling low, scarred by an old lightning strike, waist-high, self-emissive at night, softly radiating light: phosphorescent rime edging every leaf",
       "view": "low top-down",
       "size": 64,
@@ -8185,6 +8203,51 @@
           "pixellab_object_id": "4a9302d2-5a57-4068-83bb-7f361aced0e2",
           "generated_at": "2026-08-14T02:29:06+00:00",
           "art_hash": "a6ded6ce32257309"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_014/lit_2/sprite.webp",
+          "pixellab_object_id": "9cc89318-f932-40b9-980e-92e3f0b6ba0b",
+          "generated_at": "2026-08-15T21:14:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7502,
+          "glow_score": 0.0197,
+          "art_hash": "41f636d22e702aaf"
+        },
+        "LIT_3": {
+          "sprite": "bushes/bush_014/lit_3/sprite.webp",
+          "pixellab_object_id": "de5eeaa6-fa72-4acc-ae1b-5775f72c4077",
+          "generated_at": "2026-08-15T21:13:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7963,
+          "glow_score": 0.0366,
+          "art_hash": "993a7de23b300305"
+        },
+        "LIT_4": {
+          "sprite": "bushes/bush_014/lit_4/sprite.webp",
+          "pixellab_object_id": "38038198-6869-4d9c-a983-a36829ae6827",
+          "generated_at": "2026-08-15T21:13:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7248,
+          "glow_score": 0.0371,
+          "art_hash": "5f82a7bc5f71c1f1"
+        },
+        "NOT_LIT_1": {
+          "sprite": "bushes/bush_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "5e396365-3413-4b4b-9fdf-0017c577aac0",
+          "generated_at": "2026-08-15T21:14:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7588,
+          "glow_score": 0.0,
+          "art_hash": "7373e8f699024547"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bushes/bush_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "56fc0792-80ce-4d5c-964c-507c1b5eaa8f",
+          "generated_at": "2026-08-15T21:14:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6365,
+          "glow_score": 0.0,
+          "art_hash": "79c6a441a72c4b20"
         }
       },
       "animations": []
@@ -8194,7 +8257,7 @@
       "rel": "bushes/bush_015",
       "name": "Spindle bush with pink lantern fruits 015",
       "category": "bushes",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, spindle bush with pink lantern fruits, on a low grassy hummock, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -8222,11 +8285,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "bushes/bush_015/lit_1/sprite.webp",
+          "pixellab_object_id": "b4eb9ab0-07d8-466b-853e-ce2b4f5bc70f",
+          "generated_at": "2026-08-15T21:15:29+00:00",
+          "glow_concept": "phosphorescent rime edging every leaf",
+          "difference_from_source": 0.907,
+          "glow_score": 0.0615,
+          "art_hash": "185bb05658f83d78"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_015/lit_2/sprite.webp",
+          "pixellab_object_id": "c078c890-aeea-453e-a652-54dc2a791a49",
+          "generated_at": "2026-08-15T21:16:08+00:00",
+          "glow_concept": "berries glowing like scattered tiny lanterns",
+          "difference_from_source": 0.9155,
+          "glow_score": 0.0456,
+          "art_hash": "9a359108a35c0122"
+        },
         "NOT_LIT_1": {
           "sprite": "bushes/bush_015/sprite.webp",
           "pixellab_object_id": "d1938865-20b2-49c7-b367-9f30f3da46d7",
           "generated_at": "2026-08-15T18:06:36+00:00",
           "art_hash": "f18b66482ca1fd37"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bushes/bush_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7f0c1c71-4887-4f98-abb4-c6eecdf6850d",
+          "generated_at": "2026-08-15T21:14:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5638,
+          "glow_score": 0.0147,
+          "art_hash": "38b77f9bae958c52"
+        },
+        "NOT_LIT_3": {
+          "sprite": "bushes/bush_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "e25f35b8-daba-47bf-9a35-ee86eaf619cf",
+          "generated_at": "2026-08-15T21:15:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6763,
+          "glow_score": 0.0198,
+          "art_hash": "ce2b5774839fb123"
+        },
+        "NOT_LIT_4": {
+          "sprite": "bushes/bush_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6e77ef38-c6de-4c20-adfa-75c6f98e8798",
+          "generated_at": "2026-08-15T21:15:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8277,
+          "glow_score": 0.0059,
+          "art_hash": "b493eba565feef0b"
         }
       },
       "animations": []
@@ -8234,9 +8342,9 @@
     {
       "id": "bush_016",
       "rel": "bushes/bush_016",
-      "name": "Red-berried currant bush 016 \u00b7 lit",
+      "name": "Red-berried currant bush 016",
       "category": "bushes",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, red-berried currant bush, heavily weathered and gnarled, roughly six feet tall, human height, self-emissive at night, softly radiating light: berries glowing like scattered tiny lanterns",
       "view": "low top-down",
       "size": 64,
@@ -8269,6 +8377,51 @@
           "pixellab_object_id": "6beadbd2-9d2d-47be-ad4a-8756bd76e5ac",
           "generated_at": "2026-08-15T18:09:26+00:00",
           "art_hash": "6d502ee400c884ec"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_016/lit_2/sprite.webp",
+          "pixellab_object_id": "c5bebe85-84d7-47b0-909a-63f3bc46f1e9",
+          "generated_at": "2026-08-15T21:16:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9024,
+          "glow_score": 0.0403,
+          "art_hash": "9fc573a4196f8873"
+        },
+        "LIT_3": {
+          "sprite": "bushes/bush_016/lit_3/sprite.webp",
+          "pixellab_object_id": "447945f5-dd8c-42d8-9fb0-1d90ffdd67e8",
+          "generated_at": "2026-08-15T21:16:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4881,
+          "glow_score": 0.0162,
+          "art_hash": "842da01881112345"
+        },
+        "LIT_4": {
+          "sprite": "bushes/bush_016/lit_4/sprite.webp",
+          "pixellab_object_id": "949b7c08-3f95-45a9-b742-f6aafdf898b4",
+          "generated_at": "2026-08-15T21:16:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6995,
+          "glow_score": 0.0143,
+          "art_hash": "414ef7b699010f1e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "bushes/bush_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "fc790be5-c380-4e4c-85e9-d55be199df55",
+          "generated_at": "2026-08-15T21:16:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8937,
+          "glow_score": 0.0,
+          "art_hash": "bbe2eaf3d19821cf"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bushes/bush_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1703d906-f4e2-4123-9e20-290f0c4a4cd6",
+          "generated_at": "2026-08-15T21:16:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2156,
+          "glow_score": 0.0,
+          "art_hash": "cc3e8870ef0589ea"
         }
       },
       "animations": []
@@ -8278,7 +8431,7 @@
       "rel": "bushes/bush_017",
       "name": "Low blueberry shrub 017",
       "category": "bushes",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, low blueberry shrub, split into a double form, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -8306,11 +8459,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "bushes/bush_017/lit_1/sprite.webp",
+          "pixellab_object_id": "31ece0d9-c938-4b13-bfbe-485f8544a58f",
+          "generated_at": "2026-08-15T21:17:51+00:00",
+          "glow_concept": "fireflies nesting deep in the foliage",
+          "difference_from_source": 0.7567,
+          "glow_score": 0.0366,
+          "art_hash": "56b27a90a2e90b8d"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_017/lit_2/sprite.webp",
+          "pixellab_object_id": "5d454e0e-d62f-4101-aa8a-bc39512f4de6",
+          "generated_at": "2026-08-15T21:17:52+00:00",
+          "glow_concept": "pale luminescent flowers dotting the surface",
+          "difference_from_source": 0.9162,
+          "glow_score": 0.1112,
+          "art_hash": "16c47161455da9e5"
+        },
         "NOT_LIT_1": {
           "sprite": "bushes/bush_017/sprite.webp",
           "pixellab_object_id": "260c4550-5fe1-47a0-930a-9c19b2246f96",
           "generated_at": "2026-08-15T18:14:00+00:00",
           "art_hash": "2d1687d12b1dbadd"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bushes/bush_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5ede3ce5-dd38-4804-b231-f7db17be6d5c",
+          "generated_at": "2026-08-15T21:17:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3413,
+          "glow_score": 0.0,
+          "art_hash": "4ec781f229166bfc"
+        },
+        "NOT_LIT_3": {
+          "sprite": "bushes/bush_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c92931a1-5f7c-4dbd-8d36-752d899756b4",
+          "generated_at": "2026-08-15T21:17:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7573,
+          "glow_score": 0.0,
+          "art_hash": "89254bc41f334344"
+        },
+        "NOT_LIT_4": {
+          "sprite": "bushes/bush_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "32a2d00c-f107-4752-bc01-a8634f6a9186",
+          "generated_at": "2026-08-15T21:17:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.47,
+          "glow_score": 0.0078,
+          "art_hash": "6f4c8d3b5949ed90"
         }
       },
       "animations": []
@@ -8345,6 +8543,33 @@
           "pixellab_object_id": "87fc1c22-e95d-4f1a-8c18-672403a3eea5",
           "generated_at": "2026-08-13T23:10:20+00:00",
           "art_hash": "b1fd2c909261dbc7"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_900/lit_2/sprite.webp",
+          "pixellab_object_id": "f085e3d2-9bad-44a2-b70a-9f8a471521f5",
+          "generated_at": "2026-08-15T21:17:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4823,
+          "glow_score": 0.0304,
+          "art_hash": "80c12351c86294d9"
+        },
+        "LIT_3": {
+          "sprite": "bushes/bush_900/lit_3/sprite.webp",
+          "pixellab_object_id": "a07544cf-1175-4a57-87ba-82e18df98dff",
+          "generated_at": "2026-08-15T21:18:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7012,
+          "glow_score": 0.0347,
+          "art_hash": "416d36b0028c7842"
+        },
+        "LIT_4": {
+          "sprite": "bushes/bush_900/lit_4/sprite.webp",
+          "pixellab_object_id": "ebbcaccc-96cc-4224-9e09-8d4a012944b7",
+          "generated_at": "2026-08-15T21:18:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5838,
+          "glow_score": 0.0,
+          "art_hash": "1d78e33f2b8573c3"
         }
       },
       "animations": []
