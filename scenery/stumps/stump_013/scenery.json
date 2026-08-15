@@ -32,10 +32,101 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "stumps/stump_013/lit_1/sprite.webp",
+      "pixellab_object_id": "51ab5cbf-34fc-4d94-839a-231d646fe3eb",
+      "glow_concept": "soulstone core shining in the heartwood",
+      "difference_from_source": 0.5895,
+      "glow_score": 0.1156
+    },
+    "LIT_2": {
+      "sprite": "stumps/stump_013/lit_2/sprite.webp",
+      "pixellab_object_id": "7d04a2ba-0426-4ea7-9010-3b918422775b",
+      "glow_concept": "foxfire seeping from gaps in the bark",
+      "difference_from_source": 0.8971,
+      "glow_score": 0.0792
+    },
+    "LIT_3": {
+      "sprite": "stumps/stump_013/lit_3/sprite.webp",
+      "pixellab_object_id": "c3ea8164-acd2-47ca-a5b6-a039de36f49d",
+      "glow_concept": "luminous green sapling sprouting from the center",
+      "difference_from_source": 0.6216,
+      "glow_score": 0.1026
+    },
+    "LIT_4": {
+      "sprite": "stumps/stump_013/lit_4/sprite.webp",
+      "pixellab_object_id": "12a8dcc7-d496-4598-aa34-f5dd960803a6",
+      "glow_concept": "shelf undersides shedding pale spore light downward",
+      "difference_from_source": 0.6778,
+      "glow_score": 0.1305
+    },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_013/sprite.webp",
       "pixellab_object_id": "614aed5a-505c-4aa0-aba3-bc8f6fbc372b",
       "glow_score": 0.1065
+    },
+    "NOT_LIT_10": {
+      "sprite": "stumps/stump_013/not_lit_10/sprite.webp",
+      "pixellab_object_id": "ebb04b49-d055-4444-9344-1944be061a46",
+      "glow_concept": null,
+      "difference_from_source": 0.8568,
+      "glow_score": 0.0807
+    },
+    "NOT_LIT_2": {
+      "sprite": "stumps/stump_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9d7a2c77-4c62-4ba7-992e-9a8c5652d9f4",
+      "glow_concept": null,
+      "difference_from_source": 0.783,
+      "glow_score": 0.0878
+    },
+    "NOT_LIT_3": {
+      "sprite": "stumps/stump_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e00c46cf-31cf-4aba-aba5-a783f5740ce2",
+      "glow_concept": null,
+      "difference_from_source": 0.9631,
+      "glow_score": 0.0004
+    },
+    "NOT_LIT_4": {
+      "sprite": "stumps/stump_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ca7d5429-8405-428e-b5c9-8abe9976762c",
+      "glow_concept": null,
+      "difference_from_source": 0.5358,
+      "glow_score": 0.1074
+    },
+    "NOT_LIT_5": {
+      "sprite": "stumps/stump_013/not_lit_5/sprite.webp",
+      "pixellab_object_id": "6f21818d-9625-4fbd-a533-934c0ec0c19f",
+      "glow_concept": null,
+      "difference_from_source": 0.3201,
+      "glow_score": 0.1047
+    },
+    "NOT_LIT_6": {
+      "sprite": "stumps/stump_013/not_lit_6/sprite.webp",
+      "pixellab_object_id": "68de496f-2e89-4c6b-a3b1-cf856b869957",
+      "glow_concept": null,
+      "difference_from_source": 0.2602,
+      "glow_score": 0.1129
+    },
+    "NOT_LIT_7": {
+      "sprite": "stumps/stump_013/not_lit_7/sprite.webp",
+      "pixellab_object_id": "99531796-a698-418c-b80a-6c311cee611f",
+      "glow_concept": null,
+      "difference_from_source": 0.4952,
+      "glow_score": 0.124
+    },
+    "NOT_LIT_8": {
+      "sprite": "stumps/stump_013/not_lit_8/sprite.webp",
+      "pixellab_object_id": "c6e46f06-1f36-4efa-93e1-9c5dd123d88e",
+      "glow_concept": null,
+      "difference_from_source": 0.7528,
+      "glow_score": 0.0546
+    },
+    "NOT_LIT_9": {
+      "sprite": "stumps/stump_013/not_lit_9/sprite.webp",
+      "pixellab_object_id": "8f40fed7-5965-4dbc-9988-9140c28adae9",
+      "glow_concept": null,
+      "difference_from_source": 0.9558,
+      "glow_score": 0.0064
     }
   }
 }
