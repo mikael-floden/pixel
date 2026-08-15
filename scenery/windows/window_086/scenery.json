@@ -1,0 +1,53 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:51:04+00:00",
+  "id": "window_086",
+  "group": "windows",
+  "type": "WINDOW",
+  "rank": 25,
+  "index": 86,
+  "name": "A square wooden-framed window of four panes, paint faded 086",
+  "lights": "LIGHTS_OFF",
+  "variety": "a square wooden-framed window of four panes, paint faded",
+  "modifier": "one shutter closed and one open",
+  "glow_concept": null,
+  "prompt": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square wooden-framed window of four panes, paint faded, one shutter closed and one open, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south",
+    "south-east",
+    "south-west"
+  ],
+  "must_be_imbplemented_with_random_hflip": false,
+  "rotations": {
+    "south-east": "windows/window_086/rotations/south-east.webp",
+    "south-west": "windows/window_086/rotations/south-west.webp",
+    "south": "windows/window_086/sprite.webp"
+  },
+  "size": 96,
+  "sprite": "windows/window_086/sprite.webp",
+  "placement": {
+    "world_height_m": 1.27,
+    "world_px_height": 48,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      20,
+      22,
+      76,
+      76
+    ],
+    "content_px_height": 54,
+    "canvas_render_px": 85
+  },
+  "pixellab_object_id": "956a7a1f-c30f-4c1c-8617-af75457ec1f7",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
