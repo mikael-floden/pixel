@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 780,
+  "scenery_count": 781,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 35
+      "done": 36
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 35,
+    "stones": 36,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -17486,6 +17486,40 @@
       "pixellab_object_id": "c4cb8581-c6bb-4a76-9fa4-0ae140509fe2",
       "sprite": "stones/stone_036/sprite.webp",
       "art_hash": "115e58bfb5a85f82",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_037",
+      "rel": "stones/stone_037",
+      "name": "White quartz-veined boulder 037",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, white quartz-veined boulder, with fallen leaves collected at its base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.77,
+        "world_px_height": 29,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          7,
+          11,
+          58,
+          55
+        ],
+        "content_px_height": 44,
+        "canvas_render_px": 42
+      },
+      "status": "complete",
+      "pixellab_object_id": "80980062-9bba-400a-917f-98607ae32d95",
+      "sprite": "stones/stone_037/sprite.webp",
+      "art_hash": "587ff517da486fbb",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},

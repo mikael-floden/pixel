@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:01:35+00:00",
+  "id": "stone_037",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 37,
+  "name": "White quartz-veined boulder 037",
+  "lights": "LIGHTS_OFF",
+  "variety": "white quartz-veined boulder",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": null,
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, white quartz-veined boulder, with fallen leaves collected at its base, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_037/sprite.webp",
+  "placement": {
+    "world_height_m": 0.77,
+    "world_px_height": 29,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      7,
+      11,
+      58,
+      55
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 42
+  },
+  "pixellab_object_id": "80980062-9bba-400a-917f-98607ae32d95",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
