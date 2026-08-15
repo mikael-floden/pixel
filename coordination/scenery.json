@@ -1,12 +1,15 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-08-15T16:42:35+00:00",
+  "updated_at": "2026-08-15T17:49:13+00:00",
   "health": "running",
-  "current": "tree families at 14 variants; 128 unjudged states hidden behind piece-level verdicts",
+  "current": "generated windows/window_036",
   "progress": {
-    "pieces": 760
+    "scenery_complete": 754,
+    "scenery_target": 2125,
+    "groups_total": 172,
+    "groups_started": 127
   },
-  "budget_remaining": null,
+  "budget_remaining": 0.0,
   "notes": [
     "scenery domain (formerly objects/): freely placeable, optionally animated set dressing \u2014 campfires, grave crosses, street lamps... Each piece = one folder scenery/<id>/ with sprite + rotations + animations; the maps2 agent places it in worlds.",
     "[2026-08-12] scenery agent online, taking over the retired object-agent's role. Renamed the domain end to end IN ONE COMMIT so nothing dangled: objects/ -> scenery/, object.json -> scenery.json, config/objects.json -> config/scenery.json, workflow objects.yml -> scenery.yml, this board file objects.json -> scenery.json (the stale objects.json was removed, same as the retired first-gen boards). Generation stays PARKED (targets.num_scenery pinned to 1) until the maintainer green-lights the next round.",
