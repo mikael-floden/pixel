@@ -216,6 +216,37 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
+## A deleted piece must read as "removed", not as a broken image
+
+**The admin reads ART from HEAD of main and the PIECE LIST from the deployed
+build.** That split is deliberate — `stagingSha()` pins staging reads to
+`main` because reviewing art that is not in the game yet is the entire point —
+and its consequence is that `data.json` can list a piece whose file the
+producing agent has since deleted.
+
+**The REJECTED filter is where that happens every time**, because a rejection
+IS the instruction to delete the piece. Maintainer, 2026-08-15: *"Why doesn't
+the rejected Scenery render?"* — three cards, three broken `<img>`s with their
+alt text sprawling across them. Traced exactly: the wiki was built at
+`79c1ae3e5` (16:59), the scenery agent committed *"remove 3 rejected piece(s)
+(wiki verdicts)"* at 17:33, and the sprite answered 200 at the deployed sha and
+**404 on main**. Nothing was broken — the contract had worked.
+
+So a 404 on art is now reported as what it is: the frame keeps its size and
+says **removed / the agent acted on this**, which doubles as the completion
+signal for the rejection. A failure that is NOT a 404 says **not loading**
+instead — claiming "removed" because a CDN blinked would be a lie he would act
+on — so the failure path spends one `HEAD` to tell them apart. It is ONE
+capture-phase listener on `document` (`error` does not bubble, but it does
+capture), so it covers every image the app renders, now and later; detached
+`new Image()` prefetches dispatch on themselves and never reach it.
+
+It self-heals on the next deploy, when the piece leaves `data.json` entirely.
+Gate: `wiki/tools/check-gone.mjs` — a 404 and a connection failure routed at
+the network boundary, asserting the two are told apart, that no broken image
+survives on the rejected filter as admin, that the card still opens (its
+verdict and notes are not lost), and that the note is legible on both themes.
+
 ## Where the nadir shadow belonged — training data, not an override
 
 The wiki already drew each monster's ground ellipse from the games agent's own

@@ -93,6 +93,62 @@ const stripExt = (rel) => rel.replace(/\.(png|webp)$/i, "");
 // The game server's API (same origin in prod and dev — vite proxies /api).
 const API = (path) => new URL(path, location.origin).href;
 
+/* ------------------------------------------------- art that has been DELETED
+ * THE ADMIN READS ART FROM HEAD OF MAIN AND THE PIECE LIST FROM THE DEPLOYED
+ * BUILD. That is deliberate (see stagingSha — reviewing art that is not in the
+ * game yet is the entire point of reading the repo), and the consequence is
+ * that `data.json` can list a piece whose file the producing agent has since
+ * deleted. The REJECTED filter is exactly where that happens, every time,
+ * because a rejection IS the instruction to delete the piece.
+ *
+ * Measured on the maintainer's own report (2026-08-15, "why doesn't the
+ * rejected Scenery render?"): the wiki was built at 79c1ae3e5 (16:59), the
+ * scenery agent committed "remove 3 rejected piece(s) (wiki verdicts)" at
+ * 17:33, and all three cards under that filter were broken <img>s sprawling
+ * their alt text across the card.
+ *
+ * A 404 here is NOT an error — it is the agent having done what he asked — so
+ * the card says "removed" and reads as the completion signal it is. Anything
+ * else is a real load failure and must say THAT instead: telling him a piece
+ * was removed because a CDN blinked would be a lie he would act on.
+ *
+ * ONE capture-phase listener rather than 21 call sites: `error` does not
+ * bubble, but it does capture, so this covers every image the app renders
+ * today and every one added later. Detached `new Image()` prefetches dispatch
+ * on themselves and never reach the document, so the warm pump is untouched.
+ */
+const artProbe = new Map();   // url -> Promise<"gone" | "failed">, one per url
+function probeArt(url) {
+  if (!artProbe.has(url)) {
+    artProbe.set(url, (async () => {
+      try {
+        const r = await fetch(url, { method: "HEAD", cache: "no-store" });
+        return r.status === 404 || r.status === 410 ? "gone" : "failed";
+      } catch { return "failed"; }
+    })());
+  }
+  return artProbe.get(url);
+}
+async function onArtMissing(img) {
+  const url = img.src;
+  // Local chrome (section icons, the gold coin) is baked into the page and
+  // cannot be "removed by an agent" — a miss there is a plain load failure.
+  const verdict = /\/icons\//.test(url) ? "failed" : await probeArt(url);
+  if (!img.isConnected) return;
+  const box = img.closest(".thumb, .portrait");
+  img.remove();
+  if (!box) return;   // a small inline icon just goes quiet
+  box.classList.add(verdict === "gone" ? "art-gone" : "art-failed");
+  box.append(h("span", { class: "art-note" },
+    verdict === "gone" ? "removed" : "not loading",
+    verdict === "gone"
+      ? h("small", {}, "the agent acted on this")
+      : h("small", {}, "the art did not load")));
+}
+document.addEventListener("error", (ev) => {
+  if (ev.target instanceof HTMLImageElement && ev.target.src) onArtMissing(ev.target);
+}, true);
+
 // "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs and a
 // rejected entry means UNBIND that sound from that event — the recording is
 // untouched (maintainer 2026-08-06). See live/feedback/bindings.json.
