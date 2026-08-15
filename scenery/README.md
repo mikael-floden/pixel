@@ -25,12 +25,31 @@ approves/rejects/comments every piece in the wiki's Scenery section.
   world-builder actually places the thing).
 - **Quota per type follows the rank**: `quota(rank) = max(2, 102 - 2*rank)` —
   #1 `trees/` 100 pieces, #2 `stones/` 98, … floor 2 so EVERY type ships at
-  least one lit + one unlit piece. **2,650 pieces total.** One knob
+  least one lit + one unlit piece. One knob
   (`config/factory.json → quota_rule`) grows the bottom half later.
+- **THE GOAL IS 1,000 LIVE PIECES, and generation stops there** (maintainer
+  2026-08-14: "I think the goal is to generate 1000 scenery objects!").
+  `config/factory.json → goal.target_pieces` is the hard stop — no open-ended
+  catalog, no scheduler. He tops up credits, the loop runs a bounded pass, he
+  reviews. The count is live pieces on disk, and his rejections DELETE, so the
+  1,000 are all pieces that survived review. The quota plan (2,128 and
+  shrinking as groups are frozen) only decides the MIX along the way; it is a
+  priority ordering, not a target.
 - **LIGHTS_ON / LIGHTS_OFF**: every type is half self-emissive, half not,
   interleaved — odd piece numbers unlit, even lit, each lit piece drawing one
   of the type's curated `glow_concepts`. In this world glow is lore-loaded:
   light is memory being kept (lore/RED_LINE.md).
+
+  **`lights` is null on a piece that carries BOTH.** It was set at birth, when
+  a piece was one sprite and being lit was a property of the whole thing. A
+  tree carrying 10 `NOT_LIT_*` and 4 `LIT_*` states has no such property, so
+  the field would be describing only its anchor state while appearing to
+  describe the piece — which is exactly how the wiki came to file a
+  ten-unlit-variant tree under "lit", and to show the maintainer a name ending
+  "· lit" that opened onto ten unlit variants. **Read the state key, not the
+  piece**: `LIT_*` / `NOT_LIT_*` is the per-state truth and always has been.
+  Windows keep a non-null `lights` on purpose — one `LIGHTS_OFF` plus one
+  `LIGHTS_ON` is a real base condition plus an edit of it, not a mixed bag.
 - **SOUTH only.** Scenery never rotates: pieces are 1-direction PixelLab
   objects — no rotations generated, stored, or paid for. Animations come later
   (S-only), one idle per type (`animation_idea` in the config).
@@ -56,10 +75,19 @@ is a AAA project:
   `create-1-direction-object`: full canvas, auto-kept, never enters review
   (tree_001, the crisp birch, was born this way).
 
-Either path costs **20–40 generations (~$0.09 of USD overage) per piece**.
-Whole-catalog: ~2,650 calls ≈ 80k generations — months of the Tier-3 pool
-plus credits at whatever pace the maintainer funds. The loop's budget floors
-make running out a clean pause, never an error.
+Either path costs **20–40 generations per piece**. Measured against USD
+credits on 2026-08-15: **~$0.16 per piece DELIVERED**, which is the number to
+budget with — the headline ~$0.09 is one successful call, and the pixel-grid
+and edge-bleed gates re-roll a real fraction of them. To the 1,000-piece goal
+from 760 live: roughly $38 of credit. The loop's budget floors make running
+out a clean pause, never an error.
+
+**Reserve credit for the state passes.** A window that ships without its
+`LIGHTS_ON` state is not cheaper art, it is INCOMPLETE art — the game
+crossfades the two on interior brightness, so a lone dark window can never be
+lit. Same for a tree without its variants. When a pass is mostly windows,
+stop the loop (`touch scenery/.stop`, which drains in-flight jobs rather than
+dropping them) with enough left to run `pipeline/lights_on.py`.
 
 ### Daily rhythm
 
