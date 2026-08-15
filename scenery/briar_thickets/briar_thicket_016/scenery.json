@@ -5,8 +5,8 @@
   "group": "briar_thickets",
   "rank": 13,
   "index": 16,
-  "name": "Low creeping briar patch 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Low creeping briar patch 016",
+  "lights": null,
   "variety": "low creeping briar patch",
   "glow_concept": "rose hips burning like strung embers",
   "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, low creeping briar patch, waist-high, self-emissive at night, softly radiating light: rose hips burning like strung embers",
@@ -35,6 +35,46 @@
       "sprite": "briar_thickets/briar_thicket_016/sprite.webp",
       "pixellab_object_id": "33920291-ff33-4607-8f1d-bd0cb0c06855",
       "generated_at": "2026-08-13T23:31:10+00:00"
+    },
+    "LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_016/lit_2/sprite.webp",
+      "pixellab_object_id": "c5189bfb-0181-43da-8da6-8cb1cc99bb26",
+      "generated_at": "2026-08-15T20:53:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8054,
+      "glow_score": 0.0023
+    },
+    "LIT_3": {
+      "sprite": "briar_thickets/briar_thicket_016/lit_3/sprite.webp",
+      "pixellab_object_id": "0850abbe-f694-42b6-8138-36b11ca43168",
+      "generated_at": "2026-08-15T20:53:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7872,
+      "glow_score": 0.0048
+    },
+    "LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_016/lit_4/sprite.webp",
+      "pixellab_object_id": "45c480ec-09cf-474d-bd05-f1a20f57ded8",
+      "generated_at": "2026-08-15T20:53:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6321,
+      "glow_score": 0.0104
+    },
+    "NOT_LIT_1": {
+      "sprite": "briar_thickets/briar_thicket_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "0c2d8d7c-d370-4c19-b763-177efd4c3386",
+      "generated_at": "2026-08-15T20:53:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4632,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "baff4593-9e2e-40bd-817d-cd102f673dbe",
+      "generated_at": "2026-08-15T20:53:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3435,
+      "glow_score": 0.0
     }
   }
 }
