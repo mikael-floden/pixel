@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 801,
+  "scenery_count": 802,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 41
+      "done": 42
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 41,
+    "stones": 42,
     "story_posts": 8,
     "streetlights": 6,
     "stumps": 13,
@@ -18154,6 +18154,40 @@
       "pixellab_object_id": "a673f78c-7d70-412e-bfe5-4e64a5a404a0",
       "sprite": "stones/stone_048/sprite.webp",
       "art_hash": "95a025042d5b40b7",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_050",
+      "rel": "stones/stone_050",
+      "name": "Stone ringed by a worn animal path 050 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone ringed by a worn animal path, grown around a half-buried stone, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing pale handprint pressed on the face",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.39,
+        "world_px_height": 52,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          4,
+          8,
+          60,
+          60
+        ],
+        "content_px_height": 52,
+        "canvas_render_px": 64
+      },
+      "status": "complete",
+      "pixellab_object_id": "1aedc678-14c0-40e5-96ba-99a0bdadd216",
+      "sprite": "stones/stone_050/sprite.webp",
+      "art_hash": "100bc529278dd6f5",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
