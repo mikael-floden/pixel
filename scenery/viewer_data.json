@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 796,
+  "scenery_count": 797,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -126,7 +126,7 @@
       "name": "Road Light",
       "type": "TOWN",
       "quota": 40,
-      "done": 5
+      "done": 6
     },
     {
       "rank": 16,
@@ -1491,7 +1491,7 @@
     "stone_fountains": 2,
     "stones": 40,
     "story_posts": 8,
-    "streetlights": 5,
+    "streetlights": 6,
     "stumps": 13,
     "sundials": 2,
     "tables": 10,
@@ -18424,6 +18424,40 @@
       "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
       "sprite": "streetlights/streetlight_024/sprite.webp",
       "art_hash": "e9caa4985ef1be3a",
+      "type": "TOWN",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "streetlight_034",
+      "rel": "streetlights/streetlight_034",
+      "name": "Iron fire cresset on a stone pillar 034 \u00b7 lit",
+      "category": "streetlights",
+      "lights": "LIGHTS_ON",
+      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn, iron fire cresset on a stone pillar, a fresh candle just set in, large, twice human height, self-emissive at night, softly radiating light: a candle flame small and clear",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 2.99,
+        "world_px_height": 113,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          35,
+          8,
+          78,
+          90
+        ],
+        "content_px_height": 82,
+        "canvas_render_px": 132
+      },
+      "status": "complete",
+      "pixellab_object_id": "444192d5-0baa-4422-b18c-35dae55bc787",
+      "sprite": "streetlights/streetlight_034/sprite.webp",
+      "art_hash": "9668259d19eb38e0",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},

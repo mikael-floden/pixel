@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:06:21+00:00",
+  "id": "streetlight_034",
+  "group": "streetlights",
+  "type": "TOWN",
+  "rank": 15,
+  "index": 34,
+  "name": "Iron fire cresset on a stone pillar 034 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "iron fire cresset on a stone pillar",
+  "modifier": "a fresh candle just set in",
+  "glow_concept": "a candle flame small and clear",
+  "prompt": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn, iron fire cresset on a stone pillar, a fresh candle just set in, large, twice human height, self-emissive at night, softly radiating light: a candle flame small and clear",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 96,
+  "sprite": "streetlights/streetlight_034/sprite.webp",
+  "placement": {
+    "world_height_m": 2.99,
+    "world_px_height": 113,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      35,
+      8,
+      78,
+      90
+    ],
+    "content_px_height": 82,
+    "canvas_render_px": 132
+  },
+  "pixellab_object_id": "444192d5-0baa-4422-b18c-35dae55bc787",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
