@@ -77,6 +77,39 @@ for (const scheme of ["light", "dark"]) {
   await ctx.close();
 }
 
+// NO WHITE FLASH BEFORE THE STYLESHEET (maintainer 2026-08-15: "the Nangijala
+// Wiki iframe flashes white for a short short time because the iframe bg is
+// white and the page has not loaded yet"). wiki.css is an external,
+// revalidating stylesheet: until it arrives the page has no background of its
+// own, and the drawer shows the browser's default canvas. index.html now
+// carries the two --bg values inline, applied to the CHOSEN theme rather than
+// the OS one. This blocks the stylesheet outright and reads what the document
+// would paint with — the strongest form of the question.
+for (const [chosen, os, want] of [
+  ["dark", "light", "rgb(38, 38, 36)"],    // the case he sees: dark wiki on a light-mode phone
+  ["dark", "dark", "rgb(38, 38, 36)"],
+  ["light", "dark", "rgb(250, 249, 245)"],
+  [null, "dark", "rgb(38, 38, 36)"],       // no choice made: follow the phone
+  [null, "light", "rgb(250, 249, 245)"],
+]) {
+  const fctx = await b.newContext({ viewport: { width: 393, height: 851 }, colorScheme: os });
+  const fp = await fctx.newPage();
+  await fp.route("**/wiki.css", (r) => r.abort());          // it never arrives
+  await fp.addInitScript(([t]) => { if (t) localStorage.setItem("wiki-theme", t); }, [chosen]);
+  await fp.goto(W, { waitUntil: "commit" });
+  await fp.waitForTimeout(500);
+  const paint = await fp.evaluate(() => ({
+    html: getComputedStyle(document.documentElement).backgroundColor,
+    // A blocked <link> still appears in document.styleSheets — with no rules.
+    sheets: [...document.styleSheets].filter((s2) => { try { return s2.href && s2.cssRules.length; } catch { return false; } }).length,
+    scheme: getComputedStyle(document.documentElement).colorScheme,
+  }));
+  console.log(`chosen=${chosen ?? "(none)"} os=${os}:`, JSON.stringify(paint));
+  ok(paint.sheets === 0, `${chosen ?? "(none)"}/${os}: the external stylesheet really did not load (${paint.sheets} with rules)`);
+  ok(paint.html === want, `${chosen ?? "(none)"}/${os}: the page paints ${want} with no stylesheet at all, not white (${paint.html})`);
+  await fctx.close();
+}
+
 // A reader who asked for less motion gets NO motion — the stylesheet enforces
 // that globally with `* { animation: none !important }`. The bar must then
 // still read as "working": a frozen 40% sliver would look like a hung page, so

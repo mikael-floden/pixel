@@ -4,6 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
+<!-- FIRST PAINT, BEFORE ANY STYLESHEET CAN ARRIVE (maintainer 2026-08-15: "the
+     Nangijala Wiki iframe flashes white for a short short time because the
+     iframe bg is white and the page has not loaded yet"). wiki.css is an
+     external, revalidating stylesheet, so on a slow open the browser paints
+     its default canvas first — white — and the drawer flashes. These few
+     lines are part of the document, so they cost nothing and cannot be late.
+     The script runs before them to apply the CHOSEN theme: the meta above
+     only follows the OS, and picking dark in a light-mode phone would flash
+     white anyway. Colours are the two --bg values from wiki.css; if that
+     palette ever changes, change them here too. -->
+<script>try{var t=localStorage.getItem("wiki-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+  :root { background: #faf9f5; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { background: #262624; } }
+  :root[data-theme="dark"] { background: #262624; color-scheme: dark; }
+  :root[data-theme="light"] { background: #faf9f5; color-scheme: light; }
+</style>
 <title>Nangijala Wiki</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128214;</text></svg>">
 <link rel="stylesheet" href="wiki.css">

@@ -144,12 +144,16 @@ function ensureCss(): void {
   /* The wiki's own nav is open: the game strip double-darkens — one more
      "layer back". Tapping it then closes the MENU, not the wiki. */
   .ml-wikiback.on.deep{background:rgba(8,6,3,.85)}
+  /* Fallback is Canvas — the system's own page colour, which follows the
+     phone's light/dark setting — not a hard-coded cream. If --bg were ever
+     missing the old fallback painted a light panel behind a dark wiki, which
+     is the flash the maintainer reported from the other side (2026-08-15). */
   .ml-wikipanel{position:absolute;top:0;left:0;height:100%;
-    background:var(--bg, #faf9f5);box-shadow:6px 0 28px rgba(0,0,0,.45);
+    background:var(--bg, Canvas);box-shadow:6px 0 28px rgba(0,0,0,.45);
     transform:translateX(-102%);transition:transform ${ANIM_MS}ms cubic-bezier(.22,.61,.36,1);
     overflow:hidden}
   .ml-wikipanel.on{transform:translateX(0)}
-  .ml-wikipanel iframe{border:0;display:block;background:var(--bg, #faf9f5);transform-origin:top left}
+  .ml-wikipanel iframe{border:0;display:block;background:var(--bg, Canvas);transform-origin:top left}
   @media (prefers-reduced-motion: reduce){
     .ml-wikiback,.ml-wikipanel{transition:none}
   }`;
