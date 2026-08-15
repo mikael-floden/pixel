@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:09:40+00:00",
+  "id": "bed_012",
+  "group": "beds",
+  "type": "INDOOR",
+  "rank": 105,
+  "index": 12,
+  "name": "Cupboard bed built into panelling 012 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "cupboard bed built into panelling",
+  "modifier": "grand and heavy",
+  "glow_concept": "a warming pan glowing at the foot of the bed",
+  "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, cupboard bed built into panelling, grand and heavy, small, knee-high, self-emissive at night, softly radiating light: a warming pan glowing at the foot of the bed",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "beds/bed_012/sprite.webp",
+  "placement": {
+    "world_height_m": 0.6,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      24,
+      6,
+      106,
+      124
+    ],
+    "content_px_height": 118,
+    "canvas_render_px": 25
+  },
+  "pixellab_object_id": "8d914a8f-98eb-48f2-9d6a-0a895080eb1a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

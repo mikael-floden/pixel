@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 804,
+  "scenery_count": 805,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -846,7 +846,7 @@
       "name": "Bed",
       "type": "INDOOR",
       "quota": 30,
-      "done": 4
+      "done": 5
     },
     {
       "rank": 106,
@@ -1396,7 +1396,7 @@
     "beacons": 11,
     "beast_skulls": 2,
     "beaver_lodges": 1,
-    "beds": 4,
+    "beds": 5,
     "bee_logs": 1,
     "beehives": 4,
     "bell_posts": 1,
@@ -2750,6 +2750,40 @@
       "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
       "sprite": "beds/bed_006/sprite.webp",
       "art_hash": "2b10fd1fdeebcd0d",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "bed_012",
+      "rel": "beds/bed_012",
+      "name": "Cupboard bed built into panelling 012 \u00b7 lit",
+      "category": "beds",
+      "lights": "LIGHTS_ON",
+      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, cupboard bed built into panelling, grand and heavy, small, knee-high, self-emissive at night, softly radiating light: a warming pan glowing at the foot of the bed",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.6,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          24,
+          6,
+          106,
+          124
+        ],
+        "content_px_height": 118,
+        "canvas_render_px": 25
+      },
+      "status": "complete",
+      "pixellab_object_id": "8d914a8f-98eb-48f2-9d6a-0a895080eb1a",
+      "sprite": "beds/bed_012/sprite.webp",
+      "art_hash": "6f2c3c8f8f75a81c",
       "type": "INDOOR",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
