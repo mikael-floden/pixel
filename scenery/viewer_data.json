@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 782,
+  "scenery_count": 783,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1382,7 +1382,7 @@
       "name": "Window",
       "type": "WINDOW",
       "quota": 400,
-      "done": 50
+      "done": 51
     }
   ],
   "categories": {
@@ -1512,7 +1512,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 50,
+    "windows": 51,
     "wisteria_snags": 1,
     "witch_rings": 1,
     "woodpiles": 2
@@ -1600,6 +1600,7 @@
           "glow_concept": "glowing runes spiraling up the trunk",
           "difference_from_source": 0.2104,
           "glow_score": 0.0192,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "0bd3407244204ae1"
         },
         "LIT_2": {
@@ -1608,6 +1609,7 @@
           "glow_concept": "soulstone veins shining through split bark",
           "difference_from_source": 0.1993,
           "glow_score": 0.0165,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "332e5f8564459901"
         },
         "LIT_3": {
@@ -1616,6 +1618,7 @@
           "glow_concept": "hollow heart glowing like embers inside",
           "difference_from_source": 0.1995,
           "glow_score": 0.0079,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "223456fba3ac9bec"
         },
         "LIT_4": {
@@ -1624,12 +1627,14 @@
           "glow_concept": "crown wreathed in drifting golden memory-motes",
           "difference_from_source": 0.3916,
           "glow_score": 0.0121,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "2dba72162b4f8b4c"
         },
         "NOT_LIT_1": {
           "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
           "pixellab_object_id": "3108a036-f421-4028-8ff8-9d1229ada84b",
           "glow_score": 0.0001,
+          "generated_at": "2026-08-13T01:40:05+00:00",
           "art_hash": "efee6317fb901f85"
         },
         "NOT_LIT_10": {
@@ -1638,6 +1643,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2462,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "92b733ec70a692ed"
         },
         "NOT_LIT_2": {
@@ -1646,6 +1652,7 @@
           "glow_concept": null,
           "difference_from_source": 0.293,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "6d2142bd6ca6718c"
         },
         "NOT_LIT_3": {
@@ -1654,6 +1661,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5003,
           "glow_score": 0.0002,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "f6f27966441298ca"
         },
         "NOT_LIT_4": {
@@ -1662,6 +1670,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2515,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "929d5ad88f5d6d6c"
         },
         "NOT_LIT_5": {
@@ -1670,6 +1679,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2278,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "b095d6ced95ff016"
         },
         "NOT_LIT_6": {
@@ -1678,6 +1688,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2174,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "a0fa2efbd6679294"
         },
         "NOT_LIT_7": {
@@ -1686,6 +1697,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2232,
           "glow_score": 0.0005,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "3e94ada02662cb04"
         },
         "NOT_LIT_8": {
@@ -1694,6 +1706,7 @@
           "glow_concept": null,
           "difference_from_source": 0.301,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "de171969efb9cdfc"
         },
         "NOT_LIT_9": {
@@ -1702,6 +1715,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4368,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "70bb7e496fe37896"
         }
       },
@@ -1735,6 +1749,7 @@
           "sprite": "ancient_trees/ancient_tree_002/sprite.webp",
           "pixellab_object_id": "9f1d7925-8f87-480b-8cce-eec6601b3698",
           "glow_score": 0.0102,
+          "generated_at": "2026-08-13T04:52:20+00:00",
           "art_hash": "ba869feeea238b28"
         },
         "LIT_2": {
@@ -1743,6 +1758,7 @@
           "glow_concept": "crown wreathed in drifting golden memory-motes",
           "difference_from_source": 0.2651,
           "glow_score": 0.0193,
+          "generated_at": "2026-08-15T14:27:16+00:00",
           "art_hash": "c5ece0e4cc0251d8"
         },
         "LIT_3": {
@@ -1751,6 +1767,7 @@
           "glow_concept": "candlelit shrines tucked between the roots",
           "difference_from_source": 0.3064,
           "glow_score": 0.0401,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "8731195b27273a67"
         },
         "LIT_4": {
@@ -1759,6 +1776,7 @@
           "glow_concept": "stacked bracket fungi glowing phosphorescent green",
           "difference_from_source": 0.3704,
           "glow_score": 0.0332,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "a4e81c88e04f0439"
         },
         "NOT_LIT_1": {
@@ -1767,6 +1785,7 @@
           "glow_concept": null,
           "difference_from_source": 0.136,
           "glow_score": 0.004,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "f4667846df34be02"
         },
         "NOT_LIT_10": {
@@ -1775,6 +1794,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2002,
           "glow_score": 0.0027,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "f79beaa1c778bd65"
         },
         "NOT_LIT_2": {
@@ -1783,6 +1803,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3846,
           "glow_score": 0.0008,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "b14c2b927e80293c"
         },
         "NOT_LIT_3": {
@@ -1791,6 +1812,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3005,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "8b584d55beca53d0"
         },
         "NOT_LIT_4": {
@@ -1799,6 +1821,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2699,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "4dfd0f30e6b597eb"
         },
         "NOT_LIT_5": {
@@ -1807,6 +1830,7 @@
           "glow_concept": null,
           "difference_from_source": 0.394,
           "glow_score": 0.0094,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "dba16c45a3f898cb"
         },
         "NOT_LIT_6": {
@@ -1815,6 +1839,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2659,
           "glow_score": 0.0001,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "fbea42289fc4b92f"
         },
         "NOT_LIT_7": {
@@ -1823,6 +1848,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3688,
           "glow_score": 0.0015,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "2b61a49074b36bb8"
         },
         "NOT_LIT_8": {
@@ -1831,6 +1857,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3877,
           "glow_score": 0.0047,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "d93a8bc6a87b2dcf"
         },
         "NOT_LIT_9": {
@@ -1839,6 +1866,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2626,
           "glow_score": 0.0025,
+          "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "ab98ab0b4970dfdd"
         }
       },
@@ -2756,6 +2784,7 @@
           "sprite": "bee_logs/bee_log_002/sprite.webp",
           "pixellab_object_id": "50f20143-fcfd-4672-ab61-e8fcebca0a7d",
           "glow_score": 0.048,
+          "generated_at": "2026-08-14T01:16:28+00:00",
           "art_hash": "e1afece84636cd92"
         },
         "LIT_2": {
@@ -2764,6 +2793,7 @@
           "glow_concept": "drowsy glow-bees drifting home",
           "difference_from_source": 0.9586,
           "glow_score": 0.0733,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "c7cbc92c48238dcd"
         },
         "LIT_3": {
@@ -2772,6 +2802,7 @@
           "glow_concept": "warm light at every entrance hole",
           "difference_from_source": 0.9783,
           "glow_score": 0.0312,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "be3dbd0648cf3d18"
         },
         "LIT_4": {
@@ -2780,6 +2811,7 @@
           "glow_concept": "drowsy glow-bees drifting home",
           "difference_from_source": 0.9579,
           "glow_score": 0.1511,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "9d81ad985454e2fd"
         },
         "NOT_LIT_1": {
@@ -2788,6 +2820,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9511,
           "glow_score": 0.0086,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "364fc3514d5147c1"
         },
         "NOT_LIT_10": {
@@ -2796,6 +2829,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9277,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "a95d6a0b4e69052f"
         },
         "NOT_LIT_2": {
@@ -2804,6 +2838,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9478,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "2f22ac3becdc1813"
         },
         "NOT_LIT_3": {
@@ -2812,6 +2847,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9619,
           "glow_score": 0.0057,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "c9f625384ef41078"
         },
         "NOT_LIT_4": {
@@ -2820,6 +2856,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9285,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "dba6fd7c40dcdc42"
         },
         "NOT_LIT_5": {
@@ -2828,6 +2865,7 @@
           "glow_concept": null,
           "difference_from_source": 0.879,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "02f0d5fbc4e41239"
         },
         "NOT_LIT_6": {
@@ -2836,6 +2874,7 @@
           "glow_concept": null,
           "difference_from_source": 0.944,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "b289ae48db63dcf0"
         },
         "NOT_LIT_7": {
@@ -2844,6 +2883,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9712,
           "glow_score": 0.2807,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "4b97cad0e5cf66ec"
         },
         "NOT_LIT_8": {
@@ -2852,6 +2892,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9233,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "e7a28fd989a281ab"
         },
         "NOT_LIT_9": {
@@ -2860,6 +2901,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9229,
           "glow_score": 0.0055,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "15a07536d2141dae"
         }
       },
@@ -7555,6 +7597,7 @@
           "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
           "pixellab_object_id": "855e253b-d4ae-463c-a647-bd8567d6dbfc",
           "glow_score": 0.117,
+          "generated_at": "2026-08-14T02:04:02+00:00",
           "art_hash": "de2a06175766b0f0"
         },
         "LIT_2": {
@@ -7563,6 +7606,7 @@
           "glow_concept": "light refracting in slow colors",
           "difference_from_source": 0.5788,
           "glow_score": 0.2186,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "7dd83f049719e25c"
         },
         "LIT_3": {
@@ -7571,6 +7615,7 @@
           "glow_concept": "one shard blazing like a star",
           "difference_from_source": 0.9094,
           "glow_score": 0.1075,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "508f992e80f17659"
         },
         "LIT_4": {
@@ -7579,6 +7624,7 @@
           "glow_concept": "light refracting in slow colors",
           "difference_from_source": 0.9012,
           "glow_score": 0.0882,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "704c120e170956f5"
         },
         "NOT_LIT_1": {
@@ -7587,6 +7633,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7677,
           "glow_score": 0.111,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "6f13e2fe085caa31"
         },
         "NOT_LIT_10": {
@@ -7595,6 +7642,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9409,
           "glow_score": 0.0683,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "499f3c3e1fce8e53"
         },
         "NOT_LIT_2": {
@@ -7603,6 +7651,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7008,
           "glow_score": 0.0151,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "9f946097900bfec1"
         },
         "NOT_LIT_3": {
@@ -7611,6 +7660,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8251,
           "glow_score": 0.0147,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "e16d7895ac09cb76"
         },
         "NOT_LIT_4": {
@@ -7619,6 +7669,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8811,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "668826cc0c8debdc"
         },
         "NOT_LIT_5": {
@@ -7627,6 +7678,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5741,
           "glow_score": 0.0062,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "03a9b2d2f70aeea8"
         },
         "NOT_LIT_6": {
@@ -7635,6 +7687,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6814,
           "glow_score": 0.0147,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "ffde19dfe20629c9"
         },
         "NOT_LIT_7": {
@@ -7643,6 +7696,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8505,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "85b0fabfab182625"
         },
         "NOT_LIT_8": {
@@ -7651,6 +7705,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8988,
           "glow_score": 0.0051,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "25f86abdf3ca7f77"
         },
         "NOT_LIT_9": {
@@ -7659,6 +7714,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8578,
           "glow_score": 0.0888,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "545f2d20468ac42a"
         }
       },
@@ -8474,6 +8530,7 @@
           "glow_concept": "a soulstone vein running through the split wood",
           "difference_from_source": 0.9269,
           "glow_score": 0.1819,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "ec2747dc168f7b96"
         },
         "LIT_2": {
@@ -8482,6 +8539,7 @@
           "glow_concept": "mourners' carved initials glowing faintly",
           "difference_from_source": 0.9373,
           "glow_score": 0.0337,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "a91744dbaf8ce483"
         },
         "LIT_3": {
@@ -8490,6 +8548,7 @@
           "glow_concept": "ghost-blue barnacle colonies at the sand line",
           "difference_from_source": 0.9675,
           "glow_score": 0.12,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "6c836e59e9e826b2"
         },
         "LIT_4": {
@@ -8498,12 +8557,14 @@
           "glow_concept": "shipworm bore holes leaking pale light",
           "difference_from_source": 0.9543,
           "glow_score": 0.0936,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "0e99d9a86850b5dd"
         },
         "NOT_LIT_1": {
           "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
           "pixellab_object_id": "02adee43-6572-4c2b-9338-eb96c8a73e4f",
           "glow_score": 0.0708,
+          "generated_at": "2026-08-13T19:46:47+00:00",
           "art_hash": "7f30d02860cf3c08"
         },
         "NOT_LIT_10": {
@@ -8512,6 +8573,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9091,
           "glow_score": 0.0081,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "255d5d2cf252edbe"
         },
         "NOT_LIT_2": {
@@ -8520,6 +8582,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9566,
           "glow_score": 0.1622,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "98186feed203c389"
         },
         "NOT_LIT_3": {
@@ -8528,6 +8591,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9583,
           "glow_score": 0.0083,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "082fd6c00773f3fc"
         },
         "NOT_LIT_4": {
@@ -8536,6 +8600,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8631,
           "glow_score": 0.1491,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "d9dd8cac85a64451"
         },
         "NOT_LIT_5": {
@@ -8544,6 +8609,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9541,
           "glow_score": 0.0963,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "558302e35e13d715"
         },
         "NOT_LIT_6": {
@@ -8552,6 +8618,7 @@
           "glow_concept": null,
           "difference_from_source": 0.882,
           "glow_score": 0.1099,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "512638451a028f0f"
         },
         "NOT_LIT_7": {
@@ -8560,6 +8627,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9545,
           "glow_score": 0.0154,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "2b43bfcc1becfa95"
         },
         "NOT_LIT_8": {
@@ -8568,6 +8636,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9643,
           "glow_score": 0.1076,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "833a12cd356f7e82"
         },
         "NOT_LIT_9": {
@@ -8576,6 +8645,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8991,
           "glow_score": 0.0063,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "0ef5419cbc3a27a3"
         }
       },
@@ -8611,6 +8681,7 @@
           "glow_concept": "luminous moss carpeting the upper side",
           "difference_from_source": 0.945,
           "glow_score": 0.2629,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "51a744341f6e23b7"
         },
         "LIT_2": {
@@ -8619,6 +8690,7 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.9224,
           "glow_score": 0.099,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "dade3ec6a9b4a5a3"
         },
         "LIT_3": {
@@ -8627,6 +8699,7 @@
           "glow_concept": "soulstone crystals erupting from a split",
           "difference_from_source": 0.9645,
           "glow_score": 0.079,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "fd30fc5388729a12"
         },
         "LIT_4": {
@@ -8635,12 +8708,14 @@
           "glow_concept": "a lit traveler's lantern resting on top",
           "difference_from_source": 0.9488,
           "glow_score": 0.1706,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "91bd09db7263c0d0"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_001/sprite.webp",
           "pixellab_object_id": "3957b845-86a0-4d17-97ca-670c92c91dff",
           "glow_score": 0.0153,
+          "generated_at": "2026-08-13T00:55:10+00:00",
           "art_hash": "8986a41fd4dde518"
         },
         "NOT_LIT_10": {
@@ -8649,6 +8724,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9403,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "cf9db7c1a7366a0c"
         },
         "NOT_LIT_2": {
@@ -8657,6 +8733,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9208,
           "glow_score": 0.0467,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "109fca992552a9a5"
         },
         "NOT_LIT_3": {
@@ -8665,6 +8742,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9869,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "ae004b3da4b0fdd7"
         },
         "NOT_LIT_4": {
@@ -8673,6 +8751,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9226,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "6e61c79a1de58aee"
         },
         "NOT_LIT_5": {
@@ -8681,6 +8760,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9819,
           "glow_score": 0.0178,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "b03ce6f39ddc74d8"
         },
         "NOT_LIT_6": {
@@ -8689,6 +8769,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6917,
           "glow_score": 0.0617,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "7588c71806823034"
         },
         "NOT_LIT_7": {
@@ -8697,6 +8778,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9133,
           "glow_score": 0.0204,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "0a77e8ea31b826e8"
         },
         "NOT_LIT_8": {
@@ -8705,6 +8787,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9692,
           "glow_score": 0.0036,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "9e1de1923805e282"
         },
         "NOT_LIT_9": {
@@ -8713,6 +8796,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9823,
           "glow_score": 0.0023,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "707ce4d0a9eab987"
         }
       },
@@ -8746,6 +8830,7 @@
           "sprite": "fallen_logs/fallen_log_002/sprite.webp",
           "pixellab_object_id": "9a054548-8a90-4147-83e7-102e7be275c4",
           "glow_score": 0.1844,
+          "generated_at": "2026-08-13T03:43:44+00:00",
           "art_hash": "627e1b4b8945d026"
         },
         "LIT_2": {
@@ -8754,6 +8839,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.9632,
           "glow_score": 0.0757,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "1d0508a2f9aba26f"
         },
         "LIT_3": {
@@ -8762,6 +8848,7 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.9891,
           "glow_score": 0.14,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "bdc5ef8f88df94d4"
         },
         "LIT_4": {
@@ -8770,6 +8857,7 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.9526,
           "glow_score": 0.074,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "2489ead58eb2eb6e"
         },
         "NOT_LIT_1": {
@@ -8778,6 +8866,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9615,
           "glow_score": 0.0179,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "3f9f39197984da69"
         },
         "NOT_LIT_10": {
@@ -8786,6 +8875,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9515,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "ccc6374a17bc2024"
         },
         "NOT_LIT_2": {
@@ -8794,6 +8884,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9472,
           "glow_score": 0.0166,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "72fd2860f7526bc2"
         },
         "NOT_LIT_3": {
@@ -8802,6 +8893,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9438,
           "glow_score": 0.138,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "c9318481839470d1"
         },
         "NOT_LIT_4": {
@@ -8810,6 +8902,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9646,
           "glow_score": 0.0491,
+          "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "c3ae517d55dc8fc5"
         },
         "NOT_LIT_5": {
@@ -8818,6 +8911,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9712,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "7a414560a6c1c831"
         },
         "NOT_LIT_6": {
@@ -8826,6 +8920,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9724,
           "glow_score": 0.0063,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "6dec6780cbbfdb2e"
         },
         "NOT_LIT_7": {
@@ -8834,6 +8929,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9585,
           "glow_score": 0.0323,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "8abb5d09ef310691"
         },
         "NOT_LIT_8": {
@@ -8842,6 +8938,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9785,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "f6d518e211f71905"
         },
         "NOT_LIT_9": {
@@ -8850,6 +8947,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9779,
           "glow_score": 0.0342,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "cd3556960c5d071b"
         }
       },
@@ -8885,6 +8983,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.9973,
           "glow_score": 0.5384,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "1af98682e39f1b08"
         },
         "LIT_2": {
@@ -8893,6 +8992,7 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.9581,
           "glow_score": 0.4669,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "25ee5c06cf841264"
         },
         "LIT_3": {
@@ -8901,6 +9001,7 @@
           "glow_concept": "luminous moss carpeting the upper side",
           "difference_from_source": 0.9453,
           "glow_score": 0.6634,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "da41ecb32b2ab926"
         },
         "LIT_4": {
@@ -8909,12 +9010,14 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.9357,
           "glow_score": 0.6231,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "d81ad7b4b2a40175"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_003/sprite.webp",
           "pixellab_object_id": "abd878e1-c177-44c4-9e22-e92bf6e038b9",
           "glow_score": 0.4569,
+          "generated_at": "2026-08-13T07:02:36+00:00",
           "art_hash": "1f886c338d38377d"
         },
         "NOT_LIT_10": {
@@ -8923,6 +9026,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9681,
           "glow_score": 0.1805,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "e8fec7e7ea3952dd"
         },
         "NOT_LIT_2": {
@@ -8931,6 +9035,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9849,
           "glow_score": 0.0548,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "96fc3d4dc579dd9c"
         },
         "NOT_LIT_3": {
@@ -8939,6 +9044,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9278,
           "glow_score": 0.6104,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "04443f3b07aabf75"
         },
         "NOT_LIT_4": {
@@ -8947,6 +9053,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9744,
           "glow_score": 0.1053,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "17e7c3fc49f93605"
         },
         "NOT_LIT_5": {
@@ -8955,6 +9062,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9328,
           "glow_score": 0.3989,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "8769feef39062341"
         },
         "NOT_LIT_6": {
@@ -8963,6 +9071,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9621,
           "glow_score": 0.4501,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "e168c4522f52abdf"
         },
         "NOT_LIT_7": {
@@ -8971,6 +9080,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9874,
           "glow_score": 0.1399,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "7937a0fb48197462"
         },
         "NOT_LIT_8": {
@@ -8979,6 +9089,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9765,
           "glow_score": 0.1204,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "72a8a89946d5bfb0"
         },
         "NOT_LIT_9": {
@@ -8987,6 +9098,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9431,
           "glow_score": 0.4657,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "cf83979459b8a834"
         }
       },
@@ -9020,6 +9132,7 @@
           "sprite": "fallen_logs/fallen_log_004/sprite.webp",
           "pixellab_object_id": "88520ebe-aa8e-42d1-b1df-8a9beb63766a",
           "glow_score": 0.1887,
+          "generated_at": "2026-08-13T08:54:44+00:00",
           "art_hash": "c8fcbae106116742"
         },
         "LIT_2": {
@@ -9028,6 +9141,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.9125,
           "glow_score": 0.0546,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "0b18e347a2a7a7ee"
         },
         "LIT_3": {
@@ -9036,6 +9150,7 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.9126,
           "glow_score": 0.0886,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "fbf7588aeccb4cce"
         },
         "LIT_4": {
@@ -9044,6 +9159,7 @@
           "glow_concept": "luminous moss carpeting the upper side",
           "difference_from_source": 0.9496,
           "glow_score": 0.107,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "f43eea70c068e641"
         },
         "NOT_LIT_1": {
@@ -9052,6 +9168,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8693,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "0d07c1edb337fc25"
         },
         "NOT_LIT_10": {
@@ -9060,6 +9177,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8797,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "18a92f613d330c73"
         },
         "NOT_LIT_2": {
@@ -9068,6 +9186,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9251,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "1c7fbf212ae14058"
         },
         "NOT_LIT_3": {
@@ -9076,6 +9195,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8894,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "593cb16367ffd621"
         },
         "NOT_LIT_4": {
@@ -9084,6 +9204,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4907,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "0a32601949801bbe"
         },
         "NOT_LIT_5": {
@@ -9092,6 +9213,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9093,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "1c0e966de414e86e"
         },
         "NOT_LIT_6": {
@@ -9100,6 +9222,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9095,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "a2233c821a2ee5ed"
         },
         "NOT_LIT_7": {
@@ -9108,6 +9231,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9351,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "2fe03117d60988d4"
         },
         "NOT_LIT_8": {
@@ -9116,6 +9240,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9092,
           "glow_score": 0.0035,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "27b1a3f58737e31c"
         },
         "NOT_LIT_9": {
@@ -9124,6 +9249,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9235,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "ace01bc093761bdb"
         }
       },
@@ -9159,6 +9285,7 @@
           "glow_concept": "a lit traveler's lantern resting on top",
           "difference_from_source": 0.9864,
           "glow_score": 0.2394,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "3cbffdd13fb87339"
         },
         "LIT_2": {
@@ -9167,6 +9294,7 @@
           "glow_concept": "row of small glowing caps along the log's spine",
           "difference_from_source": 0.9557,
           "glow_score": 0.0524,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "55ed3b6525d806e2"
         },
         "LIT_3": {
@@ -9175,6 +9303,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.4427,
           "glow_score": 0.0921,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "74c64871f48df4f3"
         },
         "LIT_4": {
@@ -9183,12 +9312,14 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.9634,
           "glow_score": 0.0967,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "b27a2129a61a3f3a"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_005/sprite.webp",
           "pixellab_object_id": "3a86f8e1-2fa3-49e2-b61f-d6e78f0e252a",
           "glow_score": 0.0067,
+          "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "597fe7b047c43b2e"
         },
         "NOT_LIT_10": {
@@ -9197,6 +9328,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9661,
           "glow_score": 0.0022,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "3d1be9f3360e5ceb"
         },
         "NOT_LIT_2": {
@@ -9205,6 +9337,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9649,
           "glow_score": 0.0089,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "6be426bd62a4cdf3"
         },
         "NOT_LIT_3": {
@@ -9213,6 +9346,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9682,
           "glow_score": 0.0119,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "386829b0baa2b719"
         },
         "NOT_LIT_4": {
@@ -9221,6 +9355,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9763,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "a0115b9ba42f6966"
         },
         "NOT_LIT_5": {
@@ -9229,6 +9364,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9407,
           "glow_score": 0.0197,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "d229af9d773012b5"
         },
         "NOT_LIT_6": {
@@ -9237,6 +9373,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9676,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "6ee430ed389182d4"
         },
         "NOT_LIT_7": {
@@ -9245,6 +9382,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9632,
           "glow_score": 0.0108,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "21ef546c55bb9107"
         },
         "NOT_LIT_8": {
@@ -9253,6 +9391,7 @@
           "glow_concept": null,
           "difference_from_source": 0.984,
           "glow_score": 0.0115,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "0df7175802084047"
         },
         "NOT_LIT_9": {
@@ -9261,6 +9400,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9494,
           "glow_score": 0.0095,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "a3f4447b9430db64"
         }
       },
@@ -9294,6 +9434,7 @@
           "sprite": "fallen_logs/fallen_log_006/sprite.webp",
           "pixellab_object_id": "3b85d944-5c82-4ed5-8508-57d76bfa1461",
           "glow_score": 0.0507,
+          "generated_at": "2026-08-13T12:38:13+00:00",
           "art_hash": "d1e31c9de4e8c9f0"
         },
         "LIT_2": {
@@ -9302,6 +9443,7 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.9087,
           "glow_score": 0.089,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "2c8b228735865841"
         },
         "LIT_3": {
@@ -9310,6 +9452,7 @@
           "glow_concept": "soulstone crystals erupting from a split",
           "difference_from_source": 0.992,
           "glow_score": 0.2183,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "bba16a9243a24dc3"
         },
         "LIT_4": {
@@ -9318,6 +9461,7 @@
           "glow_concept": "a lit traveler's lantern resting on top",
           "difference_from_source": 0.9509,
           "glow_score": 0.1986,
+          "generated_at": "2026-08-15T15:13:08+00:00",
           "art_hash": "6910f256e73deb69"
         },
         "NOT_LIT_1": {
@@ -9326,6 +9470,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9318,
           "glow_score": 0.107,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "f3cfbc10342ce430"
         },
         "NOT_LIT_10": {
@@ -9334,6 +9479,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9069,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "836336ba47f87fe2"
         },
         "NOT_LIT_2": {
@@ -9342,6 +9488,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2993,
           "glow_score": 0.0547,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "30442ccb1495edb0"
         },
         "NOT_LIT_3": {
@@ -9350,6 +9497,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9295,
           "glow_score": 0.0021,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "cb68351a5c81006b"
         },
         "NOT_LIT_4": {
@@ -9358,6 +9506,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9514,
           "glow_score": 0.0101,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "041c86f0521cd917"
         },
         "NOT_LIT_5": {
@@ -9366,6 +9515,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9092,
           "glow_score": 0.0338,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "0c8141ee0b951d60"
         },
         "NOT_LIT_6": {
@@ -9374,6 +9524,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9631,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "2bf6f0b4f4ceab7f"
         },
         "NOT_LIT_7": {
@@ -9382,6 +9533,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9343,
           "glow_score": 0.0184,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "75d59bcb88ef2b22"
         },
         "NOT_LIT_8": {
@@ -9390,6 +9542,7 @@
           "glow_concept": null,
           "difference_from_source": 0.941,
           "glow_score": 0.0262,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "706a272899fab900"
         },
         "NOT_LIT_9": {
@@ -9398,6 +9551,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9204,
           "glow_score": 0.0745,
+          "generated_at": "2026-08-15T15:11:06+00:00",
           "art_hash": "3d8f4903c78fb04e"
         }
       },
@@ -9433,6 +9587,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.8543,
           "glow_score": 0.0809,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "ad4ae6cb276ca366"
         },
         "LIT_2": {
@@ -9441,6 +9596,7 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.9716,
           "glow_score": 0.195,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "062a4a846d06636a"
         },
         "LIT_3": {
@@ -9449,6 +9605,7 @@
           "glow_concept": "luminous moss carpeting the upper side",
           "difference_from_source": 0.9368,
           "glow_score": 0.2484,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "ab9d90f14b19fc87"
         },
         "LIT_4": {
@@ -9457,12 +9614,14 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.8864,
           "glow_score": 0.1103,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "710c2a4922f01b99"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_007/sprite.webp",
           "pixellab_object_id": "918fcefb-9715-4aa0-a7b9-d9525f7abf31",
           "glow_score": 0.0069,
+          "generated_at": "2026-08-13T13:56:25+00:00",
           "art_hash": "d747c3146ac13fe8"
         },
         "NOT_LIT_10": {
@@ -9471,6 +9630,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7299,
           "glow_score": 0.0946,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "51bc7ce6a3f9df70"
         },
         "NOT_LIT_2": {
@@ -9479,6 +9639,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6486,
           "glow_score": 0.0013,
+          "generated_at": "2026-08-15T15:13:08+00:00",
           "art_hash": "84b8c2780950a320"
         },
         "NOT_LIT_3": {
@@ -9487,6 +9648,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9231,
           "glow_score": 0.006,
+          "generated_at": "2026-08-15T15:13:08+00:00",
           "art_hash": "8a99976a40566c60"
         },
         "NOT_LIT_4": {
@@ -9495,6 +9657,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8577,
           "glow_score": 0.0011,
+          "generated_at": "2026-08-15T15:13:08+00:00",
           "art_hash": "cdd9356de08c5438"
         },
         "NOT_LIT_5": {
@@ -9503,6 +9666,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9465,
           "glow_score": 0.0047,
+          "generated_at": "2026-08-15T15:13:08+00:00",
           "art_hash": "394c45b3d540f970"
         },
         "NOT_LIT_6": {
@@ -9511,6 +9675,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9843,
           "glow_score": 0.0075,
+          "generated_at": "2026-08-15T15:13:38+00:00",
           "art_hash": "89fe0c317b143437"
         },
         "NOT_LIT_7": {
@@ -9519,6 +9684,7 @@
           "glow_concept": null,
           "difference_from_source": 0.943,
           "glow_score": 0.0027,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "9702430db71ee7a5"
         },
         "NOT_LIT_8": {
@@ -9527,6 +9693,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9816,
           "glow_score": 0.0012,
+          "generated_at": "2026-08-15T15:14:08+00:00",
           "art_hash": "6dfb9cb3068f74af"
         },
         "NOT_LIT_9": {
@@ -9535,6 +9702,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7135,
           "glow_score": 0.003,
+          "generated_at": "2026-08-15T15:14:08+00:00",
           "art_hash": "c76773e5917a8ff2"
         }
       },
@@ -9568,6 +9736,7 @@
           "sprite": "fallen_logs/fallen_log_008/sprite.webp",
           "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
           "glow_score": 0.0439,
+          "generated_at": "2026-08-13T23:52:24+00:00",
           "art_hash": "7f22ba073f423ac4"
         },
         "LIT_2": {
@@ -9576,6 +9745,7 @@
           "glow_concept": "ember-orange glow inside the hollow end",
           "difference_from_source": 0.8989,
           "glow_score": 0.3374,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "5dc431264f592f26"
         },
         "LIT_3": {
@@ -9584,6 +9754,7 @@
           "glow_concept": "soulstone crystals erupting from a split",
           "difference_from_source": 0.7855,
           "glow_score": 0.0529,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "ac297cacb372dbcb"
         },
         "LIT_4": {
@@ -9592,6 +9763,7 @@
           "glow_concept": "a lit traveler's lantern resting on top",
           "difference_from_source": 0.8625,
           "glow_score": 0.3372,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "3a653bc51fedd962"
         },
         "NOT_LIT_1": {
@@ -9600,6 +9772,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7775,
           "glow_score": 0.1977,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "ceb46f1448480538"
         },
         "NOT_LIT_10": {
@@ -9608,6 +9781,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7226,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "1dc5519e0b0acbbf"
         },
         "NOT_LIT_2": {
@@ -9616,6 +9790,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9883,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "04f2fb8aa52fb0a2"
         },
         "NOT_LIT_3": {
@@ -9624,6 +9799,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8155,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "6905f1fb66444993"
         },
         "NOT_LIT_4": {
@@ -9632,6 +9808,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2257,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "f926a44dd2a1f8cd"
         },
         "NOT_LIT_5": {
@@ -9640,6 +9817,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7819,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "e1d5d2cbc707858a"
         },
         "NOT_LIT_6": {
@@ -9648,6 +9826,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7776,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "11c959490ed7ce62"
         },
         "NOT_LIT_7": {
@@ -9656,6 +9835,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7979,
           "glow_score": 0.0836,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "df2e338d7df0951a"
         },
         "NOT_LIT_8": {
@@ -9664,6 +9844,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9586,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "6e83406179539b5c"
         },
         "NOT_LIT_9": {
@@ -9672,6 +9853,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9529,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "d87738e623770345"
         }
       },
@@ -9705,6 +9887,7 @@
           "sprite": "fallen_logs/fallen_log_010/sprite.webp",
           "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
           "glow_score": 0.0149,
+          "generated_at": "2026-08-14T01:48:33+00:00",
           "art_hash": "39be67398cee9627"
         },
         "LIT_2": {
@@ -9713,6 +9896,7 @@
           "glow_concept": "row of small glowing caps along the log's spine",
           "difference_from_source": 0.8886,
           "glow_score": 0.0279,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "d47c6efda86f6d9c"
         },
         "LIT_3": {
@@ -9721,6 +9905,7 @@
           "glow_concept": "blue foxfire glowing in the bark cracks",
           "difference_from_source": 0.8789,
           "glow_score": 0.0566,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "625c4f2fbf7004bc"
         },
         "LIT_4": {
@@ -9729,6 +9914,7 @@
           "glow_concept": "rows of shelf fungi glowing pale green",
           "difference_from_source": 0.8132,
           "glow_score": 0.0407,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "1c79cb8a72f796db"
         },
         "NOT_LIT_1": {
@@ -9737,6 +9923,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7517,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "ea508e93e18a0419"
         },
         "NOT_LIT_10": {
@@ -9745,6 +9932,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7742,
           "glow_score": 0.0055,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "252c71572b44171a"
         },
         "NOT_LIT_2": {
@@ -9753,6 +9941,7 @@
           "glow_concept": null,
           "difference_from_source": 0.768,
           "glow_score": 0.0046,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "d0e413c29bcca224"
         },
         "NOT_LIT_3": {
@@ -9761,6 +9950,7 @@
           "glow_concept": null,
           "difference_from_source": 0.733,
           "glow_score": 0.0829,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "d143fba0428451e0"
         },
         "NOT_LIT_4": {
@@ -9769,6 +9959,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7532,
           "glow_score": 0.0058,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "8210ccf3c8e0142f"
         },
         "NOT_LIT_5": {
@@ -9777,6 +9968,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8333,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "4b5de6b9c34840db"
         },
         "NOT_LIT_6": {
@@ -9785,6 +9977,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9118,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "e0741151bd1de9e3"
         },
         "NOT_LIT_7": {
@@ -9793,6 +9986,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7846,
           "glow_score": 0.0087,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "4f51d9239000ce73"
         },
         "NOT_LIT_8": {
@@ -9801,6 +9995,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7872,
           "glow_score": 0.0028,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "2f5989e3c1d09903"
         },
         "NOT_LIT_9": {
@@ -9809,6 +10004,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7967,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "605f9a4c074e11c1"
         }
       },
@@ -11783,6 +11979,7 @@
           "glow_concept": "catkins burning like rows of candle flames",
           "difference_from_source": 0.8555,
           "glow_score": 0.5312,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "e9b6ba9fc4734c9b"
         },
         "LIT_2": {
@@ -11791,6 +11988,7 @@
           "glow_concept": "soul-light pooled in the hollow of the trunk",
           "difference_from_source": 0.3292,
           "glow_score": 0.0678,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "3f36f96fa338c02c"
         },
         "LIT_3": {
@@ -11799,6 +11997,7 @@
           "glow_concept": "leaves that hold moonlight long after dark",
           "difference_from_source": 0.8607,
           "glow_score": 0.0647,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "b5eaf3ef00118847"
         },
         "LIT_4": {
@@ -11807,12 +12006,14 @@
           "glow_concept": "bright sap beads glowing along the bark",
           "difference_from_source": 0.237,
           "glow_score": 0.0789,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "eea35cc5964fcf32"
         },
         "NOT_LIT_1": {
           "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
           "pixellab_object_id": "bc058401-ac27-4f9b-938d-0b913fcdef2d",
           "glow_score": 0.0386,
+          "generated_at": "2026-08-13T01:27:27+00:00",
           "art_hash": "ff61dd2c22930668"
         },
         "NOT_LIT_10": {
@@ -11821,6 +12022,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8999,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "838988e88cec4d63"
         },
         "NOT_LIT_2": {
@@ -11829,6 +12031,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2832,
           "glow_score": 0.0341,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "997bcaf6b51b7f0e"
         },
         "NOT_LIT_3": {
@@ -11837,6 +12040,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8212,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "049950c204dfd09b"
         },
         "NOT_LIT_4": {
@@ -11845,6 +12049,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2912,
           "glow_score": 0.0681,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "2dc1e63840236fb0"
         },
         "NOT_LIT_5": {
@@ -11853,6 +12058,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8356,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "105eec98b0ec6285"
         },
         "NOT_LIT_6": {
@@ -11861,6 +12067,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6478,
           "glow_score": 0.0301,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "e87a518763ec406d"
         },
         "NOT_LIT_7": {
@@ -11869,6 +12076,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3891,
           "glow_score": 0.0357,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "0c80c2122d0d4cd2"
         },
         "NOT_LIT_8": {
@@ -11877,6 +12085,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4134,
           "glow_score": 0.0437,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "b27044598a945a1f"
         },
         "NOT_LIT_9": {
@@ -11885,6 +12094,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4791,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:30:58+00:00",
           "art_hash": "c444b5cc8a1f4213"
         }
       },
@@ -11918,6 +12128,7 @@
           "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
           "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
           "glow_score": 0.0099,
+          "generated_at": "2026-08-13T04:41:01+00:00",
           "art_hash": "4e97b252b7f1366f"
         },
         "LIT_2": {
@@ -11926,6 +12137,7 @@
           "glow_concept": "leaves that hold moonlight long after dark",
           "difference_from_source": 0.7846,
           "glow_score": 0.1189,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "3c89a9f157aff72e"
         },
         "LIT_3": {
@@ -11934,6 +12146,7 @@
           "glow_concept": "bright sap beads glowing along the bark",
           "difference_from_source": 0.4278,
           "glow_score": 0.0146,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "bec1230278ccca85"
         },
         "LIT_4": {
@@ -11942,6 +12155,7 @@
           "glow_concept": "a lantern glowing behind the branch curtain",
           "difference_from_source": 0.4565,
           "glow_score": 0.0405,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "564e744a750594c8"
         },
         "NOT_LIT_1": {
@@ -11950,6 +12164,7 @@
           "glow_concept": null,
           "difference_from_source": 0.1998,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T17:30:58+00:00",
           "art_hash": "2c50baa61b622d6a"
         },
         "NOT_LIT_10": {
@@ -11958,6 +12173,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5162,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T17:30:58+00:00",
           "art_hash": "70ba77d39e16571b"
         },
         "NOT_LIT_2": {
@@ -11966,6 +12182,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3655,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T17:30:58+00:00",
           "art_hash": "8c3215c21209a71a"
         },
         "NOT_LIT_3": {
@@ -11974,6 +12191,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2348,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "318ea9d1d4a3ea52"
         },
         "NOT_LIT_4": {
@@ -11982,6 +12200,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3372,
           "glow_score": 0.0016,
+          "generated_at": "2026-08-15T17:30:58+00:00",
           "art_hash": "c73b1525fbb2b33e"
         },
         "NOT_LIT_5": {
@@ -11990,6 +12209,7 @@
           "glow_concept": null,
           "difference_from_source": 0.256,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "619d8bae93956137"
         },
         "NOT_LIT_6": {
@@ -11998,6 +12218,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2593,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "64e9f888e8df2d0b"
         },
         "NOT_LIT_7": {
@@ -12006,6 +12227,7 @@
           "glow_concept": null,
           "difference_from_source": 0.511,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "c847ef23fa28a0fd"
         },
         "NOT_LIT_8": {
@@ -12014,6 +12236,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2514,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "df06e547b752e1ac"
         },
         "NOT_LIT_9": {
@@ -12022,6 +12245,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2851,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:38:13+00:00",
           "art_hash": "09b6a5c7958c5232"
         }
       },
@@ -12471,6 +12695,7 @@
           "sprite": "honey_trees/honey_tree_002/sprite.webp",
           "pixellab_object_id": "d5972c66-793a-4fbb-a0db-868654ef5e68",
           "glow_score": 0.0932,
+          "generated_at": "2026-08-14T01:12:58+00:00",
           "art_hash": "fe9b8d8285d7ec23"
         },
         "LIT_2": {
@@ -12479,6 +12704,7 @@
           "glow_concept": "drowsy glow-bees circling",
           "difference_from_source": 0.938,
           "glow_score": 0.0321,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "018e75c13861e1cc"
         },
         "LIT_3": {
@@ -12487,6 +12713,7 @@
           "glow_concept": "the comb glowing amber from within",
           "difference_from_source": 0.6486,
           "glow_score": 0.2437,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "9b7f34a7b8d79a40"
         },
         "LIT_4": {
@@ -12495,6 +12722,7 @@
           "glow_concept": "drowsy glow-bees circling",
           "difference_from_source": 0.5333,
           "glow_score": 0.1772,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "75c52f6965577c98"
         },
         "NOT_LIT_1": {
@@ -12503,6 +12731,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4827,
           "glow_score": 0.0052,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "989d4c2a7525e819"
         },
         "NOT_LIT_10": {
@@ -12511,6 +12740,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4007,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "291f562efec20fec"
         },
         "NOT_LIT_2": {
@@ -12519,6 +12749,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3533,
           "glow_score": 0.0005,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "856ca70b6a89a275"
         },
         "NOT_LIT_3": {
@@ -12527,6 +12758,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4214,
           "glow_score": 0.0078,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "54b06786e7c88061"
         },
         "NOT_LIT_4": {
@@ -12535,6 +12767,7 @@
           "glow_concept": null,
           "difference_from_source": 0.884,
           "glow_score": 0.1575,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "895fae8d4abd32a5"
         },
         "NOT_LIT_5": {
@@ -12543,6 +12776,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6498,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "ce9aeeaff8ae1f87"
         },
         "NOT_LIT_6": {
@@ -12551,6 +12785,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4899,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "897a1706d5c3ab55"
         },
         "NOT_LIT_7": {
@@ -12559,6 +12794,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4705,
           "glow_score": 0.0105,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "e9791e16bc5f6c84"
         },
         "NOT_LIT_8": {
@@ -12567,6 +12803,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4751,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "f8b502fd6688c73f"
         },
         "NOT_LIT_9": {
@@ -12575,6 +12812,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3386,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "edc20e09867e839b"
         }
       },
@@ -14560,6 +14798,7 @@
           "glow_concept": "carved name-runes glowing on the bark",
           "difference_from_source": 0.353,
           "glow_score": 0.113,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "63928f43e6dc6d2e"
         },
         "LIT_2": {
@@ -14568,6 +14807,7 @@
           "glow_concept": "soulstone knot where a branch broke off",
           "difference_from_source": 0.569,
           "glow_score": 0.1346,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "89d51b496b2ddb39"
         },
         "LIT_3": {
@@ -14576,6 +14816,7 @@
           "glow_concept": "small wisps circling the broken top",
           "difference_from_source": 0.5198,
           "glow_score": 0.2039,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "74b241d053818e47"
         },
         "LIT_4": {
@@ -14584,12 +14825,14 @@
           "glow_concept": "owl eyes glowing from the dark hollow",
           "difference_from_source": 0.3684,
           "glow_score": 0.1772,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "dd56c562e75a7662"
         },
         "NOT_LIT_1": {
           "sprite": "owl_snags/owl_snag_001/sprite.webp",
           "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
           "glow_score": 0.1167,
+          "generated_at": "2026-08-13T01:56:36+00:00",
           "art_hash": "8a94f1e4ce5bb0b4"
         },
         "NOT_LIT_10": {
@@ -14598,6 +14841,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5458,
           "glow_score": 0.1551,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "ed135014882651bb"
         },
         "NOT_LIT_2": {
@@ -14606,6 +14850,7 @@
           "glow_concept": null,
           "difference_from_source": 0.683,
           "glow_score": 0.1157,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "185ad9f21ec588af"
         },
         "NOT_LIT_3": {
@@ -14614,6 +14859,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3315,
           "glow_score": 0.1188,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "4cadef874ecf358b"
         },
         "NOT_LIT_4": {
@@ -14622,6 +14868,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5952,
           "glow_score": 0.1238,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "5aba774f2fad4b21"
         },
         "NOT_LIT_5": {
@@ -14630,6 +14877,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6546,
           "glow_score": 0.1062,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "770f9fb5706ca877"
         },
         "NOT_LIT_6": {
@@ -14638,6 +14886,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5859,
           "glow_score": 0.0977,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "52caf42b787bc7f9"
         },
         "NOT_LIT_7": {
@@ -14646,6 +14895,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6298,
           "glow_score": 0.154,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "ca8ddf5d74153b37"
         },
         "NOT_LIT_8": {
@@ -14654,6 +14904,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6448,
           "glow_score": 0.1067,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "3ec437b65866b128"
         },
         "NOT_LIT_9": {
@@ -14662,6 +14913,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4768,
           "glow_score": 0.0971,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "a42ab5cfd008f676"
         }
       },
@@ -14695,6 +14947,7 @@
           "sprite": "owl_snags/owl_snag_002/sprite.webp",
           "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
           "glow_score": 0.0017,
+          "generated_at": "2026-08-13T05:08:41+00:00",
           "art_hash": "c5082b96a346a560"
         },
         "LIT_2": {
@@ -14703,6 +14956,7 @@
           "glow_concept": "soulstone knot where a branch broke off",
           "difference_from_source": 0.381,
           "glow_score": 0.0141,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "ca005f045c30fd9d"
         },
         "LIT_3": {
@@ -14711,6 +14965,7 @@
           "glow_concept": "small wisps circling the broken top",
           "difference_from_source": 0.6886,
           "glow_score": 0.1052,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "9e90e07fea2c2a91"
         },
         "LIT_4": {
@@ -14719,6 +14974,7 @@
           "glow_concept": "hollow lit from within like a lantern window",
           "difference_from_source": 0.4923,
           "glow_score": 0.0295,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "1854634021f38ecf"
         },
         "NOT_LIT_1": {
@@ -14727,6 +14983,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2454,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "747d515a21aa74d3"
         },
         "NOT_LIT_10": {
@@ -14735,6 +14992,7 @@
           "glow_concept": null,
           "difference_from_source": 0.4257,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "b3986621d093dce0"
         },
         "NOT_LIT_2": {
@@ -14743,6 +15001,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2574,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "23354fe9772bd528"
         },
         "NOT_LIT_3": {
@@ -14751,6 +15010,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5865,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "7b2709e967b0ceb3"
         },
         "NOT_LIT_4": {
@@ -14759,6 +15019,7 @@
           "glow_concept": null,
           "difference_from_source": 0.643,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "5afd3d70c1d8099d"
         },
         "NOT_LIT_5": {
@@ -14767,6 +15028,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2576,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "527d99a4741e255b"
         },
         "NOT_LIT_6": {
@@ -14775,6 +15037,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5288,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "69d5ba046bf5639d"
         },
         "NOT_LIT_7": {
@@ -14783,6 +15046,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3059,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "16f9d7d998b5c566"
         },
         "NOT_LIT_8": {
@@ -14791,6 +15055,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2037,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "db6c15d1cf414ca2"
         },
         "NOT_LIT_9": {
@@ -14799,6 +15064,7 @@
           "glow_concept": null,
           "difference_from_source": 0.2956,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "0438b3e2e309f927"
         }
       },
@@ -14832,6 +15098,7 @@
           "sprite": "petrified_stumps/petrified_stump_002/sprite.webp",
           "pixellab_object_id": "f6cf3c2d-548b-494a-bccd-f649e023e61e",
           "glow_score": 0.1374,
+          "generated_at": "2026-08-13T05:02:07+00:00",
           "art_hash": "8650c6efa9bdc357"
         },
         "LIT_2": {
@@ -14840,6 +15107,7 @@
           "glow_concept": "roots traced in glowing gold veins",
           "difference_from_source": 0.8816,
           "glow_score": 0.0777,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "c1625a0008d26917"
         },
         "LIT_3": {
@@ -14848,6 +15116,7 @@
           "glow_concept": "small ghost-flames where branches once grew",
           "difference_from_source": 0.7134,
           "glow_score": 0.1332,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "39085f04de1a910f"
         },
         "LIT_4": {
@@ -14856,6 +15125,7 @@
           "glow_concept": "glowing moss and fungus on stone bark",
           "difference_from_source": 0.9535,
           "glow_score": 0.083,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "762cef13cbe1870e"
         },
         "NOT_LIT_1": {
@@ -14864,6 +15134,7 @@
           "glow_concept": null,
           "difference_from_source": 0.873,
           "glow_score": 0.2191,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "22ee56f3e9de131c"
         },
         "NOT_LIT_10": {
@@ -14872,6 +15143,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9852,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "5b13da84f6ac13dc"
         },
         "NOT_LIT_2": {
@@ -14880,6 +15152,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9511,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "0b975a9a67ab4fe5"
         },
         "NOT_LIT_3": {
@@ -14888,6 +15161,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9805,
           "glow_score": 0.0141,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "876f7731f0c7bd4c"
         },
         "NOT_LIT_4": {
@@ -14896,6 +15170,7 @@
           "glow_concept": null,
           "difference_from_source": 0.3881,
           "glow_score": 0.0994,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "132f87433b58ef5f"
         },
         "NOT_LIT_5": {
@@ -14904,6 +15179,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8999,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "87ffad46e862762b"
         },
         "NOT_LIT_6": {
@@ -14912,6 +15188,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8179,
           "glow_score": 0.0262,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "4e019c1b02dc6762"
         },
         "NOT_LIT_7": {
@@ -14920,6 +15197,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9893,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "b5e8468a3dddcc97"
         },
         "NOT_LIT_8": {
@@ -14928,6 +15206,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6545,
           "glow_score": 0.1625,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "87ec741db79efa2d"
         },
         "NOT_LIT_9": {
@@ -14936,6 +15215,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9178,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "ee4874d8dddf269e"
         }
       },
@@ -14971,6 +15251,7 @@
           "glow_concept": "growth rings glowing amber in the cut top",
           "difference_from_source": 0.7299,
           "glow_score": 0.1363,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "21e97a9d8e063b6b"
         },
         "LIT_2": {
@@ -14979,6 +15260,7 @@
           "glow_concept": "opalized bark shimmering with rainbow light",
           "difference_from_source": 0.914,
           "glow_score": 0.2623,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "1de5e5a9ac41d5d7"
         },
         "LIT_3": {
@@ -14987,6 +15269,7 @@
           "glow_concept": "roots traced in glowing gold veins",
           "difference_from_source": 0.9472,
           "glow_score": 0.0761,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "3602ebdb00480fe1"
         },
         "LIT_4": {
@@ -14995,12 +15278,14 @@
           "glow_concept": "small ghost-flames where branches once grew",
           "difference_from_source": 0.8493,
           "glow_score": 0.1898,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "c3036b44ddb8dc14"
         },
         "NOT_LIT_1": {
           "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
           "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
           "glow_score": 0.0,
+          "generated_at": "2026-08-13T20:35:56+00:00",
           "art_hash": "9900ada41a654cb3"
         },
         "NOT_LIT_10": {
@@ -15009,6 +15294,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7263,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "f29002b355bf9fd5"
         },
         "NOT_LIT_2": {
@@ -15017,6 +15303,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8033,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "1776b082ee58bd61"
         },
         "NOT_LIT_3": {
@@ -15025,6 +15312,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8551,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "583c6d8f8733af09"
         },
         "NOT_LIT_4": {
@@ -15033,6 +15321,7 @@
           "glow_concept": null,
           "difference_from_source": 0.6408,
           "glow_score": 0.0715,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "df142a3962511071"
         },
         "NOT_LIT_5": {
@@ -15041,6 +15330,7 @@
           "glow_concept": null,
           "difference_from_source": 0.9478,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "ac354da7fce11766"
         },
         "NOT_LIT_6": {
@@ -15049,6 +15339,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7247,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "f6792375f45316f3"
         },
         "NOT_LIT_7": {
@@ -15057,6 +15348,7 @@
           "glow_concept": null,
           "difference_from_source": 0.8923,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "fa2b1c2e4904b7e4"
         },
         "NOT_LIT_8": {
@@ -15065,6 +15357,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5886,
           "glow_score": 0.0,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "ebaa93a99ef9eb19"
         },
         "NOT_LIT_9": {
@@ -15073,6 +15366,7 @@
           "glow_concept": null,
           "difference_from_source": 0.7013,
           "glow_score": 0.0007,
+          "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "a17f4024ef94d8bd"
         }
       },
@@ -35907,6 +36201,44 @@
         "south-east": "windows/window_083/rotations/south-east.webp",
         "south-west": "windows/window_083/rotations/south-west.webp",
         "south": "windows/window_083/sprite.webp"
+      },
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "window_084",
+      "rel": "windows/window_084",
+      "name": "A square window in rough stone masonry 084",
+      "category": "windows",
+      "lights": "LIGHTS_OFF",
+      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square window in rough stone masonry, paint peeling and curling from the frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 1.22,
+        "world_px_height": 46,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          14,
+          7,
+          85,
+          95
+        ],
+        "content_px_height": 88,
+        "canvas_render_px": 50
+      },
+      "status": "complete",
+      "pixellab_object_id": "20647d8b-0555-4205-b34d-165dba2ebe4c",
+      "sprite": "windows/window_084/sprite.webp",
+      "art_hash": "d39299300e410053",
+      "type": "WINDOW",
+      "must_be_imbplemented_with_random_hflip": false,
+      "rotations": {
+        "south-east": "windows/window_084/rotations/south-east.webp",
+        "south-west": "windows/window_084/rotations/south-west.webp",
+        "south": "windows/window_084/sprite.webp"
       },
       "states": {},
       "animations": []

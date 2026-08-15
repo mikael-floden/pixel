@@ -278,6 +278,10 @@ def finalize(client, rel, man, state, new_oid, source_img, glow_used=None):
     fresh = factory.read_manifest(rel) or man
     states = dict(fresh.get("states") or {})
     states[state] = {"sprite": out, "pixellab_object_id": new_oid,
+                     # Its OWN date, not the piece's: a state regenerated today
+                     # is the newest art in the domain, and the maintainer
+                     # reviews sorted newest-first.
+                     "generated_at": _now(),
                      # Which glow produced this, so "G+E is ugly" can be traced
                      # back to the concept that drew it rather than guessed at.
                      "glow_concept": glow_used,
