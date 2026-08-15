@@ -6,7 +6,7 @@
   "rank": 13,
   "index": 13,
   "name": "Dense head-high thorn wall 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dense head-high thorn wall",
   "glow_concept": null,
   "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dense head-high thorn wall, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "briar_thickets/briar_thicket_013/lit_1/sprite.webp",
+      "pixellab_object_id": "94747bde-2bdb-4a87-be2f-39644b9ba73b",
+      "generated_at": "2026-08-15T20:48:13+00:00",
+      "glow_concept": "glowworms strung along the arching canes",
+      "difference_from_source": 0.293,
+      "glow_score": 0.0421
+    },
     "NOT_LIT_1": {
       "sprite": "briar_thickets/briar_thicket_013/sprite.webp",
       "pixellab_object_id": "fd8a2f8b-79eb-484f-9cb2-40ec4301d3b1",
       "generated_at": "2026-08-13T23:16:46+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d87f3760-57dc-412e-b306-141228a0a787",
+      "generated_at": "2026-08-15T20:47:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4652,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "briar_thickets/briar_thicket_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "037fa21e-7988-4118-9693-82b7e4013259",
+      "generated_at": "2026-08-15T20:48:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5465,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "39dbdcdd-4c7a-4b80-9929-be1bec5b45db",
+      "generated_at": "2026-08-15T20:48:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.348,
+      "glow_score": 0.0119
     }
   }
 }

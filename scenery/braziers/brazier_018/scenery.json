@@ -5,8 +5,8 @@
   "group": "braziers",
   "rank": 4,
   "index": 18,
-  "name": "Rusted battlefield brazier 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rusted battlefield brazier 018",
+  "lights": null,
   "variety": "rusted battlefield brazier",
   "modifier": "half-repainted",
   "glow_concept": "green copper-salt flame licking the rim",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.4817,
       "glow_score": 0.1025
+    },
+    "NOT_LIT_1": {
+      "sprite": "braziers/brazier_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "2bfa21b5-4a21-41f9-a4fa-c289a2392f42",
+      "generated_at": "2026-08-15T20:45:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7053,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6d7461e1-5d8c-4b2f-a163-7064389b8a80",
+      "generated_at": "2026-08-15T20:45:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5446,
+      "glow_score": 0.0052
     }
   }
 }
