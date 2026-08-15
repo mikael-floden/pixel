@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-15T01:32:59.805Z",
+  "updated_at": "2026-08-15T01:34:07.932Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -10818,16 +10818,14 @@
       "art": "70035a593db374f6"
     },
     "scenery/trees/tree_025#lit_1#south": {
-      "rating": 5,
-      "updated_at": "2026-08-14T14:43:00.936Z",
+      "updated_at": "2026-08-15T01:33:49.888Z",
       "status": "approved",
       "art": "70035a593db374f6"
     },
     "scenery/trees/tree_025#lit_2#south": {
-      "rating": 5,
-      "updated_at": "2026-08-14T14:43:04.156Z",
-      "status": "approved",
-      "art": "70035a593db374f6"
+      "updated_at": "2026-08-15T01:33:55.136Z",
+      "art": "70035a593db374f6",
+      "status": "approved"
     },
     "scenery/trees/tree_025#not_lit_2#south": {
       "rating": 5,
@@ -10836,10 +10834,11 @@
       "art": "70035a593db374f6"
     },
     "scenery/trees/tree_025#not_lit_3#south": {
-      "status": "rejected",
+      "status": "approved",
       "art": "70035a593db374f6",
-      "updated_at": "2026-08-14T14:43:21.396Z",
-      "note": "Wrong color/palette"
+      "updated_at": "2026-08-15T01:33:25.668Z",
+      "note": "Wrong color/palette",
+      "rating": 5
     },
     "scenery/trees/tree_025#not_lit_4#south": {
       "rating": 5,
@@ -13743,6 +13742,46 @@
       "updated_at": "2026-08-15T01:32:53.390Z",
       "rating": 5,
       "status": "approved"
+    },
+    "scenery/trees/tree_025#not_lit_6#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T01:33:30.271Z",
+      "status": "approved",
+      "art": "70035a593db374f6"
+    },
+    "scenery/trees/tree_025#not_lit_7#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T01:33:33.666Z",
+      "status": "approved",
+      "art": "70035a593db374f6"
+    },
+    "scenery/trees/tree_025#not_lit_8#south": {
+      "status": "approved",
+      "art": "70035a593db374f6",
+      "updated_at": "2026-08-15T01:33:37.161Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_025#not_lit_9#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T01:33:45.150Z",
+      "status": "approved",
+      "art": "70035a593db374f6"
+    },
+    "scenery/trees/tree_025#not_lit_10#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T01:33:47.736Z",
+      "status": "approved",
+      "art": "70035a593db374f6"
+    },
+    "scenery/trees/tree_025#lit_3#south": {
+      "status": "approved",
+      "art": "70035a593db374f6",
+      "updated_at": "2026-08-15T01:34:00.136Z"
+    },
+    "scenery/trees/tree_025#lit_4#south": {
+      "status": "approved",
+      "art": "70035a593db374f6",
+      "updated_at": "2026-08-15T01:34:04.779Z"
     }
   }
 }
