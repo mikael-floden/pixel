@@ -3954,7 +3954,7 @@
       "rel": "beacons/beacon_015",
       "name": "Basket-topped tripod beacon 015",
       "category": "beacons",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, basket-topped tripod beacon, weathered silver-grey, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -3974,11 +3974,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beacons/beacon_015/lit_1/sprite.webp",
+          "pixellab_object_id": "0c483394-8ae8-4532-ad32-f6c2b2b49b1c",
+          "generated_at": "2026-08-15T19:58:24+00:00",
+          "glow_concept": "great orange signal blaze in the cage",
+          "difference_from_source": 0.8001,
+          "glow_score": 0.1222,
+          "art_hash": "ece2cd94e393e915"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_015/lit_2/sprite.webp",
+          "pixellab_object_id": "d74a22a1-fd7a-4a72-8d7b-6bf0357f17b4",
+          "generated_at": "2026-08-15T19:58:24+00:00",
+          "glow_concept": "pillar of pale soul-light rising skyward",
+          "difference_from_source": 0.7311,
+          "glow_score": 0.1462,
+          "art_hash": "29249bb46f7295e2"
+        },
         "NOT_LIT_1": {
           "sprite": "beacons/beacon_015/sprite.webp",
           "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
           "generated_at": "2026-08-14T01:48:20+00:00",
           "art_hash": "fb8b5f8a9ff14925"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b90331ec-aa8c-4735-8062-7a579b3492da",
+          "generated_at": "2026-08-15T19:57:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3378,
+          "glow_score": 0.0364,
+          "art_hash": "6e53390596710fe3"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beacons/beacon_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "9e338885-e1b6-4d09-ad75-a593bd0e142a",
+          "generated_at": "2026-08-15T19:58:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5906,
+          "glow_score": 0.002,
+          "art_hash": "adcefb13626581f1"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beacons/beacon_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "99522aca-621c-4be2-88eb-82fd1dce25cb",
+          "generated_at": "2026-08-15T19:58:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6237,
+          "glow_score": 0.0033,
+          "art_hash": "f8eda9801b854ab1"
         }
       },
       "animations": []
@@ -3986,9 +4031,9 @@
     {
       "id": "beacon_016",
       "rel": "beacons/beacon_016",
-      "name": "Chain-hoisted cage beacon 016 \u00b7 lit",
+      "name": "Chain-hoisted cage beacon 016",
       "category": "beacons",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, chain-hoisted cage beacon, with climbing flowers at one corner, tall, about three times human height, self-emissive at night, softly radiating light: burning soulstone shining like a fixed star",
       "view": "low top-down",
       "size": 192,
@@ -4013,6 +4058,51 @@
           "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
           "generated_at": "2026-08-14T01:44:39+00:00",
           "art_hash": "0d0fe67b71a71060"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_016/lit_2/sprite.webp",
+          "pixellab_object_id": "99382fb2-6d9e-4c2c-9144-57db84571122",
+          "generated_at": "2026-08-15T19:58:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4822,
+          "glow_score": 0.0129,
+          "art_hash": "a39f99e3f683a9a2"
+        },
+        "LIT_3": {
+          "sprite": "beacons/beacon_016/lit_3/sprite.webp",
+          "pixellab_object_id": "6d1b84ff-70dd-4e15-9394-3f657d720d35",
+          "generated_at": "2026-08-15T19:58:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6957,
+          "glow_score": 0.0268,
+          "art_hash": "32854ffa7426e131"
+        },
+        "LIT_4": {
+          "sprite": "beacons/beacon_016/lit_4/sprite.webp",
+          "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
+          "generated_at": "2026-08-15T19:58:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6173,
+          "glow_score": 0.0117,
+          "art_hash": "cf27f3993f6bd104"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beacons/beacon_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ef324389-fab1-40cb-913d-f375ee9b7dd2",
+          "generated_at": "2026-08-15T19:59:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6351,
+          "glow_score": 0.0,
+          "art_hash": "2d5854a963aff11c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6e80ccac-165e-4a99-9691-40010ebfbd10",
+          "generated_at": "2026-08-15T19:59:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7664,
+          "glow_score": 0.0,
+          "art_hash": "138d1fe5587d1982"
         }
       },
       "animations": []
@@ -4022,7 +4112,7 @@
       "rel": "beast_skulls/beast_skull_001",
       "name": "Cracked half-buried skull 001",
       "category": "beast_skulls",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a large weathered animal skull resting on grassy ground, bleached bone with empty eye sockets, cracked surfaces and a heavy jaw, cracked half-buried skull, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -4042,11 +4132,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beast_skulls/beast_skull_001/lit_1/sprite.webp",
+          "pixellab_object_id": "cb478b79-3a63-43e7-b225-0b39c4b4922b",
+          "generated_at": "2026-08-15T20:02:57+00:00",
+          "glow_concept": "foxfire fungus shelf glowing on the jaw",
+          "difference_from_source": 0.7653,
+          "glow_score": 0.3615,
+          "art_hash": "76a059b377b65c56"
+        },
+        "LIT_2": {
+          "sprite": "beast_skulls/beast_skull_001/lit_2/sprite.webp",
+          "pixellab_object_id": "8e8b7d3a-55db-4e2d-bc24-71a9795287a9",
+          "generated_at": "2026-08-15T20:01:53+00:00",
+          "glow_concept": "ember soul-light glowing in the eye sockets",
+          "difference_from_source": 0.9953,
+          "glow_score": 0.1603,
+          "art_hash": "d76b0f549adf6080"
+        },
         "NOT_LIT_1": {
           "sprite": "beast_skulls/beast_skull_001/sprite.webp",
           "pixellab_object_id": "e4f1ae48-68fc-4371-b889-f6e1d69e1c35",
           "generated_at": "2026-08-13T01:53:06+00:00",
           "art_hash": "df53a85d2dfcea83"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beast_skulls/beast_skull_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8e675083-b404-4b7b-a065-ec3c2348f588",
+          "generated_at": "2026-08-15T19:59:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.462,
+          "glow_score": 0.3694,
+          "art_hash": "fda8037624863e0c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beast_skulls/beast_skull_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d49398f5-73c0-4fc3-a789-8ff7471449c8",
+          "generated_at": "2026-08-15T19:59:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5821,
+          "glow_score": 0.3454,
+          "art_hash": "84e860eba00990c0"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beast_skulls/beast_skull_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e72b0fbb-a45c-4adf-8bc1-9f4d4c0933cf",
+          "generated_at": "2026-08-15T19:59:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7349,
+          "glow_score": 0.4157,
+          "art_hash": "948d222f6493e24a"
         }
       },
       "animations": []
@@ -4054,9 +4189,9 @@
     {
       "id": "beast_skull_002",
       "rel": "beast_skulls/beast_skull_002",
-      "name": "Stag skull one antler broken 002 \u00b7 lit",
+      "name": "Stag skull one antler broken 002",
       "category": "beast_skulls",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a large weathered animal skull resting on grassy ground, bleached bone with empty eye sockets, cracked surfaces and a heavy jaw, stag skull one antler broken, small, knee-high to an adult person, self-emissive at night, softly radiating light: soulstone crystal budding from a cracked socket",
       "view": "low top-down",
       "size": 64,
@@ -4081,6 +4216,51 @@
           "pixellab_object_id": "bdd81821-b7f9-4a9e-9805-164927de068c",
           "generated_at": "2026-08-13T05:05:00+00:00",
           "art_hash": "d48fa7e2c6fd6af7"
+        },
+        "LIT_2": {
+          "sprite": "beast_skulls/beast_skull_002/lit_2/sprite.webp",
+          "pixellab_object_id": "73f308e3-7159-44bf-a3e2-dabe2824a27b",
+          "generated_at": "2026-08-15T20:00:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6293,
+          "glow_score": 0.1909,
+          "art_hash": "43d35c10524ae92c"
+        },
+        "LIT_3": {
+          "sprite": "beast_skulls/beast_skull_002/lit_3/sprite.webp",
+          "pixellab_object_id": "80a738da-aef0-4d5e-b704-b0925634441e",
+          "generated_at": "2026-08-15T20:00:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7073,
+          "glow_score": 0.1412,
+          "art_hash": "2d643134c6fa434f"
+        },
+        "LIT_4": {
+          "sprite": "beast_skulls/beast_skull_002/lit_4/sprite.webp",
+          "pixellab_object_id": "6d7bf5ab-7aba-4512-b984-82b8408f8118",
+          "generated_at": "2026-08-15T20:00:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6706,
+          "glow_score": 0.1047,
+          "art_hash": "668a576ddf02c43a"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beast_skulls/beast_skull_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "720308ce-3202-4615-a56e-70a6f2a8ffbd",
+          "generated_at": "2026-08-15T20:01:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.484,
+          "glow_score": 0.1345,
+          "art_hash": "e4726f2f1999c699"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beast_skulls/beast_skull_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c16b0e15-6e2b-4ccc-9d3b-438c7037b41e",
+          "generated_at": "2026-08-15T20:01:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9659,
+          "glow_score": 0.0,
+          "art_hash": "c004e071b4ac6cc6"
         }
       },
       "animations": []
@@ -4115,6 +4295,33 @@
           "pixellab_object_id": "c2d60240-9adf-4326-92dc-c95a8e546f2d",
           "generated_at": "2026-08-13T03:00:55+00:00",
           "art_hash": "5f3255df9e539dfe"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beaver_lodges/beaver_lodge_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a139fbf5-5ed6-4d2e-995e-2613f2003270",
+          "generated_at": "2026-08-15T20:02:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7298,
+          "glow_score": 0.0864,
+          "art_hash": "2e3a725e916a7ca1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beaver_lodges/beaver_lodge_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8333d136-5fcf-47f4-82ef-32d3aa76be41",
+          "generated_at": "2026-08-15T20:03:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7876,
+          "glow_score": 0.0642,
+          "art_hash": "840cb84874e0e435"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beaver_lodges/beaver_lodge_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6856c86f-e11d-4635-93df-04e32db68c87",
+          "generated_at": "2026-08-15T20:03:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6771,
+          "glow_score": 0.03,
+          "art_hash": "2bd6a250c31be26e"
         }
       },
       "animations": []
@@ -4149,6 +4356,24 @@
           "pixellab_object_id": "b4a5d405-3d00-4ffc-a125-197229985c88",
           "generated_at": "2026-08-13T20:44:59+00:00",
           "art_hash": "4bacea1d9dc29036"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beds/bed_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e15a8d41-3ee1-4f3b-86cf-9bdb0e899488",
+          "generated_at": "2026-08-15T20:04:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8896,
+          "glow_score": 0.2321,
+          "art_hash": "80e6d8bb05fecc0e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beds/bed_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0c1fcce4-77f7-4ba8-8032-9fa92c07afa7",
+          "generated_at": "2026-08-15T20:04:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6105,
+          "glow_score": 0.1387,
+          "art_hash": "ac3f89c379bb985a"
         }
       },
       "animations": []
