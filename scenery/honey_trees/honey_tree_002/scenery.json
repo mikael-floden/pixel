@@ -31,5 +31,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "honey_trees/honey_tree_002/sprite.webp",
+      "pixellab_object_id": "d5972c66-793a-4fbb-a0db-868654ef5e68",
+      "glow_score": 0.0932
+    }
+  }
 }

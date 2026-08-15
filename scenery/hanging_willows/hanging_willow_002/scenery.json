@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
+      "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
+      "glow_score": 0.0099
+    }
+  }
 }

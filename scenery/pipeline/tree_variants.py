@@ -114,11 +114,17 @@ def plan_for(man, cfg):
     have = set((man.get("states") or {}).keys())
     # The existing art occupies one slot and is never regenerated.
     anchor = "LIT_1" if lights == "LIGHTS_ON" else "NOT_LIT_1"
+    gid = man.get("group") or "trees"
     glow_pool = []
     for g in cfg["groups"]:
-        if g["id"] == "trees":
+        if g["id"] == gid:
             glow_pool = list(g.get("glow_concepts") or [])
             break
+    if not glow_pool:                      # fall back to the trees pool
+        for g in cfg["groups"]:
+            if g["id"] == "trees":
+                glow_pool = list(g.get("glow_concepts") or [])
+                break
     own = man.get("glow_concept")
     # LIT_1 keeps the tree's own glow when it already has one; the other lit
     # slot gets a DIFFERENT concept so the two lit variants are not near-twins.
@@ -321,6 +327,10 @@ def git_push(msg):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="max trees to touch")
+    ap.add_argument("--groups", default="trees",
+                    help="comma-separated group ids, or 'all-trees' for every "
+                         "tree family (the maintainer wanted variants for ALL "
+                         "trees, not only the `trees` group)")
     ap.add_argument("--max-states", type=int, default=0)
     ap.add_argument("--max-minutes", type=float, default=600.0)
     ap.add_argument("--dry-run", action="store_true")
@@ -328,13 +338,21 @@ def main():
 
     cfg = factory.load_config()
     client = PixelLabClient()
-    trees = sorted(factory.done_by_group().get("trees", ()))
+    done_all = factory.done_by_group()
+    if args.groups == "all-trees":
+        named = {"stumps", "fallen_logs", "driftwood_logs", "petrified_stumps",
+                 "fairy_stumps", "bee_logs", "glow_hollows", "root_arches",
+                 "owl_snags"}
+        gids = sorted({g["id"] for g in cfg["groups"] if g.get("type") == "TREE"} | named)
+    else:
+        gids = [g.strip() for g in args.groups.split(",") if g.strip()]
+    trees = [(g, p) for g in gids for p in sorted(done_all.get(g, ()))]
     if args.limit:
         trees = trees[:args.limit]
 
     queue = []
-    for pid in trees:
-        rel = f"trees/{pid}"
+    for gid, pid in trees:
+        rel = f"{gid}/{pid}"
         man = factory.read_manifest(rel) or {}
         if not man.get("pixellab_object_id"):
             continue

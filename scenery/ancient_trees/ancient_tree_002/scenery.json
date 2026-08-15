@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "ancient_trees/ancient_tree_002/sprite.webp",
+      "pixellab_object_id": "9f1d7925-8f87-480b-8cce-eec6601b3698",
+      "glow_score": 0.0102
+    }
+  }
 }

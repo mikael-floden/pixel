@@ -31,5 +31,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "orchard_trees/orchard_tree_027/sprite.webp",
+      "pixellab_object_id": "ab2a56b8-5f11-49f6-979e-20520a1894c3",
+      "glow_score": 0.0096
+    }
+  }
 }
