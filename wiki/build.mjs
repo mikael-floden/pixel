@@ -678,12 +678,50 @@ function buildObjects() {
       // matches on the FILE, falling back to the `lights` value and then to
       // whatever order the manifest lists.
       const states = Object.entries(oj.states ?? {}).filter(([, st]) => st && typeof st === "object");
-      const isBase = ([, st]) => art(`scenery/${String(st.sprite ?? "").replace(/\.(png|webp)$/i, "")}`) === preview;
-      const ordered = [
-        ...states.filter(isBase),
-        ...states.filter((e) => !isBase(e) && e[0] === oj.lights),
-        ...states.filter((e) => !isBase(e) && e[0] !== oj.lights),
-      ];
+      // THE BASE STATE IS THE ONE THE CARD SHOWS. Matched by CONTENT, not by
+      // path: the scenery agent sometimes points a state at the piece's own
+      // sprite.webp (tree_001) and sometimes writes an identical copy under
+      // its own folder (most trees) — the same picture either way, and opening
+      // the viewer on a different variant than the thumbnail you clicked means
+      // judging art you did not choose.
+      const fileHash = (rel) => {
+        if (!rel) return null;
+        try { return createHash("md5").update(readFileSync(join(ROOT, rel))).digest("hex"); } catch { return null; }
+      };
+      const previewHash = preview ? fileHash(preview) : null;
+      const stateArt = ([, st]) => art(`scenery/${String(st.sprite ?? "").replace(/\.(png|webp)$/i, "")}`);
+      const isBase = (e) => {
+        const a = stateArt(e);
+        return !!a && (a === preview || (!!previewHash && fileHash(a) === previewHash));
+      };
+      // AND IN A READABLE ORDER. The manifest lists them however they were
+      // generated (NOT_LIT_1, LIT_1, LIT_2, NOT_LIT_2, NOT_LIT_3…), which the
+      // wiki was rendering verbatim — a row that jumps between unlit and lit
+      // and back. Unlit first, ascending, then lit, ascending, so the chips
+      // read "#1 #2 #3 💡#1 💡#2". The base still leads: it is the picture
+      // every card shows, and it is the unlit #1 in practice.
+      const rank = ([n]) => {
+        const m = /^(not[_-]?lit|lit|lights[_-]?off|lights[_-]?on)(?:[_-]?(\d+))?$/i.exec(n);
+        if (!m) return [2, 0, n];
+        const lit = /^lit/i.test(m[1]) || /on$/i.test(m[1]);
+        return [lit ? 1 : 0, Number(m[2] ?? 1), n];
+      };
+      const byVariant = (a, b) => {
+        const [al, an, ak] = rank(a), [bl, bn, bk] = rank(b);
+        return al - bl || an - bn || ak.localeCompare(bk);
+      };
+      const rest = states.filter((e) => !isBase(e)).sort(byVariant);
+      const base = states.filter(isBase);
+      const ordered = [...base, ...rest];
+      // A handful of pieces (4 of 110 on 2026-08-15) carry a sprite.webp that is
+      // none of their states — the original render the variants were grown
+      // from, and the one the GAME still places. It leads the row as "Base" so
+      // the canonical art is reviewable at all; without it the viewer opened on
+      // variant #1 while the card, the queue and the game showed something else.
+      if (states.length && !base.length && preview) {
+        const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
+        if (Object.keys(dirs).length) anims.base = { description: "", dirs };
+      }
       for (const [name, st] of ordered) {
         const dirs = dirsFrom(st.rotations, st.sprite);
         // The UI title-cases this; the CAPS key is the scenery domain's.

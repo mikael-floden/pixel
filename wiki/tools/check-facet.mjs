@@ -40,7 +40,13 @@ await p.route("**/api/wiki/save", async (r) => {
   posted.push(JSON.parse(r.request().postData() || "{}"));
   await r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
 });
-await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+await p.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
 
 const facet = () => p.evaluate(() => {
   const f = document.querySelector(".facet-head");
@@ -107,27 +113,29 @@ ok(s1.headAboveStates, "the label sits above the state/direction selectors");
 console.log("star hit box:", JSON.stringify(s1.starBox));
 ok(s1.starBox && s1.starBox.w >= 28 && s1.starBox.h >= 32,
   `each star is a real tap target (${s1.starBox?.w}x${s1.starBox?.h}px)`);
-ok(s1.pill === "Lights Off · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
+// The chip is a variant number and a lamp now, not prose (2026-08-14): a
+// window's unlit state reads "#1", its lit one "💡#1".
+ok(s1.pill === "#1 · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
 
 // A VERDICT FOLLOWS THE STATE. Approving Lights Off must not colour Lights On.
 await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/.test(x.textContent)).click());
 await p.waitForTimeout(250);
 const afterApprove = await facet();
 ok(/approved/.test(afterApprove.verdictClasses), "approving marks THIS state");
-await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /On/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
 await p.waitForTimeout(500);
 const s2 = await facet();
 console.log("scenery, Lights On :", JSON.stringify({ facetName: s2.facetName, verdictClasses: s2.verdictClasses }));
-ok(s2.facetName === "Lights On", `switching state switches what the row judges (${s2.facetName})`);
+ok(s2.facetName === "💡#1", `switching state switches what the row judges (${s2.facetName})`);
 ok(!/approved/.test(s2.verdictClasses), "and the other state arrives unjudged — verdicts are per state, not per piece");
 // THE DIRECTION IS HALF THE UNIT. Approving S must leave SE unjudged.
-await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /Off/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights off/i.test(x.title)).click());
 await p.waitForTimeout(400);
 await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "SE").click());
 await p.waitForTimeout(400);
 const sSE = await facet();
 console.log("scenery, Lights Off · SE:", JSON.stringify({ pill: sSE.pill, dirOn: sSE.dirOn, verdictClasses: sSE.verdictClasses }));
-ok(sSE.pill === "Lights Off · SE", `pressing a direction re-aims the row (“${sSE.pill}”)`);
+ok(sSE.pill === "#1 · SE", `pressing a direction re-aims the row (“${sSE.pill}”)`);
 ok(!/approved/.test(sSE.verdictClasses), "and SE is unjudged though S of the same state was approved");
 await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
 await p.waitForTimeout(250);
@@ -135,7 +143,7 @@ await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x)
 await p.waitForTimeout(400);
 const backS = await facet();
 ok(/approved/.test(backS.verdictClasses), "coming back to S shows its own approval, not SE's rejection");
-await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /On/.test(x.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
 await p.waitForTimeout(400);
 await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
 await p.waitForTimeout(250);

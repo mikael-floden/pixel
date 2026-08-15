@@ -21,7 +21,13 @@ const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 // Admin, but NEVER saving: a gate must not write the maintainer's review data.
 // Everything here stops short of pressing Commit.
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
-await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+await p.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
 
 const bar = () => p.evaluate(() => ({
   hidden: document.querySelector("#savebar").classList.contains("hidden"),

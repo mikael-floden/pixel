@@ -14,6 +14,7 @@
 // animation exists" half, and that a still does not quietly become an
 // animation everywhere else in the UI.
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
@@ -42,8 +43,13 @@ ok(real.length === 3, `the three generated pieces are still the only animated on
 // thumbnail, the story art and the review queue all use `preview`, so if the
 // viewer opened on some other state you would be judging a different picture
 // than the one you clicked.
-const bad = still.filter((o) => baseClip(o)?.strip !== o.preview);
-ok(bad.length === 0, `each still opens on the sprite the list showed you${bad.length ? ` — ${bad.slice(0, 3).map((o) => `${o.id}: ${baseClip(o)?.strip}`).join(", ")}` : ""}`);
+// Compared by CONTENT: some pieces point a state at the piece's own
+// sprite.webp, some write an identical copy under the state's folder, and four
+// carry an original that is none of their states (it leads as "Base"). What
+// matters is that the picture is the same one the card showed.
+const md5 = (rel) => { try { return createHash("md5").update(readFileSync(new URL(`../../${rel}`, import.meta.url))).digest("hex"); } catch { return null; } };
+const bad = still.filter((o) => { const c = baseClip(o); return !c || md5(c.strip) !== md5(o.preview); });
+ok(bad.length === 0, `each still opens on the picture the list showed you${bad.length ? ` — ${bad.slice(0, 3).map((o) => `${o.id}: ${baseClip(o)?.strip}`).join(", ")}` : ` (${still.length})`}`);
 ok(still.every((o) => clips(o).every((c) => c.bb)),
   "and every clip is measured, so it draws cropped at true scale rather than padded");
 
@@ -261,10 +267,11 @@ const stInfo = await p.evaluate(async () => {
     let s = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 8) s += d[i] + d[i + 1] * 3 + d[i + 2] * 7;
     return s; };
   const labels = [...document.querySelectorAll(".seg-states button")].map((x) => x.textContent);
+  const tips = [...document.querySelectorAll(".seg-states button")].map((x) => x.title);
   const before = paint();
   [...document.querySelectorAll(".seg-states button")].find((x) => !x.classList.contains("on"))?.click();
   await new Promise((r) => setTimeout(r, 500));
-  return { labels, before, after: paint(),
+  return { labels, tips, before, after: paint(),
     pill: document.querySelector(".panel-title .pill")?.textContent ?? null,
     aboveStage: !!(seg && seg.bottom <= stage.top + 2),
     aboveDirs: !!(seg && pad && seg.bottom <= pad.top + 2),
@@ -275,8 +282,24 @@ ok(stInfo.labels.length === Object.keys(withStates[0].animations).length,
   `every state is a button (${stInfo.labels.join(", ")})`);
 // Words and numbers, never the raw key: LIGHTS_ON -> "Lights On",
 // NOT_LIT_3 -> "Not Lit 3".
-ok(stInfo.labels.every((l) => /^[A-Z][a-z]*( [A-Za-z0-9]+)*$/.test(l) && !/_/.test(l)),
-  `and reads as words, not as a CAPS key (${stInfo.labels.join(", ")})`);
+// A VARIANT IS A NUMBER AND A LAMP (maintainer 2026-08-14: "I don't like the
+// text on the radio buttons ... show 'not lit' as #1, #2, #3 and the lit
+// version 💡#1, 💡#2 ... more clean and visual, and more compact"). Anything
+// that is not a lit/unlit variant is still spelled out in words.
+// NB the /u flag: 💡 is a surrogate pair, so "💡?" without it makes only the
+// LOW half optional and "#1" fails to match.
+ok(stInfo.labels.every((l) => /^(?:(?:💡)?#\d+|[A-Z][a-z]*(?: [A-Za-z0-9]+)*)$/u.test(l) && !/_/.test(l)),
+  `every chip is a variant number or a word, never a CAPS key (${stInfo.labels.join(", ")})`);
+ok(stInfo.labels.some((l) => /^#\d+$/.test(l)), `with the unlit ones numbered (${stInfo.labels.slice(0, 4).join(", ")})`);
+// UNLIT FIRST, ASCENDING, THEN LIT — the manifest order interleaved them.
+const nums = (re) => stInfo.labels.filter((l) => re.test(l)).map((l) => Number(l.replace(/\D/g, "")));
+const sorted = (a) => a.every((n, i) => !i || n >= a[i - 1]);
+const firstLit = stInfo.labels.findIndex((l) => l.startsWith("💡"));
+ok(sorted(nums(/^#\d+$/)) && sorted(nums(/^💡#\d+$/)), `each run ascends (${stInfo.labels.join(" ")})`);
+ok(firstLit === -1 || !stInfo.labels.slice(firstLit).some((l) => /^#\d+$/.test(l)),
+  "and every unlit chip comes before every lit one — no jumping back and forth");
+// The words survive on hover, for anyone who wants them.
+ok(stInfo.tips.every((t) => /\w/.test(t ?? "")), `the spelled-out name is still there on hover (${JSON.stringify(stInfo.tips.slice(0, 3))})`);
 ok(stInfo.aboveStage && stInfo.aboveDirs, "the state row sits over the preview and above the direction pad, like a monster's");
 // "2 states × 3 directions" when it has both, "7 states" when it faces one
 // way — it counts what is there, and says nothing about what is not.
@@ -386,7 +409,13 @@ const actx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobil
 const pa = await actx.newPage();
 const aerrs = []; pa.on("pageerror", (e) => aerrs.push(String(e)));
 await pa.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
-await pa.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+await pa.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
 const hinfo = () => pa.evaluate(() => {
   const st = document.querySelector(".player-stage"), cv = st?.querySelector("canvas"), hu = st?.querySelector(".human-ref");
   const r = (x) => { const q = x.getBoundingClientRect(); return { l: Math.round(q.left), b: Math.round(q.bottom), w: Math.round(q.width), h: Math.round(q.height) }; };

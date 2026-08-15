@@ -53,7 +53,13 @@ await p.route("**/api/live/state", async (route) => {
   injected++;
   await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(j) });
 });
-await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+await p.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
 
 // ALWAYS reload. A hash-only goto does not re-navigate, so the live state —
 // including the verdicts injected above — is never refetched, and assertions

@@ -49,7 +49,13 @@ const ctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile
 const p = await ctx.newPage();
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
-await p.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
+await p.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  // An admin reads the REPO, not the image (wiki.js useStagingRoot, 2026-08-14).
+  // The sandbox blocks browser egress, so point the staging base at this same
+  // server's /assets — the identical code path, resolvable offline.
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 
 await p.goto(`${W}#/objects`, { waitUntil: "load" });
