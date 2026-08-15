@@ -6,7 +6,7 @@
   "rank": 46,
   "index": 15,
   "name": "Basket-topped tripod beacon 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "basket-topped tripod beacon",
   "modifier": "weathered silver-grey",
   "glow_concept": null,
@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_015/lit_1/sprite.webp",
+      "pixellab_object_id": "0c483394-8ae8-4532-ad32-f6c2b2b49b1c",
+      "generated_at": "2026-08-15T19:58:24+00:00",
+      "glow_concept": "great orange signal blaze in the cage",
+      "difference_from_source": 0.8001,
+      "glow_score": 0.1222
+    },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_015/sprite.webp",
       "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
