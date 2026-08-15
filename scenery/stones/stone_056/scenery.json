@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:13:55+00:00",
+  "id": "stone_056",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 56,
+  "name": "Weathered sandstone lump 056 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "weathered sandstone lump",
+  "modifier": "with butterflies resting on it",
+  "glow_concept": "thin runes etched glowing warm amber",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, weathered sandstone lump, with butterflies resting on it, small, knee-high, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_056/sprite.webp",
+  "placement": {
+    "world_height_m": 0.49,
+    "world_px_height": 18,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      6,
+      10,
+      59,
+      55
+    ],
+    "content_px_height": 45,
+    "canvas_render_px": 26
+  },
+  "pixellab_object_id": "6435156c-026c-422f-bf9e-244db1cf6080",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
