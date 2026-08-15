@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 784,
+  "scenery_count": 785,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 37
+      "done": 38
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 37,
+    "stones": 38,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -17950,6 +17950,40 @@
       "pixellab_object_id": "f1386a90-2174-4f5e-b38b-f737c2f0e228",
       "sprite": "stones/stone_044/sprite.webp",
       "art_hash": "32dab1569d1a7a4c",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_046",
+      "rel": "stones/stone_046",
+      "name": "Low whale-back outcrop 046 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, low whale-back outcrop, one side die-back, the other thriving, small, knee-high, self-emissive at night, softly radiating light: ring of ghost-blue lichen circles",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.43,
+        "world_px_height": 16,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          4,
+          11,
+          61,
+          58
+        ],
+        "content_px_height": 47,
+        "canvas_render_px": 22
+      },
+      "status": "complete",
+      "pixellab_object_id": "821ee265-f6c5-45cb-908f-5718923d5078",
+      "sprite": "stones/stone_046/sprite.webp",
+      "art_hash": "d49a3d6bde32f8d1",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
