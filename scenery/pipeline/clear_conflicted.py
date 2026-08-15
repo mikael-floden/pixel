@@ -22,7 +22,7 @@ server push before trusting it.
     python3 pipeline/clear_conflicted.py --dry-run
     python3 pipeline/clear_conflicted.py
 """
-import json, os, sys
+import collections, json, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 import factory
 
@@ -49,7 +49,13 @@ def conflicted(entries):
 
 def main():
     dry = "--dry-run" in sys.argv
-    doc = json.load(open(FEEDBACK))
+    # object_pairs_hook + indent=2 + ensure_ascii=False reproduce the live
+    # server's exact formatting. Writing with different options rewrote all
+    # 15,279 lines for a one-entry deletion — a diff nobody can review and a
+    # guaranteed conflict with the server's next dump. The edit must be
+    # invisible apart from the entry it removes.
+    doc = json.load(open(FEEDBACK, encoding="utf-8"),
+                    object_pairs_hook=collections.OrderedDict)
     entries = doc.get("entries") or {}
     hits = conflicted(entries)
     print(f"{len(hits)} self-contradictory verdict(s)")
@@ -60,8 +66,8 @@ def main():
     for key, *_ in hits:
         entries.pop(key, None)
     doc["entries"] = entries
-    with open(FEEDBACK, "w") as f:
-        json.dump(doc, f, indent=1, sort_keys=True)
+    with open(FEEDBACK, "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=2, ensure_ascii=False)
         f.write("\n")
     print(f"cleared {len(hits)} — those pieces are unrated and unrejected again")
     return 0
