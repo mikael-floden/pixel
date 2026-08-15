@@ -4,8 +4,8 @@
   "group": "beacons",
   "rank": 46,
   "index": 10,
-  "name": "Tarred timber mast beacon 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tarred timber mast beacon 010",
+  "lights": null,
   "variety": "tarred timber mast beacon",
   "glow_concept": "great orange signal blaze in the cage",
   "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, tarred timber mast beacon, tall, about three times human height, self-emissive at night, softly radiating light: great orange signal blaze in the cage",
@@ -59,6 +59,14 @@
       "glow_concept": null,
       "difference_from_source": 0.6407,
       "glow_score": 0.0747
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d78926e6-870c-4fc8-88ba-8d4c9001a107",
+      "generated_at": "2026-08-15T19:55:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2183,
+      "glow_score": 0.0
     }
   }
 }
