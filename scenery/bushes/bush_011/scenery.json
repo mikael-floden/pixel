@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "bushes/bush_011/sprite.webp",
+      "pixellab_object_id": "f344f80f-c46d-46e8-9168-af0ced3a39ab",
+      "generated_at": "2026-08-13T23:52:54+00:00"
+    }
+  }
 }

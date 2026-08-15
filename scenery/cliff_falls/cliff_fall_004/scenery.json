@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_falls/cliff_fall_004/sprite.webp",
+      "pixellab_object_id": "44ab6785-f6f0-4ca4-908d-f44a28f98a19",
+      "generated_at": "2026-08-14T03:09:39+00:00"
+    }
+  }
 }

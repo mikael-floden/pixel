@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "windmills/windmill_009/sprite.webp",
+      "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
+      "generated_at": "2026-08-13T23:24:43+00:00"
+    }
+  }
 }

@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_020/sprite.webp",
+      "pixellab_object_id": "83171a85-2b16-4eb3-9f58-0b2c4d515c6a",
+      "generated_at": "2026-08-14T01:33:55+00:00"
+    }
+  }
 }

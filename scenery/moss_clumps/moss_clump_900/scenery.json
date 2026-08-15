@@ -31,5 +31,12 @@
   "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
   "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly",
   "must_be_imbplemented_with_random_hflip": true,
-  "generated_at": "2026-08-13T19:46:47+00:00"
+  "generated_at": "2026-08-13T19:46:47+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "moss_clumps/moss_clump_900/sprite.webp",
+      "pixellab_object_id": "d5d79a1e-ba0d-42fc-862f-f3e2021ad1ac",
+      "generated_at": "2026-08-13T19:46:47+00:00"
+    }
+  }
 }

@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "hearth_006",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "hearths/hearth_900/sprite.webp",
+      "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
+      "generated_at": "2026-08-13T23:14:48+00:00"
+    }
+  }
 }

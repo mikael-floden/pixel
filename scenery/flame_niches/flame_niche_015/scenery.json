@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "flame_niches/flame_niche_015/sprite.webp",
+      "pixellab_object_id": "8d216dbc-3128-4a64-abdb-24f1e545cf3b",
+      "generated_at": "2026-08-14T01:25:24+00:00"
+    }
+  }
 }

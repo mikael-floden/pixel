@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
+      "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
+      "generated_at": "2026-08-14T01:15:52+00:00"
+    }
+  }
 }

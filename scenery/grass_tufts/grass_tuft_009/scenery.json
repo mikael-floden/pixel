@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "grass_tufts/grass_tuft_009/sprite.webp",
+      "pixellab_object_id": "78bcc653-cce8-4ceb-8789-27ffe209b2fa",
+      "generated_at": "2026-08-13T23:56:05+00:00"
+    }
+  }
 }

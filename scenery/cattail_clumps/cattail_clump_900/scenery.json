@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "cattail_clump_008",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
+      "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
+      "generated_at": "2026-08-13T23:11:44+00:00"
+    }
+  }
 }

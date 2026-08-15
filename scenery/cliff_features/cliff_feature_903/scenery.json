@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "cliff_feature_005",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_features/cliff_feature_903/sprite.webp",
+      "pixellab_object_id": "cfeeaab9-d843-4c36-8e3a-133fe9a6d18a",
+      "generated_at": "2026-08-13T23:28:58+00:00"
+    }
+  }
 }

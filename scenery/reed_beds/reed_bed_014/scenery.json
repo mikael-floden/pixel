@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "reed_beds/reed_bed_014/sprite.webp",
+      "pixellab_object_id": "296f0fdf-1cfd-4ab3-bd99-12a8c0208b5c",
+      "generated_at": "2026-08-14T01:51:58+00:00"
+    }
+  }
 }

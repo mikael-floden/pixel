@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_020/sprite.webp",
+      "pixellab_object_id": "2af41c85-eea9-46bb-a274-77116922dd70",
+      "generated_at": "2026-08-13T23:33:08+00:00"
+    }
+  }
 }

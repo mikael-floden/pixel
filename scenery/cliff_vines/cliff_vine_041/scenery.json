@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_041/sprite.webp",
+      "pixellab_object_id": "4e0e8083-92fe-4b12-97af-712d0bd094b8",
+      "generated_at": "2026-08-14T04:33:03+00:00"
+    }
+  }
 }

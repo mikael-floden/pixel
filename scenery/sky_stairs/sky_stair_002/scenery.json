@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "sky_stairs/sky_stair_002/sprite.webp",
+      "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
+      "generated_at": "2026-08-14T04:34:22+00:00"
+    }
+  }
 }

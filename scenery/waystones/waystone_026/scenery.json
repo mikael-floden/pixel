@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "waystones/waystone_026/sprite.webp",
+      "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
+      "generated_at": "2026-08-14T02:17:33+00:00"
+    }
+  }
 }

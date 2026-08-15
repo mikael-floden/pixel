@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "moss_clumps/moss_clump_014/sprite.webp",
+      "pixellab_object_id": "523add5c-8f2d-4269-9f59-66d88817562c",
+      "generated_at": "2026-08-13T23:40:18+00:00"
+    }
+  }
 }

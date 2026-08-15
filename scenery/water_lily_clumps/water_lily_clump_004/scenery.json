@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/sprite.webp",
+      "pixellab_object_id": "b14bbdf1-439e-4475-9c4f-c1c76503f3bc",
+      "generated_at": "2026-08-14T01:56:43+00:00"
+    }
+  }
 }

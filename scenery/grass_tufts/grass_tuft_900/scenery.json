@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "grass_tuft_008",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "grass_tufts/grass_tuft_900/sprite.webp",
+      "pixellab_object_id": "d2283caf-5287-4a47-827e-1776ccb3386d",
+      "generated_at": "2026-08-13T23:21:58+00:00"
+    }
+  }
 }

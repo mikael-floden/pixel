@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "cliff_mosses/cliff_moss_043/sprite.webp",
+      "pixellab_object_id": "a944be31-a2a4-4682-a373-0764b62f040d",
+      "generated_at": "2026-08-14T05:29:28+00:00"
+    }
+  }
 }

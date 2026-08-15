@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "moon_pools/moon_pool_002/sprite.webp",
+      "pixellab_object_id": "95fea78f-0ee3-4201-8642-29b1b206a309",
+      "generated_at": "2026-08-14T02:01:35+00:00"
+    }
+  }
 }

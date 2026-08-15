@@ -31,5 +31,12 @@
   "adopted": "recovered from the PixelLab store 2026-08-13: runs 5/6 were cancelled mid-pass and their committed-but-unpushed art died with the runners; the store object survived. Index 900+ band avoids colliding with the concurrently-running pass.",
   "recovered_spec": "metadata restored by replaying run 5's deterministic planner at its checkout (a21c4bc8); orphan creation order matched the planned sequence exactly",
   "must_be_imbplemented_with_random_hflip": true,
-  "generated_at": "2026-08-13T19:46:47+00:00"
+  "generated_at": "2026-08-13T19:46:47+00:00",
+  "states": {
+    "LIT_1": {
+      "sprite": "puffballs/puffball_900/sprite.webp",
+      "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
+      "generated_at": "2026-08-13T19:46:47+00:00"
+    }
+  }
 }

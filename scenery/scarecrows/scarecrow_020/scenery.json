@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "scarecrows/scarecrow_020/sprite.webp",
+      "pixellab_object_id": "c91c0691-4e16-4777-8931-3e9eb32f464b",
+      "generated_at": "2026-08-13T23:10:11+00:00"
+    }
+  }
 }

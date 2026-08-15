@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "chairs_and_benches/chair_014/sprite.webp",
+      "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
+      "generated_at": "2026-08-14T01:53:52+00:00"
+    }
+  }
 }

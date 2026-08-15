@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "graves/grave_017/sprite.webp",
+      "pixellab_object_id": "7281d064-4807-4041-a74e-02a171c6280c",
+      "generated_at": "2026-08-13T23:46:30+00:00"
+    }
+  }
 }

@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "sleeping_giants/sleeping_giant_002/sprite.webp",
+      "pixellab_object_id": "12b9fb55-491a-4112-8b82-80422c37d8e4",
+      "generated_at": "2026-08-14T04:34:31+00:00"
+    }
+  }
 }

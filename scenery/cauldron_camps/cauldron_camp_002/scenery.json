@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cauldron_camps/cauldron_camp_002/sprite.webp",
+      "pixellab_object_id": "e33f24e8-140b-4b98-b901-015748d61daa",
+      "generated_at": "2026-08-14T01:13:11+00:00"
+    }
+  }
 }

@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "bush_010",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "bushes/bush_900/sprite.webp",
+      "pixellab_object_id": "87fc1c22-e95d-4f1a-8c18-672403a3eea5",
+      "generated_at": "2026-08-13T23:10:20+00:00"
+    }
+  }
 }

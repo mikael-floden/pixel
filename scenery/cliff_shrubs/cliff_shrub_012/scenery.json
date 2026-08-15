@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_012/sprite.webp",
+      "pixellab_object_id": "35f5a2be-17f1-4763-bfac-2da72640424f",
+      "generated_at": "2026-08-14T03:36:29+00:00"
+    }
+  }
 }

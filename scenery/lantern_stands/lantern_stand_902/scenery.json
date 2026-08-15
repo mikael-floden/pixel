@@ -31,5 +31,12 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "renamed_from": "lantern_stand_010",
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "lantern_stands/lantern_stand_902/sprite.webp",
+      "pixellab_object_id": "b71ccedf-6201-405b-8158-70819f84e62c",
+      "generated_at": "2026-08-13T23:12:21+00:00"
+    }
+  }
 }

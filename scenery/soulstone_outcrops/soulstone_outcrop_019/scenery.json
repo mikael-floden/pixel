@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_019/sprite.webp",
+      "pixellab_object_id": "0930f8e2-999d-41ff-87ef-b6373d46999c",
+      "generated_at": "2026-08-13T23:52:53+00:00"
+    }
+  }
 }

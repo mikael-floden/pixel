@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "crystals/crystal_009/sprite.webp",
+      "pixellab_object_id": "98c05a96-c84c-41d7-9a75-a86fe041a211",
+      "generated_at": "2026-08-13T23:22:22+00:00"
+    }
+  }
 }

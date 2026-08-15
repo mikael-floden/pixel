@@ -29,5 +29,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_008/sprite.webp",
+      "pixellab_object_id": "398058ea-2dc5-4f4b-9e9d-61b57fc7228b",
+      "generated_at": "2026-08-13T23:36:25+00:00"
+    }
+  }
 }

@@ -30,5 +30,12 @@
   "status": "complete",
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
-  "must_be_imbplemented_with_random_hflip": true
+  "must_be_imbplemented_with_random_hflip": true,
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "flower_stands/flower_stand_015/sprite.webp",
+      "pixellab_object_id": "75ebfd5d-fc0a-4307-9643-e8a930596244",
+      "generated_at": "2026-08-14T02:39:51+00:00"
+    }
+  }
 }

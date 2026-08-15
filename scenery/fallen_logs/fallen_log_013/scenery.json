@@ -7,7 +7,7 @@
   "rank": 20,
   "index": 13,
   "name": "Log with honey fungus clumps 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "log with honey fungus clumps",
   "modifier": "split into a double form",
   "glow_concept": null,
@@ -45,10 +45,26 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "fallen_logs/fallen_log_013/lit_1/sprite.webp",
+      "pixellab_object_id": "d9043659-4b81-4af2-9e18-a250300226bb",
+      "generated_at": "2026-08-15T19:25:29+00:00",
+      "glow_concept": "blue foxfire glowing in the bark cracks",
+      "difference_from_source": 0.5256,
+      "glow_score": 0.1125
+    },
     "NOT_LIT_1": {
       "sprite": "fallen_logs/fallen_log_013/sprite.webp",
       "pixellab_object_id": "ef0af572-27eb-4073-afc6-7e687dcf804b",
       "glow_score": 0.0046
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_013/not_lit_10/sprite.webp",
+      "pixellab_object_id": "f2b87969-f299-4bae-b02f-6a854ffb6aef",
+      "generated_at": "2026-08-15T19:25:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4283,
+      "glow_score": 0.0033
     },
     "NOT_LIT_2": {
       "sprite": "fallen_logs/fallen_log_013/not_lit_2/sprite.webp",
@@ -97,6 +113,14 @@
       "glow_concept": null,
       "difference_from_source": 0.8106,
       "glow_score": 0.0004
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_013/not_lit_9/sprite.webp",
+      "pixellab_object_id": "365fa088-bf94-4734-87b3-bed1af6c04c5",
+      "generated_at": "2026-08-15T19:24:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.76,
+      "glow_score": 0.0
     }
   }
 }
