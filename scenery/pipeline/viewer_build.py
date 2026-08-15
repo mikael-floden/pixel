@@ -91,6 +91,13 @@ def build():
             "size": meta.get("size"),
             "placement": meta.get("placement"),
             "status": meta.get("status"),
+            # WHEN THE ART WAS MADE. The wiki sorts the maintainer's review
+            # queue newest-first and used to derive this from git, which the
+            # deploy image cannot do — it has no .git, so anything landing
+            # between cache commits fell back to "first build that saw it"
+            # (wiki agent's ask, 2026-08-14). Stamped at birth, backfilled from
+            # each sprite's LAST commit for the pieces that predate the field.
+            "generated_at": meta.get("generated_at"),
             "pixellab_object_id": meta.get("pixellab_object_id"),
             "sprite": meta.get("sprite", f"{rel}/sprite.webp"),
             "art_hash": _art_hash(meta.get("sprite", f"{rel}/sprite.webp")),

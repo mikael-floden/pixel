@@ -38,8 +38,13 @@ import numpy as np
 
 import factory
 import viewer_build
+from datetime import datetime, timezone
 from pixellab_client import V2_BASE, PixelLabClient, PixelLabError
 from PIL import Image
+
+
+def _now():
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 NOT_LIT = [f"NOT_LIT_{i}" for i in range(1, 11)]
 LIT = [f"LIT_{i}" for i in range(1, 5)]

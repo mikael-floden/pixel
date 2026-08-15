@@ -37,6 +37,7 @@ import numpy as np
 
 import factory
 import viewer_build
+from datetime import datetime, timezone
 from pixellab_client import V2_BASE, PixelLabClient, PixelLabError
 from PIL import Image
 
@@ -174,6 +175,10 @@ def finalize(client, rel, man, oid):
     states[STATE] = {"sprite": saved["south"],
                      "rotations": dict(saved),
                      "pixellab_object_id": oid,
+                     # Its OWN date — the maintainer reviews newest-first, and
+                     # a state generated today is newer than its piece.
+                     "generated_at": datetime.now(timezone.utc)
+                     .isoformat(timespec="seconds"),
                      "edit_description": EDIT_PROMPT}
     man["states"] = states
     factory.write_manifest(rel, man)
