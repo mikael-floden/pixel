@@ -992,8 +992,9 @@ const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
 // A SCENERY VARIANT IS A NUMBER AND A LAMP (maintainer 2026-08-14: "I don't
 // like the text on the radio buttons ... my idea is to show 'not lit' as #1,
 // #2, #3 and the lit version should show 💡#1, 💡#2 ... more clean and visual,
-// and at the same time make the UI more compact"). NOT_LIT_3 -> "#3",
-// LIT_2 -> "💡#2", and a window's lone LIGHTS_OFF/LIGHTS_ON pair -> "#1"/"💡#1".
+// and at the same time make the UI more compact"), and then "even more
+// compact — can you remove the # character". So NOT_LIT_3 -> "3",
+// LIT_2 -> "💡2", and a window's lone LIGHTS_OFF/LIGHTS_ON pair -> "1"/"💡1".
 // Six chips of prose became six chips you read at a glance, and the row stops
 // scrolling on a phone. Anything else — a monster's walk, a character's die —
 // is still spelled out in words.
@@ -1002,7 +1003,7 @@ function stateLabel(s) {
   const m = VARIANT.exec(String(s).trim());
   if (m) {
     const lit = /^lit/i.test(m[1]) || /on$/i.test(m[1]);
-    return `${lit ? "💡" : ""}#${m[2] ?? 1}`;
+    return `${lit ? "💡" : ""}${m[2] ?? 1}`;
   }
   return String(s).replace(/[_-]+/g, " ").toLowerCase().replace(/\b./g, (c) => c.toUpperCase());
 }

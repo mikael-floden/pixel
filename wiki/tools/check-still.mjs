@@ -282,21 +282,21 @@ ok(stInfo.labels.length === Object.keys(withStates[0].animations).length,
   `every state is a button (${stInfo.labels.join(", ")})`);
 // Words and numbers, never the raw key: LIGHTS_ON -> "Lights On",
 // NOT_LIT_3 -> "Not Lit 3".
-// A VARIANT IS A NUMBER AND A LAMP (maintainer 2026-08-14: "I don't like the
-// text on the radio buttons ... show 'not lit' as #1, #2, #3 and the lit
-// version 💡#1, 💡#2 ... more clean and visual, and more compact"). Anything
+// A VARIANT IS A NUMBER AND A LAMP (maintainer 2026-08-14: "show 'not lit' as
+// #1, #2, #3 and the lit version 💡#1, 💡#2 ... more clean and visual, and
+// more compact", then "even more compact — can you remove the # character"). Anything
 // that is not a lit/unlit variant is still spelled out in words.
 // NB the /u flag: 💡 is a surrogate pair, so "💡?" without it makes only the
 // LOW half optional and "#1" fails to match.
-ok(stInfo.labels.every((l) => /^(?:(?:💡)?#\d+|[A-Z][a-z]*(?: [A-Za-z0-9]+)*)$/u.test(l) && !/_/.test(l)),
+ok(stInfo.labels.every((l) => /^(?:(?:💡)?\d+|[A-Z][a-z]*(?: [A-Za-z0-9]+)*)$/u.test(l) && !/_/.test(l)),
   `every chip is a variant number or a word, never a CAPS key (${stInfo.labels.join(", ")})`);
-ok(stInfo.labels.some((l) => /^#\d+$/.test(l)), `with the unlit ones numbered (${stInfo.labels.slice(0, 4).join(", ")})`);
+ok(stInfo.labels.some((l) => /^\d+$/.test(l)), `with the unlit ones a bare number (${stInfo.labels.slice(0, 4).join(", ")})`);
 // UNLIT FIRST, ASCENDING, THEN LIT — the manifest order interleaved them.
 const nums = (re) => stInfo.labels.filter((l) => re.test(l)).map((l) => Number(l.replace(/\D/g, "")));
 const sorted = (a) => a.every((n, i) => !i || n >= a[i - 1]);
 const firstLit = stInfo.labels.findIndex((l) => l.startsWith("💡"));
-ok(sorted(nums(/^#\d+$/)) && sorted(nums(/^💡#\d+$/)), `each run ascends (${stInfo.labels.join(" ")})`);
-ok(firstLit === -1 || !stInfo.labels.slice(firstLit).some((l) => /^#\d+$/.test(l)),
+ok(sorted(nums(/^\d+$/)) && sorted(nums(/^💡\d+$/u)), `each run ascends (${stInfo.labels.join(" ")})`);
+ok(firstLit === -1 || !stInfo.labels.slice(firstLit).some((l) => /^\d+$/.test(l)),
   "and every unlit chip comes before every lit one — no jumping back and forth");
 // The words survive on hover, for anyone who wants them.
 ok(stInfo.tips.every((t) => /\w/.test(t ?? "")), `the spelled-out name is still there on hover (${JSON.stringify(stInfo.tips.slice(0, 3))})`);
