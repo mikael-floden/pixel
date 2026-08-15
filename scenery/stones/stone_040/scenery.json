@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:52:37+00:00",
+  "id": "stone_040",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 40,
+  "name": "Volcanic dark pumice boulder 040 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "volcanic dark pumice boulder",
+  "modifier": "with bracket fungi steps",
+  "glow_concept": "patches of luminous blue-green moss",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, volcanic dark pumice boulder, with bracket fungi steps, waist-high, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_040/sprite.webp",
+  "placement": {
+    "world_height_m": 1.18,
+    "world_px_height": 44,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      8,
+      8,
+      57,
+      55
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 60
+  },
+  "pixellab_object_id": "027e8110-df9d-486a-8539-f4369da979e1",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}

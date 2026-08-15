@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 767,
+  "scenery_count": 768,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 29
+      "done": 30
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 29,
+    "stones": 30,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -17316,6 +17316,40 @@
       "pixellab_object_id": "c4cb8581-c6bb-4a76-9fa4-0ae140509fe2",
       "sprite": "stones/stone_036/sprite.webp",
       "art_hash": "115e58bfb5a85f82",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_040",
+      "rel": "stones/stone_040",
+      "name": "Volcanic dark pumice boulder 040 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, volcanic dark pumice boulder, with bracket fungi steps, waist-high, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.18,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          8,
+          8,
+          57,
+          55
+        ],
+        "content_px_height": 47,
+        "canvas_render_px": 60
+      },
+      "status": "complete",
+      "pixellab_object_id": "027e8110-df9d-486a-8539-f4369da979e1",
+      "sprite": "stones/stone_040/sprite.webp",
+      "art_hash": "fd980006d642d69d",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
