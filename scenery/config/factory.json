@@ -2834,7 +2834,7 @@
       "id": "owl_snags",
       "prefix": "owl_snag",
       "name": "Owl Snag",
-      "description": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk where an owl roosts",
+      "description": "a tall dead tree trunk with broken-off branch stubs and peeling bark, a dark round hollow opening in the trunk",
       "world_height_m": [
         3.0,
         5.0
@@ -2854,7 +2854,6 @@
         "mossy alder snag"
       ],
       "glow_concepts": [
-        "owl eyes glowing from the dark hollow",
         "hollow lit from within like a lantern window",
         "foxfire brackets stepping up the trunk",
         "luminous moss sleeving one side",
@@ -2865,7 +2864,8 @@
       "animation_idea": "the owl in the hollow blinking slowly and swiveling its head",
       "lore_fit": "Dead trees stand long in Nangijala because owls are watched and spoken of, and speaking keeps the snag from thinning.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "TREE",
+      "_no_owl": "maintainer 2026-08-15, nine separate rejection notes across two review rounds: 'No owl in the tree thanks', 'No owl' x8. The owl was written into the group's own description ('where an owl roosts') and into a glow concept ('owl eyes glowing from the dark hollow'), so every piece was born with one and every VARIANT inherited it \u2014 the variants are text edits of the base sprite, and no prompt correction can reliably remove something the source art already contains. He likes the snag; he does not want the bird. Description and glow concept cleaned; the group keeps its id because the maintainer's verdicts are keyed by path."
     },
     {
       "rank": 70,

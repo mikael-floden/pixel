@@ -5,7 +5,7 @@
   "rank": 70,
   "index": 1,
   "name": "Scattered leg bones 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "scattered leg bones",
   "glow_concept": null,
   "prompt": "sun-bleached animal bones heaped on the ground, a curved ribcage arc and scattered vertebrae with grass growing up between them, scattered leg bones, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,14 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:57:59+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "bone_piles/bone_pile_001/lit_2/sprite.webp",
+      "pixellab_object_id": "5fd07b3e-a334-4f5b-8918-0f8bc5b03911",
+      "generated_at": "2026-08-15T20:25:40+00:00",
+      "glow_concept": "warm marrow-light leaking through hairline cracks",
+      "difference_from_source": 0.6639,
+      "glow_score": 0.2277
+    },
     "NOT_LIT_1": {
       "sprite": "bone_piles/bone_pile_001/sprite.webp",
       "pixellab_object_id": "e64fa895-022a-44ad-b102-baa77301cd2f",
@@ -51,6 +59,14 @@
       "glow_concept": null,
       "difference_from_source": 0.9044,
       "glow_score": 0.2335
+    },
+    "NOT_LIT_4": {
+      "sprite": "bone_piles/bone_pile_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d830d0dc-cd7a-49a6-ac43-37ccd29e104b",
+      "generated_at": "2026-08-15T20:25:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5104,
+      "glow_score": 0.2733
     }
   }
 }
