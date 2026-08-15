@@ -6,7 +6,7 @@
   "rank": 9,
   "index": 15,
   "name": "Toppled half-collapsed cairn 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "toppled half-collapsed cairn",
   "modifier": "with berries scattered beneath it",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cairns/cairn_015/lit_1/sprite.webp",
+      "pixellab_object_id": "49d37fc4-ba67-4917-8e92-0a36f42d557e",
+      "generated_at": "2026-08-15T21:28:09+00:00",
+      "glow_concept": "chalk name-marks shining white on each stone",
+      "difference_from_source": 0.6705,
+      "glow_score": 0.0368
+    },
+    "LIT_2": {
+      "sprite": "cairns/cairn_015/lit_2/sprite.webp",
+      "pixellab_object_id": "97aa4dec-f7f3-4024-b203-a63dce8401d5",
+      "generated_at": "2026-08-15T21:28:49+00:00",
+      "glow_concept": "wisps of soul-light circling the peak",
+      "difference_from_source": 0.657,
+      "glow_score": 0.1797
+    },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_015/sprite.webp",
       "pixellab_object_id": "f35d740b-ffb2-411c-ad04-11dcf2b21e49",
       "generated_at": "2026-08-14T00:46:51+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cairns/cairn_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1ddd1a29-e065-4460-9df4-e4793abdfc18",
+      "generated_at": "2026-08-15T21:27:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6642,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "2582d003-42e1-4007-8c63-abd9034754a3",
+      "generated_at": "2026-08-15T21:29:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2884,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cairns/cairn_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ae45a372-d20d-45d2-9116-b99dea73faa1",
+      "generated_at": "2026-08-15T21:28:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2353,
+      "glow_score": 0.0
     }
   }
 }

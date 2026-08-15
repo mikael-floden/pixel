@@ -6,7 +6,7 @@
   "rank": 9,
   "index": 17,
   "name": "Stacked slate slab cairn 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "stacked slate slab cairn",
   "modifier": "grown around a half-buried stone",
   "glow_concept": null,
@@ -32,10 +32,34 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cairns/cairn_017/lit_1/sprite.webp",
+      "pixellab_object_id": "35c702e9-6142-4df0-8c4c-4ff1dc6cee6e",
+      "generated_at": "2026-08-15T21:31:24+00:00",
+      "glow_concept": "topmost stone glowing like a lantern",
+      "difference_from_source": 0.8251,
+      "glow_score": 0.0496
+    },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_017/sprite.webp",
       "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
       "generated_at": "2026-08-14T01:28:18+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a3e15e01-eadd-4519-8fc7-bf5b4203d682",
+      "generated_at": "2026-08-15T21:30:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6315,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cairns/cairn_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "221077d3-9cdd-40ea-9999-4807d71a7e86",
+      "generated_at": "2026-08-15T21:30:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5837,
+      "glow_score": 0.0
     }
   }
 }

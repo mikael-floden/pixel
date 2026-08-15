@@ -8816,6 +8816,15 @@
           "difference_from_source": 0.9133,
           "glow_score": 0.0,
           "art_hash": "b58b50081c09c921"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7d9f40cd-1f0f-4a47-8560-327d22f2397c",
+          "generated_at": "2026-08-15T21:26:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9261,
+          "glow_score": 0.0,
+          "art_hash": "1e85e14eca0595e8"
         }
       },
       "animations": []
@@ -8930,6 +8939,15 @@
           "generated_at": "2026-08-13T21:38:02+00:00",
           "art_hash": "ac4d315b5c3265bf"
         },
+        "LIT_2": {
+          "sprite": "cairns/cairn_012/lit_2/sprite.webp",
+          "pixellab_object_id": "c3bfcfbd-33ba-4b82-9827-0e3cca92b34d",
+          "generated_at": "2026-08-15T21:24:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6581,
+          "glow_score": 0.0007,
+          "art_hash": "63c8093235c0f875"
+        },
         "LIT_3": {
           "sprite": "cairns/cairn_012/lit_3/sprite.webp",
           "pixellab_object_id": "74564b16-34c7-4a73-bb20-507e3c11cb44",
@@ -8948,6 +8966,15 @@
           "glow_score": 0.0,
           "art_hash": "d32425e77ebad418"
         },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b40ec30e-b4a6-47c4-936b-ea7d873c9e47",
+          "generated_at": "2026-08-15T21:25:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8789,
+          "glow_score": 0.0,
+          "art_hash": "0ab4a7ffc3137c46"
+        },
         "NOT_LIT_2": {
           "sprite": "cairns/cairn_012/not_lit_2/sprite.webp",
           "pixellab_object_id": "32c1a8fc-0fef-48dd-b93a-2a9ce06de6b4",
@@ -8965,7 +8992,7 @@
       "rel": "cairns/cairn_013",
       "name": "Red thread-wound cairn 013",
       "category": "cairns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, red thread-wound cairn, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -8985,6 +9012,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cairns/cairn_013/lit_1/sprite.webp",
+          "pixellab_object_id": "9f78c59a-1e78-4b90-b113-f1589a1eeef8",
+          "generated_at": "2026-08-15T21:28:38+00:00",
+          "glow_concept": "warm light spilling from gaps between stones",
+          "difference_from_source": 0.9744,
+          "glow_score": 0.0122,
+          "art_hash": "308b54ab7f90aef1"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_013/lit_2/sprite.webp",
+          "pixellab_object_id": "28b08dad-224a-4bd9-9646-6700b3ce9df1",
+          "generated_at": "2026-08-15T21:26:22+00:00",
+          "glow_concept": "chalk name-marks shining white on each stone",
+          "difference_from_source": 0.7956,
+          "glow_score": 0.0279,
+          "art_hash": "6bea408b2d85466c"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_013/sprite.webp",
           "pixellab_object_id": "40ecef11-4ce7-43f7-b23d-d121b154921f",
@@ -8999,6 +9044,24 @@
           "difference_from_source": 0.3089,
           "glow_score": 0.0,
           "art_hash": "fae6884c504540ba"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "858a59e9-f5da-41f7-9637-5dac51f4b28b",
+          "generated_at": "2026-08-15T21:25:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4181,
+          "glow_score": 0.0,
+          "art_hash": "e783119cd5db2f2f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "827cfb89-ef58-46a5-b4e9-7e9b8d638ef0",
+          "generated_at": "2026-08-15T21:25:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.331,
+          "glow_score": 0.0406,
+          "art_hash": "6be2a848a9bcbf94"
         }
       },
       "animations": []
@@ -9006,9 +9069,9 @@
     {
       "id": "cairn_014",
       "rel": "cairns/cairn_014",
-      "name": "Broad conical trail cairn 014 \u00b7 lit",
+      "name": "Broad conical trail cairn 014",
       "category": "cairns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, broad conical trail cairn, roughly six feet tall, human height, self-emissive at night, softly radiating light: topmost stone glowing like a lantern",
       "view": "low top-down",
       "size": 64,
@@ -9033,6 +9096,51 @@
           "pixellab_object_id": "f9bd69fd-16a9-4690-82c7-4e0e17b1ff45",
           "generated_at": "2026-08-13T21:53:55+00:00",
           "art_hash": "1da282a6470d84c6"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_014/lit_2/sprite.webp",
+          "pixellab_object_id": "9f92157a-aada-4d2c-aa13-5e025d7e0ff0",
+          "generated_at": "2026-08-15T21:26:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7782,
+          "glow_score": 0.0258,
+          "art_hash": "d496106a260e45ab"
+        },
+        "LIT_3": {
+          "sprite": "cairns/cairn_014/lit_3/sprite.webp",
+          "pixellab_object_id": "ccc5e77c-2886-4b46-ba72-030b02071399",
+          "generated_at": "2026-08-15T21:26:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7882,
+          "glow_score": 0.0571,
+          "art_hash": "64ea07aebf379c6e"
+        },
+        "LIT_4": {
+          "sprite": "cairns/cairn_014/lit_4/sprite.webp",
+          "pixellab_object_id": "b2cca2b7-430e-46bc-86cf-a49f10c0946e",
+          "generated_at": "2026-08-15T21:26:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7256,
+          "glow_score": 0.0488,
+          "art_hash": "c3c43de70ffa5831"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e19a014c-2cd3-4d33-b831-991d93eb3b51",
+          "generated_at": "2026-08-15T21:27:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3581,
+          "glow_score": 0.0,
+          "art_hash": "ff75cec7d2c4f73f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "17ee2d91-57b8-422c-b46e-cd6cbe63a87c",
+          "generated_at": "2026-08-15T21:27:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7401,
+          "glow_score": 0.0,
+          "art_hash": "2e2d870bc3c249fd"
         }
       },
       "animations": []
@@ -9042,7 +9150,7 @@
       "rel": "cairns/cairn_015",
       "name": "Toppled half-collapsed cairn 015",
       "category": "cairns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, toppled half-collapsed cairn, with berries scattered beneath it, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -9062,11 +9170,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cairns/cairn_015/lit_1/sprite.webp",
+          "pixellab_object_id": "49d37fc4-ba67-4917-8e92-0a36f42d557e",
+          "generated_at": "2026-08-15T21:28:09+00:00",
+          "glow_concept": "chalk name-marks shining white on each stone",
+          "difference_from_source": 0.6705,
+          "glow_score": 0.0368,
+          "art_hash": "d0aa23546f4b96e2"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_015/lit_2/sprite.webp",
+          "pixellab_object_id": "97aa4dec-f7f3-4024-b203-a63dce8401d5",
+          "generated_at": "2026-08-15T21:28:49+00:00",
+          "glow_concept": "wisps of soul-light circling the peak",
+          "difference_from_source": 0.657,
+          "glow_score": 0.1797,
+          "art_hash": "7fa88e8299f227c7"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_015/sprite.webp",
           "pixellab_object_id": "f35d740b-ffb2-411c-ad04-11dcf2b21e49",
           "generated_at": "2026-08-14T00:46:51+00:00",
           "art_hash": "2afee934c2afcb30"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1ddd1a29-e065-4460-9df4-e4793abdfc18",
+          "generated_at": "2026-08-15T21:27:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6642,
+          "glow_score": 0.0,
+          "art_hash": "919ea9fcb5399e4c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "2582d003-42e1-4007-8c63-abd9034754a3",
+          "generated_at": "2026-08-15T21:29:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2884,
+          "glow_score": 0.0,
+          "art_hash": "4f779c5e916c89f8"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ae45a372-d20d-45d2-9116-b99dea73faa1",
+          "generated_at": "2026-08-15T21:28:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2353,
+          "glow_score": 0.0,
+          "art_hash": "9e4911437bd5ad49"
         }
       },
       "animations": []
@@ -9074,9 +9227,9 @@
     {
       "id": "cairn_016",
       "rel": "cairns/cairn_016",
-      "name": "Cairn with flat capstone 016 \u00b7 lit",
+      "name": "Cairn with flat capstone 016",
       "category": "cairns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, cairn with flat capstone, waist-high, self-emissive at night, softly radiating light: warm light spilling from gaps between stones",
       "view": "low top-down",
       "size": 64,
@@ -9101,6 +9254,42 @@
           "pixellab_object_id": "1814ebf2-0b71-47f6-98c0-82be021c2e60",
           "generated_at": "2026-08-13T22:22:23+00:00",
           "art_hash": "b37901981790e0a3"
+        },
+        "LIT_2": {
+          "sprite": "cairns/cairn_016/lit_2/sprite.webp",
+          "pixellab_object_id": "b8392b83-a210-4ad7-a99f-a202ab331d06",
+          "generated_at": "2026-08-15T21:28:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4035,
+          "glow_score": 0.0,
+          "art_hash": "39e8d7a0f971bfee"
+        },
+        "LIT_3": {
+          "sprite": "cairns/cairn_016/lit_3/sprite.webp",
+          "pixellab_object_id": "97770576-0689-4ddf-ad84-9d7476f5c6cf",
+          "generated_at": "2026-08-15T21:30:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9462,
+          "glow_score": 0.0604,
+          "art_hash": "43fa292b6d4f2d2f"
+        },
+        "LIT_4": {
+          "sprite": "cairns/cairn_016/lit_4/sprite.webp",
+          "pixellab_object_id": "34e92b2f-dcfc-435e-9f01-670e809d9d8a",
+          "generated_at": "2026-08-15T21:29:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4794,
+          "glow_score": 0.0336,
+          "art_hash": "690dcb50f686f717"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cairns/cairn_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e266a5a5-fbde-4201-9e2a-c0b7b8fe6ffa",
+          "generated_at": "2026-08-15T21:30:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8949,
+          "glow_score": 0.0,
+          "art_hash": "eaf9550c129cd8d3"
         }
       },
       "animations": []
@@ -9110,7 +9299,7 @@
       "rel": "cairns/cairn_017",
       "name": "Stacked slate slab cairn 017",
       "category": "cairns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, stacked slate slab cairn, grown around a half-buried stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -9130,11 +9319,38 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cairns/cairn_017/lit_1/sprite.webp",
+          "pixellab_object_id": "35c702e9-6142-4df0-8c4c-4ff1dc6cee6e",
+          "generated_at": "2026-08-15T21:31:24+00:00",
+          "glow_concept": "topmost stone glowing like a lantern",
+          "difference_from_source": 0.8251,
+          "glow_score": 0.0496,
+          "art_hash": "262ad1fbf4332207"
+        },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_017/sprite.webp",
           "pixellab_object_id": "1db5890a-0b3e-43a2-9009-ac81c0a9d76e",
           "generated_at": "2026-08-14T01:28:18+00:00",
           "art_hash": "178feef4bb378e89"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a3e15e01-eadd-4519-8fc7-bf5b4203d682",
+          "generated_at": "2026-08-15T21:30:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6315,
+          "glow_score": 0.0,
+          "art_hash": "3f9cce4c12d2e750"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "221077d3-9cdd-40ea-9999-4807d71a7e86",
+          "generated_at": "2026-08-15T21:30:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5837,
+          "glow_score": 0.0,
+          "art_hash": "7793c1f9db1824a2"
         }
       },
       "animations": []
@@ -9169,6 +9385,15 @@
           "pixellab_object_id": "8d1e665a-6b45-40c6-ab0d-b597544f4531",
           "generated_at": "2026-08-14T01:38:34+00:00",
           "art_hash": "c9107464262eaa3d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cairns/cairn_019/not_lit_2/sprite.webp",
+          "pixellab_object_id": "543010d1-8845-40d4-bd33-f7e2fa95936c",
+          "generated_at": "2026-08-15T21:31:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3369,
+          "glow_score": 0.0,
+          "art_hash": "237bf1b8f030d5f6"
         }
       },
       "animations": []
