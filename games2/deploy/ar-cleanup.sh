@@ -49,8 +49,12 @@ echo "▶ project=$PROJECT_ID region=$REGION repo=$AR_REPO"
 gcloud config set project "$PROJECT_ID" >/dev/null
 
 echo "▶ current size (before)"
-gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" \
-  --format="value(sizeBytes)" | awk '{printf "  %.2f GB\n", $1/1073741824}'
+# NOT --format='value(sizeBytes)': that field comes back EMPTY from this API,
+# so the awk divided nothing and cheerfully printed "0.00 GB" over a 285 GB
+# repository (observed 2026-08-15). The real number is in gcloud's own
+# human-readable output, so read that and let it speak for itself.
+gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" 2>&1 \
+  | grep -iE "repository size" || echo "  (size not reported by this API version)"
 
 POLICY="$(mktemp)"
 cat > "$POLICY" <<'JSON'
@@ -80,4 +84,4 @@ echo "✅ done — Artifact Registry now prunes itself continuously."
 echo "   First sweep runs within a day; size drops over the following days"
 echo "   (deleted layers leave billing at the next storage sample)."
 echo "   Verify anytime with:"
-echo "     gcloud artifacts repositories describe $AR_REPO --location=$REGION --format='value(sizeBytes)'"
+echo "     gcloud artifacts repositories describe $AR_REPO --location=$REGION | grep -i 'repository size'"
