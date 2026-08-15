@@ -5,7 +5,7 @@
   "rank": 105,
   "index": 5,
   "name": "Box bed with drawers underneath 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "box bed with drawers underneath",
   "glow_concept": null,
   "prompt": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, box bed with drawers underneath, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:17:18+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "beds/bed_005/lit_1/sprite.webp",
+      "pixellab_object_id": "0e8732af-d43a-4b55-9448-1feccce6ca81",
+      "generated_at": "2026-08-15T20:10:02+00:00",
+      "glow_concept": "a warming pan glowing at the foot of the bed",
+      "difference_from_source": 0.9897,
+      "glow_score": 0.2167
+    },
+    "LIT_2": {
+      "sprite": "beds/bed_005/lit_2/sprite.webp",
+      "pixellab_object_id": "316d59a5-8d0a-478a-b8d6-c2167e3989be",
+      "generated_at": "2026-08-15T20:10:45+00:00",
+      "glow_concept": "a candle on the headboard shelf",
+      "difference_from_source": 0.9822,
+      "glow_score": 0.1173
+    },
     "NOT_LIT_1": {
       "sprite": "beds/bed_005/sprite.webp",
       "pixellab_object_id": "89329afb-778a-439c-adc2-f91104af3a6a",
       "generated_at": "2026-08-13T22:17:18+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "beds/bed_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1e8854eb-3c32-446f-8db6-cde5bdea33ea",
+      "generated_at": "2026-08-15T20:09:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5564,
+      "glow_score": 0.2585
+    },
+    "NOT_LIT_3": {
+      "sprite": "beds/bed_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "57f1511a-f01b-4958-b6ea-fbe75ab97e51",
+      "generated_at": "2026-08-15T20:08:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7827,
+      "glow_score": 0.2821
+    },
+    "NOT_LIT_4": {
+      "sprite": "beds/bed_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "87a9a0ae-dbbd-4259-a78c-e9612a3ae4d3",
+      "generated_at": "2026-08-15T20:09:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9029,
+      "glow_score": 0.109
     }
   }
 }

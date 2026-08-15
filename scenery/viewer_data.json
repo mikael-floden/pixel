@@ -4270,7 +4270,7 @@
       "rel": "beaver_lodges/beaver_lodge_001",
       "name": "Abandoned sagging lodge 001",
       "category": "beaver_lodges",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rounded dome lodge of gnawed sticks and packed mud built up at the shore, pale chewed log ends bristling from the weave, abandoned sagging lodge, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -4290,6 +4290,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beaver_lodges/beaver_lodge_001/lit_1/sprite.webp",
+          "pixellab_object_id": "819bee70-47ee-4aea-9b3d-6aa3c4f1f8f0",
+          "generated_at": "2026-08-15T20:06:49+00:00",
+          "glow_concept": "gnawed branch tips glowing like ember pokers",
+          "difference_from_source": 0.573,
+          "glow_score": 0.1324,
+          "art_hash": "0aa38b6c6f3db89c"
+        },
+        "LIT_2": {
+          "sprite": "beaver_lodges/beaver_lodge_001/lit_2/sprite.webp",
+          "pixellab_object_id": "fa46bef1-9c27-4cb7-bc47-9057d992265d",
+          "generated_at": "2026-08-15T20:11:24+00:00",
+          "glow_concept": "soulstone pebbles packed into the mud",
+          "difference_from_source": 0.7753,
+          "glow_score": 0.0888,
+          "art_hash": "ab950e9b3193153c"
+        },
         "NOT_LIT_1": {
           "sprite": "beaver_lodges/beaver_lodge_001/sprite.webp",
           "pixellab_object_id": "c2d60240-9adf-4326-92dc-c95a8e546f2d",
@@ -4331,7 +4349,7 @@
       "rel": "beds/bed_001",
       "name": "Sturdy iron-frame bed with brass knobs 001",
       "category": "beds",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, sturdy iron-frame bed with brass knobs, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -4351,6 +4369,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beds/bed_001/lit_1/sprite.webp",
+          "pixellab_object_id": "709ddfde-3ad2-4f5e-8cdd-247e4799ff2b",
+          "generated_at": "2026-08-15T20:05:55+00:00",
+          "glow_concept": "a candle on the headboard shelf",
+          "difference_from_source": 0.6287,
+          "glow_score": 0.2179,
+          "art_hash": "9e12be6d3c8cf4d0"
+        },
+        "LIT_2": {
+          "sprite": "beds/bed_001/lit_2/sprite.webp",
+          "pixellab_object_id": "01595486-a7e1-49b1-999b-5002710c012b",
+          "generated_at": "2026-08-15T20:05:56+00:00",
+          "glow_concept": "moonglow pooling on the quilt",
+          "difference_from_source": 0.993,
+          "glow_score": 0.1378,
+          "art_hash": "759bd5480ee3682f"
+        },
         "NOT_LIT_1": {
           "sprite": "beds/bed_001/sprite.webp",
           "pixellab_object_id": "b4a5d405-3d00-4ffc-a125-197229985c88",
@@ -4374,6 +4410,15 @@
           "difference_from_source": 0.6105,
           "glow_score": 0.1387,
           "art_hash": "ac3f89c379bb985a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beds/bed_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "193e5e5e-0827-4037-b892-3377f357afc0",
+          "generated_at": "2026-08-15T20:06:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5168,
+          "glow_score": 0.3105,
+          "art_hash": "c813f869fb9a50a0"
         }
       },
       "animations": []
@@ -4408,6 +4453,33 @@
           "pixellab_object_id": "cde51337-d881-430c-aab7-d286a3c00630",
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "a938588161cedd52"
+        },
+        "LIT_2": {
+          "sprite": "beds/bed_002/lit_2/sprite.webp",
+          "pixellab_object_id": "dbd024e4-12b7-4b20-896d-bccebf0d6bef",
+          "generated_at": "2026-08-15T20:06:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5915,
+          "glow_score": 0.2227,
+          "art_hash": "0d1076daece89889"
+        },
+        "LIT_3": {
+          "sprite": "beds/bed_002/lit_3/sprite.webp",
+          "pixellab_object_id": "771a676e-3462-4ac9-9090-9745d3a6db28",
+          "generated_at": "2026-08-15T20:07:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8157,
+          "glow_score": 0.0911,
+          "art_hash": "a36dc5bb369ddc8e"
+        },
+        "LIT_4": {
+          "sprite": "beds/bed_002/lit_4/sprite.webp",
+          "pixellab_object_id": "de0aa000-2a7e-4266-919a-82499406eeac",
+          "generated_at": "2026-08-15T20:07:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4949,
+          "glow_score": 0.4062,
+          "art_hash": "3df8458e4110c1c6"
         }
       },
       "animations": []
@@ -4417,7 +4489,7 @@
       "rel": "beds/bed_005",
       "name": "Box bed with drawers underneath 005",
       "category": "beds",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, box bed with drawers underneath, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -4437,11 +4509,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beds/bed_005/lit_1/sprite.webp",
+          "pixellab_object_id": "0e8732af-d43a-4b55-9448-1feccce6ca81",
+          "generated_at": "2026-08-15T20:10:02+00:00",
+          "glow_concept": "a warming pan glowing at the foot of the bed",
+          "difference_from_source": 0.9897,
+          "glow_score": 0.2167,
+          "art_hash": "a790f6085289d4da"
+        },
+        "LIT_2": {
+          "sprite": "beds/bed_005/lit_2/sprite.webp",
+          "pixellab_object_id": "316d59a5-8d0a-478a-b8d6-c2167e3989be",
+          "generated_at": "2026-08-15T20:10:45+00:00",
+          "glow_concept": "a candle on the headboard shelf",
+          "difference_from_source": 0.9822,
+          "glow_score": 0.1173,
+          "art_hash": "48feb29172bc2819"
+        },
         "NOT_LIT_1": {
           "sprite": "beds/bed_005/sprite.webp",
           "pixellab_object_id": "89329afb-778a-439c-adc2-f91104af3a6a",
           "generated_at": "2026-08-13T22:17:18+00:00",
           "art_hash": "8c1c5f1ec2894be4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beds/bed_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1e8854eb-3c32-446f-8db6-cde5bdea33ea",
+          "generated_at": "2026-08-15T20:09:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5564,
+          "glow_score": 0.2585,
+          "art_hash": "fe24a5e14d336d6f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beds/bed_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "57f1511a-f01b-4958-b6ea-fbe75ab97e51",
+          "generated_at": "2026-08-15T20:08:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7827,
+          "glow_score": 0.2821,
+          "art_hash": "3eebf5fa5cf3b725"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beds/bed_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "87a9a0ae-dbbd-4259-a78c-e9612a3ae4d3",
+          "generated_at": "2026-08-15T20:09:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9029,
+          "glow_score": 0.109,
+          "art_hash": "2b7aa23c67a2b501"
         }
       },
       "animations": []
@@ -4449,9 +4566,9 @@
     {
       "id": "bed_006",
       "rel": "beds/bed_006",
-      "name": "Canopy bed with heavy curtains 006 \u00b7 lit",
+      "name": "Canopy bed with heavy curtains 006",
       "category": "beds",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, canopy bed with heavy curtains, waist-high, self-emissive at night, softly radiating light: a little nightlight lantern beside the pillow",
       "view": "low top-down",
       "size": 128,
@@ -4476,6 +4593,51 @@
           "pixellab_object_id": "75fa5c25-a2d8-4847-a435-05f82907ec8c",
           "generated_at": "2026-08-13T22:02:03+00:00",
           "art_hash": "2b10fd1fdeebcd0d"
+        },
+        "LIT_2": {
+          "sprite": "beds/bed_006/lit_2/sprite.webp",
+          "pixellab_object_id": "118280a7-0cd5-4024-84d8-5c5c535b8586",
+          "generated_at": "2026-08-15T20:12:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4183,
+          "glow_score": 0.0577,
+          "art_hash": "f0cc155170897c30"
+        },
+        "LIT_3": {
+          "sprite": "beds/bed_006/lit_3/sprite.webp",
+          "pixellab_object_id": "16f5ddfd-20e9-4319-9fd1-3f9c0fbf1a7d",
+          "generated_at": "2026-08-15T20:11:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7032,
+          "glow_score": 0.0915,
+          "art_hash": "bb7de642ae9d806c"
+        },
+        "LIT_4": {
+          "sprite": "beds/bed_006/lit_4/sprite.webp",
+          "pixellab_object_id": "a527df59-a00d-4202-ba68-fd5613326016",
+          "generated_at": "2026-08-15T20:12:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7066,
+          "glow_score": 0.0467,
+          "art_hash": "f1873ad29ad31b35"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beds/bed_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8b365104-ad52-4427-9db3-724032896678",
+          "generated_at": "2026-08-15T20:13:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7712,
+          "glow_score": 0.0,
+          "art_hash": "261bfdc45086fcda"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beds/bed_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "556a5407-4908-44b2-a63d-f24a2b7c30b3",
+          "generated_at": "2026-08-15T20:14:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6092,
+          "glow_score": 0.0,
+          "art_hash": "4ec8fbbe33a87999"
         }
       },
       "animations": []
@@ -4483,9 +4645,9 @@
     {
       "id": "bed_012",
       "rel": "beds/bed_012",
-      "name": "Cupboard bed built into panelling 012 \u00b7 lit",
+      "name": "Cupboard bed built into panelling 012",
       "category": "beds",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, cupboard bed built into panelling, grand and heavy, small, knee-high, self-emissive at night, softly radiating light: a warming pan glowing at the foot of the bed",
       "view": "low top-down",
       "size": 128,
@@ -4518,6 +4680,51 @@
           "pixellab_object_id": "8d914a8f-98eb-48f2-9d6a-0a895080eb1a",
           "generated_at": "2026-08-15T18:09:40+00:00",
           "art_hash": "6f2c3c8f8f75a81c"
+        },
+        "LIT_2": {
+          "sprite": "beds/bed_012/lit_2/sprite.webp",
+          "pixellab_object_id": "41a2b394-461d-487d-a0d3-8257fe12089a",
+          "generated_at": "2026-08-15T20:13:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6866,
+          "glow_score": 0.1386,
+          "art_hash": "2f3a6b18d80a441c"
+        },
+        "LIT_3": {
+          "sprite": "beds/bed_012/lit_3/sprite.webp",
+          "pixellab_object_id": "4086a6db-f6ab-41e3-a768-af200e02087a",
+          "generated_at": "2026-08-15T20:14:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5934,
+          "glow_score": 0.0908,
+          "art_hash": "cc6833c13f467273"
+        },
+        "LIT_4": {
+          "sprite": "beds/bed_012/lit_4/sprite.webp",
+          "pixellab_object_id": "8369f3cd-419c-4dfe-84df-7e727b8d8f43",
+          "generated_at": "2026-08-15T20:15:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3735,
+          "glow_score": 0.128,
+          "art_hash": "260fd47504b37486"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beds/bed_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b00e740c-9335-4394-b7fd-1e8b912f6904",
+          "generated_at": "2026-08-15T20:14:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9297,
+          "glow_score": 0.0,
+          "art_hash": "4329f50d7e7174d4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beds/bed_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "dce621e8-18e7-4d41-a8f4-b15774bfce97",
+          "generated_at": "2026-08-15T20:15:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8427,
+          "glow_score": 0.0,
+          "art_hash": "711cdfdcab42e519"
         }
       },
       "animations": []
@@ -4704,6 +4911,24 @@
           "pixellab_object_id": "9dbbfab3-ee13-47f5-b909-7842382d4b27",
           "generated_at": "2026-08-13T07:22:11+00:00",
           "art_hash": "93369409bef7475b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beehives/beehive_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "37cdd1e8-5e52-46fb-b7d4-a63133de1977",
+          "generated_at": "2026-08-15T20:15:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5804,
+          "glow_score": 0.1065,
+          "art_hash": "3a749afa210fbe8a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beehives/beehive_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1ed74417-5cc4-44f5-b0a3-bb0bed17590e",
+          "generated_at": "2026-08-15T20:15:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6493,
+          "glow_score": 0.1698,
+          "art_hash": "0810b589590290de"
         }
       },
       "animations": []
