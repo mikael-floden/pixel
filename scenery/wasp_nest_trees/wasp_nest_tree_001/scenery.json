@@ -31,10 +31,101 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/lit_1/sprite.webp",
+      "pixellab_object_id": "2f9d8dd8-64f5-401c-b308-e708a1c6be74",
+      "glow_concept": "paper nest lit from inside like a lantern",
+      "difference_from_source": 0.5854,
+      "glow_score": 0.2299
+    },
+    "LIT_2": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/lit_2/sprite.webp",
+      "pixellab_object_id": "56fdf161-facc-42cb-90c7-5c74acb47ee5",
+      "glow_concept": "glowing wasps drifting like slow sparks",
+      "difference_from_source": 0.6314,
+      "glow_score": 0.1056
+    },
+    "LIT_3": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/lit_3/sprite.webp",
+      "pixellab_object_id": "3e054762-36de-4c4c-b8e1-9146d6b367d3",
+      "glow_concept": "amber honey seep glowing down the bark",
+      "difference_from_source": 0.4595,
+      "glow_score": 0.1523
+    },
+    "LIT_4": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/lit_4/sprite.webp",
+      "pixellab_object_id": "2891e482-b0ac-48c5-916d-dab8382cb8ab",
+      "glow_concept": "nest entrance glowing like a blown ember",
+      "difference_from_source": 0.4065,
+      "glow_score": 0.1131
+    },
     "NOT_LIT_1": {
       "sprite": "wasp_nest_trees/wasp_nest_tree_001/sprite.webp",
       "pixellab_object_id": "a6c1f6ee-0fb0-470f-9aa9-9275fd491818",
       "glow_score": 0.0774
+    },
+    "NOT_LIT_10": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_10/sprite.webp",
+      "pixellab_object_id": "26019f19-4a2b-4f3e-a943-4b2ea5e60c3b",
+      "glow_concept": null,
+      "difference_from_source": 0.3404,
+      "glow_score": 0.0922
+    },
+    "NOT_LIT_2": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "03b91b2d-e7ef-41bd-9bcc-81262800ec79",
+      "glow_concept": null,
+      "difference_from_source": 0.6027,
+      "glow_score": 0.0648
+    },
+    "NOT_LIT_3": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "663bff1d-30c3-4c52-9cc6-5531ada9ad61",
+      "glow_concept": null,
+      "difference_from_source": 0.5533,
+      "glow_score": 0.0532
+    },
+    "NOT_LIT_4": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5b12dc6e-7bd5-4ddb-b113-4e9a3d0dd199",
+      "glow_concept": null,
+      "difference_from_source": 0.6708,
+      "glow_score": 0.0524
+    },
+    "NOT_LIT_5": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "9d6cca16-3621-4296-92e1-da3b17eb1e39",
+      "glow_concept": null,
+      "difference_from_source": 0.5054,
+      "glow_score": 0.0621
+    },
+    "NOT_LIT_6": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_6/sprite.webp",
+      "pixellab_object_id": "a9754b9f-a54e-4d3d-8cba-b2abb8c909f0",
+      "glow_concept": null,
+      "difference_from_source": 0.4874,
+      "glow_score": 0.0636
+    },
+    "NOT_LIT_7": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_7/sprite.webp",
+      "pixellab_object_id": "37fad04a-760b-49c6-9685-ccc3569edf6c",
+      "glow_concept": null,
+      "difference_from_source": 0.4254,
+      "glow_score": 0.0694
+    },
+    "NOT_LIT_8": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_8/sprite.webp",
+      "pixellab_object_id": "fb127af7-ce87-4ac4-93b8-e55663de16e4",
+      "glow_concept": null,
+      "difference_from_source": 0.3272,
+      "glow_score": 0.0746
+    },
+    "NOT_LIT_9": {
+      "sprite": "wasp_nest_trees/wasp_nest_tree_001/not_lit_9/sprite.webp",
+      "pixellab_object_id": "eb744b90-605d-4e9c-889c-2261ce3de5bd",
+      "glow_concept": null,
+      "difference_from_source": 0.5702,
+      "glow_score": 0.0577
     }
   }
 }
