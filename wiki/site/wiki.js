@@ -1852,8 +1852,11 @@ function viewMonster(id) {
         // column, where it reads as the gap before the next panel instead of
         // opening a blank line in the middle of the page.
         loreSlot(monsterLore(m), state.data.domains.monsters.map(monsterLore)),
-        // Art/render tech (resolution, pads, foot metrics) is admin-only.
-        state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
+        // The art/render tech line (resolution, pads, foot metrics, kind) is
+        // GONE — maintainer 2026-08-15: "only the text 'Open in PixelLab ↗' is
+        // enough for the admin here". It was measurement output, useful while
+        // the shadows and foot anchors were being calibrated and noise ever
+        // since; every number in it is still in data.json for whoever needs it.
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
