@@ -434,32 +434,42 @@ function makePlayer(entity, kind, opts = {}) {
     const target = clip;                    // the clip may change before onload
     const fw = target.fw ?? entity.frameW ?? 64, fh = target.fh ?? entity.frameH ?? 64;
     if (target.strip) {
-      img = new Image();
-      img.onload = () => {
-        const n = Math.max(1, Math.min(target.frames ?? 1, Math.floor(img.naturalWidth / fw) || 1));
-        selfMeasure(target, Array.from({ length: n }, (_, i) => [img, i * fw]), fw, fh);
+      const url = assetUrl(target.strip);
+      const ready = (im) => {
+        const n = Math.max(1, Math.min(target.frames ?? 1, Math.floor(im.naturalWidth / fw) || 1));
+        selfMeasure(target, Array.from({ length: n }, (_, i) => [im, i * fw]), fw, fh);
         draw();
       };
-      img.src = assetUrl(target.strip);
+      const hit = warmHit(url);
+      if (hit) { img = hit; ready(hit); }           // prefetched: no request, no decode
+      else {
+        img = new Image();
+        img.onload = () => { rememberWarm(url, img); ready(img); };
+        img.src = url;
+      }
     } else if (clip.framesDir) {
       let loaded = 0;
-      frameImgs = Array.from({ length: clip.frames }, (_, i) => {
-        const im = new Image();
-        // Measured on the LAST frame — the union needs them all, the same way
-        // the Python unions a strip. The first frame still draws immediately,
-        // so nothing waits on the tail of a long animation.
-        im.onload = () => {
-          if (++loaded >= frameImgs.length) {
-            selfMeasure(target, frameImgs.map((x) => [x, 0]), fw, fh);
-            draw();
-          } else if (i === 0) draw();
-        };
-        // A frame that 404s still has to count, or one gap stalls the union
-        // for the whole clip and it never measures at all.
-        im.onerror = () => { if (++loaded >= frameImgs.length) { selfMeasure(target, frameImgs.map((x) => [x, 0]), fw, fh); draw(); } };
+      const total = clip.frames;
+      // Measured on the LAST frame — the union needs them all, the same way
+      // the Python unions a strip. The first frame still draws immediately, so
+      // nothing waits on the tail of a long animation. A frame that 404s still
+      // counts, or one gap stalls the union and the clip never measures.
+      const settle = (i) => {
+        if (++loaded >= total) { selfMeasure(target, frameImgs.map((x) => [x, 0]), fw, fh); draw(); }
+        else if (i === 0) draw();
+      };
+      frameImgs = Array.from({ length: total }, (_, i) => {
         // The builder measured how this domain names its frames — "0.png" or
         // "00.webp". Never assume: the two domains differ.
-        im.src = assetUrl(`${clip.framesDir}/${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`);
+        const url = assetUrl(`${clip.framesDir}/${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`);
+        const hit = warmHit(url);
+        // A prefetched frame is already decoded; settle it in a microtask so
+        // frameImgs is fully built before the union reads it.
+        if (hit) { queueMicrotask(() => settle(i)); return hit; }
+        const im = new Image();
+        im.onload = () => { rememberWarm(url, im); settle(i); };
+        im.onerror = () => settle(i);
+        im.src = url;
         return im;
       });
     }
@@ -846,6 +856,102 @@ function usePill(usedBy, whatUnused) {
 // ← back crumb + prev/next through the domain's full list (wraps around).
 // Layout rule (maintainer 2026-07-30): the "X / N" counter sits LEFT of the
 // buttons so they stay in the same spot when the number gets wider.
+/* -------------------------------------------------- prefetch (look-ahead) */
+// "When I open a tree's page I want all states to load in the background, and
+// also the tree on the next/prev page and all its states … to make the wiki
+// faster and prepare for what I might look at next. Of course we should not
+// reload something I have already loaded" (maintainer 2026-08-15).
+//
+// Reviewing is a rhythm: open a piece, click through its variants and
+// directions, press ›, repeat. Every one of those clicks used to start a fetch
+// at the moment of the click. This warms them while he is still looking at the
+// current frame, in the order he is likely to want them, and never twice.
+//
+// Priority, one FIFO, staged so the useful things are in flight first:
+//   1. every state × direction of THIS entity — its first asset (a strip is
+//      the whole animation; a frame directory's first frame is what draws)
+//   2. the same for the previous and next entity, so ‹ › is instant
+//   3. the remaining frames of this entity's frame-directory clips
+//   4. the remaining frames of the neighbours'
+const warmed = new Set();           // every URL this session has ever asked for
+let warmQ = [], warmActive = 0, warmGen = 0;
+const WARM_PARALLEL = 4;            // enough to fill a phone link, few enough to stay out of the way
+// The DECODED images are kept too, not just their bytes. Two reasons: the
+// origin serves `cache-control: no-cache`, so a second Image for the same URL
+// would still make a revalidation round trip; and decoding a 920x184 strip
+// again costs real milliseconds on a phone. Bounded by decoded SIZE — a
+// monster's 40 strips are ~27 MB and scenery is far smaller, so this holds a
+// creature and both its neighbours and then evicts oldest-first.
+const warmImg = new Map();          // url -> a loaded HTMLImageElement
+const WARM_BYTES = 64 * 1024 * 1024;
+let warmBytes = 0;
+function rememberWarm(url, im) {
+  const size = (im.naturalWidth || 0) * (im.naturalHeight || 0) * 4;
+  if (!size || warmImg.has(url)) return;
+  warmImg.set(url, im);
+  warmBytes += size;
+  for (const [k, v] of warmImg) {
+    if (warmBytes <= WARM_BYTES) break;
+    warmImg.delete(k);
+    warmBytes -= (v.naturalWidth || 0) * (v.naturalHeight || 0) * 4;
+  }
+}
+/** A ready-to-draw image for this url — the warmed one when we have it. */
+function warmHit(url) {
+  const im = warmImg.get(url);
+  return im && im.complete && im.naturalWidth ? im : null;
+}
+const warmIdle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 300));
+function warmPump() {
+  while (warmActive < WARM_PARALLEL && warmQ.length) {
+    const url = warmQ.shift();
+    warmActive++;
+    const im = new Image();
+    // Low priority and async decode: the page the maintainer is LOOKING at
+    // must never wait behind speculative work.
+    im.decoding = "async";
+    try { im.fetchPriority = "low"; } catch { /* older engines */ }
+    const done = () => { warmActive--; warmPump(); };
+    im.onload = () => { rememberWarm(url, im); done(); };
+    im.onerror = done;                 // a 404 is warmed too — it must not retry
+    im.src = url;
+  }
+}
+function warmUrl(url) {
+  if (!url || warmed.has(url)) return;   // never twice, whatever asks for it
+  warmed.add(url);
+  warmQ.push(url);
+  warmPump();
+}
+/** Every file behind one clip. `firstOnly` takes just the asset that draws. */
+function clipUrls(clip, firstOnly) {
+  if (!clip) return [];
+  if (clip.strip) return [assetUrl(clip.strip)];      // a strip IS the whole animation
+  if (!clip.framesDir) return [];
+  const n = firstOnly ? 1 : Math.max(1, clip.frames ?? 1);
+  return Array.from({ length: n }, (_, i) =>
+    assetUrl(`${clip.framesDir}/${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`));
+}
+const entityUrls = (e, firstOnly) => Object.values(e?.animations ?? {})
+  .flatMap((a) => Object.values(a.dirs ?? {}).flatMap((c) => clipUrls(c, firstOnly)));
+/** Warm this entity and its two neighbours in the list ‹ › walks. */
+function prefetchAround(entity, list, id) {
+  // Honour the reader's own connection settings — a data-saver phone gets the
+  // page it asked for and nothing else.
+  try { if (navigator.connection?.saveData) return; } catch { /* no NetworkInformation */ }
+  const gen = ++warmGen;               // a new page abandons the old page's queue
+  warmQ = [];
+  const i = Array.isArray(list) ? list.findIndex((x) => x.id === id) : -1;
+  const near = i >= 0 && list.length > 1
+    ? [list[(i - 1 + list.length) % list.length], list[(i + 1) % list.length]].filter((x) => x && x.id !== id)
+    : [];
+  const stage = (urls) => warmIdle(() => { if (gen === warmGen) urls.forEach(warmUrl); });
+  stage(entityUrls(entity, true));
+  stage(near.flatMap((n) => entityUrls(n, true)));
+  stage(entityUrls(entity, false));
+  stage(near.flatMap((n) => entityUrls(n, false)));
+}
+
 function crumbRow(backHref, backLabel, base, list, id) {
   const i = list.findIndex((x) => x.id === id);
   const prev = list[(i - 1 + list.length) % list.length];
@@ -1652,6 +1758,9 @@ function viewMonster(id) {
   };
   player.onFacetChange = renderFacet;
   renderFacet();
+  // Warm every animation of this creature and of the two either side of it,
+  // so clicking Walk, turning to NE or pressing › does not start a download.
+  prefetchAround(m, state.data.domains.monsters, m.id);
   return h("div", {},
     crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", state.data.domains.monsters, m.id),
     h("div", { class: "detail-head" },
@@ -1860,6 +1969,7 @@ function viewCharacter(id) {
   // reserve, so the viewer's height is constant within what you can page to.
   const isNpc = c.kind === "npc";
   const group = state.data.domains.characters.filter((x) => (x.kind === "npc") === isNpc);
+  prefetchAround(c, group, c.id);
   return h("div", {},
     // Back-link names the RACE, not the section — the page reads as if it
     // sat at /races/human/<id> (maintainer 2026-08-05). It still LEADS to
@@ -2455,6 +2565,9 @@ function viewObject(id) {
   const q = objectQueue();
   const inQueue = q.list.some((x) => x.id === o.id);
   const navList = inQueue ? q.list : [o, ...q.list];
+  // navList, not the whole domain: with a filter on, ‹ › walks the filtered
+  // set, so the piece worth warming is the next one HE will see.
+  prefetchAround(o, navList, o.id);
   return h("div", {},
     crumbRow("#/objects", `← ${label("objects")}`, "objects", navList, o.id),
     q.active ? h("a", {
