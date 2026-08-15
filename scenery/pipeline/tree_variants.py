@@ -52,11 +52,6 @@ PARALLEL = 8
 # batch either way; only the PUSH (and therefore the deploy) is batched. 60
 # turns a 497-piece run into ~8 deploys instead of ~40.
 COMMIT_EVERY = 60
-# Must cover the WHOLE fallback list. Two blunt shape-forcing prompts were
-# appended ("give it a DIFFERENT TRUNK SHAPE", "change the whole shape") and the
-# cap stayed at 10, so those two were never reached -- hanging_willow_002 gave
-# up with the strongest prompts unused.
-MAX_PROMPT_TRIES = len(LEAD_FALLBACKS)
 
 # The maintainer, watching a third of first attempts come back as the same
 # picture: "maybe it's as easy as telling the AI this should be a new looking
@@ -89,6 +84,14 @@ LEAD_FALLBACKS = [
     "Same tree type. Change the whole shape: trunk, main branches, crown "
     "outline. It must not match the old one.",
 ]
+
+
+# Must cover the WHOLE fallback list. Two blunt shape-forcing prompts were
+# appended for exactly the tree that keeps returning the same shape, but the cap
+# stayed at 10 while the list grew to 12 — so the strongest two were never
+# reached, and hanging_willow_002 abandoned four states with them unused.
+# Derived from the list so it cannot drift again.
+MAX_PROMPT_TRIES = len(LEAD_FALLBACKS)
 
 
 def not_lit_clause():
