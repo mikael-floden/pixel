@@ -165,18 +165,20 @@ def glow_for(man, cfg, state):
 
 
 def prompt_for(state, anchor, glow, attempt=0):
-    """A ladder rung plus, when the state crosses lighting, one short clause."""
-    lead = P.LADDER[min(attempt, len(P.LADDER) - 1)]
+    """A ladder rung, a preservation clause, and — only when the state CROSSES
+    lighting conditions — one clause naming that change.
+
+    A same-condition variant gets no lighting clause: there is nothing to
+    change, and the pilot showed that saying anything at all about light is
+    read as a palette instruction and turns wood to stone."""
+    parts = [P.LADDER[min(attempt, len(P.LADDER) - 1)], P.PRESERVE]
     want_lit = state.startswith("LIT_")
     anchor_lit = anchor.startswith("LIT_")
     if want_lit and not anchor_lit:
-        return f"{lead} {P.MAKE_LIT}" + (f" {glow}." if glow else "")
-    if want_lit and anchor_lit:
-        # already lit: keep it lit, vary the light itself between siblings
-        return f"{lead} {P.STAY_LIT}" + (f" {glow}." if glow else "")
-    if not want_lit and anchor_lit:
-        return f"{lead} {P.MAKE_UNLIT}"
-    return f"{lead} {P.STAY_UNLIT}"
+        parts.append(P.MAKE_LIT + (f" {glow}." if glow else ""))
+    elif not want_lit and anchor_lit:
+        parts.append(P.MAKE_UNLIT)
+    return " ".join(p for p in parts if p)
 
 
 def finalize(client, rel, man, state, oid, source_img, siblings, glow_used):

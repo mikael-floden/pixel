@@ -5,7 +5,7 @@
   "rank": 28,
   "index": 1,
   "name": "Moss-ringed leaky barrel 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "moss-ringed leaky barrel",
   "glow_concept": null,
   "prompt": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, moss-ringed leaky barrel, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -29,5 +29,6 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
-  "generated_at": "2026-08-13T00:55:11+00:00"
+  "generated_at": "2026-08-13T00:55:11+00:00",
+  "states": {}
 }

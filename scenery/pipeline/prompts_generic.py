@@ -38,12 +38,33 @@ LADDER = [
     "match the old one.",
 ]
 
+# --- preservation ------------------------------------------------------------
+# MEASURED ON THE FIRST PILOT, 2026-08-15. Without this, a warm brown wooden
+# barrel came back three times as a GREY STONE barrel, and one variant was drawn
+# much larger and from a different camera angle. Both are the failures the
+# maintainer already named: "Wrong color palette" on honey_tree_002, and his
+# warning that loose wording "will get this AI to start painting and turning
+# wood into stone".
+#
+# This is preservation stated POSITIVELY — what to keep, never what to avoid —
+# so it does not trip the noun-negation rule. Short, because it rides on every
+# single prompt.
+PRESERVE = "Keep the same colours, the same size and the same viewing angle."
+
 # --- lighting ----------------------------------------------------------------
-# MAKE_UNLIT is the rule-1 trap: it is a removal. The tree pipeline still says
-# "remove the {glow}", which names the very thing that must disappear. This says
-# what a dark object LOOKS like instead.
-MAKE_LIT = "This one is lit from within and gives off light in the dark:"
-STAY_LIT = "This one also gives off light:"
-MAKE_UNLIT = ("This one is cold and dark, lit only by the surrounding scene, "
-              "its colours dull and unlit.")
-STAY_UNLIT = "This one is cold and dark, lit only by the surrounding scene."
+# THE BIGGEST LESSON OF THE PILOT: A SAME-CONDITION VARIANT GETS NO LIGHTING
+# CLAUSE AT ALL. Three of every unlit piece's five new states are unlit->unlit,
+# where nothing about the lighting changes — and the clause I had there ("cold
+# and dark ... its colours dull and unlit") was read as a PALETTE instruction
+# and drained the wood grey. Saying nothing is not laziness here; it is the only
+# correct instruction, because there is nothing to change.
+STAY_LIT = ""
+STAY_UNLIT = ""
+
+# Crossing conditions is a real change and must be stated. Naming the CHANGE is
+# fine — the maintainer's own working window prompt says "represent lights being
+# on inside the house". What is forbidden is naming things incidentally, which
+# is what "remove the {glow}" (still in the tree pipeline) and my "cold, dull
+# colours" both did.
+MAKE_LIT = "This one is lit up and gives off its own light:"
+MAKE_UNLIT = "This one is not lit up and gives off no light of its own."
