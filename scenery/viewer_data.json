@@ -2062,7 +2062,44 @@
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "barrels/barrel_001/lit_1/sprite.webp",
+          "pixellab_object_id": "b5076f2e-5183-4f1e-aaaf-438820ec1295",
+          "generated_at": "2026-08-15T19:20:38+00:00",
+          "glow_concept": "pale soulstone hoops instead of iron",
+          "difference_from_source": 0.9106,
+          "glow_score": 0.1647,
+          "art_hash": "987c822ae921c2fc"
+        },
+        "LIT_2": {
+          "sprite": "barrels/barrel_001/lit_2/sprite.webp",
+          "pixellab_object_id": "da59d833-0f3a-40a1-a149-eb7ec3823752",
+          "generated_at": "2026-08-15T19:20:39+00:00",
+          "glow_concept": "foxfire fungus fringing the damp base",
+          "difference_from_source": 0.5744,
+          "glow_score": 0.0275,
+          "art_hash": "2cffc3bec459954d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "barrels/barrel_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e4d5e309-c373-4e89-a803-2d38fdf2531a",
+          "generated_at": "2026-08-15T19:20:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5033,
+          "glow_score": 0.0,
+          "art_hash": "356bda2f17d8527a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "barrels/barrel_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6223c546-8ad2-4fea-b289-bb8a100189f1",
+          "generated_at": "2026-08-15T19:22:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5986,
+          "glow_score": 0.0458,
+          "art_hash": "55a9401cd37c3c84"
+        }
+      },
       "animations": []
     },
     {
@@ -2070,7 +2107,7 @@
       "rel": "barrels/barrel_003",
       "name": "Small ale keg on trestle 003",
       "category": "barrels",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, small ale keg on trestle, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -2089,7 +2126,53 @@
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {},
+      "states": {
+        "LIT_1": {
+          "sprite": "barrels/barrel_003/lit_1/sprite.webp",
+          "pixellab_object_id": "d60fefed-ad06-4459-ac4b-5471c92da462",
+          "generated_at": "2026-08-15T19:22:29+00:00",
+          "glow_concept": "glowing rune brand scorched into the staves",
+          "difference_from_source": 0.7727,
+          "glow_score": 0.0286,
+          "art_hash": "9a2d36636c86c5ea"
+        },
+        "LIT_2": {
+          "sprite": "barrels/barrel_003/lit_2/sprite.webp",
+          "pixellab_object_id": "e31e02f1-4177-4af6-82e3-a2438a1e65da",
+          "generated_at": "2026-08-15T19:22:30+00:00",
+          "glow_concept": "pale soulstone hoops instead of iron",
+          "difference_from_source": 0.8219,
+          "glow_score": 0.1394,
+          "art_hash": "7a52a34037368a05"
+        },
+        "NOT_LIT_2": {
+          "sprite": "barrels/barrel_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "852dbbd5-69a1-4eb1-b0c4-c95e6fd76a6d",
+          "generated_at": "2026-08-15T19:20:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5879,
+          "glow_score": 0.0,
+          "art_hash": "39e99a366e883b89"
+        },
+        "NOT_LIT_3": {
+          "sprite": "barrels/barrel_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "480b4198-08cc-40e7-a13f-9174e2448155",
+          "generated_at": "2026-08-15T19:20:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2302,
+          "glow_score": 0.0,
+          "art_hash": "3e314f29e6c7e132"
+        },
+        "NOT_LIT_4": {
+          "sprite": "barrels/barrel_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4c883422-4965-4b23-9760-313fda2f8cb5",
+          "generated_at": "2026-08-15T19:20:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2153,
+          "glow_score": 0.007,
+          "art_hash": "9437692b8c6f84fc"
+        }
+      },
       "animations": []
     },
     {
@@ -10483,7 +10566,7 @@
       "rel": "fallen_logs/fallen_log_011",
       "name": "Moss-covered oak log 011",
       "category": "fallen_logs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, moss-covered oak log, one side die-back, the other thriving, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -10511,6 +10594,33 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "fallen_logs/fallen_log_011/lit_2/sprite.webp",
+          "pixellab_object_id": "451d2a50-9496-42e1-8437-cd9999c14b0c",
+          "generated_at": "2026-08-15T19:21:50+00:00",
+          "glow_concept": "rows of shelf fungi glowing pale green",
+          "difference_from_source": 0.7085,
+          "glow_score": 0.1352,
+          "art_hash": "7b1d92bd929cccea"
+        },
+        "LIT_3": {
+          "sprite": "fallen_logs/fallen_log_011/lit_3/sprite.webp",
+          "pixellab_object_id": "c4fac6da-906e-4afd-a330-5f7c95144006",
+          "generated_at": "2026-08-15T19:22:28+00:00",
+          "glow_concept": "luminous moss carpeting the upper side",
+          "difference_from_source": 0.9869,
+          "glow_score": 0.2163,
+          "art_hash": "5663dfda47d3a814"
+        },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_011/lit_4/sprite.webp",
+          "pixellab_object_id": "3f81f207-fe32-4137-9e9f-b317679698c6",
+          "generated_at": "2026-08-15T19:22:41+00:00",
+          "glow_concept": "ember-orange glow inside the hollow end",
+          "difference_from_source": 0.8158,
+          "glow_score": 0.0311,
+          "art_hash": "d827fb70f917dde4"
+        },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_011/sprite.webp",
           "pixellab_object_id": "5a872c5e-f5e9-4400-97f6-ffa1ae693312",
@@ -10639,6 +10749,60 @@
           "pixellab_object_id": "ef0af572-27eb-4073-afc6-7e687dcf804b",
           "glow_score": 0.0046,
           "art_hash": "4548d0534ac7cfc8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ebe739b4-f822-4653-8c13-dd047fd5c857",
+          "generated_at": "2026-08-15T19:21:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.794,
+          "glow_score": 0.1778,
+          "art_hash": "32abbab374383e6d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "82848857-ae9e-4f03-8af1-7b47bc997664",
+          "generated_at": "2026-08-15T19:21:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8355,
+          "glow_score": 0.0,
+          "art_hash": "0487312beea45c30"
+        },
+        "NOT_LIT_5": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_5/sprite.webp",
+          "pixellab_object_id": "f9ca503b-84f6-48ee-adb8-77ee457cc5e7",
+          "generated_at": "2026-08-15T19:21:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7663,
+          "glow_score": 0.0022,
+          "art_hash": "2200fe4d83df5442"
+        },
+        "NOT_LIT_6": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_6/sprite.webp",
+          "pixellab_object_id": "1c6e19c6-5f52-4811-a62d-04b4e9085489",
+          "generated_at": "2026-08-15T19:24:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7146,
+          "glow_score": 0.0018,
+          "art_hash": "e3868d63804a0efc"
+        },
+        "NOT_LIT_7": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_7/sprite.webp",
+          "pixellab_object_id": "c05efec0-a1c7-4692-9a7d-fc54a2ee7496",
+          "generated_at": "2026-08-15T19:24:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6172,
+          "glow_score": 0.0097,
+          "art_hash": "100916d31683aab4"
+        },
+        "NOT_LIT_8": {
+          "sprite": "fallen_logs/fallen_log_013/not_lit_8/sprite.webp",
+          "pixellab_object_id": "29154796-cfd9-4a44-9561-95fa481144cb",
+          "generated_at": "2026-08-15T19:24:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8106,
+          "glow_score": 0.0004,
+          "art_hash": "f81d2663c48486b2"
         }
       },
       "animations": []
