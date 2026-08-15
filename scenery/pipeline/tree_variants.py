@@ -284,8 +284,36 @@ def finalize(client, rel, man, state, new_oid, source_img, glow_used=None):
                      "difference_from_source": round(diff, 4),
                      "glow_score": round(glow_score(img), 4)}
     fresh["states"] = {k: states[k] for k in sorted(states)}
+    demote_piece_lights(fresh)
     factory.write_manifest(rel, fresh)
     return diff
+
+
+def demote_piece_lights(man):
+    """Once a piece carries BOTH lit and unlit states, it is neither.
+
+    `lights` and the "· lit" name suffix were set at birth, when a piece was a
+    single sprite and being lit was a property of the whole thing. A tree with
+    10 NOT_LIT and 4 LIT states has no such property — those labels now describe
+    only its ANCHOR state while claiming to describe the piece. The maintainer
+    reads them in the wiki: "Elm stub swollen nest 002 · lit" opens onto ten
+    unlit variants, and the lights facet files it under lit. The states map
+    already carries the truth per state (the LIT_/NOT_LIT_ key IS the label), so
+    the piece-level copy is not just stale, it is redundant. Cleared, not
+    recomputed: `lights: null` is the honest answer for a mixed piece, and the
+    wiki already reads the field as nullable."""
+    st = {k.upper() for k in (man.get("states") or {})}
+    if not (any(k.startswith("LIT_") for k in st)
+            and any(k.startswith("NOT_LIT_") for k in st)):
+        return False
+    changed = man.get("lights") is not None
+    man["lights"] = None
+    name = man.get("name") or ""
+    for suffix in (" · lit", " · unlit"):
+        if name.endswith(suffix):
+            man["name"] = name[: -len(suffix)]
+            changed = True
+    return changed
 
 
 def anchor_entry(man, anchor):
