@@ -4886,7 +4886,7 @@
       "rel": "beehives/beehive_003",
       "name": "Tilted ivy-grown abandoned skep 003",
       "category": "beehives",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, tilted ivy-grown abandoned skep, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -4906,6 +4906,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beehives/beehive_003/lit_1/sprite.webp",
+          "pixellab_object_id": "6b1c31fd-b0e3-4d20-b95d-47ffa0b3f330",
+          "generated_at": "2026-08-15T20:16:15+00:00",
+          "glow_concept": "faint honeycomb pattern of light through the straw",
+          "difference_from_source": 0.8131,
+          "glow_score": 0.3121,
+          "art_hash": "fcd6f20507393fd9"
+        },
+        "LIT_2": {
+          "sprite": "beehives/beehive_003/lit_2/sprite.webp",
+          "pixellab_object_id": "35382524-e123-46d6-9a24-fa08b7efaca6",
+          "generated_at": "2026-08-15T20:18:34+00:00",
+          "glow_concept": "votive candle on the stand beside the hive",
+          "difference_from_source": 0.8294,
+          "glow_score": 0.432,
+          "art_hash": "fd1995cf3835df2d"
+        },
         "NOT_LIT_1": {
           "sprite": "beehives/beehive_003/sprite.webp",
           "pixellab_object_id": "9dbbfab3-ee13-47f5-b909-7842382d4b27",
@@ -4929,6 +4947,15 @@
           "difference_from_source": 0.6493,
           "glow_score": 0.1698,
           "art_hash": "0810b589590290de"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beehives/beehive_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "35bfd290-b0d9-47c6-8643-f90dc2db0854",
+          "generated_at": "2026-08-15T20:16:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6063,
+          "glow_score": 0.0023,
+          "art_hash": "9a559a197141c853"
         }
       },
       "animations": []
@@ -4936,9 +4963,9 @@
     {
       "id": "beehive_004",
       "rel": "beehives/beehive_004",
-      "name": "Tall four-coil skep 004 \u00b7 lit",
+      "name": "Tall four-coil skep 004",
       "category": "beehives",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, tall four-coil skep, waist-high to an adult person, self-emissive at night, softly radiating light: shining amber honey seeping down the coils",
       "view": "low top-down",
       "size": 64,
@@ -4963,6 +4990,51 @@
           "pixellab_object_id": "56bbc68d-4f77-4ce7-b9a7-329e98a532f1",
           "generated_at": "2026-08-13T09:16:45+00:00",
           "art_hash": "08487503098f6de2"
+        },
+        "LIT_2": {
+          "sprite": "beehives/beehive_004/lit_2/sprite.webp",
+          "pixellab_object_id": "983cba1b-2d13-4ca6-b92a-363047d18f27",
+          "generated_at": "2026-08-15T20:17:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2892,
+          "glow_score": 0.275,
+          "art_hash": "34ea98c2a70996b2"
+        },
+        "LIT_3": {
+          "sprite": "beehives/beehive_004/lit_3/sprite.webp",
+          "pixellab_object_id": "d1332baa-e812-40ad-9a5a-043722918872",
+          "generated_at": "2026-08-15T20:16:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4597,
+          "glow_score": 0.3665,
+          "art_hash": "818f89d2ed313b03"
+        },
+        "LIT_4": {
+          "sprite": "beehives/beehive_004/lit_4/sprite.webp",
+          "pixellab_object_id": "e4de8c13-54b0-4c53-b019-880761a5654c",
+          "generated_at": "2026-08-15T20:18:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6755,
+          "glow_score": 0.2244,
+          "art_hash": "79e689705eda184c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beehives/beehive_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6b4eee7b-f607-4e12-90f5-410d63176f13",
+          "generated_at": "2026-08-15T20:17:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8232,
+          "glow_score": 0.0737,
+          "art_hash": "458353a4713d1d31"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beehives/beehive_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1fb65044-c03f-42c2-b2dc-265753335dfa",
+          "generated_at": "2026-08-15T20:18:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4392,
+          "glow_score": 0.2504,
+          "art_hash": "323713438befb432"
         }
       },
       "animations": []
@@ -4970,9 +5042,9 @@
     {
       "id": "beehive_006",
       "rel": "beehives/beehive_006",
-      "name": "Straw-wrapped snowy winter skep 006 \u00b7 lit",
+      "name": "Straw-wrapped snowy winter skep 006",
       "category": "beehives",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, straw-wrapped snowy winter skep, waist-high to an adult person, self-emissive at night, softly radiating light: luminous bees drifting around the dome like sparks",
       "view": "low top-down",
       "size": 64,
@@ -4997,6 +5069,51 @@
           "pixellab_object_id": "c56483dc-f964-401f-9cda-096245604e93",
           "generated_at": "2026-08-13T12:38:13+00:00",
           "art_hash": "a9c94d733d2845aa"
+        },
+        "LIT_2": {
+          "sprite": "beehives/beehive_006/lit_2/sprite.webp",
+          "pixellab_object_id": "cdc08706-9f3a-4957-9228-f8565dd7d5e1",
+          "generated_at": "2026-08-15T20:20:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6467,
+          "glow_score": 0.1376,
+          "art_hash": "df16021a38c04f2d"
+        },
+        "LIT_3": {
+          "sprite": "beehives/beehive_006/lit_3/sprite.webp",
+          "pixellab_object_id": "47eff633-4c18-49ec-8538-5673e5e95ace",
+          "generated_at": "2026-08-15T20:19:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4226,
+          "glow_score": 0.3227,
+          "art_hash": "713a98f5737a141d"
+        },
+        "LIT_4": {
+          "sprite": "beehives/beehive_006/lit_4/sprite.webp",
+          "pixellab_object_id": "02a1b652-4a96-4dcf-a1d8-05823cf4b40b",
+          "generated_at": "2026-08-15T20:19:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5391,
+          "glow_score": 0.2714,
+          "art_hash": "d1f16c7108fd4920"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beehives/beehive_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9708b945-bf66-4afd-b4aa-e612510108a8",
+          "generated_at": "2026-08-15T20:19:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8376,
+          "glow_score": 0.0787,
+          "art_hash": "e4cf7dcd02318bf7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beehives/beehive_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b174525f-8c9b-4d8e-895e-ecdcf41179b5",
+          "generated_at": "2026-08-15T20:19:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7031,
+          "glow_score": 0.1458,
+          "art_hash": "7c002badcf839671"
         }
       },
       "animations": []
@@ -5006,7 +5123,7 @@
       "rel": "beehives/beehive_011",
       "name": "Moss-capped forest skep 011",
       "category": "beehives",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, moss-capped forest skep, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -5026,11 +5143,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beehives/beehive_011/lit_1/sprite.webp",
+          "pixellab_object_id": "0fa6bf08-98e3-4438-bbc3-2a99be1bb1b8",
+          "generated_at": "2026-08-15T20:21:41+00:00",
+          "glow_concept": "votive candle on the stand beside the hive",
+          "difference_from_source": 0.732,
+          "glow_score": 0.1189,
+          "art_hash": "93029e68725c6cd3"
+        },
+        "LIT_2": {
+          "sprite": "beehives/beehive_011/lit_2/sprite.webp",
+          "pixellab_object_id": "001f4539-ae97-4fc8-9aba-fee85fed84f2",
+          "generated_at": "2026-08-15T20:21:31+00:00",
+          "glow_concept": "moon-pale gleaming wax drippings",
+          "difference_from_source": 0.6612,
+          "glow_score": 0.1512,
+          "art_hash": "0c21d81556a9627b"
+        },
         "NOT_LIT_1": {
           "sprite": "beehives/beehive_011/sprite.webp",
           "pixellab_object_id": "16c622ec-5dd9-4451-9680-542ee1db3cc9",
           "generated_at": "2026-08-13T22:10:31+00:00",
           "art_hash": "a3b371299edd130c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beehives/beehive_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "059fc563-e5de-4f7e-8c9e-e0f3a292eb14",
+          "generated_at": "2026-08-15T20:21:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9134,
+          "glow_score": 0.0,
+          "art_hash": "1448acb7a4ae1226"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beehives/beehive_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "bddf03b3-9cb0-4639-8c72-1c02c753e3e4",
+          "generated_at": "2026-08-15T20:20:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6417,
+          "glow_score": 0.3467,
+          "art_hash": "fc495fa7f0be90e1"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beehives/beehive_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "184f84d4-aa53-4022-bdfd-33a658af07c7",
+          "generated_at": "2026-08-15T20:21:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7086,
+          "glow_score": 0.0707,
+          "art_hash": "8d410a305a8ae177"
         }
       },
       "animations": []
@@ -5038,9 +5200,9 @@
     {
       "id": "bell_post_004",
       "rel": "bell_posts/bell_post_004",
-      "name": "Stone pillar, bell arm 004 \u00b7 lit",
+      "name": "Stone pillar, bell arm 004",
       "category": "bell_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall wooden post with a crossarm, a bronze bell hanging from it with a pull rope and tassel, stone pillar, bell arm, large, well above head height of a person, self-emissive at night, softly radiating light: small oil lamp hung beside the bell",
       "view": "low top-down",
       "size": 128,
@@ -5065,6 +5227,51 @@
           "pixellab_object_id": "56164d96-27b5-4cab-bf3e-8bab784ba9a5",
           "generated_at": "2026-08-13T08:45:02+00:00",
           "art_hash": "6bc3aa8cf1886fa9"
+        },
+        "LIT_2": {
+          "sprite": "bell_posts/bell_post_004/lit_2/sprite.webp",
+          "pixellab_object_id": "1b6dcaa3-3027-4d47-9acd-eece21f4b9a2",
+          "generated_at": "2026-08-15T20:24:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7114,
+          "glow_score": 0.0113,
+          "art_hash": "7d254e8275ceea0a"
+        },
+        "LIT_3": {
+          "sprite": "bell_posts/bell_post_004/lit_3/sprite.webp",
+          "pixellab_object_id": "a79d9384-01d8-4222-ae03-5212e50c96e1",
+          "generated_at": "2026-08-15T20:24:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8869,
+          "glow_score": 0.018,
+          "art_hash": "4f7cc60d91b6c862"
+        },
+        "LIT_4": {
+          "sprite": "bell_posts/bell_post_004/lit_4/sprite.webp",
+          "pixellab_object_id": "1ce626f8-ff13-4fb5-a542-10193d117e5e",
+          "generated_at": "2026-08-15T20:23:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6174,
+          "glow_score": 0.0239,
+          "art_hash": "e8ca8191beb6b4fd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "bell_posts/bell_post_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a1523d43-d71d-41e5-9bd1-d93f9ae3a167",
+          "generated_at": "2026-08-15T20:23:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3302,
+          "glow_score": 0.0108,
+          "art_hash": "6b731844f24a75d4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bell_posts/bell_post_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "55b29bf3-0f05-4fd0-b735-6c0cae83ada0",
+          "generated_at": "2026-08-15T20:23:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8872,
+          "glow_score": 0.0008,
+          "art_hash": "87da08d679faf518"
         }
       },
       "animations": []
@@ -5134,6 +5341,24 @@
           "pixellab_object_id": "e64fa895-022a-44ad-b102-baa77301cd2f",
           "generated_at": "2026-08-13T01:57:59+00:00",
           "art_hash": "6d9dea88b0e0d809"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bone_piles/bone_pile_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cf76c3f6-d186-4925-84b1-3dd333a6f05a",
+          "generated_at": "2026-08-15T20:23:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7234,
+          "glow_score": 0.225,
+          "art_hash": "5f7e0bd251b31761"
+        },
+        "NOT_LIT_3": {
+          "sprite": "bone_piles/bone_pile_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d855f8f3-9106-4657-a248-f1bebe713acb",
+          "generated_at": "2026-08-15T20:25:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9044,
+          "glow_score": 0.2335,
+          "art_hash": "7330206599c2d22c"
         }
       },
       "animations": []
