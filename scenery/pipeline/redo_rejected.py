@@ -223,7 +223,7 @@ def main():
         src = Image.open(os.path.join(factory.ROOT, man["sprite"])).convert("RGBA")
         tries.setdefault((rel, st), 1)
         lead0 = start_lead.get((rel, st), 0)
-        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, lead0) + note_for.get((rel, st), "")
+        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, lead0, man.get("group")) + note_for.get((rel, st), "")
         try:
             flight.append([rel, st, glow, tv.submit(client, man["pixellab_object_id"], p, st),
                            lead0, src, man])
@@ -267,7 +267,7 @@ def main():
                     print(f"  x {rel} {st}: gave up after {tv.MAX_PROMPT_TRIES} prompts", flush=True)
                     continue
                 nxt = (attempt + 1) % len(tv.LEAD_FALLBACKS)
-                p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt) + note_for.get((rel, st), "")
+                p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt, man.get("group")) + note_for.get((rel, st), "")
                 try:
                     entry[3] = tv.submit(client, man["pixellab_object_id"], p, st)
                     entry[4] = nxt

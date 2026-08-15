@@ -111,8 +111,22 @@ def add_glow_clause(glow):
     return f"This time the tree should glow, {glow}."
 
 
-def prompt_for(state, source_lights, source_glow, target_glow, attempt=0):
+# GROUPS WHOSE SUBJECT DOES NOT STAND UP. The lead prompt ends "The tree must
+# stand straight up. Do not lean it to the right." — his own words, added
+# because upright trees kept coming back leaning. It is right for a tree and
+# flatly wrong for a fallen log or a piece of driftwood, where lying down IS
+# the subject: told to stand straight up, the model draws a standing tree and
+# the piece stops being what its group is for. Stumps are cut low and have no
+# upright form to preserve either.
+LYING_GROUPS = {"fallen_logs", "driftwood_logs"}
+STANDING_CLAUSE = " The tree must stand straight up. Do not lean it to the right."
+
+
+def prompt_for(state, source_lights, source_glow, target_glow, attempt=0,
+               group=None):
     lead = LEAD_FALLBACKS[min(attempt, len(LEAD_FALLBACKS) - 1)]
+    if group in LYING_GROUPS:
+        lead = lead.replace(STANDING_CLAUSE, "").replace(STANDING_CLAUSE.strip(), "")
     if state.startswith("LIT"):
         return f"{lead} {add_glow_clause(target_glow)}"
     if source_lights == "LIGHTS_ON" and source_glow:
@@ -415,7 +429,7 @@ def main():
     if args.dry_run:
         for rel, st, glow in queue[:20]:
             man = factory.read_manifest(rel)
-            print(f"  {rel} {st}: {prompt_for(st, man.get('lights'), man.get('glow_concept'), glow)}")
+            print(f"  {rel} {st}: {prompt_for(st, man.get('lights'), man.get('glow_concept'), glow, 0, man.get('group'))}")
         return 0
     if not queue:
         return 0
@@ -435,7 +449,7 @@ def main():
             rel, st, glow = queue.pop(0)
             man = factory.read_manifest(rel)
             src = Image.open(os.path.join(factory.ROOT, man["sprite"])).convert("RGBA")
-            p = prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, 0)
+            p = prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, 0, man.get("group"))
             try:
                 oid = submit(client, man["pixellab_object_id"], p, st)
                 flight.append([rel, st, glow, oid, 0, src, man])
@@ -489,7 +503,7 @@ def main():
                     continue
                 shutil.rmtree(os.path.join(factory.ROOT, state_dir(rel, st)),
                               ignore_errors=True)
-                p = prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt)
+                p = prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt, man.get("group"))
                 try:
                     entry[3] = submit(client, man["pixellab_object_id"], p, st)
                     entry[4] = nxt

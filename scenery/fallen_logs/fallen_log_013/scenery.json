@@ -43,5 +43,12 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "fallen_logs/fallen_log_013/sprite.webp",
+      "pixellab_object_id": "ef0af572-27eb-4073-afc6-7e687dcf804b",
+      "glow_score": 0.0046
+    }
+  }
 }
