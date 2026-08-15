@@ -5,8 +5,8 @@
   "group": "beacons",
   "rank": 46,
   "index": 16,
-  "name": "Chain-hoisted cage beacon 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Chain-hoisted cage beacon 016",
+  "lights": null,
   "variety": "chain-hoisted cage beacon",
   "modifier": "with climbing flowers at one corner",
   "glow_concept": "burning soulstone shining like a fixed star",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.6957,
       "glow_score": 0.0268
+    },
+    "LIT_4": {
+      "sprite": "beacons/beacon_016/lit_4/sprite.webp",
+      "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
+      "generated_at": "2026-08-15T19:58:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6173,
+      "glow_score": 0.0117
+    },
+    "NOT_LIT_1": {
+      "sprite": "beacons/beacon_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ef324389-fab1-40cb-913d-f375ee9b7dd2",
+      "generated_at": "2026-08-15T19:59:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6351,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beacons/beacon_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6e80ccac-165e-4a99-9691-40010ebfbd10",
+      "generated_at": "2026-08-15T19:59:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7664,
+      "glow_score": 0.0
     }
   }
 }
