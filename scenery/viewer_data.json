@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 773,
+  "scenery_count": 774,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -166,7 +166,7 @@
       "name": "Fallen Log",
       "type": "NATURE",
       "quota": 62,
-      "done": 10
+      "done": 11
     },
     {
       "rank": 21,
@@ -1428,7 +1428,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fallen_logs": 10,
+    "fallen_logs": 11,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
@@ -9842,6 +9842,40 @@
       "pixellab_object_id": "5a872c5e-f5e9-4400-97f6-ffa1ae693312",
       "sprite": "fallen_logs/fallen_log_011/sprite.webp",
       "art_hash": "6ef6fd2bc4e613b8",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "fallen_log_014",
+      "rel": "fallen_logs/fallen_log_014",
+      "name": "Fresh-fallen birch trunk 014 \u00b7 lit",
+      "category": "fallen_logs",
+      "lights": "LIGHTS_ON",
+      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fresh-fallen birch trunk, with fallen leaves collected at its base, waist-high, self-emissive at night, softly radiating light: blue foxfire glowing in the bark cracks",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 0.99,
+        "world_px_height": 37,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          3,
+          19,
+          126,
+          120
+        ],
+        "content_px_height": 101,
+        "canvas_render_px": 47
+      },
+      "status": "complete",
+      "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
+      "sprite": "fallen_logs/fallen_log_014/sprite.webp",
+      "art_hash": "6f7b82ba61061a44",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},

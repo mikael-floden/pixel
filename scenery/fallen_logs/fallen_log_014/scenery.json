@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:54:39+00:00",
+  "id": "fallen_log_014",
+  "group": "fallen_logs",
+  "type": "NATURE",
+  "rank": 20,
+  "index": 14,
+  "name": "Fresh-fallen birch trunk 014 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "fresh-fallen birch trunk",
+  "modifier": "with fallen leaves collected at its base",
+  "glow_concept": "blue foxfire glowing in the bark cracks",
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fresh-fallen birch trunk, with fallen leaves collected at its base, waist-high, self-emissive at night, softly radiating light: blue foxfire glowing in the bark cracks",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_014/sprite.webp",
+  "placement": {
+    "world_height_m": 0.99,
+    "world_px_height": 37,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      3,
+      19,
+      126,
+      120
+    ],
+    "content_px_height": 101,
+    "canvas_render_px": 47
+  },
+  "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
