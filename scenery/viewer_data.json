@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 807,
+  "scenery_count": 808,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 42
+      "done": 43
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 42,
+    "stones": 43,
     "story_posts": 8,
     "streetlights": 6,
     "stumps": 13,
@@ -18222,6 +18222,40 @@
       "pixellab_object_id": "821ee265-f6c5-45cb-908f-5718923d5078",
       "sprite": "stones/stone_046/sprite.webp",
       "art_hash": "d49a3d6bde32f8d1",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_047",
+      "rel": "stones/stone_047",
+      "name": "Stone capped with a smaller balanced stone 047",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone capped with a smaller balanced stone, with a small sapling beside it, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.33,
+        "world_px_height": 50,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          10,
+          8,
+          64,
+          58
+        ],
+        "content_px_height": 50,
+        "canvas_render_px": 64
+      },
+      "status": "complete",
+      "pixellab_object_id": "f747c445-3862-4c71-9910-18cfa987a9d8",
+      "sprite": "stones/stone_047/sprite.webp",
+      "art_hash": "f26c3c5323e77183",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
