@@ -11,6 +11,7 @@ import { Encoder } from "@colyseus/schema";
 import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes } from "./live.js";
+import { cacheControlFor } from "./cachepolicy.js";
 
 // The combat schema (11 new Player fields, 4 new Monster fields, drops) put
 // the_island2's FULL-STATE join snapshot past the encoder's 8KB default —
@@ -99,7 +100,14 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   characters.json / world.json) → no-cache: the browser revalidates on every
 //   load and gets fresh content the moment a deploy changes it (cheap 304s
 //   otherwise);
-// - Vite's content-hashed bundles → immutable, cache for a year;
+// - Vite's content-hashed bundles → immutable, cache for a year. That is
+//   EVERY file rollup emits into client/dist/assets, not just js/css: the 503
+//   .ogg foley takes, the music .m4a/.mp3 beds and the bundled .webp are all
+//   named `<name>-<contenthash>.<ext>` by the same mechanism. Until 2026-08-15
+//   the rule only matched js|css, so 532 of the 535 hashed files revalidated
+//   on every repeat visit — 532 pointless round trips per returning player.
+//   The grant is scoped BY DIRECTORY, not by filename shape; see cachepolicy.ts
+//   for why that distinction is what keeps in-place art edits safe;
 // - art (tiles/characters PNGs) → no-cache BY DEFAULT. The path LOOKS
 //   content-hashed (…/base_x_2_161302781/…), but the art agents routinely edit
 //   a tile IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a
@@ -115,14 +123,14 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   Repeat visits then load the world with ~zero art requests instead of ~600
 //   revalidation round-trips (the maintainer's "loading for so long").
 const GIT_SHA = (process.env.GIT_SHA || "").trim();
+// Vite's output directory. Nothing but rollup emits can land here — client/
+// public has no `assets/` folder — which is what lets the grant be safe.
+const BUNDLE_DIR = join(clientDist, "assets");
 function setCacheHeaders(res: express.Response, path: string) {
-  if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-  } else if (GIT_SHA && GIT_SHA !== "dev" && res.req?.query?.v === GIT_SHA) {
-    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-  } else {
-    res.setHeader("Cache-Control", "no-cache");
-  }
+  res.setHeader(
+    "Cache-Control",
+    cacheControlFor({ filePath: path, bundleDir: BUNDLE_DIR, gitSha: GIT_SHA, queryV: res.req?.query?.v }),
+  );
 }
 
 if (serveClient) {
