@@ -169,6 +169,33 @@ def main():
     for (rel, st), extra in sorted(note_for.items()):
         if extra:
             print(f"  correction for {rel} {st}:{extra}")
+
+    # "TOO CLOSE TO THE ORIGINAL" IS NOT A THRESHOLD PROBLEM — DO NOT RAISE THE
+    # GATE. Measured across his verdicts on 2026-08-15: approved states score
+    # min 0.125 / median 0.438 on structural_difference, rejected ones min
+    # 0.136 / median 0.519. The distributions overlap almost exactly, and two
+    # states he called "too close to the original" scored 0.44 and 0.46 —
+    # ABOVE the approved median. Raising MIN_DIFFERENCE would throw away art he
+    # likes and still pass the art he rejected.
+    #
+    # What the metric misses is SALIENCE. It is a canvas-wide brightness-
+    # normalised difference, so a variant that reshuffles every branch scores
+    # high even when the one thing the eye reads as identity — the swollen nest
+    # on the elm stub, the hollow in the trunk — is untouched. He is not
+    # comparing pixels, he is comparing trees.
+    #
+    # The lever that actually works is the PROMPT: LEAD_FALLBACKS climbs from
+    # "another variant" to explicit trunk-and-crown reshaping. A state he
+    # called too close starts at the top of that ladder instead of the bottom,
+    # so the retry is a genuinely different tree rather than the same roll.
+    TOO_CLOSE = ("close to the original", "close the original", "to similar",
+                 "too similar", "same tree", "looks the same")
+    start_lead = {}
+    for rel, st, note in todo:
+        if any(p in (note or "").lower() for p in TOO_CLOSE):
+            start_lead[(rel, st)] = len(tv.LEAD_FALLBACKS) - 1
+            print(f"  {rel} {st}: 'too close' — starting at the strongest lead "
+                  f"({start_lead[(rel, st)]}) instead of 0")
     # 1) remove the rejected art, repo and store
     for rel, st, _ in todo:
         man = factory.read_manifest(rel) or {}
@@ -187,16 +214,19 @@ def main():
 
     # 2) regenerate, reusing the runner's own submit/finalize path
     flight = []
+    tries = {}          # (rel, state) -> prompts spent; bounds the retry budget
     ok = fail = 0
     for rel, st, _ in todo:
         man = factory.read_manifest(rel)
         _, plan = tv.plan_for(man, cfg)
         glow = dict((s, g) for s, g in plan).get(st)
         src = Image.open(os.path.join(factory.ROOT, man["sprite"])).convert("RGBA")
-        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, 0) + note_for.get((rel, st), "")
+        tries.setdefault((rel, st), 1)
+        lead0 = start_lead.get((rel, st), 0)
+        p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, lead0) + note_for.get((rel, st), "")
         try:
             flight.append([rel, st, glow, tv.submit(client, man["pixellab_object_id"], p, st),
-                           0, src, man])
+                           lead0, src, man])
             print(f"» {rel} {st}", flush=True)
         except PixelLabError as ex:
             fail += 1
@@ -225,11 +255,18 @@ def main():
                     if not retry:
                         fail += 1
             if retry:
-                nxt = attempt + 1
-                if nxt >= tv.MAX_PROMPT_TRIES:
+                # WRAP, don't walk off the end. A state he called "too close"
+                # starts at the LAST lead, so a plain attempt+1 would exceed
+                # MAX_PROMPT_TRIES on its very first retry and give up after
+                # one roll — the opposite of trying harder on the art he
+                # complained about. The budget is bounded by the try COUNT,
+                # which is separate from where in the ladder we happen to be.
+                tries[(rel, st)] = tries.get((rel, st), 1) + 1
+                if tries[(rel, st)] > tv.MAX_PROMPT_TRIES:
                     fail += 1
                     print(f"  x {rel} {st}: gave up after {tv.MAX_PROMPT_TRIES} prompts", flush=True)
                     continue
+                nxt = (attempt + 1) % len(tv.LEAD_FALLBACKS)
                 p = tv.prompt_for(st, man.get("lights"), man.get("glow_concept"), glow, nxt) + note_for.get((rel, st), "")
                 try:
                     entry[3] = tv.submit(client, man["pixellab_object_id"], p, st)
