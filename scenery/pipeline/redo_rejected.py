@@ -164,6 +164,14 @@ def main():
         if flight:
             time.sleep(10)
     viewer_build.build()
+    # Consume the verdicts this run made stale, so regenerated art carries no
+    # leftover comment or rating (maintainer: "the new graphics should have no
+    # comment or approve/reject"). Committed by the caller with the art.
+    try:
+        import consume_verdicts
+        consume_verdicts.main()
+    except Exception as _e:
+        print(f"  ! verdict consumption skipped: {str(_e)[:120]}")
     print(f"\nredone: {ok} ok, {fail} failed, {len(flight)} unfinished")
     return 0
 

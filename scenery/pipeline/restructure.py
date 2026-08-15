@@ -174,6 +174,14 @@ def main():
         tv.git_push(f"scenery: reshaped {since} tree variant(s) too close in structure\n\n"
                     f"Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>\n"
                     f"Claude-Session: https://claude.ai/code/session_01JdiBzdgegEf8tCwqH6RWqj")
+    # Consume the verdicts this run made stale, so regenerated art carries no
+    # leftover comment or rating (maintainer: "the new graphics should have no
+    # comment or approve/reject"). Committed by the caller with the art.
+    try:
+        import consume_verdicts
+        consume_verdicts.main()
+    except Exception as _e:
+        print(f"  ! verdict consumption skipped: {str(_e)[:120]}")
     print(f"\nreshaped: {ok} ok, {fail} failed, {len(queue)+len(flight)} left")
     return 0
 
