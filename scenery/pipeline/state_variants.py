@@ -91,7 +91,7 @@ def commit_push(message, push=True):
             if _git("push", "-u", "origin", "main", check=False).returncode == 0:
                 return True
             _git("fetch", "origin", "main", check=False)
-            _git("rebase", "origin/main", check=False)
+            _git("rebase", "--autostash", "origin/main", check=False)
             if _rebase_in_progress():          # conflicted — back out, try later
                 _git("rebase", "--abort", check=False)
                 print("  ! push rebase conflicted — will retry on the next commit")
