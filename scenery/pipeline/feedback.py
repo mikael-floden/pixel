@@ -90,8 +90,26 @@ def apply_rejections(client):
     for rel in legacy:
         print(f"  ! wiki rejected LEGACY piece {rel} — frozen and "
               f"game-referenced, NOT deleting; maintainer's own call")
-    removed, stale = [], []
+    entries = load_entries()
+    removed, stale, conflicted = [], [], []
     for rel, verdict_at in todo:
+        verdict = entries.get(f"scenery/{rel}") or {}
+        # CONTRADICTORY VERDICT GUARD. A rejection that carries a HIGH star
+        # rating, or whose own per-state verdicts are all approvals, is far
+        # more likely a misclick than an instruction — and this function
+        # deletes art from the repo AND the store, which is not recoverable
+        # from the PixelLab side. tree_021 arrived rejected at 5 stars with all
+        # eleven of its states approved at 5 (2026-08-15). Report it and let
+        # the maintainer confirm; deleting five-star art on a slip is a far
+        # worse failure than leaving one rejection outstanding.
+        rating = verdict.get("rating") or 0
+        sub = [x for k2, x in entries.items()
+               if k2.startswith(f"scenery/{rel}#")]
+        sub_ok = sum(1 for x in sub if x.get("status") == "approved")
+        if rating >= 4 or (sub and sub_ok == len(sub)):
+            conflicted.append(
+                f"{rel} (rating {rating}, {sub_ok}/{len(sub)} states approved)")
+            continue
         committed_at = _sprite_committed_at(rel)
         if not (verdict_at and committed_at and committed_at < verdict_at):
             stale.append(rel)
@@ -122,6 +140,12 @@ def apply_rejections(client):
         factory.retire([rel])
         shutil.rmtree(factory.piece_dir(rel), ignore_errors=True)
         removed.append(rel)
+    if conflicted:
+        print(f"  feedback: {len(conflicted)} CONTRADICTORY rejection(s) NOT "
+              f"deleted — high rating and/or every state approved, which reads "
+              f"as a misclick. Confirm before these go:")
+        for c in conflicted:
+            print(f"      {c}")
     if stale:
         print(f"  feedback: {len(stale)} rejection(s) predate the current art "
               f"(slot re-rolled since) — awaiting re-review, untouched")

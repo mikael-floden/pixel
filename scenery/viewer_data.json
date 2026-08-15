@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 762,
+  "scenery_count": 760,
   "target_count": 2382,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -150,7 +150,7 @@
       "name": "Orchard Tree",
       "type": "TREE",
       "quota": 0,
-      "done": 2
+      "done": 1
     },
     {
       "rank": 19,
@@ -974,7 +974,7 @@
       "name": "Lightning Oak",
       "type": "TREE",
       "quota": 3,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 122,
@@ -1460,7 +1460,6 @@
     "lantern_posts": 12,
     "lantern_stands": 7,
     "letter_boxes": 1,
-    "lightning_oaks": 1,
     "market_stalls": 4,
     "maypoles": 2,
     "meteor_stones": 1,
@@ -1468,7 +1467,7 @@
     "moss_clumps": 5,
     "mushrooms": 13,
     "offering_tables": 10,
-    "orchard_trees": 2,
+    "orchard_trees": 1,
     "overgrown_archways": 2,
     "owl_snags": 2,
     "petrified_stumps": 2,
@@ -11556,32 +11555,6 @@
       "animations": []
     },
     {
-      "id": "lightning_oak_002",
-      "rel": "lightning_oaks/lightning_oak_002",
-      "name": "Half-alive split oak 002 \u00b7 lit",
-      "category": "lightning_oaks",
-      "lights": "LIGHTS_ON",
-      "description": "a massive oak split and charred by an old lightning strike, half the trunk black, the other half stubbornly alive and leafing, half-alive split oak, regrowth sprouting from the burl, large, twice human height, self-emissive at night, softly radiating light: the scar glowing faintly at dusk",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.41,
-        "world_px_height": 91,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "7a78f332-c184-458e-9166-431cf51e767b",
-      "sprite": "lightning_oaks/lightning_oak_002/sprite.webp",
-      "art_hash": "ee44655aa69cef24",
-      "type": "TREE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {},
-      "animations": []
-    },
-    {
       "id": "market_stall_001",
       "rel": "market_stalls/market_stall_001",
       "name": "Honey and candle stall 001",
@@ -12512,32 +12485,6 @@
       "sprite": "offering_tables/offering_table_020/sprite.webp",
       "art_hash": "f15fd0e6df766bf6",
       "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {},
-      "animations": []
-    },
-    {
-      "id": "orchard_tree_026",
-      "rel": "orchard_trees/orchard_tree_026",
-      "name": "Young staked fruit tree 026 \u00b7 lit",
-      "category": "orchard_trees",
-      "lights": "LIGHTS_ON",
-      "description": "a gnarled old fruit tree with a thick twisting trunk and wide spreading horizontal branches heavy with ripe fruit, irregular natural canopy, no trellis or frame, young staked fruit tree, with butterflies resting on it, large, twice human height, self-emissive at night, softly radiating light: ripe fruit glowing like warm paper lanterns",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 2.87,
-        "world_px_height": 108,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "pixellab_object_id": "69539b03-083e-4b58-9cfb-0344dadba9da",
-      "sprite": "orchard_trees/orchard_tree_026/sprite.webp",
-      "art_hash": "a79f380febe987b7",
-      "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {},
