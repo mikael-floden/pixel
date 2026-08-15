@@ -47,6 +47,26 @@ OUT = GAME_ROOT / "client" / "public" / "atlases"
 SHEET_MAX = 2048
 SCHEMA = "nangijala/tile-atlas@1"
 
+# WebP effort, and it is DELIBERATELY DIFFERENT from the body atlas's (which
+# uses 4). The right answer depends on what the art looks like, so both were
+# measured on real sheets 2026-08-15:
+#
+#   TILE sheets (dense, opaque)     m4  2.1 s / 1.74 MB   m6  15.7 s / 1.66 MB
+#   BODY sheets (sprites, ~transp)  m4 10.3 s / 13.23 MB  m6  236 s / 13.14 MB
+#
+# So method 6 buys 5% on tiles and 0.7% on sprites, for 7.4x and 23x the time.
+# Tiles keep it; sprites do not.
+#
+# WHY 13 SECONDS IS AFFORDABLE HERE (maintainer 2026-08-15, "this game will
+# increase in content by a lot"): packing is CONTENT-ADDRESSED PER WORLD and
+# never runs at deploy — the image only VERIFIES digests (check-atlas.mjs). A
+# changed world repacks alone, so this cost tracks how much art CHANGED, not
+# how much exists. Adding a twelfth world does not make the eleventh slower.
+# The 5% comes off every player's download on every deploy, so the trade is
+# seconds of one agent's loop against bytes for everyone, repeatedly.
+# Override to re-measure: WEBP_METHOD=4 npm run atlas -- -f
+WEBP_METHOD = int(__import__("os").environ.get("WEBP_METHOD", "6"))
+
 FORCE = any(a in ("-f", "--force") for a in sys.argv[1:])
 ONLY = [a for a in sys.argv[1:] if not a.startswith("-")]
 
@@ -130,7 +150,7 @@ def pack_world(name: str) -> None:
         cropped = sh.crop((0, 0, SHEET_MAX, used_h[i]))
         f = OUT / f"{name}.{i}.webp"
         # BOTH flags non-default and non-negotiable — see module docstring.
-        cropped.save(f, "WEBP", lossless=True, exact=True, quality=100, method=6)
+        cropped.save(f, "WEBP", lossless=True, exact=True, quality=100, method=WEBP_METHOD)
         sheet_files.append(f.name)
 
     # SELF-VERIFY: re-decode every sheet, compare every frame to its source.

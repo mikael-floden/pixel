@@ -18,7 +18,7 @@
 // with different bytes is stale. The strict full-tree run is the Docker image
 // build (ASSETS_ROOT=/assets), where absence really means missing.
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, unlinkSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -38,6 +38,107 @@ const SHIP = process.argv.includes("--ship");
 
 const log = (m) => !QUIET && console.log(m);
 
+/**
+ * The BODY atlas (characters + monsters). Same contract as the tile atlas —
+ * recompute each unit's digest over its sources' bytes and prune what no
+ * longer matches — but the unit list comes from the builder's own sidecar
+ * (scripts/bodyatlas-sources.json) rather than being re-derived here, so
+ * "which files belong to this unit" has exactly one implementation.
+ *
+ * Pruning is PER UNIT: one repainted character state drops that one sheet and
+ * that one state falls back to per-file loads. Everything else keeps its
+ * atlas. A missing sidecar or missing source art means "cannot verify here"
+ * (the CI sparse checkout), never a prune.
+ */
+function checkBodyAtlas() {
+  const idxPath = join(ATLAS_DIR, "bodies.json");
+  const srcPath = join(GAME_ROOT, "scripts", "bodyatlas-sources.json");
+  let idx, srcs;
+  try {
+    idx = JSON.parse(readFileSync(idxPath, "utf8"));
+    srcs = JSON.parse(readFileSync(srcPath, "utf8"));
+  } catch {
+    unverifiable++;
+    return;
+  }
+  if (idx.schema !== "nangijala/body-atlas@1" || srcs.packer !== idx.packer) {
+    stale++;
+    console.warn("[atlas-check] bodies: index/sidecar disagree — pruning the whole body atlas");
+    if (PRUNE) {
+      for (const e of Object.values(idx.units ?? {})) {
+        const p = join(ATLAS_DIR, e.sheet ?? "");
+        if (e.sheet && existsSync(p)) unlinkSync(p);
+      }
+      unlinkSync(idxPath);
+    }
+    return;
+  }
+  let good = 0, bad = 0, skipped = 0;
+  for (const [unit, entry] of Object.entries(idx.units ?? {})) {
+    const rec = srcs.units?.[unit];
+    if (!rec?.src?.length) {
+      skipped++;
+      continue;
+    }
+    const files = rec.src.map((u) => join(ASSETS_ROOT, u.startsWith("/assets/") ? u.slice("/assets/".length) : u));
+    if (files.some((p) => !existsSync(p))) {
+      // Sparse checkout (no art here) — cannot verify, must not prune.
+      if (!STRICT) {
+        skipped++;
+        continue;
+      }
+      // STRICT is the image build against the CURATED root, where absent art
+      // means this unit is not shipped at all (an unpublished world's monster,
+      // a character nobody can pick). Dropping the sheet is the body-atlas
+      // equivalent of --ship for world atlases: the image stops carrying art
+      // for bodies it can never draw, and if one somehow IS drawn the client
+      // falls back to per-file loads.
+      bad++;
+      if (PRUNE) {
+        const p = join(ATLAS_DIR, entry.sheet);
+        if (existsSync(p)) unlinkSync(p);
+        delete idx.units[unit];
+      }
+      continue;
+    }
+    const h = createHash("sha256");
+    h.update(`${idx.schema}/${idx.packer}`);
+    let readable = true;
+    for (let i = 0; i < rec.src.length; i++) {
+      h.update(rec.src[i]);
+      h.update(Buffer.from([0]));
+      try {
+        h.update(createHash("sha256").update(readFileSync(files[i])).digest());
+      } catch {
+        readable = false;
+        break;
+      }
+    }
+    if (!readable) {
+      skipped++;
+      continue;
+    }
+    if (h.digest("hex").slice(0, 16) === entry.digest && existsSync(join(ATLAS_DIR, entry.sheet))) {
+      good++;
+      continue;
+    }
+    bad++;
+    if (PRUNE) {
+      const p = join(ATLAS_DIR, entry.sheet);
+      if (existsSync(p)) unlinkSync(p);
+      delete idx.units[unit];
+    }
+  }
+  if (bad && PRUNE) writeFileSync(idxPath, JSON.stringify(idx));
+  if (bad) {
+    stale++;
+    console.warn(
+      `[atlas-check] bodies: ${bad} stale unit(s)${PRUNE ? " pruned (those states fall back to per-file loads)" : ""} — run npm run bodyatlas`,
+    );
+  } else ok++;
+  log(`[atlas-check] bodies: ${good} unit(s) current, ${bad} stale, ${skipped} unverifiable here`);
+}
+
 if (!existsSync(ATLAS_DIR)) {
   log("[atlas-check] no atlases directory — nothing to check");
   process.exit(0);
@@ -56,6 +157,18 @@ if (SHIP) {
 let ok = 0, stale = 0, unverifiable = 0, dropped = 0;
 for (const f of readdirSync(ATLAS_DIR).filter((n) => n.endsWith(".json")).sort()) {
   const name = f.replace(/\.json$/, "");
+  // The BODY atlas (bodies.json, build-bodyatlas.py) shares this directory but
+  // is not a world atlas — its stem is not a world name. Without this it was
+  // read as a world called "bodies", found no maps2/worlds/bodies, and got
+  // pruned as an orphan on every `npm run manifest`: the body atlas silently
+  // never loaded and every character frame went back to an individual request.
+  // Caught 2026-08-15 by a browser probe measuring 1,121 frame requests with a
+  // fully built atlas on disk — the fallback is meant to be invisible, which
+  // is exactly what makes an accidental one so easy to miss.
+  if (name === "bodies") {
+    checkBodyAtlas();
+    continue;
+  }
   const prune = (why) => {
     stale++;
     console.warn(`[atlas-check] ${name}: STALE — ${why}${PRUNE ? " — pruning (client falls back to per-file tiles)" : ""}`);

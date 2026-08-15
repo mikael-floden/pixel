@@ -19,7 +19,8 @@
     "test": "npm run manifest && node scripts/shipset.mjs --check-policy && npm run test -w server && npx tsx scripts/check-surfaces.mjs && npx tsx scripts/verify-deckwalk.mjs && node scripts/check-light-budget.mjs",
     "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json",
     "manifest:force": "node scripts/manifest.mjs --force",
-    "atlas": "python3 scripts/build-atlas.py"
+    "atlas": "python3 scripts/build-atlas.py",
+    "bodyatlas": "python3 scripts/build-bodyatlas.py"
   },
   "devDependencies": {
     "@cwasm/webp": "^0.1.5",
