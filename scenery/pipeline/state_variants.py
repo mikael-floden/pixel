@@ -253,17 +253,26 @@ def finalize(client, rel, man, state, oid, source_img, siblings, glow_used,
     # when the object is meant to be dark. Relative to the source rather than
     # an absolute floor, because a moss patch and a brazier live at completely
     # different brightnesses.
+    # DELIBERATELY CONSERVATIVE: it catches a FLAT failure, not a weak one.
+    # glow_score is the fraction of near-white pixels, which is BRIGHTNESS, not
+    # emission — a sandy ant hill scores 0.281 in broad daylight without
+    # glowing at all. A first version demanded 15% more than the source and
+    # ant_hill_001 alone burned eight retries against a target it could never
+    # reach; at twelve prompts per state that is a dozen wasted generations on
+    # every naturally pale piece. This domain's own rule applies: a gate that
+    # fires on good art costs more than one that misses, because failing here
+    # costs a re-roll while the maintainer's eye catches the rest.
     want_lit = state.startswith("LIT_")
     if want_lit != anchor_lit:
         gs, src_gs = tv.glow_score(img), tv.glow_score(source_img)
-        if want_lit and gs <= src_gs * 1.15:
+        if want_lit and gs < 0.10 and gs < src_gs:
             client.delete_object(oid)
             raise PixelLabError(f"RETRY {rel}/{state}: asked for a lit version "
-                                f"but it is no brighter ({gs:.3f} vs {src_gs:.3f})")
-        if not want_lit and gs >= max(src_gs * 0.85, 0.01):
+                                f"and it came back dark ({gs:.3f} vs {src_gs:.3f})")
+        if not want_lit and gs > 0.10 and gs > src_gs * 0.9:
             client.delete_object(oid)
             raise PixelLabError(f"RETRY {rel}/{state}: asked for an unlit "
-                                f"version but it still glows ({gs:.3f} vs "
+                                f"version and it is still lit ({gs:.3f} vs "
                                 f"{src_gs:.3f})")
 
     out = f"{tv.state_dir(rel, state)}/sprite.webp"
