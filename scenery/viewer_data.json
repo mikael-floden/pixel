@@ -30592,6 +30592,22 @@
           "glow_score": 0.0609,
           "art_hash": "60e2fa0abb8e74f1"
         },
+        "LIT_3": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/lit_3/sprite.webp",
+          "pixellab_object_id": "635fd0a4-b98b-4cb0-b8b3-2957a9901c38",
+          "glow_concept": "nest entrance glowing like a blown ember",
+          "difference_from_source": 0.2525,
+          "glow_score": 0.0211,
+          "art_hash": "254d90bf801e4939"
+        },
+        "LIT_4": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/lit_4/sprite.webp",
+          "pixellab_object_id": "7d473ca2-3fa4-4d90-ae69-4f59ba7e17b0",
+          "glow_concept": "faint light bands between the papery layers",
+          "difference_from_source": 0.201,
+          "glow_score": 0.0271,
+          "art_hash": "c0ba8760c0906d80"
+        },
         "NOT_LIT_1": {
           "sprite": "wasp_nest_trees/wasp_nest_tree_004/not_lit_1/sprite.webp",
           "pixellab_object_id": "89a79709-27f2-4fdf-a32d-8b2171199245",
@@ -30639,6 +30655,38 @@
           "difference_from_source": 0.3576,
           "glow_score": 0.0,
           "art_hash": "4b5699fc39b75f48"
+        },
+        "NOT_LIT_6": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/not_lit_6/sprite.webp",
+          "pixellab_object_id": "06258557-a610-40c1-a6f0-ff9852b74c80",
+          "glow_concept": null,
+          "difference_from_source": 0.2813,
+          "glow_score": 0.0,
+          "art_hash": "cd8db4ea9aaeebcf"
+        },
+        "NOT_LIT_7": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/not_lit_7/sprite.webp",
+          "pixellab_object_id": "6a2c31e6-8a09-4613-9830-32dc55019c5a",
+          "glow_concept": null,
+          "difference_from_source": 0.6985,
+          "glow_score": 0.0,
+          "art_hash": "7d6f6210e1c71f55"
+        },
+        "NOT_LIT_8": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/not_lit_8/sprite.webp",
+          "pixellab_object_id": "5b8d1cda-c122-4f10-901b-dcca36b077d6",
+          "glow_concept": null,
+          "difference_from_source": 0.724,
+          "glow_score": 0.0,
+          "art_hash": "b0981d0a3594d046"
+        },
+        "NOT_LIT_9": {
+          "sprite": "wasp_nest_trees/wasp_nest_tree_004/not_lit_9/sprite.webp",
+          "pixellab_object_id": "e5fe0b51-d707-4a7d-8f98-2882507c72b8",
+          "glow_concept": null,
+          "difference_from_source": 0.4155,
+          "glow_score": 0.0,
+          "art_hash": "ef18956d27a83fc1"
         }
       },
       "animations": []
@@ -34128,11 +34176,99 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wisteria_snags/wisteria_snag_001/lit_1/sprite.webp",
+          "pixellab_object_id": "ac362dae-a0d7-4443-85aa-78df606b5f11",
+          "glow_concept": "seed pods cracked open and leaking light",
+          "difference_from_source": 0.8634,
+          "glow_score": 0.1058,
+          "art_hash": "fed30a4d7701ffd7"
+        },
+        "LIT_2": {
+          "sprite": "wisteria_snags/wisteria_snag_001/lit_2/sprite.webp",
+          "pixellab_object_id": "43e4bfa5-703d-4b5d-9fc9-d714a455234c",
+          "glow_concept": "growth rings glowing at the snapped limbs",
+          "difference_from_source": 0.6218,
+          "glow_score": 0.0693,
+          "art_hash": "345dd33c4c862bc0"
+        },
         "NOT_LIT_1": {
           "sprite": "wisteria_snags/wisteria_snag_001/sprite.webp",
           "pixellab_object_id": "1a894063-b8ae-458b-b7d8-867e4f2c7b3f",
           "glow_score": 0.0742,
           "art_hash": "c7a58bc63601be39"
+        },
+        "NOT_LIT_10": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_10/sprite.webp",
+          "pixellab_object_id": "b7392e4f-ec28-4234-a41b-19fae07d292e",
+          "glow_concept": null,
+          "difference_from_source": 0.5492,
+          "glow_score": 0.0935,
+          "art_hash": "c20d3e2fe52a4400"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d5140e1a-45ac-4326-b7c2-2868f31d7c2c",
+          "glow_concept": null,
+          "difference_from_source": 0.7263,
+          "glow_score": 0.0329,
+          "art_hash": "9eddbaa5300f5fbd"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8549a3ec-8344-4e52-953c-0ceba80ad7b0",
+          "glow_concept": null,
+          "difference_from_source": 0.4926,
+          "glow_score": 0.0685,
+          "art_hash": "ac95a3a82807577e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "1355f4b8-3100-4500-901b-b749051f21e1",
+          "glow_concept": null,
+          "difference_from_source": 0.5778,
+          "glow_score": 0.0073,
+          "art_hash": "7610633652d5e645"
+        },
+        "NOT_LIT_5": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_5/sprite.webp",
+          "pixellab_object_id": "c8604cbf-87eb-4a27-a13a-a9fdb56f3c5d",
+          "glow_concept": null,
+          "difference_from_source": 0.9024,
+          "glow_score": 0.0012,
+          "art_hash": "31692e4485d265b0"
+        },
+        "NOT_LIT_6": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_6/sprite.webp",
+          "pixellab_object_id": "ac17d45f-9dac-4447-a26a-6428422d2402",
+          "glow_concept": null,
+          "difference_from_source": 0.673,
+          "glow_score": 0.1353,
+          "art_hash": "617c6f3e426f77ef"
+        },
+        "NOT_LIT_7": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_7/sprite.webp",
+          "pixellab_object_id": "dd1fdffe-108f-45f5-98c8-0f3313cb90ce",
+          "glow_concept": null,
+          "difference_from_source": 0.8071,
+          "glow_score": 0.0398,
+          "art_hash": "5d67cb2f27e2e5c1"
+        },
+        "NOT_LIT_8": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_8/sprite.webp",
+          "pixellab_object_id": "1471d871-096e-4691-977c-fd8db3932b29",
+          "glow_concept": null,
+          "difference_from_source": 0.6369,
+          "glow_score": 0.2025,
+          "art_hash": "30649ee862ca3fd9"
+        },
+        "NOT_LIT_9": {
+          "sprite": "wisteria_snags/wisteria_snag_001/not_lit_9/sprite.webp",
+          "pixellab_object_id": "cff1c2ae-1bea-4961-bb87-68d1dd9ad380",
+          "glow_concept": null,
+          "difference_from_source": 0.5019,
+          "glow_score": 0.0732,
+          "art_hash": "68f24dac6008f386"
         }
       },
       "animations": []
@@ -34166,6 +34302,14 @@
           "pixellab_object_id": "7786fb91-7793-4a42-8338-3092ede5e04f",
           "glow_score": 0.1839,
           "art_hash": "2e904b5bd7e5c22b"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wisteria_snags/wisteria_snag_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "77e16f5f-7070-42db-974e-64c88b51b9a8",
+          "glow_concept": null,
+          "difference_from_source": 0.403,
+          "glow_score": 0.2335,
+          "art_hash": "b380a09a73489ff9"
         }
       },
       "animations": []
