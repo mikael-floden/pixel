@@ -5,7 +5,7 @@
   "rank": 13,
   "index": 15,
   "name": "Bare winter canes, red hips 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "bare winter canes, red hips",
   "glow_concept": null,
   "prompt": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, bare winter canes, red hips, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:05:49+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_015/lit_2/sprite.webp",
+      "pixellab_object_id": "650ee82b-6f7c-43ef-b946-aa25ee8a3abf",
+      "generated_at": "2026-08-15T20:51:56+00:00",
+      "glow_concept": "petals shedding slow drifting motes of light",
+      "difference_from_source": 0.8892,
+      "glow_score": 0.1608
+    },
     "NOT_LIT_1": {
       "sprite": "briar_thickets/briar_thicket_015/sprite.webp",
       "pixellab_object_id": "7553f172-c0d7-4b84-a5dc-98c325f65ff5",
       "generated_at": "2026-08-13T22:05:49+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "16119da9-fcf2-4a89-aba9-f23d82cbe288",
+      "generated_at": "2026-08-15T20:50:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5124,
+      "glow_score": 0.0019
+    },
+    "NOT_LIT_3": {
+      "sprite": "briar_thickets/briar_thicket_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a2065bb9-e451-4ab0-9e96-618ef203d2f8",
+      "generated_at": "2026-08-15T20:51:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7119,
+      "glow_score": 0.0031
+    },
+    "NOT_LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f2bc105a-d550-4bfe-a5ec-e9d4d3b178b4",
+      "generated_at": "2026-08-15T20:51:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.78,
+      "glow_score": 0.0
     }
   }
 }

@@ -6517,9 +6517,9 @@
     {
       "id": "brazier_018",
       "rel": "braziers/brazier_018",
-      "name": "Rusted battlefield brazier 018 \u00b7 lit",
+      "name": "Rusted battlefield brazier 018",
       "category": "braziers",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, rusted battlefield brazier, half-repainted, roughly six feet tall, human height, self-emissive at night, softly radiating light: green copper-salt flame licking the rim",
       "view": "low top-down",
       "size": 64,
@@ -6553,6 +6553,42 @@
           "difference_from_source": 0.7972,
           "glow_score": 0.0909,
           "art_hash": "da59c07a58895a35"
+        },
+        "LIT_3": {
+          "sprite": "braziers/brazier_018/lit_3/sprite.webp",
+          "pixellab_object_id": "82267382-5c83-4237-bcc3-61c27b0ae064",
+          "generated_at": "2026-08-15T20:44:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6656,
+          "glow_score": 0.0694,
+          "art_hash": "f18d9faa009f2f57"
+        },
+        "LIT_4": {
+          "sprite": "braziers/brazier_018/lit_4/sprite.webp",
+          "pixellab_object_id": "b0d4539c-e01f-47a3-a1c5-695605ae7a01",
+          "generated_at": "2026-08-15T20:44:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4817,
+          "glow_score": 0.1025,
+          "art_hash": "7ce16f3d9ad43f35"
+        },
+        "NOT_LIT_1": {
+          "sprite": "braziers/brazier_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2bfa21b5-4a21-41f9-a4fa-c289a2392f42",
+          "generated_at": "2026-08-15T20:45:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7053,
+          "glow_score": 0.0,
+          "art_hash": "8718f0b5bb6ef7ed"
+        },
+        "NOT_LIT_2": {
+          "sprite": "braziers/brazier_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6d7461e1-5d8c-4b2f-a163-7064389b8a80",
+          "generated_at": "2026-08-15T20:45:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5446,
+          "glow_score": 0.0052,
+          "art_hash": "3595df00bb7fa778"
         }
       },
       "animations": []
@@ -6560,9 +6596,9 @@
     {
       "id": "briar_thicket_010",
       "rel": "briar_thickets/briar_thicket_010",
-      "name": "Petal-strewn shedding briar 010 \u00b7 lit",
+      "name": "Petal-strewn shedding briar 010",
       "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, petal-strewn shedding briar, roughly six feet tall, human height, self-emissive at night, softly radiating light: thorn tips sparking with points of light",
       "view": "low top-down",
       "size": 96,
@@ -6587,6 +6623,51 @@
           "pixellab_object_id": "361c1df6-6dfe-4f53-ab24-9fd053ed66c1",
           "generated_at": "2026-08-13T20:54:29+00:00",
           "art_hash": "ae6885dc858a09e1"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_010/lit_2/sprite.webp",
+          "pixellab_object_id": "740acd41-3018-4e70-bcf8-39acebb85380",
+          "generated_at": "2026-08-15T20:51:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6519,
+          "glow_score": 0.0137,
+          "art_hash": "2a9fe9d5a5ad4e6e"
+        },
+        "LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_010/lit_3/sprite.webp",
+          "pixellab_object_id": "e5bbb9da-98f2-43ba-860c-4cd1aef61769",
+          "generated_at": "2026-08-15T20:46:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7822,
+          "glow_score": 0.0191,
+          "art_hash": "c07513838c552e63"
+        },
+        "LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_010/lit_4/sprite.webp",
+          "pixellab_object_id": "5ea70586-56f8-4e9c-b62b-1054ca546712",
+          "generated_at": "2026-08-15T20:46:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8604,
+          "glow_score": 0.0027,
+          "art_hash": "18a756722758e85d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "62fcfe7d-cc51-4156-9aea-e932d389aeba",
+          "generated_at": "2026-08-15T20:46:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6695,
+          "glow_score": 0.0,
+          "art_hash": "26af9540c7923813"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "819c76fa-47f1-4d07-a86a-de2d6acbe22d",
+          "generated_at": "2026-08-15T20:46:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3418,
+          "glow_score": 0.0,
+          "art_hash": "33cd9f2210cd259e"
         }
       },
       "animations": []
@@ -6596,7 +6677,7 @@
       "rel": "briar_thickets/briar_thicket_011",
       "name": "Berry-laden bramble mound 011",
       "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wide dense thicket of tangled thorny bramble canes, a low sprawling ground-hugging mass of interwoven dark thorns dotted with a few wild roses, berry-laden bramble mound, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -6616,11 +6697,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_011/lit_1/sprite.webp",
+          "pixellab_object_id": "bdbbcb2d-e7dc-45c4-923e-ccf638ea20f6",
+          "generated_at": "2026-08-15T20:48:33+00:00",
+          "glow_concept": "glowworms strung along the arching canes",
+          "difference_from_source": 0.452,
+          "glow_score": 0.13,
+          "art_hash": "2066b8c29e37646a"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_011/lit_2/sprite.webp",
+          "pixellab_object_id": "28eb545c-818b-48f3-a91f-7f8d8260f32a",
+          "generated_at": "2026-08-15T20:48:23+00:00",
+          "glow_concept": "petals shedding slow drifting motes of light",
+          "difference_from_source": 0.8136,
+          "glow_score": 0.0554,
+          "art_hash": "fc75369df678ed46"
+        },
         "NOT_LIT_1": {
           "sprite": "briar_thickets/briar_thicket_011/sprite.webp",
           "pixellab_object_id": "8a5204cf-0aef-41e8-92b5-bafb75ab8f22",
           "generated_at": "2026-08-13T20:14:44+00:00",
           "art_hash": "7d41fac8ea141c57"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "34e59981-c908-47dd-aad2-f753e11dca7a",
+          "generated_at": "2026-08-15T20:46:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6504,
+          "glow_score": 0.037,
+          "art_hash": "f62083cbb0d4bcc4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c378fd58-7d88-4cb3-bde2-7a42757c6f23",
+          "generated_at": "2026-08-15T20:48:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2693,
+          "glow_score": 0.0377,
+          "art_hash": "8d7140a605ed87a2"
+        },
+        "NOT_LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "98a543ed-b52e-4c31-be1c-76518935ff9c",
+          "generated_at": "2026-08-15T20:46:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2348,
+          "glow_score": 0.0469,
+          "art_hash": "9ccb5b67216901ad"
         }
       },
       "animations": []
@@ -6630,7 +6756,7 @@
       "rel": "briar_thickets/briar_thicket_013",
       "name": "Dense head-high thorn wall 013",
       "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, dense head-high thorn wall, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -6650,11 +6776,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_013/lit_1/sprite.webp",
+          "pixellab_object_id": "94747bde-2bdb-4a87-be2f-39644b9ba73b",
+          "generated_at": "2026-08-15T20:48:13+00:00",
+          "glow_concept": "glowworms strung along the arching canes",
+          "difference_from_source": 0.293,
+          "glow_score": 0.0421,
+          "art_hash": "a3019d5631f756ac"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_013/lit_2/sprite.webp",
+          "pixellab_object_id": "ecf51386-59a8-4039-b96d-12ea542d0154",
+          "generated_at": "2026-08-15T20:49:40+00:00",
+          "glow_concept": "petals shedding slow drifting motes of light",
+          "difference_from_source": 0.3628,
+          "glow_score": 0.0594,
+          "art_hash": "468ac7b287c3d3c0"
+        },
         "NOT_LIT_1": {
           "sprite": "briar_thickets/briar_thicket_013/sprite.webp",
           "pixellab_object_id": "fd8a2f8b-79eb-484f-9cb2-40ec4301d3b1",
           "generated_at": "2026-08-13T23:16:46+00:00",
           "art_hash": "20c62ced8b625f38"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d87f3760-57dc-412e-b306-141228a0a787",
+          "generated_at": "2026-08-15T20:47:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4652,
+          "glow_score": 0.0,
+          "art_hash": "a34e9bca652b2845"
+        },
+        "NOT_LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "037fa21e-7988-4118-9693-82b7e4013259",
+          "generated_at": "2026-08-15T20:48:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5465,
+          "glow_score": 0.0,
+          "art_hash": "bc11d7b544353232"
+        },
+        "NOT_LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "39dbdcdd-4c7a-4b80-9929-be1bec5b45db",
+          "generated_at": "2026-08-15T20:48:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.348,
+          "glow_score": 0.0119,
+          "art_hash": "6fef5deb7d83d5d8"
         }
       },
       "animations": []
@@ -6662,9 +6833,9 @@
     {
       "id": "briar_thicket_014",
       "rel": "briar_thickets/briar_thicket_014",
-      "name": "Raspberry cane thicket 014 \u00b7 lit",
+      "name": "Raspberry cane thicket 014",
       "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, raspberry cane thicket, roughly six feet tall, human height, self-emissive at night, softly radiating light: moon-white roses casting a pale halo",
       "view": "low top-down",
       "size": 96,
@@ -6689,6 +6860,33 @@
           "pixellab_object_id": "34f852d9-17c4-4521-8135-90a6ae567720",
           "generated_at": "2026-08-13T21:53:55+00:00",
           "art_hash": "2d8f010206d306a5"
+        },
+        "LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_014/lit_3/sprite.webp",
+          "pixellab_object_id": "a2497742-8239-4731-8493-18e535fa04cf",
+          "generated_at": "2026-08-15T20:50:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5299,
+          "glow_score": 0.0897,
+          "art_hash": "ad35168446b1a038"
+        },
+        "NOT_LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "61c63021-57a7-4fb7-b740-dc59e13ade41",
+          "generated_at": "2026-08-15T20:50:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4157,
+          "glow_score": 0.0,
+          "art_hash": "baa3c24aaef4903c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9d80f8a0-e63c-4c8a-85c6-04cd652ea8d9",
+          "generated_at": "2026-08-15T20:51:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2967,
+          "glow_score": 0.0,
+          "art_hash": "4c014f6d040bcc84"
         }
       },
       "animations": []
@@ -6698,7 +6896,7 @@
       "rel": "briar_thickets/briar_thicket_015",
       "name": "Bare winter canes, red hips 015",
       "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, bare winter canes, red hips, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -6718,11 +6916,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_015/lit_2/sprite.webp",
+          "pixellab_object_id": "650ee82b-6f7c-43ef-b946-aa25ee8a3abf",
+          "generated_at": "2026-08-15T20:51:56+00:00",
+          "glow_concept": "petals shedding slow drifting motes of light",
+          "difference_from_source": 0.8892,
+          "glow_score": 0.1608,
+          "art_hash": "a7352fa3fa066a9a"
+        },
         "NOT_LIT_1": {
           "sprite": "briar_thickets/briar_thicket_015/sprite.webp",
           "pixellab_object_id": "7553f172-c0d7-4b84-a5dc-98c325f65ff5",
           "generated_at": "2026-08-13T22:05:49+00:00",
           "art_hash": "c77b8be99a01fd65"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "16119da9-fcf2-4a89-aba9-f23d82cbe288",
+          "generated_at": "2026-08-15T20:50:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5124,
+          "glow_score": 0.0019,
+          "art_hash": "3c84dba81a1be90a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a2065bb9-e451-4ab0-9e96-618ef203d2f8",
+          "generated_at": "2026-08-15T20:51:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7119,
+          "glow_score": 0.0031,
+          "art_hash": "ee6c411ed6b08017"
+        },
+        "NOT_LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "f2bc105a-d550-4bfe-a5ec-e9d4d3b178b4",
+          "generated_at": "2026-08-15T20:51:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.78,
+          "glow_score": 0.0,
+          "art_hash": "cfcfcce68652f4fd"
         }
       },
       "animations": []
