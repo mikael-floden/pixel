@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-15T01:31:34.646Z",
+  "updated_at": "2026-08-15T01:32:59.805Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -10799,10 +10799,11 @@
       "art": "ae6c2536d06456bd"
     },
     "scenery/trees/tree_034#lit_2#south": {
-      "status": "rejected",
       "art": "ae6c2536d06456bd",
-      "updated_at": "2026-08-14T14:42:37.720Z",
-      "note": "Buggy graphics around the light (transparent chess pattern bug)."
+      "updated_at": "2026-08-15T01:32:43.110Z",
+      "note": "Buggy graphics around the light (transparent chess pattern bug).",
+      "rating": 5,
+      "status": "approved"
     },
     "scenery/crystal_trees/crystal_tree_002#static#south": {
       "rating": 5,
@@ -13670,6 +13671,78 @@
       "updated_at": "2026-08-15T01:31:32.655Z",
       "status": "approved",
       "art": "a1371d8dc1ed714b"
+    },
+    "scenery/trees/tree_034#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-15T01:32:02.621Z",
+      "status": "approved",
+      "art": "ae6c2536d06456bd"
+    },
+    "scenery/trees/tree_034#not_lit_2#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:05.482Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_3#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:07.770Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_4#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:12.011Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_5#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:14.801Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_6#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:18.034Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_7#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:23.836Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_8#south": {
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:29.167Z",
+      "status": "approved",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_9#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:34.176Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#not_lit_10#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:38.265Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#lit_3#south": {
+      "status": "approved",
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:47.191Z",
+      "rating": 5
+    },
+    "scenery/trees/tree_034#lit_4#south": {
+      "art": "ae6c2536d06456bd",
+      "updated_at": "2026-08-15T01:32:53.390Z",
+      "rating": 5,
+      "status": "approved"
     }
   }
 }
