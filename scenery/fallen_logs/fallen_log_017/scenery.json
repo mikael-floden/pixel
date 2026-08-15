@@ -7,7 +7,7 @@
   "rank": 20,
   "index": 17,
   "name": "Hollow rotted log 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "hollow rotted log",
   "modifier": "with berries scattered beneath it",
   "glow_concept": null,
@@ -45,10 +45,50 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "fallen_logs/fallen_log_017/lit_1/sprite.webp",
+      "pixellab_object_id": "1b6a062b-8104-4683-bd75-20263523de0c",
+      "generated_at": "2026-08-15T19:47:44+00:00",
+      "glow_concept": "soulstone crystals erupting from a split",
+      "difference_from_source": 0.9483,
+      "glow_score": 0.0918
+    },
+    "LIT_2": {
+      "sprite": "fallen_logs/fallen_log_017/lit_2/sprite.webp",
+      "pixellab_object_id": "d4a5fb6f-a54a-415a-a509-7a078f6b5a8c",
+      "generated_at": "2026-08-15T19:47:31+00:00",
+      "glow_concept": "a lit traveler's lantern resting on top",
+      "difference_from_source": 0.8275,
+      "glow_score": 0.2107
+    },
+    "LIT_3": {
+      "sprite": "fallen_logs/fallen_log_017/lit_3/sprite.webp",
+      "pixellab_object_id": "d139703b-05ec-4d09-a3a7-354941f3ac97",
+      "generated_at": "2026-08-15T19:48:24+00:00",
+      "glow_concept": "row of small glowing caps along the log's spine",
+      "difference_from_source": 0.3125,
+      "glow_score": 0.077
+    },
+    "LIT_4": {
+      "sprite": "fallen_logs/fallen_log_017/lit_4/sprite.webp",
+      "pixellab_object_id": "746afa37-a270-473b-a72d-1b67c829b851",
+      "generated_at": "2026-08-15T19:47:19+00:00",
+      "glow_concept": "blue foxfire glowing in the bark cracks",
+      "difference_from_source": 0.5326,
+      "glow_score": 0.0357
+    },
     "NOT_LIT_1": {
       "sprite": "fallen_logs/fallen_log_017/sprite.webp",
       "pixellab_object_id": "2dc80a68-a76b-4da1-bd7d-8ce6c14f828d",
       "glow_score": 0.0103
+    },
+    "NOT_LIT_10": {
+      "sprite": "fallen_logs/fallen_log_017/not_lit_10/sprite.webp",
+      "pixellab_object_id": "8a0d1e68-402f-4c27-9cc4-d3a5415f660a",
+      "generated_at": "2026-08-15T19:45:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3632,
+      "glow_score": 0.011
     },
     "NOT_LIT_2": {
       "sprite": "fallen_logs/fallen_log_017/not_lit_2/sprite.webp",
@@ -65,6 +105,14 @@
       "glow_concept": null,
       "difference_from_source": 0.927,
       "glow_score": 0.243
+    },
+    "NOT_LIT_4": {
+      "sprite": "fallen_logs/fallen_log_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f3dd4c5f-5cef-4950-b629-16b09b35193a",
+      "generated_at": "2026-08-15T19:45:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2332,
+      "glow_score": 0.01
     },
     "NOT_LIT_5": {
       "sprite": "fallen_logs/fallen_log_017/not_lit_5/sprite.webp",
@@ -97,6 +145,14 @@
       "glow_concept": null,
       "difference_from_source": 0.7626,
       "glow_score": 0.0016
+    },
+    "NOT_LIT_9": {
+      "sprite": "fallen_logs/fallen_log_017/not_lit_9/sprite.webp",
+      "pixellab_object_id": "adb8b818-8f52-4bfa-abbf-62cedcebbcff",
+      "generated_at": "2026-08-15T19:45:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8358,
+      "glow_score": 0.2139
     }
   }
 }

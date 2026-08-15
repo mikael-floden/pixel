@@ -5,7 +5,7 @@
   "rank": 84,
   "index": 1,
   "name": "Small dinghy with rope coil 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "small dinghy with rope coil",
   "glow_concept": null,
   "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, small dinghy with rope coil, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T02:28:49+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "beached_rowboats/beached_rowboat_001/lit_1/sprite.webp",
+      "pixellab_object_id": "79b96192-473a-40b5-83fc-2eb677d74cbd",
+      "generated_at": "2026-08-15T19:49:05+00:00",
+      "glow_concept": "warm soul-light seeping between the planks",
+      "difference_from_source": 0.3984,
+      "glow_score": 0.0609
+    },
+    "LIT_2": {
+      "sprite": "beached_rowboats/beached_rowboat_001/lit_2/sprite.webp",
+      "pixellab_object_id": "dfcdf480-5564-448f-a7f9-a85c0ddb0b49",
+      "generated_at": "2026-08-15T19:48:53+00:00",
+      "glow_concept": "a candle stub burning on the rowing thwart",
+      "difference_from_source": 0.682,
+      "glow_score": 0.0364
+    },
     "NOT_LIT_1": {
       "sprite": "beached_rowboats/beached_rowboat_001/sprite.webp",
       "pixellab_object_id": "a9d52ab0-bbb4-407e-b3b6-75ca621574d1",
       "generated_at": "2026-08-13T02:28:49+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "beached_rowboats/beached_rowboat_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "65697e46-946b-4fde-aed2-a57c415e7f95",
+      "generated_at": "2026-08-15T19:47:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6648,
+      "glow_score": 0.0013
+    },
+    "NOT_LIT_4": {
+      "sprite": "beached_rowboats/beached_rowboat_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "90af75ca-84cd-4d4e-aecd-445de33c1ef5",
+      "generated_at": "2026-08-15T19:48:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4927,
+      "glow_score": 0.0023
     }
   }
 }

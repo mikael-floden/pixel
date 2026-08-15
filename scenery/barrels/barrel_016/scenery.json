@@ -5,8 +5,8 @@
   "group": "barrels",
   "rank": 28,
   "index": 16,
-  "name": "Open brine barrel, floating lid 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Open brine barrel, floating lid 016",
+  "lights": null,
   "variety": "open brine barrel, floating lid",
   "modifier": "leaning slightly",
   "glow_concept": "open barrel brimful of luminous shining water",
@@ -36,6 +36,46 @@
       "sprite": "barrels/barrel_016/sprite.webp",
       "pixellab_object_id": "6095a411-4673-4e3c-b493-c28d5be0a452",
       "generated_at": "2026-08-14T02:38:53+00:00"
+    },
+    "LIT_2": {
+      "sprite": "barrels/barrel_016/lit_2/sprite.webp",
+      "pixellab_object_id": "830b434d-803f-4d67-bd8d-617403e2aa8a",
+      "generated_at": "2026-08-15T19:45:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3237,
+      "glow_score": 0.0154
+    },
+    "LIT_3": {
+      "sprite": "barrels/barrel_016/lit_3/sprite.webp",
+      "pixellab_object_id": "f92bbb93-b8cd-43b6-99b7-2f4db14e1b27",
+      "generated_at": "2026-08-15T19:46:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7893,
+      "glow_score": 0.0418
+    },
+    "LIT_4": {
+      "sprite": "barrels/barrel_016/lit_4/sprite.webp",
+      "pixellab_object_id": "87bd7665-30e2-47c7-9a99-46efcfaebac4",
+      "generated_at": "2026-08-15T19:46:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6914,
+      "glow_score": 0.0202
+    },
+    "NOT_LIT_1": {
+      "sprite": "barrels/barrel_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "35763292-4ae1-4f3d-8cc4-290c8689d7a8",
+      "generated_at": "2026-08-15T19:46:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8617,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "barrels/barrel_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "208adc0e-bf8b-4542-a12c-9eca7e863274",
+      "generated_at": "2026-08-15T19:46:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8054,
+      "glow_score": 0.0
     }
   }
 }
