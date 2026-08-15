@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 778,
+  "scenery_count": 779,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 33
+      "done": 34
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 33,
+    "stones": 34,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -17256,6 +17256,40 @@
       "pixellab_object_id": "b38c0197-072f-4dfe-a544-32dc1515f5ee",
       "sprite": "stones/stone_028/sprite.webp",
       "art_hash": "43b123b5bee3609f",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_029",
+      "rel": "stones/stone_029",
+      "name": "Pale limestone chunk 029",
+      "category": "stones",
+      "lights": "LIGHTS_OFF",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, pale limestone chunk, unusually tall and narrow, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.93,
+        "world_px_height": 35,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          13,
+          9,
+          51,
+          57
+        ],
+        "content_px_height": 48,
+        "canvas_render_px": 47
+      },
+      "status": "complete",
+      "pixellab_object_id": "021864ed-6dfb-4f7a-86db-3fa67271ab33",
+      "sprite": "stones/stone_029/sprite.webp",
+      "art_hash": "139b24da68295981",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
