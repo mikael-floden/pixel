@@ -17944,6 +17944,14 @@
           "glow_score": 0.1387,
           "art_hash": "f30db58a467ed08d"
         },
+        "LIT_3": {
+          "sprite": "stumps/stump_003/lit_3/sprite.webp",
+          "pixellab_object_id": "1ba7891d-56b0-4627-b552-1589ea9e9fe0",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.5153,
+          "glow_score": 0.2226,
+          "art_hash": "26c263b39621acb9"
+        },
         "LIT_4": {
           "sprite": "stumps/stump_003/lit_4/sprite.webp",
           "pixellab_object_id": "5153ceb5-4fb9-4f60-8b44-94460be28af6",
@@ -18057,11 +18065,51 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_005/lit_1/sprite.webp",
+          "pixellab_object_id": "ab6335d1-043d-4f8e-8a89-6fd99127bce2",
+          "glow_concept": "shelf undersides shedding pale spore light downward",
+          "difference_from_source": 0.865,
+          "glow_score": 0.1787,
+          "art_hash": "e5a18c159c2c9bb1"
+        },
+        "LIT_2": {
+          "sprite": "stumps/stump_005/lit_2/sprite.webp",
+          "pixellab_object_id": "23bea18e-5b2c-4986-8f0c-a687e4ee6cc9",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.4556,
+          "glow_score": 0.2314,
+          "art_hash": "aa357cc58bf611c8"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_005/lit_3/sprite.webp",
+          "pixellab_object_id": "8bf7d42f-c4dc-4597-a1ac-fbb1e8052d05",
+          "glow_concept": "ring of glowing mushrooms around the base",
+          "difference_from_source": 0.9628,
+          "glow_score": 0.1432,
+          "art_hash": "d01156cd5645d872"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_005/lit_4/sprite.webp",
+          "pixellab_object_id": "b660c51c-bdce-4ea5-97b1-316d5a2f945b",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.8318,
+          "glow_score": 0.2258,
+          "art_hash": "7784800bc7f23ed5"
+        },
         "NOT_LIT_1": {
           "sprite": "stumps/stump_005/sprite.webp",
           "pixellab_object_id": "c5e61e87-cab7-4451-b8b5-4a2bc9a6ea22",
           "glow_score": 0.1473,
           "art_hash": "c3a3a50c643e9340"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_005/not_lit_10/sprite.webp",
+          "pixellab_object_id": "e8a282e8-b442-4639-8e53-74fd6aeb1af1",
+          "glow_concept": null,
+          "difference_from_source": 0.9889,
+          "glow_score": 0.0068,
+          "art_hash": "b52ecd1a9b74b5ad"
         },
         "NOT_LIT_2": {
           "sprite": "stumps/stump_005/not_lit_2/sprite.webp",
@@ -18071,6 +18119,14 @@
           "glow_score": 0.1644,
           "art_hash": "210df489b99c7f86"
         },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0773a564-f8db-42ee-9886-a47f34507b33",
+          "glow_concept": null,
+          "difference_from_source": 0.7249,
+          "glow_score": 0.0932,
+          "art_hash": "13bd9adb0f97b715"
+        },
         "NOT_LIT_4": {
           "sprite": "stumps/stump_005/not_lit_4/sprite.webp",
           "pixellab_object_id": "10e4ab83-733f-4a3b-b061-f7ee19bdfbec",
@@ -18078,6 +18134,46 @@
           "difference_from_source": 0.6198,
           "glow_score": 0.1552,
           "art_hash": "96c3382b4ae78245"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_005/not_lit_5/sprite.webp",
+          "pixellab_object_id": "83919f66-bb94-4872-b39c-1fffe12e94b1",
+          "glow_concept": null,
+          "difference_from_source": 0.9711,
+          "glow_score": 0.019,
+          "art_hash": "e09349b3c450657c"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_005/not_lit_6/sprite.webp",
+          "pixellab_object_id": "073512f4-52e9-48b6-b7bf-0bffae470851",
+          "glow_concept": null,
+          "difference_from_source": 0.9852,
+          "glow_score": 0.0019,
+          "art_hash": "60e1300d0ecf4ced"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_005/not_lit_7/sprite.webp",
+          "pixellab_object_id": "36b8c27c-68dd-4011-b0d8-8352eeac709e",
+          "glow_concept": null,
+          "difference_from_source": 0.986,
+          "glow_score": 0.0,
+          "art_hash": "618555fc76ae7a11"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_005/not_lit_8/sprite.webp",
+          "pixellab_object_id": "ccf1b0b6-4fa1-4dde-b9de-c169a0c62b7f",
+          "glow_concept": null,
+          "difference_from_source": 0.9617,
+          "glow_score": 0.0138,
+          "art_hash": "8a224ce38bb53bbf"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_005/not_lit_9/sprite.webp",
+          "pixellab_object_id": "6807db7f-a6a1-4820-aa49-24326393e9fd",
+          "glow_concept": null,
+          "difference_from_source": 0.982,
+          "glow_score": 0.0008,
+          "art_hash": "c488ee2390b117df"
         }
       },
       "animations": []
@@ -18106,11 +18202,115 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_007/lit_1/sprite.webp",
+          "pixellab_object_id": "b0edddd0-4601-4ffc-9a94-0979ddfbcc16",
+          "glow_concept": "luminous green sapling sprouting from the center",
+          "difference_from_source": 0.9847,
+          "glow_score": 0.0478,
+          "art_hash": "22e8a12988e3cdf1"
+        },
+        "LIT_2": {
+          "sprite": "stumps/stump_007/lit_2/sprite.webp",
+          "pixellab_object_id": "3a5bb20c-03ac-4fbc-8a13-ceb904b28df6",
+          "glow_concept": "shelf undersides shedding pale spore light downward",
+          "difference_from_source": 0.8201,
+          "glow_score": 0.0564,
+          "art_hash": "7d30dca745112d33"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_007/lit_3/sprite.webp",
+          "pixellab_object_id": "16015b10-08b2-40d3-ab55-037ca9f04015",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.9045,
+          "glow_score": 0.1347,
+          "art_hash": "74d0e9c4653f3fb3"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_007/lit_4/sprite.webp",
+          "pixellab_object_id": "08995fd4-d88c-471e-b981-dd3664bb72da",
+          "glow_concept": "ring of glowing mushrooms around the base",
+          "difference_from_source": 0.969,
+          "glow_score": 0.1994,
+          "art_hash": "bc128d5e258405f3"
+        },
         "NOT_LIT_1": {
           "sprite": "stumps/stump_007/sprite.webp",
           "pixellab_object_id": "3cdd15be-5051-474c-af1b-62f3ad86f293",
           "glow_score": 0.1499,
           "art_hash": "bbdc807b2eb01df1"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_007/not_lit_10/sprite.webp",
+          "pixellab_object_id": "c4e2ce54-74e2-4526-8a04-18c403540d7c",
+          "glow_concept": null,
+          "difference_from_source": 0.3436,
+          "glow_score": 0.129,
+          "art_hash": "d0fecf959cc65bf0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "18026136-e1ea-4936-87f4-1ba9a93500bf",
+          "glow_concept": null,
+          "difference_from_source": 0.6626,
+          "glow_score": 0.0657,
+          "art_hash": "b4dfc8077f172c92"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "035a54c5-6b0f-4ca6-b1b3-a41def4d130e",
+          "glow_concept": null,
+          "difference_from_source": 0.9927,
+          "glow_score": 0.1619,
+          "art_hash": "01a165476b4792c2"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "34cfa3a0-2f2a-4f90-afd5-e77fe07f2c0d",
+          "glow_concept": null,
+          "difference_from_source": 0.844,
+          "glow_score": 0.0008,
+          "art_hash": "4978fea72b8f7142"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_007/not_lit_5/sprite.webp",
+          "pixellab_object_id": "113ba3fa-5072-461d-9ab5-fc9fd79f5942",
+          "glow_concept": null,
+          "difference_from_source": 0.8869,
+          "glow_score": 0.0,
+          "art_hash": "f881db257aaf46c9"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_007/not_lit_6/sprite.webp",
+          "pixellab_object_id": "f44c0a86-d175-4055-9af6-be8111c000d6",
+          "glow_concept": null,
+          "difference_from_source": 0.5048,
+          "glow_score": 0.0267,
+          "art_hash": "d3330de12770dd47"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_007/not_lit_7/sprite.webp",
+          "pixellab_object_id": "66b446ec-58af-4cda-8be4-bac66b3c894f",
+          "glow_concept": null,
+          "difference_from_source": 0.9875,
+          "glow_score": 0.0,
+          "art_hash": "f4921651e73b0c24"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_007/not_lit_8/sprite.webp",
+          "pixellab_object_id": "f4a36323-50f6-4173-a842-4eff71124478",
+          "glow_concept": null,
+          "difference_from_source": 0.7273,
+          "glow_score": 0.4484,
+          "art_hash": "83bfeb5fc18158c8"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_007/not_lit_9/sprite.webp",
+          "pixellab_object_id": "b41f1b09-a8be-4924-8431-11681dce7adf",
+          "glow_concept": null,
+          "difference_from_source": 0.9677,
+          "glow_score": 0.0,
+          "art_hash": "08b92a18da607cdf"
         }
       },
       "animations": []
@@ -18139,11 +18339,115 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_009/lit_1/sprite.webp",
+          "pixellab_object_id": "be140496-8bde-47d6-aa1c-6894af9a154d",
+          "glow_concept": "foxfire seeping from gaps in the bark",
+          "difference_from_source": 0.3667,
+          "glow_score": 0.2125,
+          "art_hash": "c3de531a28f0d2f8"
+        },
+        "LIT_2": {
+          "sprite": "stumps/stump_009/lit_2/sprite.webp",
+          "pixellab_object_id": "2bcf62e3-22f9-4a43-80ad-58f77a159e1f",
+          "glow_concept": "luminous green sapling sprouting from the center",
+          "difference_from_source": 0.6279,
+          "glow_score": 0.2023,
+          "art_hash": "e0b92d942f219f5d"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_009/lit_3/sprite.webp",
+          "pixellab_object_id": "ea10bde9-bb8a-4abc-8c08-6c91653e8166",
+          "glow_concept": "shelf undersides shedding pale spore light downward",
+          "difference_from_source": 0.6878,
+          "glow_score": 0.0947,
+          "art_hash": "54d1f499b4a4fdf8"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_009/lit_4/sprite.webp",
+          "pixellab_object_id": "86bcd4ae-345e-4993-94e5-bf9433db0a5b",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.8507,
+          "glow_score": 0.2758,
+          "art_hash": "013bd5e8b7177131"
+        },
         "NOT_LIT_1": {
           "sprite": "stumps/stump_009/sprite.webp",
           "pixellab_object_id": "17b4f7db-a651-4bd7-b4f2-dcb80587c4e2",
           "glow_score": 0.1356,
           "art_hash": "fa32511b2013d7c1"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_009/not_lit_10/sprite.webp",
+          "pixellab_object_id": "5d60fefb-9bf0-4e08-af42-175d5ae76e70",
+          "glow_concept": null,
+          "difference_from_source": 0.69,
+          "glow_score": 0.1477,
+          "art_hash": "4bb6ac484865e3a2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "781e2bbf-097c-498d-8036-4820d93f332c",
+          "glow_concept": null,
+          "difference_from_source": 0.9365,
+          "glow_score": 0.0021,
+          "art_hash": "2ae7ca4670cfc671"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8fc14633-8d56-43af-88e9-ac220cf8780b",
+          "glow_concept": null,
+          "difference_from_source": 0.3371,
+          "glow_score": 0.1366,
+          "art_hash": "f70373df0dd7e5ec"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4b6c2158-c853-4086-b600-9810108e8eb9",
+          "glow_concept": null,
+          "difference_from_source": 0.9833,
+          "glow_score": 0.0,
+          "art_hash": "549a9942ac11f97d"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_009/not_lit_5/sprite.webp",
+          "pixellab_object_id": "4053d835-be48-458d-a03b-99bce13b5c03",
+          "glow_concept": null,
+          "difference_from_source": 0.8377,
+          "glow_score": 0.1344,
+          "art_hash": "48cfc1d9a737b686"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_009/not_lit_6/sprite.webp",
+          "pixellab_object_id": "6410b428-f028-428d-84fe-7d218a1293a6",
+          "glow_concept": null,
+          "difference_from_source": 0.8303,
+          "glow_score": 0.0324,
+          "art_hash": "702d129822ab367c"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_009/not_lit_7/sprite.webp",
+          "pixellab_object_id": "195ee40c-4e53-43ac-ae06-3ac5b7e2d1ab",
+          "glow_concept": null,
+          "difference_from_source": 0.3896,
+          "glow_score": 0.0026,
+          "art_hash": "daf49101a50554c6"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_009/not_lit_8/sprite.webp",
+          "pixellab_object_id": "476b570a-85ac-48ad-98ff-4ea4cfd13b71",
+          "glow_concept": null,
+          "difference_from_source": 0.9905,
+          "glow_score": 0.1892,
+          "art_hash": "fd3b3ddf46333524"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_009/not_lit_9/sprite.webp",
+          "pixellab_object_id": "cda9cf24-5793-4f1d-ae67-8854ffde3069",
+          "glow_concept": null,
+          "difference_from_source": 0.5827,
+          "glow_score": 0.0199,
+          "art_hash": "8a4f90c637749c50"
         }
       },
       "animations": []
@@ -18177,6 +18481,110 @@
           "pixellab_object_id": "82ee60a0-e940-4c59-8952-24ca4207903c",
           "glow_score": 0.2007,
           "art_hash": "a868c6221e1ae229"
+        },
+        "LIT_2": {
+          "sprite": "stumps/stump_010/lit_2/sprite.webp",
+          "pixellab_object_id": "e7f4ad5c-f721-4555-848b-f01bf0cbe8e0",
+          "glow_concept": "luminous green sapling sprouting from the center",
+          "difference_from_source": 0.6182,
+          "glow_score": 0.1825,
+          "art_hash": "9d423ba62cbfa0e3"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_010/lit_3/sprite.webp",
+          "pixellab_object_id": "b602ed75-8937-40fb-a2bd-17ad8e4fa907",
+          "glow_concept": "shelf undersides shedding pale spore light downward",
+          "difference_from_source": 0.9623,
+          "glow_score": 0.0702,
+          "art_hash": "74e33c111889481a"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_010/lit_4/sprite.webp",
+          "pixellab_object_id": "61850012-334d-4965-98c5-788f873eb6d3",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.8397,
+          "glow_score": 0.0867,
+          "art_hash": "6826a2cf8e8c20c5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f2fd8769-6977-47e5-b6dd-90d028057407",
+          "glow_concept": null,
+          "difference_from_source": 0.8831,
+          "glow_score": 0.1468,
+          "art_hash": "d5a90a838edc3da9"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_010/not_lit_10/sprite.webp",
+          "pixellab_object_id": "c47933ba-37ba-49fd-b777-64d4d11a3761",
+          "glow_concept": null,
+          "difference_from_source": 0.5909,
+          "glow_score": 0.1399,
+          "art_hash": "e13d97016d7af1c8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7b96095d-d888-447a-98a8-5a55b337383e",
+          "glow_concept": null,
+          "difference_from_source": 0.5543,
+          "glow_score": 0.2004,
+          "art_hash": "b49bb1c3ea9e4414"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_010/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ce7d930d-e98b-477d-aaca-c8765fc65290",
+          "glow_concept": null,
+          "difference_from_source": 0.9777,
+          "glow_score": 0.0025,
+          "art_hash": "52226a990af5aa9b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_010/not_lit_4/sprite.webp",
+          "pixellab_object_id": "1220227a-f58e-4a1b-878f-46d2d0fd0af2",
+          "glow_concept": null,
+          "difference_from_source": 0.6473,
+          "glow_score": 0.1797,
+          "art_hash": "2477e6573bafd16e"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_010/not_lit_5/sprite.webp",
+          "pixellab_object_id": "c716f2f7-bb4f-41c6-b3c8-befdf46d8298",
+          "glow_concept": null,
+          "difference_from_source": 0.8002,
+          "glow_score": 0.0849,
+          "art_hash": "079da8db1c423eb3"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_010/not_lit_6/sprite.webp",
+          "pixellab_object_id": "5ea1bc16-39a7-45a0-908b-e6bb3001a504",
+          "glow_concept": null,
+          "difference_from_source": 0.8891,
+          "glow_score": 0.0285,
+          "art_hash": "adb7562e654cdfcf"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_010/not_lit_7/sprite.webp",
+          "pixellab_object_id": "139b9aec-d8f3-4f83-8a70-e9ca51454bee",
+          "glow_concept": null,
+          "difference_from_source": 0.5378,
+          "glow_score": 0.1937,
+          "art_hash": "983b14bcaeced68b"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_010/not_lit_8/sprite.webp",
+          "pixellab_object_id": "ddec396f-91af-4ff3-ac04-adf96c605bb0",
+          "glow_concept": null,
+          "difference_from_source": 0.5759,
+          "glow_score": 0.1301,
+          "art_hash": "808f8db4fcbce82e"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_010/not_lit_9/sprite.webp",
+          "pixellab_object_id": "6f3821c1-e276-4445-82a5-049460bb349c",
+          "glow_concept": null,
+          "difference_from_source": 0.6036,
+          "glow_score": 0.1586,
+          "art_hash": "ba05365fe5702fb9"
         }
       },
       "animations": []
@@ -18210,6 +18618,78 @@
           "pixellab_object_id": "101362b9-6637-46a8-bac1-3c44fc5956f6",
           "glow_score": 0.1467,
           "art_hash": "35a8b84c28c99e06"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_011/not_lit_10/sprite.webp",
+          "pixellab_object_id": "a14d00ce-e13b-4dc6-bc7f-b8bc349e1c84",
+          "glow_concept": null,
+          "difference_from_source": 0.9685,
+          "glow_score": 0.0004,
+          "art_hash": "aa0a374cd819c5b1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0cb3e793-7318-4f07-ae3a-88f9b22c109c",
+          "glow_concept": null,
+          "difference_from_source": 0.4866,
+          "glow_score": 0.1666,
+          "art_hash": "be9c5715b159ebf1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "10f6c84e-7cb6-4d67-ab8a-71c79d491c58",
+          "glow_concept": null,
+          "difference_from_source": 0.9327,
+          "glow_score": 0.0235,
+          "art_hash": "94632f7f20a98f54"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "808b47a2-3199-4e0c-8a2c-30f621713535",
+          "glow_concept": null,
+          "difference_from_source": 0.9806,
+          "glow_score": 0.0142,
+          "art_hash": "1e24ad65af64df57"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_011/not_lit_5/sprite.webp",
+          "pixellab_object_id": "41e04148-26c8-4b21-8978-e98bf4dd20e5",
+          "glow_concept": null,
+          "difference_from_source": 0.9674,
+          "glow_score": 0.0018,
+          "art_hash": "3fddec66e48b877c"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_011/not_lit_6/sprite.webp",
+          "pixellab_object_id": "9a7e77cf-bc9c-4f1b-a90e-e306308c1dc7",
+          "glow_concept": null,
+          "difference_from_source": 0.9815,
+          "glow_score": 0.0,
+          "art_hash": "cd35dec0f9bff586"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_011/not_lit_7/sprite.webp",
+          "pixellab_object_id": "d0eba096-f75c-4152-a78f-7b5b67ec3735",
+          "glow_concept": null,
+          "difference_from_source": 0.2806,
+          "glow_score": 0.1399,
+          "art_hash": "ebdf29d6b9b9cc53"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_011/not_lit_8/sprite.webp",
+          "pixellab_object_id": "b8f34893-c463-47a4-b2db-e58e9a015033",
+          "glow_concept": null,
+          "difference_from_source": 0.7055,
+          "glow_score": 0.1841,
+          "art_hash": "f82e736e986f8d10"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_011/not_lit_9/sprite.webp",
+          "pixellab_object_id": "dc3d7b0f-4056-44bd-b429-3f6b8bf55c39",
+          "glow_concept": null,
+          "difference_from_source": 0.7695,
+          "glow_score": 0.0211,
+          "art_hash": "5beb35dbe03ccd4e"
         }
       },
       "animations": []
