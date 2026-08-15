@@ -6,7 +6,8 @@ rather than the whole tree. Standing order applies at this granularity too: a
 rejected variant goes from the repo AND the PixelLab store, then the slot is
 regenerated with the improved prompt and the sibling-similarity gate.
 """
-import json, os, sys, time
+import json, os, shutil, subprocess, sys, time
+from datetime import datetime
 sys.path.insert(0, os.path.dirname(__file__))
 import factory, viewer_build, tree_variants as tv
 from pixellab_client import PixelLabClient, PixelLabError
@@ -35,7 +36,29 @@ def corrective(note):
     return " " + (n if n.endswith((".", "!")) else n + ".")
 
 
+def _ts(s):
+    try:
+        return datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+def _committed(relpath):
+    r = subprocess.run(["git", "log", "-1", "--format=%cI", "--", relpath],
+                       cwd=factory.ROOT, capture_output=True, text=True)
+    return _ts(r.stdout.strip()) if r.returncode == 0 and r.stdout.strip() else None
+
+
 def rejected_states():
+    """Rejections that still describe the art on disk.
+
+    STALENESS IS DECIDED BY TIME, NOT BY HASH. The wiki stamps a state verdict
+    with the hash of the PIECE'S sprite, not the state's own — measured
+    2026-08-15, 0 of 225 recent state verdicts matched their state sprite while
+    the piece sprite matched exactly. Comparing against the state hash made
+    every state rejection look already-fixed, and 33 real ones were reported to
+    the maintainer as "nothing needs action". A state's art is newer than the
+    verdict only if its sprite was committed after it."""
     e = json.load(open(FEEDBACK)).get("entries") or {}
     out = []
     for k, v in e.items():
@@ -43,9 +66,14 @@ def rejected_states():
             continue
         if v.get("status") != "rejected":
             continue
-        parts = k.split("#")
-        out.append((parts[0][len("scenery/"):], parts[1].upper(),
-                    v.get("note") or v.get("comment") or ""))
+        rel, state = k.split("#")[0][len("scenery/"):], k.split("#")[1].upper()
+        ent = ((factory.read_manifest(rel) or {}).get("states") or {}).get(state)
+        if not ent or not os.path.exists(os.path.join(factory.ROOT, ent.get("sprite", ""))):
+            continue
+        vt, ct = _ts(v.get("updated_at")), _committed(ent["sprite"])
+        if not (vt and ct and ct < vt):
+            continue                    # art regenerated since — verdict spent
+        out.append((rel, state, v.get("note") or v.get("comment") or ""))
     return sorted(set(out))
 
 
