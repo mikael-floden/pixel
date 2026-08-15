@@ -3129,6 +3129,15 @@
           "generated_at": "2026-08-13T02:28:49+00:00",
           "art_hash": "6c2bbbacbb0a0a80"
         },
+        "NOT_LIT_2": {
+          "sprite": "beached_rowboats/beached_rowboat_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "edefd64b-6bef-4511-8ef9-312cbefa3a5a",
+          "generated_at": "2026-08-15T19:51:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6492,
+          "glow_score": 0.0,
+          "art_hash": "f3f2a78c8f0fdf4a"
+        },
         "NOT_LIT_3": {
           "sprite": "beached_rowboats/beached_rowboat_001/not_lit_3/sprite.webp",
           "pixellab_object_id": "65697e46-946b-4fde-aed2-a57c415e7f95",
@@ -3153,9 +3162,9 @@
     {
       "id": "beached_rowboat_900",
       "rel": "beached_rowboats/beached_rowboat_900",
-      "name": "Freshly tarred black hull 900 \u00b7 lit",
+      "name": "Freshly tarred black hull 900",
       "category": "beached_rowboats",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, freshly tarred black hull, waist-high, self-emissive at night, softly radiating light: a storm lantern glowing at the prow",
       "view": "low top-down",
       "size": 160,
@@ -3207,6 +3216,24 @@
           "difference_from_source": 0.4437,
           "glow_score": 0.0048,
           "art_hash": "4aa166ad2b1a9e7d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beached_rowboats/beached_rowboat_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ea08d728-551a-4a7c-b9e3-6f8060b48f35",
+          "generated_at": "2026-08-15T19:50:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4033,
+          "glow_score": 0.0,
+          "art_hash": "df82d9dfe39949b5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beached_rowboats/beached_rowboat_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b31bf4a2-80e3-4c20-a37d-465cecc29ce2",
+          "generated_at": "2026-08-15T19:50:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5301,
+          "glow_score": 0.0,
+          "art_hash": "7925a195e781a93c"
         }
       },
       "animations": []
@@ -3216,7 +3243,7 @@
       "rel": "beacons/beacon_001",
       "name": "Leaning coastal beacon 001",
       "category": "beacons",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, leaning coastal beacon, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -3236,6 +3263,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beacons/beacon_001/lit_1/sprite.webp",
+          "pixellab_object_id": "b1e7f468-4d6f-4dbe-80d2-c45b2ba5b525",
+          "generated_at": "2026-08-15T19:50:29+00:00",
+          "glow_concept": "spark column streaming off downwind",
+          "difference_from_source": 0.7864,
+          "glow_score": 0.1762,
+          "art_hash": "cc02ecf868ce934b"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_001/lit_2/sprite.webp",
+          "pixellab_object_id": "c373f473-7641-419c-ba45-3f9a02b02b6c",
+          "generated_at": "2026-08-15T19:50:30+00:00",
+          "glow_concept": "great orange signal blaze in the cage",
+          "difference_from_source": 0.7535,
+          "glow_score": 0.1384,
+          "art_hash": "672e5aab6bd127c0"
+        },
         "NOT_LIT_1": {
           "sprite": "beacons/beacon_001/sprite.webp",
           "pixellab_object_id": "de932baa-f7f8-4612-9347-ea7e30ce29bf",
@@ -3259,6 +3304,15 @@
           "difference_from_source": 0.6587,
           "glow_score": 0.0,
           "art_hash": "de5ca7ae96df3172"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beacons/beacon_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c0f07c61-77d0-4269-882c-28b85388b446",
+          "generated_at": "2026-08-15T19:50:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.317,
+          "glow_score": 0.0,
+          "art_hash": "3441938e8f5c812b"
         }
       },
       "animations": []
@@ -3266,9 +3320,9 @@
     {
       "id": "beacon_002",
       "rel": "beacons/beacon_002",
-      "name": "Hilltop signal beacon 002 \u00b7 lit",
+      "name": "Hilltop signal beacon 002",
       "category": "beacons",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, hilltop signal beacon, towering, several times the height of a person, self-emissive at night, softly radiating light: cold green marsh-fire flame",
       "view": "low top-down",
       "size": 192,
@@ -3293,6 +3347,51 @@
           "pixellab_object_id": "ee180a42-6b80-4d17-9997-9f09e88c5e1f",
           "generated_at": "2026-08-13T04:28:20+00:00",
           "art_hash": "d1714fe8653f31f8"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_002/lit_2/sprite.webp",
+          "pixellab_object_id": "57e07822-30d8-4666-851b-f19b6c61ef5b",
+          "generated_at": "2026-08-15T19:51:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7862,
+          "glow_score": 0.0405,
+          "art_hash": "dc5e5f266f64d2f0"
+        },
+        "LIT_3": {
+          "sprite": "beacons/beacon_002/lit_3/sprite.webp",
+          "pixellab_object_id": "4b423019-ea46-4737-a6dc-8b5de8818787",
+          "generated_at": "2026-08-15T19:51:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8078,
+          "glow_score": 0.029,
+          "art_hash": "ede27f4663e0f35f"
+        },
+        "LIT_4": {
+          "sprite": "beacons/beacon_002/lit_4/sprite.webp",
+          "pixellab_object_id": "e70cb48f-b317-4fc6-8903-33209301f3a4",
+          "generated_at": "2026-08-15T19:51:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8071,
+          "glow_score": 0.0263,
+          "art_hash": "6840880707f66fbd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "beacons/beacon_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2879997c-580b-4d2f-a0d2-8c215a9904b9",
+          "generated_at": "2026-08-15T19:51:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5068,
+          "glow_score": 0.0,
+          "art_hash": "69d69aabc4917c1b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1f89899b-d2b3-4847-b800-e7835a939a25",
+          "generated_at": "2026-08-15T19:51:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6182,
+          "glow_score": 0.0,
+          "art_hash": "a3bafb5a313be507"
         }
       },
       "animations": []
@@ -3302,7 +3401,7 @@
       "rel": "beacons/beacon_003",
       "name": "Basket-topped tripod beacon 003",
       "category": "beacons",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, basket-topped tripod beacon, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -3322,11 +3421,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beacons/beacon_003/lit_1/sprite.webp",
+          "pixellab_object_id": "43a56c27-099f-4dc9-b548-ed16a3f02676",
+          "generated_at": "2026-08-15T19:52:42+00:00",
+          "glow_concept": "slow red ember eye pulsing in the cage",
+          "difference_from_source": 0.8382,
+          "glow_score": 0.0617,
+          "art_hash": "b27abae6157cf79c"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_003/lit_2/sprite.webp",
+          "pixellab_object_id": "818384d0-8ba2-4be7-a19e-55e70fb70816",
+          "generated_at": "2026-08-15T19:52:43+00:00",
+          "glow_concept": "burning soulstone shining like a fixed star",
+          "difference_from_source": 0.7775,
+          "glow_score": 0.0786,
+          "art_hash": "e009a38f1f475c9c"
+        },
         "NOT_LIT_1": {
           "sprite": "beacons/beacon_003/sprite.webp",
           "pixellab_object_id": "8f741c6d-f46e-48c1-bfc2-bc360f74920c",
           "generated_at": "2026-08-13T08:45:01+00:00",
           "art_hash": "83776752a572ea5a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a4e98444-724b-4c2e-a0d1-1793a88d98dd",
+          "generated_at": "2026-08-15T19:51:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7021,
+          "glow_score": 0.0,
+          "art_hash": "3cbc3f17fc9b4ce4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beacons/beacon_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c7efd212-77dc-4029-856c-294602a75101",
+          "generated_at": "2026-08-15T19:51:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7618,
+          "glow_score": 0.0135,
+          "art_hash": "cfe5550750c18c52"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beacons/beacon_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4db1f0ba-d908-4ca4-abe8-37a2949c620f",
+          "generated_at": "2026-08-15T19:53:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6731,
+          "glow_score": 0.0,
+          "art_hash": "a0ee9740fed681f1"
         }
       },
       "animations": []
@@ -3336,7 +3480,7 @@
       "rel": "beacons/beacon_007",
       "name": "Double-cage war beacon 007",
       "category": "beacons",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, double-cage war beacon, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -3356,11 +3500,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "beacons/beacon_007/lit_1/sprite.webp",
+          "pixellab_object_id": "65dabf98-f5c3-4cce-8e4d-8a1a14e92701",
+          "generated_at": "2026-08-15T19:52:45+00:00",
+          "glow_concept": "pillar of pale soul-light rising skyward",
+          "difference_from_source": 0.627,
+          "glow_score": 0.0954,
+          "art_hash": "783743bdd13753a3"
+        },
+        "LIT_2": {
+          "sprite": "beacons/beacon_007/lit_2/sprite.webp",
+          "pixellab_object_id": "f52d7471-6d7d-42e3-9b50-6611da2a16b1",
+          "generated_at": "2026-08-15T19:52:56+00:00",
+          "glow_concept": "slow red ember eye pulsing in the cage",
+          "difference_from_source": 0.3373,
+          "glow_score": 0.0042,
+          "art_hash": "e59b36a13ee84bcb"
+        },
         "NOT_LIT_1": {
           "sprite": "beacons/beacon_007/sprite.webp",
           "pixellab_object_id": "3291e242-7ab1-4d98-8d33-1b0affd650fb",
           "generated_at": "2026-08-13T22:14:43+00:00",
           "art_hash": "2d9ce546b39e7d2a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "beacons/beacon_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5a2cc506-b9e3-4d2a-97f7-446bdde4461f",
+          "generated_at": "2026-08-15T19:52:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6138,
+          "glow_score": 0.0,
+          "art_hash": "09c7bdad165687f5"
+        },
+        "NOT_LIT_3": {
+          "sprite": "beacons/beacon_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f82dc4b8-83e0-4763-b2f9-179fcc1cacf7",
+          "generated_at": "2026-08-15T19:52:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6813,
+          "glow_score": 0.0,
+          "art_hash": "44bf7a35649c3d1d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "beacons/beacon_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "19f19004-8cd5-4ee6-847c-97a983a68035",
+          "generated_at": "2026-08-15T19:52:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6784,
+          "glow_score": 0.0,
+          "art_hash": "670a2cc46c933694"
         }
       },
       "animations": []
@@ -14002,6 +14191,33 @@
           "glow_score": 0.025,
           "art_hash": "8d59b69392bb9bc7"
         },
+        "LIT_2": {
+          "sprite": "fallen_logs/fallen_log_020/lit_2/sprite.webp",
+          "pixellab_object_id": "4a658df5-3bef-492d-9424-426426b07e9e",
+          "generated_at": "2026-08-15T19:51:41+00:00",
+          "glow_concept": "blue foxfire glowing in the bark cracks",
+          "difference_from_source": 0.8288,
+          "glow_score": 0.0048,
+          "art_hash": "158144f46ad2519c"
+        },
+        "LIT_3": {
+          "sprite": "fallen_logs/fallen_log_020/lit_3/sprite.webp",
+          "pixellab_object_id": "afd10705-1042-4be3-9098-ddb18b7c25c7",
+          "generated_at": "2026-08-15T19:51:42+00:00",
+          "glow_concept": "rows of shelf fungi glowing pale green",
+          "difference_from_source": 0.7857,
+          "glow_score": 0.0361,
+          "art_hash": "d0f824debe2fe9f6"
+        },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_020/lit_4/sprite.webp",
+          "pixellab_object_id": "7a8ada0d-d9c3-4276-aabf-5156198f186e",
+          "generated_at": "2026-08-15T19:52:18+00:00",
+          "glow_concept": "luminous moss carpeting the upper side",
+          "difference_from_source": 0.8582,
+          "glow_score": 0.2417,
+          "art_hash": "af6fed854ca86745"
+        },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_020/not_lit_1/sprite.webp",
           "pixellab_object_id": "a8ff5d9a-8190-4ddf-a4ec-1f283fd3de19",
@@ -14010,6 +14226,15 @@
           "difference_from_source": 0.6719,
           "glow_score": 0.0,
           "art_hash": "7ad288beeeaa825e"
+        },
+        "NOT_LIT_10": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_10/sprite.webp",
+          "pixellab_object_id": "aedc9575-9edf-440a-a8f1-e994d64f9b9b",
+          "generated_at": "2026-08-15T19:50:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7054,
+          "glow_score": 0.0174,
+          "art_hash": "02e9ce1f661eb846"
         },
         "NOT_LIT_2": {
           "sprite": "fallen_logs/fallen_log_020/not_lit_2/sprite.webp",
@@ -14037,6 +14262,51 @@
           "difference_from_source": 0.7968,
           "glow_score": 0.0093,
           "art_hash": "c42d0229d47ade50"
+        },
+        "NOT_LIT_5": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_5/sprite.webp",
+          "pixellab_object_id": "8aed9bd4-d543-4ea3-9b17-59c05677d5a0",
+          "generated_at": "2026-08-15T19:49:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8027,
+          "glow_score": 0.0,
+          "art_hash": "a077872f58d23936"
+        },
+        "NOT_LIT_6": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_6/sprite.webp",
+          "pixellab_object_id": "d663a631-0f76-4c57-95e2-fd6371137407",
+          "generated_at": "2026-08-15T19:50:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7336,
+          "glow_score": 0.0533,
+          "art_hash": "16e9440dc2b08963"
+        },
+        "NOT_LIT_7": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_7/sprite.webp",
+          "pixellab_object_id": "a49e6f14-4aeb-4a2a-a77c-097ca4cb82cd",
+          "generated_at": "2026-08-15T19:51:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8676,
+          "glow_score": 0.063,
+          "art_hash": "6e95eba0d8d116ec"
+        },
+        "NOT_LIT_8": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_8/sprite.webp",
+          "pixellab_object_id": "2b287274-938d-4f7d-b741-38928791fea1",
+          "generated_at": "2026-08-15T19:50:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8228,
+          "glow_score": 0.1399,
+          "art_hash": "245515f59a9bfc6f"
+        },
+        "NOT_LIT_9": {
+          "sprite": "fallen_logs/fallen_log_020/not_lit_9/sprite.webp",
+          "pixellab_object_id": "5c91cd1f-dfa9-44df-849d-547cf62ec59c",
+          "generated_at": "2026-08-15T19:50:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5404,
+          "glow_score": 0.0204,
+          "art_hash": "29d6e51c74a473eb"
         }
       },
       "animations": []
@@ -26890,9 +27160,9 @@
     {
       "id": "stump_022",
       "rel": "stumps/stump_022",
-      "name": "Sprouting stump with shoots 022 \u00b7 lit",
+      "name": "Sprouting stump with shoots 022",
       "category": "stumps",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, sprouting stump with shoots, heavily weathered and gnarled, small, knee-high, self-emissive at night, softly radiating light: a single candle burning on the cut face",
       "view": "low top-down",
       "size": 64,
@@ -26925,6 +27195,42 @@
           "pixellab_object_id": "1397101e-5249-4d9c-9320-ae8eaf4b19af",
           "glow_score": 0.1179,
           "art_hash": "23aa4eb289179cee"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "db21780b-4fad-447d-8973-997d85e35bbb",
+          "generated_at": "2026-08-15T19:52:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9122,
+          "glow_score": 0.0816,
+          "art_hash": "31c8d231d15a3269"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f2999680-4cb7-4066-b1a2-cf4c5e8b2191",
+          "generated_at": "2026-08-15T19:52:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6241,
+          "glow_score": 0.2024,
+          "art_hash": "2bfdb0e608c8fbf5"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_022/not_lit_4/sprite.webp",
+          "pixellab_object_id": "2fac4b48-57d2-4ecc-9c36-2fb08a99c581",
+          "generated_at": "2026-08-15T19:51:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7898,
+          "glow_score": 0.0005,
+          "art_hash": "3c5f8c85518b75d2"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_022/not_lit_6/sprite.webp",
+          "pixellab_object_id": "96575f4a-bafe-47c3-b140-e3d97c834a56",
+          "generated_at": "2026-08-15T19:53:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2853,
+          "glow_score": 0.1229,
+          "art_hash": "36a870f70d0efbf9"
         }
       },
       "animations": []
