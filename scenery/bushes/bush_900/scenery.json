@@ -5,8 +5,8 @@
   "group": "bushes",
   "rank": 25,
   "index": 900,
-  "name": "Red-berried currant bush 900 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Red-berried currant bush 900",
+  "lights": null,
   "variety": "red-berried currant bush",
   "glow_concept": "pale luminescent flowers dotting the surface",
   "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, red-berried currant bush, waist-high, self-emissive at night, softly radiating light: pale luminescent flowers dotting the surface",
@@ -60,6 +60,22 @@
       "generated_at": "2026-08-15T21:18:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5838,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "bushes/bush_900/not_lit_1/sprite.webp",
+      "pixellab_object_id": "f82c3581-5a00-4c6d-9a55-a80849007577",
+      "generated_at": "2026-08-15T21:18:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.926,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_900/not_lit_2/sprite.webp",
+      "pixellab_object_id": "bc4a7cfd-877b-42cd-8b1d-fae12db7f9f2",
+      "generated_at": "2026-08-15T21:18:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2468,
       "glow_score": 0.0
     }
   }
