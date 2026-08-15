@@ -16,14 +16,46 @@ from PIL import Image
 FEEDBACK = os.path.join(os.path.dirname(factory.ROOT), "live", "feedback", "objects.json")
 
 
-# His rejection note IS the correction. "Remove the cave/nest at the bottom",
-# "Change the shape", "DON'T LEAN RIGHT" are all usable instructions, and
-# feeding them straight back is far better than guessing what he meant. Notes
-# that only DESCRIBE the fault ("To similar in structure", "E+A here is ugly")
-# are skipped: they are already handled by the structural gate, or they are
-# taste, and pasting them in would only confuse a literal model.
+# His rejection note IS the correction. "Change the shape", "DON'T LEAN RIGHT"
+# are usable instructions and feeding them straight back beats guessing.
 ACTIONABLE = ("remove", "don't", "dont", "do not", "change", "should",
               "not every", "must")
+
+# ...BUT A NOTE THAT ASKS FOR SOMETHING TO GO AWAY CANNOT BE PASSED THROUGH.
+# This is the lesson he taught me on the window prompt (2026-08-14): "I dont
+# mention things like 'glass panes', 'the shutters', 'the stone', 'the
+# woodgrain'. Those word will get this AI to start painting." Every material
+# noun in a prompt lands in the conditioning as something to RENDER, so "No
+# owl in the tree" is a reliable way to get an owl. Negating BEHAVIOUR works
+# ("Do not draw the same tree again"); negating a NOUN backfires.
+#
+# So a removal note is translated into a POSITIVE description of the end state
+# — what the art SHOULD show — which implies the absence without ever naming
+# the thing. Each entry below is anchored to the note that produced it, from
+# his 2026-08-15 round.
+REMOVAL_CUES = ("no ", "no.", "remove", "to many", "too many", "not every",
+                "should not", "shouldn't", "without")
+
+POSITIVE_REWRITES = [
+    # "No door into the tree", "No door", "The hole into the tree should not be
+    # here", "To many variants with hole", "To many trees with hole in the
+    # middle" — ancient_tree_002 (6), owl_snag_002 (3)
+    (("door", "hole", "cave", "opening", "hollow", "entrance"),
+     "The trunk is solid unbroken wood the whole way round, covered in "
+     "continuous bark from root to crown."),
+    # "No owl in the tree thanks", "No owl" x8 — owl_snag_001
+    (("owl", "bird", "animal", "creature", "face", "eyes"),
+     "The tree is bare wood and branches alone, empty of anything else."),
+    # "Remove the cave/nest at the bottom" (earlier round)
+    (("nest", "hive", "wasp", "bee"),
+     "The branches are clean and empty along their whole length."),
+]
+
+# "Wrong color palette" x2 — honey_tree_002. Not a removal; a drift. Say what
+# to keep, positively.
+PALETTE_NOTE = ("color", "colour", "palette", "hue")
+PALETTE_FIX = ("Use exactly the same colours as the source image — the same "
+               "bark tone, the same leaf tone, the same shading.")
 
 
 def corrective(note):
@@ -31,6 +63,21 @@ def corrective(note):
     if not n:
         return ""
     low = n.lower()
+
+    if any(w in low for w in PALETTE_NOTE):
+        return " " + PALETTE_FIX
+
+    # A removal request never goes back verbatim — translate it.
+    if any(c in low for c in REMOVAL_CUES):
+        for nouns, positive in POSITIVE_REWRITES:
+            if any(x in low for x in nouns):
+                return " " + positive
+        # Asked to remove something we have no positive phrasing for. Saying
+        # nothing is strictly better than naming it: the structural gate still
+        # forces a different tree, and a wrong prompt costs a generation AND
+        # produces the very thing he rejected.
+        return ""
+
     if not any(w in low for w in ACTIONABLE):
         return ""
     return " " + (n if n.endswith((".", "!")) else n + ".")

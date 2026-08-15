@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 825,
+  "scenery_count": 826,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -238,7 +238,7 @@
       "name": "Hanging Lantern Stand",
       "type": "TOWN",
       "quota": 44,
-      "done": 7
+      "done": 8
     },
     {
       "rank": 30,
@@ -1458,7 +1458,7 @@
     "house_clutter": 9,
     "ivy_posts": 5,
     "lantern_posts": 12,
-    "lantern_stands": 7,
+    "lantern_stands": 8,
     "letter_boxes": 1,
     "market_stalls": 4,
     "maypoles": 2,
@@ -14002,6 +14002,40 @@
       "pixellab_object_id": "2f76225f-cef1-41d5-a8c8-2354f36c6f07",
       "sprite": "lantern_stands/lantern_stand_014/sprite.webp",
       "art_hash": "06e9ee97ca0ce017",
+      "type": "TOWN",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "lantern_stand_015",
+      "rel": "lantern_stands/lantern_stand_015",
+      "name": "Chain-wrapped heavy stand 015",
+      "category": "lantern_stands",
+      "lights": "LIGHTS_OFF",
+      "description": "a heavy iron floor stand holding a hand-made candle lantern at head height, thick twisted stem on a broad weighted foot, chain-wrapped heavy stand, recently maintained, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 2.24,
+        "world_px_height": 84,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          43,
+          7,
+          87,
+          124
+        ],
+        "content_px_height": 117,
+        "canvas_render_px": 92
+      },
+      "status": "complete",
+      "pixellab_object_id": "9fee5cef-aa46-4879-be82-1d04953e4308",
+      "sprite": "lantern_stands/lantern_stand_015/sprite.webp",
+      "art_hash": "6415483b7948e668",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},

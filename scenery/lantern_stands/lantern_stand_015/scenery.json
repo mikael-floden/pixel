@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:16:03+00:00",
+  "id": "lantern_stand_015",
+  "group": "lantern_stands",
+  "type": "TOWN",
+  "rank": 29,
+  "index": 15,
+  "name": "Chain-wrapped heavy stand 015",
+  "lights": "LIGHTS_OFF",
+  "variety": "chain-wrapped heavy stand",
+  "modifier": "recently maintained",
+  "glow_concept": null,
+  "prompt": "a heavy iron floor stand holding a hand-made candle lantern at head height, thick twisted stem on a broad weighted foot, chain-wrapped heavy stand, recently maintained, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "lantern_stands/lantern_stand_015/sprite.webp",
+  "placement": {
+    "world_height_m": 2.24,
+    "world_px_height": 84,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      43,
+      7,
+      87,
+      124
+    ],
+    "content_px_height": 117,
+    "canvas_render_px": 92
+  },
+  "pixellab_object_id": "9fee5cef-aa46-4879-be82-1d04953e4308",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
