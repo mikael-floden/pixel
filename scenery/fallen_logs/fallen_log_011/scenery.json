@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T17:52:18+00:00",
+  "id": "fallen_log_011",
+  "group": "fallen_logs",
+  "type": "NATURE",
+  "rank": 20,
+  "index": 11,
+  "name": "Moss-covered oak log 011",
+  "lights": "LIGHTS_OFF",
+  "variety": "moss-covered oak log",
+  "modifier": "one side die-back, the other thriving",
+  "glow_concept": null,
+  "prompt": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, moss-covered oak log, one side die-back, the other thriving, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "fallen_logs/fallen_log_011/sprite.webp",
+  "placement": {
+    "world_height_m": 0.55,
+    "world_px_height": 21,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      10,
+      33,
+      120,
+      93
+    ],
+    "content_px_height": 60,
+    "canvas_render_px": 45
+  },
+  "pixellab_object_id": "5a872c5e-f5e9-4400-97f6-ffa1ae693312",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
