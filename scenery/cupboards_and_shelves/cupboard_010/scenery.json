@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:12:16+00:00",
+  "id": "cupboard_010",
+  "group": "cupboards_and_shelves",
+  "type": "INDOOR",
+  "rank": 106,
+  "index": 10,
+  "name": "Map chest of wide flat drawers 010 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "map chest of wide flat drawers",
+  "modifier": "child-sized",
+  "glow_concept": "a glowing kettle resting on the sideboard",
+  "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, map chest of wide flat drawers, child-sized, roughly six feet tall, human height, self-emissive at night, softly radiating light: a glowing kettle resting on the sideboard",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 128,
+  "sprite": "cupboards_and_shelves/cupboard_010/sprite.webp",
+  "placement": {
+    "world_height_m": 1.46,
+    "world_px_height": 55,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      22,
+      11,
+      107,
+      121
+    ],
+    "content_px_height": 110,
+    "canvas_render_px": 64
+  },
+  "pixellab_object_id": "3cdbdb5a-98f0-4b25-8c31-92a4fe4f1670",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
