@@ -144,6 +144,35 @@ ok(new Set(walk.map((w) => w.id)).size === walk.length, "each press really moves
 ok(walk.every((w) => Math.abs(w.y - Math.min(deep.y, w.maxScroll)) <= 4),
   `and every one of them keeps the scroll (${walk.map((w) => w.y).join(", ")} — clamped only by how tall the page is)`);
 ok(walk.every((w) => w.onScreen && w.navOnScreen), "with the pager still on screen on each of them");
+// THE RESTORE MUST NEVER FIGHT THE READER (maintainer 2026-08-15: "when I
+// scroll up the '← Scenery' top pinned bar also moves a bit before it stays.
+// It moves maybe 5px up and that looks ugly"). Restoring the scroll after ‹ ›
+// is re-tried once the art settles, because a piece of a different size
+// changes the page height — but an unconditional re-try lands mid-gesture and
+// yanks the page back, which is what he was watching. Measured before the fix:
+// a scroll to 560 was pulled back to 500 at t=321ms, and the pinned bar with
+// it.
+await p.evaluate(() => window.scrollTo(0, Math.max(0, (document.documentElement.scrollHeight - window.innerHeight) - 200)));
+await p.waitForTimeout(300);
+const yank = await p.evaluate(async () => {
+  const log = [];
+  const t0 = performance.now();
+  const tick = () => { log.push(Math.round(window.scrollY)); if (performance.now() - t0 < 900) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click();
+  await new Promise((r) => setTimeout(r, 120));
+  const mine = window.scrollY + 60;
+  window.scrollBy(0, 60);                       // the reader keeps scrolling
+  await new Promise((r) => setTimeout(r, 780)); // long enough for every deferred re-try
+  // The browser clamps a scroll at the end of the page; what must not happen
+  // is the WIKI pulling it back.
+  const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  return { mine: Math.round(Math.min(mine, maxY)), ended: Math.round(window.scrollY), lowest: Math.min(...log.slice(-30)), maxY: Math.round(maxY) };
+});
+console.log("scrolling right after ›:", JSON.stringify(yank));
+ok(Math.abs(yank.ended - yank.mine) <= 2, `a scroll made just after ‹ › is left alone (asked ${yank.mine}, ended ${yank.ended})`);
+ok(yank.lowest >= yank.mine - 2, "and nothing pulls the page back at any point in the second after");
+
 // Going BACK up the ladder is not paging — it starts at the top, as it always did.
 await p.evaluate(() => document.querySelector(".crumb").click());
 await p.waitForTimeout(1200);

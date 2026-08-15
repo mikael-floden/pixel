@@ -4139,7 +4139,10 @@ function initChrome() {
   // hardcoded value would either gap or overlap.
   const measureBar = () => {
     const bar = $("#topbar")?.getBoundingClientRect().height;
-    if (bar) document.documentElement.style.setProperty("--topbar-h", `${Math.round(bar)}px`);
+    // CEIL, not round: the topbar measures 64.3px on a phone, and rounding
+    // down parks the crumb row 0.2px over its bottom border — a hairline of
+    // the wrong colour on a 3x screen.
+    if (bar) document.documentElement.style.setProperty("--topbar-h", `${Math.ceil(bar)}px`);
   };
   measureBar();
   window.addEventListener("resize", measureBar);
@@ -4246,13 +4249,23 @@ function initChrome() {
     }
     if (keepScrollY != null) {
       const want = keepScrollY; keepScrollY = null;
-      // Clamp to what the new page can actually scroll, and try again once the
-      // art has laid out — a piece drawn at a different size changes the page
-      // height after this frame.
-      const put = () => window.scrollTo(0, Math.min(want, Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
-      put();
-      requestAnimationFrame(put);
-      setTimeout(put, 300);
+      const maxY = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      let set = Math.min(want, maxY());
+      window.scrollTo(0, set);
+      // A piece drawn at a different size settles its height a frame or two
+      // later, so a restore CLAMPED short is worth re-trying. But only then,
+      // and only while the reader has not touched the page: the first cut
+      // re-applied unconditionally at 300ms and yanked the page back under a
+      // moving finger — measured 560 -> 500 mid-scroll, which is what the
+      // maintainer saw as the pinned bar jumping a few pixels (2026-08-15).
+      const again = () => {
+        if (set >= want) return;                        // nothing was clamped away
+        if (Math.abs(window.scrollY - set) > 1) return; // the reader is driving now
+        const next = Math.min(want, maxY());
+        if (next !== set) { set = next; window.scrollTo(0, set); }
+      };
+      requestAnimationFrame(again);
+      setTimeout(again, 300);
       return;
     }
     if (restoreSpot(spot)) return;
