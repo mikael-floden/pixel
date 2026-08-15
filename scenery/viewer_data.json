@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
   "scenery_count": 757,
-  "target_count": 2382,
+  "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -813,7 +813,7 @@
       "id": "cliff_vines",
       "name": "Cliff Vine",
       "type": "MOUNTAIN_WALL",
-      "quota": 70,
+      "quota": 52,
       "done": 52
     },
     {
@@ -821,7 +821,7 @@
       "id": "cliff_features",
       "name": "Cliff Feature",
       "type": "MOUNTAIN_WALL",
-      "quota": 45,
+      "quota": 6,
       "done": 6
     },
     {
@@ -1245,7 +1245,7 @@
       "id": "cliff_roots",
       "name": "Cliff Root",
       "type": "MOUNTAIN_WALL",
-      "quota": 70,
+      "quota": 7,
       "done": 7
     },
     {
@@ -1253,7 +1253,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "type": "MOUNTAIN_WALL",
-      "quota": 50,
+      "quota": 5,
       "done": 5
     },
     {
@@ -1261,7 +1261,7 @@
       "id": "cliff_shrubs",
       "name": "Cliff Shrub",
       "type": "MOUNTAIN_WALL",
-      "quota": 60,
+      "quota": 12,
       "done": 12
     },
     {
@@ -1269,7 +1269,7 @@
       "id": "cliff_mosses",
       "name": "Cliff Moss",
       "type": "MOUNTAIN_WALL",
-      "quota": 50,
+      "quota": 9,
       "done": 9
     },
     {

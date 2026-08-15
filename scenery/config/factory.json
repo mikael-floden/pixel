@@ -3356,7 +3356,9 @@
       "animation_idea": "dust sifting from the cracks while moss sways gently",
       "lore_fit": "A piece of a remembered mountain that outlived the mountain itself when the Quiet took the rest of the range.",
       "modifier_pool": "nature",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "quota": 2,
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 83,
@@ -4052,7 +4054,7 @@
       "id": "cliff_vines",
       "prefix": "cliff_vine",
       "name": "Cliff Vine",
-      "quota": 70,
+      "quota": 52,
       "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background",
       "world_height_m": [
         5.0,
@@ -4102,14 +4104,15 @@
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals \u2014 not a bundle of parallel strands.",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 102,
       "id": "cliff_features",
       "prefix": "cliff_feature",
       "name": "Cliff Feature",
-      "quota": 45,
+      "quota": 6,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid",
       "world_height_m": [
         2.0,
@@ -4148,7 +4151,8 @@
         "undercut, overhanging",
         "with a small tree rooted on it"
       ],
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 103,
@@ -5972,7 +5976,7 @@
       "id": "cliff_roots",
       "prefix": "cliff_root",
       "name": "Cliff Root",
-      "quota": 70,
+      "quota": 7,
       "description": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger trailing down bare stone, gently winding, gripping with hair-fine side-roots, mostly bare strand with one or two small leaf sprouts, delicate and sparse, no trunk, no stump, NOT a big root, fantasy RPG nature art, transparent background",
       "world_height_m": [
         0.9,
@@ -6015,14 +6019,15 @@
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals \u2014 not a bundle of parallel strands.",
       "_vertical": "maintainer 2026-08-14: 'The roots still form a tree... its also tilted wrong. The roots should go kinda straight up not sideways like this and they should be thinner.'",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 156,
       "id": "cliff_falls",
       "prefix": "cliff_fall",
       "name": "Cliff Fall",
-      "quota": 50,
+      "quota": 5,
       "description": "a slender waterfall of clear water spilling down, breaking into white spray at the bottom, wet green moss and small ferns beside the flow, lush jungle growth thick and leafy in places and bare elsewhere, hanging creepers, fading into a few last leaves at the edges, no line across the top, fantasy RPG nature art, transparent background",
       "world_height_m": [
         8.0,
@@ -6064,14 +6069,15 @@
       "_framing": "maintainer 2026-08-14: 'it renders outside the frame too often or quits abruptly... the roots often stop at the top and will be hard to place... leaves a bit too thick, would be better if more sparse (but still a big image)'.",
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 157,
       "id": "cliff_shrubs",
       "prefix": "cliff_shrub",
       "name": "Cliff Shrub",
-      "quota": 60,
+      "quota": 12,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, bare gripping roots clenched around one small stone at its base, a RAGGED IRREGULAR silhouette with leaves trailing off unevenly and a torn bottom, never a rectangle or straight edge, fantasy RPG nature art, ONLY the plant, no rock, no cliff, no wall, no ground, transparent background",
       "world_height_m": [
         1.5,
@@ -6111,14 +6117,15 @@
       "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' \u2014 he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
       "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall \u2014 naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 158,
       "id": "cliff_mosses",
       "prefix": "cliff_moss",
       "name": "Cliff Moss",
-      "quota": 50,
+      "quota": 9,
       "description": "a SMALL SUBTLE DETAIL for a rock face: a thin sparse patch of moss and lichen clinging flat to bare stone, a few little cushions with plenty of bare grey stone between them, ragged edges fading out, delicate and understated, NOT a mound, NOT a boulder, no big rock shape, nothing filling the frame, fantasy RPG nature art, transparent background",
       "world_height_m": [
         0.3,
@@ -6158,7 +6165,8 @@
       "_rewrite": "maintainer 2026-08-14: 'try to rewrite the entire prompt... too ugly right now... maybe rpg, fantasy, nature etc is good words to include. still want it sparse, but this is to much spider-web.' The words WEB and GRAPH produced technical twig diagrams; the concept is now written as beautiful lush nature that happens to be uneven and edgeless.",
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine \u2014 replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "_small": "maintainer 2026-08-14: 'Yes it would be cool to have moss on the mountain wall, but not like this. That should be small sparse moss pieces on rocks sticking out and this is small details. This looks like graphics to a different game.' Big hanging moss drapes were entirely the wrong idea \u2014 moss is a 64px DETAIL on a small protruding rock, scattered over a wall by maps2.",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" \u2014 the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
     },
     {
       "rank": 159,
