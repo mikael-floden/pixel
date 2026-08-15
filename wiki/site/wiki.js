@@ -911,7 +911,18 @@ function usePill(usedBy, whatUnused) {
 //   2. the same for the previous and next entity, so ‹ › is instant
 //   3. the remaining frames of this entity's frame-directory clips
 //   4. the remaining frames of the neighbours'
-const warmed = new Set();           // every URL this session has ever asked for
+// TWO SETS, AND THE DIFFERENCE IS THE WHOLE BUG (maintainer 2026-08-15: "if I
+// press next 20-30 times and stop on a tree … it feels like the preload stops
+// working"). It did — completely. `warmed` used to be stamped at ENQUEUE time
+// while a page change threw the pending queue away, so every URL that was
+// queued-but-not-yet-fetched was marked "already fetched" and could never be
+// asked for again. Paging fast poisoned exactly the corridor being paged
+// through: measured on 25 fast presses, the piece landed on warmed 0 of its 14
+// states and both neighbours 0 of theirs. So: `warmed` means STARTED (never
+// twice), `warmQueued` is only a dedupe for what is waiting, and dropping the
+// queue clears it — a URL abandoned unfetched is eligible again.
+const warmed = new Set();           // a fetch was actually started for these
+const warmQueued = new Set();       // waiting in warmQ right now
 let warmQ = [], warmActive = 0, warmGen = 0;
 const WARM_PARALLEL = 4;            // enough to fill a phone link, few enough to stay out of the way
 // The DECODED images are kept too, not just their bytes. Two reasons: the
@@ -943,6 +954,8 @@ const warmIdle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, {
 function warmPump() {
   while (warmActive < WARM_PARALLEL && warmQ.length) {
     const url = warmQ.shift();
+    warmQueued.delete(url);
+    warmed.add(url);                   // stamped HERE: the request is going out
     warmActive++;
     const im = new Image();
     // Low priority and async decode: the page the maintainer is LOOKING at
@@ -956,8 +969,8 @@ function warmPump() {
   }
 }
 function warmUrl(url) {
-  if (!url || warmed.has(url)) return;   // never twice, whatever asks for it
-  warmed.add(url);
+  if (!url || warmed.has(url) || warmQueued.has(url)) return;  // never twice
+  warmQueued.add(url);
   warmQ.push(url);
   warmPump();
 }
@@ -977,8 +990,11 @@ function prefetchAround(entity, list, id) {
   // Honour the reader's own connection settings — a data-saver phone gets the
   // page it asked for and nothing else.
   try { if (navigator.connection?.saveData) return; } catch { /* no NetworkInformation */ }
-  const gen = ++warmGen;               // a new page abandons the old page's queue
+  // A new page abandons the old page's queue — and un-marks what it abandoned,
+  // so paging through a piece never costs it its look-ahead later.
+  const gen = ++warmGen;
   warmQ = [];
+  warmQueued.clear();
   const i = Array.isArray(list) ? list.findIndex((x) => x.id === id) : -1;
   const near = i >= 0 && list.length > 1
     ? [list[(i - 1 + list.length) % list.length], list[(i + 1) % list.length]].filter((x) => x && x.id !== id)
@@ -4354,5 +4370,19 @@ async function useStagingRoot() {
     // Static-file QA only: flips the UI to admin (the server still rejects
     // every save without a real session token).
     forceAdmin: (on = true) => setAdmin(on),
+    // What the look-ahead has actually got. A network trace cannot answer
+    // this — a warm URL is warm precisely because nothing is requested for it
+    // — so QA (and the maintainer's "does it still work if I page fast?")
+    // needs to see the cache itself.
+    warmInfo: (urls) => ({
+      started: warmed.size, queued: warmQ.length, active: warmActive, decoded: warmImg.size,
+      mb: +(warmBytes / 1048576).toFixed(1), gen: warmGen,
+      ...(Array.isArray(urls) ? {
+        ready: urls.filter((u) => !!warmHit(assetUrl(u))).length,
+        pending: urls.filter((u) => !warmHit(assetUrl(u)) && (warmed.has(assetUrl(u)) || warmQueued.has(assetUrl(u)))).length,
+        cold: urls.filter((u) => !warmHit(assetUrl(u)) && !warmed.has(assetUrl(u)) && !warmQueued.has(assetUrl(u))).length,
+        of: urls.length,
+      } : {}),
+    }),
   };
 })();

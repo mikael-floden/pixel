@@ -89,6 +89,55 @@ const stripDupes = [...new Set(dupes)].filter((u) => !/\/(sprite|preview)\.(webp
 console.log("repeat fetches:", dupes.length, "| of animation strips:", stripDupes.length, stripDupes.slice(0, 3));
 ok(stripDupes.length === 0, `no animation file is ever fetched twice${stripDupes.length ? ` — ${stripDupes.slice(0, 2).join(", ")}` : ""}`);
 
+// PAGING FAST MUST NOT COST THE LOOK-AHEAD (maintainer 2026-08-15: "if I press
+// next 20-30 times and stop on a tree ... it feels like the preload stops
+// working"). It did, and only on a slow link — which is why it hid: a page
+// change throws the pending queue away, and the "never twice" mark used to be
+// stamped when a URL was ENQUEUED, so anything abandoned before its fetch
+// started was marked fetched forever and could never be asked for again.
+// Measured over 25 fast presses at 1.5 Mbps / 150ms: 11 of the landed piece's
+// 14 states cold before, 0 after. On the sandbox's instant loopback the queue
+// drains between presses and the bug is invisible — hence the throttle.
+const tctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+const tp = await tctx.newPage();
+const cdp = await tctx.newCDPSession(tp);
+await cdp.send("Network.enable");
+await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 150,
+  downloadThroughput: 1.5 * 1024 * 1024 / 8, uploadThroughput: 750 * 1024 / 8 });
+const treqs = [];
+tp.on("request", (r) => { if (r.resourceType() === "image") treqs.push(r.url().replace(`${ORIGIN}/assets/`, "")); });
+await tp.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await tp.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+});
+const runId = D.domains.objects[Math.max(0, D.domains.objects.findIndex((o) => o.id === tree.id) - 26)]?.id ?? tree.id;
+await tp.goto(`${W}#/objects/${runId}`, { waitUntil: "load" });
+await tp.waitForTimeout(6000);
+for (let i = 0; i < 25; i++) {
+  await tp.evaluate(() => [...document.querySelectorAll("button,a")].find((x) => x.textContent.trim() === "›")?.click());
+  await tp.waitForTimeout(180);
+}
+const landedId = await tp.evaluate(() => location.hash.split("/").pop());
+const landed = D.domains.objects.find((o) => o.id === landedId);
+await tp.waitForTimeout(12000);                       // the look-ahead's chance to catch up
+const tMark = treqs.length;
+const tStates = await tp.evaluate(async () => {
+  const btns = [...document.querySelectorAll(".seg-states button")];
+  for (const b2 of btns) { b2.click(); await new Promise((r) => setTimeout(r, 500)); }
+  return btns.length;
+});
+const lateFetches = treqs.slice(tMark).filter((u) => assetsOf(landed).includes(u)).length;
+console.log(`after 25 fast presses on a 1.5 Mbps link: landed ${landedId}, ${tStates} states, ${lateFetches} fetched on click`);
+ok(tStates > 3, `the landing piece has several states to be warm or cold (${tStates})`);
+ok(lateFetches === 0, `every one of them was already warm — paging fast costs the look-ahead nothing (${lateFetches} late fetches)`);
+// And it is still looking ahead, not merely holding what it caught.
+const info = await tp.evaluate(() => __wiki.warmInfo());
+console.log("warm cache:", JSON.stringify(info));
+ok(info.started > tStates, `the queue kept working through the run (${info.started} fetches started)`);
+ok(info.mb <= 64, `and the decoded cache stays inside its budget (${info.mb} MB)`);
+await tctx.close();
+
 // ----------------------------------------------------------------- monsters
 // 5 states x 8 directions — the case where the old behaviour cost a fetch on
 // every single click.
