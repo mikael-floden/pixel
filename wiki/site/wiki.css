@@ -446,6 +446,21 @@ button { font: inherit; cursor: pointer; }
 .dirpad button.on { background: var(--accent-soft); color: var(--ink); border-color: var(--accent); font-weight: 700; }
 label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--muted); user-select: none; }
 
+/* ---- nadir shadow editor (admin, monsters) ----
+   The button is a plain ghost button that latches on, so it reads like every
+   other "pick one" control in this card rather than announcing itself. What
+   changes while it is on is the CANVAS: a move cursor, and no text selection
+   or touch panning stealing the drag out from under the finger. */
+.shadow-btn.on { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+.player-stage.editing-shadow canvas { cursor: move; touch-action: none; }
+.player-stage.editing-shadow { user-select: none; }
+.shadow-bar { font-size: 13px; color: var(--muted); gap: 8px; }
+.shadow-bar.hidden { display: none; }
+.shadow-hint { font-size: 12.5px; }
+.shadow-read { font-variant-numeric: tabular-nums; color: var(--ink); }
+.shadow-bar .ghost-btn { padding: 4px 10px; font-size: 13px; }
+.shadow-bar .ghost-btn:disabled { opacity: 0.45; cursor: default; background: transparent; }
+
 /* ---- tiles ---- */
 .tile-group { margin: 10px 0; }
 .tile-group summary { cursor: pointer; font-weight: 600; padding: 6px 0; }

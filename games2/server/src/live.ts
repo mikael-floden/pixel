@@ -48,6 +48,14 @@ const LIVE_FILES: Record<string, string> = {
   // The Game Master's "add this sound to that event" requests, written by the
   // wiki, consumed by the composer (games-audio) agent. See live/README.md.
   "tuning/sfx_requests.json": "tuning/sfx_requests",
+  // WHERE THE GAME MASTER THINKS THE NADIR SHADOW BELONGED. Not a per-monster
+  // fix: the games agent reads these as TRAINING DATA for the placement rules
+  // it derives from the art (maintainer 2026-08-15: "the game agent will use
+  // this data to improve the shadow placement on all further monsters ... it's
+  // a way to learn how the shadows should be placed"). One entry per
+  // <monster>#<state>#<direction>, each carrying what the wiki drew and what
+  // he moved it to. See live/README.md.
+  "tuning/shadow_notes.json": "tuning/shadow_notes",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -62,6 +70,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/monsters") return { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
+  if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -338,7 +347,10 @@ export function registerLiveRoutes(app: express.Application): void {
     }
     res.json({
       fetched_at: fetchedAt,
-      tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"), sfx_requests: docs.get("tuning/sfx_requests") },
+      tuning: {
+        monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
+        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"),
+      },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
   });

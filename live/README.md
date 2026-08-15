@@ -37,6 +37,33 @@ paths** — changing monster stats or rating a sound never restarts the game.
 - `live/tuning/constants.json` — `pixel-wiki-tuning-constants@1`. Overrides
   for `games2/shared` gameplay constants, keyed by exported name.
   **Consumed by the game**. Edited in the wiki's Tuning page.
+- `live/tuning/sfx_requests.json` — `pixel-wiki-sfx-requests@1`. The Game
+  Master's "play this sound on that event" requests, keyed `<event id>/<n>`.
+  **Consumed by the composer (games-audio) agent**, which wires the assignment
+  and deletes the acted-on entry in the same commit — a request is a message,
+  not a record. Written from the wiki's Sound Effects page.
+- `live/tuning/shadow_notes.json` — `pixel-wiki-shadow-notes@1`. Where the
+  Game Master says a monster's **nadir shadow** belonged, one entry per
+  `<monster path>#<animation>#<direction>` — the same unit the facet verdicts
+  and the regeneration loop use. **Consumed by the games agent, as TRAINING
+  DATA** (maintainer 2026-08-15: "it's not a 'fix this shadow only' feature.
+  It's a way to learn how the shadows should be placed"), so it is NOT an
+  override table and the game must never read it as one — the placement rules
+  it derives from the art stay the thing that ships. Written from the wiki's
+  monster pages ("✎ Edit nadir shadow"), committed with everything else on the
+  save bar. Every entry carries BOTH sides of the correction, in **frame
+  pixels at scale 1** (the units `monsters.json` speaks):
+  - `dx`, `dy` — how far he moved the ellipse's centre off the measurement.
+    A DELTA on purpose: a delta generalises, an absolute position only
+    describes the one creature.
+  - `w`, `h` — the ellipse size he settled on.
+  - `was: {w, h, cx, cy}` — what the wiki drew before he touched it, derived
+    from that monster's own `shadow` + `artBottom` + `hoverPx`. Without it a
+    note becomes unreadable the moment the measurement changes.
+  - `frame: {w, h}` — the frame those pixels are measured in, so a note can be
+    scaled if the art is ever re-exported at another size.
+  - `updated_at` — when it was made. An entry with no `dx`/`dy`/size change
+    cannot occur: clearing a note deletes the entry.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed

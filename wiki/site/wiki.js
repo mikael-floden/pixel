@@ -101,7 +101,7 @@ const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
-  tuning: { monsters: null, constants: null },
+  tuning: { monsters: null, constants: null, shadow_notes: null },
   dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
   // Per file: WHICH ids this session actually edited. Saves send exactly
   // these ids as a delta — the server merges them into the current document,
@@ -344,6 +344,66 @@ async function discardAll() {
   toast("Cancelled — your uncommitted changes are back to what the game has.");
 }
 
+/* ------------------------------------------------- nadir shadow notes (admin)
+ * "It has been really hard to get the nadir shadow correct in the game ... a
+ * button that makes it easy to drag and resize the nadir shadow on a monster
+ * direction/animation, and commit them all the same way approve/reject
+ * commits" (maintainer 2026-08-15). Explicitly NOT a per-monster override:
+ * "the game agent will use this data to improve the shadow placement on all
+ * further monsters ... it's a way to learn how the shadows should be placed."
+ *
+ * So an entry records BOTH sides of the correction — what the wiki drew from
+ * the art-measured metrics, and where he put it — in FRAME PIXELS at scale 1,
+ * the same units monsters.json speaks. Anyone learning from this needs the
+ * before as much as the after, and a note that only carried the after would be
+ * unreadable the moment the measurement changes.
+ */
+const SHADOW_KEY = "tuning/shadow_notes";
+const shadowNotes = () => state.tuning.shadow_notes ?? (state.tuning.shadow_notes = { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} });
+const shadowNoteId = (entity, st, dir) => `${entity.path}#${st}#${dir}`;
+const shadowNote = (entity, st, dir) => shadowNotes().overrides?.[shadowNoteId(entity, st, dir)] ?? null;
+/** The ellipse the wiki draws with no note: the game's own numbers. */
+function shadowBase(entity, clip) {
+  const fh = clip?.fh ?? entity.frameH ?? 64;
+  const bb = clip?.bb ?? [0, 0, clip?.fw ?? 64, fh];
+  return {
+    w: entity.shadow?.w ?? 0, h: entity.shadow?.h ?? 0,
+    // Where the ellipse sits, in the SAME frame pixels: x is the content
+    // box's centre, y the art-measured foot line.
+    cx: (bb[0] + bb[2]) / 2,
+    cy: (entity.artBottom ?? 1) * fh + (entity.hoverPx ?? 0),
+  };
+}
+/** Base plus his correction — what to draw. */
+function shadowNow(entity, clip, st, dir) {
+  const base = shadowBase(entity, clip);
+  const n = shadowNote(entity, st, dir);
+  if (!n) return { ...base, edited: false };
+  return { w: n.w ?? base.w, h: n.h ?? base.h, cx: base.cx + (n.dx ?? 0), cy: base.cy + (n.dy ?? 0), edited: true };
+}
+function setShadowNote(entity, clip, st, dir, patch) {
+  const doc = shadowNotes();
+  const id = shadowNoteId(entity, st, dir);
+  const base = shadowBase(entity, clip);
+  if (!patch) delete (doc.overrides ??= {})[id];
+  else {
+    (doc.overrides ??= {})[id] = {
+      // What he moved it to, as a delta from the measurement — a delta is what
+      // generalises; an absolute position only describes this one creature.
+      dx: +(patch.cx - base.cx).toFixed(2), dy: +(patch.cy - base.cy).toFixed(2),
+      w: +patch.w.toFixed(2), h: +patch.h.toFixed(2),
+      // …and what the game drew before he touched it, so the correction can be
+      // read without re-deriving the metrics of the day.
+      was: { w: +base.w.toFixed(2), h: +base.h.toFixed(2), cx: +base.cx.toFixed(2), cy: +base.cy.toFixed(2) },
+      frame: { w: clip?.fw ?? entity.frameW ?? null, h: clip?.fh ?? entity.frameH ?? null },
+      updated_at: new Date().toISOString(),
+    };
+  }
+  doc.updated_at = new Date().toISOString();
+  touch(SHADOW_KEY, id);
+  markDirty(SHADOW_KEY);
+}
+
 /* --------------------------------------------------------------- player */
 // One animation player: strips (monsters/objects) or per-frame urls
 // (characters). Nearest-neighbour scaling, play/pause, frame-step, speed,
@@ -388,10 +448,64 @@ function makePlayer(entity, kind, opts = {}) {
     state: stateNames.includes("idle") ? "idle" : stateNames[0],
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
+    editShadow: false,
   };
+  let onShadowEdit = null;
   const baseFps = 8;
+  const GRIP = 11;                       // finger-sized, in canvas px
+  let shadowHit = null;                  // where the ellipse landed last draw
+  let shadowDrag = null;                 // {mode, sx, sy, from}
   const canvas = h("canvas", { width: 64, height: 64 });
   const stage = h("div", { class: "player-stage checker" }, canvas);
+  // DRAG THE SHADOW (admin, edit mode only). Pointer events on the canvas, in
+  // canvas pixels, converted back to FRAME pixels before anything is stored —
+  // the note has to mean the same thing at 1x, 2x and 4x.
+  const toCanvas = (ev) => {
+    const r = canvas.getBoundingClientRect();
+    return { x: (ev.clientX - r.left) * (canvas.width / r.width), y: (ev.clientY - r.top) * (canvas.height / r.height) };
+  };
+  canvas.addEventListener("pointerdown", (ev) => {
+    if (!cur.editShadow || !shadowHit) return;
+    const p2 = toCanvas(ev);
+    const { ex, ey, rx, ry } = shadowHit;
+    const near = (hx, hy) => Math.abs(p2.x - hx) <= GRIP && Math.abs(p2.y - hy) <= GRIP;
+    const sh = shadowNow(entity, clip, cur.state, cur.dir);
+    let mode = null;
+    if (near(ex + rx, ey)) mode = "w";
+    else if (near(ex, ey + ry)) mode = "h";
+    else if (((p2.x - ex) / Math.max(1, rx)) ** 2 + ((p2.y - ey) / Math.max(1, ry)) ** 2 <= 1.6) mode = "move";
+    if (!mode) return;
+    ev.preventDefault();
+    canvas.setPointerCapture(ev.pointerId);
+    // The origin is kept in CLIENT coordinates, with the canvas→frame scale
+    // captured once: growing the ellipse grows the CANVAS (so the grip stays
+    // reachable), which moves the element under the finger. A drag measured in
+    // canvas pixels would read that resize as pointer movement and run away.
+    const r = canvas.getBoundingClientRect();
+    shadowDrag = { mode, sx: ev.clientX, sy: ev.clientY, from: { ...sh }, k: (canvas.width / (r.width || 1)) / (shadowHit.s || 1) };
+  });
+  canvas.addEventListener("pointermove", (ev) => {
+    if (!shadowDrag) return;
+    const dxF = (ev.clientX - shadowDrag.sx) * shadowDrag.k;   // frame px
+    const dyF = (ev.clientY - shadowDrag.sy) * shadowDrag.k;
+    const f = shadowDrag.from;
+    const next = shadowDrag.mode === "move"
+      ? { ...f, cx: f.cx + dxF, cy: f.cy + dyF }
+      : shadowDrag.mode === "w"
+        ? { ...f, w: Math.max(2, f.w + dxF * 2) }
+        : { ...f, h: Math.max(2, f.h + dyF * 2) };
+    setShadowNote(entity, clip, cur.state, cur.dir, next);
+    onShadowEdit?.();
+    refreshShadowBar();
+    draw();
+  });
+  const endDrag = (ev) => {
+    if (!shadowDrag) return;
+    shadowDrag = null;
+    try { canvas.releasePointerCapture(ev.pointerId); } catch { /* already gone */ }
+  };
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
   // ADMIN SIZE REFERENCE (maintainer 2026-08-13: "render the human male side
   // by side with the scenery so I see how big it is in comparison … as close
   // to the screen border/edge as possible … keep rendering the scenery itself
@@ -576,8 +690,19 @@ function makePlayer(entity, kind, opts = {}) {
     const foot = (entity.artBottom ?? 1) * fh;          // ground line, frame px
     const showShadow = cur.shadow && entity.shadow;
     const shadowY = (foot - bb[1]) * s + hover;
-    const wantW = Math.ceil(Math.max(cw * s, showShadow ? entity.shadow.w * s + 2 : 0));
-    const wantH = Math.ceil(Math.max(ch * s, showShadow ? shadowY + (entity.shadow.h * s) / 2 + 2 : 0));
+    // The canvas has to hold the ellipse that is actually drawn — the edited
+    // one, which may be wider than the measurement and offset from it. Sized
+    // to the measurement alone, a widened shadow is clipped at exactly the rim
+    // the grip sits on, and it cannot be dragged back. Edit mode adds a grip's
+    // margin so both handles stay inside.
+    const shNow = showShadow ? shadowNow(entity, clip, cur.state, cur.dir) : null;
+    const shBase = showShadow ? shadowBase(entity, clip) : null;
+    const offX = shNow ? (shNow.cx - shBase.cx) * s : 0, offY = shNow ? (shNow.cy - shBase.cy) * s : 0;
+    const shPad = cur.editShadow ? GRIP : 2;
+    // Horizontal: the sprite is centred, so the canvas must be symmetric about
+    // its middle — an ellipse pushed `offX` to one side costs that on BOTH.
+    const wantW = Math.ceil(Math.max(cw * s, shNow ? 2 * (Math.abs(offX) + (shNow.w * s) / 2 + shPad) : 0));
+    const wantH = Math.ceil(Math.max(ch * s, shNow ? shadowY + offY + (shNow.h * s) / 2 + shPad : 0));
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
@@ -592,12 +717,39 @@ function makePlayer(entity, kind, opts = {}) {
     const dx = Math.round(canvas.width / 2 - ((bb[0] + bb[2]) / 2) * s);
     const dy = Math.round(-bb[1] * s);
     if (showShadow) {
-      // The game's ground ellipse: centred, sitting at the art-measured foot line.
+      // The game's ground ellipse — or where the Game Master says it belonged.
+      const sh = shNow, base = shBase;
+      // Frame pixels -> canvas pixels: the frame is drawn with its content box
+      // centred, so the ellipse follows the same mapping the sprite does.
+      const ex = canvas.width / 2 + offX;
+      const ey = shadowY + offY;
       ctx.fillStyle = "rgba(20,16,8,0.38)";
       ctx.beginPath();
-      ctx.ellipse(canvas.width / 2, shadowY, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
+      ctx.ellipse(ex, ey, (sh.w * s) / 2, (sh.h * s) / 2, 0, 0, Math.PI * 2);
       ctx.fill();
-    }
+      shadowHit = { ex, ey, rx: (sh.w * s) / 2, ry: (sh.h * s) / 2, s };
+      if (cur.editShadow) {
+        // The measurement's own ellipse stays visible as a dashed ghost: a
+        // correction is only readable against what it corrects.
+        ctx.save();
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = "rgba(217,119,87,0.75)"; ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(canvas.width / 2, shadowY, (base.w * s) / 2, (base.h * s) / 2, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "rgba(217,119,87,1)"; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, (sh.w * s) / 2, (sh.h * s) / 2, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        // Two grips: the right rim widens, the bottom rim flattens.
+        ctx.fillStyle = "rgba(217,119,87,1)";
+        for (const [hx, hy] of [[ex + (sh.w * s) / 2, ey], [ex, ey + (sh.h * s) / 2]]) {
+          ctx.fillRect(hx - GRIP / 2, hy - GRIP / 2, GRIP, GRIP);
+        }
+        ctx.restore();
+      }
+    } else shadowHit = null;
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
       ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, dx, dy, fw * s, fh * s);
@@ -645,7 +797,7 @@ function makePlayer(entity, kind, opts = {}) {
           if (!anims[s]?.dirs?.[cur.dir]) {
             cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           }
-          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onFacetChange?.();
+          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); onFacetChange?.();
         },
         title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
       }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
@@ -673,7 +825,7 @@ function makePlayer(entity, kind, opts = {}) {
         // regenerate an animation for a direction, you don't regenerate for
         // all directions … maybe the SE direction on the state LIGHTS_ON is
         // bad"), so the feedback row follows this click as well as the state.
-        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); onFacetChange?.(); },
+        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); refreshShadowBar(); onFacetChange?.(); },
       }, DIR_LABEL[d]);
     }));
   }
@@ -709,6 +861,67 @@ function makePlayer(entity, kind, opts = {}) {
   // The state row and the direction pad are ALWAYS drawn (they also name what
   // you are looking at), so the stage keeps one height across every piece.
   const noTransport = maxFrames <= 1;
+
+  /* ---- edit the nadir shadow (admin; monsters are the only kind that has one)
+   * "It has been really hard to get the nadir shadow correct in the game …
+   * create an 'Edit nadir shadow' button that makes it easy to drag and resize
+   * the nadir shadow on a monster direction/animation, and after doing a lot of
+   * them commit them all the same way an approve/reject commit works"
+   * (maintainer 2026-08-15). So this button does ONE thing — turn the preview
+   * canvas into an editor. Everything downstream is the machinery the verdicts
+   * already ride: each drag writes one entry, the save bar counts it, Commit
+   * pushes the file. */
+  const shadowChk = Object.assign(h("input", { type: "checkbox" }), {
+    checked: cur.shadow,
+    onchange: (e) => { cur.shadow = e.target.checked; if (!cur.shadow) setEditShadow(false); else draw(); },
+  });
+  const shadowRead = h("span", { class: "shadow-read" });
+  const shadowResetBtn = h("button", {
+    class: "ghost-btn",
+    title: "Drop your note for this animation and direction — back to the shadow the game measures itself",
+    onclick: () => { setShadowNote(entity, clip, cur.state, cur.dir, null); onShadowEdit?.(); refreshShadowBar(); draw(); },
+  }, "Reset");
+  // The numbers lead, because they are what is being read; the instruction
+  // trails, because it is only needed once.
+  const shadowBar = h("div", { class: "player-controls shadow-bar hidden" },
+    shadowRead, shadowResetBtn,
+    h("span", { class: "muted shadow-hint" }, "Drag the shadow to move it, a handle to resize."));
+  const shadowBtn = state.admin && entity.shadow
+    ? h("button", {
+      class: "ghost-btn shadow-btn",
+      title: "Show where this shadow belonged — one note per animation and direction, committed with everything else",
+      onclick: () => setEditShadow(!cur.editShadow),
+    }, "✎ Edit nadir shadow")
+    : null;
+  function setEditShadow(on) {
+    cur.editShadow = !!on && !!shadowBtn;
+    // You cannot place what you cannot see, so the editor brings the shadow
+    // with it — and the checkbox follows, or it would be lying.
+    if (cur.editShadow && !cur.shadow) { cur.shadow = true; shadowChk.checked = true; }
+    stage.classList.toggle("editing-shadow", cur.editShadow);
+    refreshShadowBar();
+    draw();
+  }
+  /** The numbers, in FRAME pixels — the units monsters.json speaks, so what is
+   *  read here and what lands in the note are the same quantity. */
+  function refreshShadowBar() {
+    if (!shadowBtn) return;
+    shadowBar.classList.toggle("hidden", !cur.editShadow);
+    shadowBtn.classList.toggle("on", cur.editShadow);
+    if (!cur.editShadow) return;
+    const sh = shadowNow(entity, clip, cur.state, cur.dir), base = shadowBase(entity, clip);
+    const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
+    shadowResetBtn.disabled = !sh.edited;
+    shadowRead.replaceChildren(
+      h("b", {}, `${sh.w.toFixed(1)} × ${sh.h.toFixed(1)} px`),
+      sh.edited
+        // Both halves of the correction, because both are what the games agent
+        // has to learn from: where it went, and what it was moved off.
+        ? ` · moved ${signed(sh.cx - base.cx)}, ${signed(sh.cy - base.cy)} — was ${base.w.toFixed(1)} × ${base.h.toFixed(1)}`
+        : " · the game's own measurement, untouched",
+    );
+  }
+
   const controls2 = h("div", { class: "player-controls" },
     noTransport ? null : playBtn,
     noTransport ? null : h("button", { class: "ghost-btn", title: "Previous frame", onclick: () => step(-1) }, "⏮"),
@@ -716,9 +929,8 @@ function makePlayer(entity, kind, opts = {}) {
     noTransport ? null : frameNo,
     noTransport ? null : speedSeg,
     zoomSeg,
-    entity.shadow ? h("label", { class: "chk" },
-      Object.assign(h("input", { type: "checkbox" }), { checked: cur.shadow, onchange: (e) => { cur.shadow = e.target.checked; draw(); } }),
-      "Show shadow") : null,
+    entity.shadow ? h("label", { class: "chk" }, shadowChk, "Show shadow") : null,
+    shadowBtn,
   );
 
   let onFacetChange = null;
@@ -745,7 +957,7 @@ function makePlayer(entity, kind, opts = {}) {
     // for a while so a rotated piece wouldn't push the art down; he'd rather
     // have it look the same everywhere, so above the stage it is.
     h("div", { class: "player-controls" }, dirPad),
-    stage, overflowNote, controls2);
+    stage, overflowNote, controls2, shadowBar);
   return {
     el: rootEl,
     destroy: () => cancelAnimationFrame(rafTimer),
@@ -753,6 +965,12 @@ function makePlayer(entity, kind, opts = {}) {
     getDir: () => cur.dir,
     /** Repaint the approved/rejected marks — call after a verdict changes. */
     refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
+    /** Nadir-shadow editing: drag/resize on the canvas, one note per facet. */
+    editShadow(on) { setEditShadow(on); },
+    isEditingShadow: () => cur.editShadow,
+    set onShadowEdit(fn) { onShadowEdit = fn; },
+    resetShadow() { setShadowNote(entity, clip, cur.state, cur.dir, null); refreshShadowBar(); draw(); },
+    shadowFacet: () => ({ st: cur.state, dir: cur.dir, note: shadowNote(entity, cur.state, cur.dir), now: shadowNow(entity, clip, cur.state, cur.dir), base: shadowBase(entity, clip) }),
     /** Fires whenever the state OR the direction changes — i.e. whenever the
      *  thing on screen is a different piece of generated art. */
     set onFacetChange(fn) { onFacetChange = fn; },
@@ -4220,18 +4438,21 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
+       fromApi((s) => s.tuning.shadow_notes),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
         fetchJson(new URL("live/tuning/constants.json", ROOT)),
         fetchJson(new URL("live/tuning/sfx_requests.json", ROOT)),
+        fetchJson(new URL("live/tuning/shadow_notes.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   state.tuning.sfx_requests = sfxReq ?? { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
+  state.tuning.shadow_notes = shadowNotes ?? { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

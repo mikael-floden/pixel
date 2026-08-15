@@ -216,6 +216,44 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
+## Where the nadir shadow belonged — training data, not an override
+
+The wiki already drew each monster's ground ellipse from the games agent's own
+art-measured metrics (`shadow.w/h` + `artBottom` + `hoverPx`), which makes the
+monster page the one place in the project where the Game Master can SEE the
+shadow the game will draw, next to the art it belongs to. Since 2026-08-15 he
+can also **move it**: `✎ Edit nadir shadow` (admin, monster pages) turns the
+preview canvas into an editor — drag the ellipse to reposition it, drag either
+handle to widen or flatten it — and each correction is one entry in
+`live/tuning/shadow_notes.json` (`pixel-wiki-shadow-notes@1`, schema in
+`live/README.md`), committed by the same save bar as every verdict.
+
+What it is FOR, in his words: *"It's not a 'fix this shadow only' feature. It's
+a way to learn how the shadows should be placed"* — the games agent reads these
+to improve the placement rules it derives from the art, for every monster it
+has not generated yet. Three consequences that are the whole design:
+
+- **One entry per `<monster>#<animation>#<direction>`** — the unit that gets
+  regenerated, and the same key the facet verdicts use. A shadow that is right
+  facing south and wrong facing north-east is sayable.
+- **The correction is a DELTA plus the original** (`dx`/`dy`/`w`/`h` beside
+  `was: {w,h,cx,cy}`), in frame pixels at scale 1. An absolute position only
+  describes the one creature it was measured on; the pair "the metrics said
+  here, he put it there" is what generalises — and it stays readable after the
+  measurement itself changes.
+- **Nothing consumes it as an override.** The game keeps deriving shadows from
+  the art. If these notes ever start driving placement directly they stop being
+  a training signal and become 400 hand-tuned exceptions, which is the state
+  the maintainer was trying to get out of.
+
+Gate: `wiki/tools/check-shadow.mjs` — real mouse drags on the real canvas,
+asserting the drawn ellipse actually moves and resizes (read from the PIXELS,
+not from the note), that it stays inside the canvas once enlarged (a clipped
+ellipse loses the handle it is grabbed by), that the note follows the facet,
+and that Commit posts one entry per facet with both halves of the correction.
+It fakes admin and captures `/api/wiki/save` at the network boundary, so it
+never writes the maintainer's real review data.
+
 ## The animation viewer scales by the CREATURE, not the frame
 
 Sprite frames are mostly transparent padding, and the padding differs per
