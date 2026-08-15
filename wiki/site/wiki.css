@@ -625,7 +625,17 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 .crumb-row {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   position: sticky; top: var(--topbar-h, 56px); z-index: 15;
-  background: var(--bg); margin: -6px 0 0; padding: 6px 0 8px;
+  background: var(--bg);
+  /* IT MUST ALREADY BE WHERE IT WILL STICK (maintainer 2026-08-15, with two
+     screenshots: "the pinned bar moves a bit when I scroll"). A sticky element
+     travels with the page until it reaches its pin — so if it RESTS lower than
+     it PINS, the first few pixels of every scroll slide it up under the topbar
+     and then it stops. That is what he was watching, and no amount of
+     measuring the stuck state could find it: the stuck state was always right.
+     #content's 24px top padding was the whole gap, so the row cancels it and
+     starts flush under the bar, where it is going to stay. Its own padding
+     gives the text the air the page padding used to. */
+  margin: -24px 0 0; padding: 10px 0 8px;
 }
 .detail-nav { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .detail-count { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }

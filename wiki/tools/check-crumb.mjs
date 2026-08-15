@@ -131,7 +131,32 @@ ok(deep.y > 300, `the page really scrolls (${deep.y}px)`);
 ok(deep.onScreen && deep.navOnScreen, "the crumb and the ‹ › buttons are still on screen after scrolling down");
 ok(Math.abs(deep.crumbTop - deep.barBottom) <= 2,
   `and they sit exactly under the topbar, not over it or below it (${deep.crumbTop} vs ${deep.barBottom})`);
-ok(deep.crumbTop < top.crumbTop, "which is lower than where they started — they stuck, they did not merely stay put");
+// IT MUST NOT MOVE AT ALL — not even the few pixels between where it rests and
+// where it pins (maintainer 2026-08-15, with two screenshots: "the pinned bar
+// moves a bit when I scroll ... that bug still exists"). A sticky row that
+// rests lower than it pins slides up under the topbar over the first pixels of
+// every scroll. THE OLD ASSERTION HERE DEMANDED EXACTLY THAT — `crumbTop <
+// top.crumbTop`, "they stuck, they did not merely stay put" — so the gate was
+// green while the bug was on screen. Measured before the fix: 9.3px of travel
+// across 5 distinct positions; after: one position, 0.0px.
+const sweep = [];
+for (const y of [0, 2, 4, 8, 12, 20, 40, 80, 200, 500]) {
+  await p.evaluate((v) => window.scrollTo(0, v), y);
+  await p.waitForTimeout(110);
+  sweep.push(await p.evaluate(() => {
+    const cr = document.querySelector(".crumb-row").getBoundingClientRect();
+    const tx = document.querySelector(".crumb").getBoundingClientRect();
+    return { row: +cr.top.toFixed(1), text: +tx.top.toFixed(1) };
+  }));
+}
+const rowTops = [...new Set(sweep.map((s) => s.row))];
+const textTops = [...new Set(sweep.map((s) => s.text))];
+const travel = Math.max(...textTops) - Math.min(...textTops);
+console.log("through the sticking threshold:", JSON.stringify({ rowTops, textTops, travel: +travel.toFixed(1) }));
+ok(rowTops.length === 1, `the row holds ONE position from the very first pixel of scroll (${rowTops.join(", ")})`);
+ok(travel <= 1, `and so does the text inside it — no slide before it pins (${travel.toFixed(1)}px of travel)`);
+await p.evaluate(() => window.scrollTo(0, 700));
+await p.waitForTimeout(200);
 // Pressing › keeps the reader where they were standing.
 const walk = [deep];
 for (let i = 0; i < 3; i++) {
