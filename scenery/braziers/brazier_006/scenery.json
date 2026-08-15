@@ -4,8 +4,8 @@
   "group": "braziers",
   "rank": 4,
   "index": 6,
-  "name": "Wrought basket-legged brazier 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Wrought basket-legged brazier 006",
+  "lights": null,
   "variety": "wrought basket-legged brazier",
   "glow_concept": "column of drifting gold sparks",
   "prompt": "a wide metal fire bowl standing on three splayed legs, heaped with coals and split logs, wrought basket-legged brazier, waist-high to an adult person, self-emissive at night, softly radiating light: column of drifting gold sparks",
@@ -35,6 +35,46 @@
       "sprite": "braziers/brazier_006/sprite.webp",
       "pixellab_object_id": "f42b2f5d-31a8-4b74-8e90-5b259b9793f7",
       "generated_at": "2026-08-13T12:04:09+00:00"
+    },
+    "LIT_2": {
+      "sprite": "braziers/brazier_006/lit_2/sprite.webp",
+      "pixellab_object_id": "7a90e726-d8e1-4ede-94d3-21b6cd2b0c08",
+      "generated_at": "2026-08-15T20:35:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.638,
+      "glow_score": 0.1391
+    },
+    "LIT_3": {
+      "sprite": "braziers/brazier_006/lit_3/sprite.webp",
+      "pixellab_object_id": "28fd3e61-c837-41d8-a926-745a333d64b4",
+      "generated_at": "2026-08-15T20:35:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8462,
+      "glow_score": 0.0598
+    },
+    "LIT_4": {
+      "sprite": "braziers/brazier_006/lit_4/sprite.webp",
+      "pixellab_object_id": "6f1b7019-d8ec-4dd4-a76e-954d4e54b7b5",
+      "generated_at": "2026-08-15T20:35:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.436,
+      "glow_score": 0.099
+    },
+    "NOT_LIT_1": {
+      "sprite": "braziers/brazier_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "c355aa01-5da0-44a5-a05e-b5fded33958c",
+      "generated_at": "2026-08-15T20:35:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9255,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "braziers/brazier_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9ed5e931-929c-4b93-80a3-3515c0801c7f",
+      "generated_at": "2026-08-15T20:36:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7938,
+      "glow_score": 0.0221
     }
   }
 }
