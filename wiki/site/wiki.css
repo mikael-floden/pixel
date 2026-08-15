@@ -188,6 +188,19 @@ button { font: inherit; cursor: pointer; }
 }
 .seg button:last-child { border-right: none; }
 .seg button.on { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+/* WHERE THE REVIEW STANDS, ON THE CHIP (maintainer 2026-08-15: "the admin will
+   see the state text 1, 2 etc in green = approved, red = rejected ... normal
+   color means I have not reviewed it yet"). --good/--bad are the theme's own
+   tokens: dark green / dark red on the light theme, light green / light red on
+   the dark one, so both stay legible either way. The colour survives on the
+   SELECTED chip too — the one you are looking at is the one you are about to
+   judge, and it must not lose its state to the highlight. */
+.seg button.judged-ok, .dirpad button.judged-ok { color: var(--good); font-weight: 600; }
+.seg button.judged-no, .dirpad button.judged-no { color: var(--bad); font-weight: 600; }
+.seg button.on.judged-ok, .dirpad button.on.judged-ok { color: var(--good); }
+.seg button.on.judged-no, .dirpad button.on.judged-no { color: var(--bad); }
+.dirpad button.judged-ok { border-color: var(--good); }
+.dirpad button.judged-no { border-color: var(--bad); }
 
 /* ---- feedback controls ---- */
 /* BIG ENOUGH TO HIT (maintainer 2026-08-14: "I also want all stars in the

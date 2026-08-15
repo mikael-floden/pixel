@@ -203,12 +203,83 @@ for (const [url, what, expectFacet] of [[`${W}#/monsters/mammoth`, "monster", "I
     `and the ${what}'s row follows the direction pad too (${dirSwap.before} → ${dirSwap.after})`);
 }
 
+// ---------------------------------------------- what is left to review
+// Maintainer 2026-08-15: "it's hard for me to know what tree state I have left
+// to review ... the admin will see the state text 1, 2 etc in green =
+// approved, red = rejected. Then I know if it's normal color means I have not
+// reviewed it yet. And the red and green has to be visible in the current
+// dark/light-mode."
+//
+// A state chip summarises its directions; a direction button carries its own
+// verdict exactly. Both must be legible on both themes, so this measures the
+// CONTRAST of the painted colour against the page it sits on rather than
+// trusting a hex value.
+const contrast = (fg, bg) => {
+  const lum = (c) => {
+    const [r, g, b2] = c.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
+      const x = Number(v) / 255;
+      return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b2;
+  };
+  const [a, b2] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+  return (a + 0.05) / (b2 + 0.05);
+};
+for (const scheme of ["light", "dark"]) {
+  const tctx = await b.newContext({ viewport: { width: 393, height: 851 }, colorScheme: scheme });
+  const tp = await tctx.newPage();
+  const terrs = []; tp.on("pageerror", (e) => terrs.push(String(e)));
+  await tp.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await tp.addInitScript(() => {
+    localStorage.setItem("wiki-admin-token", "gate");
+    localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  });
+  // A monster: 8 directions per state, so the SUMMARY rule is exercised.
+  await tp.goto(`${W}#/monsters/mammoth`, { waitUntil: "load" });
+  await tp.waitForTimeout(2000);
+  const chip = () => tp.evaluate(() => {
+    const on = document.querySelector(".seg-states button.on");
+    const dir = document.querySelector(".dirpad button.on");
+    return { cls: on.className, color: getComputedStyle(on).color, title: on.title,
+      dirCls: dir.className, dirColor: getComputedStyle(dir).color,
+      bg: getComputedStyle(document.body).backgroundColor };
+  });
+  const plain = await chip();
+  // One direction of eight: the STATE must not claim to be finished.
+  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/.test(x.textContent)).click());
+  await tp.waitForTimeout(350);
+  const one = await chip();
+  console.log(`${scheme}: unreviewed ${plain.color} / 1-of-8 approved ${one.color} (${one.title})`);
+  ok(!/judged/.test(plain.cls), `${scheme}: an unjudged state wears no colour — plain means "not reviewed yet"`);
+  ok(!/judged-ok/.test(one.cls), `${scheme}: one direction of eight does NOT turn the state green (${one.title})`);
+  ok(/judged-ok/.test(one.dirCls), `${scheme}: but that DIRECTION goes green immediately (${one.dirCls})`);
+  ok(contrast(one.dirColor, one.bg) >= 3, `${scheme}: and it is legible on this theme (contrast ${contrast(one.dirColor, one.bg).toFixed(1)}:1 against the page)`);
+  // Reject it — red outranks, because a rejection is the thing not to lose.
+  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
+  await tp.waitForTimeout(350);
+  const no = await chip();
+  ok(/judged-no/.test(no.cls) && /judged-no/.test(no.dirCls), `${scheme}: a rejection shows on the state as well as the direction (${no.title})`);
+  ok(contrast(no.color, no.bg) >= 3, `${scheme}: red is legible too (contrast ${contrast(no.color, no.bg).toFixed(1)}:1)`);
+  ok(no.color !== plain.color && one.dirColor !== plain.color, `${scheme}: judged and unjudged really are different colours`);
+  // Clearing it puts the chip back to plain — the mark tracks the verdict.
+  await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
+  await tp.waitForTimeout(350);
+  ok(!/judged/.test((await chip()).dirCls), `${scheme}: clearing the verdict clears the colour`);
+  ok(terrs.length === 0, `${scheme}: no page errors${terrs.length ? ` — ${terrs[0]}` : ""}`);
+  await tctx.close();
+}
+// The two themes must not paint the same thing — dark green on a dark page
+// would be exactly the bug he asked us to avoid.
+console.log("(colours above are the theme's own --good/--bad tokens)");
+
 // The public sees none of this — it is a Game Master's tool.
 const pub = await ctx.browser().newContext({ viewport: { width: 393, height: 851 } });
 const pp = await pub.newPage();
 await pp.goto(`${W}#/objects/window_058`, { waitUntil: "load" });
 await pp.waitForTimeout(1700);
 ok(!(await pp.evaluate(() => !!document.querySelector(".facet-head"))), "and a visitor never sees it");
+ok(!(await pp.evaluate(() => !!document.querySelector(".judged-ok, .judged-no"))),
+  "nor the review marks on the chips — those are a Game Master's working notes");
 await pub.close();
 
 console.log("page errors:", errs.length ? errs : "none");

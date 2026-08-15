@@ -321,6 +321,33 @@ async function discardAll() {
 // One animation player: strips (monsters/objects) or per-frame urls
 // (characters). Nearest-neighbour scaling, play/pause, frame-step, speed,
 // and the game's nadir shadow for monsters.
+// WHAT IS LEFT TO REVIEW, VISIBLE ON THE CHIP ITSELF (maintainer 2026-08-15:
+// "when logged in as admin it's hard for me to know what tree state I have
+// left to review ... the admin will see the state text 1, 2 etc in green =
+// approved, red = rejected. Then I know if it's normal color means I have not
+// reviewed it yet"). Verdicts are per state × DIRECTION, so a state chip
+// summarises its directions:
+//   red   — at least one direction rejected (the call you must not lose sight of)
+//   green — every direction judged, and all approved
+//   plain — nothing judged yet, or only some of it: still work to do
+// The colours are the theme's own --good/--bad, which are dark on the light
+// theme and light on the dark one, exactly as he asked.
+const FACET_DOMAIN = { monster: "monsters", character: "characters", object: "objects" };
+function facetMark(domain, path, state, dirs) {
+  if (!domain || !path || !dirs.length) return { cls: "", title: null };
+  let approved = 0, rejected = 0;
+  for (const d of dirs) {
+    const st = fb(domain, `${path}#${state}#${d}`).status;
+    if (st === "approved") approved++;
+    else if (st === "rejected") rejected++;
+  }
+  const of = dirs.length === 1 ? "" : ` of ${dirs.length} directions`;
+  if (rejected) return { cls: "judged-no", title: `${rejected}${of} rejected` };
+  if (approved === dirs.length) return { cls: "judged-ok", title: `approved${of ? ` (all ${dirs.length} directions)` : ""}` };
+  if (approved) return { cls: "", title: `${approved}${of} approved — not finished` };
+  return { cls: "", title: "not reviewed yet" };
+}
+
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
@@ -571,10 +598,12 @@ function makePlayer(entity, kind, opts = {}) {
     else if (on.offsetLeft + on.offsetWidth > stateSeg.scrollLeft + stateSeg.clientWidth - pad)
       stateSeg.scrollLeft = on.offsetLeft + on.offsetWidth - stateSeg.clientWidth + pad;
   }
+  const fbDomain = state.admin ? FACET_DOMAIN[kind] : null;
   function renderStateSeg() {
-    stateSeg.replaceChildren(...stateNames.map((s) =>
-      h("button", {
-        class: s === cur.state ? "on" : "",
+    stateSeg.replaceChildren(...stateNames.map((s) => {
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {})) : { cls: "", title: null };
+      return h("button", {
+        class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
           cur.state = s;
           // Direction availability differs per state (e.g. stone_golem's
@@ -585,8 +614,9 @@ function makePlayer(entity, kind, opts = {}) {
           }
           loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); onFacetChange?.();
         },
-        title: stateWords(s),
-      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""))));
+        title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
+      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
+    }));
   }
 
   const dirPad = h("span", { class: "dirpad" });
@@ -598,15 +628,21 @@ function makePlayer(entity, kind, opts = {}) {
     // them to learn which way the art faces. Availability is PER STATE — a
     // monster's angry can ship 5 of 8 while its walk ships all — so this
     // re-runs on every state change, which it already did.
-    dirPad.replaceChildren(...state.data.directions.filter(clipForDir).map((d) =>
-      h("button", {
-        class: d === cur.dir ? "on" : "", title: d,
+    dirPad.replaceChildren(...state.data.directions.filter(clipForDir).map((d) => {
+      // The direction is where a verdict actually lives, so it is marked
+      // exactly, not summarised: this one file is approved, rejected or not
+      // looked at yet.
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, cur.state, [d]) : { cls: "", title: null };
+      return h("button", {
+        class: [d === cur.dir ? "on" : "", mark.cls].filter(Boolean).join(" "),
+        title: mark.title ? `${d} — ${mark.title}` : d,
         // A DIRECTION IS A FACET TOO (maintainer 2026-08-14: "you can
         // regenerate an animation for a direction, you don't regenerate for
         // all directions … maybe the SE direction on the state LIGHTS_ON is
         // bad"), so the feedback row follows this click as well as the state.
         onclick: () => { cur.dir = d; loadClip(); renderDirPad(); onFacetChange?.(); },
-      }, DIR_LABEL[d])));
+      }, DIR_LABEL[d]);
+    }));
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
   renderStateSeg();
@@ -682,6 +718,8 @@ function makePlayer(entity, kind, opts = {}) {
     destroy: () => cancelAnimationFrame(rafTimer),
     getState: () => cur.state,
     getDir: () => cur.dir,
+    /** Repaint the approved/rejected marks — call after a verdict changes. */
+    refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
     /** Fires whenever the state OR the direction changes — i.e. whenever the
      *  thing on screen is a different piece of generated art. */
     set onFacetChange(fn) { onFacetChange = fn; },
@@ -1751,6 +1789,8 @@ function viewMonster(id) {
     const st = player.getState(), dir = player.getDir();
     facetPill.replaceChildren(facetName(st, dir));
     facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
+      // The chip the verdict belongs to turns green or red the moment it lands.
+      onchange: () => player.refreshMarks(),
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -1953,6 +1993,8 @@ function viewCharacter(id) {
     const st = player.getState(), dir = player.getDir();
     facetPill.replaceChildren(facetName(st, dir));
     facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${st}#${dir}`, {
+      // The chip the verdict belongs to turns green or red the moment it lands.
+      onchange: () => player.refreshMarks(),
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -2533,6 +2575,8 @@ function viewObject(id) {
     if (!st || !dir) return;
     facetPill.replaceChildren(facetName(st, dir));
     facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}#${dir}`, {
+      // The chip the verdict belongs to turns green or red the moment it lands.
+      onchange: () => player.refreshMarks(),
       // The piece's art hash, so a re-rolled piece can be told from this one.
       stamp: { art: o.artHash ?? null },
       reject: "✕ redo",
