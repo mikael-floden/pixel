@@ -9313,6 +9313,14 @@
           "glow_score": 0.2183,
           "art_hash": "bba16a9243a24dc3"
         },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_006/lit_4/sprite.webp",
+          "pixellab_object_id": "e1e44874-3a66-4cc3-b2cb-052140832eab",
+          "glow_concept": "a lit traveler's lantern resting on top",
+          "difference_from_source": 0.9509,
+          "glow_score": 0.1986,
+          "art_hash": "6910f256e73deb69"
+        },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_006/not_lit_1/sprite.webp",
           "pixellab_object_id": "c835d22e-f8d4-4567-8525-8570e52b05ed",
@@ -9420,11 +9428,115 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "fallen_logs/fallen_log_007/lit_1/sprite.webp",
+          "pixellab_object_id": "a9ad02da-7d85-49ea-bf13-ba7fc4d4e671",
+          "glow_concept": "blue foxfire glowing in the bark cracks",
+          "difference_from_source": 0.8543,
+          "glow_score": 0.0809,
+          "art_hash": "ad4ae6cb276ca366"
+        },
+        "LIT_2": {
+          "sprite": "fallen_logs/fallen_log_007/lit_2/sprite.webp",
+          "pixellab_object_id": "34a49115-1f30-4ca5-84bb-1979823c2364",
+          "glow_concept": "rows of shelf fungi glowing pale green",
+          "difference_from_source": 0.9716,
+          "glow_score": 0.195,
+          "art_hash": "062a4a846d06636a"
+        },
+        "LIT_3": {
+          "sprite": "fallen_logs/fallen_log_007/lit_3/sprite.webp",
+          "pixellab_object_id": "d1512058-6002-4084-a8d2-3c2bb530d94e",
+          "glow_concept": "luminous moss carpeting the upper side",
+          "difference_from_source": 0.9368,
+          "glow_score": 0.2484,
+          "art_hash": "ab9d90f14b19fc87"
+        },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_007/lit_4/sprite.webp",
+          "pixellab_object_id": "429e7a09-e7a6-4fd5-88c1-7d1e446379b4",
+          "glow_concept": "ember-orange glow inside the hollow end",
+          "difference_from_source": 0.8864,
+          "glow_score": 0.1103,
+          "art_hash": "710c2a4922f01b99"
+        },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_007/sprite.webp",
           "pixellab_object_id": "918fcefb-9715-4aa0-a7b9-d9525f7abf31",
           "glow_score": 0.0069,
           "art_hash": "d747c3146ac13fe8"
+        },
+        "NOT_LIT_10": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_10/sprite.webp",
+          "pixellab_object_id": "afb17eab-b430-4c64-b5cf-8a12fce8497f",
+          "glow_concept": null,
+          "difference_from_source": 0.7299,
+          "glow_score": 0.0946,
+          "art_hash": "51bc7ce6a3f9df70"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "abb92de8-eaeb-481c-9e62-05aaa2998fa3",
+          "glow_concept": null,
+          "difference_from_source": 0.6486,
+          "glow_score": 0.0013,
+          "art_hash": "84b8c2780950a320"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "04038b60-f84b-4327-91c9-1dc27e77e917",
+          "glow_concept": null,
+          "difference_from_source": 0.9231,
+          "glow_score": 0.006,
+          "art_hash": "8a99976a40566c60"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "45b61cbe-3dfd-44e9-8074-4303b6ac47b9",
+          "glow_concept": null,
+          "difference_from_source": 0.8577,
+          "glow_score": 0.0011,
+          "art_hash": "cdd9356de08c5438"
+        },
+        "NOT_LIT_5": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_5/sprite.webp",
+          "pixellab_object_id": "41ad90bc-e246-4238-ae6e-f7e71fb716b8",
+          "glow_concept": null,
+          "difference_from_source": 0.9465,
+          "glow_score": 0.0047,
+          "art_hash": "394c45b3d540f970"
+        },
+        "NOT_LIT_6": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_6/sprite.webp",
+          "pixellab_object_id": "f42485e3-7470-4f78-bd36-3180ccdc8bcf",
+          "glow_concept": null,
+          "difference_from_source": 0.9843,
+          "glow_score": 0.0075,
+          "art_hash": "89fe0c317b143437"
+        },
+        "NOT_LIT_7": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_7/sprite.webp",
+          "pixellab_object_id": "351d0061-cc23-48f5-b088-fc5ac30f01ae",
+          "glow_concept": null,
+          "difference_from_source": 0.943,
+          "glow_score": 0.0027,
+          "art_hash": "9702430db71ee7a5"
+        },
+        "NOT_LIT_8": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_8/sprite.webp",
+          "pixellab_object_id": "3ad82554-be04-40f7-b514-8c764c7117ac",
+          "glow_concept": null,
+          "difference_from_source": 0.9816,
+          "glow_score": 0.0012,
+          "art_hash": "6dfb9cb3068f74af"
+        },
+        "NOT_LIT_9": {
+          "sprite": "fallen_logs/fallen_log_007/not_lit_9/sprite.webp",
+          "pixellab_object_id": "b6540dfe-d8b5-4226-a6d3-462edbdb8d5c",
+          "glow_concept": null,
+          "difference_from_source": 0.7135,
+          "glow_score": 0.003,
+          "art_hash": "c76773e5917a8ff2"
         }
       },
       "animations": []
@@ -9458,6 +9570,110 @@
           "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
           "glow_score": 0.0439,
           "art_hash": "7f22ba073f423ac4"
+        },
+        "LIT_2": {
+          "sprite": "fallen_logs/fallen_log_008/lit_2/sprite.webp",
+          "pixellab_object_id": "3f8d8927-8785-4ff0-9446-21d9a6601ef8",
+          "glow_concept": "ember-orange glow inside the hollow end",
+          "difference_from_source": 0.8989,
+          "glow_score": 0.3374,
+          "art_hash": "5dc431264f592f26"
+        },
+        "LIT_3": {
+          "sprite": "fallen_logs/fallen_log_008/lit_3/sprite.webp",
+          "pixellab_object_id": "2da1eb54-22ab-4a2b-ae97-d73de9692465",
+          "glow_concept": "soulstone crystals erupting from a split",
+          "difference_from_source": 0.7855,
+          "glow_score": 0.0529,
+          "art_hash": "ac297cacb372dbcb"
+        },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_008/lit_4/sprite.webp",
+          "pixellab_object_id": "ff3d390e-f107-472a-b03f-983963d162d7",
+          "glow_concept": "a lit traveler's lantern resting on top",
+          "difference_from_source": 0.8625,
+          "glow_score": 0.3372,
+          "art_hash": "3a653bc51fedd962"
+        },
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "479e952e-0335-44cd-9933-66c334730302",
+          "glow_concept": null,
+          "difference_from_source": 0.7775,
+          "glow_score": 0.1977,
+          "art_hash": "ceb46f1448480538"
+        },
+        "NOT_LIT_10": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_10/sprite.webp",
+          "pixellab_object_id": "3d4ab5c3-798e-47fe-bfa9-0afd1e07abed",
+          "glow_concept": null,
+          "difference_from_source": 0.7226,
+          "glow_score": 0.0,
+          "art_hash": "1dc5519e0b0acbbf"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6f872d8c-3d11-4c2c-a8f8-06c88b6f8a32",
+          "glow_concept": null,
+          "difference_from_source": 0.9883,
+          "glow_score": 0.0,
+          "art_hash": "04f2fb8aa52fb0a2"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_3/sprite.webp",
+          "pixellab_object_id": "5a471315-a15b-4221-9b03-c2460c0ce3eb",
+          "glow_concept": null,
+          "difference_from_source": 0.8155,
+          "glow_score": 0.0,
+          "art_hash": "6905f1fb66444993"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d1cbb327-d86b-4b99-81d3-31ec49a7af4e",
+          "glow_concept": null,
+          "difference_from_source": 0.2257,
+          "glow_score": 0.0,
+          "art_hash": "f926a44dd2a1f8cd"
+        },
+        "NOT_LIT_5": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_5/sprite.webp",
+          "pixellab_object_id": "81fc0c92-fc85-4f1d-b3c5-69e4fe07fd6e",
+          "glow_concept": null,
+          "difference_from_source": 0.7819,
+          "glow_score": 0.0,
+          "art_hash": "e1d5d2cbc707858a"
+        },
+        "NOT_LIT_6": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_6/sprite.webp",
+          "pixellab_object_id": "1d595649-1ff2-4045-95d8-05a24126e0e0",
+          "glow_concept": null,
+          "difference_from_source": 0.7776,
+          "glow_score": 0.0,
+          "art_hash": "11c959490ed7ce62"
+        },
+        "NOT_LIT_7": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_7/sprite.webp",
+          "pixellab_object_id": "ab185f68-3a12-4b7a-a012-d96fb641d9eb",
+          "glow_concept": null,
+          "difference_from_source": 0.7979,
+          "glow_score": 0.0836,
+          "art_hash": "df2e338d7df0951a"
+        },
+        "NOT_LIT_8": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_8/sprite.webp",
+          "pixellab_object_id": "23537fe4-c973-463a-a045-6c6b1e089d7b",
+          "glow_concept": null,
+          "difference_from_source": 0.9586,
+          "glow_score": 0.0,
+          "art_hash": "6e83406179539b5c"
+        },
+        "NOT_LIT_9": {
+          "sprite": "fallen_logs/fallen_log_008/not_lit_9/sprite.webp",
+          "pixellab_object_id": "fd6834c6-cc87-431b-b40f-43fc46bae3d9",
+          "glow_concept": null,
+          "difference_from_source": 0.9529,
+          "glow_score": 0.0,
+          "art_hash": "d87738e623770345"
         }
       },
       "animations": []
@@ -9491,6 +9707,110 @@
           "pixellab_object_id": "34cd8369-99be-41ab-b8aa-79867e2bc458",
           "glow_score": 0.0149,
           "art_hash": "39be67398cee9627"
+        },
+        "LIT_2": {
+          "sprite": "fallen_logs/fallen_log_010/lit_2/sprite.webp",
+          "pixellab_object_id": "00bbc928-4ea2-48c9-86b7-0ab2b0e62eb4",
+          "glow_concept": "row of small glowing caps along the log's spine",
+          "difference_from_source": 0.8886,
+          "glow_score": 0.0279,
+          "art_hash": "d47c6efda86f6d9c"
+        },
+        "LIT_3": {
+          "sprite": "fallen_logs/fallen_log_010/lit_3/sprite.webp",
+          "pixellab_object_id": "fc1b8a34-13d1-413d-bd53-90a54cbe8f87",
+          "glow_concept": "blue foxfire glowing in the bark cracks",
+          "difference_from_source": 0.8789,
+          "glow_score": 0.0566,
+          "art_hash": "625c4f2fbf7004bc"
+        },
+        "LIT_4": {
+          "sprite": "fallen_logs/fallen_log_010/lit_4/sprite.webp",
+          "pixellab_object_id": "500f400a-2d4c-4c43-8bc3-74d597f35071",
+          "glow_concept": "rows of shelf fungi glowing pale green",
+          "difference_from_source": 0.8132,
+          "glow_score": 0.0407,
+          "art_hash": "1c79cb8a72f796db"
+        },
+        "NOT_LIT_1": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "aac53099-4cb6-431e-834c-d41bef8557a6",
+          "glow_concept": null,
+          "difference_from_source": 0.7517,
+          "glow_score": 0.0,
+          "art_hash": "ea508e93e18a0419"
+        },
+        "NOT_LIT_10": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_10/sprite.webp",
+          "pixellab_object_id": "bf207510-acc7-471f-9733-f727fd244bb3",
+          "glow_concept": null,
+          "difference_from_source": 0.7742,
+          "glow_score": 0.0055,
+          "art_hash": "252c71572b44171a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6f459799-ed7e-44e3-96e4-b282242caedd",
+          "glow_concept": null,
+          "difference_from_source": 0.768,
+          "glow_score": 0.0046,
+          "art_hash": "d0e413c29bcca224"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_3/sprite.webp",
+          "pixellab_object_id": "07756acc-0423-4ab1-936c-325a1f0d35bf",
+          "glow_concept": null,
+          "difference_from_source": 0.733,
+          "glow_score": 0.0829,
+          "art_hash": "d143fba0428451e0"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_4/sprite.webp",
+          "pixellab_object_id": "83082e75-3211-4df0-819b-1c58f46c476a",
+          "glow_concept": null,
+          "difference_from_source": 0.7532,
+          "glow_score": 0.0058,
+          "art_hash": "8210ccf3c8e0142f"
+        },
+        "NOT_LIT_5": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_5/sprite.webp",
+          "pixellab_object_id": "5a6d09ab-4dac-4ee1-ad27-9d8860ec683f",
+          "glow_concept": null,
+          "difference_from_source": 0.8333,
+          "glow_score": 0.0,
+          "art_hash": "4b5de6b9c34840db"
+        },
+        "NOT_LIT_6": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_6/sprite.webp",
+          "pixellab_object_id": "2b1095fc-73b2-4b45-b955-12815ba14fec",
+          "glow_concept": null,
+          "difference_from_source": 0.9118,
+          "glow_score": 0.0,
+          "art_hash": "e0741151bd1de9e3"
+        },
+        "NOT_LIT_7": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_7/sprite.webp",
+          "pixellab_object_id": "dcfeb9c6-5db1-4353-8c7f-3dfc399a4233",
+          "glow_concept": null,
+          "difference_from_source": 0.7846,
+          "glow_score": 0.0087,
+          "art_hash": "4f51d9239000ce73"
+        },
+        "NOT_LIT_8": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_8/sprite.webp",
+          "pixellab_object_id": "e9d6f16e-62da-42b9-9502-eedc7ff246a6",
+          "glow_concept": null,
+          "difference_from_source": 0.7872,
+          "glow_score": 0.0028,
+          "art_hash": "2f5989e3c1d09903"
+        },
+        "NOT_LIT_9": {
+          "sprite": "fallen_logs/fallen_log_010/not_lit_9/sprite.webp",
+          "pixellab_object_id": "fa8729b0-0688-4437-bcc3-1f6399dba286",
+          "glow_concept": null,
+          "difference_from_source": 0.7967,
+          "glow_score": 0.0,
+          "art_hash": "605f9a4c074e11c1"
         }
       },
       "animations": []
@@ -11356,11 +11676,115 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hanging_willows/hanging_willow_001/lit_1/sprite.webp",
+          "pixellab_object_id": "7c3da6a0-c988-464f-a433-35020775d62c",
+          "glow_concept": "catkins burning like rows of candle flames",
+          "difference_from_source": 0.8555,
+          "glow_score": 0.5312,
+          "art_hash": "e9b6ba9fc4734c9b"
+        },
+        "LIT_2": {
+          "sprite": "hanging_willows/hanging_willow_001/lit_2/sprite.webp",
+          "pixellab_object_id": "ea03f1d8-7df6-46d8-9da2-048687609c22",
+          "glow_concept": "soul-light pooled in the hollow of the trunk",
+          "difference_from_source": 0.3292,
+          "glow_score": 0.0678,
+          "art_hash": "3f36f96fa338c02c"
+        },
+        "LIT_3": {
+          "sprite": "hanging_willows/hanging_willow_001/lit_3/sprite.webp",
+          "pixellab_object_id": "60542894-ea63-41e5-bbed-318d86def068",
+          "glow_concept": "leaves that hold moonlight long after dark",
+          "difference_from_source": 0.8607,
+          "glow_score": 0.0647,
+          "art_hash": "b5eaf3ef00118847"
+        },
+        "LIT_4": {
+          "sprite": "hanging_willows/hanging_willow_001/lit_4/sprite.webp",
+          "pixellab_object_id": "81d65186-7e41-4325-8430-e59190022887",
+          "glow_concept": "bright sap beads glowing along the bark",
+          "difference_from_source": 0.237,
+          "glow_score": 0.0789,
+          "art_hash": "eea35cc5964fcf32"
+        },
         "NOT_LIT_1": {
           "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
           "pixellab_object_id": "bc058401-ac27-4f9b-938d-0b913fcdef2d",
           "glow_score": 0.0386,
           "art_hash": "ff61dd2c22930668"
+        },
+        "NOT_LIT_10": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_10/sprite.webp",
+          "pixellab_object_id": "537f0ec9-62dc-43e8-acc2-3f642811f794",
+          "glow_concept": null,
+          "difference_from_source": 0.8999,
+          "glow_score": 0.0,
+          "art_hash": "838988e88cec4d63"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "301244ab-472a-4262-a94d-c80821f7450a",
+          "glow_concept": null,
+          "difference_from_source": 0.2832,
+          "glow_score": 0.0341,
+          "art_hash": "997bcaf6b51b7f0e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "2d299d3d-148e-4930-872f-451c83b4a1ce",
+          "glow_concept": null,
+          "difference_from_source": 0.8212,
+          "glow_score": 0.0,
+          "art_hash": "049950c204dfd09b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5281498d-f643-4d7d-bc7d-0242d079d0a2",
+          "glow_concept": null,
+          "difference_from_source": 0.2912,
+          "glow_score": 0.0681,
+          "art_hash": "2dc1e63840236fb0"
+        },
+        "NOT_LIT_5": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_5/sprite.webp",
+          "pixellab_object_id": "84793633-cf13-4b07-8b76-dd5565463a4f",
+          "glow_concept": null,
+          "difference_from_source": 0.8356,
+          "glow_score": 0.0,
+          "art_hash": "105eec98b0ec6285"
+        },
+        "NOT_LIT_6": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_6/sprite.webp",
+          "pixellab_object_id": "7a718af9-e8a8-4230-ad44-0e44afef76f9",
+          "glow_concept": null,
+          "difference_from_source": 0.6478,
+          "glow_score": 0.0301,
+          "art_hash": "e87a518763ec406d"
+        },
+        "NOT_LIT_7": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_7/sprite.webp",
+          "pixellab_object_id": "0bde930c-373f-45cf-b5e9-5faaa5eb26ef",
+          "glow_concept": null,
+          "difference_from_source": 0.3891,
+          "glow_score": 0.0357,
+          "art_hash": "0c80c2122d0d4cd2"
+        },
+        "NOT_LIT_8": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_8/sprite.webp",
+          "pixellab_object_id": "06d014a4-b189-4d93-a2ce-52ef7e3df43d",
+          "glow_concept": null,
+          "difference_from_source": 0.4134,
+          "glow_score": 0.0437,
+          "art_hash": "b27044598a945a1f"
+        },
+        "NOT_LIT_9": {
+          "sprite": "hanging_willows/hanging_willow_001/not_lit_9/sprite.webp",
+          "pixellab_object_id": "d82f5577-5f9a-4c95-bc1b-1aec103f7e00",
+          "glow_concept": null,
+          "difference_from_source": 0.4791,
+          "glow_score": 0.0,
+          "art_hash": "c444b5cc8a1f4213"
         }
       },
       "animations": []
@@ -11394,6 +11818,62 @@
           "pixellab_object_id": "37a6bdf2-3911-4ddf-a837-8e63a07edcb4",
           "glow_score": 0.0099,
           "art_hash": "4e97b252b7f1366f"
+        },
+        "LIT_3": {
+          "sprite": "hanging_willows/hanging_willow_002/lit_3/sprite.webp",
+          "pixellab_object_id": "6c54f226-5564-4ecf-adbb-f3488c27040e",
+          "glow_concept": "bright sap beads glowing along the bark",
+          "difference_from_source": 0.4278,
+          "glow_score": 0.0146,
+          "art_hash": "bec1230278ccca85"
+        },
+        "LIT_4": {
+          "sprite": "hanging_willows/hanging_willow_002/lit_4/sprite.webp",
+          "pixellab_object_id": "7dbac0a7-884f-4d96-a139-059b88781dfd",
+          "glow_concept": "a lantern glowing behind the branch curtain",
+          "difference_from_source": 0.4565,
+          "glow_score": 0.0405,
+          "art_hash": "564e744a750594c8"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hanging_willows/hanging_willow_002/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d17a4582-775f-4f8c-b8a1-34f2180625e3",
+          "glow_concept": null,
+          "difference_from_source": 0.2348,
+          "glow_score": 0.0,
+          "art_hash": "318ea9d1d4a3ea52"
+        },
+        "NOT_LIT_5": {
+          "sprite": "hanging_willows/hanging_willow_002/not_lit_5/sprite.webp",
+          "pixellab_object_id": "4320c867-72be-4c73-bc2e-3e17a072d2b2",
+          "glow_concept": null,
+          "difference_from_source": 0.256,
+          "glow_score": 0.0,
+          "art_hash": "619d8bae93956137"
+        },
+        "NOT_LIT_6": {
+          "sprite": "hanging_willows/hanging_willow_002/not_lit_6/sprite.webp",
+          "pixellab_object_id": "73c19c7e-b794-412b-a765-6073b898d28d",
+          "glow_concept": null,
+          "difference_from_source": 0.2593,
+          "glow_score": 0.0,
+          "art_hash": "64e9f888e8df2d0b"
+        },
+        "NOT_LIT_7": {
+          "sprite": "hanging_willows/hanging_willow_002/not_lit_7/sprite.webp",
+          "pixellab_object_id": "3c26c786-1e26-4b33-8852-c9161faae00b",
+          "glow_concept": null,
+          "difference_from_source": 0.511,
+          "glow_score": 0.0,
+          "art_hash": "c847ef23fa28a0fd"
+        },
+        "NOT_LIT_9": {
+          "sprite": "hanging_willows/hanging_willow_002/not_lit_9/sprite.webp",
+          "pixellab_object_id": "07f7d13d-0d13-45a9-9015-54f14d8c3465",
+          "glow_concept": null,
+          "difference_from_source": 0.2851,
+          "glow_score": 0.0,
+          "art_hash": "09b6a5c7958c5232"
         }
       },
       "animations": []
