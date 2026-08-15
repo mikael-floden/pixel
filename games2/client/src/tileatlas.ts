@@ -24,6 +24,7 @@
 import type Phaser from "phaser";
 import { World, distinctTilePaths, distinctPropPaths, pathTileKey, assetUrl } from "./maps";
 import { withV } from "./assetver";
+import { gameUrl } from "./staging";
 
 interface AtlasIndex {
   schema: string;
@@ -64,11 +65,11 @@ export function queueTileLoads(scene: Phaser.Scene, world: World, worldName: str
       if (queuedIndividually.has(p) || scene.textures.exists(pathTileKey(p))) continue;
       queuedIndividually.add(p);
       individual++;
-      scene.load.image(pathTileKey(p), withV(assetUrl(p)));
+      scene.load.image(pathTileKey(p), withV(gameUrl(assetUrl(p))));
     }
   };
 
-  scene.load.json(idxKey, withV(`/atlases/${worldName}.json`));
+  scene.load.json(idxKey, withV(gameUrl(`/atlases/${worldName}.json`)));
   scene.load.once(`filecomplete-json-${idxKey}`, (_k: string, _t: string, data: AtlasIndex) => {
     // A wrong or half-formed index means "no atlas", never a crash mid-boot.
     if (!data || data.schema !== "nangijala/tile-atlas@1" || data.world !== worldName || !data.frames) {
@@ -78,7 +79,7 @@ export function queueTileLoads(scene: Phaser.Scene, world: World, worldName: str
     index = data;
     for (let i = 0; i < (data.sheets?.length ?? 0); i++) {
       sheetsQueued++;
-      scene.load.image(sheetKey(i), withV(`/atlases/${data.sheets[i]}`));
+      scene.load.image(sheetKey(i), withV(gameUrl(`/atlases/${data.sheets[i]}`)));
     }
     // Tiles the atlas does not carry (should be none — the packer uses the
     // same paths[] the world does — but a partial index must not 404 art).

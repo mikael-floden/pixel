@@ -18,18 +18,13 @@
 
   "userWorlds": ["the_island2"],
   "$comment_userWorlds": [
-    "What an END USER may select. Everything else in `worlds` below is a dev",
-    "map: shipped so it WORKS, but hidden from the picker unless you are signed",
-    "in as admin (build-worlds marks them dev:true, loadWorldsList filters them).",
-    "",
-    "This is a product gate, not a security boundary — the repo is public, so",
-    "the maps are readable on GitHub by anyone who looks. The point is that the",
-    "game never OFFERS them, which is what 'always prepared for the final",
-    "release' actually needs."
+    "THE GAME. What an end user may select, and — since 2026-08-15 — the ONLY",
+    "worlds the image carries: the ship-set closure walks this list, nothing",
+    "else. A product gate, not a security boundary (the repo is public); the",
+    "point is the game never OFFERS anything else."
   ],
 
-  "worlds": [
-    "the_island2",
+  "devWorlds": [
     "the_island",
     "demo_isle",
     "demo_lost",
@@ -41,18 +36,15 @@
     "ring_test",
     "trans_demo"
   ],
-  "$comment_worlds": [
-    "Every world that ships. The dev maps are here because THE SERVER IS",
-    "AUTHORITATIVE: WorldRoom.loadWorldGrid reads world.json and spawns.json",
-    "from disk, so a map the image lacks cannot be joined at all — browser CORS",
-    "cannot fix that, only a server-side GitHub fetch could.",
-    "",
-    "Cost of keeping them: 87 MB of art instead of 57 MB. Still 126 MB less than",
-    "before the split, because the real win was never the worlds — it was the",
-    "unused tiles, scenery and monsters the closure drops either way.",
-    "",
-    "To go leaner later, teach the server to fetch an unknown world from GitHub",
-    "and pull the dev maps out of this list; the userWorlds gate above stays."
+  "$comment_devWorlds": [
+    "STAGING worlds: renderer test beds and generator fixtures. NOT in the",
+    "image at all — an admin who joins one streams it from the repo (client:",
+    "staging.ts via jsDelivr; server: WorldRoom's disk-first GitHub fallback).",
+    "They cost production zero bytes, which is what lets monster_demo one day",
+    "spawn all 57 monsters without dragging 16 MB of monster art into the",
+    "container (the leak the maintainer caught 2026-08-15). The admin picker",
+    "reads this list via the CDN; the dev server still plays them from the",
+    "working tree exactly as before."
   ],
 
   "playableCharacters": ["humans/default_boy", "humans/default_girl"],

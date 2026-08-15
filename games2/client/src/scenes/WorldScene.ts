@@ -73,6 +73,7 @@ import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV } from "../assetver";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
+import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
@@ -9058,7 +9059,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.spawnZonesLoading) return;
     this.spawnZonesLoading = true;
     const name = this.worldName || DEFAULT_WORLD;
-    fetch(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/spawns.json`)
+    fetch(gameUrl(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/spawns.json`))
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         this.spawnZones = j ? parseSpawns(j) : [];

@@ -245,7 +245,7 @@ export class WorldRoom extends Room<WorldState> {
     });
   }
 
-  onCreate(options?: {
+  async onCreate(options?: {
     world?: string;
     phaseSeconds?: number[];
     auroraChance?: number;
@@ -263,7 +263,7 @@ export class WorldRoom extends Room<WorldState> {
       // matched by this name (filterBy in index.ts), so everyone who picks the
       // same world shares one room; different worlds get separate rooms.
       const world = (options?.world || DEFAULT_WORLD).replace(/[^a-z0-9_-]/gi, "");
-      const w = loadWorldGrid(world);
+      const w = await loadWorldGrid(world);
       this.terrain = w.terrain;
       this.worldSpawn = w.spawn;
       this.worldW = w.worldW;
@@ -274,7 +274,11 @@ export class WorldRoom extends Room<WorldState> {
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
-      this.zones = this.terrain ? loadSpawnZones(world, this.terrain) : [];
+      this.zones = this.terrain ? await loadSpawnZones(world, this.terrain) : [];
+      // A world absent from disk was STAGED (fetched from the repo) — say so,
+      // with the two facts that decide whether the join is playable.
+      if (!existsSync(join(assetsRoot(), "maps2", "worlds", world)))
+        console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());
     // Live tuning (live/tuning/* on GitHub main, held by the live store):
@@ -1804,14 +1808,60 @@ function assetsRoot(): string {
   return process.env.ASSETS_ROOT || join(gameRoot, ".."); // repo root
 }
 
+// ---------------------------------------------------------------- staging ----
+// A world that is NOT in this image (config/publish.json ships only
+// `userWorlds` since 2026-08-15) can still be joined by an admin: its
+// world.json/spawns.json are fetched from the repo. DISK FIRST, ALWAYS — a
+// shipped world never touches the network, so the ordinary player join path
+// is byte-identical to before this existed. The fetch half only runs for
+// names the image does not carry, i.e. dev maps.
+//
+// STAGING_WORLD_BASE overrides the GitHub base — that is how the gate
+// (verify-stagingworld.mjs) points this at a local fixture, since asserting
+// against live GitHub from CI would test their uptime, not our code.
+//
+// Cached in memory: positive 5 min (a room create per world per process is
+// the real frequency), negative 60 s so a typo'd join cannot hammer GitHub.
+const STAGING_BASE =
+  process.env.STAGING_WORLD_BASE || "https://raw.githubusercontent.com/mikael-floden/pixel/main";
+const stagingCache = new Map<string, { doc: unknown | null; at: number }>();
+async function fetchStagingJson(rel: string): Promise<unknown | null> {
+  const hit = stagingCache.get(rel);
+  if (hit && Date.now() - hit.at < (hit.doc ? 300_000 : 60_000)) return hit.doc;
+  let doc: unknown | null = null;
+  try {
+    const res = await fetch(`${STAGING_BASE}/${rel}`, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) doc = await res.json();
+    else console.warn(`[staging] ${rel}: ${res.status} from ${STAGING_BASE}`);
+  } catch (e) {
+    console.warn(`[staging] ${rel}: ${(e as Error).message}`);
+  }
+  stagingCache.set(rel, { doc, at: Date.now() });
+  return doc;
+}
+
+/** The raw world.json for a name: disk (the shipped image / dev working tree)
+ * first, staging fetch second. Null = the world truly does not exist. */
+async function readWorldDoc(name: string, file: string): Promise<unknown | null> {
+  try {
+    const path = join(assetsRoot(), "maps2", "worlds", name, file);
+    if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    return null; // a CORRUPT local file is not rescued by GitHub — surface it as missing
+  }
+  return fetchStagingJson(`maps2/worlds/${name}/${file}`);
+}
+
 /** Load a named maps2 world (maps2/worlds/<name>/world.json) into a collision
- * grid + spawn + extent, or an open world if it isn't present/parseable. */
-function loadWorldGrid(name: string): LoadedWorld {
+ * grid + spawn + extent, or an open world if it isn't present/parseable.
+ * Async since the staging path (2026-08-15): a world absent from disk may
+ * stream from the repo — see readWorldDoc. */
+async function loadWorldGrid(name: string): Promise<LoadedWorld> {
   const open: LoadedWorld = { terrain: null, spawn: null, worldW: WORLD_WIDTH, worldH: WORLD_HEIGHT };
   try {
-    const path = join(assetsRoot(), "maps2", "worlds", name, "world.json");
-    if (!existsSync(path)) return open;
-    const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
+    const doc = await readWorldDoc(name, "world.json");
+    if (!doc) return open;
+    const world = parseWorld(doc);
     if (!world) return open;
     return {
       terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks),
@@ -1871,11 +1921,11 @@ function tieBreakAngle(id: string): number {
  * file → no monsters (maps2 owns placement; nothing to invent here). Zones
  * with no valid cell at their claimed elevation are skipped with a warning —
  * that's map data disagreeing with itself, worth surfacing. */
-function loadSpawnZones(name: string, grid: TerrainGrid): ZoneRuntime[] {
+async function loadSpawnZones(name: string, grid: TerrainGrid): Promise<ZoneRuntime[]> {
   try {
-    const path = join(assetsRoot(), "maps2", "worlds", name, "spawns.json");
-    if (!existsSync(path)) return [];
-    const zones = parseSpawns(JSON.parse(readFileSync(path, "utf8")));
+    const doc = await readWorldDoc(name, "spawns.json");
+    if (!doc) return [];
+    const zones = parseSpawns(doc);
     const runtimes = buildZoneRuntimes(grid, zones);
     if (runtimes.length < zones.length) {
       const kept = new Set(runtimes.map((r) => r.zone.id));

@@ -117,7 +117,11 @@ COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.
 # individual tiles: slower, never wrong pixels, never a red pipeline. --strict
 # because in THIS context /assets is the curated full set, so an absent tile
 # really is absent.
-RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict
+# --ship also removes atlases for worlds this image does NOT publish: since
+# 2026-08-15 dev maps are staging content, so their ~16 MB of sheets would be
+# dead weight (client/public is copied wholesale, which is how they arrive).
+# An admin who joins a dev map streams its tiles from the repo instead.
+RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict --ship
 
 # The deployed commit, baked into the bundle so testers can see which version
 # they're running (bottom-left in-game + console) and into the wiki's build

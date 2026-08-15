@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
+import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
@@ -223,7 +224,10 @@ async function boot() {
         name?: string;
       } | null;
       const character = manifest.characters.find((c) => c.uid === saved?.characterUid);
-      const worldOk = worlds.length === 0 || worlds.some((w) => w.name === saved?.world);
+      // A remembered world this build does not LIST may still be a staging
+      // world (dev map streamed from the repo) — let the activation below
+      // decide instead of bouncing the admin to the select screen.
+      const worldOk = worlds.length === 0 || !!saved?.world;
       if (saved?.world && character && worldOk) {
         showLoading();
         choice = { world: saved.world, character, name: saved.name || "wanderer" };
@@ -231,6 +235,32 @@ async function boot() {
     } catch {}
   }
   const { world: worldName, character, name } = choice ?? (await chooseCharacter(manifest, worlds));
+
+  // STAGING: the chosen world is not in this build (an admin's dev map, or a
+  // remembered one that left the image). Flip every subsequent art/data URL
+  // to the repo CDN (staging.ts) BEFORE anything world-shaped is fetched.
+  // If activation fails, loadWorld below returns null and the scene falls
+  // back to plain ground — same degradation as any missing world.
+  if (!worlds.some((w) => w.name === worldName && !w.staging)) {
+    const ok = await enterStaging(worldName);
+    if (ok && monsterManifest) {
+      // The image's manifests were built from the CURATED root, so a dev
+      // world's monsters/NPCs may be missing from them. The committed repo
+      // copies have everything; merge in what this image lacks, with their
+      // art URLs rewritten to the CDN.
+      try {
+        const full = (await (await fetch(gameUrl("/monsters.json"))).json()) as typeof monsterManifest;
+        monsterManifest.monsters = mergeStagingEntries(monsterManifest.monsters, full.monsters ?? []);
+      } catch {}
+    }
+    if (ok && npcManifest) {
+      try {
+        const full = (await (await fetch(gameUrl("/npcs.json"))).json()) as typeof npcManifest;
+        npcManifest.npcs = mergeStagingEntries(npcManifest.npcs ?? [], full?.npcs ?? []);
+      } catch {}
+    }
+    if (!ok) console.warn(`[staging] could not activate for "${worldName}" — falling back to image assets`);
+  }
 
   // select.ts showed the loading overlay on commit; the world JSON is the
   // first slow step (a few MB on mobile), then WorldScene.preload takes over

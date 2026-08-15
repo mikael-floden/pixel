@@ -28,6 +28,7 @@ export interface World {
 }
 
 import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
+import { gameUrl, resolveStagingBase } from "./staging";
 
 export type { WorldProp, Deck };
 
@@ -50,7 +51,7 @@ export function worldUrl(name: string): string {
 
 export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | null> {
   try {
-    const res = await fetch(worldUrl(name));
+    const res = await fetch(gameUrl(worldUrl(name)));
     if (!res.ok) return null;
     return parseWorld(await res.json());
   } catch {
@@ -71,7 +72,7 @@ export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | n
 export type PlaceLookup = { at(cx: number, cy: number): string | null; ids: string[] };
 
 export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLookup | null> {
-  const url = `/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/places.json`;
+  const url = gameUrl(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/places.json`);
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
@@ -100,9 +101,12 @@ export interface WorldInfo {
   schema?: string | null;
   spawn?: [number, number] | null;
   preview?: string | null;
-  /** A DEV map: shipped and joinable, but offered only to a signed-in admin.
-   * Set by build-worlds for anything outside config/publish.json's userWorlds. */
+  /** A DEV map: offered only to a signed-in admin (build-worlds marks
+   * anything outside config/publish.json's userWorlds). */
   dev?: boolean;
+  /** Not in this image at all — joined via the staging path (staging.ts
+   * client-side, WorldRoom's GitHub fallback server-side). */
+  staging?: boolean;
 }
 
 /** The list of playable worlds for the selector, DEFAULT_WORLD first. Falls back
@@ -130,13 +134,41 @@ export async function loadWorldsList(): Promise<WorldInfo[]> {
         // house_demo / glow_test / monster_demo. Filtering there would not make
         // anything safer (it is localhost against the working tree) and would
         // silently break the whole gate suite.
-        const hasDev = list.some((w) => w.dev);
-        if (!hasDev || import.meta.env.DEV || (await isAdmin())) return orderWorlds(list);
-        return orderWorlds(list.filter((w) => !w.dev));
+        if (import.meta.env.DEV) return orderWorlds(list);
+        if (!(await isAdmin())) return orderWorlds(list.filter((w) => !w.dev));
+        // ADMIN: also offer the STAGING worlds — dev maps that are not in this
+        // image at all (config/publish.json ships only userWorlds since
+        // 2026-08-15). Their names come from the committed policy via the
+        // staging CDN; joining one streams its data from the repo (staging.ts
+        // client-side, WorldRoom's GitHub fallback server-side). Any failure
+        // here just means the picker shows what the image has.
+        return orderWorlds([...list, ...(await stagingWorlds(new Set(list.map((w) => w.name))))]);
       }
     }
   } catch {}
   return [{ name: DEFAULT_WORLD, label: "The Island2" }];
+}
+
+/** Dev worlds the image does NOT carry, from the committed publish policy. */
+async function stagingWorlds(have: Set<string>): Promise<WorldInfo[]> {
+  try {
+    const base = await resolveStagingBase();
+    if (!base) return [];
+    const res = await fetch(`${base}games2/config/publish.json`);
+    if (!res.ok) return [];
+    const policy = (await res.json()) as { devWorlds?: string[] };
+    return (policy.devWorlds ?? [])
+      .filter((n) => typeof n === "string" && /^[a-z0-9_-]+$/i.test(n) && !have.has(n))
+      .map((n) => ({
+        name: n,
+        label: n.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        dev: true,
+        staging: true,
+        preview: null,
+      }));
+  } catch {
+    return [];
+  }
 }
 
 /** Is this browser signed in as the game designer? Asks the SERVER — the token

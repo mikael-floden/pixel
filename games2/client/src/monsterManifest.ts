@@ -11,6 +11,8 @@
  * footprint/body widths) — the nadir shadow and the feet origin derive from
  * these; `hoverPx` marks intentional flyers (winged) that levitate above the
  * ground anchor with the shadow staying on the ground. */
+import { gameUrl } from "./staging";
+
 export interface MonsterDef {
   id: string; // folder id under monsters/ (also the `kind` on a synced Monster)
   name: string;
@@ -75,7 +77,7 @@ let cache: MonsterManifest | null = null;
 
 export async function loadMonsterManifest(): Promise<MonsterManifest> {
   if (cache) return cache;
-  const res = await fetch("/monsters.json");
+  const res = await fetch(gameUrl("/monsters.json"));
   if (!res.ok) throw new Error(`failed to load monster manifest: ${res.status}`);
   cache = (await res.json()) as MonsterManifest;
   return cache;

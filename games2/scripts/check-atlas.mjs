@@ -29,6 +29,12 @@ const ATLAS_DIR = join(GAME_ROOT, "client", "public", "atlases");
 const PRUNE = process.argv.includes("--prune");
 const QUIET = process.argv.includes("--quiet");
 const STRICT = process.argv.includes("--strict"); // image build: absence = stale
+// --ship: keep ONLY the atlases for worlds this image publishes. Dev-world
+// atlases are ~16 MB of sheets for maps that are staging content since
+// 2026-08-15 — an admin who joins one streams its tiles from the repo, so a
+// copy in the image is pure weight. client/public is copied wholesale by the
+// Dockerfile, which is how they got in.
+const SHIP = process.argv.includes("--ship");
 
 const log = (m) => !QUIET && console.log(m);
 
@@ -37,7 +43,17 @@ if (!existsSync(ATLAS_DIR)) {
   process.exit(0);
 }
 
-let ok = 0, stale = 0, unverifiable = 0;
+let shipWorlds = null;
+if (SHIP) {
+  try {
+    const pol = JSON.parse(readFileSync(join(GAME_ROOT, "config", "publish.json"), "utf8"));
+    shipWorlds = new Set(pol.userWorlds ?? pol.worlds ?? []);
+  } catch {
+    console.warn("[atlas-check] --ship: no readable publish policy — keeping every atlas");
+  }
+}
+
+let ok = 0, stale = 0, unverifiable = 0, dropped = 0;
 for (const f of readdirSync(ATLAS_DIR).filter((n) => n.endsWith(".json")).sort()) {
   const name = f.replace(/\.json$/, "");
   const prune = (why) => {
@@ -49,6 +65,13 @@ for (const f of readdirSync(ATLAS_DIR).filter((n) => n.endsWith(".json")).sort()
       }
     }
   };
+
+  if (shipWorlds && !shipWorlds.has(name)) {
+    for (const f2 of readdirSync(ATLAS_DIR))
+      if (f2 === f || (f2.startsWith(`${name}.`) && f2.endsWith(".webp"))) unlinkSync(join(ATLAS_DIR, f2));
+    dropped++;
+    continue;
+  }
 
   let idx;
   try {
@@ -98,7 +121,7 @@ for (const f of readdirSync(ATLAS_DIR).filter((n) => n.endsWith(".json")).sort()
   ok++;
 }
 
-log(`[atlas-check] ${ok} current, ${stale} stale${PRUNE && stale ? " (pruned)" : ""}, ${unverifiable} unverifiable here`);
+log(`[atlas-check] ${ok} current, ${stale} stale${PRUNE && stale ? " (pruned)" : ""}, ${unverifiable} unverifiable here${dropped ? `, ${dropped} non-shipped atlas(es) removed` : ""}`);
 // Stale is never fatal: pruning already made it safe, and failing here would
 // let an in-place tiles2 regeneration turn the whole pipeline red — the exact
 // failure mode the sparse-checkout incident taught us to design out.

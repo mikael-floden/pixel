@@ -8,6 +8,8 @@
  * empty, and every facing always has a static `base` rotation to fall back to.
  * When characters2 generates the other seven rotations they appear here with
  * no client change. */
+import { gameUrl } from "./staging";
+
 export interface NpcDef {
   id: string;
   name: string;
@@ -36,7 +38,7 @@ export interface NpcManifest {
 }
 
 export async function loadNpcManifest(): Promise<NpcManifest> {
-  const res = await fetch("/npcs.json");
+  const res = await fetch(gameUrl("/npcs.json"));
   if (!res.ok) throw new Error(`npcs.json ${res.status}`);
   return (await res.json()) as NpcManifest;
 }
@@ -57,7 +59,7 @@ export interface NpcPlacement {
 /** A world's NPC placement, or [] when it ships none (most demo worlds). */
 export async function loadNpcPlacement(world: string): Promise<NpcPlacement[]> {
   try {
-    const res = await fetch(`/assets/maps2/worlds/${world}/npcs.json`);
+    const res = await fetch(gameUrl(`/assets/maps2/worlds/${world}/npcs.json`));
     if (!res.ok) return [];
     const j = await res.json();
     return Array.isArray(j?.npcs) ? (j.npcs as NpcPlacement[]) : [];

@@ -76,6 +76,35 @@ sheets:
   571 sliced, world renders) and verify-indoor doubling as the pixel canary —
   its whole assertion suite runs against atlas-sliced textures.
 
+**STAGING WORLDS (2026-08-15).** The image ships `userWorlds` ONLY. Every
+other map in `devWorlds` is streamed from the repo when an admin joins it, so
+a dev map costs production ZERO bytes — which is what stops "put all 57
+monsters in monster_demo" from dragging 16 MB of monster art into the
+container (the leak the maintainer caught: measured 89.5 → 105.4 MB).
+
+- CLIENT: `client/src/staging.ts` — one chokepoint, `gameUrl()`. Inactive it
+  is the identity function, so a normal player's path is byte-identical to
+  before. Activated (main.ts, when the chosen world is not in this build) it
+  rewrites `/assets/**`, `/atlases/**` and the manifests to the sha-pinned
+  jsDelivr base. `mergeStagingEntries` folds the repo's full monster/NPC
+  manifests over the image's, rewriting only the ADDED entries' URLs.
+- SERVER: `WorldRoom.readWorldDoc` — **disk first, always**; only a name the
+  image lacks hits the network. Required because the server is authoritative
+  (it reads world.json/spawns.json to build collision + spawn zones), so
+  browser CORS alone can never make an unshipped map joinable.
+- Both bases are INJECTABLE (`ml-staging-base`, `STAGING_WORLD_BASE`) — the
+  sandbox denies the headless browser external egress, so the gate points
+  both at a local fixture origin.
+- Gate: `verify-stagingworld.mjs` joins a world that exists ONLY on the
+  fixture (`staging_probe_<t>`, unique per run — Colyseus keeps a room per
+  world name and a reused name rejoins the old room). It asserts the server
+  half (fixture spawn cell + monsters, which only exist via the fetched
+  spawns.json) AND the client half (all tiles from the fixture, ZERO requests
+  for that world to the game origin). Fixture is monster_demo, not
+  house_demo: house_demo ships zero spawn zones, so it can only ever fail.
+- `check-atlas.mjs --ship` drops atlases for non-published worlds in the
+  image (18 MB → 1.7 MB); an admin streams a dev map's tiles from the repo.
+
 **AR RETENTION**: `deploy/ar-cleanup.sh` — a server-side Artifact Registry
 cleanup policy (keep newest 15 versions, delete >14 days), pasted once into
 Cloud Shell from a phone. No CI job, no credentials, cannot be broken by a

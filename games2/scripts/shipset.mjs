@@ -109,7 +109,10 @@ const addAll = (ps) => ps.forEach(add);
 // world uses — measured across all 11 worlds, every entry is referenced by
 // `top[]`, a prop or a deck cell. So the tile closure is a union of those
 // tables and needs no per-cell scan.
-const worldNames = policy.worlds ?? [];
+// Since 2026-08-15 the ship set is `userWorlds` ONLY — dev maps are staging
+// content streamed from the repo (client staging.ts / server WorldRoom
+// fallback) and cost the image nothing. `worlds` accepted as a legacy alias.
+const worldNames = policy.userWorlds ?? policy.worlds ?? [];
 if (!worldNames.length) warn("policy publishes NO worlds — the image will have no map art");
 
 const perWorld = {};
@@ -384,7 +387,10 @@ if (emitIdx !== -1) {
 if (process.argv.includes("--check-policy")) {
   const problems = [];
   if (!worldNames.length) problems.push("policy publishes no worlds");
-  for (const n of worldNames) {
+  // Dev worlds are not shipped, but a typo here silently empties the admin
+  // picker's staging list — same class of failure, same check.
+  for (const n of [...worldNames, ...(policy.devWorlds ?? [])]) {
+
     const wj = join(ASSETS_ROOT, "maps2", "worlds", n, "world.json");
     if (!existsSync(wj)) problems.push(`published world "${n}" has no world.json`);
     else if (!readJson(wj, `world ${n}`)) problems.push(`published world "${n}" has unparseable world.json`);
