@@ -378,6 +378,11 @@ def main():
 
     flight = []           # [rel, state, glow, oid, attempt, source_img, man]
     ok = failed = since_push = 0
+    # BUDGET CIRCUIT BREAKER. When PixelLab runs dry every submit returns
+    # "No generations remaining"; the all-families run burned 511 of them
+    # against an empty account before finishing, which is pure noise and makes
+    # the log useless for finding real faults. Three in a row is not a blip.
+    budget_out = 0
     deadline = time.monotonic() + args.max_minutes * 60
     started = time.monotonic()
 
@@ -393,7 +398,18 @@ def main():
                 print(f"» {rel} {st} ({len(flight)} in flight, {len(queue)} queued)", flush=True)
             except PixelLabError as e:
                 failed += 1
-                print(f"  x {rel} {st}: submit — {str(e)[:150]}", flush=True)
+                msg = str(e)
+                if "No generations remaining" in msg or "402" in msg:
+                    budget_out += 1
+                    if budget_out >= 3:
+                        print("  ! OUT OF PIXELLAB CREDIT — stopping submissions; "
+                              "everything already in flight will still be saved",
+                              flush=True)
+                        queue.clear()
+                        break
+                else:
+                    budget_out = 0
+                print(f"  x {rel} {st}: submit — {msg[:130]}", flush=True)
 
         still = []
         for entry in flight:
