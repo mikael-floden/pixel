@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-15T18:05:37+00:00",
+  "id": "stone_048",
+  "group": "stones",
+  "type": "NATURE",
+  "rank": 2,
+  "index": 48,
+  "name": "Flint nodule, glassy fracture 048 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "flint nodule, glassy fracture",
+  "modifier": "split into a double form",
+  "glow_concept": "tiny golden memory motes drifting above it",
+  "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flint nodule, glassy fracture, split into a double form, roughly six feet tall, human height, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "stones/stone_048/sprite.webp",
+  "placement": {
+    "world_height_m": 1.2,
+    "world_px_height": 45,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      7,
+      13,
+      58,
+      56
+    ],
+    "content_px_height": 43,
+    "canvas_render_px": 67
+  },
+  "pixellab_object_id": "a673f78c-7d70-412e-bfe5-4e64a5a404a0",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
