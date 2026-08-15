@@ -5,7 +5,7 @@
   "rank": 27,
   "index": 5,
   "name": "Hay-heaped harvest cart 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "hay-heaped harvest cart",
   "glow_concept": null,
   "prompt": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, hay-heaped harvest cart, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,14 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T11:18:21+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "carts/cart_005/lit_2/sprite.webp",
+      "pixellab_object_id": "2edaa675-c844-4f89-8fef-a9368dd3b89a",
+      "generated_at": "2026-08-15T21:50:27+00:00",
+      "glow_concept": "candle lantern swinging from the cart shaft",
+      "difference_from_source": 0.9068,
+      "glow_score": 0.1975
+    },
     "NOT_LIT_1": {
       "sprite": "carts/cart_005/sprite.webp",
       "pixellab_object_id": "5db52d7a-39ca-41cf-89cc-d2f1a7aca8cb",
