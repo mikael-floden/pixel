@@ -10159,7 +10159,7 @@
       "rel": "carts/cart_005",
       "name": "Hay-heaped harvest cart 005",
       "category": "carts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, hay-heaped harvest cart, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -10179,6 +10179,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "carts/cart_005/lit_2/sprite.webp",
+          "pixellab_object_id": "2edaa675-c844-4f89-8fef-a9368dd3b89a",
+          "generated_at": "2026-08-15T21:50:27+00:00",
+          "glow_concept": "candle lantern swinging from the cart shaft",
+          "difference_from_source": 0.9068,
+          "glow_score": 0.1975,
+          "art_hash": "ce643f12d610b5c1"
+        },
         "NOT_LIT_1": {
           "sprite": "carts/cart_005/sprite.webp",
           "pixellab_object_id": "5db52d7a-39ca-41cf-89cc-d2f1a7aca8cb",
@@ -10220,7 +10229,7 @@
       "rel": "carts/cart_011",
       "name": "Roped tarpaulin-covered load 011",
       "category": "carts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, roped tarpaulin-covered load, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -10240,11 +10249,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "carts/cart_011/lit_1/sprite.webp",
+          "pixellab_object_id": "23f92165-e0a0-44d2-bb4a-3c72b68efc7c",
+          "generated_at": "2026-08-15T21:50:57+00:00",
+          "glow_concept": "phosphorescent moss blanketing a wrecked cart",
+          "difference_from_source": 0.6392,
+          "glow_score": 0.1352,
+          "art_hash": "910733ba76d7762d"
+        },
+        "LIT_2": {
+          "sprite": "carts/cart_011/lit_2/sprite.webp",
+          "pixellab_object_id": "f51dbb71-e246-4500-99bf-edaba6cfc703",
+          "generated_at": "2026-08-15T21:51:47+00:00",
+          "glow_concept": "small brazier of tended coals in the bed",
+          "difference_from_source": 0.9979,
+          "glow_score": 0.2203,
+          "art_hash": "efaaa3488e0568e7"
+        },
         "NOT_LIT_1": {
           "sprite": "carts/cart_011/sprite.webp",
           "pixellab_object_id": "1efb1c12-22b6-4733-afc3-ca34f24e5a46",
           "generated_at": "2026-08-13T23:57:13+00:00",
           "art_hash": "524f9258ea5ef4e6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "carts/cart_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "04bb8a19-38a0-44a0-b883-0db34eb1e842",
+          "generated_at": "2026-08-15T21:50:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4168,
+          "glow_score": 0.0,
+          "art_hash": "abdb42fbb9a65509"
+        },
+        "NOT_LIT_3": {
+          "sprite": "carts/cart_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c373ed9c-277d-4e61-97c3-62a482c2958c",
+          "generated_at": "2026-08-15T21:50:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8627,
+          "glow_score": 0.0014,
+          "art_hash": "28ddb800710c6dbd"
+        },
+        "NOT_LIT_4": {
+          "sprite": "carts/cart_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7c74fe06-bc7c-4ee8-a3bb-55eb90b64407",
+          "generated_at": "2026-08-15T21:50:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6069,
+          "glow_score": 0.0,
+          "art_hash": "53d10a5b3a731bbc"
         }
       },
       "animations": []
@@ -10252,9 +10306,9 @@
     {
       "id": "cart_016",
       "rel": "carts/cart_016",
-      "name": "Barrel-laden cooper's cart 016 \u00b7 lit",
+      "name": "Barrel-laden cooper's cart 016",
       "category": "carts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, barrel-laden cooper's cart, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: cargo of softly glowing lantern-fruit",
       "view": "low top-down",
       "size": 128,
@@ -10279,6 +10333,51 @@
           "pixellab_object_id": "6f621a02-374a-4708-ae36-25c14c2039ff",
           "generated_at": "2026-08-14T01:28:25+00:00",
           "art_hash": "dfb9efe01f2b5232"
+        },
+        "LIT_2": {
+          "sprite": "carts/cart_016/lit_2/sprite.webp",
+          "pixellab_object_id": "9167d48f-b363-4207-b63f-1b812d1ee5e4",
+          "generated_at": "2026-08-15T21:51:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3677,
+          "glow_score": 0.158,
+          "art_hash": "8f460c7fb06253c8"
+        },
+        "LIT_3": {
+          "sprite": "carts/cart_016/lit_3/sprite.webp",
+          "pixellab_object_id": "aaa16710-9996-47eb-be2d-5209bc0aad82",
+          "generated_at": "2026-08-15T21:53:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7854,
+          "glow_score": 0.0438,
+          "art_hash": "06bbfb612749d1df"
+        },
+        "LIT_4": {
+          "sprite": "carts/cart_016/lit_4/sprite.webp",
+          "pixellab_object_id": "17f11a2b-7d35-449f-97e0-05d9af44e74a",
+          "generated_at": "2026-08-15T21:52:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6484,
+          "glow_score": 0.1066,
+          "art_hash": "cb5913e9d67b5c4f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "carts/cart_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "64498026-9d36-4645-83a1-b95541c18626",
+          "generated_at": "2026-08-15T21:53:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8427,
+          "glow_score": 0.0,
+          "art_hash": "b600475d5f138215"
+        },
+        "NOT_LIT_2": {
+          "sprite": "carts/cart_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f938eb37-bce0-4c20-b7c3-5524d48172f7",
+          "generated_at": "2026-08-15T21:53:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.447,
+          "glow_score": 0.0,
+          "art_hash": "3e19ea39bdfd4a50"
         }
       },
       "animations": []
@@ -10286,9 +10385,9 @@
     {
       "id": "cart_022",
       "rel": "carts/cart_022",
-      "name": "Broken wheel, propped on stones 022 \u00b7 lit",
+      "name": "Broken wheel, propped on stones 022",
       "category": "carts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, broken wheel, propped on stones, bird-favored, with droppings and a nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm soul-light seeping between the floor slats",
       "view": "low top-down",
       "size": 128,
@@ -10313,6 +10412,51 @@
           "pixellab_object_id": "1689c899-22ac-4996-a075-c2b51523749a",
           "generated_at": "2026-08-14T02:33:59+00:00",
           "art_hash": "04e2d9168603e6f8"
+        },
+        "LIT_2": {
+          "sprite": "carts/cart_022/lit_2/sprite.webp",
+          "pixellab_object_id": "9983b896-5607-4c39-ae6b-bf60461f2337",
+          "generated_at": "2026-08-15T21:53:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4881,
+          "glow_score": 0.0364,
+          "art_hash": "613c7dafb1e401c9"
+        },
+        "LIT_3": {
+          "sprite": "carts/cart_022/lit_3/sprite.webp",
+          "pixellab_object_id": "54a53b9e-1377-457e-9476-a13ae842f7b3",
+          "generated_at": "2026-08-15T21:53:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.617,
+          "glow_score": 0.0139,
+          "art_hash": "35ad712379608ec8"
+        },
+        "LIT_4": {
+          "sprite": "carts/cart_022/lit_4/sprite.webp",
+          "pixellab_object_id": "5236d8e2-a5bc-456f-8cc0-0addc3bb0ee2",
+          "generated_at": "2026-08-15T21:54:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5714,
+          "glow_score": 0.0054,
+          "art_hash": "6f6269e311045de4"
+        },
+        "NOT_LIT_1": {
+          "sprite": "carts/cart_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "49cc9656-ca0b-42f3-bb42-09c16875e8ef",
+          "generated_at": "2026-08-15T21:56:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9256,
+          "glow_score": 0.0,
+          "art_hash": "a8a7c662e473f665"
+        },
+        "NOT_LIT_2": {
+          "sprite": "carts/cart_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e4282d86-bb65-416a-8724-1c512d0bed52",
+          "generated_at": "2026-08-15T21:55:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9739,
+          "glow_score": 0.0,
+          "art_hash": "6b9600081693916c"
         }
       },
       "animations": []
@@ -10322,7 +10466,7 @@
       "rel": "carts/cart_901",
       "name": "Firewood-stacked cart 901",
       "category": "carts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden farm cart with two large spoked wheels, slatted sides, and shafts resting on the ground, firewood-stacked cart, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -10342,11 +10486,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "carts/cart_901/lit_1/sprite.webp",
+          "pixellab_object_id": "c4affd53-07fa-45aa-a1d7-833ff35b42f2",
+          "generated_at": "2026-08-15T21:56:05+00:00",
+          "glow_concept": "glowing chalk waymarks scrawled on the sideboards",
+          "difference_from_source": 0.7794,
+          "glow_score": 0.0271,
+          "art_hash": "1caf0695437ba4c3"
+        },
+        "LIT_2": {
+          "sprite": "carts/cart_901/lit_2/sprite.webp",
+          "pixellab_object_id": "10527e89-19c1-4317-bbfe-7ca5b51f39b4",
+          "generated_at": "2026-08-15T21:57:44+00:00",
+          "glow_concept": "candle lantern swinging from the cart shaft",
+          "difference_from_source": 0.2423,
+          "glow_score": 0.0295,
+          "art_hash": "09f8bbd4ead86699"
+        },
         "NOT_LIT_1": {
           "sprite": "carts/cart_901/sprite.webp",
           "pixellab_object_id": "92d8bb37-78a8-4e52-94d7-7c7940430128",
           "generated_at": "2026-08-13T23:21:36+00:00",
           "art_hash": "23d2bd2daaf2c8fa"
+        },
+        "NOT_LIT_3": {
+          "sprite": "carts/cart_901/not_lit_3/sprite.webp",
+          "pixellab_object_id": "688d4c58-41a4-4018-b4cc-66ce8a803ea5",
+          "generated_at": "2026-08-15T21:56:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7654,
+          "glow_score": 0.1366,
+          "art_hash": "0d107c3776cbc028"
+        },
+        "NOT_LIT_4": {
+          "sprite": "carts/cart_901/not_lit_4/sprite.webp",
+          "pixellab_object_id": "33dee111-992a-4882-a112-74761acc2d25",
+          "generated_at": "2026-08-15T21:55:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5074,
+          "glow_score": 0.0,
+          "art_hash": "726d6f8829acb5af"
         }
       },
       "animations": []
@@ -10356,7 +10536,7 @@
       "rel": "cattail_clumps/cattail_clump_001",
       "name": "Cattails with drooping leaves 001",
       "category": "cattail_clumps",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, cattails with drooping leaves, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -10376,11 +10556,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cattail_clumps/cattail_clump_001/lit_1/sprite.webp",
+          "pixellab_object_id": "f25df934-d753-47ec-b86f-8bebbb609013",
+          "generated_at": "2026-08-15T21:57:45+00:00",
+          "glow_concept": "a soulstone pebble shining among the roots",
+          "difference_from_source": 0.9544,
+          "glow_score": 0.0325,
+          "art_hash": "c62a76690160421c"
+        },
+        "LIT_2": {
+          "sprite": "cattail_clumps/cattail_clump_001/lit_2/sprite.webp",
+          "pixellab_object_id": "460d9d7c-409b-4142-91fd-1cc08941f215",
+          "generated_at": "2026-08-15T21:58:06+00:00",
+          "glow_concept": "marsh-gas wisps flickering above the heads",
+          "difference_from_source": 0.8342,
+          "glow_score": 0.1422,
+          "art_hash": "854f8e7b726d9f40"
+        },
         "NOT_LIT_1": {
           "sprite": "cattail_clumps/cattail_clump_001/sprite.webp",
           "pixellab_object_id": "fb095a00-83a7-47a6-9fbf-d21f4dca6d40",
           "generated_at": "2026-08-13T00:55:11+00:00",
           "art_hash": "25afbbb0afe5cd0b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cattail_clumps/cattail_clump_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6b74acb9-d1db-4ac3-87e4-d602c383e278",
+          "generated_at": "2026-08-15T21:57:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7368,
+          "glow_score": 0.002,
+          "art_hash": "7166f5538b7e3cc4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cattail_clumps/cattail_clump_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a40bfc35-fb89-4fb1-87ee-e496283bca89",
+          "generated_at": "2026-08-15T21:58:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8059,
+          "glow_score": 0.0,
+          "art_hash": "e9504b2621c773fe"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cattail_clumps/cattail_clump_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "bab8b978-05e3-479d-ad2d-3a9ccf1e5649",
+          "generated_at": "2026-08-15T21:57:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6778,
+          "glow_score": 0.0,
+          "art_hash": "85f5743fb2378e43"
         }
       },
       "animations": []

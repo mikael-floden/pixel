@@ -5,8 +5,8 @@
   "group": "carts",
   "rank": 27,
   "index": 22,
-  "name": "Broken wheel, propped on stones 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Broken wheel, propped on stones 022",
+  "lights": null,
   "variety": "broken wheel, propped on stones",
   "modifier": "bird-favored, with droppings and a nest",
   "glow_concept": "warm soul-light seeping between the floor slats",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.5714,
       "glow_score": 0.0054
+    },
+    "NOT_LIT_1": {
+      "sprite": "carts/cart_022/not_lit_1/sprite.webp",
+      "pixellab_object_id": "49cc9656-ca0b-42f3-bb42-09c16875e8ef",
+      "generated_at": "2026-08-15T21:56:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9256,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "carts/cart_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e4282d86-bb65-416a-8724-1c512d0bed52",
+      "generated_at": "2026-08-15T21:55:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9739,
+      "glow_score": 0.0
     }
   }
 }
