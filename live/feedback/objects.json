@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-15T18:04:01.771Z",
+  "updated_at": "2026-08-15T18:04:19.114Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -15286,9 +15286,10 @@
       "rating": 5
     },
     "scenery/ancient_trees/ancient_tree_002#lit_1#south": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:53:30.500Z",
-      "rating": 5
+      "status": "rejected",
+      "updated_at": "2026-08-15T18:04:07.378Z",
+      "rating": 1,
+      "art": "ba869feeea238b28"
     },
     "scenery/bee_logs/bee_log_002#lit_1#south": {
       "rating": 2,
@@ -16141,8 +16142,9 @@
     "scenery/ancient_trees/ancient_tree_002#not_lit_5#south": {
       "status": "rejected",
       "art": "dba16c45a3f898cb",
-      "updated_at": "2026-08-15T18:04:03.063Z",
-      "rating": 5
+      "updated_at": "2026-08-15T18:04:21.228Z",
+      "rating": 1,
+      "note": "No door into the tree"
     }
   }
 }
