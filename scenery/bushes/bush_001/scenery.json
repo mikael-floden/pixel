@@ -5,7 +5,7 @@
   "rank": 25,
   "index": 1,
   "name": "Low blueberry shrub 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "low blueberry shrub",
   "glow_concept": null,
   "prompt": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, low blueberry shrub, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T00:55:11+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "bushes/bush_001/lit_1/sprite.webp",
+      "pixellab_object_id": "9749d9dc-a4df-49a6-b3f8-912f04cfc871",
+      "generated_at": "2026-08-15T21:06:08+00:00",
+      "glow_concept": "pale luminescent flowers dotting the surface",
+      "difference_from_source": 0.8355,
+      "glow_score": 0.0628
+    },
+    "LIT_2": {
+      "sprite": "bushes/bush_001/lit_2/sprite.webp",
+      "pixellab_object_id": "bc7df5bd-a5ee-4265-91d1-3d11c8aff28c",
+      "generated_at": "2026-08-15T21:06:09+00:00",
+      "glow_concept": "inner lantern glow silhouetting the leaves",
+      "difference_from_source": 0.8363,
+      "glow_score": 0.2044
+    },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_001/sprite.webp",
       "pixellab_object_id": "4b5cbf58-b6e2-42ce-895a-9bed00c25235",
       "generated_at": "2026-08-13T00:55:11+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "bushes/bush_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "61eefcb5-7a02-4e10-a507-c1b6602c5417",
+      "generated_at": "2026-08-15T21:04:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8835,
+      "glow_score": 0.0014
+    },
+    "NOT_LIT_3": {
+      "sprite": "bushes/bush_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ecd246dd-e55a-41be-8c02-8a3cc31700e7",
+      "generated_at": "2026-08-15T21:06:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6744,
+      "glow_score": 0.0
     }
   }
 }

@@ -7309,7 +7309,7 @@
       "rel": "briar_thickets/briar_thicket_021",
       "name": "Deep crimson wild roses 021",
       "category": "briar_thickets",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, deep crimson wild roses, with bracket fungi steps, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -7329,6 +7329,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_021/lit_1/sprite.webp",
+          "pixellab_object_id": "29d59b34-94d0-4115-8666-4332142c6bd9",
+          "generated_at": "2026-08-15T20:59:05+00:00",
+          "glow_concept": "glowworms strung along the arching canes",
+          "difference_from_source": 0.5649,
+          "glow_score": 0.0339,
+          "art_hash": "d0c83672a4da20d0"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_021/lit_2/sprite.webp",
+          "pixellab_object_id": "bfac67bb-e121-440c-a1c3-4b02918ebecb",
+          "generated_at": "2026-08-15T20:58:53+00:00",
+          "glow_concept": "petals shedding slow drifting motes of light",
+          "difference_from_source": 0.7205,
+          "glow_score": 0.135,
+          "art_hash": "adb5557c2d0b4fe6"
+        },
         "NOT_LIT_1": {
           "sprite": "briar_thickets/briar_thicket_021/sprite.webp",
           "pixellab_object_id": "88cbc647-2a3f-4701-a38a-a19d342a28a8",
@@ -7368,9 +7386,9 @@
     {
       "id": "briar_thicket_022",
       "rel": "briar_thickets/briar_thicket_022",
-      "name": "Briar swallowing a fallen log 022 \u00b7 lit",
+      "name": "Briar swallowing a fallen log 022",
       "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, briar swallowing a fallen log, leaning noticeably to one side, waist-high, self-emissive at night, softly radiating light: rose blossoms glowing like paper lanterns",
       "view": "low top-down",
       "size": 64,
@@ -7395,6 +7413,51 @@
           "pixellab_object_id": "4ddcbb94-5378-4ef8-ac42-f0c2b1dfefaa",
           "generated_at": "2026-08-14T01:45:07+00:00",
           "art_hash": "06e236dde3d91dce"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_022/lit_2/sprite.webp",
+          "pixellab_object_id": "6012d004-73b8-4d73-a61d-48d3a9c918cc",
+          "generated_at": "2026-08-15T20:59:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8592,
+          "glow_score": 0.0441,
+          "art_hash": "d332e592df2bdc8e"
+        },
+        "LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_022/lit_3/sprite.webp",
+          "pixellab_object_id": "87b2922b-0b7d-4660-b2cc-9d29c8d2129a",
+          "generated_at": "2026-08-15T20:59:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8344,
+          "glow_score": 0.0645,
+          "art_hash": "dcc19b4393f3eb18"
+        },
+        "LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_022/lit_4/sprite.webp",
+          "pixellab_object_id": "5bd1d668-549e-49dc-b6a8-9404de745ab0",
+          "generated_at": "2026-08-15T20:59:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8046,
+          "glow_score": 0.0633,
+          "art_hash": "0a422255e24c8f9b"
+        },
+        "NOT_LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3ce027c3-11f0-4a61-904d-e647e4117241",
+          "generated_at": "2026-08-15T20:58:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6628,
+          "glow_score": 0.0,
+          "art_hash": "0b169d0aadce84e9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "03598da7-b500-454a-b4c9-4405c848182a",
+          "generated_at": "2026-08-15T21:00:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.788,
+          "glow_score": 0.0,
+          "art_hash": "2ce43cd8f02f2e0f"
         }
       },
       "animations": []
@@ -7402,9 +7465,9 @@
     {
       "id": "briar_thicket_024",
       "rel": "briar_thickets/briar_thicket_024",
-      "name": "Pale pink dog roses 024 \u00b7 lit",
+      "name": "Pale pink dog roses 024",
       "category": "briar_thickets",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense sprawling bramble thicket of dark green leaves and thick arcing thorny stems, a low lush leafy mass hugging the ground with wild roses scattered through it, pale pink dog roses, with thick exposed roots, roughly six feet tall, human height, self-emissive at night, softly radiating light: thorn tips sparking with points of light",
       "view": "low top-down",
       "size": 64,
@@ -7429,6 +7492,51 @@
           "pixellab_object_id": "5d0dd9ef-0141-4bed-8e70-cbf1fd1707c6",
           "generated_at": "2026-08-14T01:54:59+00:00",
           "art_hash": "ff0051972f367a6d"
+        },
+        "LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_024/lit_2/sprite.webp",
+          "pixellab_object_id": "961d0d44-4d97-4b43-bebc-ba23489248d6",
+          "generated_at": "2026-08-15T21:00:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8861,
+          "glow_score": 0.011,
+          "art_hash": "0317c5f8f9eebd16"
+        },
+        "LIT_3": {
+          "sprite": "briar_thickets/briar_thicket_024/lit_3/sprite.webp",
+          "pixellab_object_id": "05814dd3-ee89-456d-99ea-9b3c92e780e6",
+          "generated_at": "2026-08-15T21:00:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4846,
+          "glow_score": 0.0566,
+          "art_hash": "4a023256e3e5a184"
+        },
+        "LIT_4": {
+          "sprite": "briar_thickets/briar_thicket_024/lit_4/sprite.webp",
+          "pixellab_object_id": "85978802-636c-4082-ac33-8c911c80d347",
+          "generated_at": "2026-08-15T21:00:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2632,
+          "glow_score": 0.0208,
+          "art_hash": "9a46dda7197c2718"
+        },
+        "NOT_LIT_1": {
+          "sprite": "briar_thickets/briar_thicket_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f0442836-405f-428a-80cc-930cbe83c567",
+          "generated_at": "2026-08-15T21:00:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4236,
+          "glow_score": 0.0,
+          "art_hash": "0bcbec8289f1c622"
+        },
+        "NOT_LIT_2": {
+          "sprite": "briar_thickets/briar_thicket_024/not_lit_2/sprite.webp",
+          "pixellab_object_id": "36c1e447-f8e7-4c65-b9ff-96030609ed6f",
+          "generated_at": "2026-08-15T21:02:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.679,
+          "glow_score": 0.0,
+          "art_hash": "ed6cb76d0b37352d"
         }
       },
       "animations": []
@@ -7438,7 +7546,7 @@
       "rel": "broken_columns/broken_column_001",
       "name": "Granite column stump 001",
       "category": "broken_columns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle, granite column stump, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -7458,11 +7566,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "broken_columns/broken_column_001/lit_1/sprite.webp",
+          "pixellab_object_id": "5da909dd-3016-44b0-9839-8b21078cdf28",
+          "generated_at": "2026-08-15T21:04:09+00:00",
+          "glow_concept": "soulstone veins shining in the fracture face",
+          "difference_from_source": 0.9732,
+          "glow_score": 0.2645,
+          "art_hash": "73368d2b46e9e78a"
+        },
+        "LIT_2": {
+          "sprite": "broken_columns/broken_column_001/lit_2/sprite.webp",
+          "pixellab_object_id": "6b40075a-aea7-43c3-9e48-90b0026b4c1e",
+          "generated_at": "2026-08-15T21:02:56+00:00",
+          "glow_concept": "lines of light pooled in the fluting grooves",
+          "difference_from_source": 0.9614,
+          "glow_score": 0.1554,
+          "art_hash": "9c38927fd0d41033"
+        },
         "NOT_LIT_1": {
           "sprite": "broken_columns/broken_column_001/sprite.webp",
           "pixellab_object_id": "0f3ddcb9-682f-4453-b6bb-d49e28365579",
           "generated_at": "2026-08-13T01:42:50+00:00",
           "art_hash": "08256546c8e836ee"
+        },
+        "NOT_LIT_2": {
+          "sprite": "broken_columns/broken_column_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f19b3aea-3309-40f2-8947-4c7f53c52961",
+          "generated_at": "2026-08-15T21:01:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5009,
+          "glow_score": 0.0643,
+          "art_hash": "5d7c6b16e2ec78d4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "broken_columns/broken_column_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a79af689-2c43-45e9-a12e-0b8550abe358",
+          "generated_at": "2026-08-15T21:02:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6254,
+          "glow_score": 0.0,
+          "art_hash": "19bff4eec473dc97"
+        },
+        "NOT_LIT_4": {
+          "sprite": "broken_columns/broken_column_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ec42702d-4b63-478b-b444-f7224db7e8b8",
+          "generated_at": "2026-08-15T21:03:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5547,
+          "glow_score": 0.029,
+          "art_hash": "753d05cc430ebd4e"
         }
       },
       "animations": []
@@ -7470,9 +7623,9 @@
     {
       "id": "broken_column_002",
       "rel": "broken_columns/broken_column_002",
-      "name": "Weathered sandstone column 002 \u00b7 lit",
+      "name": "Weathered sandstone column 002",
       "category": "broken_columns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "the broken stump of an ancient fluted stone column standing on a square base, its top snapped at an angle, weathered sandstone column, about as tall as an adult person, self-emissive at night, softly radiating light: bioluminescent ivy spiraling up the stump",
       "view": "low top-down",
       "size": 128,
@@ -7497,6 +7650,42 @@
           "pixellab_object_id": "093a44c8-7422-4a1c-9e84-26d6eda69721",
           "generated_at": "2026-08-13T04:54:47+00:00",
           "art_hash": "fa3722d6c6293d74"
+        },
+        "LIT_2": {
+          "sprite": "broken_columns/broken_column_002/lit_2/sprite.webp",
+          "pixellab_object_id": "fc2ceb6f-419e-466c-99cd-56d69f0cf042",
+          "generated_at": "2026-08-15T21:03:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.703,
+          "glow_score": 0.3212,
+          "art_hash": "8d9a001ba9a8d7e6"
+        },
+        "LIT_3": {
+          "sprite": "broken_columns/broken_column_002/lit_3/sprite.webp",
+          "pixellab_object_id": "235d952f-a856-4fec-951b-916b5a44e741",
+          "generated_at": "2026-08-15T21:04:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.779,
+          "glow_score": 0.3033,
+          "art_hash": "8ff60dc993fdc8eb"
+        },
+        "LIT_4": {
+          "sprite": "broken_columns/broken_column_002/lit_4/sprite.webp",
+          "pixellab_object_id": "63acde23-110a-4953-9dca-4041577b3890",
+          "generated_at": "2026-08-15T21:04:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4027,
+          "glow_score": 0.2415,
+          "art_hash": "d764d778ef6fba77"
+        },
+        "NOT_LIT_2": {
+          "sprite": "broken_columns/broken_column_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f2562e02-26d6-429c-b724-89a41907095f",
+          "generated_at": "2026-08-15T21:06:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9979,
+          "glow_score": 0.0,
+          "art_hash": "c4adc94794f96b64"
         }
       },
       "animations": []
@@ -7506,7 +7695,7 @@
       "rel": "bushes/bush_001",
       "name": "Low blueberry shrub 001",
       "category": "bushes",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rounded dense shrub of layered foliage with a few thin woody stems showing at the base, low blueberry shrub, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -7526,11 +7715,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "bushes/bush_001/lit_1/sprite.webp",
+          "pixellab_object_id": "9749d9dc-a4df-49a6-b3f8-912f04cfc871",
+          "generated_at": "2026-08-15T21:06:08+00:00",
+          "glow_concept": "pale luminescent flowers dotting the surface",
+          "difference_from_source": 0.8355,
+          "glow_score": 0.0628,
+          "art_hash": "bce8404938dfc5e5"
+        },
+        "LIT_2": {
+          "sprite": "bushes/bush_001/lit_2/sprite.webp",
+          "pixellab_object_id": "bc7df5bd-a5ee-4265-91d1-3d11c8aff28c",
+          "generated_at": "2026-08-15T21:06:09+00:00",
+          "glow_concept": "inner lantern glow silhouetting the leaves",
+          "difference_from_source": 0.8363,
+          "glow_score": 0.2044,
+          "art_hash": "10be34063e6ed2cb"
+        },
         "NOT_LIT_1": {
           "sprite": "bushes/bush_001/sprite.webp",
           "pixellab_object_id": "4b5cbf58-b6e2-42ce-895a-9bed00c25235",
           "generated_at": "2026-08-13T00:55:11+00:00",
           "art_hash": "cfbfef7316407d44"
+        },
+        "NOT_LIT_2": {
+          "sprite": "bushes/bush_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "61eefcb5-7a02-4e10-a507-c1b6602c5417",
+          "generated_at": "2026-08-15T21:04:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8835,
+          "glow_score": 0.0014,
+          "art_hash": "775fd323c3861e3f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "bushes/bush_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ecd246dd-e55a-41be-8c02-8a3cc31700e7",
+          "generated_at": "2026-08-15T21:06:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6744,
+          "glow_score": 0.0,
+          "art_hash": "de09578910f6d595"
         }
       },
       "animations": []
