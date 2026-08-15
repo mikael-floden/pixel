@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 768,
+  "scenery_count": 769,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1382,7 +1382,7 @@
       "name": "Window",
       "type": "WINDOW",
       "quota": 400,
-      "done": 45
+      "done": 46
     }
   ],
   "categories": {
@@ -1512,7 +1512,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 45,
+    "windows": 46,
     "wisteria_snags": 1,
     "witch_rings": 1,
     "woodpiles": 2
@@ -34383,6 +34383,44 @@
         "south-east": "windows/window_086/rotations/south-east.webp",
         "south-west": "windows/window_086/rotations/south-west.webp",
         "south": "windows/window_086/sprite.webp"
+      },
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "window_087",
+      "rel": "windows/window_087",
+      "name": "A rectangular window with a rope-hung shutter 087",
+      "category": "windows",
+      "lights": "LIGHTS_OFF",
+      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window with a rope-hung shutter, iron bars across the glass, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 80,
+      "placement": {
+        "world_height_m": 1.16,
+        "world_px_height": 44,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          14,
+          9,
+          67,
+          75
+        ],
+        "content_px_height": 66,
+        "canvas_render_px": 53
+      },
+      "status": "complete",
+      "pixellab_object_id": "c04eb978-c65f-465a-8bfc-c809ffa54f27",
+      "sprite": "windows/window_087/sprite.webp",
+      "art_hash": "2ce3ee6bb43d134f",
+      "type": "WINDOW",
+      "must_be_imbplemented_with_random_hflip": false,
+      "rotations": {
+        "south-east": "windows/window_087/rotations/south-east.webp",
+        "south-west": "windows/window_087/rotations/south-west.webp",
+        "south": "windows/window_087/sprite.webp"
       },
       "states": {},
       "animations": []
