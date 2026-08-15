@@ -50,9 +50,36 @@ a spare file wastes bytes, a dropped one 404s in production.
   `?v=<sha>` trick gives (see `assetver.ts`), with raw as the fallback for
   commits the CDN has not picked up. **Not yet wired up — see the plan below.**
 
-Still to do: the admin staging fetch in the client + wiki, and packing the used
-tiles into WebP atlases. Both are designed around the same digest the ship set
-already emits, so a deploy whose digest is unchanged must not redo the work.
+**THE TILE ATLAS (2026-08-15).** A maps2 world used to boot with one HTTP
+request per tile — 571 for the_island2. It now boots from 1-2 committed
+sheets:
+
+- `scripts/build-atlas.py` packs each world's `paths[]` (exactly its used
+  set) into **lossless** WebP sheets under `client/public/atlases/` —
+  lossless=True + exact=True per repo law (the maintainer reviewed a lossy
+  q85-q95 ladder on real sheets 2026-08-15 and decided: **stay lossless**),
+  self-verified byte-for-byte per frame, two-band shelf pack (tiles are only
+  64×64 and 64×128), deterministic. `npm run atlas`; `-f` to force.
+- **THE WORK IS NEVER REPEATED**: atlases are committed and content-addressed
+  by a digest over the tile list AND every tile's bytes. The packer skips
+  matching digests; deploys only VERIFY (`scripts/check-atlas.mjs`, wired
+  into `npm run manifest` and the Dockerfile). A STALE atlas is **pruned, not
+  failed**: the client's index fetch 404s and it falls back to per-file tiles
+  — slower, never wrong pixels, never a red pipeline (the sparse-checkout
+  incident's lesson, applied in design).
+- `client/src/tileatlas.ts` is a LOADING strategy only: sheets are sliced
+  into per-path canvas textures under the exact `t2:<path>` keys the per-file
+  loads produced, so every draw site (ground RT, occluders, debris,
+  flippedKey) is untouched and cannot tell which path ran. Any failure at any
+  stage degrades to individual loads. Probe: `__ml.atlasInfo()`.
+- Gates: `verify-atlas.mjs` (zero individual tile-art requests on boot, all
+  571 sliced, world renders) and verify-indoor doubling as the pixel canary —
+  its whole assertion suite runs against atlas-sliced textures.
+
+**AR RETENTION**: `deploy/ar-cleanup.sh` — a server-side Artifact Registry
+cleanup policy (keep newest 15 versions, delete >14 days), pasted once into
+Cloud Shell from a phone. No CI job, no credentials, cannot be broken by a
+red pipeline.
 
 ## What this is
 

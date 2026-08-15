@@ -108,6 +108,17 @@ COPY games2/ ./
 # copies client/public into the bundle.
 COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
 
+# THE ATLAS PRUNE GUARD. The committed tile atlases (client/public/atlases,
+# built by scripts/build-atlas.py, content-addressed by a digest over the tile
+# list AND every tile's bytes) are only ever VERIFIED at deploy — never built,
+# which is what keeps the packing work from being redone on every push. A
+# stale atlas (tiles2 regenerated a tile in place, or a world's set changed)
+# is DELETED here, so the client's index fetch 404s and it falls back to
+# individual tiles: slower, never wrong pixels, never a red pipeline. --strict
+# because in THIS context /assets is the curated full set, so an absent tile
+# really is absent.
+RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict
+
 # The deployed commit, baked into the bundle so testers can see which version
 # they're running (bottom-left in-game + console) and into the wiki's build
 # stamp (topbar, under the build date). Also exposed at runtime via GIT_SHA so

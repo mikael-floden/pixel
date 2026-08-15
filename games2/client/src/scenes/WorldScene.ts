@@ -72,6 +72,7 @@ import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "..
 import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV } from "../assetver";
+import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
@@ -1095,6 +1096,7 @@ export class WorldScene extends Phaser.Scene {
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
+  private tileAtlas: TileAtlasLoad | null = null; // this world's sheet loader (tileatlas.ts)
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
   private maps2 = false; // true when the world uses maps2 explicit tile paths
@@ -1561,13 +1563,12 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) {
       if (this.maps2) {
         // maps2 world bakes an explicit tile PNG per cell + per-material face
-        // tiles + placed props — load that unique set.
-        for (const path of distinctTilePaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
-        }
-        for (const path of distinctPropPaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
-        }
+        // tiles + placed props. Since 2026-08-15 that unique set arrives as a
+        // committed atlas sheet when one exists (571 requests → 2 on
+        // the_island2) and falls back to per-file loads for anything the
+        // atlas cannot provide — see tileatlas.ts. Same `t2:` texture keys
+        // either way; the renderer cannot tell which path ran.
+        this.tileAtlas = queueTileLoads(this, this.world, this.worldName);
       } else {
         for (const { t, v } of distinctTiles(this.world)) {
           this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
@@ -1592,6 +1593,10 @@ export class WorldScene extends Phaser.Scene {
     this.initCoverSurfaces();
     this.buildAnimations();
     this.buildMonsterAnimations();
+    // Slice the atlas sheets into per-path textures BEFORE anything draws:
+    // the ground RT and occluder passes resolve tiles via textures.exists and
+    // silently skip missing keys, so this must run ahead of them.
+    this.tileAtlas?.finalize(this);
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
@@ -2055,6 +2060,9 @@ export class WorldScene extends Phaser.Scene {
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
       }),
+      // How this world's tile art arrived: sheets sliced from the committed
+      // atlas vs individual fallback requests (verify-atlas's instrument).
+      atlasInfo: () => this.tileAtlas?.stats() ?? null,
       // The debris pieces standing on ONE cell, as (level, textureKey) pairs —
       // the instrument behind the lap-rule gate: a cell must never carry two
       // pieces at the same level (the deck stamped over its own equal-height

@@ -8,7 +8,7 @@
     "client"
   ],
   "scripts": {
-    "manifest": "node scripts/manifest.mjs",
+    "manifest": "node scripts/manifest.mjs && node scripts/check-atlas.mjs --prune --quiet",
     "dev": "npm run manifest && concurrently -n server,client -c cyan,magenta \"npm:dev -w server\" \"npm:dev -w client\"",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run manifest && npm run dev -w client",
@@ -18,7 +18,8 @@
     "start": "npm run build:client && npm run serve",
     "test": "npm run manifest && node scripts/shipset.mjs --check-policy && npm run test -w server && npx tsx scripts/check-surfaces.mjs && npx tsx scripts/verify-deckwalk.mjs && node scripts/check-light-budget.mjs",
     "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json",
-    "manifest:force": "node scripts/manifest.mjs --force"
+    "manifest:force": "node scripts/manifest.mjs --force",
+    "atlas": "python3 scripts/build-atlas.py"
   },
   "devDependencies": {
     "@cwasm/webp": "^0.1.5",
