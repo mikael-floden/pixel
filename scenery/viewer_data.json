@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 772,
+  "scenery_count": 773,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -22,7 +22,7 @@
       "name": "Stone",
       "type": "NATURE",
       "quota": 150,
-      "done": 31
+      "done": 32
     },
     {
       "rank": 3,
@@ -1489,7 +1489,7 @@
     "standing_stones": 5,
     "statues": 2,
     "stone_fountains": 2,
-    "stones": 31,
+    "stones": 32,
     "story_posts": 8,
     "streetlights": 5,
     "stumps": 13,
@@ -17384,6 +17384,40 @@
       "pixellab_object_id": "027e8110-df9d-486a-8539-f4369da979e1",
       "sprite": "stones/stone_040/sprite.webp",
       "art_hash": "fd980006d642d69d",
+      "type": "NATURE",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "stone_042",
+      "rel": "stones/stone_042",
+      "name": "Tilted slab like a fallen door 042 \u00b7 lit",
+      "category": "stones",
+      "lights": "LIGHTS_ON",
+      "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, tilted slab like a fallen door, young and vigorous, small, knee-high, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.37,
+        "world_px_height": 14,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          8,
+          10,
+          57,
+          57
+        ],
+        "content_px_height": 47,
+        "canvas_render_px": 19
+      },
+      "status": "complete",
+      "pixellab_object_id": "78bfaa08-7849-408c-a3a6-f33db5d1e6b6",
+      "sprite": "stones/stone_042/sprite.webp",
+      "art_hash": "a64f88757e4b64bc",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
