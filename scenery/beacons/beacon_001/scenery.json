@@ -5,7 +5,7 @@
   "rank": 46,
   "index": 1,
   "name": "Leaning coastal beacon 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "leaning coastal beacon",
   "glow_concept": null,
   "prompt": "a tall tarred timber mast with climbing rungs and an iron fire cage mounted at its top, leaning coastal beacon, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:16:44+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "beacons/beacon_001/lit_1/sprite.webp",
+      "pixellab_object_id": "b1e7f468-4d6f-4dbe-80d2-c45b2ba5b525",
+      "generated_at": "2026-08-15T19:50:29+00:00",
+      "glow_concept": "spark column streaming off downwind",
+      "difference_from_source": 0.7864,
+      "glow_score": 0.1762
+    },
+    "LIT_2": {
+      "sprite": "beacons/beacon_001/lit_2/sprite.webp",
+      "pixellab_object_id": "c373f473-7641-419c-ba45-3f9a02b02b6c",
+      "generated_at": "2026-08-15T19:50:30+00:00",
+      "glow_concept": "great orange signal blaze in the cage",
+      "difference_from_source": 0.7535,
+      "glow_score": 0.1384
+    },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_001/sprite.webp",
       "pixellab_object_id": "de932baa-f7f8-4612-9347-ea7e30ce29bf",
@@ -50,6 +66,14 @@
       "generated_at": "2026-08-15T19:49:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6587,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "beacons/beacon_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c0f07c61-77d0-4269-882c-28b85388b446",
+      "generated_at": "2026-08-15T19:50:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.317,
       "glow_score": 0.0
     }
   }

@@ -5,8 +5,8 @@
   "group": "beached_rowboats",
   "rank": 84,
   "index": 900,
-  "name": "Freshly tarred black hull 900 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Freshly tarred black hull 900",
+  "lights": null,
   "variety": "freshly tarred black hull",
   "glow_concept": "a storm lantern glowing at the prow",
   "prompt": "a small clinker-built wooden rowboat pulled up onto the shore, resting tilted on the sand with oars shipped inside, freshly tarred black hull, waist-high, self-emissive at night, softly radiating light: a storm lantern glowing at the prow",
@@ -61,6 +61,22 @@
       "glow_concept": null,
       "difference_from_source": 0.4437,
       "glow_score": 0.0048
+    },
+    "NOT_LIT_1": {
+      "sprite": "beached_rowboats/beached_rowboat_900/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ea08d728-551a-4a7c-b9e3-6f8060b48f35",
+      "generated_at": "2026-08-15T19:50:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4033,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "beached_rowboats/beached_rowboat_900/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b31bf4a2-80e3-4c20-a37d-465cecc29ce2",
+      "generated_at": "2026-08-15T19:50:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5301,
+      "glow_score": 0.0
     }
   }
 }
