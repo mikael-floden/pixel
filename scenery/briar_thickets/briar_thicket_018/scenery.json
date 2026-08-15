@@ -5,8 +5,8 @@
   "group": "briar_thickets",
   "rank": 13,
   "index": 18,
-  "name": "White briar roses 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White briar roses 018",
+  "lights": null,
   "variety": "white briar roses",
   "modifier": "half-swallowed by tall grass",
   "glow_concept": "a warm heart of light buried deep inside",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.806,
       "glow_score": 0.0321
+    },
+    "LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_018/lit_4/sprite.webp",
+      "pixellab_object_id": "2f0d24b0-8964-443c-b18d-33cc66d5fa36",
+      "generated_at": "2026-08-15T20:55:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6629,
+      "glow_score": 0.0636
+    },
+    "NOT_LIT_1": {
+      "sprite": "briar_thickets/briar_thicket_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "1cf2957e-1aff-4bc4-bcee-687ee4571b96",
+      "generated_at": "2026-08-15T20:55:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8024,
+      "glow_score": 0.0185
+    },
+    "NOT_LIT_2": {
+      "sprite": "briar_thickets/briar_thicket_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ae44e0d6-c078-44aa-aed0-892c32805b98",
+      "generated_at": "2026-08-15T20:55:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3552,
+      "glow_score": 0.0207
     }
   }
 }
