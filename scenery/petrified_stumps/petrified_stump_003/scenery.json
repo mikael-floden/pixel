@@ -30,10 +30,101 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_1/sprite.webp",
+      "pixellab_object_id": "f2045cf1-34d5-46b7-a189-33e67422869b",
+      "glow_concept": "growth rings glowing amber in the cut top",
+      "difference_from_source": 0.7299,
+      "glow_score": 0.1363
+    },
+    "LIT_2": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_2/sprite.webp",
+      "pixellab_object_id": "184385ec-7978-4f2f-b6ce-e9cd140ca5c5",
+      "glow_concept": "opalized bark shimmering with rainbow light",
+      "difference_from_source": 0.914,
+      "glow_score": 0.2623
+    },
+    "LIT_3": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_3/sprite.webp",
+      "pixellab_object_id": "a893eb68-e922-4fd1-b7a0-1d6e341d963b",
+      "glow_concept": "roots traced in glowing gold veins",
+      "difference_from_source": 0.9472,
+      "glow_score": 0.0761
+    },
+    "LIT_4": {
+      "sprite": "petrified_stumps/petrified_stump_003/lit_4/sprite.webp",
+      "pixellab_object_id": "e27c69a0-e06d-49ce-a0a7-42dbc70c7e91",
+      "glow_concept": "small ghost-flames where branches once grew",
+      "difference_from_source": 0.8493,
+      "glow_score": 0.1898
+    },
     "NOT_LIT_1": {
       "sprite": "petrified_stumps/petrified_stump_003/sprite.webp",
       "pixellab_object_id": "9abc904d-69d4-400e-a201-d8d906c90625",
       "glow_score": 0.0
+    },
+    "NOT_LIT_10": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_10/sprite.webp",
+      "pixellab_object_id": "e5cedf39-3de9-45e0-b353-33a5e2310ed0",
+      "glow_concept": null,
+      "difference_from_source": 0.7263,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "12f76909-8ef6-4a19-a7fa-fd65574d47ad",
+      "glow_concept": null,
+      "difference_from_source": 0.8033,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "fc166193-b0a0-4502-b9cf-aed660f64938",
+      "glow_concept": null,
+      "difference_from_source": 0.8551,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f833aa45-64d2-46f2-98af-2d6dd8b80f12",
+      "glow_concept": null,
+      "difference_from_source": 0.6408,
+      "glow_score": 0.0715
+    },
+    "NOT_LIT_5": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_5/sprite.webp",
+      "pixellab_object_id": "ec88a442-41e1-4ebd-b6f2-e120fcf0bc2c",
+      "glow_concept": null,
+      "difference_from_source": 0.9478,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_6": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_6/sprite.webp",
+      "pixellab_object_id": "28edc579-8a6d-4a29-9612-85d0c3d58617",
+      "glow_concept": null,
+      "difference_from_source": 0.7247,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_7": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_7/sprite.webp",
+      "pixellab_object_id": "c681a066-2ebb-49f9-ad2e-7a9eb5223017",
+      "glow_concept": null,
+      "difference_from_source": 0.8923,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_8": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_8/sprite.webp",
+      "pixellab_object_id": "8c50da77-2c00-46d2-b27e-27dae72f5109",
+      "glow_concept": null,
+      "difference_from_source": 0.5886,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_9": {
+      "sprite": "petrified_stumps/petrified_stump_003/not_lit_9/sprite.webp",
+      "pixellab_object_id": "9a4ef5a4-b5b1-4e14-896f-1846551aec7f",
+      "glow_concept": null,
+      "difference_from_source": 0.7013,
+      "glow_score": 0.0007
     }
   }
 }
