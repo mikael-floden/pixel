@@ -2410,8 +2410,14 @@ function stillShape(o) {
 /** Card/page badges for a scenery piece, honest about stale verdicts. */
 function objBadges(o) {
   const v = objVerdict(o);
-  if (!v.stale) return entityBadge("objects", o.path);
-  return [h("span", {
+  // Half-done is worth seeing in the grid, not only through the filter: it is
+  // the one state you cannot infer from the piece's own verdict.
+  const t = state.admin ? facetTally(o) : { done: 0, total: 0 };
+  const partly = t.done > 0 && t.done < t.total
+    ? [h("span", { class: "pill warn", title: `You have judged ${t.done} of this piece's ${t.total} states — the rest are untouched` }, `${t.done}/${t.total}`)]
+    : [];
+  if (!v.stale) return [...partly, ...entityBadge("objects", o.path)];
+  return [...partly, h("span", {
     class: "pill warn",
     title: `You marked this "${v.status}" on ${String(v.at).slice(0, 16).replace("T", " ")}, but the scenery agent has regenerated the art at this path since. This is a different piece — it needs a fresh look.`,
   }, "re-review")];
@@ -2431,10 +2437,37 @@ function objVerdict(o) {
     : !!(o.added && !o.addedGuess && e.updated_at && e.updated_at < o.added);
   return { status: e.status, at: e.updated_at, stale };
 }
+// HOW FAR THROUGH A PIECE'S OWN STATES YOU ARE. A verdict lives per state ×
+// direction, so a piece with 14 states and 3 judged is a piece you started and
+// put down — which is exactly the set the maintainer could not find
+// (2026-08-15: "it's hard for me to find scenery objects that need partly
+// reviewed items ... if I haven't started reviewing individual states that
+// means I don't care and this object is not partly reviewed").
+// A facet counts as TOUCHED on a status OR a rating: giving one state four
+// stars is starting on it, whether or not approve was pressed after.
+function facetTally(o) {
+  let done = 0, total = 0;
+  for (const [st, anim] of Object.entries(o?.animations ?? {})) {
+    for (const dir of Object.keys(anim.dirs ?? {})) {
+      total++;
+      const e = fb("objects", `${o.path}#${st}#${dir}`);
+      if (e.status || e.rating) done++;
+    }
+  }
+  return { done, total };
+}
+/** Started on its states, not finished with them. Untouched pieces are NOT in. */
+function partlyReviewed(o) {
+  const t = facetTally(o);
+  return t.done > 0 && t.done < t.total;
+}
 const OBJ_FILTERS = {
   all: { label: "all", title: "Every piece", match: () => true, empty: "Nothing here at all — the scenery domain is empty." },
   unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue", match: (v) => !v.status || v.stale,
     empty: "Nothing needs review — you have judged every piece in the library. The art is all still here; new pieces will appear as the scenery agent generates them." },
+  partial: { label: "partly reviewed", title: "You judged some of this piece's states and not the rest — pick up where you left off",
+    match: (v, o) => partlyReviewed(o),
+    empty: "Nothing is half-done — every piece whose states you started on, you finished. A piece you have not started on at all does not count as partly reviewed." },
   approved: { label: "approved", title: "Approved, and the art has not changed since", match: (v) => v.status === "approved" && !v.stale,
     empty: "No piece is approved yet." },
   rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale,
@@ -2460,7 +2493,7 @@ function objectQueue() {
   const sort = OBJ_SORTS[read(OBJ_SORT_KEY, "group")] ? read(OBJ_SORT_KEY, "group") : "group";
   const filter = OBJ_FILTERS[read(OBJ_FILTER_KEY, "all")] ? read(OBJ_FILTER_KEY, "all") : "all";
   let list = byType;
-  if (filter !== "all") list = list.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o)));
+  if (filter !== "all") list = list.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o), o));
   // `added` is the commit that introduced the piece (build.mjs). Undated art
   // sorts last rather than first — a missing date is not a claim of newness.
   if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
@@ -2506,7 +2539,7 @@ function viewObjects() {
     state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) =>
       // Counted WITHIN the chosen type: with Trees selected, "needs review 12"
       // has to mean twelve trees, or the two bars contradict each other.
-      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.match(objVerdict(o))).length}`,
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.match(objVerdict(o), o)).length}`,
         q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.filter, () => route()) : null,
     q.active
       ? h("p", { class: "muted", style: "margin:-6px 0 12px" },

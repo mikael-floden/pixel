@@ -200,6 +200,63 @@ ok(un.names.length === objs.length - APPROVED.length - REJECTED.length,
   await go("#/objects");                   // back to a page that HAS the sort bar
 }
 
+// --- PARTLY REVIEWED: STARTED, NOT FINISHED.
+//
+// Maintainer 2026-08-15: "it's hard for me to find scenery objects that need
+// partly reviewed items ... But here is an important detail. If I haven't
+// started reviewing individual states that means I don't care and this object
+// is not 'partly reviewed'. What is partly reviewed is an object I HAVE
+// started to rate individual states/animations/directions but have not
+// reviewed everyone yet."
+//
+// So the set is exactly {some facets judged} MINUS {all facets judged}, and an
+// untouched piece — however many states it has — is never in it. That
+// exclusion is the whole point: 673 of 760 pieces are untouched, and a filter
+// that swept them in would be the unreviewed queue under a second name.
+{
+  const facets = (o) => Object.entries(o.animations ?? {})
+    .flatMap(([st, a]) => Object.keys(a.dirs ?? {}).map((d) => `${o.path}#${st}#${d}`));
+  const many = objs.filter((o) => facets(o).length >= 4);
+  const [started, finished, untouched] = [many[0], many[1], many[2]];
+  for (const f of facets(started).slice(0, 2)) entries[f] = { status: "approved", updated_at: "2026-08-15T00:00:00Z" };
+  entries[facets(started)[2]] = { rating: 4, updated_at: "2026-08-15T00:00:00Z" };   // a rating counts as started
+  for (const f of facets(finished)) entries[f] = { status: "approved", updated_at: "2026-08-15T00:00:00Z" };
+  // `untouched` gets nothing at all — that is the case being asserted.
+  await go("#/objects");
+  await pick("all");
+  const chips = await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-obj-filter"] button')].map((x) => x.textContent));
+  console.log("filter chips:", JSON.stringify(chips));
+  ok(chips.some((c) => /^partly reviewed \d+$/.test(c)), `there is a partly-reviewed chip, with its own count (${chips.find((c) => /partly/.test(c))})`);
+  await pick("partial");
+  const shown = await p.evaluate(() => ({
+    ids: [...document.querySelectorAll(".card")].map((c) => c.getAttribute("href").split("/").pop()),
+    badges: [...document.querySelectorAll(".card .card-badges")].map((x) => x.textContent),
+  }));
+  console.log("partly reviewed:", JSON.stringify(shown.ids.slice(0, 6)));
+  ok(shown.ids.includes(started.id), `a piece with SOME of its states judged is listed (${started.id})`);
+  ok(!shown.ids.includes(finished.id), `a piece with ALL of them judged is not (${finished.id})`);
+  ok(!shown.ids.includes(untouched.id),
+    `and an UNTOUCHED piece is not — "if I haven't started reviewing individual states that means I don't care" (${untouched.id})`);
+  ok(shown.badges.some((b2) => new RegExp(`3/${facets(started).length}`).test(b2)),
+    `the card says how far in you are (${shown.badges.find((b2) => /\d+\/\d+/.test(b2))})`);
+  // A rating with no verdict is still "started" — he said rate.
+  const ratingOnly = objs.find((o) => facets(o).length >= 4 && o !== started && o !== finished && o !== untouched);
+  entries[facets(ratingOnly)[0]] = { rating: 5, updated_at: "2026-08-15T00:00:00Z" };
+  await go("#/objects");
+  await pick("partial");
+  const withRating = await p.evaluate(() => [...document.querySelectorAll(".card")].map((c) => c.getAttribute("href").split("/").pop()));
+  ok(withRating.includes(ratingOnly.id), `starring one state counts as starting on it (${ratingOnly.id})`);
+  // Finishing the last facet drops the piece out of the set.
+  for (const f of facets(started)) entries[f] = { status: "approved", updated_at: "2026-08-15T00:00:00Z" };
+  await go("#/objects");
+  await pick("partial");
+  const after2 = await p.evaluate(() => [...document.querySelectorAll(".card")].map((c) => c.getAttribute("href").split("/").pop()));
+  console.log("after finishing it:", JSON.stringify(after2.slice(0, 6)));
+  ok(!after2.includes(started.id), "finishing the last state takes the piece out of the set");
+  for (const o of [started, finished, untouched, ratingOnly]) for (const f of facets(o)) delete entries[f];
+  await pick("all");
+}
+
 // --- THE FILTER HOLDS INSIDE A PIECE. This is the request's core: ‹ › must
 //     walk the filtered set, in the filtered order, and say that it is.
 await pick("approved");
