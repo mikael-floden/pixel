@@ -52,9 +52,32 @@ def _current_branch():
     return _git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() or "main"
 
 
+def _rebase_in_progress():
+    """True while a rebase is half-applied — ours, or one left by a crash.
+
+    During a rebase HEAD is DETACHED, so `_current_branch()` returns "HEAD"
+    and the push becomes `git push -u origin HEAD`, which git rejects with
+    "the destination you provided is not a full refname". That is the polite
+    failure. The rude one is `git add -A` staging a conflicted file with its
+    <<<<<<< markers intact and committing it as art (2026-08-15: an agent
+    session ran a manual rebase while this loop was live; the loop staged
+    wiki/first_seen.json mid-conflict and its pushes died for ten minutes).
+    A rebase is someone else's transaction — wait it out, never commit into
+    it. The work is not lost: the per-piece commit is retried next batch and
+    the art is already on disk."""
+    d = _git("rev-parse", "--git-path", "rebase-merge", check=False).stdout.strip()
+    a = _git("rev-parse", "--git-path", "rebase-apply", check=False).stdout.strip()
+    base = factory.ROOT
+    return any(os.path.exists(os.path.join(base, p)) for p in (d, a) if p)
+
+
 def commit_push(message, push=True):
     """Commit only the scenery/ domain + our own heartbeat, push with
     rebase-and-retry backoff (disjoint domain paths rebase cleanly)."""
+    if _rebase_in_progress():
+        print("  ! rebase in progress — skipping commit this batch (the art "
+              "is on disk; the next batch commits it)")
+        return False
     _git("add", "-A", ".")
     _git("add", "--", "../coordination/scenery.json", check=False)
     _git("add", "--", "../wiki/first_seen.json", check=False)
