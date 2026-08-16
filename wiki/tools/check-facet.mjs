@@ -119,8 +119,27 @@ ok(s1.starBox && s1.starBox.w >= 28 && s1.starBox.h >= 32,
 ok(s1.pill === "1 · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
 
 // A VERDICT FOLLOWS THE STATE. Approving Lights Off must not colour Lights On.
-await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/.test(x.textContent)).click());
-await p.waitForTimeout(250);
+//
+// THE MAINTAINER HAS ALREADY JUDGED THESE FACETS FOR REAL, so this gate can
+// never assume one starts unjudged: it used to click approve and assert the
+// class, which on a facet he had already approved TOGGLED IT OFF and failed
+// (measured 2026-08-16, three assertions red for exactly this reason). It
+// drives the widget to the state it wants instead. Nothing is ever committed —
+// /api/wiki/save is captured at the network boundary.
+// A facet already carrying the wanted verdict is toggled OFF and back ON, so
+// the round trip below still has an entry to find: skipping the click entirely
+// would leave the save payload short of the facet the gate just "judged", and
+// the value it lands on is the one it started with either way.
+const setVerdict = async (want) => {
+  await p.evaluate((w) => {
+    const btn = () => [...document.querySelectorAll(".facet-head .fb-row button")]
+      .find((x) => (w === "approved" ? /approve/ : /✕/).test(x.textContent));
+    if (btn().classList.contains(w)) btn().click();   // clear, then set below
+    btn().click();
+  }, want);
+  await p.waitForTimeout(250);
+};
+await setVerdict("approved");
 const afterApprove = await facet();
 ok(/approved/.test(afterApprove.verdictClasses), "approving marks THIS state");
 await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
@@ -138,16 +157,14 @@ const sSE = await facet();
 console.log("scenery, Lights Off · SE:", JSON.stringify({ pill: sSE.pill, dirOn: sSE.dirOn, verdictClasses: sSE.verdictClasses }));
 ok(sSE.pill === "1 · SE", `pressing a direction re-aims the row (“${sSE.pill}”)`);
 ok(!/approved/.test(sSE.verdictClasses), "and SE is unjudged though S of the same state was approved");
-await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
-await p.waitForTimeout(250);
+await setVerdict("rejected");
 await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === "S").click());
 await p.waitForTimeout(400);
 const backS = await facet();
 ok(/approved/.test(backS.verdictClasses), "coming back to S shows its own approval, not SE's rejection");
 await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
 await p.waitForTimeout(400);
-await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕/.test(x.textContent)).click());
-await p.waitForTimeout(250);
+await setVerdict("rejected");
 const head = await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row button")].map((x) => x.className).join("|"));
 // UNCHANGED, not empty: the maintainer reviews these pieces for real, so this
 // one may well carry his own approval and rating already. What must hold is
@@ -189,14 +206,27 @@ ok(new Set(keys.map((k) => k.split("#")[1])).size === 2 && new Set(keys.map((k) 
 ok(new Set(keys.map((k) => k.split("#")[0])).size === 1, "both on the same piece, so the piece is not being rejected by proxy");
 ok(!keys.includes("scenery/windows/window_058"), "and nothing was written against the piece itself");
 
-// A LONE STATIC PIECE still gets the row — the states row always renders, so
+// A ONE-STATE PIECE still gets the row — the states row always renders, so
 // this must never become a page where the control disappears.
-await p.goto(`${W}#/objects/mushroom_005`, { waitUntil: "load" });
-await p.waitForTimeout(1600);
-const lone = await facet();
-console.log("lone static:", JSON.stringify({ label: lone.label, facetName: lone.facetName, underPreview: lone.underPreview }));
-ok(lone.present && lone.overPreview && lone.underTitle, "a piece with only Static has it too, in the same place");
-ok(lone.facetName === "Static" && lone.pill === "Static · S", `judging what is on screen (${lone.pill})`);
+//
+// The piece is picked from the DATA, never hardcoded: mushroom_005 was the
+// fixture until the scenery agent's variant pass gave it states, and a gate
+// pinned to one id fails for a reason that has nothing to do with what it
+// tests. What matters is the SHAPE — exactly one state, one direction.
+const solo = DATA.domains.objects.find((o) => {
+  const st = Object.keys(o.animations ?? {});
+  return st.length === 1 && Object.keys(o.animations[st[0]]?.dirs ?? {}).length === 1;
+});
+if (!solo) { console.log("no single-state piece in the domain — skipping the lone-state check"); }
+else {
+  const soloState = Object.keys(solo.animations)[0];
+  await p.goto(`${W}#/objects/${solo.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(1600);
+  const lone = await facet();
+  console.log(`lone state (${solo.id}, ${soloState}):`, JSON.stringify({ label: lone.label, facetName: lone.facetName, pill: lone.pill }));
+  ok(lone.present && lone.overPreview && lone.underTitle, "a piece with one state has it too, in the same place");
+  ok(!!lone.facetName && lone.pill === `${lone.facetName} · S`, `judging what is on screen (${lone.pill})`);
+}
 
 // ----------------------------------------------------- monsters + characters
 // Same feature, same place, same words — this is one wiki.
