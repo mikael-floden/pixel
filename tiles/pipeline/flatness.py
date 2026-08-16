@@ -103,7 +103,7 @@ def faces(path):
     return out
 
 
-def wall_quality(path, ideal_spread=0.22, tol=0.13):
+def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     """Score the WALLS on the three things the maintainer actually judges them on.
 
     The walls are the product: they become every cliff and mountain face in the game,
@@ -150,7 +150,8 @@ def wall_quality(path, ideal_spread=0.22, tol=0.13):
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
     v = lum[wall]
     mean = float(v.mean()) or 1.0
-    spread = float(v.std() / mean)
+    contrast = float(v.std())          # absolute, dark-material safe
+    spread = contrast / mean           # kept as a diagnostic only
 
     gy = np.abs(np.diff(lum, axis=0, prepend=lum[:1]))
     gx = np.abs(np.diff(lum, axis=1, prepend=lum[:, :1]))
@@ -184,7 +185,14 @@ def wall_quality(path, ideal_spread=0.22, tol=0.13):
 
     # --- combine ------------------------------------------------------------
     # discretion: a triangular band around ideal_spread, so flat AND garish both lose
-    disc = max(0.0, 1.0 - abs(spread - ideal_spread) / tol)
+    # Discretion is judged on ABSOLUTE luminance contrast, not on std/mean. The
+    # relative form systematically punishes dark materials: a black_rock wall measured
+    # LOWER absolute contrast than a snow wall (std 28.8 vs 54.2) yet scored a HIGHER
+    # relative spread (0.44 vs 0.33) purely because its mean luminance is a third as
+    # big — so every dark type (black_rock, dark_mud, deep_water) scored discretion
+    # 0.00 and would have been rejected wholesale. Same trap as tiles2's black_mountain
+    # bugs, where relative measures kept misreading near-black art.
+    disc = max(0.0, 1.0 - abs(contrast - ideal_contrast) / tol)
     struct = min(1.0, edges / 12.0)                 # saturates: enough is enough
     seams = [s for s in (seam_h, seam_v) if s is not None]
     tiling = 1.0 if not seams else max(0.0, 1.0 - (sum(seams) / len(seams)) / 0.35)
@@ -198,7 +206,8 @@ def wall_quality(path, ideal_spread=0.22, tol=0.13):
     px = rgb[wall]
     return {
         "n": int(wall.sum()),
-        "spread": round(spread, 4), "edges": round(edges, 3),
+        "contrast": round(contrast, 2), "spread": round(spread, 4),
+        "edges": round(edges, 3),
         "uniq": int(len(np.unique((px // 4) * 4, axis=0))),
         "seam_h": None if seam_h is None else round(seam_h, 4),
         "seam_v": None if seam_v is None else round(seam_v, 4),
