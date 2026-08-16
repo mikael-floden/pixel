@@ -4,8 +4,8 @@
   "group": "spring_basins",
   "rank": 94,
   "index": 4,
-  "name": "Fern-flanked shaded basin 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fern-flanked shaded basin 004",
+  "lights": null,
   "variety": "fern-flanked shaded basin",
   "glow_concept": "moonmilk mineral crust glowing on the rim stones",
   "prompt": "a natural spring welling up in a shallow rocky hollow, wet mossy boulders ringing a pool of clear water, no built stonework, fern-flanked shaded basin, waist-high, self-emissive at night, softly radiating light: moonmilk mineral crust glowing on the rim stones",
@@ -35,6 +35,46 @@
       "sprite": "spring_basins/spring_basin_004/sprite.webp",
       "pixellab_object_id": "391213ab-759c-47b0-9e62-bbdacd94afed",
       "generated_at": "2026-08-13T20:40:19+00:00"
+    },
+    "LIT_2": {
+      "sprite": "spring_basins/spring_basin_004/lit_2/sprite.webp",
+      "pixellab_object_id": "e012aa75-8d82-4390-99b2-f4f6ee42ec99",
+      "generated_at": "2026-08-16T21:15:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6417,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "spring_basins/spring_basin_004/lit_3/sprite.webp",
+      "pixellab_object_id": "b9c61b7e-238f-4f17-b709-43ac0404c2b3",
+      "generated_at": "2026-08-16T21:15:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9657,
+      "glow_score": 0.1077
+    },
+    "LIT_4": {
+      "sprite": "spring_basins/spring_basin_004/lit_4/sprite.webp",
+      "pixellab_object_id": "e6f00c5c-aee5-44fd-9eea-6a919385d7e4",
+      "generated_at": "2026-08-16T21:16:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9291,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "spring_basins/spring_basin_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ab246305-8787-4747-a628-7c45f580c0b4",
+      "generated_at": "2026-08-16T21:16:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9248,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "spring_basins/spring_basin_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "fae7e1b7-e0fb-4cbf-9405-edba34a5e5c4",
+      "generated_at": "2026-08-16T21:16:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7527,
+      "glow_score": 0.0
     }
   }
 }
