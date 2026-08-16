@@ -4,8 +4,8 @@
   "group": "graves",
   "rank": 3,
   "index": 20,
-  "name": "Rounded granite headstone 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rounded granite headstone 020",
+  "lights": null,
   "variety": "rounded granite headstone",
   "glow_concept": "luminous white flowers blooming against the stone",
   "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, small, knee-high, self-emissive at night, softly radiating light: luminous white flowers blooming against the stone",
@@ -43,6 +43,38 @@
       "glow_concept": null,
       "difference_from_source": 0.5776,
       "glow_score": 0.0365
+    },
+    "LIT_3": {
+      "sprite": "graves/grave_020/lit_3/sprite.webp",
+      "pixellab_object_id": "7d454c19-22eb-4773-8f73-d85426787acf",
+      "generated_at": "2026-08-16T14:52:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6118,
+      "glow_score": 0.0487
+    },
+    "LIT_4": {
+      "sprite": "graves/grave_020/lit_4/sprite.webp",
+      "pixellab_object_id": "63c40156-2911-44c8-8cf0-73bece486154",
+      "generated_at": "2026-08-16T14:53:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6032,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "graves/grave_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "a3d1a0aa-ae1c-4c14-af05-a60d4060eda3",
+      "generated_at": "2026-08-16T14:53:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9527,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "graves/grave_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5634e928-c131-482f-a3f4-a996ddae17d2",
+      "generated_at": "2026-08-16T14:53:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9678,
+      "glow_score": 0.0
     }
   }
 }

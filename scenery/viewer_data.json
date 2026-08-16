@@ -27049,6 +27049,15 @@
           "glow_score": 0.2984,
           "art_hash": "ab9390c47191304f"
         },
+        "LIT_2": {
+          "sprite": "gravel_piles/gravel_pile_001/lit_2/sprite.webp",
+          "pixellab_object_id": "ae886145-32e7-4466-955d-96b9d5b7c31b",
+          "generated_at": "2026-08-16T14:53:46+00:00",
+          "glow_concept": "scattered pebbles glowing like banked coals",
+          "difference_from_source": 0.8698,
+          "glow_score": 0.1118,
+          "art_hash": "e69ed8b6c115c426"
+        },
         "NOT_LIT_1": {
           "sprite": "gravel_piles/gravel_pile_001/sprite.webp",
           "pixellab_object_id": "5a3efe9a-9112-474c-b1e0-20dfd2bb6f48",
@@ -27380,6 +27389,15 @@
           "glow_score": 0.0274,
           "art_hash": "a4281d869fccd613"
         },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d23e26f0-70d3-4201-a866-5069a83dfbc5",
+          "generated_at": "2026-08-16T14:53:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9425,
+          "glow_score": 0.0,
+          "art_hash": "bf77f449fdb834e6"
+        },
         "NOT_LIT_2": {
           "sprite": "graves/grave_004/not_lit_2/sprite.webp",
           "pixellab_object_id": "18c044a1-c581-43f4-9d72-b3a5852f9582",
@@ -27553,9 +27571,9 @@
     {
       "id": "grave_020",
       "rel": "graves/grave_020",
-      "name": "Rounded granite headstone 020 \u00b7 lit",
+      "name": "Rounded granite headstone 020",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, small, knee-high, self-emissive at night, softly radiating light: luminous white flowers blooming against the stone",
       "view": "low top-down",
       "size": 64,
@@ -27589,6 +27607,42 @@
           "difference_from_source": 0.5776,
           "glow_score": 0.0365,
           "art_hash": "f291f1565d044980"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_020/lit_3/sprite.webp",
+          "pixellab_object_id": "7d454c19-22eb-4773-8f73-d85426787acf",
+          "generated_at": "2026-08-16T14:52:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6118,
+          "glow_score": 0.0487,
+          "art_hash": "2f13dbd2bdfca814"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_020/lit_4/sprite.webp",
+          "pixellab_object_id": "63c40156-2911-44c8-8cf0-73bece486154",
+          "generated_at": "2026-08-16T14:53:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6032,
+          "glow_score": 0.0,
+          "art_hash": "096b3127083cd4c4"
+        },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a3d1a0aa-ae1c-4c14-af05-a60d4060eda3",
+          "generated_at": "2026-08-16T14:53:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9527,
+          "glow_score": 0.0,
+          "art_hash": "6ff12e019f689c96"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5634e928-c131-482f-a3f4-a996ddae17d2",
+          "generated_at": "2026-08-16T14:53:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9678,
+          "glow_score": 0.0,
+          "art_hash": "5c1c9d2681c0a404"
         }
       },
       "animations": []
@@ -27596,9 +27650,9 @@
     {
       "id": "grave_024",
       "rel": "graves/grave_024",
-      "name": "Child's small pebble marker 024 \u00b7 lit",
+      "name": "Child's small pebble marker 024",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, child's small pebble marker, overgrown at the base, small, knee-high, self-emissive at night, softly radiating light: pale soul-wisp hovering above the stone",
       "view": "low top-down",
       "size": 64,
@@ -27623,6 +27677,51 @@
           "pixellab_object_id": "bd169295-a9fc-4825-9505-70d8b2fd1948",
           "generated_at": "2026-08-14T00:34:37+00:00",
           "art_hash": "27c5b154eb7c455c"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_024/lit_2/sprite.webp",
+          "pixellab_object_id": "ee74333c-13ea-4728-847e-7813e3a8daa7",
+          "generated_at": "2026-08-16T14:54:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4928,
+          "glow_score": 0.0432,
+          "art_hash": "161c531e0a121d89"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_024/lit_3/sprite.webp",
+          "pixellab_object_id": "52d80ef1-b0a1-4671-83af-ea99debf05af",
+          "generated_at": "2026-08-16T14:54:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3914,
+          "glow_score": 0.0397,
+          "art_hash": "9b72b74ce0b9c6b2"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_024/lit_4/sprite.webp",
+          "pixellab_object_id": "7d588699-4e2c-4233-93fb-f2ba08df9172",
+          "generated_at": "2026-08-16T14:54:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4483,
+          "glow_score": 0.0582,
+          "art_hash": "b12fe8f54241cdb6"
+        },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "5b7dfc6b-4bb5-467f-ba77-daa2207477e5",
+          "generated_at": "2026-08-16T14:55:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6127,
+          "glow_score": 0.0039,
+          "art_hash": "fcc7a2eda415e44a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_024/not_lit_2/sprite.webp",
+          "pixellab_object_id": "458d0312-f98b-4995-ad76-3db393190575",
+          "generated_at": "2026-08-16T14:54:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9536,
+          "glow_score": 0.0,
+          "art_hash": "8745d0df9d6b0dcb"
         }
       },
       "animations": []
@@ -27630,9 +27729,9 @@
     {
       "id": "grave_026",
       "rel": "graves/grave_026",
-      "name": "Rusted iron plate marker 026 \u00b7 lit",
+      "name": "Rusted iron plate marker 026",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rusted iron plate marker, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: carved name letters glowing warm amber",
       "view": "low top-down",
       "size": 64,
@@ -27657,6 +27756,51 @@
           "pixellab_object_id": "0df4a9c4-fb77-4c9a-832b-7156851646f3",
           "generated_at": "2026-08-14T00:45:37+00:00",
           "art_hash": "250654a6f9004280"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_026/lit_2/sprite.webp",
+          "pixellab_object_id": "f71298da-8a66-41e9-86d1-50eb16fc71df",
+          "generated_at": "2026-08-16T14:55:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4713,
+          "glow_score": 0.0722,
+          "art_hash": "ab5189f522a8fb9e"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_026/lit_3/sprite.webp",
+          "pixellab_object_id": "915e7fea-6ed1-4e6e-9a2a-bc35183d415a",
+          "generated_at": "2026-08-16T14:55:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4056,
+          "glow_score": 0.0465,
+          "art_hash": "7f98750aacc5ccb5"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_026/lit_4/sprite.webp",
+          "pixellab_object_id": "07b4b290-c094-4507-b1d7-0068ae4bbb80",
+          "generated_at": "2026-08-16T14:55:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.352,
+          "glow_score": 0.0632,
+          "art_hash": "6e8031811f56817c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_026/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8cbffdc5-78e5-4edc-b183-1fd60d9846a9",
+          "generated_at": "2026-08-16T14:55:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9337,
+          "glow_score": 0.0,
+          "art_hash": "6b0045effb9b9294"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_026/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a3b31986-446c-4a2f-8a32-8642ceb11511",
+          "generated_at": "2026-08-16T14:55:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9231,
+          "glow_score": 0.0,
+          "art_hash": "89c9157459dd2873"
         }
       },
       "animations": []
@@ -27664,9 +27808,9 @@
     {
       "id": "grave_028",
       "rel": "graves/grave_028",
-      "name": "Headstone with carved bird 028 \u00b7 lit",
+      "name": "Headstone with carved bird 028",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, headstone with carved bird, snow-dusted, small, knee-high, self-emissive at night, softly radiating light: small lantern hung on the marker",
       "view": "low top-down",
       "size": 64,
@@ -27691,6 +27835,51 @@
           "pixellab_object_id": "13aea3c4-fb1a-4032-941f-657da53d1c19",
           "generated_at": "2026-08-14T01:17:18+00:00",
           "art_hash": "89f32622ef92e2ca"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_028/lit_2/sprite.webp",
+          "pixellab_object_id": "65369dfa-a9d3-452d-8c06-c4e313380eba",
+          "generated_at": "2026-08-16T14:55:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7712,
+          "glow_score": 0.0196,
+          "art_hash": "1ef3a748d3a5b524"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_028/lit_3/sprite.webp",
+          "pixellab_object_id": "e29e7e9b-950e-4826-9489-28d8056a2abe",
+          "generated_at": "2026-08-16T14:56:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6199,
+          "glow_score": 0.0701,
+          "art_hash": "cf7d5efc1098048f"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_028/lit_4/sprite.webp",
+          "pixellab_object_id": "ee13cb79-136d-41ec-a288-4b8968afea7d",
+          "generated_at": "2026-08-16T14:56:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6582,
+          "glow_score": 0.0854,
+          "art_hash": "73e21bcff361e08c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_028/not_lit_1/sprite.webp",
+          "pixellab_object_id": "27c15eba-6fab-43f7-84f2-b9b6658315ab",
+          "generated_at": "2026-08-16T14:56:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9197,
+          "glow_score": 0.0,
+          "art_hash": "6e611fc7bcb7d911"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_028/not_lit_2/sprite.webp",
+          "pixellab_object_id": "54cb058b-7b55-463d-9c3c-e45cb298fa73",
+          "generated_at": "2026-08-16T14:56:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6598,
+          "glow_score": 0.0103,
+          "art_hash": "a137904e5cbd5bb6"
         }
       },
       "animations": []
@@ -27698,9 +27887,9 @@
     {
       "id": "grave_034",
       "rel": "graves/grave_034",
-      "name": "Rounded granite headstone 034 \u00b7 lit",
+      "name": "Rounded granite headstone 034",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, rounded granite headstone, reinforced with iron bands, small, knee-high, self-emissive at night, softly radiating light: the epitaph glowing in unreadable soul-script",
       "view": "low top-down",
       "size": 64,
@@ -27725,6 +27914,42 @@
           "pixellab_object_id": "48187bc1-ad36-4d92-849c-85cf1216fd1a",
           "generated_at": "2026-08-14T02:15:50+00:00",
           "art_hash": "c4c62e863a17dacd"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_034/lit_2/sprite.webp",
+          "pixellab_object_id": "3fc187d2-67ae-4c50-8c43-c040b2bed9f7",
+          "generated_at": "2026-08-16T14:57:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5081,
+          "glow_score": 0.0723,
+          "art_hash": "0d593ca5f3d6c582"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_034/lit_3/sprite.webp",
+          "pixellab_object_id": "0ff47cb5-0d6c-4fd7-b578-09174a4abb1d",
+          "generated_at": "2026-08-16T14:56:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4765,
+          "glow_score": 0.1168,
+          "art_hash": "e72d6df856e83b16"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_034/lit_4/sprite.webp",
+          "pixellab_object_id": "b3ec0544-54cc-42b0-8bb7-291b32025b47",
+          "generated_at": "2026-08-16T14:57:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8016,
+          "glow_score": 0.0,
+          "art_hash": "4165d08fcd78e3e3"
+        },
+        "NOT_LIT_1": {
+          "sprite": "graves/grave_034/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2af4cb77-2b21-49d5-8e08-39a1fc352d35",
+          "generated_at": "2026-08-16T14:57:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8522,
+          "glow_score": 0.0,
+          "art_hash": "083ef95bbf04d87e"
         }
       },
       "animations": []

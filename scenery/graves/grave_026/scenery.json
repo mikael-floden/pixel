@@ -5,8 +5,8 @@
   "group": "graves",
   "rank": 3,
   "index": 26,
-  "name": "Rusted iron plate marker 026 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rusted iron plate marker 026",
+  "lights": null,
   "variety": "rusted iron plate marker",
   "modifier": "old and settling into the ground",
   "glow_concept": "carved name letters glowing warm amber",
@@ -36,6 +36,46 @@
       "sprite": "graves/grave_026/sprite.webp",
       "pixellab_object_id": "0df4a9c4-fb77-4c9a-832b-7156851646f3",
       "generated_at": "2026-08-14T00:45:37+00:00"
+    },
+    "LIT_2": {
+      "sprite": "graves/grave_026/lit_2/sprite.webp",
+      "pixellab_object_id": "f71298da-8a66-41e9-86d1-50eb16fc71df",
+      "generated_at": "2026-08-16T14:55:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4713,
+      "glow_score": 0.0722
+    },
+    "LIT_3": {
+      "sprite": "graves/grave_026/lit_3/sprite.webp",
+      "pixellab_object_id": "915e7fea-6ed1-4e6e-9a2a-bc35183d415a",
+      "generated_at": "2026-08-16T14:55:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4056,
+      "glow_score": 0.0465
+    },
+    "LIT_4": {
+      "sprite": "graves/grave_026/lit_4/sprite.webp",
+      "pixellab_object_id": "07b4b290-c094-4507-b1d7-0068ae4bbb80",
+      "generated_at": "2026-08-16T14:55:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.352,
+      "glow_score": 0.0632
+    },
+    "NOT_LIT_1": {
+      "sprite": "graves/grave_026/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8cbffdc5-78e5-4edc-b183-1fd60d9846a9",
+      "generated_at": "2026-08-16T14:55:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9337,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "graves/grave_026/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a3b31986-446c-4a2f-8a32-8642ceb11511",
+      "generated_at": "2026-08-16T14:55:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9231,
+      "glow_score": 0.0
     }
   }
 }
