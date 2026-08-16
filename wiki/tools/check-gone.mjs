@@ -14,7 +14,16 @@
 //
 // The REJECTED filter is where this happens every single time, because a
 // rejection IS the instruction to delete the piece. So a 404 there is the
-// contract WORKING, and the card should say so.
+// contract WORKING.
+//
+// ROUND 2 (maintainer 2026-08-16, three "removed" cards sitting in his
+// partly-reviewed filter): "Why is the object not removed then removed? Why do
+// I still see it but as removed?" He is right — a card he cannot open, judge
+// or look at is not information, it is an obstacle between him and the pieces
+// he CAN review. A 404'd piece now LEAVES the wiki: dropped from the loaded
+// manifest, so counts, chips, filters and the ‹ › pager all agree. The
+// tombstone survives only for the other case — art that failed to load without
+// a 404 — where the piece is not known to be gone at all.
 //
 // The gate reproduces it the only honest way — by making the art 404 at the
 // network boundary, exactly as a deleted file does.
@@ -60,31 +69,53 @@ const cards = () => p.evaluate(([gone, broke]) => {
       linkWorks: !!a.getAttribute("href"),
     };
   };
-  return { gone: of(gone), broke: of(broke), pageBg: getComputedStyle(document.body).backgroundColor };
+  const chipNum = (re) => {
+    const b = [...document.querySelectorAll("button")].find((x) => re.test(x.textContent.trim()));
+    return b ? Number(/(\d+)\s*$/.exec(b.textContent.trim())?.[1] ?? NaN) : null;
+  };
+  return {
+    gone: of(gone), broke: of(broke),
+    pageBg: getComputedStyle(document.body).backgroundColor,
+    // What the page CLAIMS versus what it draws: a piece dropped from the
+    // manifest but still counted would read as "19 of 828" over 17 cards.
+    counts: { shown: document.querySelectorAll("a.card").length, claimed: chipNum(/^all \d+$/) },
+    chip: chipNum(/^all \d+$/),
+  };
 }, [GONE.id, BROKE.id]);
 
 await p.goto(`${W}#/objects`, { waitUntil: "load" });
-await p.waitForTimeout(2600);
+await p.waitForTimeout(3200);
 const c = await cards();
 console.log("deleted card:", JSON.stringify(c.gone));
 console.log("failing card:", JSON.stringify(c.broke));
 
-ok(c.gone?.present, "the deleted piece is still listed — the manifest is what it is");
-ok(c.gone?.imgs === 0, `and its broken image is GONE from the card (${c.gone?.imgs} img elements)`);
-ok(!c.gone?.altText, `so no alt text sprawls across it (“${c.gone?.altText}”)`);
-ok(c.gone?.gone === true, "the frame is marked as removed art");
-ok(/removed/.test(c.gone?.note ?? ""), `with a note that says what happened (“${c.gone?.note}”)`);
-ok(/acted on this/.test(c.gone?.note ?? ""), "and reads as the agent having done what he asked, not as an error");
-ok(c.gone?.name === GONE.name, "the piece's name still reads normally, so the card is still a card");
-ok(c.gone?.linkWorks, "and it still opens — the verdict and notes on it are not lost");
-ok(c.gone?.thumbH >= 90, `the frame keeps the art's height, so the grid does not reflow (${c.gone?.thumbH}px)`);
+ok(c.gone === null, "a piece whose art 404s is GONE from the list, not left as a tombstone");
+ok(c.counts && c.counts.shown === c.counts.claimed,
+  `and the count follows it out — the page says ${c.counts?.claimed} and shows ${c.counts?.shown}`);
+ok(c.chip !== null && c.chip < DATA.domains.objects.length,
+  `and the chip counts what is really there, below the build's own total (${c.chip} of ${DATA.domains.objects.length} listed)`);
 
-// TELLING THE TWO APART IS THE POINT. "Removed" is a claim about the agent
-// having acted; saying it because a CDN blinked would be a lie he acts on.
-ok(c.broke?.failed === true && c.broke?.gone === false,
-  `a load that fails WITHOUT a 404 is not called removed (failed=${c.broke?.failed}, gone=${c.broke?.gone})`);
-ok(/not loading/.test(c.broke?.note ?? ""), `it says the art did not load (“${c.broke?.note}”)`);
-ok(c.broke?.imgs === 0, "and it drops its broken image too");
+// IT STAYS GONE. A re-render, a page turn or a Back must not resurrect it —
+// the session remembers, so he never meets the same dead card twice.
+await p.goto(`${W}#/monsters`, { waitUntil: "load" });
+await p.waitForTimeout(1200);
+await p.goto(`${W}#/objects`, { waitUntil: "load" });
+await p.waitForTimeout(2000);
+const again = await cards();
+console.log("after navigating away and back:", JSON.stringify({ gone: again.gone, counts: again.counts }));
+ok(again.gone === null, "navigating away and back does not bring it back");
+ok(again.counts.shown === again.counts.claimed, `and the count is still honest (${again.counts.claimed})`);
+
+// TELLING THE TWO APART IS THE POINT. "Gone" removes a piece from his review
+// queue; saying it because a CDN blinked would silently hide real work. Judged
+// here, once the drops have settled — the first drop re-renders the list,
+// which re-requests this card's image.
+console.log("failing card:", JSON.stringify(again.broke));
+ok(!!again.broke?.present, "a load that fails WITHOUT a 404 keeps its card — the piece is not known to be gone");
+ok(again.broke?.failed === true && again.broke?.gone === false, `and is not called removed (failed=${again.broke?.failed}, gone=${again.broke?.gone})`);
+ok(/not loading/.test(again.broke?.note ?? ""), `it says the art did not load (“${again.broke?.note}”)`);
+ok(again.broke?.imgs === 0, "with no broken image left in the frame");
+ok(again.broke?.thumbH >= 90, `keeping the art's height, so the grid does not reflow (${again.broke?.thumbH}px)`);
 
 // THE WHOLE REASON HE FOUND THIS: the rejected filter is where deleted pieces
 // live, and it is admin-only. So this half signs in — faked at the network
@@ -105,31 +136,35 @@ const chip = await p2.evaluate(() => {
   c?.click();
   return c?.textContent?.trim() ?? null;
 });
-await p2.waitForTimeout(1500);
+await p2.waitForTimeout(3000);
 const onRejected = await p2.evaluate(() => ({
   cards: document.querySelectorAll("a.card").length,
   // A broken <img> is one that finished loading with no pixels — precisely
   // what his screenshot showed, and what must never survive.
   broken: [...document.querySelectorAll("a.card .thumb img")].filter((i) => i.complete && i.naturalWidth === 0).length,
   marked: document.querySelectorAll("a.card .thumb.art-gone, a.card .thumb.art-failed").length,
+  claimed: Number(/(\d+)\s*$/.exec([...document.querySelectorAll("button")].find((x) => /^rejected \d+$/i.test(x.textContent.trim()))?.textContent.trim() ?? "")?.[1] ?? NaN),
 }));
 console.log("rejected chip:", JSON.stringify(chip), "->", JSON.stringify(onRejected));
 ok(!!chip, `the rejected filter is reachable as admin (\u201c${chip}\u201d)`);
 ok(onRejected.cards > 0, `and it lists his rejected pieces (${onRejected.cards})`);
 ok(onRejected.broken === 0, `with NO broken image left on it (${onRejected.broken})`);
+ok(onRejected.cards === onRejected.claimed,
+  `and the chip agrees with the grid once the deleted ones have dropped out (${onRejected.claimed} claimed, ${onRejected.cards} shown)`);
 ok(errs2.length === 0, `no page errors as admin (${errs2.slice(0, 2).join(" | ") || "none"})`);
 
 // DARK MODE — the note has to be legible on the theme he reviews in.
 await p.evaluate(() => { localStorage.setItem("wiki-theme", "dark"); document.documentElement.setAttribute("data-theme", "dark"); });
 await p.goto(`${W}#/objects`, { waitUntil: "load" });
-await p.waitForTimeout(2400);
+await p.waitForTimeout(3200);
 const dark = await cards();
 const lum = (c) => { const [r, g, bl] = c.match(/\d+/g).map(Number).map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * bl; };
 const contrast = (a, bg) => { const [l1, l2] = [lum(a), lum(bg)].sort((x, y) => y - x); return (l1 + 0.05) / (l2 + 0.05); };
-const ratio = dark.gone?.noteColor && dark.pageBg ? contrast(dark.gone.noteColor, dark.pageBg) : 0;
-console.log("dark:", JSON.stringify({ note: dark.gone?.note, color: dark.gone?.noteColor, bg: dark.pageBg, ratio: +ratio.toFixed(1) }));
-ok(dark.gone?.gone === true && /removed/.test(dark.gone?.note ?? ""), "the same note appears on the dark theme");
-ok(ratio >= 3, `and it is legible there (${ratio.toFixed(1)}:1)`);
+const ratio = dark.broke?.noteColor && dark.pageBg ? contrast(dark.broke.noteColor, dark.pageBg) : 0;
+console.log("dark:", JSON.stringify({ note: dark.broke?.note, color: dark.broke?.noteColor, bg: dark.pageBg, ratio: +ratio.toFixed(1) }));
+ok(dark.gone === null, "the deleted piece is gone on the dark theme too");
+ok(dark.broke?.failed === true && /not loading/.test(dark.broke?.note ?? ""), "and the not-loading note still appears there");
+ok(ratio >= 3, `legible on the theme he reviews in (${ratio.toFixed(1)}:1)`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 await b.close();

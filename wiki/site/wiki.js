@@ -134,16 +134,77 @@ async function onArtMissing(img) {
   // Local chrome (section icons, the gold coin) is baked into the page and
   // cannot be "removed by an agent" — a miss there is a plain load failure.
   const verdict = /\/icons\//.test(url) ? "failed" : await probeArt(url);
+  // GONE MEANS GONE — the piece leaves the wiki, it does not become a
+  // tombstone (maintainer 2026-08-16, on three "removed" cards sitting in his
+  // partly-reviewed filter: "why is the object not removed then removed? Why
+  // do I still see it but as removed?"). He is right: a card he cannot open,
+  // judge or look at is not information, it is an obstacle between him and the
+  // 17 pieces he CAN review. Dropping the entity from the loaded manifest
+  // makes every count, filter, chip and ‹ › pager behave as though the build
+  // had never listed it — which is the truth as of this second.
+  if (verdict === "gone" && dropGoneEntity(url)) return;
   if (!img.isConnected) return;
   const box = img.closest(".thumb, .portrait");
   img.remove();
   if (!box) return;   // a small inline icon just goes quiet
+  // What is left here is the OTHER case: the art did not load, but nothing
+  // says it is gone. That one must stay visible — a piece silently vanishing
+  // because a CDN blinked is the failure this distinction exists to prevent.
   box.classList.add(verdict === "gone" ? "art-gone" : "art-failed");
   box.append(h("span", { class: "art-note" },
     verdict === "gone" ? "removed" : "not loading",
     verdict === "gone"
       ? h("small", {}, "the agent acted on this")
       : h("small", {}, "the art did not load")));
+}
+/** Paths whose art answered 404 this session — remembered so a re-render, a
+ *  page turn or a Back cannot resurrect a piece that is not there. */
+const goneArt = new Set(JSON.parse(sessionStorage.getItem("wiki-gone-art") || "[]"));
+/** Drop the entity whose OWN sprite 404'd. Keyed on `preview` deliberately: a
+ *  missing animation frame means one state is gone, not the piece, and that
+ *  keeps its note in the viewer. Returns whether anything was dropped. */
+function dropGoneEntity(url) {
+  const path = new URL(url, location.href).pathname;
+  let hit = null;
+  for (const [domain, list] of Object.entries(state.data?.domains ?? {})) {
+    if (!Array.isArray(list)) continue;
+    const i = list.findIndex((e) => e?.preview && path.endsWith(e.preview));
+    if (i >= 0) { hit = { domain, entity: list[i], i }; break; }
+  }
+  if (!hit) return false;
+  forgetEntity(hit.domain, hit.i);
+  goneArt.add(hit.entity.preview);
+  try { sessionStorage.setItem("wiki-gone-art", JSON.stringify([...goneArt])); } catch { /* private mode */ }
+  // Re-render so the counts, the chips and the pager agree with the grid — but
+  // NEVER while he is on that piece's own page: re-routing there would replace
+  // what he is reading with "unknown piece". The lists correct themselves the
+  // moment he navigates.
+  const [page, id] = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
+  if (id && id === hit.entity.id) return true;
+  if (page) scheduleGoneRerender();
+  return true;
+}
+// ONE re-render for the whole batch. A stale build can be carrying a dozen
+// deleted pieces at once (measured 14 in one filtered view), their images all
+// 404 within a few hundred ms of each other, and re-routing per drop would
+// rebuild 800 cards a dozen times over on his phone.
+let goneTimer = null;
+function scheduleGoneRerender() {
+  if (goneTimer) return;
+  if (keepScrollY == null) keepScrollY = window.scrollY;
+  goneTimer = setTimeout(() => { goneTimer = null; route(); }, 200);
+}
+function forgetEntity(domain, i) {
+  state.data.domains[domain].splice(i, 1);
+  if (state.data.counts?.[domain] > 0) state.data.counts[domain] -= 1;
+}
+/** Applied once the manifest is loaded, so a piece already known to be gone
+ *  never flashes into the grid a second time. */
+function pruneKnownGone() {
+  for (const [domain, list] of Object.entries(state.data?.domains ?? {})) {
+    if (!Array.isArray(list)) continue;
+    for (let i = list.length - 1; i >= 0; i--) if (list[i]?.preview && goneArt.has(list[i].preview)) forgetEntity(domain, i);
+  }
 }
 document.addEventListener("error", (ev) => {
   if (ev.target instanceof HTMLImageElement && ev.target.src) onArtMissing(ev.target);
@@ -4882,6 +4943,7 @@ async function useStagingRoot() {
     return;
   }
   state.data = data;
+  pruneKnownGone();   // pieces this session already found deleted never come back
   await loadLiveFiles();
   buildKnownIds();
   // Topbar stamp: the build DATE on one line, the deployed git sha under it —

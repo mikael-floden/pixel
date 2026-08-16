@@ -15,14 +15,25 @@
 // just culled and regenerated the domain, so the standing verdicts pointed at
 // paths that no longer existed). Injecting is also the only way to prove the
 // filters NARROW rather than merely render.
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 
-const objs = D.domains.objects ?? [];
+// THE PIECES THAT ACTUALLY EXIST, which is not the same set the build listed.
+// The scenery agent deletes what he rejects, and the manifest is only as fresh
+// as the last build — so the wiki drops a piece the moment its art 404s
+// (maintainer 2026-08-16: "why is the object not removed then removed?").
+// Measured while writing this: 828 listed, 19 already deleted from disk. A
+// gate that models the manifest instead of the disk is asserting a page that
+// cannot exist.
+const REPO = new URL("../../", import.meta.url);
+const onDisk = (o) => !o.preview || existsSync(new URL(o.preview, REPO));
+const listed = D.domains.objects ?? [];
+const objs = listed.filter(onDisk);
+if (listed.length !== objs.length) console.log(`(${listed.length - objs.length} of ${listed.length} listed pieces are deleted on disk — excluded, exactly as the page excludes them)`);
 // Newest first, by the build's own `added` — the order the page must produce.
 const byNew = [...objs].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
 ok(objs.every((o) => o.added), `every piece carries an added date (${objs.filter((o) => !o.added).length} without)`);
@@ -64,16 +75,35 @@ await p.addInitScript(() => {
 // ALWAYS reload. A hash-only goto does not re-navigate, so the live state —
 // including the verdicts injected above — is never refetched, and assertions
 // about them pass while describing a page that never saw them.
+// EVERY CARD'S ART MUST BE REQUESTED BEFORE THE GRID CAN BE JUDGED. The wiki
+// drops a piece the moment its own sprite 404s, and a LAZY image that was
+// never scrolled into view cannot 404 — so a page sampled straight after load
+// still shows deleted pieces, and the count settles later, as the reviewer
+// scrolls. Flipping the whole grid to eager reaches that end state in one
+// step; each drop re-renders, so it is re-applied until the count stops
+// moving.
+const settleGrid = async () => {
+  let last = -1;
+  for (let i = 0; i < 12; i++) {
+    await p.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
+    await p.waitForTimeout(600);
+    const n = await p.evaluate(() => document.querySelectorAll("a.card").length);
+    if (n === last) return;
+    last = n;
+  }
+};
 const go = async (hash) => {
   await p.goto(`${W}${hash}`, { waitUntil: "load" });
   await p.reload({ waitUntil: "load" });
   await p.waitForTimeout(1700);
+  await settleGrid();
 };
 // Chip ids repeat across the three bars ("all" is a type AND a review status),
 // so every pick names its bar by storage key.
 const pick = async (v, bar = "wiki-obj-filter") => {
   await p.evaluate(([s, b]) => document.querySelector(`[data-bar="${b}"] [data-sort="${s}"]`)?.click(), [v, bar]);
   await p.waitForTimeout(800);
+  await settleGrid();   // a filter switch renders a fresh grid of lazy images
 };
 const overview = () => p.evaluate(() => ({
   bars: [...document.querySelectorAll(".sortbar")].map((r) => [...r.querySelectorAll("button")].map((x) => (x.classList.contains("sel") ? "*" : "") + x.textContent).join(" ")),
@@ -396,6 +426,15 @@ ok(!!(await p.evaluate(() => document.querySelector(".queue-note"))), "the filte
 const pub = await (await b.newContext({ viewport: { width: 393, height: 851 } })).newPage();
 await pub.goto(`${W}#/objects`, { waitUntil: "load" });
 await pub.waitForTimeout(1700);
+// The visitor's grid needs the same settling as the admin's — a deleted piece
+// leaves their list too (a card with no picture is no use to anyone).
+for (let i = 0, last = -1; i < 12; i++) {
+  await pub.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
+  await pub.waitForTimeout(600);
+  const n = await pub.evaluate(() => document.querySelectorAll("a.card").length);
+  if (n === last) break;
+  last = n;
+}
 const pv = await pub.evaluate(() => ({ bars: document.querySelectorAll(".sortbar").length, cards: document.querySelectorAll(".card").length, note: !!document.querySelector(".queue-note") }));
 console.log("public:", JSON.stringify(pv));
 // The public keeps the type bar — it is a way to find things, not a review
@@ -403,7 +442,7 @@ console.log("public:", JSON.stringify(pv));
 ok(pv.bars === 1 && !pv.note, `the visitor gets the type bar only (${pv.bars} bars)`);
 ok(await pub.evaluate(() => !!document.querySelector('[data-bar="wiki-obj-type"]')
   && !document.querySelector('[data-bar="wiki-obj-filter"]')), "and it is the type row, not a review row");
-ok(pv.cards === objs.length, `and the public still sees the whole domain (${pv.cards}/${objs.length})`);
+ok(pv.cards === objs.length, `and the public still sees the whole domain that still exists (${pv.cards}/${objs.length})`);
 
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");

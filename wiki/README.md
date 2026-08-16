@@ -216,7 +216,7 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
-## A deleted piece must read as "removed", not as a broken image
+## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed
 build.** That split is deliberate — `stagingSha()` pins staging reads to
@@ -232,20 +232,44 @@ alt text sprawling across them. Traced exactly: the wiki was built at
 (wiki verdicts)"* at 17:33, and the sprite answered 200 at the deployed sha and
 **404 on main**. Nothing was broken — the contract had worked.
 
-So a 404 on art is now reported as what it is: the frame keeps its size and
-says **removed / the agent acted on this**, which doubles as the completion
-signal for the rejection. A failure that is NOT a 404 says **not loading**
-instead — claiming "removed" because a CDN blinked would be a lie he would act
-on — so the failure path spends one `HEAD` to tell them apart. It is ONE
-capture-phase listener on `document` (`error` does not bubble, but it does
-capture), so it covers every image the app renders, now and later; detached
-`new Image()` prefetches dispatch on themselves and never reach it.
+The first fix drew a "removed" tombstone in the card, and he rejected it the
+next day: *"Why is the object not removed then removed? Why do I still see it
+but as removed?"* He is right — a card he cannot open, judge or look at is not
+information, it is an obstacle between him and the pieces he CAN review. So a
+404'd piece is now **dropped from the loaded manifest** (`dropGoneEntity`), and
+every count, chip, filter and ‹ › pager follows for free, because they all read
+`state.data.domains.*`. Measured on the working tree the day it shipped: 828
+listed, 26 already deleted.
 
-It self-heals on the next deploy, when the piece leaves `data.json` entirely.
-Gate: `wiki/tools/check-gone.mjs` — a 404 and a connection failure routed at
-the network boundary, asserting the two are told apart, that no broken image
-survives on the rejected filter as admin, that the card still opens (its
-verdict and notes are not lost), and that the note is legible on both themes.
+- **Keyed on the piece's own `preview`.** A missing animation FRAME means one
+  state is gone, not the piece — that keeps its card and shows the note in the
+  viewer.
+- **A failure that is not a 404 keeps its card**, marked "not loading". The
+  failure path spends one `HEAD` to tell the two apart: claiming a piece was
+  removed because a CDN blinked would silently take real work out of his queue.
+- **It never re-routes the page he is reading.** Dropping the piece whose own
+  detail page is open would replace it with "unknown piece"; the lists correct
+  themselves on the next navigation.
+- **One re-render for the whole batch** (`scheduleGoneRerender`, 200ms). A
+  stale build can carry a dozen deleted pieces whose images all 404 together —
+  measured 14 in one filtered view — and re-routing per drop would rebuild
+  hundreds of cards a dozen times over on his phone. Scroll is preserved
+  through `keepScrollY`.
+- **The session remembers** (`goneArt` in sessionStorage, applied by
+  `pruneKnownGone` right after the manifest loads), so a page turn or a Back
+  cannot resurrect a piece that is not there.
+- **Discovery is progressive**, because images are lazy: a piece is only known
+  gone once its card has been rendered. The counts therefore settle as he
+  browses, and everything self-heals at the next deploy, when the piece leaves
+  `data.json` entirely.
+
+Gates: `wiki/tools/check-gone.mjs` (a 404 and a connection failure routed at
+the network boundary — the piece leaves, the count follows it out, the other
+one keeps its card, and nothing resurrects on a re-navigation) and
+`check-queue.mjs`, which had to learn the same lesson: it now models the pieces
+**on disk** rather than the ones the build listed, and forces the grid's lazy
+images to load before judging it. A gate that models the manifest is asserting
+a page that cannot exist.
 
 ## Where the nadir shadow belonged — training data, not an override
 
