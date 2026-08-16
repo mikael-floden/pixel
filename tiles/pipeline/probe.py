@@ -19,6 +19,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import flatness
+import pixellab_gc
 from pixellab_client import PixelLabClient
 
 OUT_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "probes")
@@ -39,6 +40,9 @@ def run(label, prompt, target_hex=None, seed=7, outline_mode=None, side_hex=None
     client = PixelLabClient()
     before = client.credits_usd()
     images, tile_id = client.create_tiles(description=prompt, seed=seed, **kw)
+    # Register BEFORE anything else can fail: an id we forget to record is an id the
+    # GC can never clean up, so it would sit on the account as junk forever.
+    pixellab_gc.record(tile_id, purpose=f"probe:{label}", prompt=prompt)
     spent = before - client.credits_usd()
     paths = []
     for i, im in enumerate(images):
