@@ -4,8 +4,8 @@
   "group": "hanging_baskets",
   "rank": 74,
   "index": 6,
-  "name": "Primrose and ivy basket 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Primrose and ivy basket 006",
+  "lights": null,
   "variety": "primrose and ivy basket",
   "glow_concept": "trailing vines dripping slow glowing droplets",
   "prompt": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, primrose and ivy basket, large, twice human height, self-emissive at night, softly radiating light: trailing vines dripping slow glowing droplets",
@@ -35,6 +35,46 @@
       "sprite": "hanging_baskets/hanging_basket_006/sprite.webp",
       "pixellab_object_id": "90764009-0a03-46e1-b0d4-43cdfd121b0e",
       "generated_at": "2026-08-13T21:23:42+00:00"
+    },
+    "LIT_2": {
+      "sprite": "hanging_baskets/hanging_basket_006/lit_2/sprite.webp",
+      "pixellab_object_id": "100b135f-27ac-4a19-b14a-c0833359151c",
+      "generated_at": "2026-08-16T14:59:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7138,
+      "glow_score": 0.1096
+    },
+    "LIT_3": {
+      "sprite": "hanging_baskets/hanging_basket_006/lit_3/sprite.webp",
+      "pixellab_object_id": "42bcac90-7cf5-446c-8674-19f69b387733",
+      "generated_at": "2026-08-16T14:59:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5991,
+      "glow_score": 0.1009
+    },
+    "LIT_4": {
+      "sprite": "hanging_baskets/hanging_basket_006/lit_4/sprite.webp",
+      "pixellab_object_id": "38da0932-b185-4de9-a804-075b7c00deec",
+      "generated_at": "2026-08-16T14:59:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7965,
+      "glow_score": 0.1154
+    },
+    "NOT_LIT_1": {
+      "sprite": "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "17b51a3f-c694-46de-ae09-79d56b7f0ba2",
+      "generated_at": "2026-08-16T14:59:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8266,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "hanging_baskets/hanging_basket_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8bd66298-f31b-4602-a9b1-f78d2c9be8df",
+      "generated_at": "2026-08-16T15:00:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9152,
+      "glow_score": 0.0
     }
   }
 }

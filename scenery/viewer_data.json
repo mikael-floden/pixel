@@ -27950,6 +27950,15 @@
           "difference_from_source": 0.8522,
           "glow_score": 0.0,
           "art_hash": "083ef95bbf04d87e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_034/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3748c706-08d0-467f-b4b2-2c1019aa834f",
+          "generated_at": "2026-08-16T14:57:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9537,
+          "glow_score": 0.0006,
+          "art_hash": "21cc60f7d9e8b312"
         }
       },
       "animations": []
@@ -27959,7 +27968,7 @@
       "rel": "hanging_baskets/hanging_basket_005",
       "name": "Trailing red geraniums 005",
       "category": "hanging_baskets",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, trailing red geraniums, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -27979,11 +27988,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hanging_baskets/hanging_basket_005/lit_1/sprite.webp",
+          "pixellab_object_id": "7fd0e406-7ea7-4ab4-8844-3929e8d67f5b",
+          "generated_at": "2026-08-16T14:58:35+00:00",
+          "glow_concept": "moss lining glowing soft foxfire green",
+          "difference_from_source": 0.4423,
+          "glow_score": 0.0804,
+          "art_hash": "bbed65074ac076e6"
+        },
+        "LIT_2": {
+          "sprite": "hanging_baskets/hanging_basket_005/lit_2/sprite.webp",
+          "pixellab_object_id": "78972854-f67f-4920-b4b5-b1e6d478066d",
+          "generated_at": "2026-08-16T15:00:14+00:00",
+          "glow_concept": "the basket glowing from within like a lantern",
+          "difference_from_source": 0.8729,
+          "glow_score": 0.1186,
+          "art_hash": "7ea6d424a8d2aaad"
+        },
         "NOT_LIT_1": {
           "sprite": "hanging_baskets/hanging_basket_005/sprite.webp",
           "pixellab_object_id": "ea347752-bcbe-441b-9020-aa111d8a234d",
           "generated_at": "2026-08-13T20:36:23+00:00",
           "art_hash": "5d1de8c335aa27f1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hanging_baskets/hanging_basket_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "28672fa9-e3d6-4de0-966d-25ebb0633d04",
+          "generated_at": "2026-08-16T14:57:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7023,
+          "glow_score": 0.0,
+          "art_hash": "bac366e2244d945e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hanging_baskets/hanging_basket_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8cfcc087-6b32-41ed-987b-cf461ada6a56",
+          "generated_at": "2026-08-16T14:59:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6816,
+          "glow_score": 0.0037,
+          "art_hash": "e7d2b48947c35e3f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hanging_baskets/hanging_basket_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b2137961-36f3-424e-baec-b6704d8ee1a0",
+          "generated_at": "2026-08-16T14:58:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.913,
+          "glow_score": 0.1032,
+          "art_hash": "215b8810c6e6ad69"
         }
       },
       "animations": []
@@ -27991,9 +28045,9 @@
     {
       "id": "hanging_basket_006",
       "rel": "hanging_baskets/hanging_basket_006",
-      "name": "Primrose and ivy basket 006 \u00b7 lit",
+      "name": "Primrose and ivy basket 006",
       "category": "hanging_baskets",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wide woven basket packed with flowers spilling thick trailing blooms over its sides, resting on a stout low wooden stand on the ground, primrose and ivy basket, large, twice human height, self-emissive at night, softly radiating light: trailing vines dripping slow glowing droplets",
       "view": "low top-down",
       "size": 64,
@@ -28018,6 +28072,51 @@
           "pixellab_object_id": "90764009-0a03-46e1-b0d4-43cdfd121b0e",
           "generated_at": "2026-08-13T21:23:42+00:00",
           "art_hash": "125797bed6d1dd2b"
+        },
+        "LIT_2": {
+          "sprite": "hanging_baskets/hanging_basket_006/lit_2/sprite.webp",
+          "pixellab_object_id": "100b135f-27ac-4a19-b14a-c0833359151c",
+          "generated_at": "2026-08-16T14:59:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7138,
+          "glow_score": 0.1096,
+          "art_hash": "c26dbc9c28dac83b"
+        },
+        "LIT_3": {
+          "sprite": "hanging_baskets/hanging_basket_006/lit_3/sprite.webp",
+          "pixellab_object_id": "42bcac90-7cf5-446c-8674-19f69b387733",
+          "generated_at": "2026-08-16T14:59:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5991,
+          "glow_score": 0.1009,
+          "art_hash": "862fb8a44c6da52f"
+        },
+        "LIT_4": {
+          "sprite": "hanging_baskets/hanging_basket_006/lit_4/sprite.webp",
+          "pixellab_object_id": "38da0932-b185-4de9-a804-075b7c00deec",
+          "generated_at": "2026-08-16T14:59:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7965,
+          "glow_score": 0.1154,
+          "art_hash": "3fb04d4136dedd5d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "17b51a3f-c694-46de-ae09-79d56b7f0ba2",
+          "generated_at": "2026-08-16T14:59:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8266,
+          "glow_score": 0.0,
+          "art_hash": "9f8345e72a50da2b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hanging_baskets/hanging_basket_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8bd66298-f31b-4602-a9b1-f78d2c9be8df",
+          "generated_at": "2026-08-16T15:00:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9152,
+          "glow_score": 0.0,
+          "art_hash": "df887a3dcaa60c82"
         }
       },
       "animations": []
@@ -28329,9 +28428,9 @@
     {
       "id": "harvest_altar_002",
       "rel": "harvest_altars/harvest_altar_002",
-      "name": "Gourd-and-candle altar 002 \u00b7 lit",
+      "name": "Gourd-and-candle altar 002",
       "category": "harvest_altars",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a low stone altar slab piled with harvest offerings, pumpkins, sheaves and apples, at the edge of the fields, gourd-and-candle altar, snow settling on the gourds, waist-high, self-emissive at night, softly radiating light: the offerings glowing with kept memory",
       "view": "low top-down",
       "size": 64,
@@ -28356,6 +28455,51 @@
           "pixellab_object_id": "0bc1c3b8-1505-4373-84ae-ee609cb8050c",
           "generated_at": "2026-08-14T01:12:49+00:00",
           "art_hash": "c3ea086fa786aae6"
+        },
+        "LIT_2": {
+          "sprite": "harvest_altars/harvest_altar_002/lit_2/sprite.webp",
+          "pixellab_object_id": "73ccc3d7-2239-4a4c-a2ef-059f6bc1da3a",
+          "generated_at": "2026-08-16T14:59:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3823,
+          "glow_score": 0.1712,
+          "art_hash": "0764596845563562"
+        },
+        "LIT_3": {
+          "sprite": "harvest_altars/harvest_altar_002/lit_3/sprite.webp",
+          "pixellab_object_id": "62ebffdb-95da-459c-b521-09d2a18404b9",
+          "generated_at": "2026-08-16T15:01:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4168,
+          "glow_score": 0.165,
+          "art_hash": "db90537d213d015e"
+        },
+        "LIT_4": {
+          "sprite": "harvest_altars/harvest_altar_002/lit_4/sprite.webp",
+          "pixellab_object_id": "f5d34689-7207-4d4d-97d5-15ebf00652a6",
+          "generated_at": "2026-08-16T15:01:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5304,
+          "glow_score": 0.2159,
+          "art_hash": "99bd8b2fbc648260"
+        },
+        "NOT_LIT_1": {
+          "sprite": "harvest_altars/harvest_altar_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ea87db30-71ba-4acd-b213-13506b2e9207",
+          "generated_at": "2026-08-16T15:00:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8401,
+          "glow_score": 0.0,
+          "art_hash": "592618309dadd207"
+        },
+        "NOT_LIT_2": {
+          "sprite": "harvest_altars/harvest_altar_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ee5570f8-8250-4c61-9c99-e84561c382e0",
+          "generated_at": "2026-08-16T15:00:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8297,
+          "glow_score": 0.0014,
+          "art_hash": "dcc4d1ad324d0822"
         }
       },
       "animations": []
@@ -28363,9 +28507,9 @@
     {
       "id": "haystack_008",
       "rel": "haystacks/haystack_008",
-      "name": "Fresh golden domed stack 008 \u00b7 lit",
+      "name": "Fresh golden domed stack 008",
       "category": "haystacks",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, fresh golden domed stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: stray straws glinting like spun gold",
       "view": "low top-down",
       "size": 128,
@@ -28390,6 +28534,51 @@
           "pixellab_object_id": "3eec8add-8744-4bf4-b22b-08aa05c44b3b",
           "generated_at": "2026-08-13T20:48:49+00:00",
           "art_hash": "ecfa990428e5a7aa"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_008/lit_2/sprite.webp",
+          "pixellab_object_id": "6081a94e-3b05-47bd-a4d1-0c0a202b13ec",
+          "generated_at": "2026-08-16T15:02:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8071,
+          "glow_score": 0.4754,
+          "art_hash": "e7e95fae16b8c167"
+        },
+        "LIT_3": {
+          "sprite": "haystacks/haystack_008/lit_3/sprite.webp",
+          "pixellab_object_id": "fb7d0516-9003-44f3-a62c-983285894831",
+          "generated_at": "2026-08-16T15:02:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7232,
+          "glow_score": 0.6099,
+          "art_hash": "eb3501c45c66c6bb"
+        },
+        "LIT_4": {
+          "sprite": "haystacks/haystack_008/lit_4/sprite.webp",
+          "pixellab_object_id": "eb4e288c-dab4-490b-b7c7-05fddec88550",
+          "generated_at": "2026-08-16T15:02:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7884,
+          "glow_score": 0.4123,
+          "art_hash": "4e65108f87256d0b"
+        },
+        "NOT_LIT_1": {
+          "sprite": "haystacks/haystack_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d7613010-3dab-40e9-9c1b-bcdc7915a86a",
+          "generated_at": "2026-08-16T15:04:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.0,
+          "art_hash": "0eee1a1e3e2c0e8d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9efca8ed-a662-47b3-8b4c-d42d9705299e",
+          "generated_at": "2026-08-16T15:02:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9989,
+          "glow_score": 0.0,
+          "art_hash": "0c95de179a8bb701"
         }
       },
       "animations": []
@@ -28397,9 +28586,9 @@
     {
       "id": "haystack_010",
       "rel": "haystacks/haystack_010",
-      "name": "Burrow-holed hollow old stack 010 \u00b7 lit",
+      "name": "Burrow-holed hollow old stack 010",
       "category": "haystacks",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, burrow-holed hollow old stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: pale foxfire crust on the rotting side",
       "view": "low top-down",
       "size": 128,
@@ -28424,6 +28613,42 @@
           "pixellab_object_id": "5e18c1bc-c3d8-4f1e-990e-5f341cccaee4",
           "generated_at": "2026-08-13T21:55:18+00:00",
           "art_hash": "e9a4a87fb2d1bfde"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_010/lit_2/sprite.webp",
+          "pixellab_object_id": "39cab7ea-e991-4494-a564-d42bb774b6ee",
+          "generated_at": "2026-08-16T15:03:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8123,
+          "glow_score": 0.5985,
+          "art_hash": "175bd0a9af3e5875"
+        },
+        "LIT_3": {
+          "sprite": "haystacks/haystack_010/lit_3/sprite.webp",
+          "pixellab_object_id": "d5edc6e5-9838-48b5-a51a-806a4c0c44a5",
+          "generated_at": "2026-08-16T15:02:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6927,
+          "glow_score": 0.5621,
+          "art_hash": "89258fd54ef75c83"
+        },
+        "LIT_4": {
+          "sprite": "haystacks/haystack_010/lit_4/sprite.webp",
+          "pixellab_object_id": "9dca8f6a-937e-43f6-a259-ebce2f674c25",
+          "generated_at": "2026-08-16T15:03:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2751,
+          "glow_score": 0.5532,
+          "art_hash": "d7481dfdba0ae490"
+        },
+        "NOT_LIT_1": {
+          "sprite": "haystacks/haystack_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "fc69aaff-0cc8-468e-a6e2-60446d5ac4f1",
+          "generated_at": "2026-08-16T15:03:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9934,
+          "glow_score": 0.1194,
+          "art_hash": "3e8131cd0b51cad6"
         }
       },
       "animations": []

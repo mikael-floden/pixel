@@ -5,8 +5,8 @@
   "group": "harvest_altars",
   "rank": 124,
   "index": 2,
-  "name": "Gourd-and-candle altar 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Gourd-and-candle altar 002",
+  "lights": null,
   "variety": "gourd-and-candle altar",
   "modifier": "snow settling on the gourds",
   "glow_concept": "the offerings glowing with kept memory",
@@ -36,6 +36,46 @@
       "sprite": "harvest_altars/harvest_altar_002/sprite.webp",
       "pixellab_object_id": "0bc1c3b8-1505-4373-84ae-ee609cb8050c",
       "generated_at": "2026-08-14T01:12:49+00:00"
+    },
+    "LIT_2": {
+      "sprite": "harvest_altars/harvest_altar_002/lit_2/sprite.webp",
+      "pixellab_object_id": "73ccc3d7-2239-4a4c-a2ef-059f6bc1da3a",
+      "generated_at": "2026-08-16T14:59:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3823,
+      "glow_score": 0.1712
+    },
+    "LIT_3": {
+      "sprite": "harvest_altars/harvest_altar_002/lit_3/sprite.webp",
+      "pixellab_object_id": "62ebffdb-95da-459c-b521-09d2a18404b9",
+      "generated_at": "2026-08-16T15:01:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4168,
+      "glow_score": 0.165
+    },
+    "LIT_4": {
+      "sprite": "harvest_altars/harvest_altar_002/lit_4/sprite.webp",
+      "pixellab_object_id": "f5d34689-7207-4d4d-97d5-15ebf00652a6",
+      "generated_at": "2026-08-16T15:01:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5304,
+      "glow_score": 0.2159
+    },
+    "NOT_LIT_1": {
+      "sprite": "harvest_altars/harvest_altar_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ea87db30-71ba-4acd-b213-13506b2e9207",
+      "generated_at": "2026-08-16T15:00:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8401,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "harvest_altars/harvest_altar_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ee5570f8-8250-4c61-9c99-e84561c382e0",
+      "generated_at": "2026-08-16T15:00:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8297,
+      "glow_score": 0.0014
     }
   }
 }
