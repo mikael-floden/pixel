@@ -1,5 +1,142 @@
 {
   "format": "pixel-wiki-shadow-notes@1",
-  "updated_at": "",
-  "overrides": {}
+  "updated_at": "2026-08-16T11:21:59.849Z",
+  "overrides": {
+    "monsters/crystal_horn#idle#south": {
+      "dx": -0.23,
+      "dy": -8.23,
+      "w": 51,
+      "h": 31.1,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 88,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:18:12.201Z"
+    },
+    "monsters/crystal_horn#idle#south-east": {
+      "dx": -4.78,
+      "dy": -10.76,
+      "w": 56.98,
+      "h": 24.63,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 90.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:18:35.897Z"
+    },
+    "monsters/crystal_horn#idle#east": {
+      "dx": -12.5,
+      "dy": -9.46,
+      "w": 51.63,
+      "h": 22.74,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 93,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:18:52.145Z"
+    },
+    "monsters/crystal_horn#idle#north-east": {
+      "dx": -3.07,
+      "dy": -11.27,
+      "w": 53.56,
+      "h": 28.53,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 91,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:19:50.342Z"
+    },
+    "monsters/crystal_horn#idle#north": {
+      "dx": -1.62,
+      "dy": -8.97,
+      "w": 47.67,
+      "h": 41.8,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 88.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:20:18.379Z"
+    },
+    "monsters/crystal_horn#idle#north-west": {
+      "dx": 4.92,
+      "dy": -12.09,
+      "w": 55.95,
+      "h": 34.65,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 85,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:20:51.176Z"
+    },
+    "monsters/crystal_horn#idle#west": {
+      "dx": 11.3,
+      "dy": -9.21,
+      "w": 54.77,
+      "h": 20,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 83,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:21:06.801Z"
+    },
+    "monsters/crystal_horn#idle#south-west": {
+      "dx": 5.82,
+      "dy": -15.69,
+      "w": 55.77,
+      "h": 42.44,
+      "was": {
+        "w": 51,
+        "h": 20,
+        "cx": 85.5,
+        "cy": 120.96
+      },
+      "frame": {
+        "w": 176,
+        "h": 176
+      },
+      "updated_at": "2026-08-16T11:21:54.554Z"
+    }
+  }
 }
