@@ -5,7 +5,7 @@
   "rank": 45,
   "index": 9,
   "name": "Star moss dome 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "star moss dome",
   "glow_concept": null,
   "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, star moss dome, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:45:40+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "moss_clumps/moss_clump_009/lit_1/sprite.webp",
+      "pixellab_object_id": "d70fb8d1-c624-4ff6-ae85-c9403922eb2e",
+      "generated_at": "2026-08-16T18:01:36+00:00",
+      "glow_concept": "moss veined with glowing soulstone seams",
+      "difference_from_source": 0.357,
+      "glow_score": 0.0633
+    },
+    "LIT_2": {
+      "sprite": "moss_clumps/moss_clump_009/lit_2/sprite.webp",
+      "pixellab_object_id": "81606cc3-9779-4de7-8dab-c4847a73c7fe",
+      "generated_at": "2026-08-16T18:01:56+00:00",
+      "glow_concept": "gently pulsing green glow deep inside the clump",
+      "difference_from_source": 0.3478,
+      "glow_score": 0.0953
+    },
     "NOT_LIT_1": {
       "sprite": "moss_clumps/moss_clump_009/sprite.webp",
       "pixellab_object_id": "fe646f50-0367-49c1-b35b-2a01590c272e",
       "generated_at": "2026-08-13T21:45:40+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "moss_clumps/moss_clump_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "965e4fc0-0c73-4392-afe5-0b4f0ded4a71",
+      "generated_at": "2026-08-16T18:00:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8174,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "moss_clumps/moss_clump_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ad419e22-7e24-41e6-81ec-ef80704aa082",
+      "generated_at": "2026-08-16T18:00:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4627,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "moss_clumps/moss_clump_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ca906c11-45b6-4038-81c3-4816d7ead70f",
+      "generated_at": "2026-08-16T18:01:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8685,
+      "glow_score": 0.0
     }
   }
 }

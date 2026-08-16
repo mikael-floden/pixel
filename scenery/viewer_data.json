@@ -33241,9 +33241,9 @@
     {
       "id": "meteor_stone_002",
       "rel": "meteor_stones/meteor_stone_002",
-      "name": "Iron-dark star-stone 002 \u00b7 lit",
+      "name": "Iron-dark star-stone 002",
       "category": "meteor_stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a fallen star-stone resting in a small scorched crater, dark dense rock unlike anything around it, iron-dark star-stone, surrounded by curious mushrooms, roughly six feet tall, human height, self-emissive at night, softly radiating light: embers that never cool in the crater",
       "view": "low top-down",
       "size": 64,
@@ -33269,6 +33269,15 @@
           "generated_at": "2026-08-14T01:10:26+00:00",
           "art_hash": "5d4f7602434e4476"
         },
+        "LIT_2": {
+          "sprite": "meteor_stones/meteor_stone_002/lit_2/sprite.webp",
+          "pixellab_object_id": "1ff6b4a7-2cf6-4636-a62e-e87117c13f31",
+          "generated_at": "2026-08-16T17:56:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5822,
+          "glow_score": 0.0155,
+          "art_hash": "ff873631638f3663"
+        },
         "LIT_3": {
           "sprite": "meteor_stones/meteor_stone_002/lit_3/sprite.webp",
           "pixellab_object_id": "e6418975-3254-4b7a-b7af-95591d38fcf0",
@@ -33277,6 +33286,33 @@
           "difference_from_source": 0.4622,
           "glow_score": 0.0054,
           "art_hash": "5e6348f4b5e3bdbb"
+        },
+        "LIT_4": {
+          "sprite": "meteor_stones/meteor_stone_002/lit_4/sprite.webp",
+          "pixellab_object_id": "d8d6d56b-3133-46b7-907b-03bc0ee5780b",
+          "generated_at": "2026-08-16T17:57:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4814,
+          "glow_score": 0.0121,
+          "art_hash": "a3f07d8d2a0d5f78"
+        },
+        "NOT_LIT_1": {
+          "sprite": "meteor_stones/meteor_stone_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3d08c446-ddfb-41d8-96b3-8ef1eab00f1f",
+          "generated_at": "2026-08-16T17:57:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6245,
+          "glow_score": 0.0016,
+          "art_hash": "1a295c6e0ddb960e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "meteor_stones/meteor_stone_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "26d511b6-3e91-4ac2-acfb-023595bb2c16",
+          "generated_at": "2026-08-16T17:57:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9245,
+          "glow_score": 0.0,
+          "art_hash": "14b787dfc7a8fc5a"
         }
       },
       "animations": []
@@ -33284,9 +33320,9 @@
     {
       "id": "moon_pool_002",
       "rel": "moon_pools/moon_pool_002",
-      "name": "Mirror-calm water 002 \u00b7 lit",
+      "name": "Mirror-calm water 002",
       "category": "moon_pools",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small perfectly round pool of still dark water reflecting a full moon that is not in the sky, mirror-calm water, ringed with white pebbles, small, knee-high, self-emissive at night, softly radiating light: silver mist over the surface",
       "view": "low top-down",
       "size": 64,
@@ -33311,6 +33347,51 @@
           "pixellab_object_id": "95fea78f-0ee3-4201-8642-29b1b206a309",
           "generated_at": "2026-08-14T02:01:35+00:00",
           "art_hash": "7795cfe3b73e1345"
+        },
+        "LIT_2": {
+          "sprite": "moon_pools/moon_pool_002/lit_2/sprite.webp",
+          "pixellab_object_id": "2300b2a6-f98b-4d62-802e-c0c00b8b597c",
+          "generated_at": "2026-08-16T17:59:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9015,
+          "glow_score": 0.1606,
+          "art_hash": "377d12fc90939d36"
+        },
+        "LIT_3": {
+          "sprite": "moon_pools/moon_pool_002/lit_3/sprite.webp",
+          "pixellab_object_id": "95bb7113-c0fc-45f8-9594-4f44d8a18c8d",
+          "generated_at": "2026-08-16T17:58:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9512,
+          "glow_score": 0.2789,
+          "art_hash": "b46198a67bd3adb3"
+        },
+        "LIT_4": {
+          "sprite": "moon_pools/moon_pool_002/lit_4/sprite.webp",
+          "pixellab_object_id": "c59214d7-220a-4fe8-bb0e-c96039bbe2c3",
+          "generated_at": "2026-08-16T17:59:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7818,
+          "glow_score": 0.0,
+          "art_hash": "76259853e5497e7f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "moon_pools/moon_pool_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9089df98-f3e1-4107-9182-57932a7dc843",
+          "generated_at": "2026-08-16T17:58:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9531,
+          "glow_score": 0.0,
+          "art_hash": "7f4d396c8efa2acb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "moon_pools/moon_pool_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5f391dd3-c167-4c04-b79d-03b7ea4799cf",
+          "generated_at": "2026-08-16T17:58:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9556,
+          "glow_score": 0.0,
+          "art_hash": "cb47dbc9377aad39"
         }
       },
       "animations": []
@@ -33318,9 +33399,9 @@
     {
       "id": "moss_clump_008",
       "rel": "moss_clumps/moss_clump_008",
-      "name": "Moss-capped boulder 008 \u00b7 lit",
+      "name": "Moss-capped boulder 008",
       "category": "moss_clumps",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-capped boulder, tiny, only ankle-high, self-emissive at night, softly radiating light: glowing footprint pressed into the moss top",
       "view": "low top-down",
       "size": 48,
@@ -33345,6 +33426,51 @@
           "pixellab_object_id": "bce1ab6f-7d23-49f5-810d-d50fcb82cd70",
           "generated_at": "2026-08-13T19:54:36+00:00",
           "art_hash": "fe60ff7605af0755"
+        },
+        "LIT_2": {
+          "sprite": "moss_clumps/moss_clump_008/lit_2/sprite.webp",
+          "pixellab_object_id": "4a22841e-dc46-4b3e-8418-130314d97c20",
+          "generated_at": "2026-08-16T18:02:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5934,
+          "glow_score": 0.145,
+          "art_hash": "1e3534a9b95d1d70"
+        },
+        "LIT_3": {
+          "sprite": "moss_clumps/moss_clump_008/lit_3/sprite.webp",
+          "pixellab_object_id": "78d1a82a-3f11-45be-a34e-0d33a2a1b41e",
+          "generated_at": "2026-08-16T18:02:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5882,
+          "glow_score": 0.0658,
+          "art_hash": "deb11dd991d4bf76"
+        },
+        "LIT_4": {
+          "sprite": "moss_clumps/moss_clump_008/lit_4/sprite.webp",
+          "pixellab_object_id": "aaae60fd-87eb-4ac0-8aaf-4ae7c68b719e",
+          "generated_at": "2026-08-16T17:59:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2685,
+          "glow_score": 0.1219,
+          "art_hash": "cfa2a5599540a022"
+        },
+        "NOT_LIT_1": {
+          "sprite": "moss_clumps/moss_clump_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "24a92884-9ca8-4eb4-ac69-102612261375",
+          "generated_at": "2026-08-16T17:59:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6682,
+          "glow_score": 0.0,
+          "art_hash": "c0029b4c89c6bc81"
+        },
+        "NOT_LIT_2": {
+          "sprite": "moss_clumps/moss_clump_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2773590b-a294-4c35-a397-b64ffdf89359",
+          "generated_at": "2026-08-16T18:00:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8945,
+          "glow_score": 0.0,
+          "art_hash": "ed938a4cc9af30fe"
         }
       },
       "animations": []
@@ -33354,7 +33480,7 @@
       "rel": "moss_clumps/moss_clump_009",
       "name": "Star moss dome 009",
       "category": "moss_clumps",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, star moss dome, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -33374,11 +33500,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "moss_clumps/moss_clump_009/lit_1/sprite.webp",
+          "pixellab_object_id": "d70fb8d1-c624-4ff6-ae85-c9403922eb2e",
+          "generated_at": "2026-08-16T18:01:36+00:00",
+          "glow_concept": "moss veined with glowing soulstone seams",
+          "difference_from_source": 0.357,
+          "glow_score": 0.0633,
+          "art_hash": "625b2cea2c20b351"
+        },
+        "LIT_2": {
+          "sprite": "moss_clumps/moss_clump_009/lit_2/sprite.webp",
+          "pixellab_object_id": "81606cc3-9779-4de7-8dab-c4847a73c7fe",
+          "generated_at": "2026-08-16T18:01:56+00:00",
+          "glow_concept": "gently pulsing green glow deep inside the clump",
+          "difference_from_source": 0.3478,
+          "glow_score": 0.0953,
+          "art_hash": "4922bef5450ffa4a"
+        },
         "NOT_LIT_1": {
           "sprite": "moss_clumps/moss_clump_009/sprite.webp",
           "pixellab_object_id": "fe646f50-0367-49c1-b35b-2a01590c272e",
           "generated_at": "2026-08-13T21:45:40+00:00",
           "art_hash": "b2cd55978221f7a6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "moss_clumps/moss_clump_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "965e4fc0-0c73-4392-afe5-0b4f0ded4a71",
+          "generated_at": "2026-08-16T18:00:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8174,
+          "glow_score": 0.0,
+          "art_hash": "6f5f943f17b840c0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "moss_clumps/moss_clump_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ad419e22-7e24-41e6-81ec-ef80704aa082",
+          "generated_at": "2026-08-16T18:00:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4627,
+          "glow_score": 0.0,
+          "art_hash": "06213431eb6baf47"
+        },
+        "NOT_LIT_4": {
+          "sprite": "moss_clumps/moss_clump_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ca906c11-45b6-4038-81c3-4816d7ead70f",
+          "generated_at": "2026-08-16T18:01:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8685,
+          "glow_score": 0.0,
+          "art_hash": "307eb3decf1ad4f0"
         }
       },
       "animations": []
@@ -33386,9 +33557,9 @@
     {
       "id": "moss_clump_012",
       "rel": "moss_clumps/moss_clump_012",
-      "name": "Moss-swallowed stump 012 \u00b7 lit",
+      "name": "Moss-swallowed stump 012",
       "category": "moss_clumps",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, moss-swallowed stump, small, knee-high, self-emissive at night, softly radiating light: constellation of glowing pinprick spore capsules",
       "view": "low top-down",
       "size": 48,
@@ -33413,6 +33584,51 @@
           "pixellab_object_id": "cf4dbbc1-9582-4ddf-b3d5-ea0d73a446a8",
           "generated_at": "2026-08-13T23:13:19+00:00",
           "art_hash": "d6ae43f7a4215611"
+        },
+        "LIT_2": {
+          "sprite": "moss_clumps/moss_clump_012/lit_2/sprite.webp",
+          "pixellab_object_id": "ebe88aee-d7bd-4ae7-821c-add9f5f00b1e",
+          "generated_at": "2026-08-16T18:01:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5554,
+          "glow_score": 0.0054,
+          "art_hash": "8746335729425f34"
+        },
+        "LIT_3": {
+          "sprite": "moss_clumps/moss_clump_012/lit_3/sprite.webp",
+          "pixellab_object_id": "621ac5c2-9953-4cdb-998f-d55a44053ce6",
+          "generated_at": "2026-08-16T18:02:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7776,
+          "glow_score": 0.001,
+          "art_hash": "6478eabb56fb0bb7"
+        },
+        "LIT_4": {
+          "sprite": "moss_clumps/moss_clump_012/lit_4/sprite.webp",
+          "pixellab_object_id": "4c825e90-bba5-4f0f-838c-64cbe6533c69",
+          "generated_at": "2026-08-16T18:02:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5326,
+          "glow_score": 0.0032,
+          "art_hash": "b059db92ae9485db"
+        },
+        "NOT_LIT_1": {
+          "sprite": "moss_clumps/moss_clump_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ce99a51b-a529-442c-ba34-1da3d1c565fe",
+          "generated_at": "2026-08-16T18:03:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8367,
+          "glow_score": 0.0,
+          "art_hash": "a217d85f445d6205"
+        },
+        "NOT_LIT_2": {
+          "sprite": "moss_clumps/moss_clump_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1842c108-ac8e-4dcb-84d9-de5a947d5f5c",
+          "generated_at": "2026-08-16T18:03:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8655,
+          "glow_score": 0.0,
+          "art_hash": "6d5c39b1afa311c0"
         }
       },
       "animations": []
@@ -33447,6 +33663,15 @@
           "pixellab_object_id": "523add5c-8f2d-4269-9f59-66d88817562c",
           "generated_at": "2026-08-13T23:40:18+00:00",
           "art_hash": "d8f3d49390b176ef"
+        },
+        "LIT_2": {
+          "sprite": "moss_clumps/moss_clump_014/lit_2/sprite.webp",
+          "pixellab_object_id": "76a76530-4fe4-4e3a-8e87-8112e01ce324",
+          "generated_at": "2026-08-16T18:03:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5334,
+          "glow_score": 0.1547,
+          "art_hash": "774e9fbb3f2329c9"
         }
       },
       "animations": []
