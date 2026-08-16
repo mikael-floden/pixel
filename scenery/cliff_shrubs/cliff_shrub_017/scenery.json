@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/lit_1/sprite.webp",
+      "pixellab_object_id": "ffa58da3-9048-4904-91f5-5f87c6ed9dc4",
+      "generated_at": "2026-08-16T10:01:55+00:00",
+      "glow_concept": "blossoms glowing along the branches",
+      "difference_from_source": 0.5841,
+      "glow_score": 0.1644
+    },
     "LIT_2": {
       "sprite": "cliff_shrubs/cliff_shrub_017/lit_2/sprite.webp",
       "pixellab_object_id": "ccfee0f1-98ca-4b81-97d0-c3e9d5f02ff2",

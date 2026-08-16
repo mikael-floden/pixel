@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 18,
-  "name": "White-flowering bindweed fall 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White-flowering bindweed fall 018",
+  "lights": null,
   "variety": "white-flowering bindweed fall",
   "modifier": "broken by a bare rock band mid-fall",
   "glow_concept": "moonlit silver shimmer across the leaves",
@@ -36,6 +36,46 @@
       "sprite": "cliff_vines/cliff_vine_018/sprite.webp",
       "pixellab_object_id": "6ebd05d0-2c86-4f4f-93fe-e47224391fb0",
       "generated_at": "2026-08-14T03:14:02+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_2/sprite.webp",
+      "pixellab_object_id": "41f5fd7b-590e-40af-84f1-f5907d43e6bf",
+      "generated_at": "2026-08-16T10:06:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4051,
+      "glow_score": 0.0311
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_3/sprite.webp",
+      "pixellab_object_id": "0d1a8ea7-ccfd-45ea-bb35-1fdad1438832",
+      "generated_at": "2026-08-16T10:07:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6759,
+      "glow_score": 0.0335
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_018/lit_4/sprite.webp",
+      "pixellab_object_id": "c213d9ff-49b2-4f8c-a6bc-80292492a16b",
+      "generated_at": "2026-08-16T10:07:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.637,
+      "glow_score": 0.0269
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "21ed1506-d56f-4a77-bcc9-1c1d82ca1a39",
+      "generated_at": "2026-08-16T10:08:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8812,
+      "glow_score": 0.0016
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "bf42b9a9-86bf-47ad-b2df-d0169678a725",
+      "generated_at": "2026-08-16T10:07:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8512,
+      "glow_score": 0.0
     }
   }
 }

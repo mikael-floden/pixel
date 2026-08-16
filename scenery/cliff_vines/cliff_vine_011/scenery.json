@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 11,
   "name": "Moss-heavy dripping vine curtain 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "moss-heavy dripping vine curtain",
   "modifier": "asymmetric, wind-shaped",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_011/lit_1/sprite.webp",
+      "pixellab_object_id": "90678a65-9177-4df9-9b2d-733b9296b96d",
+      "generated_at": "2026-08-16T10:06:54+00:00",
+      "glow_concept": "amber memory-light dripping from the tips",
+      "difference_from_source": 0.6983,
+      "glow_score": 0.0327
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_011/lit_2/sprite.webp",
+      "pixellab_object_id": "ee0045ad-5a60-4f4b-b645-3ba6ff307e5c",
+      "generated_at": "2026-08-16T10:07:24+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.6347,
+      "glow_score": 0.076
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_011/sprite.webp",
       "pixellab_object_id": "9cf7568d-0747-494a-9ab6-e81b7ec16fd2",
       "generated_at": "2026-08-14T00:44:49+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d415a25f-618e-4771-84f7-634b116791ee",
+      "generated_at": "2026-08-16T10:06:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.742,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "067cdb03-50ac-4e14-9474-6c5e05194e6d",
+      "generated_at": "2026-08-16T10:06:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6793,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "37b55dad-ae4e-40cf-bcc3-943bdc4a8620",
+      "generated_at": "2026-08-16T10:06:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3953,
+      "glow_score": 0.0
     }
   }
 }
