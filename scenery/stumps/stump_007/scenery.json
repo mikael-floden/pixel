@@ -30,6 +30,14 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "stumps/stump_007/lit_1/sprite.webp",
+      "pixellab_object_id": "d4a5fe80-0c72-42f8-85fe-0241d48d993f",
+      "generated_at": "2026-08-16T14:25:47+00:00",
+      "glow_concept": "luminous green sapling sprouting from the center",
+      "difference_from_source": 0.8598,
+      "glow_score": 0.0671
+    },
     "LIT_2": {
       "sprite": "stumps/stump_007/lit_2/sprite.webp",
       "pixellab_object_id": "3a5bb20c-03ac-4fbc-8a13-ceb904b28df6",
@@ -37,6 +45,14 @@
       "difference_from_source": 0.8201,
       "glow_score": 0.0564,
       "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "LIT_3": {
+      "sprite": "stumps/stump_007/lit_3/sprite.webp",
+      "pixellab_object_id": "ac98f681-ff17-4e30-8d88-16cc95c64d81",
+      "generated_at": "2026-08-16T14:25:48+00:00",
+      "glow_concept": "growth rings glowing like concentric embers",
+      "difference_from_source": 0.6524,
+      "glow_score": 0.1273
     },
     "LIT_4": {
       "sprite": "stumps/stump_007/lit_4/sprite.webp",
@@ -68,6 +84,30 @@
       "glow_score": 0.0657,
       "generated_at": "2026-08-15T16:27:38+00:00"
     },
+    "NOT_LIT_3": {
+      "sprite": "stumps/stump_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "2251d5a4-69c4-4003-ab80-7a33badc7f93",
+      "generated_at": "2026-08-16T14:25:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9031,
+      "glow_score": 0.0363
+    },
+    "NOT_LIT_4": {
+      "sprite": "stumps/stump_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7c564e6a-8a57-4066-a1a4-7a0624869546",
+      "generated_at": "2026-08-16T14:25:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.467,
+      "glow_score": 0.0345
+    },
+    "NOT_LIT_5": {
+      "sprite": "stumps/stump_007/not_lit_5/sprite.webp",
+      "pixellab_object_id": "98b33b2f-3cc1-41ba-823e-874e72be2d49",
+      "generated_at": "2026-08-16T14:25:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5648,
+      "glow_score": 0.0155
+    },
     "NOT_LIT_6": {
       "sprite": "stumps/stump_007/not_lit_6/sprite.webp",
       "pixellab_object_id": "f44c0a86-d175-4055-9af6-be8111c000d6",
@@ -76,6 +116,14 @@
       "glow_score": 0.0267,
       "generated_at": "2026-08-15T16:27:38+00:00"
     },
+    "NOT_LIT_7": {
+      "sprite": "stumps/stump_007/not_lit_7/sprite.webp",
+      "pixellab_object_id": "d5261550-ccfe-461f-98b5-964436b836d3",
+      "generated_at": "2026-08-16T14:25:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.718,
+      "glow_score": 0.0
+    },
     "NOT_LIT_8": {
       "sprite": "stumps/stump_007/not_lit_8/sprite.webp",
       "pixellab_object_id": "f4a36323-50f6-4173-a842-4eff71124478",
@@ -83,6 +131,14 @@
       "difference_from_source": 0.7273,
       "glow_score": 0.4484,
       "generated_at": "2026-08-15T16:27:38+00:00"
+    },
+    "NOT_LIT_9": {
+      "sprite": "stumps/stump_007/not_lit_9/sprite.webp",
+      "pixellab_object_id": "da24185e-144d-4411-b2b0-e96186414ea2",
+      "generated_at": "2026-08-16T14:25:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8142,
+      "glow_score": 0.0186
     }
   },
   "generated_at": "2026-08-13T13:56:25+00:00"

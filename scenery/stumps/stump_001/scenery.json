@@ -30,6 +30,22 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "stumps/stump_001/lit_2/sprite.webp",
+      "pixellab_object_id": "5087322a-ee7a-4f1c-9e82-9ea7cb4f98d9",
+      "generated_at": "2026-08-16T14:25:12+00:00",
+      "glow_concept": "ring of glowing mushrooms around the base",
+      "difference_from_source": 0.8958,
+      "glow_score": 0.1016
+    },
+    "LIT_3": {
+      "sprite": "stumps/stump_001/lit_3/sprite.webp",
+      "pixellab_object_id": "723e435b-0108-4af7-aed1-ca35cc338ef9",
+      "generated_at": "2026-08-16T14:25:13+00:00",
+      "glow_concept": "a single candle burning on the cut face",
+      "difference_from_source": 0.4743,
+      "glow_score": 0.2397
+    },
     "LIT_4": {
       "sprite": "stumps/stump_001/lit_4/sprite.webp",
       "pixellab_object_id": "c6fcc026-1d9a-4a25-82ea-f59acf0ae43f",
@@ -52,6 +68,14 @@
       "glow_score": 0.0089,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
+    "NOT_LIT_3": {
+      "sprite": "stumps/stump_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3a3620a2-4f11-4f65-84f3-60c52c634575",
+      "generated_at": "2026-08-16T14:25:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8051,
+      "glow_score": 0.042
+    },
     "NOT_LIT_4": {
       "sprite": "stumps/stump_001/not_lit_4/sprite.webp",
       "pixellab_object_id": "29c9825a-753d-49e1-a966-5a50096b2d44",
@@ -59,6 +83,22 @@
       "difference_from_source": 0.4331,
       "glow_score": 0.0089,
       "generated_at": "2026-08-15T16:13:33+00:00"
+    },
+    "NOT_LIT_5": {
+      "sprite": "stumps/stump_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "fea46b82-8a74-4a91-899f-9d2eea99e958",
+      "generated_at": "2026-08-16T14:25:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6992,
+      "glow_score": 0.0252
+    },
+    "NOT_LIT_6": {
+      "sprite": "stumps/stump_001/not_lit_6/sprite.webp",
+      "pixellab_object_id": "7bdc1f50-9e9e-4680-bd76-611ceb919a47",
+      "generated_at": "2026-08-16T14:25:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6767,
+      "glow_score": 0.0061
     },
     "NOT_LIT_9": {
       "sprite": "stumps/stump_001/not_lit_9/sprite.webp",
