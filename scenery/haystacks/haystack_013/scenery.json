@@ -5,7 +5,7 @@
   "rank": 17,
   "index": 13,
   "name": "Twin small hillock stacks 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "twin small hillock stacks",
   "glow_concept": null,
   "prompt": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, twin small hillock stacks, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:08:50+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "haystacks/haystack_013/lit_1/sprite.webp",
+      "pixellab_object_id": "9be2fdf1-b231-4312-bc70-955e8e9bc476",
+      "generated_at": "2026-08-16T15:05:22+00:00",
+      "glow_concept": "stray straws glinting like spun gold",
+      "difference_from_source": 0.4533,
+      "glow_score": 0.5749
+    },
+    "LIT_2": {
+      "sprite": "haystacks/haystack_013/lit_2/sprite.webp",
+      "pixellab_object_id": "b4c7b09a-a37b-4b83-abd9-2caa95eb6d44",
+      "generated_at": "2026-08-16T15:06:09+00:00",
+      "glow_concept": "warm light leaking from a hollow inside",
+      "difference_from_source": 0.7188,
+      "glow_score": 0.6304
+    },
     "NOT_LIT_1": {
       "sprite": "haystacks/haystack_013/sprite.webp",
       "pixellab_object_id": "d359b86d-e62b-4e2a-9d7a-54e6588d0683",
       "generated_at": "2026-08-13T22:08:50+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "haystacks/haystack_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "3bdfebb6-eb20-4793-ab0b-92570b23a46f",
+      "generated_at": "2026-08-16T15:05:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5174,
+      "glow_score": 0.3031
+    },
+    "NOT_LIT_3": {
+      "sprite": "haystacks/haystack_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "03fcc65d-bf2b-46af-9315-0ec4c59be4bb",
+      "generated_at": "2026-08-16T15:05:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5994,
+      "glow_score": 0.576
+    },
+    "NOT_LIT_4": {
+      "sprite": "haystacks/haystack_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5ab18824-f9b5-4f84-bf0e-ad5e563b3668",
+      "generated_at": "2026-08-16T15:05:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4879,
+      "glow_score": 0.5262
     }
   }
 }

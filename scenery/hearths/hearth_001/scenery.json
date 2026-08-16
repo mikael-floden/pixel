@@ -5,7 +5,7 @@
   "rank": 107,
   "index": 1,
   "name": "Brick hearth with a baking oven 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "brick hearth with a baking oven",
   "glow_concept": null,
   "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, brick hearth with a baking oven, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:45:59+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "hearths/hearth_001/lit_1/sprite.webp",
+      "pixellab_object_id": "f6134247-bbb5-480e-b357-08f3169d2409",
+      "generated_at": "2026-08-16T15:12:20+00:00",
+      "glow_concept": "fire burning warm in the hearth mouth",
+      "difference_from_source": 0.288,
+      "glow_score": 0.0872
+    },
+    "LIT_2": {
+      "sprite": "hearths/hearth_001/lit_2/sprite.webp",
+      "pixellab_object_id": "759181f4-7d04-42c6-bc45-f9c093ad896d",
+      "generated_at": "2026-08-16T15:13:17+00:00",
+      "glow_concept": "embers breathing orange under the cook pot",
+      "difference_from_source": 0.9035,
+      "glow_score": 0.125
+    },
     "NOT_LIT_1": {
       "sprite": "hearths/hearth_001/sprite.webp",
       "pixellab_object_id": "7ced2af6-92e8-444f-9f67-6d8d462f18c6",
       "generated_at": "2026-08-13T20:45:59+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "hearths/hearth_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "711f18fe-58ab-437b-ae9c-6be87d80e5b2",
+      "generated_at": "2026-08-16T15:12:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5742,
+      "glow_score": 0.004
+    },
+    "NOT_LIT_3": {
+      "sprite": "hearths/hearth_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "63331c7c-5a95-40a9-96ed-d04ecd697851",
+      "generated_at": "2026-08-16T15:11:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2024,
+      "glow_score": 0.0
     }
   }
 }

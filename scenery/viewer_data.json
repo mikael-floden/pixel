@@ -28649,6 +28649,15 @@
           "difference_from_source": 0.9934,
           "glow_score": 0.1194,
           "art_hash": "3e8131cd0b51cad6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3e328eea-ea07-4d0f-a191-9d9ac2553338",
+          "generated_at": "2026-08-16T15:05:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.0,
+          "art_hash": "9a9b222a176101e2"
         }
       },
       "animations": []
@@ -28658,7 +28667,7 @@
       "rel": "haystacks/haystack_013",
       "name": "Twin small hillock stacks 013",
       "category": "haystacks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, twin small hillock stacks, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -28678,11 +28687,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "haystacks/haystack_013/lit_1/sprite.webp",
+          "pixellab_object_id": "9be2fdf1-b231-4312-bc70-955e8e9bc476",
+          "generated_at": "2026-08-16T15:05:22+00:00",
+          "glow_concept": "stray straws glinting like spun gold",
+          "difference_from_source": 0.4533,
+          "glow_score": 0.5749,
+          "art_hash": "6492e922665c20fe"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_013/lit_2/sprite.webp",
+          "pixellab_object_id": "b4c7b09a-a37b-4b83-abd9-2caa95eb6d44",
+          "generated_at": "2026-08-16T15:06:09+00:00",
+          "glow_concept": "warm light leaking from a hollow inside",
+          "difference_from_source": 0.7188,
+          "glow_score": 0.6304,
+          "art_hash": "8b83baa743ce8988"
+        },
         "NOT_LIT_1": {
           "sprite": "haystacks/haystack_013/sprite.webp",
           "pixellab_object_id": "d359b86d-e62b-4e2a-9d7a-54e6588d0683",
           "generated_at": "2026-08-13T22:08:50+00:00",
           "art_hash": "f2c7712ba19e5a18"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3bdfebb6-eb20-4793-ab0b-92570b23a46f",
+          "generated_at": "2026-08-16T15:05:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5174,
+          "glow_score": 0.3031,
+          "art_hash": "a986ff69f826dd83"
+        },
+        "NOT_LIT_3": {
+          "sprite": "haystacks/haystack_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "03fcc65d-bf2b-46af-9315-0ec4c59be4bb",
+          "generated_at": "2026-08-16T15:05:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5994,
+          "glow_score": 0.576,
+          "art_hash": "13e5efbc559cbda6"
+        },
+        "NOT_LIT_4": {
+          "sprite": "haystacks/haystack_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5ab18824-f9b5-4f84-bf0e-ad5e563b3668",
+          "generated_at": "2026-08-16T15:05:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4879,
+          "glow_score": 0.5262,
+          "art_hash": "de811ceb094d6ce5"
         }
       },
       "animations": []
@@ -28692,7 +28746,7 @@
       "rel": "haystacks/haystack_021",
       "name": "Rope-bound conical stack 021",
       "category": "haystacks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, rope-bound conical stack, with climbing flowers at one corner, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -28712,11 +28766,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "haystacks/haystack_021/lit_1/sprite.webp",
+          "pixellab_object_id": "c8012611-5be1-4fcf-822d-87870bfc5e8c",
+          "generated_at": "2026-08-16T15:07:42+00:00",
+          "glow_concept": "stray straws glinting like spun gold",
+          "difference_from_source": 0.5401,
+          "glow_score": 0.5248,
+          "art_hash": "2da890166b07af6e"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_021/lit_2/sprite.webp",
+          "pixellab_object_id": "f6a558ed-d66c-42fa-8e3b-bc61e7a5e9f6",
+          "generated_at": "2026-08-16T15:09:24+00:00",
+          "glow_concept": "warm light leaking from a hollow inside",
+          "difference_from_source": 0.5103,
+          "glow_score": 0.4899,
+          "art_hash": "a696ee092a1a01b9"
+        },
         "NOT_LIT_1": {
           "sprite": "haystacks/haystack_021/sprite.webp",
           "pixellab_object_id": "ce39fe8b-43b6-4f88-9e56-c811c992bdb7",
           "generated_at": "2026-08-14T01:27:49+00:00",
           "art_hash": "762962a9341240bc"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_021/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9b2ca2ad-c139-4918-a3ac-ad47918771f1",
+          "generated_at": "2026-08-16T15:05:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8193,
+          "glow_score": 0.3706,
+          "art_hash": "5c9c017097edb667"
+        },
+        "NOT_LIT_3": {
+          "sprite": "haystacks/haystack_021/not_lit_3/sprite.webp",
+          "pixellab_object_id": "bc975988-3149-420f-b787-91aeb47c5b5d",
+          "generated_at": "2026-08-16T15:07:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4395,
+          "glow_score": 0.3718,
+          "art_hash": "3c8f8b26d0509819"
+        },
+        "NOT_LIT_4": {
+          "sprite": "haystacks/haystack_021/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5e10fe32-7d67-4e5d-9f52-449e8afac236",
+          "generated_at": "2026-08-16T15:09:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7372,
+          "glow_score": 0.6675,
+          "art_hash": "b044899abf78313c"
         }
       },
       "animations": []
@@ -28724,9 +28823,9 @@
     {
       "id": "haystack_900",
       "rel": "haystacks/haystack_900",
-      "name": "Storm-leaning tousled stack 900 \u00b7 lit",
+      "name": "Storm-leaning tousled stack 900",
       "category": "haystacks",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, storm-leaning tousled stack, large, well above head height of a person, self-emissive at night, softly radiating light: luminous seed-heads threaded through the hay",
       "view": "low top-down",
       "size": 128,
@@ -28751,6 +28850,51 @@
           "pixellab_object_id": "7fdb7cd2-10dd-427b-94de-5d0223bbfc59",
           "generated_at": "2026-08-13T19:46:47+00:00",
           "art_hash": "617644a416a9e6ec"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_900/lit_2/sprite.webp",
+          "pixellab_object_id": "46eda5e7-9eac-473c-be32-c347dbf35dd3",
+          "generated_at": "2026-08-16T15:08:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2679,
+          "glow_score": 0.4354,
+          "art_hash": "a094ab4b8392878c"
+        },
+        "LIT_3": {
+          "sprite": "haystacks/haystack_900/lit_3/sprite.webp",
+          "pixellab_object_id": "123e07f1-12f5-4f28-93e5-51033cd84d6a",
+          "generated_at": "2026-08-16T15:08:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4637,
+          "glow_score": 0.4187,
+          "art_hash": "988269ffdc5559c8"
+        },
+        "LIT_4": {
+          "sprite": "haystacks/haystack_900/lit_4/sprite.webp",
+          "pixellab_object_id": "d30bb11d-6935-4521-a5be-1d8d0e8603e5",
+          "generated_at": "2026-08-16T15:09:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6588,
+          "glow_score": 0.4233,
+          "art_hash": "721d597a6a10d4ae"
+        },
+        "NOT_LIT_1": {
+          "sprite": "haystacks/haystack_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "37a5d3a2-cc0b-410a-a3c3-d0328110d40b",
+          "generated_at": "2026-08-16T15:08:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9987,
+          "glow_score": 0.0001,
+          "art_hash": "ba686ff133217fe0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6abdd2d7-a702-42ee-9e1b-3a058b9219aa",
+          "generated_at": "2026-08-16T15:10:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9954,
+          "glow_score": 0.0,
+          "art_hash": "261811dfddb03fbe"
         }
       },
       "animations": []
@@ -28760,7 +28904,7 @@
       "rel": "haystacks/haystack_901",
       "name": "Thatch-capped rain-hooded stack 901",
       "category": "haystacks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, thatch-capped rain-hooded stack, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -28780,11 +28924,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "haystacks/haystack_901/lit_1/sprite.webp",
+          "pixellab_object_id": "b219c79d-8fa3-455f-b699-ce2c365518fc",
+          "generated_at": "2026-08-16T15:11:10+00:00",
+          "glow_concept": "stray straws glinting like spun gold",
+          "difference_from_source": 0.4829,
+          "glow_score": 0.6885,
+          "art_hash": "88fdbe9fc8d406dc"
+        },
+        "LIT_2": {
+          "sprite": "haystacks/haystack_901/lit_2/sprite.webp",
+          "pixellab_object_id": "d1237d51-df15-449f-94cb-5d251e8250db",
+          "generated_at": "2026-08-16T15:12:39+00:00",
+          "glow_concept": "warm light leaking from a hollow inside",
+          "difference_from_source": 0.5685,
+          "glow_score": 0.6575,
+          "art_hash": "f7873c849d80f4e1"
+        },
         "NOT_LIT_1": {
           "sprite": "haystacks/haystack_901/sprite.webp",
           "pixellab_object_id": "e2c93f35-87de-4ff3-9a69-4dace469e4a8",
           "generated_at": "2026-08-13T23:19:00+00:00",
           "art_hash": "068be91b79ffa416"
+        },
+        "NOT_LIT_2": {
+          "sprite": "haystacks/haystack_901/not_lit_2/sprite.webp",
+          "pixellab_object_id": "dec5008b-9c34-4370-9d44-9a79ddc6dc21",
+          "generated_at": "2026-08-16T15:10:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6463,
+          "glow_score": 0.6078,
+          "art_hash": "fbbcf4a172f08417"
+        },
+        "NOT_LIT_3": {
+          "sprite": "haystacks/haystack_901/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1e2777dd-403e-4aa4-85e8-b42e7dbab889",
+          "generated_at": "2026-08-16T15:10:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.603,
+          "glow_score": 0.6379,
+          "art_hash": "7a841043b1d2684b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "haystacks/haystack_901/not_lit_4/sprite.webp",
+          "pixellab_object_id": "64763166-09e6-4f70-8b50-6ab23e78defa",
+          "generated_at": "2026-08-16T15:10:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6269,
+          "glow_score": 0.6091,
+          "art_hash": "dff83b18a77a636f"
         }
       },
       "animations": []
@@ -28794,7 +28983,7 @@
       "rel": "hearths/hearth_001",
       "name": "Brick hearth with a baking oven 001",
       "category": "hearths",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, brick hearth with a baking oven, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -28814,11 +29003,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hearths/hearth_001/lit_1/sprite.webp",
+          "pixellab_object_id": "f6134247-bbb5-480e-b357-08f3169d2409",
+          "generated_at": "2026-08-16T15:12:20+00:00",
+          "glow_concept": "fire burning warm in the hearth mouth",
+          "difference_from_source": 0.288,
+          "glow_score": 0.0872,
+          "art_hash": "c2dd7ececb0d4bb7"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_001/lit_2/sprite.webp",
+          "pixellab_object_id": "759181f4-7d04-42c6-bc45-f9c093ad896d",
+          "generated_at": "2026-08-16T15:13:17+00:00",
+          "glow_concept": "embers breathing orange under the cook pot",
+          "difference_from_source": 0.9035,
+          "glow_score": 0.125,
+          "art_hash": "dc908e4ce5e10750"
+        },
         "NOT_LIT_1": {
           "sprite": "hearths/hearth_001/sprite.webp",
           "pixellab_object_id": "7ced2af6-92e8-444f-9f67-6d8d462f18c6",
           "generated_at": "2026-08-13T20:45:59+00:00",
           "art_hash": "881022c7c60c7619"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "711f18fe-58ab-437b-ae9c-6be87d80e5b2",
+          "generated_at": "2026-08-16T15:12:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5742,
+          "glow_score": 0.004,
+          "art_hash": "7b2186d4dfc6b44f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hearths/hearth_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "63331c7c-5a95-40a9-96ed-d04ecd697851",
+          "generated_at": "2026-08-16T15:11:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2024,
+          "glow_score": 0.0,
+          "art_hash": "add5a3b5a4e5c904"
         }
       },
       "animations": []
