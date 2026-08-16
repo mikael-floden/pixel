@@ -21677,6 +21677,15 @@
           "difference_from_source": 0.7952,
           "glow_score": 0.0,
           "art_hash": "321964210f19cdf2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "dock_pilings/dock_piling_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1acbe24c-aaef-4b5a-9c56-d9ff9da10cad",
+          "generated_at": "2026-08-16T11:52:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8248,
+          "glow_score": 0.0,
+          "art_hash": "c2c94830eca51d5c"
         }
       },
       "animations": []
@@ -21686,7 +21695,7 @@
       "rel": "dragon_ribcages/dragon_ribcage_001",
       "name": "Bleached white ribcage 001",
       "category": "dragon_ribcages",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, bleached white by seasons, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -21706,11 +21715,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "dragon_ribcages/dragon_ribcage_001/lit_1/sprite.webp",
+          "pixellab_object_id": "328f90ac-8d4d-4dd2-acc9-cb26cc8a21f3",
+          "generated_at": "2026-08-16T11:54:55+00:00",
+          "glow_concept": "a warm heart-glow where the heart was",
+          "difference_from_source": 0.9632,
+          "glow_score": 0.1009,
+          "art_hash": "f2502118a7dc2beb"
+        },
+        "LIT_2": {
+          "sprite": "dragon_ribcages/dragon_ribcage_001/lit_2/sprite.webp",
+          "pixellab_object_id": "da977aea-fcb9-4bfd-bb00-e6c6e7871d53",
+          "generated_at": "2026-08-16T11:55:06+00:00",
+          "glow_concept": "soul-light breathing softly between the ribs",
+          "difference_from_source": 0.3965,
+          "glow_score": 0.2592,
+          "art_hash": "5338682907b16034"
+        },
         "NOT_LIT_1": {
           "sprite": "dragon_ribcages/dragon_ribcage_001/sprite.webp",
           "pixellab_object_id": "710e2e38-4231-49aa-9d6f-6f65849a1a97",
           "generated_at": "2026-08-14T02:35:25+00:00",
           "art_hash": "f7e61a654fc95ef0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "dragon_ribcages/dragon_ribcage_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "068b0a93-694c-49a2-85b2-2bef0de0bd06",
+          "generated_at": "2026-08-16T11:53:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.478,
+          "glow_score": 0.1132,
+          "art_hash": "a568cbbc3c06b405"
+        },
+        "NOT_LIT_3": {
+          "sprite": "dragon_ribcages/dragon_ribcage_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "45050272-4db4-4ef9-8ccc-3e3b3383127e",
+          "generated_at": "2026-08-16T11:52:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3853,
+          "glow_score": 0.0875,
+          "art_hash": "ab2085700a49a447"
+        },
+        "NOT_LIT_4": {
+          "sprite": "dragon_ribcages/dragon_ribcage_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "f0eda608-e4e6-4faf-9038-22da235f73d9",
+          "generated_at": "2026-08-16T11:54:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4407,
+          "glow_score": 0.0874,
+          "art_hash": "984622c75f0ed8ec"
         }
       },
       "animations": []
@@ -21718,9 +21772,9 @@
     {
       "id": "dragon_ribcage_004",
       "rel": "dragon_ribcages/dragon_ribcage_004",
-      "name": "Bleached white ribcage 004 \u00b7 lit",
+      "name": "Bleached white ribcage 004",
       "category": "dragon_ribcages",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "the huge weathered ribcage of some ancient beast arching out of the meadow, bones grey and moss-patched, bleached white ribcage, ivy climbing one side, tall, about three times human height, self-emissive at night, softly radiating light: glowing lichen mapping the bone",
       "view": "low top-down",
       "size": 128,
@@ -21745,6 +21799,51 @@
           "pixellab_object_id": "bb12c523-484a-41bf-a745-152d8dfd96de",
           "generated_at": "2026-08-14T01:27:30+00:00",
           "art_hash": "d86509c7a81b423d"
+        },
+        "LIT_2": {
+          "sprite": "dragon_ribcages/dragon_ribcage_004/lit_2/sprite.webp",
+          "pixellab_object_id": "e714fc16-46c6-46ff-a5de-955f00c26be0",
+          "generated_at": "2026-08-16T11:54:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5429,
+          "glow_score": 0.1482,
+          "art_hash": "8c242a31a724292c"
+        },
+        "LIT_3": {
+          "sprite": "dragon_ribcages/dragon_ribcage_004/lit_3/sprite.webp",
+          "pixellab_object_id": "316bfb5d-e3d7-4ce1-8ffa-50243630cf12",
+          "generated_at": "2026-08-16T11:57:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7433,
+          "glow_score": 0.144,
+          "art_hash": "0c8b3f381c25ac66"
+        },
+        "LIT_4": {
+          "sprite": "dragon_ribcages/dragon_ribcage_004/lit_4/sprite.webp",
+          "pixellab_object_id": "b7b3bba8-ed0f-44d6-99f0-1d728c71af44",
+          "generated_at": "2026-08-16T11:58:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4914,
+          "glow_score": 0.1642,
+          "art_hash": "ea12b9c3330ce5a6"
+        },
+        "NOT_LIT_1": {
+          "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "562e7b5a-f03a-4bca-b806-a40de700a778",
+          "generated_at": "2026-08-16T11:55:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8915,
+          "glow_score": 0.0003,
+          "art_hash": "70350de2a5711e0d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6d523a2d-c50a-4b6f-9bc2-1a6c4d062e71",
+          "generated_at": "2026-08-16T11:56:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8142,
+          "glow_score": 0.0,
+          "art_hash": "1eebbecc78d51492"
         }
       },
       "animations": []
@@ -24387,7 +24486,7 @@
       "rel": "fences/fence_001",
       "name": "Lichen-spotted spruce rails 001",
       "category": "fences",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, lichen-spotted spruce rails, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -24407,11 +24506,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "fences/fence_001/lit_1/sprite.webp",
+          "pixellab_object_id": "26f7e285-8572-4a79-b477-47292d1fded0",
+          "generated_at": "2026-08-16T11:57:44+00:00",
+          "glow_concept": "glowworms dotted along the lower rail",
+          "difference_from_source": 0.8754,
+          "glow_score": 0.0118,
+          "art_hash": "17cfbbbaef61028d"
+        },
+        "LIT_2": {
+          "sprite": "fences/fence_001/lit_2/sprite.webp",
+          "pixellab_object_id": "08496bf1-b041-434f-90c2-632ff63ea3d8",
+          "generated_at": "2026-08-16T11:57:55+00:00",
+          "glow_concept": "pale soulstone cap stones on the posts",
+          "difference_from_source": 0.7581,
+          "glow_score": 0.0437,
+          "art_hash": "70e1d6ed7bd90ea8"
+        },
         "NOT_LIT_1": {
           "sprite": "fences/fence_001/sprite.webp",
           "pixellab_object_id": "6dbd0a38-80d9-47e1-b981-e125d7ebfc7d",
           "generated_at": "2026-08-12T23:56:00+00:00",
           "art_hash": "20a5084c1075c6b0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fences/fence_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c57620bf-645b-41d3-9f58-a113c8f9cf46",
+          "generated_at": "2026-08-16T11:56:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6735,
+          "glow_score": 0.0,
+          "art_hash": "ebaed7c664248940"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fences/fence_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c4bbda03-8290-4c7d-99cd-243451925f56",
+          "generated_at": "2026-08-16T11:57:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6362,
+          "glow_score": 0.0,
+          "art_hash": "6bc571979272486d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fences/fence_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "3563ab3c-06a2-4658-8d25-c7fb4f0ca19b",
+          "generated_at": "2026-08-16T11:57:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7455,
+          "glow_score": 0.0,
+          "art_hash": "d5dbd0183cfed1ca"
         }
       },
       "animations": []
@@ -24421,7 +24565,7 @@
       "rel": "fences/fence_003",
       "name": "Moss-eaten collapsing rails 003",
       "category": "fences",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, moss-eaten collapsing rails, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -24441,11 +24585,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "fences/fence_003/lit_1/sprite.webp",
+          "pixellab_object_id": "1fe4fe7d-4c52-4947-af43-5c57d3d575fc",
+          "generated_at": "2026-08-16T12:00:54+00:00",
+          "glow_concept": "foxfire fungus shelves on a rotting rail",
+          "difference_from_source": 0.9607,
+          "glow_score": 0.0836,
+          "art_hash": "1ea904b19228de0e"
+        },
+        "LIT_2": {
+          "sprite": "fences/fence_003/lit_2/sprite.webp",
+          "pixellab_object_id": "e192869c-a177-4d31-b8b1-26804ec5cb20",
+          "generated_at": "2026-08-16T12:00:34+00:00",
+          "glow_concept": "carved farm-mark rune shining on a post",
+          "difference_from_source": 0.1477,
+          "glow_score": 0.0165,
+          "art_hash": "8a033393ce2a9f61"
+        },
         "NOT_LIT_1": {
           "sprite": "fences/fence_003/sprite.webp",
           "pixellab_object_id": "c5d48047-e9e7-4633-9215-1c394315d43b",
           "generated_at": "2026-08-13T06:35:03+00:00",
           "art_hash": "5f513fd62700fef5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fences/fence_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6d8ca2c7-0ebe-43e1-bd04-a2e237bcd0bd",
+          "generated_at": "2026-08-16T11:59:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6807,
+          "glow_score": 0.0,
+          "art_hash": "278d78d03d4bae70"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fences/fence_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "7e98b94a-46f5-47bd-b9e0-7786e0e39beb",
+          "generated_at": "2026-08-16T11:59:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5649,
+          "glow_score": 0.0,
+          "art_hash": "56e0857239cac16c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fences/fence_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d18c1b27-3d28-478e-bfe1-619e6f7303ac",
+          "generated_at": "2026-08-16T11:59:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5732,
+          "glow_score": 0.0,
+          "art_hash": "5158fee172d73691"
         }
       },
       "animations": []
@@ -24480,6 +24669,33 @@
           "pixellab_object_id": "6836ef8f-ec9c-41ee-a0be-b93e1d2ada6e",
           "generated_at": "2026-08-13T12:04:09+00:00",
           "art_hash": "738176b72cde2aef"
+        },
+        "LIT_2": {
+          "sprite": "fences/fence_006/lit_2/sprite.webp",
+          "pixellab_object_id": "58338d86-def5-437b-93d5-cd59cb3cbba9",
+          "generated_at": "2026-08-16T12:00:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4969,
+          "glow_score": 0.0183,
+          "art_hash": "81de1cdae46e5fb1"
+        },
+        "LIT_3": {
+          "sprite": "fences/fence_006/lit_3/sprite.webp",
+          "pixellab_object_id": "50d7a048-7ef0-4bc8-b03c-513fc7d8d900",
+          "generated_at": "2026-08-16T12:00:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7001,
+          "glow_score": 0.0073,
+          "art_hash": "0b3b9ad15de70ec5"
+        },
+        "LIT_4": {
+          "sprite": "fences/fence_006/lit_4/sprite.webp",
+          "pixellab_object_id": "06bc9b03-ae53-40bf-b34c-e7401ebcb9fb",
+          "generated_at": "2026-08-16T12:00:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9442,
+          "glow_score": 0.167,
+          "art_hash": "fa56d2ec81598217"
         }
       },
       "animations": []
@@ -24514,6 +24730,15 @@
           "pixellab_object_id": "8e8b6640-5c5f-4cad-b4b9-b546a00e08cd",
           "generated_at": "2026-08-13T01:12:13+00:00",
           "art_hash": "ae469bf1cff9c39c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "cbd81144-1e59-4251-959e-868f1722d352",
+          "generated_at": "2026-08-16T12:01:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7923,
+          "glow_score": 0.0,
+          "art_hash": "c4c695eac946996a"
         }
       },
       "animations": []
