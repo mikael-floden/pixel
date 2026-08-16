@@ -106,7 +106,16 @@ def apply_rejections(client):
         sub = [x for k2, x in entries.items()
                if k2.startswith(f"scenery/{rel}#")]
         sub_ok = sum(1 for x in sub if x.get("status") == "approved")
-        if rating >= 4 or (sub and sub_ok == len(sub)):
+        # A DAMNING RATING IS NOT A MISCLICK. "Every state approved" alone used
+        # to be enough to hold a deletion, which blocked fallen_log_004 and
+        # _005 — both rated ONE STAR and rejected, with a single approved
+        # state each (2026-08-16). One star plus a rejection is the most
+        # consistent judgement he can express; refusing to act on it makes the
+        # guard the thing that ignores him. The guard exists for the opposite
+        # shape — five-star art rejected by a stray tap — so a low rating now
+        # overrides the all-states-approved signal.
+        deliberate = 0 < rating <= 1
+        if not deliberate and (rating >= 4 or (sub and sub_ok == len(sub))):
             conflicted.append(
                 f"{rel} (rating {rating}, {sub_ok}/{len(sub)} states approved)")
             continue
