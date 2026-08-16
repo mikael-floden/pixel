@@ -156,6 +156,66 @@ def canonicalise(img):
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+def refine_interface(a, reg, band=3):
+    """Let the grass/wall boundary keep the material's OWN shape.
+
+    The geometric split is right for the interior of each surface and wrong at the seam
+    between them. A real 'grass over soil' tile has grass tufting down over the edge and
+    soil poking up into it; forcing a straight mathematical line there produces 'green
+    over soil' — a colour lying on top of a material instead of one material growing out
+    of another. Measured: the raw art carries a boundary raggedness of 0.4 to 1.5 px and
+    up to 16 pixels of overhanging tuft, and the geometric line flattens both to exactly
+    zero.
+
+    So within `band` rows of the boundary, and ONLY there, each pixel is assigned by
+    colour: closer to the top material's median, it is top; closer to the wall's, it is
+    wall. This is the inference tiles2 got wrong for months, which is why it is fenced in
+    hard — it runs in a 3px band around a boundary already known geometrically, between
+    exactly two candidate colours measured from this tile. It cannot wander off into the
+    flowers or the fire, because it never looks anywhere else.
+
+    The interior is untouched, so the top stays a clean single colour. Only the seam
+    moves, which is the whole point: clean surface, interesting transition.
+    """
+    rgb = a[:, :, :3]
+    op = a[:, :, 3] > 128
+    top, left, right = reg["top"], reg["left"], reg["right"]
+    wall = left | right
+    if top.sum() < 50 or wall.sum() < 50:
+        return reg
+    # medians taken AWAY from the seam, so the reference colours are not themselves
+    # contaminated by the transition we are trying to resolve
+    _, xs = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+    ox = np.where(op.any(0))[0]
+    cx = (int(ox.min()) + int(ox.max())) / 2.0
+
+    bnd = np.zeros_like(top)
+    for x in range(a.shape[1]):
+        t = np.where(top[:, x])[0]
+        if len(t):
+            tb = int(t.max())
+            bnd[max(0, tb - band + 1):tb + band + 1, x] = True
+
+    core_t = top & ~bnd
+    if core_t.sum() < 30:
+        return reg
+    tmed = np.median(rgb[core_t], 0)
+    dt = np.abs(rgb - tmed).sum(2)
+
+    out = {"top": top.copy(), "left": left.copy(), "right": right.copy()}
+    for face, side in (("left", xs <= cx), ("right", xs > cx)):
+        core = reg[face] & ~bnd
+        if core.sum() < 20:
+            continue
+        sel = bnd & op & side & (reg[face] | top)
+        if not sel.any():
+            continue
+        dw = np.abs(rgb - np.median(rgb[core], 0)).sum(2)
+        out["top"] = (out["top"] & ~sel) | (sel & (dt <= dw))
+        out[face] = (out[face] & ~sel) | (sel & (dt > dw))
+    return out
+
+
 def _rgb2hsv(px):
     return np.asarray(Image.fromarray(px.clip(0, 255).astype(np.uint8)[None, :, :], "RGB")
                       .convert("HSV"), dtype=float)[0]
@@ -261,6 +321,67 @@ def wrap_wall(img, band=6, strength=1.0):
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+def middle_floor(img, band=4):
+    """Derive the tile used for every floor BELOW the top of a cliff.
+
+    A cliff is one tile stacked N high, so the wall repeats vertically and any
+    discontinuity between the strip's first and last row becomes a hard line at every
+    storey. Measured on a 4-storey stack, the join rows step 1.2x to 1.9x harder than
+    the texture's own row-to-row variation.
+
+    The cause is not the texture, it is END-OF-BLOCK LIGHTING. Measuring mean luminance
+    by depth into the wall shows the generator draws a lit rim on the top row (+22 on
+    grey_stone, +35 on paving_stone) and an occlusion falloff over the last three rows
+    (-18, -36, -44). Stacked, the dark base of one block meets the bright rim of the next
+    and that IS the line. Cross-fading the two ends together does not fix it — measured,
+    it moved 1.6x to 1.5x and made light_soil worse — because averaging a dark edge with
+    a bright one leaves a band either way.
+
+    A middle floor has no ends, so it should carry neither. This removes the systematic
+    profile: for each depth within `band` of an end, the mean deviation from the strip's
+    interior is measured across all columns and subtracted. Because the correction is one
+    constant per depth, every pixel's deviation from its row — the actual rock texture —
+    survives untouched; only the banding goes.
+
+    The CAP tile keeps its shading. That is what makes ground read as sitting on rock,
+    and it is correct exactly once, at the top.
+
+    The two faces are corrected SEPARATELY. The generator lights them differently on
+    purpose — that difference is what makes a tile read as a solid block — and it applies
+    to the end effects too: on grey_stone the left face's rim is +43 and its base -34,
+    while the right face's rim is +1 and its base -53. Averaging the two into one profile
+    corrects neither, which is what a first attempt at this did.
+    """
+    a = np.asarray(img.convert("RGBA")).astype(float)
+    reg = _regions(a)
+    if not reg:
+        return img.convert("RGBA")
+    lum = lambda p: 0.299 * p[..., 0] + 0.587 * p[..., 1] + 0.114 * p[..., 2]
+    L = lum(a[:, :, :3])
+    out = a.copy()
+
+    for face in ("left", "right"):
+        wall = reg[face]
+        strips = {}
+        for x in range(a.shape[1]):
+            rows = np.where(wall[:, x])[0]
+            if len(rows) >= band * 2 + 2:
+                strips[x] = (int(rows.min()), int(rows.max()))
+        if not strips:
+            continue
+        mid = float(np.mean(np.concatenate(
+            [L[r0 + band:r1 - band + 1, x] for x, (r0, r1) in strips.items()])))
+        top_dev = [float(np.mean([L[r0 + d, x] for x, (r0, _) in strips.items()])) - mid
+                   for d in range(band)]
+        bot_dev = [float(np.mean([L[r1 - d, x] for x, (_, r1) in strips.items()])) - mid
+                   for d in range(band)]
+        for x, (r0, r1) in strips.items():
+            for d in range(band):
+                for row, dev in ((r0 + d, top_dev[d]), (r1 - d, bot_dev[d])):
+                    out[row, x, :3] = np.clip(a[row, x, :3] - dev, 0, 255)
+    return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
@@ -284,6 +405,8 @@ def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     """
     a = np.asarray(canonicalise(img)).astype(float)
     reg = _regions(a)
+    if reg:
+        reg = refine_interface(a, reg)
     if not reg:
         return img.convert("RGBA")
     out = a.copy()

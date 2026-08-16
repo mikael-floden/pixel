@@ -76,16 +76,21 @@ def wall_height(tile):
     return int(min(gaps)) if gaps else 0
 
 
-def plateau(tile, cols=4, rows=4, level=1, pad=8, floors=1):
+def plateau(tile, cols=4, rows=4, level=1, pad=8, floors=1, middle=None):
     """Lay `tile` over a cols x rows patch of ground raised to `level`.
 
     A plateau rather than a flat field on purpose: raising it means the front rank's
     walls are exposed, which is the only way to see the cliff faces the tiles exist
     for, while the interior shows how the tops tessellate.
 
-    `floors` stacks that many storeys of the SAME tile into one cliff. One floor only
-    ever shows the wall repeating sideways; the wall also has to repeat downwards, and
-    a single storey cannot show whether it does.
+    `floors` stacks that many storeys into one cliff. One floor only ever shows the wall
+    repeating sideways; the wall also has to repeat downwards, and a single storey
+    cannot show whether it does.
+
+    `middle`, when given, is used for every floor BELOW the top one. A cliff wants two
+    different tiles: the cap carries the shading where the ground overhangs the rock,
+    and the floors under it want that shading gone or it becomes a stripe at every
+    storey. Passing the same tile for both is what puts a hard line at each join.
     """
     lp = wall_height(tile)
     tw, th = tile.size
@@ -103,7 +108,7 @@ def plateau(tile, cols=4, rows=4, level=1, pad=8, floors=1):
     for c, r, f in sorted(cells, key=lambda k: (k[0] + k[1], k[2])):
         x = ox + (c - r) * DX
         y = oy + (c + r) * DY - level * lp - f * lp
-        out.alpha_composite(tile, (x, y))
+        out.alpha_composite(tile if (middle is None or f == floors - 1) else middle, (x, y))
     return out
 
 
