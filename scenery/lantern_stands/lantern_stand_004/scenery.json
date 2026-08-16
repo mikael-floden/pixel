@@ -4,8 +4,8 @@
   "group": "lantern_stands",
   "rank": 29,
   "index": 4,
-  "name": "Double-hook twin lantern stand 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Double-hook twin lantern stand 004",
+  "lights": null,
   "variety": "double-hook twin lantern stand",
   "glow_concept": "punched-tin lantern scattering pinprick light",
   "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, double-hook twin lantern stand, large, well above head height of a person, self-emissive at night, softly radiating light: punched-tin lantern scattering pinprick light",
@@ -35,6 +35,46 @@
       "sprite": "lantern_stands/lantern_stand_004/sprite.webp",
       "pixellab_object_id": "7d5fb7d7-6493-4deb-91f3-7a93c15110bc",
       "generated_at": "2026-08-13T09:14:42+00:00"
+    },
+    "LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_004/lit_2/sprite.webp",
+      "pixellab_object_id": "e04d4a1a-54f1-4971-a6ed-4fc2c8a7599a",
+      "generated_at": "2026-08-16T17:30:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8388,
+      "glow_score": 0.0315
+    },
+    "LIT_3": {
+      "sprite": "lantern_stands/lantern_stand_004/lit_3/sprite.webp",
+      "pixellab_object_id": "19b028a2-4f4b-4376-950a-95254ea0dc74",
+      "generated_at": "2026-08-16T17:30:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9612,
+      "glow_score": 0.1915
+    },
+    "LIT_4": {
+      "sprite": "lantern_stands/lantern_stand_004/lit_4/sprite.webp",
+      "pixellab_object_id": "76dfada2-7832-4b3d-8112-3cc1e3c4581b",
+      "generated_at": "2026-08-16T17:30:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9657,
+      "glow_score": 0.1447
+    },
+    "NOT_LIT_1": {
+      "sprite": "lantern_stands/lantern_stand_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4e649383-b9cd-49d6-851b-4749c418815f",
+      "generated_at": "2026-08-16T17:30:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8545,
+      "glow_score": 0.0031
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4086ac54-ca83-4585-8704-666ecd89a4e8",
+      "generated_at": "2026-08-16T17:30:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7077,
+      "glow_score": 0.0
     }
   }
 }

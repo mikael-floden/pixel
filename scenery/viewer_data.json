@@ -32040,6 +32040,15 @@
           "difference_from_source": 0.3287,
           "glow_score": 0.0,
           "art_hash": "a2daf0b9b981d3a6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a2c62cce-4e14-460d-8e6f-1b0b4d9e6ffe",
+          "generated_at": "2026-08-16T17:32:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8905,
+          "glow_score": 0.0,
+          "art_hash": "893d5f46510420d0"
         }
       },
       "animations": []
@@ -32047,9 +32056,9 @@
     {
       "id": "lantern_post_026",
       "rel": "lantern_posts/lantern_post_026",
-      "name": "Rope-lashed twin post 026 \u00b7 lit",
+      "name": "Rope-lashed twin post 026",
       "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rope-lashed twin post, weathered silver-grey, large, twice human height, self-emissive at night, softly radiating light: raw glowing amber soulstone chunk",
       "view": "low top-down",
       "size": 64,
@@ -32092,6 +32101,33 @@
           "difference_from_source": 0.4048,
           "glow_score": 0.0472,
           "art_hash": "8214d91162ff7cd6"
+        },
+        "LIT_4": {
+          "sprite": "lantern_posts/lantern_post_026/lit_4/sprite.webp",
+          "pixellab_object_id": "0e728296-89c5-4b2a-b101-c43b1568cee8",
+          "generated_at": "2026-08-16T17:27:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9344,
+          "glow_score": 0.0494,
+          "art_hash": "26e491a4ae86dc78"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_posts/lantern_post_026/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4f631faf-053c-498a-8ce1-3392da07ba8b",
+          "generated_at": "2026-08-16T17:27:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6279,
+          "glow_score": 0.004,
+          "art_hash": "ff09478ebe79c2f6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_026/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8075a842-a7b3-43d6-88f0-67e246feb275",
+          "generated_at": "2026-08-16T17:28:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7451,
+          "glow_score": 0.0115,
+          "art_hash": "9ef54798e44ef267"
         }
       },
       "animations": []
@@ -32099,9 +32135,9 @@
     {
       "id": "lantern_stand_004",
       "rel": "lantern_stands/lantern_stand_004",
-      "name": "Double-hook twin lantern stand 004 \u00b7 lit",
+      "name": "Double-hook twin lantern stand 004",
       "category": "lantern_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, double-hook twin lantern stand, large, well above head height of a person, self-emissive at night, softly radiating light: punched-tin lantern scattering pinprick light",
       "view": "low top-down",
       "size": 128,
@@ -32126,6 +32162,51 @@
           "pixellab_object_id": "7d5fb7d7-6493-4deb-91f3-7a93c15110bc",
           "generated_at": "2026-08-13T09:14:42+00:00",
           "art_hash": "c9a396c562160337"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_004/lit_2/sprite.webp",
+          "pixellab_object_id": "e04d4a1a-54f1-4971-a6ed-4fc2c8a7599a",
+          "generated_at": "2026-08-16T17:30:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8388,
+          "glow_score": 0.0315,
+          "art_hash": "9458832ce3952245"
+        },
+        "LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_004/lit_3/sprite.webp",
+          "pixellab_object_id": "19b028a2-4f4b-4376-950a-95254ea0dc74",
+          "generated_at": "2026-08-16T17:30:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9612,
+          "glow_score": 0.1915,
+          "art_hash": "db1b5ea1f9b65e8f"
+        },
+        "LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_004/lit_4/sprite.webp",
+          "pixellab_object_id": "76dfada2-7832-4b3d-8112-3cc1e3c4581b",
+          "generated_at": "2026-08-16T17:30:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9657,
+          "glow_score": 0.1447,
+          "art_hash": "341aeb762f1a985f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4e649383-b9cd-49d6-851b-4749c418815f",
+          "generated_at": "2026-08-16T17:30:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8545,
+          "glow_score": 0.0031,
+          "art_hash": "e1720da37d9d20be"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4086ac54-ca83-4585-8704-666ecd89a4e8",
+          "generated_at": "2026-08-16T17:30:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7077,
+          "glow_score": 0.0,
+          "art_hash": "752ed6c00dc1a54c"
         }
       },
       "animations": []
@@ -32135,7 +32216,7 @@
       "rel": "lantern_stands/lantern_stand_005",
       "name": "Antler-shaped forked stand 005",
       "category": "lantern_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, antler-shaped forked stand, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -32155,11 +32236,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_005/lit_1/sprite.webp",
+          "pixellab_object_id": "fb4f97b2-eafe-471b-8d82-df855b3d8626",
+          "generated_at": "2026-08-16T17:33:00+00:00",
+          "glow_concept": "wickless ghost-flame hovering inside the cage",
+          "difference_from_source": 0.848,
+          "glow_score": 0.1087,
+          "art_hash": "773b7c09b68dc6f6"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_005/lit_2/sprite.webp",
+          "pixellab_object_id": "37133198-ceb4-4002-b5cb-235014ddebd6",
+          "generated_at": "2026-08-16T17:33:53+00:00",
+          "glow_concept": "green foxfire fungus packed behind the glass",
+          "difference_from_source": 0.6936,
+          "glow_score": 0.1382,
+          "art_hash": "1b7b5e24e034338a"
+        },
         "NOT_LIT_1": {
           "sprite": "lantern_stands/lantern_stand_005/sprite.webp",
           "pixellab_object_id": "e90b70ce-22f1-4bad-b33c-13bc9d7b68d6",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "ad5661417562bc03"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "04497f48-943e-4f60-9a8c-fa108c039613",
+          "generated_at": "2026-08-16T17:32:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9067,
+          "glow_score": 0.0411,
+          "art_hash": "ca13180ba94341db"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "fac54d39-5958-44b1-b781-f39ce999cfab",
+          "generated_at": "2026-08-16T17:31:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9401,
+          "glow_score": 0.0214,
+          "art_hash": "0886f96fee9ac17f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7b38f9a7-3a7a-4a51-8afc-84549a3078a1",
+          "generated_at": "2026-08-16T17:33:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.789,
+          "glow_score": 0.0198,
+          "art_hash": "d3220f8b50fed0c3"
         }
       },
       "animations": []
@@ -32169,7 +32295,7 @@
       "rel": "lantern_stands/lantern_stand_007",
       "name": "Leaning overgrown stand 007",
       "category": "lantern_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, leaning overgrown stand, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -32189,11 +32315,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_007/lit_1/sprite.webp",
+          "pixellab_object_id": "d9383a29-ff98-4317-82ba-95d1469e9d1b",
+          "generated_at": "2026-08-16T17:36:45+00:00",
+          "glow_concept": "green foxfire fungus packed behind the glass",
+          "difference_from_source": 0.7398,
+          "glow_score": 0.0542,
+          "art_hash": "7e5526561e09da9f"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_007/lit_2/sprite.webp",
+          "pixellab_object_id": "84462e3f-7d7e-4a5b-9e6b-92c5f47cc1fd",
+          "generated_at": "2026-08-16T17:36:30+00:00",
+          "glow_concept": "stained-glass panes throwing colored light",
+          "difference_from_source": 0.6481,
+          "glow_score": 0.0539,
+          "art_hash": "568e887435db0d46"
+        },
         "NOT_LIT_1": {
           "sprite": "lantern_stands/lantern_stand_007/sprite.webp",
           "pixellab_object_id": "075f17ac-28c8-45a6-a00e-0fafea347db1",
           "generated_at": "2026-08-13T14:03:12+00:00",
           "art_hash": "006e3002128ccdcb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b0bf4b7a-4b3e-45e7-b011-725ec944003c",
+          "generated_at": "2026-08-16T17:33:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7829,
+          "glow_score": 0.0,
+          "art_hash": "e494daf0e837ba5f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0bb6dc56-a7cf-4938-85b3-e0f95e3896c0",
+          "generated_at": "2026-08-16T17:35:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8936,
+          "glow_score": 0.0909,
+          "art_hash": "fd740276804bf902"
+        },
+        "NOT_LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "8ad8275f-3c72-4239-ba3b-22c9efbcb862",
+          "generated_at": "2026-08-16T17:35:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6042,
+          "glow_score": 0.0,
+          "art_hash": "b26ef816af4110a1"
         }
       },
       "animations": []
@@ -32203,7 +32374,7 @@
       "rel": "lantern_stands/lantern_stand_013",
       "name": "Rusted harbor crane stand 013",
       "category": "lantern_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, rusted harbor crane stand, with climbing flowers at one corner, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -32223,11 +32394,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_013/lit_1/sprite.webp",
+          "pixellab_object_id": "830b9141-7932-4668-b5ad-cc4fece04565",
+          "generated_at": "2026-08-16T17:37:53+00:00",
+          "glow_concept": "stained-glass panes throwing colored light",
+          "difference_from_source": 0.8621,
+          "glow_score": 0.0318,
+          "art_hash": "b4197818d26e0ed8"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_013/lit_2/sprite.webp",
+          "pixellab_object_id": "b878b33c-bd70-4efa-ae67-9fa2ed32c240",
+          "generated_at": "2026-08-16T17:38:22+00:00",
+          "glow_concept": "punched-tin lantern scattering pinprick light",
+          "difference_from_source": 0.8018,
+          "glow_score": 0.1486,
+          "art_hash": "9f1546dae6eca7f6"
+        },
         "NOT_LIT_1": {
           "sprite": "lantern_stands/lantern_stand_013/sprite.webp",
           "pixellab_object_id": "f6bdab44-794a-4b82-aac4-ffd0294f6507",
           "generated_at": "2026-08-14T00:50:47+00:00",
           "art_hash": "0167ec2d1c544102"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5d1e8def-b96c-4008-a03c-88314edf3317",
+          "generated_at": "2026-08-16T17:36:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9248,
+          "glow_score": 0.12,
+          "art_hash": "9e91f0a6e7b44eb1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4527020d-8893-4d6f-9c91-a1843a5dc8ab",
+          "generated_at": "2026-08-16T17:36:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.931,
+          "glow_score": 0.0696,
+          "art_hash": "425b6bdc75efae62"
+        },
+        "NOT_LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7fc56a98-7541-4ab6-a6ad-09e6b23cd025",
+          "generated_at": "2026-08-16T17:37:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8704,
+          "glow_score": 0.0975,
+          "art_hash": "0d6507e80a9be589"
         }
       },
       "animations": []
@@ -32262,6 +32478,15 @@
           "pixellab_object_id": "2f76225f-cef1-41d5-a8c8-2354f36c6f07",
           "generated_at": "2026-08-14T00:39:44+00:00",
           "art_hash": "06e9ee97ca0ce017"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_014/lit_2/sprite.webp",
+          "pixellab_object_id": "c81d7156-8fc8-40b7-bdf1-08300681d893",
+          "generated_at": "2026-08-16T17:38:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9688,
+          "glow_score": 0.1903,
+          "art_hash": "b52cca5f56481834"
         }
       },
       "animations": []

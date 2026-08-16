@@ -5,8 +5,8 @@
   "group": "lantern_posts",
   "rank": 5,
   "index": 26,
-  "name": "Rope-lashed twin post 026 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rope-lashed twin post 026",
+  "lights": null,
   "variety": "rope-lashed twin post",
   "modifier": "weathered silver-grey",
   "glow_concept": "raw glowing amber soulstone chunk",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.4048,
       "glow_score": 0.0472
+    },
+    "LIT_4": {
+      "sprite": "lantern_posts/lantern_post_026/lit_4/sprite.webp",
+      "pixellab_object_id": "0e728296-89c5-4b2a-b101-c43b1568cee8",
+      "generated_at": "2026-08-16T17:27:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9344,
+      "glow_score": 0.0494
+    },
+    "NOT_LIT_1": {
+      "sprite": "lantern_posts/lantern_post_026/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4f631faf-053c-498a-8ce1-3392da07ba8b",
+      "generated_at": "2026-08-16T17:27:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6279,
+      "glow_score": 0.004
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_posts/lantern_post_026/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8075a842-a7b3-43d6-88f0-67e246feb275",
+      "generated_at": "2026-08-16T17:28:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7451,
+      "glow_score": 0.0115
     }
   }
 }

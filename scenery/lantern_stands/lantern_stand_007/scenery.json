@@ -5,7 +5,7 @@
   "rank": 29,
   "index": 7,
   "name": "Leaning overgrown stand 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "leaning overgrown stand",
   "glow_concept": null,
   "prompt": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, leaning overgrown stand, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T14:03:12+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "lantern_stands/lantern_stand_007/lit_1/sprite.webp",
+      "pixellab_object_id": "d9383a29-ff98-4317-82ba-95d1469e9d1b",
+      "generated_at": "2026-08-16T17:36:45+00:00",
+      "glow_concept": "green foxfire fungus packed behind the glass",
+      "difference_from_source": 0.7398,
+      "glow_score": 0.0542
+    },
+    "LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_007/lit_2/sprite.webp",
+      "pixellab_object_id": "84462e3f-7d7e-4a5b-9e6b-92c5f47cc1fd",
+      "generated_at": "2026-08-16T17:36:30+00:00",
+      "glow_concept": "stained-glass panes throwing colored light",
+      "difference_from_source": 0.6481,
+      "glow_score": 0.0539
+    },
     "NOT_LIT_1": {
       "sprite": "lantern_stands/lantern_stand_007/sprite.webp",
       "pixellab_object_id": "075f17ac-28c8-45a6-a00e-0fafea347db1",
       "generated_at": "2026-08-13T14:03:12+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b0bf4b7a-4b3e-45e7-b011-725ec944003c",
+      "generated_at": "2026-08-16T17:33:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7829,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "lantern_stands/lantern_stand_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "0bb6dc56-a7cf-4938-85b3-e0f95e3896c0",
+      "generated_at": "2026-08-16T17:35:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8936,
+      "glow_score": 0.0909
+    },
+    "NOT_LIT_4": {
+      "sprite": "lantern_stands/lantern_stand_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8ad8275f-3c72-4239-ba3b-22c9efbcb862",
+      "generated_at": "2026-08-16T17:35:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6042,
+      "glow_score": 0.0
     }
   }
 }
