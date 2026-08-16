@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 828,
+  "scenery_count": 812,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -78,7 +78,7 @@
       "name": "Cairn",
       "type": "TOWN",
       "quota": 84,
-      "done": 16
+      "done": 15
     },
     {
       "rank": 10,
@@ -126,7 +126,7 @@
       "name": "Road Light",
       "type": "TOWN",
       "quota": 40,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 16,
@@ -166,7 +166,7 @@
       "name": "Fallen Log",
       "type": "NATURE",
       "quota": 62,
-      "done": 16
+      "done": 12
     },
     {
       "rank": 21,
@@ -198,7 +198,7 @@
       "name": "Stump",
       "type": "NATURE",
       "quota": 54,
-      "done": 14
+      "done": 13
     },
     {
       "rank": 25,
@@ -238,7 +238,7 @@
       "name": "Hanging Lantern Stand",
       "type": "TOWN",
       "quota": 44,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 30,
@@ -846,7 +846,7 @@
       "name": "Bed",
       "type": "INDOOR",
       "quota": 30,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 106,
@@ -1382,7 +1382,7 @@
       "name": "Window",
       "type": "WINDOW",
       "quota": 400,
-      "done": 72
+      "done": 64
     }
   ],
   "categories": {
@@ -1396,7 +1396,7 @@
     "beacons": 11,
     "beast_skulls": 2,
     "beaver_lodges": 1,
-    "beds": 5,
+    "beds": 4,
     "bee_logs": 1,
     "beehives": 4,
     "bell_posts": 1,
@@ -1406,7 +1406,7 @@
     "briar_thickets": 12,
     "broken_columns": 2,
     "bushes": 12,
-    "cairns": 16,
+    "cairns": 15,
     "light": 1,
     "carts": 7,
     "cattail_clumps": 6,
@@ -1428,7 +1428,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fallen_logs": 16,
+    "fallen_logs": 13,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
@@ -1458,7 +1458,7 @@
     "house_clutter": 9,
     "ivy_posts": 5,
     "lantern_posts": 12,
-    "lantern_stands": 8,
+    "lantern_stands": 7,
     "letter_boxes": 1,
     "market_stalls": 4,
     "maypoles": 2,
@@ -1491,8 +1491,8 @@
     "stone_fountains": 2,
     "stones": 46,
     "story_posts": 8,
-    "streetlights": 7,
-    "stumps": 14,
+    "streetlights": 6,
+    "stumps": 13,
     "sundials": 2,
     "tables": 10,
     "telegraph_poles": 4,
@@ -1512,7 +1512,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 72,
+    "windows": 64,
     "wisteria_snags": 1,
     "witch_rings": 1,
     "woodpiles": 2
@@ -4661,93 +4661,6 @@
       "animations": []
     },
     {
-      "id": "bed_012",
-      "rel": "beds/bed_012",
-      "name": "Cupboard bed built into panelling 012",
-      "category": "beds",
-      "lights": null,
-      "description": "a solid wooden box bed with a thick quilted cover and a plump pillow, heavy frame standing on the floor, cupboard bed built into panelling, grand and heavy, small, knee-high, self-emissive at night, softly radiating light: a warming pan glowing at the foot of the bed",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.6,
-        "world_px_height": 23,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          24,
-          6,
-          106,
-          124
-        ],
-        "content_px_height": 118,
-        "canvas_render_px": 25
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:09:40+00:00",
-      "pixellab_object_id": "8d914a8f-98eb-48f2-9d6a-0a895080eb1a",
-      "sprite": "beds/bed_012/sprite.webp",
-      "art_hash": "6f2c3c8f8f75a81c",
-      "type": "INDOOR",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "beds/bed_012/sprite.webp",
-          "pixellab_object_id": "8d914a8f-98eb-48f2-9d6a-0a895080eb1a",
-          "generated_at": "2026-08-15T18:09:40+00:00",
-          "art_hash": "6f2c3c8f8f75a81c"
-        },
-        "LIT_2": {
-          "sprite": "beds/bed_012/lit_2/sprite.webp",
-          "pixellab_object_id": "41a2b394-461d-487d-a0d3-8257fe12089a",
-          "generated_at": "2026-08-15T20:13:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6866,
-          "glow_score": 0.1386,
-          "art_hash": "2f3a6b18d80a441c"
-        },
-        "LIT_3": {
-          "sprite": "beds/bed_012/lit_3/sprite.webp",
-          "pixellab_object_id": "4086a6db-f6ab-41e3-a768-af200e02087a",
-          "generated_at": "2026-08-15T20:14:06+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5934,
-          "glow_score": 0.0908,
-          "art_hash": "cc6833c13f467273"
-        },
-        "LIT_4": {
-          "sprite": "beds/bed_012/lit_4/sprite.webp",
-          "pixellab_object_id": "8369f3cd-419c-4dfe-84df-7e727b8d8f43",
-          "generated_at": "2026-08-15T20:15:05+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3735,
-          "glow_score": 0.128,
-          "art_hash": "260fd47504b37486"
-        },
-        "NOT_LIT_1": {
-          "sprite": "beds/bed_012/not_lit_1/sprite.webp",
-          "pixellab_object_id": "b00e740c-9335-4394-b7fd-1e8b912f6904",
-          "generated_at": "2026-08-15T20:14:36+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9297,
-          "glow_score": 0.0,
-          "art_hash": "4329f50d7e7174d4"
-        },
-        "NOT_LIT_2": {
-          "sprite": "beds/bed_012/not_lit_2/sprite.webp",
-          "pixellab_object_id": "dce621e8-18e7-4d41-a8f4-b15774bfce97",
-          "generated_at": "2026-08-15T20:15:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8427,
-          "glow_score": 0.0,
-          "art_hash": "711cdfdcab42e519"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "bee_log_002",
       "rel": "bee_logs/bee_log_002",
       "name": "Single keeper's bee log 002",
@@ -4778,24 +4691,6 @@
           "glow_score": 0.048,
           "generated_at": "2026-08-14T01:16:28+00:00",
           "art_hash": "e1afece84636cd92"
-        },
-        "LIT_2": {
-          "sprite": "bee_logs/bee_log_002/lit_2/sprite.webp",
-          "pixellab_object_id": "ff31a5fb-81bc-48ed-8d1e-3dc05a5d74f5",
-          "glow_concept": "drowsy glow-bees drifting home",
-          "difference_from_source": 0.9586,
-          "glow_score": 0.0733,
-          "generated_at": "2026-08-15T14:47:58+00:00",
-          "art_hash": "c7cbc92c48238dcd"
-        },
-        "LIT_3": {
-          "sprite": "bee_logs/bee_log_002/lit_3/sprite.webp",
-          "pixellab_object_id": "7bbb7beb-01b2-4a2a-ac20-69bb72d7b8da",
-          "glow_concept": "warm light at every entrance hole",
-          "difference_from_source": 0.9783,
-          "glow_score": 0.0312,
-          "generated_at": "2026-08-15T14:47:58+00:00",
-          "art_hash": "be3dbd0648cf3d18"
         },
         "LIT_4": {
           "sprite": "bee_logs/bee_log_002/lit_4/sprite.webp",
@@ -4868,15 +4763,6 @@
           "glow_score": 0.0,
           "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "b289ae48db63dcf0"
-        },
-        "NOT_LIT_7": {
-          "sprite": "bee_logs/bee_log_002/not_lit_7/sprite.webp",
-          "pixellab_object_id": "3bda686a-0e8e-4334-b9d9-ffe1d9998d5e",
-          "glow_concept": null,
-          "difference_from_source": 0.9712,
-          "glow_score": 0.2807,
-          "generated_at": "2026-08-15T14:47:58+00:00",
-          "art_hash": "4b97cad0e5cf66ec"
         },
         "NOT_LIT_8": {
           "sprite": "bee_logs/bee_log_002/not_lit_8/sprite.webp",
@@ -8378,15 +8264,6 @@
           "generated_at": "2026-08-15T18:09:26+00:00",
           "art_hash": "6d502ee400c884ec"
         },
-        "LIT_2": {
-          "sprite": "bushes/bush_016/lit_2/sprite.webp",
-          "pixellab_object_id": "c5bebe85-84d7-47b0-909a-63f3bc46f1e9",
-          "generated_at": "2026-08-15T21:16:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9024,
-          "glow_score": 0.0403,
-          "art_hash": "9fc573a4196f8873"
-        },
         "LIT_3": {
           "sprite": "bushes/bush_016/lit_3/sprite.webp",
           "pixellab_object_id": "447945f5-dd8c-42d8-9fb0-1d90ffdd67e8",
@@ -9852,93 +9729,6 @@
           "difference_from_source": 0.8208,
           "glow_score": 0.0073,
           "art_hash": "db529b595fb3388c"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cairn_027",
-      "rel": "cairns/cairn_027",
-      "name": "Red thread-wound cairn 027",
-      "category": "cairns",
-      "lights": null,
-      "description": "a broad sturdy pile of large stacked rocks built as a trail marker, wide at the base, made of heavy weathered stones, red thread-wound cairn, with bracket fungi steps, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.78,
-        "world_px_height": 67,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          11,
-          7,
-          54,
-          58
-        ],
-        "content_px_height": 51,
-        "canvas_render_px": 84
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:15:51+00:00",
-      "pixellab_object_id": "0f92ad4a-f71d-4b9f-93d6-560057d288cf",
-      "sprite": "cairns/cairn_027/sprite.webp",
-      "art_hash": "95deb48595484e51",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cairns/cairn_027/lit_1/sprite.webp",
-          "pixellab_object_id": "2a9463ec-7060-4493-b702-183c23d66c4c",
-          "generated_at": "2026-08-15T21:40:51+00:00",
-          "glow_concept": "wisps of soul-light circling the peak",
-          "difference_from_source": 0.7147,
-          "glow_score": 0.2994,
-          "art_hash": "d128d26d243ed408"
-        },
-        "LIT_2": {
-          "sprite": "cairns/cairn_027/lit_2/sprite.webp",
-          "pixellab_object_id": "892b32e6-0d1d-4d49-af89-ff3bb91185c2",
-          "generated_at": "2026-08-15T21:41:32+00:00",
-          "glow_concept": "cold blue soul-light seeping from under the base",
-          "difference_from_source": 0.7868,
-          "glow_score": 0.0148,
-          "art_hash": "80f408a0e2699680"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cairns/cairn_027/sprite.webp",
-          "pixellab_object_id": "0f92ad4a-f71d-4b9f-93d6-560057d288cf",
-          "generated_at": "2026-08-15T18:15:51+00:00",
-          "art_hash": "95deb48595484e51"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cairns/cairn_027/not_lit_2/sprite.webp",
-          "pixellab_object_id": "2dce8c35-bcfc-4e3b-adae-502f3ece7956",
-          "generated_at": "2026-08-15T21:40:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6767,
-          "glow_score": 0.0,
-          "art_hash": "205ac99736a51a5b"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cairns/cairn_027/not_lit_3/sprite.webp",
-          "pixellab_object_id": "88602e50-ada2-433c-a006-65c80349f139",
-          "generated_at": "2026-08-15T21:39:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7444,
-          "glow_score": 0.0,
-          "art_hash": "325520a197099c3e"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cairns/cairn_027/not_lit_4/sprite.webp",
-          "pixellab_object_id": "4589f18d-f797-49e4-91ee-680b05faca27",
-          "generated_at": "2026-08-15T21:41:31+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6543,
-          "glow_score": 0.0095,
-          "art_hash": "f74a068a47418c5c"
         }
       },
       "animations": []
@@ -23067,153 +22857,22 @@
     {
       "id": "fallen_log_008",
       "rel": "fallen_logs/fallen_log_008",
-      "name": "Fern-flanked damp log 008",
+      "name": "fallen_logs/fallen_log_008",
       "category": "fallen_logs",
       "lights": null,
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, fern-flanked damp log, small, knee-high, self-emissive at night, softly radiating light: rows of shelf fungi glowing pale green",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.69,
-        "world_px_height": 26,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T23:52:24+00:00",
-      "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
+      "description": "",
+      "view": null,
+      "size": null,
+      "placement": null,
+      "status": null,
+      "generated_at": null,
+      "pixellab_object_id": null,
       "sprite": "fallen_logs/fallen_log_008/sprite.webp",
-      "art_hash": "7f22ba073f423ac4",
+      "art_hash": null,
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "fallen_logs/fallen_log_008/sprite.webp",
-          "pixellab_object_id": "3ac942f6-48b0-4258-8aa8-ebb27395bfb7",
-          "glow_score": 0.0439,
-          "generated_at": "2026-08-13T23:52:24+00:00",
-          "art_hash": "7f22ba073f423ac4"
-        },
-        "LIT_2": {
-          "sprite": "fallen_logs/fallen_log_008/lit_2/sprite.webp",
-          "pixellab_object_id": "3f8d8927-8785-4ff0-9446-21d9a6601ef8",
-          "glow_concept": "ember-orange glow inside the hollow end",
-          "difference_from_source": 0.8989,
-          "glow_score": 0.3374,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "5dc431264f592f26"
-        },
-        "LIT_3": {
-          "sprite": "fallen_logs/fallen_log_008/lit_3/sprite.webp",
-          "pixellab_object_id": "2da1eb54-22ab-4a2b-ae97-d73de9692465",
-          "glow_concept": "soulstone crystals erupting from a split",
-          "difference_from_source": 0.7855,
-          "glow_score": 0.0529,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "ac297cacb372dbcb"
-        },
-        "LIT_4": {
-          "sprite": "fallen_logs/fallen_log_008/lit_4/sprite.webp",
-          "pixellab_object_id": "ff3d390e-f107-472a-b03f-983963d162d7",
-          "glow_concept": "a lit traveler's lantern resting on top",
-          "difference_from_source": 0.8625,
-          "glow_score": 0.3372,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "3a653bc51fedd962"
-        },
-        "NOT_LIT_1": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_1/sprite.webp",
-          "pixellab_object_id": "479e952e-0335-44cd-9933-66c334730302",
-          "glow_concept": null,
-          "difference_from_source": 0.7775,
-          "glow_score": 0.1977,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "ceb46f1448480538"
-        },
-        "NOT_LIT_10": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_10/sprite.webp",
-          "pixellab_object_id": "3d4ab5c3-798e-47fe-bfa9-0afd1e07abed",
-          "glow_concept": null,
-          "difference_from_source": 0.7226,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "1dc5519e0b0acbbf"
-        },
-        "NOT_LIT_2": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_2/sprite.webp",
-          "pixellab_object_id": "6f872d8c-3d11-4c2c-a8f8-06c88b6f8a32",
-          "glow_concept": null,
-          "difference_from_source": 0.9883,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "04f2fb8aa52fb0a2"
-        },
-        "NOT_LIT_3": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_3/sprite.webp",
-          "pixellab_object_id": "5a471315-a15b-4221-9b03-c2460c0ce3eb",
-          "glow_concept": null,
-          "difference_from_source": 0.8155,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "6905f1fb66444993"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_4/sprite.webp",
-          "pixellab_object_id": "d1cbb327-d86b-4b99-81d3-31ec49a7af4e",
-          "glow_concept": null,
-          "difference_from_source": 0.2257,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "f926a44dd2a1f8cd"
-        },
-        "NOT_LIT_5": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_5/sprite.webp",
-          "pixellab_object_id": "81fc0c92-fc85-4f1d-b3c5-69e4fe07fd6e",
-          "glow_concept": null,
-          "difference_from_source": 0.7819,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "e1d5d2cbc707858a"
-        },
-        "NOT_LIT_6": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_6/sprite.webp",
-          "pixellab_object_id": "1d595649-1ff2-4045-95d8-05a24126e0e0",
-          "glow_concept": null,
-          "difference_from_source": 0.7776,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "11c959490ed7ce62"
-        },
-        "NOT_LIT_7": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_7/sprite.webp",
-          "pixellab_object_id": "ab185f68-3a12-4b7a-a012-d96fb641d9eb",
-          "glow_concept": null,
-          "difference_from_source": 0.7979,
-          "glow_score": 0.0836,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "df2e338d7df0951a"
-        },
-        "NOT_LIT_8": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_8/sprite.webp",
-          "pixellab_object_id": "23537fe4-c973-463a-a045-6c6b1e089d7b",
-          "glow_concept": null,
-          "difference_from_source": 0.9586,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "6e83406179539b5c"
-        },
-        "NOT_LIT_9": {
-          "sprite": "fallen_logs/fallen_log_008/not_lit_9/sprite.webp",
-          "pixellab_object_id": "fd6834c6-cc87-431b-b40f-43fc46bae3d9",
-          "glow_concept": null,
-          "difference_from_source": 0.9529,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T15:30:58+00:00",
-          "art_hash": "d87738e623770345"
-        }
-      },
+      "states": {},
       "animations": []
     },
     {
@@ -23620,24 +23279,6 @@
           "glow_score": 0.1778,
           "art_hash": "32abbab374383e6d"
         },
-        "NOT_LIT_3": {
-          "sprite": "fallen_logs/fallen_log_013/not_lit_3/sprite.webp",
-          "pixellab_object_id": "7882ad5f-83f6-4f22-a528-c0f4cab3f4de",
-          "generated_at": "2026-08-15T19:28:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8442,
-          "glow_score": 0.0109,
-          "art_hash": "565dc9d105e18f85"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fallen_logs/fallen_log_013/not_lit_4/sprite.webp",
-          "pixellab_object_id": "82848857-ae9e-4f03-8af1-7b47bc997664",
-          "generated_at": "2026-08-15T19:21:52+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8355,
-          "glow_score": 0.0,
-          "art_hash": "0487312beea45c30"
-        },
         "NOT_LIT_5": {
           "sprite": "fallen_logs/fallen_log_013/not_lit_5/sprite.webp",
           "pixellab_object_id": "f9ca503b-84f6-48ee-adb8-77ee457cc5e7",
@@ -23647,15 +23288,6 @@
           "glow_score": 0.0022,
           "art_hash": "2200fe4d83df5442"
         },
-        "NOT_LIT_6": {
-          "sprite": "fallen_logs/fallen_log_013/not_lit_6/sprite.webp",
-          "pixellab_object_id": "1c6e19c6-5f52-4811-a62d-04b4e9085489",
-          "generated_at": "2026-08-15T19:24:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7146,
-          "glow_score": 0.0018,
-          "art_hash": "e3868d63804a0efc"
-        },
         "NOT_LIT_7": {
           "sprite": "fallen_logs/fallen_log_013/not_lit_7/sprite.webp",
           "pixellab_object_id": "c05efec0-a1c7-4692-9a7d-fc54a2ee7496",
@@ -23664,15 +23296,6 @@
           "difference_from_source": 0.6172,
           "glow_score": 0.0097,
           "art_hash": "100916d31683aab4"
-        },
-        "NOT_LIT_8": {
-          "sprite": "fallen_logs/fallen_log_013/not_lit_8/sprite.webp",
-          "pixellab_object_id": "29154796-cfd9-4a44-9561-95fa481144cb",
-          "generated_at": "2026-08-15T19:24:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8106,
-          "glow_score": 0.0004,
-          "art_hash": "f81d2663c48486b2"
         },
         "NOT_LIT_9": {
           "sprite": "fallen_logs/fallen_log_013/not_lit_9/sprite.webp",
@@ -23742,15 +23365,6 @@
           "difference_from_source": 0.9478,
           "glow_score": 0.4317,
           "art_hash": "143dfac3feab1b72"
-        },
-        "LIT_4": {
-          "sprite": "fallen_logs/fallen_log_014/lit_4/sprite.webp",
-          "pixellab_object_id": "79406a5f-3cf8-4f6e-89cd-14267a73ad8c",
-          "generated_at": "2026-08-15T19:32:35+00:00",
-          "glow_concept": "a lit traveler's lantern resting on top",
-          "difference_from_source": 0.7865,
-          "glow_score": 0.3772,
-          "art_hash": "714f4830ace179b1"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_014/not_lit_1/sprite.webp",
@@ -23832,492 +23446,6 @@
           "difference_from_source": 0.5491,
           "glow_score": 0.1615,
           "art_hash": "05ac5cd35cf451d3"
-        },
-        "NOT_LIT_9": {
-          "sprite": "fallen_logs/fallen_log_014/not_lit_9/sprite.webp",
-          "pixellab_object_id": "d8e69aa9-8d8e-4624-a602-cdecc98b9347",
-          "generated_at": "2026-08-15T19:30:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5285,
-          "glow_score": 0.139,
-          "art_hash": "14c2cd9262d40531"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "fallen_log_015",
-      "rel": "fallen_logs/fallen_log_015",
-      "name": "Half-buried mossy log 015",
-      "category": "fallen_logs",
-      "lights": null,
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, half-buried mossy log, grown around a half-buried stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.55,
-        "world_px_height": 21,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          33,
-          18,
-          96,
-          115
-        ],
-        "content_px_height": 97,
-        "canvas_render_px": 28
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:08:49+00:00",
-      "pixellab_object_id": "52d37a5e-4af1-49ab-a652-c3655ed462e3",
-      "sprite": "fallen_logs/fallen_log_015/sprite.webp",
-      "art_hash": "c5f4f8de6563e416",
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "fallen_logs/fallen_log_015/lit_1/sprite.webp",
-          "pixellab_object_id": "2cac018d-b448-47cf-9f87-e00539ecd4ad",
-          "generated_at": "2026-08-15T19:35:51+00:00",
-          "glow_concept": "ember-orange glow inside the hollow end",
-          "difference_from_source": 0.4656,
-          "glow_score": 0.1115,
-          "art_hash": "97b704f051fed01f"
-        },
-        "LIT_2": {
-          "sprite": "fallen_logs/fallen_log_015/lit_2/sprite.webp",
-          "pixellab_object_id": "1a08ca3a-d584-41f5-b2ed-f73550805b2a",
-          "generated_at": "2026-08-15T19:36:16+00:00",
-          "glow_concept": "soulstone crystals erupting from a split",
-          "difference_from_source": 0.8378,
-          "glow_score": 0.1686,
-          "art_hash": "8c993e836b975ede"
-        },
-        "LIT_3": {
-          "sprite": "fallen_logs/fallen_log_015/lit_3/sprite.webp",
-          "pixellab_object_id": "0658b9ab-6dcb-41b4-92ba-6b1d28598106",
-          "generated_at": "2026-08-15T19:37:02+00:00",
-          "glow_concept": "a lit traveler's lantern resting on top",
-          "difference_from_source": 0.7433,
-          "glow_score": 0.1364,
-          "art_hash": "cc6b6cd105acd25c"
-        },
-        "LIT_4": {
-          "sprite": "fallen_logs/fallen_log_015/lit_4/sprite.webp",
-          "pixellab_object_id": "69971bf7-8f4e-4070-a925-536605eef56e",
-          "generated_at": "2026-08-15T19:37:26+00:00",
-          "glow_concept": "row of small glowing caps along the log's spine",
-          "difference_from_source": 0.4568,
-          "glow_score": 0.0497,
-          "art_hash": "8f55508f4697cac3"
-        },
-        "NOT_LIT_1": {
-          "sprite": "fallen_logs/fallen_log_015/sprite.webp",
-          "pixellab_object_id": "52d37a5e-4af1-49ab-a652-c3655ed462e3",
-          "glow_score": 0.0,
-          "art_hash": "c5f4f8de6563e416"
-        },
-        "NOT_LIT_10": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_10/sprite.webp",
-          "pixellab_object_id": "a690cac3-ed51-45f1-ac2c-0936fbd5a3b2",
-          "generated_at": "2026-08-15T19:36:03+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3229,
-          "glow_score": 0.0051,
-          "art_hash": "7376fdd1b9dc8212"
-        },
-        "NOT_LIT_2": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_2/sprite.webp",
-          "pixellab_object_id": "34a334a6-7ff3-4e23-86da-2209568a68dc",
-          "generated_at": "2026-08-15T19:33:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7784,
-          "glow_score": 0.0497,
-          "art_hash": "b88e2c56defd0bb2"
-        },
-        "NOT_LIT_3": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_3/sprite.webp",
-          "pixellab_object_id": "a7c4a886-0885-407f-a4aa-cc28b50dcd69",
-          "generated_at": "2026-08-15T19:33:11+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5294,
-          "glow_score": 0.063,
-          "art_hash": "9aabde8af284456b"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_4/sprite.webp",
-          "pixellab_object_id": "7ca1d837-dab6-4ae8-86f8-52e24261e4be",
-          "generated_at": "2026-08-15T19:33:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3408,
-          "glow_score": 0.0,
-          "art_hash": "24622212f33827f8"
-        },
-        "NOT_LIT_5": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_5/sprite.webp",
-          "pixellab_object_id": "530f5d51-fda5-42de-b956-58f66d693d84",
-          "generated_at": "2026-08-15T19:35:11+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5441,
-          "glow_score": 0.1805,
-          "art_hash": "b1b759a57fdcde2a"
-        },
-        "NOT_LIT_6": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_6/sprite.webp",
-          "pixellab_object_id": "ad32a55b-fbc2-4530-b5f1-8a087c16aa26",
-          "generated_at": "2026-08-15T19:35:26+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5118,
-          "glow_score": 0.004,
-          "art_hash": "614be273be126ff8"
-        },
-        "NOT_LIT_7": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_7/sprite.webp",
-          "pixellab_object_id": "ee76aa14-b466-46a2-a1d4-717cd555a5ef",
-          "generated_at": "2026-08-15T19:34:47+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2919,
-          "glow_score": 0.0253,
-          "art_hash": "f963b4622a8db265"
-        },
-        "NOT_LIT_8": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_8/sprite.webp",
-          "pixellab_object_id": "97a212ed-6091-45c9-aba8-32cffaa1626d",
-          "generated_at": "2026-08-15T19:35:13+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5472,
-          "glow_score": 0.0179,
-          "art_hash": "f894d3bbe3066223"
-        },
-        "NOT_LIT_9": {
-          "sprite": "fallen_logs/fallen_log_015/not_lit_9/sprite.webp",
-          "pixellab_object_id": "c0853a17-8bc0-48e6-8044-d4682a9aac0e",
-          "generated_at": "2026-08-15T19:36:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.21,
-          "glow_score": 0.0093,
-          "art_hash": "abe633b0987c74a7"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "fallen_log_016",
-      "rel": "fallen_logs/fallen_log_016",
-      "name": "Log bridge over a dip 016",
-      "category": "fallen_logs",
-      "lights": null,
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, log bridge over a dip, standing in a patch of wildflowers, small, knee-high, self-emissive at night, softly radiating light: luminous moss carpeting the upper side",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.57,
-        "world_px_height": 21,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          20,
-          23,
-          111,
-          112
-        ],
-        "content_px_height": 89,
-        "canvas_render_px": 30
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:06:02+00:00",
-      "pixellab_object_id": "df6fcd51-0cf3-48c0-a7bc-c0672f2ff653",
-      "sprite": "fallen_logs/fallen_log_016/sprite.webp",
-      "art_hash": "8192afb1173a2988",
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "fallen_logs/fallen_log_016/sprite.webp",
-          "pixellab_object_id": "df6fcd51-0cf3-48c0-a7bc-c0672f2ff653",
-          "glow_score": 0.0621,
-          "art_hash": "8192afb1173a2988"
-        },
-        "LIT_2": {
-          "sprite": "fallen_logs/fallen_log_016/lit_2/sprite.webp",
-          "pixellab_object_id": "e4fe5801-addb-480a-9851-9cadb859bc4e",
-          "generated_at": "2026-08-15T19:41:25+00:00",
-          "glow_concept": "rows of shelf fungi glowing pale green",
-          "difference_from_source": 0.4261,
-          "glow_score": 0.1304,
-          "art_hash": "ad3786cc056e8b5b"
-        },
-        "LIT_3": {
-          "sprite": "fallen_logs/fallen_log_016/lit_3/sprite.webp",
-          "pixellab_object_id": "47ffb600-19df-45ca-9f7e-769c3c0684e6",
-          "generated_at": "2026-08-15T19:41:51+00:00",
-          "glow_concept": "ember-orange glow inside the hollow end",
-          "difference_from_source": 0.5781,
-          "glow_score": 0.154,
-          "art_hash": "805269a7cc70e1dd"
-        },
-        "LIT_4": {
-          "sprite": "fallen_logs/fallen_log_016/lit_4/sprite.webp",
-          "pixellab_object_id": "2fcb7e51-143b-4491-8971-7c61cf0e13df",
-          "generated_at": "2026-08-15T19:41:38+00:00",
-          "glow_concept": "soulstone crystals erupting from a split",
-          "difference_from_source": 0.5873,
-          "glow_score": 0.0462,
-          "art_hash": "a68f9fedfccce693"
-        },
-        "NOT_LIT_1": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_1/sprite.webp",
-          "pixellab_object_id": "7a77b4d8-975a-49ba-8b2d-b8facdfc61e6",
-          "generated_at": "2026-08-15T19:38:02+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4635,
-          "glow_score": 0.0285,
-          "art_hash": "75853528b6aadcee"
-        },
-        "NOT_LIT_10": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_10/sprite.webp",
-          "pixellab_object_id": "5c285c2f-5c4f-45d7-9e0f-2b547411bdae",
-          "generated_at": "2026-08-15T19:42:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4036,
-          "glow_score": 0.0689,
-          "art_hash": "8580a29aa519cb2a"
-        },
-        "NOT_LIT_2": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_2/sprite.webp",
-          "pixellab_object_id": "10d91b24-2885-49ee-9bc8-9e9c4f526551",
-          "generated_at": "2026-08-15T19:38:15+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2928,
-          "glow_score": 0.0238,
-          "art_hash": "ca1fed0b8408a909"
-        },
-        "NOT_LIT_3": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_3/sprite.webp",
-          "pixellab_object_id": "c82c4e55-ad59-4b66-a3aa-c8e657342d4b",
-          "generated_at": "2026-08-15T19:38:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3062,
-          "glow_score": 0.0271,
-          "art_hash": "141e40c2f4c34c3d"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_4/sprite.webp",
-          "pixellab_object_id": "3c1fb957-06bc-414b-9dd9-d0bbb14f5974",
-          "generated_at": "2026-08-15T19:42:03+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2696,
-          "glow_score": 0.0217,
-          "art_hash": "c1cd75c7fcb00683"
-        },
-        "NOT_LIT_5": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_5/sprite.webp",
-          "pixellab_object_id": "9b04257e-a1ad-4491-a347-20e00da0ebb2",
-          "generated_at": "2026-08-15T19:39:23+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3784,
-          "glow_score": 0.0186,
-          "art_hash": "504d22f75f24c38b"
-        },
-        "NOT_LIT_6": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_6/sprite.webp",
-          "pixellab_object_id": "ddd8924f-ced4-4c5b-b01d-47b10b4e154d",
-          "generated_at": "2026-08-15T19:38:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4526,
-          "glow_score": 0.0269,
-          "art_hash": "500229be3959ce84"
-        },
-        "NOT_LIT_7": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_7/sprite.webp",
-          "pixellab_object_id": "0e5e235d-9c6b-428a-8a01-95e41c8108dd",
-          "generated_at": "2026-08-15T19:39:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.322,
-          "glow_score": 0.0211,
-          "art_hash": "00a4d53f10481fff"
-        },
-        "NOT_LIT_8": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_8/sprite.webp",
-          "pixellab_object_id": "17d1824f-5193-4e2a-9c9f-8a92a418ca59",
-          "generated_at": "2026-08-15T19:39:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9128,
-          "glow_score": 0.0123,
-          "art_hash": "e0063ecc27e4771a"
-        },
-        "NOT_LIT_9": {
-          "sprite": "fallen_logs/fallen_log_016/not_lit_9/sprite.webp",
-          "pixellab_object_id": "4572d26e-5d09-4265-b32a-64e7146cf907",
-          "generated_at": "2026-08-15T19:44:56+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6686,
-          "glow_score": 0.0054,
-          "art_hash": "6398d7584027ee7c"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "fallen_log_017",
-      "rel": "fallen_logs/fallen_log_017",
-      "name": "Hollow rotted log 017",
-      "category": "fallen_logs",
-      "lights": null,
-      "description": "a fallen tree trunk lying on its side with broken branch stubs, torn bark, moss and fungi along its length, hollow rotted log, with berries scattered beneath it, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 0.9,
-        "world_px_height": 34,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          31,
-          16,
-          97,
-          113
-        ],
-        "content_px_height": 97,
-        "canvas_render_px": 45
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:14:50+00:00",
-      "pixellab_object_id": "2dc80a68-a76b-4da1-bd7d-8ce6c14f828d",
-      "sprite": "fallen_logs/fallen_log_017/sprite.webp",
-      "art_hash": "719fb2b64f3fb299",
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "fallen_logs/fallen_log_017/lit_1/sprite.webp",
-          "pixellab_object_id": "1b6a062b-8104-4683-bd75-20263523de0c",
-          "generated_at": "2026-08-15T19:47:44+00:00",
-          "glow_concept": "soulstone crystals erupting from a split",
-          "difference_from_source": 0.9483,
-          "glow_score": 0.0918,
-          "art_hash": "3352b7373a2878a2"
-        },
-        "LIT_2": {
-          "sprite": "fallen_logs/fallen_log_017/lit_2/sprite.webp",
-          "pixellab_object_id": "d4a5fb6f-a54a-415a-a509-7a078f6b5a8c",
-          "generated_at": "2026-08-15T19:47:31+00:00",
-          "glow_concept": "a lit traveler's lantern resting on top",
-          "difference_from_source": 0.8275,
-          "glow_score": 0.2107,
-          "art_hash": "ab594b7bde072471"
-        },
-        "LIT_3": {
-          "sprite": "fallen_logs/fallen_log_017/lit_3/sprite.webp",
-          "pixellab_object_id": "d139703b-05ec-4d09-a3a7-354941f3ac97",
-          "generated_at": "2026-08-15T19:48:24+00:00",
-          "glow_concept": "row of small glowing caps along the log's spine",
-          "difference_from_source": 0.3125,
-          "glow_score": 0.077,
-          "art_hash": "8de496786212c88a"
-        },
-        "LIT_4": {
-          "sprite": "fallen_logs/fallen_log_017/lit_4/sprite.webp",
-          "pixellab_object_id": "746afa37-a270-473b-a72d-1b67c829b851",
-          "generated_at": "2026-08-15T19:47:19+00:00",
-          "glow_concept": "blue foxfire glowing in the bark cracks",
-          "difference_from_source": 0.5326,
-          "glow_score": 0.0357,
-          "art_hash": "cfeb7e2bc9c725d6"
-        },
-        "NOT_LIT_1": {
-          "sprite": "fallen_logs/fallen_log_017/sprite.webp",
-          "pixellab_object_id": "2dc80a68-a76b-4da1-bd7d-8ce6c14f828d",
-          "glow_score": 0.0103,
-          "art_hash": "719fb2b64f3fb299"
-        },
-        "NOT_LIT_10": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_10/sprite.webp",
-          "pixellab_object_id": "8a0d1e68-402f-4c27-9cc4-d3a5415f660a",
-          "generated_at": "2026-08-15T19:45:33+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3632,
-          "glow_score": 0.011,
-          "art_hash": "d0405fc89c56df61"
-        },
-        "NOT_LIT_2": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_2/sprite.webp",
-          "pixellab_object_id": "a3d279da-2812-40b5-a03c-b185f07e6f10",
-          "generated_at": "2026-08-15T19:42:53+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3373,
-          "glow_score": 0.0149,
-          "art_hash": "258351f5ca4a8788"
-        },
-        "NOT_LIT_3": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_3/sprite.webp",
-          "pixellab_object_id": "a64fc315-b34c-4e6c-9e3e-9bca072b1ca7",
-          "generated_at": "2026-08-15T19:42:29+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.927,
-          "glow_score": 0.243,
-          "art_hash": "0ec60335e2c96456"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_4/sprite.webp",
-          "pixellab_object_id": "f3dd4c5f-5cef-4950-b629-16b09b35193a",
-          "generated_at": "2026-08-15T19:45:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2332,
-          "glow_score": 0.01,
-          "art_hash": "846511f2efcc795a"
-        },
-        "NOT_LIT_5": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_5/sprite.webp",
-          "pixellab_object_id": "e8bc1466-5437-4de0-8c2c-197194aec07b",
-          "generated_at": "2026-08-15T19:44:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8723,
-          "glow_score": 0.0024,
-          "art_hash": "5580f402c1f68d0e"
-        },
-        "NOT_LIT_6": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_6/sprite.webp",
-          "pixellab_object_id": "523e1050-bb71-4ff6-a98c-9f3a61a392ab",
-          "generated_at": "2026-08-15T19:44:40+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7486,
-          "glow_score": 0.0002,
-          "art_hash": "0062192eef8b8061"
-        },
-        "NOT_LIT_7": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_7/sprite.webp",
-          "pixellab_object_id": "33ee528d-c3a0-44d9-a245-32247e680c5d",
-          "generated_at": "2026-08-15T19:44:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9333,
-          "glow_score": 0.0388,
-          "art_hash": "898a6572d216941d"
-        },
-        "NOT_LIT_8": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_8/sprite.webp",
-          "pixellab_object_id": "2efc7b0b-d4cd-4d0e-b073-ea6f62df0fc3",
-          "generated_at": "2026-08-15T19:44:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7626,
-          "glow_score": 0.0016,
-          "art_hash": "cdc841bdfad508be"
-        },
-        "NOT_LIT_9": {
-          "sprite": "fallen_logs/fallen_log_017/not_lit_9/sprite.webp",
-          "pixellab_object_id": "adb8b818-8f52-4bfa-abbf-62cedcebbcff",
-          "generated_at": "2026-08-15T19:45:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8358,
-          "glow_score": 0.2139,
-          "art_hash": "c2f751e1f7b36a1a"
         }
       },
       "animations": []
@@ -30018,48 +29146,6 @@
       "animations": []
     },
     {
-      "id": "lantern_stand_015",
-      "rel": "lantern_stands/lantern_stand_015",
-      "name": "Chain-wrapped heavy stand 015",
-      "category": "lantern_stands",
-      "lights": "LIGHTS_OFF",
-      "description": "a heavy iron floor stand holding a hand-made candle lantern at head height, thick twisted stem on a broad weighted foot, chain-wrapped heavy stand, recently maintained, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.24,
-        "world_px_height": 84,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          43,
-          7,
-          87,
-          124
-        ],
-        "content_px_height": 117,
-        "canvas_render_px": 92
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:16:03+00:00",
-      "pixellab_object_id": "9fee5cef-aa46-4879-be82-1d04953e4308",
-      "sprite": "lantern_stands/lantern_stand_015/sprite.webp",
-      "art_hash": "6415483b7948e668",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "NOT_LIT_1": {
-          "sprite": "lantern_stands/lantern_stand_015/sprite.webp",
-          "pixellab_object_id": "9fee5cef-aa46-4879-be82-1d04953e4308",
-          "generated_at": "2026-08-15T18:16:03+00:00",
-          "art_hash": "6415483b7948e668"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "lantern_stand_018",
       "rel": "lantern_stands/lantern_stand_018",
       "name": "Curled fern-tip iron stand 018 \u00b7 lit",
@@ -31496,39 +30582,12 @@
           "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "89d51b496b2ddb39"
         },
-        "LIT_3": {
-          "sprite": "owl_snags/owl_snag_001/lit_3/sprite.webp",
-          "pixellab_object_id": "1f1e784f-7111-42b6-9a24-dd7f5e6cf100",
-          "generated_at": "2026-08-15T18:20:55+00:00",
-          "glow_concept": "small wisps circling the broken top",
-          "difference_from_source": 0.6073,
-          "glow_score": 0.2477,
-          "art_hash": "90e95937c626e3f6"
-        },
-        "LIT_4": {
-          "sprite": "owl_snags/owl_snag_001/lit_4/sprite.webp",
-          "pixellab_object_id": "f578d420-903f-4fff-98b0-a6a85b124810",
-          "glow_concept": "owl eyes glowing from the dark hollow",
-          "difference_from_source": 0.3684,
-          "glow_score": 0.1772,
-          "generated_at": "2026-08-15T15:57:53+00:00",
-          "art_hash": "dd56c562e75a7662"
-        },
         "NOT_LIT_1": {
           "sprite": "owl_snags/owl_snag_001/sprite.webp",
           "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
           "glow_score": 0.1167,
           "generated_at": "2026-08-13T01:56:36+00:00",
           "art_hash": "8a94f1e4ce5bb0b4"
-        },
-        "NOT_LIT_10": {
-          "sprite": "owl_snags/owl_snag_001/not_lit_10/sprite.webp",
-          "pixellab_object_id": "fbf384f6-573c-458b-9e7d-a7d9fc3b9f74",
-          "generated_at": "2026-08-15T21:43:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5321,
-          "glow_score": 0.1018,
-          "art_hash": "0f79cce0ce49ba7b"
         },
         "NOT_LIT_2": {
           "sprite": "owl_snags/owl_snag_001/not_lit_2/sprite.webp",
@@ -31548,15 +30607,6 @@
           "glow_score": 0.0895,
           "art_hash": "d1fd16adb778fb4b"
         },
-        "NOT_LIT_4": {
-          "sprite": "owl_snags/owl_snag_001/not_lit_4/sprite.webp",
-          "pixellab_object_id": "14b7c863-2827-4ddd-aef9-1d7d76c3778d",
-          "generated_at": "2026-08-15T18:21:00+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2657,
-          "glow_score": 0.1094,
-          "art_hash": "ce58bb4391001aab"
-        },
         "NOT_LIT_5": {
           "sprite": "owl_snags/owl_snag_001/not_lit_5/sprite.webp",
           "pixellab_object_id": "fd48ba99-b640-40cf-8d16-f0ac1d9a048e",
@@ -31574,33 +30624,6 @@
           "difference_from_source": 0.8126,
           "glow_score": 0.1284,
           "art_hash": "cc07b5eb21ec001d"
-        },
-        "NOT_LIT_7": {
-          "sprite": "owl_snags/owl_snag_001/not_lit_7/sprite.webp",
-          "pixellab_object_id": "3bed3d2e-3b7a-4f0a-af29-8cbcaf1fe579",
-          "generated_at": "2026-08-15T19:54:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4533,
-          "glow_score": 0.1074,
-          "art_hash": "09bb29a31dab048f"
-        },
-        "NOT_LIT_8": {
-          "sprite": "owl_snags/owl_snag_001/not_lit_8/sprite.webp",
-          "pixellab_object_id": "a002370b-5186-4ebd-b779-367279ed695f",
-          "generated_at": "2026-08-15T19:55:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7036,
-          "glow_score": 0.1022,
-          "art_hash": "3c9d8ca93f8578e1"
-        },
-        "NOT_LIT_9": {
-          "sprite": "owl_snags/owl_snag_001/not_lit_9/sprite.webp",
-          "pixellab_object_id": "36f7ba91-de1b-4211-8bb0-2f148779391f",
-          "generated_at": "2026-08-15T21:44:02+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2792,
-          "glow_score": 0.1129,
-          "art_hash": "c598d24a7c2aff8d"
         }
       },
       "animations": []
@@ -36318,48 +35341,6 @@
       "animations": []
     },
     {
-      "id": "streetlight_036",
-      "rel": "streetlights/streetlight_036",
-      "name": "Paper-and-wood festival lantern on a pole 036 \u00b7 lit",
-      "category": "streetlights",
-      "lights": "LIGHTS_ON",
-      "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn, paper-and-wood festival lantern on a pole, leaning from an old knock, large, twice human height, self-emissive at night, softly radiating light: a low guttering flame nearly out",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 2.58,
-        "world_px_height": 97,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          32,
-          13,
-          78,
-          88
-        ],
-        "content_px_height": 75,
-        "canvas_render_px": 124
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:12:14+00:00",
-      "pixellab_object_id": "ef57cb8e-e12a-4ea7-bc56-5f7ef7bf7809",
-      "sprite": "streetlights/streetlight_036/sprite.webp",
-      "art_hash": "d17c51c71dfd5c66",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "streetlights/streetlight_036/sprite.webp",
-          "pixellab_object_id": "ef57cb8e-e12a-4ea7-bc56-5f7ef7bf7809",
-          "generated_at": "2026-08-15T18:12:14+00:00",
-          "art_hash": "d17c51c71dfd5c66"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "stump_001",
       "rel": "stumps/stump_001",
       "name": "Stump with axe embedded 001",
@@ -37312,33 +36293,6 @@
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "9d423ba62cbfa0e3"
         },
-        "LIT_3": {
-          "sprite": "stumps/stump_010/lit_3/sprite.webp",
-          "pixellab_object_id": "b602ed75-8937-40fb-a2bd-17ad8e4fa907",
-          "glow_concept": "shelf undersides shedding pale spore light downward",
-          "difference_from_source": 0.9623,
-          "glow_score": 0.0702,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "74e33c111889481a"
-        },
-        "LIT_4": {
-          "sprite": "stumps/stump_010/lit_4/sprite.webp",
-          "pixellab_object_id": "61850012-334d-4965-98c5-788f873eb6d3",
-          "glow_concept": "growth rings glowing like concentric embers",
-          "difference_from_source": 0.8397,
-          "glow_score": 0.0867,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "6826a2cf8e8c20c5"
-        },
-        "NOT_LIT_1": {
-          "sprite": "stumps/stump_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "f2fd8769-6977-47e5-b6dd-90d028057407",
-          "glow_concept": null,
-          "difference_from_source": 0.8831,
-          "glow_score": 0.1468,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "d5a90a838edc3da9"
-        },
         "NOT_LIT_10": {
           "sprite": "stumps/stump_010/not_lit_10/sprite.webp",
           "pixellab_object_id": "c47933ba-37ba-49fd-b777-64d4d11a3761",
@@ -37356,15 +36310,6 @@
           "glow_score": 0.2004,
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "b49bb1c3ea9e4414"
-        },
-        "NOT_LIT_3": {
-          "sprite": "stumps/stump_010/not_lit_3/sprite.webp",
-          "pixellab_object_id": "ce7d930d-e98b-477d-aaca-c8765fc65290",
-          "glow_concept": null,
-          "difference_from_source": 0.9777,
-          "glow_score": 0.0025,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "52226a990af5aa9b"
         },
         "NOT_LIT_4": {
           "sprite": "stumps/stump_010/not_lit_4/sprite.webp",
@@ -37670,15 +36615,6 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "33ea76a4cf6731a5"
         },
-        "NOT_LIT_4": {
-          "sprite": "stumps/stump_012/not_lit_4/sprite.webp",
-          "pixellab_object_id": "3378254d-f641-4aef-977e-3ae185dfb10f",
-          "glow_concept": null,
-          "difference_from_source": 0.9293,
-          "glow_score": 0.0222,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "ff13b66526ca2b30"
-        },
         "NOT_LIT_5": {
           "sprite": "stumps/stump_012/not_lit_5/sprite.webp",
           "pixellab_object_id": "4eeed1cf-2a18-4522-802e-e14b242b3f19",
@@ -37920,24 +36856,6 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "467f3401c19064f9"
         },
-        "LIT_3": {
-          "sprite": "stumps/stump_014/lit_3/sprite.webp",
-          "pixellab_object_id": "7d032f2c-2071-4042-93aa-38df38c046bd",
-          "glow_concept": "growth rings glowing like concentric embers",
-          "difference_from_source": 0.374,
-          "glow_score": 0.0777,
-          "generated_at": "2026-08-15T16:41:35+00:00",
-          "art_hash": "e67b38a2a58f70fb"
-        },
-        "LIT_4": {
-          "sprite": "stumps/stump_014/lit_4/sprite.webp",
-          "pixellab_object_id": "5498b4d9-775b-4479-b87f-c9bd51ece76b",
-          "glow_concept": "ring of glowing mushrooms around the base",
-          "difference_from_source": 0.9577,
-          "glow_score": 0.1773,
-          "generated_at": "2026-08-15T16:41:35+00:00",
-          "art_hash": "cfcf461482b217aa"
-        },
         "NOT_LIT_1": {
           "sprite": "stumps/stump_014/not_lit_1/sprite.webp",
           "pixellab_object_id": "bbaeafef-c350-43fd-ab94-2c92be60e1f1",
@@ -37956,24 +36874,6 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "696bac11813a38b1"
         },
-        "NOT_LIT_2": {
-          "sprite": "stumps/stump_014/not_lit_2/sprite.webp",
-          "pixellab_object_id": "62b0eba8-1c1f-4cb7-b665-33be33cd59bb",
-          "glow_concept": null,
-          "difference_from_source": 0.9196,
-          "glow_score": 0.0021,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "5d39ec012d88cfac"
-        },
-        "NOT_LIT_3": {
-          "sprite": "stumps/stump_014/not_lit_3/sprite.webp",
-          "pixellab_object_id": "d422a0d7-922b-408c-850f-01bbdc59aa50",
-          "glow_concept": null,
-          "difference_from_source": 0.3499,
-          "glow_score": 0.0883,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "d593ea430f65cd6a"
-        },
         "NOT_LIT_4": {
           "sprite": "stumps/stump_014/not_lit_4/sprite.webp",
           "pixellab_object_id": "39383111-e7d5-40ef-883c-3efbc6be5fd8",
@@ -37983,24 +36883,6 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "5c8c3238ad5c4a18"
         },
-        "NOT_LIT_5": {
-          "sprite": "stumps/stump_014/not_lit_5/sprite.webp",
-          "pixellab_object_id": "80746744-b9ce-4724-9ca1-d135dcffced6",
-          "glow_concept": null,
-          "difference_from_source": 0.9524,
-          "glow_score": 0.0017,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "68ff77dad1f7105b"
-        },
-        "NOT_LIT_6": {
-          "sprite": "stumps/stump_014/not_lit_6/sprite.webp",
-          "pixellab_object_id": "caa4dc1d-50bc-498a-8150-751df8be4273",
-          "glow_concept": null,
-          "difference_from_source": 0.9793,
-          "glow_score": 0.0041,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "9c94cc063a6d1dde"
-        },
         "NOT_LIT_7": {
           "sprite": "stumps/stump_014/not_lit_7/sprite.webp",
           "pixellab_object_id": "47eca740-8c79-46ff-9d47-a568cb96fed7",
@@ -38009,24 +36891,6 @@
           "glow_score": 0.212,
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "c161a8c457819992"
-        },
-        "NOT_LIT_8": {
-          "sprite": "stumps/stump_014/not_lit_8/sprite.webp",
-          "pixellab_object_id": "b20ac997-8425-4c44-99b7-8c2343c3b160",
-          "glow_concept": null,
-          "difference_from_source": 0.9844,
-          "glow_score": 0.0372,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "39e03c0e250391a9"
-        },
-        "NOT_LIT_9": {
-          "sprite": "stumps/stump_014/not_lit_9/sprite.webp",
-          "pixellab_object_id": "27f0c406-bc82-4ce5-8f73-1e1b3faad57e",
-          "glow_concept": null,
-          "difference_from_source": 0.6001,
-          "glow_score": 0.0039,
-          "generated_at": "2026-08-15T16:37:29+00:00",
-          "art_hash": "d4081c05712ede20"
         }
       },
       "animations": []
@@ -38331,165 +37195,6 @@
           "glow_score": 0.0,
           "generated_at": "2026-08-15T16:42:55+00:00",
           "art_hash": "f420aade6025b8e2"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "stump_022",
-      "rel": "stumps/stump_022",
-      "name": "Sprouting stump with shoots 022",
-      "category": "stumps",
-      "lights": null,
-      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, sprouting stump with shoots, heavily weathered and gnarled, small, knee-high, self-emissive at night, softly radiating light: a single candle burning on the cut face",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.6,
-        "world_px_height": 23,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          7,
-          9,
-          57,
-          58
-        ],
-        "content_px_height": 49,
-        "canvas_render_px": 30
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:13:46+00:00",
-      "pixellab_object_id": "1397101e-5249-4d9c-9320-ae8eaf4b19af",
-      "sprite": "stumps/stump_022/sprite.webp",
-      "art_hash": "23aa4eb289179cee",
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "stumps/stump_022/sprite.webp",
-          "pixellab_object_id": "1397101e-5249-4d9c-9320-ae8eaf4b19af",
-          "glow_score": 0.1179,
-          "art_hash": "23aa4eb289179cee"
-        },
-        "LIT_2": {
-          "sprite": "stumps/stump_022/lit_2/sprite.webp",
-          "pixellab_object_id": "753e7c04-bbd1-448e-bec5-a2cffe846299",
-          "generated_at": "2026-08-15T19:53:47+00:00",
-          "glow_concept": "soulstone core shining in the heartwood",
-          "difference_from_source": 0.4677,
-          "glow_score": 0.0865,
-          "art_hash": "880456ac9d7dd2aa"
-        },
-        "LIT_3": {
-          "sprite": "stumps/stump_022/lit_3/sprite.webp",
-          "pixellab_object_id": "d3815a6c-23e8-4ac5-a5bf-6a9a4cba79da",
-          "generated_at": "2026-08-15T19:54:45+00:00",
-          "glow_concept": "foxfire seeping from gaps in the bark",
-          "difference_from_source": 0.4555,
-          "glow_score": 0.1756,
-          "art_hash": "ac030c093af42552"
-        },
-        "LIT_4": {
-          "sprite": "stumps/stump_022/lit_4/sprite.webp",
-          "pixellab_object_id": "67f80f5a-6cd9-4779-a922-e976d71f2d5a",
-          "generated_at": "2026-08-15T19:55:08+00:00",
-          "glow_concept": "luminous green sapling sprouting from the center",
-          "difference_from_source": 0.8476,
-          "glow_score": 0.1143,
-          "art_hash": "66d4307db1ff553a"
-        },
-        "NOT_LIT_1": {
-          "sprite": "stumps/stump_022/not_lit_1/sprite.webp",
-          "pixellab_object_id": "db21780b-4fad-447d-8973-997d85e35bbb",
-          "generated_at": "2026-08-15T19:52:19+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9122,
-          "glow_score": 0.0816,
-          "art_hash": "31c8d231d15a3269"
-        },
-        "NOT_LIT_10": {
-          "sprite": "stumps/stump_022/not_lit_10/sprite.webp",
-          "pixellab_object_id": "1d8f4ec2-93e8-43ba-b6d3-2bb27f7811a3",
-          "generated_at": "2026-08-15T19:53:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.377,
-          "glow_score": 0.0178,
-          "art_hash": "a2f91a32092746cb"
-        },
-        "NOT_LIT_2": {
-          "sprite": "stumps/stump_022/not_lit_2/sprite.webp",
-          "pixellab_object_id": "f2999680-4cb7-4066-b1a2-cf4c5e8b2191",
-          "generated_at": "2026-08-15T19:52:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6241,
-          "glow_score": 0.2024,
-          "art_hash": "2bfdb0e608c8fbf5"
-        },
-        "NOT_LIT_3": {
-          "sprite": "stumps/stump_022/not_lit_3/sprite.webp",
-          "pixellab_object_id": "c0e0836f-dd71-4ac6-a50a-e7b701788125",
-          "generated_at": "2026-08-15T19:55:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4173,
-          "glow_score": 0.0056,
-          "art_hash": "bd531c96780ca244"
-        },
-        "NOT_LIT_4": {
-          "sprite": "stumps/stump_022/not_lit_4/sprite.webp",
-          "pixellab_object_id": "2fac4b48-57d2-4ecc-9c36-2fb08a99c581",
-          "generated_at": "2026-08-15T19:51:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7898,
-          "glow_score": 0.0005,
-          "art_hash": "3c5f8c85518b75d2"
-        },
-        "NOT_LIT_5": {
-          "sprite": "stumps/stump_022/not_lit_5/sprite.webp",
-          "pixellab_object_id": "2631fe74-9b05-4a08-86c7-9b7e4aab4b94",
-          "generated_at": "2026-08-15T19:53:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5696,
-          "glow_score": 0.1466,
-          "art_hash": "67293e0c8f93ebd7"
-        },
-        "NOT_LIT_6": {
-          "sprite": "stumps/stump_022/not_lit_6/sprite.webp",
-          "pixellab_object_id": "96575f4a-bafe-47c3-b140-e3d97c834a56",
-          "generated_at": "2026-08-15T19:53:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2853,
-          "glow_score": 0.1229,
-          "art_hash": "36a870f70d0efbf9"
-        },
-        "NOT_LIT_7": {
-          "sprite": "stumps/stump_022/not_lit_7/sprite.webp",
-          "pixellab_object_id": "d9730919-c649-47ac-979c-b7f8e766ef5c",
-          "generated_at": "2026-08-15T19:53:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6124,
-          "glow_score": 0.1191,
-          "art_hash": "3ba742a4a344427c"
-        },
-        "NOT_LIT_8": {
-          "sprite": "stumps/stump_022/not_lit_8/sprite.webp",
-          "pixellab_object_id": "fa360870-7349-4788-91a8-d0cba1acd3bd",
-          "generated_at": "2026-08-15T19:53:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9554,
-          "glow_score": 0.0011,
-          "art_hash": "0375fe709437ad3a"
-        },
-        "NOT_LIT_9": {
-          "sprite": "stumps/stump_022/not_lit_9/sprite.webp",
-          "pixellab_object_id": "feffb801-d96b-4dc7-8222-419c9b7e1aec",
-          "generated_at": "2026-08-15T19:54:00+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9092,
-          "glow_score": 0.0,
-          "art_hash": "130706076acedeb2"
         }
       },
       "animations": []
@@ -54060,69 +52765,6 @@
       "animations": []
     },
     {
-      "id": "window_052",
-      "rel": "windows/window_052",
-      "name": "A shuttered rectangular window in bleached grey timber 052",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a shuttered rectangular window in bleached grey timber, one shutter hanging loose from its hinge, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.32,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          9,
-          7,
-          89,
-          90
-        ],
-        "content_px_height": 83,
-        "canvas_render_px": 58
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T06:52:32+00:00",
-      "pixellab_object_id": "1d5b0467-dca0-4827-bd08-57257e02a9eb",
-      "sprite": "windows/window_052/sprite.webp",
-      "art_hash": "6945946354792186",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_052/rotations/south-east.webp",
-        "south": "windows/window_052/sprite.webp",
-        "south-west": "windows/window_052/rotations/south-west.webp"
-      },
-      "states": {
-        "LIGHTS_ON": {
-          "sprite": "windows/window_052/lights_on/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_052/lights_on/rotations/south-east.webp",
-            "south": "windows/window_052/lights_on/sprite.webp",
-            "south-west": "windows/window_052/lights_on/rotations/south-west.webp"
-          },
-          "pixellab_object_id": "da199ad8-a73b-42e6-a53a-447757b4d5bd",
-          "edit_description": "maintainer-supplied pair (PixelLab UI)",
-          "generated_at": "2026-08-14T08:56:53+00:00",
-          "art_hash": "38aa978ba008b701"
-        },
-        "LIGHTS_OFF": {
-          "sprite": "windows/window_052/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_052/rotations/south-east.webp",
-            "south": "windows/window_052/sprite.webp",
-            "south-west": "windows/window_052/rotations/south-west.webp"
-          },
-          "pixellab_object_id": "1d5b0467-dca0-4827-bd08-57257e02a9eb",
-          "generated_at": "2026-08-14T08:56:53+00:00",
-          "art_hash": "6945946354792186"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "window_053",
       "rel": "windows/window_053",
       "name": "A wide rectangular window in mossy fieldstone 053",
@@ -55281,45 +53923,6 @@
       "animations": []
     },
     {
-      "id": "window_079",
-      "rel": "windows/window_079",
-      "name": "A plank-framed rectangular window from a poor hut 079",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a plank-framed rectangular window from a poor hut, an unlit candle stub on the sill, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.24,
-        "world_px_height": 47,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          21,
-          11,
-          78,
-          87
-        ],
-        "content_px_height": 76,
-        "canvas_render_px": 59
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:02:13+00:00",
-      "pixellab_object_id": "dab5ddf3-ca16-4a32-8d2c-2e1b0145ac34",
-      "sprite": "windows/window_079/sprite.webp",
-      "art_hash": "e699e02c8d296771",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_079/rotations/south-east.webp",
-        "south-west": "windows/window_079/rotations/south-west.webp",
-        "south": "windows/window_079/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
       "id": "window_081",
       "rel": "windows/window_081",
       "name": "A heavy rectangular stone window under a carved lintel 081",
@@ -55612,45 +54215,6 @@
         "south-east": "windows/window_088/rotations/south-east.webp",
         "south-west": "windows/window_088/rotations/south-west.webp",
         "south": "windows/window_088/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
-      "id": "window_089",
-      "rel": "windows/window_089",
-      "name": "A rectangular window in flaking green-painted wood 089",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in flaking green-painted wood, closed wooden shutters, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.23,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          21,
-          14,
-          78,
-          86
-        ],
-        "content_px_height": 72,
-        "canvas_render_px": 61
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:03:31+00:00",
-      "pixellab_object_id": "c2154b12-b02c-4648-b4c5-1b5c98244ff7",
-      "sprite": "windows/window_089/sprite.webp",
-      "art_hash": "1459dd27f0b97a76",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_089/rotations/south-east.webp",
-        "south-west": "windows/window_089/rotations/south-west.webp",
-        "south": "windows/window_089/sprite.webp"
       },
       "states": {},
       "animations": []
@@ -56046,45 +54610,6 @@
       "animations": []
     },
     {
-      "id": "window_100",
-      "rel": "windows/window_100",
-      "name": "A shuttered rectangular window in bleached grey timber 100",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a shuttered rectangular window in bleached grey timber, one shutter hanging loose from its hinge, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.32,
-        "world_px_height": 50,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          12,
-          90,
-          88
-        ],
-        "content_px_height": 76,
-        "canvas_render_px": 63
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:06:13+00:00",
-      "pixellab_object_id": "b26aff19-2d41-418b-8724-e686bbff5735",
-      "sprite": "windows/window_100/sprite.webp",
-      "art_hash": "3915b90e59de63f9",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_100/rotations/south-east.webp",
-        "south-west": "windows/window_100/rotations/south-west.webp",
-        "south": "windows/window_100/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
       "id": "window_101",
       "rel": "windows/window_101",
       "name": "A wide rectangular window in mossy fieldstone 101",
@@ -56280,84 +54805,6 @@
       "animations": []
     },
     {
-      "id": "window_109",
-      "rel": "windows/window_109",
-      "name": "A tall narrow wooden window with a weathered sill 109",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a tall narrow wooden window with a weathered sill, a window box with a few hardy flowers, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.12,
-        "world_px_height": 42,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          22,
-          9,
-          60,
-          72
-        ],
-        "content_px_height": 63,
-        "canvas_render_px": 53
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:12:06+00:00",
-      "pixellab_object_id": "c799c898-fdb1-4d69-baa5-87d1000f52ec",
-      "sprite": "windows/window_109/sprite.webp",
-      "art_hash": "28b2233aba51fcf9",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_109/rotations/south-east.webp",
-        "south-west": "windows/window_109/rotations/south-west.webp",
-        "south": "windows/window_109/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
-      "id": "window_110",
-      "rel": "windows/window_110",
-      "name": "A square wooden-framed window of four panes, paint faded 110",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square wooden-framed window of four panes, paint faded, one shutter closed and one open, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.39,
-        "world_px_height": 52,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          9,
-          12,
-          89,
-          87
-        ],
-        "content_px_height": 75,
-        "canvas_render_px": 67
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:11:55+00:00",
-      "pixellab_object_id": "19389c81-7fa6-4cee-a800-38bc3c5d8846",
-      "sprite": "windows/window_110/sprite.webp",
-      "art_hash": "d14bafb28a4c6757",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_110/rotations/south-east.webp",
-        "south-west": "windows/window_110/rotations/south-west.webp",
-        "south": "windows/window_110/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
       "id": "window_111",
       "rel": "windows/window_111",
       "name": "A rectangular window with a rope-hung shutter 111",
@@ -56397,45 +54844,6 @@
       "animations": []
     },
     {
-      "id": "window_112",
-      "rel": "windows/window_112",
-      "name": "A rectangular window set deep in a thick clay wall 112",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window set deep in a thick clay wall, rain streaks and old water stains, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.11,
-        "world_px_height": 42,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          21,
-          15,
-          61,
-          73
-        ],
-        "content_px_height": 58,
-        "canvas_render_px": 58
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:13:45+00:00",
-      "pixellab_object_id": "50aec83a-b4a3-4b05-8a01-83d9e6b81d2d",
-      "sprite": "windows/window_112/sprite.webp",
-      "art_hash": "13c014afb8f271ba",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_112/rotations/south-east.webp",
-        "south-west": "windows/window_112/rotations/south-west.webp",
-        "south": "windows/window_112/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
       "id": "window_113",
       "rel": "windows/window_113",
       "name": "A rectangular window in flaking green-painted wood 113",
@@ -56470,45 +54878,6 @@
         "south-east": "windows/window_113/rotations/south-east.webp",
         "south-west": "windows/window_113/rotations/south-west.webp",
         "south": "windows/window_113/sprite.webp"
-      },
-      "states": {},
-      "animations": []
-    },
-    {
-      "id": "window_114",
-      "rel": "windows/window_114",
-      "name": "A rectangular window under a slate drip-ledge 114",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window under a slate drip-ledge, a bird's nest tucked in the upper corner, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.39,
-        "world_px_height": 52,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          21,
-          7,
-          78,
-          90
-        ],
-        "content_px_height": 83,
-        "canvas_render_px": 60
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:14:42+00:00",
-      "pixellab_object_id": "ef2392a8-5f89-4648-bb31-3debb48bd246",
-      "sprite": "windows/window_114/sprite.webp",
-      "art_hash": "8246910b972067b0",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_114/rotations/south-east.webp",
-        "south-west": "windows/window_114/rotations/south-west.webp",
-        "south": "windows/window_114/sprite.webp"
       },
       "states": {},
       "animations": []
