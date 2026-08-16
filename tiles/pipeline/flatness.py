@@ -103,26 +103,30 @@ def faces(path):
     return out
 
 
-def wall_quality(path):
-    """Score the WALLS, which are the thing that actually has to be generated well.
+def wall_quality(path, ideal_spread=0.22, tol=0.13):
+    """Score the WALLS on the three things the maintainer actually judges them on.
 
-    The priority order here is the opposite of what it looks like at first glance. The
-    top being one flat colour is not a generation problem: palette_snap rewrites the
-    whole top surface, so a source that was only 0.547 flat with visible grass still
-    comes out at exactly 1.00. Top flatness is free.
+    The walls are the product: they become every cliff and mountain face in the game,
+    and postprocess can only recolour them — it cannot invent structure that was never
+    generated. (The flat top, by contrast, is free: palette_snap rewrites the whole top
+    surface, so a source measured at 0.547 flat with visible grass still lands at
+    1.000.) So a sheet is kept or discarded on its walls, judged as:
 
-    The walls are not free. They become every cliff and mountain face in the game, and
-    postprocess can only recolour them — it cannot invent crack structure that was
-    never generated. So a sheet is worth keeping or discarding almost entirely on how
-    good its walls are, and this is the number that should drive that.
+      1. DOES IT TILE WITH ITSELF, seamlessly, horizontally AND vertically. A cliff is
+         built from many copies of this one wall, so a mismatch at the wrap becomes a
+         hard line repeated across the whole rock face — the same class of defect that
+         plagued tiles2's ground tiles. `seam_h` / `seam_v` measure the discontinuity
+         at the wrap; LOWER IS BETTER.
+      2. IS IT DISCREET — it must read as background rock, not compete with the scene.
+         This is the one that inverts a naive metric: more contrast is NOT better past
+         a point. `spread` is scored against a target band (`ideal_spread`), so both a
+         dead flat cardboard wall and a garish noisy one lose.
+      3. DOES IT HAVE REAL STRUCTURE at all — `edges`, the mean local gradient. A smooth
+         gradient can carry many distinct colours while having no texture whatsoever,
+         so a colour count alone cannot see this.
 
-    Measured on the wall faces only:
-      * `spread`  luminance variation relative to brightness — is there any relief at all
-      * `edges`   mean local gradient — real surface STRUCTURE rather than a smooth ramp,
-                  which `uniq` alone cannot tell apart (a soft gradient has many colours
-                  and no texture)
-      * `uniq`    distinct colours, capped, as a coarse detail count
-    `score` combines them; higher is better, and a flat cardboard cliff lands near 0.
+    `score` is 0..~10, higher better. Reported alongside the raw parts so a rejection
+    can always be explained by which criterion failed.
     """
     im = Image.open(path).convert("RGBA")
     a = np.asarray(im).astype(float)
@@ -141,23 +145,67 @@ def wall_quality(path):
     wall = _erode(wall, 1)
     if wall.sum() < 40:
         return None
+
     rgb = a[:, :, :3]
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
     v = lum[wall]
     mean = float(v.mean()) or 1.0
     spread = float(v.std() / mean)
-    # local gradient inside the wall only, so the silhouette edge cannot fake texture
+
     gy = np.abs(np.diff(lum, axis=0, prepend=lum[:1]))
     gx = np.abs(np.diff(lum, axis=1, prepend=lum[:, :1]))
     inner = _erode(wall, 1)
     edges = float(((gx + gy) / 2.0)[inner].mean()) if inner.sum() else 0.0
+
+    # --- tiling seams -------------------------------------------------------
+    # A wall repeats by the TILE pitch: horizontally the next tile's wall starts one
+    # tile-width along, vertically the next elevation level stacks one face-height up.
+    # So the honest test is to compare each edge of the wall band against the edge it
+    # will actually abut, and see how big the jump is relative to the wall's own
+    # internal variation — a seam only reads as a line if it is worse than the texture.
+    def _seam(axis):
+        prof = []
+        idx = np.where(wall.any(axis=axis))[0]
+        if len(idx) < 6:
+            return None
+        lo, hi = int(idx.min()), int(idx.max())
+        for i in (lo, lo + 1, hi - 1, hi):
+            band = wall.take(i, axis=1 - axis)
+            vals = lum.take(i, axis=1 - axis)[band]
+            prof.append(float(vals.mean()) if band.sum() else None)
+        if any(p is None for p in prof):
+            return None
+        near = (prof[0] + prof[1]) / 2.0
+        far = (prof[2] + prof[3]) / 2.0
+        return abs(near - far) / (mean or 1.0)
+
+    seam_h = _seam(0)
+    seam_v = _seam(1)
+
+    # --- combine ------------------------------------------------------------
+    # discretion: a triangular band around ideal_spread, so flat AND garish both lose
+    disc = max(0.0, 1.0 - abs(spread - ideal_spread) / tol)
+    struct = min(1.0, edges / 12.0)                 # saturates: enough is enough
+    seams = [s for s in (seam_h, seam_v) if s is not None]
+    tiling = 1.0 if not seams else max(0.0, 1.0 - (sum(seams) / len(seams)) / 0.35)
+    # Structure GATES the score rather than contributing a share of it. As a weighted
+    # sum it did the wrong thing: a deliberately flattened wall tiles perfectly and is
+    # maximally discreet, so it scored 4.55 — above two genuinely textured walls — on
+    # two criteria it passes only by having no content. A wall with no structure is
+    # unusable however well it tiles, so it must collapse the whole score.
+    score = 10.0 * (0.55 * tiling + 0.45 * disc) * struct
+
     px = rgb[wall]
-    uniq = int(len(np.unique((px // 4) * 4, axis=0)))
     return {
-        "n": int(wall.sum()), "spread": round(spread, 4),
-        "edges": round(edges, 3), "uniq": uniq,
+        "n": int(wall.sum()),
+        "spread": round(spread, 4), "edges": round(edges, 3),
+        "uniq": int(len(np.unique((px // 4) * 4, axis=0))),
+        "seam_h": None if seam_h is None else round(seam_h, 4),
+        "seam_v": None if seam_v is None else round(seam_v, 4),
+        "tiling": round(tiling, 3), "discretion": round(disc, 3),
+        "structure": round(struct, 3),
         "median": [int(x) for x in np.median(px, axis=0)],
-        "score": round(spread * 10.0 + edges * 0.6 + min(uniq, 24) / 8.0, 3),
+        "score": round(score, 2),
     }
 
 
