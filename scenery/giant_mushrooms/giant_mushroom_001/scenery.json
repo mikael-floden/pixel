@@ -5,7 +5,7 @@
   "rank": 79,
   "index": 1,
   "name": "Leaning crooked giant 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "leaning crooked giant",
   "glow_concept": null,
   "prompt": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, leaning crooked giant, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T02:17:01+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/lit_1/sprite.webp",
+      "pixellab_object_id": "474d910a-7988-40ac-bfcb-4cba58ae9ec2",
+      "generated_at": "2026-08-16T14:26:41+00:00",
+      "glow_concept": "glowing sap veins climbing the thick stalk",
+      "difference_from_source": 0.8381,
+      "glow_score": 0.0603
+    },
+    "LIT_2": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/lit_2/sprite.webp",
+      "pixellab_object_id": "eed98c62-ae3d-4211-a524-e34a76a40fd1",
+      "generated_at": "2026-08-16T14:27:12+00:00",
+      "glow_concept": "cap spots lit like little cottage windows",
+      "difference_from_source": 0.6654,
+      "glow_score": 0.0164
+    },
     "NOT_LIT_1": {
       "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
       "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
@@ -42,6 +58,22 @@
       "generated_at": "2026-08-16T14:25:34+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7274,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "baedfb78-b89f-4266-9401-aa073e1aa6e8",
+      "generated_at": "2026-08-16T14:27:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2575,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d2f257c5-f045-42dc-9503-c47dcf09acfe",
+      "generated_at": "2026-08-16T14:26:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2597,
       "glow_score": 0.0
     }
   }

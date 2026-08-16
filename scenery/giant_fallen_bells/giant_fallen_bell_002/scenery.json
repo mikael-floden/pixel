@@ -5,8 +5,8 @@
   "group": "giant_fallen_bells",
   "rank": 111,
   "index": 2,
-  "name": "Verdigris ship's bell 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Verdigris ship's bell 002",
+  "lights": null,
   "variety": "verdigris ship's bell",
   "modifier": "split down one side",
   "glow_concept": "a soft hum of light inside the crack",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.8803,
       "glow_score": 0.0366
+    },
+    "NOT_LIT_1": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3ff9d159-2c60-4e7b-ae8b-c35c090f8c03",
+      "generated_at": "2026-08-16T14:26:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8571,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6ca5d387-8b98-4270-b317-ec18f8e1d1fb",
+      "generated_at": "2026-08-16T14:26:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9138,
+      "glow_score": 0.0
     }
   }
 }
