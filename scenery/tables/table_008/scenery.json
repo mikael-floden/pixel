@@ -4,8 +4,8 @@
   "group": "tables",
   "rank": 103,
   "index": 8,
-  "name": "Small bedside table 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Small bedside table 008",
+  "lights": null,
   "variety": "small bedside table",
   "glow_concept": "a lit candle stub in a brass holder on the tabletop",
   "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, small bedside table, waist-high, self-emissive at night, softly radiating light: a lit candle stub in a brass holder on the tabletop",
@@ -35,6 +35,46 @@
       "sprite": "tables/table_008/sprite.webp",
       "pixellab_object_id": "4596bf64-013d-4521-9ccb-7bc1579676dd",
       "generated_at": "2026-08-13T21:32:57+00:00"
+    },
+    "LIT_2": {
+      "sprite": "tables/table_008/lit_2/sprite.webp",
+      "pixellab_object_id": "77e68337-14b0-4e31-9179-f85d23fd8eea",
+      "generated_at": "2026-08-16T22:53:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4535,
+      "glow_score": 0.0331
+    },
+    "LIT_3": {
+      "sprite": "tables/table_008/lit_3/sprite.webp",
+      "pixellab_object_id": "0d959e31-ba17-40a8-903b-abc72f32719f",
+      "generated_at": "2026-08-16T22:52:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3977,
+      "glow_score": 0.0779
+    },
+    "LIT_4": {
+      "sprite": "tables/table_008/lit_4/sprite.webp",
+      "pixellab_object_id": "906ae1ae-93cd-4284-ace4-af179431e5ba",
+      "generated_at": "2026-08-16T22:53:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3429,
+      "glow_score": 0.0193
+    },
+    "NOT_LIT_1": {
+      "sprite": "tables/table_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e21a43b9-e4f6-40f3-bf0d-ae19f784620f",
+      "generated_at": "2026-08-16T22:58:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3335,
+      "glow_score": 0.0104
+    },
+    "NOT_LIT_2": {
+      "sprite": "tables/table_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "25552656-6bd1-4cdb-8b3f-a67b4c688219",
+      "generated_at": "2026-08-16T22:53:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6555,
+      "glow_score": 0.0
     }
   }
 }

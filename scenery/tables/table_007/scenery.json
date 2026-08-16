@@ -5,7 +5,7 @@
   "rank": 103,
   "index": 7,
   "name": "Kitchen work table with chopping block 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "kitchen work table with chopping block",
   "glow_concept": null,
   "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, kitchen work table with chopping block, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:16:33+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "tables/table_007/lit_1/sprite.webp",
+      "pixellab_object_id": "1445ea43-798b-4e76-87c4-7889df1d73a2",
+      "generated_at": "2026-08-16T22:54:19+00:00",
+      "glow_concept": "a lit candle stub in a brass holder on the tabletop",
+      "difference_from_source": 0.4376,
+      "glow_score": 0.1372
+    },
+    "LIT_2": {
+      "sprite": "tables/table_007/lit_2/sprite.webp",
+      "pixellab_object_id": "bd562e14-d77a-41f4-8b62-1b6d03b032e2",
+      "generated_at": "2026-08-16T22:54:38+00:00",
+      "glow_concept": "a small glass-hooded oil lamp glowing at its center",
+      "difference_from_source": 0.4893,
+      "glow_score": 0.222
+    },
     "NOT_LIT_1": {
       "sprite": "tables/table_007/sprite.webp",
       "pixellab_object_id": "9bac467d-3d52-4534-8580-7f3a1679c626",

@@ -6,7 +6,7 @@
   "rank": 103,
   "index": 9,
   "name": "Half-set supper table for two 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "half-set supper table for two",
   "modifier": "dusty from long storage",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "tables/table_009/lit_1/sprite.webp",
+      "pixellab_object_id": "6b757f1c-7847-4064-b2c5-4d62b3a9e435",
+      "generated_at": "2026-08-16T22:55:44+00:00",
+      "glow_concept": "memory-light pooling in the wood grain",
+      "difference_from_source": 0.6003,
+      "glow_score": 0.1346
+    },
+    "LIT_2": {
+      "sprite": "tables/table_009/lit_2/sprite.webp",
+      "pixellab_object_id": "07dce424-b278-408d-8010-5b210cb1b911",
+      "generated_at": "2026-08-16T22:55:45+00:00",
+      "glow_concept": "a lit candle stub in a brass holder on the tabletop",
+      "difference_from_source": 0.3628,
+      "glow_score": 0.094
+    },
     "NOT_LIT_1": {
       "sprite": "tables/table_009/sprite.webp",
       "pixellab_object_id": "f9879922-4b55-437d-96cd-627b3b7527ca",
       "generated_at": "2026-08-14T01:42:38+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "tables/table_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a2100dc8-ae8f-4ffd-ac48-8a60a7edb6ec",
+      "generated_at": "2026-08-16T22:55:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9669,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "tables/table_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "9400a996-c4b3-43e2-8698-a6682c2bffb2",
+      "generated_at": "2026-08-16T22:54:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6294,
+      "glow_score": 0.08
+    },
+    "NOT_LIT_4": {
+      "sprite": "tables/table_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "016a102e-fb44-4eea-9afb-06c180b390ec",
+      "generated_at": "2026-08-16T22:56:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3108,
+      "glow_score": 0.0177
     }
   }
 }
