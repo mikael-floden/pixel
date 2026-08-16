@@ -61,6 +61,30 @@ def top_mask(h, w, opaque=None):
     return m
 
 
+def _surfaces(op, h, w):
+    """Top-diamond and wall masks, with the diamond MEASURED off the art.
+
+    This file used to assume the usual 2:1 diamond (64 wide -> 32 tall). The generator
+    makes it 64x28, so that assumption put the top/wall boundary 1-3 rows too low and
+    every "top" measurement here was quietly scoring wall pixels as part of the top —
+    including the clean-top gate, which is the single most important judgement the
+    pipeline makes. Same off-by-two that made rendered plateaus come out ragged and made
+    the postprocess fatten the grass; it lived in three files and this was the last one.
+
+    The half-height comes from the tile's own corners: the topmost opaque pixel of the
+    outermost columns, minus the apex.
+    """
+    ys, xs = np.where(op)
+    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
+    hw = (x1 - x0 + 1) / 2.0
+    cx = (x0 + x1) / 2.0
+    hh = float(np.mean([int(np.where(op[:, x])[0].min()) - y0 for x in (x0, x1)])) or hw / 2.0
+    cy = y0 + hh
+    yy, xx = np.mgrid[0:h, 0:w]
+    below = yy > cy + hh * (1.0 - np.abs(xx - cx) / hw) + 1.0
+    return cx, xx, ~below, below
+
+
 def faces(path):
     """Split a tile into its THREE surfaces and measure each independently:
     the top diamond, the left wall and the right wall.
@@ -77,15 +101,7 @@ def faces(path):
     op = a[:, :, 3] > 200
     if not op.any():
         return None
-    ys, xs = np.where(op)
-    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
-    bw = x1 - x0 + 1
-    cx = (x0 + x1) / 2.0
-    hd = bw / 2.0
-    cy = y0 + hd / 2.0
-    yy, xx = np.mgrid[0:h, 0:w]
-    dia = (np.abs(xx - cx) / (bw / 2.0) + np.abs(yy - cy) / (hd / 2.0)) <= 1.0
-    below = (yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0)))
+    cx, xx, dia, below = _surfaces(op, h, w)
     out = {}
     for name, m in (("top", dia & op),
                     ("left", below & op & (xx < cx - 1)),
@@ -105,6 +121,45 @@ def faces(path):
 
 
 CLEAN_TOP = 0.93   # calibrated against the maintainer's own accept/reject, see below
+
+
+def overhang(path, cap=200.0):
+    """How much of the TOP material spills down over the wall — 0.0 to 1.0.
+
+    The maintainer's own words for a ten-star tile: "It looks like grass is falling over
+    the edge and there is no sharp edge. This is how I want it." That is a property of
+    the GENERATED art and nothing downstream can add it — postprocess deliberately does
+    not touch the wall, which is exactly where the spill lives. So it has to be selected
+    for, or the pipeline keeps publishing tiles with a clean cut instead.
+
+    Measured by HUE rather than by exact colour, because the blades hanging over an edge
+    are darker and more varied than the flat surface they grow from; matching the
+    surface colour within a tolerance finds almost none of them (10 on a tile that
+    visibly has dozens). The hue of the top material's own median is the reference, so
+    this works for any material, not just green.
+    """
+    try:
+        a = np.asarray(Image.open(path).convert("RGBA")).astype(float)
+    except Exception:
+        return 0.0
+    op = a[:, :, 3] > 200
+    if not op.any():
+        return 0.0
+    h, w = a.shape[:2]
+    cx, xx, dia, below = _surfaces(op, h, w)
+    top, wall = dia & op, below & op
+    if top.sum() < 50 or wall.sum() < 50:
+        return 0.0
+    rgb = a[:, :, :3]
+    to_hsv = lambda px: np.asarray(
+        Image.fromarray(px.clip(0, 255).astype(np.uint8)[None, :, :], "RGB").convert("HSV"),
+        dtype=float)[0]
+    ref = to_hsv(np.median(rgb[top], 0)[None, :])[0]
+    hsv = to_hsv(rgb[wall])
+    dh = np.abs(hsv[:, 0] - ref[0])
+    dh = np.minimum(dh, 255.0 - dh)          # hue is circular
+    spill = int(((dh < 22) & (hsv[:, 1] > 55)).sum())
+    return min(spill / cap, 1.0)
 
 
 def select_best(paths, gate=CLEAN_TOP):
@@ -137,7 +192,7 @@ def select_best(paths, gate=CLEAN_TOP):
     pool = clean or []
     if not pool:
         return None                     # no clean top in this sheet: nothing to offer
-    return max(pool, key=lambda x: x[1]["score"])
+    return max(pool, key=lambda x: x[1]["score"] * (1.0 + overhang(x[0])))
 
 def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     """Score the WALLS on the three things the maintainer actually judges them on.
