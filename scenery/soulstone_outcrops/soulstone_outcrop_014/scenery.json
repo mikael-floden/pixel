@@ -5,8 +5,8 @@
   "group": "soulstone_outcrops",
   "rank": 23,
   "index": 14,
-  "name": "Single tall quartz shard 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Single tall quartz shard 014",
+  "lights": null,
   "variety": "single tall quartz shard",
   "glow_concept": "concentric glowing rings like tree rings",
   "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, single tall quartz shard, waist-high, self-emissive at night, softly radiating light: concentric glowing rings like tree rings",
@@ -59,6 +59,22 @@
       "glow_concept": null,
       "difference_from_source": 0.8496,
       "glow_score": 0.1225
+    },
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "0e0b8eb2-98ac-448b-855d-0df3bf687e82",
+      "generated_at": "2026-08-16T21:04:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9093,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f1c0396a-8a1e-49df-b6d2-48ba8ede04cb",
+      "generated_at": "2026-08-16T21:04:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8918,
+      "glow_score": 0.0
     }
   }
 }

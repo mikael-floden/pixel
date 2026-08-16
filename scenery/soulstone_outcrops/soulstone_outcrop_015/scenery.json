@@ -6,7 +6,7 @@
   "rank": 23,
   "index": 15,
   "name": "Purple amethyst cluster 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "purple amethyst cluster",
   "glow_concept": null,
   "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, purple amethyst cluster, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_015/lit_1/sprite.webp",
+      "pixellab_object_id": "59d2efdc-15f7-45e6-bd29-90c6ee039daf",
+      "generated_at": "2026-08-16T21:05:40+00:00",
+      "glow_concept": "tips glowing like small candle flames",
+      "difference_from_source": 0.6241,
+      "glow_score": 0.1937
+    },
+    "LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_015/lit_2/sprite.webp",
+      "pixellab_object_id": "7cebf473-2ee2-4a93-a890-99734460adfd",
+      "generated_at": "2026-08-16T21:06:08+00:00",
+      "glow_concept": "a single word glowing in the surface",
+      "difference_from_source": 0.8859,
+      "glow_score": 0.2308
+    },
     "NOT_LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/sprite.webp",
       "pixellab_object_id": "ad0a1960-bd29-4714-902c-5f53cce53a81",
       "generated_at": "2026-08-13T23:03:30+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "3108a35f-534c-4ff1-a1c9-e00861ec6ab8",
+      "generated_at": "2026-08-16T21:04:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8065,
+      "glow_score": 0.0768
+    },
+    "NOT_LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "76f3ac78-2bf6-427a-ad66-a24e751be04e",
+      "generated_at": "2026-08-16T21:04:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9325,
+      "glow_score": 0.0971
+    },
+    "NOT_LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e6fecaa6-3137-4379-a1ea-7c2eb7165d31",
+      "generated_at": "2026-08-16T21:05:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6631,
+      "glow_score": 0.0684
     }
   }
 }
