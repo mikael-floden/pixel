@@ -4,8 +4,8 @@
   "group": "soulstone_outcrops",
   "rank": 23,
   "index": 10,
-  "name": "Soulstone half-swallowed by turf 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Soulstone half-swallowed by turf 010",
+  "lights": null,
   "variety": "soulstone half-swallowed by turf",
   "glow_concept": "tips glowing like small candle flames",
   "prompt": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone half-swallowed by turf, waist-high, self-emissive at night, softly radiating light: tips glowing like small candle flames",
@@ -35,6 +35,46 @@
       "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
       "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
       "generated_at": "2026-08-13T21:32:59+00:00"
+    },
+    "LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_2/sprite.webp",
+      "pixellab_object_id": "30abee58-2235-4952-a13e-895df118da44",
+      "generated_at": "2026-08-16T21:01:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.925,
+      "glow_score": 0.0165
+    },
+    "LIT_3": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_3/sprite.webp",
+      "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
+      "generated_at": "2026-08-16T21:02:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8884,
+      "glow_score": 0.0528
+    },
+    "LIT_4": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_4/sprite.webp",
+      "pixellab_object_id": "6141321c-985f-4cfc-898e-d01fb892bcb2",
+      "generated_at": "2026-08-16T21:03:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8488,
+      "glow_score": 0.1147
+    },
+    "NOT_LIT_1": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6668cb21-9aed-4f37-8239-921b21ca8dd5",
+      "generated_at": "2026-08-16T21:03:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6922,
+      "glow_score": 0.0872
+    },
+    "NOT_LIT_2": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7ed96c26-7f28-42a6-872a-fe0c207cba83",
+      "generated_at": "2026-08-16T21:03:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9461,
+      "glow_score": 0.0412
     }
   }
 }

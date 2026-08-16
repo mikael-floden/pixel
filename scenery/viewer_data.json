@@ -39002,9 +39002,9 @@
     {
       "id": "signpost_028",
       "rel": "signposts/signpost_028",
-      "name": "Tar-lettered harbor signpost 028 \u00b7 lit",
+      "name": "Tar-lettered harbor signpost 028",
       "category": "signposts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, tar-lettered harbor signpost, reinforced with iron bands, large, twice human height, self-emissive at night, softly radiating light: painted place-names glowing like embers",
       "view": "low top-down",
       "size": 128,
@@ -39056,6 +39056,15 @@
           "difference_from_source": 0.5027,
           "glow_score": 0.0347,
           "art_hash": "a5eac3d8f4c28876"
+        },
+        "NOT_LIT_1": {
+          "sprite": "signposts/signpost_028/not_lit_1/sprite.webp",
+          "pixellab_object_id": "927a1d86-4507-4d20-941a-b69096890c41",
+          "generated_at": "2026-08-16T20:57:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8652,
+          "glow_score": 0.0,
+          "art_hash": "5b8b294ff4247481"
         }
       },
       "animations": []
@@ -39093,6 +39102,15 @@
           "difference_from_source": 0.8135,
           "glow_score": 0.0296,
           "art_hash": "66bcb7affe62ab4f"
+        },
+        "LIT_2": {
+          "sprite": "sky_stairs/sky_stair_001/lit_2/sprite.webp",
+          "pixellab_object_id": "f21b2f8d-8c04-44c9-8002-69a963e7d821",
+          "generated_at": "2026-08-16T20:57:27+00:00",
+          "glow_concept": "soul-lights drifting off the top step",
+          "difference_from_source": 0.8884,
+          "glow_score": 0.0244,
+          "art_hash": "d21aa98ee3e7c71e"
         },
         "NOT_LIT_1": {
           "sprite": "sky_stairs/sky_stair_001/sprite.webp",
@@ -39133,9 +39151,9 @@
     {
       "id": "sky_stair_002",
       "rel": "sky_stairs/sky_stair_002",
-      "name": "Weathered sky stair 002 \u00b7 lit",
+      "name": "Weathered sky stair 002",
       "category": "sky_stairs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, weathered sky stair, crumbling at the top step, tall, about three times human height, self-emissive at night, softly radiating light: each tread glowing faintly upward",
       "view": "low top-down",
       "size": 192,
@@ -39160,6 +39178,51 @@
           "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
           "generated_at": "2026-08-14T04:34:22+00:00",
           "art_hash": "e1f46ad6a21eae26"
+        },
+        "LIT_2": {
+          "sprite": "sky_stairs/sky_stair_002/lit_2/sprite.webp",
+          "pixellab_object_id": "30bf618d-7b8f-4390-8833-62eb78e280dd",
+          "generated_at": "2026-08-16T20:57:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1975,
+          "glow_score": 0.1221,
+          "art_hash": "9bc19785a136830d"
+        },
+        "LIT_3": {
+          "sprite": "sky_stairs/sky_stair_002/lit_3/sprite.webp",
+          "pixellab_object_id": "99537875-6508-4441-b968-d2285659de90",
+          "generated_at": "2026-08-16T20:57:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3389,
+          "glow_score": 0.1204,
+          "art_hash": "94694b7634f063a9"
+        },
+        "LIT_4": {
+          "sprite": "sky_stairs/sky_stair_002/lit_4/sprite.webp",
+          "pixellab_object_id": "84e74dc7-6e46-4721-b8da-4fa87d341e13",
+          "generated_at": "2026-08-16T20:58:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6612,
+          "glow_score": 0.0618,
+          "art_hash": "73f1dfebd6681d01"
+        },
+        "NOT_LIT_1": {
+          "sprite": "sky_stairs/sky_stair_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d6201f00-93aa-4dd4-a458-2b850941784c",
+          "generated_at": "2026-08-16T20:58:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9964,
+          "glow_score": 0.0,
+          "art_hash": "28211cc8693d10ab"
+        },
+        "NOT_LIT_2": {
+          "sprite": "sky_stairs/sky_stair_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e0caab85-572c-4d51-9a63-80c1534ed78a",
+          "generated_at": "2026-08-16T20:58:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9936,
+          "glow_score": 0.0,
+          "art_hash": "3743221f143fa3d3"
         }
       },
       "animations": []
@@ -39167,9 +39230,9 @@
     {
       "id": "sleeping_giant_002",
       "rel": "sleeping_giants/sleeping_giant_002",
-      "name": "Weathered sleeping giant 002 \u00b7 lit",
+      "name": "Weathered sleeping giant 002",
       "category": "sleeping_giants",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a grassy hillock that is unmistakably a sleeping figure under the turf \u2014 the curve of a shoulder, a knee, a hand of bare grey stone escaping the grass, weathered sleeping giant, a knee breaking the turf, tall, about three times human height, self-emissive at night, softly radiating light: light between the stone fingers",
       "view": "low top-down",
       "size": 192,
@@ -39194,6 +39257,51 @@
           "pixellab_object_id": "12b9fb55-491a-4112-8b82-80422c37d8e4",
           "generated_at": "2026-08-14T04:34:31+00:00",
           "art_hash": "8183993561265e3a"
+        },
+        "LIT_2": {
+          "sprite": "sleeping_giants/sleeping_giant_002/lit_2/sprite.webp",
+          "pixellab_object_id": "2fc078de-79d4-48cd-9c4b-a6d0519b8044",
+          "generated_at": "2026-08-16T20:59:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2321,
+          "glow_score": 0.0103,
+          "art_hash": "bfd2d592cc54797a"
+        },
+        "LIT_3": {
+          "sprite": "sleeping_giants/sleeping_giant_002/lit_3/sprite.webp",
+          "pixellab_object_id": "bc022db6-d886-4efb-9469-635c42df6d47",
+          "generated_at": "2026-08-16T20:59:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2008,
+          "glow_score": 0.0026,
+          "art_hash": "e98c751e564aefad"
+        },
+        "LIT_4": {
+          "sprite": "sleeping_giants/sleeping_giant_002/lit_4/sprite.webp",
+          "pixellab_object_id": "f4b2fb31-4d2d-436c-9db2-39bd61e20e48",
+          "generated_at": "2026-08-16T20:58:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.189,
+          "glow_score": 0.0191,
+          "art_hash": "47f3fca22658cc03"
+        },
+        "NOT_LIT_1": {
+          "sprite": "sleeping_giants/sleeping_giant_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b73725e9-bd18-40f4-8045-fb53297979db",
+          "generated_at": "2026-08-16T20:59:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9084,
+          "glow_score": 0.0,
+          "art_hash": "af9286c40f8b53c3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "sleeping_giants/sleeping_giant_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "45906a16-cd99-4ead-b6c8-f492e0ce54ea",
+          "generated_at": "2026-08-16T20:59:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2418,
+          "glow_score": 0.0,
+          "art_hash": "89f2088f9950d3e1"
         }
       },
       "animations": []
@@ -39203,7 +39311,7 @@
       "rel": "soulstone_outcrops/soulstone_outcrop_009",
       "name": "Single tall quartz shard 009",
       "category": "soulstone_outcrops",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, single tall quartz shard, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -39223,11 +39331,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_009/lit_1/sprite.webp",
+          "pixellab_object_id": "12833964-20e3-4ab8-854f-b4b38a21fb84",
+          "generated_at": "2026-08-16T21:01:20+00:00",
+          "glow_concept": "hairline cracks bleeding golden light",
+          "difference_from_source": 0.8786,
+          "glow_score": 0.2081,
+          "art_hash": "a430c637c12081fc"
+        },
+        "LIT_2": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_009/lit_2/sprite.webp",
+          "pixellab_object_id": "0003245c-59c3-4217-9091-105cb7a21e96",
+          "generated_at": "2026-08-16T21:02:36+00:00",
+          "glow_concept": "one sharp glowing facet like a window into the stone",
+          "difference_from_source": 0.9404,
+          "glow_score": 0.2144,
+          "art_hash": "eec50f41cffe3355"
+        },
         "NOT_LIT_1": {
           "sprite": "soulstone_outcrops/soulstone_outcrop_009/sprite.webp",
           "pixellab_object_id": "e37c6b1c-83e2-4a54-804d-7e902aac2638",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "a0c1f495cf724bec"
+        },
+        "NOT_LIT_2": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5f444000-4054-4346-8f48-68f99fdacb6e",
+          "generated_at": "2026-08-16T21:00:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7625,
+          "glow_score": 0.1239,
+          "art_hash": "0eff736437de1f49"
+        },
+        "NOT_LIT_3": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "13e0ddac-25b0-4c45-a07d-da3e7c5b5b8b",
+          "generated_at": "2026-08-16T21:00:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4986,
+          "glow_score": 0.152,
+          "art_hash": "a91d8f850d7aa627"
+        },
+        "NOT_LIT_4": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ec960104-accf-4803-9935-1b23be8128dd",
+          "generated_at": "2026-08-16T21:01:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6567,
+          "glow_score": 0.2346,
+          "art_hash": "1ef13cf6c6d7f652"
         }
       },
       "animations": []
@@ -39235,9 +39388,9 @@
     {
       "id": "soulstone_outcrop_010",
       "rel": "soulstone_outcrops/soulstone_outcrop_010",
-      "name": "Soulstone half-swallowed by turf 010 \u00b7 lit",
+      "name": "Soulstone half-swallowed by turf 010",
       "category": "soulstone_outcrops",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough natural boulder outcrop breaking out of the ground with smooth glassy blue-white soulstone veins running through the rock, the stone mass dominant, not a freestanding crystal cluster and not a carved slab, soulstone half-swallowed by turf, waist-high, self-emissive at night, softly radiating light: tips glowing like small candle flames",
       "view": "low top-down",
       "size": 96,
@@ -39262,6 +39415,51 @@
           "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
           "generated_at": "2026-08-13T21:32:59+00:00",
           "art_hash": "6b83e5dcb94c2b70"
+        },
+        "LIT_2": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_2/sprite.webp",
+          "pixellab_object_id": "30abee58-2235-4952-a13e-895df118da44",
+          "generated_at": "2026-08-16T21:01:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.925,
+          "glow_score": 0.0165,
+          "art_hash": "d386ff3bb941806b"
+        },
+        "LIT_3": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_3/sprite.webp",
+          "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
+          "generated_at": "2026-08-16T21:02:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8884,
+          "glow_score": 0.0528,
+          "art_hash": "64c24a8df7a00ea4"
+        },
+        "LIT_4": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_4/sprite.webp",
+          "pixellab_object_id": "6141321c-985f-4cfc-898e-d01fb892bcb2",
+          "generated_at": "2026-08-16T21:03:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8488,
+          "glow_score": 0.1147,
+          "art_hash": "ba6c75ea0f71bd62"
+        },
+        "NOT_LIT_1": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6668cb21-9aed-4f37-8239-921b21ca8dd5",
+          "generated_at": "2026-08-16T21:03:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6922,
+          "glow_score": 0.0872,
+          "art_hash": "6891ca71e6cc290a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7ed96c26-7f28-42a6-872a-fe0c207cba83",
+          "generated_at": "2026-08-16T21:03:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9461,
+          "glow_score": 0.0412,
+          "art_hash": "e26139d39c8efe71"
         }
       },
       "animations": []
@@ -39296,6 +39494,33 @@
           "pixellab_object_id": "c7db2069-0b8c-48c0-a822-1ca1a6d4d84d",
           "generated_at": "2026-08-13T23:10:03+00:00",
           "art_hash": "929c23506615d3b5"
+        },
+        "LIT_2": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_014/lit_2/sprite.webp",
+          "pixellab_object_id": "e8cb9016-2ae6-4ffe-b921-050bbec9d239",
+          "generated_at": "2026-08-16T21:02:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8854,
+          "glow_score": 0.1162,
+          "art_hash": "af74a9a0898f1014"
+        },
+        "LIT_3": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_014/lit_3/sprite.webp",
+          "pixellab_object_id": "9f8d4cae-727b-43f3-9a7b-2caf006a2f11",
+          "generated_at": "2026-08-16T21:03:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6736,
+          "glow_score": 0.2101,
+          "art_hash": "a47b506586d8d473"
+        },
+        "LIT_4": {
+          "sprite": "soulstone_outcrops/soulstone_outcrop_014/lit_4/sprite.webp",
+          "pixellab_object_id": "31231e3a-d827-44cd-b697-30d9fff00fed",
+          "generated_at": "2026-08-16T21:04:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8496,
+          "glow_score": 0.1225,
+          "art_hash": "6736804162f9afe4"
         }
       },
       "animations": []

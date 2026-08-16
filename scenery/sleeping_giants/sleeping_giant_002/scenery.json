@@ -5,8 +5,8 @@
   "group": "sleeping_giants",
   "rank": 160,
   "index": 2,
-  "name": "Weathered sleeping giant 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Weathered sleeping giant 002",
+  "lights": null,
   "variety": "weathered sleeping giant",
   "modifier": "a knee breaking the turf",
   "glow_concept": "light between the stone fingers",
@@ -36,6 +36,46 @@
       "sprite": "sleeping_giants/sleeping_giant_002/sprite.webp",
       "pixellab_object_id": "12b9fb55-491a-4112-8b82-80422c37d8e4",
       "generated_at": "2026-08-14T04:34:31+00:00"
+    },
+    "LIT_2": {
+      "sprite": "sleeping_giants/sleeping_giant_002/lit_2/sprite.webp",
+      "pixellab_object_id": "2fc078de-79d4-48cd-9c4b-a6d0519b8044",
+      "generated_at": "2026-08-16T20:59:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2321,
+      "glow_score": 0.0103
+    },
+    "LIT_3": {
+      "sprite": "sleeping_giants/sleeping_giant_002/lit_3/sprite.webp",
+      "pixellab_object_id": "bc022db6-d886-4efb-9469-635c42df6d47",
+      "generated_at": "2026-08-16T20:59:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2008,
+      "glow_score": 0.0026
+    },
+    "LIT_4": {
+      "sprite": "sleeping_giants/sleeping_giant_002/lit_4/sprite.webp",
+      "pixellab_object_id": "f4b2fb31-4d2d-436c-9db2-39bd61e20e48",
+      "generated_at": "2026-08-16T20:58:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.189,
+      "glow_score": 0.0191
+    },
+    "NOT_LIT_1": {
+      "sprite": "sleeping_giants/sleeping_giant_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "b73725e9-bd18-40f4-8045-fb53297979db",
+      "generated_at": "2026-08-16T20:59:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9084,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "sleeping_giants/sleeping_giant_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "45906a16-cd99-4ead-b6c8-f492e0ce54ea",
+      "generated_at": "2026-08-16T20:59:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2418,
+      "glow_score": 0.0
     }
   }
 }

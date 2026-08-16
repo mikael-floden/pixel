@@ -5,8 +5,8 @@
   "group": "signposts",
   "rank": 8,
   "index": 28,
-  "name": "Tar-lettered harbor signpost 028 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tar-lettered harbor signpost 028",
+  "lights": null,
   "variety": "tar-lettered harbor signpost",
   "modifier": "reinforced with iron bands",
   "glow_concept": "painted place-names glowing like embers",
@@ -60,6 +60,14 @@
       "glow_concept": null,
       "difference_from_source": 0.5027,
       "glow_score": 0.0347
+    },
+    "NOT_LIT_1": {
+      "sprite": "signposts/signpost_028/not_lit_1/sprite.webp",
+      "pixellab_object_id": "927a1d86-4507-4d20-941a-b69096890c41",
+      "generated_at": "2026-08-16T20:57:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8652,
+      "glow_score": 0.0
     }
   }
 }

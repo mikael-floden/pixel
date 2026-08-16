@@ -5,8 +5,8 @@
   "group": "sky_stairs",
   "rank": 165,
   "index": 2,
-  "name": "Weathered sky stair 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Weathered sky stair 002",
+  "lights": null,
   "variety": "weathered sky stair",
   "modifier": "crumbling at the top step",
   "glow_concept": "each tread glowing faintly upward",
@@ -36,6 +36,46 @@
       "sprite": "sky_stairs/sky_stair_002/sprite.webp",
       "pixellab_object_id": "5bcd27a3-706f-4edd-b988-fa19b8f7e3e6",
       "generated_at": "2026-08-14T04:34:22+00:00"
+    },
+    "LIT_2": {
+      "sprite": "sky_stairs/sky_stair_002/lit_2/sprite.webp",
+      "pixellab_object_id": "30bf618d-7b8f-4390-8833-62eb78e280dd",
+      "generated_at": "2026-08-16T20:57:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1975,
+      "glow_score": 0.1221
+    },
+    "LIT_3": {
+      "sprite": "sky_stairs/sky_stair_002/lit_3/sprite.webp",
+      "pixellab_object_id": "99537875-6508-4441-b968-d2285659de90",
+      "generated_at": "2026-08-16T20:57:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3389,
+      "glow_score": 0.1204
+    },
+    "LIT_4": {
+      "sprite": "sky_stairs/sky_stair_002/lit_4/sprite.webp",
+      "pixellab_object_id": "84e74dc7-6e46-4721-b8da-4fa87d341e13",
+      "generated_at": "2026-08-16T20:58:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6612,
+      "glow_score": 0.0618
+    },
+    "NOT_LIT_1": {
+      "sprite": "sky_stairs/sky_stair_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d6201f00-93aa-4dd4-a458-2b850941784c",
+      "generated_at": "2026-08-16T20:58:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9964,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "sky_stairs/sky_stair_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e0caab85-572c-4d51-9a63-80c1534ed78a",
+      "generated_at": "2026-08-16T20:58:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9936,
+      "glow_score": 0.0
     }
   }
 }
