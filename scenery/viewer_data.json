@@ -15821,6 +15821,15 @@
           "glow_score": 0.1593,
           "art_hash": "fdc20185b9db7245"
         },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_028/not_lit_1/sprite.webp",
+          "pixellab_object_id": "0b59dbb7-c4d5-4857-bc14-5953d8ff5459",
+          "generated_at": "2026-08-16T10:18:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7714,
+          "glow_score": 0.0,
+          "art_hash": "854c75491779503e"
+        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_028/not_lit_2/sprite.webp",
           "pixellab_object_id": "10101fef-4e2f-4ca8-aca1-26d4909889ec",
@@ -15917,7 +15926,7 @@
       "rel": "cliff_vines/cliff_vine_041",
       "name": "Blue-flowered creeper fall 041",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, blue-flowered creeper fall, scattered evenly and thinly, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -15937,6 +15946,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_041/lit_1/sprite.webp",
+          "pixellab_object_id": "76d80bff-b0d8-41ae-a219-661b9a2caa14",
+          "generated_at": "2026-08-16T10:17:37+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.582,
+          "glow_score": 0.1071,
+          "art_hash": "de92783e785cb134"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_041/lit_2/sprite.webp",
+          "pixellab_object_id": "323af1cc-498f-4622-84e0-cdd0ead28274",
+          "generated_at": "2026-08-16T10:17:05+00:00",
+          "glow_concept": "luminous sap veins glowing through the leaves",
+          "difference_from_source": 0.6582,
+          "glow_score": 0.1316,
+          "art_hash": "88c37cc609812fc4"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_041/sprite.webp",
           "pixellab_object_id": "4e0e8083-92fe-4b12-97af-712d0bd094b8",
@@ -15960,6 +15987,15 @@
           "difference_from_source": 0.4935,
           "glow_score": 0.002,
           "art_hash": "3dc230013428075e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_041/not_lit_4/sprite.webp",
+          "pixellab_object_id": "cac6ceec-446b-41ca-9ed3-533015fbeb8b",
+          "generated_at": "2026-08-16T10:17:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.655,
+          "glow_score": 0.0013,
+          "art_hash": "a815aa3a781e3f46"
         }
       },
       "animations": []
@@ -15967,9 +16003,9 @@
     {
       "id": "cliff_vine_044",
       "rel": "cliff_vines/cliff_vine_044",
-      "name": "Dark green ivy fall 044 \u00b7 lit",
+      "name": "Dark green ivy fall 044",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dark green ivy fall, a denser knot in one corner, thin elsewhere, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
       "view": "low top-down",
       "size": 256,
@@ -15994,6 +16030,51 @@
           "pixellab_object_id": "44a6e116-bf3d-44bb-8c57-cbfa1efe20d7",
           "generated_at": "2026-08-14T04:30:16+00:00",
           "art_hash": "d688cd31c5f687a9"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_044/lit_2/sprite.webp",
+          "pixellab_object_id": "871b8451-aed2-4dbe-ba0f-f94ecf93470d",
+          "generated_at": "2026-08-16T10:17:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5545,
+          "glow_score": 0.0,
+          "art_hash": "c5083d3d6d171135"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_044/lit_3/sprite.webp",
+          "pixellab_object_id": "9f1e8109-302e-4980-ad46-a55526a2b58a",
+          "generated_at": "2026-08-16T10:17:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5718,
+          "glow_score": 0.0,
+          "art_hash": "46fe6c446820adcf"
+        },
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_044/lit_4/sprite.webp",
+          "pixellab_object_id": "17a6de82-dcf7-4600-9ffd-fe9f0a0bf5a8",
+          "generated_at": "2026-08-16T10:18:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7196,
+          "glow_score": 0.0,
+          "art_hash": "71a552ffa6a9ca2d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_044/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f60eaf73-b36a-4661-8758-39ce66e3e49c",
+          "generated_at": "2026-08-16T10:18:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8424,
+          "glow_score": 0.0,
+          "art_hash": "909533536ca9d04a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_044/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b5cff3a2-8698-4450-ad68-66a00733e335",
+          "generated_at": "2026-08-16T10:18:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6363,
+          "glow_score": 0.0,
+          "art_hash": "04fdab14ff77af64"
         }
       },
       "animations": []
@@ -16003,7 +16084,7 @@
       "rel": "cliff_vines/cliff_vine_045",
       "name": "Red-leaved autumn creeper fall 045",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, red-leaved autumn creeper fall, a wide loose spread with big gaps, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -16023,11 +16104,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_045/lit_2/sprite.webp",
+          "pixellab_object_id": "9719ba19-15c0-4ed2-93fc-6009e3f93d21",
+          "generated_at": "2026-08-16T10:21:54+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.4159,
+          "glow_score": 0.0756,
+          "art_hash": "58631ae999cf6bc6"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_045/sprite.webp",
           "pixellab_object_id": "8d5e3e71-0d91-44b1-b541-1aae2864e95d",
           "generated_at": "2026-08-14T04:51:35+00:00",
           "art_hash": "09ff1a7fc09b61e1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_045/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d0a76a07-c8ca-4782-bc3d-d97a902686b3",
+          "generated_at": "2026-08-16T10:18:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.318,
+          "glow_score": 0.0029,
+          "art_hash": "82065d1528812a8f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_045/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a5ca5895-1a51-4b8e-a28d-730e9e7eba05",
+          "generated_at": "2026-08-16T10:20:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2964,
+          "glow_score": 0.003,
+          "art_hash": "f88cabc5b0b426aa"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_045/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0ee5cb15-2df1-4e40-b527-5bd6ea2d93d0",
+          "generated_at": "2026-08-16T10:19:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3394,
+          "glow_score": 0.0316,
+          "art_hash": "8e099fd5ff06a3b8"
         }
       },
       "animations": []
@@ -16037,7 +16154,7 @@
       "rel": "cliff_vines/cliff_vine_047",
       "name": "Moss-heavy dripping fall 047",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "beautiful lush climbing ivy growing wild across an old ruin wall, deep green leaves in loose overlapping clusters with long trailing tendrils between them, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, moss-heavy dripping fall, one thick tendril reaching far out alone, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -16057,11 +16174,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_047/lit_1/sprite.webp",
+          "pixellab_object_id": "4859db0a-5588-4324-93b4-56a7675c11c6",
+          "generated_at": "2026-08-16T10:19:44+00:00",
+          "glow_concept": "amber memory-light dripping from the tips",
+          "difference_from_source": 0.5728,
+          "glow_score": 0.0384,
+          "art_hash": "093fceecb6bbfde3"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_047/lit_2/sprite.webp",
+          "pixellab_object_id": "7375d61c-c1ee-4331-835b-d30ffe1532d0",
+          "generated_at": "2026-08-16T10:20:40+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.2779,
+          "glow_score": 0.0174,
+          "art_hash": "3442f6bfacef4664"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_047/sprite.webp",
           "pixellab_object_id": "1789338f-08f5-4e67-a2c8-4ef8625d4269",
           "generated_at": "2026-08-14T04:51:36+00:00",
           "art_hash": "d01182d2891a733e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_047/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0528e719-9d2d-4377-9c41-c8631b0d570a",
+          "generated_at": "2026-08-16T10:19:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2528,
+          "glow_score": 0.0028,
+          "art_hash": "0297ac337e834edd"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_047/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4626e337-54fa-4703-bf68-b477e5363b8a",
+          "generated_at": "2026-08-16T10:22:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2077,
+          "glow_score": 0.0007,
+          "art_hash": "4947f63ce01575d5"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_047/not_lit_4/sprite.webp",
+          "pixellab_object_id": "8654fd89-94aa-4e0f-90a4-449665dbbe09",
+          "generated_at": "2026-08-16T10:19:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2805,
+          "glow_score": 0.0007,
+          "art_hash": "3761d6599b61a2c0"
         }
       },
       "animations": []
@@ -16069,9 +16231,9 @@
     {
       "id": "cliff_vine_048",
       "rel": "cliff_vines/cliff_vine_048",
-      "name": "Yellow honeysuckle fall 048 \u00b7 lit",
+      "name": "Yellow honeysuckle fall 048",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, yellow honeysuckle fall, fine and lacy throughout, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
       "view": "low top-down",
       "size": 256,
@@ -16096,6 +16258,42 @@
           "pixellab_object_id": "a2ada813-ef20-49dc-85f1-e9e1e4dca647",
           "generated_at": "2026-08-14T04:33:00+00:00",
           "art_hash": "9971a5381db8df01"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_048/lit_2/sprite.webp",
+          "pixellab_object_id": "dd69dc04-494e-4129-bb18-ac920c0407e6",
+          "generated_at": "2026-08-16T10:20:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6722,
+          "glow_score": 0.0035,
+          "art_hash": "199b3b62935fbdd6"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_048/lit_3/sprite.webp",
+          "pixellab_object_id": "d2b460a7-e57e-4960-addf-25dd464f0afb",
+          "generated_at": "2026-08-16T10:22:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.429,
+          "glow_score": 0.0038,
+          "art_hash": "7d33e8cc449114ea"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_048/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b8da861f-878e-4d29-a2a2-dd2cc3168f05",
+          "generated_at": "2026-08-16T10:21:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9998,
+          "glow_score": 0.0,
+          "art_hash": "4962e8393191fdd9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_048/not_lit_2/sprite.webp",
+          "pixellab_object_id": "77000209-e14b-49ea-84a6-6b6de1c08962",
+          "generated_at": "2026-08-16T10:23:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9993,
+          "glow_score": 0.0,
+          "art_hash": "bcea49a59e3cf98a"
         }
       },
       "animations": []
@@ -16130,6 +16328,33 @@
           "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",
           "generated_at": "2026-08-14T04:52:51+00:00",
           "art_hash": "6336bf150a5300c8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_049/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0330c54b-a342-4f0e-b368-60c5081f90cc",
+          "generated_at": "2026-08-16T10:22:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6062,
+          "glow_score": 0.1761,
+          "art_hash": "b5c2e62eb4f6c7e1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_049/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4585e2bb-1a7a-4efe-8a3e-b55fc83a38d8",
+          "generated_at": "2026-08-16T10:22:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3656,
+          "glow_score": 0.0611,
+          "art_hash": "d6536c1e158dc417"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_049/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fb891347-085b-4f3f-ac6a-9de9a3eac16d",
+          "generated_at": "2026-08-16T10:23:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4003,
+          "glow_score": 0.0601,
+          "art_hash": "ce6c7d7bff86e1d4"
         }
       },
       "animations": []

@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 47,
   "name": "Moss-heavy dripping fall 047",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "moss-heavy dripping fall",
   "modifier": "one thick tendril reaching far out alone",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_047/lit_1/sprite.webp",
+      "pixellab_object_id": "4859db0a-5588-4324-93b4-56a7675c11c6",
+      "generated_at": "2026-08-16T10:19:44+00:00",
+      "glow_concept": "amber memory-light dripping from the tips",
+      "difference_from_source": 0.5728,
+      "glow_score": 0.0384
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_047/lit_2/sprite.webp",
+      "pixellab_object_id": "7375d61c-c1ee-4331-835b-d30ffe1532d0",
+      "generated_at": "2026-08-16T10:20:40+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.2779,
+      "glow_score": 0.0174
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_047/sprite.webp",
       "pixellab_object_id": "1789338f-08f5-4e67-a2c8-4ef8625d4269",
       "generated_at": "2026-08-14T04:51:36+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_047/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0528e719-9d2d-4377-9c41-c8631b0d570a",
+      "generated_at": "2026-08-16T10:19:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2528,
+      "glow_score": 0.0028
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_047/not_lit_3/sprite.webp",
+      "pixellab_object_id": "4626e337-54fa-4703-bf68-b477e5363b8a",
+      "generated_at": "2026-08-16T10:22:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2077,
+      "glow_score": 0.0007
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_047/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8654fd89-94aa-4e0f-90a4-449665dbbe09",
+      "generated_at": "2026-08-16T10:19:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2805,
+      "glow_score": 0.0007
     }
   }
 }
