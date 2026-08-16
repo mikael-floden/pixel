@@ -26,6 +26,7 @@ import argparse
 import os
 import sys
 
+import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -40,29 +41,56 @@ import palette_snap
 # what makes a plateau's edge come out ragged instead of a straight diagonal — the
 # maintainer spotted it on sight. Verified by rendering 14/15/16 side by side: only 14
 # gives clean edges.
-DX, DY, LEVEL_PX = 32, 14, 16
+DX, DY = 32, 14
 
 
-def plateau(tile, cols=4, rows=4, level=1, pad=8):
+def wall_height(tile):
+    """How far one floor drops — MEASURED, like DY and the top diamond.
+
+    A floor's cliff face runs from the top diamond's bottom vertex to the bottom of the
+    silhouette, so that distance IS the stacking pitch: offset two blocks by it and the
+    lower one's wall starts exactly where the upper one's ends. On a 64px tile it is 17.
+
+    Guessing 16 (the tidy power of two) overlaps every floor by a row, which puts a
+    hitch into the vertical repeat at each storey — precisely the thing a multi-floor
+    render exists to show. Every constant in this file has now been wrong once by
+    assuming a round number, so this one is read off the art too.
+    """
+    a = np.asarray(tile.convert("RGBA"))
+    op = a[:, :, 3] > 128
+    ys, xs = np.where(op)
+    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
+    hh = float(np.mean([int(np.where(op[:, x])[0].min()) - y0 for x in (x0, x1)]))
+    return int(round(int(ys.max()) - (y0 + 2 * hh)))
+
+
+def plateau(tile, cols=4, rows=4, level=1, pad=8, floors=1):
     """Lay `tile` over a cols x rows patch of ground raised to `level`.
 
     A plateau rather than a flat field on purpose: raising it means the front rank's
     walls are exposed, which is the only way to see the cliff faces the tiles exist
     for, while the interior shows how the tops tessellate.
+
+    `floors` stacks that many storeys of the SAME tile into one cliff. One floor only
+    ever shows the wall repeating sideways; the wall also has to repeat downwards, and
+    a single storey cannot show whether it does.
     """
+    lp = wall_height(tile)
     tw, th = tile.size
     xs = [(c - r) * DX for c in range(cols) for r in range(rows)]
     ys = [(c + r) * DY for c in range(cols) for r in range(rows)]
+    lift = level * lp + (floors - 1) * lp
     w = (max(xs) - min(xs)) + tw + pad * 2
-    h = (max(ys) - min(ys)) + th + pad * 2 + level * LEVEL_PX
+    h = (max(ys) - min(ys)) + th + pad * 2 + lift
     out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     ox = pad - min(xs)
-    oy = pad - min(ys) + level * LEVEL_PX
-    # back to front: a nearer tile must be able to cover the one behind it
-    for c, r in sorted([(c, r) for c in range(cols) for r in range(rows)],
-                       key=lambda cr: cr[0] + cr[1]):
+    oy = pad - min(ys) + lift
+    # back to front: a nearer tile must be able to cover the one behind it, and within
+    # a cell a higher storey must be able to cover the top of the one it sits on
+    cells = [(c, r, f) for c in range(cols) for r in range(rows) for f in range(floors)]
+    for c, r, f in sorted(cells, key=lambda k: (k[0] + k[1], k[2])):
         x = ox + (c - r) * DX
-        y = oy + (c + r) * DY - level * LEVEL_PX
+        y = oy + (c + r) * DY - level * lp - f * lp
         out.alpha_composite(tile, (x, y))
     return out
 
