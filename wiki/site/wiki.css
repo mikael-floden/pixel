@@ -1136,3 +1136,21 @@ input[type="range"] { accent-color: var(--accent); }
 .race-block h2 { display: flex; align-items: center; }
 .race-blurb { margin: 2px 0 10px; }
 .npc-block .page-rail { display: flex; align-items: center; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+
+/* ---- World (Tiles 3.0) ----
+   The review unit is a CANDIDATE, so the card carries its measurements and
+   its verdict together: he compares two or three generations of the same pair
+   side by side and picks one. The picked/dropped outlines are the same
+   language the tile cells use in Tiles OLD. */
+.plain-list { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+.plain-list li { margin: 4px 0; }
+.plain-list b { color: var(--ink); }
+.world-cands .world-cand { gap: 6px; }
+.world-cand.picked { outline: 2px solid var(--good); }
+.world-cand.dropped { outline: 2px solid var(--bad); opacity: 0.55; }
+.world-cand .thumb { height: 132px; }
+.world-cand .thumb img { image-rendering: pixelated; width: 96px; height: auto; }
+.metric-row { display: flex; flex-wrap: wrap; gap: 4px 10px; font-variant-numeric: tabular-nums; }
+.world-prompt summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.world-prompt p { font-size: 12.5px; margin: 6px 0 0; }
+.world-prompt .mono { font-family: ui-monospace, monospace; font-size: 11.5px; word-break: break-all; }

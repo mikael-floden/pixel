@@ -489,6 +489,90 @@ function buildCharacters() {
   return chars;
 }
 
+/* ------------------------------------------------------------------ WORLD
+ * TILES 3.0 (`tiles/`) — the ground system being built to replace `tiles2/`.
+ *
+ * Maintainer 2026-08-16: "The tiles agent is working in what we call Tiles
+ * 3.0 … When the new tile system is complete the old /tiles2 will be removed.
+ * This however is a big task and we will need the wiki in order to know if
+ * /tiles (3.0) works. Can you in the wiki have two tiles systems/pages? Tiles
+ * OLD and World? … I will have to review the new system to make it good."
+ *
+ * So the NEW system takes the good name — the section is **World** — and the
+ * outgoing one becomes **Tiles OLD**. Two live domains, side by side, for as
+ * long as the migration takes.
+ *
+ * WHAT HE REVIEWS IS THE CANDIDATE, NOT THE TILE. `tiles/review/manifest.json`
+ * (`tiles3/review@1`) is the tiles agent's own contract, written for exactly
+ * this: per CELL (a "grass over black rock" pair) it offers 2-3 CANDIDATES
+ * ranked by a measured wall score, and says what a verdict means — "`tile_id`
+ * is the PixelLab generation a rejection should delete … A DELETED cell is
+ * tombstoned and never regenerated, unlike a rejected one."
+ *
+ * Verdicts therefore ride the manifest's OWN keys (`tiles/<cell>/<n>`) in the
+ * `tiles` feedback file, which is the domain the manifest names and the file
+ * that agent already reads. Its ids are repo paths, so 3.0's `tiles/…` and
+ * 2.0's `tiles2/…` cannot collide even though they share the file.
+ */
+function buildWorld() {
+  const base = join(ROOT, "tiles");
+  if (!isDir(base)) return null;
+  const review = readJson(join(base, "review", "manifest.json"));
+  const cfg = readJson(join(base, "config", "tiles.json")) ?? {};
+  const tombs = readJson(join(base, "tombstones.json"));
+  // The ground types are the vocabulary — the wiki renders THEIRS, never its
+  // own, so a type added in config appears here with no wiki edit.
+  const types = new Map((cfg.ground_types ?? []).map((g) => {
+    const t = typeof g === "string" ? { id: g } : g;
+    return [t.id, t];
+  }));
+  const label = (id) => types.get(id)?.name ?? titleCase(id);
+  const dead = new Set(Array.isArray(tombs?.cells) ? tombs.cells
+    : tombs && typeof tombs === "object" ? Object.keys(tombs.cells ?? tombs) : []);
+  const cells = [];
+  for (const [id, cell] of Object.entries(review?.cells ?? {})) {
+    const cands = (cell.candidates ?? [])
+      .map((c) => ({
+        // The manifest's own key IS the feedback id — no id scheme of the
+        // wiki's invention to keep in sync with the agent's.
+        key: c.key ?? `tiles/${id}/${c.file?.split("/").pop()?.replace(/\.\w+$/, "")}`,
+        art: c.file ? `tiles/${c.file}` : null,
+        wallScore: c.wall_score ?? null,
+        wall: c.wall ?? null,
+        topShare: c.top_share ?? null,
+        tileId: c.tile_id ?? null,
+        style: c.style ?? null,
+        prompt: c.prompt ?? null,
+      }))
+      .filter((c) => c.art && existsSync(join(ROOT, c.art)));
+    if (!cands.length) continue;
+    cells.push({
+      id,
+      // "Grass over Black rock" — the pair, in the order the agent names it:
+      // the walkable TOP first, the sideways WALL second.
+      name: `${label(cell.top ?? id.split("__over__")[0])} over ${label(cell.side ?? id.split("__over__")[1]).toLowerCase()}`,
+      top: cell.top ?? null, side: cell.side ?? null,
+      path: `tiles/${id}`,               // the CELL's own feedback id
+      preview: cands[0].art,             // the agent's own top-ranked candidate
+      candidates: cands,
+      best: cands[0].wallScore ?? null,
+      tombstoned: dead.has(id),
+    });
+  }
+  cells.sort((a, b) => a.name.localeCompare(b.name));
+  worldMeta = {
+    // What the agent measures a candidate against, published so the page can
+    // say WHY something ranks where it does instead of showing bare numbers.
+    accept: cfg.accept ?? null,
+    tile: cfg.tile ?? null,
+    groundTypes: [...types.values()],
+    tombstoned: [...dead],
+    schema: review?.schema ?? null,
+  };
+  return cells;
+}
+let worldMeta = null;
+
 // ------------------------------------------------------------------- tiles
 function buildTiles() {
   const base = join(ROOT, "tiles2");
@@ -1910,6 +1994,7 @@ function seedMonsterTuning(monsters, levels) {
 const monsters = buildMonsters();
 const characters = buildCharacters();
 const tiles = buildTiles();
+const worldCells = buildWorld();
 const objects = buildObjects();
 const sounds = buildSounds();
 const music = buildMusic();
@@ -2113,6 +2198,10 @@ const data = {
     npcs: characters?.filter((c) => c.kind === "npc").length ?? 0,
     tile_types: tiles?.length ?? 0,
     tiles: tiles?.reduce((n, t) => n + t.tileCount, 0) ?? 0,
+    // Tiles 3.0 counts CELLS — one "grass over black rock" pair — because
+    // that is the unit he reviews and the unit the agent regenerates.
+    world: worldCells?.length ?? 0,
+    world_candidates: worldCells?.reduce((n, c) => n + c.candidates.length, 0) ?? 0,
     objects: objects?.length ?? 0,
     sounds: sounds?.length ?? 0,
     music: music?.length ?? 0,
@@ -2127,8 +2216,10 @@ const data = {
   domains: {
     monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
     objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
-    lore: lore ?? [],
+    lore: lore ?? [], world: worldCells ?? [],
   },
+  // The tiles agent's own vocabulary and acceptance thresholds.
+  worldMeta,
   constants,
 };
 

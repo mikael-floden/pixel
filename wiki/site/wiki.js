@@ -1318,7 +1318,28 @@ const SECTIONS = {
   // 4,372 tiles — one section quietly measuring itself two ways (maintainer
   // 2026-08-06: "use it in the menu as well"). One count per section now, and
   // `navCount` went with it: tiles was its only user.
-  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
+  // TWO TILE SYSTEMS, SIDE BY SIDE, for as long as the migration takes
+  // (maintainer 2026-08-16: "The tiles agent is working in what we call Tiles
+  // 3.0 … Can you in the wiki have two tiles systems/pages? Tiles OLD and
+  // World? World is the new Tiles 3.0 system (/tiles) … I will have to review
+  // the new system to make it good").
+  //
+  // The NEW system takes the good name. `tiles` here is the tiles2 domain,
+  // which has been the section called "World" since July and is now the one on
+  // its way out; `world` is tiles/ (3.0). When tiles2 goes, this row goes with
+  // it and nothing else has to move.
+  //
+  // A PLAYER SEES ONE GROUND SECTION, still called World, and it is the one
+  // the game actually renders — tiles2, today. "Tiles OLD" is a migration
+  // word: it means something to the Game Master and nothing to a reader, and
+  // the encyclopedia must not degrade while the two systems overlap. So the
+  // label is admin-dependent, and 3.0 is admin-only until it ships — an
+  // unfinished ground system in the player's encyclopedia would be a promise
+  // the game cannot keep. When tiles2 goes, this row goes with it, `world`
+  // loses its adminOnly, and nothing else moves.
+  tiles:      { label: () => (state.admin ? "Tiles OLD" : "World"),
+                noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
+  world:      { label: "World",         noun: "pairs",      icon: "world",      count: (d) => d.counts.world, adminOnly: true },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
@@ -1336,8 +1357,11 @@ const SECTIONS = {
 // Races before Creatures: the people of Nangijala come before the things that
 // hunt them (maintainer 2026-08-14, "feels like humans must be sorted before
 // monsters").
-const SECTION_ORDER = ["characters", "monsters", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
-const label = (slug) => SECTIONS[slug]?.label ?? slug;
+// World (3.0) sits where the ground system has always sat; Tiles OLD follows
+// it, because the thing being replaced should not be the one you reach first.
+const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
+// A section's label may depend on who is reading (see `tiles` above).
+const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** The maintainer's 48x48 pixel art, drawn ONLY at whole multiples of 48 and
  *  never resampled — `image-rendering: pixelated` plus an exact CSS size, so
  *  a phone's 2x/3x device pixels land on clean pixel boundaries. */
@@ -1370,7 +1394,7 @@ function renderNav() {
     const s = SECTIONS[slug];
     if (s.adminOnly && !state.admin) continue;
     rows.push(h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
-      s.label, h("span", { class: "count" }, String(s.count(state.data) || ""))));
+      label(slug), h("span", { class: "count" }, String(s.count(state.data) || ""))));
   }
   $("#nav").replaceChildren(...rows);
 }
@@ -1558,7 +1582,7 @@ function viewHome() {
     h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, noun]) =>
       h("a", { class: "stat-tile", href: `#/${slug}` },
         sectionIcon(slug, 96),
-        h("div", { class: "n" }, SECTIONS[slug].label),
+        h("div", { class: "n" }, label(slug)),
         h("div", { class: "l" }, `${n} ${noun}`)))),
     ...(state.admin ? [
       h("h2", {}, "How feedback works"),
@@ -2638,6 +2662,160 @@ function viewCharacter(id) {
 }
 
 /* --- tiles --- */
+/* ------------------------------------------------------- WORLD (Tiles 3.0)
+ * The ground system replacing tiles2. He reviews CANDIDATES: for each "A over
+ * B" pair the tiles agent offers two or three generations, ranked by a
+ * measured wall score, and asks which one to keep.
+ *
+ * The page is built around that question and nothing else. Every number on it
+ * is the AGENT'S OWN measurement (wiki/build.mjs buildWorld) — the wiki never
+ * scores a tile itself, or the two would drift and his verdict would be about
+ * a ranking nobody else can reproduce.
+ */
+const worldCells = () => state.data.domains.world ?? [];
+const worldMeta = () => state.data.worldMeta ?? {};
+/** Passed / short of the agent's own acceptance bar, so a score reads as a
+ *  verdict rather than a number. */
+function wallVerdict(score) {
+  const min = worldMeta().accept?.min_wall_score;
+  if (score == null || min == null) return null;
+  return score >= min
+    ? { cls: "ok", text: `wall ${score} — over the bar (${min})` }
+    : { cls: "warn", text: `wall ${score} — under the bar (${min})` };
+}
+/** Where a cell stands with HIM, which is not the same as where it stands with
+ *  the agent: a cell is settled once one of its candidates is approved. */
+function cellReview(cell) {
+  let approved = 0, rejected = 0;
+  for (const c of cell.candidates) {
+    const st = fb("tiles", c.key).status;
+    if (st === "approved") approved++;
+    else if (st === "rejected") rejected++;
+  }
+  const piece = fb("tiles", cell.path).status;
+  if (piece === "rejected") return { key: "dropped", cls: "err", text: "drop the pair" };
+  if (approved) return { key: "picked", cls: "ok", text: `picked${approved > 1 ? ` (${approved})` : ""}` };
+  if (rejected === cell.candidates.length) return { key: "redo", cls: "err", text: "all rejected — redo" };
+  if (rejected) return { key: "partly", cls: "warn", text: `${rejected} of ${cell.candidates.length} rejected` };
+  return { key: "open", cls: "", text: "not reviewed" };
+}
+const WORLD_FILTERS = {
+  all: { label: "all", title: "Every pair the agent has generated" },
+  open: { label: "not reviewed", title: "No candidate judged yet — the work to do" },
+  partly: { label: "partly", title: "Some candidates judged, none picked yet" },
+  picked: { label: "picked", title: "A candidate approved — this pair is settled" },
+  redo: { label: "redo", title: "Every candidate rejected, or the pair dropped" },
+};
+const WORLD_FILTER_KEY = "wiki-world-filter";
+function viewWorld() {
+  const all = worldCells();
+  const q = all.filter((c) => matches(state.query, c.id, c.name, c.top, c.side));
+  const read = (() => { try { return localStorage.getItem(WORLD_FILTER_KEY) || "all"; } catch { return "all"; } })();
+  const filter = WORLD_FILTERS[read] ? read : "all";
+  const match = (c) => {
+    const r = cellReview(c).key;
+    return filter === "all" || (filter === "redo" ? r === "redo" || r === "dropped" : r === filter);
+  };
+  const list = state.admin ? q.filter(match) : q;
+  return h("div", {},
+    sectionHead("world"),
+    h("p", { class: "muted" }, state.admin
+      ? "Tiles 3.0 — the ground system being built to replace Tiles OLD. Each pair is a walkable TOP over a wall SIDE; open one to pick which generation to keep."
+      : "The ground of Nangijala — every walkable surface over every wall it can stand on."),
+    // The agent's headline: no baked outline, one call per transition, top and
+    // wall chosen apart. Said once, here, rather than on every page.
+    h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "What is new",
+        h("span", { class: "pill" }, `${all.length} pairs`),
+        h("span", { class: "pill" }, `${state.data.counts?.world_candidates ?? 0} candidates`)),
+      h("ul", { class: "plain-list" },
+        h("li", {}, h("b", {}, "No baked outline"), " — generated as colour zones, so none of Tiles OLD's four outline-fighting passes exist."),
+        h("li", {}, h("b", {}, "Top and wall are separate"), " — “grass over grey stone”, so the map agent picks the surface you walk on and the wall you see independently."),
+        h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))),
+    state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
+      const n = id === "all" ? q.length : q.filter((c) => (id === "redo" ? ["redo", "dropped"] : [id]).includes(cellReview(c).key)).length;
+      return [id, `${f.label} ${n}`, f.title];
+    }), filter, () => route()) : null,
+    list.length ? h("div", { class: "grid" }, ...list.map((c) => {
+      const r = cellReview(c);
+      const v = wallVerdict(c.best);
+      return h("a", { class: "card", href: `#/world/${c.id}` },
+        h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+        h("div", { class: "card-name" }, c.name),
+        h("div", { class: "card-sub" }, `${c.candidates.length} candidate${c.candidates.length === 1 ? "" : "s"}`),
+        h("div", { class: "card-badges" },
+          v ? h("span", { class: `pill ${v.cls}` }, `wall ${c.best}`) : null,
+          state.admin && r.key !== "open" ? h("span", { class: `pill ${r.cls}` }, r.text) : null,
+          c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
+    })) : h("p", { class: "muted" }, all.length ? "Nothing in this filter." : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
+}
+function viewWorldCell(id) {
+  const all = worldCells();
+  const c = all.find((x) => x.id === id);
+  if (!c) return h("p", {}, "Unknown pair.");
+  const r = cellReview(c);
+  const t = worldMeta().tile ?? {};
+  return h("div", {},
+    crumbRow("#/world", `← ${label("world")}`, "world", all, c.id),
+    h("div", { class: "detail-head" },
+      h("div", { class: "portrait-col" },
+        h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name }))),
+      h("div", { class: "meta" },
+        h("h1", {}, c.name),
+        h("div", { class: "spawn-line" },
+          h("span", { class: "pill" }, `walk on ${c.top}`),
+          h("span", { class: "pill" }, `wall of ${c.side}`),
+          state.admin ? h("span", { class: `pill ${r.cls}` }, r.text) : null),
+        h("p", { class: "muted" }, `${c.candidates.length} generation${c.candidates.length === 1 ? "" : "s"} of this pair. ${state.admin ? "Approve the one to keep; reject the ones to regenerate." : ""}`),
+        // The WHOLE PAIR's verdict — "this pairing should not exist", which
+        // the agent tombstones so it is never generated again. Deliberately
+        // apart from the per-candidate rows below: it is a different decision.
+        state.admin ? h("div", {},
+          h("div", { class: "muted", style: "margin:10px 0 4px" }, "The pair itself"),
+          feedbackRow("tiles", c.path, {
+            reject: "✕ drop this pair",
+            rejectTitle: "This pairing should not exist — the agent tombstones it and never generates it again",
+            rejectedLabel: "dropped",
+          })) : null)),
+    h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "Candidates",
+        h("span", { class: "pill" }, "ranked by wall score")),
+      h("div", { class: "grid world-cands" }, ...c.candidates.map((cand, i) => worldCandidate(c, cand, i))),
+      h("p", { class: "muted", style: "margin:10px 0 0" },
+        `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`)));
+}
+/** One generation of one pair: the art, what was measured about it, and the
+ *  verdict. The metrics are the agent's own — `wall_score` is what it ranks
+ *  by, and the four parts are published so a low score is explainable rather
+ *  than merely low. */
+function worldCandidate(cell, cand, i) {
+  const v = wallVerdict(cand.wallScore);
+  const st = state.admin ? fb("tiles", cand.key).status : null;
+  const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
+  return h("div", { class: `card world-cand${st === "approved" ? " picked" : st === "rejected" ? " dropped" : ""}` },
+    h("div", { class: "thumb checker" }, h("img", { src: assetUrl(cand.art), alt: `${cell.name} — generation ${i + 1}`, loading: "lazy" })),
+    h("div", { class: "card-name" }, `#${i + 1}`,
+      v ? h("span", { class: `pill ${v.cls}`, title: v.text, style: "margin-left:8px" }, `wall ${cand.wallScore}`) : null),
+    cand.wall ? h("div", { class: "card-sub metric-row" },
+      // Named, not lettered: he has to be able to read WHY one beat another.
+      h("span", { title: "how well the wall repeats without a visible seam" }, `tiling ${num(cand.wall.tiling)}`),
+      h("span", { title: "how quietly the wall texture sits — loud walls fight the art on top" }, `discretion ${num(cand.wall.discretion)}`),
+      h("span", { title: "whether the wall reads as a real surface rather than noise" }, `structure ${num(cand.wall.structure)}`)) : null,
+    cand.topShare != null
+      ? h("div", { class: "card-sub" }, `top surface ${(cand.topShare * 100).toFixed(1)}% one colour`)
+      : null,
+    state.admin ? h("div", { class: "card-sub" },
+      feedbackRow("tiles", cand.key, {
+        reject: "✕ redo",
+        rejectTitle: "Reject this generation — the agent deletes it on PixelLab and generates another",
+        rejectedLabel: "to be redone",
+      })) : null,
+    state.admin && cand.prompt
+      ? h("details", { class: "world-prompt" }, h("summary", {}, "prompt"), h("p", {}, cand.prompt),
+        cand.tileId ? h("p", { class: "muted mono" }, cand.tileId) : null)
+      : null);
+}
+
 function viewTiles() {
   const list = state.data.domains.tiles.filter((t) => matches(state.query, t.id, t.name, t.description));
   return h("div", {},
@@ -4639,6 +4817,7 @@ function route() {
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
   else if (page === "characters") view = id ? viewCharacter(id) : viewCharacters();
   else if (page === "tiles") view = id ? (sub ? viewTileInstance(id, sub) : viewTileType(id)) : viewTiles();
+  else if (page === "world") view = id ? viewWorldCell(id) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();
