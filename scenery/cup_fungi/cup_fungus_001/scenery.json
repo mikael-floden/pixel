@@ -5,7 +5,7 @@
   "rank": 58,
   "index": 1,
   "name": "Moss-nested scarlet cups 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "moss-nested scarlet cups",
   "glow_concept": null,
   "prompt": "a cluster of small goblet-shaped cup fungi growing from mossy ground, moss-nested scarlet cups, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:36:03+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "cup_fungi/cup_fungus_001/lit_1/sprite.webp",
+      "pixellab_object_id": "43dbb2f1-366e-4381-aa24-34b7c45de613",
+      "generated_at": "2026-08-16T11:21:04+00:00",
+      "glow_concept": "glowing haze puffing from the cups",
+      "difference_from_source": 0.6465,
+      "glow_score": 0.3896
+    },
     "NOT_LIT_1": {
       "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
       "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
       "generated_at": "2026-08-13T01:36:03+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cup_fungi/cup_fungus_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7ae41b4c-5aea-4ae1-b40e-7dca808dbf42",
+      "generated_at": "2026-08-16T11:20:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.637,
+      "glow_score": 0.2105
+    },
+    "NOT_LIT_3": {
+      "sprite": "cup_fungi/cup_fungus_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3e2c3058-ea8e-4c3f-b85f-0ac641fb49bc",
+      "generated_at": "2026-08-16T11:20:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2456,
+      "glow_score": 0.1134
+    },
+    "NOT_LIT_4": {
+      "sprite": "cup_fungi/cup_fungus_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4d4be1d8-956a-45e4-ac61-07071ae45c85",
+      "generated_at": "2026-08-16T11:21:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4951,
+      "glow_score": 0.0944
     }
   }
 }

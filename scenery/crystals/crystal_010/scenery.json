@@ -5,8 +5,8 @@
   "group": "crystals",
   "rank": 37,
   "index": 10,
-  "name": "Frost-rimed pale cluster 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Frost-rimed pale cluster 010",
+  "lights": null,
   "variety": "frost-rimed pale cluster",
   "glow_concept": "sparks of light drifting off the points",
   "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, frost-rimed pale cluster, small, knee-high, self-emissive at night, softly radiating light: sparks of light drifting off the points",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.4822,
       "glow_score": 0.4392
+    },
+    "LIT_4": {
+      "sprite": "crystals/crystal_010/lit_4/sprite.webp",
+      "pixellab_object_id": "7afc2b12-b93d-4884-8b20-f510f01f4ce4",
+      "generated_at": "2026-08-16T11:15:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5845,
+      "glow_score": 0.4314
+    },
+    "NOT_LIT_1": {
+      "sprite": "crystals/crystal_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "9102cc84-d0e7-45d1-b507-f7edbd80550b",
+      "generated_at": "2026-08-16T11:15:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9487,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "crystals/crystal_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "70239d07-47db-47bc-85d3-aa367962c018",
+      "generated_at": "2026-08-16T11:15:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9661,
+      "glow_score": 0.0
     }
   }
 }

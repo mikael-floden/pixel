@@ -19598,6 +19598,15 @@
           "generated_at": "2026-08-13T23:22:22+00:00",
           "art_hash": "bc86656b1d64c7da"
         },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7d64f5c3-b659-4d26-bcd5-b4dd0f85cacc",
+          "generated_at": "2026-08-16T11:15:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8299,
+          "glow_score": 0.0701,
+          "art_hash": "a442577ff04bcacc"
+        },
         "NOT_LIT_3": {
           "sprite": "crystals/crystal_009/not_lit_3/sprite.webp",
           "pixellab_object_id": "db7d8bbc-bdae-406f-b126-bbb3102ec0ca",
@@ -19622,9 +19631,9 @@
     {
       "id": "crystal_010",
       "rel": "crystals/crystal_010",
-      "name": "Frost-rimed pale cluster 010 \u00b7 lit",
+      "name": "Frost-rimed pale cluster 010",
       "category": "crystals",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, frost-rimed pale cluster, small, knee-high, self-emissive at night, softly radiating light: sparks of light drifting off the points",
       "view": "low top-down",
       "size": 64,
@@ -19667,6 +19676,33 @@
           "difference_from_source": 0.4822,
           "glow_score": 0.4392,
           "art_hash": "f7dcfe50c02f1c9c"
+        },
+        "LIT_4": {
+          "sprite": "crystals/crystal_010/lit_4/sprite.webp",
+          "pixellab_object_id": "7afc2b12-b93d-4884-8b20-f510f01f4ce4",
+          "generated_at": "2026-08-16T11:15:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5845,
+          "glow_score": 0.4314,
+          "art_hash": "84a975d74c1b9963"
+        },
+        "NOT_LIT_1": {
+          "sprite": "crystals/crystal_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9102cc84-d0e7-45d1-b507-f7edbd80550b",
+          "generated_at": "2026-08-16T11:15:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9487,
+          "glow_score": 0.0,
+          "art_hash": "eef2e7d7b3caa288"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "70239d07-47db-47bc-85d3-aa367962c018",
+          "generated_at": "2026-08-16T11:15:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9661,
+          "glow_score": 0.0,
+          "art_hash": "b4e60994c80d8855"
         }
       },
       "animations": []
@@ -19676,7 +19712,7 @@
       "rel": "crystals/crystal_011",
       "name": "Dark violet night cluster 011",
       "category": "crystals",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, dark violet night cluster, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -19696,11 +19732,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "crystals/crystal_011/lit_1/sprite.webp",
+          "pixellab_object_id": "b458fa34-3901-456c-a09d-f7cccb955ff0",
+          "generated_at": "2026-08-16T11:16:16+00:00",
+          "glow_concept": "the whole cluster radiating its own gem color",
+          "difference_from_source": 0.8213,
+          "glow_score": 0.3558,
+          "art_hash": "92efa25e92e523cb"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_011/lit_2/sprite.webp",
+          "pixellab_object_id": "e8ae2c73-799a-40ba-ba2e-316018e0317f",
+          "generated_at": "2026-08-16T11:16:47+00:00",
+          "glow_concept": "light pulsing slowly up the central shard",
+          "difference_from_source": 0.5836,
+          "glow_score": 0.1182,
+          "art_hash": "7d8b0f45502b8a50"
+        },
         "NOT_LIT_1": {
           "sprite": "crystals/crystal_011/sprite.webp",
           "pixellab_object_id": "843a7822-b976-4c6e-8957-5b26d61c5a4d",
           "generated_at": "2026-08-13T23:56:34+00:00",
           "art_hash": "2d165f981c209c3a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "26f8725e-1f81-4899-b42b-6c2e88101bff",
+          "generated_at": "2026-08-16T11:15:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1244,
+          "glow_score": 0.0,
+          "art_hash": "d80579261d0f264b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "crystals/crystal_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "21fa9248-eba6-4cf6-90e1-f3ddb029b459",
+          "generated_at": "2026-08-16T11:15:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6003,
+          "glow_score": 0.0,
+          "art_hash": "8e6c40f8dae55eee"
+        },
+        "NOT_LIT_4": {
+          "sprite": "crystals/crystal_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7cf3447b-6166-4f12-a99b-20da450eff22",
+          "generated_at": "2026-08-16T11:16:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4195,
+          "glow_score": 0.0,
+          "art_hash": "fbf0f0c0cf12f521"
         }
       },
       "animations": []
@@ -19708,9 +19789,9 @@
     {
       "id": "crystal_012",
       "rel": "crystals/crystal_012",
-      "name": "Sea-glass teal cluster 012 \u00b7 lit",
+      "name": "Sea-glass teal cluster 012",
       "category": "crystals",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, sea-glass teal cluster, roughly six feet tall, human height, self-emissive at night, softly radiating light: ground around the base lit in the crystal's color",
       "view": "low top-down",
       "size": 64,
@@ -19735,6 +19816,51 @@
           "pixellab_object_id": "d3fd1b87-e437-444d-8bbb-4101d29713a9",
           "generated_at": "2026-08-13T23:12:11+00:00",
           "art_hash": "09392efd668a72a8"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_012/lit_2/sprite.webp",
+          "pixellab_object_id": "06152dcf-11f1-4693-bdc6-7ea2f48d2ce1",
+          "generated_at": "2026-08-16T11:16:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8022,
+          "glow_score": 0.1769,
+          "art_hash": "87de0c4cb1ba764f"
+        },
+        "LIT_3": {
+          "sprite": "crystals/crystal_012/lit_3/sprite.webp",
+          "pixellab_object_id": "0abf9ced-fcf3-4dbd-9120-d68a40863ad1",
+          "generated_at": "2026-08-16T11:16:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6667,
+          "glow_score": 0.1851,
+          "art_hash": "f1f243e8a28d8d31"
+        },
+        "LIT_4": {
+          "sprite": "crystals/crystal_012/lit_4/sprite.webp",
+          "pixellab_object_id": "373ddda3-4aba-48c6-bf93-c8e443fe6fcc",
+          "generated_at": "2026-08-16T11:19:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5709,
+          "glow_score": 0.2196,
+          "art_hash": "30381ae02889158b"
+        },
+        "NOT_LIT_1": {
+          "sprite": "crystals/crystal_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d07bc18a-6796-4c3b-8a45-42ab1ee0e975",
+          "generated_at": "2026-08-16T11:18:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9832,
+          "glow_score": 0.0,
+          "art_hash": "d9d8cdfb5cddfda8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "17b30ea6-8112-448e-aaf6-7833c20043ea",
+          "generated_at": "2026-08-16T11:17:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9778,
+          "glow_score": 0.0,
+          "art_hash": "b1a2cd28e2dadf12"
         }
       },
       "animations": []
@@ -19742,9 +19868,9 @@
     {
       "id": "crystal_014",
       "rel": "crystals/crystal_014",
-      "name": "Clear white quartz spikes 014 \u00b7 lit",
+      "name": "Clear white quartz spikes 014",
       "category": "crystals",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, clear white quartz spikes, small, knee-high, self-emissive at night, softly radiating light: the whole cluster radiating its own gem color",
       "view": "low top-down",
       "size": 64,
@@ -19769,6 +19895,51 @@
           "pixellab_object_id": "7b0190c3-e82e-4772-9d83-abad214c91aa",
           "generated_at": "2026-08-13T23:38:16+00:00",
           "art_hash": "cb0abdc5d1f87204"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_014/lit_2/sprite.webp",
+          "pixellab_object_id": "2901b616-3eba-440c-a3e8-dbf28727842b",
+          "generated_at": "2026-08-16T11:17:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4807,
+          "glow_score": 0.3407,
+          "art_hash": "4b48519bb4c6ba82"
+        },
+        "LIT_3": {
+          "sprite": "crystals/crystal_014/lit_3/sprite.webp",
+          "pixellab_object_id": "29198d90-2506-49ba-9ad1-495fb309a92e",
+          "generated_at": "2026-08-16T11:19:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8468,
+          "glow_score": 0.3821,
+          "art_hash": "1299fe4fbb3d65b5"
+        },
+        "LIT_4": {
+          "sprite": "crystals/crystal_014/lit_4/sprite.webp",
+          "pixellab_object_id": "93702adf-f31a-4338-85d7-bd950fbb43a1",
+          "generated_at": "2026-08-16T11:18:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3101,
+          "glow_score": 0.3858,
+          "art_hash": "d76cd4c5253016f2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "crystals/crystal_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8f9132f2-a267-431a-b05f-6bcc7506e78f",
+          "generated_at": "2026-08-16T11:18:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8931,
+          "glow_score": 0.0,
+          "art_hash": "d78915e6fb42bb5a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f4ec2d84-3e11-472a-a355-179df0844854",
+          "generated_at": "2026-08-16T11:18:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8938,
+          "glow_score": 0.0,
+          "art_hash": "1f0a366a193ee506"
         }
       },
       "animations": []
@@ -19803,6 +19974,33 @@
           "pixellab_object_id": "f75fccb0-1042-430d-948a-48549673ca12",
           "generated_at": "2026-08-13T23:05:02+00:00",
           "art_hash": "d1148c7289893ef0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_901/not_lit_2/sprite.webp",
+          "pixellab_object_id": "42fff046-1a8b-46bb-93e8-620883cfc703",
+          "generated_at": "2026-08-16T11:19:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8627,
+          "glow_score": 0.2153,
+          "art_hash": "5955a91e006ce708"
+        },
+        "NOT_LIT_3": {
+          "sprite": "crystals/crystal_901/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0ab9752d-404f-4bbb-a3b5-07c50b2a5bd6",
+          "generated_at": "2026-08-16T11:19:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5735,
+          "glow_score": 0.1161,
+          "art_hash": "1ce110ea9079ae98"
+        },
+        "NOT_LIT_4": {
+          "sprite": "crystals/crystal_901/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d39d3107-6795-4167-8b54-9ac39b00abc5",
+          "generated_at": "2026-08-16T11:19:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8425,
+          "glow_score": 0.1466,
+          "art_hash": "f493e1e55bb508b4"
         }
       },
       "animations": []
@@ -19812,7 +20010,7 @@
       "rel": "cup_fungi/cup_fungus_001",
       "name": "Moss-nested scarlet cups 001",
       "category": "cup_fungi",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of small goblet-shaped cup fungi growing from mossy ground, moss-nested scarlet cups, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -19832,11 +20030,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cup_fungi/cup_fungus_001/lit_1/sprite.webp",
+          "pixellab_object_id": "43dbb2f1-366e-4381-aa24-34b7c45de613",
+          "generated_at": "2026-08-16T11:21:04+00:00",
+          "glow_concept": "glowing haze puffing from the cups",
+          "difference_from_source": 0.6465,
+          "glow_score": 0.3896,
+          "art_hash": "9e6dc8920d8469cb"
+        },
         "NOT_LIT_1": {
           "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
           "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
           "generated_at": "2026-08-13T01:36:03+00:00",
           "art_hash": "8a9b3887aba6365b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cup_fungi/cup_fungus_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7ae41b4c-5aea-4ae1-b40e-7dca808dbf42",
+          "generated_at": "2026-08-16T11:20:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.637,
+          "glow_score": 0.2105,
+          "art_hash": "251313899d5adb6b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cup_fungi/cup_fungus_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3e2c3058-ea8e-4c3f-b85f-0ac641fb49bc",
+          "generated_at": "2026-08-16T11:20:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2456,
+          "glow_score": 0.1134,
+          "art_hash": "0e28e44fb3d23bc7"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cup_fungi/cup_fungus_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4d4be1d8-956a-45e4-ac61-07071ae45c85",
+          "generated_at": "2026-08-16T11:21:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4951,
+          "glow_score": 0.0944,
+          "art_hash": "e2a513ae3fc710cc"
         }
       },
       "animations": []

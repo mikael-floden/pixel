@@ -5,8 +5,8 @@
   "group": "crystals",
   "rank": 37,
   "index": 12,
-  "name": "Sea-glass teal cluster 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Sea-glass teal cluster 012",
+  "lights": null,
   "variety": "sea-glass teal cluster",
   "glow_concept": "ground around the base lit in the crystal's color",
   "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, sea-glass teal cluster, roughly six feet tall, human height, self-emissive at night, softly radiating light: ground around the base lit in the crystal's color",
@@ -35,6 +35,46 @@
       "sprite": "crystals/crystal_012/sprite.webp",
       "pixellab_object_id": "d3fd1b87-e437-444d-8bbb-4101d29713a9",
       "generated_at": "2026-08-13T23:12:11+00:00"
+    },
+    "LIT_2": {
+      "sprite": "crystals/crystal_012/lit_2/sprite.webp",
+      "pixellab_object_id": "06152dcf-11f1-4693-bdc6-7ea2f48d2ce1",
+      "generated_at": "2026-08-16T11:16:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8022,
+      "glow_score": 0.1769
+    },
+    "LIT_3": {
+      "sprite": "crystals/crystal_012/lit_3/sprite.webp",
+      "pixellab_object_id": "0abf9ced-fcf3-4dbd-9120-d68a40863ad1",
+      "generated_at": "2026-08-16T11:16:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6667,
+      "glow_score": 0.1851
+    },
+    "LIT_4": {
+      "sprite": "crystals/crystal_012/lit_4/sprite.webp",
+      "pixellab_object_id": "373ddda3-4aba-48c6-bf93-c8e443fe6fcc",
+      "generated_at": "2026-08-16T11:19:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5709,
+      "glow_score": 0.2196
+    },
+    "NOT_LIT_1": {
+      "sprite": "crystals/crystal_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d07bc18a-6796-4c3b-8a45-42ab1ee0e975",
+      "generated_at": "2026-08-16T11:18:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9832,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "crystals/crystal_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "17b30ea6-8112-448e-aaf6-7833c20043ea",
+      "generated_at": "2026-08-16T11:17:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9778,
+      "glow_score": 0.0
     }
   }
 }
