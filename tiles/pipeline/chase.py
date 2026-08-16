@@ -162,8 +162,22 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd):
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
         os.makedirs(sdir, exist_ok=True)
-        images, tile_id = client.create_tiles(description=prompt, seed=101 + i * 7,
-                                              **matrix.FIXED)
+        try:
+            images, tile_id = client.create_tiles(description=prompt, seed=101 + i * 7,
+                                                  **matrix.FIXED)
+        except PixelLabError as e:
+            # A stalled or failed JOB says nothing about the cell, and letting it end
+            # the chase throws away the other nine rolls. It cost a cell exactly that
+            # once: a job hung at 10% for 180s, the exception unwound out of the whole
+            # cell, and snow/paving_stone was reported as having no transition
+            # available — it produced a 1.00 on its third roll as soon as it was asked
+            # again. So a bad roll is just a bad roll: drop the empty sheet dir and
+            # take the next one.
+            os.rmdir(sdir) if not os.listdir(sdir) else None
+            print(f"    roll {n + 1}/{attempts}: job failed ({str(e)[:70]}), rolling on",
+                  flush=True)
+            time.sleep(5)
+            continue
         pixellab_gc.record(tile_id, purpose=f"matrix:{cell.replace('__over__', '_over_')}",
                            prompt=prompt)
         spent[0] += matrix.SHEET_USD

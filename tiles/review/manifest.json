@@ -1631,56 +1631,22 @@
         {
           "key": "tiles/snow__over__paving_stone/0",
           "file": "review/snow__over__paving_stone/0.png",
-          "wall_score": 9.49,
+          "wall_score": 3.19,
           "wall": {
-            "tiling": 0.916,
-            "discretion": 0.99,
-            "structure": 1.0,
-            "contrast": 26.17,
-            "edges": 15.211
+            "tiling": 0.0,
+            "discretion": 0.925,
+            "structure": 0.766,
+            "contrast": 24.65,
+            "edges": 9.187
           },
-          "top_share": 0.9382,
-          "overhang": 0.0,
-          "tile_id": "fa6d5006-510c-4f5f-860f-54fcc615c450",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are cut paving stone slabs with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
-        },
-        {
-          "key": "tiles/snow__over__paving_stone/1",
-          "file": "review/snow__over__paving_stone/1.png",
-          "wall_score": 9.49,
-          "wall": {
-            "tiling": 0.949,
-            "discretion": 0.95,
-            "structure": 1.0,
-            "contrast": 25.1,
-            "edges": 14.968
-          },
-          "top_share": 0.4306,
-          "overhang": 0.0,
-          "tile_id": "fa6d5006-510c-4f5f-860f-54fcc615c450",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are cut paving stone slabs with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
-        },
-        {
-          "key": "tiles/snow__over__paving_stone/2",
-          "file": "review/snow__over__paving_stone/2.png",
-          "wall_score": 9.39,
-          "wall": {
-            "tiling": 0.893,
-            "discretion": 0.994,
-            "structure": 1.0,
-            "contrast": 25.89,
-            "edges": 16.547
-          },
-          "top_share": 0.5036,
-          "overhang": 0.005,
-          "tile_id": "fa6d5006-510c-4f5f-860f-54fcc615c450",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are cut paving stone slabs with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.8198,
+          "overhang": 1.0,
+          "tile_id": "48449d27-775c-40c9-b2ea-0d7cc9bf1c61",
+          "style": "chase5",
+          "prompt": "isometric ground tile, clean fresh snow over cut paving stone slabs, photographed from above. Soft irregular boundary where snow meets paving stone \u2014 the snow creeps down over the paving stone. Plain even snow surface. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__slime": {
       "top": "snow",
