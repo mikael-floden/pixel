@@ -6,7 +6,7 @@
   "rank": 109,
   "index": 7,
   "name": "Half-wound wool skein and spindle 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "half-wound wool skein and spindle",
   "modifier": "with carved decorative trim",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "house_clutter/clutter_007/lit_1/sprite.webp",
+      "pixellab_object_id": "d4124373-4800-4e9d-ae79-64b39a7c184d",
+      "generated_at": "2026-08-16T16:55:15+00:00",
+      "glow_concept": "a covered lantern set among the things",
+      "difference_from_source": 0.6531,
+      "glow_score": 0.1481
+    },
+    "LIT_2": {
+      "sprite": "house_clutter/clutter_007/lit_2/sprite.webp",
+      "pixellab_object_id": "3a55ecc7-12a1-4eb5-aa01-6c1053e09824",
+      "generated_at": "2026-08-16T16:55:16+00:00",
+      "glow_concept": "a little oil lamp burning beside the basket",
+      "difference_from_source": 0.4061,
+      "glow_score": 0.031
+    },
     "NOT_LIT_1": {
       "sprite": "house_clutter/clutter_007/sprite.webp",
       "pixellab_object_id": "2248fe24-ef3c-4ad8-8fa3-c81ce38d16f3",
       "generated_at": "2026-08-14T01:52:43+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "house_clutter/clutter_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e32db38b-5d80-4d9c-9708-cb9ab192e64d",
+      "generated_at": "2026-08-16T16:54:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5317,
+      "glow_score": 0.0306
+    },
+    "NOT_LIT_3": {
+      "sprite": "house_clutter/clutter_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f1d5ff1d-9222-4ce5-b182-ead71e5b3b9e",
+      "generated_at": "2026-08-16T16:55:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5902,
+      "glow_score": 0.0497
+    },
+    "NOT_LIT_4": {
+      "sprite": "house_clutter/clutter_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f2cb1f9d-b8e5-48e0-9599-516ea60bbac2",
+      "generated_at": "2026-08-16T16:55:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4867,
+      "glow_score": 0.013
     }
   }
 }

@@ -30460,7 +30460,7 @@
       "rel": "house_clutter/clutter_007",
       "name": "Half-wound wool skein and spindle 007",
       "category": "house_clutter",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, half-wound wool skein and spindle, with carved decorative trim, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -30480,11 +30480,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "house_clutter/clutter_007/lit_1/sprite.webp",
+          "pixellab_object_id": "d4124373-4800-4e9d-ae79-64b39a7c184d",
+          "generated_at": "2026-08-16T16:55:15+00:00",
+          "glow_concept": "a covered lantern set among the things",
+          "difference_from_source": 0.6531,
+          "glow_score": 0.1481,
+          "art_hash": "370fbdf0c341f959"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_007/lit_2/sprite.webp",
+          "pixellab_object_id": "3a55ecc7-12a1-4eb5-aa01-6c1053e09824",
+          "generated_at": "2026-08-16T16:55:16+00:00",
+          "glow_concept": "a little oil lamp burning beside the basket",
+          "difference_from_source": 0.4061,
+          "glow_score": 0.031,
+          "art_hash": "45d236793516d6a9"
+        },
         "NOT_LIT_1": {
           "sprite": "house_clutter/clutter_007/sprite.webp",
           "pixellab_object_id": "2248fe24-ef3c-4ad8-8fa3-c81ce38d16f3",
           "generated_at": "2026-08-14T01:52:43+00:00",
           "art_hash": "8d2551844b916465"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e32db38b-5d80-4d9c-9708-cb9ab192e64d",
+          "generated_at": "2026-08-16T16:54:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5317,
+          "glow_score": 0.0306,
+          "art_hash": "4e4fd2b7a8425a75"
+        },
+        "NOT_LIT_3": {
+          "sprite": "house_clutter/clutter_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f1d5ff1d-9222-4ce5-b182-ead71e5b3b9e",
+          "generated_at": "2026-08-16T16:55:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5902,
+          "glow_score": 0.0497,
+          "art_hash": "09b01fddc994aa0f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "house_clutter/clutter_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "f2cb1f9d-b8e5-48e0-9599-516ea60bbac2",
+          "generated_at": "2026-08-16T16:55:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4867,
+          "glow_score": 0.013,
+          "art_hash": "fa3819201f247503"
         }
       },
       "animations": []
@@ -30492,9 +30537,9 @@
     {
       "id": "clutter_008",
       "rel": "house_clutter/clutter_008",
-      "name": "Butter churn with milk pails 008 \u00b7 lit",
+      "name": "Butter churn with milk pails 008",
       "category": "house_clutter",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, butter churn with milk pails, small, knee-high, self-emissive at night, softly radiating light: a little oil lamp burning beside the basket",
       "view": "low top-down",
       "size": 64,
@@ -30519,6 +30564,51 @@
           "pixellab_object_id": "63cc528e-9398-4444-a73e-f0dbd4003ec4",
           "generated_at": "2026-08-13T23:45:51+00:00",
           "art_hash": "81c3762f3f982e52"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_008/lit_2/sprite.webp",
+          "pixellab_object_id": "49bb3a61-c129-45cd-a129-54197a4ef65e",
+          "generated_at": "2026-08-16T16:56:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.933,
+          "glow_score": 0.2199,
+          "art_hash": "e9a659030a21f692"
+        },
+        "LIT_3": {
+          "sprite": "house_clutter/clutter_008/lit_3/sprite.webp",
+          "pixellab_object_id": "9a575634-bed5-4458-b1b5-3a2ef3cac2a8",
+          "generated_at": "2026-08-16T16:55:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7883,
+          "glow_score": 0.0523,
+          "art_hash": "f665bce2d6236ef3"
+        },
+        "LIT_4": {
+          "sprite": "house_clutter/clutter_008/lit_4/sprite.webp",
+          "pixellab_object_id": "6b34e68d-1d5f-4dfd-968e-b24d70356f5e",
+          "generated_at": "2026-08-16T16:57:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6165,
+          "glow_score": 0.0491,
+          "art_hash": "4e904c81ec735fc0"
+        },
+        "NOT_LIT_1": {
+          "sprite": "house_clutter/clutter_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "352a2cec-1ffc-487a-bbb3-a7ac70456c14",
+          "generated_at": "2026-08-16T16:57:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9799,
+          "glow_score": 0.0,
+          "art_hash": "15715cb10329ace8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d70eaf45-e66f-4a7c-9afb-cc0404805692",
+          "generated_at": "2026-08-16T16:57:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9605,
+          "glow_score": 0.003,
+          "art_hash": "c15db21e283bec38"
         }
       },
       "animations": []
@@ -30526,9 +30616,9 @@
     {
       "id": "clutter_012",
       "rel": "house_clutter/clutter_012",
-      "name": "Spilled sewing box mid-tidy 012 \u00b7 lit",
+      "name": "Spilled sewing box mid-tidy 012",
       "category": "house_clutter",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, spilled sewing box mid-tidy, built from driftwood planks, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
       "view": "low top-down",
       "size": 64,
@@ -30553,6 +30643,51 @@
           "pixellab_object_id": "a6c35a81-bbaa-465c-81a5-621fb0ae27a4",
           "generated_at": "2026-08-14T02:44:20+00:00",
           "art_hash": "40b72e6a16064e10"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_012/lit_2/sprite.webp",
+          "pixellab_object_id": "74b93fd9-bf50-40a7-be2a-0a14d9da7ef2",
+          "generated_at": "2026-08-16T16:57:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6844,
+          "glow_score": 0.1238,
+          "art_hash": "38477a8a879950e7"
+        },
+        "LIT_3": {
+          "sprite": "house_clutter/clutter_012/lit_3/sprite.webp",
+          "pixellab_object_id": "c4de6bab-655a-4133-aae7-adcad9d23c02",
+          "generated_at": "2026-08-16T16:57:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6614,
+          "glow_score": 0.0158,
+          "art_hash": "42c6e7cb9645aa64"
+        },
+        "LIT_4": {
+          "sprite": "house_clutter/clutter_012/lit_4/sprite.webp",
+          "pixellab_object_id": "a266ec64-c79a-4a88-bc32-a7048ccb4884",
+          "generated_at": "2026-08-16T16:57:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7202,
+          "glow_score": 0.0529,
+          "art_hash": "0d8fb5f1bda1776a"
+        },
+        "NOT_LIT_1": {
+          "sprite": "house_clutter/clutter_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "321c158c-8395-43b9-aecf-2a2c3fa9b5ec",
+          "generated_at": "2026-08-16T16:59:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8408,
+          "glow_score": 0.0,
+          "art_hash": "a9232326c3619b7b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e4792d82-ed16-439f-80ef-48cc1f0acad6",
+          "generated_at": "2026-08-16T16:59:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6064,
+          "glow_score": 0.0583,
+          "art_hash": "f23967c32442b89e"
         }
       },
       "animations": []
@@ -30560,9 +30695,9 @@
     {
       "id": "clutter_900",
       "rel": "house_clutter/clutter_900",
-      "name": "Muddy boots by a doormat 900 \u00b7 lit",
+      "name": "Muddy boots by a doormat 900",
       "category": "house_clutter",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, muddy boots by a doormat, waist-high, self-emissive at night, softly radiating light: a covered lantern set among the things",
       "view": "low top-down",
       "size": 64,
@@ -30587,6 +30722,51 @@
           "pixellab_object_id": "73495fea-0281-4f5a-9f19-78599a4ce28d",
           "generated_at": "2026-08-13T23:28:01+00:00",
           "art_hash": "9fd7829d00269bd0"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_900/lit_2/sprite.webp",
+          "pixellab_object_id": "3c303004-7569-454a-abc4-ad72746a157f",
+          "generated_at": "2026-08-16T16:59:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8828,
+          "glow_score": 0.042,
+          "art_hash": "b268ad35a7330ab2"
+        },
+        "LIT_3": {
+          "sprite": "house_clutter/clutter_900/lit_3/sprite.webp",
+          "pixellab_object_id": "b7538b44-0cd7-4eb9-b161-93da36c49e24",
+          "generated_at": "2026-08-16T16:59:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8437,
+          "glow_score": 0.0641,
+          "art_hash": "24c7bc6c4e4c8969"
+        },
+        "LIT_4": {
+          "sprite": "house_clutter/clutter_900/lit_4/sprite.webp",
+          "pixellab_object_id": "8576c478-6baf-4e82-b592-57327cbff708",
+          "generated_at": "2026-08-16T16:59:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9197,
+          "glow_score": 0.0301,
+          "art_hash": "dcd8a45b00c0fd12"
+        },
+        "NOT_LIT_1": {
+          "sprite": "house_clutter/clutter_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "cc7346c6-e95d-4b78-9984-609bab4e5950",
+          "generated_at": "2026-08-16T16:59:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.771,
+          "glow_score": 0.0,
+          "art_hash": "0e42c02b282afe71"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "386d9b19-1ea9-4a6c-a107-b9bc4e83ce37",
+          "generated_at": "2026-08-16T17:00:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8823,
+          "glow_score": 0.0,
+          "art_hash": "0474765d6d792347"
         }
       },
       "animations": []
@@ -30594,9 +30774,9 @@
     {
       "id": "ivy_post_002",
       "rel": "ivy_posts/ivy_post_002",
-      "name": "Ivy on rusted iron post 002 \u00b7 lit",
+      "name": "Ivy on rusted iron post 002",
       "category": "ivy_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, ivy on rusted iron post, about as tall as an adult person, self-emissive at night, softly radiating light: a carved name shining through gaps in the leaves",
       "view": "low top-down",
       "size": 128,
@@ -30621,6 +30801,33 @@
           "pixellab_object_id": "c8067f2f-0df9-404c-bac5-f7a5bb40b11a",
           "generated_at": "2026-08-13T04:21:10+00:00",
           "art_hash": "b5572d7a9fd4b9a3"
+        },
+        "LIT_2": {
+          "sprite": "ivy_posts/ivy_post_002/lit_2/sprite.webp",
+          "pixellab_object_id": "81e0b68f-24c3-4d1a-ac03-8c034d0ef1a5",
+          "generated_at": "2026-08-16T17:01:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.294,
+          "glow_score": 0.0497,
+          "art_hash": "e68ca3c2bba8db51"
+        },
+        "LIT_3": {
+          "sprite": "ivy_posts/ivy_post_002/lit_3/sprite.webp",
+          "pixellab_object_id": "823ff2f0-0494-42b9-ab0e-f9b460d817a3",
+          "generated_at": "2026-08-16T17:02:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7207,
+          "glow_score": 0.0272,
+          "art_hash": "43932d53f32478ef"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ivy_posts/ivy_post_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "1912b3aa-f143-454a-98c9-1b9afccbbc3a",
+          "generated_at": "2026-08-16T17:02:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7296,
+          "glow_score": 0.0,
+          "art_hash": "145a11c22613ce77"
         }
       },
       "animations": []
@@ -30655,6 +30862,24 @@
           "pixellab_object_id": "c0cfb78b-b8b8-4b57-9144-f871c2d7e6f0",
           "generated_at": "2026-08-13T07:42:08+00:00",
           "art_hash": "4a5c20f600f4f252"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ivy_posts/ivy_post_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9b81180a-82e8-4557-a555-c18e56e1ff29",
+          "generated_at": "2026-08-16T17:03:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8983,
+          "glow_score": 0.0021,
+          "art_hash": "57152cb71a906346"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ivy_posts/ivy_post_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a284bf50-32fd-4320-837c-8716cf9eddd3",
+          "generated_at": "2026-08-16T17:04:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7903,
+          "glow_score": 0.0025,
+          "art_hash": "6bfbd54f8c671424"
         }
       },
       "animations": []
