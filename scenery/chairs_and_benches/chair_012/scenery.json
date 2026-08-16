@@ -5,8 +5,8 @@
   "group": "chairs_and_benches",
   "rank": 104,
   "index": 12,
-  "name": "Half-barrel chair 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Half-barrel chair 012",
+  "lights": null,
   "variety": "half-barrel chair",
   "glow_concept": "a small candle lantern hung on the chair back",
   "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, half-barrel chair, small, knee-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
@@ -35,6 +35,46 @@
       "sprite": "chairs_and_benches/chair_012/sprite.webp",
       "pixellab_object_id": "1777a67d-7416-4f83-afba-38ab50806038",
       "generated_at": "2026-08-13T23:43:33+00:00"
+    },
+    "LIT_2": {
+      "sprite": "chairs_and_benches/chair_012/lit_2/sprite.webp",
+      "pixellab_object_id": "51f9607a-f094-4d79-bfd3-6e9af72d567f",
+      "generated_at": "2026-08-16T09:04:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8008,
+      "glow_score": 0.0222
+    },
+    "LIT_3": {
+      "sprite": "chairs_and_benches/chair_012/lit_3/sprite.webp",
+      "pixellab_object_id": "8c4a09ae-4858-4061-86ee-70c1022893f6",
+      "generated_at": "2026-08-16T09:04:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7524,
+      "glow_score": 0.0172
+    },
+    "LIT_4": {
+      "sprite": "chairs_and_benches/chair_012/lit_4/sprite.webp",
+      "pixellab_object_id": "5b6bf9a7-7c9d-4f98-946b-63c17c8cc104",
+      "generated_at": "2026-08-16T09:04:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8176,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "chairs_and_benches/chair_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "dc9d057b-6311-4b2c-95f7-3062a89cf4d1",
+      "generated_at": "2026-08-16T09:05:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6834,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "chairs_and_benches/chair_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "21ac813d-9ab3-4440-b26b-51d384ffd40d",
+      "generated_at": "2026-08-16T09:05:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6533,
+      "glow_score": 0.0
     }
   }
 }

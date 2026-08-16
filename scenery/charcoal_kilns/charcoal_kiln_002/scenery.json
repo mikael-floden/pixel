@@ -4,8 +4,8 @@
   "group": "charcoal_kilns",
   "rank": 99,
   "index": 2,
-  "name": "Squat rounded kiln 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Squat rounded kiln 002",
+  "lights": null,
   "variety": "squat rounded kiln",
   "glow_concept": "soulstone core shining through a broken flank",
   "prompt": "a tall clay-domed charcoal kiln mound with ridged earthen sides, pocked with small vent holes seeping thin smoke, squat rounded kiln, large, well above head height of a person, self-emissive at night, softly radiating light: soulstone core shining through a broken flank",
@@ -35,6 +35,38 @@
       "sprite": "charcoal_kilns/charcoal_kiln_002/sprite.webp",
       "pixellab_object_id": "9547dd87-d9de-4bd9-9484-5a5c9d6b454e",
       "generated_at": "2026-08-13T06:12:49+00:00"
+    },
+    "LIT_2": {
+      "sprite": "charcoal_kilns/charcoal_kiln_002/lit_2/sprite.webp",
+      "pixellab_object_id": "21aaf719-8d2f-4a11-85d3-35127d58049a",
+      "generated_at": "2026-08-16T09:07:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7387,
+      "glow_score": 0.225
+    },
+    "LIT_3": {
+      "sprite": "charcoal_kilns/charcoal_kiln_002/lit_3/sprite.webp",
+      "pixellab_object_id": "e0079661-6340-40bd-8fa6-684ab2dad700",
+      "generated_at": "2026-08-16T09:08:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4037,
+      "glow_score": 0.0667
+    },
+    "NOT_LIT_1": {
+      "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3512ba7a-3d27-45fc-9a16-74662634b7db",
+      "generated_at": "2026-08-16T09:08:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.358,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2ab95213-67d6-4985-a4ef-0c8b06327bb5",
+      "generated_at": "2026-08-16T09:08:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4556,
+      "glow_score": 0.0
     }
   }
 }

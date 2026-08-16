@@ -11500,9 +11500,9 @@
     {
       "id": "chair_010",
       "rel": "chairs_and_benches/chair_010",
-      "name": "Ladder-back kitchen chair 010 \u00b7 lit",
+      "name": "Ladder-back kitchen chair 010",
       "category": "chairs_and_benches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, ladder-back kitchen chair, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
       "view": "low top-down",
       "size": 64,
@@ -11536,6 +11536,42 @@
           "difference_from_source": 0.5875,
           "glow_score": 0.0904,
           "art_hash": "d183e14eb8412891"
+        },
+        "LIT_3": {
+          "sprite": "chairs_and_benches/chair_010/lit_3/sprite.webp",
+          "pixellab_object_id": "cca0f79b-08f8-4724-a924-9cb6729eabfc",
+          "generated_at": "2026-08-16T09:03:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9299,
+          "glow_score": 0.2571,
+          "art_hash": "2b15510f4564be0f"
+        },
+        "LIT_4": {
+          "sprite": "chairs_and_benches/chair_010/lit_4/sprite.webp",
+          "pixellab_object_id": "02db92aa-fc0e-4f5c-a263-b36bde832186",
+          "generated_at": "2026-08-16T09:03:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5169,
+          "glow_score": 0.055,
+          "art_hash": "972865f47f10718c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "chairs_and_benches/chair_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d99fbeeb-f3ba-478c-977b-5063a20b09d0",
+          "generated_at": "2026-08-16T09:05:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9886,
+          "glow_score": 0.0,
+          "art_hash": "99696bbbe2d40252"
+        },
+        "NOT_LIT_2": {
+          "sprite": "chairs_and_benches/chair_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d553d187-fa91-4346-a821-2732c1163cc2",
+          "generated_at": "2026-08-16T09:04:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8787,
+          "glow_score": 0.0,
+          "art_hash": "4561166cdf328cfa"
         }
       },
       "animations": []
@@ -11543,9 +11579,9 @@
     {
       "id": "chair_012",
       "rel": "chairs_and_benches/chair_012",
-      "name": "Half-barrel chair 012 \u00b7 lit",
+      "name": "Half-barrel chair 012",
       "category": "chairs_and_benches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, half-barrel chair, small, knee-high, self-emissive at night, softly radiating light: a small candle lantern hung on the chair back",
       "view": "low top-down",
       "size": 64,
@@ -11570,6 +11606,51 @@
           "pixellab_object_id": "1777a67d-7416-4f83-afba-38ab50806038",
           "generated_at": "2026-08-13T23:43:33+00:00",
           "art_hash": "67eec3188a3f706a"
+        },
+        "LIT_2": {
+          "sprite": "chairs_and_benches/chair_012/lit_2/sprite.webp",
+          "pixellab_object_id": "51f9607a-f094-4d79-bfd3-6e9af72d567f",
+          "generated_at": "2026-08-16T09:04:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8008,
+          "glow_score": 0.0222,
+          "art_hash": "56b1a09ad83ab010"
+        },
+        "LIT_3": {
+          "sprite": "chairs_and_benches/chair_012/lit_3/sprite.webp",
+          "pixellab_object_id": "8c4a09ae-4858-4061-86ee-70c1022893f6",
+          "generated_at": "2026-08-16T09:04:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7524,
+          "glow_score": 0.0172,
+          "art_hash": "6d79137be27dbf81"
+        },
+        "LIT_4": {
+          "sprite": "chairs_and_benches/chair_012/lit_4/sprite.webp",
+          "pixellab_object_id": "5b6bf9a7-7c9d-4f98-946b-63c17c8cc104",
+          "generated_at": "2026-08-16T09:04:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8176,
+          "glow_score": 0.0,
+          "art_hash": "36f4a26a23dd4284"
+        },
+        "NOT_LIT_1": {
+          "sprite": "chairs_and_benches/chair_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "dc9d057b-6311-4b2c-95f7-3062a89cf4d1",
+          "generated_at": "2026-08-16T09:05:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6834,
+          "glow_score": 0.0,
+          "art_hash": "23d817ad2083a212"
+        },
+        "NOT_LIT_2": {
+          "sprite": "chairs_and_benches/chair_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "21ac813d-9ab3-4440-b26b-51d384ffd40d",
+          "generated_at": "2026-08-16T09:05:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6533,
+          "glow_score": 0.0,
+          "art_hash": "a36cb7bedc751a73"
         }
       },
       "animations": []
@@ -11577,9 +11658,9 @@
     {
       "id": "chair_014",
       "rel": "chairs_and_benches/chair_014",
-      "name": "Upturned crate used as a seat 014 \u00b7 lit",
+      "name": "Upturned crate used as a seat 014",
       "category": "chairs_and_benches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, upturned crate used as a seat, freshly made and neat, waist-high, self-emissive at night, softly radiating light: a knitted blanket glowing faintly with kept warmth",
       "view": "low top-down",
       "size": 64,
@@ -11604,6 +11685,42 @@
           "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
           "generated_at": "2026-08-14T01:53:52+00:00",
           "art_hash": "5367ef0ff2b0b562"
+        },
+        "LIT_2": {
+          "sprite": "chairs_and_benches/chair_014/lit_2/sprite.webp",
+          "pixellab_object_id": "1e4fd6e6-e982-4193-b7b4-ad05d821775f",
+          "generated_at": "2026-08-16T09:05:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7662,
+          "glow_score": 0.0161,
+          "art_hash": "7a4dd24623cc5afb"
+        },
+        "LIT_3": {
+          "sprite": "chairs_and_benches/chair_014/lit_3/sprite.webp",
+          "pixellab_object_id": "d86d2df0-5460-4d90-8725-5758168f5f0d",
+          "generated_at": "2026-08-16T09:05:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6588,
+          "glow_score": 0.0777,
+          "art_hash": "3972b4df67c405a6"
+        },
+        "LIT_4": {
+          "sprite": "chairs_and_benches/chair_014/lit_4/sprite.webp",
+          "pixellab_object_id": "4eb7d168-de28-4793-88da-147aac60fb25",
+          "generated_at": "2026-08-16T09:06:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6862,
+          "glow_score": 0.0703,
+          "art_hash": "c4d114de6be45f7c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "chairs_and_benches/chair_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "519786e1-390f-48ec-9c44-703288e91c75",
+          "generated_at": "2026-08-16T09:06:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8143,
+          "glow_score": 0.0,
+          "art_hash": "7195aaaa5a98cdc6"
         }
       },
       "animations": []
@@ -11611,9 +11728,9 @@
     {
       "id": "charcoal_kiln_002",
       "rel": "charcoal_kilns/charcoal_kiln_002",
-      "name": "Squat rounded kiln 002 \u00b7 lit",
+      "name": "Squat rounded kiln 002",
       "category": "charcoal_kilns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall clay-domed charcoal kiln mound with ridged earthen sides, pocked with small vent holes seeping thin smoke, squat rounded kiln, large, well above head height of a person, self-emissive at night, softly radiating light: soulstone core shining through a broken flank",
       "view": "low top-down",
       "size": 128,
@@ -11638,6 +11755,42 @@
           "pixellab_object_id": "9547dd87-d9de-4bd9-9484-5a5c9d6b454e",
           "generated_at": "2026-08-13T06:12:49+00:00",
           "art_hash": "84764aae8062329f"
+        },
+        "LIT_2": {
+          "sprite": "charcoal_kilns/charcoal_kiln_002/lit_2/sprite.webp",
+          "pixellab_object_id": "21aaf719-8d2f-4a11-85d3-35127d58049a",
+          "generated_at": "2026-08-16T09:07:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7387,
+          "glow_score": 0.225,
+          "art_hash": "82298a70a612affd"
+        },
+        "LIT_3": {
+          "sprite": "charcoal_kilns/charcoal_kiln_002/lit_3/sprite.webp",
+          "pixellab_object_id": "e0079661-6340-40bd-8fa6-684ab2dad700",
+          "generated_at": "2026-08-16T09:08:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4037,
+          "glow_score": 0.0667,
+          "art_hash": "6c999f451a1f611a"
+        },
+        "NOT_LIT_1": {
+          "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3512ba7a-3d27-45fc-9a16-74662634b7db",
+          "generated_at": "2026-08-16T09:08:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.358,
+          "glow_score": 0.0,
+          "art_hash": "3e11944b23475516"
+        },
+        "NOT_LIT_2": {
+          "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2ab95213-67d6-4985-a4ef-0c8b06327bb5",
+          "generated_at": "2026-08-16T09:08:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4556,
+          "glow_score": 0.0,
+          "art_hash": "056f7bcdeafca5d1"
         }
       },
       "animations": []
@@ -11645,9 +11798,9 @@
     {
       "id": "chimney_stack_002",
       "rel": "chimney_stacks/chimney_stack_002",
-      "name": "Chimney with intact mantel shelf 002 \u00b7 lit",
+      "name": "Chimney with intact mantel shelf 002",
       "category": "chimney_stacks",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a lone stone chimney standing on open grass, with a soot-blackened hearth opening at its base and a crumbling brick crown, chimney with intact mantel shelf, tall, about two people high, self-emissive at night, softly radiating light: hearthfire still burning in the soot-black hearth",
       "view": "low top-down",
       "size": 160,
@@ -11672,6 +11825,42 @@
           "pixellab_object_id": "5c55e2df-28eb-4bd3-ac02-0410dd7bb250",
           "generated_at": "2026-08-13T04:37:04+00:00",
           "art_hash": "f806bc8ef2314be4"
+        },
+        "LIT_2": {
+          "sprite": "chimney_stacks/chimney_stack_002/lit_2/sprite.webp",
+          "pixellab_object_id": "4ed4a80a-54c8-4c00-910b-5ee01f9ec21a",
+          "generated_at": "2026-08-16T09:09:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.821,
+          "glow_score": 0.0221,
+          "art_hash": "a812efeda3f42a35"
+        },
+        "LIT_3": {
+          "sprite": "chimney_stacks/chimney_stack_002/lit_3/sprite.webp",
+          "pixellab_object_id": "8e9b1c4b-7259-493c-9c97-33d794df9fdb",
+          "generated_at": "2026-08-16T09:09:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.575,
+          "glow_score": 0.0392,
+          "art_hash": "e68409c029970980"
+        },
+        "LIT_4": {
+          "sprite": "chimney_stacks/chimney_stack_002/lit_4/sprite.webp",
+          "pixellab_object_id": "4248e96c-db41-44e6-b3c8-c05546c85176",
+          "generated_at": "2026-08-16T09:11:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5385,
+          "glow_score": 0.0321,
+          "art_hash": "bea8109675542d78"
+        },
+        "NOT_LIT_1": {
+          "sprite": "chimney_stacks/chimney_stack_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "fa1a7061-ca8f-4ea9-97af-bdc6c9578df2",
+          "generated_at": "2026-08-16T09:10:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7451,
+          "glow_score": 0.0,
+          "art_hash": "8c2ef3b90b4bf1ac"
         }
       },
       "animations": []
@@ -11681,7 +11870,7 @@
       "rel": "cliff_falls/cliff_fall_001",
       "name": "Brown with spring meltwater 001",
       "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, brown with spring meltwater, a diagonal band of growth, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -11701,11 +11890,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_falls/cliff_fall_001/lit_1/sprite.webp",
+          "pixellab_object_id": "61f23731-c052-4140-9e54-b00aa6f50400",
+          "generated_at": "2026-08-16T09:11:00+00:00",
+          "glow_concept": "the whole fall shining like moonlight",
+          "difference_from_source": 0.8154,
+          "glow_score": 0.1947,
+          "art_hash": "753b885547802943"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_falls/cliff_fall_001/sprite.webp",
           "pixellab_object_id": "b4576034-8a23-442a-926f-76de3a13c271",
           "generated_at": "2026-08-14T05:00:04+00:00",
           "art_hash": "73cd461d4da37b77"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d76d9fa8-50f6-4e8c-8a92-cc1b736d641e",
+          "generated_at": "2026-08-16T09:09:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4208,
+          "glow_score": 0.0676,
+          "art_hash": "89a1ce5b10eded23"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_falls/cliff_fall_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "5ab36783-e54a-4a07-a0c0-2dc38ac5eca5",
+          "generated_at": "2026-08-16T09:10:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8696,
+          "glow_score": 0.0657,
+          "art_hash": "a23272c27a92eec3"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_falls/cliff_fall_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "81de2138-080a-443d-bd04-2286519c5329",
+          "generated_at": "2026-08-16T09:10:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9035,
+          "glow_score": 0.1031,
+          "art_hash": "bc2c4f4cef63ec38"
         }
       },
       "animations": []

@@ -5,8 +5,8 @@
   "group": "chairs_and_benches",
   "rank": 104,
   "index": 14,
-  "name": "Upturned crate used as a seat 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Upturned crate used as a seat 014",
+  "lights": null,
   "variety": "upturned crate used as a seat",
   "modifier": "freshly made and neat",
   "glow_concept": "a knitted blanket glowing faintly with kept warmth",
@@ -36,6 +36,38 @@
       "sprite": "chairs_and_benches/chair_014/sprite.webp",
       "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
       "generated_at": "2026-08-14T01:53:52+00:00"
+    },
+    "LIT_2": {
+      "sprite": "chairs_and_benches/chair_014/lit_2/sprite.webp",
+      "pixellab_object_id": "1e4fd6e6-e982-4193-b7b4-ad05d821775f",
+      "generated_at": "2026-08-16T09:05:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7662,
+      "glow_score": 0.0161
+    },
+    "LIT_3": {
+      "sprite": "chairs_and_benches/chair_014/lit_3/sprite.webp",
+      "pixellab_object_id": "d86d2df0-5460-4d90-8725-5758168f5f0d",
+      "generated_at": "2026-08-16T09:05:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6588,
+      "glow_score": 0.0777
+    },
+    "LIT_4": {
+      "sprite": "chairs_and_benches/chair_014/lit_4/sprite.webp",
+      "pixellab_object_id": "4eb7d168-de28-4793-88da-147aac60fb25",
+      "generated_at": "2026-08-16T09:06:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6862,
+      "glow_score": 0.0703
+    },
+    "NOT_LIT_1": {
+      "sprite": "chairs_and_benches/chair_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "519786e1-390f-48ec-9c44-703288e91c75",
+      "generated_at": "2026-08-16T09:06:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8143,
+      "glow_score": 0.0
     }
   }
 }
