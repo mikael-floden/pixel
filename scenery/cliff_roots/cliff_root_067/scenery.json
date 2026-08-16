@@ -6,7 +6,7 @@
   "rank": 155,
   "index": 67,
   "name": "Rootlets with one tiny fern 067",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "rootlets with one tiny fern",
   "modifier": "one strand crossing another once, lightly",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_roots/cliff_root_067/lit_1/sprite.webp",
+      "pixellab_object_id": "000ed84a-0202-4746-a50a-4fcf7ea9fa13",
+      "generated_at": "2026-08-16T09:52:06+00:00",
+      "glow_concept": "glow-moss packed between them",
+      "difference_from_source": 0.9753,
+      "glow_score": 0.0912
+    },
+    "LIT_2": {
+      "sprite": "cliff_roots/cliff_root_067/lit_2/sprite.webp",
+      "pixellab_object_id": "e8737d53-1827-4ac6-96d1-e9487423d4a6",
+      "generated_at": "2026-08-16T09:51:50+00:00",
+      "glow_concept": "the root tips glowing faintly",
+      "difference_from_source": 0.6973,
+      "glow_score": 0.0544
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_roots/cliff_root_067/sprite.webp",
       "pixellab_object_id": "2c980161-24fc-4416-92bf-45ddaa8625b0",
       "generated_at": "2026-08-14T05:39:01+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_roots/cliff_root_067/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6ad2d17a-bc62-4983-b818-f6f5758f1fa2",
+      "generated_at": "2026-08-16T09:50:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7006,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_roots/cliff_root_067/not_lit_3/sprite.webp",
+      "pixellab_object_id": "dcd874fe-b081-43aa-ba05-3b65f81b7dd3",
+      "generated_at": "2026-08-16T09:50:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7325,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_roots/cliff_root_067/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d1a7437a-b78b-426d-8f47-bac00899ff0a",
+      "generated_at": "2026-08-16T09:51:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8287,
+      "glow_score": 0.0
     }
   }
 }

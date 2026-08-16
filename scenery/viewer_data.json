@@ -13617,6 +13617,15 @@
           "difference_from_source": 0.9464,
           "glow_score": 0.0,
           "art_hash": "94fe562ef45e0001"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_054/not_lit_2/sprite.webp",
+          "pixellab_object_id": "31db845a-c244-44ce-93cd-924d122884f6",
+          "generated_at": "2026-08-16T09:48:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8806,
+          "glow_score": 0.0,
+          "art_hash": "1cf4db500eee9c6a"
         }
       },
       "animations": []
@@ -13892,6 +13901,15 @@
           "glow_score": 0.0659,
           "art_hash": "7d19e2a86f7cf03d"
         },
+        "LIT_2": {
+          "sprite": "cliff_roots/cliff_root_047/lit_2/sprite.webp",
+          "pixellab_object_id": "ccc29ad9-f82c-4db5-a1d5-f0021550cdfe",
+          "generated_at": "2026-08-16T09:46:57+00:00",
+          "glow_concept": "the root tips glowing faintly",
+          "difference_from_source": 0.6424,
+          "glow_score": 0.0451,
+          "art_hash": "03c34f23d58e13ed"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_roots/cliff_root_047/sprite.webp",
           "pixellab_object_id": "5d1b2c32-83b7-4a68-ba95-aa8acbcecdf0",
@@ -13933,7 +13951,7 @@
       "rel": "cliff_roots/cliff_root_049",
       "name": "Roots with ferns rooted between them 049",
       "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a few SLENDER THIN tree roots running STRAIGHT UP AND DOWN a rock face, vertical, clinging tight to the stone with small gripping side-roots, gently winding but always travelling vertically \u2014 never sideways, never diagonal \u2014 small clusters of green leaves sprouting at a few points along them, the tree far above and out of sight, no trunk, no stump, no root crown, no tree shape anywhere, fantasy RPG nature art, no border, no straight edges, transparent background, roots with ferns rooted between them, a single slender root with slight bends, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -13953,11 +13971,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_roots/cliff_root_049/lit_1/sprite.webp",
+          "pixellab_object_id": "aeb09740-b099-44e3-8e01-edc61618116c",
+          "generated_at": "2026-08-16T09:47:30+00:00",
+          "glow_concept": "the root tips glowing faintly",
+          "difference_from_source": 0.6813,
+          "glow_score": 0.0074,
+          "art_hash": "3544a13cade7fc42"
+        },
+        "LIT_2": {
+          "sprite": "cliff_roots/cliff_root_049/lit_2/sprite.webp",
+          "pixellab_object_id": "aa25f7c2-07ac-4a42-980c-46b0fba5ab70",
+          "generated_at": "2026-08-16T09:47:32+00:00",
+          "glow_concept": "soul-light running up the roots",
+          "difference_from_source": 0.5924,
+          "glow_score": 0.0267,
+          "art_hash": "1dc768d6cd16d35b"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_roots/cliff_root_049/sprite.webp",
           "pixellab_object_id": "9e95c927-5e93-4a6f-bbaf-fd5102670ab0",
           "generated_at": "2026-08-14T05:24:20+00:00",
           "art_hash": "9932892b532496d7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_roots/cliff_root_049/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8889e425-949f-4973-aa48-97df1b4591ea",
+          "generated_at": "2026-08-16T09:49:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2647,
+          "glow_score": 0.0,
+          "art_hash": "f07bbc14dc37f1f7"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_roots/cliff_root_049/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a7f3f18d-ad4c-4f02-81fd-6edba8226454",
+          "generated_at": "2026-08-16T09:47:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.338,
+          "glow_score": 0.0,
+          "art_hash": "5a6ffb428981a1de"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_roots/cliff_root_049/not_lit_4/sprite.webp",
+          "pixellab_object_id": "9cd70622-f55e-4e92-9f0c-d8cf23b4f736",
+          "generated_at": "2026-08-16T09:47:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4991,
+          "glow_score": 0.0,
+          "art_hash": "f87049a537ae79e4"
         }
       },
       "animations": []
@@ -13965,9 +14028,9 @@
     {
       "id": "cliff_root_052",
       "rel": "cliff_roots/cliff_root_052",
-      "name": "Pale bleached roots 052 \u00b7 lit",
+      "name": "Pale bleached roots 052",
       "category": "cliff_roots",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a FEW long separate tree roots creeping down over old stone, each root its own independent strand with wide bare empty gaps between them, a little moss or a small fern where they touch, the tree they belong to is FAR ABOVE and out of sight \u2014 the roots never join or converge, no trunk, no stump, no root crown, no bundle, no starting point anywhere, each strand simply thinning to a fine tip at both ends, lush fantasy RPG nature art, drifting off one side, no straight edges, no border, transparent background, no rock or wall behind it, pale bleached roots, three or four long strands, widely spaced, towering, many times human height, self-emissive at night, softly radiating light: the root tips glowing faintly",
       "view": "low top-down",
       "size": 256,
@@ -13992,6 +14055,51 @@
           "pixellab_object_id": "f57fb241-6bce-45ba-974e-fe2d11113705",
           "generated_at": "2026-08-14T04:52:44+00:00",
           "art_hash": "b5dd445b19d74b43"
+        },
+        "LIT_2": {
+          "sprite": "cliff_roots/cliff_root_052/lit_2/sprite.webp",
+          "pixellab_object_id": "05634b9f-c966-43dc-bb4a-ae1ceeead30e",
+          "generated_at": "2026-08-16T09:48:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7257,
+          "glow_score": 0.2029,
+          "art_hash": "f8057abb64ef3e2a"
+        },
+        "LIT_3": {
+          "sprite": "cliff_roots/cliff_root_052/lit_3/sprite.webp",
+          "pixellab_object_id": "af04f744-b5e1-4abc-b733-20e8d6189627",
+          "generated_at": "2026-08-16T09:48:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7799,
+          "glow_score": 0.099,
+          "art_hash": "1b496bacc7fb93ef"
+        },
+        "LIT_4": {
+          "sprite": "cliff_roots/cliff_root_052/lit_4/sprite.webp",
+          "pixellab_object_id": "99da29a4-aba8-4281-8fab-90ac1898ac9a",
+          "generated_at": "2026-08-16T09:49:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3626,
+          "glow_score": 0.2319,
+          "art_hash": "f5251930a19d47fb"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_roots/cliff_root_052/not_lit_1/sprite.webp",
+          "pixellab_object_id": "0dda6a53-f40e-4b5b-aa95-cbbd8a54ee06",
+          "generated_at": "2026-08-16T09:49:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8939,
+          "glow_score": 0.0,
+          "art_hash": "84f2e24f120a1da9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_roots/cliff_root_052/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0cbc9d85-02b7-4994-9401-243d4664875c",
+          "generated_at": "2026-08-16T09:48:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8307,
+          "glow_score": 0.0,
+          "art_hash": "be138b836f7de4d7"
         }
       },
       "animations": []
@@ -14001,7 +14109,7 @@
       "rel": "cliff_roots/cliff_root_067",
       "name": "Rootlets with one tiny fern 067",
       "category": "cliff_roots",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a SMALL SUBTLE DETAIL for a rock face: two or three THIN WIRY rootlets no thicker than a finger trailing down bare stone, gently winding, gripping with hair-fine side-roots, mostly bare strand with one or two small leaf sprouts, delicate and sparse, no trunk, no stump, NOT a big root, fantasy RPG nature art, transparent background, rootlets with one tiny fern, one strand crossing another once, lightly, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -14021,11 +14129,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_roots/cliff_root_067/lit_1/sprite.webp",
+          "pixellab_object_id": "000ed84a-0202-4746-a50a-4fcf7ea9fa13",
+          "generated_at": "2026-08-16T09:52:06+00:00",
+          "glow_concept": "glow-moss packed between them",
+          "difference_from_source": 0.9753,
+          "glow_score": 0.0912,
+          "art_hash": "ef589c6a2ddf32cc"
+        },
+        "LIT_2": {
+          "sprite": "cliff_roots/cliff_root_067/lit_2/sprite.webp",
+          "pixellab_object_id": "e8737d53-1827-4ac6-96d1-e9487423d4a6",
+          "generated_at": "2026-08-16T09:51:50+00:00",
+          "glow_concept": "the root tips glowing faintly",
+          "difference_from_source": 0.6973,
+          "glow_score": 0.0544,
+          "art_hash": "55d7ce5cb20c1bab"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_roots/cliff_root_067/sprite.webp",
           "pixellab_object_id": "2c980161-24fc-4416-92bf-45ddaa8625b0",
           "generated_at": "2026-08-14T05:39:01+00:00",
           "art_hash": "a99e1ec67a5777c3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_roots/cliff_root_067/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6ad2d17a-bc62-4983-b818-f6f5758f1fa2",
+          "generated_at": "2026-08-16T09:50:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7006,
+          "glow_score": 0.0,
+          "art_hash": "a40a20026108b36b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_roots/cliff_root_067/not_lit_3/sprite.webp",
+          "pixellab_object_id": "dcd874fe-b081-43aa-ba05-3b65f81b7dd3",
+          "generated_at": "2026-08-16T09:50:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7325,
+          "glow_score": 0.0,
+          "art_hash": "e7e40e01d3bde563"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_roots/cliff_root_067/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d1a7437a-b78b-426d-8f47-bac00899ff0a",
+          "generated_at": "2026-08-16T09:51:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8287,
+          "glow_score": 0.0,
+          "art_hash": "2ee70470cd76420b"
         }
       },
       "animations": []
@@ -14033,9 +14186,9 @@
     {
       "id": "cliff_shrub_002",
       "rel": "cliff_shrubs/cliff_shrub_002",
-      "name": "Wind-flattened juniper 002 \u00b7 lit",
+      "name": "Wind-flattened juniper 002",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tough shrub growing sideways out of a vertical rock face, its trunk bent hard outward then up, roots clamped into a crack, wind-flattened juniper, a bird nest in its crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: light in the crack at its root",
       "view": "low top-down",
       "size": 192,
@@ -14060,6 +14213,51 @@
           "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
           "generated_at": "2026-08-14T02:59:42+00:00",
           "art_hash": "a18d030f8dfd09d9"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/lit_2/sprite.webp",
+          "pixellab_object_id": "31eccee1-93d9-4237-9b31-44881d4c77c0",
+          "generated_at": "2026-08-16T09:50:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5234,
+          "glow_score": 0.0,
+          "art_hash": "9daf594764b1a323"
+        },
+        "LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/lit_3/sprite.webp",
+          "pixellab_object_id": "4bed6757-4253-4b4f-aaa2-c4a67b8d4e2a",
+          "generated_at": "2026-08-16T09:50:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7608,
+          "glow_score": 0.0029,
+          "art_hash": "05df2a5d0f0ba2a0"
+        },
+        "LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/lit_4/sprite.webp",
+          "pixellab_object_id": "238fdc7b-759d-4abf-9205-f456bb47ba09",
+          "generated_at": "2026-08-16T09:50:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.729,
+          "glow_score": 0.0048,
+          "art_hash": "a363106ac277b205"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "232df00c-4173-494e-92b7-f6e4640c507f",
+          "generated_at": "2026-08-16T09:51:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8004,
+          "glow_score": 0.0,
+          "art_hash": "c3d3c7c43822658d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0f08a026-2866-4285-8131-5da87b5361b2",
+          "generated_at": "2026-08-16T09:51:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7705,
+          "glow_score": 0.0,
+          "art_hash": "fe97cd086bc84313"
         }
       },
       "animations": []
@@ -14094,6 +14292,33 @@
           "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
           "generated_at": "2026-08-14T03:13:33+00:00",
           "art_hash": "608d5f8e716ce491"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/lit_2/sprite.webp",
+          "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
+          "generated_at": "2026-08-16T09:51:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4967,
+          "glow_score": 0.007,
+          "art_hash": "4b077e2752f3a14a"
+        },
+        "LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/lit_3/sprite.webp",
+          "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
+          "generated_at": "2026-08-16T09:51:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.532,
+          "glow_score": 0.0055,
+          "art_hash": "a7b2ee4d69627fed"
+        },
+        "LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/lit_4/sprite.webp",
+          "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
+          "generated_at": "2026-08-16T09:51:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7818,
+          "glow_score": 0.0055,
+          "art_hash": "0e8be2b20e49aaf8"
         }
       },
       "animations": []

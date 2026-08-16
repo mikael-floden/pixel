@@ -5,8 +5,8 @@
   "group": "cliff_roots",
   "rank": 155,
   "index": 52,
-  "name": "Pale bleached roots 052 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pale bleached roots 052",
+  "lights": null,
   "variety": "pale bleached roots",
   "modifier": "three or four long strands, widely spaced",
   "glow_concept": "the root tips glowing faintly",
@@ -36,6 +36,46 @@
       "sprite": "cliff_roots/cliff_root_052/sprite.webp",
       "pixellab_object_id": "f57fb241-6bce-45ba-974e-fe2d11113705",
       "generated_at": "2026-08-14T04:52:44+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_roots/cliff_root_052/lit_2/sprite.webp",
+      "pixellab_object_id": "05634b9f-c966-43dc-bb4a-ae1ceeead30e",
+      "generated_at": "2026-08-16T09:48:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7257,
+      "glow_score": 0.2029
+    },
+    "LIT_3": {
+      "sprite": "cliff_roots/cliff_root_052/lit_3/sprite.webp",
+      "pixellab_object_id": "af04f744-b5e1-4abc-b733-20e8d6189627",
+      "generated_at": "2026-08-16T09:48:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7799,
+      "glow_score": 0.099
+    },
+    "LIT_4": {
+      "sprite": "cliff_roots/cliff_root_052/lit_4/sprite.webp",
+      "pixellab_object_id": "99da29a4-aba8-4281-8fab-90ac1898ac9a",
+      "generated_at": "2026-08-16T09:49:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3626,
+      "glow_score": 0.2319
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_roots/cliff_root_052/not_lit_1/sprite.webp",
+      "pixellab_object_id": "0dda6a53-f40e-4b5b-aa95-cbbd8a54ee06",
+      "generated_at": "2026-08-16T09:49:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8939,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_roots/cliff_root_052/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0cbc9d85-02b7-4994-9401-243d4664875c",
+      "generated_at": "2026-08-16T09:48:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8307,
+      "glow_score": 0.0
     }
   }
 }
