@@ -4,8 +4,8 @@
   "group": "hearths",
   "rank": 107,
   "index": 4,
-  "name": "Fieldstone hearth with an iron cook pot 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fieldstone hearth with an iron cook pot 004",
+  "lights": null,
   "variety": "fieldstone hearth with an iron cook pot",
   "glow_concept": "embers breathing orange under the cook pot",
   "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, fieldstone hearth with an iron cook pot, large, twice human height, self-emissive at night, softly radiating light: embers breathing orange under the cook pot",
@@ -35,6 +35,38 @@
       "sprite": "hearths/hearth_004/sprite.webp",
       "pixellab_object_id": "e18ab340-1a8f-4b57-bd76-99b5dbbad040",
       "generated_at": "2026-08-13T21:36:42+00:00"
+    },
+    "LIT_2": {
+      "sprite": "hearths/hearth_004/lit_2/sprite.webp",
+      "pixellab_object_id": "d9f5f182-4b09-4e65-9fe6-a98c2b42931f",
+      "generated_at": "2026-08-16T15:17:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4534,
+      "glow_score": 0.0023
+    },
+    "LIT_3": {
+      "sprite": "hearths/hearth_004/lit_3/sprite.webp",
+      "pixellab_object_id": "f42226ad-b661-4b2d-aed9-bae95087e04a",
+      "generated_at": "2026-08-16T15:18:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4322,
+      "glow_score": 0.0035
+    },
+    "LIT_4": {
+      "sprite": "hearths/hearth_004/lit_4/sprite.webp",
+      "pixellab_object_id": "620ed58c-2400-497d-9a38-73f5a9fc9692",
+      "generated_at": "2026-08-16T15:18:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7584,
+      "glow_score": 0.007
+    },
+    "NOT_LIT_2": {
+      "sprite": "hearths/hearth_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ac00228b-57af-4e09-b42a-223e6419debc",
+      "generated_at": "2026-08-16T15:17:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7269,
+      "glow_score": 0.0
     }
   }
 }

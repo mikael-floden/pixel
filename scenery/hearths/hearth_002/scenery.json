@@ -4,8 +4,8 @@
   "group": "hearths",
   "rank": 107,
   "index": 2,
-  "name": "Small cottage hearth with a kettle 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Small cottage hearth with a kettle 002",
+  "lights": null,
   "variety": "small cottage hearth with a kettle",
   "glow_concept": "fire burning warm in the hearth mouth",
   "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, small cottage hearth with a kettle, waist-high, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
@@ -35,6 +35,46 @@
       "sprite": "hearths/hearth_002/sprite.webp",
       "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
       "generated_at": "2026-08-13T19:54:37+00:00"
+    },
+    "LIT_2": {
+      "sprite": "hearths/hearth_002/lit_2/sprite.webp",
+      "pixellab_object_id": "b0cb80c6-8566-4b72-af82-3dd978d734c7",
+      "generated_at": "2026-08-16T15:13:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4376,
+      "glow_score": 0.0826
+    },
+    "LIT_3": {
+      "sprite": "hearths/hearth_002/lit_3/sprite.webp",
+      "pixellab_object_id": "a7a31edb-f459-496a-8268-3da8fae36e8c",
+      "generated_at": "2026-08-16T15:13:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6661,
+      "glow_score": 0.07
+    },
+    "LIT_4": {
+      "sprite": "hearths/hearth_002/lit_4/sprite.webp",
+      "pixellab_object_id": "f2cea7ac-2b42-4a14-b980-6b34e8fb32a8",
+      "generated_at": "2026-08-16T15:14:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7493,
+      "glow_score": 0.064
+    },
+    "NOT_LIT_1": {
+      "sprite": "hearths/hearth_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e482eff4-861b-4143-a3de-9873653ce5af",
+      "generated_at": "2026-08-16T15:15:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9719,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "hearths/hearth_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9d40bd74-c592-4e0c-baa9-adc153966390",
+      "generated_at": "2026-08-16T15:15:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7962,
+      "glow_score": 0.0
     }
   }
 }

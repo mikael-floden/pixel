@@ -29044,6 +29044,15 @@
           "difference_from_source": 0.2024,
           "glow_score": 0.0,
           "art_hash": "add5a3b5a4e5c904"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hearths/hearth_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "add84fcb-4033-4e81-9673-b98d17b39b91",
+          "generated_at": "2026-08-16T15:15:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1958,
+          "glow_score": 0.031,
+          "art_hash": "28896bb07d93f20c"
         }
       },
       "animations": []
@@ -29051,9 +29060,9 @@
     {
       "id": "hearth_002",
       "rel": "hearths/hearth_002",
-      "name": "Small cottage hearth with a kettle 002 \u00b7 lit",
+      "name": "Small cottage hearth with a kettle 002",
       "category": "hearths",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, small cottage hearth with a kettle, waist-high, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
       "view": "low top-down",
       "size": 128,
@@ -29078,6 +29087,51 @@
           "pixellab_object_id": "cc58b604-4cf5-470e-becf-663a1e809186",
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "36b6f2a3073dfc0c"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_002/lit_2/sprite.webp",
+          "pixellab_object_id": "b0cb80c6-8566-4b72-af82-3dd978d734c7",
+          "generated_at": "2026-08-16T15:13:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4376,
+          "glow_score": 0.0826,
+          "art_hash": "77bb06a084363202"
+        },
+        "LIT_3": {
+          "sprite": "hearths/hearth_002/lit_3/sprite.webp",
+          "pixellab_object_id": "a7a31edb-f459-496a-8268-3da8fae36e8c",
+          "generated_at": "2026-08-16T15:13:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6661,
+          "glow_score": 0.07,
+          "art_hash": "c0e874ca8bb6aea9"
+        },
+        "LIT_4": {
+          "sprite": "hearths/hearth_002/lit_4/sprite.webp",
+          "pixellab_object_id": "f2cea7ac-2b42-4a14-b980-6b34e8fb32a8",
+          "generated_at": "2026-08-16T15:14:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7493,
+          "glow_score": 0.064,
+          "art_hash": "d7c3d832f79a5b80"
+        },
+        "NOT_LIT_1": {
+          "sprite": "hearths/hearth_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e482eff4-861b-4143-a3de-9873653ce5af",
+          "generated_at": "2026-08-16T15:15:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9719,
+          "glow_score": 0.0,
+          "art_hash": "a0d633d8e91e428e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9d40bd74-c592-4e0c-baa9-adc153966390",
+          "generated_at": "2026-08-16T15:15:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7962,
+          "glow_score": 0.0,
+          "art_hash": "df70d8f736f929a4"
         }
       },
       "animations": []
@@ -29087,7 +29141,7 @@
       "rel": "hearths/hearth_003",
       "name": "Whitewashed hearth with tile trim 003",
       "category": "hearths",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, whitewashed hearth with tile trim, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -29107,11 +29161,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hearths/hearth_003/lit_1/sprite.webp",
+          "pixellab_object_id": "b777eb21-86c1-4c16-898d-b63af8e15f3b",
+          "generated_at": "2026-08-16T15:15:55+00:00",
+          "glow_concept": "embers breathing orange under the cook pot",
+          "difference_from_source": 0.8118,
+          "glow_score": 0.3379,
+          "art_hash": "3eddc29d786eb8e8"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_003/lit_2/sprite.webp",
+          "pixellab_object_id": "9371f9d2-64e7-48e5-8a31-03a7a3acdfb3",
+          "generated_at": "2026-08-16T15:20:04+00:00",
+          "glow_concept": "coals banked for the night glowing low",
+          "difference_from_source": 0.9142,
+          "glow_score": 0.1525,
+          "art_hash": "505e6e6f601342d6"
+        },
         "NOT_LIT_1": {
           "sprite": "hearths/hearth_003/sprite.webp",
           "pixellab_object_id": "c2dad202-9832-4f75-be28-f6fee8a6ba86",
           "generated_at": "2026-08-13T21:49:03+00:00",
           "art_hash": "edffaf103515007f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1d4971e6-fbf1-4b4e-b471-8b4613c88247",
+          "generated_at": "2026-08-16T15:16:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7174,
+          "glow_score": 0.195,
+          "art_hash": "cf266e5555b6ffaf"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hearths/hearth_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "87f25021-2f00-4a06-8c8f-c179ed765703",
+          "generated_at": "2026-08-16T15:15:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4036,
+          "glow_score": 0.4074,
+          "art_hash": "ac1b249bf2310b29"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hearths/hearth_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "09d84fe1-97b2-4696-9440-09c6193632f1",
+          "generated_at": "2026-08-16T15:16:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.494,
+          "glow_score": 0.3674,
+          "art_hash": "fbb782d07bae596a"
         }
       },
       "animations": []
@@ -29119,9 +29218,9 @@
     {
       "id": "hearth_004",
       "rel": "hearths/hearth_004",
-      "name": "Fieldstone hearth with an iron cook pot 004 \u00b7 lit",
+      "name": "Fieldstone hearth with an iron cook pot 004",
       "category": "hearths",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, fieldstone hearth with an iron cook pot, large, twice human height, self-emissive at night, softly radiating light: embers breathing orange under the cook pot",
       "view": "low top-down",
       "size": 128,
@@ -29146,6 +29245,42 @@
           "pixellab_object_id": "e18ab340-1a8f-4b57-bd76-99b5dbbad040",
           "generated_at": "2026-08-13T21:36:42+00:00",
           "art_hash": "e2fe1702c06c2637"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_004/lit_2/sprite.webp",
+          "pixellab_object_id": "d9f5f182-4b09-4e65-9fe6-a98c2b42931f",
+          "generated_at": "2026-08-16T15:17:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4534,
+          "glow_score": 0.0023,
+          "art_hash": "fcef56da111cdab1"
+        },
+        "LIT_3": {
+          "sprite": "hearths/hearth_004/lit_3/sprite.webp",
+          "pixellab_object_id": "f42226ad-b661-4b2d-aed9-bae95087e04a",
+          "generated_at": "2026-08-16T15:18:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4322,
+          "glow_score": 0.0035,
+          "art_hash": "d0fb3a64ac3d3bbe"
+        },
+        "LIT_4": {
+          "sprite": "hearths/hearth_004/lit_4/sprite.webp",
+          "pixellab_object_id": "620ed58c-2400-497d-9a38-73f5a9fc9692",
+          "generated_at": "2026-08-16T15:18:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7584,
+          "glow_score": 0.007,
+          "art_hash": "ce53eb9e4c479f1b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ac00228b-57af-4e09-b42a-223e6419debc",
+          "generated_at": "2026-08-16T15:17:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7269,
+          "glow_score": 0.0,
+          "art_hash": "412f566ab33a8798"
         }
       },
       "animations": []
@@ -29153,9 +29288,9 @@
     {
       "id": "hearth_008",
       "rel": "hearths/hearth_008",
-      "name": "Hearth with drying herbs on the mantel 008 \u00b7 lit",
+      "name": "Hearth with drying herbs on the mantel 008",
       "category": "hearths",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with drying herbs on the mantel, large, twice human height, self-emissive at night, softly radiating light: fire burning warm in the hearth mouth",
       "view": "low top-down",
       "size": 128,
@@ -29180,6 +29315,42 @@
           "pixellab_object_id": "8f5817fb-0fd0-4219-8f8a-f7509cabe654",
           "generated_at": "2026-08-13T23:45:32+00:00",
           "art_hash": "9246ea3b380cd2a5"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_008/lit_2/sprite.webp",
+          "pixellab_object_id": "61bb96b2-c1ab-4c70-b1ba-81694c064966",
+          "generated_at": "2026-08-16T15:18:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9011,
+          "glow_score": 0.0704,
+          "art_hash": "8401d699a3dcd04a"
+        },
+        "LIT_3": {
+          "sprite": "hearths/hearth_008/lit_3/sprite.webp",
+          "pixellab_object_id": "d5b55629-fc87-4ec2-9cca-17b86d9a1e4a",
+          "generated_at": "2026-08-16T15:19:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3308,
+          "glow_score": 0.0632,
+          "art_hash": "2957d2a92c8e1f79"
+        },
+        "LIT_4": {
+          "sprite": "hearths/hearth_008/lit_4/sprite.webp",
+          "pixellab_object_id": "d11054dd-8a7f-465e-b9df-146e97c54d05",
+          "generated_at": "2026-08-16T15:19:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.569,
+          "glow_score": 0.0772,
+          "art_hash": "5ab19124dbda7a3f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "hearths/hearth_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "95a41fcb-7b07-4bd3-a1d0-37e38f80e850",
+          "generated_at": "2026-08-16T15:20:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3966,
+          "glow_score": 0.0031,
+          "art_hash": "55a335734926f128"
         }
       },
       "animations": []
@@ -29187,9 +29358,9 @@
     {
       "id": "hearth_900",
       "rel": "hearths/hearth_900",
-      "name": "Hearth with copper pans hung beside it 900 \u00b7 lit",
+      "name": "Hearth with copper pans hung beside it 900",
       "category": "hearths",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, hearth with copper pans hung beside it, waist-high, self-emissive at night, softly radiating light: coals banked for the night glowing low",
       "view": "low top-down",
       "size": 128,
@@ -29214,6 +29385,42 @@
           "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
           "generated_at": "2026-08-13T23:14:48+00:00",
           "art_hash": "2ac6d282a23a28ee"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_900/lit_2/sprite.webp",
+          "pixellab_object_id": "130ce66e-5ca6-4469-b379-001ff1a7a216",
+          "generated_at": "2026-08-16T15:21:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7711,
+          "glow_score": 0.0332,
+          "art_hash": "ec43a952990788b9"
+        },
+        "LIT_3": {
+          "sprite": "hearths/hearth_900/lit_3/sprite.webp",
+          "pixellab_object_id": "cf605f32-2c04-45db-ba12-bde27c2d494d",
+          "generated_at": "2026-08-16T15:20:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.871,
+          "glow_score": 0.0027,
+          "art_hash": "2fa6d0ff167be07a"
+        },
+        "NOT_LIT_1": {
+          "sprite": "hearths/hearth_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ed86087b-4eb2-4b97-a9b6-d13c38a21863",
+          "generated_at": "2026-08-16T15:21:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8601,
+          "glow_score": 0.0,
+          "art_hash": "06fe7ee35bf28037"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8cd2caa6-5160-49ff-a0ce-33fc97ffcaff",
+          "generated_at": "2026-08-16T15:22:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5257,
+          "glow_score": 0.0029,
+          "art_hash": "e72a015f13f27e80"
         }
       },
       "animations": []
@@ -29248,6 +29455,24 @@
           "pixellab_object_id": "c11a62a1-bff6-4733-a204-88963f88362d",
           "generated_at": "2026-08-13T23:27:18+00:00",
           "art_hash": "6074a78a0526a3d0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hearths/hearth_901/not_lit_3/sprite.webp",
+          "pixellab_object_id": "2f8d86cd-c118-408c-bc40-41731a5dfecd",
+          "generated_at": "2026-08-16T15:22:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2797,
+          "glow_score": 0.0,
+          "art_hash": "32e6a023dd1aee45"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hearths/hearth_901/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a901bd62-81b0-4c24-8fe9-6b3bb5aa3652",
+          "generated_at": "2026-08-16T15:23:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.804,
+          "glow_score": 0.0,
+          "art_hash": "4161b1d77c206855"
         }
       },
       "animations": []
