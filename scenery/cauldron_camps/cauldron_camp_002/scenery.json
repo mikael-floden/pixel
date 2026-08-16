@@ -5,8 +5,8 @@
   "group": "cauldron_camps",
   "rank": 123,
   "index": 2,
-  "name": "Iron tripod cauldron 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Iron tripod cauldron 002",
+  "lights": null,
   "variety": "iron tripod cauldron",
   "modifier": "cold and crow-visited",
   "glow_concept": "the brew glowing faintly green",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.6162,
       "glow_score": 0.0061
+    },
+    "LIT_4": {
+      "sprite": "cauldron_camps/cauldron_camp_002/lit_4/sprite.webp",
+      "pixellab_object_id": "5b4c1814-4083-43d1-bd1f-273eef4e0bdc",
+      "generated_at": "2026-08-16T08:58:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6614,
+      "glow_score": 0.1239
+    },
+    "NOT_LIT_1": {
+      "sprite": "cauldron_camps/cauldron_camp_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ceafb1bd-78b9-42c8-9c4c-3bcb62a93012",
+      "generated_at": "2026-08-16T08:58:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2598,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cauldron_camps/cauldron_camp_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5a9c7307-b6f2-4685-92c6-fcbab625af83",
+      "generated_at": "2026-08-16T08:58:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6955,
+      "glow_score": 0.0
     }
   }
 }

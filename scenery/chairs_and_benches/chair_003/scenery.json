@@ -5,7 +5,7 @@
   "rank": 104,
   "index": 3,
   "name": "Three-legged milking stool 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "three-legged milking stool",
   "glow_concept": null,
   "prompt": "a sturdy wooden seat for a house: a chunky chair, stool or short bench with thick legs, standing solidly on the floor, three-legged milking stool, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:47:16+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "chairs_and_benches/chair_003/lit_1/sprite.webp",
+      "pixellab_object_id": "38852289-67ca-46a8-b347-531068e4a395",
+      "generated_at": "2026-08-16T09:00:28+00:00",
+      "glow_concept": "a small candle lantern hung on the chair back",
+      "difference_from_source": 0.9489,
+      "glow_score": 0.1402
+    },
+    "LIT_2": {
+      "sprite": "chairs_and_benches/chair_003/lit_2/sprite.webp",
+      "pixellab_object_id": "d903468b-7a55-479c-9d94-02e2c0cf138f",
+      "generated_at": "2026-08-16T09:01:08+00:00",
+      "glow_concept": "a knitted blanket glowing faintly with kept warmth",
+      "difference_from_source": 0.9613,
+      "glow_score": 0.1259
+    },
     "NOT_LIT_1": {
       "sprite": "chairs_and_benches/chair_003/sprite.webp",
       "pixellab_object_id": "197ee104-9710-4ffc-bc25-29a116fd62d9",
       "generated_at": "2026-08-13T21:47:16+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "chairs_and_benches/chair_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "608d23a4-44a0-48e4-89e1-9d8fdee3c0b0",
+      "generated_at": "2026-08-16T08:59:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4716,
+      "glow_score": 0.0175
+    },
+    "NOT_LIT_3": {
+      "sprite": "chairs_and_benches/chair_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "b30d7688-6b8c-4635-8fce-669bea62a6c9",
+      "generated_at": "2026-08-16T09:00:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.598,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "chairs_and_benches/chair_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "3869185f-0592-4682-983b-f070188b17cb",
+      "generated_at": "2026-08-16T09:00:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3604,
+      "glow_score": 0.0047
     }
   }
 }
