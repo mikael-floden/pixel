@@ -45501,6 +45501,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "streetlights/streetlight_011/lit_1/sprite.webp",
+          "pixellab_object_id": "8427a00d-4a3f-4d65-813c-fa34c3893d58",
+          "generated_at": "2026-08-16T23:07:00+00:00",
+          "glow_concept": "a low guttering flame nearly out",
+          "difference_from_source": 0.7284,
+          "glow_score": 0.1442,
+          "art_hash": "a0bffc4a1d2c7327"
+        },
         "LIT_2": {
           "sprite": "streetlights/streetlight_011/lit_2/sprite.webp",
           "pixellab_object_id": "e5bf779b-72c9-4e11-b55c-60d3571b244b",
@@ -48697,9 +48706,9 @@
     {
       "id": "telegraph_pole_006",
       "rel": "telegraph_poles/telegraph_pole_006",
-      "name": "Moss-footed rotting pole 006 \u00b7 lit",
+      "name": "Moss-footed rotting pole 006",
       "category": "telegraph_poles",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, moss-footed rotting pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pulses of light traveling along the sagging wire",
       "view": "low top-down",
       "size": 256,
@@ -48751,6 +48760,24 @@
           "difference_from_source": 0.5791,
           "glow_score": 0.0204,
           "art_hash": "8683a5c7bbfe1978"
+        },
+        "NOT_LIT_1": {
+          "sprite": "telegraph_poles/telegraph_pole_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "028cfced-b11e-4183-ab22-99115f563866",
+          "generated_at": "2026-08-16T23:06:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8375,
+          "glow_score": 0.0,
+          "art_hash": "a9f531711065cf54"
+        },
+        "NOT_LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e42d671d-a349-4f38-bf7d-5469448891e9",
+          "generated_at": "2026-08-16T23:06:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.823,
+          "glow_score": 0.0,
+          "art_hash": "c8257c5ae8b68d9a"
         }
       },
       "animations": []
@@ -48785,6 +48812,15 @@
           "pixellab_object_id": "7b44c1f1-46e0-453d-8f0d-ca04ecc68302",
           "generated_at": "2026-08-13T21:58:10+00:00",
           "art_hash": "643c4cafb3d54eb6"
+        },
+        "LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_008/lit_2/sprite.webp",
+          "pixellab_object_id": "27c47cc0-2bae-4856-9a86-5615615045f5",
+          "generated_at": "2026-08-16T23:06:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2992,
+          "glow_score": 0.0481,
+          "art_hash": "10198b20dd23f264"
         }
       },
       "animations": []
