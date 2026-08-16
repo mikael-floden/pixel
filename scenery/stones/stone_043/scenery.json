@@ -7,7 +7,7 @@
   "rank": 2,
   "index": 43,
   "name": "Pair of leaning stones touching tips 043",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "pair of leaning stones touching tips",
   "modifier": "heavily weathered and gnarled",
   "glow_concept": null,
@@ -45,10 +45,34 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_043/lit_1/sprite.webp",
+      "pixellab_object_id": "20d69b44-11b1-4731-bad0-038d644b7fa3",
+      "generated_at": "2026-08-16T22:15:54+00:00",
+      "glow_concept": "molten orange soulstone veins in deep cracks",
+      "difference_from_source": 0.5138,
+      "glow_score": 0.1253
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_043/lit_2/sprite.webp",
+      "pixellab_object_id": "7ff96d70-59f2-47be-90d3-95df8aa116ac",
+      "generated_at": "2026-08-16T22:16:30+00:00",
+      "glow_concept": "glowing pale handprint pressed on the face",
+      "difference_from_source": 0.8241,
+      "glow_score": 0.0854
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_043/sprite.webp",
       "pixellab_object_id": "a44de483-2dea-4198-ac8e-4c0959fd165a",
       "generated_at": "2026-08-15T18:06:55+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_043/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4d452279-76b2-4b13-a7d1-fc4dd4ffc655",
+      "generated_at": "2026-08-16T22:15:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8907,
+      "glow_score": 0.0
     },
     "NOT_LIT_3": {
       "sprite": "stones/stone_043/not_lit_3/sprite.webp",
@@ -56,6 +80,14 @@
       "generated_at": "2026-08-16T22:15:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8936,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_043/not_lit_4/sprite.webp",
+      "pixellab_object_id": "54893101-67d5-40f8-8388-e3addb699205",
+      "generated_at": "2026-08-16T22:16:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9126,
       "glow_score": 0.0
     }
   }

@@ -7,7 +7,7 @@
   "rank": 2,
   "index": 47,
   "name": "Stone capped with a smaller balanced stone 047",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "stone capped with a smaller balanced stone",
   "modifier": "with a small sapling beside it",
   "glow_concept": null,
@@ -45,10 +45,50 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_047/lit_1/sprite.webp",
+      "pixellab_object_id": "e4496539-0253-424d-b3db-27311fb42f40",
+      "generated_at": "2026-08-16T22:19:15+00:00",
+      "glow_concept": "molten orange soulstone veins in deep cracks",
+      "difference_from_source": 0.8848,
+      "glow_score": 0.0674
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_047/lit_2/sprite.webp",
+      "pixellab_object_id": "73aa0e21-a952-48e2-b45f-ba51d8225fc7",
+      "generated_at": "2026-08-16T22:19:36+00:00",
+      "glow_concept": "glowing pale handprint pressed on the face",
+      "difference_from_source": 0.972,
+      "glow_score": 0.1294
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_047/sprite.webp",
       "pixellab_object_id": "f747c445-3862-4c71-9910-18cfa987a9d8",
       "generated_at": "2026-08-15T18:10:30+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_047/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2aaa0f8b-544e-498a-bbbf-25593b18a278",
+      "generated_at": "2026-08-16T22:19:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8766,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_047/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e8c27a73-b8d3-4f44-b81a-7de7c9433e42",
+      "generated_at": "2026-08-16T22:18:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.451,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_047/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1043a213-3fe3-4d94-9221-7f3a4d16748e",
+      "generated_at": "2026-08-16T22:19:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8681,
+      "glow_score": 0.0
     }
   }
 }
