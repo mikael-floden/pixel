@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 124,
-  "name": "Purple wisteria fall 124 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Purple wisteria fall 124",
+  "lights": null,
   "variety": "purple wisteria fall",
   "modifier": "wandering diagonally with leaf clusters low and high",
   "glow_concept": "amber memory-light dripping from the tips",
@@ -36,6 +36,46 @@
       "sprite": "cliff_vines/cliff_vine_124/sprite.webp",
       "pixellab_object_id": "e165e7e9-7bea-4fea-aa2f-0ca5247c57d3",
       "generated_at": "2026-08-14T05:44:04+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_124/lit_2/sprite.webp",
+      "pixellab_object_id": "ed67aad8-6c4b-4d58-9326-d1d35e448f79",
+      "generated_at": "2026-08-16T10:56:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8822,
+      "glow_score": 0.0851
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_124/lit_3/sprite.webp",
+      "pixellab_object_id": "5ee75696-81e2-4e71-ae77-1e34b0c0b028",
+      "generated_at": "2026-08-16T10:56:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6975,
+      "glow_score": 0.1015
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_124/lit_4/sprite.webp",
+      "pixellab_object_id": "5d4e864e-a280-44d2-99bd-2bc3af05ac17",
+      "generated_at": "2026-08-16T10:57:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5583,
+      "glow_score": 0.0926
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_124/not_lit_1/sprite.webp",
+      "pixellab_object_id": "ab9ca9c3-219d-4e31-b439-8a4c4c16da4f",
+      "generated_at": "2026-08-16T10:57:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5788,
+      "glow_score": 0.0437
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_124/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7c36e8ce-5698-415b-98e6-c4b92209650d",
+      "generated_at": "2026-08-16T10:57:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.948,
+      "glow_score": 0.0
     }
   }
 }

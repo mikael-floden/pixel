@@ -17725,6 +17725,15 @@
           "difference_from_source": 0.6123,
           "glow_score": 0.0002,
           "art_hash": "6313b92a4426a6b6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_078/not_lit_2/sprite.webp",
+          "pixellab_object_id": "630f1b25-e156-4e29-86ec-0c072103f2b3",
+          "generated_at": "2026-08-16T10:54:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4202,
+          "glow_score": 0.0019,
+          "art_hash": "f948d0348edc054d"
         }
       },
       "animations": []
@@ -17892,7 +17901,7 @@
       "rel": "cliff_vines/cliff_vine_095",
       "name": "Dry brown wilted fall 095",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, dry brown wilted fall, a long straightish run with two sharp kinks, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -17912,6 +17921,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_095/lit_1/sprite.webp",
+          "pixellab_object_id": "d6ac2b39-38e8-415b-9cfa-05292c87be43",
+          "generated_at": "2026-08-16T10:54:46+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.6847,
+          "glow_score": 0.029,
+          "art_hash": "93e61bd1b165dc09"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_095/lit_2/sprite.webp",
+          "pixellab_object_id": "cbdad6ab-1408-4128-b06f-a793205ce9f2",
+          "generated_at": "2026-08-16T10:53:52+00:00",
+          "glow_concept": "luminous sap veins glowing through the leaves",
+          "difference_from_source": 0.507,
+          "glow_score": 0.0476,
+          "art_hash": "0fa75cb534a67bda"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_095/sprite.webp",
           "pixellab_object_id": "a1910f4c-7783-4d82-a94b-c949767308d6",
@@ -17935,6 +17962,15 @@
           "difference_from_source": 0.6593,
           "glow_score": 0.001,
           "art_hash": "bde60d8583393259"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_095/not_lit_4/sprite.webp",
+          "pixellab_object_id": "43d58df6-f31b-45f7-badd-6b9525b5843c",
+          "generated_at": "2026-08-16T10:52:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3077,
+          "glow_score": 0.0,
+          "art_hash": "678aaa0b08df9234"
         }
       },
       "animations": []
@@ -17942,9 +17978,9 @@
     {
       "id": "cliff_vine_096",
       "rel": "cliff_vines/cliff_vine_096",
-      "name": "Purple wisteria fall 096 \u00b7 lit",
+      "name": "Purple wisteria fall 096",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, purple wisteria fall, thick at one end, tapering as it climbs, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
       "view": "low top-down",
       "size": 256,
@@ -17969,6 +18005,51 @@
           "pixellab_object_id": "eeab9932-4d2f-46b3-a73b-369b070f5f8e",
           "generated_at": "2026-08-14T05:20:03+00:00",
           "art_hash": "cded19977b7eccb2"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_096/lit_2/sprite.webp",
+          "pixellab_object_id": "0be416cd-a940-4a50-81f4-6f51759858ed",
+          "generated_at": "2026-08-16T10:54:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4977,
+          "glow_score": 0.0741,
+          "art_hash": "d54fb9cd88c32d96"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_096/lit_3/sprite.webp",
+          "pixellab_object_id": "e19221a3-e53f-410d-a42c-88caeb28f67b",
+          "generated_at": "2026-08-16T10:53:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5704,
+          "glow_score": 0.0751,
+          "art_hash": "8e5ee6af8bc5e83b"
+        },
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_096/lit_4/sprite.webp",
+          "pixellab_object_id": "4afb27a0-62b1-4aec-9f95-64449dfecd47",
+          "generated_at": "2026-08-16T10:53:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4388,
+          "glow_score": 0.0775,
+          "art_hash": "f3d7bf8586cca56c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_096/not_lit_1/sprite.webp",
+          "pixellab_object_id": "29d59bf7-3206-4ce0-b741-000e9bd3d4f0",
+          "generated_at": "2026-08-16T10:55:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8075,
+          "glow_score": 0.0,
+          "art_hash": "d51bac64d05cd3ac"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_096/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d33ffcf0-52e3-411a-bbf2-c82630e08d7b",
+          "generated_at": "2026-08-16T10:54:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8645,
+          "glow_score": 0.0004,
+          "art_hash": "250dd95585622f94"
         }
       },
       "animations": []
@@ -17978,7 +18059,7 @@
       "rel": "cliff_vines/cliff_vine_115",
       "name": "Red-leaved autumn creeper fall 115",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "ONE long climbing vine SNAKING and WINDING across a rock face, clinging tight to the stone as it climbs, coiling in slow curves the way a creeper spirals a tree trunk, gripping tendrils along its length, dense clusters of jungle leaves sprouting at points on the vine with bare woody stem between them, the plant's roots far below out of sight, jungle-lush and alive, fantasy RPG nature art, no straight edges, no border, no rock or wall behind it, transparent background, red-leaved autumn creeper fall, a long straightish run with two sharp kinks, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -17998,11 +18079,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_115/lit_2/sprite.webp",
+          "pixellab_object_id": "c014be76-343f-4c61-b373-ed7c78490fe3",
+          "generated_at": "2026-08-16T10:55:41+00:00",
+          "glow_concept": "pale blue soul-flowers dotted down the fall",
+          "difference_from_source": 0.5763,
+          "glow_score": 0.2546,
+          "art_hash": "354d167535a4acf4"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_115/sprite.webp",
           "pixellab_object_id": "881c0a3f-16fd-4e4a-9d4d-8ed644841478",
           "generated_at": "2026-08-14T05:27:51+00:00",
           "art_hash": "4e06fe98f87e4abe"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_115/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1cdcbe2d-d473-4ca1-bfff-5c09236ddec2",
+          "generated_at": "2026-08-16T10:54:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.492,
+          "glow_score": 0.075,
+          "art_hash": "92243e791eb9af8c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_115/not_lit_3/sprite.webp",
+          "pixellab_object_id": "132db640-6cc2-4bf7-bcb2-a2dc4bed97b5",
+          "generated_at": "2026-08-16T10:55:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5642,
+          "glow_score": 0.0848,
+          "art_hash": "e668b835b7601d30"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_115/not_lit_4/sprite.webp",
+          "pixellab_object_id": "06d972e8-7339-4217-b3e3-1e6263eea883",
+          "generated_at": "2026-08-16T10:55:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9791,
+          "glow_score": 0.0561,
+          "art_hash": "d3b11315c035d811"
         }
       },
       "animations": []
@@ -18012,7 +18129,7 @@
       "rel": "cliff_vines/cliff_vine_123",
       "name": "Dry brown wilted fall 123",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, dry brown wilted fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -18032,11 +18149,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_123/lit_1/sprite.webp",
+          "pixellab_object_id": "075518a5-ea71-4eca-aac1-47032e32d64a",
+          "generated_at": "2026-08-16T10:56:34+00:00",
+          "glow_concept": "pale blue soul-flowers dotted down the fall",
+          "difference_from_source": 0.6077,
+          "glow_score": 0.0843,
+          "art_hash": "ade6308aac3d4c16"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_123/lit_2/sprite.webp",
+          "pixellab_object_id": "1573c510-3281-440c-8959-08a7110a90a0",
+          "generated_at": "2026-08-16T10:56:35+00:00",
+          "glow_concept": "glowworm colonies strung in the foliage",
+          "difference_from_source": 0.5717,
+          "glow_score": 0.1624,
+          "art_hash": "12c5797de9777451"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_123/sprite.webp",
           "pixellab_object_id": "b2125824-65e3-4f0b-9921-2f5a60de9432",
           "generated_at": "2026-08-14T05:43:44+00:00",
           "art_hash": "0a00fd363c145667"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_123/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4abc1cae-fb54-4394-a5c0-3e78f751545c",
+          "generated_at": "2026-08-16T10:56:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5491,
+          "glow_score": 0.0002,
+          "art_hash": "5beceb87e0d1b4f1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_123/not_lit_3/sprite.webp",
+          "pixellab_object_id": "56dd98ca-8de8-4a08-b654-37249f3fe5a3",
+          "generated_at": "2026-08-16T10:56:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8799,
+          "glow_score": 0.0,
+          "art_hash": "a4955e1f5a62f6e7"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_123/not_lit_4/sprite.webp",
+          "pixellab_object_id": "063eb8f5-147d-4dc9-876d-beed780b08fd",
+          "generated_at": "2026-08-16T10:56:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4278,
+          "glow_score": 0.0,
+          "art_hash": "eb439e5dbbace590"
         }
       },
       "animations": []
@@ -18044,9 +18206,9 @@
     {
       "id": "cliff_vine_124",
       "rel": "cliff_vines/cliff_vine_124",
-      "name": "Purple wisteria fall 124 \u00b7 lit",
+      "name": "Purple wisteria fall 124",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, purple wisteria fall, wandering diagonally with leaf clusters low and high, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
       "view": "low top-down",
       "size": 256,
@@ -18071,6 +18233,51 @@
           "pixellab_object_id": "e165e7e9-7bea-4fea-aa2f-0ca5247c57d3",
           "generated_at": "2026-08-14T05:44:04+00:00",
           "art_hash": "5e6e1a02448a9cef"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_124/lit_2/sprite.webp",
+          "pixellab_object_id": "ed67aad8-6c4b-4d58-9326-d1d35e448f79",
+          "generated_at": "2026-08-16T10:56:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8822,
+          "glow_score": 0.0851,
+          "art_hash": "42be31196ee52ecc"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_124/lit_3/sprite.webp",
+          "pixellab_object_id": "5ee75696-81e2-4e71-ae77-1e34b0c0b028",
+          "generated_at": "2026-08-16T10:56:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6975,
+          "glow_score": 0.1015,
+          "art_hash": "702c2bd54c35ab33"
+        },
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_124/lit_4/sprite.webp",
+          "pixellab_object_id": "5d4e864e-a280-44d2-99bd-2bc3af05ac17",
+          "generated_at": "2026-08-16T10:57:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5583,
+          "glow_score": 0.0926,
+          "art_hash": "9b77e0c6029a5437"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_124/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ab9ca9c3-219d-4e31-b439-8a4c4c16da4f",
+          "generated_at": "2026-08-16T10:57:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5788,
+          "glow_score": 0.0437,
+          "art_hash": "f81f25ae7e3fbfd2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_124/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7c36e8ce-5698-415b-98e6-c4b92209650d",
+          "generated_at": "2026-08-16T10:57:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.948,
+          "glow_score": 0.0,
+          "art_hash": "62ed714802f2bc9d"
         }
       },
       "animations": []
@@ -18105,6 +18312,24 @@
           "pixellab_object_id": "b663a2d9-8d00-4ded-a475-f323aab474db",
           "generated_at": "2026-08-14T05:34:41+00:00",
           "art_hash": "a73267e78034a787"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_125/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c733ed87-41c6-46ce-a2e1-4e21857a103b",
+          "generated_at": "2026-08-16T10:57:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4831,
+          "glow_score": 0.0242,
+          "art_hash": "08a06aefb8bae2d5"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_125/not_lit_3/sprite.webp",
+          "pixellab_object_id": "fec4e0a5-37dd-4eb0-990c-c08a262575c2",
+          "generated_at": "2026-08-16T10:57:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3071,
+          "glow_score": 0.029,
+          "art_hash": "3182748fc1d32aa3"
         }
       },
       "animations": []

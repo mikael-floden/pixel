@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 95,
   "name": "Dry brown wilted fall 095",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dry brown wilted fall",
   "modifier": "a long straightish run with two sharp kinks",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_095/lit_1/sprite.webp",
+      "pixellab_object_id": "d6ac2b39-38e8-415b-9cfa-05292c87be43",
+      "generated_at": "2026-08-16T10:54:46+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.6847,
+      "glow_score": 0.029
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_095/lit_2/sprite.webp",
+      "pixellab_object_id": "cbdad6ab-1408-4128-b06f-a793205ce9f2",
+      "generated_at": "2026-08-16T10:53:52+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.507,
+      "glow_score": 0.0476
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_095/sprite.webp",
       "pixellab_object_id": "a1910f4c-7783-4d82-a94b-c949767308d6",
@@ -52,6 +68,14 @@
       "glow_concept": null,
       "difference_from_source": 0.6593,
       "glow_score": 0.001
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_095/not_lit_4/sprite.webp",
+      "pixellab_object_id": "43d58df6-f31b-45f7-badd-6b9525b5843c",
+      "generated_at": "2026-08-16T10:52:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3077,
+      "glow_score": 0.0
     }
   }
 }
