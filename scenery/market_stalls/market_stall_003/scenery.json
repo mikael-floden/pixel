@@ -5,7 +5,7 @@
   "rank": 49,
   "index": 3,
   "name": "Shuttered stall, boarded counter 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "shuttered stall, boarded counter",
   "glow_concept": null,
   "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, shuttered stall, boarded counter, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T08:45:01+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "market_stalls/market_stall_003/lit_1/sprite.webp",
+      "pixellab_object_id": "7e19df1d-2d67-4d0f-b040-ff6705257fba",
+      "generated_at": "2026-08-16T17:51:58+00:00",
+      "glow_concept": "soulstone merchant scales shining on the counter",
+      "difference_from_source": 0.9142,
+      "glow_score": 0.0
+    },
+    "LIT_2": {
+      "sprite": "market_stalls/market_stall_003/lit_2/sprite.webp",
+      "pixellab_object_id": "9ff3b9c7-aeea-4d2b-9031-c3c0d85e7e35",
+      "generated_at": "2026-08-16T17:52:50+00:00",
+      "glow_concept": "glowing chalked price-runes on the signboard",
+      "difference_from_source": 0.5546,
+      "glow_score": 0.0212
+    },
     "NOT_LIT_1": {
       "sprite": "market_stalls/market_stall_003/sprite.webp",
       "pixellab_object_id": "67278bf1-2766-44e0-9df1-d6fb20952dd7",
       "generated_at": "2026-08-13T08:45:01+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "market_stalls/market_stall_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e4ce247d-e89d-4a79-aff9-c2063cbd1d91",
+      "generated_at": "2026-08-16T17:49:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5801,
+      "glow_score": 0.1089
+    },
+    "NOT_LIT_3": {
+      "sprite": "market_stalls/market_stall_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "404482a7-73f9-4eaf-8929-51e27353ba89",
+      "generated_at": "2026-08-16T17:50:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.514,
+      "glow_score": 0.0031
+    },
+    "NOT_LIT_4": {
+      "sprite": "market_stalls/market_stall_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c2897ff7-443b-487e-ac0a-5264c78d4b50",
+      "generated_at": "2026-08-16T17:54:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3861,
+      "glow_score": 0.0068
     }
   }
 }

@@ -4,8 +4,8 @@
   "group": "market_stalls",
   "rank": 49,
   "index": 2,
-  "name": "Green canopy, root vegetables 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Green canopy, root vegetables 002",
+  "lights": null,
   "variety": "green canopy, root vegetables",
   "glow_concept": "canopy cloth lit from within like a tent",
   "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, green canopy, root vegetables, large, well above head height of a person, self-emissive at night, softly radiating light: canopy cloth lit from within like a tent",
@@ -59,6 +59,22 @@
       "glow_concept": null,
       "difference_from_source": 0.2594,
       "glow_score": 0.0501
+    },
+    "NOT_LIT_1": {
+      "sprite": "market_stalls/market_stall_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "565362de-7d9d-4d6d-9ab6-b8650c77c42c",
+      "generated_at": "2026-08-16T17:49:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8925,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "market_stalls/market_stall_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "20366b5c-ed8d-44e7-a0b1-17dee3cd1399",
+      "generated_at": "2026-08-16T17:49:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9338,
+      "glow_score": 0.0
     }
   }
 }

@@ -4,8 +4,8 @@
   "group": "market_stalls",
   "rank": 49,
   "index": 4,
-  "name": "Baker's stall, stacked loaves 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Baker's stall, stacked loaves 004",
+  "lights": null,
   "variety": "baker's stall, stacked loaves",
   "glow_concept": "counter of glowing honey jars and lit candles",
   "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, baker's stall, stacked loaves, large, well above head height of a person, self-emissive at night, softly radiating light: counter of glowing honey jars and lit candles",
@@ -35,6 +35,46 @@
       "sprite": "market_stalls/market_stall_004/sprite.webp",
       "pixellab_object_id": "d464941a-d025-45b2-a98a-8155229e8ffd",
       "generated_at": "2026-08-13T09:52:51+00:00"
+    },
+    "LIT_2": {
+      "sprite": "market_stalls/market_stall_004/lit_2/sprite.webp",
+      "pixellab_object_id": "f0225f29-839d-48d6-b7a8-d99660865f8f",
+      "generated_at": "2026-08-16T17:53:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3031,
+      "glow_score": 0.0327
+    },
+    "LIT_3": {
+      "sprite": "market_stalls/market_stall_004/lit_3/sprite.webp",
+      "pixellab_object_id": "3bc7ba83-6564-4c14-9df4-77c82588cc24",
+      "generated_at": "2026-08-16T17:52:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2432,
+      "glow_score": 0.0279
+    },
+    "LIT_4": {
+      "sprite": "market_stalls/market_stall_004/lit_4/sprite.webp",
+      "pixellab_object_id": "2655dbab-4fef-440d-b484-c1b8bb32a203",
+      "generated_at": "2026-08-16T17:53:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2767,
+      "glow_score": 0.0242
+    },
+    "NOT_LIT_1": {
+      "sprite": "market_stalls/market_stall_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d300a54e-7be0-4b90-9708-fcd102b8dbe7",
+      "generated_at": "2026-08-16T17:54:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9673,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "market_stalls/market_stall_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f29bf428-2813-4915-96ad-167ce4ae0191",
+      "generated_at": "2026-08-16T17:55:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9172,
+      "glow_score": 0.0
     }
   }
 }

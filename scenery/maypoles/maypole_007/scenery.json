@@ -5,7 +5,7 @@
   "rank": 48,
   "index": 7,
   "name": "Rose-and-daisy garlanded pole 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "rose-and-daisy garlanded pole",
   "glow_concept": null,
   "prompt": "a tall midsummer maypole wrapped in birch leaves and flowers, a crossarm near the top with two flower wreaths hanging from its ends and long ribbons trailing, rose-and-daisy garlanded pole, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:14:59+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "maypoles/maypole_007/lit_1/sprite.webp",
+      "pixellab_object_id": "464fa141-6d2b-4bed-90ca-5f7cd666e416",
+      "generated_at": "2026-08-16T17:56:28+00:00",
+      "glow_concept": "blossom wrappings shining soft pink-white",
+      "difference_from_source": 0.8175,
+      "glow_score": 0.1034
+    },
+    "LIT_2": {
+      "sprite": "maypoles/maypole_007/lit_2/sprite.webp",
+      "pixellab_object_id": "1b6754d8-2725-439f-829a-e04775018215",
+      "generated_at": "2026-08-16T17:56:30+00:00",
+      "glow_concept": "crown of warm light at the pole top",
+      "difference_from_source": 0.8448,
+      "glow_score": 0.0966
+    },
     "NOT_LIT_1": {
       "sprite": "maypoles/maypole_007/sprite.webp",
       "pixellab_object_id": "ad9da301-876b-443b-88ad-23dbe604adf0",
       "generated_at": "2026-08-13T22:14:59+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "maypoles/maypole_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8d50c526-ef21-4efb-aa5b-f4f7c4132424",
+      "generated_at": "2026-08-16T17:55:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1964,
+      "glow_score": 0.0481
+    },
+    "NOT_LIT_3": {
+      "sprite": "maypoles/maypole_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "925c27af-e27a-48c7-a8eb-b0b11aef8025",
+      "generated_at": "2026-08-16T17:56:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3296,
+      "glow_score": 0.0738
+    },
+    "NOT_LIT_4": {
+      "sprite": "maypoles/maypole_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "9aa6fbb1-5d13-4b0d-8a92-2905d82e34d8",
+      "generated_at": "2026-08-16T17:56:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2325,
+      "glow_score": 0.0645
     }
   }
 }
