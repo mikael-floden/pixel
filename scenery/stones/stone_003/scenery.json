@@ -5,7 +5,7 @@
   "rank": 2,
   "index": 3,
   "name": "Stone with carved initials 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "stone with carved initials",
   "glow_concept": null,
   "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, completely unlit, no glow, no light sources, no self-emission",
@@ -30,10 +30,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:22:20+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_003/lit_1/sprite.webp",
+      "pixellab_object_id": "f1b3a26e-e7ae-4593-b77f-7cafb812ae7f",
+      "generated_at": "2026-08-16T21:36:41+00:00",
+      "glow_concept": "ring of ghost-blue lichen circles",
+      "difference_from_source": 0.9299,
+      "glow_score": 0.1324
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_003/sprite.webp",
       "pixellab_object_id": "a8cf1239-b5ad-45df-8808-b30254ff3993",
       "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8a44a4f2-6515-479f-b667-651d91675ee8",
+      "generated_at": "2026-08-16T21:35:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5563,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "09dc5f1b-8d39-457e-8d28-1b2a6a710d5e",
+      "generated_at": "2026-08-16T21:35:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.771,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "140d254c-475d-4e98-a96c-e5008b223943",
+      "generated_at": "2026-08-16T21:36:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3298,
+      "glow_score": 0.0
     }
   }
 }

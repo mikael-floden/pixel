@@ -5,7 +5,7 @@
   "rank": 89,
   "index": 3,
   "name": "Headless torso statue 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "headless torso statue",
   "glow_concept": null,
   "prompt": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, headless torso statue, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:41:03+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "statues/statue_003/lit_1/sprite.webp",
+      "pixellab_object_id": "5854336e-83c6-441d-b0be-720f381f47e3",
+      "generated_at": "2026-08-16T21:31:19+00:00",
+      "glow_concept": "a halo of pale light above the head",
+      "difference_from_source": 0.6203,
+      "glow_score": 0.3216
+    },
+    "LIT_2": {
+      "sprite": "statues/statue_003/lit_2/sprite.webp",
+      "pixellab_object_id": "6b815278-4cac-4013-a446-67b832f69b59",
+      "generated_at": "2026-08-16T21:31:40+00:00",
+      "glow_concept": "the held lantern or sword faintly alight",
+      "difference_from_source": 0.9729,
+      "glow_score": 0.0683
+    },
     "NOT_LIT_1": {
       "sprite": "statues/statue_003/sprite.webp",
       "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
       "generated_at": "2026-08-13T20:41:03+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "statues/statue_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "fe9b659f-7d2d-4840-b434-097d0bdaa4e7",
+      "generated_at": "2026-08-16T21:31:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6183,
+      "glow_score": 0.0323
+    },
+    "NOT_LIT_3": {
+      "sprite": "statues/statue_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a1e2a675-8afd-4248-8b92-02e95d8d4141",
+      "generated_at": "2026-08-16T21:31:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4029,
+      "glow_score": 0.0367
+    },
+    "NOT_LIT_4": {
+      "sprite": "statues/statue_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "fd3e00bc-76f5-4361-9203-27e0bbaa7a02",
+      "generated_at": "2026-08-16T21:31:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5997,
+      "glow_score": 0.0243
     }
   }
 }

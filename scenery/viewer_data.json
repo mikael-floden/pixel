@@ -40618,6 +40618,15 @@
           "generated_at": "2026-08-13T23:13:41+00:00",
           "art_hash": "9f7db113b4d9f342"
         },
+        "LIT_2": {
+          "sprite": "standing_stones/standing_stone_012/lit_2/sprite.webp",
+          "pixellab_object_id": "6b79edac-b0af-4629-b512-0b5f9728d485",
+          "generated_at": "2026-08-16T21:29:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6514,
+          "glow_score": 0.1233,
+          "art_hash": "f1a3781bb6f0b596"
+        },
         "LIT_3": {
           "sprite": "standing_stones/standing_stone_012/lit_3/sprite.webp",
           "pixellab_object_id": "3640efc2-53ee-4d51-ba84-797ac9fa2b2c",
@@ -40706,6 +40715,24 @@
           "glow_score": 0.143,
           "art_hash": "9ace291765790bcd"
         },
+        "LIT_4": {
+          "sprite": "statues/statue_002/lit_4/sprite.webp",
+          "pixellab_object_id": "4da7609d-9589-4fb3-a89e-d50155706da0",
+          "generated_at": "2026-08-16T21:29:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.917,
+          "glow_score": 0.1401,
+          "art_hash": "8032c4c8e30b72ce"
+        },
+        "NOT_LIT_1": {
+          "sprite": "statues/statue_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "0ddea91c-0482-4108-9acb-4c4f75d2e7d5",
+          "generated_at": "2026-08-16T21:28:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9756,
+          "glow_score": 0.0,
+          "art_hash": "4b48d6080c98168f"
+        },
         "NOT_LIT_2": {
           "sprite": "statues/statue_002/not_lit_2/sprite.webp",
           "pixellab_object_id": "1189acf4-e6d4-420d-83f2-ede936d699cb",
@@ -40723,7 +40750,7 @@
       "rel": "statues/statue_003",
       "name": "Headless torso statue 003",
       "category": "statues",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, headless torso statue, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -40743,11 +40770,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "statues/statue_003/lit_1/sprite.webp",
+          "pixellab_object_id": "5854336e-83c6-441d-b0be-720f381f47e3",
+          "generated_at": "2026-08-16T21:31:19+00:00",
+          "glow_concept": "a halo of pale light above the head",
+          "difference_from_source": 0.6203,
+          "glow_score": 0.3216,
+          "art_hash": "fa955446965a5a3e"
+        },
+        "LIT_2": {
+          "sprite": "statues/statue_003/lit_2/sprite.webp",
+          "pixellab_object_id": "6b815278-4cac-4013-a446-67b832f69b59",
+          "generated_at": "2026-08-16T21:31:40+00:00",
+          "glow_concept": "the held lantern or sword faintly alight",
+          "difference_from_source": 0.9729,
+          "glow_score": 0.0683,
+          "art_hash": "c3b98556e6cee932"
+        },
         "NOT_LIT_1": {
           "sprite": "statues/statue_003/sprite.webp",
           "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
           "generated_at": "2026-08-13T20:41:03+00:00",
           "art_hash": "2ce401dcd1495048"
+        },
+        "NOT_LIT_2": {
+          "sprite": "statues/statue_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "fe9b659f-7d2d-4840-b434-097d0bdaa4e7",
+          "generated_at": "2026-08-16T21:31:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6183,
+          "glow_score": 0.0323,
+          "art_hash": "755c4cc37d6defbc"
+        },
+        "NOT_LIT_3": {
+          "sprite": "statues/statue_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a1e2a675-8afd-4248-8b92-02e95d8d4141",
+          "generated_at": "2026-08-16T21:31:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4029,
+          "glow_score": 0.0367,
+          "art_hash": "258b5fd436032474"
+        },
+        "NOT_LIT_4": {
+          "sprite": "statues/statue_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fd3e00bc-76f5-4361-9203-27e0bbaa7a02",
+          "generated_at": "2026-08-16T21:31:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5997,
+          "glow_score": 0.0243,
+          "art_hash": "2dbe1d8a827f0106"
         }
       },
       "animations": []
@@ -40757,7 +40829,7 @@
       "rel": "stone_fountains/stone_fountain_001",
       "name": "Square basin with lion-head spout 001",
       "category": "stone_fountains",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, square basin with lion-head spout, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -40777,11 +40849,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stone_fountains/stone_fountain_001/lit_1/sprite.webp",
+          "pixellab_object_id": "9bba7cb3-1ea4-4d3b-919e-6b43b3e95c4e",
+          "generated_at": "2026-08-16T21:34:10+00:00",
+          "glow_concept": "the spout stream falling as a ribbon of light",
+          "difference_from_source": 0.9394,
+          "glow_score": 0.0452,
+          "art_hash": "36bd998d33df13f7"
+        },
+        "LIT_2": {
+          "sprite": "stone_fountains/stone_fountain_001/lit_2/sprite.webp",
+          "pixellab_object_id": "ee56d9d4-9d04-4a65-b133-a17a0f7fefcf",
+          "generated_at": "2026-08-16T21:34:49+00:00",
+          "glow_concept": "the basin water glowing pale gold",
+          "difference_from_source": 0.9047,
+          "glow_score": 0.1531,
+          "art_hash": "c4bf0a3fefdc117a"
+        },
         "NOT_LIT_1": {
           "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
           "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
           "generated_at": "2026-08-13T02:08:40+00:00",
           "art_hash": "2d2ebaeb9db8487d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stone_fountains/stone_fountain_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "048d97d2-84a9-40af-8217-4c6e4cd70092",
+          "generated_at": "2026-08-16T21:31:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6324,
+          "glow_score": 0.0012,
+          "art_hash": "3c541975b8b036e3"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stone_fountains/stone_fountain_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "06c9fdc6-6e30-4553-924b-b0e6c6ad409c",
+          "generated_at": "2026-08-16T21:32:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.204,
+          "glow_score": 0.0112,
+          "art_hash": "d73a50c860be0f23"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stone_fountains/stone_fountain_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "87408a33-87ac-4f75-96d7-df45976e0832",
+          "generated_at": "2026-08-16T21:31:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7612,
+          "glow_score": 0.0,
+          "art_hash": "70397695e4d83b64"
         }
       },
       "animations": []
@@ -40816,6 +40933,33 @@
           "pixellab_object_id": "b50f7993-eb78-48d1-815b-dae3b165ff40",
           "generated_at": "2026-08-13T20:38:02+00:00",
           "art_hash": "bb2d5a2e096f31c3"
+        },
+        "LIT_2": {
+          "sprite": "stone_fountains/stone_fountain_004/lit_2/sprite.webp",
+          "pixellab_object_id": "45948e44-b130-4ebd-85d1-01da124cab46",
+          "generated_at": "2026-08-16T21:34:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6769,
+          "glow_score": 0.0172,
+          "art_hash": "e26b27794a4d6509"
+        },
+        "LIT_3": {
+          "sprite": "stone_fountains/stone_fountain_004/lit_3/sprite.webp",
+          "pixellab_object_id": "14913a01-6dcd-439a-8fa7-771713e7c926",
+          "generated_at": "2026-08-16T21:34:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4694,
+          "glow_score": 0.0029,
+          "art_hash": "5b2abcefa7ce240d"
+        },
+        "LIT_4": {
+          "sprite": "stone_fountains/stone_fountain_004/lit_4/sprite.webp",
+          "pixellab_object_id": "d3d1e21e-8e5d-4fa5-8704-da13d611387b",
+          "generated_at": "2026-08-16T21:34:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4472,
+          "glow_score": 0.0188,
+          "art_hash": "eea0b86211e42c52"
         }
       },
       "animations": []
@@ -40825,7 +40969,7 @@
       "rel": "stones/stone_001",
       "name": "Boulder wrapped in briar roots 001",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, boulder wrapped in briar roots, completely unlit, no glow, no light sources, no self-emission",
       "view": "top-down",
       "size": 64,
@@ -40845,11 +40989,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_001/lit_1/sprite.webp",
+          "pixellab_object_id": "57c2dc51-1adf-4727-bd56-ae4ef575f94a",
+          "generated_at": "2026-08-16T21:35:27+00:00",
+          "glow_concept": "molten orange soulstone veins in deep cracks",
+          "difference_from_source": 0.8425,
+          "glow_score": 0.0819,
+          "art_hash": "59bc7b209c20912d"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_001/lit_2/sprite.webp",
+          "pixellab_object_id": "e5dbc6db-7496-4616-8fd2-5d5b0ca277c6",
+          "generated_at": "2026-08-16T21:35:38+00:00",
+          "glow_concept": "glowing pale handprint pressed on the face",
+          "difference_from_source": 0.876,
+          "glow_score": 0.0845,
+          "art_hash": "16e3a8fd6474d32a"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_001/sprite.webp",
           "pixellab_object_id": "bd880689-92f3-4be4-a8ce-bd23d1fad436",
           "generated_at": "2026-08-12T23:22:20+00:00",
           "art_hash": "30420173c1ee5562"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8ea83e17-0f69-4d24-9e8a-f629939781ec",
+          "generated_at": "2026-08-16T21:33:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8136,
+          "glow_score": 0.0,
+          "art_hash": "c6519fb5ddc56ef8"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4627f058-f449-477f-8bf7-7f0fd6bf3081",
+          "generated_at": "2026-08-16T21:34:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7907,
+          "glow_score": 0.0,
+          "art_hash": "f31c67901781b711"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stones/stone_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "92d4f146-eead-4210-bb62-7be65a93e731",
+          "generated_at": "2026-08-16T21:35:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7771,
+          "glow_score": 0.0,
+          "art_hash": "d40cabf9de87ca6c"
         }
       },
       "animations": []
@@ -40859,7 +41048,7 @@
       "rel": "stones/stone_003",
       "name": "Stone with carved initials 003",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, completely unlit, no glow, no light sources, no self-emission",
       "view": "top-down",
       "size": 64,
@@ -40879,11 +41068,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_003/lit_1/sprite.webp",
+          "pixellab_object_id": "f1b3a26e-e7ae-4593-b77f-7cafb812ae7f",
+          "generated_at": "2026-08-16T21:36:41+00:00",
+          "glow_concept": "ring of ghost-blue lichen circles",
+          "difference_from_source": 0.9299,
+          "glow_score": 0.1324,
+          "art_hash": "b8820ec8d909c4a1"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_003/sprite.webp",
           "pixellab_object_id": "a8cf1239-b5ad-45df-8808-b30254ff3993",
           "generated_at": "2026-08-12T23:22:20+00:00",
           "art_hash": "c70b74cf40d86948"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8a44a4f2-6515-479f-b667-651d91675ee8",
+          "generated_at": "2026-08-16T21:35:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5563,
+          "glow_score": 0.0,
+          "art_hash": "d71ae2b69ff0ecf8"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "09dc5f1b-8d39-457e-8d28-1b2a6a710d5e",
+          "generated_at": "2026-08-16T21:35:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.771,
+          "glow_score": 0.0,
+          "art_hash": "9a9324fab3c927fb"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stones/stone_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "140d254c-475d-4e98-a96c-e5008b223943",
+          "generated_at": "2026-08-16T21:36:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3298,
+          "glow_score": 0.0,
+          "art_hash": "f50bfa9d1260cd11"
         }
       },
       "animations": []
@@ -40918,6 +41143,15 @@
           "pixellab_object_id": "e4dc5d1b-432a-44b9-b1b6-6ca29846b0a3",
           "generated_at": "2026-08-12T23:22:20+00:00",
           "art_hash": "083a5717b67da8f7"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_004/lit_2/sprite.webp",
+          "pixellab_object_id": "f8d49205-6394-4a02-8e88-515b83c7a303",
+          "generated_at": "2026-08-16T21:36:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1789,
+          "glow_score": 0.0948,
+          "art_hash": "12b76105cdaedea5"
         }
       },
       "animations": []
