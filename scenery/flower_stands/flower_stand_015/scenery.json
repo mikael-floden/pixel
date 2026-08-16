@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "flower_stands/flower_stand_015/lit_1/sprite.webp",
+      "pixellab_object_id": "4a9765b2-a2ba-4c42-99e8-3e331b4bee29",
+      "generated_at": "2026-08-16T14:17:58+00:00",
+      "glow_concept": "luminous golden pollen motes drifting upward",
+      "difference_from_source": 0.8734,
+      "glow_score": 0.3247
+    },
     "LIT_2": {
       "sprite": "flower_stands/flower_stand_015/lit_2/sprite.webp",
       "pixellab_object_id": "8deb438f-c93b-4a37-b0cf-6bbe6a7d5319",
