@@ -5,7 +5,7 @@
   "rank": 33,
   "index": 5,
   "name": "Green summer cattails 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "green summer cattails",
   "glow_concept": null,
   "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, green summer cattails, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T11:18:21+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "cattail_clumps/cattail_clump_005/lit_1/sprite.webp",
+      "pixellab_object_id": "18e6c3c2-c575-4290-831d-3b3006595eff",
+      "generated_at": "2026-08-15T21:59:59+00:00",
+      "glow_concept": "burst fluff drifting off as glowing motes",
+      "difference_from_source": 0.905,
+      "glow_score": 0.1317
+    },
+    "LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_005/lit_2/sprite.webp",
+      "pixellab_object_id": "cfa7a2f8-28ad-4aab-9265-1d3e1cb1beb5",
+      "generated_at": "2026-08-15T21:59:59+00:00",
+      "glow_concept": "a firefly cluster nested in the leaves",
+      "difference_from_source": 0.8304,
+      "glow_score": 0.0889
+    },
     "NOT_LIT_1": {
       "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
       "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
       "generated_at": "2026-08-13T11:18:21+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "29a67bea-1f56-4955-9906-9c00d3d56f31",
+      "generated_at": "2026-08-15T21:59:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3596,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cattail_clumps/cattail_clump_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "1468df2a-e799-4aee-831b-30371e835a44",
+      "generated_at": "2026-08-15T21:59:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7676,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cattail_clumps/cattail_clump_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "93538d9d-6055-40d2-ab51-c84b46313622",
+      "generated_at": "2026-08-15T21:59:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4089,
+      "glow_score": 0.0
     }
   }
 }
