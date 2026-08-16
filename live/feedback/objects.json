@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-16T12:51:14.260Z",
+  "updated_at": "2026-08-16T12:55:46.054Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -4411,10 +4411,10 @@
       "rating": 3
     },
     "scenery/fallen_logs/fallen_log_008": {
-      "status": "approved",
+      "status": "rejected",
       "art": "7f22ba073f423ac4",
-      "updated_at": "2026-08-14T00:35:06.484Z",
-      "rating": 4
+      "updated_at": "2026-08-16T12:54:38.841Z",
+      "rating": 1
     },
     "scenery/offering_tables/offering_table_009": {
       "status": "approved",
@@ -15477,14 +15477,14 @@
       "art": "d192b632750f4f51"
     },
     "scenery/windows/window_004#lights_off#south": {
-      "rating": 2,
-      "updated_at": "2026-08-14T06:56:36.392Z",
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:16.356Z",
       "status": "approved",
       "art": "90aa75478249124a"
     },
     "scenery/windows/window_005#lights_off#south": {
-      "rating": 2,
-      "updated_at": "2026-08-14T06:56:18.657Z",
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:07.776Z",
       "status": "approved",
       "art": "f0ebb6c6537c1312"
     },
@@ -18265,6 +18265,352 @@
       "updated_at": "2026-08-16T12:50:42.718Z",
       "status": "approved",
       "art": "97da81e9494e5967"
+    },
+    "scenery/windows/window_007#lights_on#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:51:47.569Z",
+      "status": "approved",
+      "art": "534aec313db1ff26"
+    },
+    "scenery/windows/window_007#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:51:50.945Z",
+      "status": "approved",
+      "art": "054250bd62f6b666"
+    },
+    "scenery/windows/window_007#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:51:52.965Z",
+      "status": "approved",
+      "art": "e6d960e26814949e"
+    },
+    "scenery/windows/window_012#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:02.191Z",
+      "status": "approved",
+      "art": "45ac24a00fd45d3a"
+    },
+    "scenery/windows/window_012#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:03.612Z",
+      "status": "approved",
+      "art": "01c73e0f8ac1b1dd"
+    },
+    "scenery/windows/window_012#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:05.863Z",
+      "status": "approved",
+      "art": "c5d38bf093e20a96"
+    },
+    "scenery/windows/window_005#lights_on#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:10.641Z",
+      "status": "approved",
+      "art": "ab3486592aa9f349"
+    },
+    "scenery/windows/window_005#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:12.429Z",
+      "status": "approved",
+      "art": "5dd247ec5569795a"
+    },
+    "scenery/windows/window_005#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:14.157Z",
+      "status": "approved",
+      "art": "a6cec747bc93dd47"
+    },
+    "scenery/windows/window_004#lights_on#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:18.954Z",
+      "status": "approved",
+      "art": "a473fbaaceb781ba"
+    },
+    "scenery/windows/window_004#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:21.401Z",
+      "status": "approved",
+      "art": "c87731f4f595aa11"
+    },
+    "scenery/windows/window_004#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:23.204Z",
+      "status": "approved",
+      "art": "3a944e5bb3f4b646"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:30.601Z",
+      "status": "approved",
+      "art": "364fc3514d5147c1"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:37.428Z",
+      "status": "approved",
+      "art": "2f22ac3becdc1813"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:39.709Z",
+      "status": "approved",
+      "art": "c9f625384ef41078"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_5#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:42.775Z",
+      "status": "approved",
+      "art": "02f0d5fbc4e41239"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:46.175Z",
+      "status": "approved",
+      "art": "dba6fd7c40dcdc42"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_6#south": {
+      "art": "b289ae48db63dcf0",
+      "updated_at": "2026-08-16T12:52:50.235Z",
+      "rating": 5,
+      "status": "approved"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_7#south": {
+      "status": "rejected",
+      "art": "4b97cad0e5cf66ec",
+      "updated_at": "2026-08-16T12:52:54.558Z",
+      "rating": 1
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_8#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:52:57.973Z",
+      "art": "e7a28fd989a281ab",
+      "status": "approved"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_9#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:53:00.143Z",
+      "status": "approved",
+      "art": "15a07536d2141dae"
+    },
+    "scenery/bee_logs/bee_log_002#not_lit_10#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:53:02.374Z",
+      "status": "approved",
+      "art": "a95d6a0b4e69052f"
+    },
+    "scenery/bee_logs/bee_log_002#lit_2#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:53:07.120Z",
+      "status": "rejected",
+      "art": "c7cbc92c48238dcd"
+    },
+    "scenery/bee_logs/bee_log_002#lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:53:12.440Z",
+      "status": "rejected",
+      "art": "be3dbd0648cf3d18"
+    },
+    "scenery/bee_logs/bee_log_002#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:53:15.758Z",
+      "status": "approved",
+      "art": "9d81ad985454e2fd"
+    },
+    "scenery/stumps/stump_014#not_lit_2#south": {
+      "status": "rejected",
+      "art": "5d39ec012d88cfac",
+      "updated_at": "2026-08-16T12:53:22.776Z",
+      "rating": 1
+    },
+    "scenery/stumps/stump_014#not_lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:53:31.015Z",
+      "status": "rejected",
+      "art": "d593ea430f65cd6a"
+    },
+    "scenery/stumps/stump_014#not_lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:53:40.917Z",
+      "status": "approved",
+      "art": "5c8c3238ad5c4a18"
+    },
+    "scenery/stumps/stump_014#not_lit_5#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:53:50.487Z",
+      "status": "rejected",
+      "art": "68ff77dad1f7105b"
+    },
+    "scenery/stumps/stump_014#not_lit_6#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:53:56.920Z",
+      "status": "rejected",
+      "art": "9c94cc063a6d1dde"
+    },
+    "scenery/stumps/stump_014#not_lit_7#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:53:59.812Z",
+      "status": "approved",
+      "art": "c161a8c457819992"
+    },
+    "scenery/stumps/stump_014#not_lit_8#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:03.284Z",
+      "status": "rejected",
+      "art": "39e03c0e250391a9"
+    },
+    "scenery/stumps/stump_014#not_lit_9#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:06.272Z",
+      "status": "rejected",
+      "art": "d4081c05712ede20"
+    },
+    "scenery/stumps/stump_014#not_lit_10#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:54:08.886Z",
+      "status": "approved",
+      "art": "696bac11813a38b1"
+    },
+    "scenery/stumps/stump_014#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:54:12.874Z",
+      "status": "approved",
+      "art": "467f3401c19064f9"
+    },
+    "scenery/stumps/stump_014#lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:18.776Z",
+      "art": "e67b38a2a58f70fb",
+      "status": "rejected"
+    },
+    "scenery/stumps/stump_014#lit_4#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:22.496Z",
+      "status": "rejected",
+      "art": "cfcf461482b217aa"
+    },
+    "scenery/fallen_logs/fallen_log_008#not_lit_1#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:29.966Z",
+      "status": "rejected",
+      "art": "ceb46f1448480538"
+    },
+    "scenery/fallen_logs/fallen_log_008#not_lit_2#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:33.445Z",
+      "status": "rejected",
+      "art": "04f2fb8aa52fb0a2"
+    },
+    "scenery/fallen_logs/fallen_log_008#not_lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:35.615Z"
+    },
+    "scenery/stumps/stump_012#not_lit_1#south": {
+      "status": "approved",
+      "art": "a5cb1696901adfe1",
+      "updated_at": "2026-08-16T12:54:46.735Z",
+      "rating": 5
+    },
+    "scenery/stumps/stump_012#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:54:49.361Z",
+      "status": "approved",
+      "art": "3257d38b6b9e1bb1"
+    },
+    "scenery/stumps/stump_012#not_lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:54:51.783Z",
+      "status": "approved",
+      "art": "33ea76a4cf6731a5"
+    },
+    "scenery/stumps/stump_012#not_lit_4#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:54:54.709Z",
+      "status": "rejected",
+      "art": "ff13b66526ca2b30"
+    },
+    "scenery/stumps/stump_012#not_lit_5#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:54:57.344Z",
+      "status": "approved",
+      "art": "08ad43d9ec9c8cc3"
+    },
+    "scenery/stumps/stump_010#not_lit_1#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:55:05.743Z",
+      "status": "rejected",
+      "art": "d5a90a838edc3da9"
+    },
+    "scenery/stumps/stump_010#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:08.658Z",
+      "status": "approved",
+      "art": "b49bb1c3ea9e4414"
+    },
+    "scenery/stumps/stump_010#not_lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:55:12.471Z",
+      "status": "rejected",
+      "art": "52226a990af5aa9b"
+    },
+    "scenery/stumps/stump_010#not_lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:15.208Z",
+      "status": "approved",
+      "art": "2477e6573bafd16e"
+    },
+    "scenery/stumps/stump_010#not_lit_5#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:17.047Z",
+      "status": "approved",
+      "art": "079da8db1c423eb3"
+    },
+    "scenery/stumps/stump_010#not_lit_6#south": {
+      "art": "adb7562e654cdfcf",
+      "updated_at": "2026-08-16T12:55:21.926Z",
+      "rating": 5,
+      "status": "approved"
+    },
+    "scenery/stumps/stump_010#not_lit_7#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:23.969Z",
+      "status": "approved",
+      "art": "983b14bcaeced68b"
+    },
+    "scenery/stumps/stump_010#not_lit_8#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:26.267Z",
+      "status": "approved",
+      "art": "808f8db4fcbce82e"
+    },
+    "scenery/stumps/stump_010#not_lit_9#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:29.503Z",
+      "status": "approved",
+      "art": "ba05365fe5702fb9"
+    },
+    "scenery/stumps/stump_010#not_lit_10#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:31.621Z",
+      "status": "approved",
+      "art": "e13d97016d7af1c8"
+    },
+    "scenery/stumps/stump_010#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:55:34.175Z",
+      "status": "approved",
+      "art": "9d423ba62cbfa0e3"
+    },
+    "scenery/stumps/stump_010#lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:55:38.787Z",
+      "status": "rejected",
+      "art": "74e33c111889481a"
+    },
+    "scenery/stumps/stump_010#lit_4#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:55:42.622Z",
+      "status": "rejected",
+      "art": "6826a2cf8e8c20c5"
     }
   }
 }
