@@ -5,8 +5,8 @@
   "group": "lantern_stands",
   "rank": 29,
   "index": 18,
-  "name": "Curled fern-tip iron stand 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Curled fern-tip iron stand 018",
+  "lights": null,
   "variety": "curled fern-tip iron stand",
   "modifier": "overgrown at the base",
   "glow_concept": "stained-glass panes throwing colored light",
@@ -36,6 +36,46 @@
       "sprite": "lantern_stands/lantern_stand_018/sprite.webp",
       "pixellab_object_id": "f8f56430-7ac7-4210-b9cc-ee4225129f16",
       "generated_at": "2026-08-14T02:51:10+00:00"
+    },
+    "LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_018/lit_2/sprite.webp",
+      "pixellab_object_id": "8f80e925-f147-4159-a324-fcda2de5d698",
+      "generated_at": "2026-08-16T17:40:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9035,
+      "glow_score": 0.0396
+    },
+    "LIT_3": {
+      "sprite": "lantern_stands/lantern_stand_018/lit_3/sprite.webp",
+      "pixellab_object_id": "975384d2-92f8-44b7-904b-8af90d0cd9e6",
+      "generated_at": "2026-08-16T17:40:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9259,
+      "glow_score": 0.0128
+    },
+    "LIT_4": {
+      "sprite": "lantern_stands/lantern_stand_018/lit_4/sprite.webp",
+      "pixellab_object_id": "d561db29-10b7-4dad-9e80-7f2b3294bdf7",
+      "generated_at": "2026-08-16T17:42:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.953,
+      "glow_score": 0.0746
+    },
+    "NOT_LIT_1": {
+      "sprite": "lantern_stands/lantern_stand_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6c4f3fb5-9315-4ad9-be24-a9c8eb1fa903",
+      "generated_at": "2026-08-16T17:41:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7221,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_stands/lantern_stand_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2bdd0703-9d4f-46d5-8dff-22e3711a0e5f",
+      "generated_at": "2026-08-16T17:42:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8562,
+      "glow_score": 0.0
     }
   }
 }

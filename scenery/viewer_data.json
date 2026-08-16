@@ -32451,9 +32451,9 @@
     {
       "id": "lantern_stand_014",
       "rel": "lantern_stands/lantern_stand_014",
-      "name": "Festival stand with ribbons 014 \u00b7 lit",
+      "name": "Festival stand with ribbons 014",
       "category": "lantern_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, festival stand with ribbons, snow-dusted, large, twice human height, self-emissive at night, softly radiating light: paper lantern glowing through painted panes",
       "view": "low top-down",
       "size": 128,
@@ -32487,6 +32487,42 @@
           "difference_from_source": 0.9688,
           "glow_score": 0.1903,
           "art_hash": "b52cca5f56481834"
+        },
+        "LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_014/lit_3/sprite.webp",
+          "pixellab_object_id": "351ffecf-f053-470e-9325-382a938033a8",
+          "generated_at": "2026-08-16T17:38:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7896,
+          "glow_score": 0.2342,
+          "art_hash": "f2a1e5d72bafe430"
+        },
+        "LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_014/lit_4/sprite.webp",
+          "pixellab_object_id": "1bdc3f96-be95-46ed-a603-266c6acb53f3",
+          "generated_at": "2026-08-16T17:39:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9926,
+          "glow_score": 0.4491,
+          "art_hash": "0d4b59823970c72e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "28f56e6e-316a-43db-b068-76173cf3f588",
+          "generated_at": "2026-08-16T17:38:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.58,
+          "glow_score": 0.0004,
+          "art_hash": "f18e44e07776d04e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "500420f4-4788-4800-922f-26723796a030",
+          "generated_at": "2026-08-16T17:40:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9141,
+          "glow_score": 0.1789,
+          "art_hash": "e5a1204e9c73ea60"
         }
       },
       "animations": []
@@ -32494,9 +32530,9 @@
     {
       "id": "lantern_stand_018",
       "rel": "lantern_stands/lantern_stand_018",
-      "name": "Curled fern-tip iron stand 018 \u00b7 lit",
+      "name": "Curled fern-tip iron stand 018",
       "category": "lantern_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, curled fern-tip iron stand, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: stained-glass panes throwing colored light",
       "view": "low top-down",
       "size": 128,
@@ -32521,6 +32557,51 @@
           "pixellab_object_id": "f8f56430-7ac7-4210-b9cc-ee4225129f16",
           "generated_at": "2026-08-14T02:51:10+00:00",
           "art_hash": "80c2080b1cd3ccad"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_018/lit_2/sprite.webp",
+          "pixellab_object_id": "8f80e925-f147-4159-a324-fcda2de5d698",
+          "generated_at": "2026-08-16T17:40:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9035,
+          "glow_score": 0.0396,
+          "art_hash": "d788d75081ddd064"
+        },
+        "LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_018/lit_3/sprite.webp",
+          "pixellab_object_id": "975384d2-92f8-44b7-904b-8af90d0cd9e6",
+          "generated_at": "2026-08-16T17:40:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9259,
+          "glow_score": 0.0128,
+          "art_hash": "74e02cc8cf7d14da"
+        },
+        "LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_018/lit_4/sprite.webp",
+          "pixellab_object_id": "d561db29-10b7-4dad-9e80-7f2b3294bdf7",
+          "generated_at": "2026-08-16T17:42:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.953,
+          "glow_score": 0.0746,
+          "art_hash": "7db0046497b513ed"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6c4f3fb5-9315-4ad9-be24-a9c8eb1fa903",
+          "generated_at": "2026-08-16T17:41:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7221,
+          "glow_score": 0.0,
+          "art_hash": "e78c62282988422b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2bdd0703-9d4f-46d5-8dff-22e3711a0e5f",
+          "generated_at": "2026-08-16T17:42:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8562,
+          "glow_score": 0.0,
+          "art_hash": "0dfeed5dc9f5f16f"
         }
       },
       "animations": []
@@ -32528,9 +32609,9 @@
     {
       "id": "lantern_stand_902",
       "rel": "lantern_stands/lantern_stand_902",
-      "name": "Slender reed-thin stand 902 \u00b7 lit",
+      "name": "Slender reed-thin stand 902",
       "category": "lantern_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shepherd's-crook iron stand with a lantern hanging from its curved hook on a short chain, slender reed-thin stand, large, twice human height, self-emissive at night, softly radiating light: wickless ghost-flame hovering inside the cage",
       "view": "low top-down",
       "size": 128,
@@ -32555,6 +32636,51 @@
           "pixellab_object_id": "b71ccedf-6201-405b-8158-70819f84e62c",
           "generated_at": "2026-08-13T23:12:21+00:00",
           "art_hash": "e4ca6e94c5fb97cb"
+        },
+        "LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_902/lit_2/sprite.webp",
+          "pixellab_object_id": "be83bbdc-f282-4d5b-87dd-9b0da31798cf",
+          "generated_at": "2026-08-16T17:41:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9202,
+          "glow_score": 0.1147,
+          "art_hash": "8f697c2174798287"
+        },
+        "LIT_3": {
+          "sprite": "lantern_stands/lantern_stand_902/lit_3/sprite.webp",
+          "pixellab_object_id": "46b51a63-76c3-4e56-8c12-659918346778",
+          "generated_at": "2026-08-16T17:43:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.615,
+          "glow_score": 0.0445,
+          "art_hash": "11d8d411bc012ed4"
+        },
+        "LIT_4": {
+          "sprite": "lantern_stands/lantern_stand_902/lit_4/sprite.webp",
+          "pixellab_object_id": "a888ec31-543f-4791-8076-07f277188558",
+          "generated_at": "2026-08-16T17:43:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9445,
+          "glow_score": 0.0835,
+          "art_hash": "81818a8b5db888fd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_stands/lantern_stand_902/not_lit_1/sprite.webp",
+          "pixellab_object_id": "40500108-0812-4895-9e5d-5fdf8fa317a4",
+          "generated_at": "2026-08-16T17:42:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9707,
+          "glow_score": 0.0,
+          "art_hash": "9d887b2d50e58021"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_stands/lantern_stand_902/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a3b3f5fd-55a5-444f-83f4-629154ba4575",
+          "generated_at": "2026-08-16T17:46:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1953,
+          "glow_score": 0.0,
+          "art_hash": "829e6e25357eaaea"
         }
       },
       "animations": []
@@ -32564,7 +32690,7 @@
       "rel": "letter_boxes/letter_box_003",
       "name": "Carved farmhouse name box 003",
       "category": "letter_boxes",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a chunky wooden mailbox with a heavy rounded body on a thick square post with a wide solid base, carved farmhouse name box, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -32584,11 +32710,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "letter_boxes/letter_box_003/lit_1/sprite.webp",
+          "pixellab_object_id": "4c065123-e2c2-4577-bbbb-3495000905a3",
+          "generated_at": "2026-08-16T17:43:50+00:00",
+          "glow_concept": "one bright letter lit among dark ones",
+          "difference_from_source": 0.8766,
+          "glow_score": 0.0475,
+          "art_hash": "9af4785e18ddff37"
+        },
+        "LIT_2": {
+          "sprite": "letter_boxes/letter_box_003/lit_2/sprite.webp",
+          "pixellab_object_id": "a7d7e6c9-6093-4a68-b571-932f752e6965",
+          "generated_at": "2026-08-16T17:44:21+00:00",
+          "glow_concept": "small lantern hooked beneath the box",
+          "difference_from_source": 0.7516,
+          "glow_score": 0.0363,
+          "art_hash": "b5e97a80f47cc545"
+        },
         "NOT_LIT_1": {
           "sprite": "letter_boxes/letter_box_003/sprite.webp",
           "pixellab_object_id": "0b076865-875e-4228-9fd5-9c31c131b18b",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "32952c66bbad8708"
+        },
+        "NOT_LIT_2": {
+          "sprite": "letter_boxes/letter_box_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "aa36aea5-3068-4c3d-b666-b86da532d706",
+          "generated_at": "2026-08-16T17:43:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5365,
+          "glow_score": 0.0019,
+          "art_hash": "2a36d20b6c6864cc"
+        },
+        "NOT_LIT_3": {
+          "sprite": "letter_boxes/letter_box_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0e71f876-8e69-4e8b-ad38-d6cdca08c648",
+          "generated_at": "2026-08-16T17:42:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.726,
+          "glow_score": 0.0,
+          "art_hash": "eaabf02718623e7e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "letter_boxes/letter_box_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5d438b70-367b-4553-9a99-b53de07a2323",
+          "generated_at": "2026-08-16T17:43:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3058,
+          "glow_score": 0.0,
+          "art_hash": "01686afb57a05fcd"
         }
       },
       "animations": []
@@ -32598,7 +32769,7 @@
       "rel": "market_stalls/market_stall_001",
       "name": "Honey and candle stall 001",
       "category": "market_stalls",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, honey and candle stall, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -32618,11 +32789,38 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "market_stalls/market_stall_001/lit_1/sprite.webp",
+          "pixellab_object_id": "7f85ab33-725c-467f-a2e5-1c0f05f5f0e0",
+          "generated_at": "2026-08-16T17:46:22+00:00",
+          "glow_concept": "canopy cloth lit from within like a tent",
+          "difference_from_source": 0.9742,
+          "glow_score": 0.3756,
+          "art_hash": "e95ea3e6ac875c8e"
+        },
+        "LIT_2": {
+          "sprite": "market_stalls/market_stall_001/lit_2/sprite.webp",
+          "pixellab_object_id": "0fdf9bf0-8ce9-46dd-87b7-bce089bae926",
+          "generated_at": "2026-08-16T17:49:07+00:00",
+          "glow_concept": "soulstone merchant scales shining on the counter",
+          "difference_from_source": 0.3057,
+          "glow_score": 0.3457,
+          "art_hash": "19fbb6c192247216"
+        },
         "NOT_LIT_1": {
           "sprite": "market_stalls/market_stall_001/sprite.webp",
           "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
           "generated_at": "2026-08-13T01:20:58+00:00",
           "art_hash": "696a7ec057a77fc5"
+        },
+        "NOT_LIT_4": {
+          "sprite": "market_stalls/market_stall_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "250a80c6-b9cd-4e53-8778-77863f27912a",
+          "generated_at": "2026-08-16T17:46:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4896,
+          "glow_score": 0.3709,
+          "art_hash": "429e4894063d8bb4"
         }
       },
       "animations": []
@@ -32657,6 +32855,33 @@
           "pixellab_object_id": "5f20f6c8-3deb-45c9-89f3-464e038ec395",
           "generated_at": "2026-08-13T04:33:36+00:00",
           "art_hash": "29da64b1e1dfbd10"
+        },
+        "LIT_2": {
+          "sprite": "market_stalls/market_stall_002/lit_2/sprite.webp",
+          "pixellab_object_id": "b5fe134b-d85e-4950-8d78-94a1d287dd54",
+          "generated_at": "2026-08-16T17:46:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2459,
+          "glow_score": 0.0597,
+          "art_hash": "6995eeec23baaf64"
+        },
+        "LIT_3": {
+          "sprite": "market_stalls/market_stall_002/lit_3/sprite.webp",
+          "pixellab_object_id": "d97db32b-f2d7-4fde-aeb8-029298528e6d",
+          "generated_at": "2026-08-16T17:46:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6197,
+          "glow_score": 0.1516,
+          "art_hash": "1a2432419635e34d"
+        },
+        "LIT_4": {
+          "sprite": "market_stalls/market_stall_002/lit_4/sprite.webp",
+          "pixellab_object_id": "dc3679e0-7a7d-4905-85bf-c37e5e45877c",
+          "generated_at": "2026-08-16T17:49:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2594,
+          "glow_score": 0.0501,
+          "art_hash": "85cf8bca521be083"
         }
       },
       "animations": []

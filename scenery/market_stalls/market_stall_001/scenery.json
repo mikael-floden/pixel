@@ -5,7 +5,7 @@
   "rank": 49,
   "index": 1,
   "name": "Honey and candle stall 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "honey and candle stall",
   "glow_concept": null,
   "prompt": "a wooden market stall with a cloth canopy on poles and a plank counter stacked with goods, honey and candle stall, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,34 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:20:58+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "market_stalls/market_stall_001/lit_1/sprite.webp",
+      "pixellab_object_id": "7f85ab33-725c-467f-a2e5-1c0f05f5f0e0",
+      "generated_at": "2026-08-16T17:46:22+00:00",
+      "glow_concept": "canopy cloth lit from within like a tent",
+      "difference_from_source": 0.9742,
+      "glow_score": 0.3756
+    },
+    "LIT_2": {
+      "sprite": "market_stalls/market_stall_001/lit_2/sprite.webp",
+      "pixellab_object_id": "0fdf9bf0-8ce9-46dd-87b7-bce089bae926",
+      "generated_at": "2026-08-16T17:49:07+00:00",
+      "glow_concept": "soulstone merchant scales shining on the counter",
+      "difference_from_source": 0.3057,
+      "glow_score": 0.3457
+    },
     "NOT_LIT_1": {
       "sprite": "market_stalls/market_stall_001/sprite.webp",
       "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
       "generated_at": "2026-08-13T01:20:58+00:00"
+    },
+    "NOT_LIT_4": {
+      "sprite": "market_stalls/market_stall_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "250a80c6-b9cd-4e53-8778-77863f27912a",
+      "generated_at": "2026-08-16T17:46:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4896,
+      "glow_score": 0.3709
     }
   }
 }
