@@ -1,12 +1,12 @@
 {
   "format": "pixel-wiki-shadow-notes@1",
-  "updated_at": "2026-08-16T11:29:27.346Z",
+  "updated_at": "2026-08-16T12:00:49.498Z",
   "overrides": {
     "monsters/crystal_horn#idle#south": {
       "dx": -0.23,
       "dy": -8.23,
       "w": 51,
-      "h": 31.1,
+      "h": 35.5,
       "was": {
         "w": 51,
         "h": 20,
@@ -17,13 +17,13 @@
         "w": 176,
         "h": 176
       },
-      "updated_at": "2026-08-16T11:18:12.201Z"
+      "updated_at": "2026-08-16T11:57:54.946Z"
     },
     "monsters/crystal_horn#idle#south-east": {
       "dx": -4.78,
       "dy": -10.76,
-      "w": 56.98,
-      "h": 24.63,
+      "w": 64,
+      "h": 31.5,
       "was": {
         "w": 51,
         "h": 20,
@@ -34,7 +34,7 @@
         "w": 176,
         "h": 176
       },
-      "updated_at": "2026-08-16T11:18:35.897Z"
+      "updated_at": "2026-08-16T11:58:06.963Z"
     },
     "monsters/crystal_horn#idle#east": {
       "dx": -12.5,
@@ -275,8 +275,8 @@
       "updated_at": "2026-08-16T11:25:58.887Z"
     },
     "monsters/dark_donkey#idle#south": {
-      "dx": 0.78,
-      "dy": -5.8,
+      "dx": 1.54,
+      "dy": -6.34,
       "w": 30.98,
       "h": 27.71,
       "was": {
@@ -289,7 +289,7 @@
         "w": 124,
         "h": 124
       },
-      "updated_at": "2026-08-16T11:26:27.494Z"
+      "updated_at": "2026-08-16T11:58:29.378Z"
     },
     "monsters/dark_donkey#idle#south-east": {
       "dx": -2.86,
@@ -309,8 +309,8 @@
       "updated_at": "2026-08-16T11:26:46.357Z"
     },
     "monsters/dark_donkey#idle#east": {
-      "dx": -4.92,
-      "dy": -4,
+      "dx": -2.38,
+      "dy": -3.82,
       "w": 38.08,
       "h": 14.4,
       "was": {
@@ -323,13 +323,13 @@
         "w": 124,
         "h": 124
       },
-      "updated_at": "2026-08-16T11:27:10.810Z"
+      "updated_at": "2026-08-16T11:58:37.223Z"
     },
     "monsters/dark_donkey#idle#north-east": {
-      "dx": 1.03,
-      "dy": -5.3,
+      "dx": -1.04,
+      "dy": -6.63,
       "w": 39.43,
-      "h": 15.53,
+      "h": 23,
       "was": {
         "w": 25,
         "h": 10,
@@ -340,7 +340,7 @@
         "w": 124,
         "h": 124
       },
-      "updated_at": "2026-08-16T11:27:19.139Z"
+      "updated_at": "2026-08-16T11:58:49.312Z"
     },
     "monsters/dark_donkey#idle#north": {
       "dx": -2.5,
@@ -377,10 +377,10 @@
       "updated_at": "2026-08-16T11:28:11.081Z"
     },
     "monsters/dark_donkey#idle#west": {
-      "dx": 5.55,
-      "dy": -6.4,
-      "w": 34.98,
-      "h": 19.08,
+      "dx": 5.44,
+      "dy": -5.63,
+      "w": 34,
+      "h": 21.5,
       "was": {
         "w": 25,
         "h": 10,
@@ -391,7 +391,7 @@
         "w": 124,
         "h": 124
       },
-      "updated_at": "2026-08-16T11:28:23.904Z"
+      "updated_at": "2026-08-16T11:59:14.806Z"
     },
     "monsters/dark_donkey#idle#south-west": {
       "dx": 2.18,
@@ -426,6 +426,40 @@
         "h": 124
       },
       "updated_at": "2026-08-16T11:29:19.301Z"
+    },
+    "monsters/desert_cat#idle#south-east": {
+      "dx": 4.5,
+      "dy": -5.66,
+      "w": 43,
+      "h": 20,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 57,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:59:40.899Z"
+    },
+    "monsters/desert_cat#idle#east": {
+      "dx": -0.32,
+      "dy": -1.97,
+      "w": 46,
+      "h": 20.5,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 60.5,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T12:00:45.206Z"
     }
   }
 }
