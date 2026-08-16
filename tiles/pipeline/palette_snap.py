@@ -112,20 +112,30 @@ def profile(ref_path, surface="left"):
     }
 
 
-def _apply_profile(px, prof, lighting=1.0):
-    """Rewrite a surface's pixels to match a measured profile, keeping its own
-    texture but re-fitting that texture's brightness and CONTRAST to the target."""
+def _apply_profile(px, prof, lighting=1.0, shift_value=False):
+    """Recolour a surface to the palette WITHOUT relighting it.
+
+    The postprocess exists to align colour. It is not a lighting pass, and every step
+    beyond recolouring damages the art: an earlier version rescaled the wall's mean
+    brightness to a target and applied a contrast gain, which brightened a stone wall
+    by +29 and +41 luminance, amplified its variation (std 23.7 -> 27.5 and 36.4 ->
+    44.9) and erased the dark band the generator had drawn under the grass. Amplified
+    contrast on a stone pattern reads as harsh zigzag rather than rock.
+
+    So only HUE and SATURATION move. The value channel — which carries the material's
+    entire shading, relief and shape-reading — is left exactly as generated. That keeps
+    the tile looking like the art PixelLab produced, in the palette's colour.
+
+    `shift_value` is available for the rare case where a material's brightness is
+    genuinely wrong rather than merely different, and it applies a flat OFFSET rather
+    than a rescale, so texture contrast is carried across unchanged.
+    """
     hsv = _rgb2hsv(px)
-    v = hsv[:, 2]
-    vm = float(v.mean()) or 1.0
-    target_v = prof["value"] * lighting
-    dev = v - vm                                   # the texture itself
-    cur_spread = float(v.std() / vm) or 1e-6
-    gain = (prof["spread"] / cur_spread) if prof.get("spread") else 1.0
-    gain = float(np.clip(gain, 0.25, 4.0))         # never invent or erase all detail
-    hsv[:, 2] = np.clip(target_v + dev * (target_v / vm) * gain, 0, 255)
     hsv[:, 0] = prof["hue"]
     hsv[:, 1] = prof["sat"]
+    if shift_value:
+        v = hsv[:, 2]
+        hsv[:, 2] = np.clip(v + (prof["value"] * lighting - float(v.mean())), 0, 255)
     return _hsv2rgb(hsv)
 
 

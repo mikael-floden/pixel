@@ -26,6 +26,12 @@
       "purpose": "matrix:grass_over_parquet_floor",
       "status": "pending"
     },
+    "24bc9492-05ab-4636-b6db-3ec195bf807c": {
+      "created": "2026-08-16T16:45:28+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are thick bubbling slime with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
     "25b53013-94af-4389-8af2-3cb7d3d25837": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:35+00:00",
@@ -210,6 +216,12 @@
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
     },
+    "cafaec37-89aa-46ee-b595-29e4a83fd6a4": {
+      "created": "2026-08-16T16:48:41+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are lush green grass with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
     "ccadab39-90d2-403a-982f-7ba87531c1c5": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:36+00:00",
@@ -262,10 +274,22 @@
       "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
+    "ec506552-d561-4f13-92c3-811a218c8e66": {
+      "created": "2026-08-16T16:47:16+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean lush green grass",
+      "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
     "f0b9c67e-97cd-4b83-9eb0-9ae573d4cfe9": {
       "created": "2026-08-16T09:47:54+00:00",
       "prompt": "clean single color green grass on top of clean lava",
       "purpose": "probe:grass_on_lava__maintainer",
+      "status": "pending"
+    },
+    "f790dc22-a867-4dc9-b513-f14282fda3cd": {
+      "created": "2026-08-16T16:43:25+00:00",
+      "prompt": "clean single color lush green grass on top of clean thick bubbling slime",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "fdf2931a-718a-48d3-92e6-fdfdbb03fd14": {
