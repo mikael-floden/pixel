@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 49,
   "name": "Frost-silvered winter fall 049",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "frost-silvered winter fall",
   "modifier": "dense in the middle, ragged at both ends",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_1/sprite.webp",
+      "pixellab_object_id": "7a1ff64c-4d9d-4776-9b25-dd16a8271169",
+      "generated_at": "2026-08-16T10:32:07+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.3572,
+      "glow_score": 0.0642
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_2/sprite.webp",
+      "pixellab_object_id": "53b6ba1a-1aaf-4b6a-a374-dc3aa595623f",
+      "generated_at": "2026-08-16T10:25:11+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.3754,
+      "glow_score": 0.0969
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_049/sprite.webp",
       "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",

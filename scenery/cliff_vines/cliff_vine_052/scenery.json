@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 52,
-  "name": "Pale lichen-strung fall 052 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pale lichen-strung fall 052",
+  "lights": null,
   "variety": "pale lichen-strung fall",
   "modifier": "a long drift down across the frame",
   "glow_concept": "luminous sap veins glowing through the leaves",
@@ -36,6 +36,46 @@
       "sprite": "cliff_vines/cliff_vine_052/sprite.webp",
       "pixellab_object_id": "c5bef938-ce05-4c72-8751-ba24c52020bf",
       "generated_at": "2026-08-14T04:40:37+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_052/lit_2/sprite.webp",
+      "pixellab_object_id": "4c455fbb-3d2b-48d8-8e6a-168a93a54daf",
+      "generated_at": "2026-08-16T10:25:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5182,
+      "glow_score": 0.0164
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_052/lit_3/sprite.webp",
+      "pixellab_object_id": "4c929e73-fc52-455b-8237-495c9a55f66a",
+      "generated_at": "2026-08-16T10:25:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4664,
+      "glow_score": 0.0254
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_052/lit_4/sprite.webp",
+      "pixellab_object_id": "5db8678d-b9d3-4b62-890c-35c765cb68c9",
+      "generated_at": "2026-08-16T10:26:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5541,
+      "glow_score": 0.0124
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_052/not_lit_1/sprite.webp",
+      "pixellab_object_id": "10e900d6-35ee-426e-8816-a72d041979ad",
+      "generated_at": "2026-08-16T10:26:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5987,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_052/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4301a873-3e8a-466c-b370-323e209d9ba9",
+      "generated_at": "2026-08-16T10:26:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4335,
+      "glow_score": 0.0146
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 58,
-  "name": "Dark green ivy fall 058 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dark green ivy fall 058",
+  "lights": null,
   "variety": "dark green ivy fall",
   "modifier": "a diagonal band of growth",
   "glow_concept": "moonlit silver shimmer across the leaves",
@@ -36,6 +36,30 @@
       "sprite": "cliff_vines/cliff_vine_058/sprite.webp",
       "pixellab_object_id": "986ce81a-7973-4bf4-8f22-4e9b390212fa",
       "generated_at": "2026-08-14T04:51:38+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_058/lit_2/sprite.webp",
+      "pixellab_object_id": "4b101911-9447-4a7a-bce5-007459bafa23",
+      "generated_at": "2026-08-16T10:29:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.516,
+      "glow_score": 0.0008
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_058/lit_4/sprite.webp",
+      "pixellab_object_id": "3fde56da-b35a-41a4-99c6-9c24a3e18984",
+      "generated_at": "2026-08-16T10:30:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3419,
+      "glow_score": 0.0007
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_058/not_lit_1/sprite.webp",
+      "pixellab_object_id": "9a51a014-536b-49b4-bb20-c2e5d1880b4e",
+      "generated_at": "2026-08-16T10:31:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3734,
+      "glow_score": 0.0006
     }
   }
 }

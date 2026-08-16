@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 57,
   "name": "Old thick-stemmed ancient fall 057",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "old thick-stemmed ancient fall",
   "modifier": "one thick tendril reaching far out alone",
   "glow_concept": null,
@@ -32,10 +32,42 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_057/lit_1/sprite.webp",
+      "pixellab_object_id": "7e033eb3-f03e-467a-a23f-2d121fcad63d",
+      "generated_at": "2026-08-16T10:29:14+00:00",
+      "glow_concept": "pale blue soul-flowers dotted down the fall",
+      "difference_from_source": 0.1423,
+      "glow_score": 0.0226
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_057/lit_2/sprite.webp",
+      "pixellab_object_id": "30ce9328-06fe-4148-80e4-91db44a2d305",
+      "generated_at": "2026-08-16T10:29:37+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.2664,
+      "glow_score": 0.0402
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
       "pixellab_object_id": "905c1fb2-1257-4370-80ba-2346f6f1c12f",
       "generated_at": "2026-08-14T04:55:57+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_057/not_lit_2/sprite.webp",
+      "pixellab_object_id": "711385fd-abfc-4c1c-bad2-8bbd0196c58f",
+      "generated_at": "2026-08-16T10:31:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2357,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_057/not_lit_4/sprite.webp",
+      "pixellab_object_id": "47b8a45f-c7e8-466b-bea6-c9844d6035fc",
+      "generated_at": "2026-08-16T10:28:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5752,
+      "glow_score": 0.0008
     }
   }
 }
