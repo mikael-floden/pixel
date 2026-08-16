@@ -3005,7 +3005,29 @@ function partlyReviewed(o) {
 }
 const OBJ_FILTERS = {
   all: { label: "all", title: "Every piece", match: () => true, empty: "Nothing here at all — the scenery domain is empty." },
-  unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue", match: (v) => !v.status || v.stale,
+  // A PIECE NEEDS REVIEW WHILE ANY OF ITS STATES IS UNJUDGED.
+  //
+  // PATCHED BY THE SCENERY AGENT 2026-08-16 — please keep or replace, the same
+  // way you patched my .player-stage bug in August. The maintainer had been
+  // refreshing an EMPTY review queue for hours while 617 pieces sat with zero
+  // states judged and 2,079 states were unjudged in total.
+  //
+  // The cause: this matched on the PIECE verdict alone. Every one of his 801
+  // scenery pieces carries a piece-level verdict from when a piece WAS a single
+  // sprite, and none of those are stale — so all 801 read as reviewed and the
+  // filter rendered nothing. It degraded gradually as the scenery domain grew
+  // states (he saw "73 of 828" yesterday) and hit exactly zero once the last
+  // piece acquired a piece verdict. `partial` did not catch them either: it
+  // requires done > 0, and these have done == 0.
+  //
+  // facetTally is yours and already counts per state × direction, so this reuses
+  // it rather than inventing a second notion of "reviewed".
+  unreviewed: { label: "needs review", title: "Never judged, or judged before the art was regenerated — the review queue",
+    match: (v, o) => {
+      if (!v.status || v.stale) return true;
+      const t = facetTally(o);
+      return t.total > 0 && t.done < t.total;
+    },
     empty: "Nothing needs review — you have judged every piece in the library. The art is all still here; new pieces will appear as the scenery agent generates them." },
   partial: { label: "partly reviewed", title: "You judged some of this piece's states and not the rest — pick up where you left off",
     match: (v, o) => partlyReviewed(o),
