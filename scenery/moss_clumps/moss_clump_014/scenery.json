@@ -5,8 +5,8 @@
   "group": "moss_clumps",
   "rank": 45,
   "index": 14,
-  "name": "Frost-rimed moss flat spread 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Frost-rimed moss flat spread 014",
+  "lights": null,
   "variety": "frost-rimed moss flat spread",
   "glow_concept": "moss veined with glowing soulstone seams",
   "prompt": "a flat spreading patch of thick velvety moss hugging the ground, creeping low across soil and over small stones, completely flat, not a dome and not a shrub, frost-rimed moss flat spread, tiny, only ankle-high, self-emissive at night, softly radiating light: moss veined with glowing soulstone seams",
@@ -43,6 +43,38 @@
       "glow_concept": null,
       "difference_from_source": 0.5334,
       "glow_score": 0.1547
+    },
+    "LIT_3": {
+      "sprite": "moss_clumps/moss_clump_014/lit_3/sprite.webp",
+      "pixellab_object_id": "20d39777-85eb-4caf-81c4-3bb2551f102d",
+      "generated_at": "2026-08-16T18:04:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.686,
+      "glow_score": 0.1211
+    },
+    "LIT_4": {
+      "sprite": "moss_clumps/moss_clump_014/lit_4/sprite.webp",
+      "pixellab_object_id": "b21f3c66-5c5e-474f-b3ce-02ad0bf991e5",
+      "generated_at": "2026-08-16T18:04:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5341,
+      "glow_score": 0.1052
+    },
+    "NOT_LIT_1": {
+      "sprite": "moss_clumps/moss_clump_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "a7639690-c913-40f7-a755-2e497720cf36",
+      "generated_at": "2026-08-16T18:05:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9597,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "moss_clumps/moss_clump_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "bece190a-f81f-4c5d-99e8-4e57cd6167ee",
+      "generated_at": "2026-08-16T18:04:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9597,
+      "glow_score": 0.0
     }
   }
 }
