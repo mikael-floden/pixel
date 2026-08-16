@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 72,
-  "name": "Dark green ivy fall 072 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dark green ivy fall 072",
+  "lights": null,
   "variety": "dark green ivy fall",
   "modifier": "a long drift down across the frame",
   "glow_concept": "luminous sap veins glowing through the leaves",
@@ -36,6 +36,46 @@
       "sprite": "cliff_vines/cliff_vine_072/sprite.webp",
       "pixellab_object_id": "3a45ad23-36a7-44d6-bcd2-5cfec1d91797",
       "generated_at": "2026-08-14T04:57:40+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_072/lit_2/sprite.webp",
+      "pixellab_object_id": "a84b127a-04cf-4f8a-9c92-f760eb7928d8",
+      "generated_at": "2026-08-16T10:43:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2761,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_072/lit_3/sprite.webp",
+      "pixellab_object_id": "24362fa5-5ec1-4194-9926-29608a720943",
+      "generated_at": "2026-08-16T10:45:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2464,
+      "glow_score": 0.0018
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_072/lit_4/sprite.webp",
+      "pixellab_object_id": "3067415e-3a1c-4542-99f7-fc64dae2d580",
+      "generated_at": "2026-08-16T10:43:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2979,
+      "glow_score": 0.0014
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_072/not_lit_1/sprite.webp",
+      "pixellab_object_id": "11699387-a0f2-40a3-a0a9-3bd8d2ed2b75",
+      "generated_at": "2026-08-16T10:43:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7735,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_072/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1d0a838e-845c-4a86-8b2b-0e5bbc18a408",
+      "generated_at": "2026-08-16T10:43:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5474,
+      "glow_score": 0.0019
     }
   }
 }

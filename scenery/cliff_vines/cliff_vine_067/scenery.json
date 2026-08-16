@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 67,
   "name": "Dry brown wilted fall 067",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dry brown wilted fall",
   "modifier": "one thick tendril reaching far out alone",
   "glow_concept": null,
@@ -32,10 +32,42 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_067/lit_1/sprite.webp",
+      "pixellab_object_id": "535654ca-0c74-4f97-9ce9-c9f5a3a30d38",
+      "generated_at": "2026-08-16T10:40:02+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.5285,
+      "glow_score": 0.0805
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_067/lit_2/sprite.webp",
+      "pixellab_object_id": "1487237e-c543-40c1-8a3a-4d5c7886675b",
+      "generated_at": "2026-08-16T10:40:25+00:00",
+      "glow_concept": "pale blue soul-flowers dotted down the fall",
+      "difference_from_source": 0.4254,
+      "glow_score": 0.1372
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_067/sprite.webp",
       "pixellab_object_id": "4995ce90-1993-405c-b5bf-589033a2f178",
       "generated_at": "2026-08-14T05:01:07+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_067/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f7db8c75-d500-4f6f-9410-b4eb52880e37",
+      "generated_at": "2026-08-16T10:45:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2882,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_067/not_lit_4/sprite.webp",
+      "pixellab_object_id": "e2b99daa-66e5-435b-8ae8-ef3a4f571db4",
+      "generated_at": "2026-08-16T10:39:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4558,
+      "glow_score": 0.0004
     }
   }
 }

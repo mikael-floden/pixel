@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 73,
   "name": "Red-leaved autumn creeper fall 073",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "red-leaved autumn creeper fall",
   "modifier": "one long root with a single doubling-back curve",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_073/lit_1/sprite.webp",
+      "pixellab_object_id": "9147340e-9a41-49d0-8f9e-a4e0d54f868a",
+      "generated_at": "2026-08-16T10:46:25+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.4133,
+      "glow_score": 0.0756
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_073/lit_2/sprite.webp",
+      "pixellab_object_id": "7b1766bc-4016-459b-9646-a5b6406fb43a",
+      "generated_at": "2026-08-16T10:46:02+00:00",
+      "glow_concept": "amber memory-light dripping from the tips",
+      "difference_from_source": 0.3451,
+      "glow_score": 0.1398
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_073/sprite.webp",
       "pixellab_object_id": "ba9e1c1c-5d50-4e7d-83a5-6cc56a9e62d1",
       "generated_at": "2026-08-14T05:07:16+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_073/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f9378171-479d-4110-bfc9-9a8b1333525f",
+      "generated_at": "2026-08-16T10:46:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3972,
+      "glow_score": 0.0455
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_073/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d05e1146-be89-4331-a1d7-21458f2d065b",
+      "generated_at": "2026-08-16T10:44:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3513,
+      "glow_score": 0.0262
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_073/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d395f131-cab4-4bcc-afa4-0a09eb986731",
+      "generated_at": "2026-08-16T10:45:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2594,
+      "glow_score": 0.0567
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 66,
-  "name": "Pale lichen-strung fall 066 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pale lichen-strung fall 066",
+  "lights": null,
   "variety": "pale lichen-strung fall",
   "modifier": "gathering low, sparse above",
   "glow_concept": "pale blue soul-flowers dotted down the fall",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.2853,
       "glow_score": 0.0048
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_066/lit_4/sprite.webp",
+      "pixellab_object_id": "9ecbd800-1c31-41e0-b0c4-81964fe99efe",
+      "generated_at": "2026-08-16T10:42:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3385,
+      "glow_score": 0.0121
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_066/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d2313b0d-642a-42dc-a878-553374f2ac1f",
+      "generated_at": "2026-08-16T10:38:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1461,
+      "glow_score": 0.0001
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_066/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c7499663-e2bf-4f0e-a12c-1adcbf6b8ac2",
+      "generated_at": "2026-08-16T10:39:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7826,
+      "glow_score": 0.0
     }
   }
 }
