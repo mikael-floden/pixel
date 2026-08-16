@@ -5,8 +5,8 @@
   "group": "mushrooms",
   "rank": 31,
   "index": 8,
-  "name": "Honey-brown clustered sheathed stems 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Honey-brown clustered sheathed stems 008",
+  "lights": null,
   "variety": "honey-brown clustered sheathed stems",
   "glow_concept": "caps speckled with glowing spore freckles",
   "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, honey-brown clustered sheathed stems, tiny, only ankle-high, self-emissive at night, softly radiating light: caps speckled with glowing spore freckles",
@@ -35,6 +35,46 @@
       "sprite": "mushrooms/mushroom_008/sprite.webp",
       "pixellab_object_id": "398058ea-2dc5-4f4b-9e9d-61b57fc7228b",
       "generated_at": "2026-08-13T23:36:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_008/lit_2/sprite.webp",
+      "pixellab_object_id": "8c17ed07-ca6b-4453-b4b5-b2c274cf80b7",
+      "generated_at": "2026-08-16T19:31:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5979,
+      "glow_score": 0.1807
+    },
+    "LIT_3": {
+      "sprite": "mushrooms/mushroom_008/lit_3/sprite.webp",
+      "pixellab_object_id": "9b79a386-bc4e-4dd5-9cb8-49e35689c6a7",
+      "generated_at": "2026-08-16T19:33:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5723,
+      "glow_score": 0.1397
+    },
+    "LIT_4": {
+      "sprite": "mushrooms/mushroom_008/lit_4/sprite.webp",
+      "pixellab_object_id": "3bef70f2-27c9-485d-9659-96b0a70f2282",
+      "generated_at": "2026-08-16T19:31:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5351,
+      "glow_score": 0.0992
+    },
+    "NOT_LIT_1": {
+      "sprite": "mushrooms/mushroom_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "39581187-b905-48cc-af1f-41e6a8e50631",
+      "generated_at": "2026-08-16T19:32:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6284,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "97dbb84b-63e5-4475-89bd-15c232032e55",
+      "generated_at": "2026-08-16T19:32:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7984,
+      "glow_score": 0.0
     }
   }
 }

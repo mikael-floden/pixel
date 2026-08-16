@@ -34094,6 +34094,15 @@
           "difference_from_source": 0.8615,
           "glow_score": 0.0,
           "art_hash": "ba16385b8f7cd9b5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "82f0ba89-82e1-4205-a23d-58515e957a39",
+          "generated_at": "2026-08-16T19:31:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7874,
+          "glow_score": 0.0,
+          "art_hash": "806a77b1481e3a6c"
         }
       },
       "animations": []
@@ -34123,6 +34132,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "mushrooms/mushroom_007/lit_1/sprite.webp",
+          "pixellab_object_id": "c7b474a3-9400-45c9-9947-bff149200920",
+          "generated_at": "2026-08-16T19:33:01+00:00",
+          "glow_concept": "caps speckled with glowing spore freckles",
+          "difference_from_source": 0.758,
+          "glow_score": 0.2331,
+          "art_hash": "65f5cf4d3dabf89e"
+        },
         "LIT_2": {
           "sprite": "mushrooms/mushroom_007/lit_2/sprite.webp",
           "pixellab_object_id": "9e7c9fdd-4416-4797-8cce-ecf134294940",
@@ -34155,6 +34173,15 @@
           "difference_from_source": 0.424,
           "glow_score": 0.1413,
           "art_hash": "ceb05f5d55509488"
+        },
+        "NOT_LIT_4": {
+          "sprite": "mushrooms/mushroom_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4c3a307b-3890-403a-a77c-e443afa0fe06",
+          "generated_at": "2026-08-16T19:33:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5162,
+          "glow_score": 0.126,
+          "art_hash": "3b92860c862d4dac"
         }
       },
       "animations": []
@@ -34162,9 +34189,9 @@
     {
       "id": "mushroom_008",
       "rel": "mushrooms/mushroom_008",
-      "name": "Honey-brown clustered sheathed stems 008 \u00b7 lit",
+      "name": "Honey-brown clustered sheathed stems 008",
       "category": "mushrooms",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, honey-brown clustered sheathed stems, tiny, only ankle-high, self-emissive at night, softly radiating light: caps speckled with glowing spore freckles",
       "view": "low top-down",
       "size": 48,
@@ -34189,6 +34216,51 @@
           "pixellab_object_id": "398058ea-2dc5-4f4b-9e9d-61b57fc7228b",
           "generated_at": "2026-08-13T23:36:25+00:00",
           "art_hash": "387fa844e41b1ec2"
+        },
+        "LIT_2": {
+          "sprite": "mushrooms/mushroom_008/lit_2/sprite.webp",
+          "pixellab_object_id": "8c17ed07-ca6b-4453-b4b5-b2c274cf80b7",
+          "generated_at": "2026-08-16T19:31:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5979,
+          "glow_score": 0.1807,
+          "art_hash": "60c367f5485cef05"
+        },
+        "LIT_3": {
+          "sprite": "mushrooms/mushroom_008/lit_3/sprite.webp",
+          "pixellab_object_id": "9b79a386-bc4e-4dd5-9cb8-49e35689c6a7",
+          "generated_at": "2026-08-16T19:33:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5723,
+          "glow_score": 0.1397,
+          "art_hash": "4aa8142b20be4068"
+        },
+        "LIT_4": {
+          "sprite": "mushrooms/mushroom_008/lit_4/sprite.webp",
+          "pixellab_object_id": "3bef70f2-27c9-485d-9659-96b0a70f2282",
+          "generated_at": "2026-08-16T19:31:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5351,
+          "glow_score": 0.0992,
+          "art_hash": "d03956de35ea20f7"
+        },
+        "NOT_LIT_1": {
+          "sprite": "mushrooms/mushroom_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "39581187-b905-48cc-af1f-41e6a8e50631",
+          "generated_at": "2026-08-16T19:32:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6284,
+          "glow_score": 0.0,
+          "art_hash": "8079729a661d3e44"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "97dbb84b-63e5-4475-89bd-15c232032e55",
+          "generated_at": "2026-08-16T19:32:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7984,
+          "glow_score": 0.0,
+          "art_hash": "2027d621bb912271"
         }
       },
       "animations": []
@@ -34198,7 +34270,7 @@
       "rel": "mushrooms/mushroom_009",
       "name": "Golden chanterelle cluster 009",
       "category": "mushrooms",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, golden chanterelle cluster, with butterflies resting on it, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -34218,11 +34290,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "mushrooms/mushroom_009/lit_1/sprite.webp",
+          "pixellab_object_id": "e059c04d-7a22-41f1-a68b-2bd5d29f8309",
+          "generated_at": "2026-08-16T19:34:28+00:00",
+          "glow_concept": "translucent stems glowing from within like candles",
+          "difference_from_source": 0.5234,
+          "glow_score": 0.3371,
+          "art_hash": "1757e2ee975b1219"
+        },
+        "LIT_2": {
+          "sprite": "mushrooms/mushroom_009/lit_2/sprite.webp",
+          "pixellab_object_id": "6c9ebf70-f5b2-4d0e-a577-f51b869d33de",
+          "generated_at": "2026-08-16T19:34:48+00:00",
+          "glow_concept": "soft foxfire halo hugging the whole cluster",
+          "difference_from_source": 0.4713,
+          "glow_score": 0.157,
+          "art_hash": "89d5f61bd07c4a46"
+        },
         "NOT_LIT_1": {
           "sprite": "mushrooms/mushroom_009/sprite.webp",
           "pixellab_object_id": "2661cd37-1f07-49fa-8721-acc8a270fe71",
           "generated_at": "2026-08-14T01:38:00+00:00",
           "art_hash": "bc2b05fecc860c1c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c5380b15-3ff7-48b1-9d37-aa7de8631acb",
+          "generated_at": "2026-08-16T19:33:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4062,
+          "glow_score": 0.2283,
+          "art_hash": "df4f6d1e481a9328"
+        },
+        "NOT_LIT_3": {
+          "sprite": "mushrooms/mushroom_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "7e59e513-328c-4ae4-b46f-f9aaac246ddc",
+          "generated_at": "2026-08-16T19:34:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8207,
+          "glow_score": 0.2661,
+          "art_hash": "3740b541594a796a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "mushrooms/mushroom_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "45593ccc-32df-40cc-a2e6-258d09c1710d",
+          "generated_at": "2026-08-16T19:35:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3,
+          "glow_score": 0.2624,
+          "art_hash": "38ac05edde1e9a3e"
         }
       },
       "animations": []
@@ -34230,9 +34347,9 @@
     {
       "id": "mushroom_010",
       "rel": "mushrooms/mushroom_010",
-      "name": "Rosy russula pair 010 \u00b7 lit",
+      "name": "Rosy russula pair 010",
       "category": "mushrooms",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, rosy russula pair, tiny, only ankle-high, self-emissive at night, softly radiating light: dewdrops on the caps lit like tiny lamps",
       "view": "low top-down",
       "size": 48,
@@ -34257,6 +34374,51 @@
           "pixellab_object_id": "dd3e2257-1d79-4068-8df2-2d039ecae494",
           "generated_at": "2026-08-13T23:54:30+00:00",
           "art_hash": "08ad670edfa73773"
+        },
+        "LIT_2": {
+          "sprite": "mushrooms/mushroom_010/lit_2/sprite.webp",
+          "pixellab_object_id": "8597c0a7-66c1-45a3-8c82-1b09fc093f07",
+          "generated_at": "2026-08-16T19:34:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6749,
+          "glow_score": 0.07,
+          "art_hash": "78e4484a415d2da4"
+        },
+        "LIT_3": {
+          "sprite": "mushrooms/mushroom_010/lit_3/sprite.webp",
+          "pixellab_object_id": "fb395439-4fe7-44c3-a093-553a89b8b22d",
+          "generated_at": "2026-08-16T19:37:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5956,
+          "glow_score": 0.2711,
+          "art_hash": "d50e7073054595ff"
+        },
+        "LIT_4": {
+          "sprite": "mushrooms/mushroom_010/lit_4/sprite.webp",
+          "pixellab_object_id": "ba318bb5-d853-409e-99fd-3eafe6314bc9",
+          "generated_at": "2026-08-16T19:34:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5755,
+          "glow_score": 0.1244,
+          "art_hash": "c830ba219dda9231"
+        },
+        "NOT_LIT_1": {
+          "sprite": "mushrooms/mushroom_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "74b6f3c1-4065-4366-b218-8c2210bf48cf",
+          "generated_at": "2026-08-16T19:35:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.854,
+          "glow_score": 0.0,
+          "art_hash": "879070fa21cefcc7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4995515e-176e-4968-9b68-3d1f725783c3",
+          "generated_at": "2026-08-16T19:35:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7512,
+          "glow_score": 0.0,
+          "art_hash": "62aa5f65af391c80"
         }
       },
       "animations": []
@@ -34291,6 +34453,33 @@
           "pixellab_object_id": "2ba5b1a4-07d3-4ac3-8701-6ed4ef578047",
           "generated_at": "2026-08-14T01:43:17+00:00",
           "art_hash": "f9a9882b945e4ba2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "fbf10e76-278a-499a-9510-1d9e748c1111",
+          "generated_at": "2026-08-16T19:36:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2513,
+          "glow_score": 0.1058,
+          "art_hash": "4827faa24f50ff2c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "mushrooms/mushroom_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ef885737-3c06-4c8d-b327-48ed1ef7148f",
+          "generated_at": "2026-08-16T19:36:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6264,
+          "glow_score": 0.1046,
+          "art_hash": "7c8c7fc0d3d0dcc6"
+        },
+        "NOT_LIT_4": {
+          "sprite": "mushrooms/mushroom_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c0244944-31ed-458f-af9e-2bf3ed266989",
+          "generated_at": "2026-08-16T19:36:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7243,
+          "glow_score": 0.0359,
+          "art_hash": "2555463119560c94"
         }
       },
       "animations": []
@@ -34298,9 +34487,9 @@
     {
       "id": "mushroom_012",
       "rel": "mushrooms/mushroom_012",
-      "name": "Chanterelle patch, egg-yolk yellow 012 \u00b7 lit",
+      "name": "Chanterelle patch, egg-yolk yellow 012",
       "category": "mushrooms",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, chanterelle patch, egg-yolk yellow, with a small sapling beside it, small, knee-high, self-emissive at night, softly radiating light: faint glowing spore motes drifting above the caps",
       "view": "low top-down",
       "size": 48,
@@ -34325,6 +34514,42 @@
           "pixellab_object_id": "367752a4-ae7f-42df-8387-ce890ce4b9c6",
           "generated_at": "2026-08-14T01:36:10+00:00",
           "art_hash": "11c12ed172848cab"
+        },
+        "LIT_2": {
+          "sprite": "mushrooms/mushroom_012/lit_2/sprite.webp",
+          "pixellab_object_id": "f7b4a8d3-370a-43fb-a940-b0d119e97842",
+          "generated_at": "2026-08-16T19:37:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9585,
+          "glow_score": 0.3479,
+          "art_hash": "6c56ab3af8e3a394"
+        },
+        "LIT_3": {
+          "sprite": "mushrooms/mushroom_012/lit_3/sprite.webp",
+          "pixellab_object_id": "ec1893fa-2893-49c8-b741-770bab421fa7",
+          "generated_at": "2026-08-16T19:38:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9399,
+          "glow_score": 0.3449,
+          "art_hash": "a089a5d31ac7099c"
+        },
+        "LIT_4": {
+          "sprite": "mushrooms/mushroom_012/lit_4/sprite.webp",
+          "pixellab_object_id": "82eb5433-33f3-437f-8132-f49d773e21a5",
+          "generated_at": "2026-08-16T19:38:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8287,
+          "glow_score": 0.3556,
+          "art_hash": "1a8c9efe22db7669"
+        },
+        "NOT_LIT_2": {
+          "sprite": "mushrooms/mushroom_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d77c1cd4-aa28-4810-bcb9-008baf87f4ea",
+          "generated_at": "2026-08-16T19:38:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9585,
+          "glow_score": 0.0,
+          "art_hash": "253f78764b1114ea"
         }
       },
       "animations": []

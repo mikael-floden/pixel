@@ -31,6 +31,14 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T14:05:30+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_007/lit_1/sprite.webp",
+      "pixellab_object_id": "c7b474a3-9400-45c9-9947-bff149200920",
+      "generated_at": "2026-08-16T19:33:01+00:00",
+      "glow_concept": "caps speckled with glowing spore freckles",
+      "difference_from_source": 0.758,
+      "glow_score": 0.2331
+    },
     "LIT_2": {
       "sprite": "mushrooms/mushroom_007/lit_2/sprite.webp",
       "pixellab_object_id": "9e7c9fdd-4416-4797-8cce-ecf134294940",
@@ -59,6 +67,14 @@
       "glow_concept": null,
       "difference_from_source": 0.424,
       "glow_score": 0.1413
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4c3a307b-3890-403a-a77c-e443afa0fe06",
+      "generated_at": "2026-08-16T19:33:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5162,
+      "glow_score": 0.126
     }
   }
 }

@@ -6,7 +6,7 @@
   "rank": 31,
   "index": 9,
   "name": "Golden chanterelle cluster 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "golden chanterelle cluster",
   "modifier": "with butterflies resting on it",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_009/lit_1/sprite.webp",
+      "pixellab_object_id": "e059c04d-7a22-41f1-a68b-2bd5d29f8309",
+      "generated_at": "2026-08-16T19:34:28+00:00",
+      "glow_concept": "translucent stems glowing from within like candles",
+      "difference_from_source": 0.5234,
+      "glow_score": 0.3371
+    },
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_009/lit_2/sprite.webp",
+      "pixellab_object_id": "6c9ebf70-f5b2-4d0e-a577-f51b869d33de",
+      "generated_at": "2026-08-16T19:34:48+00:00",
+      "glow_concept": "soft foxfire halo hugging the whole cluster",
+      "difference_from_source": 0.4713,
+      "glow_score": 0.157
+    },
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_009/sprite.webp",
       "pixellab_object_id": "2661cd37-1f07-49fa-8721-acc8a270fe71",
       "generated_at": "2026-08-14T01:38:00+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c5380b15-3ff7-48b1-9d37-aa7de8631acb",
+      "generated_at": "2026-08-16T19:33:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4062,
+      "glow_score": 0.2283
+    },
+    "NOT_LIT_3": {
+      "sprite": "mushrooms/mushroom_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "7e59e513-328c-4ae4-b46f-f9aaac246ddc",
+      "generated_at": "2026-08-16T19:34:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8207,
+      "glow_score": 0.2661
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "45593ccc-32df-40cc-a2e6-258d09c1710d",
+      "generated_at": "2026-08-16T19:35:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3,
+      "glow_score": 0.2624
     }
   }
 }
