@@ -29668,6 +29668,15 @@
           "glow_score": 0.0136,
           "art_hash": "991148a731c0e855"
         },
+        "NOT_LIT_1": {
+          "sprite": "hedges/hedge_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "62ccb13e-ee4a-4027-8435-2d52adb0ec31",
+          "generated_at": "2026-08-16T17:05:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9954,
+          "glow_score": 0.0,
+          "art_hash": "f119d2f7cc91d8c5"
+        },
         "NOT_LIT_2": {
           "sprite": "hedges/hedge_008/not_lit_2/sprite.webp",
           "pixellab_object_id": "9be2b497-d795-4ddf-a19c-c67cd38bc40c",
@@ -30443,6 +30452,15 @@
           "glow_score": 0.0187,
           "art_hash": "33dc3f82bc92955e"
         },
+        "NOT_LIT_1": {
+          "sprite": "house_clutter/clutter_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9bc7f45b-b6a4-442e-86e9-d013720269af",
+          "generated_at": "2026-08-16T17:05:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9779,
+          "glow_score": 0.0042,
+          "art_hash": "ce3707a7d934b4d8"
+        },
         "NOT_LIT_2": {
           "sprite": "house_clutter/clutter_006/not_lit_2/sprite.webp",
           "pixellab_object_id": "20ca2c77-0e81-42c4-8653-b9d277620863",
@@ -30820,6 +30838,15 @@
           "glow_score": 0.0272,
           "art_hash": "43932d53f32478ef"
         },
+        "LIT_4": {
+          "sprite": "ivy_posts/ivy_post_002/lit_4/sprite.webp",
+          "pixellab_object_id": "8bc0f9b8-7fe5-4941-9e02-58c0111017a3",
+          "generated_at": "2026-08-16T17:04:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6413,
+          "glow_score": 0.0,
+          "art_hash": "0f8e14eaac9760f2"
+        },
         "NOT_LIT_1": {
           "sprite": "ivy_posts/ivy_post_002/not_lit_1/sprite.webp",
           "pixellab_object_id": "1912b3aa-f143-454a-98c9-1b9afccbbc3a",
@@ -30828,6 +30855,15 @@
           "difference_from_source": 0.7296,
           "glow_score": 0.0,
           "art_hash": "145a11c22613ce77"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ivy_posts/ivy_post_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "98779910-4245-4732-9cfb-1f0bd910184b",
+          "generated_at": "2026-08-16T17:06:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.915,
+          "glow_score": 0.0,
+          "art_hash": "c5bdb7e850fb474c"
         }
       },
       "animations": []
@@ -30837,7 +30873,7 @@
       "rel": "ivy_posts/ivy_post_003",
       "name": "Honeysuckle threaded through ivy 003",
       "category": "ivy_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, honeysuckle threaded through ivy, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -30857,6 +30893,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ivy_posts/ivy_post_003/lit_1/sprite.webp",
+          "pixellab_object_id": "6af4e191-9d5e-46c7-b1cf-04ba305bed43",
+          "generated_at": "2026-08-16T17:06:10+00:00",
+          "glow_concept": "fireflies nested deep among the leaves",
+          "difference_from_source": 0.5669,
+          "glow_score": 0.0233,
+          "art_hash": "8e0e20bf25ac22c7"
+        },
+        "LIT_2": {
+          "sprite": "ivy_posts/ivy_post_003/lit_2/sprite.webp",
+          "pixellab_object_id": "afacaecb-72c2-4b28-8fd9-e6b434d31869",
+          "generated_at": "2026-08-16T17:06:40+00:00",
+          "glow_concept": "green foxfire seeping from the rotten post core",
+          "difference_from_source": 0.6365,
+          "glow_score": 0.0879,
+          "art_hash": "06629453b2391f51"
+        },
         "NOT_LIT_1": {
           "sprite": "ivy_posts/ivy_post_003/sprite.webp",
           "pixellab_object_id": "c0cfb78b-b8b8-4b57-9144-f871c2d7e6f0",
@@ -30880,6 +30934,15 @@
           "difference_from_source": 0.7903,
           "glow_score": 0.0025,
           "art_hash": "6bfbd54f8c671424"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ivy_posts/ivy_post_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0203b801-2d40-49dc-9b8f-2cafb6846e14",
+          "generated_at": "2026-08-16T17:05:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6422,
+          "glow_score": 0.0,
+          "art_hash": "6b8b2be8ae8a6089"
         }
       },
       "animations": []
@@ -30889,7 +30952,7 @@
       "rel": "ivy_posts/ivy_post_005",
       "name": "Pale spring ivy shoots 005",
       "category": "ivy_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, pale spring ivy shoots, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -30909,11 +30972,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ivy_posts/ivy_post_005/lit_1/sprite.webp",
+          "pixellab_object_id": "ec264a3c-63f9-4a13-b521-a2571542c82d",
+          "generated_at": "2026-08-16T17:08:03+00:00",
+          "glow_concept": "a swallowed tin lantern still burning inside the ivy",
+          "difference_from_source": 0.8866,
+          "glow_score": 0.0697,
+          "art_hash": "bd208b88f655fb86"
+        },
+        "LIT_2": {
+          "sprite": "ivy_posts/ivy_post_005/lit_2/sprite.webp",
+          "pixellab_object_id": "9893f1f3-5954-4458-8ae0-749094c603ef",
+          "generated_at": "2026-08-16T17:07:48+00:00",
+          "glow_concept": "ivy berries lit like tiny coals",
+          "difference_from_source": 0.7279,
+          "glow_score": 0.0479,
+          "art_hash": "563e7e43c34c55ab"
+        },
         "NOT_LIT_1": {
           "sprite": "ivy_posts/ivy_post_005/sprite.webp",
           "pixellab_object_id": "93fa63a1-d080-4605-b740-451e84efe95b",
           "generated_at": "2026-08-13T12:04:08+00:00",
           "art_hash": "10e0ae2688b84397"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ivy_posts/ivy_post_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2c0123b6-d5b4-4da5-8d9a-164742b3de9a",
+          "generated_at": "2026-08-16T17:07:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3574,
+          "glow_score": 0.0257,
+          "art_hash": "0799e6bf52a7e13e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ivy_posts/ivy_post_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3a59d23a-3ec3-4625-8e8d-23f47c147898",
+          "generated_at": "2026-08-16T17:07:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6748,
+          "glow_score": 0.0129,
+          "art_hash": "3cab3e3071a17d21"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ivy_posts/ivy_post_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e7300f33-eccf-4572-80c4-37a7df9ab461",
+          "generated_at": "2026-08-16T17:11:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6754,
+          "glow_score": 0.1083,
+          "art_hash": "7c9f87d6d8a9cd16"
         }
       },
       "animations": []
@@ -30921,9 +31029,9 @@
     {
       "id": "ivy_post_008",
       "rel": "ivy_posts/ivy_post_008",
-      "name": "Ivy with black berry clusters 008 \u00b7 lit",
+      "name": "Ivy with black berry clusters 008",
       "category": "ivy_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, ivy with black berry clusters, large, twice human height, self-emissive at night, softly radiating light: fireflies nested deep among the leaves",
       "view": "low top-down",
       "size": 128,
@@ -30948,6 +31056,51 @@
           "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
           "generated_at": "2026-08-13T21:45:39+00:00",
           "art_hash": "732f550ca9e8956b"
+        },
+        "LIT_2": {
+          "sprite": "ivy_posts/ivy_post_008/lit_2/sprite.webp",
+          "pixellab_object_id": "c4f04de8-fc8d-4b96-ad14-11e755834362",
+          "generated_at": "2026-08-16T17:08:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5749,
+          "glow_score": 0.0036,
+          "art_hash": "3ea290eda127a88a"
+        },
+        "LIT_3": {
+          "sprite": "ivy_posts/ivy_post_008/lit_3/sprite.webp",
+          "pixellab_object_id": "acbe7fde-527b-4128-ab7e-13c4296f3935",
+          "generated_at": "2026-08-16T17:09:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2374,
+          "glow_score": 0.0352,
+          "art_hash": "318ae720d921b77a"
+        },
+        "LIT_4": {
+          "sprite": "ivy_posts/ivy_post_008/lit_4/sprite.webp",
+          "pixellab_object_id": "764efb2a-cffe-41c8-a0cd-34e10baece6f",
+          "generated_at": "2026-08-16T17:09:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7851,
+          "glow_score": 0.0203,
+          "art_hash": "bfc0a9ef59af9b2e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ivy_posts/ivy_post_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "91795302-5e40-47eb-9d0a-e0cad3ac5f72",
+          "generated_at": "2026-08-16T17:09:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3274,
+          "glow_score": 0.0023,
+          "art_hash": "5dc3f7af2a5ab6fa"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ivy_posts/ivy_post_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e4185139-895e-4b05-b849-da26d728a1f1",
+          "generated_at": "2026-08-16T17:10:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2224,
+          "glow_score": 0.0093,
+          "art_hash": "c1ec18e9501ad68d"
         }
       },
       "animations": []
@@ -30955,9 +31108,9 @@
     {
       "id": "ivy_post_010",
       "rel": "ivy_posts/ivy_post_010",
-      "name": "Frost-dusted winter ivy 010 \u00b7 lit",
+      "name": "Frost-dusted winter ivy 010",
       "category": "ivy_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered wooden fence post thickly wrapped in climbing ivy, loose tendrils reaching past the top, frost-dusted winter ivy, large, twice human height, self-emissive at night, softly radiating light: green foxfire seeping from the rotten post core",
       "view": "low top-down",
       "size": 128,
@@ -30982,6 +31135,51 @@
           "pixellab_object_id": "486a4507-e8c9-4377-9de0-3740511971cf",
           "generated_at": "2026-08-13T22:00:01+00:00",
           "art_hash": "dba89738d4cd1e7b"
+        },
+        "LIT_2": {
+          "sprite": "ivy_posts/ivy_post_010/lit_2/sprite.webp",
+          "pixellab_object_id": "02961f00-d72b-47a3-9bbc-0b0215ef5d06",
+          "generated_at": "2026-08-16T17:10:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9537,
+          "glow_score": 0.2093,
+          "art_hash": "735a833e4575c405"
+        },
+        "LIT_3": {
+          "sprite": "ivy_posts/ivy_post_010/lit_3/sprite.webp",
+          "pixellab_object_id": "26a542f2-fcd8-4e21-af77-ac091daca7af",
+          "generated_at": "2026-08-16T17:12:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8824,
+          "glow_score": 0.079,
+          "art_hash": "88293ef27cb84b99"
+        },
+        "LIT_4": {
+          "sprite": "ivy_posts/ivy_post_010/lit_4/sprite.webp",
+          "pixellab_object_id": "a0c097f9-afa7-4a6a-9a2b-ca64bc2053c8",
+          "generated_at": "2026-08-16T17:11:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8188,
+          "glow_score": 0.1138,
+          "art_hash": "09067acfb58e66e0"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ivy_posts/ivy_post_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b764ef42-af73-44ab-ba8e-fc34003d1853",
+          "generated_at": "2026-08-16T17:12:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7192,
+          "glow_score": 0.0575,
+          "art_hash": "2f105efe8ee2cfdb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ivy_posts/ivy_post_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a1ec06e0-cf5a-4db2-9a66-3b220f83a3d8",
+          "generated_at": "2026-08-16T17:12:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4914,
+          "glow_score": 0.0456,
+          "art_hash": "f3bb894db716b0ba"
         }
       },
       "animations": []
@@ -31016,6 +31214,33 @@
           "pixellab_object_id": "36864f55-30ba-4c0e-9187-21254790d5f6",
           "generated_at": "2026-08-12T23:46:32+00:00",
           "art_hash": "9937c15ae3b54056"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b2024546-1576-48f6-80f7-f871632af9c0",
+          "generated_at": "2026-08-16T17:12:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9897,
+          "glow_score": 0.0441,
+          "art_hash": "f2991c52326dbc56"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_posts/lantern_post_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "af50bb57-cd70-43bd-9a18-e3869fb09447",
+          "generated_at": "2026-08-16T17:12:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9772,
+          "glow_score": 0.1605,
+          "art_hash": "850d5807093d03fb"
+        },
+        "NOT_LIT_4": {
+          "sprite": "lantern_posts/lantern_post_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "67e7c72c-38e7-4435-8a07-cc1a2f864361",
+          "generated_at": "2026-08-16T17:12:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9899,
+          "glow_score": 0.1352,
+          "art_hash": "e65c07cb6592f2b1"
         }
       },
       "animations": []
