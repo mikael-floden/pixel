@@ -746,19 +746,33 @@ function makePlayer(entity, kind, opts = {}) {
     const foot = (entity.artBottom ?? 1) * fh;          // ground line, frame px
     const showShadow = cur.shadow && entity.shadow;
     const shadowY = (foot - bb[1]) * s + hover;
-    // The canvas has to hold the ellipse that is actually drawn — the edited
-    // one, which may be wider than the measurement and offset from it. Sized
-    // to the measurement alone, a widened shadow is clipped at exactly the rim
-    // the grip sits on, and it cannot be dragged back. Edit mode adds a grip's
-    // margin so both handles stay inside.
     const shNow = showShadow ? shadowNow(entity, clip, cur.state, cur.dir) : null;
     const shBase = showShadow ? shadowBase(entity, clip) : null;
     const offX = shNow ? (shNow.cx - shBase.cx) * s : 0, offY = shNow ? (shNow.cy - shBase.cy) * s : 0;
+    // THE CANVAS MUST NOT RESIZE WHILE HE IS EDITING. The stage centres the
+    // canvas, so a canvas that grows or shrinks with the ellipse drags the
+    // MONSTER along with it: measured, a 16px push up moved the shadow only 8px
+    // on screen (the canvas shed 16px of height, the re-centring gave 8 back)
+    // and the art slid under his thumb the whole time. So in edit mode the box
+    // is derived from the CLIP ALONE — the frame's width, and depth enough for
+    // the deepest shadow the rails can dial — which is constant for as long as
+    // he stays on this animation and direction. Out of edit mode it still hugs
+    // the drawn ellipse, so an ordinary preview is unchanged.
+    // The reserved box is the measured ellipse plus SLACK — not the whole
+    // frame, which is mostly padding (cropping it away is why this viewer
+    // exists) and which left the creature marooned in a screen-wide
+    // checkerboard. The slack is sized off his own corrections: the first 25
+    // notes moved the ellipse by up to 12.5px and at most doubled its depth.
+    const ROOM = 28;                                  // frame px, every side
+    const boxW = shBase ? Math.max(shBase.w + 2 * ROOM, shBase.w * 1.6) : 0;
+    const boxH = shBase ? Math.max(shBase.h + 2 * ROOM, shBase.h * 2.2) : 0;
     const shPad = cur.editShadow ? GRIP : 2;
-    // Horizontal: the sprite is centred, so the canvas must be symmetric about
-    // its middle — an ellipse pushed `offX` to one side costs that on BOTH.
-    const wantW = Math.ceil(Math.max(cw * s, shNow ? 2 * (Math.abs(offX) + (shNow.w * s) / 2 + shPad) : 0));
-    const wantH = Math.ceil(Math.max(ch * s, shNow ? shadowY + offY + (shNow.h * s) / 2 + shPad : 0));
+    const wantW = Math.ceil(cur.editShadow
+      ? Math.max(cw * s, boxW * s) + 2 * shPad
+      : Math.max(cw * s, shNow ? 2 * (Math.abs(offX) + (shNow.w * s) / 2 + shPad) : 0));
+    const wantH = Math.ceil(cur.editShadow
+      ? Math.max(ch * s, shadowY + (boxH / 2) * s + shPad)
+      : Math.max(ch * s, shNow ? shadowY + offY + (shNow.h * s) / 2 + shPad : 0));
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
@@ -937,11 +951,91 @@ function makePlayer(entity, kind, opts = {}) {
     title: "Drop your note for this animation and direction — back to the shadow the game measures itself",
     onclick: () => { setShadowNote(entity, clip, cur.state, cur.dir, null); onShadowEdit?.(); refreshShadowBar(); draw(); },
   }, "Reset");
+
+  /* THE CONTROLS ARE A PROXY — NOTHING THAT EDITS THE SHADOW SITS ON IT.
+   * Maintainer 2026-08-15, after placing 25 real notes from his phone: "I work
+   * from the phone, so for me to drag or resize the shadow with the thumb I
+   * can't see where I place the shadow or how big I resize it at the same
+   * time. Is it possible to render the controller at the bottom right, but
+   * when moving the controller the shadow under the monster will move / be
+   * resized? Like a proxy, so I can see what I edit without my thumb being in
+   * the way."
+   *
+   * The PAD is a trackpad, not a joystick: one finger-pixel moves the ellipse
+   * one SCREEN pixel, so the shadow tracks the thumb exactly — and at the
+   * default 2x zoom that is half a frame pixel, so ordinary thumb movement
+   * lands sub-pixel corrections without a fine mode. It does NOT clamp the
+   * shadow to the pad's own size; only the knob stops at the rim, so one long
+   * drag can cross the whole frame.
+   *
+   * It sits UNDER the stage, right-aligned, rather than floating over the
+   * stage's corner: the stage SCROLLS for oversized pieces (an absolutely
+   * placed child would slide out of its corner with the art), and a control
+   * over the art is one more thing hiding the art — which is the whole
+   * complaint.
+   */
+  const padKnob = h("span", { class: "pad-knob" });
+  const padEl = h("div", {
+    class: "shadow-pad", title: "Drag to move the shadow — your thumb stays off the art",
+  }, h("span", { class: "pad-label" }, "move"), padKnob);
+  let padDrag = null;
+  padEl.addEventListener("pointerdown", (ev) => {
+    ev.preventDefault();
+    padEl.setPointerCapture(ev.pointerId);
+    padEl.classList.add("held");
+    padDrag = {
+      x: ev.clientX, y: ev.clientY,
+      from: { ...shadowNow(entity, clip, cur.state, cur.dir) },
+      // Screen pixels -> frame pixels. The canvas draws at `s`, so dividing by
+      // it is what makes the shadow move exactly as far as the thumb did.
+      k: 1 / (cur.zoom || (state.data.artScale || 2)),
+    };
+  });
+  padEl.addEventListener("pointermove", (ev) => {
+    if (!padDrag) return;
+    const dx = ev.clientX - padDrag.x, dy = ev.clientY - padDrag.y;
+    const r = padEl.getBoundingClientRect();
+    const lim = Math.max(8, Math.min(r.width, r.height) / 2 - 20);
+    padKnob.style.transform = `translate(${Math.max(-lim, Math.min(lim, dx))}px, ${Math.max(-lim, Math.min(lim, dy))}px)`;
+    const f = padDrag.from;
+    setShadowNote(entity, clip, cur.state, cur.dir, { ...f, cx: f.cx + dx * padDrag.k, cy: f.cy + dy * padDrag.k });
+    onShadowEdit?.(); refreshShadowBar(); draw();
+  });
+  const padEnd = (ev) => {
+    if (!padDrag) return;
+    padDrag = null;
+    padEl.classList.remove("held");
+    padKnob.style.transform = "";
+    try { padEl.releasePointerCapture(ev.pointerId); } catch { /* already gone */ }
+  };
+  padEl.addEventListener("pointerup", padEnd);
+  padEl.addEventListener("pointercancel", padEnd);
+
+  // Size is two sliders rather than two more pads: a slider is an ABSOLUTE
+  // value, so the thumb can be anywhere along a rail he is not looking at
+  // while his eye stays on the ellipse — and it shows how much range is left
+  // in each direction, which a relative gesture cannot.
+  const mkSizer = (kind, label) => {
+    const inp = h("input", { type: "range", class: "shadow-slider", min: "2", step: "0.5", "aria-label": label });
+    const apply = () => {
+      const sh = shadowNow(entity, clip, cur.state, cur.dir);
+      setShadowNote(entity, clip, cur.state, cur.dir, { ...sh, [kind]: +inp.value });
+      onShadowEdit?.(); refreshShadowBar(); draw();
+    };
+    inp.addEventListener("input", apply);
+    return inp;
+  };
+  const wSlider = mkSizer("w", "shadow width"), hSlider = mkSizer("h", "shadow depth");
   // The numbers lead, because they are what is being read; the instruction
   // trails, because it is only needed once.
-  const shadowBar = h("div", { class: "player-controls shadow-bar hidden" },
-    shadowRead, shadowResetBtn,
-    h("span", { class: "muted shadow-hint" }, "Drag the shadow to move it, a handle to resize."));
+  const shadowBar = h("div", { class: "shadow-bar hidden" },
+    h("div", { class: "player-controls" }, shadowRead, shadowResetBtn),
+    h("div", { class: "shadow-tools" },
+      h("div", { class: "shadow-sliders" },
+        h("label", {}, h("span", {}, "W"), wSlider),
+        h("label", {}, h("span", {}, "H"), hSlider)),
+      padEl),
+    h("span", { class: "muted shadow-hint" }, "Drag the pad to move it, the rails to resize."));
   const shadowBtn = state.admin && entity.shadow
     ? h("button", {
       class: "ghost-btn shadow-btn",
@@ -968,6 +1062,16 @@ function makePlayer(entity, kind, opts = {}) {
     const sh = shadowNow(entity, clip, cur.state, cur.dir), base = shadowBase(entity, clip);
     const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
     shadowResetBtn.disabled = !sh.edited;
+    // The rails span what a shadow could sensibly be for THIS frame, so their
+    // travel means something on a 34px frog and a 256px mammoth alike. Max
+    // before value, or the browser clamps the value to the previous max.
+    const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
+    wSlider.max = String(Math.max(32, Math.round(fw)));
+    hSlider.max = String(Math.max(16, Math.round(fh / 2)));
+    // Never fight the finger that is on the rail: writing the value back mid
+    // -drag would snap the knob to the rounded number under it.
+    if (document.activeElement !== wSlider) wSlider.value = String(sh.w);
+    if (document.activeElement !== hSlider) hSlider.value = String(sh.h);
     shadowRead.replaceChildren(
       h("b", {}, `${sh.w.toFixed(1)} × ${sh.h.toFixed(1)} px`),
       sh.edited
@@ -1013,7 +1117,10 @@ function makePlayer(entity, kind, opts = {}) {
     // for a while so a rotated piece wouldn't push the art down; he'd rather
     // have it look the same everywhere, so above the stage it is.
     h("div", { class: "player-controls" }, dirPad),
-    stage, overflowNote, controls2, shadowBar);
+    // The shadow tools go DIRECTLY under the art, above the transport and zoom
+    // rows: the pad and the ellipse have to be on screen together, and every
+    // row between them is a row that can push one of the two off a phone.
+    stage, overflowNote, shadowBar, controls2);
   return {
     el: rootEl,
     destroy: () => cancelAnimationFrame(rafTimer),

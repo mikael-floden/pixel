@@ -73,7 +73,17 @@ const look = () => p.evaluate(() => {
     if (n > 20) ell = { x0, x1, y0, y1, w: x1 - x0 + 1, h: y1 - y0 + 1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, n };
   }
   const bar = document.querySelector(".shadow-bar");
+  const pad = document.querySelector(".shadow-pad");
+  const cv2 = document.querySelector(".player-stage canvas");
   return {
+    pad: pad ? { box: pad.getBoundingClientRect().toJSON(), held: pad.classList.contains("held"),
+                 knob: getComputedStyle(pad.querySelector(".pad-knob")).transform } : null,
+    sliders: [...document.querySelectorAll(".shadow-slider")].map((i) => ({ v: +i.value, max: +i.max })),
+    // A canvas that swallows every touch traps the whole page in edit mode.
+    canvasTouch: cv2 ? getComputedStyle(cv2).touchAction : null,
+    // Client rects are viewport-relative and this gate scrolls between
+    // samples, so every position is compared in PAGE space.
+    scrollY: window.scrollY,
     hasBtn: !!btn,
     btnOn: !!btn?.classList.contains("on"),
     barShown: !!bar && !bar.classList.contains("hidden"),
@@ -135,35 +145,133 @@ ok(/measurement/.test(on.read ?? ""), "saying up front that nothing has been cha
 ok(on.resetDisabled === true, "and Reset disabled, because there is nothing to reset");
 ok(on.pending === 0, "and NOTHING pending — opening the editor is not an edit");
 
-// ---------------------------------------------------------------- 2. it drags
-const base = on.ell;
-await drag(base, 14, -9);
+// ------------------------------------------------------- 2. the PROXY moves it
+// Maintainer 2026-08-15, after placing 25 real notes from his phone: "I can't
+// see where I place the shadow or how big I resize it at the same time ...
+// render the controller at the bottom right, but when moving the controller
+// the shadow under the monster will move / be resized. Like a proxy, so I can
+// see what I edit without my thumb being in the way."
+//
+// So the gate drives the PAD and the RAILS and reads the answer off the
+// ellipse's own pixels. TWO measurement traps, both paid for once:
+//   - the canvas RESIZES around the centred sprite as the ellipse grows or
+//     moves, so a canvas-local x is not a position that can be compared —
+//     everything is measured in PAGE space through the canvas's own rect;
+//   - the sprite is drawn OVER the shadow, so once the ellipse is moved up
+//     under the body the visible dark pixels are clipped by it and a width
+//     read under-reports. The rails are therefore exercised FIRST, on an
+//     unmoved shadow, and the pad afterwards.
+const padCentre = async () => {
+  // Centre the PAD, not the stage: it lives under the art, and a pointer aimed
+  // below the fold is never delivered (the same trap the canvas drags hit).
+  await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
+  await p.waitForTimeout(200);
+  const now = await look();
+  return { now, pt: { x: now.pad.box.x + now.pad.box.width / 2, y: now.pad.box.y + now.pad.box.height / 2 } };
+};
+async function padPush(dx, dy) {
+  const { pt } = await padCentre();
+  await p.mouse.move(pt.x, pt.y);
+  await p.mouse.down();
+  for (let i = 1; i <= 6; i++) await p.mouse.move(pt.x + (dx * i) / 6, pt.y + (dy * i) / 6);
+  const mid = await look();                     // sampled WHILE held
+  await p.mouse.up();
+  await p.waitForTimeout(200);
+  return mid;
+}
+// The ellipse in PAGE coordinates — immune to the canvas resizing and to this
+// gate's own scrolling.
+const ellBox = (l) => ({
+  x0: l.canvas.box.x + (l.ell.x0 / l.canvas.w) * l.canvas.box.width,
+  x1: l.canvas.box.x + (l.ell.x1 / l.canvas.w) * l.canvas.box.width,
+  y0: l.canvas.box.y + l.scrollY + (l.ell.y0 / l.canvas.h) * l.canvas.box.height,
+  y1: l.canvas.box.y + l.scrollY + (l.ell.y1 / l.canvas.h) * l.canvas.box.height,
+});
+const cxOf = (l) => (ellBox(l).x0 + ellBox(l).x1) / 2;
+const cyOf = (l) => (ellBox(l).y0 + ellBox(l).y1) / 2;
+
+// -- the geometry: the control is nowhere near the thing it controls
+ok(!!on.pad, "the editor puts a control PAD on the page, not just handles on the art");
+const eb = ellBox(on), pb = on.pad.box, pbTop = pb.y + on.scrollY;
+const overlaps = pb.x < eb.x1 && pb.x + pb.width > eb.x0 && pbTop < eb.y1 && pbTop + pb.height > eb.y0;
+console.log("pad vs shadow:", JSON.stringify({ pad: { x: Math.round(pb.x), y: Math.round(pbTop), w: Math.round(pb.width) }, shadow: { x0: Math.round(eb.x0), x1: Math.round(eb.x1), y0: Math.round(eb.y0), y1: Math.round(eb.y1) } }));
+ok(!overlaps, "and the pad does not sit on the shadow — the thumb cannot cover what it is placing");
+ok(pbTop >= eb.y1, `it is BELOW the art (pad top ${Math.round(pbTop)} vs shadow bottom ${Math.round(eb.y1)})`);
+ok(pb.x + pb.width / 2 > on.canvas.box.x + on.canvas.box.width / 2, "and to the RIGHT, where the thumb is");
+ok(pb.width >= 90 && pb.height >= 90, `with a thumb-sized target (${Math.round(pb.width)}x${Math.round(pb.height)}px)`);
+// Both have to be on screen AT ONCE, or the proxy solves nothing.
+ok(pbTop + pb.height - eb.y0 <= 851, `and both fit on his phone together (${Math.round(pbTop + pb.height - eb.y0)}px from the shadow's top to the pad's bottom)`);
+ok(on.canvasTouch !== "none", `while the stage no longer traps the page's scroll (touch-action: ${on.canvasTouch})`);
+
+// -- the PAD moves it. Measured FIRST, on the ellipse at its measured size:
+// pushed up under the body, a bigger one is clipped by the sprite drawn over
+// it and the visible extent stops being the ellipse.
+const before = await look();
+const [wasX, wasY] = [cxOf(before), cyOf(before)];
+const held = await padPush(24, -16);
 const moved = await look();
-console.log("after move:", JSON.stringify({ read: moved.read, from: { cx: base.cx, cy: base.cy }, to: moved.ell && { cx: moved.ell.cx, cy: moved.ell.cy }, pending: moved.pending }));
-ok(!!moved.ell && Math.abs(moved.ell.cx - base.cx) >= 8 && Math.abs(moved.ell.cy - base.cy) >= 5,
-  `dragging the ellipse MOVES the drawn shadow (${base.cx},${base.cy} → ${moved.ell?.cx},${moved.ell?.cy})`);
-ok(/moved [+−]/.test(moved.read ?? ""), `and the readout says how far, in frame pixels (“${moved.read}”)`);
+const [nowX, nowY] = [cxOf(moved), cyOf(moved)];
+console.log("after pad:", JSON.stringify({ read: moved.read, from: [Math.round(wasX), Math.round(wasY)], to: [Math.round(nowX), Math.round(nowY)], pending: moved.pending }));
+ok(nowX > wasX + 12 && nowY < wasY - 8,
+  `dragging the PAD moves the shadow under the monster (${Math.round(wasX)},${Math.round(wasY)} → ${Math.round(nowX)},${Math.round(nowY)})`);
+// A trackpad, not a joystick: the shadow travels exactly as far as the thumb.
+// Vertically the BOTTOM RIM is the honest tracker — the sprite is drawn over
+// the shadow, so an ellipse pushed up loses its top rows to the body and its
+// visible centre lags the real one. The rim below the feet is never covered.
+const dxErr = Math.abs((nowX - wasX) - 24);
+const dyErr = Math.abs((ellBox(moved).y1 - ellBox(before).y1) + 16);
+// AND THE ART MUST NOT MOVE. The canvas is centred in the stage, so a canvas
+// that resizes with the ellipse slides the monster under his thumb: measured
+// at 8px per 16px push before the box was pinned to the clip.
+const artShift = Math.round(Math.abs((moved.canvas.box.y + moved.scrollY) - (before.canvas.box.y + before.scrollY)));
+ok(artShift <= 1, `and the monster does not move while he places it (${artShift}px)`);
+ok(dxErr <= 3 && dyErr <= 3, `and it tracks the finger 1:1 on screen (off by ${dxErr.toFixed(1)}, ${dyErr.toFixed(1)}px)`);
+ok(held.pad?.held === true && /matrix/.test(held.pad?.knob ?? ""), "the knob follows the finger while held");
+ok(moved.pad?.held === false, "and lets go when the finger does");
+ok(/moved [+−]/.test(moved.read ?? ""), `the readout says how far, in frame pixels (“${moved.read}”)`);
 ok(/was /.test(moved.read ?? ""), "next to what the game measured, so the correction is readable against it");
 ok(moved.resetDisabled === false, "Reset becomes available");
-ok(moved.pending === 1, `and it counts as ONE pending change, exactly like a verdict (${moved.pending})`);
+ok(moved.pending === 1, `and the whole session on one facet is still ONE entry (${moved.pending})`);
 
-// The width handle sits on the ellipse's right rim.
-const rimBefore = await look();
-const grip = { cx: rimBefore.ell.x1, cy: rimBefore.ell.cy };
-await drag(grip, 16, 0);
+// Back to the measurement before the rails are judged — see the note above.
+await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
+await p.waitForTimeout(300);
+
+// -- the RAILS resize it. Absolute values, so the eye can stay on the ellipse.
+const railSet = async (i, v) => {
+  await p.evaluate(([n, val]) => {
+    const s = document.querySelectorAll(".shadow-slider")[n];
+    s.value = String(val);
+    s.dispatchEvent(new Event("input", { bubbles: true }));
+  }, [i, v]);
+  await p.waitForTimeout(240);
+};
+const base = await look();
+console.log("rails:", JSON.stringify(base.sliders));
+ok(base.sliders.length === 2, `there are two rails — width and depth (${base.sliders.length})`);
+ok(base.sliders[0].v > 0 && base.sliders[0].max >= 32, `carrying the live numbers (w ${base.sliders[0].v} of ${base.sliders[0].max})`);
+await railSet(0, base.sliders[0].v + 18);
 const wider = await look();
-console.log("after widen:", JSON.stringify({ read: wider.read, w: [rimBefore.ell.w, wider.ell?.w] }));
-ok(!!wider.ell && wider.ell.w >= rimBefore.ell.w + 12, `dragging the side handle WIDENS it (${rimBefore.ell.w} → ${wider.ell?.w}px)`);
-const hGrip = { cx: wider.ell.cx, cy: wider.ell.y1 };
-await drag(hGrip, 0, 10);
+console.log("after W rail:", JSON.stringify({ read: wider.read, w: [base.ell.w, wider.ell?.w] }));
+ok(!!wider.ell && wider.ell.w >= base.ell.w + 28, `the W rail widens the drawn shadow (${base.ell.w} → ${wider.ell?.w}px on a 2x canvas)`);
+await railSet(1, wider.sliders[1].v + 12);
 const taller = await look();
-console.log("after flatten:", JSON.stringify({ read: taller.read, h: [wider.ell.h, taller.ell?.h] }));
-ok(!!taller.ell && taller.ell.h >= wider.ell.h + 8, `and the bottom handle changes its depth (${wider.ell.h} → ${taller.ell?.h}px)`);
-// A widened ellipse must stay REACHABLE: clipped at the canvas rim, the handle
-// it is grabbed by is gone and the edit cannot be undone by hand.
+console.log("after H rail:", JSON.stringify({ read: taller.read, h: [wider.ell.h, taller.ell?.h] }));
+ok(!!taller.ell && taller.ell.h >= wider.ell.h + 18, `the H rail deepens it (${wider.ell.h} → ${taller.ell?.h}px)`);
+ok(/69\.0 × 32\.0 px/.test(taller.read ?? ""), `and the readout follows both (“${taller.read}”)`);
+// A widened ellipse must stay VISIBLE — clipped at the canvas rim he cannot
+// judge the shape he is dialling in.
 ok(taller.ell.x1 <= taller.canvas.w - 2 && taller.ell.x0 >= 1 && taller.ell.y1 <= taller.canvas.h - 2,
   `the enlarged ellipse still fits inside the canvas (x ${taller.ell.x0}-${taller.ell.x1} of ${taller.canvas.w}, bottom ${taller.ell.y1} of ${taller.canvas.h})`);
-ok(taller.pending === 1, `and the whole session on one facet is still ONE entry (${taller.pending})`);
+ok(taller.pending === 1, `and the two rails are still ONE entry (${taller.pending})`);
+
+// DIRECT DRAG STILL WORKS (mouse/desktop) — the proxy is an addition, not a
+// replacement, and the gate would otherwise stop covering it.
+const preDrag = await look();
+await drag({ cx: preDrag.ell.cx, cy: preDrag.ell.cy }, -14, 0);
+const dragged = await look();
+ok(cxOf(dragged) < cxOf(preDrag) - 8,
+  `dragging the ellipse itself still moves it (${Math.round(cxOf(preDrag))} → ${Math.round(cxOf(dragged))})`);
 
 // ---------------------------------------------------------------- 3. per facet
 const dirs = await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].map((x) => x.textContent));
