@@ -6,7 +6,7 @@
   "rank": 158,
   "index": 11,
   "name": "Black wet moss 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "black wet moss",
   "modifier": "growth trailing off in three directions",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_mosses/cliff_moss_011/lit_1/sprite.webp",
+      "pixellab_object_id": "5f9ecbc4-6cfb-4bb9-99d6-f2cdd514685c",
+      "generated_at": "2026-08-16T09:36:34+00:00",
+      "glow_concept": "glow-lichen in bright rings",
+      "difference_from_source": 0.3614,
+      "glow_score": 0.1803
+    },
+    "LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_011/lit_2/sprite.webp",
+      "pixellab_object_id": "fae0bd8c-52ba-4770-b34c-47fbbe4a11e4",
+      "generated_at": "2026-08-16T09:37:03+00:00",
+      "glow_concept": "the moss glowing soft green",
+      "difference_from_source": 0.3596,
+      "glow_score": 0.0223
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_mosses/cliff_moss_011/sprite.webp",
       "pixellab_object_id": "7eab3b6d-8c5a-459e-bc88-be98620b928e",
       "generated_at": "2026-08-14T04:10:09+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c3afed7e-55f9-4ab5-a202-c19bd7f8e87a",
+      "generated_at": "2026-08-16T09:35:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3875,
+      "glow_score": 0.0031
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_mosses/cliff_moss_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d28b47bf-925e-4015-8325-e6c8352dacdf",
+      "generated_at": "2026-08-16T09:36:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3348,
+      "glow_score": 0.007
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_mosses/cliff_moss_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7a398187-4d52-41d8-8f2d-d5122c904d52",
+      "generated_at": "2026-08-16T09:36:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4728,
+      "glow_score": 0.006
     }
   }
 }

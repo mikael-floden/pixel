@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_mosses/cliff_moss_001/lit_1/sprite.webp",
+      "pixellab_object_id": "e4e18b6c-ee77-43e0-bf1d-72d51cee8515",
+      "generated_at": "2026-08-16T09:37:16+00:00",
+      "glow_concept": "light seeping from beneath the cushions",
+      "difference_from_source": 0.1985,
+      "glow_score": 0.0784
+    },
     "LIT_2": {
       "sprite": "cliff_mosses/cliff_moss_001/lit_2/sprite.webp",
       "pixellab_object_id": "207f268d-52ae-4d3c-a00e-1449d3698072",
