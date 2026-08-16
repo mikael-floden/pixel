@@ -122,8 +122,34 @@ LYING_GROUPS = {"fallen_logs", "driftwood_logs"}
 STANDING_CLAUSE = " The tree must stand straight up. Do not lean it to the right."
 
 
+# GROUPS THAT ARE NOT TREES, however they got into the tree pass. A stump, a
+# fallen log, a piece of driftwood and a petrified stump are all tree-DERIVED —
+# which is why they were swept in — but none of them IS a tree, and every rung
+# of the ladder above says "the tree". Told to "redraw the tree in the same
+# style, but another variant of the same tree type", the model does exactly
+# that: it draws a tree. The maintainer's 2026-08-16 round rejected 25 states
+# across these two groups, and the art shows it — a fallen log's variants came
+# back as standing stumps and as a full leafy tree, a stump's last three
+# variants are complete trees with canopies.
+#
+# They get the OBJECT-AGNOSTIC ladder instead ("another one of the same kind"),
+# which is what state_variants uses for the other 640 pieces and which never
+# names what the thing is. Same gates, same escalation, correct nouns.
+NOT_ACTUALLY_TREES = {"stumps", "fallen_logs", "driftwood_logs",
+                      "petrified_stumps"}
+
+
 def prompt_for(state, source_lights, source_glow, target_glow, attempt=0,
                group=None):
+    if group in NOT_ACTUALLY_TREES:
+        import prompts_generic as P
+        lead = P.LADDER[min(attempt, len(P.LADDER) - 1)]
+        parts = [lead, P.PRESERVE]
+        if state.startswith("LIT"):
+            parts.append(P.MAKE_LIT + (f" {target_glow}." if target_glow else ""))
+        elif source_lights == "LIGHTS_ON":
+            parts.append(P.MAKE_UNLIT)
+        return " ".join(p for p in parts if p)
     lead = LEAD_FALLBACKS[min(attempt, len(LEAD_FALLBACKS) - 1)]
     if group in LYING_GROUPS:
         lead = lead.replace(STANDING_CLAUSE, "").replace(STANDING_CLAUSE.strip(), "")
