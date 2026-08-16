@@ -1,5 +1,11 @@
 {
   "items": {
+    "022633b0-759d-43dd-816d-ea2e60fac6dd": {
+      "created": "2026-08-16T16:59:51+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean pale sandy beach",
+      "purpose": "matrix:snow_over_light_beach",
+      "status": "pending"
+    },
     "064b13a6-b0b6-4364-88be-ab4eb89a83f0": {
       "created": "2026-08-16T16:20:36+00:00",
       "prompt": "clean single color lush green grass on top of clean dry light soil",
@@ -13,6 +19,18 @@
       "purpose": "probe:bakeoff(backfilled)",
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
+    },
+    "12658b91-840b-47af-abe7-e9165acb342b": {
+      "created": "2026-08-16T16:56:52+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean dark volcanic rock",
+      "purpose": "matrix:snow_over_black_rock",
+      "status": "pending"
+    },
+    "172d3eb5-5df8-4c7d-9f37-ca203422e0d4": {
+      "created": "2026-08-16T16:52:18+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_snow",
+      "status": "pending"
     },
     "21540e5a-25ac-48ed-b682-d9ba1651a90f": {
       "created": "2026-08-16T11:15:54+00:00",
@@ -30,6 +48,12 @@
       "created": "2026-08-16T16:45:28+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are thick bubbling slime with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "24fdfb88-433b-4546-b968-c7720aaa648d": {
+      "created": "2026-08-16T17:05:56+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean dry light soil",
+      "purpose": "matrix:snow_over_light_soil",
       "status": "pending"
     },
     "25b53013-94af-4389-8af2-3cb7d3d25837": {
@@ -74,6 +98,12 @@
       "purpose": "probe:grass_on_stone__maintainer",
       "status": "pending"
     },
+    "379dd3b7-7ea0-43fa-898d-d3d834ad1cc3": {
+      "created": "2026-08-16T17:15:34+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean cut paving stone slabs",
+      "purpose": "matrix:snow_over_paving_stone",
+      "status": "pending"
+    },
     "3d1c50c7-7981-4f43-8a91-8618f33a283e": {
       "created": "2026-08-16T11:11:41+00:00",
       "prompt": "clean single color lush green grass on top of clean dark volcanic rock",
@@ -84,6 +114,12 @@
       "created": "2026-08-16T09:47:31+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour green grass, completely smooth with no texture. The vertical side walls are grey stone with its natural rocky surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "probe:grass_on_stone__explicit",
+      "status": "pending"
+    },
+    "512226fb-3b5b-4b8e-8c1f-ae777ea98867": {
+      "created": "2026-08-16T16:50:17+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean clean fresh snow",
+      "purpose": "matrix:snow_over_snow",
       "status": "pending"
     },
     "5710da14-304a-4d2a-9081-c1a28c31823c": {
@@ -102,6 +138,12 @@
       "created": "2026-08-16T09:43:01+00:00",
       "prompt": "solid single color #3f8a3a green grass on top of clean grey stone",
       "purpose": "probe:grass_on_stone__hextop",
+      "status": "pending"
+    },
+    "60b4c087-bb7a-4f0c-ab41-77d05a3c9f0a": {
+      "created": "2026-08-16T17:09:02+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean wet dark mud",
+      "purpose": "matrix:snow_over_dark_mud",
       "status": "pending"
     },
     "649ccf8c-a69f-4129-916d-9424d119c7ea": {
@@ -132,6 +174,12 @@
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
     },
+    "7112f3ac-88c4-401d-9240-a399309639aa": {
+      "created": "2026-08-16T17:10:35+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are wet dark mud with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_dark_mud",
+      "status": "pending"
+    },
     "718f6dc5-eb4c-4063-8d5a-48239c4293ab": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:36+00:00",
@@ -144,6 +192,12 @@
       "created": "2026-08-16T16:39:03+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_deep_water",
+      "status": "pending"
+    },
+    "783a5028-9525-4357-b642-a47887ed9a24": {
+      "created": "2026-08-16T17:13:56+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_parquet_floor",
       "status": "pending"
     },
     "7b5e1669-8dcd-48ba-a1ac-d561018ec51f": {
@@ -178,6 +232,12 @@
       "purpose": "matrix:grass_over_light_soil",
       "status": "pending"
     },
+    "991d399d-47e9-4373-9372-403f487e8d94": {
+      "created": "2026-08-16T17:04:39+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_grey_stone",
+      "status": "pending"
+    },
     "9e098621-f468-4274-a2ad-876236414ad8": {
       "created": "2026-08-16T11:07:47+00:00",
       "prompt": "clean single color lush green grass on top of clean translucent crystal ice",
@@ -188,6 +248,12 @@
       "created": "2026-08-16T11:10:01+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_ice",
+      "status": "pending"
+    },
+    "b0d6a6d2-306d-4b46-a2a6-92cb4f31b56d": {
+      "created": "2026-08-16T17:12:13+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean wooden parquet floor",
+      "purpose": "matrix:snow_over_parquet_floor",
       "status": "pending"
     },
     "b50246b9-b6a6-47bc-bc47-e35d83cf063d": {
@@ -208,6 +274,12 @@
       "purpose": "matrix:grass_over_grass",
       "status": "pending"
     },
+    "c1267ca1-7085-4c1a-acf7-7674066b0d7b": {
+      "created": "2026-08-16T17:01:27+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_light_beach",
+      "status": "pending"
+    },
     "c3c621a6-880e-46fa-860b-256e3b202c18": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:36+00:00",
@@ -215,6 +287,12 @@
       "purpose": "probe:bakeoff(backfilled)",
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
+    },
+    "c73be1fe-3f22-4397-b83e-08ae2be9ccda": {
+      "created": "2026-08-16T17:02:57+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean rugged grey mountain rock",
+      "purpose": "matrix:snow_over_grey_stone",
+      "status": "pending"
     },
     "cafaec37-89aa-46ee-b595-29e4a83fd6a4": {
       "created": "2026-08-16T16:48:41+00:00",
@@ -237,6 +315,12 @@
       "purpose": "probe:bakeoff(backfilled)",
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
+    },
+    "ce68ce77-bc19-4fcf-b2e6-72ba53c9fb95": {
+      "created": "2026-08-16T17:07:26+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
     },
     "d832da3a-1cbf-4ae3-bd26-c2762146bf50": {
       "created": "2026-08-16T16:40:39+00:00",
@@ -268,6 +352,12 @@
       "purpose": "matrix:grass_over_deep_water",
       "status": "pending"
     },
+    "e707c017-f686-4267-b8fc-d96e1b120d8b": {
+      "created": "2026-08-16T16:55:04+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_ice",
+      "status": "pending"
+    },
     "e74fc7c2-e0f5-43cd-b65b-9a8c53ace551": {
       "created": "2026-08-16T16:34:03+00:00",
       "prompt": "clean single color lush green grass on top of clean clear calm water",
@@ -278,6 +368,18 @@
       "created": "2026-08-16T16:47:16+00:00",
       "prompt": "clean single color clean fresh snow on top of clean lush green grass",
       "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
+    "eefddb1a-d20a-47ea-9ca1-b12dad2fabed": {
+      "created": "2026-08-16T16:53:35+00:00",
+      "prompt": "clean single color clean fresh snow on top of clean translucent crystal ice",
+      "purpose": "matrix:snow_over_ice",
+      "status": "pending"
+    },
+    "ef85f1ee-6ca0-4c38-ba24-240df22dbe1a": {
+      "created": "2026-08-16T16:58:28+00:00",
+      "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are dark volcanic rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
+      "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
     "f0b9c67e-97cd-4b83-9eb0-9ae573d4cfe9": {

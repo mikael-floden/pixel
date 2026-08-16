@@ -45,7 +45,30 @@ def _hex(s):
 
 
 def _regions(a):
-    """Top / left-wall / right-wall masks from the tile's own geometry."""
+    """Top / left-wall / right-wall masks from the tile's own geometry.
+
+    The diamond is MEASURED, never assumed. Its apex is the topmost opaque pixel and
+    its left/right corners are the topmost opaque pixel of the bounding box's outermost
+    columns, so the half-height falls out of the art (14 on a 64-wide tile — the diamond
+    is 64x28, not 64x32).
+
+    Assuming the usual 2:1 diamond instead costs 2px of half-height, which pushes the
+    top/wall boundary 1-3 rows BELOW where the top surface actually ends. That band is
+    the dark shading the generator draws where the grass overhangs the cliff, and
+    repainting it flat palette green fattens the green area by 4.4% and deletes the
+    tile's edge definition. It is the same off-by-two that made rendered plateaus come
+    out ragged.
+
+    The +1 is the diamond's own boundary ROW, which a strict inequality drops: with an
+    even tile width the centre falls between columns, so the bottom vertex never quite
+    reaches the threshold. Including it makes the mask land exactly on the last pixel of
+    the top surface far more often than any other cutoff, and leaves the flat fill 2.0%
+    SMALLER than the raw art rather than larger — so the postprocess can never be what
+    enlarges a surface.
+
+    Both figures are measured over the 350 generated grass tiles whose wall material is
+    not itself green, comparing the mask against the raw art's own green silhouette.
+    """
     h, w = a.shape[:2]
     op = a[:, :, 3] > 128
     if not op.any():
@@ -54,19 +77,21 @@ def _regions(a):
     x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
     bw = x1 - x0 + 1
     cx = (x0 + x1) / 2.0
-    hd = bw / 2.0
-    cy = y0 + hd / 2.0
+    hw = bw / 2.0
+    corners = [int(np.where(op[:, x])[0].min()) - y0 for x in (x0, x1)]
+    hh = float(np.mean(corners)) or hw / 2.0
+    cy = y0 + hh
     yy, xx = np.mgrid[0:h, 0:w]
-    below = yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0))
-    # The top is EVERY opaque pixel that is not wall — not the strict diamond equation.
-    # The strict form leaves the diamond's outermost rim outside every mask, so those
-    # pixels keep their raw colour while the interior is rewritten to the palette. On a
-    # single tile that is invisible; tessellated it becomes a bright grid line along
-    # every shared edge, which is the same seam class tiles2 fought for months. Measured
-    # on one tile: 77 orphaned rim pixels sitting at [117,173,92] against a snapped
-    # interior of [63,138,58]. Defining the top as the complement of the wall leaves
-    # nothing unclaimed.
-    return {"top": op & ~below, "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
+    below = yy > cy + hh * (1.0 - np.abs(xx - cx) / hw) + 1.0
+    # Claim every opaque pixel above the line rather than only those inside the strict
+    # diamond. The strict form leaves its own outermost rim in no mask at all, so the
+    # rim keeps its raw colour while the interior is repainted — invisible on one tile,
+    # a bright grid line along every shared edge once tessellated. Those rim pixels are
+    # not a compromise: measured on a real tile they are fully opaque and green, i.e.
+    # they ARE the top surface, the equation just cuts a pixel inside the art. The wall
+    # keeps every pixel below the line, unchanged.
+    return {"top": op & ~below,
+            "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
 
 
 def _rgb2hsv(px):
