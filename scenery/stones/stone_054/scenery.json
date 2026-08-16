@@ -6,8 +6,8 @@
   "type": "NATURE",
   "rank": 2,
   "index": 54,
-  "name": "Split rock with sharp cleft 054 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Split rock with sharp cleft 054",
+  "lights": null,
   "variety": "split rock with sharp cleft",
   "modifier": "unusually broad and squat",
   "glow_concept": "patches of luminous blue-green moss",
@@ -49,6 +49,46 @@
       "sprite": "stones/stone_054/sprite.webp",
       "pixellab_object_id": "1500007a-17ac-42f6-8553-430f5341d8ae",
       "generated_at": "2026-08-15T18:11:51+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_054/lit_2/sprite.webp",
+      "pixellab_object_id": "814ad4bf-4915-433a-b794-eb5873482a12",
+      "generated_at": "2026-08-16T22:23:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8243,
+      "glow_score": 0.0307
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_054/lit_3/sprite.webp",
+      "pixellab_object_id": "009538ce-604f-4d0a-a713-14f4ca92acab",
+      "generated_at": "2026-08-16T22:23:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6193,
+      "glow_score": 0.0123
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_054/lit_4/sprite.webp",
+      "pixellab_object_id": "76e1486c-d4c3-400f-87fa-5b9fd550c7e0",
+      "generated_at": "2026-08-16T22:24:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8265,
+      "glow_score": 0.0066
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_054/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6928a0ee-2eaf-4f95-bd4d-59faf9411386",
+      "generated_at": "2026-08-16T22:25:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9136,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_054/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f1a32dd8-b9bd-48a7-b929-007a69879f43",
+      "generated_at": "2026-08-16T22:24:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1721,
+      "glow_score": 0.0
     }
   }
 }

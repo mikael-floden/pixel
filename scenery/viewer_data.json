@@ -44407,6 +44407,15 @@
           "glow_score": 0.0522,
           "art_hash": "2f50cbf8c0cae60b"
         },
+        "NOT_LIT_1": {
+          "sprite": "stones/stone_048/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f14e0b63-e012-46ba-8c90-2946a0c6f6b0",
+          "generated_at": "2026-08-16T22:21:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7092,
+          "glow_score": 0.0006,
+          "art_hash": "8d62297f97374f4d"
+        },
         "NOT_LIT_2": {
           "sprite": "stones/stone_048/not_lit_2/sprite.webp",
           "pixellab_object_id": "725b6216-ded6-4373-ae97-39ea5814c9cb",
@@ -44424,7 +44433,7 @@
       "rel": "stones/stone_049",
       "name": "Old millstone half-buried 049",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, old millstone half-buried, with thick exposed roots, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -44452,6 +44461,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_049/lit_1/sprite.webp",
+          "pixellab_object_id": "209d9a49-0f31-49c4-89e8-e8f96ece1aaa",
+          "generated_at": "2026-08-16T22:22:04+00:00",
+          "glow_concept": "ember light leaking from a hollow beneath",
+          "difference_from_source": 0.7159,
+          "glow_score": 0.04,
+          "art_hash": "dfb1a98782a1f7f6"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_049/lit_2/sprite.webp",
+          "pixellab_object_id": "a5ee44d1-13f3-4e69-8100-4cd892625c58",
+          "generated_at": "2026-08-16T22:23:43+00:00",
+          "glow_concept": "thin runes etched glowing warm amber",
+          "difference_from_source": 0.8696,
+          "glow_score": 0.0717,
+          "art_hash": "0c16b8dd8caf66f4"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_049/sprite.webp",
           "pixellab_object_id": "676a9a1e-2f16-4a9e-9c04-30d3a8bce048",
@@ -44466,6 +44493,15 @@
           "difference_from_source": 0.919,
           "glow_score": 0.0,
           "art_hash": "46da7440023bfd65"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_049/not_lit_3/sprite.webp",
+          "pixellab_object_id": "62cfc839-f5b8-4e12-a7c6-e8fd45d37978",
+          "generated_at": "2026-08-16T22:21:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8386,
+          "glow_score": 0.0,
+          "art_hash": "ec774af8c1c2904f"
         },
         "NOT_LIT_4": {
           "sprite": "stones/stone_049/not_lit_4/sprite.webp",
@@ -44482,9 +44518,9 @@
     {
       "id": "stone_050",
       "rel": "stones/stone_050",
-      "name": "Stone ringed by a worn animal path 050 \u00b7 lit",
+      "name": "Stone ringed by a worn animal path 050",
       "category": "stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone ringed by a worn animal path, grown around a half-buried stone, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing pale handprint pressed on the face",
       "view": "low top-down",
       "size": 64,
@@ -44517,6 +44553,51 @@
           "pixellab_object_id": "1aedc678-14c0-40e5-96ba-99a0bdadd216",
           "generated_at": "2026-08-15T18:07:43+00:00",
           "art_hash": "100bc529278dd6f5"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_050/lit_2/sprite.webp",
+          "pixellab_object_id": "e2df3553-4bba-4c03-bae5-aec228e8803f",
+          "generated_at": "2026-08-16T22:22:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6725,
+          "glow_score": 0.0914,
+          "art_hash": "8af4124708ecf2e0"
+        },
+        "LIT_3": {
+          "sprite": "stones/stone_050/lit_3/sprite.webp",
+          "pixellab_object_id": "afd33d5d-d834-41fc-9fad-d08bdd861dec",
+          "generated_at": "2026-08-16T22:22:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6289,
+          "glow_score": 0.0598,
+          "art_hash": "f970b14bf6ac6026"
+        },
+        "LIT_4": {
+          "sprite": "stones/stone_050/lit_4/sprite.webp",
+          "pixellab_object_id": "d6269150-6a25-4b8c-8ef8-22c87b85f9ac",
+          "generated_at": "2026-08-16T22:22:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.332,
+          "glow_score": 0.0629,
+          "art_hash": "171c00df2c03fe18"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stones/stone_050/not_lit_1/sprite.webp",
+          "pixellab_object_id": "811f20e5-e0fa-4db6-be3f-1343fdcca0a1",
+          "generated_at": "2026-08-16T22:22:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3227,
+          "glow_score": 0.0,
+          "art_hash": "1551f546e1586c47"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_050/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f9ec4667-5e62-426d-8131-d4d1cd701920",
+          "generated_at": "2026-08-16T22:23:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9409,
+          "glow_score": 0.0,
+          "art_hash": "81b52057749f6241"
         }
       },
       "animations": []
@@ -44524,9 +44605,9 @@
     {
       "id": "stone_054",
       "rel": "stones/stone_054",
-      "name": "Split rock with sharp cleft 054 \u00b7 lit",
+      "name": "Split rock with sharp cleft 054",
       "category": "stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, split rock with sharp cleft, unusually broad and squat, roughly six feet tall, human height, self-emissive at night, softly radiating light: patches of luminous blue-green moss",
       "view": "low top-down",
       "size": 64,
@@ -44559,6 +44640,51 @@
           "pixellab_object_id": "1500007a-17ac-42f6-8553-430f5341d8ae",
           "generated_at": "2026-08-15T18:11:51+00:00",
           "art_hash": "a7551e98bfc802bf"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_054/lit_2/sprite.webp",
+          "pixellab_object_id": "814ad4bf-4915-433a-b794-eb5873482a12",
+          "generated_at": "2026-08-16T22:23:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8243,
+          "glow_score": 0.0307,
+          "art_hash": "a61deb43fdddbf2c"
+        },
+        "LIT_3": {
+          "sprite": "stones/stone_054/lit_3/sprite.webp",
+          "pixellab_object_id": "009538ce-604f-4d0a-a713-14f4ca92acab",
+          "generated_at": "2026-08-16T22:23:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6193,
+          "glow_score": 0.0123,
+          "art_hash": "770f84812a133aab"
+        },
+        "LIT_4": {
+          "sprite": "stones/stone_054/lit_4/sprite.webp",
+          "pixellab_object_id": "76e1486c-d4c3-400f-87fa-5b9fd550c7e0",
+          "generated_at": "2026-08-16T22:24:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8265,
+          "glow_score": 0.0066,
+          "art_hash": "5a5e475f47644488"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stones/stone_054/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6928a0ee-2eaf-4f95-bd4d-59faf9411386",
+          "generated_at": "2026-08-16T22:25:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9136,
+          "glow_score": 0.0,
+          "art_hash": "887ce91926438ed8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_054/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f1a32dd8-b9bd-48a7-b929-007a69879f43",
+          "generated_at": "2026-08-16T22:24:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1721,
+          "glow_score": 0.0,
+          "art_hash": "e0fd9f070800eb19"
         }
       },
       "animations": []
@@ -44566,9 +44692,9 @@
     {
       "id": "stone_056",
       "rel": "stones/stone_056",
-      "name": "Weathered sandstone lump 056 \u00b7 lit",
+      "name": "Weathered sandstone lump 056",
       "category": "stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, weathered sandstone lump, with butterflies resting on it, small, knee-high, self-emissive at night, softly radiating light: thin runes etched glowing warm amber",
       "view": "low top-down",
       "size": 64,
@@ -44601,6 +44727,51 @@
           "pixellab_object_id": "6435156c-026c-422f-bf9e-244db1cf6080",
           "generated_at": "2026-08-15T18:13:55+00:00",
           "art_hash": "2af57e4365a354fb"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_056/lit_2/sprite.webp",
+          "pixellab_object_id": "11c47e17-ee65-443f-83ae-1d97c3d84c16",
+          "generated_at": "2026-08-16T22:24:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7254,
+          "glow_score": 0.0684,
+          "art_hash": "384dbd8e123554cf"
+        },
+        "LIT_3": {
+          "sprite": "stones/stone_056/lit_3/sprite.webp",
+          "pixellab_object_id": "62823dd2-f6b6-4227-b1e1-02825787f39b",
+          "generated_at": "2026-08-16T22:24:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7829,
+          "glow_score": 0.0184,
+          "art_hash": "e94b7b78ca002f99"
+        },
+        "LIT_4": {
+          "sprite": "stones/stone_056/lit_4/sprite.webp",
+          "pixellab_object_id": "e3538856-223e-4b22-94bc-cac1177b3de1",
+          "generated_at": "2026-08-16T22:25:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5797,
+          "glow_score": 0.0693,
+          "art_hash": "8aef366e4fbb1944"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stones/stone_056/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b3079da0-7814-4519-b376-d08f11683c49",
+          "generated_at": "2026-08-16T22:25:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9176,
+          "glow_score": 0.0,
+          "art_hash": "97717d058a7ace89"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_056/not_lit_2/sprite.webp",
+          "pixellab_object_id": "249e4430-6935-4eaf-bdee-dcb1e223056d",
+          "generated_at": "2026-08-16T22:25:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9374,
+          "glow_score": 0.0,
+          "art_hash": "08b56a850a41017d"
         }
       },
       "animations": []
@@ -44610,7 +44781,7 @@
       "rel": "story_posts/story_post_001",
       "name": "Oak post, spiral scenes 001",
       "category": "story_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a carved wooden post covered in stacked story scenes, ribbons tied beneath its shaped topper, oak post, spiral scenes, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -44630,11 +44801,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "story_posts/story_post_001/lit_1/sprite.webp",
+          "pixellab_object_id": "8b011d07-017d-4717-93ce-6bbcfa1f5f7d",
+          "generated_at": "2026-08-16T22:26:59+00:00",
+          "glow_concept": "carved bird topper glowing softly",
+          "difference_from_source": 0.8366,
+          "glow_score": 0.1253,
+          "art_hash": "d22a2ffd6a3502d3"
+        },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_001/sprite.webp",
           "pixellab_object_id": "c253194a-e0b4-4d96-86bc-1d5d2584c24a",
           "generated_at": "2026-08-13T00:55:10+00:00",
           "art_hash": "616e0ad8a9aa29cb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5d004f7d-650e-4380-96f6-abe717a1c0e1",
+          "generated_at": "2026-08-16T22:27:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9098,
+          "glow_score": 0.0,
+          "art_hash": "f24d5434645e10fa"
+        },
+        "NOT_LIT_3": {
+          "sprite": "story_posts/story_post_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ab67b56e-767b-4dca-abe3-d37d2fa371aa",
+          "generated_at": "2026-08-16T22:26:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.878,
+          "glow_score": 0.0226,
+          "art_hash": "021bb6c0ed4bb269"
+        },
+        "NOT_LIT_4": {
+          "sprite": "story_posts/story_post_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0d03ab6d-7175-4efd-8050-a4527f96d55b",
+          "generated_at": "2026-08-16T22:26:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8579,
+          "glow_score": 0.0046,
+          "art_hash": "e45c664d5e4ec48c"
         }
       },
       "animations": []
@@ -44669,6 +44876,33 @@
           "pixellab_object_id": "2ebf0798-1cdc-41a6-80f1-e1f9f32631d1",
           "generated_at": "2026-08-13T21:41:37+00:00",
           "art_hash": "ce4c40f2cd4a84f4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5356cbd9-54e3-465c-ab02-e117171486ae",
+          "generated_at": "2026-08-16T22:26:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.588,
+          "glow_score": 0.2968,
+          "art_hash": "272025565dc2b302"
+        },
+        "NOT_LIT_3": {
+          "sprite": "story_posts/story_post_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "dbed1f82-c9ad-4d5d-9744-a87e159bc2d3",
+          "generated_at": "2026-08-16T22:27:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7538,
+          "glow_score": 0.2412,
+          "art_hash": "aa1e29361dd6ddf2"
+        },
+        "NOT_LIT_4": {
+          "sprite": "story_posts/story_post_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "150df1c9-023e-4648-9055-0c0ad9fe9d9e",
+          "generated_at": "2026-08-16T22:27:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7716,
+          "glow_score": 0.199,
+          "art_hash": "fcb0908b80420c0b"
         }
       },
       "animations": []
