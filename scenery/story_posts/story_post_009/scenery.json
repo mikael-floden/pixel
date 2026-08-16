@@ -5,7 +5,7 @@
   "rank": 21,
   "index": 9,
   "name": "Fresh pale new-cut post 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "fresh pale new-cut post",
   "glow_concept": null,
   "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, fresh pale new-cut post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:41:37+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "story_posts/story_post_009/lit_1/sprite.webp",
+      "pixellab_object_id": "e70a6fe6-277f-48ca-98e2-ae5359b2ec58",
+      "generated_at": "2026-08-16T22:27:49+00:00",
+      "glow_concept": "luminous ribbons streaming from the top",
+      "difference_from_source": 0.7562,
+      "glow_score": 0.3767
+    },
+    "LIT_2": {
+      "sprite": "story_posts/story_post_009/lit_2/sprite.webp",
+      "pixellab_object_id": "ab6728ee-d93e-4a2d-ae57-2b7179235f11",
+      "generated_at": "2026-08-16T22:27:59+00:00",
+      "glow_concept": "oil lantern hooked below the finial",
+      "difference_from_source": 0.9077,
+      "glow_score": 0.2368
+    },
     "NOT_LIT_1": {
       "sprite": "story_posts/story_post_009/sprite.webp",
       "pixellab_object_id": "2ebf0798-1cdc-41a6-80f1-e1f9f32631d1",

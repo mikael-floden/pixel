@@ -4,8 +4,8 @@
   "group": "story_posts",
   "rank": 21,
   "index": 14,
-  "name": "Ancient split banded post 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Ancient split banded post 014",
+  "lights": null,
   "variety": "ancient split banded post",
   "glow_concept": "carved bird topper glowing softly",
   "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, ancient split banded post, large, twice human height, self-emissive at night, softly radiating light: carved bird topper glowing softly",
@@ -35,6 +35,46 @@
       "sprite": "story_posts/story_post_014/sprite.webp",
       "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
       "generated_at": "2026-08-13T21:54:06+00:00"
+    },
+    "LIT_2": {
+      "sprite": "story_posts/story_post_014/lit_2/sprite.webp",
+      "pixellab_object_id": "b10022b6-ec75-4283-9e31-ef127142397d",
+      "generated_at": "2026-08-16T22:31:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7419,
+      "glow_score": 0.0655
+    },
+    "LIT_3": {
+      "sprite": "story_posts/story_post_014/lit_3/sprite.webp",
+      "pixellab_object_id": "d71c8930-6af7-4a45-8ed8-c8b30226ffed",
+      "generated_at": "2026-08-16T22:32:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7953,
+      "glow_score": 0.1655
+    },
+    "LIT_4": {
+      "sprite": "story_posts/story_post_014/lit_4/sprite.webp",
+      "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
+      "generated_at": "2026-08-16T22:32:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7521,
+      "glow_score": 0.1436
+    },
+    "NOT_LIT_1": {
+      "sprite": "story_posts/story_post_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e40f75fe-452d-4913-9e16-5e9b7a1411d6",
+      "generated_at": "2026-08-16T22:33:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8954,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "story_posts/story_post_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c8fd177e-39c3-4686-a99a-664ff3018e17",
+      "generated_at": "2026-08-16T22:32:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8372,
+      "glow_score": 0.0
     }
   }
 }

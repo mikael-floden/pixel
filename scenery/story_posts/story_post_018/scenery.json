@@ -5,8 +5,8 @@
   "group": "story_posts",
   "rank": 21,
   "index": 18,
-  "name": "Wooden token-hung post 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Wooden token-hung post 018",
+  "lights": null,
   "variety": "wooden token-hung post",
   "glow_concept": "tiny glowing letters spiraling up the post",
   "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wooden token-hung post, large, twice human height, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
@@ -35,6 +35,38 @@
       "sprite": "story_posts/story_post_018/sprite.webp",
       "pixellab_object_id": "e70c6f1f-feaf-4ab5-a9d7-26f4fdce1b9c",
       "generated_at": "2026-08-13T23:33:23+00:00"
+    },
+    "LIT_2": {
+      "sprite": "story_posts/story_post_018/lit_2/sprite.webp",
+      "pixellab_object_id": "6cc840f0-ee5c-4cc8-84cb-5ca4fb86dede",
+      "generated_at": "2026-08-16T22:33:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7024,
+      "glow_score": 0.0367
+    },
+    "LIT_3": {
+      "sprite": "story_posts/story_post_018/lit_3/sprite.webp",
+      "pixellab_object_id": "afe07f7d-7150-43de-9e94-059d64d4bee9",
+      "generated_at": "2026-08-16T22:33:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5683,
+      "glow_score": 0.0103
+    },
+    "LIT_4": {
+      "sprite": "story_posts/story_post_018/lit_4/sprite.webp",
+      "pixellab_object_id": "878d5eb6-6612-4e8b-950a-64e0464dbbae",
+      "generated_at": "2026-08-16T22:33:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6867,
+      "glow_score": 0.0678
+    },
+    "NOT_LIT_1": {
+      "sprite": "story_posts/story_post_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "9288ce4d-21d2-4e94-a406-0e7636d38528",
+      "generated_at": "2026-08-16T22:33:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.869,
+      "glow_score": 0.0
     }
   }
 }

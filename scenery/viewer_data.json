@@ -44810,6 +44810,15 @@
           "glow_score": 0.1253,
           "art_hash": "d22a2ffd6a3502d3"
         },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_001/lit_2/sprite.webp",
+          "pixellab_object_id": "880cc47f-3dd4-4395-a225-a5e74d7ba0e5",
+          "generated_at": "2026-08-16T22:28:08+00:00",
+          "glow_concept": "glowing symbol hovering above the finial",
+          "difference_from_source": 0.9268,
+          "glow_score": 0.3123,
+          "art_hash": "325cd791f5a455a9"
+        },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_001/sprite.webp",
           "pixellab_object_id": "c253194a-e0b4-4d96-86bc-1d5d2584c24a",
@@ -44851,7 +44860,7 @@
       "rel": "story_posts/story_post_009",
       "name": "Fresh pale new-cut post 009",
       "category": "story_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, fresh pale new-cut post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -44871,6 +44880,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "story_posts/story_post_009/lit_1/sprite.webp",
+          "pixellab_object_id": "e70a6fe6-277f-48ca-98e2-ae5359b2ec58",
+          "generated_at": "2026-08-16T22:27:49+00:00",
+          "glow_concept": "luminous ribbons streaming from the top",
+          "difference_from_source": 0.7562,
+          "glow_score": 0.3767,
+          "art_hash": "82a1758805513bec"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_009/lit_2/sprite.webp",
+          "pixellab_object_id": "ab6728ee-d93e-4a2d-ae57-2b7179235f11",
+          "generated_at": "2026-08-16T22:27:59+00:00",
+          "glow_concept": "oil lantern hooked below the finial",
+          "difference_from_source": 0.9077,
+          "glow_score": 0.2368,
+          "art_hash": "f702473cdbaa3fd8"
+        },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_009/sprite.webp",
           "pixellab_object_id": "2ebf0798-1cdc-41a6-80f1-e1f9f32631d1",
@@ -44910,9 +44937,9 @@
     {
       "id": "story_post_010",
       "rel": "story_posts/story_post_010",
-      "name": "Wave-carved sea-tale post 010 \u00b7 lit",
+      "name": "Wave-carved sea-tale post 010",
       "category": "story_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wave-carved sea-tale post, large, twice human height, self-emissive at night, softly radiating light: luminous ribbons streaming from the top",
       "view": "low top-down",
       "size": 96,
@@ -44937,6 +44964,51 @@
           "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
           "generated_at": "2026-08-13T20:48:22+00:00",
           "art_hash": "a2681edee9e659fa"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_010/lit_2/sprite.webp",
+          "pixellab_object_id": "e56fe573-a31c-46f1-bde3-e97ab3e3b615",
+          "generated_at": "2026-08-16T22:28:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7632,
+          "glow_score": 0.1949,
+          "art_hash": "fb0566a23b6e8941"
+        },
+        "LIT_3": {
+          "sprite": "story_posts/story_post_010/lit_3/sprite.webp",
+          "pixellab_object_id": "b55d1b84-1b43-4ed1-90be-50e63e5eda73",
+          "generated_at": "2026-08-16T22:28:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6529,
+          "glow_score": 0.1706,
+          "art_hash": "f60b36c9e69a4438"
+        },
+        "LIT_4": {
+          "sprite": "story_posts/story_post_010/lit_4/sprite.webp",
+          "pixellab_object_id": "3325ea14-a0fe-41a5-9ce2-97ac8a8b3f61",
+          "generated_at": "2026-08-16T22:29:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7204,
+          "glow_score": 0.1855,
+          "art_hash": "82e679792f8a35e5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "story_posts/story_post_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "162fc640-de28-4e31-8fa6-87df60494781",
+          "generated_at": "2026-08-16T22:29:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7806,
+          "glow_score": 0.1091,
+          "art_hash": "2c660a9588a51b61"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ab19bb8b-2c61-4e72-9ebd-b09c3ac3a053",
+          "generated_at": "2026-08-16T22:29:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7805,
+          "glow_score": 0.0648,
+          "art_hash": "12678d35154e7d38"
         }
       },
       "animations": []
@@ -44946,7 +45018,7 @@
       "rel": "story_posts/story_post_011",
       "name": "Stacked carved faces post 011",
       "category": "story_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, stacked carved faces post, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -44966,11 +45038,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "story_posts/story_post_011/lit_1/sprite.webp",
+          "pixellab_object_id": "da3af729-940a-46b3-a05c-b152932af970",
+          "generated_at": "2026-08-16T22:30:55+00:00",
+          "glow_concept": "oil lantern hooked below the finial",
+          "difference_from_source": 0.8631,
+          "glow_score": 0.0512,
+          "art_hash": "c147679a93f89960"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_011/lit_2/sprite.webp",
+          "pixellab_object_id": "84a809f8-cd5f-471f-b22e-00c2a854ff2e",
+          "generated_at": "2026-08-16T22:30:35+00:00",
+          "glow_concept": "knot-hole shining like a small hearth",
+          "difference_from_source": 0.6944,
+          "glow_score": 0.0009,
+          "art_hash": "ed227da81a23f3cf"
+        },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_011/sprite.webp",
           "pixellab_object_id": "8e2c919f-0a1f-445b-99c0-daa8fe48f2bb",
           "generated_at": "2026-08-13T22:07:50+00:00",
           "art_hash": "cf96303a05ae10d5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "76a11351-c71a-458d-b957-250cee1a183d",
+          "generated_at": "2026-08-16T22:29:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5247,
+          "glow_score": 0.0,
+          "art_hash": "2beaa6a165896f21"
+        },
+        "NOT_LIT_3": {
+          "sprite": "story_posts/story_post_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4fe0d0ce-8f5f-438e-bc87-b9e8729baf56",
+          "generated_at": "2026-08-16T22:29:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7611,
+          "glow_score": 0.0,
+          "art_hash": "976f9fd29739d527"
+        },
+        "NOT_LIT_4": {
+          "sprite": "story_posts/story_post_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c00edb33-bc43-49a7-bc09-73d41b21d903",
+          "generated_at": "2026-08-16T22:29:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4927,
+          "glow_score": 0.0039,
+          "art_hash": "6efc63b1f6c4d446"
         }
       },
       "animations": []
@@ -45012,9 +45129,9 @@
     {
       "id": "story_post_014",
       "rel": "story_posts/story_post_014",
-      "name": "Ancient split banded post 014 \u00b7 lit",
+      "name": "Ancient split banded post 014",
       "category": "story_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, ancient split banded post, large, twice human height, self-emissive at night, softly radiating light: carved bird topper glowing softly",
       "view": "low top-down",
       "size": 64,
@@ -45039,6 +45156,51 @@
           "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
           "generated_at": "2026-08-13T21:54:06+00:00",
           "art_hash": "36955678fd187be3"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_014/lit_2/sprite.webp",
+          "pixellab_object_id": "b10022b6-ec75-4283-9e31-ef127142397d",
+          "generated_at": "2026-08-16T22:31:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7419,
+          "glow_score": 0.0655,
+          "art_hash": "84dcadd5b9bcd043"
+        },
+        "LIT_3": {
+          "sprite": "story_posts/story_post_014/lit_3/sprite.webp",
+          "pixellab_object_id": "d71c8930-6af7-4a45-8ed8-c8b30226ffed",
+          "generated_at": "2026-08-16T22:32:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7953,
+          "glow_score": 0.1655,
+          "art_hash": "2ca5a03c4f25392d"
+        },
+        "LIT_4": {
+          "sprite": "story_posts/story_post_014/lit_4/sprite.webp",
+          "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
+          "generated_at": "2026-08-16T22:32:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7521,
+          "glow_score": 0.1436,
+          "art_hash": "2a644260ea567eb5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "story_posts/story_post_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e40f75fe-452d-4913-9e16-5e9b7a1411d6",
+          "generated_at": "2026-08-16T22:33:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8954,
+          "glow_score": 0.0,
+          "art_hash": "e34c0a022e6cd4d7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c8fd177e-39c3-4686-a99a-664ff3018e17",
+          "generated_at": "2026-08-16T22:32:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8372,
+          "glow_score": 0.0,
+          "art_hash": "2d091e806e9813ad"
         }
       },
       "animations": []
@@ -45046,9 +45208,9 @@
     {
       "id": "story_post_018",
       "rel": "story_posts/story_post_018",
-      "name": "Wooden token-hung post 018 \u00b7 lit",
+      "name": "Wooden token-hung post 018",
       "category": "story_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wooden token-hung post, large, twice human height, self-emissive at night, softly radiating light: tiny glowing letters spiraling up the post",
       "view": "low top-down",
       "size": 64,
@@ -45073,6 +45235,42 @@
           "pixellab_object_id": "e70c6f1f-feaf-4ab5-a9d7-26f4fdce1b9c",
           "generated_at": "2026-08-13T23:33:23+00:00",
           "art_hash": "1da1e946a7f311f6"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_018/lit_2/sprite.webp",
+          "pixellab_object_id": "6cc840f0-ee5c-4cc8-84cb-5ca4fb86dede",
+          "generated_at": "2026-08-16T22:33:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7024,
+          "glow_score": 0.0367,
+          "art_hash": "1a9f5718cdfc509e"
+        },
+        "LIT_3": {
+          "sprite": "story_posts/story_post_018/lit_3/sprite.webp",
+          "pixellab_object_id": "afe07f7d-7150-43de-9e94-059d64d4bee9",
+          "generated_at": "2026-08-16T22:33:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5683,
+          "glow_score": 0.0103,
+          "art_hash": "c0ef65f1ed5bbfc7"
+        },
+        "LIT_4": {
+          "sprite": "story_posts/story_post_018/lit_4/sprite.webp",
+          "pixellab_object_id": "878d5eb6-6612-4e8b-950a-64e0464dbbae",
+          "generated_at": "2026-08-16T22:33:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6867,
+          "glow_score": 0.0678,
+          "art_hash": "942750a17ef9706c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "story_posts/story_post_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "9288ce4d-21d2-4e94-a406-0e7636d38528",
+          "generated_at": "2026-08-16T22:33:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.869,
+          "glow_score": 0.0,
+          "art_hash": "b0941185e27c1072"
         }
       },
       "animations": []
@@ -45107,6 +45305,33 @@
           "pixellab_object_id": "55383ea1-d29e-407b-93df-f9d2fbea894a",
           "generated_at": "2026-08-14T00:53:19+00:00",
           "art_hash": "0bf4c21062aa359f"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_020/lit_2/sprite.webp",
+          "pixellab_object_id": "25bb5999-e00a-4128-85ef-35dfa7a85421",
+          "generated_at": "2026-08-16T22:34:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8099,
+          "glow_score": 0.0412,
+          "art_hash": "d2d115fbc9163b42"
+        },
+        "LIT_3": {
+          "sprite": "story_posts/story_post_020/lit_3/sprite.webp",
+          "pixellab_object_id": "16bf8d32-2ab8-4d85-aab6-ba2282284921",
+          "generated_at": "2026-08-16T22:34:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8508,
+          "glow_score": 0.004,
+          "art_hash": "fc92a25f3cf70b3a"
+        },
+        "LIT_4": {
+          "sprite": "story_posts/story_post_020/lit_4/sprite.webp",
+          "pixellab_object_id": "fde0ab62-8724-4c16-a471-feaa9e4e6bc2",
+          "generated_at": "2026-08-16T22:34:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8627,
+          "glow_score": 0.0794,
+          "art_hash": "f7455d9ee7ed5bf1"
         }
       },
       "animations": []
