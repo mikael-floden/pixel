@@ -4,8 +4,8 @@
   "group": "cliff_fragments",
   "rank": 82,
   "index": 2,
-  "name": "Overhanging tilted fragment 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Overhanging tilted fragment 002",
+  "lights": null,
   "variety": "overhanging tilted fragment",
   "glow_concept": "warm light from a sheltered hollow beneath",
   "prompt": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, overhanging tilted fragment, tall, about two people high, self-emissive at night, softly radiating light: warm light from a sheltered hollow beneath",
@@ -35,6 +35,46 @@
       "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
       "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
       "generated_at": "2026-08-13T05:37:08+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_fragments/cliff_fragment_002/lit_2/sprite.webp",
+      "pixellab_object_id": "0a94f54d-c193-43bd-984a-ba8c436dff38",
+      "generated_at": "2026-08-16T09:29:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5499,
+      "glow_score": 0.2364
+    },
+    "LIT_3": {
+      "sprite": "cliff_fragments/cliff_fragment_002/lit_3/sprite.webp",
+      "pixellab_object_id": "892bdf72-2278-4517-83fc-49fbff0c9131",
+      "generated_at": "2026-08-16T09:30:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.665,
+      "glow_score": 0.1943
+    },
+    "LIT_4": {
+      "sprite": "cliff_fragments/cliff_fragment_002/lit_4/sprite.webp",
+      "pixellab_object_id": "0e4b6efb-81f8-4b6f-86b0-b609c60498f9",
+      "generated_at": "2026-08-16T09:33:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8726,
+      "glow_score": 0.0063
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_fragments/cliff_fragment_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "84bd0223-4e85-4fd0-a60b-a8e40590bccc",
+      "generated_at": "2026-08-16T09:31:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.97,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_fragments/cliff_fragment_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f040382f-179e-4e1c-91c8-04bd36599286",
+      "generated_at": "2026-08-16T09:30:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9019,
+      "glow_score": 0.0
     }
   }
 }

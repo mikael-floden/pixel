@@ -6,7 +6,7 @@
   "rank": 102,
   "index": 903,
   "name": "Ice-glazed winter ledge 903",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ice-glazed winter ledge",
   "glow_concept": null,
   "prompt": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, ice-glazed winter ledge, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -33,6 +33,22 @@
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_features/cliff_feature_903/lit_1/sprite.webp",
+      "pixellab_object_id": "8f673211-f9e7-4302-a393-1bf9b602674c",
+      "generated_at": "2026-08-16T09:27:29+00:00",
+      "glow_concept": "warm light spilling from a deep crevice",
+      "difference_from_source": 0.919,
+      "glow_score": 0.2936
+    },
+    "LIT_2": {
+      "sprite": "cliff_features/cliff_feature_903/lit_2/sprite.webp",
+      "pixellab_object_id": "17aabb87-b8ea-4100-9379-e29c4bbee67c",
+      "generated_at": "2026-08-16T09:27:30+00:00",
+      "glow_concept": "glow-lichen shelf shining pale green",
+      "difference_from_source": 0.5673,
+      "glow_score": 0.2976
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_features/cliff_feature_903/sprite.webp",
       "pixellab_object_id": "cfeeaab9-d843-4c36-8e3a-133fe9a6d18a",
@@ -53,6 +69,14 @@
       "glow_concept": null,
       "difference_from_source": 0.6409,
       "glow_score": 0.2616
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_features/cliff_feature_903/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b4ff38f4-046e-45fc-bc34-b684c665b5d1",
+      "generated_at": "2026-08-16T09:27:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7449,
+      "glow_score": 0.1916
     }
   }
 }

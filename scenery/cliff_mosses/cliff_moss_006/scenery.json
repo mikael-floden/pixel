@@ -5,8 +5,8 @@
   "group": "cliff_mosses",
   "rank": 158,
   "index": 6,
-  "name": "Rust-orange lichen patches 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rust-orange lichen patches 006",
+  "lights": null,
   "variety": "rust-orange lichen patches",
   "modifier": "thickest where water seeps",
   "glow_concept": "light seeping from beneath the cushions",
@@ -36,6 +36,38 @@
       "sprite": "cliff_mosses/cliff_moss_006/sprite.webp",
       "pixellab_object_id": "bdc75a15-3ab4-4902-8c6c-c0cd6ac12187",
       "generated_at": "2026-08-14T03:16:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_006/lit_2/sprite.webp",
+      "pixellab_object_id": "377a969e-5124-4872-b777-439f5112e1d9",
+      "generated_at": "2026-08-16T09:33:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.384,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "cliff_mosses/cliff_moss_006/lit_3/sprite.webp",
+      "pixellab_object_id": "cebcea8a-2682-4446-97ab-3714f9ed535a",
+      "generated_at": "2026-08-16T09:33:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3897,
+      "glow_score": 0.0431
+    },
+    "LIT_4": {
+      "sprite": "cliff_mosses/cliff_moss_006/lit_4/sprite.webp",
+      "pixellab_object_id": "0cf60d4d-4d8b-40d3-9703-1f2210e45892",
+      "generated_at": "2026-08-16T09:33:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5655,
+      "glow_score": 0.0396
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ea0ad4ff-19cf-4ca3-9dae-d3a7c2c45bca",
+      "generated_at": "2026-08-16T09:34:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7428,
+      "glow_score": 0.0
     }
   }
 }

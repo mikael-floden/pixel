@@ -12687,7 +12687,7 @@
       "rel": "cliff_features/cliff_feature_903",
       "name": "Ice-glazed winter ledge 903",
       "category": "cliff_features",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, ice-glazed winter ledge, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -12707,6 +12707,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_features/cliff_feature_903/lit_1/sprite.webp",
+          "pixellab_object_id": "8f673211-f9e7-4302-a393-1bf9b602674c",
+          "generated_at": "2026-08-16T09:27:29+00:00",
+          "glow_concept": "warm light spilling from a deep crevice",
+          "difference_from_source": 0.919,
+          "glow_score": 0.2936,
+          "art_hash": "b0eab005fe0ef999"
+        },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_903/lit_2/sprite.webp",
+          "pixellab_object_id": "17aabb87-b8ea-4100-9379-e29c4bbee67c",
+          "generated_at": "2026-08-16T09:27:30+00:00",
+          "glow_concept": "glow-lichen shelf shining pale green",
+          "difference_from_source": 0.5673,
+          "glow_score": 0.2976,
+          "art_hash": "2744fb6de797dc63"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_features/cliff_feature_903/sprite.webp",
           "pixellab_object_id": "cfeeaab9-d843-4c36-8e3a-133fe9a6d18a",
@@ -12730,6 +12748,15 @@
           "difference_from_source": 0.6409,
           "glow_score": 0.2616,
           "art_hash": "11c2c68db34b160f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_features/cliff_feature_903/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b4ff38f4-046e-45fc-bc34-b684c665b5d1",
+          "generated_at": "2026-08-16T09:27:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7449,
+          "glow_score": 0.1916,
+          "art_hash": "12347c089f814b8d"
         }
       },
       "animations": []
@@ -12739,7 +12766,7 @@
       "rel": "cliff_fragments/cliff_fragment_001",
       "name": "Glacial erratic boulder 001",
       "category": "cliff_fragments",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, glacial erratic boulder, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -12759,11 +12786,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_fragments/cliff_fragment_001/lit_1/sprite.webp",
+          "pixellab_object_id": "7908b547-4c01-4c56-8437-ff2194a39b61",
+          "generated_at": "2026-08-16T09:32:39+00:00",
+          "glow_concept": "curtain of glowing green moss down one side",
+          "difference_from_source": 0.3405,
+          "glow_score": 0.1498,
+          "art_hash": "01f45dc7b3f2faa5"
+        },
+        "LIT_2": {
+          "sprite": "cliff_fragments/cliff_fragment_001/lit_2/sprite.webp",
+          "pixellab_object_id": "deb92faa-012d-4da5-bb8f-38982514db17",
+          "generated_at": "2026-08-16T09:29:54+00:00",
+          "glow_concept": "raw break faces shining pale white",
+          "difference_from_source": 0.903,
+          "glow_score": 0.2042,
+          "art_hash": "16b6fe4ae0d03a7d"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_fragments/cliff_fragment_001/sprite.webp",
           "pixellab_object_id": "553afc47-0a33-47aa-ad8c-2d70917c9074",
           "generated_at": "2026-08-13T02:24:24+00:00",
           "art_hash": "82ed4cde4a8e5a43"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_fragments/cliff_fragment_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "16a4af14-ffff-4435-9589-0ff822ce2715",
+          "generated_at": "2026-08-16T09:27:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.551,
+          "glow_score": 0.1553,
+          "art_hash": "6199770ef6612cc2"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_fragments/cliff_fragment_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "80843a7d-b3fd-47ea-b216-ca452aedc767",
+          "generated_at": "2026-08-16T09:27:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5581,
+          "glow_score": 0.2465,
+          "art_hash": "b7379eed976215a1"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_fragments/cliff_fragment_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "79cc08d2-8ac5-4faa-a672-b7288ab060fc",
+          "generated_at": "2026-08-16T09:29:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6861,
+          "glow_score": 0.0123,
+          "art_hash": "3c65d3bc620a79a4"
         }
       },
       "animations": []
@@ -12771,9 +12843,9 @@
     {
       "id": "cliff_fragment_002",
       "rel": "cliff_fragments/cliff_fragment_002",
-      "name": "Overhanging tilted fragment 002 \u00b7 lit",
+      "name": "Overhanging tilted fragment 002",
       "category": "cliff_fragments",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a massive sharp-edged chunk of broken cliff rock lying where it fell, one face freshly fractured and pale, overhanging tilted fragment, tall, about two people high, self-emissive at night, softly radiating light: warm light from a sheltered hollow beneath",
       "view": "low top-down",
       "size": 128,
@@ -12798,6 +12870,51 @@
           "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
           "generated_at": "2026-08-13T05:37:08+00:00",
           "art_hash": "213331bd37f74316"
+        },
+        "LIT_2": {
+          "sprite": "cliff_fragments/cliff_fragment_002/lit_2/sprite.webp",
+          "pixellab_object_id": "0a94f54d-c193-43bd-984a-ba8c436dff38",
+          "generated_at": "2026-08-16T09:29:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5499,
+          "glow_score": 0.2364,
+          "art_hash": "1a4be471ead279dc"
+        },
+        "LIT_3": {
+          "sprite": "cliff_fragments/cliff_fragment_002/lit_3/sprite.webp",
+          "pixellab_object_id": "892bdf72-2278-4517-83fc-49fbff0c9131",
+          "generated_at": "2026-08-16T09:30:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.665,
+          "glow_score": 0.1943,
+          "art_hash": "4ccc60e2980b0a65"
+        },
+        "LIT_4": {
+          "sprite": "cliff_fragments/cliff_fragment_002/lit_4/sprite.webp",
+          "pixellab_object_id": "0e4b6efb-81f8-4b6f-86b0-b609c60498f9",
+          "generated_at": "2026-08-16T09:33:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8726,
+          "glow_score": 0.0063,
+          "art_hash": "179f6dc8e59ac827"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "84bd0223-4e85-4fd0-a60b-a8e40590bccc",
+          "generated_at": "2026-08-16T09:31:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.97,
+          "glow_score": 0.0,
+          "art_hash": "79863bafa7ec1eb2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f040382f-179e-4e1c-91c8-04bd36599286",
+          "generated_at": "2026-08-16T09:30:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9019,
+          "glow_score": 0.0,
+          "art_hash": "505fcbe8985daede"
         }
       },
       "animations": []
@@ -12807,7 +12924,7 @@
       "rel": "cliff_mosses/cliff_moss_001",
       "name": "Grey-green lichen crust 001",
       "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, grey-green lichen crust, peeling away at one edge, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -12827,11 +12944,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_001/lit_2/sprite.webp",
+          "pixellab_object_id": "207f268d-52ae-4d3c-a00e-1449d3698072",
+          "generated_at": "2026-08-16T09:33:03+00:00",
+          "glow_concept": "glow-lichen in bright rings",
+          "difference_from_source": 0.5377,
+          "glow_score": 0.1083,
+          "art_hash": "206444b3e4d4c244"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_mosses/cliff_moss_001/sprite.webp",
           "pixellab_object_id": "58a85adf-b1df-4282-944f-9d6c60a6470d",
           "generated_at": "2026-08-14T03:07:05+00:00",
           "art_hash": "64941c82718c3e50"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4841c453-4669-47fa-8e99-d263e93bf928",
+          "generated_at": "2026-08-16T09:30:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.412,
+          "glow_score": 0.0103,
+          "art_hash": "ecb940b11a2e2582"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_mosses/cliff_moss_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "896c93b5-392f-4c41-8c32-2dc41b92e790",
+          "generated_at": "2026-08-16T09:30:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4013,
+          "glow_score": 0.0087,
+          "art_hash": "c4f284c28c9fa2d1"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_mosses/cliff_moss_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "46e0793a-529d-41c4-8bff-cd5b2fa61594",
+          "generated_at": "2026-08-16T09:30:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5633,
+          "glow_score": 0.0091,
+          "art_hash": "5192a0699771c510"
         }
       },
       "animations": []
@@ -12841,7 +12994,7 @@
       "rel": "cliff_mosses/cliff_moss_005",
       "name": "Black wet moss 005",
       "category": "cliff_mosses",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, black wet moss, spreading in wide blotches, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -12861,11 +13014,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_mosses/cliff_moss_005/lit_1/sprite.webp",
+          "pixellab_object_id": "4d52e889-25ff-4edd-9d08-c7050fe7c0f2",
+          "generated_at": "2026-08-16T09:32:43+00:00",
+          "glow_concept": "glow-lichen in bright rings",
+          "difference_from_source": 0.4322,
+          "glow_score": 0.1017,
+          "art_hash": "e1b21834ae64d9fe"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_mosses/cliff_moss_005/sprite.webp",
           "pixellab_object_id": "1ba88abd-4ce9-4e4c-86c3-d8abc61d105b",
           "generated_at": "2026-08-14T03:34:03+00:00",
           "art_hash": "0538a35d3d0a34fa"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "48884127-f1d3-471d-aabb-4a19a55ad76d",
+          "generated_at": "2026-08-16T09:32:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4932,
+          "glow_score": 0.0528,
+          "art_hash": "4e4beb9af2cac878"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_mosses/cliff_moss_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "139b53b5-6a76-44c2-9106-989163b1ec70",
+          "generated_at": "2026-08-16T09:32:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.333,
+          "glow_score": 0.0679,
+          "art_hash": "14d82d2ccd9205bb"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_mosses/cliff_moss_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4717a845-3a84-4230-964f-d124443c4a21",
+          "generated_at": "2026-08-16T09:32:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5996,
+          "glow_score": 0.0611,
+          "art_hash": "e0fbb79fce523d57"
         }
       },
       "animations": []
@@ -12873,9 +13062,9 @@
     {
       "id": "cliff_moss_006",
       "rel": "cliff_mosses/cliff_moss_006",
-      "name": "Rust-orange lichen patches 006 \u00b7 lit",
+      "name": "Rust-orange lichen patches 006",
       "category": "cliff_mosses",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, rust-orange lichen patches, thickest where water seeps, tall, about three times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
       "view": "low top-down",
       "size": 192,
@@ -12900,6 +13089,42 @@
           "pixellab_object_id": "bdc75a15-3ab4-4902-8c6c-c0cd6ac12187",
           "generated_at": "2026-08-14T03:16:25+00:00",
           "art_hash": "f2c857f5c1be0bab"
+        },
+        "LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_006/lit_2/sprite.webp",
+          "pixellab_object_id": "377a969e-5124-4872-b777-439f5112e1d9",
+          "generated_at": "2026-08-16T09:33:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.384,
+          "glow_score": 0.0,
+          "art_hash": "bb346bf8c1f5618f"
+        },
+        "LIT_3": {
+          "sprite": "cliff_mosses/cliff_moss_006/lit_3/sprite.webp",
+          "pixellab_object_id": "cebcea8a-2682-4446-97ab-3714f9ed535a",
+          "generated_at": "2026-08-16T09:33:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3897,
+          "glow_score": 0.0431,
+          "art_hash": "aa690b318ae341ca"
+        },
+        "LIT_4": {
+          "sprite": "cliff_mosses/cliff_moss_006/lit_4/sprite.webp",
+          "pixellab_object_id": "0cf60d4d-4d8b-40d3-9703-1f2210e45892",
+          "generated_at": "2026-08-16T09:33:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5655,
+          "glow_score": 0.0396,
+          "art_hash": "4a2000a5661d82bb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ea0ad4ff-19cf-4ca3-9dae-d3a7c2c45bca",
+          "generated_at": "2026-08-16T09:34:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7428,
+          "glow_score": 0.0,
+          "art_hash": "27306160e0f79c7f"
         }
       },
       "animations": []
@@ -12934,6 +13159,15 @@
           "pixellab_object_id": "86c02868-3d74-4dca-8e4c-177609a88914",
           "generated_at": "2026-08-14T03:35:32+00:00",
           "art_hash": "e98c6815493ffd97"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_mosses/cliff_moss_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "96586bd4-1562-4921-99ee-ca716baa9ed4",
+          "generated_at": "2026-08-16T09:34:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4972,
+          "glow_score": 0.0,
+          "art_hash": "dbd6b7cfca4d632d"
         }
       },
       "animations": []
