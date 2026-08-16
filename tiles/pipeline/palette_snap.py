@@ -57,9 +57,16 @@ def _regions(a):
     hd = bw / 2.0
     cy = y0 + hd / 2.0
     yy, xx = np.mgrid[0:h, 0:w]
-    dia = (np.abs(xx - cx) / (bw / 2.0) + np.abs(yy - cy) / (hd / 2.0)) <= 1.0
     below = yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0))
-    return {"top": dia & op, "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
+    # The top is EVERY opaque pixel that is not wall — not the strict diamond equation.
+    # The strict form leaves the diamond's outermost rim outside every mask, so those
+    # pixels keep their raw colour while the interior is rewritten to the palette. On a
+    # single tile that is invisible; tessellated it becomes a bright grid line along
+    # every shared edge, which is the same seam class tiles2 fought for months. Measured
+    # on one tile: 77 orphaned rim pixels sitting at [117,173,92] against a snapped
+    # interior of [63,138,58]. Defining the top as the complement of the wall leaves
+    # nothing unclaimed.
+    return {"top": op & ~below, "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
 
 
 def _rgb2hsv(px):
