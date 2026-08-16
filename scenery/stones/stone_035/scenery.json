@@ -7,7 +7,7 @@
   "rank": 2,
   "index": 35,
   "name": "Barnacled coastal rock 035",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "barnacled coastal rock",
   "modifier": "rain-dark and glistening",
   "glow_concept": null,
@@ -45,10 +45,50 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_035/lit_1/sprite.webp",
+      "pixellab_object_id": "2fd7bc34-cf7c-4530-af60-42b2f8e0c7b2",
+      "generated_at": "2026-08-16T22:07:37+00:00",
+      "glow_concept": "tiny golden memory motes drifting above it",
+      "difference_from_source": 0.5957,
+      "glow_score": 0.0945
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_035/lit_2/sprite.webp",
+      "pixellab_object_id": "caae07db-b6ac-4a0f-97d6-0de6ab3645b3",
+      "generated_at": "2026-08-16T22:07:48+00:00",
+      "glow_concept": "ring of ghost-blue lichen circles",
+      "difference_from_source": 0.6393,
+      "glow_score": 0.0696
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_035/sprite.webp",
       "pixellab_object_id": "4b6f622c-e79b-4054-9e86-6dac5e0346c2",
       "generated_at": "2026-08-15T17:53:32+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_035/not_lit_2/sprite.webp",
+      "pixellab_object_id": "36339ea6-9e27-46f9-b005-c8c440417ec6",
+      "generated_at": "2026-08-16T22:07:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6431,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_035/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f30a80e1-dd00-4306-b9fe-fd4f3286d15d",
+      "generated_at": "2026-08-16T22:07:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6046,
+      "glow_score": 0.0013
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_035/not_lit_4/sprite.webp",
+      "pixellab_object_id": "fa4c9c54-d216-4eb5-87af-60b361b1a6c3",
+      "generated_at": "2026-08-16T22:07:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3906,
+      "glow_score": 0.0
     }
   }
 }

@@ -42944,6 +42944,15 @@
           "difference_from_source": 0.9292,
           "glow_score": 0.0037,
           "art_hash": "e5c8a540d77805ce"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_028/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f610c11f-a916-425a-86b4-ff9a9266e2f4",
+          "generated_at": "2026-08-16T22:05:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7817,
+          "glow_score": 0.0,
+          "art_hash": "777840f3550b8a67"
         }
       },
       "animations": []
@@ -42953,7 +42962,7 @@
       "rel": "stones/stone_029",
       "name": "Pale limestone chunk 029",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, pale limestone chunk, unusually tall and narrow, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -42981,6 +42990,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_029/lit_1/sprite.webp",
+          "pixellab_object_id": "e47ebd16-6bca-4a2f-b488-90b90fba924f",
+          "generated_at": "2026-08-16T22:03:33+00:00",
+          "glow_concept": "ember light leaking from a hollow beneath",
+          "difference_from_source": 0.9928,
+          "glow_score": 0.1597,
+          "art_hash": "14cc4138cb604866"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_029/lit_2/sprite.webp",
+          "pixellab_object_id": "d0f9659a-fe07-4b91-8fdb-89d367c37d15",
+          "generated_at": "2026-08-16T22:05:17+00:00",
+          "glow_concept": "thin runes etched glowing warm amber",
+          "difference_from_source": 0.8585,
+          "glow_score": 0.3637,
+          "art_hash": "0ef1774655fbdef8"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_029/sprite.webp",
           "pixellab_object_id": "021864ed-6dfb-4f7a-86db-3fa67271ab33",
@@ -43101,7 +43128,7 @@
       "rel": "stones/stone_031",
       "name": "Boulder wrapped in briar roots 031",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, boulder wrapped in briar roots, half-swallowed by tall grass, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -43129,6 +43156,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_031/lit_1/sprite.webp",
+          "pixellab_object_id": "8b31ac5b-55ef-407c-b015-446fb7c5f21c",
+          "generated_at": "2026-08-16T22:03:52+00:00",
+          "glow_concept": "ember light leaking from a hollow beneath",
+          "difference_from_source": 0.513,
+          "glow_score": 0.0723,
+          "art_hash": "06ce95e86c4e9427"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_031/lit_2/sprite.webp",
+          "pixellab_object_id": "ed9c509a-3720-47fc-ba31-6f7eaf48d8a7",
+          "generated_at": "2026-08-16T22:04:02+00:00",
+          "glow_concept": "thin runes etched glowing warm amber",
+          "difference_from_source": 0.9207,
+          "glow_score": 0.0399,
+          "art_hash": "467b8369b0775391"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_031/sprite.webp",
           "pixellab_object_id": "f6c4cc2b-bcd1-4679-b103-f5287e4c9eb3",
@@ -43170,7 +43215,7 @@
       "rel": "stones/stone_033",
       "name": "Stone with carved initials 033",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, stone with carved initials, scarred by an old lightning strike, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -43198,11 +43243,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_033/lit_1/sprite.webp",
+          "pixellab_object_id": "9e6a4db8-6097-4c33-b4c1-88962e70ca1f",
+          "generated_at": "2026-08-16T22:05:38+00:00",
+          "glow_concept": "ember light leaking from a hollow beneath",
+          "difference_from_source": 0.9108,
+          "glow_score": 0.1673,
+          "art_hash": "a873a1b437e3da51"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_033/lit_2/sprite.webp",
+          "pixellab_object_id": "24c68f14-8be7-4f9d-8a6b-f24b4e85e824",
+          "generated_at": "2026-08-16T22:05:28+00:00",
+          "glow_concept": "thin runes etched glowing warm amber",
+          "difference_from_source": 0.6723,
+          "glow_score": 0.0558,
+          "art_hash": "9bb2838b2de74fb4"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_033/sprite.webp",
           "pixellab_object_id": "57ad368b-0106-4e21-a5d6-eb78d921b1c8",
           "generated_at": "2026-08-15T17:51:57+00:00",
           "art_hash": "7be6ba554035d8b9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_033/not_lit_2/sprite.webp",
+          "pixellab_object_id": "08f53a83-9c3e-4150-86ab-2389ddc609ea",
+          "generated_at": "2026-08-16T22:04:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5478,
+          "glow_score": 0.0,
+          "art_hash": "3c098d585e3eccfe"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_033/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ccaa99bf-dfc3-481a-aef8-bf4340b23e85",
+          "generated_at": "2026-08-16T22:04:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5431,
+          "glow_score": 0.0,
+          "art_hash": "d596f6c6aeb9cd6c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stones/stone_033/not_lit_4/sprite.webp",
+          "pixellab_object_id": "9d6d1656-c892-48ad-a35c-0e94763e2b9b",
+          "generated_at": "2026-08-16T22:05:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7768,
+          "glow_score": 0.0,
+          "art_hash": "d3c2d4efd6c78f1a"
         }
       },
       "animations": []
@@ -43210,9 +43300,9 @@
     {
       "id": "stone_034",
       "rel": "stones/stone_034",
-      "name": "Toppled old gatepost stone 034 \u00b7 lit",
+      "name": "Toppled old gatepost stone 034",
       "category": "stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, toppled old gatepost stone, with a rabbit burrow at the base, small, knee-high, self-emissive at night, softly radiating light: tiny golden memory motes drifting above it",
       "view": "low top-down",
       "size": 64,
@@ -43245,6 +43335,51 @@
           "pixellab_object_id": "53db6c6c-68eb-4eb0-8a5b-c77eb991d1b5",
           "generated_at": "2026-08-15T18:01:33+00:00",
           "art_hash": "a06146b55f26ba31"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_034/lit_2/sprite.webp",
+          "pixellab_object_id": "5951a688-59bb-44f0-8347-b42998138b3d",
+          "generated_at": "2026-08-16T22:05:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6713,
+          "glow_score": 0.0261,
+          "art_hash": "5ed8f5b4899ef33f"
+        },
+        "LIT_3": {
+          "sprite": "stones/stone_034/lit_3/sprite.webp",
+          "pixellab_object_id": "4dba46ec-23c1-4654-b1a2-381dce1548c5",
+          "generated_at": "2026-08-16T22:06:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6879,
+          "glow_score": 0.0431,
+          "art_hash": "01d7d66e5d96f5b5"
+        },
+        "LIT_4": {
+          "sprite": "stones/stone_034/lit_4/sprite.webp",
+          "pixellab_object_id": "3b536631-80e5-4ec0-949c-722061f1cd04",
+          "generated_at": "2026-08-16T22:06:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7366,
+          "glow_score": 0.0422,
+          "art_hash": "88b14c202b58954c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stones/stone_034/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a60e4af0-c33a-48ac-a2b6-714f57bed2ba",
+          "generated_at": "2026-08-16T22:06:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9395,
+          "glow_score": 0.0,
+          "art_hash": "fae5e2ded6f45fd0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_034/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9457b52e-644c-496f-960b-bd69ee56f4b7",
+          "generated_at": "2026-08-16T22:07:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6263,
+          "glow_score": 0.0263,
+          "art_hash": "714d40270684d237"
         }
       },
       "animations": []
@@ -43254,7 +43389,7 @@
       "rel": "stones/stone_035",
       "name": "Barnacled coastal rock 035",
       "category": "stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, barnacled coastal rock, rain-dark and glistening, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -43282,11 +43417,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stones/stone_035/lit_1/sprite.webp",
+          "pixellab_object_id": "2fd7bc34-cf7c-4530-af60-42b2f8e0c7b2",
+          "generated_at": "2026-08-16T22:07:37+00:00",
+          "glow_concept": "tiny golden memory motes drifting above it",
+          "difference_from_source": 0.5957,
+          "glow_score": 0.0945,
+          "art_hash": "29f33349feed7a87"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_035/lit_2/sprite.webp",
+          "pixellab_object_id": "caae07db-b6ac-4a0f-97d6-0de6ab3645b3",
+          "generated_at": "2026-08-16T22:07:48+00:00",
+          "glow_concept": "ring of ghost-blue lichen circles",
+          "difference_from_source": 0.6393,
+          "glow_score": 0.0696,
+          "art_hash": "16a82fdbaf30765f"
+        },
         "NOT_LIT_1": {
           "sprite": "stones/stone_035/sprite.webp",
           "pixellab_object_id": "4b6f622c-e79b-4054-9e86-6dac5e0346c2",
           "generated_at": "2026-08-15T17:53:32+00:00",
           "art_hash": "69bb53fbbef15f6f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_035/not_lit_2/sprite.webp",
+          "pixellab_object_id": "36339ea6-9e27-46f9-b005-c8c440417ec6",
+          "generated_at": "2026-08-16T22:07:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6431,
+          "glow_score": 0.0,
+          "art_hash": "19db65e330c34135"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_035/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f30a80e1-dd00-4306-b9fe-fd4f3286d15d",
+          "generated_at": "2026-08-16T22:07:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6046,
+          "glow_score": 0.0013,
+          "art_hash": "46d188cabc520717"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stones/stone_035/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fa4c9c54-d216-4eb5-87af-60b361b1a6c3",
+          "generated_at": "2026-08-16T22:07:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3906,
+          "glow_score": 0.0,
+          "art_hash": "33802a3d1b828040"
         }
       },
       "animations": []
@@ -43294,9 +43474,9 @@
     {
       "id": "stone_036",
       "rel": "stones/stone_036",
-      "name": "Red iron-streaked boulder 036 \u00b7 lit",
+      "name": "Red iron-streaked boulder 036",
       "category": "stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-streaked boulder, lightly snow-dusted, waist-high, self-emissive at night, softly radiating light: glowing pale handprint pressed on the face",
       "view": "low top-down",
       "size": 64,
@@ -43329,6 +43509,42 @@
           "pixellab_object_id": "c4cb8581-c6bb-4a76-9fa4-0ae140509fe2",
           "generated_at": "2026-08-15T17:49:15+00:00",
           "art_hash": "115e58bfb5a85f82"
+        },
+        "LIT_2": {
+          "sprite": "stones/stone_036/lit_2/sprite.webp",
+          "pixellab_object_id": "8ec677d8-10e0-4d30-adbf-37696df6be2a",
+          "generated_at": "2026-08-16T22:08:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3829,
+          "glow_score": 0.1644,
+          "art_hash": "31151869d517bac1"
+        },
+        "LIT_3": {
+          "sprite": "stones/stone_036/lit_3/sprite.webp",
+          "pixellab_object_id": "d3aad787-00be-4c70-9019-1df3a521952a",
+          "generated_at": "2026-08-16T22:08:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3586,
+          "glow_score": 0.0723,
+          "art_hash": "bf6c1c5f51fc7eb2"
+        },
+        "LIT_4": {
+          "sprite": "stones/stone_036/lit_4/sprite.webp",
+          "pixellab_object_id": "cacae92b-e121-420c-bb20-44e5d69691d1",
+          "generated_at": "2026-08-16T22:08:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5458,
+          "glow_score": 0.1882,
+          "art_hash": "779282922adb4992"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_036/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0c5d34c7-17ba-496e-8914-024452f8f9ca",
+          "generated_at": "2026-08-16T22:08:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8256,
+          "glow_score": 0.0948,
+          "art_hash": "1eff770a071cb608"
         }
       },
       "animations": []
@@ -43371,6 +43587,24 @@
           "pixellab_object_id": "80980062-9bba-400a-917f-98607ae32d95",
           "generated_at": "2026-08-15T18:01:35+00:00",
           "art_hash": "587ff517da486fbb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "stones/stone_037/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b718ced4-f1b4-44f0-b78a-ef7a4bb32dbf",
+          "generated_at": "2026-08-16T22:09:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5745,
+          "glow_score": 0.0,
+          "art_hash": "c1b2d27af1e6f62b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stones/stone_037/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8d6887b8-2219-4e6b-8120-f2955ac368b1",
+          "generated_at": "2026-08-16T22:09:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5856,
+          "glow_score": 0.054,
+          "art_hash": "9bef3f25302ed13f"
         }
       },
       "animations": []
