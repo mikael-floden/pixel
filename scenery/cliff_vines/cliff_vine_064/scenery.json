@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 64,
-  "name": "Berry-dotted bramble fall 064 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Berry-dotted bramble fall 064",
+  "lights": null,
   "variety": "berry-dotted bramble fall",
   "modifier": "an old thick growth with young shoots around it",
   "glow_concept": "amber memory-light dripping from the tips",
@@ -36,6 +36,38 @@
       "sprite": "cliff_vines/cliff_vine_064/sprite.webp",
       "pixellab_object_id": "40276d41-9206-458e-b074-4892a7c0c0c3",
       "generated_at": "2026-08-14T04:54:23+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_064/lit_2/sprite.webp",
+      "pixellab_object_id": "adcfac9f-82a6-4e27-bc81-72713f1a93b2",
+      "generated_at": "2026-08-16T10:37:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2643,
+      "glow_score": 0.001
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_064/lit_3/sprite.webp",
+      "pixellab_object_id": "4ecf3b51-2c41-435e-a01f-88a8b224cc4b",
+      "generated_at": "2026-08-16T10:37:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.301,
+      "glow_score": 0.0013
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_064/lit_4/sprite.webp",
+      "pixellab_object_id": "da805bd3-1079-4c41-8537-d9da1044d3dd",
+      "generated_at": "2026-08-16T10:38:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3399,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_064/not_lit_2/sprite.webp",
+      "pixellab_object_id": "19c02e15-2507-4e1d-a598-2002770b479c",
+      "generated_at": "2026-08-16T10:37:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4982,
+      "glow_score": 0.0
     }
   }
 }
