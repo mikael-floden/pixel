@@ -46,6 +46,8 @@ def candidates(cell_dir):
             if not q:
                 continue
             f = flatness.faces(p)
+            if not f or not f["top"] or f["top"]["share"] < flatness.CLEAN_TOP:
+                continue      # dirty top = no-go, regardless of how good the wall is
             out.append({
                 "path": p, "wall": q,
                 "top_share": round(f["top"]["share"], 4) if f and f["top"] else None,

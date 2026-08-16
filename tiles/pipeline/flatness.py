@@ -103,6 +103,42 @@ def faces(path):
     return out
 
 
+
+CLEAN_TOP = 0.93   # calibrated against the maintainer's own accept/reject, see below
+
+
+def select_best(paths, gate=CLEAN_TOP):
+    """Pick a cell's best tile: CLEAN TOP first as a gate, then wall quality.
+
+    Order matters and I had it wrong. Ranking on wall score alone surfaced tiles with
+    the best cliffs and often the WORST tops — the maintainer reviewed eight of them
+    and rejected five on exactly that, "not clean grass is a no go". Every one of those
+    cells contained clean-top candidates in the same sheets that the ranking never
+    showed (dark_mud had 15 of 32 clean; I displayed one at 0.175).
+
+    So a clean top is a GATE, not a score component: below the gate a tile is out no
+    matter how good its wall. Among tiles that pass, the wall decides, because the wall
+    is what builds every cliff.
+
+    Gate calibrated on the maintainer's verdict: accepted tops measured 0.944, 0.950,
+    0.944; rejected ones 0.153, 0.175, 0.390, 0.425 and 0.907. 0.93 separates them
+    exactly. Returns (path, wall_quality, top_share) or None.
+    """
+    scored = []
+    for p in paths:
+        q = wall_quality(p)
+        f = faces(p)
+        if not q or not f or not f["top"]:
+            continue
+        scored.append((p, q, float(f["top"]["share"])))
+    if not scored:
+        return None
+    clean = [x for x in scored if x[2] >= gate]
+    pool = clean or []
+    if not pool:
+        return None                     # no clean top in this sheet: nothing to offer
+    return max(pool, key=lambda x: x[1]["score"])
+
 def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     """Score the WALLS on the three things the maintainer actually judges them on.
 

@@ -57,6 +57,60 @@
         }
       ]
     },
+    "grass__over__dark_mud": {
+      "top": "grass",
+      "side": "dark_mud",
+      "candidates": [
+        {
+          "key": "tiles/grass__over__dark_mud/0",
+          "file": "review/grass__over__dark_mud/0.png",
+          "wall_score": 2.76,
+          "wall": {
+            "tiling": 0.273,
+            "discretion": 0.61,
+            "structure": 0.651,
+            "contrast": 18.99,
+            "edges": 7.81
+          },
+          "top_share": 0.9367,
+          "tile_id": "9144890a-77ad-4c13-8fc6-9fe5296f7ff8",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wet dark mud with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
+          "key": "tiles/grass__over__dark_mud/1",
+          "file": "review/grass__over__dark_mud/1.png",
+          "wall_score": 2.55,
+          "wall": {
+            "tiling": 0.267,
+            "discretion": 0.547,
+            "structure": 0.65,
+            "contrast": 17.85,
+            "edges": 7.802
+          },
+          "top_share": 0.9422,
+          "tile_id": "9144890a-77ad-4c13-8fc6-9fe5296f7ff8",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wet dark mud with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
+          "key": "tiles/grass__over__dark_mud/2",
+          "file": "review/grass__over__dark_mud/2.png",
+          "wall_score": 1.91,
+          "wall": {
+            "tiling": 0.523,
+            "discretion": 0.325,
+            "structure": 0.439,
+            "contrast": 13.85,
+            "edges": 5.274
+          },
+          "top_share": 0.9444,
+          "tile_id": "9144890a-77ad-4c13-8fc6-9fe5296f7ff8",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wet dark mud with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        }
+      ]
+    },
     "grass__over__grass": {
       "top": "grass",
       "side": "grass",
@@ -80,15 +134,15 @@
         {
           "key": "tiles/grass__over__grass/1",
           "file": "review/grass__over__grass/1.png",
-          "wall_score": 7.67,
+          "wall_score": 5.82,
           "wall": {
-            "tiling": 0.625,
-            "discretion": 0.94,
+            "tiling": 0.452,
+            "discretion": 0.74,
             "structure": 1.0,
-            "contrast": 24.93,
-            "edges": 16.266
+            "contrast": 21.32,
+            "edges": 20.133
           },
-          "top_share": 0.7533,
+          "top_share": 0.9389,
           "tile_id": "d986002c-2588-4d3d-a8c6-46baf9f56b16",
           "style": "explicit",
           "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are lush green grass with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
@@ -96,15 +150,15 @@
         {
           "key": "tiles/grass__over__grass/2",
           "file": "review/grass__over__grass/2.png",
-          "wall_score": 6.75,
+          "wall_score": 5.81,
           "wall": {
-            "tiling": 0.502,
-            "discretion": 0.886,
+            "tiling": 0.269,
+            "discretion": 0.961,
             "structure": 1.0,
-            "contrast": 23.96,
-            "edges": 13.731
+            "contrast": 25.3,
+            "edges": 18.877
           },
-          "top_share": 0.8822,
+          "top_share": 0.9489,
           "tile_id": "d986002c-2588-4d3d-a8c6-46baf9f56b16",
           "style": "explicit",
           "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are lush green grass with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
@@ -118,50 +172,50 @@
         {
           "key": "tiles/grass__over__grey_stone/0",
           "file": "review/grass__over__grey_stone/0.png",
-          "wall_score": 5.8,
+          "wall_score": 4.1,
           "wall": {
-            "tiling": 0.545,
-            "discretion": 0.622,
+            "tiling": 0.362,
+            "discretion": 0.469,
             "structure": 1.0,
-            "contrast": 32.8,
-            "edges": 21.704
+            "contrast": 35.56,
+            "edges": 23.734
           },
-          "top_share": 0.4247,
-          "tile_id": "8074a7a7-657c-4ec1-abc7-211e62f07ff4",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean rugged grey mountain rock"
+          "top_share": 0.9333,
+          "tile_id": "e10cfea2-03de-4934-9d2d-466aad8d201b",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
           "key": "tiles/grass__over__grey_stone/1",
           "file": "review/grass__over__grey_stone/1.png",
-          "wall_score": 4.96,
+          "wall_score": 3.47,
           "wall": {
-            "tiling": 0.424,
-            "discretion": 0.584,
+            "tiling": 0.177,
+            "discretion": 0.554,
             "structure": 1.0,
-            "contrast": 33.48,
-            "edges": 16.432
+            "contrast": 34.03,
+            "edges": 15.632
           },
-          "top_share": 0.5379,
-          "tile_id": "8074a7a7-657c-4ec1-abc7-211e62f07ff4",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean rugged grey mountain rock"
+          "top_share": 0.9322,
+          "tile_id": "e10cfea2-03de-4934-9d2d-466aad8d201b",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
           "key": "tiles/grass__over__grey_stone/2",
           "file": "review/grass__over__grey_stone/2.png",
-          "wall_score": 4.71,
+          "wall_score": 3.11,
           "wall": {
-            "tiling": 0.227,
-            "discretion": 0.768,
-            "structure": 1.0,
-            "contrast": 30.17,
-            "edges": 22.561
+            "tiling": 0.0,
+            "discretion": 0.788,
+            "structure": 0.878,
+            "contrast": 29.81,
+            "edges": 10.535
           },
-          "top_share": 0.3875,
-          "tile_id": "8074a7a7-657c-4ec1-abc7-211e62f07ff4",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean rugged grey mountain rock"
+          "top_share": 0.9433,
+          "tile_id": "e10cfea2-03de-4934-9d2d-466aad8d201b",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         }
       ]
     },
@@ -172,22 +226,6 @@
         {
           "key": "tiles/grass__over__ice/0",
           "file": "review/grass__over__ice/0.png",
-          "wall_score": 8.64,
-          "wall": {
-            "tiling": 0.772,
-            "discretion": 0.976,
-            "structure": 1.0,
-            "contrast": 26.44,
-            "edges": 14.49
-          },
-          "top_share": 0.3899,
-          "tile_id": "9e098621-f468-4274-a2ad-876236414ad8",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean translucent crystal ice"
-        },
-        {
-          "key": "tiles/grass__over__ice/1",
-          "file": "review/grass__over__ice/1.png",
           "wall_score": 8.51,
           "wall": {
             "tiling": 0.825,
@@ -202,20 +240,36 @@
           "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
+          "key": "tiles/grass__over__ice/1",
+          "file": "review/grass__over__ice/1.png",
+          "wall_score": 7.95,
+          "wall": {
+            "tiling": 0.775,
+            "discretion": 0.819,
+            "structure": 1.0,
+            "contrast": 29.26,
+            "edges": 16.604
+          },
+          "top_share": 0.9322,
+          "tile_id": "a9c5f4e1-af9c-434e-b44f-4582ab6aea8e",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
           "key": "tiles/grass__over__ice/2",
           "file": "review/grass__over__ice/2.png",
-          "wall_score": 8.02,
+          "wall_score": 7.76,
           "wall": {
-            "tiling": 0.844,
-            "discretion": 0.749,
+            "tiling": 0.75,
+            "discretion": 0.808,
             "structure": 1.0,
-            "contrast": 30.51,
-            "edges": 15.251
+            "contrast": 29.46,
+            "edges": 13.993
           },
-          "top_share": 0.3497,
-          "tile_id": "9e098621-f468-4274-a2ad-876236414ad8",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean translucent crystal ice"
+          "top_share": 0.9444,
+          "tile_id": "a9c5f4e1-af9c-434e-b44f-4582ab6aea8e",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         }
       ]
     },
@@ -226,50 +280,142 @@
         {
           "key": "tiles/grass__over__light_beach/0",
           "file": "review/grass__over__light_beach/0.png",
-          "wall_score": 7.15,
+          "wall_score": 5.71,
           "wall": {
-            "tiling": 0.621,
-            "discretion": 0.831,
+            "tiling": 0.505,
+            "discretion": 0.651,
             "structure": 1.0,
-            "contrast": 29.05,
-            "edges": 13.204
+            "contrast": 32.28,
+            "edges": 13.097
           },
-          "top_share": 0.1533,
-          "tile_id": "5710da14-304a-4d2a-9081-c1a28c31823c",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean pale sandy beach"
+          "top_share": 0.9444,
+          "tile_id": "21540e5a-25ac-48ed-b682-d9ba1651a90f",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
           "key": "tiles/grass__over__light_beach/1",
           "file": "review/grass__over__light_beach/1.png",
-          "wall_score": 6.85,
+          "wall_score": 5.62,
           "wall": {
-            "tiling": 0.608,
-            "discretion": 0.779,
+            "tiling": 0.534,
+            "discretion": 0.596,
             "structure": 1.0,
-            "contrast": 29.98,
-            "edges": 12.703
+            "contrast": 33.27,
+            "edges": 19.784
           },
-          "top_share": 0.1722,
-          "tile_id": "5710da14-304a-4d2a-9081-c1a28c31823c",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean pale sandy beach"
+          "top_share": 0.9444,
+          "tile_id": "21540e5a-25ac-48ed-b682-d9ba1651a90f",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        }
+      ]
+    },
+    "grass__over__light_soil": {
+      "top": "grass",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/grass__over__light_soil/0",
+          "file": "review/grass__over__light_soil/0.png",
+          "wall_score": 5.07,
+          "wall": {
+            "tiling": 0.441,
+            "discretion": 0.846,
+            "structure": 0.814,
+            "contrast": 28.76,
+            "edges": 9.766
+          },
+          "top_share": 0.9444,
+          "tile_id": "9806b561-9909-4032-a32b-cc6d2634dfe5",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
-          "key": "tiles/grass__over__light_beach/2",
-          "file": "review/grass__over__light_beach/2.png",
-          "wall_score": 6.81,
+          "key": "tiles/grass__over__light_soil/1",
+          "file": "review/grass__over__light_soil/1.png",
+          "wall_score": 4.92,
           "wall": {
-            "tiling": 0.584,
-            "discretion": 0.798,
-            "structure": 1.0,
-            "contrast": 29.63,
-            "edges": 13.475
+            "tiling": 0.498,
+            "discretion": 0.97,
+            "structure": 0.692,
+            "contrast": 26.55,
+            "edges": 8.308
           },
-          "top_share": 0.1644,
-          "tile_id": "5710da14-304a-4d2a-9081-c1a28c31823c",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean pale sandy beach"
+          "top_share": 0.9444,
+          "tile_id": "9806b561-9909-4032-a32b-cc6d2634dfe5",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
+          "key": "tiles/grass__over__light_soil/2",
+          "file": "review/grass__over__light_soil/2.png",
+          "wall_score": 4.8,
+          "wall": {
+            "tiling": 0.52,
+            "discretion": 0.979,
+            "structure": 0.661,
+            "contrast": 26.37,
+            "edges": 7.927
+          },
+          "top_share": 0.9444,
+          "tile_id": "9806b561-9909-4032-a32b-cc6d2634dfe5",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        }
+      ]
+    },
+    "grass__over__parquet_floor": {
+      "top": "grass",
+      "side": "parquet_floor",
+      "candidates": [
+        {
+          "key": "tiles/grass__over__parquet_floor/0",
+          "file": "review/grass__over__parquet_floor/0.png",
+          "wall_score": 6.22,
+          "wall": {
+            "tiling": 0.591,
+            "discretion": 0.694,
+            "structure": 0.977,
+            "contrast": 20.48,
+            "edges": 11.718
+          },
+          "top_share": 0.9444,
+          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
+          "key": "tiles/grass__over__parquet_floor/1",
+          "file": "review/grass__over__parquet_floor/1.png",
+          "wall_score": 6.1,
+          "wall": {
+            "tiling": 0.485,
+            "discretion": 0.764,
+            "structure": 1.0,
+            "contrast": 21.75,
+            "edges": 12.476
+          },
+          "top_share": 0.9444,
+          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+        },
+        {
+          "key": "tiles/grass__over__parquet_floor/2",
+          "file": "review/grass__over__parquet_floor/2.png",
+          "wall_score": 5.99,
+          "wall": {
+            "tiling": 0.471,
+            "discretion": 0.757,
+            "structure": 1.0,
+            "contrast": 21.62,
+            "edges": 12.442
+          },
+          "top_share": 0.9433,
+          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
+          "style": "explicit",
+          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         }
       ]
     },
@@ -280,15 +426,15 @@
         {
           "key": "tiles/grass__over__snow/0",
           "file": "review/grass__over__snow/0.png",
-          "wall_score": 6.31,
+          "wall_score": 3.83,
           "wall": {
-            "tiling": 0.52,
-            "discretion": 0.766,
-            "structure": 1.0,
-            "contrast": 30.21,
-            "edges": 12.244
+            "tiling": 0.337,
+            "discretion": 0.656,
+            "structure": 0.798,
+            "contrast": 32.2,
+            "edges": 9.576
           },
-          "top_share": 0.9067,
+          "top_share": 0.9433,
           "tile_id": "7b5e1669-8dcd-48ba-a1ac-d561018ec51f",
           "style": null,
           "prompt": null
@@ -296,31 +442,15 @@
         {
           "key": "tiles/grass__over__snow/1",
           "file": "review/grass__over__snow/1.png",
-          "wall_score": 5.73,
+          "wall_score": 3.83,
           "wall": {
-            "tiling": 0.444,
-            "discretion": 0.795,
-            "structure": 0.952,
-            "contrast": 29.7,
-            "edges": 11.423
+            "tiling": 0.345,
+            "discretion": 0.643,
+            "structure": 0.799,
+            "contrast": 32.42,
+            "edges": 9.583
           },
-          "top_share": 0.9089,
-          "tile_id": "7b5e1669-8dcd-48ba-a1ac-d561018ec51f",
-          "style": null,
-          "prompt": null
-        },
-        {
-          "key": "tiles/grass__over__snow/2",
-          "file": "review/grass__over__snow/2.png",
-          "wall_score": 5.7,
-          "wall": {
-            "tiling": 0.496,
-            "discretion": 0.661,
-            "structure": 1.0,
-            "contrast": 32.11,
-            "edges": 14.468
-          },
-          "top_share": 0.9078,
+          "top_share": 0.9444,
           "tile_id": "7b5e1669-8dcd-48ba-a1ac-d561018ec51f",
           "style": null,
           "prompt": null
