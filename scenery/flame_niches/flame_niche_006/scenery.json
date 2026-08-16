@@ -4,8 +4,8 @@
   "group": "flame_niches",
   "rank": 16,
   "index": 6,
-  "name": "Copper-hooded niche 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Copper-hooded niche 006",
+  "lights": null,
   "variety": "copper-hooded niche",
   "glow_concept": "cold blue flame burning without fuel",
   "prompt": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, copper-hooded niche, about as tall as an adult person, self-emissive at night, softly radiating light: cold blue flame burning without fuel",
@@ -35,6 +35,46 @@
       "sprite": "flame_niches/flame_niche_006/sprite.webp",
       "pixellab_object_id": "9f925512-13b6-42a5-8237-ac3c0469d631",
       "generated_at": "2026-08-13T12:38:13+00:00"
+    },
+    "LIT_2": {
+      "sprite": "flame_niches/flame_niche_006/lit_2/sprite.webp",
+      "pixellab_object_id": "01d4d78c-39a4-44d1-9ef4-2d436a695562",
+      "generated_at": "2026-08-16T12:25:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8409,
+      "glow_score": 0.0449
+    },
+    "LIT_3": {
+      "sprite": "flame_niches/flame_niche_006/lit_3/sprite.webp",
+      "pixellab_object_id": "987b1966-1721-4f11-b4f6-cc45b82e0775",
+      "generated_at": "2026-08-16T12:25:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7824,
+      "glow_score": 0.0468
+    },
+    "LIT_4": {
+      "sprite": "flame_niches/flame_niche_006/lit_4/sprite.webp",
+      "pixellab_object_id": "38979462-010c-48d1-bb0e-d317e8a624ff",
+      "generated_at": "2026-08-16T12:25:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8792,
+      "glow_score": 0.0364
+    },
+    "NOT_LIT_1": {
+      "sprite": "flame_niches/flame_niche_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "cb0e8269-c012-41c1-897b-b036846b1c15",
+      "generated_at": "2026-08-16T12:26:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3762,
+      "glow_score": 0.0103
+    },
+    "NOT_LIT_2": {
+      "sprite": "flame_niches/flame_niche_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f1eebb5e-aaf2-4d67-850e-3d2be1c8b118",
+      "generated_at": "2026-08-16T12:26:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8793,
+      "glow_score": 0.0646
     }
   }
 }
