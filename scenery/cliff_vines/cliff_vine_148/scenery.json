@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 148,
-  "name": "Berry-dotted bramble fall 148 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Berry-dotted bramble fall 148",
+  "lights": null,
   "variety": "berry-dotted bramble fall",
   "modifier": "S-curving with leaves at every bend",
   "glow_concept": "moonlit silver shimmer across the leaves",
@@ -36,6 +36,38 @@
       "sprite": "cliff_vines/cliff_vine_148/sprite.webp",
       "pixellab_object_id": "27a35e60-e9c6-4df8-8d59-d22e9341da50",
       "generated_at": "2026-08-14T05:46:35+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_148/lit_2/sprite.webp",
+      "pixellab_object_id": "f07d7955-3bdf-4ce4-b155-7a61028890a5",
+      "generated_at": "2026-08-16T11:06:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4855,
+      "glow_score": 0.0462
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_148/lit_4/sprite.webp",
+      "pixellab_object_id": "c8a4ef61-6550-4ccc-88a3-389484782ebf",
+      "generated_at": "2026-08-16T11:06:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5192,
+      "glow_score": 0.0475
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_148/not_lit_1/sprite.webp",
+      "pixellab_object_id": "63122974-9ea0-4e4e-9d18-f81e45f3db3e",
+      "generated_at": "2026-08-16T11:06:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9919,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_148/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e9a783cb-d371-4c5b-b1c7-c31da742af70",
+      "generated_at": "2026-08-16T11:07:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5672,
+      "glow_score": 0.0514
     }
   }
 }

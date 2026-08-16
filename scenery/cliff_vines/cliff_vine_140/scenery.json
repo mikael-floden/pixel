@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 140,
-  "name": "Variegated cream-and-green fall 140 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Variegated cream-and-green fall 140",
+  "lights": null,
   "variety": "variegated cream-and-green fall",
   "modifier": "two roots winding side by side, touching once",
   "glow_concept": "glowworm colonies strung in the foliage",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.382,
       "glow_score": 0.1926
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_140/lit_4/sprite.webp",
+      "pixellab_object_id": "ea05ffde-009e-4afa-a34e-0d2314edfe00",
+      "generated_at": "2026-08-16T11:02:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4061,
+      "glow_score": 0.1921
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_140/not_lit_1/sprite.webp",
+      "pixellab_object_id": "849e09f5-ba55-4bcb-9f0d-068cd7968803",
+      "generated_at": "2026-08-16T11:02:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2908,
+      "glow_score": 0.1298
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_140/not_lit_2/sprite.webp",
+      "pixellab_object_id": "4ae3f615-9153-45a2-ba58-a14f301b18d4",
+      "generated_at": "2026-08-16T11:04:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6784,
+      "glow_score": 0.0
     }
   }
 }
