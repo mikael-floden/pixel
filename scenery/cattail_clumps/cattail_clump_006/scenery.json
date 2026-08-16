@@ -4,8 +4,8 @@
   "group": "cattail_clumps",
   "rank": 33,
   "index": 6,
-  "name": "Dense double clump 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dense double clump 006",
+  "lights": null,
   "variety": "dense double clump",
   "glow_concept": "a firefly cluster nested in the leaves",
   "prompt": "a clump of cattails with strap-like arching leaves and brown velvet seed heads on tall straight stalks, growing from marshy ground, dense double clump, about as tall as an adult person, self-emissive at night, softly radiating light: a firefly cluster nested in the leaves",
@@ -35,6 +35,22 @@
       "sprite": "cattail_clumps/cattail_clump_006/sprite.webp",
       "pixellab_object_id": "8acffd69-ed83-45f0-8503-f7a851e5baa6",
       "generated_at": "2026-08-13T13:18:30+00:00"
+    },
+    "NOT_LIT_1": {
+      "sprite": "cattail_clumps/cattail_clump_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6e145bd8-63d2-44a4-9107-d91b994bc961",
+      "generated_at": "2026-08-16T05:27:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4638,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d5703e78-895f-427d-90d9-385d52b03517",
+      "generated_at": "2026-08-16T05:28:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9037,
+      "glow_score": 0.0
     }
   }
 }
