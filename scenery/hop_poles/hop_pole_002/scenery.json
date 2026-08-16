@@ -4,8 +4,8 @@
   "group": "hop_poles",
   "rank": 66,
   "index": 2,
-  "name": "Single pole, dense cones 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Single pole, dense cones 002",
+  "lights": null,
   "variety": "single pole, dense cones",
   "glow_concept": "cones dusted with luminous golden pollen",
   "prompt": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones, single pole, dense cones, tall, about two people high, self-emissive at night, softly radiating light: cones dusted with luminous golden pollen",
@@ -35,6 +35,38 @@
       "sprite": "hop_poles/hop_pole_002/sprite.webp",
       "pixellab_object_id": "f68bdc30-f41b-499b-85c2-64e4c1a4455d",
       "generated_at": "2026-08-13T05:03:03+00:00"
+    },
+    "LIT_2": {
+      "sprite": "hop_poles/hop_pole_002/lit_2/sprite.webp",
+      "pixellab_object_id": "6e2b6711-d2d7-498d-a2d2-0e3dc1be790d",
+      "generated_at": "2026-08-16T15:30:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4914,
+      "glow_score": 0.0304
+    },
+    "LIT_3": {
+      "sprite": "hop_poles/hop_pole_002/lit_3/sprite.webp",
+      "pixellab_object_id": "a6db9471-a10e-403a-be9e-3ae3bf79d309",
+      "generated_at": "2026-08-16T15:30:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.577,
+      "glow_score": 0.0365
+    },
+    "LIT_4": {
+      "sprite": "hop_poles/hop_pole_002/lit_4/sprite.webp",
+      "pixellab_object_id": "b1ce27fd-957b-4661-8a40-d9a3f9fe1b94",
+      "generated_at": "2026-08-16T15:30:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3986,
+      "glow_score": 0.0549
+    },
+    "NOT_LIT_2": {
+      "sprite": "hop_poles/hop_pole_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b1a59b5c-f443-4e80-a5ef-0f187e23b1f2",
+      "generated_at": "2026-08-16T15:31:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7575,
+      "glow_score": 0.0
     }
   }
 }

@@ -6,7 +6,7 @@
   "rank": 107,
   "index": 901,
   "name": "Grand carved-mantel hearth 901",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "grand carved-mantel hearth",
   "glow_concept": null,
   "prompt": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, grand carved-mantel hearth, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -33,10 +33,34 @@
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "hearths/hearth_901/lit_1/sprite.webp",
+      "pixellab_object_id": "979e33e0-e012-4afb-816e-bcb73b543131",
+      "generated_at": "2026-08-16T15:24:23+00:00",
+      "glow_concept": "fire burning warm in the hearth mouth",
+      "difference_from_source": 0.5327,
+      "glow_score": 0.1434
+    },
+    "LIT_2": {
+      "sprite": "hearths/hearth_901/lit_2/sprite.webp",
+      "pixellab_object_id": "d6fe5f5c-a2ab-4885-bf48-5b825c32a703",
+      "generated_at": "2026-08-16T15:24:24+00:00",
+      "glow_concept": "embers breathing orange under the cook pot",
+      "difference_from_source": 0.3806,
+      "glow_score": 0.0502
+    },
     "NOT_LIT_1": {
       "sprite": "hearths/hearth_901/sprite.webp",
       "pixellab_object_id": "c11a62a1-bff6-4733-a204-88963f88362d",
       "generated_at": "2026-08-13T23:27:18+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "hearths/hearth_901/not_lit_2/sprite.webp",
+      "pixellab_object_id": "bf06f136-8751-4447-873d-f31155efbdc8",
+      "generated_at": "2026-08-16T15:24:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2338,
+      "glow_score": 0.0
     },
     "NOT_LIT_3": {
       "sprite": "hearths/hearth_901/not_lit_3/sprite.webp",

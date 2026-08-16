@@ -29273,6 +29273,15 @@
           "glow_score": 0.007,
           "art_hash": "ce53eb9e4c479f1b"
         },
+        "NOT_LIT_1": {
+          "sprite": "hearths/hearth_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4bc21c58-10ab-4e6b-9be7-5ca8dd42f695",
+          "generated_at": "2026-08-16T15:31:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8764,
+          "glow_score": 0.0,
+          "art_hash": "22780044e48d7404"
+        },
         "NOT_LIT_2": {
           "sprite": "hearths/hearth_004/not_lit_2/sprite.webp",
           "pixellab_object_id": "ac00228b-57af-4e09-b42a-223e6419debc",
@@ -29351,6 +29360,15 @@
           "difference_from_source": 0.3966,
           "glow_score": 0.0031,
           "art_hash": "55a335734926f128"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "642e305e-ace0-48df-8a1f-34c17c97bc79",
+          "generated_at": "2026-08-16T15:27:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3623,
+          "glow_score": 0.009,
+          "art_hash": "3fb4ab7aea470db6"
         }
       },
       "animations": []
@@ -29404,6 +29422,15 @@
           "glow_score": 0.0027,
           "art_hash": "2fa6d0ff167be07a"
         },
+        "LIT_4": {
+          "sprite": "hearths/hearth_900/lit_4/sprite.webp",
+          "pixellab_object_id": "0777e92e-a201-468f-8920-8caac97c7f46",
+          "generated_at": "2026-08-16T15:24:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8122,
+          "glow_score": 0.008,
+          "art_hash": "176511f0a3804742"
+        },
         "NOT_LIT_1": {
           "sprite": "hearths/hearth_900/not_lit_1/sprite.webp",
           "pixellab_object_id": "ed86087b-4eb2-4b97-a9b6-d13c38a21863",
@@ -29430,7 +29457,7 @@
       "rel": "hearths/hearth_901",
       "name": "Grand carved-mantel hearth 901",
       "category": "hearths",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy stone fireplace hearth with a thick mantel and a fire space, solid masonry built to stand against a house wall, grand carved-mantel hearth, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -29450,11 +29477,38 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hearths/hearth_901/lit_1/sprite.webp",
+          "pixellab_object_id": "979e33e0-e012-4afb-816e-bcb73b543131",
+          "generated_at": "2026-08-16T15:24:23+00:00",
+          "glow_concept": "fire burning warm in the hearth mouth",
+          "difference_from_source": 0.5327,
+          "glow_score": 0.1434,
+          "art_hash": "4d3b706c2cf87f3b"
+        },
+        "LIT_2": {
+          "sprite": "hearths/hearth_901/lit_2/sprite.webp",
+          "pixellab_object_id": "d6fe5f5c-a2ab-4885-bf48-5b825c32a703",
+          "generated_at": "2026-08-16T15:24:24+00:00",
+          "glow_concept": "embers breathing orange under the cook pot",
+          "difference_from_source": 0.3806,
+          "glow_score": 0.0502,
+          "art_hash": "dad9e2782d43cb04"
+        },
         "NOT_LIT_1": {
           "sprite": "hearths/hearth_901/sprite.webp",
           "pixellab_object_id": "c11a62a1-bff6-4733-a204-88963f88362d",
           "generated_at": "2026-08-13T23:27:18+00:00",
           "art_hash": "6074a78a0526a3d0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hearths/hearth_901/not_lit_2/sprite.webp",
+          "pixellab_object_id": "bf06f136-8751-4447-873d-f31155efbdc8",
+          "generated_at": "2026-08-16T15:24:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2338,
+          "glow_score": 0.0,
+          "art_hash": "ba0846fadc7fc2a2"
         },
         "NOT_LIT_3": {
           "sprite": "hearths/hearth_901/not_lit_3/sprite.webp",
@@ -29482,7 +29536,7 @@
       "rel": "hedges/hedge_005",
       "name": "Gap-toothed old hedge 005",
       "category": "hedges",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a free-standing trimmed hedge segment with a flat clipped top, dense small leaves, and twiggy gaps near the ground, gap-toothed old hedge, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -29502,11 +29556,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hedges/hedge_005/lit_1/sprite.webp",
+          "pixellab_object_id": "790a1553-cb13-4bc3-95ff-a6bedeb28216",
+          "generated_at": "2026-08-16T15:26:06+00:00",
+          "glow_concept": "glowing sap threads veining the twigs",
+          "difference_from_source": 0.1744,
+          "glow_score": 0.0503,
+          "art_hash": "7669baf3e6df7fd1"
+        },
+        "LIT_2": {
+          "sprite": "hedges/hedge_005/lit_2/sprite.webp",
+          "pixellab_object_id": "715bc7de-4308-4414-9e10-33c09f638bd2",
+          "generated_at": "2026-08-16T15:26:40+00:00",
+          "glow_concept": "small iron lanterns set into clipped niches",
+          "difference_from_source": 0.3074,
+          "glow_score": 0.055,
+          "art_hash": "b9bc581a2890e387"
+        },
         "NOT_LIT_1": {
           "sprite": "hedges/hedge_005/sprite.webp",
           "pixellab_object_id": "8681ccd7-5e14-457c-bc16-a87c3e63c77f",
           "generated_at": "2026-08-13T10:16:12+00:00",
           "art_hash": "2c771a77e5160e83"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hedges/hedge_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3c162d5e-20ca-4bc6-acf2-b93896d2a846",
+          "generated_at": "2026-08-16T15:30:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4013,
+          "glow_score": 0.0,
+          "art_hash": "15293067dab489e7"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hedges/hedge_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "40048041-ac94-4532-adca-032cb44f54c7",
+          "generated_at": "2026-08-16T15:25:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.459,
+          "glow_score": 0.0,
+          "art_hash": "5e941f69a487d4a2"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hedges/hedge_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "06898a47-145f-4f77-9e9a-48e28bf7cffe",
+          "generated_at": "2026-08-16T15:29:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9595,
+          "glow_score": 0.0,
+          "art_hash": "e88eb7bbc3b0391e"
         }
       },
       "animations": []
@@ -29514,9 +29613,9 @@
     {
       "id": "hedge_008",
       "rel": "hedges/hedge_008",
-      "name": "Copper autumn beech hedge 008 \u00b7 lit",
+      "name": "Copper autumn beech hedge 008",
       "category": "hedges",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense solid block of clipped hedge with a flat top and thick leafy sides, foliage reaching all the way down to the soil, sitting heavily on the ground, copper autumn beech hedge, roughly six feet tall, human height, self-emissive at night, softly radiating light: firefly colony blinking through the leaves",
       "view": "low top-down",
       "size": 128,
@@ -29541,6 +29640,42 @@
           "pixellab_object_id": "22dfd252-5320-4ebf-90e1-e957c4e7a0a7",
           "generated_at": "2026-08-13T20:14:44+00:00",
           "art_hash": "bccedf803f40f714"
+        },
+        "LIT_2": {
+          "sprite": "hedges/hedge_008/lit_2/sprite.webp",
+          "pixellab_object_id": "7aa9dcc4-c978-452c-bb0f-9a9b08a2cf35",
+          "generated_at": "2026-08-16T15:29:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2245,
+          "glow_score": 0.2105,
+          "art_hash": "c2495df3a94d6308"
+        },
+        "LIT_3": {
+          "sprite": "hedges/hedge_008/lit_3/sprite.webp",
+          "pixellab_object_id": "8738d98c-5c0a-4367-a55f-5f0d2ca2cf6d",
+          "generated_at": "2026-08-16T15:27:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6575,
+          "glow_score": 0.0111,
+          "art_hash": "8f6b650f519b8fd8"
+        },
+        "LIT_4": {
+          "sprite": "hedges/hedge_008/lit_4/sprite.webp",
+          "pixellab_object_id": "31c15960-ab30-4a65-9e05-4d5edcacf7ad",
+          "generated_at": "2026-08-16T15:30:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6862,
+          "glow_score": 0.0136,
+          "art_hash": "991148a731c0e855"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hedges/hedge_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9be2b497-d795-4ddf-a19c-c67cd38bc40c",
+          "generated_at": "2026-08-16T15:29:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8873,
+          "glow_score": 0.0,
+          "art_hash": "8559db8135f6c6f6"
         }
       },
       "animations": []
@@ -29702,7 +29837,7 @@
       "rel": "hop_poles/hop_pole_001",
       "name": "Pole with crossbar arm 001",
       "category": "hop_poles",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones, pole with crossbar arm, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -29722,11 +29857,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "hop_poles/hop_pole_001/lit_1/sprite.webp",
+          "pixellab_object_id": "e69415de-b6f0-4c64-9474-126255bbb637",
+          "generated_at": "2026-08-16T15:30:12+00:00",
+          "glow_concept": "a thin line of glowing sap spiraling upward",
+          "difference_from_source": 0.6256,
+          "glow_score": 0.0715,
+          "art_hash": "9e9017c362197c6c"
+        },
+        "LIT_2": {
+          "sprite": "hop_poles/hop_pole_001/lit_2/sprite.webp",
+          "pixellab_object_id": "12f2431e-ad70-4b82-b4ef-7c87520ea67d",
+          "generated_at": "2026-08-16T15:30:34+00:00",
+          "glow_concept": "hop cones glowing like strings of paper lanterns",
+          "difference_from_source": 0.511,
+          "glow_score": 0.1878,
+          "art_hash": "86040d4cd29dd57a"
+        },
         "NOT_LIT_1": {
           "sprite": "hop_poles/hop_pole_001/sprite.webp",
           "pixellab_object_id": "6dc5fc53-e670-4e95-a0ea-875f598e5c10",
           "generated_at": "2026-08-13T01:51:09+00:00",
           "art_hash": "96f30a03cecb86df"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hop_poles/hop_pole_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "667c7ab0-d9c9-4a89-afae-766a10534eee",
+          "generated_at": "2026-08-16T15:28:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7301,
+          "glow_score": 0.0181,
+          "art_hash": "a9ffd3f835664756"
+        },
+        "NOT_LIT_3": {
+          "sprite": "hop_poles/hop_pole_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "60399784-5754-4e28-8565-2331a0bd107b",
+          "generated_at": "2026-08-16T15:29:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4394,
+          "glow_score": 0.0484,
+          "art_hash": "d3727a36ae69bb0e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "hop_poles/hop_pole_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "dca6524e-97b4-4879-905d-30c6bca099e4",
+          "generated_at": "2026-08-16T15:29:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.715,
+          "glow_score": 0.0459,
+          "art_hash": "16384d319b44e890"
         }
       },
       "animations": []
@@ -29734,9 +29914,9 @@
     {
       "id": "hop_pole_002",
       "rel": "hop_poles/hop_pole_002",
-      "name": "Single pole, dense cones 002 \u00b7 lit",
+      "name": "Single pole, dense cones 002",
       "category": "hop_poles",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall slender wooden pole with hop bines spiraling to its top, heavy with pale green cones, single pole, dense cones, tall, about two people high, self-emissive at night, softly radiating light: cones dusted with luminous golden pollen",
       "view": "low top-down",
       "size": 192,
@@ -29761,6 +29941,42 @@
           "pixellab_object_id": "f68bdc30-f41b-499b-85c2-64e4c1a4455d",
           "generated_at": "2026-08-13T05:03:03+00:00",
           "art_hash": "88ba9530140b1ed0"
+        },
+        "LIT_2": {
+          "sprite": "hop_poles/hop_pole_002/lit_2/sprite.webp",
+          "pixellab_object_id": "6e2b6711-d2d7-498d-a2d2-0e3dc1be790d",
+          "generated_at": "2026-08-16T15:30:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4914,
+          "glow_score": 0.0304,
+          "art_hash": "9129b656b20108a3"
+        },
+        "LIT_3": {
+          "sprite": "hop_poles/hop_pole_002/lit_3/sprite.webp",
+          "pixellab_object_id": "a6db9471-a10e-403a-be9e-3ae3bf79d309",
+          "generated_at": "2026-08-16T15:30:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.577,
+          "glow_score": 0.0365,
+          "art_hash": "a107adb981682bb1"
+        },
+        "LIT_4": {
+          "sprite": "hop_poles/hop_pole_002/lit_4/sprite.webp",
+          "pixellab_object_id": "b1ce27fd-957b-4661-8a40-d9a3f9fe1b94",
+          "generated_at": "2026-08-16T15:30:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3986,
+          "glow_score": 0.0549,
+          "art_hash": "17f10ed81be367ee"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hop_poles/hop_pole_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b1a59b5c-f443-4e80-a5ef-0f187e23b1f2",
+          "generated_at": "2026-08-16T15:31:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7575,
+          "glow_score": 0.0,
+          "art_hash": "3741a1ca282dee2c"
         }
       },
       "animations": []
@@ -29768,9 +29984,9 @@
     {
       "id": "hot_spring_002",
       "rel": "hot_springs/hot_spring_002",
-      "name": "Rust-terraced spring 002 \u00b7 lit",
+      "name": "Rust-terraced spring 002",
       "category": "hot_springs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a natural hot spring pool ringed by mineral-crusted rocks, steam rising off milky turquoise water, rust-terraced spring, with a flat sitting stone at the edge, waist-high, self-emissive at night, softly radiating light: glowing mineral rings",
       "view": "low top-down",
       "size": 64,
@@ -29795,6 +30011,42 @@
           "pixellab_object_id": "61e71c59-c139-4d7b-83f2-0399f086cd12",
           "generated_at": "2026-08-14T01:10:53+00:00",
           "art_hash": "c32fab83844acd24"
+        },
+        "LIT_2": {
+          "sprite": "hot_springs/hot_spring_002/lit_2/sprite.webp",
+          "pixellab_object_id": "f5bd5edc-ddc2-41cd-8e37-dadc295be58c",
+          "generated_at": "2026-08-16T15:32:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.92,
+          "glow_score": 0.4668,
+          "art_hash": "64e90b1db8b5f217"
+        },
+        "LIT_3": {
+          "sprite": "hot_springs/hot_spring_002/lit_3/sprite.webp",
+          "pixellab_object_id": "223a6432-5acc-4366-b40b-208b9ac39455",
+          "generated_at": "2026-08-16T15:32:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9025,
+          "glow_score": 0.0304,
+          "art_hash": "68a7a868f3416030"
+        },
+        "LIT_4": {
+          "sprite": "hot_springs/hot_spring_002/lit_4/sprite.webp",
+          "pixellab_object_id": "b82b3479-7182-4a94-bb70-6646bfc7aa51",
+          "generated_at": "2026-08-16T15:32:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8998,
+          "glow_score": 0.2501,
+          "art_hash": "5d46d223c15f8b8d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "hot_springs/hot_spring_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b763c6ba-a8ef-4d07-90ea-1870df4125f9",
+          "generated_at": "2026-08-16T15:32:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.881,
+          "glow_score": 0.0,
+          "art_hash": "fd8ea4a5f8954ea4"
         }
       },
       "animations": []
@@ -29829,6 +30081,15 @@
           "pixellab_object_id": "e1e908a6-c31c-43fa-b205-676d6964d2d6",
           "generated_at": "2026-08-13T20:45:41+00:00",
           "art_hash": "e1d7d00779cddd3c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "65f8d74b-65f3-4091-8638-507e326a5e34",
+          "generated_at": "2026-08-16T15:32:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9136,
+          "glow_score": 0.0725,
+          "art_hash": "8c2a98d0fc06f2e3"
         }
       },
       "animations": []
