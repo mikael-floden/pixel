@@ -15244,6 +15244,15 @@
           "glow_score": 0.1827,
           "art_hash": "e215885253c5b1e8"
         },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_007/lit_2/sprite.webp",
+          "pixellab_object_id": "e065b05c-0fc8-4d65-bceb-e73f3750aabb",
+          "generated_at": "2026-08-16T10:12:42+00:00",
+          "glow_concept": "luminous sap veins glowing through the leaves",
+          "difference_from_source": 0.9126,
+          "glow_score": 0.1662,
+          "art_hash": "d43cd033d3c306f1"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_007/sprite.webp",
           "pixellab_object_id": "24c1ea44-a0ed-4d92-ae47-2c2bf90793b7",
@@ -15443,7 +15452,7 @@
       "rel": "cliff_vines/cliff_vine_021",
       "name": "Frost-silvered winter fall 021",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, frost-silvered winter fall, strands drifting apart toward one side, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -15463,6 +15472,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_021/lit_1/sprite.webp",
+          "pixellab_object_id": "6bca1644-8136-4c1d-9922-e6e37a1918a1",
+          "generated_at": "2026-08-16T10:12:55+00:00",
+          "glow_concept": "pale blue soul-flowers dotted down the fall",
+          "difference_from_source": 0.2974,
+          "glow_score": 0.1155,
+          "art_hash": "afdc60695a5c0893"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_021/lit_2/sprite.webp",
+          "pixellab_object_id": "973a673c-881a-4eeb-a55e-3921248dc42f",
+          "generated_at": "2026-08-16T10:11:39+00:00",
+          "glow_concept": "glowworm colonies strung in the foliage",
+          "difference_from_source": 0.4251,
+          "glow_score": 0.2172,
+          "art_hash": "450c96729662c775"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
           "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
@@ -15530,6 +15557,15 @@
           "generated_at": "2026-08-14T03:32:53+00:00",
           "art_hash": "df8a61210d61d2aa"
         },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_022/lit_2/sprite.webp",
+          "pixellab_object_id": "1d2b2e8a-9e6d-48de-9646-9caee52fc924",
+          "generated_at": "2026-08-16T10:11:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3608,
+          "glow_score": 0.011,
+          "art_hash": "e61e91179c688c01"
+        },
         "LIT_3": {
           "sprite": "cliff_vines/cliff_vine_022/lit_3/sprite.webp",
           "pixellab_object_id": "3cb80fcd-6472-4e6e-85c3-657b7f61bc5f",
@@ -15572,9 +15608,9 @@
     {
       "id": "cliff_vine_024",
       "rel": "cliff_vines/cliff_vine_024",
-      "name": "Pale lichen-strung fall 024 \u00b7 lit",
+      "name": "Pale lichen-strung fall 024",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, pale lichen-strung fall, stems thick as arms at the top, towering, many times human height, self-emissive at night, softly radiating light: amber memory-light dripping from the tips",
       "view": "low top-down",
       "size": 256,
@@ -15599,6 +15635,51 @@
           "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
           "generated_at": "2026-08-14T03:32:24+00:00",
           "art_hash": "34c29ff31d53a674"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_024/lit_2/sprite.webp",
+          "pixellab_object_id": "01e14579-b6e9-4568-ab9b-ae57ef07279c",
+          "generated_at": "2026-08-16T10:15:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4526,
+          "glow_score": 0.2588,
+          "art_hash": "06e1e709d6735f81"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_024/lit_3/sprite.webp",
+          "pixellab_object_id": "6f4fcdd3-e087-4158-ad45-86377c9c2946",
+          "generated_at": "2026-08-16T10:12:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6194,
+          "glow_score": 0.1833,
+          "art_hash": "f73904cd685795b0"
+        },
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_024/lit_4/sprite.webp",
+          "pixellab_object_id": "952ad4f6-4bf7-4078-9272-9b0e2baac4d6",
+          "generated_at": "2026-08-16T10:12:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7703,
+          "glow_score": 0.2215,
+          "art_hash": "dc7a9fa28789b63f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "786ed393-6d39-45a2-b755-d06466ab1a41",
+          "generated_at": "2026-08-16T10:12:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9943,
+          "glow_score": 0.0,
+          "art_hash": "1d9888783f4314e0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_024/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2c11befb-81ca-456b-9c93-a6f588e8448f",
+          "generated_at": "2026-08-16T10:12:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9047,
+          "glow_score": 0.0545,
+          "art_hash": "a4848d8bdbccea0b"
         }
       },
       "animations": []
@@ -15608,7 +15689,7 @@
       "rel": "cliff_vines/cliff_vine_025",
       "name": "Dry brown wilted fall 025",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dry brown wilted fall, a few isolated tufts drifting away from the main spread, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -15628,11 +15709,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_025/lit_1/sprite.webp",
+          "pixellab_object_id": "3983f5f9-a91a-4965-bd96-1d73116f2040",
+          "generated_at": "2026-08-16T10:13:38+00:00",
+          "glow_concept": "luminous sap veins glowing through the leaves",
+          "difference_from_source": 0.2023,
+          "glow_score": 0.0581,
+          "art_hash": "04aad7cac1e26a97"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_025/lit_2/sprite.webp",
+          "pixellab_object_id": "3e1cb12c-3e07-42b0-ad6b-b7d2d6482285",
+          "generated_at": "2026-08-16T10:14:09+00:00",
+          "glow_concept": "pale blue soul-flowers dotted down the fall",
+          "difference_from_source": 0.4378,
+          "glow_score": 0.2831,
+          "art_hash": "7f97b5d49e60f5e0"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_025/sprite.webp",
           "pixellab_object_id": "90cd8fc1-ea5d-4d23-b44d-c7c8fa36112a",
           "generated_at": "2026-08-14T04:24:20+00:00",
           "art_hash": "19c5678ff48b6b51"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_025/not_lit_2/sprite.webp",
+          "pixellab_object_id": "bcfb65cf-3414-4150-88a2-17bb7950fef8",
+          "generated_at": "2026-08-16T10:12:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3373,
+          "glow_score": 0.0013,
+          "art_hash": "16de4b4c1084c2dc"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_025/not_lit_3/sprite.webp",
+          "pixellab_object_id": "16184a34-df4d-40da-8619-0935cd68d589",
+          "generated_at": "2026-08-16T10:14:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3683,
+          "glow_score": 0.0013,
+          "art_hash": "d6fa7b24398a20a9"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_025/not_lit_4/sprite.webp",
+          "pixellab_object_id": "de98d074-3a1e-4b68-a9e9-efef1227b258",
+          "generated_at": "2026-08-16T10:13:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4041,
+          "glow_score": 0.001,
+          "art_hash": "31af99bebc9d7ba0"
         }
       },
       "animations": []
@@ -15640,9 +15766,9 @@
     {
       "id": "cliff_vine_028",
       "rel": "cliff_vines/cliff_vine_028",
-      "name": "Variegated cream-and-green fall 028 \u00b7 lit",
+      "name": "Variegated cream-and-green fall 028",
       "category": "cliff_vines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "an enormous hanging curtain of climbing vine seen from the front, a very tall narrow sheet of dense overlapping leaves falling straight down with thick woody stems running through it, hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, variegated cream-and-green fall, ending high, swinging free, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
       "view": "low top-down",
       "size": 256,
@@ -15667,6 +15793,42 @@
           "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
           "generated_at": "2026-08-14T03:36:49+00:00",
           "art_hash": "69a4b142a72babe8"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_028/lit_2/sprite.webp",
+          "pixellab_object_id": "519568e6-54fd-4a45-91f3-9371d064ab4f",
+          "generated_at": "2026-08-16T10:14:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3938,
+          "glow_score": 0.1607,
+          "art_hash": "52ca84fc8d0ed8ee"
+        },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_028/lit_3/sprite.webp",
+          "pixellab_object_id": "6944e100-96e0-4cbe-876c-82cd9b26bf8f",
+          "generated_at": "2026-08-16T10:13:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3912,
+          "glow_score": 0.1811,
+          "art_hash": "b7cf45a88cf1d8eb"
+        },
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_028/lit_4/sprite.webp",
+          "pixellab_object_id": "c73e56c9-20cb-4759-8bcb-ea08cd3323ad",
+          "generated_at": "2026-08-16T10:15:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4187,
+          "glow_score": 0.1593,
+          "art_hash": "fdc20185b9db7245"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_028/not_lit_2/sprite.webp",
+          "pixellab_object_id": "10101fef-4e2f-4ca8-aca1-26d4909889ec",
+          "generated_at": "2026-08-16T10:14:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3577,
+          "glow_score": 0.0638,
+          "art_hash": "39be39ce0f150044"
         }
       },
       "animations": []
@@ -15676,7 +15838,7 @@
       "rel": "cliff_vines/cliff_vine_039",
       "name": "Dry brown wilted fall 039",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dry brown wilted fall, a ring-shaped spread with an empty middle, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -15696,11 +15858,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_039/lit_1/sprite.webp",
+          "pixellab_object_id": "b1eb8561-c041-4ec7-8742-47c86a0cfd74",
+          "generated_at": "2026-08-16T10:15:51+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.6596,
+          "glow_score": 0.0723,
+          "art_hash": "8808279d8cc0382e"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_039/lit_2/sprite.webp",
+          "pixellab_object_id": "8a7ab35a-0454-4dff-93e3-0f3040796b78",
+          "generated_at": "2026-08-16T10:16:44+00:00",
+          "glow_concept": "luminous sap veins glowing through the leaves",
+          "difference_from_source": 0.6072,
+          "glow_score": 0.16,
+          "art_hash": "0510cf049132fe94"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_039/sprite.webp",
           "pixellab_object_id": "71ab63ed-59de-4033-825e-b019ea919703",
           "generated_at": "2026-08-14T04:31:43+00:00",
           "art_hash": "ef9b4a72a9a69931"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_039/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f51dced4-d5f5-40a0-a409-ceb55deaace1",
+          "generated_at": "2026-08-16T10:15:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4367,
+          "glow_score": 0.0071,
+          "art_hash": "ed4115b88965050d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_039/not_lit_3/sprite.webp",
+          "pixellab_object_id": "908f82ce-b79d-4696-84ae-e06f8336c274",
+          "generated_at": "2026-08-16T10:15:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4674,
+          "glow_score": 0.0022,
+          "art_hash": "785ead399e5be3f8"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_039/not_lit_4/sprite.webp",
+          "pixellab_object_id": "39b8375d-e0e0-407b-805d-5382b0582d39",
+          "generated_at": "2026-08-16T10:16:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6425,
+          "glow_score": 0.0077,
+          "art_hash": "2e92e07057e5b1d6"
         }
       },
       "animations": []
@@ -15735,6 +15942,24 @@
           "pixellab_object_id": "4e0e8083-92fe-4b12-97af-712d0bd094b8",
           "generated_at": "2026-08-14T04:33:03+00:00",
           "art_hash": "21b9d68c58afa9e1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_041/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8e70258b-12b5-427e-8745-70926657891e",
+          "generated_at": "2026-08-16T10:16:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6145,
+          "glow_score": 0.0019,
+          "art_hash": "884b778ff3e617da"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_041/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ed0aabca-5783-4a6b-84a3-8c9386a366f6",
+          "generated_at": "2026-08-16T10:16:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4935,
+          "glow_score": 0.002,
+          "art_hash": "3dc230013428075e"
         }
       },
       "animations": []

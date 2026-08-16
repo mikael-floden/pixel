@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 39,
   "name": "Dry brown wilted fall 039",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dry brown wilted fall",
   "modifier": "a ring-shaped spread with an empty middle",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_039/lit_1/sprite.webp",
+      "pixellab_object_id": "b1eb8561-c041-4ec7-8742-47c86a0cfd74",
+      "generated_at": "2026-08-16T10:15:51+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.6596,
+      "glow_score": 0.0723
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_039/lit_2/sprite.webp",
+      "pixellab_object_id": "8a7ab35a-0454-4dff-93e3-0f3040796b78",
+      "generated_at": "2026-08-16T10:16:44+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.6072,
+      "glow_score": 0.16
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_039/sprite.webp",
       "pixellab_object_id": "71ab63ed-59de-4033-825e-b019ea919703",
       "generated_at": "2026-08-14T04:31:43+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_039/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f51dced4-d5f5-40a0-a409-ceb55deaace1",
+      "generated_at": "2026-08-16T10:15:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4367,
+      "glow_score": 0.0071
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_039/not_lit_3/sprite.webp",
+      "pixellab_object_id": "908f82ce-b79d-4696-84ae-e06f8336c274",
+      "generated_at": "2026-08-16T10:15:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4674,
+      "glow_score": 0.0022
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_039/not_lit_4/sprite.webp",
+      "pixellab_object_id": "39b8375d-e0e0-407b-805d-5382b0582d39",
+      "generated_at": "2026-08-16T10:16:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6425,
+      "glow_score": 0.0077
     }
   }
 }

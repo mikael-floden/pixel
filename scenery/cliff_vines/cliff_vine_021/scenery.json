@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 21,
   "name": "Frost-silvered winter fall 021",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "frost-silvered winter fall",
   "modifier": "strands drifting apart toward one side",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_021/lit_1/sprite.webp",
+      "pixellab_object_id": "6bca1644-8136-4c1d-9922-e6e37a1918a1",
+      "generated_at": "2026-08-16T10:12:55+00:00",
+      "glow_concept": "pale blue soul-flowers dotted down the fall",
+      "difference_from_source": 0.2974,
+      "glow_score": 0.1155
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_021/lit_2/sprite.webp",
+      "pixellab_object_id": "973a673c-881a-4eeb-a55e-3921248dc42f",
+      "generated_at": "2026-08-16T10:11:39+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.4251,
+      "glow_score": 0.2172
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
       "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
