@@ -6,7 +6,7 @@
   "rank": 31,
   "index": 11,
   "name": "Tiny bonnet mushroom troop 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "tiny bonnet mushroom troop",
   "modifier": "with a rabbit burrow at the base",
   "glow_concept": null,
@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_011/lit_2/sprite.webp",
+      "pixellab_object_id": "4a587a26-25c6-4602-aa08-dea9e4b15c66",
+      "generated_at": "2026-08-16T19:41:17+00:00",
+      "glow_concept": "bioluminescent gills casting light from under the caps",
+      "difference_from_source": 0.7813,
+      "glow_score": 0.1315
+    },
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_011/sprite.webp",
       "pixellab_object_id": "2ba5b1a4-07d3-4ac3-8701-6ed4ef578047",

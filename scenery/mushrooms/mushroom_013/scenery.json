@@ -6,7 +6,7 @@
   "rank": 31,
   "index": 13,
   "name": "Red-capped white-spotted toadstools 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "red-capped white-spotted toadstools",
   "modifier": "lightly snow-dusted",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_013/lit_1/sprite.webp",
+      "pixellab_object_id": "3b0d5d62-ec3f-4c20-a583-9f61d020a51d",
+      "generated_at": "2026-08-16T19:40:30+00:00",
+      "glow_concept": "bioluminescent gills casting light from under the caps",
+      "difference_from_source": 0.7654,
+      "glow_score": 0.1593
+    },
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_013/lit_2/sprite.webp",
+      "pixellab_object_id": "15251280-c99d-447e-98d1-bb7fb1def1bd",
+      "generated_at": "2026-08-16T19:40:20+00:00",
+      "glow_concept": "caps speckled with glowing spore freckles",
+      "difference_from_source": 0.518,
+      "glow_score": 0.2819
+    },
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_013/sprite.webp",
       "pixellab_object_id": "d37a4da6-ea3a-4ab7-9578-41f9fd935885",
       "generated_at": "2026-08-14T01:52:08+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5e1c7b14-de3d-4580-b596-779d9b64a3da",
+      "generated_at": "2026-08-16T19:38:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5034,
+      "glow_score": 0.1545
+    },
+    "NOT_LIT_3": {
+      "sprite": "mushrooms/mushroom_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "15a696b6-9575-42bd-8da9-e4a39b258356",
+      "generated_at": "2026-08-16T19:39:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2569,
+      "glow_score": 0.1778
+    },
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "315c1fa3-45c5-401f-bcca-7762a36d4aac",
+      "generated_at": "2026-08-16T19:40:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6697,
+      "glow_score": 0.226
     }
   }
 }
