@@ -14,21 +14,21 @@
   "_prompt_comment": "THE KEY LESSON from the maintainer's own prompt tests: naming the MATERIAL gets you texture you cannot flatten ('clean single colour grass' still returns detailed grass). Naming the COLOUR gets you the flat fill we actually want. So every type carries `color_words` used to build prompts, and `material_words` kept only for the later detailed-variant pass. `hex` is the intended resting colour — the QA target the generated top is measured against, not something sent to the API.",
 
   "ground_types": [
-    { "id": "grass",         "category": "solid",  "color_words": "pure flat green",              "material_words": "lush green grass",        "hex": "#3f8a3a" },
-    { "id": "snow",          "category": "solid",  "color_words": "pure flat white",              "material_words": "clean fresh snow",        "hex": "#e8eef0" },
-    { "id": "ice",           "category": "solid",  "color_words": "pure flat pale cyan",          "material_words": "translucent crystal ice", "hex": "#9fd8e6" },
-    { "id": "black_rock",    "category": "solid",  "color_words": "pure flat near-black charcoal","material_words": "dark volcanic rock",      "hex": "#2c2c2e" },
-    { "id": "light_beach",   "category": "solid",  "color_words": "pure flat pale sand yellow",   "material_words": "pale sandy beach",        "hex": "#e0cf9a" },
-    { "id": "grey_stone",    "category": "solid",  "color_words": "pure flat medium grey",        "material_words": "rugged grey mountain rock","hex": "#8a8f8c" },
-    { "id": "light_soil",    "category": "solid",  "color_words": "pure flat light warm brown",   "material_words": "dry light soil",          "hex": "#b08a5c" },
-    { "id": "dark_mud",      "category": "solid",  "color_words": "pure flat dark cold brown",    "material_words": "wet dark mud",            "hex": "#4a3728" },
-    { "id": "parquet_floor", "category": "solid",  "color_words": "pure flat warm tan",           "material_words": "wooden parquet floor",    "hex": "#c39a63" },
-    { "id": "paving_stone",  "category": "solid",  "color_words": "pure flat cool light grey",    "material_words": "cut paving stone slabs",  "hex": "#b6b8b5" },
+    { "id": "grass",         "category": "solid",  "color_words": "pure flat green",              "material_words": "lush green grass",        "hex": "#3f8a3a", "wall_contrast": 0.8 },
+    { "id": "snow",          "category": "solid",  "color_words": "pure flat white",              "material_words": "clean fresh snow",        "hex": "#e8eef0", "wall_contrast": 0.65 },
+    { "id": "ice",           "category": "solid",  "color_words": "pure flat pale cyan",          "material_words": "translucent crystal ice", "hex": "#9fd8e6", "wall_contrast": 1.4 },
+    { "id": "black_rock",    "category": "solid",  "color_words": "pure flat near-black charcoal","material_words": "dark volcanic rock",      "hex": "#2c2c2e", "wall_contrast": 1.3 },
+    { "id": "light_beach",   "category": "solid",  "color_words": "pure flat pale sand yellow",   "material_words": "pale sandy beach",        "hex": "#e0cf9a", "wall_contrast": 0.7 },
+    { "id": "grey_stone",    "category": "solid",  "color_words": "pure flat medium grey",        "material_words": "rugged grey mountain rock","hex": "#8a8f8c", "wall_contrast": 1.2 },
+    { "id": "light_soil",    "category": "solid",  "color_words": "pure flat light warm brown",   "material_words": "dry light soil",          "hex": "#b08a5c", "wall_contrast": 0.9 },
+    { "id": "dark_mud",      "category": "solid",  "color_words": "pure flat dark cold brown",    "material_words": "wet dark mud",            "hex": "#4a3728", "wall_contrast": 0.55 },
+    { "id": "parquet_floor", "category": "solid",  "color_words": "pure flat warm tan",           "material_words": "wooden parquet floor",    "hex": "#c39a63", "wall_contrast": 1.0 },
+    { "id": "paving_stone",  "category": "solid",  "color_words": "pure flat cool light grey",    "material_words": "cut paving stone slabs",  "hex": "#b6b8b5", "wall_contrast": 1.15 },
 
-    { "id": "water",         "category": "liquid", "color_words": "pure flat medium blue",        "material_words": "clear calm water",        "hex": "#3f7fbf" },
-    { "id": "deep_water",    "category": "liquid", "color_words": "pure flat dark navy blue",     "material_words": "deep dark ocean water",   "hex": "#1b3a5c" },
-    { "id": "lava",          "category": "liquid", "color_words": "pure flat dark orange",        "material_words": "molten glowing lava",     "hex": "#c2500f" },
-    { "id": "slime",         "category": "liquid", "color_words": "pure flat bright yellow-green","material_words": "thick bubbling slime",    "hex": "#7fbf3f" }
+    { "id": "water",         "category": "liquid", "color_words": "pure flat medium blue",        "material_words": "clear calm water",        "hex": "#3f7fbf", "wall_contrast": 0.8 },
+    { "id": "deep_water",    "category": "liquid", "color_words": "pure flat dark navy blue",     "material_words": "deep dark ocean water",   "hex": "#1b3a5c", "wall_contrast": 0.75 },
+    { "id": "lava",          "category": "liquid", "color_words": "pure flat dark orange",        "material_words": "molten glowing lava",     "hex": "#c2500f", "wall_contrast": 1.3 },
+    { "id": "slime",         "category": "liquid", "color_words": "pure flat bright yellow-green","material_words": "thick bubbling slime",    "hex": "#7fbf3f", "wall_contrast": 0.85 }
   ],
 
   "_base_prompt_comment": "MEASURED, not guessed. An 8-strategy bake-off (identical pinned harness, only the prompt varying; see docs/BAKEOFF.md) settled these. Three results shaped the templates below: (1) flatness is EASY — five different prompts reached share >= 0.99, so it is not the discriminator; (2) COLOUR ACCURACY is the hard part, and only anchoring an explicit #hex landed it (dE 5.7 vs 21-31 for every prompt that named the colour in words alone) — which is why every template carries {hex}; (3) naming the material ('single color 100% pure green') is read as a STYLE hint and ignored as an instruction: it scored 0.825 with visible grass blades. Long negation lists ('no texture, no pattern, no speckles...') do work but drift the hue badly on their own. Ask for a flat surface AND pin the hex.",

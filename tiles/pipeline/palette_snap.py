@@ -72,7 +72,57 @@ def _hsv2rgb(px):
                       .convert("RGB"), dtype=float)[0]
 
 
-def snap(img, top_hex, side_hex, keep_wall_texture=True):
+def profile(ref_path, surface="left"):
+    """Measure what a material's surface ACTUALLY looks like, from an approved
+    reference tile of that type.
+
+    The reference tile is the definition of the type — it is the one the maintainer
+    approved as 'this is how light_soil looks'. So the conversion target is taken from
+    it rather than from hand-picked constants: hue and saturation say what colour the
+    material is, and the luminance SPREAD says how cracked or smooth its cliff face is.
+    That spread is what separates black_rock from dark_mud once both are dark and
+    brownish — without it, converting the same tile toward either target would differ
+    only in tint and both would come out as the same texture wearing different paint.
+
+    Returns a dict consumable by snap(); None if the reference has no such surface.
+    """
+    a = np.asarray(Image.open(ref_path).convert("RGBA")).astype(float)
+    reg = _regions(a)
+    if not reg or not reg.get(surface) is not None:
+        return None
+    m = reg[surface]
+    if m.sum() < 25:
+        return None
+    hsv = _rgb2hsv(a[:, :, :3][m])
+    v = hsv[:, 2]
+    return {
+        "hue": float(np.median(hsv[:, 0])),
+        "sat": float(np.median(hsv[:, 1])),
+        "value": float(v.mean()),
+        # relative spread, so it transfers to a surface of any brightness
+        "spread": float(v.std() / (v.mean() or 1.0)),
+        "source": ref_path,
+    }
+
+
+def _apply_profile(px, prof, lighting=1.0):
+    """Rewrite a surface's pixels to match a measured profile, keeping its own
+    texture but re-fitting that texture's brightness and CONTRAST to the target."""
+    hsv = _rgb2hsv(px)
+    v = hsv[:, 2]
+    vm = float(v.mean()) or 1.0
+    target_v = prof["value"] * lighting
+    dev = v - vm                                   # the texture itself
+    cur_spread = float(v.std() / vm) or 1e-6
+    gain = (prof["spread"] / cur_spread) if prof.get("spread") else 1.0
+    gain = float(np.clip(gain, 0.25, 4.0))         # never invent or erase all detail
+    hsv[:, 2] = np.clip(target_v + dev * (target_v / vm) * gain, 0, 255)
+    hsv[:, 0] = prof["hue"]
+    hsv[:, 1] = prof["sat"]
+    return _hsv2rgb(hsv)
+
+
+def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -120,17 +170,14 @@ def snap(img, top_hex, side_hex, keep_wall_texture=True):
         if not keep_wall_texture:
             out[:, :, :3][m] = np.clip(side * fac[k], 0, 255)
             continue
-        hsv = _rgb2hsv(px)
-        v = hsv[:, 2]
-        vm = float(v.mean()) or 1.0
-        target_v = float(side_hsv[2]) * fac[k]
-        # Rescale rather than offset: a multiplicative fit keeps the texture's
-        # contrast proportional to its new brightness, so a dark material stays
-        # legible instead of having its detail crushed flat by a constant shift.
-        hsv[:, 2] = np.clip(v * (target_v / vm), 0, 255)
-        hsv[:, 0] = side_hsv[0]
-        hsv[:, 1] = side_hsv[1]
-        out[:, :, :3][m] = _hsv2rgb(hsv)
+        # With a reference profile we match the target material's own colour AND
+        # surface contrast; without one we fall back to the palette hex, which can
+        # only carry colour. The profile is what makes converting the same tile
+        # toward black_rock and toward dark_mud produce genuinely different cliffs
+        # rather than one texture in two tints.
+        prof = side_profile or {"hue": float(side_hsv[0]), "sat": float(side_hsv[1]),
+                                "value": float(side_hsv[2]), "spread": None}
+        out[:, :, :3][m] = _apply_profile(px, prof, lighting=fac[k])
 
     out[:, :, 3] = a[:, :, 3]
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
