@@ -5,8 +5,8 @@
   "group": "offering_tables",
   "rank": 22,
   "index": 16,
-  "name": "Rough plank table, bread 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rough plank table, bread 016",
+  "lights": null,
   "variety": "rough plank table, bread",
   "modifier": "leaning slightly",
   "glow_concept": "small wisps gathered over the food",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.5263,
       "glow_score": 0.0774
+    },
+    "LIT_4": {
+      "sprite": "offering_tables/offering_table_016/lit_4/sprite.webp",
+      "pixellab_object_id": "42727934-02e6-458d-b2c2-398b20ae3e4a",
+      "generated_at": "2026-08-16T19:50:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5657,
+      "glow_score": 0.1034
+    },
+    "NOT_LIT_1": {
+      "sprite": "offering_tables/offering_table_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "eb42183c-0a74-4996-8f93-dce6d77eceda",
+      "generated_at": "2026-08-16T19:51:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8767,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "offering_tables/offering_table_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9c091f59-599b-464a-9dda-4c16f6d1cb34",
+      "generated_at": "2026-08-16T19:50:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5137,
+      "glow_score": 0.0887
     }
   }
 }

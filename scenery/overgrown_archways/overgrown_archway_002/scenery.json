@@ -4,8 +4,8 @@
   "group": "overgrown_archways",
   "rank": 72,
   "index": 2,
-  "name": "Red brick arch, white roses 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Red brick arch, white roses 002",
+  "lights": null,
   "variety": "red brick arch, white roses",
   "glow_concept": "keystone carved with a softly glowing name",
   "prompt": "a freestanding stone garden arch swallowed by climbing vines and hanging blossom, red brick arch, white roses, large, well above head height of a person, self-emissive at night, softly radiating light: keystone carved with a softly glowing name",
@@ -35,6 +35,38 @@
       "sprite": "overgrown_archways/overgrown_archway_002/sprite.webp",
       "pixellab_object_id": "e7246ed7-2dc3-4afa-990f-a9a200ff0ddf",
       "generated_at": "2026-08-13T05:14:52+00:00"
+    },
+    "LIT_2": {
+      "sprite": "overgrown_archways/overgrown_archway_002/lit_2/sprite.webp",
+      "pixellab_object_id": "80959526-14c8-481f-88f2-b4e9fd3dfd17",
+      "generated_at": "2026-08-16T19:55:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4898,
+      "glow_score": 0.0928
+    },
+    "LIT_4": {
+      "sprite": "overgrown_archways/overgrown_archway_002/lit_4/sprite.webp",
+      "pixellab_object_id": "e9b41b51-8d55-4f53-90a0-850c79df68fb",
+      "generated_at": "2026-08-16T19:56:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6222,
+      "glow_score": 0.0504
+    },
+    "NOT_LIT_1": {
+      "sprite": "overgrown_archways/overgrown_archway_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "65189466-f0d9-4731-9d75-3f926a15e91a",
+      "generated_at": "2026-08-16T19:57:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.958,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "overgrown_archways/overgrown_archway_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f98fb3f0-1ce8-48c6-85dc-4e29bbf7d3ee",
+      "generated_at": "2026-08-16T19:58:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9453,
+      "glow_score": 0.0222
     }
   }
 }

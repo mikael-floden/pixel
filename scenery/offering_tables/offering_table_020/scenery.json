@@ -5,8 +5,8 @@
   "group": "offering_tables",
   "rank": 22,
   "index": 20,
-  "name": "Low table, folded letters 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Low table, folded letters 020",
+  "lights": null,
   "variety": "low table, folded letters",
   "modifier": "recently maintained",
   "glow_concept": "glowing runes carved along the table edge",
@@ -36,6 +36,46 @@
       "sprite": "offering_tables/offering_table_020/sprite.webp",
       "pixellab_object_id": "2b4709fd-2d4f-46d7-8862-8f22e2bd0fd9",
       "generated_at": "2026-08-14T02:37:35+00:00"
+    },
+    "LIT_2": {
+      "sprite": "offering_tables/offering_table_020/lit_2/sprite.webp",
+      "pixellab_object_id": "3ec367c6-c9f6-4439-b168-e2928206ebb5",
+      "generated_at": "2026-08-16T19:52:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4931,
+      "glow_score": 0.0603
+    },
+    "LIT_3": {
+      "sprite": "offering_tables/offering_table_020/lit_3/sprite.webp",
+      "pixellab_object_id": "3cc906b9-ef4c-477b-8d42-aa5a073f0ac2",
+      "generated_at": "2026-08-16T19:52:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8906,
+      "glow_score": 0.1338
+    },
+    "LIT_4": {
+      "sprite": "offering_tables/offering_table_020/lit_4/sprite.webp",
+      "pixellab_object_id": "fa849bce-af29-4af6-ab88-ea168384b2b6",
+      "generated_at": "2026-08-16T19:52:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5373,
+      "glow_score": 0.0763
+    },
+    "NOT_LIT_1": {
+      "sprite": "offering_tables/offering_table_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "2146049c-8947-40ac-88ab-017ffa575e5d",
+      "generated_at": "2026-08-16T19:52:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9007,
+      "glow_score": 0.0008
+    },
+    "NOT_LIT_2": {
+      "sprite": "offering_tables/offering_table_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ab43fd37-0498-4797-ac82-165cf3845834",
+      "generated_at": "2026-08-16T19:52:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8913,
+      "glow_score": 0.0064
     }
   }
 }
