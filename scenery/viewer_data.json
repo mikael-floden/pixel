@@ -22244,12 +22244,12 @@
         },
         "NOT_LIT_3": {
           "sprite": "fallen_logs/fallen_log_013/not_lit_3/sprite.webp",
-          "pixellab_object_id": "644df845-5e66-442f-88fc-1d1fa7a48b85",
-          "generated_at": "2026-08-16T13:57:04+00:00",
+          "pixellab_object_id": "b82fb2db-80d9-48ed-b5ba-f83a6a54d5e1",
+          "generated_at": "2026-08-16T14:12:33+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.7431,
-          "glow_score": 0.0031,
-          "art_hash": "94ec42c7eef0fbd9"
+          "difference_from_source": 0.8065,
+          "glow_score": 0.0017,
+          "art_hash": "cd00960c78cf197a"
         },
         "NOT_LIT_4": {
           "sprite": "fallen_logs/fallen_log_013/not_lit_4/sprite.webp",
@@ -22367,12 +22367,12 @@
         },
         "LIT_4": {
           "sprite": "fallen_logs/fallen_log_014/lit_4/sprite.webp",
-          "pixellab_object_id": "09f79fd9-6d62-4675-98aa-e1dad757fea7",
-          "generated_at": "2026-08-16T13:56:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.597,
-          "glow_score": 0.1921,
-          "art_hash": "bd41ac15829f389a"
+          "pixellab_object_id": "f8ffa89f-a3a3-4dd9-9b18-0f4bef70f579",
+          "generated_at": "2026-08-16T14:13:58+00:00",
+          "glow_concept": "a lit traveler's lantern resting on top",
+          "difference_from_source": 0.8521,
+          "glow_score": 0.1137,
+          "art_hash": "8a1b97a0e035517a"
         },
         "NOT_LIT_1": {
           "sprite": "fallen_logs/fallen_log_014/not_lit_1/sprite.webp",
@@ -22454,6 +22454,15 @@
           "difference_from_source": 0.5491,
           "glow_score": 0.1615,
           "art_hash": "05ac5cd35cf451d3"
+        },
+        "NOT_LIT_9": {
+          "sprite": "fallen_logs/fallen_log_014/not_lit_9/sprite.webp",
+          "pixellab_object_id": "e9efab56-f993-4a31-b1c7-818f1e13de55",
+          "generated_at": "2026-08-16T14:13:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5685,
+          "glow_score": 0.1969,
+          "art_hash": "db983e3e72332636"
         }
       },
       "animations": []
@@ -24933,6 +24942,15 @@
           "glow_score": 0.1235,
           "art_hash": "78c32d46c9d02c78"
         },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_003/lit_2/sprite.webp",
+          "pixellab_object_id": "1480b70e-2511-4ea4-b2ed-7447d60af863",
+          "generated_at": "2026-08-16T14:13:23+00:00",
+          "glow_concept": "night-blooms open and shining moon-pale",
+          "difference_from_source": 0.8974,
+          "glow_score": 0.1736,
+          "art_hash": "6e6e8f3b2fbce152"
+        },
         "NOT_LIT_1": {
           "sprite": "flower_stands/flower_stand_003/sprite.webp",
           "pixellab_object_id": "b0b7d38a-deec-4e85-9996-d35c780b3f97",
@@ -25053,7 +25071,7 @@
       "rel": "flower_stands/flower_stand_007",
       "name": "Briar roses on arching canes 007",
       "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, briar roses on arching canes, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25073,6 +25091,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "flower_stands/flower_stand_007/lit_1/sprite.webp",
+          "pixellab_object_id": "d3da5b39-2c44-480f-91fb-17eb9f6b850e",
+          "generated_at": "2026-08-16T14:10:04+00:00",
+          "glow_concept": "night-blooms open and shining moon-pale",
+          "difference_from_source": 0.6449,
+          "glow_score": 0.2206,
+          "art_hash": "9a65f8963667701e"
+        },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_007/lit_2/sprite.webp",
+          "pixellab_object_id": "3f513f58-94c6-4649-9917-6c7894b7dffb",
+          "generated_at": "2026-08-16T14:11:07+00:00",
+          "glow_concept": "a glowing memorial ribbon tied among stems",
+          "difference_from_source": 0.7551,
+          "glow_score": 0.2696,
+          "art_hash": "f4a2a95278f751c1"
+        },
         "NOT_LIT_1": {
           "sprite": "flower_stands/flower_stand_007/sprite.webp",
           "pixellab_object_id": "a6879a28-f045-4a1d-8f9b-9703f53b2e8a",
@@ -25087,6 +25123,24 @@
           "difference_from_source": 0.8183,
           "glow_score": 0.1452,
           "art_hash": "6236e03703a947d0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "flower_stands/flower_stand_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "6e813f59-e4b3-4343-851f-544337519d8c",
+          "generated_at": "2026-08-16T14:10:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8186,
+          "glow_score": 0.0,
+          "art_hash": "7758288add17fdc7"
+        },
+        "NOT_LIT_4": {
+          "sprite": "flower_stands/flower_stand_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "2e6bd047-6563-4275-8aa1-07f6eee4d6db",
+          "generated_at": "2026-08-16T14:09:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8282,
+          "glow_score": 0.057,
+          "art_hash": "31b80ea1e9b72b5a"
         }
       },
       "animations": []
@@ -25094,9 +25148,9 @@
     {
       "id": "flower_stand_008",
       "rel": "flower_stands/flower_stand_008",
-      "name": "Fireweed in magenta bloom 008 \u00b7 lit",
+      "name": "Fireweed in magenta bloom 008",
       "category": "flower_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, fireweed in magenta bloom, waist-high, self-emissive at night, softly radiating light: foxglove bells glowing like hanging lamps",
       "view": "low top-down",
       "size": 64,
@@ -25121,6 +25175,51 @@
           "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
           "generated_at": "2026-08-13T21:56:01+00:00",
           "art_hash": "d05c6d583e047c67"
+        },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_008/lit_2/sprite.webp",
+          "pixellab_object_id": "bb4c35d7-3ba8-400f-a097-5e1847a02aa4",
+          "generated_at": "2026-08-16T14:10:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9256,
+          "glow_score": 0.0415,
+          "art_hash": "a50165e36e0b18c9"
+        },
+        "LIT_3": {
+          "sprite": "flower_stands/flower_stand_008/lit_3/sprite.webp",
+          "pixellab_object_id": "eba4f2f0-8da0-4a02-b9ce-0ebae23b9b56",
+          "generated_at": "2026-08-16T14:11:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9486,
+          "glow_score": 0.0325,
+          "art_hash": "f6490efca7f8aafe"
+        },
+        "LIT_4": {
+          "sprite": "flower_stands/flower_stand_008/lit_4/sprite.webp",
+          "pixellab_object_id": "9ab4d301-cc63-43e5-a4e5-41ae2ef91f94",
+          "generated_at": "2026-08-16T14:10:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3186,
+          "glow_score": 0.0162,
+          "art_hash": "fc2de2a6baffdb46"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flower_stands/flower_stand_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "745762e2-02c3-486d-b9c7-2a8b51da4df0",
+          "generated_at": "2026-08-16T14:11:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9979,
+          "glow_score": 0.0,
+          "art_hash": "457c9e3142018499"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "50662e76-95bf-482b-84b9-f95c51e63cd6",
+          "generated_at": "2026-08-16T14:12:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6964,
+          "glow_score": 0.0014,
+          "art_hash": "07580f5c30929ad6"
         }
       },
       "animations": []
@@ -25128,9 +25227,9 @@
     {
       "id": "flower_stand_012",
       "rel": "flower_stands/flower_stand_012",
-      "name": "Dry winter seed-head stand 012 \u00b7 lit",
+      "name": "Dry winter seed-head stand 012",
       "category": "flower_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, dry winter seed-head stand, asymmetric, wind-shaped, waist-high, self-emissive at night, softly radiating light: night-blooms open and shining moon-pale",
       "view": "low top-down",
       "size": 64,
@@ -25155,6 +25254,51 @@
           "pixellab_object_id": "3a67fea3-f89a-4962-bbb9-d3279e823b4e",
           "generated_at": "2026-08-14T02:48:13+00:00",
           "art_hash": "bf7a713cc6635f6f"
+        },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_012/lit_2/sprite.webp",
+          "pixellab_object_id": "0950a78f-f33f-4b57-862a-171b047eef06",
+          "generated_at": "2026-08-16T14:11:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.741,
+          "glow_score": 0.1667,
+          "art_hash": "d12666cdde1aeedb"
+        },
+        "LIT_3": {
+          "sprite": "flower_stands/flower_stand_012/lit_3/sprite.webp",
+          "pixellab_object_id": "18e0b5fb-753d-49a5-aa8c-9fa07816d42a",
+          "generated_at": "2026-08-16T14:12:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8547,
+          "glow_score": 0.1237,
+          "art_hash": "48bd9bf48be44c7e"
+        },
+        "LIT_4": {
+          "sprite": "flower_stands/flower_stand_012/lit_4/sprite.webp",
+          "pixellab_object_id": "a72d7136-cf5b-4883-800f-e6d08b340f58",
+          "generated_at": "2026-08-16T14:12:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8043,
+          "glow_score": 0.1174,
+          "art_hash": "f5602c86660a5c6f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flower_stands/flower_stand_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "fdbdd475-f31b-4113-a173-83571aeb59af",
+          "generated_at": "2026-08-16T14:12:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.0,
+          "art_hash": "bb305d48308eef93"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1d2791b2-6c87-42c3-8034-4f421bda2462",
+          "generated_at": "2026-08-16T14:13:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9015,
+          "glow_score": 0.0184,
+          "art_hash": "429c17e802bce803"
         }
       },
       "animations": []
@@ -25189,6 +25333,15 @@
           "pixellab_object_id": "75ebfd5d-fc0a-4307-9643-e8a930596244",
           "generated_at": "2026-08-14T02:39:51+00:00",
           "art_hash": "5099b217f733e273"
+        },
+        "NOT_LIT_3": {
+          "sprite": "flower_stands/flower_stand_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f52cc9f3-3eec-4e5e-b860-c85ba0c639a3",
+          "generated_at": "2026-08-16T14:13:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2877,
+          "glow_score": 0.1614,
+          "art_hash": "4d45546478009d55"
         }
       },
       "animations": []
@@ -35760,6 +35913,15 @@
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "9d423ba62cbfa0e3"
         },
+        "LIT_3": {
+          "sprite": "stumps/stump_010/lit_3/sprite.webp",
+          "pixellab_object_id": "0492c195-3016-4e91-997f-5c23f474f9a5",
+          "generated_at": "2026-08-16T14:12:00+00:00",
+          "glow_concept": "shelf undersides shedding pale spore light downward",
+          "difference_from_source": 0.74,
+          "glow_score": 0.0247,
+          "art_hash": "e872cf0e3f53a9ea"
+        },
         "LIT_4": {
           "sprite": "stumps/stump_010/lit_4/sprite.webp",
           "pixellab_object_id": "1324a99b-55f6-4b33-ad30-4e7ee0806596",
@@ -35792,6 +35954,15 @@
           "glow_score": 0.2004,
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "b49bb1c3ea9e4414"
+        },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_010/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a5a5ec3d-6222-4f07-82a1-0c5618b4e022",
+          "generated_at": "2026-08-16T14:12:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8708,
+          "glow_score": 0.0711,
+          "art_hash": "2563663b629bd53a"
         },
         "NOT_LIT_4": {
           "sprite": "stumps/stump_010/not_lit_4/sprite.webp",

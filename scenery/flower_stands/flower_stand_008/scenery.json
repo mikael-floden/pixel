@@ -4,8 +4,8 @@
   "group": "flower_stands",
   "rank": 34,
   "index": 8,
-  "name": "Fireweed in magenta bloom 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fireweed in magenta bloom 008",
+  "lights": null,
   "variety": "fireweed in magenta bloom",
   "glow_concept": "foxglove bells glowing like hanging lamps",
   "prompt": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, fireweed in magenta bloom, waist-high, self-emissive at night, softly radiating light: foxglove bells glowing like hanging lamps",
@@ -35,6 +35,46 @@
       "sprite": "flower_stands/flower_stand_008/sprite.webp",
       "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
       "generated_at": "2026-08-13T21:56:01+00:00"
+    },
+    "LIT_2": {
+      "sprite": "flower_stands/flower_stand_008/lit_2/sprite.webp",
+      "pixellab_object_id": "bb4c35d7-3ba8-400f-a097-5e1847a02aa4",
+      "generated_at": "2026-08-16T14:10:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9256,
+      "glow_score": 0.0415
+    },
+    "LIT_3": {
+      "sprite": "flower_stands/flower_stand_008/lit_3/sprite.webp",
+      "pixellab_object_id": "eba4f2f0-8da0-4a02-b9ce-0ebae23b9b56",
+      "generated_at": "2026-08-16T14:11:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9486,
+      "glow_score": 0.0325
+    },
+    "LIT_4": {
+      "sprite": "flower_stands/flower_stand_008/lit_4/sprite.webp",
+      "pixellab_object_id": "9ab4d301-cc63-43e5-a4e5-41ae2ef91f94",
+      "generated_at": "2026-08-16T14:10:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3186,
+      "glow_score": 0.0162
+    },
+    "NOT_LIT_1": {
+      "sprite": "flower_stands/flower_stand_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "745762e2-02c3-486d-b9c7-2a8b51da4df0",
+      "generated_at": "2026-08-16T14:11:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9979,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "flower_stands/flower_stand_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "50662e76-95bf-482b-84b9-f95c51e63cd6",
+      "generated_at": "2026-08-16T14:12:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6964,
+      "glow_score": 0.0014
     }
   }
 }
