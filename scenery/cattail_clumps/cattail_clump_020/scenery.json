@@ -5,8 +5,8 @@
   "group": "cattail_clumps",
   "rank": 33,
   "index": 20,
-  "name": "Dark marsh cattails 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dark marsh cattails 020",
+  "lights": null,
   "variety": "dark marsh cattails",
   "modifier": "on a low grassy hummock",
   "glow_concept": "a foxfire ring around the wet base",
@@ -36,6 +36,46 @@
       "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
       "pixellab_object_id": "45063c7c-e88d-452e-b792-a27d08e11510",
       "generated_at": "2026-08-14T02:46:01+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_2/sprite.webp",
+      "pixellab_object_id": "3e0fc651-fbac-4dcb-9d8b-237b580c9998",
+      "generated_at": "2026-08-16T08:53:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4749,
+      "glow_score": 0.0418
+    },
+    "LIT_3": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_3/sprite.webp",
+      "pixellab_object_id": "2433fce3-0090-465f-8423-64ae4028f77e",
+      "generated_at": "2026-08-16T08:53:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4393,
+      "glow_score": 0.0443
+    },
+    "LIT_4": {
+      "sprite": "cattail_clumps/cattail_clump_020/lit_4/sprite.webp",
+      "pixellab_object_id": "aeb24e3b-c43f-4e5a-a54e-6740f8f541d9",
+      "generated_at": "2026-08-16T08:56:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.689,
+      "glow_score": 0.0489
+    },
+    "NOT_LIT_1": {
+      "sprite": "cattail_clumps/cattail_clump_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "cecb33ce-0d8d-4134-b3b8-99319b04ab10",
+      "generated_at": "2026-08-16T08:54:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5372,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cattail_clumps/cattail_clump_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f6a63ff1-c095-40d8-af4e-f6590c6e9974",
+      "generated_at": "2026-08-16T08:54:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9029,
+      "glow_score": 0.0
     }
   }
 }
