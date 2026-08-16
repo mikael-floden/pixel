@@ -5,8 +5,8 @@
   "group": "cliff_shrubs",
   "rank": 157,
   "index": 6,
-  "name": "Dark holly bush 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dark holly bush 006",
+  "lights": null,
   "variety": "dark holly bush",
   "modifier": "two shrubs from one crack",
   "glow_concept": "blossoms glowing along the branches",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.7818,
       "glow_score": 0.0055
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "b8687c05-1a2c-49d1-93dd-e19ede1b1097",
+      "generated_at": "2026-08-16T09:52:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4531,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7b70c929-3844-43e5-bf64-4c179a13b6a5",
+      "generated_at": "2026-08-16T09:53:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5799,
+      "glow_score": 0.0
     }
   }
 }

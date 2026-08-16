@@ -6,7 +6,7 @@
   "rank": 157,
   "index": 9,
   "name": "Stunted twisted pine 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "stunted twisted pine",
   "modifier": "growing from a narrow crack",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_009/lit_1/sprite.webp",
+      "pixellab_object_id": "13f3c5f7-1bcd-4f75-88f9-ae81017f2c7e",
+      "generated_at": "2026-08-16T09:54:19+00:00",
+      "glow_concept": "the leaves shining faintly",
+      "difference_from_source": 0.6827,
+      "glow_score": 0.1253
+    },
+    "LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_009/lit_2/sprite.webp",
+      "pixellab_object_id": "ea86af61-8c9b-47d0-8747-580b6d3aa2d6",
+      "generated_at": "2026-08-16T09:54:33+00:00",
+      "glow_concept": "blossoms glowing along the branches",
+      "difference_from_source": 0.3504,
+      "glow_score": 0.0759
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_009/sprite.webp",
       "pixellab_object_id": "71c12f50-72ff-40c7-af12-bcedbafc8c32",
       "generated_at": "2026-08-14T03:32:55+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9ac0aff3-33eb-41fe-a384-9e60cae81e4d",
+      "generated_at": "2026-08-16T09:53:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5257,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "8a433e6c-1337-4f4a-bbc7-b9f7b9134ccc",
+      "generated_at": "2026-08-16T09:53:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7459,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ab28109f-3f24-4190-8b9a-d5017612c722",
+      "generated_at": "2026-08-16T09:54:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6378,
+      "glow_score": 0.0
     }
   }
 }
