@@ -6,7 +6,7 @@
   "rank": 2,
   "index": 27,
   "name": "Half-buried tilted stone 027",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "half-buried tilted stone",
   "modifier": "leaning noticeably to one side",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_027/lit_1/sprite.webp",
+      "pixellab_object_id": "6f4bba4e-ca32-4800-a608-e1b3cba7d4f2",
+      "generated_at": "2026-08-16T21:58:11+00:00",
+      "glow_concept": "thin runes etched glowing warm amber",
+      "difference_from_source": 0.9271,
+      "glow_score": 0.0518
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_027/lit_2/sprite.webp",
+      "pixellab_object_id": "1c3a3a9a-77bb-47d0-9bae-7bb94820e631",
+      "generated_at": "2026-08-16T21:58:01+00:00",
+      "glow_concept": "patches of luminous blue-green moss",
+      "difference_from_source": 0.9216,
+      "glow_score": 0.0632
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_027/sprite.webp",
       "pixellab_object_id": "d02906b1-d935-41dc-8998-070a0ff7350f",
       "generated_at": "2026-08-14T03:18:36+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_027/not_lit_2/sprite.webp",
+      "pixellab_object_id": "460152fc-102a-41c3-93f8-6f5053a9296f",
+      "generated_at": "2026-08-16T21:58:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4935,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_027/not_lit_3/sprite.webp",
+      "pixellab_object_id": "411a0485-0baf-4fc7-adf3-08c7d09e55a5",
+      "generated_at": "2026-08-16T21:58:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7245,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_027/not_lit_4/sprite.webp",
+      "pixellab_object_id": "cdaa5d0a-8281-486a-b3d2-5c986eac4f5b",
+      "generated_at": "2026-08-16T21:58:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5402,
+      "glow_score": 0.0
     }
   }
 }

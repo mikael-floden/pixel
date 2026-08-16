@@ -5,8 +5,8 @@
   "group": "stones",
   "rank": 2,
   "index": 26,
-  "name": "Stacked pair of stones 026 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Stacked pair of stones 026",
+  "lights": null,
   "variety": "stacked pair of stones",
   "modifier": "grown around a half-buried stone",
   "glow_concept": "patches of luminous blue-green moss",
@@ -44,6 +44,38 @@
       "glow_concept": null,
       "difference_from_source": 0.7088,
       "glow_score": 0.0375
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_026/lit_3/sprite.webp",
+      "pixellab_object_id": "933c8b11-0aef-477b-9c9e-07738ad9bb78",
+      "generated_at": "2026-08-16T21:56:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5505,
+      "glow_score": 0.0041
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_026/lit_4/sprite.webp",
+      "pixellab_object_id": "0eac961c-4a2e-4401-a195-7958df4637d6",
+      "generated_at": "2026-08-16T21:56:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8005,
+      "glow_score": 0.0203
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_026/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6586ee76-e9d1-4762-ab65-f9de08d50ddb",
+      "generated_at": "2026-08-16T21:57:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8053,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_026/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5f882497-0ccb-4e76-86f5-ffbf19ee968b",
+      "generated_at": "2026-08-16T21:57:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8966,
+      "glow_score": 0.0
     }
   }
 }

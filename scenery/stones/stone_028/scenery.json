@@ -5,8 +5,8 @@
   "group": "stones",
   "rank": 2,
   "index": 28,
-  "name": "Pitted volcanic rock 028 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pitted volcanic rock 028",
+  "lights": null,
   "variety": "pitted volcanic rock",
   "modifier": "with berries scattered beneath it",
   "glow_concept": "thin runes etched glowing warm amber",
@@ -36,6 +36,38 @@
       "sprite": "stones/stone_028/sprite.webp",
       "pixellab_object_id": "b38c0197-072f-4dfe-a544-32dc1515f5ee",
       "generated_at": "2026-08-14T01:51:25+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_028/lit_2/sprite.webp",
+      "pixellab_object_id": "6e8fae27-e736-404e-81f9-f35b8b55825c",
+      "generated_at": "2026-08-16T21:58:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.309,
+      "glow_score": 0.0967
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_028/lit_3/sprite.webp",
+      "pixellab_object_id": "440e3732-aab8-4445-a3ce-3442622bf8ae",
+      "generated_at": "2026-08-16T21:59:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6257,
+      "glow_score": 0.0525
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_028/lit_4/sprite.webp",
+      "pixellab_object_id": "71b33304-2b61-4d7d-93c5-ab82b0aa1c29",
+      "generated_at": "2026-08-16T21:59:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2295,
+      "glow_score": 0.026
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_028/not_lit_1/sprite.webp",
+      "pixellab_object_id": "648f1b4a-b2b3-412f-9efb-ecb3bfbc2149",
+      "generated_at": "2026-08-16T22:00:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9292,
+      "glow_score": 0.0037
     }
   }
 }
