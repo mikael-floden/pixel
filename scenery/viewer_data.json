@@ -1914,6 +1914,15 @@
           "generated_at": "2026-08-15T14:17:33+00:00",
           "art_hash": "b14c2b927e80293c"
         },
+        "NOT_LIT_3": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ab0e1731-350f-4b29-b82b-5d670ba5d407",
+          "generated_at": "2026-08-16T14:36:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2406,
+          "glow_score": 0.0001,
+          "art_hash": "59f0bef8d96f0472"
+        },
         "NOT_LIT_4": {
           "sprite": "ancient_trees/ancient_tree_002/not_lit_4/sprite.webp",
           "pixellab_object_id": "059185c4-5f6e-49c4-bdc6-1db6662a92dd",
@@ -26282,6 +26291,15 @@
           "generated_at": "2026-08-14T04:35:48+00:00",
           "art_hash": "792be09ba9f05eb5"
         },
+        "LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_004/lit_2/sprite.webp",
+          "pixellab_object_id": "736b3d43-3078-4554-bcfb-cd4979f3641a",
+          "generated_at": "2026-08-16T14:32:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8106,
+          "glow_score": 0.021,
+          "art_hash": "067682961c087319"
+        },
         "LIT_3": {
           "sprite": "giant_snail_shells/giant_snail_shell_004/lit_3/sprite.webp",
           "pixellab_object_id": "12273450-61ce-4f0b-8a68-e52b142659d7",
@@ -26291,6 +26309,15 @@
           "glow_score": 0.1425,
           "art_hash": "28e5f9d102deca19"
         },
+        "LIT_4": {
+          "sprite": "giant_snail_shells/giant_snail_shell_004/lit_4/sprite.webp",
+          "pixellab_object_id": "26a3994b-0eb5-4e7f-8a43-c1a801d55d19",
+          "generated_at": "2026-08-16T14:32:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4046,
+          "glow_score": 0.1109,
+          "art_hash": "bcfc2818ab8aaa7e"
+        },
         "NOT_LIT_1": {
           "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_1/sprite.webp",
           "pixellab_object_id": "bbe18868-33ef-425c-91a7-a3247dcc0da2",
@@ -26299,6 +26326,15 @@
           "difference_from_source": 0.8226,
           "glow_score": 0.0,
           "art_hash": "a5ed1dd39dd3de55"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6f6292e1-d399-4994-9661-5f51a07efdc9",
+          "generated_at": "2026-08-16T14:32:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8806,
+          "glow_score": 0.0025,
+          "art_hash": "d1ae6c664f6746d3"
         }
       },
       "animations": []
@@ -26308,7 +26344,7 @@
       "rel": "grass_tufts/grass_tuft_001",
       "name": "Golden dry autumn tuft 001",
       "category": "grass_tufts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, golden dry autumn tuft, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -26328,11 +26364,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_001/lit_1/sprite.webp",
+          "pixellab_object_id": "817e044e-c22f-4594-bc3a-0e25c3e095fb",
+          "generated_at": "2026-08-16T14:34:35+00:00",
+          "glow_concept": "scattered blades shining thread-thin gold",
+          "difference_from_source": 0.4713,
+          "glow_score": 0.2804,
+          "art_hash": "c31c20bf32e533f3"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_001/lit_2/sprite.webp",
+          "pixellab_object_id": "026a6e0d-4404-4d11-addb-65b89e347f15",
+          "generated_at": "2026-08-16T14:34:24+00:00",
+          "glow_concept": "dewdrops lit like tiny stars",
+          "difference_from_source": 0.8388,
+          "glow_score": 0.1721,
+          "art_hash": "87eb22701311b9fe"
+        },
         "NOT_LIT_1": {
           "sprite": "grass_tufts/grass_tuft_001/sprite.webp",
           "pixellab_object_id": "da258a02-1805-4537-ac0e-05dd2adb922c",
           "generated_at": "2026-08-13T00:56:54+00:00",
           "art_hash": "0b570d7355fc633a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d4c0c104-48b2-427a-ae73-270d4a4eb5c7",
+          "generated_at": "2026-08-16T14:33:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6798,
+          "glow_score": 0.126,
+          "art_hash": "5c590103382a6a3d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "33849dc6-c132-4073-82e8-3998dbf69cd2",
+          "generated_at": "2026-08-16T14:34:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3558,
+          "glow_score": 0.1795,
+          "art_hash": "b9d0bdbfd83e5cee"
+        },
+        "NOT_LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "90de0b59-10e6-43dd-aee3-bbd4be8553f3",
+          "generated_at": "2026-08-16T14:37:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5255,
+          "glow_score": 0.1667,
+          "art_hash": "929f8b3e2a4a7696"
         }
       },
       "animations": []
@@ -26340,9 +26421,9 @@
     {
       "id": "grass_tuft_002",
       "rel": "grass_tufts/grass_tuft_002",
-      "name": "Feathery seed-plume grass 002 \u00b7 lit",
+      "name": "Feathery seed-plume grass 002",
       "category": "grass_tufts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, feathery seed-plume grass, small, knee-high to an adult person, self-emissive at night, softly radiating light: scattered blades shining thread-thin gold",
       "view": "low top-down",
       "size": 48,
@@ -26367,6 +26448,51 @@
           "pixellab_object_id": "083a9e2e-ce07-45bf-9b05-ed8710ba8b3e",
           "generated_at": "2026-08-13T04:10:39+00:00",
           "art_hash": "c5216fecf1694da6"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_002/lit_2/sprite.webp",
+          "pixellab_object_id": "d162ab1a-788b-4562-a8e9-ff0b1e9bf942",
+          "generated_at": "2026-08-16T14:35:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9092,
+          "glow_score": 0.0297,
+          "art_hash": "69b0c048720486cc"
+        },
+        "LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_002/lit_3/sprite.webp",
+          "pixellab_object_id": "0a7e0d8e-8b16-446d-875a-6831748b3142",
+          "generated_at": "2026-08-16T14:35:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8883,
+          "glow_score": 0.0,
+          "art_hash": "6be44526f0f962ed"
+        },
+        "LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_002/lit_4/sprite.webp",
+          "pixellab_object_id": "05b61e4d-a485-4836-ab14-9afd0ebab260",
+          "generated_at": "2026-08-16T14:34:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8025,
+          "glow_score": 0.0351,
+          "art_hash": "8acd744ff6d5332c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b60415c3-0f92-4b40-ad98-f6b56c332c6c",
+          "generated_at": "2026-08-16T14:34:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9381,
+          "glow_score": 0.0,
+          "art_hash": "6d198235b5c62470"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7cdbf7aa-2d1d-45c1-9b6f-578ba02b0a44",
+          "generated_at": "2026-08-16T14:35:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9116,
+          "glow_score": 0.0,
+          "art_hash": "bc8c7b5e62bdab31"
         }
       },
       "animations": []
@@ -26374,9 +26500,9 @@
     {
       "id": "grass_tuft_004",
       "rel": "grass_tufts/grass_tuft_004",
-      "name": "Silvery hair-grass tuft 004 \u00b7 lit",
+      "name": "Silvery hair-grass tuft 004",
       "category": "grass_tufts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, silvery hair-grass tuft, small, knee-high to an adult person, self-emissive at night, softly radiating light: faint green foxfire at the roots",
       "view": "low top-down",
       "size": 48,
@@ -26401,6 +26527,42 @@
           "pixellab_object_id": "e24d8fc9-d748-4e7b-bf85-fdcc103c43f3",
           "generated_at": "2026-08-13T09:27:12+00:00",
           "art_hash": "c610e43100022fc6"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_004/lit_2/sprite.webp",
+          "pixellab_object_id": "42501e7b-63d1-4ab1-90a9-6cd64ea3e287",
+          "generated_at": "2026-08-16T14:35:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6948,
+          "glow_score": 0.0156,
+          "art_hash": "53b3e771b94c679d"
+        },
+        "LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_004/lit_3/sprite.webp",
+          "pixellab_object_id": "4f7614bf-de80-4998-8c16-4548675e0560",
+          "generated_at": "2026-08-16T14:36:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.888,
+          "glow_score": 0.0109,
+          "art_hash": "c3ffbe16c56f8774"
+        },
+        "LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_004/lit_4/sprite.webp",
+          "pixellab_object_id": "870a32d9-bb73-4a64-84d6-dd164a9e5e2b",
+          "generated_at": "2026-08-16T14:36:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7405,
+          "glow_score": 0.042,
+          "art_hash": "0cf4fdb67a6806c3"
+        },
+        "NOT_LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "965119f4-5909-403c-98ca-83a42fa029a2",
+          "generated_at": "2026-08-16T14:35:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.0,
+          "art_hash": "8a1d8ed9c1f604ea"
         }
       },
       "animations": []
@@ -26410,7 +26572,7 @@
       "rel": "grass_tufts/grass_tuft_005",
       "name": "Coarse marsh grass tuft 005",
       "category": "grass_tufts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, coarse marsh grass tuft, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -26430,11 +26592,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_005/lit_1/sprite.webp",
+          "pixellab_object_id": "9a04afbb-e175-4243-a4a8-36a3db83eb33",
+          "generated_at": "2026-08-16T14:37:42+00:00",
+          "glow_concept": "scattered blades shining thread-thin gold",
+          "difference_from_source": 0.3789,
+          "glow_score": 0.0509,
+          "art_hash": "8830d80efd9219f2"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_005/lit_2/sprite.webp",
+          "pixellab_object_id": "3b4bbd80-37a2-45ec-a398-662298f2481c",
+          "generated_at": "2026-08-16T14:39:09+00:00",
+          "glow_concept": "dewdrops lit like tiny stars",
+          "difference_from_source": 0.7487,
+          "glow_score": 0.1045,
+          "art_hash": "d7929419e162a24c"
+        },
         "NOT_LIT_1": {
           "sprite": "grass_tufts/grass_tuft_005/sprite.webp",
           "pixellab_object_id": "231aac9a-ff8d-4f60-b638-0c3f257c02a3",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "8900ee313d975f20"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ed9d6a37-0eff-4d31-ba0c-8a9c818f619f",
+          "generated_at": "2026-08-16T14:37:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5217,
+          "glow_score": 0.0166,
+          "art_hash": "0c8994feb9ce9842"
+        },
+        "NOT_LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "54ebbdb7-3e1e-41eb-9fd5-4a7b199e7680",
+          "generated_at": "2026-08-16T14:37:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3961,
+          "glow_score": 0.0,
+          "art_hash": "e084605cc759da96"
+        },
+        "NOT_LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5bb3d66d-631a-4b5e-84c3-879e2b9e57c6",
+          "generated_at": "2026-08-16T14:37:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3442,
+          "glow_score": 0.0,
+          "art_hash": "c3e003f38469c9e3"
         }
       },
       "animations": []
@@ -26469,6 +26676,24 @@
           "pixellab_object_id": "bb0d4772-cbbc-4d25-aab8-9bd03f56180c",
           "generated_at": "2026-08-13T22:12:30+00:00",
           "art_hash": "29df13f528ef2e97"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a102cc43-7561-449c-a637-92d474b03a06",
+          "generated_at": "2026-08-16T14:38:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.329,
+          "glow_score": 0.0676,
+          "art_hash": "782684d5197cb544"
+        },
+        "NOT_LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7a0c5733-f81e-486b-a225-104f7b1a88db",
+          "generated_at": "2026-08-16T14:38:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5874,
+          "glow_score": 0.0,
+          "art_hash": "e1792140b0322667"
         }
       },
       "animations": []
@@ -26503,6 +26728,15 @@
           "pixellab_object_id": "78bcc653-cce8-4ceb-8789-27ffe209b2fa",
           "generated_at": "2026-08-13T23:56:05+00:00",
           "art_hash": "aa76c24a6b8bc338"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "24646cc3-9409-43ea-9ce4-1627005b04e7",
+          "generated_at": "2026-08-16T14:39:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1903,
+          "glow_score": 0.0,
+          "art_hash": "2c4d29e0bdad5e1c"
         }
       },
       "animations": []
@@ -35830,6 +36064,15 @@
           "glow_score": 0.1387,
           "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "f30db58a467ed08d"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_003/lit_3/sprite.webp",
+          "pixellab_object_id": "dfde3b0e-828f-4311-9ce3-3304f6bdbaed",
+          "generated_at": "2026-08-16T14:33:12+00:00",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.6311,
+          "glow_score": 0.2586,
+          "art_hash": "87b6ae8ede97b875"
         },
         "LIT_4": {
           "sprite": "stumps/stump_003/lit_4/sprite.webp",

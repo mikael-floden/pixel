@@ -5,7 +5,7 @@
   "rank": 36,
   "index": 1,
   "name": "Golden dry autumn tuft 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "golden dry autumn tuft",
   "glow_concept": null,
   "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, golden dry autumn tuft, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T00:56:54+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "grass_tufts/grass_tuft_001/lit_1/sprite.webp",
+      "pixellab_object_id": "817e044e-c22f-4594-bc3a-0e25c3e095fb",
+      "generated_at": "2026-08-16T14:34:35+00:00",
+      "glow_concept": "scattered blades shining thread-thin gold",
+      "difference_from_source": 0.4713,
+      "glow_score": 0.2804
+    },
+    "LIT_2": {
+      "sprite": "grass_tufts/grass_tuft_001/lit_2/sprite.webp",
+      "pixellab_object_id": "026a6e0d-4404-4d11-addb-65b89e347f15",
+      "generated_at": "2026-08-16T14:34:24+00:00",
+      "glow_concept": "dewdrops lit like tiny stars",
+      "difference_from_source": 0.8388,
+      "glow_score": 0.1721
+    },
     "NOT_LIT_1": {
       "sprite": "grass_tufts/grass_tuft_001/sprite.webp",
       "pixellab_object_id": "da258a02-1805-4537-ac0e-05dd2adb922c",
       "generated_at": "2026-08-13T00:56:54+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "grass_tufts/grass_tuft_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d4c0c104-48b2-427a-ae73-270d4a4eb5c7",
+      "generated_at": "2026-08-16T14:33:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6798,
+      "glow_score": 0.126
+    },
+    "NOT_LIT_3": {
+      "sprite": "grass_tufts/grass_tuft_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "33849dc6-c132-4073-82e8-3998dbf69cd2",
+      "generated_at": "2026-08-16T14:34:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3558,
+      "glow_score": 0.1795
+    },
+    "NOT_LIT_4": {
+      "sprite": "grass_tufts/grass_tuft_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "90de0b59-10e6-43dd-aee3-bbd4be8553f3",
+      "generated_at": "2026-08-16T14:37:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5255,
+      "glow_score": 0.1667
     }
   }
 }
