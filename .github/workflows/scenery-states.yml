@@ -1,0 +1,87 @@
+name: Scenery state variants
+
+# THE STATE-VARIANT PASS, ON A RUNNER INSTEAD OF IN AN AGENT SESSION.
+#
+# Maintainer, 2026-08-15: every piece that is not a TREE or a WINDOW gets six
+# states — four in its own lighting condition, two in the opposite. That is
+# ~3,000 generations, which is many hours of wall-clock.
+#
+# WHY THIS EXISTS RATHER THAN JUST RUNNING IT IN THE AGENT'S SHELL: it was run
+# that way first, and the container went away overnight and took the run with
+# it, silently, at 433 of 3,073 states. coordination/PROTOCOL.md already says
+# this in bold — "a loop running inside your agent's session/container DIES on
+# every container restart ... Do not rely on it for continuous generation" —
+# and this is the second time the lesson has been paid for.
+#
+# The pass is fully resumable from the filesystem: state_variants.py plans from
+# what is on disk, persists each piece's anchor before generating, and commits
+# every 25 states. So a run that is cut off mid-way loses nothing, and the next
+# firing continues from exactly where it stopped. That is what makes a schedule
+# the right shape for it — each firing is a bounded slice of the same job.
+#
+# It stops on its own when credits run out (MIN_USD floor) and simply picks up
+# again after the maintainer tops up.
+
+on:
+  schedule:
+    # Every 4 hours. The pass is finite: once every piece has its six states,
+    # in_scope() returns empty and each firing exits in seconds having spent
+    # nothing. Turn it off then, or leave it as the backstop that gives new
+    # pieces their states automatically.
+    - cron: "20 */4 * * *"
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: "Minutes to run this pass"
+        default: "300"
+      groups:
+        description: "Comma-separated group ids (blank = every group)"
+        default: ""
+
+permissions:
+  contents: write
+
+# Never two at once: they would fight over the same manifests and the same
+# push. cancel-in-progress stays FALSE — a running pass is doing paid work and
+# committing it; killing it mid-batch would strand PixelLab jobs already paid
+# for, which the run cannot recover on its own.
+concurrency:
+  group: scenery-states
+  cancel-in-progress: false
+
+jobs:
+  states:
+    runs-on: ubuntu-latest
+    # Headroom over --max-minutes so the final batch can finish downloading,
+    # gate, write and COMMIT before the runner is killed.
+    timeout-minutes: 350
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary art history and this job only
+          # needs the tip to commit and push.
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate state variants
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          if [ -z "$PIXELLAB_API_KEY" ]; then
+            echo "::warning::PIXELLAB_API_KEY secret is not set. Skipping."
+            exit 0
+          fi
+          git config user.name "pixel-scenery-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python scenery/pipeline/state_variants.py \
+            --max-minutes "${{ github.event.inputs.max_minutes || '300' }}" \
+            ${{ github.event.inputs.groups && format('--groups {0}', github.event.inputs.groups) || '' }}
