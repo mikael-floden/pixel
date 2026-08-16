@@ -4,8 +4,8 @@
   "group": "lantern_posts",
   "rank": 5,
   "index": 8,
-  "name": "Moss-capped old post 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Moss-capped old post 008",
+  "lights": null,
   "variety": "moss-capped old post",
   "glow_concept": "green foxfire packed behind the panes",
   "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, moss-capped old post, large, twice human height, self-emissive at night, softly radiating light: green foxfire packed behind the panes",
@@ -35,6 +35,46 @@
       "sprite": "lantern_posts/lantern_post_008/sprite.webp",
       "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
       "generated_at": "2026-08-13T21:50:10+00:00"
+    },
+    "LIT_2": {
+      "sprite": "lantern_posts/lantern_post_008/lit_2/sprite.webp",
+      "pixellab_object_id": "9cc16ac8-8415-4b17-968f-6a74ccf623e5",
+      "generated_at": "2026-08-16T17:18:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7021,
+      "glow_score": 0.0338
+    },
+    "LIT_3": {
+      "sprite": "lantern_posts/lantern_post_008/lit_3/sprite.webp",
+      "pixellab_object_id": "7d6b53a6-3c33-4241-b6bc-e80b2d83825b",
+      "generated_at": "2026-08-16T17:18:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8045,
+      "glow_score": 0.06
+    },
+    "LIT_4": {
+      "sprite": "lantern_posts/lantern_post_008/lit_4/sprite.webp",
+      "pixellab_object_id": "540ec3a9-ccb5-4dc6-99ea-5af06b093900",
+      "generated_at": "2026-08-16T17:19:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8114,
+      "glow_score": 0.0349
+    },
+    "NOT_LIT_1": {
+      "sprite": "lantern_posts/lantern_post_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "52390b10-4d33-41f5-bb1e-743bdc1b106e",
+      "generated_at": "2026-08-16T17:18:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5185,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_posts/lantern_post_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d7dbe6f4-efa1-4857-af90-4a0b3f3e93d9",
+      "generated_at": "2026-08-16T17:19:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8217,
+      "glow_score": 0.0
     }
   }
 }

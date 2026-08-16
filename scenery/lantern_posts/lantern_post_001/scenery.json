@@ -5,7 +5,7 @@
   "rank": 5,
   "index": 1,
   "name": "Weathered oak post 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "weathered oak post",
   "glow_concept": null,
   "prompt": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, weathered oak post, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:46:32+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "lantern_posts/lantern_post_001/lit_1/sprite.webp",
+      "pixellab_object_id": "8ea5717f-15ac-405c-8904-9a23a25f4dad",
+      "generated_at": "2026-08-16T17:13:55+00:00",
+      "glow_concept": "steady candle flame behind horn panes",
+      "difference_from_source": 0.9159,
+      "glow_score": 0.1173
+    },
+    "LIT_2": {
+      "sprite": "lantern_posts/lantern_post_001/lit_2/sprite.webp",
+      "pixellab_object_id": "f8d8813b-a654-4996-83bf-c924f10cf5cd",
+      "generated_at": "2026-08-16T17:14:16+00:00",
+      "glow_concept": "green foxfire packed behind the panes",
+      "difference_from_source": 0.8912,
+      "glow_score": 0.0854
+    },
     "NOT_LIT_1": {
       "sprite": "lantern_posts/lantern_post_001/sprite.webp",
       "pixellab_object_id": "36864f55-30ba-4c0e-9187-21254790d5f6",

@@ -31189,7 +31189,7 @@
       "rel": "lantern_posts/lantern_post_001",
       "name": "Weathered oak post 001",
       "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, weathered oak post, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -31209,6 +31209,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "lantern_posts/lantern_post_001/lit_1/sprite.webp",
+          "pixellab_object_id": "8ea5717f-15ac-405c-8904-9a23a25f4dad",
+          "generated_at": "2026-08-16T17:13:55+00:00",
+          "glow_concept": "steady candle flame behind horn panes",
+          "difference_from_source": 0.9159,
+          "glow_score": 0.1173,
+          "art_hash": "b99ed2450507a924"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_001/lit_2/sprite.webp",
+          "pixellab_object_id": "f8d8813b-a654-4996-83bf-c924f10cf5cd",
+          "generated_at": "2026-08-16T17:14:16+00:00",
+          "glow_concept": "green foxfire packed behind the panes",
+          "difference_from_source": 0.8912,
+          "glow_score": 0.0854,
+          "art_hash": "ee67400e4d20be4f"
+        },
         "NOT_LIT_1": {
           "sprite": "lantern_posts/lantern_post_001/sprite.webp",
           "pixellab_object_id": "36864f55-30ba-4c0e-9187-21254790d5f6",
@@ -31248,9 +31266,9 @@
     {
       "id": "lantern_post_004",
       "rel": "lantern_posts/lantern_post_004",
-      "name": "Rune-notched waymark post 004 \u00b7 lit",
+      "name": "Rune-notched waymark post 004",
       "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rune-notched waymark post, about as tall as an adult person, self-emissive at night, softly radiating light: thread of woven light burning like a wick",
       "view": "low top-down",
       "size": 96,
@@ -31275,6 +31293,51 @@
           "pixellab_object_id": "ba9e5108-0648-4a82-8fb9-b145914628db",
           "generated_at": "2026-08-13T08:45:01+00:00",
           "art_hash": "fddbfc8a7ae4b6f6"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_004/lit_2/sprite.webp",
+          "pixellab_object_id": "981ae8b2-08f2-44bc-86f7-c275427133bd",
+          "generated_at": "2026-08-16T17:14:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6974,
+          "glow_score": 0.0857,
+          "art_hash": "d1672f91502a2599"
+        },
+        "LIT_3": {
+          "sprite": "lantern_posts/lantern_post_004/lit_3/sprite.webp",
+          "pixellab_object_id": "e22f9770-518b-4329-a519-317e2d828d0c",
+          "generated_at": "2026-08-16T17:15:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6247,
+          "glow_score": 0.0978,
+          "art_hash": "1cd1e97f996e5507"
+        },
+        "LIT_4": {
+          "sprite": "lantern_posts/lantern_post_004/lit_4/sprite.webp",
+          "pixellab_object_id": "d5967935-6b8c-4d50-9814-5fa174c3e53d",
+          "generated_at": "2026-08-16T17:14:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8316,
+          "glow_score": 0.0871,
+          "art_hash": "6e722c92690e16a8"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_posts/lantern_post_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d4e3a5dd-d1bc-4cb6-9c23-828968b4ba3d",
+          "generated_at": "2026-08-16T17:14:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9857,
+          "glow_score": 0.0,
+          "art_hash": "cf818173bd942fe0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cfc779ba-bfe3-4f69-a26b-8e3f8ca64834",
+          "generated_at": "2026-08-16T17:15:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9732,
+          "glow_score": 0.0086,
+          "art_hash": "6db1d8faf9cc188c"
         }
       },
       "animations": []
@@ -31284,7 +31347,7 @@
       "rel": "lantern_posts/lantern_post_005",
       "name": "Driftwood post with barnacles 005",
       "category": "lantern_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, driftwood post with barnacles, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -31304,11 +31367,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "lantern_posts/lantern_post_005/lit_1/sprite.webp",
+          "pixellab_object_id": "e2ceb6d2-6a55-4113-9207-b80a575218d2",
+          "generated_at": "2026-08-16T17:17:29+00:00",
+          "glow_concept": "glass jar packed with gathered fireflies",
+          "difference_from_source": 0.9938,
+          "glow_score": 0.5066,
+          "art_hash": "a1c9eb92f524647a"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_005/lit_2/sprite.webp",
+          "pixellab_object_id": "04369cd4-a0a1-42c1-b7c1-319df16db612",
+          "generated_at": "2026-08-16T17:17:31+00:00",
+          "glow_concept": "raw glowing amber soulstone chunk",
+          "difference_from_source": 1.0,
+          "glow_score": 0.4802,
+          "art_hash": "dbf27f28ca70b5d0"
+        },
         "NOT_LIT_1": {
           "sprite": "lantern_posts/lantern_post_005/sprite.webp",
           "pixellab_object_id": "98a78082-c211-4308-8b7b-c6dc8b5838d0",
           "generated_at": "2026-08-13T09:59:47+00:00",
           "art_hash": "7832cb516d2433c4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b27413f2-097a-4daa-b552-409433236ec2",
+          "generated_at": "2026-08-16T17:15:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9088,
+          "glow_score": 0.0518,
+          "art_hash": "834bc30fe8283b1c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_posts/lantern_post_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4f1cceec-a7e4-4f67-938e-2f94c8242a46",
+          "generated_at": "2026-08-16T17:16:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8441,
+          "glow_score": 0.0185,
+          "art_hash": "6a650e8ef4cdf4e4"
+        },
+        "NOT_LIT_4": {
+          "sprite": "lantern_posts/lantern_post_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
+          "generated_at": "2026-08-16T17:16:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.896,
+          "glow_score": 0.0779,
+          "art_hash": "3db58a8420802459"
         }
       },
       "animations": []
@@ -31316,9 +31424,9 @@
     {
       "id": "lantern_post_006",
       "rel": "lantern_posts/lantern_post_006",
-      "name": "Tar-blackened coastal post 006 \u00b7 lit",
+      "name": "Tar-blackened coastal post 006",
       "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, tar-blackened coastal post, about as tall as an adult person, self-emissive at night, softly radiating light: steady candle flame behind horn panes",
       "view": "low top-down",
       "size": 96,
@@ -31343,6 +31451,42 @@
           "pixellab_object_id": "112be2d4-c5d7-4409-8d8d-f50c1ae095f4",
           "generated_at": "2026-08-13T12:04:09+00:00",
           "art_hash": "d4d2713f7d9d5dd6"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_006/lit_2/sprite.webp",
+          "pixellab_object_id": "5856312b-b0b8-4ade-8355-5a8ee90a2e3c",
+          "generated_at": "2026-08-16T17:16:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9372,
+          "glow_score": 0.2158,
+          "art_hash": "f2e695cbdc063fc9"
+        },
+        "LIT_3": {
+          "sprite": "lantern_posts/lantern_post_006/lit_3/sprite.webp",
+          "pixellab_object_id": "9a5d0015-4174-433f-a92f-12aeb0494222",
+          "generated_at": "2026-08-16T17:16:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8736,
+          "glow_score": 0.0646,
+          "art_hash": "af32343e6b9c9d3f"
+        },
+        "LIT_4": {
+          "sprite": "lantern_posts/lantern_post_006/lit_4/sprite.webp",
+          "pixellab_object_id": "ce0ed16b-3bc7-4724-8f1f-68727c4c461e",
+          "generated_at": "2026-08-16T17:17:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7675,
+          "glow_score": 0.1076,
+          "art_hash": "f4e95c81cc7a53ca"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_posts/lantern_post_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "cae76dba-37b5-4595-8ad3-0a569d8e01f3",
+          "generated_at": "2026-08-16T17:17:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6742,
+          "glow_score": 0.0,
+          "art_hash": "48f6ebcde478bc75"
         }
       },
       "animations": []
@@ -31350,9 +31494,9 @@
     {
       "id": "lantern_post_008",
       "rel": "lantern_posts/lantern_post_008",
-      "name": "Moss-capped old post 008 \u00b7 lit",
+      "name": "Moss-capped old post 008",
       "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, moss-capped old post, large, twice human height, self-emissive at night, softly radiating light: green foxfire packed behind the panes",
       "view": "low top-down",
       "size": 96,
@@ -31377,6 +31521,51 @@
           "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
           "generated_at": "2026-08-13T21:50:10+00:00",
           "art_hash": "0cc24025bf3fb4fb"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_008/lit_2/sprite.webp",
+          "pixellab_object_id": "9cc16ac8-8415-4b17-968f-6a74ccf623e5",
+          "generated_at": "2026-08-16T17:18:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7021,
+          "glow_score": 0.0338,
+          "art_hash": "27c83e22944872a3"
+        },
+        "LIT_3": {
+          "sprite": "lantern_posts/lantern_post_008/lit_3/sprite.webp",
+          "pixellab_object_id": "7d6b53a6-3c33-4241-b6bc-e80b2d83825b",
+          "generated_at": "2026-08-16T17:18:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8045,
+          "glow_score": 0.06,
+          "art_hash": "c62a42836b9ef605"
+        },
+        "LIT_4": {
+          "sprite": "lantern_posts/lantern_post_008/lit_4/sprite.webp",
+          "pixellab_object_id": "540ec3a9-ccb5-4dc6-99ea-5af06b093900",
+          "generated_at": "2026-08-16T17:19:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8114,
+          "glow_score": 0.0349,
+          "art_hash": "73ab5a874221b3da"
+        },
+        "NOT_LIT_1": {
+          "sprite": "lantern_posts/lantern_post_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "52390b10-4d33-41f5-bb1e-743bdc1b106e",
+          "generated_at": "2026-08-16T17:18:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5185,
+          "glow_score": 0.0,
+          "art_hash": "f3d7d2ddca5a472e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d7dbe6f4-efa1-4857-af90-4a0b3f3e93d9",
+          "generated_at": "2026-08-16T17:19:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8217,
+          "glow_score": 0.0,
+          "art_hash": "1d1734564d71af7e"
         }
       },
       "animations": []
@@ -31384,9 +31573,9 @@
     {
       "id": "lantern_post_014",
       "rel": "lantern_posts/lantern_post_014",
-      "name": "Rope-lashed twin post 014 \u00b7 lit",
+      "name": "Rope-lashed twin post 014",
       "category": "lantern_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a shoulder-height wooden post with a small metal-framed glass lantern fixed on its flat top, rope-lashed twin post, weathered silver-grey, roughly six feet tall, human height, self-emissive at night, softly radiating light: raw glowing amber soulstone chunk",
       "view": "low top-down",
       "size": 64,
@@ -31411,6 +31600,42 @@
           "pixellab_object_id": "2535019e-0370-43ea-a136-7e724dc56cba",
           "generated_at": "2026-08-14T00:36:54+00:00",
           "art_hash": "cfa7d3bea57cfd7e"
+        },
+        "LIT_2": {
+          "sprite": "lantern_posts/lantern_post_014/lit_2/sprite.webp",
+          "pixellab_object_id": "df3a3958-9c90-4892-9e08-7e2433bb8498",
+          "generated_at": "2026-08-16T17:19:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.971,
+          "glow_score": 0.054,
+          "art_hash": "ac448ae95d2e3ebc"
+        },
+        "LIT_3": {
+          "sprite": "lantern_posts/lantern_post_014/lit_3/sprite.webp",
+          "pixellab_object_id": "f2d35bd7-bea9-4c30-bffe-389ac49cd254",
+          "generated_at": "2026-08-16T17:19:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.93,
+          "glow_score": 0.1317,
+          "art_hash": "c63910aa5a1daf0f"
+        },
+        "LIT_4": {
+          "sprite": "lantern_posts/lantern_post_014/lit_4/sprite.webp",
+          "pixellab_object_id": "7c55bcbd-a1fb-4bb4-8584-e8dcab55f9c1",
+          "generated_at": "2026-08-16T17:20:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9295,
+          "glow_score": 0.1215,
+          "art_hash": "a4cbbd3ba0761afa"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8f642a23-8434-4d07-94ea-fea9e0d983fb",
+          "generated_at": "2026-08-16T17:20:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9123,
+          "glow_score": 0.0038,
+          "art_hash": "6f4063001435f4c2"
         }
       },
       "animations": []
@@ -31445,6 +31670,15 @@
           "pixellab_object_id": "d38fac50-94c2-46ca-b8be-f01fb1ca9e05",
           "generated_at": "2026-08-14T00:31:33+00:00",
           "art_hash": "c83b35fd66ed967a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "lantern_posts/lantern_post_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "79cf682f-8449-42ac-a3ac-8b0ef3281670",
+          "generated_at": "2026-08-16T17:20:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8629,
+          "glow_score": 0.0038,
+          "art_hash": "5ffd39b7e51124e7"
         }
       },
       "animations": []
