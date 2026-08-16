@@ -4,8 +4,8 @@
   "group": "mushrooms",
   "rank": 31,
   "index": 2,
-  "name": "Pale ivory field mushrooms 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pale ivory field mushrooms 002",
+  "lights": null,
   "variety": "pale ivory field mushrooms",
   "glow_concept": "bioluminescent gills casting light from under the caps",
   "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, pale ivory field mushrooms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: bioluminescent gills casting light from under the caps",
@@ -35,6 +35,46 @@
       "sprite": "mushrooms/mushroom_002/sprite.webp",
       "pixellab_object_id": "8c414a6a-ca82-4b5c-b38b-d098892cd7c9",
       "generated_at": "2026-08-13T04:02:44+00:00"
+    },
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_002/lit_2/sprite.webp",
+      "pixellab_object_id": "10d86eed-00c4-4367-ac1a-28efcd5ccdfa",
+      "generated_at": "2026-08-16T19:24:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6367,
+      "glow_score": 0.2545
+    },
+    "LIT_3": {
+      "sprite": "mushrooms/mushroom_002/lit_3/sprite.webp",
+      "pixellab_object_id": "9039a0a4-21c3-4936-80a9-d36378609c68",
+      "generated_at": "2026-08-16T19:24:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5843,
+      "glow_score": 0.2616
+    },
+    "LIT_4": {
+      "sprite": "mushrooms/mushroom_002/lit_4/sprite.webp",
+      "pixellab_object_id": "6a4084c0-dfe5-4f95-9279-7b3d51e4781e",
+      "generated_at": "2026-08-16T19:24:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8612,
+      "glow_score": 0.304
+    },
+    "NOT_LIT_1": {
+      "sprite": "mushrooms/mushroom_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "cefa6111-ee7b-4bbd-91cb-cfb8bd1f8fdb",
+      "generated_at": "2026-08-16T19:24:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8353,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a8c3aa89-bc1a-463e-a0df-174c363d6452",
+      "generated_at": "2026-08-16T19:24:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6403,
+      "glow_score": 0.0
     }
   }
 }

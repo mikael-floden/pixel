@@ -5,7 +5,7 @@
   "rank": 31,
   "index": 1,
   "name": "Frost-grey winter mushrooms 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "frost-grey winter mushrooms",
   "glow_concept": null,
   "prompt": "a small cluster of woodland mushrooms with rounded caps and pale stems growing from leaf litter, frost-grey winter mushrooms, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,34 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T00:55:11+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_001/lit_1/sprite.webp",
+      "pixellab_object_id": "0aa268e7-cf74-4fe4-ba72-2be04d3033c4",
+      "generated_at": "2026-08-16T19:26:28+00:00",
+      "glow_concept": "bioluminescent gills casting light from under the caps",
+      "difference_from_source": 0.7121,
+      "glow_score": 0.1903
+    },
+    "LIT_2": {
+      "sprite": "mushrooms/mushroom_001/lit_2/sprite.webp",
+      "pixellab_object_id": "a0f4eccf-5a51-489d-9b81-ccef6dd69584",
+      "generated_at": "2026-08-16T19:28:50+00:00",
+      "glow_concept": "caps speckled with glowing spore freckles",
+      "difference_from_source": 0.6288,
+      "glow_score": 0.144
+    },
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_001/sprite.webp",
       "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
       "generated_at": "2026-08-13T00:55:11+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "mushrooms/mushroom_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "174e2d68-d768-4f51-a6b1-25aebb8dd0e3",
+      "generated_at": "2026-08-16T19:24:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7349,
+      "glow_score": 0.0
     },
     "NOT_LIT_3": {
       "sprite": "mushrooms/mushroom_001/not_lit_3/sprite.webp",
