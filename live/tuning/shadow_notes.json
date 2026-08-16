@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-shadow-notes@1",
-  "updated_at": "2026-08-16T11:28:37.489Z",
+  "updated_at": "2026-08-16T11:29:27.346Z",
   "overrides": {
     "monsters/crystal_horn#idle#south": {
       "dx": -0.23,
@@ -409,6 +409,23 @@
         "h": 124
       },
       "updated_at": "2026-08-16T11:28:34.771Z"
+    },
+    "monsters/desert_cat#idle#south": {
+      "dx": 0.17,
+      "dy": -3.61,
+      "w": 32,
+      "h": 27.06,
+      "was": {
+        "w": 32,
+        "h": 12,
+        "cx": 62,
+        "cy": 87.75
+      },
+      "frame": {
+        "w": 124,
+        "h": 124
+      },
+      "updated_at": "2026-08-16T11:29:19.301Z"
     }
   }
 }
