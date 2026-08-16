@@ -30,30 +30,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "stumps/stump_001/lit_1/sprite.webp",
-      "pixellab_object_id": "c9a95967-2f0d-4123-a540-3e0f184a4652",
-      "glow_concept": "growth rings glowing like concentric embers",
-      "difference_from_source": 0.744,
-      "glow_score": 0.0948,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "LIT_2": {
-      "sprite": "stumps/stump_001/lit_2/sprite.webp",
-      "pixellab_object_id": "a6863caa-b5e2-4fd2-a80f-fd2a747ada66",
-      "glow_concept": "ring of glowing mushrooms around the base",
-      "difference_from_source": 0.9876,
-      "glow_score": 0.1009,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "LIT_3": {
-      "sprite": "stumps/stump_001/lit_3/sprite.webp",
-      "pixellab_object_id": "3d0330c4-317b-4663-bdfd-743907f2dbcc",
-      "glow_concept": "a single candle burning on the cut face",
-      "difference_from_source": 0.417,
-      "glow_score": 0.2153,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
     "LIT_4": {
       "sprite": "stumps/stump_001/lit_4/sprite.webp",
       "pixellab_object_id": "c6fcc026-1d9a-4a25-82ea-f59acf0ae43f",
@@ -76,60 +52,12 @@
       "glow_score": 0.0089,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
-    "NOT_LIT_2": {
-      "sprite": "stumps/stump_001/not_lit_2/sprite.webp",
-      "pixellab_object_id": "fa65de90-e86c-4588-a7bc-849d05c156f5",
-      "glow_concept": null,
-      "difference_from_source": 0.9557,
-      "glow_score": 0.0,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_3": {
-      "sprite": "stumps/stump_001/not_lit_3/sprite.webp",
-      "pixellab_object_id": "2e379948-2e69-4cda-8cf6-159c7c35b69f",
-      "glow_concept": null,
-      "difference_from_source": 0.9931,
-      "glow_score": 0.3726,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
     "NOT_LIT_4": {
       "sprite": "stumps/stump_001/not_lit_4/sprite.webp",
       "pixellab_object_id": "29c9825a-753d-49e1-a966-5a50096b2d44",
       "glow_concept": null,
       "difference_from_source": 0.4331,
       "glow_score": 0.0089,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_5": {
-      "sprite": "stumps/stump_001/not_lit_5/sprite.webp",
-      "pixellab_object_id": "11c0bb55-7d9a-4fa3-8cde-cf8f23017dae",
-      "glow_concept": null,
-      "difference_from_source": 0.8612,
-      "glow_score": 0.0013,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_6": {
-      "sprite": "stumps/stump_001/not_lit_6/sprite.webp",
-      "pixellab_object_id": "5d55bef8-5f04-441f-977b-942e7715258a",
-      "glow_concept": null,
-      "difference_from_source": 0.9596,
-      "glow_score": 0.0084,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_7": {
-      "sprite": "stumps/stump_001/not_lit_7/sprite.webp",
-      "pixellab_object_id": "4df44cd8-184e-4ecf-99ec-ee63d0080351",
-      "glow_concept": null,
-      "difference_from_source": 0.9642,
-      "glow_score": 0.0011,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_8": {
-      "sprite": "stumps/stump_001/not_lit_8/sprite.webp",
-      "pixellab_object_id": "f2d5dbd7-e9d7-4c4b-bbdf-264374f510ae",
-      "glow_concept": null,
-      "difference_from_source": 0.9761,
-      "glow_score": 0.0009,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
     "NOT_LIT_9": {

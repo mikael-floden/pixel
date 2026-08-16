@@ -30,14 +30,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "stumps/stump_003/lit_1/sprite.webp",
-      "pixellab_object_id": "f4ddd46e-941b-4264-bb52-64032f78e3bc",
-      "glow_concept": "growth rings glowing like concentric embers",
-      "difference_from_source": 0.7524,
-      "glow_score": 0.1046,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
     "LIT_2": {
       "sprite": "stumps/stump_003/lit_2/sprite.webp",
       "pixellab_object_id": "c0d75bfb-0c0c-4a9f-a76b-08a10cb76ae3",
@@ -46,43 +38,11 @@
       "glow_score": 0.1387,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
-    "LIT_3": {
-      "sprite": "stumps/stump_003/lit_3/sprite.webp",
-      "pixellab_object_id": "1ba7891d-56b0-4627-b552-1589ea9e9fe0",
-      "glow_concept": "a single candle burning on the cut face",
-      "difference_from_source": 0.5153,
-      "glow_score": 0.2226,
-      "generated_at": "2026-08-15T16:27:38+00:00"
-    },
-    "LIT_4": {
-      "sprite": "stumps/stump_003/lit_4/sprite.webp",
-      "pixellab_object_id": "5153ceb5-4fb9-4f60-8b44-94460be28af6",
-      "glow_concept": "soulstone core shining in the heartwood",
-      "difference_from_source": 0.9724,
-      "glow_score": 0.023,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_003/sprite.webp",
       "pixellab_object_id": "c052321a-648c-461e-b7e0-5ab1811782c9",
       "glow_score": 0.2943,
       "generated_at": "2026-08-13T07:09:16+00:00"
-    },
-    "NOT_LIT_10": {
-      "sprite": "stumps/stump_003/not_lit_10/sprite.webp",
-      "pixellab_object_id": "ff566dac-4750-4bb9-9ad0-70cc161fb892",
-      "glow_concept": null,
-      "difference_from_source": 0.9914,
-      "glow_score": 0.0,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_2": {
-      "sprite": "stumps/stump_003/not_lit_2/sprite.webp",
-      "pixellab_object_id": "56a6d19b-2bdb-4d01-88ba-632e7f89f3b0",
-      "glow_concept": null,
-      "difference_from_source": 0.9768,
-      "glow_score": 0.0,
-      "generated_at": "2026-08-15T16:13:33+00:00"
     },
     "NOT_LIT_3": {
       "sprite": "stumps/stump_003/not_lit_3/sprite.webp",
@@ -92,36 +52,12 @@
       "glow_score": 0.0,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
-    "NOT_LIT_4": {
-      "sprite": "stumps/stump_003/not_lit_4/sprite.webp",
-      "pixellab_object_id": "0c1b3d3c-990d-4750-9d59-f32444e99196",
-      "glow_concept": null,
-      "difference_from_source": 0.9595,
-      "glow_score": 0.0,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
     "NOT_LIT_5": {
       "sprite": "stumps/stump_003/not_lit_5/sprite.webp",
       "pixellab_object_id": "cbce82ec-5efe-4330-85cd-034dbd6cad18",
       "glow_concept": null,
       "difference_from_source": 0.8955,
       "glow_score": 0.5668,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_6": {
-      "sprite": "stumps/stump_003/not_lit_6/sprite.webp",
-      "pixellab_object_id": "4e50c422-96f2-4578-a76c-fdc7c674bef3",
-      "glow_concept": null,
-      "difference_from_source": 0.9884,
-      "glow_score": 0.0,
-      "generated_at": "2026-08-15T16:13:33+00:00"
-    },
-    "NOT_LIT_7": {
-      "sprite": "stumps/stump_003/not_lit_7/sprite.webp",
-      "pixellab_object_id": "d89ff89a-0dbd-4931-b13a-e2705a76d1e6",
-      "glow_concept": null,
-      "difference_from_source": 0.965,
-      "glow_score": 0.0009,
       "generated_at": "2026-08-15T16:13:33+00:00"
     },
     "NOT_LIT_8": {
