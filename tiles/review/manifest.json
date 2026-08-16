@@ -10,56 +10,22 @@
         {
           "key": "tiles/grass__over__black_rock/0",
           "file": "review/grass__over__black_rock/0.png",
-          "wall_score": 5.51,
+          "wall_score": 3.6,
           "wall": {
-            "tiling": 0.302,
-            "discretion": 0.855,
+            "tiling": 0.0,
+            "discretion": 0.8,
             "structure": 1.0,
-            "contrast": 23.39,
-            "edges": 16.051
+            "contrast": 29.6,
+            "edges": 16.918
           },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "649ccf8c-a69f-4129-916d-9424d119c7ea",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dark volcanic rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
-        },
-        {
-          "key": "tiles/grass__over__black_rock/1",
-          "file": "review/grass__over__black_rock/1.png",
-          "wall_score": 5.18,
-          "wall": {
-            "tiling": 0.124,
-            "discretion": 0.999,
-            "structure": 1.0,
-            "contrast": 25.97,
-            "edges": 22.422
-          },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "649ccf8c-a69f-4129-916d-9424d119c7ea",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dark volcanic rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
-        },
-        {
-          "key": "tiles/grass__over__black_rock/2",
-          "file": "review/grass__over__black_rock/2.png",
-          "wall_score": 5.08,
-          "wall": {
-            "tiling": 0.133,
-            "discretion": 0.965,
-            "structure": 1.0,
-            "contrast": 25.37,
-            "edges": 18.324
-          },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "649ccf8c-a69f-4129-916d-9424d119c7ea",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dark volcanic rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.5437,
+          "overhang": 0.62,
+          "tile_id": "52bb3e95-3c5d-48c2-b053-9805fb0db1d0",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed dark volcanic rock. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed black rock sides. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "grass__over__dark_mud": {
       "top": "grass",
@@ -126,56 +92,56 @@
         {
           "key": "tiles/grass__over__deep_water/0",
           "file": "review/grass__over__deep_water/0.png",
-          "wall_score": 3.69,
+          "wall_score": 3.8,
           "wall": {
-            "tiling": 0.129,
-            "discretion": 0.662,
-            "structure": 1.0,
-            "contrast": 32.09,
-            "edges": 13.896
+            "tiling": 0.085,
+            "discretion": 0.949,
+            "structure": 0.802,
+            "contrast": 25.07,
+            "edges": 9.625
           },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "72ecede7-6603-4a30-9952-be6e6c29c886",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.3804,
+          "overhang": 0.375,
+          "tile_id": "31bbf543-0f22-4f10-88dd-84373adb1040",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline."
         },
         {
           "key": "tiles/grass__over__deep_water/1",
           "file": "review/grass__over__deep_water/1.png",
-          "wall_score": 3.15,
+          "wall_score": 3.49,
           "wall": {
-            "tiling": 0.064,
-            "discretion": 0.636,
-            "structure": 0.979,
-            "contrast": 32.55,
-            "edges": 11.746
+            "tiling": 0.0,
+            "discretion": 0.918,
+            "structure": 0.845,
+            "contrast": 27.48,
+            "edges": 10.146
           },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "72ecede7-6603-4a30-9952-be6e6c29c886",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.2556,
+          "overhang": 0.53,
+          "tile_id": "31bbf543-0f22-4f10-88dd-84373adb1040",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline."
         },
         {
           "key": "tiles/grass__over__deep_water/2",
           "file": "review/grass__over__deep_water/2.png",
-          "wall_score": 3.11,
+          "wall_score": 3.39,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.69,
-            "structure": 1.0,
-            "contrast": 31.57,
-            "edges": 14.847
+            "discretion": 0.899,
+            "structure": 0.838,
+            "contrast": 27.81,
+            "edges": 10.055
           },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "72ecede7-6603-4a30-9952-be6e6c29c886",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.3055,
+          "overhang": 0.64,
+          "tile_id": "31bbf543-0f22-4f10-88dd-84373adb1040",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "grass__over__grass": {
       "top": "grass",
@@ -266,56 +232,56 @@
         {
           "key": "tiles/grass__over__ice/0",
           "file": "review/grass__over__ice/0.png",
-          "wall_score": 8.64,
+          "wall_score": 2.88,
           "wall": {
-            "tiling": 0.772,
-            "discretion": 0.976,
+            "tiling": 0.261,
+            "discretion": 0.322,
             "structure": 1.0,
-            "contrast": 26.44,
-            "edges": 14.49
+            "contrast": 38.21,
+            "edges": 23.98
           },
-          "top_share": 0.3039,
-          "overhang": 0.0,
-          "tile_id": "9e098621-f468-4274-a2ad-876236414ad8",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean translucent crystal ice"
+          "top_share": 0.5477,
+          "overhang": 0.92,
+          "tile_id": "4b06579b-0bbb-4d2b-82e4-38d88e3a9373",
+          "style": "chase4",
+          "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline."
         },
         {
           "key": "tiles/grass__over__ice/1",
           "file": "review/grass__over__ice/1.png",
-          "wall_score": 8.51,
+          "wall_score": 0.0,
           "wall": {
-            "tiling": 0.825,
-            "discretion": 0.883,
+            "tiling": 0.0,
+            "discretion": 0.0,
             "structure": 1.0,
-            "contrast": 28.1,
-            "edges": 14.422
+            "contrast": 45.92,
+            "edges": 16.124
           },
           "top_share": 1.0,
-          "overhang": 0.09,
-          "tile_id": "a9c5f4e1-af9c-434e-b44f-4582ab6aea8e",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are translucent crystal ice with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "overhang": 0.26,
+          "tile_id": "4b06579b-0bbb-4d2b-82e4-38d88e3a9373",
+          "style": "chase4",
+          "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline."
         },
         {
           "key": "tiles/grass__over__ice/2",
           "file": "review/grass__over__ice/2.png",
-          "wall_score": 8.02,
+          "wall_score": 0.0,
           "wall": {
-            "tiling": 0.844,
-            "discretion": 0.749,
-            "structure": 1.0,
-            "contrast": 30.51,
-            "edges": 15.251
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 0.764,
+            "contrast": 47.14,
+            "edges": 9.162
           },
-          "top_share": 0.2725,
-          "overhang": 0.0,
-          "tile_id": "9e098621-f468-4274-a2ad-876236414ad8",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean translucent crystal ice"
+          "top_share": 0.9307,
+          "overhang": 0.275,
+          "tile_id": "4b06579b-0bbb-4d2b-82e4-38d88e3a9373",
+          "style": "chase4",
+          "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "grass__over__lava": {
       "top": "grass",
@@ -464,56 +430,56 @@
         {
           "key": "tiles/grass__over__parquet_floor/0",
           "file": "review/grass__over__parquet_floor/0.png",
-          "wall_score": 6.22,
+          "wall_score": 4.75,
           "wall": {
-            "tiling": 0.591,
-            "discretion": 0.694,
-            "structure": 0.977,
-            "contrast": 20.48,
-            "edges": 11.718
+            "tiling": 0.257,
+            "discretion": 0.742,
+            "structure": 1.0,
+            "contrast": 30.64,
+            "edges": 13.555
           },
-          "top_share": 1.0,
-          "overhang": 0.095,
-          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.6882,
+          "overhang": 0.735,
+          "tile_id": "e9d7ae97-8674-476f-9b2b-f79b2593f564",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of lush green grass covering a block of wooden parquet floor. Ragged grass edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
         },
         {
           "key": "tiles/grass__over__parquet_floor/1",
           "file": "review/grass__over__parquet_floor/1.png",
-          "wall_score": 6.1,
+          "wall_score": 4.7,
           "wall": {
-            "tiling": 0.485,
-            "discretion": 0.764,
+            "tiling": 0.244,
+            "discretion": 0.746,
             "structure": 1.0,
-            "contrast": 21.75,
-            "edges": 12.476
+            "contrast": 30.58,
+            "edges": 19.24
           },
-          "top_share": 1.0,
-          "overhang": 0.085,
-          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.6991,
+          "overhang": 0.925,
+          "tile_id": "e9d7ae97-8674-476f-9b2b-f79b2593f564",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of lush green grass covering a block of wooden parquet floor. Ragged grass edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
         },
         {
           "key": "tiles/grass__over__parquet_floor/2",
           "file": "review/grass__over__parquet_floor/2.png",
-          "wall_score": 5.99,
+          "wall_score": 4.56,
           "wall": {
-            "tiling": 0.471,
+            "tiling": 0.211,
             "discretion": 0.757,
             "structure": 1.0,
-            "contrast": 21.62,
-            "edges": 12.442
+            "contrast": 30.38,
+            "edges": 19.231
           },
-          "top_share": 1.0,
-          "overhang": 0.09,
-          "tile_id": "22ba4de6-d227-44db-9fb8-4c3aa7614ebf",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.6607,
+          "overhang": 0.75,
+          "tile_id": "e9d7ae97-8674-476f-9b2b-f79b2593f564",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of lush green grass covering a block of wooden parquet floor. Ragged grass edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "grass__over__paving_stone": {
       "top": "grass",
@@ -638,19 +604,53 @@
         {
           "key": "tiles/grass__over__snow/0",
           "file": "review/grass__over__snow/0.png",
-          "wall_score": 0.0,
+          "wall_score": 2.88,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.0,
-            "structure": 0.68,
-            "contrast": 58.75,
-            "edges": 8.163
+            "discretion": 0.771,
+            "structure": 0.831,
+            "contrast": 30.12,
+            "edges": 9.975
           },
-          "top_share": 0.3795,
-          "overhang": 0.815,
-          "tile_id": "58a8507a-2874-43f2-8313-9ed67c5729e8",
-          "style": null,
-          "prompt": null
+          "top_share": 0.5065,
+          "overhang": 0.75,
+          "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
+          "style": "chase5",
+          "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
+        },
+        {
+          "key": "tiles/grass__over__snow/1",
+          "file": "review/grass__over__snow/1.png",
+          "wall_score": 2.87,
+          "wall": {
+            "tiling": 0.229,
+            "discretion": 0.614,
+            "structure": 0.714,
+            "contrast": 32.95,
+            "edges": 8.566
+          },
+          "top_share": 0.5136,
+          "overhang": 0.35,
+          "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
+          "style": "chase5",
+          "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
+        },
+        {
+          "key": "tiles/grass__over__snow/2",
+          "file": "review/grass__over__snow/2.png",
+          "wall_score": 2.86,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.752,
+            "structure": 0.845,
+            "contrast": 30.47,
+            "edges": 10.136
+          },
+          "top_share": 0.5865,
+          "overhang": 0.56,
+          "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
+          "style": "chase5",
+          "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
         }
       ],
       "needs_regeneration": false
@@ -662,56 +662,56 @@
         {
           "key": "tiles/grass__over__water/0",
           "file": "review/grass__over__water/0.png",
-          "wall_score": 6.57,
+          "wall_score": 4.38,
           "wall": {
-            "tiling": 0.54,
-            "discretion": 0.901,
-            "structure": 0.936,
-            "contrast": 27.78,
-            "edges": 11.228
+            "tiling": 0.154,
+            "discretion": 0.895,
+            "structure": 0.898,
+            "contrast": 27.89,
+            "edges": 10.772
           },
           "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "fdf2931a-718a-48d3-92e6-fdfdbb03fd14",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clear calm water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "overhang": 1.0,
+          "tile_id": "b8952ac1-e4c8-46b6-a5b8-fb7927f0fb13",
+          "style": "chase4",
+          "prompt": "isometric cube of clear calm water capped with lush green grass. The cap overhangs slightly, grass draping down onto the water beneath it. Uniform flat grass top. No outline."
         },
         {
           "key": "tiles/grass__over__water/1",
           "file": "review/grass__over__water/1.png",
-          "wall_score": 6.21,
+          "wall_score": 4.3,
           "wall": {
-            "tiling": 0.496,
-            "discretion": 0.847,
-            "structure": 0.949,
-            "contrast": 28.75,
-            "edges": 11.387
+            "tiling": 0.472,
+            "discretion": 0.675,
+            "structure": 0.764,
+            "contrast": 20.15,
+            "edges": 9.169
           },
           "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "fdf2931a-718a-48d3-92e6-fdfdbb03fd14",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clear calm water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "overhang": 1.0,
+          "tile_id": "b8952ac1-e4c8-46b6-a5b8-fb7927f0fb13",
+          "style": "chase4",
+          "prompt": "isometric cube of clear calm water capped with lush green grass. The cap overhangs slightly, grass draping down onto the water beneath it. Uniform flat grass top. No outline."
         },
         {
           "key": "tiles/grass__over__water/2",
           "file": "review/grass__over__water/2.png",
-          "wall_score": 6.08,
+          "wall_score": 3.98,
           "wall": {
-            "tiling": 0.596,
-            "discretion": 0.956,
-            "structure": 0.802,
-            "contrast": 25.2,
-            "edges": 9.623
+            "tiling": 0.191,
+            "discretion": 0.919,
+            "structure": 0.767,
+            "contrast": 27.45,
+            "edges": 9.2
           },
-          "top_share": 1.0,
-          "overhang": 0.07,
-          "tile_id": "fdf2931a-718a-48d3-92e6-fdfdbb03fd14",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clear calm water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.6506,
+          "overhang": 1.0,
+          "tile_id": "b8952ac1-e4c8-46b6-a5b8-fb7927f0fb13",
+          "style": "chase4",
+          "prompt": "isometric cube of clear calm water capped with lush green grass. The cap overhangs slightly, grass draping down onto the water beneath it. Uniform flat grass top. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "ice__over__black_rock": {
       "top": "ice",
@@ -1242,56 +1242,56 @@
         {
           "key": "tiles/snow__over__grass/0",
           "file": "review/snow__over__grass/0.png",
-          "wall_score": 7.2,
+          "wall_score": 3.78,
           "wall": {
-            "tiling": 0.645,
-            "discretion": 0.811,
+            "tiling": 0.0,
+            "discretion": 0.841,
             "structure": 1.0,
-            "contrast": 22.59,
-            "edges": 13.872
+            "contrast": 28.86,
+            "edges": 15.89
           },
-          "top_share": 0.7985,
-          "overhang": 0.0,
-          "tile_id": "ec506552-d561-4f13-92c3-811a218c8e66",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean lush green grass"
+          "top_share": 0.9457,
+          "overhang": 0.395,
+          "tile_id": "bc0f3ce4-ca69-46e5-a3c1-c88321000cc8",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with clean fresh snow growing on top. The snow spills over the rim and hangs down the grass face in an uneven fringe. Flat even snow seen from above. No outline."
         },
         {
           "key": "tiles/snow__over__grass/1",
           "file": "review/snow__over__grass/1.png",
-          "wall_score": 7.15,
+          "wall_score": 1.54,
           "wall": {
-            "tiling": 0.634,
-            "discretion": 0.813,
-            "structure": 1.0,
-            "contrast": 22.64,
-            "edges": 14.609
+            "tiling": 0.0,
+            "discretion": 0.376,
+            "structure": 0.907,
+            "contrast": 37.23,
+            "edges": 10.887
           },
-          "top_share": 0.73,
-          "overhang": 0.0,
-          "tile_id": "ec506552-d561-4f13-92c3-811a218c8e66",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean lush green grass"
+          "top_share": 0.6475,
+          "overhang": 0.48,
+          "tile_id": "a04f263e-ebbb-4f09-98ed-cb3d6968e187",
+          "style": "chase5",
+          "prompt": "isometric ground tile, clean fresh snow over lush green grass, photographed from above. Soft irregular boundary where snow meets grass \u2014 the snow creeps down over the grass. Plain even snow surface. No outline."
         },
         {
           "key": "tiles/snow__over__grass/2",
           "file": "review/snow__over__grass/2.png",
-          "wall_score": 6.98,
+          "wall_score": 1.26,
           "wall": {
-            "tiling": 0.667,
-            "discretion": 0.736,
+            "tiling": 0.0,
+            "discretion": 0.28,
             "structure": 1.0,
-            "contrast": 21.25,
-            "edges": 12.253
+            "contrast": 38.96,
+            "edges": 21.261
           },
-          "top_share": 0.8446,
-          "overhang": 0.0,
-          "tile_id": "ec506552-d561-4f13-92c3-811a218c8e66",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean lush green grass"
+          "top_share": 0.9516,
+          "overhang": 0.58,
+          "tile_id": "ed05020c-0e6d-40af-819c-f76f96d44469",
+          "style": "chase0",
+          "prompt": "isometric ground tile. clean fresh snow on top of lush green grass. The snow grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the snow surface is even and uniform. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__grey_stone": {
       "top": "snow",
@@ -1300,56 +1300,56 @@
         {
           "key": "tiles/snow__over__grey_stone/0",
           "file": "review/snow__over__grey_stone/0.png",
-          "wall_score": 5.57,
+          "wall_score": 6.46,
           "wall": {
             "tiling": 0.402,
-            "discretion": 0.746,
+            "discretion": 0.944,
             "structure": 1.0,
-            "contrast": 30.57,
-            "edges": 12.157
+            "contrast": 27.0,
+            "edges": 18.119
           },
-          "top_share": 0.923,
-          "overhang": 0.0,
-          "tile_id": "991d399d-47e9-4373-9372-403f487e8d94",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.993,
+          "overhang": 1.0,
+          "tile_id": "42e12dcf-f285-47b7-8850-f3a28a6ee916",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick clean fresh snow carpet over exposed rugged grey mountain rock. Where the two meet the snow droops over the edge instead of being cut off. Even snow surface, detailed grey stone sides. No outline."
         },
         {
           "key": "tiles/snow__over__grey_stone/1",
           "file": "review/snow__over__grey_stone/1.png",
-          "wall_score": 5.54,
+          "wall_score": 4.24,
           "wall": {
-            "tiling": 0.265,
-            "discretion": 0.94,
-            "structure": 0.974,
-            "contrast": 27.09,
-            "edges": 11.684
+            "tiling": 0.075,
+            "discretion": 0.852,
+            "structure": 1.0,
+            "contrast": 28.67,
+            "edges": 20.975
           },
-          "top_share": 0.9254,
-          "overhang": 0.0,
-          "tile_id": "991d399d-47e9-4373-9372-403f487e8d94",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.4408,
+          "overhang": 1.0,
+          "tile_id": "42e12dcf-f285-47b7-8850-f3a28a6ee916",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick clean fresh snow carpet over exposed rugged grey mountain rock. Where the two meet the snow droops over the edge instead of being cut off. Even snow surface, detailed grey stone sides. No outline."
         },
         {
           "key": "tiles/snow__over__grey_stone/2",
           "file": "review/snow__over__grey_stone/2.png",
-          "wall_score": 5.46,
+          "wall_score": 3.58,
           "wall": {
-            "tiling": 0.339,
-            "discretion": 0.798,
+            "tiling": 0.168,
+            "discretion": 0.59,
             "structure": 1.0,
-            "contrast": 29.63,
-            "edges": 17.919
+            "contrast": 33.38,
+            "edges": 20.79
           },
-          "top_share": 0.9254,
-          "overhang": 0.0,
-          "tile_id": "991d399d-47e9-4373-9372-403f487e8d94",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are rugged grey mountain rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.7257,
+          "overhang": 1.0,
+          "tile_id": "42e12dcf-f285-47b7-8850-f3a28a6ee916",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick clean fresh snow carpet over exposed rugged grey mountain rock. Where the two meet the snow droops over the edge instead of being cut off. Even snow surface, detailed grey stone sides. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__ice": {
       "top": "snow",
@@ -1416,56 +1416,56 @@
         {
           "key": "tiles/snow__over__lava/0",
           "file": "review/snow__over__lava/0.png",
-          "wall_score": 5.76,
+          "wall_score": 3.47,
           "wall": {
-            "tiling": 0.499,
-            "discretion": 0.67,
-            "structure": 1.0,
-            "contrast": 31.94,
-            "edges": 14.238
+            "tiling": 0.0,
+            "discretion": 0.878,
+            "structure": 0.879,
+            "contrast": 28.2,
+            "edges": 10.549
           },
-          "top_share": 0.6341,
-          "overhang": 0.0,
-          "tile_id": "c6e78a51-892a-4b4d-8d8b-5e01bd868fb8",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean molten glowing lava"
+          "top_share": 0.4407,
+          "overhang": 0.51,
+          "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
+          "style": "chase7",
+          "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
         },
         {
           "key": "tiles/snow__over__lava/1",
           "file": "review/snow__over__lava/1.png",
-          "wall_score": 4.52,
+          "wall_score": 2.63,
           "wall": {
-            "tiling": 0.534,
-            "discretion": 0.351,
+            "tiling": 0.0,
+            "discretion": 0.585,
             "structure": 1.0,
-            "contrast": 37.69,
-            "edges": 17.864
+            "contrast": 33.47,
+            "edges": 13.877
           },
-          "top_share": 0.7652,
-          "overhang": 0.0,
-          "tile_id": "083cfc2c-ad2b-4f4e-ac34-e609780478f2",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are molten glowing lava with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.4555,
+          "overhang": 0.415,
+          "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
+          "style": "chase7",
+          "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
         },
         {
           "key": "tiles/snow__over__lava/2",
           "file": "review/snow__over__lava/2.png",
-          "wall_score": 4.22,
+          "wall_score": 2.23,
           "wall": {
-            "tiling": 0.545,
-            "discretion": 0.272,
-            "structure": 1.0,
-            "contrast": 39.11,
-            "edges": 18.298
+            "tiling": 0.0,
+            "discretion": 0.831,
+            "structure": 0.597,
+            "contrast": 29.04,
+            "edges": 7.159
           },
-          "top_share": 0.7133,
-          "overhang": 0.0,
-          "tile_id": "c6e78a51-892a-4b4d-8d8b-5e01bd868fb8",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean molten glowing lava"
+          "top_share": 0.4503,
+          "overhang": 0.56,
+          "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
+          "style": "chase7",
+          "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__light_beach": {
       "top": "snow",
@@ -1515,56 +1515,56 @@
         {
           "key": "tiles/snow__over__light_soil/0",
           "file": "review/snow__over__light_soil/0.png",
-          "wall_score": 6.62,
+          "wall_score": 2.05,
           "wall": {
-            "tiling": 0.474,
-            "discretion": 0.988,
-            "structure": 0.938,
-            "contrast": 26.21,
-            "edges": 11.257
+            "tiling": 0.0,
+            "discretion": 0.456,
+            "structure": 1.0,
+            "contrast": 35.79,
+            "edges": 22.121
           },
-          "top_share": 0.5374,
-          "overhang": 0.0,
-          "tile_id": "24fdfb88-433b-4546-b968-c7720aaa648d",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean dry light soil"
+          "top_share": 0.726,
+          "overhang": 0.585,
+          "tile_id": "1df0b7f8-954f-431f-8eb7-fe26ffce6745",
+          "style": "chase8",
+          "prompt": "isometric game tile of clean fresh snow growing over dry light soil. Overgrown edges, snow cascading down the light soil walls. Flat clean snow on top. No outline."
         },
         {
           "key": "tiles/snow__over__light_soil/1",
           "file": "review/snow__over__light_soil/1.png",
-          "wall_score": 6.62,
+          "wall_score": 1.47,
           "wall": {
-            "tiling": 0.419,
-            "discretion": 0.959,
-            "structure": 1.0,
-            "contrast": 25.26,
-            "edges": 15.873
+            "tiling": 0.253,
+            "discretion": 0.787,
+            "structure": 0.298,
+            "contrast": 22.17,
+            "edges": 3.574
           },
-          "top_share": 0.9431,
-          "overhang": 0.0,
-          "tile_id": "ce68ce77-bc19-4fcf-b2e6-72ba53c9fb95",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.4211,
+          "overhang": 1.0,
+          "tile_id": "666e9bab-6580-4397-b3ac-4098ae6789f3",
+          "style": "chase5",
+          "prompt": "isometric ground tile, clean fresh snow over dry light soil, photographed from above. Soft irregular boundary where snow meets light soil \u2014 the snow creeps down over the light soil. Plain even snow surface. No outline."
         },
         {
           "key": "tiles/snow__over__light_soil/2",
           "file": "review/snow__over__light_soil/2.png",
-          "wall_score": 6.33,
+          "wall_score": 1.23,
           "wall": {
-            "tiling": 0.406,
-            "discretion": 0.909,
+            "tiling": 0.003,
+            "discretion": 0.27,
             "structure": 1.0,
-            "contrast": 27.64,
-            "edges": 15.03
+            "contrast": 39.14,
+            "edges": 24.803
           },
-          "top_share": 0.9419,
-          "overhang": 0.0,
-          "tile_id": "ce68ce77-bc19-4fcf-b2e6-72ba53c9fb95",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.6847,
+          "overhang": 0.63,
+          "tile_id": "1df0b7f8-954f-431f-8eb7-fe26ffce6745",
+          "style": "chase8",
+          "prompt": "isometric game tile of clean fresh snow growing over dry light soil. Overgrown edges, snow cascading down the light soil walls. Flat clean snow on top. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__parquet_floor": {
       "top": "snow",
@@ -1573,56 +1573,56 @@
         {
           "key": "tiles/snow__over__parquet_floor/0",
           "file": "review/snow__over__parquet_floor/0.png",
-          "wall_score": 7.64,
+          "wall_score": 6.95,
           "wall": {
-            "tiling": 0.615,
-            "discretion": 0.946,
+            "tiling": 0.596,
+            "discretion": 0.816,
             "structure": 1.0,
-            "contrast": 25.03,
-            "edges": 18.666
+            "contrast": 29.31,
+            "edges": 18.6
           },
-          "top_share": 0.8955,
-          "overhang": 0.0,
-          "tile_id": "783a5028-9525-4357-b642-a47887ed9a24",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.8652,
+          "overhang": 0.57,
+          "tile_id": "d9189056-8523-4f58-a2ca-ae572ffd5bdf",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of wooden parquet floor. Ragged snow edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
         },
         {
           "key": "tiles/snow__over__parquet_floor/1",
           "file": "review/snow__over__parquet_floor/1.png",
-          "wall_score": 7.09,
+          "wall_score": 5.61,
           "wall": {
-            "tiling": 0.52,
-            "discretion": 0.939,
+            "tiling": 0.32,
+            "discretion": 0.856,
             "structure": 1.0,
-            "contrast": 24.91,
-            "edges": 12.187
+            "contrast": 28.59,
+            "edges": 16.547
           },
-          "top_share": 0.85,
-          "overhang": 0.0,
-          "tile_id": "783a5028-9525-4357-b642-a47887ed9a24",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.8478,
+          "overhang": 0.365,
+          "tile_id": "d9189056-8523-4f58-a2ca-ae572ffd5bdf",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of wooden parquet floor. Ragged snow edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
         },
         {
           "key": "tiles/snow__over__parquet_floor/2",
           "file": "review/snow__over__parquet_floor/2.png",
-          "wall_score": 6.96,
+          "wall_score": 4.84,
           "wall": {
-            "tiling": 0.537,
-            "discretion": 0.891,
+            "tiling": 0.319,
+            "discretion": 0.685,
             "structure": 1.0,
-            "contrast": 24.04,
-            "edges": 14.775
+            "contrast": 31.67,
+            "edges": 19.264
           },
-          "top_share": 0.86,
-          "overhang": 0.0,
-          "tile_id": "783a5028-9525-4357-b642-a47887ed9a24",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
+          "top_share": 0.9339,
+          "overhang": 0.315,
+          "tile_id": "d9189056-8523-4f58-a2ca-ae572ffd5bdf",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of wooden parquet floor. Ragged snow edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
         }
       ],
-      "needs_regeneration": true
+      "needs_regeneration": false
     },
     "snow__over__paving_stone": {
       "top": "snow",
@@ -1689,19 +1689,53 @@
         {
           "key": "tiles/snow__over__slime/0",
           "file": "review/snow__over__slime/0.png",
-          "wall_score": 0.0,
+          "wall_score": 2.41,
           "wall": {
-            "tiling": 0.0,
-            "discretion": 0.0,
-            "structure": 1.0,
-            "contrast": 57.36,
-            "edges": 13.864
+            "tiling": 0.212,
+            "discretion": 0.326,
+            "structure": 0.915,
+            "contrast": 38.13,
+            "edges": 10.981
           },
-          "top_share": 0.4196,
-          "overhang": 0.815,
-          "tile_id": "d656c0c0-cd4f-4605-b802-95671d6b8e21",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean thick bubbling slime"
+          "top_share": 0.9138,
+          "overhang": 0.34,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
+        },
+        {
+          "key": "tiles/snow__over__slime/1",
+          "file": "review/snow__over__slime/1.png",
+          "wall_score": 2.11,
+          "wall": {
+            "tiling": 0.127,
+            "discretion": 0.443,
+            "structure": 0.783,
+            "contrast": 36.03,
+            "edges": 9.401
+          },
+          "top_share": 0.8985,
+          "overhang": 0.37,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
+        },
+        {
+          "key": "tiles/snow__over__slime/2",
+          "file": "review/snow__over__slime/2.png",
+          "wall_score": 2.0,
+          "wall": {
+            "tiling": 0.057,
+            "discretion": 0.375,
+            "structure": 1.0,
+            "contrast": 37.25,
+            "edges": 11.995
+          },
+          "top_share": 0.8865,
+          "overhang": 0.47,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
         }
       ],
       "needs_regeneration": false
