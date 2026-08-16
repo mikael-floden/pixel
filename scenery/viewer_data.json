@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 801,
+  "scenery_count": 800,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -814,7 +814,7 @@
       "name": "Cliff Vine",
       "type": "MOUNTAIN_WALL",
       "quota": 52,
-      "done": 52
+      "done": 51
     },
     {
       "rank": 102,
@@ -1420,7 +1420,7 @@
     "cliff_mosses": 9,
     "cliff_roots": 7,
     "cliff_shrubs": 12,
-    "cliff_vines": 52,
+    "cliff_vines": 51,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -18736,85 +18736,6 @@
           "difference_from_source": 0.75,
           "glow_score": 0.002,
           "art_hash": "01c8d6a563a19905"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_146",
-      "rel": "cliff_vines/cliff_vine_146",
-      "name": "Yellow honeysuckle fall 146",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "ONE slender climbing vine crossing a rock face, a THIN supple stem no thicker than a thumb, drifting naturally with only a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, clear empty margin on all sides, transparent background, yellow honeysuckle fall, thick at one end, tapering as it climbs, towering, many times human height, self-emissive at night, softly radiating light: pale blue soul-flowers dotted down the fall",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 11.65,
-        "world_px_height": 439,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T05:41:28+00:00",
-      "pixellab_object_id": "a630e3c8-f7b3-4e6b-8209-388111394290",
-      "sprite": "cliff_vines/cliff_vine_146/sprite.webp",
-      "art_hash": "e39191732a6d17a4",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_146/sprite.webp",
-          "pixellab_object_id": "a630e3c8-f7b3-4e6b-8209-388111394290",
-          "generated_at": "2026-08-14T05:41:28+00:00",
-          "art_hash": "e39191732a6d17a4"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_146/lit_2/sprite.webp",
-          "pixellab_object_id": "e00ae1e2-55ec-4b0e-b467-d1a470a231da",
-          "generated_at": "2026-08-16T11:05:13+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5752,
-          "glow_score": 0.1849,
-          "art_hash": "e297617bbb363dc6"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_146/lit_3/sprite.webp",
-          "pixellab_object_id": "1ea4c8d6-b451-4310-a132-34af3c56f4a0",
-          "generated_at": "2026-08-16T11:06:12+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6473,
-          "glow_score": 0.1908,
-          "art_hash": "d5fd30b00c525273"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_146/lit_4/sprite.webp",
-          "pixellab_object_id": "569888fd-9341-471a-bea4-4706640605af",
-          "generated_at": "2026-08-16T11:05:43+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5932,
-          "glow_score": 0.1397,
-          "art_hash": "c8ea784c2c4006be"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_146/not_lit_1/sprite.webp",
-          "pixellab_object_id": "a7c2790b-53b8-4456-a8db-61661ec1c1f1",
-          "generated_at": "2026-08-16T11:06:00+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8338,
-          "glow_score": 0.0181,
-          "art_hash": "18e8bd06c72c1b43"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_146/not_lit_2/sprite.webp",
-          "pixellab_object_id": "da7abde3-97df-4a51-a41c-ab39f32791ea",
-          "generated_at": "2026-08-16T11:06:02+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8207,
-          "glow_score": 0.0,
-          "art_hash": "156315a338dc758d"
         }
       },
       "animations": []
