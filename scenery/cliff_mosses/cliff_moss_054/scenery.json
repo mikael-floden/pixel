@@ -5,8 +5,8 @@
   "group": "cliff_mosses",
   "rank": 158,
   "index": 54,
-  "name": "Mossy stone knob 054 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Mossy stone knob 054",
+  "lights": null,
   "variety": "mossy stone knob",
   "modifier": "a fern sprout in a crack",
   "glow_concept": "light seeping from beneath the cushions",
@@ -36,6 +36,38 @@
       "sprite": "cliff_mosses/cliff_moss_054/sprite.webp",
       "pixellab_object_id": "579104f2-2c96-4731-8848-2b68aff4a4c9",
       "generated_at": "2026-08-14T05:24:58+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_054/lit_2/sprite.webp",
+      "pixellab_object_id": "a71f9700-64b9-45b8-af5d-fbbbb782eef1",
+      "generated_at": "2026-08-16T09:40:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8145,
+      "glow_score": 0.0136
+    },
+    "LIT_3": {
+      "sprite": "cliff_mosses/cliff_moss_054/lit_3/sprite.webp",
+      "pixellab_object_id": "f75a3b1a-e249-423c-a806-05d07043ede7",
+      "generated_at": "2026-08-16T09:40:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8395,
+      "glow_score": 0.0127
+    },
+    "LIT_4": {
+      "sprite": "cliff_mosses/cliff_moss_054/lit_4/sprite.webp",
+      "pixellab_object_id": "3dda7129-1f53-4e75-b5a1-555bf548defc",
+      "generated_at": "2026-08-16T09:40:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7175,
+      "glow_score": 0.0222
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_mosses/cliff_moss_054/not_lit_1/sprite.webp",
+      "pixellab_object_id": "278f84b3-0722-47cd-8b00-ccbf5e63efc0",
+      "generated_at": "2026-08-16T09:40:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9464,
+      "glow_score": 0.0
     }
   }
 }

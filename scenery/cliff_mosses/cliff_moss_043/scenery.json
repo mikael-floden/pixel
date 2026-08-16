@@ -6,7 +6,7 @@
   "rank": 158,
   "index": 43,
   "name": "Lichen-crusted little ledge 043",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "lichen-crusted little ledge",
   "modifier": "pale lichen ringing the moss",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_mosses/cliff_moss_043/lit_1/sprite.webp",
+      "pixellab_object_id": "f66dbecf-756d-4e29-beae-b352926e58c8",
+      "generated_at": "2026-08-16T09:42:45+00:00",
+      "glow_concept": "the moss glowing soft green",
+      "difference_from_source": 0.8828,
+      "glow_score": 0.1661
+    },
+    "LIT_2": {
+      "sprite": "cliff_mosses/cliff_moss_043/lit_2/sprite.webp",
+      "pixellab_object_id": "aa119d30-2d23-47ba-a61a-6c68ce7ff3f4",
+      "generated_at": "2026-08-16T09:42:34+00:00",
+      "glow_concept": "light seeping from beneath the cushions",
+      "difference_from_source": 0.9279,
+      "glow_score": 0.1553
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_mosses/cliff_moss_043/sprite.webp",
       "pixellab_object_id": "a944be31-a2a4-4682-a373-0764b62f040d",
