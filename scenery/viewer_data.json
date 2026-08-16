@@ -19042,6 +19042,15 @@
           "glow_score": 0.0462,
           "art_hash": "32a3539d6d7fcc52"
         },
+        "LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_148/lit_3/sprite.webp",
+          "pixellab_object_id": "bf8b5594-d49c-4c54-9775-1a6380916466",
+          "generated_at": "2026-08-16T11:07:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5923,
+          "glow_score": 0.0476,
+          "art_hash": "8f38197993112daf"
+        },
         "LIT_4": {
           "sprite": "cliff_vines/cliff_vine_148/lit_4/sprite.webp",
           "pixellab_object_id": "c8a4ef61-6550-4ccc-88a3-389484782ebf",
@@ -19077,7 +19086,7 @@
       "rel": "cliff_vines/cliff_vine_153",
       "name": "Blue-flowered creeper fall 153",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "ONE long climbing vine running the FULL HEIGHT of the picture on a rock face, a THIN supple stem no thicker than a thumb, drifting with a few gentle bends, NOT coiling, NOT snaking, no tight spirals, no thick branch, leaf clusters with bare stem between, jungle-lush, fantasy RPG nature art, a small clear margin at the edges, transparent background, blue-flowered creeper fall, one long root with a single doubling-back curve, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -19097,11 +19106,38 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_153/lit_1/sprite.webp",
+          "pixellab_object_id": "ba3961d7-62f5-4a2e-8713-26bdcc0fadf3",
+          "generated_at": "2026-08-16T11:07:38+00:00",
+          "glow_concept": "amber memory-light dripping from the tips",
+          "difference_from_source": 0.4611,
+          "glow_score": 0.0343,
+          "art_hash": "17d4406ab9493fe1"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_153/lit_2/sprite.webp",
+          "pixellab_object_id": "119e8d91-8a56-49b3-a1b0-e563b64c2d02",
+          "generated_at": "2026-08-16T11:07:50+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.7096,
+          "glow_score": 0.0764,
+          "art_hash": "092eac62efe45d46"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_153/sprite.webp",
           "pixellab_object_id": "87f2eac7-df93-4a3b-a5a1-1d16be7b69a2",
           "generated_at": "2026-08-14T05:48:15+00:00",
           "art_hash": "efc81a4edd4dd8b6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_153/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2c80cdde-5987-46a3-a9f0-3f72deeccc6c",
+          "generated_at": "2026-08-16T11:07:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5893,
+          "glow_score": 0.0147,
+          "art_hash": "1f61dc375912d634"
         },
         "NOT_LIT_3": {
           "sprite": "cliff_vines/cliff_vine_153/not_lit_3/sprite.webp",
@@ -19129,7 +19165,7 @@
       "rel": "cliff_vines/cliff_vine_903",
       "name": "Wilted dry brown vine fall 903",
       "category": "cliff_vines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, wilted dry brown vine fall, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -19149,11 +19185,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_vines/cliff_vine_903/lit_1/sprite.webp",
+          "pixellab_object_id": "b8b628bb-e7ec-4b9a-b3e5-2b3cc0bd0d96",
+          "generated_at": "2026-08-16T11:10:09+00:00",
+          "glow_concept": "amber memory-light dripping from the tips",
+          "difference_from_source": 0.8452,
+          "glow_score": 0.0189,
+          "art_hash": "ec2aee337c57c19f"
+        },
+        "LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_903/lit_2/sprite.webp",
+          "pixellab_object_id": "9340914c-dd07-453d-bcdc-1cc590f3d613",
+          "generated_at": "2026-08-16T11:10:10+00:00",
+          "glow_concept": "moonlit silver shimmer across the leaves",
+          "difference_from_source": 0.518,
+          "glow_score": 0.0169,
+          "art_hash": "02d8afcfc1487b20"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_903/sprite.webp",
           "pixellab_object_id": "6875c9dc-134a-4c8e-93a2-8f4212d8d5d5",
           "generated_at": "2026-08-13T23:26:50+00:00",
           "art_hash": "1a859eb506527456"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_vines/cliff_vine_903/not_lit_2/sprite.webp",
+          "pixellab_object_id": "badb2f2a-805f-4bda-9222-c17e7eec4c55",
+          "generated_at": "2026-08-16T11:09:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8933,
+          "glow_score": 0.0,
+          "art_hash": "abcf38adecc841ed"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_903/not_lit_3/sprite.webp",
+          "pixellab_object_id": "9f8050be-e3b2-4003-bba4-8f6a8880d9a2",
+          "generated_at": "2026-08-16T11:09:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.779,
+          "glow_score": 0.0,
+          "art_hash": "64d79d22cb211961"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_903/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b53dd1b8-36fd-4c3a-b249-5a7892ca22c2",
+          "generated_at": "2026-08-16T11:11:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.836,
+          "glow_score": 0.0,
+          "art_hash": "c61d32be61e72486"
         }
       },
       "animations": []
@@ -19315,7 +19396,7 @@
       "rel": "crystals/crystal_005",
       "name": "Smoky grey crystal spikes 005",
       "category": "crystals",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of pointed natural crystals growing up out of the ground at angles, sharp faceted spikes around one tall central shard, smoky grey crystal spikes, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -19335,11 +19416,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "crystals/crystal_005/lit_1/sprite.webp",
+          "pixellab_object_id": "e2a42fd7-fc4e-4d2c-9a10-b5c9bcf72c47",
+          "generated_at": "2026-08-16T11:11:41+00:00",
+          "glow_concept": "ground around the base lit in the crystal's color",
+          "difference_from_source": 0.7122,
+          "glow_score": 0.347,
+          "art_hash": "4f9ebae74361455c"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_005/lit_2/sprite.webp",
+          "pixellab_object_id": "07093418-7f54-42d9-b3e6-840feff0bedd",
+          "generated_at": "2026-08-16T11:12:01+00:00",
+          "glow_concept": "the whole cluster radiating its own gem color",
+          "difference_from_source": 0.7965,
+          "glow_score": 0.1355,
+          "art_hash": "2a22bfa0fc8bc507"
+        },
         "NOT_LIT_1": {
           "sprite": "crystals/crystal_005/sprite.webp",
           "pixellab_object_id": "763b83d3-df7b-49a3-a493-35867c46e512",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "0c3251a362df801d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "07436c2c-0793-4f7c-b647-e4fba219731c",
+          "generated_at": "2026-08-16T11:12:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7796,
+          "glow_score": 0.0,
+          "art_hash": "5e36a9bb759f7e58"
+        },
+        "NOT_LIT_3": {
+          "sprite": "crystals/crystal_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "10631b2e-cfe9-41e2-a05e-81bef0c709b9",
+          "generated_at": "2026-08-16T11:09:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7997,
+          "glow_score": 0.0188,
+          "art_hash": "f359569879c698e4"
+        },
+        "NOT_LIT_4": {
+          "sprite": "crystals/crystal_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d7a6e52a-42a6-4afd-bec6-15831ea5f70d",
+          "generated_at": "2026-08-16T11:10:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2026,
+          "glow_score": 0.0166,
+          "art_hash": "30496c1f3f289962"
         }
       },
       "animations": []
@@ -19347,9 +19473,9 @@
     {
       "id": "crystal_006",
       "rel": "crystals/crystal_006",
-      "name": "Single tall leaning shard 006 \u00b7 lit",
+      "name": "Single tall leaning shard 006",
       "category": "crystals",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cluster of pointed natural crystals growing up out of the ground at angles, sharp faceted spikes around one tall central shard, single tall leaning shard, waist-high to an adult person, self-emissive at night, softly radiating light: tips burning like small candle flames",
       "view": "low top-down",
       "size": 96,
@@ -19374,6 +19500,51 @@
           "pixellab_object_id": "300323e5-9ca6-4756-8fea-2ed8604dcb5f",
           "generated_at": "2026-08-13T13:18:30+00:00",
           "art_hash": "cca35a355dfceead"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_006/lit_2/sprite.webp",
+          "pixellab_object_id": "5d97106d-60e4-4296-a491-e13b89702291",
+          "generated_at": "2026-08-16T11:12:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5961,
+          "glow_score": 0.0388,
+          "art_hash": "6d46bd5b6b81aab6"
+        },
+        "LIT_3": {
+          "sprite": "crystals/crystal_006/lit_3/sprite.webp",
+          "pixellab_object_id": "51b6710e-881b-49e8-9661-d44405e801cc",
+          "generated_at": "2026-08-16T11:12:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8582,
+          "glow_score": 0.0993,
+          "art_hash": "5ba5dc987769f418"
+        },
+        "LIT_4": {
+          "sprite": "crystals/crystal_006/lit_4/sprite.webp",
+          "pixellab_object_id": "887b42a7-b92a-45b6-b757-ddf31dc471b5",
+          "generated_at": "2026-08-16T11:12:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.614,
+          "glow_score": 0.0742,
+          "art_hash": "e0cf0e1ba2e48fcc"
+        },
+        "NOT_LIT_1": {
+          "sprite": "crystals/crystal_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3f8e80c0-7c96-48a2-86c5-030932f6f94a",
+          "generated_at": "2026-08-16T11:12:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6362,
+          "glow_score": 0.0807,
+          "art_hash": "f928f2cf366a940a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "crystals/crystal_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b3abcce7-74ea-4484-ad8e-07bb649e7f92",
+          "generated_at": "2026-08-16T11:13:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7444,
+          "glow_score": 0.0,
+          "art_hash": "9797fc0b9a4bb824"
         }
       },
       "animations": []
@@ -19383,7 +19554,7 @@
       "rel": "crystals/crystal_009",
       "name": "Ring of small crystal points 009",
       "category": "crystals",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, ring of small crystal points, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -19403,11 +19574,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "crystals/crystal_009/lit_1/sprite.webp",
+          "pixellab_object_id": "53925852-cbb9-40be-bae7-4d2cfef1be21",
+          "generated_at": "2026-08-16T11:13:52+00:00",
+          "glow_concept": "ground around the base lit in the crystal's color",
+          "difference_from_source": 0.8799,
+          "glow_score": 0.2315,
+          "art_hash": "08f03af680f06543"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_009/lit_2/sprite.webp",
+          "pixellab_object_id": "f060a565-e54d-4184-95ac-a71523e9bcc7",
+          "generated_at": "2026-08-16T11:14:14+00:00",
+          "glow_concept": "the whole cluster radiating its own gem color",
+          "difference_from_source": 0.3387,
+          "glow_score": 0.3844,
+          "art_hash": "d52a4e1aee7a5587"
+        },
         "NOT_LIT_1": {
           "sprite": "crystals/crystal_009/sprite.webp",
           "pixellab_object_id": "98c05a96-c84c-41d7-9a75-a86fe041a211",
           "generated_at": "2026-08-13T23:22:22+00:00",
           "art_hash": "bc86656b1d64c7da"
+        },
+        "NOT_LIT_3": {
+          "sprite": "crystals/crystal_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "db7d8bbc-bdae-406f-b126-bbb3102ec0ca",
+          "generated_at": "2026-08-16T11:13:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6682,
+          "glow_score": 0.1168,
+          "art_hash": "a44350269b0bf58c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "crystals/crystal_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fe9a89b2-c6f7-425d-89aa-8d4c1d302de9",
+          "generated_at": "2026-08-16T11:13:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.748,
+          "glow_score": 0.1092,
+          "art_hash": "f5b1861042e526f2"
         }
       },
       "animations": []
@@ -19442,6 +19649,24 @@
           "pixellab_object_id": "51470201-9d2a-42a6-aba8-c725739e8d38",
           "generated_at": "2026-08-13T23:01:06+00:00",
           "art_hash": "f39c5e19344db09e"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_010/lit_2/sprite.webp",
+          "pixellab_object_id": "6105f9ee-6a4e-414c-915b-1bbc192a84af",
+          "generated_at": "2026-08-16T11:14:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5908,
+          "glow_score": 0.4189,
+          "art_hash": "7825a493f49ee563"
+        },
+        "LIT_3": {
+          "sprite": "crystals/crystal_010/lit_3/sprite.webp",
+          "pixellab_object_id": "38a4d904-4a47-467c-8138-7dd552581166",
+          "generated_at": "2026-08-16T11:14:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4822,
+          "glow_score": 0.4392,
+          "art_hash": "f7dcfe50c02f1c9c"
         }
       },
       "animations": []

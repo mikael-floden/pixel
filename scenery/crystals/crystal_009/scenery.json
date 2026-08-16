@@ -6,7 +6,7 @@
   "rank": 37,
   "index": 9,
   "name": "Ring of small crystal points 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ring of small crystal points",
   "glow_concept": null,
   "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, ring of small crystal points, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "crystals/crystal_009/lit_1/sprite.webp",
+      "pixellab_object_id": "53925852-cbb9-40be-bae7-4d2cfef1be21",
+      "generated_at": "2026-08-16T11:13:52+00:00",
+      "glow_concept": "ground around the base lit in the crystal's color",
+      "difference_from_source": 0.8799,
+      "glow_score": 0.2315
+    },
+    "LIT_2": {
+      "sprite": "crystals/crystal_009/lit_2/sprite.webp",
+      "pixellab_object_id": "f060a565-e54d-4184-95ac-a71523e9bcc7",
+      "generated_at": "2026-08-16T11:14:14+00:00",
+      "glow_concept": "the whole cluster radiating its own gem color",
+      "difference_from_source": 0.3387,
+      "glow_score": 0.3844
+    },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_009/sprite.webp",
       "pixellab_object_id": "98c05a96-c84c-41d7-9a75-a86fe041a211",
       "generated_at": "2026-08-13T23:22:22+00:00"
+    },
+    "NOT_LIT_3": {
+      "sprite": "crystals/crystal_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "db7d8bbc-bdae-406f-b126-bbb3102ec0ca",
+      "generated_at": "2026-08-16T11:13:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6682,
+      "glow_score": 0.1168
+    },
+    "NOT_LIT_4": {
+      "sprite": "crystals/crystal_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "fe9a89b2-c6f7-425d-89aa-8d4c1d302de9",
+      "generated_at": "2026-08-16T11:13:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.748,
+      "glow_score": 0.1092
     }
   }
 }
