@@ -2674,6 +2674,51 @@ function viewCharacter(id) {
  */
 const worldCells = () => state.data.domains.world ?? [];
 const worldMeta = () => state.data.worldMeta ?? {};
+/* THE PAIRS ARE READ LIVE FROM THE AGENT, NOT FROM THE BUILD.
+ * Every other domain is settled art: a build a few hours old describes it
+ * perfectly. Tiles 3.0 is a factory running right now — the matrix is 14
+ * ground types over each other and 9 pairs existed the day this shipped — so
+ * a baked list is stale by the time he opens it, and he would be reviewing
+ * yesterday's generations while the agent waits on today's.
+ *
+ * So for the ADMIN the World section refetches `tiles/review/manifest.json`
+ * from the repo, through the same staging root his art already comes from
+ * (`ROOT`), and rebuilds the pairs from it. That is the tiles agent's own
+ * published contract, so this cannot drift from what they meant. The baked
+ * copy stays the fallback — and the whole thing is one ~30 KB fetch, once per
+ * session, on a page only he opens.
+ */
+let worldLive = null;   // null = not fetched yet, [] = fetched and empty
+async function refreshWorldPairs() {
+  if (!state.admin || worldLive) return false;
+  const man = await fetchJson(new URL("tiles/review/manifest.json", ROOT));
+  const cells = Object.entries(man?.cells ?? {});
+  if (!cells.length) { worldLive = []; return false; }
+  const names = new Map((worldMeta().groundTypes ?? []).map((g) => [g.id, g.name]));
+  const nice = (id) => names.get(id) ?? String(id ?? "").replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const dead = new Set(worldMeta().tombstoned ?? []);
+  worldLive = cells.map(([id, cell]) => {
+    const cands = (cell.candidates ?? []).map((c) => ({
+      key: c.key, art: c.file ? `tiles/${c.file}` : null,
+      wallScore: c.wall_score ?? null, wall: c.wall ?? null, topShare: c.top_share ?? null,
+      tileId: c.tile_id ?? null, style: c.style ?? null, prompt: c.prompt ?? null,
+    })).filter((c) => c.art && c.key);
+    const top = cell.top ?? id.split("__over__")[0], side = cell.side ?? id.split("__over__")[1];
+    return {
+      id, name: `${nice(top)} over ${nice(side).toLowerCase()}`, top, side,
+      path: `tiles/${id}`, preview: cands[0]?.art ?? null, candidates: cands,
+      best: cands[0]?.wallScore ?? null, tombstoned: dead.has(id),
+    };
+  }).filter((c) => c.candidates.length).sort((a, b) => a.name.localeCompare(b.name));
+  // An art file the manifest names but the repo has not pushed yet simply
+  // fails to load and the card says so — the same contract as every other
+  // domain. What must not happen is the LIST being older than the agent.
+  const was = state.data.domains.world?.length ?? 0;
+  state.data.domains.world = worldLive;
+  state.data.counts.world = worldLive.length;
+  state.data.counts.world_candidates = worldLive.reduce((n, c) => n + c.candidates.length, 0);
+  return worldLive.length !== was || true;
+}
 /** Passed / short of the agent's own acceptance bar, so a score reads as a
  *  verdict rather than a number. */
 function wallVerdict(score) {
@@ -2708,6 +2753,10 @@ const WORLD_FILTERS = {
 };
 const WORLD_FILTER_KEY = "wiki-world-filter";
 function viewWorld() {
+  // Fire-and-forget: the baked list draws immediately, the live one replaces
+  // it a moment later. Re-rendering only when the fetch actually landed keeps
+  // the page still on every visit after the first.
+  refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const all = worldCells();
   const q = all.filter((c) => matches(state.query, c.id, c.name, c.top, c.side));
   const read = (() => { try { return localStorage.getItem(WORLD_FILTER_KEY) || "all"; } catch { return "all"; } })();
@@ -2750,6 +2799,7 @@ function viewWorld() {
     })) : h("p", { class: "muted" }, all.length ? "Nothing in this filter." : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
 }
 function viewWorldCell(id) {
+  refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const all = worldCells();
   const c = all.find((x) => x.id === id);
   if (!c) return h("p", {}, "Unknown pair.");

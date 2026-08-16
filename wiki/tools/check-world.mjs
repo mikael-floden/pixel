@@ -141,7 +141,50 @@ ok(keys.length === 1 && keys[0] === cell.candidates[0].key,
   `keyed exactly as the manifest keyed it (${keys[0]})`);
 ok(!keys.some((k) => k.startsWith("tiles2/")), "and cannot collide with Tiles OLD, whose ids all start tiles2/");
 
-// ------------------------------------------------------------- 4. the player
+// --------------------------------------------- 4. the list is LIVE, not baked
+// Tiles 3.0 is a factory running right now, so a list baked into the last
+// build is stale by the time he opens it — he would be reviewing yesterday's
+// generations while the agent waits on today's. The section refetches the
+// agent's own manifest. Proven the only way that means anything: serve a
+// manifest carrying a pair the build has never heard of.
+const FRESH = "sand__over__moonstone";
+ok(!CELLS.some((c) => c.id === FRESH), `the build does not know “${FRESH}” — that is the point`);
+const live = await ctx.newPage();
+const liveErrs = []; live.on("pageerror", (e) => liveErrs.push(String(e)));
+await live.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await live.route("**/tiles/review/manifest.json", (r) => r.fulfill({
+  status: 200, contentType: "application/json",
+  body: JSON.stringify({
+    schema: "tiles3/review@1",
+    cells: {
+      ...MAN.cells,
+      [FRESH]: {
+        top: "sand", side: "moonstone",
+        // Art the repo really has, so the card draws — what is being tested is
+        // whether the LIST comes from the manifest, not the image loader.
+        candidates: [{ ...MAN.cells[Object.keys(MAN.cells)[0]].candidates[0], key: `tiles/${FRESH}/0`, wall_score: 9.9 }],
+      },
+    },
+  }),
+}));
+await live.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  localStorage.removeItem("wiki-world-filter");
+});
+await live.goto(`${W}#/world`, { waitUntil: "load" });
+await live.waitForTimeout(3000);
+const fresh = await live.evaluate((id) => ({
+  cards: document.querySelectorAll("a.card").length,
+  has: !!document.querySelector(`a.card[href="#/world/${id}"]`),
+  name: document.querySelector(`a.card[href="#/world/${id}"] .card-name`)?.textContent ?? null,
+}), FRESH);
+console.log("live manifest:", JSON.stringify(fresh));
+ok(fresh.has, `a pair the agent generated after the last build still shows up (“${fresh.name}”)`);
+ok(fresh.cards === CELLS.length + 1, `and the count follows it (${fresh.cards} = ${CELLS.length} + 1)`);
+ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 1).join("") || "none"})`);
+
+// ------------------------------------------------------------- 5. the player
 // He asked for a migration surface, not a change to the encyclopedia.
 const pub = await ctx.newPage();
 await pub.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
