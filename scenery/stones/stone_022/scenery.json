@@ -5,8 +5,8 @@
   "group": "stones",
   "rank": 2,
   "index": 22,
-  "name": "White quartz-flecked boulder 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White quartz-flecked boulder 022",
+  "lights": null,
   "variety": "white quartz-flecked boulder",
   "modifier": "one side die-back, the other thriving",
   "glow_concept": "glowing pale handprint pressed on the face",
@@ -36,6 +36,38 @@
       "sprite": "stones/stone_022/sprite.webp",
       "pixellab_object_id": "63b91831-915b-4391-80a4-bf83682c1a23",
       "generated_at": "2026-08-14T01:34:56+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_022/lit_2/sprite.webp",
+      "pixellab_object_id": "fd8f7577-c311-4c95-aba9-85a16433838c",
+      "generated_at": "2026-08-16T21:53:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.544,
+      "glow_score": 0.0855
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_022/lit_3/sprite.webp",
+      "pixellab_object_id": "0fa21a50-5474-40bd-807d-91c51c1e8361",
+      "generated_at": "2026-08-16T21:53:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9565,
+      "glow_score": 0.001
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_022/lit_4/sprite.webp",
+      "pixellab_object_id": "b5b61d49-74e2-43eb-ba12-a5dd9143d2d4",
+      "generated_at": "2026-08-16T21:52:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6473,
+      "glow_score": 0.0634
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "361c201d-7e54-4954-989d-f351d1537bb4",
+      "generated_at": "2026-08-16T21:54:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3354,
+      "glow_score": 0.0004
     }
   }
 }

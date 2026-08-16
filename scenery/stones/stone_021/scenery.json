@@ -6,7 +6,7 @@
   "rank": 2,
   "index": 21,
   "name": "Dark basalt block 021",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dark basalt block",
   "modifier": "wrapped in thin creeper vines",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_021/lit_1/sprite.webp",
+      "pixellab_object_id": "64532b6a-c8db-48df-b9e5-2388261025bd",
+      "generated_at": "2026-08-16T21:52:42+00:00",
+      "glow_concept": "glowing pale handprint pressed on the face",
+      "difference_from_source": 0.8651,
+      "glow_score": 0.0856
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_021/lit_2/sprite.webp",
+      "pixellab_object_id": "ce999a13-332b-43fa-97b9-62cc6f1315d0",
+      "generated_at": "2026-08-16T21:53:01+00:00",
+      "glow_concept": "tiny golden memory motes drifting above it",
+      "difference_from_source": 0.3492,
+      "glow_score": 0.0975
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_021/sprite.webp",
       "pixellab_object_id": "49e2f823-a804-4420-9b94-2c895f14cd77",
       "generated_at": "2026-08-14T01:46:58+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_021/not_lit_2/sprite.webp",
+      "pixellab_object_id": "c3c591f2-d5ef-4b77-b974-acbf6f7548fe",
+      "generated_at": "2026-08-16T21:52:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7024,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_021/not_lit_3/sprite.webp",
+      "pixellab_object_id": "183745ef-1eef-4ae3-bb5c-acf8197d5afd",
+      "generated_at": "2026-08-16T21:52:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6869,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_021/not_lit_4/sprite.webp",
+      "pixellab_object_id": "bf378ae6-4098-47c2-b588-7cd7026caef0",
+      "generated_at": "2026-08-16T21:52:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8452,
+      "glow_score": 0.0
     }
   }
 }
