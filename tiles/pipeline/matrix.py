@@ -31,6 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import flatness
 import pixellab_gc
+import tombstones
 from pixellab_client import BudgetExhausted, PixelLabClient, PixelLabError
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -139,7 +140,18 @@ def main():
     types = c["ground_types"]
     pairs = [(t, s) for t in types for s in types
              if not args.only or t["id"] == args.only]
-    todo = [(t, s) for t, s in pairs if have_sheets(t["id"], s["id"]) < args.sheets]
+    # A DELETED cell is not an empty cell. The maintainer's rule is that deleting an
+    # object means it should be gone, not regenerated — and without this check the
+    # pipeline does the opposite by construction: matrix regenerates anything short of
+    # its sheet target and pixellab_gc deletes what was rejected, so a deletion becomes
+    # reject -> delete -> regenerate -> reject, an unbounded paid loop that keeps
+    # resurrecting art already refused.
+    dead = tombstones.load().get("cells", {})
+    todo = [(t, s) for t, s in pairs
+            if have_sheets(t["id"], s["id"]) < args.sheets
+            and f"{t['id']}_over_{s['id']}" not in dead]
+    if dead:
+        print(f"skipping {len(dead)} tombstoned cell(s) — deleted, not to be regenerated")
     print(f"{len(pairs)} cells, {len(todo)} still need sheets "
           f"({args.sheets} each) -> ~{len(todo) * args.sheets} generations "
           f"~${len(todo) * args.sheets * 0.10:.0f}")
