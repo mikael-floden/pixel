@@ -32,6 +32,14 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "mushrooms/mushroom_011/lit_1/sprite.webp",
+      "pixellab_object_id": "0b7f798e-069a-441d-8a30-f652835608d7",
+      "generated_at": "2026-08-16T19:45:04+00:00",
+      "glow_concept": "dewdrops on the caps lit like tiny lamps",
+      "difference_from_source": 0.4607,
+      "glow_score": 0.1518
+    },
     "LIT_2": {
       "sprite": "mushrooms/mushroom_011/lit_2/sprite.webp",
       "pixellab_object_id": "4a587a26-25c6-4602-aa08-dea9e4b15c66",

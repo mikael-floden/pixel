@@ -34448,6 +34448,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "mushrooms/mushroom_011/lit_1/sprite.webp",
+          "pixellab_object_id": "0b7f798e-069a-441d-8a30-f652835608d7",
+          "generated_at": "2026-08-16T19:45:04+00:00",
+          "glow_concept": "dewdrops on the caps lit like tiny lamps",
+          "difference_from_source": 0.4607,
+          "glow_score": 0.1518,
+          "art_hash": "92133506e84caa19"
+        },
         "LIT_2": {
           "sprite": "mushrooms/mushroom_011/lit_2/sprite.webp",
           "pixellab_object_id": "4a587a26-25c6-4602-aa08-dea9e4b15c66",
@@ -34893,7 +34902,7 @@
       "rel": "offering_tables/offering_table_003",
       "name": "Flat dolmen stone, apples 003",
       "category": "offering_tables",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, flat dolmen stone, apples, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -34913,6 +34922,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "offering_tables/offering_table_003/lit_1/sprite.webp",
+          "pixellab_object_id": "34186f4a-cdd7-40ed-9b4a-6cd9ac07aff8",
+          "generated_at": "2026-08-16T19:45:41+00:00",
+          "glow_concept": "the offerings themselves glowing faintly gold",
+          "difference_from_source": 0.8397,
+          "glow_score": 0.0905,
+          "art_hash": "e135fa7f69b32943"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_003/lit_2/sprite.webp",
+          "pixellab_object_id": "56ff21e9-fbd3-4da1-8255-e7c6bd84b66a",
+          "generated_at": "2026-08-16T19:45:43+00:00",
+          "glow_concept": "ring of lit tea candles among the gifts",
+          "difference_from_source": 0.8267,
+          "glow_score": 0.1246,
+          "art_hash": "c2950c7999270108"
+        },
         "NOT_LIT_1": {
           "sprite": "offering_tables/offering_table_003/sprite.webp",
           "pixellab_object_id": "3f1ed1ca-db9b-4dc6-a632-af2e22b26d64",
@@ -34952,9 +34979,9 @@
     {
       "id": "offering_table_004",
       "rel": "offering_tables/offering_table_004",
-      "name": "Birch log table, berries 004 \u00b7 lit",
+      "name": "Birch log table, berries 004",
       "category": "offering_tables",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, birch log table, berries, waist-high to an adult person, self-emissive at night, softly radiating light: the offerings themselves glowing faintly gold",
       "view": "low top-down",
       "size": 64,
@@ -34979,6 +35006,51 @@
           "pixellab_object_id": "e6f9e6b0-7d53-414e-bbc0-0f1fd27029af",
           "generated_at": "2026-08-13T08:57:30+00:00",
           "art_hash": "8937e1ce07008ab4"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_004/lit_2/sprite.webp",
+          "pixellab_object_id": "6fc0964e-28e8-4fde-a866-d7b19004e167",
+          "generated_at": "2026-08-16T19:46:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6796,
+          "glow_score": 0.329,
+          "art_hash": "95115e91916663a0"
+        },
+        "LIT_3": {
+          "sprite": "offering_tables/offering_table_004/lit_3/sprite.webp",
+          "pixellab_object_id": "8cba74c8-b267-4324-842e-c4238afc7e43",
+          "generated_at": "2026-08-16T19:46:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5133,
+          "glow_score": 0.3774,
+          "art_hash": "85dfc5f7945ad118"
+        },
+        "LIT_4": {
+          "sprite": "offering_tables/offering_table_004/lit_4/sprite.webp",
+          "pixellab_object_id": "eaa5f3bf-a2e6-423e-a4de-27375b1b4df7",
+          "generated_at": "2026-08-16T19:46:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.517,
+          "glow_score": 0.4021,
+          "art_hash": "f8f2251f4fbfa2aa"
+        },
+        "NOT_LIT_1": {
+          "sprite": "offering_tables/offering_table_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "98fb38ac-0bd0-4a00-96ef-b66fdc62e8bd",
+          "generated_at": "2026-08-16T19:46:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8981,
+          "glow_score": 0.0,
+          "art_hash": "c3f0a49d5f675110"
+        },
+        "NOT_LIT_2": {
+          "sprite": "offering_tables/offering_table_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "dc977ea8-74d1-43f4-8565-325f48d72a68",
+          "generated_at": "2026-08-16T19:46:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8804,
+          "glow_score": 0.0,
+          "art_hash": "dcefd47ef21df08c"
         }
       },
       "animations": []
@@ -34988,7 +35060,7 @@
       "rel": "offering_tables/offering_table_007",
       "name": "Table with milk jug 007",
       "category": "offering_tables",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, table with milk jug, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -35008,11 +35080,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "offering_tables/offering_table_007/lit_1/sprite.webp",
+          "pixellab_object_id": "4b09be64-24de-41ad-95f8-b0b342034101",
+          "generated_at": "2026-08-16T19:47:54+00:00",
+          "glow_concept": "luminous steam curling from an offering bowl",
+          "difference_from_source": 0.7269,
+          "glow_score": 0.0483,
+          "art_hash": "5952aa2566f84a5d"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_007/lit_2/sprite.webp",
+          "pixellab_object_id": "b3edb3c8-40aa-4634-b692-bb9f3136178e",
+          "generated_at": "2026-08-16T19:47:54+00:00",
+          "glow_concept": "glowing runes carved along the table edge",
+          "difference_from_source": 0.4804,
+          "glow_score": 0.0734,
+          "art_hash": "032015ddd5127ea9"
+        },
         "NOT_LIT_1": {
           "sprite": "offering_tables/offering_table_007/sprite.webp",
           "pixellab_object_id": "5bbda2a8-79c4-4fda-8fa1-35f58cab34e7",
           "generated_at": "2026-08-13T13:56:25+00:00",
           "art_hash": "269105da71e6b828"
+        },
+        "NOT_LIT_2": {
+          "sprite": "offering_tables/offering_table_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a8f53f44-39ed-4e50-8724-88da9bb2987e",
+          "generated_at": "2026-08-16T19:46:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8689,
+          "glow_score": 0.0476,
+          "art_hash": "61742c8a272e51e4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "offering_tables/offering_table_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "cfe78a87-0dd8-47a6-b171-65f8d53180d3",
+          "generated_at": "2026-08-16T19:47:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4263,
+          "glow_score": 0.0139,
+          "art_hash": "99d1317c238acc7d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "offering_tables/offering_table_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0c008607-c419-4093-be59-4f27b0eb62ee",
+          "generated_at": "2026-08-16T19:47:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5132,
+          "glow_score": 0.0098,
+          "art_hash": "2802db8ceee6318d"
         }
       },
       "animations": []
@@ -35022,7 +35139,7 @@
       "rel": "offering_tables/offering_table_009",
       "name": "Cloth-draped embroidered table 009",
       "category": "offering_tables",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, cloth-draped embroidered table, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -35042,11 +35159,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "offering_tables/offering_table_009/lit_1/sprite.webp",
+          "pixellab_object_id": "d5ff13c4-bc24-4aa7-86a6-81fb52f8e55a",
+          "generated_at": "2026-08-16T19:48:15+00:00",
+          "glow_concept": "the offerings themselves glowing faintly gold",
+          "difference_from_source": 0.4207,
+          "glow_score": 0.0692,
+          "art_hash": "22270d6daf72a8f1"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_009/lit_2/sprite.webp",
+          "pixellab_object_id": "b0d70bba-bd96-4276-8ef7-9d029a15a584",
+          "generated_at": "2026-08-16T19:49:18+00:00",
+          "glow_concept": "ring of lit tea candles among the gifts",
+          "difference_from_source": 0.5455,
+          "glow_score": 0.0918,
+          "art_hash": "1734b17f73e124e8"
+        },
         "NOT_LIT_1": {
           "sprite": "offering_tables/offering_table_009/sprite.webp",
           "pixellab_object_id": "45e176bf-4a2d-44e3-925a-9acd70e82d03",
           "generated_at": "2026-08-13T23:52:11+00:00",
           "art_hash": "3b67e44a6434d2cc"
+        },
+        "NOT_LIT_2": {
+          "sprite": "offering_tables/offering_table_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "530e090a-279b-4d5b-a199-4c3ba5d062f8",
+          "generated_at": "2026-08-16T19:47:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5044,
+          "glow_score": 0.0617,
+          "art_hash": "fc91604a544ae47f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "offering_tables/offering_table_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1fdffbc2-9948-4638-a6d2-4ea18a2ca927",
+          "generated_at": "2026-08-16T19:48:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6423,
+          "glow_score": 0.1003,
+          "art_hash": "b81b6a2fa059f420"
+        },
+        "NOT_LIT_4": {
+          "sprite": "offering_tables/offering_table_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "f15933e9-b051-43bb-8aab-725c60ed8123",
+          "generated_at": "2026-08-16T19:48:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5081,
+          "glow_score": 0.0207,
+          "art_hash": "eecc334b280fd102"
         }
       },
       "animations": []
@@ -35054,9 +35216,9 @@
     {
       "id": "offering_table_012",
       "rel": "offering_tables/offering_table_012",
-      "name": "Table with wooden toys 012 \u00b7 lit",
+      "name": "Table with wooden toys 012",
       "category": "offering_tables",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, table with wooden toys, waist-high, self-emissive at night, softly radiating light: embroidered cloth threads woven with light",
       "view": "low top-down",
       "size": 64,
@@ -35081,6 +35243,51 @@
           "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
           "generated_at": "2026-08-13T23:33:54+00:00",
           "art_hash": "2b908a011d7a4586"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_012/lit_2/sprite.webp",
+          "pixellab_object_id": "b9d81161-345e-4d85-9569-957714620aa2",
+          "generated_at": "2026-08-16T19:49:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.592,
+          "glow_score": 0.1391,
+          "art_hash": "72ac08c4330f50b7"
+        },
+        "LIT_3": {
+          "sprite": "offering_tables/offering_table_012/lit_3/sprite.webp",
+          "pixellab_object_id": "85292a98-75ce-4bde-95fc-89a7ccddfbf9",
+          "generated_at": "2026-08-16T19:49:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5155,
+          "glow_score": 0.2592,
+          "art_hash": "19ff518388f45167"
+        },
+        "LIT_4": {
+          "sprite": "offering_tables/offering_table_012/lit_4/sprite.webp",
+          "pixellab_object_id": "e60ad2b6-bb7d-448a-adf1-c6f5fa125068",
+          "generated_at": "2026-08-16T19:49:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5352,
+          "glow_score": 0.3668,
+          "art_hash": "d73f451155b76af4"
+        },
+        "NOT_LIT_1": {
+          "sprite": "offering_tables/offering_table_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e66d493f-184b-4c34-b939-61b100cd848e",
+          "generated_at": "2026-08-16T19:49:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8484,
+          "glow_score": 0.0,
+          "art_hash": "f63688d82a267cdb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "offering_tables/offering_table_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "78d24b19-fb6e-43ec-8a20-64301787ff4a",
+          "generated_at": "2026-08-16T19:49:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8188,
+          "glow_score": 0.0,
+          "art_hash": "1688600c47bdc24e"
         }
       },
       "animations": []
@@ -35115,6 +35322,24 @@
           "pixellab_object_id": "2dc174d9-73e1-46a0-be0d-9f68c3c0f015",
           "generated_at": "2026-08-14T02:14:53+00:00",
           "art_hash": "039847741d96789c"
+        },
+        "LIT_2": {
+          "sprite": "offering_tables/offering_table_016/lit_2/sprite.webp",
+          "pixellab_object_id": "955a1314-671d-475e-9d79-c94f3105fac3",
+          "generated_at": "2026-08-16T19:50:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9352,
+          "glow_score": 0.1329,
+          "art_hash": "b8817330987cbbf2"
+        },
+        "LIT_3": {
+          "sprite": "offering_tables/offering_table_016/lit_3/sprite.webp",
+          "pixellab_object_id": "2794a7e7-334c-4b63-bdd9-6427f477b1ca",
+          "generated_at": "2026-08-16T19:49:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5263,
+          "glow_score": 0.0774,
+          "art_hash": "f0668439302a49f5"
         }
       },
       "animations": []

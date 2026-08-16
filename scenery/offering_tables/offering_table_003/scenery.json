@@ -5,7 +5,7 @@
   "rank": 22,
   "index": 3,
   "name": "Flat dolmen stone, apples 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "flat dolmen stone, apples",
   "glow_concept": null,
   "prompt": "a low wooden offering table set with bowls of food, cut flowers and small keepsakes left for the dead, flat dolmen stone, apples, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T07:06:21+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "offering_tables/offering_table_003/lit_1/sprite.webp",
+      "pixellab_object_id": "34186f4a-cdd7-40ed-9b4a-6cd9ac07aff8",
+      "generated_at": "2026-08-16T19:45:41+00:00",
+      "glow_concept": "the offerings themselves glowing faintly gold",
+      "difference_from_source": 0.8397,
+      "glow_score": 0.0905
+    },
+    "LIT_2": {
+      "sprite": "offering_tables/offering_table_003/lit_2/sprite.webp",
+      "pixellab_object_id": "56ff21e9-fbd3-4da1-8255-e7c6bd84b66a",
+      "generated_at": "2026-08-16T19:45:43+00:00",
+      "glow_concept": "ring of lit tea candles among the gifts",
+      "difference_from_source": 0.8267,
+      "glow_score": 0.1246
+    },
     "NOT_LIT_1": {
       "sprite": "offering_tables/offering_table_003/sprite.webp",
       "pixellab_object_id": "3f1ed1ca-db9b-4dc6-a632-af2e22b26d64",
