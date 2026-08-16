@@ -5,7 +5,7 @@
   "rank": 109,
   "index": 1,
   "name": "Basket of wool with knitting needles 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "basket of wool with knitting needles",
   "glow_concept": null,
   "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, basket of wool with knitting needles, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:45:41+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "house_clutter/clutter_001/lit_1/sprite.webp",
+      "pixellab_object_id": "8424d87e-6aa5-448d-b70d-a260c9cb22f5",
+      "generated_at": "2026-08-16T16:48:29+00:00",
+      "glow_concept": "embers glowing in a small warming pot",
+      "difference_from_source": 0.9042,
+      "glow_score": 0.2478
+    },
+    "LIT_2": {
+      "sprite": "house_clutter/clutter_001/lit_2/sprite.webp",
+      "pixellab_object_id": "fd267cd8-1e91-41c6-aa7b-a01d9daf9a23",
+      "generated_at": "2026-08-16T16:46:45+00:00",
+      "glow_concept": "a covered lantern set among the things",
+      "difference_from_source": 0.9473,
+      "glow_score": 0.123
+    },
     "NOT_LIT_1": {
       "sprite": "house_clutter/clutter_001/sprite.webp",
       "pixellab_object_id": "e1e908a6-c31c-43fa-b205-676d6964d2d6",
@@ -43,6 +59,22 @@
       "glow_concept": null,
       "difference_from_source": 0.9136,
       "glow_score": 0.0725
+    },
+    "NOT_LIT_3": {
+      "sprite": "house_clutter/clutter_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "1928f590-6c5e-4231-bf8c-a04bc98a91a7",
+      "generated_at": "2026-08-16T16:46:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4045,
+      "glow_score": 0.1402
+    },
+    "NOT_LIT_4": {
+      "sprite": "house_clutter/clutter_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "351e91fd-874a-4f46-8da2-0e5d75db3bba",
+      "generated_at": "2026-08-16T16:46:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6682,
+      "glow_score": 0.1302
     }
   }
 }

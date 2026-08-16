@@ -29969,6 +29969,15 @@
           "glow_score": 0.0549,
           "art_hash": "17f10ed81be367ee"
         },
+        "NOT_LIT_1": {
+          "sprite": "hop_poles/hop_pole_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "c9c5e58e-9bf6-4329-816d-f1e473bf204f",
+          "generated_at": "2026-08-16T16:46:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7246,
+          "glow_score": 0.0221,
+          "art_hash": "2bac234d53d2e6cb"
+        },
         "NOT_LIT_2": {
           "sprite": "hop_poles/hop_pole_002/not_lit_2/sprite.webp",
           "pixellab_object_id": "b1a59b5c-f443-4e80-a5ef-0f187e23b1f2",
@@ -30039,6 +30048,15 @@
           "glow_score": 0.2501,
           "art_hash": "5d46d223c15f8b8d"
         },
+        "NOT_LIT_1": {
+          "sprite": "hot_springs/hot_spring_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "1eb2b87b-7200-47f4-8943-bbf8d3c7f8b5",
+          "generated_at": "2026-08-16T16:46:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9734,
+          "glow_score": 0.0,
+          "art_hash": "8cb9e2a9137239f8"
+        },
         "NOT_LIT_2": {
           "sprite": "hot_springs/hot_spring_002/not_lit_2/sprite.webp",
           "pixellab_object_id": "b763c6ba-a8ef-4d07-90ea-1870df4125f9",
@@ -30056,7 +30074,7 @@
       "rel": "house_clutter/clutter_001",
       "name": "Basket of wool with knitting needles 001",
       "category": "house_clutter",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, basket of wool with knitting needles, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -30076,6 +30094,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "house_clutter/clutter_001/lit_1/sprite.webp",
+          "pixellab_object_id": "8424d87e-6aa5-448d-b70d-a260c9cb22f5",
+          "generated_at": "2026-08-16T16:48:29+00:00",
+          "glow_concept": "embers glowing in a small warming pot",
+          "difference_from_source": 0.9042,
+          "glow_score": 0.2478,
+          "art_hash": "30192b20ecbf3656"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_001/lit_2/sprite.webp",
+          "pixellab_object_id": "fd267cd8-1e91-41c6-aa7b-a01d9daf9a23",
+          "generated_at": "2026-08-16T16:46:45+00:00",
+          "glow_concept": "a covered lantern set among the things",
+          "difference_from_source": 0.9473,
+          "glow_score": 0.123,
+          "art_hash": "2785a5a51613c4a9"
+        },
         "NOT_LIT_1": {
           "sprite": "house_clutter/clutter_001/sprite.webp",
           "pixellab_object_id": "e1e908a6-c31c-43fa-b205-676d6964d2d6",
@@ -30090,6 +30126,24 @@
           "difference_from_source": 0.9136,
           "glow_score": 0.0725,
           "art_hash": "8c2a98d0fc06f2e3"
+        },
+        "NOT_LIT_3": {
+          "sprite": "house_clutter/clutter_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1928f590-6c5e-4231-bf8c-a04bc98a91a7",
+          "generated_at": "2026-08-16T16:46:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4045,
+          "glow_score": 0.1402,
+          "art_hash": "85281d84680326d6"
+        },
+        "NOT_LIT_4": {
+          "sprite": "house_clutter/clutter_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "351e91fd-874a-4f46-8da2-0e5d75db3bba",
+          "generated_at": "2026-08-16T16:46:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6682,
+          "glow_score": 0.1302,
+          "art_hash": "90ba603b8e462bb0"
         }
       },
       "animations": []
@@ -30097,9 +30151,9 @@
     {
       "id": "clutter_002",
       "rel": "house_clutter/clutter_002",
-      "name": "Potted kitchen herbs 002 \u00b7 lit",
+      "name": "Potted kitchen herbs 002",
       "category": "house_clutter",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, potted kitchen herbs, tiny, only ankle-high, self-emissive at night, softly radiating light: a little oil lamp burning beside the basket",
       "view": "low top-down",
       "size": 64,
@@ -30124,6 +30178,51 @@
           "pixellab_object_id": "754cb61a-0270-44cc-985f-d1f74d089cda",
           "generated_at": "2026-08-13T20:14:44+00:00",
           "art_hash": "9b8be97b20369479"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_002/lit_2/sprite.webp",
+          "pixellab_object_id": "9cbcac88-c0e5-450f-928f-6b3694d89e56",
+          "generated_at": "2026-08-16T16:47:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5045,
+          "glow_score": 0.1077,
+          "art_hash": "d479253ba295d3a4"
+        },
+        "LIT_3": {
+          "sprite": "house_clutter/clutter_002/lit_3/sprite.webp",
+          "pixellab_object_id": "ee55a690-ef2f-4869-a591-a800c3a82b68",
+          "generated_at": "2026-08-16T16:48:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5253,
+          "glow_score": 0.124,
+          "art_hash": "843ed966ef939819"
+        },
+        "LIT_4": {
+          "sprite": "house_clutter/clutter_002/lit_4/sprite.webp",
+          "pixellab_object_id": "ad335dc5-2a68-4d83-abfd-146119d8f88a",
+          "generated_at": "2026-08-16T16:48:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8084,
+          "glow_score": 0.1112,
+          "art_hash": "321018d0dec06d5c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "house_clutter/clutter_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "16621798-ef5b-42ba-8585-17b515f5fa83",
+          "generated_at": "2026-08-16T16:50:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.786,
+          "glow_score": 0.0,
+          "art_hash": "d541ba30e023d01f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d615821a-187a-465a-b980-76c47267d17d",
+          "generated_at": "2026-08-16T16:48:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.893,
+          "glow_score": 0.0,
+          "art_hash": "f2ac0617a45713fc"
         }
       },
       "animations": []
@@ -30133,7 +30232,7 @@
       "rel": "house_clutter/clutter_003",
       "name": "Flour sack leaning on a crock 003",
       "category": "house_clutter",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, flour sack leaning on a crock, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -30153,11 +30252,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "house_clutter/clutter_003/lit_1/sprite.webp",
+          "pixellab_object_id": "1711572b-8ea8-4b1c-80b8-690121fa6fc8",
+          "generated_at": "2026-08-16T16:53:14+00:00",
+          "glow_concept": "a covered lantern set among the things",
+          "difference_from_source": 0.8993,
+          "glow_score": 0.3559,
+          "art_hash": "fc0d537935070703"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_003/lit_2/sprite.webp",
+          "pixellab_object_id": "ca348f4b-a9f9-471c-a9c3-39b5978b6e57",
+          "generated_at": "2026-08-16T16:49:59+00:00",
+          "glow_concept": "a little oil lamp burning beside the basket",
+          "difference_from_source": 0.9706,
+          "glow_score": 0.1405,
+          "art_hash": "b4b2cd82fe408675"
+        },
         "NOT_LIT_1": {
           "sprite": "house_clutter/clutter_003/sprite.webp",
           "pixellab_object_id": "0ab664bf-5a94-451d-8efa-282fbb0d2d98",
           "generated_at": "2026-08-13T21:49:12+00:00",
           "art_hash": "7ab91c830e29de42"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2489de83-5550-4a8e-bd94-82a338e798fd",
+          "generated_at": "2026-08-16T16:48:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9262,
+          "glow_score": 0.0006,
+          "art_hash": "36826264166c7d50"
+        },
+        "NOT_LIT_3": {
+          "sprite": "house_clutter/clutter_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "789b34a3-b742-486f-9a8f-7e30b6826eeb",
+          "generated_at": "2026-08-16T16:49:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4618,
+          "glow_score": 0.3491,
+          "art_hash": "1bd4d51f23a18cdf"
+        },
+        "NOT_LIT_4": {
+          "sprite": "house_clutter/clutter_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a63b5373-ab26-4cb6-96df-c999e5bb0ae6",
+          "generated_at": "2026-08-16T16:50:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9259,
+          "glow_score": 0.5696,
+          "art_hash": "33a59c66cea36356"
         }
       },
       "animations": []
@@ -30167,7 +30311,7 @@
       "rel": "house_clutter/clutter_005",
       "name": "Basket of folded linen 005",
       "category": "house_clutter",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, basket of folded linen, tiny, only ankle-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -30187,11 +30331,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "house_clutter/clutter_005/lit_1/sprite.webp",
+          "pixellab_object_id": "0c7c71c8-e869-4527-938e-0b6329db50db",
+          "generated_at": "2026-08-16T16:51:53+00:00",
+          "glow_concept": "a covered lantern set among the things",
+          "difference_from_source": 0.9333,
+          "glow_score": 0.1613,
+          "art_hash": "351eb1c8ef3ec412"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_005/lit_2/sprite.webp",
+          "pixellab_object_id": "471860f0-e19a-4b18-b5a7-4b5fca4d396b",
+          "generated_at": "2026-08-16T16:53:56+00:00",
+          "glow_concept": "a little oil lamp burning beside the basket",
+          "difference_from_source": 0.4274,
+          "glow_score": 0.1006,
+          "art_hash": "89e1ff157141177d"
+        },
         "NOT_LIT_1": {
           "sprite": "house_clutter/clutter_005/sprite.webp",
           "pixellab_object_id": "e2587851-67c5-42ff-9253-012a05c588bb",
           "generated_at": "2026-08-13T22:18:06+00:00",
           "art_hash": "aea20e430b3bb817"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d89ecc60-151b-4f68-8687-65e86e858c0c",
+          "generated_at": "2026-08-16T16:50:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8369,
+          "glow_score": 0.0204,
+          "art_hash": "91865805bb33b362"
+        },
+        "NOT_LIT_3": {
+          "sprite": "house_clutter/clutter_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8f7aab90-0d78-4f24-95d3-991bc9d0d94e",
+          "generated_at": "2026-08-16T16:51:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8995,
+          "glow_score": 0.0,
+          "art_hash": "3ea301e4d3320617"
+        },
+        "NOT_LIT_4": {
+          "sprite": "house_clutter/clutter_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c123d42a-2d39-439d-93a1-1225c33c9a58",
+          "generated_at": "2026-08-16T16:51:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8929,
+          "glow_score": 0.0066,
+          "art_hash": "4fe2603c4259cfbe"
         }
       },
       "animations": []
@@ -30199,9 +30388,9 @@
     {
       "id": "clutter_006",
       "rel": "house_clutter/clutter_006",
-      "name": "Washtub with a washboard 006 \u00b7 lit",
+      "name": "Washtub with a washboard 006",
       "category": "house_clutter",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, washtub with a washboard, small, knee-high, self-emissive at night, softly radiating light: embers glowing in a small warming pot",
       "view": "low top-down",
       "size": 64,
@@ -30226,6 +30415,42 @@
           "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
           "generated_at": "2026-08-13T22:02:24+00:00",
           "art_hash": "48f07ee654638ac9"
+        },
+        "LIT_2": {
+          "sprite": "house_clutter/clutter_006/lit_2/sprite.webp",
+          "pixellab_object_id": "c2a51064-a8fe-4ffe-a32a-61ee9b0ed5d0",
+          "generated_at": "2026-08-16T16:52:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5409,
+          "glow_score": 0.0131,
+          "art_hash": "3f1bd6049b190c8f"
+        },
+        "LIT_3": {
+          "sprite": "house_clutter/clutter_006/lit_3/sprite.webp",
+          "pixellab_object_id": "adc45155-65ec-4f91-bb97-f85bc0dbc731",
+          "generated_at": "2026-08-16T16:52:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8031,
+          "glow_score": 0.0287,
+          "art_hash": "76064dbbe92e2b38"
+        },
+        "LIT_4": {
+          "sprite": "house_clutter/clutter_006/lit_4/sprite.webp",
+          "pixellab_object_id": "1936c5ce-85e2-42da-bc76-d319bf1b4329",
+          "generated_at": "2026-08-16T16:53:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6353,
+          "glow_score": 0.0187,
+          "art_hash": "33dc3f82bc92955e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "house_clutter/clutter_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "20ca2c77-0e81-42c4-8653-b9d277620863",
+          "generated_at": "2026-08-16T16:53:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3232,
+          "glow_score": 0.0,
+          "art_hash": "c0fac80dbd1176f3"
         }
       },
       "animations": []

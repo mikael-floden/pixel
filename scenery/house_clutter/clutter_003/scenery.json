@@ -5,7 +5,7 @@
   "rank": 109,
   "index": 3,
   "name": "Flour sack leaning on a crock 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "flour sack leaning on a crock",
   "glow_concept": null,
   "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, flour sack leaning on a crock, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:49:12+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "house_clutter/clutter_003/lit_1/sprite.webp",
+      "pixellab_object_id": "1711572b-8ea8-4b1c-80b8-690121fa6fc8",
+      "generated_at": "2026-08-16T16:53:14+00:00",
+      "glow_concept": "a covered lantern set among the things",
+      "difference_from_source": 0.8993,
+      "glow_score": 0.3559
+    },
+    "LIT_2": {
+      "sprite": "house_clutter/clutter_003/lit_2/sprite.webp",
+      "pixellab_object_id": "ca348f4b-a9f9-471c-a9c3-39b5978b6e57",
+      "generated_at": "2026-08-16T16:49:59+00:00",
+      "glow_concept": "a little oil lamp burning beside the basket",
+      "difference_from_source": 0.9706,
+      "glow_score": 0.1405
+    },
     "NOT_LIT_1": {
       "sprite": "house_clutter/clutter_003/sprite.webp",
       "pixellab_object_id": "0ab664bf-5a94-451d-8efa-282fbb0d2d98",
       "generated_at": "2026-08-13T21:49:12+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "house_clutter/clutter_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2489de83-5550-4a8e-bd94-82a338e798fd",
+      "generated_at": "2026-08-16T16:48:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9262,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_3": {
+      "sprite": "house_clutter/clutter_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "789b34a3-b742-486f-9a8f-7e30b6826eeb",
+      "generated_at": "2026-08-16T16:49:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4618,
+      "glow_score": 0.3491
+    },
+    "NOT_LIT_4": {
+      "sprite": "house_clutter/clutter_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "a63b5373-ab26-4cb6-96df-c999e5bb0ae6",
+      "generated_at": "2026-08-16T16:50:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9259,
+      "glow_score": 0.5696
     }
   }
 }

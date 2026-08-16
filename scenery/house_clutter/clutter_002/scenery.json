@@ -4,8 +4,8 @@
   "group": "house_clutter",
   "rank": 109,
   "index": 2,
-  "name": "Potted kitchen herbs 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Potted kitchen herbs 002",
+  "lights": null,
   "variety": "potted kitchen herbs",
   "glow_concept": "a little oil lamp burning beside the basket",
   "prompt": "a small chunky cluster of household things arranged together on the floor, solid everyday objects with visible weight, potted kitchen herbs, tiny, only ankle-high, self-emissive at night, softly radiating light: a little oil lamp burning beside the basket",
@@ -35,6 +35,46 @@
       "sprite": "house_clutter/clutter_002/sprite.webp",
       "pixellab_object_id": "754cb61a-0270-44cc-985f-d1f74d089cda",
       "generated_at": "2026-08-13T20:14:44+00:00"
+    },
+    "LIT_2": {
+      "sprite": "house_clutter/clutter_002/lit_2/sprite.webp",
+      "pixellab_object_id": "9cbcac88-c0e5-450f-928f-6b3694d89e56",
+      "generated_at": "2026-08-16T16:47:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5045,
+      "glow_score": 0.1077
+    },
+    "LIT_3": {
+      "sprite": "house_clutter/clutter_002/lit_3/sprite.webp",
+      "pixellab_object_id": "ee55a690-ef2f-4869-a591-a800c3a82b68",
+      "generated_at": "2026-08-16T16:48:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5253,
+      "glow_score": 0.124
+    },
+    "LIT_4": {
+      "sprite": "house_clutter/clutter_002/lit_4/sprite.webp",
+      "pixellab_object_id": "ad335dc5-2a68-4d83-abfd-146119d8f88a",
+      "generated_at": "2026-08-16T16:48:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8084,
+      "glow_score": 0.1112
+    },
+    "NOT_LIT_1": {
+      "sprite": "house_clutter/clutter_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "16621798-ef5b-42ba-8585-17b515f5fa83",
+      "generated_at": "2026-08-16T16:50:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.786,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "house_clutter/clutter_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d615821a-187a-465a-b980-76c47267d17d",
+      "generated_at": "2026-08-16T16:48:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.893,
+      "glow_score": 0.0
     }
   }
 }
