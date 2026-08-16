@@ -5,8 +5,8 @@
   "group": "cliff_vines",
   "rank": 101,
   "index": 76,
-  "name": "Yellow honeysuckle fall 076 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Yellow honeysuckle fall 076",
+  "lights": null,
   "variety": "yellow honeysuckle fall",
   "modifier": "gathering low, sparse above",
   "glow_concept": "pale blue soul-flowers dotted down the fall",
@@ -36,6 +36,46 @@
       "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
       "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
       "generated_at": "2026-08-14T05:00:14+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_076/lit_2/sprite.webp",
+      "pixellab_object_id": "29240c86-c56e-426a-9234-ef61960a8059",
+      "generated_at": "2026-08-16T10:47:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3454,
+      "glow_score": 0.0681
+    },
+    "LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_076/lit_3/sprite.webp",
+      "pixellab_object_id": "4a5a3a33-9425-4179-b63d-4fd6378db0dd",
+      "generated_at": "2026-08-16T10:47:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3702,
+      "glow_score": 0.0486
+    },
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_076/lit_4/sprite.webp",
+      "pixellab_object_id": "73b5f3e5-97a7-4d83-907b-a2804b62ab07",
+      "generated_at": "2026-08-16T10:48:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2578,
+      "glow_score": 0.0737
+    },
+    "NOT_LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4d428e6f-34fe-4d21-be8b-c45182e46fe2",
+      "generated_at": "2026-08-16T10:48:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3509,
+      "glow_score": 0.0252
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_076/not_lit_2/sprite.webp",
+      "pixellab_object_id": "fc6c0316-dbd3-4f02-a050-7d40e61159e9",
+      "generated_at": "2026-08-16T10:48:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7375,
+      "glow_score": 0.0
     }
   }
 }
