@@ -5,7 +5,7 @@
   "rank": 76,
   "index": 1,
   "name": "Window-pierced eroded spire 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "window-pierced eroded spire",
   "glow_concept": null,
   "prompt": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy, window-pierced eroded spire, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T02:09:44+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "rock_spires/rock_spire_001/lit_1/sprite.webp",
+      "pixellab_object_id": "2e85edbd-4796-4587-b7bf-b3e22b3d5ffc",
+      "generated_at": "2026-08-16T20:14:02+00:00",
+      "glow_concept": "swarm of glowing motes spiraling upward",
+      "difference_from_source": 0.4895,
+      "glow_score": 0.1618
+    },
+    "LIT_2": {
+      "sprite": "rock_spires/rock_spire_001/lit_2/sprite.webp",
+      "pixellab_object_id": "7e002421-0010-4937-b714-69434af60bc3",
+      "generated_at": "2026-08-16T20:14:23+00:00",
+      "glow_concept": "crystal seams flashing down its length",
+      "difference_from_source": 0.696,
+      "glow_score": 0.173
+    },
     "NOT_LIT_1": {
       "sprite": "rock_spires/rock_spire_001/sprite.webp",
       "pixellab_object_id": "8231a5b2-7ef5-4f5e-8cec-3185606da9a0",
       "generated_at": "2026-08-13T02:09:44+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "rock_spires/rock_spire_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5e512c80-a3cd-4397-b5ca-1c90b50ea738",
+      "generated_at": "2026-08-16T20:12:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6092,
+      "glow_score": 0.074
+    },
+    "NOT_LIT_3": {
+      "sprite": "rock_spires/rock_spire_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "e09dd328-237c-4e3b-9ce0-66e3df97f790",
+      "generated_at": "2026-08-16T20:13:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3218,
+      "glow_score": 0.1003
+    },
+    "NOT_LIT_4": {
+      "sprite": "rock_spires/rock_spire_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d704fdf0-b79e-4913-ba44-24dd0df7676b",
+      "generated_at": "2026-08-16T20:13:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.529,
+      "glow_score": 0.0936
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "reed_beds",
   "rank": 32,
   "index": 10,
-  "name": "Thick bulrush clump 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Thick bulrush clump 010",
+  "lights": null,
   "variety": "thick bulrush clump",
   "glow_concept": "foxfire glow on rotted stems at the waterline",
   "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, thick bulrush clump, roughly six feet tall, human height, self-emissive at night, softly radiating light: foxfire glow on rotted stems at the waterline",
@@ -35,6 +35,46 @@
       "sprite": "reed_beds/reed_bed_010/sprite.webp",
       "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
       "generated_at": "2026-08-13T23:20:37+00:00"
+    },
+    "LIT_2": {
+      "sprite": "reed_beds/reed_bed_010/lit_2/sprite.webp",
+      "pixellab_object_id": "712b0780-3b9c-487a-b421-ed581db49a70",
+      "generated_at": "2026-08-16T20:10:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7057,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "reed_beds/reed_bed_010/lit_3/sprite.webp",
+      "pixellab_object_id": "c2f10d5f-9b8d-4739-8642-576907e0794d",
+      "generated_at": "2026-08-16T20:10:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4915,
+      "glow_score": 0.0312
+    },
+    "LIT_4": {
+      "sprite": "reed_beds/reed_bed_010/lit_4/sprite.webp",
+      "pixellab_object_id": "92669525-20f9-4913-9652-adb080e31ae0",
+      "generated_at": "2026-08-16T20:11:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5539,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_1": {
+      "sprite": "reed_beds/reed_bed_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e25be5a5-e745-4ac0-881d-4057cd527e32",
+      "generated_at": "2026-08-16T20:13:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9211,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "reed_beds/reed_bed_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7eb1ef7e-482e-4702-b200-137359e9f247",
+      "generated_at": "2026-08-16T20:11:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5996,
+      "glow_score": 0.0006
     }
   }
 }
