@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-16T13:04:53.971Z",
+  "updated_at": "2026-08-16T13:07:15.357Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -544,14 +544,16 @@
       "rating": 4
     },
     "scenery/fallen_logs/fallen_log_004": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:50:35.696Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-16T13:05:50.837Z",
+      "art": "c8fcbae106116742",
+      "rating": 1
     },
     "scenery/fallen_logs/fallen_log_005": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:49:15.203Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-16T13:05:58.840Z",
+      "rating": 1,
+      "art": "597fe7b047c43b2e"
     },
     "scenery/fallen_logs/fallen_log_006": {
       "status": "approved",
@@ -18796,6 +18798,104 @@
       "art": "4652944a471fa72d",
       "updated_at": "2026-08-16T13:04:53.778Z",
       "note": "Wrong palette"
+    },
+    "scenery/ancient_trees/ancient_tree_002#not_lit_3#south": {
+      "status": "rejected",
+      "art": "f80198d3756b5ef1",
+      "updated_at": "2026-08-16T13:05:12.942Z",
+      "rating": 1,
+      "note": "To similar"
+    },
+    "scenery/ancient_trees/ancient_tree_002#not_lit_7#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:05:29.263Z",
+      "status": "rejected",
+      "art": "f561a65f36d9ed85",
+      "note": "To similar"
+    },
+    "scenery/ancient_trees/ancient_tree_002#not_lit_9#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T13:05:32.231Z",
+      "status": "approved",
+      "art": "dad8b1a4c4be64c2"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "f3cfbc10342ce430",
+      "updated_at": "2026-08-16T13:06:17.716Z",
+      "rating": 1
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-16T13:06:23.286Z",
+      "status": "approved",
+      "art": "30442ccb1495edb0"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_3#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:28.026Z",
+      "status": "rejected",
+      "art": "cb68351a5c81006b"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_4#south": {
+      "art": "041c86f0521cd917",
+      "updated_at": "2026-08-16T13:06:33.659Z",
+      "status": "rejected",
+      "rating": 1
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_5#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:38.118Z",
+      "status": "rejected",
+      "art": "0c8141ee0b951d60"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_6#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:40.767Z",
+      "status": "rejected",
+      "art": "2bf6f0b4f4ceab7f"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_7#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:46.575Z",
+      "status": "rejected",
+      "art": "75d59bcb88ef2b22"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_8#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:50.253Z",
+      "status": "rejected",
+      "art": "706a272899fab900"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_9#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:53.867Z",
+      "status": "rejected",
+      "art": "3d8f4903c78fb04e"
+    },
+    "scenery/fallen_logs/fallen_log_006#not_lit_10#south": {
+      "rating": 1,
+      "updated_at": "2026-08-16T13:06:57.766Z",
+      "status": "rejected",
+      "art": "836336ba47f87fe2"
+    },
+    "scenery/fallen_logs/fallen_log_006#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T13:07:05.761Z",
+      "status": "approved",
+      "art": "2c8b228735865841"
+    },
+    "scenery/fallen_logs/fallen_log_006#lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T13:07:11.311Z",
+      "status": "approved",
+      "art": "bba16a9243a24dc3"
+    },
+    "scenery/fallen_logs/fallen_log_006#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T13:07:13.786Z",
+      "status": "approved",
+      "art": "6910f256e73deb69"
     }
   }
 }
