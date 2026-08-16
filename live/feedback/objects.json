@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-16T12:41:13.328Z",
+  "updated_at": "2026-08-16T12:44:55.585Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -16764,26 +16764,28 @@
       "updated_at": "2026-08-15T20:50:28.197Z"
     },
     "scenery/windows/window_109#static#south": {
-      "rating": 5,
-      "updated_at": "2026-08-15T20:50:43.605Z",
+      "rating": 1,
+      "updated_at": "2026-08-16T12:42:05.383Z",
       "status": "approved",
       "art": "28b2233aba51fcf9"
     },
     "scenery/windows/window_109": {
-      "rating": 5,
-      "updated_at": "2026-08-15T20:50:43.014Z",
-      "status": "approved",
-      "art": "28b2233aba51fcf9"
+      "rating": 1,
+      "updated_at": "2026-08-16T12:42:01.992Z",
+      "art": "28b2233aba51fcf9",
+      "status": "rejected"
     },
     "scenery/windows/window_110": {
       "status": "rejected",
       "art": "d14bafb28a4c6757",
-      "updated_at": "2026-08-15T20:50:47.701Z"
+      "updated_at": "2026-08-16T12:44:21.370Z",
+      "rating": 1
     },
     "scenery/windows/window_110#static#south": {
       "status": "rejected",
       "art": "d14bafb28a4c6757",
-      "updated_at": "2026-08-15T20:50:48.321Z"
+      "updated_at": "2026-08-16T12:44:22.758Z",
+      "rating": 1
     },
     "scenery/stones/stone_054": {
       "rating": 5,
@@ -18010,6 +18012,61 @@
       "updated_at": "2026-08-16T12:41:05.988Z",
       "rating": 5,
       "status": "approved"
+    },
+    "scenery/windows/window_114#static#south-east": {
+      "status": "rejected",
+      "art": "202d1f36b6f413f9",
+      "updated_at": "2026-08-16T12:41:28.404Z"
+    },
+    "scenery/windows/window_114#static#south": {
+      "status": "rejected",
+      "art": "8246910b972067b0",
+      "updated_at": "2026-08-16T12:41:30.497Z"
+    },
+    "scenery/windows/window_112#static#south-west": {
+      "status": "rejected",
+      "art": "7091a5d55afe48f4",
+      "updated_at": "2026-08-16T12:41:42.034Z"
+    },
+    "scenery/windows/window_112#static#south-east": {
+      "status": "rejected",
+      "art": "ea47f907616c30a8",
+      "updated_at": "2026-08-16T12:41:43.880Z"
+    },
+    "scenery/windows/window_109#static#south-west": {
+      "status": "rejected",
+      "art": "3583b3b254946ffd",
+      "updated_at": "2026-08-16T12:41:52.730Z"
+    },
+    "scenery/windows/window_109#static#south-east": {
+      "status": "rejected",
+      "art": "a03a561fdbd350af",
+      "updated_at": "2026-08-16T12:41:57.754Z",
+      "rating": 1
+    },
+    "scenery/windows/window_110#static#south-east": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:44:28.443Z",
+      "status": "rejected",
+      "art": "083f0b0186cbe677"
+    },
+    "scenery/windows/window_110#static#south-west": {
+      "rating": 1,
+      "updated_at": "2026-08-16T12:44:31.881Z",
+      "status": "rejected",
+      "art": "48d56121ec183b28"
+    },
+    "scenery/windows/window_107#static#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:44:50.820Z",
+      "status": "approved",
+      "art": "217d8832f986e9d5"
+    },
+    "scenery/windows/window_107#static#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:44:46.954Z",
+      "status": "approved",
+      "art": "2fbe0b03cc6b65ac"
     }
   }
 }
