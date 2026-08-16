@@ -24617,6 +24617,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "flame_niches/flame_niche_017/lit_1/sprite.webp",
+          "pixellab_object_id": "54f9959e-40bf-48e9-bd08-36d2f99c227a",
+          "generated_at": "2026-08-16T14:03:00+00:00",
+          "glow_concept": "white soul-flame hovering above a bare soulstone",
+          "difference_from_source": 0.8529,
+          "glow_score": 0.1073,
+          "art_hash": "8ad8d28598dfde44"
+        },
         "LIT_2": {
           "sprite": "flame_niches/flame_niche_017/lit_2/sprite.webp",
           "pixellab_object_id": "20dc2451-6639-4eeb-aa0d-64fd44effb18",
@@ -24641,6 +24650,15 @@
           "glow_score": 0.0209,
           "art_hash": "2b10c769cd2267d0"
         },
+        "NOT_LIT_3": {
+          "sprite": "flame_niches/flame_niche_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "06dc4665-2a6d-4d6d-bb39-f57e3e8a9cb3",
+          "generated_at": "2026-08-16T14:03:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.909,
+          "glow_score": 0.0,
+          "art_hash": "49ef2ff076b68e68"
+        },
         "NOT_LIT_4": {
           "sprite": "flame_niches/flame_niche_017/not_lit_4/sprite.webp",
           "pixellab_object_id": "8b2d47ef-36fd-408a-8c11-d5f1a20143e2",
@@ -24656,9 +24674,9 @@
     {
       "id": "flame_niche_018",
       "rel": "flame_niches/flame_niche_018",
-      "name": "Clay oven-shaped niche 018 \u00b7 lit",
+      "name": "Clay oven-shaped niche 018",
       "category": "flame_niches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, clay oven-shaped niche, snow-dusted, roughly six feet tall, human height, self-emissive at night, softly radiating light: bed of ember coals glowing deep red",
       "view": "low top-down",
       "size": 64,
@@ -24684,6 +24702,24 @@
           "generated_at": "2026-08-14T01:19:07+00:00",
           "art_hash": "642a056b9ed98bb0"
         },
+        "LIT_2": {
+          "sprite": "flame_niches/flame_niche_018/lit_2/sprite.webp",
+          "pixellab_object_id": "0bdfbcb1-2564-484c-96df-06b65f4594a5",
+          "generated_at": "2026-08-16T14:02:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8822,
+          "glow_score": 0.1871,
+          "art_hash": "6d224feab70f25e8"
+        },
+        "LIT_3": {
+          "sprite": "flame_niches/flame_niche_018/lit_3/sprite.webp",
+          "pixellab_object_id": "5eae440b-6695-4687-a006-7cfab8899e51",
+          "generated_at": "2026-08-16T14:02:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6605,
+          "glow_score": 0.1559,
+          "art_hash": "6b0e97574dfe110d"
+        },
         "LIT_4": {
           "sprite": "flame_niches/flame_niche_018/lit_4/sprite.webp",
           "pixellab_object_id": "30050e77-9177-400e-bc8e-dc88b90f2c0c",
@@ -24692,6 +24728,24 @@
           "difference_from_source": 0.6665,
           "glow_score": 0.1642,
           "art_hash": "fc397fe61967e971"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flame_niches/flame_niche_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6dd3b982-f5b7-438b-b74c-4d35d148f571",
+          "generated_at": "2026-08-16T14:02:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7352,
+          "glow_score": 0.1295,
+          "art_hash": "d1bdc1e356c8e2da"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flame_niches/flame_niche_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "44642136-c640-4d8d-9def-0c05a50d05c6",
+          "generated_at": "2026-08-16T14:02:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9148,
+          "glow_score": 0.0,
+          "art_hash": "97f65c9109f75f22"
         }
       },
       "animations": []
@@ -24699,9 +24753,9 @@
     {
       "id": "flame_niche_900",
       "rel": "flame_niches/flame_niche_900",
-      "name": "Brick niche, iron grate 900 \u00b7 lit",
+      "name": "Brick niche, iron grate 900",
       "category": "flame_niches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small freestanding stone niche with an arched opening sheltering a little flame burning on a dish, brick niche, iron grate, roughly six feet tall, human height, self-emissive at night, softly radiating light: small orange flame on a stone dish",
       "view": "low top-down",
       "size": 64,
@@ -24726,6 +24780,51 @@
           "pixellab_object_id": "3fa021ad-35b6-4be4-a5ea-74f02f78d5c3",
           "generated_at": "2026-08-13T23:02:36+00:00",
           "art_hash": "bceed9b34147b49e"
+        },
+        "LIT_2": {
+          "sprite": "flame_niches/flame_niche_900/lit_2/sprite.webp",
+          "pixellab_object_id": "792af0bd-125b-44d0-8445-6f991877a439",
+          "generated_at": "2026-08-16T14:03:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7765,
+          "glow_score": 0.0142,
+          "art_hash": "09c969680e8c25ec"
+        },
+        "LIT_3": {
+          "sprite": "flame_niches/flame_niche_900/lit_3/sprite.webp",
+          "pixellab_object_id": "40281060-1850-4f63-8db0-5b54262a94f0",
+          "generated_at": "2026-08-16T14:03:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8556,
+          "glow_score": 0.0239,
+          "art_hash": "f14ffb359285c851"
+        },
+        "LIT_4": {
+          "sprite": "flame_niches/flame_niche_900/lit_4/sprite.webp",
+          "pixellab_object_id": "156820ee-923d-40ec-ba7b-431c6cb390eb",
+          "generated_at": "2026-08-16T14:03:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8601,
+          "glow_score": 0.0218,
+          "art_hash": "35d01b430a1bd155"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flame_niches/flame_niche_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f3ae8d34-6e00-4ad4-bb59-99a4d8f3b800",
+          "generated_at": "2026-08-16T14:03:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2557,
+          "glow_score": 0.0,
+          "art_hash": "9c1f312fef4957ad"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flame_niches/flame_niche_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f355b896-79c6-4a7a-94bb-1af41626b77f",
+          "generated_at": "2026-08-16T14:03:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2822,
+          "glow_score": 0.0,
+          "art_hash": "25fd2f3fb962acba"
         }
       },
       "animations": []
@@ -24733,9 +24832,9 @@
     {
       "id": "flower_stand_002",
       "rel": "flower_stands/flower_stand_002",
-      "name": "Pink foxglove stand 002 \u00b7 lit",
+      "name": "Pink foxglove stand 002",
       "category": "flower_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, pink foxglove stand, waist-high to an adult person, self-emissive at night, softly radiating light: rose hips glowing like small coals",
       "view": "low top-down",
       "size": 64,
@@ -24760,6 +24859,42 @@
           "pixellab_object_id": "3398d24f-dac9-47cb-bd1b-9155d3ef889e",
           "generated_at": "2026-08-13T04:07:46+00:00",
           "art_hash": "3fd18992694b5b8d"
+        },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_002/lit_2/sprite.webp",
+          "pixellab_object_id": "95d0d35a-9a19-442b-9000-01bec61cae8c",
+          "generated_at": "2026-08-16T14:04:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8433,
+          "glow_score": 0.0329,
+          "art_hash": "c668d76b05d3a258"
+        },
+        "LIT_4": {
+          "sprite": "flower_stands/flower_stand_002/lit_4/sprite.webp",
+          "pixellab_object_id": "1476b6d9-45b5-40e5-ad7e-70242a256cfd",
+          "generated_at": "2026-08-16T14:05:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.892,
+          "glow_score": 0.0192,
+          "art_hash": "b8126b63eaf4ae23"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flower_stands/flower_stand_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "330cd5d5-c54a-4a34-9c6b-a9a419b64e72",
+          "generated_at": "2026-08-16T14:05:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9315,
+          "glow_score": 0.0,
+          "art_hash": "2e30d0fbb9d0449a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "53a4144d-8ee8-4b9e-b337-5d4851a279e1",
+          "generated_at": "2026-08-16T14:05:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9117,
+          "glow_score": 0.0,
+          "art_hash": "56a72c4f68b4969d"
         }
       },
       "animations": []
@@ -24769,7 +24904,7 @@
       "rel": "flower_stands/flower_stand_003",
       "name": "White oxeye daisies 003",
       "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, white oxeye daisies, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -24789,11 +24924,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "flower_stands/flower_stand_003/lit_1/sprite.webp",
+          "pixellab_object_id": "d73f40db-ddf2-443d-b279-9cb3dad6e35e",
+          "generated_at": "2026-08-16T14:07:23+00:00",
+          "glow_concept": "rose hips glowing like small coals",
+          "difference_from_source": 0.9244,
+          "glow_score": 0.1235,
+          "art_hash": "78c32d46c9d02c78"
+        },
         "NOT_LIT_1": {
           "sprite": "flower_stands/flower_stand_003/sprite.webp",
           "pixellab_object_id": "b0b7d38a-deec-4e85-9996-d35c780b3f97",
           "generated_at": "2026-08-13T07:28:07+00:00",
           "art_hash": "2915ef4c90693079"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "902baba0-a925-4e75-bde1-715ac4ff76c8",
+          "generated_at": "2026-08-16T14:08:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5341,
+          "glow_score": 0.2085,
+          "art_hash": "867fba76bc68d4a1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "flower_stands/flower_stand_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d1bd447e-1e8a-4862-8b3e-e019e8fe1ec5",
+          "generated_at": "2026-08-16T14:05:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8724,
+          "glow_score": 0.1165,
+          "art_hash": "dd14462dd17c5156"
+        },
+        "NOT_LIT_4": {
+          "sprite": "flower_stands/flower_stand_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "84152137-6b7c-43cc-8ff7-06169f7510e7",
+          "generated_at": "2026-08-16T14:05:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7106,
+          "glow_score": 0.1471,
+          "art_hash": "a7076d898c37bcd5"
         }
       },
       "animations": []
@@ -24801,9 +24972,9 @@
     {
       "id": "flower_stand_004",
       "rel": "flower_stands/flower_stand_004",
-      "name": "Red poppy cluster 004 \u00b7 lit",
+      "name": "Red poppy cluster 004",
       "category": "flower_stands",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, red poppy cluster, waist-high to an adult person, self-emissive at night, softly radiating light: petals edged with soft white light",
       "view": "low top-down",
       "size": 64,
@@ -24828,6 +24999,51 @@
           "pixellab_object_id": "6f9efeab-84c2-4128-9f30-0b8e8ee9ceab",
           "generated_at": "2026-08-13T09:24:19+00:00",
           "art_hash": "c5e000ef5fd98440"
+        },
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_004/lit_2/sprite.webp",
+          "pixellab_object_id": "5f626784-6202-456e-b480-052b3c8633d3",
+          "generated_at": "2026-08-16T14:07:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9637,
+          "glow_score": 0.0416,
+          "art_hash": "8b0f5d3f9455e119"
+        },
+        "LIT_3": {
+          "sprite": "flower_stands/flower_stand_004/lit_3/sprite.webp",
+          "pixellab_object_id": "51ce1ea3-a617-4182-93b2-c09715f458d5",
+          "generated_at": "2026-08-16T14:07:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5425,
+          "glow_score": 0.1578,
+          "art_hash": "054fd18d963baccc"
+        },
+        "LIT_4": {
+          "sprite": "flower_stands/flower_stand_004/lit_4/sprite.webp",
+          "pixellab_object_id": "465773ea-3fdb-4dbe-a4a8-50efdd5b889b",
+          "generated_at": "2026-08-16T14:08:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7073,
+          "glow_score": 0.0792,
+          "art_hash": "99011eb4f67e32c1"
+        },
+        "NOT_LIT_1": {
+          "sprite": "flower_stands/flower_stand_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "5e29c345-841a-4cbf-ab55-cc84cbed0ab9",
+          "generated_at": "2026-08-16T14:07:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9293,
+          "glow_score": 0.0,
+          "art_hash": "e910826efbb99d12"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d35f3aa4-dde4-499e-8622-d0775da239f6",
+          "generated_at": "2026-08-16T14:09:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9865,
+          "glow_score": 0.0,
+          "art_hash": "f07beccdd1b59385"
         }
       },
       "animations": []
@@ -24862,6 +25078,15 @@
           "pixellab_object_id": "a6879a28-f045-4a1d-8f9b-9703f53b2e8a",
           "generated_at": "2026-08-13T14:09:54+00:00",
           "art_hash": "d5a50345dd841483"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "bdd80fdd-6c8f-4efe-82fd-029db18e67b3",
+          "generated_at": "2026-08-16T14:08:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8183,
+          "glow_score": 0.1452,
+          "art_hash": "6236e03703a947d0"
         }
       },
       "animations": []
@@ -29761,12 +29986,39 @@
           "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "89d51b496b2ddb39"
         },
+        "LIT_3": {
+          "sprite": "owl_snags/owl_snag_001/lit_3/sprite.webp",
+          "pixellab_object_id": "4fb9d46e-e50b-4059-90e7-bf5f98650c57",
+          "generated_at": "2026-08-16T14:07:28+00:00",
+          "glow_concept": "hollow lit from within like a lantern window",
+          "difference_from_source": 0.5999,
+          "glow_score": 0.126,
+          "art_hash": "43c39bc5b2eb3110"
+        },
+        "LIT_4": {
+          "sprite": "owl_snags/owl_snag_001/lit_4/sprite.webp",
+          "pixellab_object_id": "b29025c2-58dd-4f0d-8e31-4e010a54bec1",
+          "generated_at": "2026-08-16T14:07:40+00:00",
+          "glow_concept": "foxfire brackets stepping up the trunk",
+          "difference_from_source": 0.5558,
+          "glow_score": 0.175,
+          "art_hash": "40e5ee6c4bd2c3f6"
+        },
         "NOT_LIT_1": {
           "sprite": "owl_snags/owl_snag_001/sprite.webp",
           "pixellab_object_id": "2efbec53-b39a-4e12-908f-f5bfe83e8928",
           "glow_score": 0.1167,
           "generated_at": "2026-08-13T01:56:36+00:00",
           "art_hash": "8a94f1e4ce5bb0b4"
+        },
+        "NOT_LIT_10": {
+          "sprite": "owl_snags/owl_snag_001/not_lit_10/sprite.webp",
+          "pixellab_object_id": "09a93fcb-8f41-4b47-b2f4-39c13329165e",
+          "generated_at": "2026-08-16T14:06:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3233,
+          "glow_score": 0.1314,
+          "art_hash": "e6fe1a83595083ae"
         },
         "NOT_LIT_2": {
           "sprite": "owl_snags/owl_snag_001/not_lit_2/sprite.webp",
@@ -29786,6 +30038,15 @@
           "glow_score": 0.0895,
           "art_hash": "d1fd16adb778fb4b"
         },
+        "NOT_LIT_4": {
+          "sprite": "owl_snags/owl_snag_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0380f18c-a1ff-4c03-a63a-a75961ae6268",
+          "generated_at": "2026-08-16T14:03:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6218,
+          "glow_score": 0.2624,
+          "art_hash": "40050daa7db222c8"
+        },
         "NOT_LIT_5": {
           "sprite": "owl_snags/owl_snag_001/not_lit_5/sprite.webp",
           "pixellab_object_id": "fd48ba99-b640-40cf-8d16-f0ac1d9a048e",
@@ -29803,6 +30064,33 @@
           "difference_from_source": 0.8126,
           "glow_score": 0.1284,
           "art_hash": "cc07b5eb21ec001d"
+        },
+        "NOT_LIT_7": {
+          "sprite": "owl_snags/owl_snag_001/not_lit_7/sprite.webp",
+          "pixellab_object_id": "a38e7d59-ad23-4a63-a284-dcf73e0fcab4",
+          "generated_at": "2026-08-16T14:04:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6114,
+          "glow_score": 0.1149,
+          "art_hash": "1cc313a1cbf36ae0"
+        },
+        "NOT_LIT_8": {
+          "sprite": "owl_snags/owl_snag_001/not_lit_8/sprite.webp",
+          "pixellab_object_id": "8f83083f-7945-4246-83b8-3103d660e73a",
+          "generated_at": "2026-08-16T14:06:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6752,
+          "glow_score": 0.0761,
+          "art_hash": "5d32a87a14bdf3e9"
+        },
+        "NOT_LIT_9": {
+          "sprite": "owl_snags/owl_snag_001/not_lit_9/sprite.webp",
+          "pixellab_object_id": "a07a3b63-bb25-420d-ba0a-5b6d32b78ace",
+          "generated_at": "2026-08-16T14:05:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.392,
+          "glow_score": 0.1047,
+          "art_hash": "ea37c818fedd7780"
         }
       },
       "animations": []
@@ -36059,6 +36347,24 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "467f3401c19064f9"
         },
+        "LIT_3": {
+          "sprite": "stumps/stump_014/lit_3/sprite.webp",
+          "pixellab_object_id": "48d78c38-4476-445e-b74c-1a145b6f6714",
+          "generated_at": "2026-08-16T14:02:36+00:00",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.9587,
+          "glow_score": 0.0828,
+          "art_hash": "d7bf03b9732d0474"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_014/lit_4/sprite.webp",
+          "pixellab_object_id": "7dd31298-4c18-4268-8b76-dfe16884cc6d",
+          "generated_at": "2026-08-16T14:05:22+00:00",
+          "glow_concept": "ring of glowing mushrooms around the base",
+          "difference_from_source": 0.9071,
+          "glow_score": 0.0524,
+          "art_hash": "3d10a0e281fea8d3"
+        },
         "NOT_LIT_1": {
           "sprite": "stumps/stump_014/not_lit_1/sprite.webp",
           "pixellab_object_id": "bbaeafef-c350-43fd-ab94-2c92be60e1f1",
@@ -36130,6 +36436,24 @@
           "glow_score": 0.212,
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "c161a8c457819992"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_014/not_lit_8/sprite.webp",
+          "pixellab_object_id": "cbb3476a-fd84-4648-81d6-93612208d9b7",
+          "generated_at": "2026-08-16T14:04:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4626,
+          "glow_score": 0.1181,
+          "art_hash": "8e45f11b0c308901"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_014/not_lit_9/sprite.webp",
+          "pixellab_object_id": "69843670-1fa3-4007-8bb5-617a7907757e",
+          "generated_at": "2026-08-16T14:02:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7438,
+          "glow_score": 0.0579,
+          "art_hash": "6d00c721044b0e76"
         }
       },
       "animations": []
