@@ -6,7 +6,7 @@
   "rank": 42,
   "index": 11,
   "name": "Frost-silvered fern 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "frost-silvered fern",
   "modifier": "with bracket fungi steps",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "ferns/fern_011/lit_1/sprite.webp",
+      "pixellab_object_id": "de9b04fb-9274-4b4c-9c8e-bbda2003cb21",
+      "generated_at": "2026-08-16T12:12:06+00:00",
+      "glow_concept": "cool fog of light pooling under the fronds",
+      "difference_from_source": 0.458,
+      "glow_score": 0.1051
+    },
+    "LIT_2": {
+      "sprite": "ferns/fern_011/lit_2/sprite.webp",
+      "pixellab_object_id": "ebcdf1cd-9b60-4376-994d-f245195ac29d",
+      "generated_at": "2026-08-16T12:12:56+00:00",
+      "glow_concept": "one bright glowing frond among dark ones",
+      "difference_from_source": 0.8567,
+      "glow_score": 0.0703
+    },
     "NOT_LIT_1": {
       "sprite": "ferns/fern_011/sprite.webp",
       "pixellab_object_id": "c380e269-5f2c-46df-91df-9116a4eee8b2",
       "generated_at": "2026-08-14T01:53:10+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "ferns/fern_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "21021950-a82f-42df-932d-455e97d46f63",
+      "generated_at": "2026-08-16T12:11:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.857,
+      "glow_score": 0.0657
+    },
+    "NOT_LIT_3": {
+      "sprite": "ferns/fern_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "36cd97c0-d33b-4ec0-a3e9-d6178cc0317f",
+      "generated_at": "2026-08-16T12:12:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.715,
+      "glow_score": 0.0693
+    },
+    "NOT_LIT_4": {
+      "sprite": "ferns/fern_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "0b8e3920-3136-4eb7-a941-11d9a8c9b965",
+      "generated_at": "2026-08-16T12:12:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8721,
+      "glow_score": 0.0
     }
   }
 }

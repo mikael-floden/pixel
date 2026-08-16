@@ -6,7 +6,7 @@
   "rank": 42,
   "index": 9,
   "name": "Ostrich fern vase 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ostrich fern vase",
   "modifier": "grown around a half-buried stone",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "ferns/fern_009/lit_1/sprite.webp",
+      "pixellab_object_id": "e04e411d-0cf3-406e-b944-2f5c858c5af9",
+      "generated_at": "2026-08-16T12:11:23+00:00",
+      "glow_concept": "one bright glowing frond among dark ones",
+      "difference_from_source": 0.4291,
+      "glow_score": 0.066
+    },
+    "LIT_2": {
+      "sprite": "ferns/fern_009/lit_2/sprite.webp",
+      "pixellab_object_id": "e65e2e18-329f-4132-b97c-71662c241638",
+      "generated_at": "2026-08-16T12:11:25+00:00",
+      "glow_concept": "frond tips glowing like green candle flames",
+      "difference_from_source": 0.6792,
+      "glow_score": 0.1443
+    },
     "NOT_LIT_1": {
       "sprite": "ferns/fern_009/sprite.webp",
       "pixellab_object_id": "3139a97d-036a-4483-9507-ec0953590a8c",
       "generated_at": "2026-08-14T01:43:44+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "ferns/fern_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8acf08d6-c217-4ee8-82ae-f07d9edca1c1",
+      "generated_at": "2026-08-16T12:10:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8389,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "ferns/fern_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "15baf986-28dc-4d09-b2b0-88df632535a9",
+      "generated_at": "2026-08-16T12:11:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8217,
+      "glow_score": 0.0006
+    },
+    "NOT_LIT_4": {
+      "sprite": "ferns/fern_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "efa14f62-8ef7-4fe8-a9f8-3a24ac7a821b",
+      "generated_at": "2026-08-16T12:11:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4639,
+      "glow_score": 0.0036
     }
   }
 }

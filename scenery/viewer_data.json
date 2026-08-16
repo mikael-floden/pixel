@@ -25092,6 +25092,15 @@
           "glow_score": 0.0892,
           "art_hash": "e37b837e65a91312"
         },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e5a7d70d-8f6b-4be4-88e0-1e06d7d37909",
+          "generated_at": "2026-08-16T12:09:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.0,
+          "art_hash": "e604d92dec87146b"
+        },
         "NOT_LIT_2": {
           "sprite": "ferns/fern_006/not_lit_2/sprite.webp",
           "pixellab_object_id": "27815792-fbed-47cc-a18a-153e1979ec07",
@@ -25109,7 +25118,7 @@
       "rel": "ferns/fern_007",
       "name": "Frost-silvered fern 007",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, frost-silvered fern, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25129,11 +25138,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_007/lit_1/sprite.webp",
+          "pixellab_object_id": "32d188c2-f626-4ccf-aeeb-1a0531545a0d",
+          "generated_at": "2026-08-16T12:08:17+00:00",
+          "glow_concept": "frond tips glowing like green candle flames",
+          "difference_from_source": 0.268,
+          "glow_score": 0.1031,
+          "art_hash": "506a240efa0bbd49"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_007/lit_2/sprite.webp",
+          "pixellab_object_id": "8f8ba2f7-440c-4153-aae6-7b7788efedc2",
+          "generated_at": "2026-08-16T12:08:30+00:00",
+          "glow_concept": "luminous spore dots lining the frond undersides",
+          "difference_from_source": 0.5346,
+          "glow_score": 0.0487,
+          "art_hash": "ff7c5968eaab34c3"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_007/sprite.webp",
           "pixellab_object_id": "62ce896a-06c0-45c5-baa1-09461b200315",
           "generated_at": "2026-08-13T23:58:07+00:00",
           "art_hash": "287466fa4d851310"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7a6fd503-3154-4f0d-ab0a-67e78dfdc696",
+          "generated_at": "2026-08-16T12:08:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9017,
+          "glow_score": 0.0,
+          "art_hash": "7dd090622d71a899"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c54a61f8-da0f-4b8c-8c68-64b410a0356c",
+          "generated_at": "2026-08-16T12:08:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7132,
+          "glow_score": 0.0019,
+          "art_hash": "ca6d5fab62aecead"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "62109fcc-347b-42f2-a7cc-1dbd8a9e1e55",
+          "generated_at": "2026-08-16T12:08:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6343,
+          "glow_score": 0.0,
+          "art_hash": "72271ca2bca6b4c7"
         }
       },
       "animations": []
@@ -25141,9 +25195,9 @@
     {
       "id": "fern_008",
       "rel": "ferns/fern_008",
-      "name": "Small polypody tuft 008 \u00b7 lit",
+      "name": "Small polypody tuft 008",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, small polypody tuft, waist-high, self-emissive at night, softly radiating light: cool fog of light pooling under the fronds",
       "view": "low top-down",
       "size": 64,
@@ -25168,6 +25222,51 @@
           "pixellab_object_id": "44c451e7-b0de-496d-9dd4-bb5422249084",
           "generated_at": "2026-08-13T22:13:38+00:00",
           "art_hash": "833c2fd28c8070bb"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_008/lit_2/sprite.webp",
+          "pixellab_object_id": "92d85f00-9f93-4aa0-a77d-4b53f30d3b4d",
+          "generated_at": "2026-08-16T12:09:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8608,
+          "glow_score": 0.0,
+          "art_hash": "b83164c388390e26"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_008/lit_3/sprite.webp",
+          "pixellab_object_id": "4b37a573-4c1b-408f-b238-0235d7ee4238",
+          "generated_at": "2026-08-16T12:09:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7277,
+          "glow_score": 0.0,
+          "art_hash": "816d5fb3a6170d74"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_008/lit_4/sprite.webp",
+          "pixellab_object_id": "b5642298-a84a-459a-ba12-45a067644565",
+          "generated_at": "2026-08-16T12:10:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8639,
+          "glow_score": 0.0,
+          "art_hash": "3c6e1da4443b3cce"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "7ece9e43-7737-46a5-bb3e-882ae240ce28",
+          "generated_at": "2026-08-16T12:10:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7036,
+          "glow_score": 0.0,
+          "art_hash": "2517b7885e67dce0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "97822538-cb2d-41df-b5b6-34bb69f30103",
+          "generated_at": "2026-08-16T12:10:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7372,
+          "glow_score": 0.0,
+          "art_hash": "117cbf8261bd18df"
         }
       },
       "animations": []
@@ -25177,7 +25276,7 @@
       "rel": "ferns/fern_009",
       "name": "Ostrich fern vase 009",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, ostrich fern vase, grown around a half-buried stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25197,11 +25296,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_009/lit_1/sprite.webp",
+          "pixellab_object_id": "e04e411d-0cf3-406e-b944-2f5c858c5af9",
+          "generated_at": "2026-08-16T12:11:23+00:00",
+          "glow_concept": "one bright glowing frond among dark ones",
+          "difference_from_source": 0.4291,
+          "glow_score": 0.066,
+          "art_hash": "f49ab9ec86ba604b"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_009/lit_2/sprite.webp",
+          "pixellab_object_id": "e65e2e18-329f-4132-b97c-71662c241638",
+          "generated_at": "2026-08-16T12:11:25+00:00",
+          "glow_concept": "frond tips glowing like green candle flames",
+          "difference_from_source": 0.6792,
+          "glow_score": 0.1443,
+          "art_hash": "19d9d459b90ca496"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_009/sprite.webp",
           "pixellab_object_id": "3139a97d-036a-4483-9507-ec0953590a8c",
           "generated_at": "2026-08-14T01:43:44+00:00",
           "art_hash": "4f4d0c39fdcc7717"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "8acf08d6-c217-4ee8-82ae-f07d9edca1c1",
+          "generated_at": "2026-08-16T12:10:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8389,
+          "glow_score": 0.0,
+          "art_hash": "ca1f20968ff67f72"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "15baf986-28dc-4d09-b2b0-88df632535a9",
+          "generated_at": "2026-08-16T12:11:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8217,
+          "glow_score": 0.0006,
+          "art_hash": "1ec9c423de212228"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "efa14f62-8ef7-4fe8-a9f8-3a24ac7a821b",
+          "generated_at": "2026-08-16T12:11:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4639,
+          "glow_score": 0.0036,
+          "art_hash": "19d933fb30913fd5"
         }
       },
       "animations": []
@@ -25211,7 +25355,7 @@
       "rel": "ferns/fern_011",
       "name": "Frost-silvered fern 011",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, frost-silvered fern, with bracket fungi steps, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25231,11 +25375,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_011/lit_1/sprite.webp",
+          "pixellab_object_id": "de9b04fb-9274-4b4c-9c8e-bbda2003cb21",
+          "generated_at": "2026-08-16T12:12:06+00:00",
+          "glow_concept": "cool fog of light pooling under the fronds",
+          "difference_from_source": 0.458,
+          "glow_score": 0.1051,
+          "art_hash": "420e3a458e9f96cf"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_011/lit_2/sprite.webp",
+          "pixellab_object_id": "ebcdf1cd-9b60-4376-994d-f245195ac29d",
+          "generated_at": "2026-08-16T12:12:56+00:00",
+          "glow_concept": "one bright glowing frond among dark ones",
+          "difference_from_source": 0.8567,
+          "glow_score": 0.0703,
+          "art_hash": "b000a863af8f5b65"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_011/sprite.webp",
           "pixellab_object_id": "c380e269-5f2c-46df-91df-9116a4eee8b2",
           "generated_at": "2026-08-14T01:53:10+00:00",
           "art_hash": "fa1babea3447ec6b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "21021950-a82f-42df-932d-455e97d46f63",
+          "generated_at": "2026-08-16T12:11:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.857,
+          "glow_score": 0.0657,
+          "art_hash": "084d0bab3ea92a56"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "36cd97c0-d33b-4ec0-a3e9-d6178cc0317f",
+          "generated_at": "2026-08-16T12:12:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.715,
+          "glow_score": 0.0693,
+          "art_hash": "dc15bbf163af5bec"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0b8e3920-3136-4eb7-a941-11d9a8c9b965",
+          "generated_at": "2026-08-16T12:12:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8721,
+          "glow_score": 0.0,
+          "art_hash": "5a396cadb7b25d88"
         }
       },
       "animations": []
@@ -25243,9 +25432,9 @@
     {
       "id": "fern_012",
       "rel": "ferns/fern_012",
-      "name": "Tall royal fern clump 012 \u00b7 lit",
+      "name": "Tall royal fern clump 012",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, tall royal fern clump, with a small sapling beside it, small, knee-high, self-emissive at night, softly radiating light: frond tips glowing like green candle flames",
       "view": "low top-down",
       "size": 64,
@@ -25270,6 +25459,51 @@
           "pixellab_object_id": "3539b596-8bc1-44b0-b90f-59d2ab9880d7",
           "generated_at": "2026-08-14T01:38:08+00:00",
           "art_hash": "a84222093440449e"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_012/lit_2/sprite.webp",
+          "pixellab_object_id": "25b1baec-d746-4d57-9479-869a65311658",
+          "generated_at": "2026-08-16T12:13:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8356,
+          "glow_score": 0.0539,
+          "art_hash": "e10f5d0adc40a69f"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_012/lit_3/sprite.webp",
+          "pixellab_object_id": "317aa2db-db55-4d6d-81e0-7b853b8dd4b5",
+          "generated_at": "2026-08-16T12:13:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.788,
+          "glow_score": 0.0493,
+          "art_hash": "1d0bd28fe89c5169"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_012/lit_4/sprite.webp",
+          "pixellab_object_id": "9681ba61-8971-49ae-b182-e8112386403e",
+          "generated_at": "2026-08-16T12:13:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7082,
+          "glow_score": 0.0475,
+          "art_hash": "356e479d4ed14ce9"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "7a9947fc-c18c-4d6c-9b32-26c17f760c30",
+          "generated_at": "2026-08-16T12:13:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6044,
+          "glow_score": 0.0,
+          "art_hash": "ff8d21af0be721fb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "dc46ee07-2ad0-4632-bed8-e314b8b5a353",
+          "generated_at": "2026-08-16T12:13:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4951,
+          "glow_score": 0.0007,
+          "art_hash": "04acf38019071de0"
         }
       },
       "animations": []

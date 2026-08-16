@@ -5,8 +5,8 @@
   "group": "ferns",
   "rank": 42,
   "index": 12,
-  "name": "Tall royal fern clump 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tall royal fern clump 012",
+  "lights": null,
   "variety": "tall royal fern clump",
   "modifier": "with a small sapling beside it",
   "glow_concept": "frond tips glowing like green candle flames",
@@ -36,6 +36,46 @@
       "sprite": "ferns/fern_012/sprite.webp",
       "pixellab_object_id": "3539b596-8bc1-44b0-b90f-59d2ab9880d7",
       "generated_at": "2026-08-14T01:38:08+00:00"
+    },
+    "LIT_2": {
+      "sprite": "ferns/fern_012/lit_2/sprite.webp",
+      "pixellab_object_id": "25b1baec-d746-4d57-9479-869a65311658",
+      "generated_at": "2026-08-16T12:13:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8356,
+      "glow_score": 0.0539
+    },
+    "LIT_3": {
+      "sprite": "ferns/fern_012/lit_3/sprite.webp",
+      "pixellab_object_id": "317aa2db-db55-4d6d-81e0-7b853b8dd4b5",
+      "generated_at": "2026-08-16T12:13:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.788,
+      "glow_score": 0.0493
+    },
+    "LIT_4": {
+      "sprite": "ferns/fern_012/lit_4/sprite.webp",
+      "pixellab_object_id": "9681ba61-8971-49ae-b182-e8112386403e",
+      "generated_at": "2026-08-16T12:13:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7082,
+      "glow_score": 0.0475
+    },
+    "NOT_LIT_1": {
+      "sprite": "ferns/fern_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "7a9947fc-c18c-4d6c-9b32-26c17f760c30",
+      "generated_at": "2026-08-16T12:13:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6044,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "ferns/fern_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "dc46ee07-2ad0-4632-bed8-e314b8b5a353",
+      "generated_at": "2026-08-16T12:13:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4951,
+      "glow_score": 0.0007
     }
   }
 }
