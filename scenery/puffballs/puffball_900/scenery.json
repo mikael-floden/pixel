@@ -4,8 +4,8 @@
   "group": "puffballs",
   "rank": 53,
   "index": 900,
-  "name": "Giant white puffball 900 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Giant white puffball 900",
+  "lights": null,
   "variety": "giant white puffball",
   "glow_concept": "burst husk spilling a pile of glowing spores",
   "prompt": "a plump round puffball mushroom sitting directly on bare earth, giant white puffball, small, knee-high to an adult person, self-emissive at night, softly radiating light: burst husk spilling a pile of glowing spores",
@@ -37,6 +37,46 @@
       "sprite": "puffballs/puffball_900/sprite.webp",
       "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
       "generated_at": "2026-08-13T19:46:47+00:00"
+    },
+    "LIT_2": {
+      "sprite": "puffballs/puffball_900/lit_2/sprite.webp",
+      "pixellab_object_id": "8ae4c46c-f2e9-4a52-b956-704235b07731",
+      "generated_at": "2026-08-16T19:59:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2618,
+      "glow_score": 0.5554
+    },
+    "LIT_3": {
+      "sprite": "puffballs/puffball_900/lit_3/sprite.webp",
+      "pixellab_object_id": "a81f04c1-cd1f-4f75-86a8-da91cece887c",
+      "generated_at": "2026-08-16T19:59:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9979,
+      "glow_score": 0.6067
+    },
+    "LIT_4": {
+      "sprite": "puffballs/puffball_900/lit_4/sprite.webp",
+      "pixellab_object_id": "783296d6-3701-44db-a768-f98fd9f41415",
+      "generated_at": "2026-08-16T19:59:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8421,
+      "glow_score": 0.4317
+    },
+    "NOT_LIT_1": {
+      "sprite": "puffballs/puffball_900/not_lit_1/sprite.webp",
+      "pixellab_object_id": "77da76cb-aa20-4e22-bb38-7871b5d58ed1",
+      "generated_at": "2026-08-16T19:59:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9046,
+      "glow_score": 0.0318
+    },
+    "NOT_LIT_2": {
+      "sprite": "puffballs/puffball_900/not_lit_2/sprite.webp",
+      "pixellab_object_id": "5b040d1a-1c42-4b9c-a956-0fea37bfaea0",
+      "generated_at": "2026-08-16T20:00:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9427,
+      "glow_score": 0.0
     }
   }
 }

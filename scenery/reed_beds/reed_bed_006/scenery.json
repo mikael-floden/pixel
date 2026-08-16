@@ -4,8 +4,8 @@
   "group": "reed_beds",
   "rank": 32,
   "index": 6,
-  "name": "Reeds mixed with yellow iris 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Reeds mixed with yellow iris 006",
+  "lights": null,
   "variety": "reeds mixed with yellow iris",
   "glow_concept": "a will-o-wisp hovering inside the clump",
   "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds mixed with yellow iris, about as tall as an adult person, self-emissive at night, softly radiating light: a will-o-wisp hovering inside the clump",
@@ -35,6 +35,30 @@
       "sprite": "reed_beds/reed_bed_006/sprite.webp",
       "pixellab_object_id": "2fdfad09-4e8a-4162-bfc3-cf7885abb7da",
       "generated_at": "2026-08-13T12:38:13+00:00"
+    },
+    "LIT_2": {
+      "sprite": "reed_beds/reed_bed_006/lit_2/sprite.webp",
+      "pixellab_object_id": "24a8e07f-cb55-4874-be05-fc0657cb360a",
+      "generated_at": "2026-08-16T20:06:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6643,
+      "glow_score": 0.0384
+    },
+    "LIT_3": {
+      "sprite": "reed_beds/reed_bed_006/lit_3/sprite.webp",
+      "pixellab_object_id": "467cb888-c14c-4e98-9794-05da3945faf5",
+      "generated_at": "2026-08-16T20:06:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7967,
+      "glow_score": 0.098
+    },
+    "NOT_LIT_1": {
+      "sprite": "reed_beds/reed_bed_006/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d866d073-46c5-4bef-ac97-ad5eb12609dc",
+      "generated_at": "2026-08-16T20:07:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9896,
+      "glow_score": 0.0
     }
   }
 }

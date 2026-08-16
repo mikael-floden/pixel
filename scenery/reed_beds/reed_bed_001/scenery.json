@@ -5,7 +5,7 @@
   "rank": 32,
   "index": 1,
   "name": "Reeds mixed with marsh grass 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "reeds mixed with marsh grass",
   "glow_concept": null,
   "prompt": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds mixed with marsh grass, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T00:55:11+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "reed_beds/reed_bed_001/lit_2/sprite.webp",
+      "pixellab_object_id": "59235e62-2036-4f8d-828d-5c83812f61a3",
+      "generated_at": "2026-08-16T20:01:57+00:00",
+      "glow_concept": "fireflies drifting between the stalks",
+      "difference_from_source": 0.8885,
+      "glow_score": 0.2685
+    },
     "NOT_LIT_1": {
       "sprite": "reed_beds/reed_bed_001/sprite.webp",
       "pixellab_object_id": "756eb71e-a928-421c-8afa-88bb65e3654e",
       "generated_at": "2026-08-13T00:55:11+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "reed_beds/reed_bed_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "cc4357ab-580f-43ca-adfd-5eea4e95ae96",
+      "generated_at": "2026-08-16T20:01:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7746,
+      "glow_score": 0.0431
+    },
+    "NOT_LIT_3": {
+      "sprite": "reed_beds/reed_bed_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d2759f0b-4d3f-4e86-86dd-16f05906d9e5",
+      "generated_at": "2026-08-16T20:01:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8193,
+      "glow_score": 0.0325
+    },
+    "NOT_LIT_4": {
+      "sprite": "reed_beds/reed_bed_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1f84deae-90d6-4017-9ac7-b8be2dc659bc",
+      "generated_at": "2026-08-16T20:02:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7106,
+      "glow_score": 0.0325
     }
   }
 }

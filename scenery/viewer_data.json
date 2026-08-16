@@ -35648,6 +35648,15 @@
           "glow_score": 0.0928,
           "art_hash": "45029a8066bac3bb"
         },
+        "LIT_3": {
+          "sprite": "overgrown_archways/overgrown_archway_002/lit_3/sprite.webp",
+          "pixellab_object_id": "f536f291-4bb0-49d8-9248-6dfb955f413a",
+          "generated_at": "2026-08-16T19:59:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7613,
+          "glow_score": 0.0423,
+          "art_hash": "74e7ad6ff3b91e8f"
+        },
         "LIT_4": {
           "sprite": "overgrown_archways/overgrown_archway_002/lit_4/sprite.webp",
           "pixellab_object_id": "e9b41b51-8d55-4f53-90a0-850c79df68fb",
@@ -36275,7 +36284,7 @@
       "rel": "puffballs/puffball_001",
       "name": "Cracked leathery earthball 001",
       "category": "puffballs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a plump round puffball mushroom sitting directly on bare earth, cracked leathery earthball, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -36295,6 +36304,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "puffballs/puffball_001/lit_1/sprite.webp",
+          "pixellab_object_id": "96cdef78-738a-44b4-a7d6-0a426b48a899",
+          "generated_at": "2026-08-16T20:02:15+00:00",
+          "glow_concept": "ring of glowing freckles around the middle",
+          "difference_from_source": 0.2167,
+          "glow_score": 0.3089,
+          "art_hash": "ed9df075c3d519d3"
+        },
+        "LIT_2": {
+          "sprite": "puffballs/puffball_001/lit_2/sprite.webp",
+          "pixellab_object_id": "b4204cdc-af74-4228-a438-801fc4edcfde",
+          "generated_at": "2026-08-16T19:59:12+00:00",
+          "glow_concept": "slow heartbeat pulse of light under the skin",
+          "difference_from_source": 0.8356,
+          "glow_score": 0.1395,
+          "art_hash": "52a7020eed073e93"
+        },
         "NOT_LIT_1": {
           "sprite": "puffballs/puffball_001/sprite.webp",
           "pixellab_object_id": "40d750ec-561c-4772-9913-bffa8d12b9ef",
@@ -36318,6 +36345,15 @@
           "difference_from_source": 0.7555,
           "glow_score": 0.0387,
           "art_hash": "d5d0de92bf2472c4"
+        },
+        "NOT_LIT_4": {
+          "sprite": "puffballs/puffball_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "16d4e4b0-2796-4381-98ee-e4ce0abed3c1",
+          "generated_at": "2026-08-16T19:59:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4095,
+          "glow_score": 0.1907,
+          "art_hash": "5c4667eae4f70d8c"
         }
       },
       "animations": []
@@ -36325,9 +36361,9 @@
     {
       "id": "puffball_900",
       "rel": "puffballs/puffball_900",
-      "name": "Giant white puffball 900 \u00b7 lit",
+      "name": "Giant white puffball 900",
       "category": "puffballs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a plump round puffball mushroom sitting directly on bare earth, giant white puffball, small, knee-high to an adult person, self-emissive at night, softly radiating light: burst husk spilling a pile of glowing spores",
       "view": "low top-down",
       "size": 48,
@@ -36352,6 +36388,51 @@
           "pixellab_object_id": "8c599849-adc1-4dd3-8412-7a8fa9a588d4",
           "generated_at": "2026-08-13T19:46:47+00:00",
           "art_hash": "05779083a3bd90cf"
+        },
+        "LIT_2": {
+          "sprite": "puffballs/puffball_900/lit_2/sprite.webp",
+          "pixellab_object_id": "8ae4c46c-f2e9-4a52-b956-704235b07731",
+          "generated_at": "2026-08-16T19:59:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2618,
+          "glow_score": 0.5554,
+          "art_hash": "8df828ba7840c26c"
+        },
+        "LIT_3": {
+          "sprite": "puffballs/puffball_900/lit_3/sprite.webp",
+          "pixellab_object_id": "a81f04c1-cd1f-4f75-86a8-da91cece887c",
+          "generated_at": "2026-08-16T19:59:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9979,
+          "glow_score": 0.6067,
+          "art_hash": "78f1a76a82b24ec8"
+        },
+        "LIT_4": {
+          "sprite": "puffballs/puffball_900/lit_4/sprite.webp",
+          "pixellab_object_id": "783296d6-3701-44db-a768-f98fd9f41415",
+          "generated_at": "2026-08-16T19:59:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8421,
+          "glow_score": 0.4317,
+          "art_hash": "b0c7d45bc5d42696"
+        },
+        "NOT_LIT_1": {
+          "sprite": "puffballs/puffball_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "77da76cb-aa20-4e22-bb38-7871b5d58ed1",
+          "generated_at": "2026-08-16T19:59:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9046,
+          "glow_score": 0.0318,
+          "art_hash": "274cbf896d21c7df"
+        },
+        "NOT_LIT_2": {
+          "sprite": "puffballs/puffball_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5b040d1a-1c42-4b9c-a956-0fea37bfaea0",
+          "generated_at": "2026-08-16T20:00:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9427,
+          "glow_score": 0.0,
+          "art_hash": "08ed6019276172f1"
         }
       },
       "animations": []
@@ -36361,7 +36442,7 @@
       "rel": "reed_beds/reed_bed_001",
       "name": "Reeds mixed with marsh grass 001",
       "category": "reed_beds",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds mixed with marsh grass, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -36381,11 +36462,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "reed_beds/reed_bed_001/lit_2/sprite.webp",
+          "pixellab_object_id": "59235e62-2036-4f8d-828d-5c83812f61a3",
+          "generated_at": "2026-08-16T20:01:57+00:00",
+          "glow_concept": "fireflies drifting between the stalks",
+          "difference_from_source": 0.8885,
+          "glow_score": 0.2685,
+          "art_hash": "89476242862101fc"
+        },
         "NOT_LIT_1": {
           "sprite": "reed_beds/reed_bed_001/sprite.webp",
           "pixellab_object_id": "756eb71e-a928-421c-8afa-88bb65e3654e",
           "generated_at": "2026-08-13T00:55:11+00:00",
           "art_hash": "8f5eafd18cc5ed19"
+        },
+        "NOT_LIT_2": {
+          "sprite": "reed_beds/reed_bed_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cc4357ab-580f-43ca-adfd-5eea4e95ae96",
+          "generated_at": "2026-08-16T20:01:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7746,
+          "glow_score": 0.0431,
+          "art_hash": "543e85d40c4f4362"
+        },
+        "NOT_LIT_3": {
+          "sprite": "reed_beds/reed_bed_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d2759f0b-4d3f-4e86-86dd-16f05906d9e5",
+          "generated_at": "2026-08-16T20:01:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8193,
+          "glow_score": 0.0325,
+          "art_hash": "9ac70bc28ddec674"
+        },
+        "NOT_LIT_4": {
+          "sprite": "reed_beds/reed_bed_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "1f84deae-90d6-4017-9ac7-b8be2dc659bc",
+          "generated_at": "2026-08-16T20:02:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7106,
+          "glow_score": 0.0325,
+          "art_hash": "41c25f2dae213552"
         }
       },
       "animations": []
@@ -36393,9 +36510,9 @@
     {
       "id": "reed_bed_004",
       "rel": "reed_beds/reed_bed_004",
-      "name": "Dense overgrown reed wall 004 \u00b7 lit",
+      "name": "Dense overgrown reed wall 004",
       "category": "reed_beds",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, dense overgrown reed wall, large, well above head height of a person, self-emissive at night, softly radiating light: pale blue bioluminescent stalk tips",
       "view": "low top-down",
       "size": 96,
@@ -36420,6 +36537,51 @@
           "pixellab_object_id": "5efda393-445f-40e4-b1f1-1e998017bda3",
           "generated_at": "2026-08-13T09:21:48+00:00",
           "art_hash": "35aa7a203d65c5d2"
+        },
+        "LIT_2": {
+          "sprite": "reed_beds/reed_bed_004/lit_2/sprite.webp",
+          "pixellab_object_id": "9eadcc25-252c-445b-8a5f-cbde159e7414",
+          "generated_at": "2026-08-16T20:05:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7508,
+          "glow_score": 0.0943,
+          "art_hash": "f9e82beb275c0852"
+        },
+        "LIT_3": {
+          "sprite": "reed_beds/reed_bed_004/lit_3/sprite.webp",
+          "pixellab_object_id": "0010e844-7d7e-4621-916a-5c83bde8e232",
+          "generated_at": "2026-08-16T20:03:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7592,
+          "glow_score": 0.0794,
+          "art_hash": "78f62a5eebc3791a"
+        },
+        "LIT_4": {
+          "sprite": "reed_beds/reed_bed_004/lit_4/sprite.webp",
+          "pixellab_object_id": "d6d9d4fe-e354-4d28-a8d4-9ab75e80a44c",
+          "generated_at": "2026-08-16T20:03:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5241,
+          "glow_score": 0.0609,
+          "art_hash": "898342b10d538dc2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "reed_beds/reed_bed_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f3513d26-5c2b-4dd0-9e3d-92e9cc85b247",
+          "generated_at": "2026-08-16T20:03:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8453,
+          "glow_score": 0.0,
+          "art_hash": "a1aa24ddb2949f21"
+        },
+        "NOT_LIT_2": {
+          "sprite": "reed_beds/reed_bed_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "29712887-48a5-4de3-ba33-ac0dd192a046",
+          "generated_at": "2026-08-16T20:04:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8271,
+          "glow_score": 0.0,
+          "art_hash": "88e8d48553f760f9"
         }
       },
       "animations": []
@@ -36429,7 +36591,7 @@
       "rel": "reed_beds/reed_bed_005",
       "name": "Dark bog reeds 005",
       "category": "reed_beds",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, dark bog reeds, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -36449,11 +36611,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "reed_beds/reed_bed_005/lit_1/sprite.webp",
+          "pixellab_object_id": "37d24923-ba6d-48cf-9f95-1646a3d84178",
+          "generated_at": "2026-08-16T20:06:52+00:00",
+          "glow_concept": "pale blue bioluminescent stalk tips",
+          "difference_from_source": 0.7861,
+          "glow_score": 0.1714,
+          "art_hash": "25fa8f88f29b3419"
+        },
+        "LIT_2": {
+          "sprite": "reed_beds/reed_bed_005/lit_2/sprite.webp",
+          "pixellab_object_id": "ced555d2-32e6-4c1e-b109-7806ca8bce5e",
+          "generated_at": "2026-08-16T20:07:30+00:00",
+          "glow_concept": "a tiny hidden lantern glowing deep in the reeds",
+          "difference_from_source": 0.9671,
+          "glow_score": 0.0102,
+          "art_hash": "f747512b40c9b5fd"
+        },
         "NOT_LIT_1": {
           "sprite": "reed_beds/reed_bed_005/sprite.webp",
           "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "3fa6d80a249bbbb7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "reed_beds/reed_bed_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f2df7a4a-6718-475b-aef8-daf45d4fa2db",
+          "generated_at": "2026-08-16T20:04:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7925,
+          "glow_score": 0.0097,
+          "art_hash": "7489a182d549b997"
+        },
+        "NOT_LIT_3": {
+          "sprite": "reed_beds/reed_bed_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ec71cf98-aba1-4310-bb64-955ef8e9a50f",
+          "generated_at": "2026-08-16T20:06:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3372,
+          "glow_score": 0.01,
+          "art_hash": "f0ee3c42186cb3e9"
+        },
+        "NOT_LIT_4": {
+          "sprite": "reed_beds/reed_bed_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e1290d84-3eea-4677-a65a-36d9d1ece8c7",
+          "generated_at": "2026-08-16T20:05:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5893,
+          "glow_score": 0.0442,
+          "art_hash": "d735a00c68a39c9d"
         }
       },
       "animations": []
@@ -36461,9 +36668,9 @@
     {
       "id": "reed_bed_006",
       "rel": "reed_beds/reed_bed_006",
-      "name": "Reeds mixed with yellow iris 006 \u00b7 lit",
+      "name": "Reeds mixed with yellow iris 006",
       "category": "reed_beds",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a dense clump of tall slender freshwater reeds with feathery seed plumes, rising from a small mound of wet mud and marsh grass, reeds mixed with yellow iris, about as tall as an adult person, self-emissive at night, softly radiating light: a will-o-wisp hovering inside the clump",
       "view": "low top-down",
       "size": 96,
@@ -36488,6 +36695,33 @@
           "pixellab_object_id": "2fdfad09-4e8a-4162-bfc3-cf7885abb7da",
           "generated_at": "2026-08-13T12:38:13+00:00",
           "art_hash": "08b3d42c60638254"
+        },
+        "LIT_2": {
+          "sprite": "reed_beds/reed_bed_006/lit_2/sprite.webp",
+          "pixellab_object_id": "24a8e07f-cb55-4874-be05-fc0657cb360a",
+          "generated_at": "2026-08-16T20:06:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6643,
+          "glow_score": 0.0384,
+          "art_hash": "52b2c18873b966e7"
+        },
+        "LIT_3": {
+          "sprite": "reed_beds/reed_bed_006/lit_3/sprite.webp",
+          "pixellab_object_id": "467cb888-c14c-4e98-9794-05da3945faf5",
+          "generated_at": "2026-08-16T20:06:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7967,
+          "glow_score": 0.098,
+          "art_hash": "1f28a7a7082397ec"
+        },
+        "NOT_LIT_1": {
+          "sprite": "reed_beds/reed_bed_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d866d073-46c5-4bef-ac97-ad5eb12609dc",
+          "generated_at": "2026-08-16T20:07:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9896,
+          "glow_score": 0.0,
+          "art_hash": "7478b7520334030e"
         }
       },
       "animations": []
