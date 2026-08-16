@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 137,
   "name": "Dry brown wilted fall 137",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dry brown wilted fall",
   "modifier": "gripping side-roots reaching out at intervals",
   "glow_concept": null,
@@ -32,10 +32,42 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_137/lit_1/sprite.webp",
+      "pixellab_object_id": "89123293-86e7-46eb-9b16-6da220dff98c",
+      "generated_at": "2026-08-16T11:01:46+00:00",
+      "glow_concept": "glowworm colonies strung in the foliage",
+      "difference_from_source": 0.465,
+      "glow_score": 0.0472
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_137/lit_2/sprite.webp",
+      "pixellab_object_id": "9e7b1ae5-4288-46af-bf91-48b587438ffc",
+      "generated_at": "2026-08-16T11:02:09+00:00",
+      "glow_concept": "amber memory-light dripping from the tips",
+      "difference_from_source": 0.3832,
+      "glow_score": 0.0426
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_137/sprite.webp",
       "pixellab_object_id": "9f43d6c7-f63a-465a-94c0-c26cef5b650c",
       "generated_at": "2026-08-14T05:36:41+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_137/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2562ccec-2677-4b72-9cd2-1302e8537e6b",
+      "generated_at": "2026-08-16T11:01:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7006,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_137/not_lit_4/sprite.webp",
+      "pixellab_object_id": "d299c187-b568-41b1-829c-9943ab9b1073",
+      "generated_at": "2026-08-16T11:01:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.489,
+      "glow_score": 0.0
     }
   }
 }

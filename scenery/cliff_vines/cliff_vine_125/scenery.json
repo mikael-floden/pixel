@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 125,
   "name": "Blue-flowered creeper fall 125",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "blue-flowered creeper fall",
   "modifier": "a long straightish run with two sharp kinks",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_125/lit_1/sprite.webp",
+      "pixellab_object_id": "30f2c300-70b3-4d2e-b2ee-e88b3322442e",
+      "generated_at": "2026-08-16T10:58:32+00:00",
+      "glow_concept": "amber memory-light dripping from the tips",
+      "difference_from_source": 0.8129,
+      "glow_score": 0.0707
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_125/lit_2/sprite.webp",
+      "pixellab_object_id": "0ad5df9a-8140-4572-aeda-bcfb3d30ffad",
+      "generated_at": "2026-08-16T10:58:45+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.6814,
+      "glow_score": 0.065
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_125/sprite.webp",
       "pixellab_object_id": "b663a2d9-8d00-4ded-a475-f323aab474db",
@@ -52,6 +68,14 @@
       "glow_concept": null,
       "difference_from_source": 0.3071,
       "glow_score": 0.029
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_125/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5f4fe90b-c79c-4316-b431-5060b00aa1da",
+      "generated_at": "2026-08-16T10:58:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5392,
+      "glow_score": 0.0263
     }
   }
 }

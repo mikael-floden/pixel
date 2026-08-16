@@ -6,7 +6,7 @@
   "rank": 101,
   "index": 135,
   "name": "Fern-mixed green fall 135",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "fern-mixed green fall",
   "modifier": "a long straightish run with two sharp kinks",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_vines/cliff_vine_135/lit_1/sprite.webp",
+      "pixellab_object_id": "08bbbc8c-8a4b-4094-8721-afcb6fba7d72",
+      "generated_at": "2026-08-16T11:01:14+00:00",
+      "glow_concept": "moonlit silver shimmer across the leaves",
+      "difference_from_source": 0.5881,
+      "glow_score": 0.0214
+    },
+    "LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_135/lit_2/sprite.webp",
+      "pixellab_object_id": "7a5e8e93-188f-43be-8497-800feef1786c",
+      "generated_at": "2026-08-16T11:01:35+00:00",
+      "glow_concept": "luminous sap veins glowing through the leaves",
+      "difference_from_source": 0.4316,
+      "glow_score": 0.0756
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_135/sprite.webp",
       "pixellab_object_id": "0f4c3944-3833-406d-b3bb-22c150af32dc",
       "generated_at": "2026-08-14T05:45:25+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_vines/cliff_vine_135/not_lit_2/sprite.webp",
+      "pixellab_object_id": "801c7c63-994f-4d2d-a371-6c4ff2fd80db",
+      "generated_at": "2026-08-16T11:00:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4053,
+      "glow_score": 0.0003
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_135/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a1c81f82-f1d7-4163-8489-b5b68e346ce3",
+      "generated_at": "2026-08-16T11:00:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4292,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_135/not_lit_4/sprite.webp",
+      "pixellab_object_id": "b51b4b36-5a02-4285-b11d-3a182b25ec8a",
+      "generated_at": "2026-08-16T11:01:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.31,
+      "glow_score": 0.0005
     }
   }
 }
