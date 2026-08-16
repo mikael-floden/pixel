@@ -406,8 +406,6 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
     """
     a = np.asarray(canonicalise(img)).astype(float)
     reg = _regions(a)
-    if reg:
-        reg = refine_interface(a, reg)
     if not reg:
         return img.convert("RGBA")
     out = a.copy()
@@ -426,7 +424,14 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         fac = {"left": 0.86, "right": 1.10}
 
     if reg["top"].sum():
-        out[:, :, :3][reg["top"]] = np.clip(top, 0, 255)
+        # SHIFT the surface onto the palette colour rather than overwriting it. On a
+        # tile that generated flat the two are identical, and the clean-top gate means
+        # those are the only tiles we accept — but a shift also carries across whatever
+        # thin shading the generator drew INSIDE the surface, where an overwrite deletes
+        # it. Smallest edit that still makes every grass tile the same green.
+        m = reg["top"]
+        out[:, :, :3][m] = np.clip(a[:, :, :3][m] + (top - np.median(a[:, :, :3][m], 0)),
+                                   0, 255)
 
     for k in ("left", "right") if align_walls else ():
         m = reg[k]
