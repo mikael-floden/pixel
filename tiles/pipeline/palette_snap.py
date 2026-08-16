@@ -129,6 +129,41 @@ def _apply_profile(px, prof, lighting=1.0):
     return _hsv2rgb(hsv)
 
 
+def wrap_wall(img, band=6, strength=1.0):
+    """Make the wall texture continuous across the tile's own left/right edge.
+
+    A cliff is built from many copies of ONE tile, and along a plateau's front edge
+    consecutive tiles sit exactly one tile-width apart horizontally. So the wall repeats
+    with period = tile width, and whatever discontinuity exists between column 0 and
+    column W-1 becomes a hard vertical line at every tile boundary, repeated across the
+    whole rock face — measured on a 4x4 plateau: 34 columns with a luminance jump above
+    12, peaking at 59.8.
+
+    Fixing it is a wrap, not a blur: the first `band` columns are cross-faded with the
+    columns that will actually abut them (the last `band`), weighted so the seam itself
+    gets the most correction and the tile's interior is left alone. The top surface is
+    untouched — it is already flat and seamless after the palette snap.
+    """
+    a = np.asarray(img.convert("RGBA")).astype(float)
+    reg = _regions(a)
+    if not reg:
+        return img.convert("RGBA")
+    wall = reg["left"] | reg["right"]
+    if not wall.any():
+        return img.convert("RGBA")
+    h, w = a.shape[:2]
+    out = a.copy()
+    for i in range(band):
+        wgt = strength * (1.0 - i / float(band)) * 0.5
+        li, ri = i, w - 1 - i
+        for src, dst in ((ri, li), (li, ri)):
+            m = wall[:, dst] & wall[:, src]
+            if not m.any():
+                continue
+            out[m, dst, :3] = (a[m, dst, :3] * (1 - wgt) + a[m, src, :3] * wgt)
+    return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 

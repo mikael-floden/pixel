@@ -32,9 +32,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import palette_snap
 
-# 64px isometric house format: the top diamond is the full 64 wide and 32 tall, so the
-# grid pitch is half of each. LEVEL_PX is one elevation step, matching tiles2/maps2.
-DX, DY, LEVEL_PX = 32, 16, 16
+# 64px isometric house format. DY is MEASURED from the art, not assumed: on a real
+# generated tile the top diamond's apex sits at y9 and it reaches full width at y23,
+# so the diamond is 64 wide and 28 tall and the grid pitch is 32 x 14.
+#
+# Assuming 16 (half of a 32-tall diamond) is wrong by 2px per step, which is exactly
+# what makes a plateau's edge come out ragged instead of a straight diagonal — the
+# maintainer spotted it on sight. Verified by rendering 14/15/16 side by side: only 14
+# gives clean edges.
+DX, DY, LEVEL_PX = 32, 14, 16
 
 
 def plateau(tile, cols=4, rows=4, level=1, pad=8):
