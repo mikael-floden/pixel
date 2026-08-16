@@ -61,6 +61,54 @@ def top_mask(h, w, opaque=None):
     return m
 
 
+def faces(path):
+    """Split a tile into its THREE surfaces and measure each independently:
+    the top diamond, the left wall and the right wall.
+
+    Measuring only the top is not enough for tiles 3.0. An "X over Y" tile is a claim
+    about TWO materials, and the generator will happily hand back a plausible pairing
+    it chose itself (green top over brown soil) whether or not that is what was asked
+    for. Without per-wall numbers there is no way to tell a controlled result from the
+    generator's default — the walls have to be scored too, or "over" is unverifiable.
+    """
+    im = Image.open(path).convert("RGBA")
+    a = np.asarray(im).astype(int)
+    h, w = a.shape[:2]
+    op = a[:, :, 3] > 200
+    if not op.any():
+        return None
+    ys, xs = np.where(op)
+    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
+    bw = x1 - x0 + 1
+    cx = (x0 + x1) / 2.0
+    hd = bw / 2.0
+    cy = y0 + hd / 2.0
+    yy, xx = np.mgrid[0:h, 0:w]
+    dia = (np.abs(xx - cx) / (bw / 2.0) + np.abs(yy - cy) / (hd / 2.0)) <= 1.0
+    below = (yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0)))
+    out = {}
+    for name, m in (("top", dia & op),
+                    ("left", below & op & (xx < cx - 1)),
+                    ("right", below & op & (xx > cx + 1))):
+        m = _erode(m, 1)
+        if m.sum() < 25:
+            out[name] = None
+            continue
+        px = a[:, :, :3][m]
+        q = (px // 8) * 8
+        vals, cnts = np.unique(q, axis=0, return_counts=True)
+        out[name] = {"n": int(m.sum()), "share": float(cnts.max() / m.sum()),
+                     "uniq": int(len(np.unique(px, axis=0))),
+                     "median": [int(v) for v in np.median(px, axis=0)]}
+    return out
+
+
+def dE(rgb, target_hex):
+    """Perceptual distance from a measured colour to an intended one."""
+    t = np.array([int(target_hex.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4)], float)
+    return float(np.linalg.norm(_lab(np.array(rgb, float)) - _lab(t)))
+
+
 def _erode(m, r=2):
     for _ in range(r):
         m = (m & np.roll(m, 1, 0) & np.roll(m, -1, 0)
