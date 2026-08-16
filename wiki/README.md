@@ -277,11 +277,48 @@ has not generated yet. Three consequences that are the whole design:
   a training signal and become 400 hand-tuned exceptions, which is the state
   the maintainer was trying to get out of.
 
-Gate: `wiki/tools/check-shadow.mjs` — real mouse drags on the real canvas,
-asserting the drawn ellipse actually moves and resizes (read from the PIXELS,
-not from the note), that it stays inside the canvas once enlarged (a clipped
-ellipse loses the handle it is grabbed by), that the note follows the facet,
-and that Commit posts one entry per facet with both halves of the correction.
+**THE CONTROLS ARE A PROXY — nothing that edits the shadow sits on it.** He
+reviews from a phone, and after the first 25 notes: *"for me to drag or resize
+the shadow with the thumb I can't see where I place the shadow or how big I
+resize it at the same time ... render the controller at the bottom right, but
+when moving the controller the shadow under the monster will move / be resized.
+Like a proxy, so I can see what I edit without my thumb being in the way."* So:
+
+- A **pad** under the stage, right-aligned. A TRACKPAD, not a joystick: one
+  finger-pixel moves the ellipse one screen pixel, which at the default 2x zoom
+  is half a frame pixel — ordinary thumb movement lands sub-pixel corrections
+  with no fine mode. Only the knob stops at the rim; the shadow keeps going.
+- Two **rails** for size. Absolute values, unlike the pad's relative gesture:
+  the thumb can be anywhere along a rail he is not looking at while his eye
+  stays on the ellipse, and the travel shows how much range is left.
+- They sit DIRECTLY under the art, above the transport and zoom rows —
+  measured, 372px from the shadow's top to the pad's bottom, so both are on a
+  phone screen at once. Every row between them is a row that can push one off.
+
+**THE CANVAS IS PINNED WHILE EDITING, or the art moves under his thumb.** It
+normally hugs the drawn ellipse, and the stage centres it — so a 16px push up
+moved the shadow only 8px on screen (the canvas shed 16px of height, the
+re-centring gave 8 back) and the monster slid the whole time. In edit mode the
+box comes from the clip alone: the measured ellipse plus slack sized off his
+own corrections (up to 12.5px of movement, at most double the depth), constant
+for as long as he stays on one animation and direction. Pinning it to the whole
+FRAME was tried first and marooned the creature in a screen-wide checkerboard —
+the frame is mostly padding, which is why this viewer crops it.
+
+`touch-action` on the canvas is **`pan-y`, never `none`**: the stage is most of
+a phone's screen, so a canvas that swallows every touch traps the page's scroll
+in edit mode. Direct dragging on the ellipse still works with a mouse.
+
+Gate: `wiki/tools/check-shadow.mjs` — real drags on the pad, the rails, and
+the canvas,
+asserting that the pad never overlaps the shadow, that both fit on his phone
+together, that the ellipse tracks the finger 1:1 in both axes, that the monster
+does not move while he places it, that the rails resize the drawn shape, that
+the note follows the facet, and that Commit posts one entry per facet with both
+halves of the correction. Two measurement traps are documented in it: the
+canvas resizes around the centred sprite, so positions are compared in PAGE
+space, and the sprite is drawn OVER the shadow, so an ellipse pushed under the
+body loses its top rows to it and a naive pixel read under-reports.
 It fakes admin and captures `/api/wiki/save` at the network boundary, so it
 never writes the maintainer's real review data.
 
