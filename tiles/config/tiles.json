@@ -36,8 +36,14 @@
     "flat_base": "solid uniform #{hex} {color}, one single flat colour, completely smooth, no texture",
     "over": "isometric tile with a completely flat uniform #{top_hex} {top_color} top surface and plain #{side_hex} {side_color} side walls, no texture on the top, no outline"
   },
-  "_accept_comment": "A candidate base tile must clear ALL of these. share/dE alone are gameable: two bake-off prompts scored a PERFECT 1.000 by returning a plain shaded cube with no distinct wall and (in one case) undersized art that would not tessellate — flawless by the metric, useless as a tile. Hence geom_ok.",
-  "accept": { "min_share": 0.98, "max_dE": 12.0, "require_geom": true },
+  "_accept_comment": "What generation must deliver, AFTER accounting for what pipeline/palette_snap.py can repair. Measured: seven sheets that generated seven different greens (dE 5.7-40.6, flatness 0.547-1.000) all snapped to ONE identical palette colour at share 1.000. So COLOUR is not a generation requirement — every grass tile ends up the same green because postprocess writes it, not because the generator hit it — and neither is a perfectly flat fill, since the snap rewrites the whole surface. max_dE is therefore only a loose sanity bound (is this even the right hue family), not a quality gate. What the snap CANNOT repair is the SILHOUETTE: it only rewrites pixels inside the three geometric surfaces, so anything protruding above the diamond survives. A probe whose prompt produced tall grass blades came out of the snap with green stubs poking through the top edge. Hence the real gates: a clean full-width silhouette, and three identifiable surfaces to snap.",
+  "accept": {
+    "min_share": 0.60,
+    "max_dE": 45.0,
+    "require_geom": true,
+    "require_three_faces": true,
+    "max_protrusion_px": 1
+  },
 
   "budget": { "min_generations_remaining": 0, "min_usd": 5.0 }
 }
