@@ -33,8 +33,26 @@ _APEX_Y = 6
 _H = 32
 
 
-def top_mask(h, w):
+def top_mask(h, w, opaque=None):
+    """Top-diamond mask, derived from the tile's OWN opaque bounding box when one is
+    given rather than assuming the art fills a centred 64px canvas.
+
+    That assumption is not safe: most sheets do come back canvas-filling (x0..63,
+    centre 31.5), but a sheet can return undersized/offset tiles — one bake-off sheet
+    came back 57px wide centred at x29. A fixed mask on that art straddles the two
+    side walls, and their darker pixels read as 'surface texture', scoring a perfectly
+    flat tile at ~0.57. Deriving the diamond from the bbox measures the top face on
+    any geometry, so the score describes the ART instead of the framing."""
     m = np.zeros((h, w), bool)
+    if opaque is not None and opaque.any():
+        ys, xs = np.where(opaque)
+        x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
+        bw = x1 - x0 + 1
+        cx = (x0 + x1) / 2.0
+        hd = bw / 2.0                      # iso: a full-width diamond is half as tall
+        cy = y0 + hd / 2.0
+        yy, xx = np.mgrid[0:h, 0:w]
+        return (np.abs(xx - cx) / (bw / 2.0) + np.abs(yy - cy) / (hd / 2.0)) <= 1.0
     cx = w // 2
     for y in range(_APEX_Y, min(h, _APEX_Y + _H)):
         t = (y - _APEX_Y) / _H
@@ -66,7 +84,8 @@ def score(path, target_hex=None, quant=8):
     im = Image.open(path).convert("RGBA")
     a = np.asarray(im).astype(int)
     h, w = a.shape[:2]
-    m = _erode(top_mask(h, w) & (a[:, :, 3] > 200), 2)
+    op = a[:, :, 3] > 200
+    m = _erode(top_mask(h, w, op) & op, 2)
     if m.sum() < 40:
         return None
     px = a[:, :, :3][m]
@@ -88,7 +107,29 @@ def score(path, target_hex=None, quant=8):
     if target_hex:
         t = np.array([int(target_hex[i:i + 2], 16) for i in (0, 2, 4)], float)
         out["dE"] = float(np.linalg.norm(_lab(out["median"]) - _lab(t)))
+    out.update(_geometry(op, w))
     return out
+
+
+def _geometry(op, w):
+    """Is this still a usable isometric ground tile, or did the generator cheat?
+
+    Flatness alone is a gameable target: two bake-off prompts scored a perfect 1.000
+    by returning a plain shaded CUBE — one uniform top, no distinct wall material, and
+    in one case undersized art that would not tessellate. Perfectly flat and perfectly
+    useless. So a candidate must also FIT THE GRID (span the full canvas width, since
+    neighbouring diamonds have to meet edge to edge) and actually HAVE a front face
+    below the diamond for the wall material to live on."""
+    ys, xs = np.where(op)
+    if not len(xs):
+        return {"geom_ok": False, "why": "empty"}
+    bw = int(xs.max() - xs.min() + 1)
+    fills = bw >= w - 1                    # full-width: tessellates without a gap
+    dia_bottom = int(ys.min()) + bw / 2.0  # the diamond's own lower vertex
+    has_face = int(ys.max()) > dia_bottom + 2
+    return {"geom_ok": bool(fills and has_face), "bbox_w": bw,
+            "why": "" if (fills and has_face) else
+                   ("not full width" if not fills else "no front face")}
 
 
 def main():

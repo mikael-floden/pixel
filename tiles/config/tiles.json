@@ -31,12 +31,13 @@
     { "id": "slime",         "category": "liquid", "color_words": "pure flat bright yellow-green","material_words": "thick bubbling slime",    "hex": "#7fbf3f" }
   ],
 
-  "_base_prompt_comment": "16 tiles come back per call, so we ask for 16 numbered attempts at the SAME flat fill rather than 16 different-looking tiles — then pick the flattest by measurement (pipeline/flatness.py). Asking for variety here is what produced texture in tiles2.",
+  "_base_prompt_comment": "MEASURED, not guessed. An 8-strategy bake-off (identical pinned harness, only the prompt varying; see docs/BAKEOFF.md) settled these. Three results shaped the templates below: (1) flatness is EASY — five different prompts reached share >= 0.99, so it is not the discriminator; (2) COLOUR ACCURACY is the hard part, and only anchoring an explicit #hex landed it (dE 5.7 vs 21-31 for every prompt that named the colour in words alone) — which is why every template carries {hex}; (3) naming the material ('single color 100% pure green') is read as a STYLE hint and ignored as an instruction: it scored 0.825 with visible grass blades. Long negation lists ('no texture, no pattern, no speckles...') do work but drift the hue badly on their own. Ask for a flat surface AND pin the hex.",
   "prompts": {
-    "flat_base": "isometric tile of {color}. Every one of the 16 tiles is the SAME single completely uniform {color} surface: {variations}. The top surface is one solid flat colour with no texture, no pattern, no speckles, no blades, no grain, no noise, no highlights and no shading gradient. No outline, no border, no grid lines, no dark edges.",
-    "flat_base_variations": "1) flat 2) flat 3) flat 4) flat 5) flat 6) flat 7) flat 8) flat 9) flat 10) flat 11) flat 12) flat 13) flat 14) flat 15) flat 16) flat",
-    "over": "isometric tile with a top surface of {top_color} and side walls of {side_color}. All 16 tiles identical: the flat top is one solid uniform {top_color}, the vertical sides are {side_color}. No texture, no pattern, no noise on either surface. No outline, no border, no dark edges."
+    "flat_base": "solid uniform #{hex} {color}, one single flat colour, completely smooth, no texture",
+    "over": "isometric tile with a completely flat uniform #{top_hex} {top_color} top surface and plain #{side_hex} {side_color} side walls, no texture on the top, no outline"
   },
+  "_accept_comment": "A candidate base tile must clear ALL of these. share/dE alone are gameable: two bake-off prompts scored a PERFECT 1.000 by returning a plain shaded cube with no distinct wall and (in one case) undersized art that would not tessellate — flawless by the metric, useless as a tile. Hence geom_ok.",
+  "accept": { "min_share": 0.98, "max_dE": 12.0, "require_geom": true },
 
   "budget": { "min_generations_remaining": 0, "min_usd": 5.0 }
 }
