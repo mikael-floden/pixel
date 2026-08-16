@@ -5,7 +5,7 @@
   "rank": 15,
   "index": 7,
   "name": "Ivy-overgrown leaning lamp 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ivy-overgrown leaning lamp",
   "glow_concept": null,
   "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ivy-overgrown leaning lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T13:56:24+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "streetlights/streetlight_007/lit_1/sprite.webp",
+      "pixellab_object_id": "d782a3e1-e227-4bfc-a166-0bd482183f5e",
+      "generated_at": "2026-08-16T22:37:47+00:00",
+      "glow_concept": "blue soul-flame instead of fire",
+      "difference_from_source": 0.5994,
+      "glow_score": 0.101
+    },
+    "LIT_2": {
+      "sprite": "streetlights/streetlight_007/lit_2/sprite.webp",
+      "pixellab_object_id": "d7434619-532b-4039-805e-11a21d154434",
+      "generated_at": "2026-08-16T22:39:16+00:00",
+      "glow_concept": "fireflies glowing in the jar",
+      "difference_from_source": 0.9119,
+      "glow_score": 0.069
+    },
     "NOT_LIT_1": {
       "sprite": "streetlights/streetlight_007/sprite.webp",
       "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
       "generated_at": "2026-08-13T13:56:24+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "streetlights/streetlight_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9093a242-46a8-4759-aac9-369493e11228",
+      "generated_at": "2026-08-16T22:37:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8778,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "streetlights/streetlight_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3d07aaa3-89cf-419b-985d-cb204722a186",
+      "generated_at": "2026-08-16T22:37:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.75,
+      "glow_score": 0.0652
+    },
+    "NOT_LIT_4": {
+      "sprite": "streetlights/streetlight_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "9e8e4f39-b692-4307-8356-b4ac64e76c24",
+      "generated_at": "2026-08-16T22:37:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8272,
+      "glow_score": 0.0269
     }
   }
 }

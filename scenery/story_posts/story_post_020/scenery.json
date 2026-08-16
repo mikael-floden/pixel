@@ -5,8 +5,8 @@
   "group": "story_posts",
   "rank": 21,
   "index": 20,
-  "name": "Ribbon-hung birch post 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Ribbon-hung birch post 020",
+  "lights": null,
   "variety": "ribbon-hung birch post",
   "modifier": "recently maintained",
   "glow_concept": "glowing symbol hovering above the finial",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.8627,
       "glow_score": 0.0794
+    },
+    "NOT_LIT_1": {
+      "sprite": "story_posts/story_post_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "c1d01448-c546-4ab8-90eb-ba9cd0529ac0",
+      "generated_at": "2026-08-16T22:34:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8108,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "story_posts/story_post_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0ebadb05-929e-411f-824d-c702ebf0fe17",
+      "generated_at": "2026-08-16T22:34:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8336,
+      "glow_score": 0.0
     }
   }
 }

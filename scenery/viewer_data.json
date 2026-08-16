@@ -45271,6 +45271,15 @@
           "difference_from_source": 0.869,
           "glow_score": 0.0,
           "art_hash": "b0941185e27c1072"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "eab7dcbd-1759-4a48-b2c8-c01d8d61a892",
+          "generated_at": "2026-08-16T22:34:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8128,
+          "glow_score": 0.0,
+          "art_hash": "85e2969dfa9dc2f9"
         }
       },
       "animations": []
@@ -45278,9 +45287,9 @@
     {
       "id": "story_post_020",
       "rel": "story_posts/story_post_020",
-      "name": "Ribbon-hung birch post 020 \u00b7 lit",
+      "name": "Ribbon-hung birch post 020",
       "category": "story_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, ribbon-hung birch post, recently maintained, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing symbol hovering above the finial",
       "view": "low top-down",
       "size": 64,
@@ -45332,6 +45341,24 @@
           "difference_from_source": 0.8627,
           "glow_score": 0.0794,
           "art_hash": "f7455d9ee7ed5bf1"
+        },
+        "NOT_LIT_1": {
+          "sprite": "story_posts/story_post_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "c1d01448-c546-4ab8-90eb-ba9cd0529ac0",
+          "generated_at": "2026-08-16T22:34:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8108,
+          "glow_score": 0.0,
+          "art_hash": "39ef2c8241bf64b2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0ebadb05-929e-411f-824d-c702ebf0fe17",
+          "generated_at": "2026-08-16T22:34:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8336,
+          "glow_score": 0.0,
+          "art_hash": "73b8a581aa1dd59f"
         }
       },
       "animations": []
@@ -45375,7 +45402,7 @@
       "rel": "streetlights/streetlight_007",
       "name": "Ivy-overgrown leaning lamp 007",
       "category": "streetlights",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, ivy-overgrown leaning lamp, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -45395,11 +45422,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "streetlights/streetlight_007/lit_1/sprite.webp",
+          "pixellab_object_id": "d782a3e1-e227-4bfc-a166-0bd482183f5e",
+          "generated_at": "2026-08-16T22:37:47+00:00",
+          "glow_concept": "blue soul-flame instead of fire",
+          "difference_from_source": 0.5994,
+          "glow_score": 0.101,
+          "art_hash": "72c8e4ec26ccc283"
+        },
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_007/lit_2/sprite.webp",
+          "pixellab_object_id": "d7434619-532b-4039-805e-11a21d154434",
+          "generated_at": "2026-08-16T22:39:16+00:00",
+          "glow_concept": "fireflies glowing in the jar",
+          "difference_from_source": 0.9119,
+          "glow_score": 0.069,
+          "art_hash": "0a60b3463aae5791"
+        },
         "NOT_LIT_1": {
           "sprite": "streetlights/streetlight_007/sprite.webp",
           "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
           "generated_at": "2026-08-13T13:56:24+00:00",
           "art_hash": "2a289d58457f52bb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "streetlights/streetlight_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9093a242-46a8-4759-aac9-369493e11228",
+          "generated_at": "2026-08-16T22:37:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8778,
+          "glow_score": 0.0,
+          "art_hash": "c7684ad1da941d88"
+        },
+        "NOT_LIT_3": {
+          "sprite": "streetlights/streetlight_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3d07aaa3-89cf-419b-985d-cb204722a186",
+          "generated_at": "2026-08-16T22:37:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.75,
+          "glow_score": 0.0652,
+          "art_hash": "d352226d9fbde383"
+        },
+        "NOT_LIT_4": {
+          "sprite": "streetlights/streetlight_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "9e8e4f39-b692-4307-8356-b4ac64e76c24",
+          "generated_at": "2026-08-16T22:37:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8272,
+          "glow_score": 0.0269,
+          "art_hash": "5b50939e27a0c8f8"
         }
       },
       "animations": []
@@ -45409,7 +45481,7 @@
       "rel": "streetlights/streetlight_011",
       "name": "Hexagonal glass head lamp 011",
       "category": "streetlights",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, hexagonal glass head lamp, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -45429,11 +45501,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_011/lit_2/sprite.webp",
+          "pixellab_object_id": "e5bf779b-72c9-4e11-b55c-60d3571b244b",
+          "generated_at": "2026-08-16T22:43:48+00:00",
+          "glow_concept": "flame with a curl of smoke rising",
+          "difference_from_source": 0.2731,
+          "glow_score": 0.1303,
+          "art_hash": "7e4a4d35e5c0c567"
+        },
         "NOT_LIT_1": {
           "sprite": "streetlights/streetlight_011/sprite.webp",
           "pixellab_object_id": "43987415-b040-4400-85f0-65a334edfa3c",
           "generated_at": "2026-08-13T23:17:57+00:00",
           "art_hash": "fb2f24fce6e24bf3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "streetlights/streetlight_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0c2200df-3e1c-43f5-9615-91e845f7415e",
+          "generated_at": "2026-08-16T22:38:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8547,
+          "glow_score": 0.0833,
+          "art_hash": "6d8681cba1cf41ab"
+        },
+        "NOT_LIT_3": {
+          "sprite": "streetlights/streetlight_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "6d997dad-eb57-4f36-a63f-d97fa53f7135",
+          "generated_at": "2026-08-16T22:40:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3758,
+          "glow_score": 0.0871,
+          "art_hash": "29c4eb66382b3df5"
+        },
+        "NOT_LIT_4": {
+          "sprite": "streetlights/streetlight_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "02fc6417-e868-40c6-b59d-b77e5603bc45",
+          "generated_at": "2026-08-16T22:39:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5279,
+          "glow_score": 0.0485,
+          "art_hash": "47a108b8d65f696b"
         }
       },
       "animations": []
@@ -45443,7 +45551,7 @@
       "rel": "streetlights/streetlight_013",
       "name": "Square-headed medieval wooden post 013",
       "category": "streetlights",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, square-headed medieval wooden post, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -45463,11 +45571,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "streetlights/streetlight_013/lit_1/sprite.webp",
+          "pixellab_object_id": "6a00ac6d-00f7-4a20-81d3-e16dea6ccae1",
+          "generated_at": "2026-08-16T22:43:02+00:00",
+          "glow_concept": "flame with a curl of smoke rising",
+          "difference_from_source": 0.8436,
+          "glow_score": 0.1138,
+          "art_hash": "83243011e1d83b88"
+        },
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_013/lit_2/sprite.webp",
+          "pixellab_object_id": "aef6855d-77d9-43a1-835b-4967b283cb2b",
+          "generated_at": "2026-08-16T22:45:10+00:00",
+          "glow_concept": "embers glowing in the basket",
+          "difference_from_source": 0.4566,
+          "glow_score": 0.0858,
+          "art_hash": "49e5bdb7c9a0cf28"
+        },
         "NOT_LIT_1": {
           "sprite": "streetlights/streetlight_013/sprite.webp",
           "pixellab_object_id": "018ee460-e63f-44ab-83d4-98f0c6b9fdb1",
           "generated_at": "2026-08-13T23:52:08+00:00",
           "art_hash": "1f5120a092a27a91"
+        },
+        "NOT_LIT_2": {
+          "sprite": "streetlights/streetlight_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "93f70aa9-08e1-4359-a3ae-4afba4dd6ae8",
+          "generated_at": "2026-08-16T22:40:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8541,
+          "glow_score": 0.0002,
+          "art_hash": "17b30d96dc4e0f42"
+        },
+        "NOT_LIT_3": {
+          "sprite": "streetlights/streetlight_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "20d48268-7176-4de0-afba-305c06a5bae1",
+          "generated_at": "2026-08-16T22:40:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8483,
+          "glow_score": 0.0855,
+          "art_hash": "8032b7c7a9025536"
+        },
+        "NOT_LIT_4": {
+          "sprite": "streetlights/streetlight_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "2ecabcfa-14b3-4c98-91ed-bcdea94f1351",
+          "generated_at": "2026-08-16T22:41:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7193,
+          "glow_score": 0.0604,
+          "art_hash": "c40cb716391543e9"
         }
       },
       "animations": []
@@ -45475,9 +45628,9 @@
     {
       "id": "streetlight_024",
       "rel": "streetlights/streetlight_024",
-      "name": "Onion-domed brass head 024 \u00b7 lit",
+      "name": "Onion-domed brass head 024",
       "category": "streetlights",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, onion-domed brass head, overgrown at the base, tall, about three times human height, self-emissive at night, softly radiating light: amber soulstone shard mounted as the bulb",
       "view": "low top-down",
       "size": 128,
@@ -45502,6 +45655,42 @@
           "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
           "generated_at": "2026-08-14T00:50:26+00:00",
           "art_hash": "e9caa4985ef1be3a"
+        },
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_024/lit_2/sprite.webp",
+          "pixellab_object_id": "4742a06e-36f1-4a96-81e8-6920cd5d6fdf",
+          "generated_at": "2026-08-16T22:43:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6577,
+          "glow_score": 0.0767,
+          "art_hash": "8633472bbb3dbaab"
+        },
+        "LIT_3": {
+          "sprite": "streetlights/streetlight_024/lit_3/sprite.webp",
+          "pixellab_object_id": "5e83750d-9e23-4e8c-90bf-168de3ec038a",
+          "generated_at": "2026-08-16T22:43:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7928,
+          "glow_score": 0.057,
+          "art_hash": "6be5d5b9973bf881"
+        },
+        "LIT_4": {
+          "sprite": "streetlights/streetlight_024/lit_4/sprite.webp",
+          "pixellab_object_id": "12503d8b-bb39-4a5f-9b7a-c570502e8d62",
+          "generated_at": "2026-08-16T22:43:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7697,
+          "glow_score": 0.0789,
+          "art_hash": "ce25a48127dc566b"
+        },
+        "NOT_LIT_1": {
+          "sprite": "streetlights/streetlight_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2da3ab52-56f4-432a-9401-bc941f2031cb",
+          "generated_at": "2026-08-16T22:44:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5982,
+          "glow_score": 0.0,
+          "art_hash": "3e586d764dab6f1d"
         }
       },
       "animations": []
@@ -45509,9 +45698,9 @@
     {
       "id": "streetlight_034",
       "rel": "streetlights/streetlight_034",
-      "name": "Iron fire cresset on a stone pillar 034 \u00b7 lit",
+      "name": "Iron fire cresset on a stone pillar 034",
       "category": "streetlights",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a public fire-light standing at the roadside: a stout post or stone pillar carrying an OPEN FLAME \u2014 a fire basket, a horn lantern with a candle, an oil cresset \u2014 no glass-and-iron street lamp, no modern lamppost, everything hand-made from timber, rope, iron and horn, iron fire cresset on a stone pillar, a fresh candle just set in, large, twice human height, self-emissive at night, softly radiating light: a candle flame small and clear",
       "view": "low top-down",
       "size": 96,
@@ -45544,6 +45733,42 @@
           "pixellab_object_id": "444192d5-0baa-4422-b18c-35dae55bc787",
           "generated_at": "2026-08-15T18:06:21+00:00",
           "art_hash": "9668259d19eb38e0"
+        },
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_034/lit_2/sprite.webp",
+          "pixellab_object_id": "267bd4d0-59d0-4e03-92e1-c90a7ea0aa87",
+          "generated_at": "2026-08-16T22:45:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6246,
+          "glow_score": 0.0792,
+          "art_hash": "5a0ef443c3d42715"
+        },
+        "LIT_3": {
+          "sprite": "streetlights/streetlight_034/lit_3/sprite.webp",
+          "pixellab_object_id": "cf97728c-afb0-43e8-83ed-7ffbb7f1d6b4",
+          "generated_at": "2026-08-16T22:46:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9588,
+          "glow_score": 0.0418,
+          "art_hash": "99866990475068b8"
+        },
+        "LIT_4": {
+          "sprite": "streetlights/streetlight_034/lit_4/sprite.webp",
+          "pixellab_object_id": "d065c99f-1279-4271-aad0-d0a2c31d928e",
+          "generated_at": "2026-08-16T22:45:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7526,
+          "glow_score": 0.0817,
+          "art_hash": "8a7d2758a61497c6"
+        },
+        "NOT_LIT_1": {
+          "sprite": "streetlights/streetlight_034/not_lit_1/sprite.webp",
+          "pixellab_object_id": "cd9f85c3-eccc-4d04-be99-87b4b8ecd08f",
+          "generated_at": "2026-08-16T22:45:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5045,
+          "glow_score": 0.0179,
+          "art_hash": "7e180d6fc99c82ce"
         }
       },
       "animations": []

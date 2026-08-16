@@ -6,8 +6,8 @@
   "type": "TOWN",
   "rank": 15,
   "index": 34,
-  "name": "Iron fire cresset on a stone pillar 034 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Iron fire cresset on a stone pillar 034",
+  "lights": null,
   "variety": "iron fire cresset on a stone pillar",
   "modifier": "a fresh candle just set in",
   "glow_concept": "a candle flame small and clear",
@@ -49,6 +49,38 @@
       "sprite": "streetlights/streetlight_034/sprite.webp",
       "pixellab_object_id": "444192d5-0baa-4422-b18c-35dae55bc787",
       "generated_at": "2026-08-15T18:06:21+00:00"
+    },
+    "LIT_2": {
+      "sprite": "streetlights/streetlight_034/lit_2/sprite.webp",
+      "pixellab_object_id": "267bd4d0-59d0-4e03-92e1-c90a7ea0aa87",
+      "generated_at": "2026-08-16T22:45:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6246,
+      "glow_score": 0.0792
+    },
+    "LIT_3": {
+      "sprite": "streetlights/streetlight_034/lit_3/sprite.webp",
+      "pixellab_object_id": "cf97728c-afb0-43e8-83ed-7ffbb7f1d6b4",
+      "generated_at": "2026-08-16T22:46:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9588,
+      "glow_score": 0.0418
+    },
+    "LIT_4": {
+      "sprite": "streetlights/streetlight_034/lit_4/sprite.webp",
+      "pixellab_object_id": "d065c99f-1279-4271-aad0-d0a2c31d928e",
+      "generated_at": "2026-08-16T22:45:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7526,
+      "glow_score": 0.0817
+    },
+    "NOT_LIT_1": {
+      "sprite": "streetlights/streetlight_034/not_lit_1/sprite.webp",
+      "pixellab_object_id": "cd9f85c3-eccc-4d04-be99-87b4b8ecd08f",
+      "generated_at": "2026-08-16T22:45:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5045,
+      "glow_score": 0.0179
     }
   }
 }
