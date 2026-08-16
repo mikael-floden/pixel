@@ -5,7 +5,7 @@
   "rank": 95,
   "index": 5,
   "name": "Small child-raised sheaf 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "small child-raised sheaf",
   "glow_concept": null,
   "prompt": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, small child-raised sheaf, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:28:04+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "sheaf_poles/sheaf_pole_005/lit_1/sprite.webp",
+      "pixellab_object_id": "67d7a318-6abf-4691-848c-c69d22e5a8ef",
+      "generated_at": "2026-08-16T20:43:45+00:00",
+      "glow_concept": "glowing birds of light perched among the grain",
+      "difference_from_source": 0.6992,
+      "glow_score": 0.3945
+    },
+    "LIT_2": {
+      "sprite": "sheaf_poles/sheaf_pole_005/lit_2/sprite.webp",
+      "pixellab_object_id": "bee58e32-78c6-4ee7-989d-280e7aa0ce5f",
+      "generated_at": "2026-08-16T20:44:27+00:00",
+      "glow_concept": "straw binding shining like a hot band",
+      "difference_from_source": 0.7111,
+      "glow_score": 0.2945
+    },
     "NOT_LIT_1": {
       "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
       "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
       "generated_at": "2026-08-13T21:28:04+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f896ccc2-6dd2-4e6e-aefd-462d116d9c97",
+      "generated_at": "2026-08-16T20:44:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7329,
+      "glow_score": 0.1055
+    },
+    "NOT_LIT_3": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a6578d24-b567-4bee-a4dc-c489e3afb976",
+      "generated_at": "2026-08-16T20:44:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9384,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "da2465a3-08af-4dd1-830d-fa1e65cdfc30",
+      "generated_at": "2026-08-16T20:43:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8554,
+      "glow_score": 0.0929
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "shipwreck_prows",
   "rank": 119,
   "index": 2,
-  "name": "Carved longship prow 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Carved longship prow 002",
+  "lights": null,
   "variety": "carved longship prow",
   "modifier": "a rope ladder still hanging",
   "glow_concept": "the figurehead's eyes faintly aglow",
@@ -36,6 +36,46 @@
       "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
       "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
       "generated_at": "2026-08-14T01:15:52+00:00"
+    },
+    "LIT_2": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/lit_2/sprite.webp",
+      "pixellab_object_id": "59332fcd-c076-40c0-81a5-3cf96d064aed",
+      "generated_at": "2026-08-16T20:45:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3914,
+      "glow_score": 0.0
+    },
+    "LIT_3": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/lit_3/sprite.webp",
+      "pixellab_object_id": "5b90087e-4cba-441b-aaaf-dd9c882eace4",
+      "generated_at": "2026-08-16T20:45:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4734,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/lit_4/sprite.webp",
+      "pixellab_object_id": "bc3a4dd4-3e18-487c-9c56-06c24ae64c20",
+      "generated_at": "2026-08-16T20:46:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4333,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "bd7082e8-32bd-4604-8a9b-390347ae6d4b",
+      "generated_at": "2026-08-16T20:46:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5829,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "59f3a0a4-9f33-494d-bf3c-3537de6019d4",
+      "generated_at": "2026-08-16T20:46:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9207,
+      "glow_score": 0.0
     }
   }
 }

@@ -38291,9 +38291,9 @@
     {
       "id": "scarecrow_022",
       "rel": "scarecrows/scarecrow_022",
-      "name": "Sack-head, patched brown coat 022 \u00b7 lit",
+      "name": "Sack-head, patched brown coat 022",
       "category": "scarecrows",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, sack-head, patched brown coat, large, twice human height, self-emissive at night, softly radiating light: carved turnip head lit from inside",
       "view": "low top-down",
       "size": 64,
@@ -38336,6 +38336,33 @@
           "difference_from_source": 0.6453,
           "glow_score": 0.014,
           "art_hash": "2519082271f752df"
+        },
+        "LIT_4": {
+          "sprite": "scarecrows/scarecrow_022/lit_4/sprite.webp",
+          "pixellab_object_id": "0230fbb5-269f-4979-bd3d-78f7428c8fe5",
+          "generated_at": "2026-08-16T20:40:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6676,
+          "glow_score": 0.0217,
+          "art_hash": "28ccdeb66e0e20dd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "scarecrows/scarecrow_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "36ce7ada-baa8-4864-9be6-3bb313e79242",
+          "generated_at": "2026-08-16T20:42:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4598,
+          "glow_score": 0.0039,
+          "art_hash": "bf33698b38901182"
+        },
+        "NOT_LIT_2": {
+          "sprite": "scarecrows/scarecrow_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1b05b2b2-272c-4f16-a2fe-4defd3bb3b45",
+          "generated_at": "2026-08-16T20:40:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3454,
+          "glow_score": 0.0,
+          "art_hash": "5910257046322720"
         }
       },
       "animations": []
@@ -38345,7 +38372,7 @@
       "rel": "scarecrows/scarecrow_901",
       "name": "Tall thin twin-pole scarecrow 901",
       "category": "scarecrows",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, tall thin twin-pole scarecrow, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -38365,11 +38392,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "scarecrows/scarecrow_901/lit_1/sprite.webp",
+          "pixellab_object_id": "dead3818-3421-460f-947e-eb040b192f67",
+          "generated_at": "2026-08-16T20:42:29+00:00",
+          "glow_concept": "carved turnip head lit from inside",
+          "difference_from_source": 0.9461,
+          "glow_score": 0.2671,
+          "art_hash": "9724d927c5bb415e"
+        },
+        "LIT_2": {
+          "sprite": "scarecrows/scarecrow_901/lit_2/sprite.webp",
+          "pixellab_object_id": "6846c719-0f41-40ee-9eeb-52e7df98bf16",
+          "generated_at": "2026-08-16T20:42:18+00:00",
+          "glow_concept": "twin ember-orange eyes in the sack face",
+          "difference_from_source": 0.5708,
+          "glow_score": 0.0822,
+          "art_hash": "c1a17c1f8ca3bf32"
+        },
         "NOT_LIT_1": {
           "sprite": "scarecrows/scarecrow_901/sprite.webp",
           "pixellab_object_id": "be81d895-de21-4ff0-804b-43d9d6263135",
           "generated_at": "2026-08-13T19:46:47+00:00",
           "art_hash": "652e9d15191b7f61"
+        },
+        "NOT_LIT_2": {
+          "sprite": "scarecrows/scarecrow_901/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3847bf47-b280-4db3-a3f3-a00edcc83850",
+          "generated_at": "2026-08-16T20:40:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.797,
+          "glow_score": 0.0494,
+          "art_hash": "906301a8208fe688"
+        },
+        "NOT_LIT_3": {
+          "sprite": "scarecrows/scarecrow_901/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1d8e4749-e315-4501-922f-b6e8772403bc",
+          "generated_at": "2026-08-16T20:40:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6992,
+          "glow_score": 0.0248,
+          "art_hash": "cfd450fcbd98de07"
+        },
+        "NOT_LIT_4": {
+          "sprite": "scarecrows/scarecrow_901/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fc4ec0d7-4466-4c89-a494-9de8d5e8f977",
+          "generated_at": "2026-08-16T20:41:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6877,
+          "glow_score": 0.0144,
+          "art_hash": "9ac6ac40a8642c50"
         }
       },
       "animations": []
@@ -38377,9 +38449,9 @@
     {
       "id": "sheaf_pole_002",
       "rel": "sheaf_poles/sheaf_pole_002",
-      "name": "Leaning old sheaf pole 002 \u00b7 lit",
+      "name": "Leaning old sheaf pole 002",
       "category": "sheaf_poles",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, leaning old sheaf pole, about as tall as an adult person, self-emissive at night, softly radiating light: glowing birds of light perched among the grain",
       "view": "low top-down",
       "size": 96,
@@ -38404,6 +38476,51 @@
           "pixellab_object_id": "8cf6e732-ff2e-4fea-9b79-f8835a030cd3",
           "generated_at": "2026-08-13T06:03:22+00:00",
           "art_hash": "c0b9085b12892bab"
+        },
+        "LIT_2": {
+          "sprite": "sheaf_poles/sheaf_pole_002/lit_2/sprite.webp",
+          "pixellab_object_id": "70978b65-455b-485d-8c3a-15abfc663c54",
+          "generated_at": "2026-08-16T20:42:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7984,
+          "glow_score": 0.3039,
+          "art_hash": "01704239cee44b07"
+        },
+        "LIT_3": {
+          "sprite": "sheaf_poles/sheaf_pole_002/lit_3/sprite.webp",
+          "pixellab_object_id": "7defb8c0-fbdd-469c-89f9-62161fb6fce7",
+          "generated_at": "2026-08-16T20:42:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8565,
+          "glow_score": 0.102,
+          "art_hash": "c54cbe4735f8faaf"
+        },
+        "LIT_4": {
+          "sprite": "sheaf_poles/sheaf_pole_002/lit_4/sprite.webp",
+          "pixellab_object_id": "727611cc-8117-4ddb-ac94-a4ddd1431e2a",
+          "generated_at": "2026-08-16T20:42:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8567,
+          "glow_score": 0.3925,
+          "art_hash": "a4d3345ed259003d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "sheaf_poles/sheaf_pole_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e0d77135-67a2-4e70-89f4-f17d92732596",
+          "generated_at": "2026-08-16T20:42:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9314,
+          "glow_score": 0.0,
+          "art_hash": "7e68c7af8fea9ff8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "sheaf_poles/sheaf_pole_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a6bcbe78-3835-4acd-b565-3a2f1b1ad2be",
+          "generated_at": "2026-08-16T20:43:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.724,
+          "glow_score": 0.0,
+          "art_hash": "ebfc17477b35f672"
         }
       },
       "animations": []
@@ -38413,7 +38530,7 @@
       "rel": "sheaf_poles/sheaf_pole_005",
       "name": "Small child-raised sheaf 005",
       "category": "sheaf_poles",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden pole with a fat sheaf of oats bound at its top, grain heads nodding over a tied straw cord, small child-raised sheaf, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -38433,11 +38550,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "sheaf_poles/sheaf_pole_005/lit_1/sprite.webp",
+          "pixellab_object_id": "67d7a318-6abf-4691-848c-c69d22e5a8ef",
+          "generated_at": "2026-08-16T20:43:45+00:00",
+          "glow_concept": "glowing birds of light perched among the grain",
+          "difference_from_source": 0.6992,
+          "glow_score": 0.3945,
+          "art_hash": "85ea47999b96fdc8"
+        },
+        "LIT_2": {
+          "sprite": "sheaf_poles/sheaf_pole_005/lit_2/sprite.webp",
+          "pixellab_object_id": "bee58e32-78c6-4ee7-989d-280e7aa0ce5f",
+          "generated_at": "2026-08-16T20:44:27+00:00",
+          "glow_concept": "straw binding shining like a hot band",
+          "difference_from_source": 0.7111,
+          "glow_score": 0.2945,
+          "art_hash": "695892c127013453"
+        },
         "NOT_LIT_1": {
           "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
           "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
           "generated_at": "2026-08-13T21:28:04+00:00",
           "art_hash": "3b2a173abe29ee42"
+        },
+        "NOT_LIT_2": {
+          "sprite": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f896ccc2-6dd2-4e6e-aefd-462d116d9c97",
+          "generated_at": "2026-08-16T20:44:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7329,
+          "glow_score": 0.1055,
+          "art_hash": "9de599f751fa1d2d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a6578d24-b567-4bee-a4dc-c489e3afb976",
+          "generated_at": "2026-08-16T20:44:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9384,
+          "glow_score": 0.0,
+          "art_hash": "372e1da81f2b5352"
+        },
+        "NOT_LIT_4": {
+          "sprite": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "da2465a3-08af-4dd1-830d-fa1e65cdfc30",
+          "generated_at": "2026-08-16T20:43:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8554,
+          "glow_score": 0.0929,
+          "art_hash": "b32bf60085de9376"
         }
       },
       "animations": []
@@ -38445,9 +38607,9 @@
     {
       "id": "shipwreck_prow_002",
       "rel": "shipwreck_prows/shipwreck_prow_002",
-      "name": "Carved longship prow 002 \u00b7 lit",
+      "name": "Carved longship prow 002",
       "category": "shipwreck_prows",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "the broken bow of an old wooden ship beached far from any sea, planks sprung and keel buried in the grass, carved longship prow, a rope ladder still hanging, large, twice human height, self-emissive at night, softly radiating light: the figurehead's eyes faintly aglow",
       "view": "low top-down",
       "size": 128,
@@ -38472,6 +38634,51 @@
           "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
           "generated_at": "2026-08-14T01:15:52+00:00",
           "art_hash": "1ded1b4de28154c5"
+        },
+        "LIT_2": {
+          "sprite": "shipwreck_prows/shipwreck_prow_002/lit_2/sprite.webp",
+          "pixellab_object_id": "59332fcd-c076-40c0-81a5-3cf96d064aed",
+          "generated_at": "2026-08-16T20:45:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3914,
+          "glow_score": 0.0,
+          "art_hash": "cc9fb19613b887af"
+        },
+        "LIT_3": {
+          "sprite": "shipwreck_prows/shipwreck_prow_002/lit_3/sprite.webp",
+          "pixellab_object_id": "5b90087e-4cba-441b-aaaf-dd9c882eace4",
+          "generated_at": "2026-08-16T20:45:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4734,
+          "glow_score": 0.0,
+          "art_hash": "5f2e6f2709da90da"
+        },
+        "LIT_4": {
+          "sprite": "shipwreck_prows/shipwreck_prow_002/lit_4/sprite.webp",
+          "pixellab_object_id": "bc3a4dd4-3e18-487c-9c56-06c24ae64c20",
+          "generated_at": "2026-08-16T20:46:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4333,
+          "glow_score": 0.0,
+          "art_hash": "bbd59bbadb590e09"
+        },
+        "NOT_LIT_1": {
+          "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "bd7082e8-32bd-4604-8a9b-390347ae6d4b",
+          "generated_at": "2026-08-16T20:46:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5829,
+          "glow_score": 0.0,
+          "art_hash": "a06a2141a9a28bd8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "59f3a0a4-9f33-494d-bf3c-3537de6019d4",
+          "generated_at": "2026-08-16T20:46:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9207,
+          "glow_score": 0.0,
+          "art_hash": "8f84b95ee0c6e8c5"
         }
       },
       "animations": []
@@ -38506,6 +38713,24 @@
           "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
           "generated_at": "2026-08-13T08:45:01+00:00",
           "art_hash": "641d33ecbbde5839"
+        },
+        "LIT_2": {
+          "sprite": "signposts/signpost_004/lit_2/sprite.webp",
+          "pixellab_object_id": "b77d255e-1870-45bc-ac12-66ca2f4c8f20",
+          "generated_at": "2026-08-16T20:46:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.633,
+          "glow_score": 0.1197,
+          "art_hash": "2f31284ddd6b3ef6"
+        },
+        "LIT_3": {
+          "sprite": "signposts/signpost_004/lit_3/sprite.webp",
+          "pixellab_object_id": "4d26f494-9d6b-48ce-adfe-f27bed79c3ee",
+          "generated_at": "2026-08-16T20:47:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1834,
+          "glow_score": 0.074,
+          "art_hash": "6341b33c8b684d5c"
         }
       },
       "animations": []

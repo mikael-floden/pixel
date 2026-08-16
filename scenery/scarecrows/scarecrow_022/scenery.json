@@ -5,8 +5,8 @@
   "group": "scarecrows",
   "rank": 26,
   "index": 22,
-  "name": "Sack-head, patched brown coat 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Sack-head, patched brown coat 022",
+  "lights": null,
   "variety": "sack-head, patched brown coat",
   "glow_concept": "carved turnip head lit from inside",
   "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, sack-head, patched brown coat, large, twice human height, self-emissive at night, softly radiating light: carved turnip head lit from inside",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.6453,
       "glow_score": 0.014
+    },
+    "LIT_4": {
+      "sprite": "scarecrows/scarecrow_022/lit_4/sprite.webp",
+      "pixellab_object_id": "0230fbb5-269f-4979-bd3d-78f7428c8fe5",
+      "generated_at": "2026-08-16T20:40:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6676,
+      "glow_score": 0.0217
+    },
+    "NOT_LIT_1": {
+      "sprite": "scarecrows/scarecrow_022/not_lit_1/sprite.webp",
+      "pixellab_object_id": "36ce7ada-baa8-4864-9be6-3bb313e79242",
+      "generated_at": "2026-08-16T20:42:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4598,
+      "glow_score": 0.0039
+    },
+    "NOT_LIT_2": {
+      "sprite": "scarecrows/scarecrow_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1b05b2b2-272c-4f16-a2fe-4defd3bb3b45",
+      "generated_at": "2026-08-16T20:40:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3454,
+      "glow_score": 0.0
     }
   }
 }
