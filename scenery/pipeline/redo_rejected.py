@@ -203,7 +203,14 @@ def main():
     # called too close starts at the top of that ladder instead of the bottom,
     # so the retry is a genuinely different tree rather than the same roll.
     TOO_CLOSE = ("close to the original", "close the original", "to similar",
-                 "too similar", "same tree", "looks the same")
+                 "too similar", "same tree", "looks the same",
+                 # His 2026-08-16 wording on fallen_log_014, three states:
+                 # "Need something that looks a bit different in structure".
+                 # Same complaint, none of the phrases above match it — and it
+                 # names the axis (structure) rather than the comparison, which
+                 # is exactly what the strongest rungs push on.
+                 "different in structure", "bit different", "more different",
+                 "vary the structure", "different structure")
     start_lead = {}
     for rel, st, note in todo:
         if any(p in (note or "").lower() for p in TOO_CLOSE):
