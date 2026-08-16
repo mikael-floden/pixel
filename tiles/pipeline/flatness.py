@@ -103,6 +103,64 @@ def faces(path):
     return out
 
 
+def wall_quality(path):
+    """Score the WALLS, which are the thing that actually has to be generated well.
+
+    The priority order here is the opposite of what it looks like at first glance. The
+    top being one flat colour is not a generation problem: palette_snap rewrites the
+    whole top surface, so a source that was only 0.547 flat with visible grass still
+    comes out at exactly 1.00. Top flatness is free.
+
+    The walls are not free. They become every cliff and mountain face in the game, and
+    postprocess can only recolour them — it cannot invent crack structure that was
+    never generated. So a sheet is worth keeping or discarding almost entirely on how
+    good its walls are, and this is the number that should drive that.
+
+    Measured on the wall faces only:
+      * `spread`  luminance variation relative to brightness — is there any relief at all
+      * `edges`   mean local gradient — real surface STRUCTURE rather than a smooth ramp,
+                  which `uniq` alone cannot tell apart (a soft gradient has many colours
+                  and no texture)
+      * `uniq`    distinct colours, capped, as a coarse detail count
+    `score` combines them; higher is better, and a flat cardboard cliff lands near 0.
+    """
+    im = Image.open(path).convert("RGBA")
+    a = np.asarray(im).astype(float)
+    h, w = a.shape[:2]
+    op = a[:, :, 3] > 200
+    if not op.any():
+        return None
+    ys, xs = np.where(op)
+    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
+    bw = x1 - x0 + 1
+    cx = (x0 + x1) / 2.0
+    hd = bw / 2.0
+    cy = y0 + hd / 2.0
+    yy, xx = np.mgrid[0:h, 0:w]
+    wall = (yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0))) & op
+    wall = _erode(wall, 1)
+    if wall.sum() < 40:
+        return None
+    rgb = a[:, :, :3]
+    lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
+    v = lum[wall]
+    mean = float(v.mean()) or 1.0
+    spread = float(v.std() / mean)
+    # local gradient inside the wall only, so the silhouette edge cannot fake texture
+    gy = np.abs(np.diff(lum, axis=0, prepend=lum[:1]))
+    gx = np.abs(np.diff(lum, axis=1, prepend=lum[:, :1]))
+    inner = _erode(wall, 1)
+    edges = float(((gx + gy) / 2.0)[inner].mean()) if inner.sum() else 0.0
+    px = rgb[wall]
+    uniq = int(len(np.unique((px // 4) * 4, axis=0)))
+    return {
+        "n": int(wall.sum()), "spread": round(spread, 4),
+        "edges": round(edges, 3), "uniq": uniq,
+        "median": [int(x) for x in np.median(px, axis=0)],
+        "score": round(spread * 10.0 + edges * 0.6 + min(uniq, 24) / 8.0, 3),
+    }
+
+
 def dE(rgb, target_hex):
     """Perceptual distance from a measured colour to an intended one."""
     t = np.array([int(target_hex.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4)], float)
