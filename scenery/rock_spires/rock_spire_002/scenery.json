@@ -4,8 +4,8 @@
   "group": "rock_spires",
   "rank": 76,
   "index": 2,
-  "name": "Twisted basalt spire 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Twisted basalt spire 002",
+  "lights": null,
   "variety": "twisted basalt spire",
   "glow_concept": "banded strata glowing in warm layers",
   "prompt": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy, twisted basalt spire, tall, about two people high, self-emissive at night, softly radiating light: banded strata glowing in warm layers",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.5536,
       "glow_score": 0.0633
+    },
+    "LIT_4": {
+      "sprite": "rock_spires/rock_spire_002/lit_4/sprite.webp",
+      "pixellab_object_id": "19c6f14f-4e88-40a4-b941-3201e2a2803e",
+      "generated_at": "2026-08-16T20:14:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5736,
+      "glow_score": 0.0921
+    },
+    "NOT_LIT_1": {
+      "sprite": "rock_spires/rock_spire_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8a8029f7-fd7b-4195-ae2d-4daa98a871a2",
+      "generated_at": "2026-08-16T20:14:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2266,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "rock_spires/rock_spire_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "24a04015-4b54-4c5f-9515-513ceb2d0515",
+      "generated_at": "2026-08-16T20:15:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.981,
+      "glow_score": 0.0
     }
   }
 }

@@ -37072,9 +37072,9 @@
     {
       "id": "rock_spire_002",
       "rel": "rock_spires/rock_spire_002",
-      "name": "Twisted basalt spire 002 \u00b7 lit",
+      "name": "Twisted basalt spire 002",
       "category": "rock_spires",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall narrow natural rock pinnacle rising from a broad stone base, eroded, layered and top-heavy, twisted basalt spire, tall, about two people high, self-emissive at night, softly radiating light: banded strata glowing in warm layers",
       "view": "low top-down",
       "size": 256,
@@ -37117,6 +37117,33 @@
           "difference_from_source": 0.5536,
           "glow_score": 0.0633,
           "art_hash": "8000f593d526b8e8"
+        },
+        "LIT_4": {
+          "sprite": "rock_spires/rock_spire_002/lit_4/sprite.webp",
+          "pixellab_object_id": "19c6f14f-4e88-40a4-b941-3201e2a2803e",
+          "generated_at": "2026-08-16T20:14:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5736,
+          "glow_score": 0.0921,
+          "art_hash": "b9e8f65c8f0e96d3"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rock_spires/rock_spire_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8a8029f7-fd7b-4195-ae2d-4daa98a871a2",
+          "generated_at": "2026-08-16T20:14:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2266,
+          "glow_score": 0.0,
+          "art_hash": "3da09b4b0cd02e9d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rock_spires/rock_spire_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "24a04015-4b54-4c5f-9515-513ceb2d0515",
+          "generated_at": "2026-08-16T20:15:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.981,
+          "glow_score": 0.0,
+          "art_hash": "4e4545e09a7c5128"
         }
       },
       "animations": []
@@ -37126,7 +37153,7 @@
       "rel": "rope_swings/rope_swing_001",
       "name": "Rough timber A-frame swing 001",
       "category": "rope_swings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden swing hanging by two ropes from a stout timber frame, its plank seat swaying above a patch of worn bare ground, rough timber A-frame swing, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -37146,11 +37173,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "rope_swings/rope_swing_001/lit_1/sprite.webp",
+          "pixellab_object_id": "4e9af0d1-bee1-449b-9b08-8de1d53054a9",
+          "generated_at": "2026-08-16T20:18:58+00:00",
+          "glow_concept": "carved initials on the crossbeam glowing warm",
+          "difference_from_source": 0.871,
+          "glow_score": 0.0096,
+          "art_hash": "a35e46c944513eb8"
+        },
+        "LIT_2": {
+          "sprite": "rope_swings/rope_swing_001/lit_2/sprite.webp",
+          "pixellab_object_id": "7f598f9a-b2c8-4cbd-a71a-33fb80f98133",
+          "generated_at": "2026-08-16T20:18:09+00:00",
+          "glow_concept": "worn ground beneath shining in a faint ring",
+          "difference_from_source": 0.947,
+          "glow_score": 0.0408,
+          "art_hash": "b0c6c0e593d0ca29"
+        },
         "NOT_LIT_1": {
           "sprite": "rope_swings/rope_swing_001/sprite.webp",
           "pixellab_object_id": "ee75a8bb-4b98-46c6-8a83-aa49193028e0",
           "generated_at": "2026-08-13T02:42:04+00:00",
           "art_hash": "aa16eace8e73f758"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rope_swings/rope_swing_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d8b1c8a2-d240-437e-aae3-b3f2c84afb90",
+          "generated_at": "2026-08-16T20:17:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4398,
+          "glow_score": 0.0013,
+          "art_hash": "567028f47933272a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "rope_swings/rope_swing_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "5d897157-4142-4925-935f-6fda8609ee4f",
+          "generated_at": "2026-08-16T20:16:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4785,
+          "glow_score": 0.0,
+          "art_hash": "bc990e54c6623beb"
+        },
+        "NOT_LIT_4": {
+          "sprite": "rope_swings/rope_swing_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "64efb6fd-7654-49bc-b3a7-3c9f4c1f7030",
+          "generated_at": "2026-08-16T20:18:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8764,
+          "glow_score": 0.0,
+          "art_hash": "83993b946cfb1091"
         }
       },
       "animations": []
@@ -37158,9 +37230,9 @@
     {
       "id": "rope_swing_002",
       "rel": "rope_swings/rope_swing_002",
-      "name": "Plank seat, hemp ropes 002 \u00b7 lit",
+      "name": "Plank seat, hemp ropes 002",
       "category": "rope_swings",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden swing hanging by two ropes from a stout timber frame, its plank seat swaying above a patch of worn bare ground, plank seat, hemp ropes, large, well above head height of a person, self-emissive at night, softly radiating light: the empty seat glowing softly as if just left",
       "view": "low top-down",
       "size": 128,
@@ -37185,6 +37257,51 @@
           "pixellab_object_id": "16e67abf-8d56-4081-a32c-4796218f5a9d",
           "generated_at": "2026-08-13T05:54:23+00:00",
           "art_hash": "2273b7b855f3b767"
+        },
+        "LIT_2": {
+          "sprite": "rope_swings/rope_swing_002/lit_2/sprite.webp",
+          "pixellab_object_id": "af21e19a-c295-49ca-94c6-7b3bda33107b",
+          "generated_at": "2026-08-16T20:17:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8121,
+          "glow_score": 0.1305,
+          "art_hash": "78bd6bda5af9043e"
+        },
+        "LIT_3": {
+          "sprite": "rope_swings/rope_swing_002/lit_3/sprite.webp",
+          "pixellab_object_id": "4769dfe9-9511-4d66-8b42-7b61aee52dcb",
+          "generated_at": "2026-08-16T20:17:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6097,
+          "glow_score": 0.0783,
+          "art_hash": "aad52fb3ff6b2e7f"
+        },
+        "LIT_4": {
+          "sprite": "rope_swings/rope_swing_002/lit_4/sprite.webp",
+          "pixellab_object_id": "6b92cbe5-a223-4efe-8417-06bd2086779c",
+          "generated_at": "2026-08-16T20:17:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5387,
+          "glow_score": 0.0815,
+          "art_hash": "fa18d133cb283ee5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rope_swings/rope_swing_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d0a0de6e-d7a0-4965-b178-7b7b6b2a1e6f",
+          "generated_at": "2026-08-16T20:19:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.938,
+          "glow_score": 0.0,
+          "art_hash": "b11d614eede87896"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rope_swings/rope_swing_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b0fce75c-f63b-4ef4-8dea-f53a20d29b44",
+          "generated_at": "2026-08-16T20:20:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9683,
+          "glow_score": 0.0,
+          "art_hash": "d4aaf921d4c1cbcf"
         }
       },
       "animations": []
@@ -37194,7 +37311,7 @@
       "rel": "rugs_and_hides/rug_009",
       "name": "Long woven runner rug 009",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, long woven runner rug, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -37214,11 +37331,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "rugs_and_hides/rug_009/lit_1/sprite.webp",
+          "pixellab_object_id": "862ee1ad-8855-4882-98cb-f2e5f21e689e",
+          "generated_at": "2026-08-16T20:20:17+00:00",
+          "glow_concept": "warm hearthlight reflected across the pile",
+          "difference_from_source": 0.5817,
+          "glow_score": 0.2802,
+          "art_hash": "395df29936c4000d"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_009/lit_2/sprite.webp",
+          "pixellab_object_id": "b3fa38cd-37fc-4bfb-980b-96fb37b33e71",
+          "generated_at": "2026-08-16T20:19:48+00:00",
+          "glow_concept": "pattern threads shimmering with woven memory-light",
+          "difference_from_source": 0.6289,
+          "glow_score": 0.2156,
+          "art_hash": "2fec8632116fc586"
+        },
         "NOT_LIT_1": {
           "sprite": "rugs_and_hides/rug_009/sprite.webp",
           "pixellab_object_id": "d2c5e5b0-b4f8-4a2f-a2ce-5ba9b25782ba",
           "generated_at": "2026-08-13T22:59:03+00:00",
           "art_hash": "8e27e6cb0f3b62fe"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0ee71db8-06bc-44ca-9f09-737a3dd2b690",
+          "generated_at": "2026-08-16T20:19:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6506,
+          "glow_score": 0.1211,
+          "art_hash": "f395650e7cfc0545"
+        },
+        "NOT_LIT_3": {
+          "sprite": "rugs_and_hides/rug_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3a63400d-272f-4f67-b86b-635c07715eee",
+          "generated_at": "2026-08-16T20:19:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5034,
+          "glow_score": 0.2712,
+          "art_hash": "d2fe95a6764bca31"
+        },
+        "NOT_LIT_4": {
+          "sprite": "rugs_and_hides/rug_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b703c646-81f0-42a7-be46-296494a2656e",
+          "generated_at": "2026-08-16T20:18:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7613,
+          "glow_score": 0.1374,
+          "art_hash": "4121b4b3adcbde49"
         }
       },
       "animations": []
@@ -37228,7 +37390,7 @@
       "rel": "rugs_and_hides/rug_011",
       "name": "Round braided rug 011",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, round braided rug, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -37248,11 +37410,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "rugs_and_hides/rug_011/lit_1/sprite.webp",
+          "pixellab_object_id": "c469f4b4-89ba-45ce-b5d9-299d4310bf77",
+          "generated_at": "2026-08-16T20:21:21+00:00",
+          "glow_concept": "pattern threads shimmering with woven memory-light",
+          "difference_from_source": 0.6996,
+          "glow_score": 0.3259,
+          "art_hash": "13b4a00b45166dc7"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_011/lit_2/sprite.webp",
+          "pixellab_object_id": "1aec3707-eeae-4c09-b47f-6fbfcf2438b6",
+          "generated_at": "2026-08-16T20:21:31+00:00",
+          "glow_concept": "warm hearthlight reflected across the pile",
+          "difference_from_source": 0.8466,
+          "glow_score": 0.1141,
+          "art_hash": "03c60acb83552c45"
+        },
         "NOT_LIT_1": {
           "sprite": "rugs_and_hides/rug_011/sprite.webp",
           "pixellab_object_id": "3e6be4d6-4711-4910-9d02-94ffe33e52a7",
           "generated_at": "2026-08-13T23:05:52+00:00",
           "art_hash": "a348bbadc8161e3f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f174db9b-a2f1-4700-bcdf-31f169845c76",
+          "generated_at": "2026-08-16T20:20:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3047,
+          "glow_score": 0.1768,
+          "art_hash": "b623d2180f1ef6b1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "rugs_and_hides/rug_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "65574310-0df2-4bc5-93fe-f6355f6275ef",
+          "generated_at": "2026-08-16T20:21:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8908,
+          "glow_score": 0.0,
+          "art_hash": "082b709ef25abb75"
+        },
+        "NOT_LIT_4": {
+          "sprite": "rugs_and_hides/rug_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7892b1a8-5327-4d06-b949-9a7e653ef744",
+          "generated_at": "2026-08-16T20:20:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5296,
+          "glow_score": 0.0,
+          "art_hash": "aba02105649f7833"
         }
       },
       "animations": []
@@ -37287,6 +37494,24 @@
           "pixellab_object_id": "c1fd5055-8f22-4adc-9198-2cc444d7d47d",
           "generated_at": "2026-08-13T23:01:35+00:00",
           "art_hash": "869cda6d692a38ef"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_012/lit_2/sprite.webp",
+          "pixellab_object_id": "a3c90b32-0ff3-4416-8e34-9720ba8073ca",
+          "generated_at": "2026-08-16T20:21:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3296,
+          "glow_score": 0.1842,
+          "art_hash": "d34fe80d3bf5f509"
+        },
+        "LIT_3": {
+          "sprite": "rugs_and_hides/rug_012/lit_3/sprite.webp",
+          "pixellab_object_id": "78b555b3-7a1b-4944-89b8-8b8d0809b034",
+          "generated_at": "2026-08-16T20:21:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2879,
+          "glow_score": 0.1574,
+          "art_hash": "7b1a9a1522d59484"
         }
       },
       "animations": []
