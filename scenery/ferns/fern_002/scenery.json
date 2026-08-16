@@ -4,8 +4,8 @@
   "group": "ferns",
   "rank": 42,
   "index": 2,
-  "name": "Lady fern fountain 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Lady fern fountain 002",
+  "lights": null,
   "variety": "lady fern fountain",
   "glow_concept": "luminous spore dots lining the frond undersides",
   "prompt": "a bushy clump of arching ferns rising from a shaggy root crown, lady fern fountain, small, knee-high to an adult person, self-emissive at night, softly radiating light: luminous spore dots lining the frond undersides",
@@ -35,6 +35,46 @@
       "sprite": "ferns/fern_002/sprite.webp",
       "pixellab_object_id": "4953d2c5-c709-47f5-aee8-41d58c737400",
       "generated_at": "2026-08-13T04:22:37+00:00"
+    },
+    "LIT_2": {
+      "sprite": "ferns/fern_002/lit_2/sprite.webp",
+      "pixellab_object_id": "e8d65da4-96c6-47b6-a60b-3adea8d40520",
+      "generated_at": "2026-08-16T12:02:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3361,
+      "glow_score": 0.0012
+    },
+    "LIT_3": {
+      "sprite": "ferns/fern_002/lit_3/sprite.webp",
+      "pixellab_object_id": "003a90c9-8f35-4023-abd3-bf1d6c88f2b6",
+      "generated_at": "2026-08-16T12:02:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7577,
+      "glow_score": 0.0066
+    },
+    "LIT_4": {
+      "sprite": "ferns/fern_002/lit_4/sprite.webp",
+      "pixellab_object_id": "e4e220eb-9a33-4870-8ef0-6e250cd828aa",
+      "generated_at": "2026-08-16T12:03:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8641,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "ferns/fern_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3273a0e8-2f8c-49bd-9952-007395db97c8",
+      "generated_at": "2026-08-16T12:03:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8856,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "ferns/fern_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "cecb2214-878f-4b88-b09e-c4448ef7d7b6",
+      "generated_at": "2026-08-16T12:05:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8294,
+      "glow_score": 0.0
     }
   }
 }

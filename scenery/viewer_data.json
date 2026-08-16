@@ -24642,9 +24642,9 @@
     {
       "id": "fence_006",
       "rel": "fences/fence_006",
-      "name": "Stone-footed post and rail 006 \u00b7 lit",
+      "name": "Stone-footed post and rail 006",
       "category": "fences",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a short freestanding run of rough wooden fence, two or three posts with split rails between them, stone-footed post and rail, waist-high to an adult person, self-emissive at night, softly radiating light: small tin lantern hung on the end post",
       "view": "low top-down",
       "size": 128,
@@ -24696,6 +24696,24 @@
           "difference_from_source": 0.9442,
           "glow_score": 0.167,
           "art_hash": "fa56d2ec81598217"
+        },
+        "NOT_LIT_1": {
+          "sprite": "fences/fence_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "96ab4cc2-b0e4-4ecc-8508-1e4f54665fb0",
+          "generated_at": "2026-08-16T12:04:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5625,
+          "glow_score": 0.0,
+          "art_hash": "bacb335eb729f6f2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fences/fence_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a79b2fa6-9367-4ee3-8958-65d787fc8cdd",
+          "generated_at": "2026-08-16T12:02:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7256,
+          "glow_score": 0.0,
+          "art_hash": "25b3f4ebe28be588"
         }
       },
       "animations": []
@@ -24705,7 +24723,7 @@
       "rel": "ferns/fern_001",
       "name": "Ostrich fern vase 001",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, ostrich fern vase, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -24725,11 +24743,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_001/lit_1/sprite.webp",
+          "pixellab_object_id": "4e9d5a0a-5f29-4147-b00f-8c3d266a8f0b",
+          "generated_at": "2026-08-16T12:02:45+00:00",
+          "glow_concept": "central fiddlehead coil glowing as it unrolls",
+          "difference_from_source": 0.8348,
+          "glow_score": 0.0681,
+          "art_hash": "a04d03656518e992"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_001/lit_2/sprite.webp",
+          "pixellab_object_id": "e351c4aa-5dea-4ed0-97a1-46a5b1a3946f",
+          "generated_at": "2026-08-16T12:02:46+00:00",
+          "glow_concept": "veins of light tracing every frond",
+          "difference_from_source": 0.8222,
+          "glow_score": 0.0602,
+          "art_hash": "fe90bc0ff52b3d6a"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_001/sprite.webp",
           "pixellab_object_id": "8e8b6640-5c5f-4cad-b4b9-b546a00e08cd",
           "generated_at": "2026-08-13T01:12:13+00:00",
           "art_hash": "ae469bf1cff9c39c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "11ed7492-dd17-4312-b974-22018df275b4",
+          "generated_at": "2026-08-16T12:01:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8883,
+          "glow_score": 0.0,
+          "art_hash": "2f752c75353479c6"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "67732ba2-d6ab-4c4a-9230-23f34a6bd2d3",
+          "generated_at": "2026-08-16T12:02:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8231,
+          "glow_score": 0.0,
+          "art_hash": "4e114155833b383b"
         },
         "NOT_LIT_4": {
           "sprite": "ferns/fern_001/not_lit_4/sprite.webp",
@@ -24746,9 +24800,9 @@
     {
       "id": "fern_002",
       "rel": "ferns/fern_002",
-      "name": "Lady fern fountain 002 \u00b7 lit",
+      "name": "Lady fern fountain 002",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, lady fern fountain, small, knee-high to an adult person, self-emissive at night, softly radiating light: luminous spore dots lining the frond undersides",
       "view": "low top-down",
       "size": 64,
@@ -24773,6 +24827,51 @@
           "pixellab_object_id": "4953d2c5-c709-47f5-aee8-41d58c737400",
           "generated_at": "2026-08-13T04:22:37+00:00",
           "art_hash": "aba5172663e6f8cf"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_002/lit_2/sprite.webp",
+          "pixellab_object_id": "e8d65da4-96c6-47b6-a60b-3adea8d40520",
+          "generated_at": "2026-08-16T12:02:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3361,
+          "glow_score": 0.0012,
+          "art_hash": "d8d036e171ef3f37"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_002/lit_3/sprite.webp",
+          "pixellab_object_id": "003a90c9-8f35-4023-abd3-bf1d6c88f2b6",
+          "generated_at": "2026-08-16T12:02:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7577,
+          "glow_score": 0.0066,
+          "art_hash": "86296d96cb3a0aa3"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_002/lit_4/sprite.webp",
+          "pixellab_object_id": "e4e220eb-9a33-4870-8ef0-6e250cd828aa",
+          "generated_at": "2026-08-16T12:03:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8641,
+          "glow_score": 0.0,
+          "art_hash": "41d41637d368c027"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3273a0e8-2f8c-49bd-9952-007395db97c8",
+          "generated_at": "2026-08-16T12:03:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8856,
+          "glow_score": 0.0,
+          "art_hash": "f94a37550ddbac14"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cecb2214-878f-4b88-b09e-c4448ef7d7b6",
+          "generated_at": "2026-08-16T12:05:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8294,
+          "glow_score": 0.0,
+          "art_hash": "d7aed26b04b527be"
         }
       },
       "animations": []
@@ -24782,7 +24881,7 @@
       "rel": "ferns/fern_003",
       "name": "Unrolling fiddlehead cluster 003",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, unrolling fiddlehead cluster, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -24802,11 +24901,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_003/lit_1/sprite.webp",
+          "pixellab_object_id": "c8584111-8274-49bb-bc60-d50240035b87",
+          "generated_at": "2026-08-16T12:03:57+00:00",
+          "glow_concept": "veins of light tracing every frond",
+          "difference_from_source": 0.4172,
+          "glow_score": 0.1117,
+          "art_hash": "78aac26b52715bfa"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_003/lit_2/sprite.webp",
+          "pixellab_object_id": "3de42a4b-ef70-4ae5-b2ab-d300354820f3",
+          "generated_at": "2026-08-16T12:05:38+00:00",
+          "glow_concept": "cool fog of light pooling under the fronds",
+          "difference_from_source": 0.4204,
+          "glow_score": 0.0562,
+          "art_hash": "bc46b5a18cca935d"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_003/sprite.webp",
           "pixellab_object_id": "c447cfeb-70c1-4c00-8c86-e6177f470162",
           "generated_at": "2026-08-13T07:43:48+00:00",
           "art_hash": "e905d98c9dae24cc"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "79477f6c-8ec5-4218-89c0-162c83df1f69",
+          "generated_at": "2026-08-16T12:04:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6671,
+          "glow_score": 0.0,
+          "art_hash": "fc074f0517363db5"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0aeaa6ff-fe4e-4518-b988-d5c7b64ddfe3",
+          "generated_at": "2026-08-16T12:04:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6081,
+          "glow_score": 0.0,
+          "art_hash": "147fcafef53a24bf"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ea6a9562-eec9-4fc5-bdf2-1867e229b578",
+          "generated_at": "2026-08-16T12:04:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8136,
+          "glow_score": 0.0,
+          "art_hash": "0fd54e377a532b45"
         }
       },
       "animations": []
@@ -24816,7 +24960,7 @@
       "rel": "ferns/fern_005",
       "name": "Green bracken clump 005",
       "category": "ferns",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, green bracken clump, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -24836,11 +24980,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ferns/fern_005/lit_1/sprite.webp",
+          "pixellab_object_id": "5ef30223-e6f0-40b5-987f-517923a03761",
+          "generated_at": "2026-08-16T12:06:33+00:00",
+          "glow_concept": "luminous spore dots lining the frond undersides",
+          "difference_from_source": 0.8329,
+          "glow_score": 0.0276,
+          "art_hash": "c8207d853b88286a"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_005/lit_2/sprite.webp",
+          "pixellab_object_id": "7d2cdd15-45aa-4a23-9757-0fbd9096458e",
+          "generated_at": "2026-08-16T12:06:55+00:00",
+          "glow_concept": "central fiddlehead coil glowing as it unrolls",
+          "difference_from_source": 0.6288,
+          "glow_score": 0.0848,
+          "art_hash": "39e743d9336922dd"
+        },
         "NOT_LIT_1": {
           "sprite": "ferns/fern_005/sprite.webp",
           "pixellab_object_id": "9e984b92-2644-494e-acfc-fdda5ad66e0e",
           "generated_at": "2026-08-13T12:04:08+00:00",
           "art_hash": "f4e95f8acc4da6e9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "00e67b5a-e489-4283-a049-78eb2803ac51",
+          "generated_at": "2026-08-16T12:06:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7186,
+          "glow_score": 0.0,
+          "art_hash": "2dbbf0b38b914778"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ferns/fern_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "16ce1e8f-a344-4c06-bfd8-7d6554756ff7",
+          "generated_at": "2026-08-16T12:04:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6781,
+          "glow_score": 0.0,
+          "art_hash": "0baff5848ad87c9c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ferns/fern_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6b27231b-66c7-4def-8a59-527ca30970b8",
+          "generated_at": "2026-08-16T12:05:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2815,
+          "glow_score": 0.0,
+          "art_hash": "3a04c301c95f758f"
         }
       },
       "animations": []
@@ -24848,9 +25037,9 @@
     {
       "id": "fern_006",
       "rel": "ferns/fern_006",
-      "name": "Copper autumn bracken 006 \u00b7 lit",
+      "name": "Copper autumn bracken 006",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, copper autumn bracken, small, knee-high to an adult person, self-emissive at night, softly radiating light: veins of light tracing every frond",
       "view": "low top-down",
       "size": 64,
@@ -24875,6 +25064,42 @@
           "pixellab_object_id": "13dc0449-9cf3-4962-96d3-60ae6a4fc429",
           "generated_at": "2026-08-13T13:18:31+00:00",
           "art_hash": "bbe2b27ccfc19552"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_006/lit_2/sprite.webp",
+          "pixellab_object_id": "cac9dfcb-9f9c-4ee2-aff4-f3255fc5a557",
+          "generated_at": "2026-08-16T12:07:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4835,
+          "glow_score": 0.1481,
+          "art_hash": "2b45a636ad26cd0f"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_006/lit_3/sprite.webp",
+          "pixellab_object_id": "5138a926-3da3-428b-ac50-0dd091be65e4",
+          "generated_at": "2026-08-16T12:06:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8937,
+          "glow_score": 0.0038,
+          "art_hash": "2678138f29967104"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_006/lit_4/sprite.webp",
+          "pixellab_object_id": "504a3d91-6875-482b-b934-3ae83e6bb8ce",
+          "generated_at": "2026-08-16T12:06:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7613,
+          "glow_score": 0.0892,
+          "art_hash": "e37b837e65a91312"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "27815792-fbed-47cc-a18a-153e1979ec07",
+          "generated_at": "2026-08-16T12:07:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9909,
+          "glow_score": 0.0,
+          "art_hash": "ba8ec711cdd6bbe1"
         }
       },
       "animations": []
