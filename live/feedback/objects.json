@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-16T13:12:50.620Z",
+  "updated_at": "2026-08-16T13:14:33.374Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -15376,9 +15376,10 @@
       "rating": 5
     },
     "scenery/owl_snags/owl_snag_002#lit_1#south": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:53:14.773Z",
-      "rating": 5
+      "status": "rejected",
+      "updated_at": "2026-08-16T13:14:29.140Z",
+      "rating": 1,
+      "art": "c5082b96a346a560"
     },
     "scenery/petrified_stumps/petrified_stump_002#lit_1#south": {
       "status": "approved",
@@ -16820,16 +16821,16 @@
       "status": "approved"
     },
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_1#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T01:19:10.905Z",
+      "updated_at": "2026-08-16T13:14:18.929Z",
       "status": "approved",
-      "art": "03efd9ca560de2b8"
+      "art": "ea1a853ee9fd5601",
+      "rating": 5
     },
     "scenery/owl_snags/owl_snag_002#not_lit_1#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T01:19:19.431Z",
+      "updated_at": "2026-08-16T13:14:26.571Z",
       "status": "approved",
-      "art": "747d515a21aa74d3"
+      "art": "2395c2806765d8fa",
+      "rating": 5
     },
     "scenery/owl_snags/owl_snag_001#not_lit_5#south": {
       "updated_at": "2026-08-16T12:58:01.357Z",
@@ -19052,6 +19053,12 @@
       "updated_at": "2026-08-16T13:09:44.230Z",
       "status": "approved",
       "art": "d36c8a34a5b6395a"
+    },
+    "scenery/wasp_nest_trees/wasp_nest_tree_004#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T13:14:08.776Z",
+      "status": "approved",
+      "art": "736258d52c82ce38"
     }
   }
 }
