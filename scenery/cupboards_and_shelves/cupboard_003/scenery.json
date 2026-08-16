@@ -5,7 +5,7 @@
   "rank": 106,
   "index": 3,
   "name": "Carved linen chest 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "carved linen chest",
   "glow_concept": null,
   "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, carved linen chest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:48:40+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_003/lit_1/sprite.webp",
+      "pixellab_object_id": "567ba4b8-c3bb-483f-99bb-5b0001fe42a7",
+      "generated_at": "2026-08-16T11:30:19+00:00",
+      "glow_concept": "lamplight seeping from behind the cupboard doors",
+      "difference_from_source": 0.6579,
+      "glow_score": 0.389
+    },
+    "LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_003/lit_2/sprite.webp",
+      "pixellab_object_id": "dbeebaf2-2d3f-4a52-8fac-b09e5d0fb037",
+      "generated_at": "2026-08-16T11:29:39+00:00",
+      "glow_concept": "a glowing kettle resting on the sideboard",
+      "difference_from_source": 0.9468,
+      "glow_score": 0.2812
+    },
     "NOT_LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_003/sprite.webp",
       "pixellab_object_id": "93d5690c-0492-484b-9f83-a99a7cb196d3",
       "generated_at": "2026-08-13T21:48:40+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "354f2b56-3537-4fe8-9558-24e37e56bffb",
+      "generated_at": "2026-08-16T11:28:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.512,
+      "glow_score": 0.0062
+    },
+    "NOT_LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "059550c2-a66d-412f-be62-a9ca87cf179e",
+      "generated_at": "2026-08-16T11:30:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6953,
+      "glow_score": 0.0108
     }
   }
 }

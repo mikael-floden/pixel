@@ -4,8 +4,8 @@
   "group": "cupboards_and_shelves",
   "rank": 106,
   "index": 4,
-  "name": "Heavy china cabinet 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Heavy china cabinet 004",
+  "lights": null,
   "variety": "heavy china cabinet",
   "glow_concept": "a glowing kettle resting on the sideboard",
   "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, heavy china cabinet, roughly six feet tall, human height, self-emissive at night, softly radiating light: a glowing kettle resting on the sideboard",
@@ -35,6 +35,30 @@
       "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
       "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
       "generated_at": "2026-08-13T21:01:51+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_004/lit_2/sprite.webp",
+      "pixellab_object_id": "85d4fdee-e406-4990-bb07-8cfafdb885e2",
+      "generated_at": "2026-08-16T11:29:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6756,
+      "glow_score": 0.0361
+    },
+    "LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_004/lit_4/sprite.webp",
+      "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
+      "generated_at": "2026-08-16T11:30:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3462,
+      "glow_score": 0.0382
+    },
+    "NOT_LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "635fb548-a360-4d13-97ca-d41918bdc7ec",
+      "generated_at": "2026-08-16T11:31:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9424,
+      "glow_score": 0.0
     }
   }
 }

@@ -5,7 +5,7 @@
   "rank": 106,
   "index": 1,
   "name": "Tall larder cupboard 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "tall larder cupboard",
   "glow_concept": null,
   "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, tall larder cupboard, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:45:50+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_001/lit_1/sprite.webp",
+      "pixellab_object_id": "1999b58a-c231-45a0-8ec4-529dd608b39e",
+      "generated_at": "2026-08-16T11:28:31+00:00",
+      "glow_concept": "a glowing kettle resting on the sideboard",
+      "difference_from_source": 0.57,
+      "glow_score": 0.0326
+    },
+    "LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_001/lit_2/sprite.webp",
+      "pixellab_object_id": "15c29242-82c1-4682-9dc0-60eda1696626",
+      "generated_at": "2026-08-16T11:26:28+00:00",
+      "glow_concept": "jars of glowing preserves on the shelves",
+      "difference_from_source": 0.3847,
+      "glow_score": 0.0279
+    },
     "NOT_LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_001/sprite.webp",
       "pixellab_object_id": "22ab4e5a-7977-4e82-99d3-ed6a6b4687d7",
       "generated_at": "2026-08-13T20:45:50+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "20830713-2539-438a-9c5f-03adccc382e0",
+      "generated_at": "2026-08-16T11:24:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5157,
+      "glow_score": 0.0038
+    },
+    "NOT_LIT_3": {
+      "sprite": "cupboards_and_shelves/cupboard_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "61f9f239-fc96-4031-92c3-f72033fa18a1",
+      "generated_at": "2026-08-16T11:23:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4288,
+      "glow_score": 0.0023
+    },
+    "NOT_LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "bf699dff-08ab-4597-9ece-2be07bb0d4e4",
+      "generated_at": "2026-08-16T11:24:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3869,
+      "glow_score": 0.0066
     }
   }
 }

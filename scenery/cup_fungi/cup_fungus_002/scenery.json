@@ -4,8 +4,8 @@
   "group": "cup_fungi",
   "rank": 58,
   "index": 2,
-  "name": "Orange peel fungus patch 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Orange peel fungus patch 002",
+  "lights": null,
   "variety": "orange peel fungus patch",
   "glow_concept": "single glowing raindrop pooled in every cup",
   "prompt": "a cluster of small goblet-shaped cup fungi growing from mossy ground, orange peel fungus patch, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: single glowing raindrop pooled in every cup",
@@ -35,6 +35,46 @@
       "sprite": "cup_fungi/cup_fungus_002/sprite.webp",
       "pixellab_object_id": "bb130c61-7029-4e4a-9a8b-aa6820262e4f",
       "generated_at": "2026-08-13T04:48:56+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cup_fungi/cup_fungus_002/lit_2/sprite.webp",
+      "pixellab_object_id": "0bf2d221-627e-451f-9bea-8537096c334b",
+      "generated_at": "2026-08-16T11:21:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6064,
+      "glow_score": 0.1186
+    },
+    "LIT_3": {
+      "sprite": "cup_fungi/cup_fungus_002/lit_3/sprite.webp",
+      "pixellab_object_id": "9f1894d5-0cd5-44fe-981a-7d7949dfa04f",
+      "generated_at": "2026-08-16T11:22:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6707,
+      "glow_score": 0.1131
+    },
+    "LIT_4": {
+      "sprite": "cup_fungi/cup_fungus_002/lit_4/sprite.webp",
+      "pixellab_object_id": "6992ccc6-be3d-49be-967e-cac736c663c0",
+      "generated_at": "2026-08-16T11:22:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6774,
+      "glow_score": 0.1688
+    },
+    "NOT_LIT_1": {
+      "sprite": "cup_fungi/cup_fungus_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "eaac672d-4a5b-44ed-85dc-c7d1eeeec590",
+      "generated_at": "2026-08-16T11:22:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5754,
+      "glow_score": 0.1073
+    },
+    "NOT_LIT_2": {
+      "sprite": "cup_fungi/cup_fungus_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f083604c-2049-4d6a-9f21-ddb35c211d72",
+      "generated_at": "2026-08-16T11:23:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2658,
+      "glow_score": 0.1685
     }
   }
 }

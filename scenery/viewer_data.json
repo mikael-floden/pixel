@@ -19949,7 +19949,7 @@
       "rel": "crystals/crystal_901",
       "name": "Twin crossed shards 901",
       "category": "crystals",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, twin crossed shards, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -19969,6 +19969,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "crystals/crystal_901/lit_1/sprite.webp",
+          "pixellab_object_id": "7e8a3b75-f560-4b7b-a772-0527cdb7a748",
+          "generated_at": "2026-08-16T11:21:57+00:00",
+          "glow_concept": "ground around the base lit in the crystal's color",
+          "difference_from_source": 0.8471,
+          "glow_score": 0.4635,
+          "art_hash": "1a55da113a2b17b2"
+        },
+        "LIT_2": {
+          "sprite": "crystals/crystal_901/lit_2/sprite.webp",
+          "pixellab_object_id": "a526eabc-1abf-43f6-b2ce-9faf0d7f57dd",
+          "generated_at": "2026-08-16T11:25:49+00:00",
+          "glow_concept": "the whole cluster radiating its own gem color",
+          "difference_from_source": 0.5531,
+          "glow_score": 0.3756,
+          "art_hash": "f7e99cced4d72fc4"
+        },
         "NOT_LIT_1": {
           "sprite": "crystals/crystal_901/sprite.webp",
           "pixellab_object_id": "f75fccb0-1042-430d-948a-48549673ca12",
@@ -20039,6 +20057,15 @@
           "glow_score": 0.3896,
           "art_hash": "9e6dc8920d8469cb"
         },
+        "LIT_2": {
+          "sprite": "cup_fungi/cup_fungus_001/lit_2/sprite.webp",
+          "pixellab_object_id": "8ba1b985-ed67-4017-87fa-3ebd5b42038f",
+          "generated_at": "2026-08-16T11:21:26+00:00",
+          "glow_concept": "each cup brimming with glowing liquid light",
+          "difference_from_source": 0.4707,
+          "glow_score": 0.2816,
+          "art_hash": "e32bb84719bcd1c6"
+        },
         "NOT_LIT_1": {
           "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
           "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
@@ -20078,9 +20105,9 @@
     {
       "id": "cup_fungus_002",
       "rel": "cup_fungi/cup_fungus_002",
-      "name": "Orange peel fungus patch 002 \u00b7 lit",
+      "name": "Orange peel fungus patch 002",
       "category": "cup_fungi",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a cluster of small goblet-shaped cup fungi growing from mossy ground, orange peel fungus patch, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: single glowing raindrop pooled in every cup",
       "view": "low top-down",
       "size": 48,
@@ -20105,6 +20132,51 @@
           "pixellab_object_id": "bb130c61-7029-4e4a-9a8b-aa6820262e4f",
           "generated_at": "2026-08-13T04:48:56+00:00",
           "art_hash": "61724682c05aadcd"
+        },
+        "LIT_2": {
+          "sprite": "cup_fungi/cup_fungus_002/lit_2/sprite.webp",
+          "pixellab_object_id": "0bf2d221-627e-451f-9bea-8537096c334b",
+          "generated_at": "2026-08-16T11:21:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6064,
+          "glow_score": 0.1186,
+          "art_hash": "33774725be80d934"
+        },
+        "LIT_3": {
+          "sprite": "cup_fungi/cup_fungus_002/lit_3/sprite.webp",
+          "pixellab_object_id": "9f1894d5-0cd5-44fe-981a-7d7949dfa04f",
+          "generated_at": "2026-08-16T11:22:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6707,
+          "glow_score": 0.1131,
+          "art_hash": "cc17c5802ddd529f"
+        },
+        "LIT_4": {
+          "sprite": "cup_fungi/cup_fungus_002/lit_4/sprite.webp",
+          "pixellab_object_id": "6992ccc6-be3d-49be-967e-cac736c663c0",
+          "generated_at": "2026-08-16T11:22:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6774,
+          "glow_score": 0.1688,
+          "art_hash": "1a1b67b58ffe55ba"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cup_fungi/cup_fungus_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "eaac672d-4a5b-44ed-85dc-c7d1eeeec590",
+          "generated_at": "2026-08-16T11:22:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5754,
+          "glow_score": 0.1073,
+          "art_hash": "5614d927b09a468d"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cup_fungi/cup_fungus_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f083604c-2049-4d6a-9f21-ddb35c211d72",
+          "generated_at": "2026-08-16T11:23:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2658,
+          "glow_score": 0.1685,
+          "art_hash": "8ecf329a826aa69e"
         }
       },
       "animations": []
@@ -20114,7 +20186,7 @@
       "rel": "cupboards_and_shelves/cupboard_001",
       "name": "Tall larder cupboard 001",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, tall larder cupboard, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -20134,11 +20206,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_001/lit_1/sprite.webp",
+          "pixellab_object_id": "1999b58a-c231-45a0-8ec4-529dd608b39e",
+          "generated_at": "2026-08-16T11:28:31+00:00",
+          "glow_concept": "a glowing kettle resting on the sideboard",
+          "difference_from_source": 0.57,
+          "glow_score": 0.0326,
+          "art_hash": "35ee65a7fcdebe49"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_001/lit_2/sprite.webp",
+          "pixellab_object_id": "15c29242-82c1-4682-9dc0-60eda1696626",
+          "generated_at": "2026-08-16T11:26:28+00:00",
+          "glow_concept": "jars of glowing preserves on the shelves",
+          "difference_from_source": 0.3847,
+          "glow_score": 0.0279,
+          "art_hash": "a5e685315f6c66f3"
+        },
         "NOT_LIT_1": {
           "sprite": "cupboards_and_shelves/cupboard_001/sprite.webp",
           "pixellab_object_id": "22ab4e5a-7977-4e82-99d3-ed6a6b4687d7",
           "generated_at": "2026-08-13T20:45:50+00:00",
           "art_hash": "5cc1b02d12099a10"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "20830713-2539-438a-9c5f-03adccc382e0",
+          "generated_at": "2026-08-16T11:24:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5157,
+          "glow_score": 0.0038,
+          "art_hash": "39c3e1da0083087e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "61f9f239-fc96-4031-92c3-f72033fa18a1",
+          "generated_at": "2026-08-16T11:23:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4288,
+          "glow_score": 0.0023,
+          "art_hash": "e7485835e50e12ff"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "bf699dff-08ab-4597-9ece-2be07bb0d4e4",
+          "generated_at": "2026-08-16T11:24:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3869,
+          "glow_score": 0.0066,
+          "art_hash": "824296f1c191a81f"
         }
       },
       "animations": []
@@ -20146,9 +20263,9 @@
     {
       "id": "cupboard_002",
       "rel": "cupboards_and_shelves/cupboard_002",
-      "name": "Painted folk-art cupboard 002 \u00b7 lit",
+      "name": "Painted folk-art cupboard 002",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, painted folk-art cupboard, large, twice human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
       "view": "low top-down",
       "size": 128,
@@ -20173,6 +20290,51 @@
           "pixellab_object_id": "16132f0f-b737-4e4c-90ca-00a639454660",
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "b9e306a7bfec02f6"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_002/lit_2/sprite.webp",
+          "pixellab_object_id": "06e198e7-2f6a-4af9-adb2-b3b77053915d",
+          "generated_at": "2026-08-16T11:25:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6432,
+          "glow_score": 0.0225,
+          "art_hash": "5853a0567551852b"
+        },
+        "LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_002/lit_3/sprite.webp",
+          "pixellab_object_id": "33c809ba-bbcd-43c9-a8e3-ec18551351aa",
+          "generated_at": "2026-08-16T11:26:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8643,
+          "glow_score": 0.2402,
+          "art_hash": "8f385d3398b7fa6c"
+        },
+        "LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_002/lit_4/sprite.webp",
+          "pixellab_object_id": "27a47eba-f92b-4b82-a44c-627d6350acf6",
+          "generated_at": "2026-08-16T11:26:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7467,
+          "glow_score": 0.0385,
+          "art_hash": "c94e499e5e055e88"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "24a1d651-fa6a-461a-ace7-a3ea1a5e9d5d",
+          "generated_at": "2026-08-16T11:27:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9359,
+          "glow_score": 0.0,
+          "art_hash": "737cb9ee8d3146c1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "405afae6-77d8-4e00-a419-04cd38c1cd11",
+          "generated_at": "2026-08-16T11:27:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8727,
+          "glow_score": 0.0,
+          "art_hash": "ff01ef2fc149b6ab"
         }
       },
       "animations": []
@@ -20182,7 +20344,7 @@
       "rel": "cupboards_and_shelves/cupboard_003",
       "name": "Carved linen chest 003",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, carved linen chest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -20202,11 +20364,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_003/lit_1/sprite.webp",
+          "pixellab_object_id": "567ba4b8-c3bb-483f-99bb-5b0001fe42a7",
+          "generated_at": "2026-08-16T11:30:19+00:00",
+          "glow_concept": "lamplight seeping from behind the cupboard doors",
+          "difference_from_source": 0.6579,
+          "glow_score": 0.389,
+          "art_hash": "351415ae739c31b9"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_003/lit_2/sprite.webp",
+          "pixellab_object_id": "dbeebaf2-2d3f-4a52-8fac-b09e5d0fb037",
+          "generated_at": "2026-08-16T11:29:39+00:00",
+          "glow_concept": "a glowing kettle resting on the sideboard",
+          "difference_from_source": 0.9468,
+          "glow_score": 0.2812,
+          "art_hash": "0399068bfcb06c7d"
+        },
         "NOT_LIT_1": {
           "sprite": "cupboards_and_shelves/cupboard_003/sprite.webp",
           "pixellab_object_id": "93d5690c-0492-484b-9f83-a99a7cb196d3",
           "generated_at": "2026-08-13T21:48:40+00:00",
           "art_hash": "da18978d1dcccf97"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "354f2b56-3537-4fe8-9558-24e37e56bffb",
+          "generated_at": "2026-08-16T11:28:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.512,
+          "glow_score": 0.0062,
+          "art_hash": "2ff8124169d78319"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "059550c2-a66d-412f-be62-a9ca87cf179e",
+          "generated_at": "2026-08-16T11:30:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6953,
+          "glow_score": 0.0108,
+          "art_hash": "b8697aa12d39fb2f"
         }
       },
       "animations": []
@@ -20214,9 +20412,9 @@
     {
       "id": "cupboard_004",
       "rel": "cupboards_and_shelves/cupboard_004",
-      "name": "Heavy china cabinet 004 \u00b7 lit",
+      "name": "Heavy china cabinet 004",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, heavy china cabinet, roughly six feet tall, human height, self-emissive at night, softly radiating light: a glowing kettle resting on the sideboard",
       "view": "low top-down",
       "size": 128,
@@ -20241,6 +20439,33 @@
           "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
           "generated_at": "2026-08-13T21:01:51+00:00",
           "art_hash": "e4f2cf3ec60e8e9b"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_004/lit_2/sprite.webp",
+          "pixellab_object_id": "85d4fdee-e406-4990-bb07-8cfafdb885e2",
+          "generated_at": "2026-08-16T11:29:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6756,
+          "glow_score": 0.0361,
+          "art_hash": "613751c4168139ab"
+        },
+        "LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_004/lit_4/sprite.webp",
+          "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
+          "generated_at": "2026-08-16T11:30:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3462,
+          "glow_score": 0.0382,
+          "art_hash": "d9ee90f4cc837220"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "635fb548-a360-4d13-97ca-d41918bdc7ec",
+          "generated_at": "2026-08-16T11:31:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9424,
+          "glow_score": 0.0,
+          "art_hash": "cd4fdf497e090620"
         }
       },
       "animations": []

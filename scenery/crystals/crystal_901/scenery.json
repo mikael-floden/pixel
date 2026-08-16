@@ -6,7 +6,7 @@
   "rank": 37,
   "index": 901,
   "name": "Twin crossed shards 901",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "twin crossed shards",
   "glow_concept": null,
   "prompt": "a cluster of thick chunky faceted crystal shards growing up out of a rocky base, broad solid gem forms, twin crossed shards, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -33,6 +33,22 @@
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "crystals/crystal_901/lit_1/sprite.webp",
+      "pixellab_object_id": "7e8a3b75-f560-4b7b-a772-0527cdb7a748",
+      "generated_at": "2026-08-16T11:21:57+00:00",
+      "glow_concept": "ground around the base lit in the crystal's color",
+      "difference_from_source": 0.8471,
+      "glow_score": 0.4635
+    },
+    "LIT_2": {
+      "sprite": "crystals/crystal_901/lit_2/sprite.webp",
+      "pixellab_object_id": "a526eabc-1abf-43f6-b2ce-9faf0d7f57dd",
+      "generated_at": "2026-08-16T11:25:49+00:00",
+      "glow_concept": "the whole cluster radiating its own gem color",
+      "difference_from_source": 0.5531,
+      "glow_score": 0.3756
+    },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_901/sprite.webp",
       "pixellab_object_id": "f75fccb0-1042-430d-948a-48549673ca12",
