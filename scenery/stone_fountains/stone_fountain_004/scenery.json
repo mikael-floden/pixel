@@ -4,8 +4,8 @@
   "group": "stone_fountains",
   "rank": 75,
   "index": 4,
-  "name": "Fountain with carved child figure 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fountain with carved child figure 004",
+  "lights": null,
   "variety": "fountain with carved child figure",
   "glow_concept": "carved memorial runes shining on the stone",
   "prompt": "a small round village fountain of fitted grey stone, a mossy basin with a carved central spout trickling water, fountain with carved child figure, large, twice human height, self-emissive at night, softly radiating light: carved memorial runes shining on the stone",
@@ -59,6 +59,22 @@
       "glow_concept": null,
       "difference_from_source": 0.4472,
       "glow_score": 0.0188
+    },
+    "NOT_LIT_1": {
+      "sprite": "stone_fountains/stone_fountain_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "1ad0e295-723d-4f70-8bc7-7d82bfffd197",
+      "generated_at": "2026-08-16T21:40:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9799,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stone_fountains/stone_fountain_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "538a6e78-122b-4d6c-b490-79633b438d0d",
+      "generated_at": "2026-08-16T21:37:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9169,
+      "glow_score": 0.0006
     }
   }
 }
