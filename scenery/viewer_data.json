@@ -40276,7 +40276,7 @@
       "rel": "standing_stones/standing_stone_001",
       "name": "Red sandstone obelisk 001",
       "category": "standing_stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, red sandstone obelisk, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -40296,11 +40296,38 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "standing_stones/standing_stone_001/lit_1/sprite.webp",
+          "pixellab_object_id": "637d3b8c-c67c-4621-a516-1750f4c9b97e",
+          "generated_at": "2026-08-16T21:19:20+00:00",
+          "glow_concept": "crown of beacon light at the tip",
+          "difference_from_source": 0.8748,
+          "glow_score": 0.2201,
+          "art_hash": "7bfdb1a388174b9c"
+        },
+        "LIT_2": {
+          "sprite": "standing_stones/standing_stone_001/lit_2/sprite.webp",
+          "pixellab_object_id": "a0ea27b3-4a0b-4e3a-92ff-61a12185d615",
+          "generated_at": "2026-08-16T21:23:35+00:00",
+          "glow_concept": "glowing notch marks along one edge",
+          "difference_from_source": 0.5537,
+          "glow_score": 0.4802,
+          "art_hash": "1d1da50e13f96f25"
+        },
         "NOT_LIT_1": {
           "sprite": "standing_stones/standing_stone_001/sprite.webp",
           "pixellab_object_id": "b8059594-b225-46e7-84ec-8d4e6640ef95",
           "generated_at": "2026-08-13T01:01:57+00:00",
           "art_hash": "7a80e2f58843a7b8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "standing_stones/standing_stone_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "10770f82-fd1c-4595-a77a-e1631014a049",
+          "generated_at": "2026-08-16T21:18:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3136,
+          "glow_score": 0.1422,
+          "art_hash": "8967151fe0cf5013"
         },
         "NOT_LIT_3": {
           "sprite": "standing_stones/standing_stone_001/not_lit_3/sprite.webp",
@@ -40328,7 +40355,7 @@
       "rel": "standing_stones/standing_stone_005",
       "name": "Plain grey menhir 005",
       "category": "standing_stones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, plain grey menhir, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -40348,11 +40375,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "standing_stones/standing_stone_005/lit_1/sprite.webp",
+          "pixellab_object_id": "e8783976-3229-43a5-ad71-a9439e2f496b",
+          "generated_at": "2026-08-16T21:20:30+00:00",
+          "glow_concept": "spiral carvings glowing ember orange",
+          "difference_from_source": 0.9969,
+          "glow_score": 0.0772,
+          "art_hash": "11e116d6ab271c97"
+        },
+        "LIT_2": {
+          "sprite": "standing_stones/standing_stone_005/lit_2/sprite.webp",
+          "pixellab_object_id": "9ee92ec7-1fc7-4eb5-b65e-34ec9828c01f",
+          "generated_at": "2026-08-16T21:20:52+00:00",
+          "glow_concept": "crown of beacon light at the tip",
+          "difference_from_source": 0.9431,
+          "glow_score": 0.2763,
+          "art_hash": "18092de7f52b6d18"
+        },
         "NOT_LIT_1": {
           "sprite": "standing_stones/standing_stone_005/sprite.webp",
           "pixellab_object_id": "cc7295de-3f50-46fc-bbb2-4f77849355a1",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "d140298f5e34b90a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "standing_stones/standing_stone_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "933a3f28-1293-4625-b9e9-3bbca72d4b22",
+          "generated_at": "2026-08-16T21:20:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5251,
+          "glow_score": 0.0,
+          "art_hash": "357f6e0a76c524fa"
+        },
+        "NOT_LIT_3": {
+          "sprite": "standing_stones/standing_stone_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "2a09e668-ed93-430c-8a21-d08707fd71e5",
+          "generated_at": "2026-08-16T21:19:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7855,
+          "glow_score": 0.0366,
+          "art_hash": "6458c61e1b228112"
+        },
+        "NOT_LIT_4": {
+          "sprite": "standing_stones/standing_stone_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4ecfa62d-e978-4a29-a74d-6d73a96773a9",
+          "generated_at": "2026-08-16T21:20:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5139,
+          "glow_score": 0.0,
+          "art_hash": "0f04afd9b0cea617"
         }
       },
       "animations": []
@@ -40360,9 +40432,9 @@
     {
       "id": "standing_stone_006",
       "rel": "standing_stones/standing_stone_006",
-      "name": "Rope-wrapped venerated stone 006 \u00b7 lit",
+      "name": "Rope-wrapped venerated stone 006",
       "category": "standing_stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, rope-wrapped venerated stone, tall, about two people high, self-emissive at night, softly radiating light: glowing notch marks along one edge",
       "view": "low top-down",
       "size": 160,
@@ -40387,6 +40459,51 @@
           "pixellab_object_id": "2c382de7-cab3-48da-9b33-a8703a9349aa",
           "generated_at": "2026-08-13T13:18:30+00:00",
           "art_hash": "3b9a9e9d52e76269"
+        },
+        "LIT_2": {
+          "sprite": "standing_stones/standing_stone_006/lit_2/sprite.webp",
+          "pixellab_object_id": "1887eaaa-8024-4a30-943b-1c6fee8ca8f6",
+          "generated_at": "2026-08-16T21:21:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5488,
+          "glow_score": 0.0266,
+          "art_hash": "082552f3040a1a92"
+        },
+        "LIT_3": {
+          "sprite": "standing_stones/standing_stone_006/lit_3/sprite.webp",
+          "pixellab_object_id": "11d61a96-4613-4d92-82eb-318edae18888",
+          "generated_at": "2026-08-16T21:22:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5603,
+          "glow_score": 0.0639,
+          "art_hash": "f3cbfd6bc859b48d"
+        },
+        "LIT_4": {
+          "sprite": "standing_stones/standing_stone_006/lit_4/sprite.webp",
+          "pixellab_object_id": "be6199b0-b800-4279-b3b3-d0b9b98aba86",
+          "generated_at": "2026-08-16T21:23:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4611,
+          "glow_score": 0.0,
+          "art_hash": "56007f42e8336d6c"
+        },
+        "NOT_LIT_1": {
+          "sprite": "standing_stones/standing_stone_006/not_lit_1/sprite.webp",
+          "pixellab_object_id": "0d6b2075-fbcb-4189-b6cf-c7cdc9b9dcdc",
+          "generated_at": "2026-08-16T21:23:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5958,
+          "glow_score": 0.0,
+          "art_hash": "a699961fb993e001"
+        },
+        "NOT_LIT_2": {
+          "sprite": "standing_stones/standing_stone_006/not_lit_2/sprite.webp",
+          "pixellab_object_id": "76d6c4bb-86d7-4f1d-89a3-998015cb2c18",
+          "generated_at": "2026-08-16T21:23:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7684,
+          "glow_score": 0.0,
+          "art_hash": "e0f6302570dbf514"
         }
       },
       "animations": []
@@ -40394,9 +40511,9 @@
     {
       "id": "standing_stone_010",
       "rel": "standing_stones/standing_stone_010",
-      "name": "Notch-scored slender pillar 010 \u00b7 lit",
+      "name": "Notch-scored slender pillar 010",
       "category": "standing_stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, notch-scored slender pillar, large, twice human height, self-emissive at night, softly radiating light: pulsing moon-white ring symbols",
       "view": "low top-down",
       "size": 160,
@@ -40421,6 +40538,51 @@
           "pixellab_object_id": "1a7a5a3a-3d2a-44f9-acf8-0e3b18129947",
           "generated_at": "2026-08-13T21:59:13+00:00",
           "art_hash": "d162ca11cdc2b6dc"
+        },
+        "LIT_2": {
+          "sprite": "standing_stones/standing_stone_010/lit_2/sprite.webp",
+          "pixellab_object_id": "e73d9007-80d1-47ec-872d-eddc59ab9b95",
+          "generated_at": "2026-08-16T21:24:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4181,
+          "glow_score": 0.0,
+          "art_hash": "39fc8464e7a0c74c"
+        },
+        "LIT_3": {
+          "sprite": "standing_stones/standing_stone_010/lit_3/sprite.webp",
+          "pixellab_object_id": "669f44eb-e9a3-492a-b79b-4d660f762485",
+          "generated_at": "2026-08-16T21:24:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6176,
+          "glow_score": 0.0,
+          "art_hash": "f402c5500f436bfb"
+        },
+        "LIT_4": {
+          "sprite": "standing_stones/standing_stone_010/lit_4/sprite.webp",
+          "pixellab_object_id": "3153afca-5f65-49d7-8751-60b05733875d",
+          "generated_at": "2026-08-16T21:23:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5655,
+          "glow_score": 0.0,
+          "art_hash": "cd6fef8f3d2c6f85"
+        },
+        "NOT_LIT_1": {
+          "sprite": "standing_stones/standing_stone_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a4030ed4-8323-4ec7-87b4-59cbd7dc600d",
+          "generated_at": "2026-08-16T21:24:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2744,
+          "glow_score": 0.0,
+          "art_hash": "3cfa2ce0b855c93e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "standing_stones/standing_stone_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b2f7bfb3-c51a-4adc-af9a-d3df6d421247",
+          "generated_at": "2026-08-16T21:26:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9158,
+          "glow_score": 0.0,
+          "art_hash": "f9a306b57a579994"
         }
       },
       "animations": []
@@ -40428,9 +40590,9 @@
     {
       "id": "standing_stone_012",
       "rel": "standing_stones/standing_stone_012",
-      "name": "Holed stone with round opening 012 \u00b7 lit",
+      "name": "Holed stone with round opening 012",
       "category": "standing_stones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, holed stone with round opening, large, twice human height, self-emissive at night, softly radiating light: spiral carvings glowing ember orange",
       "view": "low top-down",
       "size": 160,
@@ -40455,6 +40617,42 @@
           "pixellab_object_id": "674a0840-5d04-4302-8417-9778a761f1f3",
           "generated_at": "2026-08-13T23:13:41+00:00",
           "art_hash": "9f7db113b4d9f342"
+        },
+        "LIT_3": {
+          "sprite": "standing_stones/standing_stone_012/lit_3/sprite.webp",
+          "pixellab_object_id": "3640efc2-53ee-4d51-ba84-797ac9fa2b2c",
+          "generated_at": "2026-08-16T21:26:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4953,
+          "glow_score": 0.0757,
+          "art_hash": "0176b464ae0d7714"
+        },
+        "LIT_4": {
+          "sprite": "standing_stones/standing_stone_012/lit_4/sprite.webp",
+          "pixellab_object_id": "6388dcc6-15f9-4cb0-a5c0-e3b88854822a",
+          "generated_at": "2026-08-16T21:26:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6459,
+          "glow_score": 0.0527,
+          "art_hash": "154459f0d8dad0d7"
+        },
+        "NOT_LIT_1": {
+          "sprite": "standing_stones/standing_stone_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "0f66e98e-1c79-4562-9911-0c9d50e93e64",
+          "generated_at": "2026-08-16T21:28:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.633,
+          "glow_score": 0.0,
+          "art_hash": "9294cd9c8e28878b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "standing_stones/standing_stone_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "36d53f7a-7a5d-4fc9-bc79-eb84f5ed7eaf",
+          "generated_at": "2026-08-16T21:28:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4851,
+          "glow_score": 0.0,
+          "art_hash": "9cd9f49d1255932a"
         }
       },
       "animations": []
@@ -40462,9 +40660,9 @@
     {
       "id": "statue_002",
       "rel": "statues/statue_002",
-      "name": "Harpist mid-song 002 \u00b7 lit",
+      "name": "Harpist mid-song 002",
       "category": "statues",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered stone statue of a standing figure on a low square pedestal, features softened by age, harpist mid-song, large, well above head height of a person, self-emissive at night, softly radiating light: ring of votive candles around the pedestal",
       "view": "low top-down",
       "size": 128,
@@ -40489,6 +40687,33 @@
           "pixellab_object_id": "d99b5d4f-70bd-4990-b1d0-0791a91cafe8",
           "generated_at": "2026-08-13T05:51:28+00:00",
           "art_hash": "42446b5a7334dd60"
+        },
+        "LIT_2": {
+          "sprite": "statues/statue_002/lit_2/sprite.webp",
+          "pixellab_object_id": "f651c932-bc83-4f6f-bb0f-dfa687f693cb",
+          "generated_at": "2026-08-16T21:28:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6757,
+          "glow_score": 0.1425,
+          "art_hash": "a0b813c969f75e9c"
+        },
+        "LIT_3": {
+          "sprite": "statues/statue_002/lit_3/sprite.webp",
+          "pixellab_object_id": "02a89192-7db9-4bce-95dd-22c6d3989dad",
+          "generated_at": "2026-08-16T21:27:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7889,
+          "glow_score": 0.143,
+          "art_hash": "9ace291765790bcd"
+        },
+        "NOT_LIT_2": {
+          "sprite": "statues/statue_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1189acf4-e6d4-420d-83f2-ede936d699cb",
+          "generated_at": "2026-08-16T21:28:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9873,
+          "glow_score": 0.0,
+          "art_hash": "87ccb1280f12d144"
         }
       },
       "animations": []

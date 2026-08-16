@@ -5,7 +5,7 @@
   "rank": 38,
   "index": 1,
   "name": "Red sandstone obelisk 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "red sandstone obelisk",
   "glow_concept": null,
   "prompt": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, red sandstone obelisk, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,34 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:01:57+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "standing_stones/standing_stone_001/lit_1/sprite.webp",
+      "pixellab_object_id": "637d3b8c-c67c-4621-a516-1750f4c9b97e",
+      "generated_at": "2026-08-16T21:19:20+00:00",
+      "glow_concept": "crown of beacon light at the tip",
+      "difference_from_source": 0.8748,
+      "glow_score": 0.2201
+    },
+    "LIT_2": {
+      "sprite": "standing_stones/standing_stone_001/lit_2/sprite.webp",
+      "pixellab_object_id": "a0ea27b3-4a0b-4e3a-92ff-61a12185d615",
+      "generated_at": "2026-08-16T21:23:35+00:00",
+      "glow_concept": "glowing notch marks along one edge",
+      "difference_from_source": 0.5537,
+      "glow_score": 0.4802
+    },
     "NOT_LIT_1": {
       "sprite": "standing_stones/standing_stone_001/sprite.webp",
       "pixellab_object_id": "b8059594-b225-46e7-84ec-8d4e6640ef95",
       "generated_at": "2026-08-13T01:01:57+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "standing_stones/standing_stone_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "10770f82-fd1c-4595-a77a-e1631014a049",
+      "generated_at": "2026-08-16T21:18:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3136,
+      "glow_score": 0.1422
     },
     "NOT_LIT_3": {
       "sprite": "standing_stones/standing_stone_001/not_lit_3/sprite.webp",
