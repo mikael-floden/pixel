@@ -7,7 +7,7 @@
   "rank": 2,
   "index": 37,
   "name": "White quartz-veined boulder 037",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "white quartz-veined boulder",
   "modifier": "with fallen leaves collected at its base",
   "glow_concept": null,
@@ -45,6 +45,22 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_037/lit_1/sprite.webp",
+      "pixellab_object_id": "c798aedc-b39f-4eea-80fc-8d77bbf619cf",
+      "generated_at": "2026-08-16T22:11:07+00:00",
+      "glow_concept": "molten orange soulstone veins in deep cracks",
+      "difference_from_source": 0.8358,
+      "glow_score": 0.1369
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_037/lit_2/sprite.webp",
+      "pixellab_object_id": "edc49807-c165-4c9e-a271-92a3d42835f7",
+      "generated_at": "2026-08-16T22:10:18+00:00",
+      "glow_concept": "glowing pale handprint pressed on the face",
+      "difference_from_source": 0.7208,
+      "glow_score": 0.0902
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_037/sprite.webp",
       "pixellab_object_id": "80980062-9bba-400a-917f-98607ae32d95",
@@ -65,6 +81,14 @@
       "glow_concept": null,
       "difference_from_source": 0.5856,
       "glow_score": 0.054
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_037/not_lit_4/sprite.webp",
+      "pixellab_object_id": "89eff7f8-d2fc-473c-84e9-b824629220c2",
+      "generated_at": "2026-08-16T22:09:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4006,
+      "glow_score": 0.0278
     }
   }
 }
