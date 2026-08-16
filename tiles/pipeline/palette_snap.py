@@ -382,7 +382,8 @@ def middle_floor(img, band=4):
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
 
-def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
+def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
+         align_walls=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -411,7 +412,7 @@ def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
         return img.convert("RGBA")
     out = a.copy()
     top = _hex(top_hex)
-    side = _hex(side_hex)
+    side = _hex(side_hex) if side_hex else np.array([128.0, 128.0, 128.0])
     side_hsv = _rgb2hsv(side[None, :])[0]
 
     lum = {}
@@ -427,7 +428,7 @@ def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     if reg["top"].sum():
         out[:, :, :3][reg["top"]] = np.clip(top, 0, 255)
 
-    for k in ("left", "right"):
+    for k in ("left", "right") if align_walls else ():
         m = reg[k]
         if not m.sum():
             continue
