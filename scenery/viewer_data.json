@@ -20397,6 +20397,15 @@
           "glow_score": 0.0062,
           "art_hash": "2ff8124169d78319"
         },
+        "NOT_LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "aab0a6c0-aa6b-4b9d-a884-9e06293f5aaa",
+          "generated_at": "2026-08-16T11:33:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1407,
+          "glow_score": 0.0013,
+          "art_hash": "c88946d96c7a5edd"
+        },
         "NOT_LIT_4": {
           "sprite": "cupboards_and_shelves/cupboard_003/not_lit_4/sprite.webp",
           "pixellab_object_id": "059550c2-a66d-412f-be62-a9ca87cf179e",
@@ -20449,6 +20458,15 @@
           "glow_score": 0.0361,
           "art_hash": "613751c4168139ab"
         },
+        "LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_004/lit_3/sprite.webp",
+          "pixellab_object_id": "2328637a-3dcc-49d5-b18e-0839b347802c",
+          "generated_at": "2026-08-16T11:31:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6186,
+          "glow_score": 0.0974,
+          "art_hash": "abe80d53b5e53c6e"
+        },
         "LIT_4": {
           "sprite": "cupboards_and_shelves/cupboard_004/lit_4/sprite.webp",
           "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
@@ -20466,6 +20484,15 @@
           "difference_from_source": 0.9424,
           "glow_score": 0.0,
           "art_hash": "cd4fdf497e090620"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "545441ac-b7a5-490a-94ec-552b660bdb55",
+          "generated_at": "2026-08-16T11:32:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9869,
+          "glow_score": 0.0,
+          "art_hash": "3e3ff56c9df5fb26"
         }
       },
       "animations": []
@@ -20475,7 +20502,7 @@
       "rel": "cupboards_and_shelves/cupboard_005",
       "name": "Bookshelf of worn plain cloth-bound books with blank spines 005",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, bookshelf of worn plain cloth-bound books with blank spines, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -20495,11 +20522,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_005/lit_1/sprite.webp",
+          "pixellab_object_id": "65e344f3-b6d3-4b23-94f3-9c22dbe0ab58",
+          "generated_at": "2026-08-16T11:34:23+00:00",
+          "glow_concept": "lamplight seeping from behind the cupboard doors",
+          "difference_from_source": 0.7409,
+          "glow_score": 0.0776,
+          "art_hash": "d33bc56d190e3be2"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_005/lit_2/sprite.webp",
+          "pixellab_object_id": "dfb22314-df63-465f-a655-49ad1121b115",
+          "generated_at": "2026-08-16T11:33:41+00:00",
+          "glow_concept": "a glowing kettle resting on the sideboard",
+          "difference_from_source": 0.8925,
+          "glow_score": 0.1209,
+          "art_hash": "aa50ff797359ee82"
+        },
         "NOT_LIT_1": {
           "sprite": "cupboards_and_shelves/cupboard_005/sprite.webp",
           "pixellab_object_id": "57b3d7e8-6ffd-45c9-9724-13ffc0d59ca4",
           "generated_at": "2026-08-13T22:17:26+00:00",
           "art_hash": "f9b24be7cb98c337"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0cb781a7-7f25-4213-b553-d8aa52524f40",
+          "generated_at": "2026-08-16T11:32:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2691,
+          "glow_score": 0.0,
+          "art_hash": "d08f06defe1a4400"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f634a649-1780-401f-8582-4b454d720356",
+          "generated_at": "2026-08-16T11:33:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5376,
+          "glow_score": 0.0008,
+          "art_hash": "b186ddebe24e7cdf"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c3d20a72-02ef-4640-b7fd-c179a52cb4a4",
+          "generated_at": "2026-08-16T11:33:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1823,
+          "glow_score": 0.0027,
+          "art_hash": "580d9d1c952d18a8"
         }
       },
       "animations": []
@@ -20507,9 +20579,9 @@
     {
       "id": "cupboard_008",
       "rel": "cupboards_and_shelves/cupboard_008",
-      "name": "Open shelf unit of jars and crocks 008 \u00b7 lit",
+      "name": "Open shelf unit of jars and crocks 008",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, open shelf unit of jars and crocks, roughly six feet tall, human height, self-emissive at night, softly radiating light: jars of glowing preserves on the shelves",
       "view": "low top-down",
       "size": 128,
@@ -20534,6 +20606,51 @@
           "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
           "generated_at": "2026-08-13T23:45:49+00:00",
           "art_hash": "1016ea22f533da28"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_008/lit_2/sprite.webp",
+          "pixellab_object_id": "0f773d98-e577-44ce-a145-c6b8f659d986",
+          "generated_at": "2026-08-16T11:34:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7151,
+          "glow_score": 0.0511,
+          "art_hash": "22fd18e3c7aaf786"
+        },
+        "LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_008/lit_3/sprite.webp",
+          "pixellab_object_id": "b8dc5974-eacf-4493-988c-852341c19708",
+          "generated_at": "2026-08-16T11:34:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7877,
+          "glow_score": 0.0618,
+          "art_hash": "dfdf8d45bb659bb2"
+        },
+        "LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_008/lit_4/sprite.webp",
+          "pixellab_object_id": "58246f15-ef1e-42a8-b530-431bc435c6e2",
+          "generated_at": "2026-08-16T11:35:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8147,
+          "glow_score": 0.0323,
+          "art_hash": "e8bbcc22bd2ebdd2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "5c7655d8-07f7-47aa-b7c2-505cbb33a0e7",
+          "generated_at": "2026-08-16T11:36:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9494,
+          "glow_score": 0.0,
+          "art_hash": "b39cc170c0a25dd4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4c549b23-a3d9-4d47-8c93-5d76c3cc88e6",
+          "generated_at": "2026-08-16T11:35:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4059,
+          "glow_score": 0.0039,
+          "art_hash": "302bd3cf33b2d5f2"
         }
       },
       "animations": []
@@ -20541,9 +20658,9 @@
     {
       "id": "cupboard_010",
       "rel": "cupboards_and_shelves/cupboard_010",
-      "name": "Map chest of wide flat drawers 010 \u00b7 lit",
+      "name": "Map chest of wide flat drawers 010",
       "category": "cupboards_and_shelves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, map chest of wide flat drawers, child-sized, roughly six feet tall, human height, self-emissive at night, softly radiating light: a glowing kettle resting on the sideboard",
       "view": "low top-down",
       "size": 128,
@@ -20576,6 +20693,51 @@
           "pixellab_object_id": "3cdbdb5a-98f0-4b25-8c31-92a4fe4f1670",
           "generated_at": "2026-08-15T18:12:16+00:00",
           "art_hash": "d56081d32cfd09d9"
+        },
+        "LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_010/lit_2/sprite.webp",
+          "pixellab_object_id": "081c8431-82fe-442c-992a-08817d7ece5a",
+          "generated_at": "2026-08-16T11:35:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3965,
+          "glow_score": 0.0517,
+          "art_hash": "ea55ab959cfe21da"
+        },
+        "LIT_3": {
+          "sprite": "cupboards_and_shelves/cupboard_010/lit_3/sprite.webp",
+          "pixellab_object_id": "05882b78-ba28-4383-9db9-30e3d85dc873",
+          "generated_at": "2026-08-16T11:37:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.716,
+          "glow_score": 0.0608,
+          "art_hash": "a34a5f9df5e61891"
+        },
+        "LIT_4": {
+          "sprite": "cupboards_and_shelves/cupboard_010/lit_4/sprite.webp",
+          "pixellab_object_id": "c64c2a46-fbcb-4087-a18d-41501fff2f07",
+          "generated_at": "2026-08-16T11:37:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3399,
+          "glow_score": 0.0062,
+          "art_hash": "e22ba149d5f99fed"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cupboards_and_shelves/cupboard_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6ce34b7d-2965-4c80-a1e4-14de647d428e",
+          "generated_at": "2026-08-16T11:37:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.485,
+          "glow_score": 0.0003,
+          "art_hash": "49023e9227bceb03"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cupboards_and_shelves/cupboard_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "14e6895a-13cf-4fe1-b213-e41d6a341f65",
+          "generated_at": "2026-08-16T11:37:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8704,
+          "glow_score": 0.0,
+          "art_hash": "bfa6e9fc54874e76"
         }
       },
       "animations": []
@@ -20585,7 +20747,7 @@
       "rel": "dock_pilings/dock_piling_001",
       "name": "Pilings with tarred rope wraps 001",
       "category": "dock_pilings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pilings with tarred rope wraps, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -20605,11 +20767,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "dock_pilings/dock_piling_001/lit_1/sprite.webp",
+          "pixellab_object_id": "e0e93e2f-6c61-4517-93cd-23de01e9d728",
+          "generated_at": "2026-08-16T11:38:48+00:00",
+          "glow_concept": "rope wraps smoldering with faint ember light",
+          "difference_from_source": 0.4009,
+          "glow_score": 0.0264,
+          "art_hash": "0b1476752b9d839c"
+        },
+        "LIT_2": {
+          "sprite": "dock_pilings/dock_piling_001/lit_2/sprite.webp",
+          "pixellab_object_id": "1064ed44-07b0-49c0-b690-dbaf1f5caab4",
+          "generated_at": "2026-08-16T11:38:58+00:00",
+          "glow_concept": "the rope coil glowing like a slow fuse",
+          "difference_from_source": 0.929,
+          "glow_score": 0.0711,
+          "art_hash": "7e79efab2f72166d"
+        },
         "NOT_LIT_1": {
           "sprite": "dock_pilings/dock_piling_001/sprite.webp",
           "pixellab_object_id": "1c1df4c2-657a-4a94-9c90-b5aa081252b4",
           "generated_at": "2026-08-13T00:55:11+00:00",
           "art_hash": "aaa5895be6b11de5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "dock_pilings/dock_piling_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3222db4f-a8dd-4a92-b575-29b357a38b14",
+          "generated_at": "2026-08-16T11:37:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.62,
+          "glow_score": 0.0008,
+          "art_hash": "5c378a2e0dc96532"
+        },
+        "NOT_LIT_3": {
+          "sprite": "dock_pilings/dock_piling_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c24eb9b3-bb59-4f78-893f-324584e5bd35",
+          "generated_at": "2026-08-16T11:38:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5787,
+          "glow_score": 0.0,
+          "art_hash": "53790c3d7b5400bc"
+        },
+        "NOT_LIT_4": {
+          "sprite": "dock_pilings/dock_piling_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "445be7e0-b907-4a55-9479-22a2781d9136",
+          "generated_at": "2026-08-16T11:37:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8188,
+          "glow_score": 0.0,
+          "art_hash": "abeeeb271ef9775a"
         }
       },
       "animations": []
@@ -20644,6 +20851,24 @@
           "pixellab_object_id": "e882a682-12e2-4bc9-9505-b7d0630ff9b2",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "a3b9656ed8fd7287"
+        },
+        "NOT_LIT_3": {
+          "sprite": "dock_pilings/dock_piling_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3dbdb44e-d715-414c-80ce-96df21a74210",
+          "generated_at": "2026-08-16T11:39:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2922,
+          "glow_score": 0.0127,
+          "art_hash": "8d51ff563e14a2e7"
+        },
+        "NOT_LIT_4": {
+          "sprite": "dock_pilings/dock_piling_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e2eb79de-1613-433b-a2c9-c9384c4b6bbe",
+          "generated_at": "2026-08-16T11:39:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7196,
+          "glow_score": 0.0034,
+          "art_hash": "ff648cf25e1c1a6b"
         }
       },
       "animations": []
@@ -20678,6 +20903,15 @@
           "pixellab_object_id": "f01f85a7-ab7c-4cd4-829f-40f7bff3f44b",
           "generated_at": "2026-08-13T13:18:30+00:00",
           "art_hash": "3183ee434e101b3b"
+        },
+        "LIT_2": {
+          "sprite": "dock_pilings/dock_piling_006/lit_2/sprite.webp",
+          "pixellab_object_id": "5931885d-208e-41ef-923b-9c0aa3fb348d",
+          "generated_at": "2026-08-16T11:40:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3921,
+          "glow_score": 0.0091,
+          "art_hash": "3f1a50ddc151bd92"
         }
       },
       "animations": []

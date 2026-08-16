@@ -6,8 +6,8 @@
   "type": "INDOOR",
   "rank": 106,
   "index": 10,
-  "name": "Map chest of wide flat drawers 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Map chest of wide flat drawers 010",
+  "lights": null,
   "variety": "map chest of wide flat drawers",
   "modifier": "child-sized",
   "glow_concept": "a glowing kettle resting on the sideboard",
@@ -49,6 +49,46 @@
       "sprite": "cupboards_and_shelves/cupboard_010/sprite.webp",
       "pixellab_object_id": "3cdbdb5a-98f0-4b25-8c31-92a4fe4f1670",
       "generated_at": "2026-08-15T18:12:16+00:00"
+    },
+    "LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_010/lit_2/sprite.webp",
+      "pixellab_object_id": "081c8431-82fe-442c-992a-08817d7ece5a",
+      "generated_at": "2026-08-16T11:35:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3965,
+      "glow_score": 0.0517
+    },
+    "LIT_3": {
+      "sprite": "cupboards_and_shelves/cupboard_010/lit_3/sprite.webp",
+      "pixellab_object_id": "05882b78-ba28-4383-9db9-30e3d85dc873",
+      "generated_at": "2026-08-16T11:37:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.716,
+      "glow_score": 0.0608
+    },
+    "LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_010/lit_4/sprite.webp",
+      "pixellab_object_id": "c64c2a46-fbcb-4087-a18d-41501fff2f07",
+      "generated_at": "2026-08-16T11:37:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3399,
+      "glow_score": 0.0062
+    },
+    "NOT_LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6ce34b7d-2965-4c80-a1e4-14de647d428e",
+      "generated_at": "2026-08-16T11:37:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.485,
+      "glow_score": 0.0003
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "14e6895a-13cf-4fe1-b213-e41d6a341f65",
+      "generated_at": "2026-08-16T11:37:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8704,
+      "glow_score": 0.0
     }
   }
 }

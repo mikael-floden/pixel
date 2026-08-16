@@ -5,7 +5,7 @@
   "rank": 106,
   "index": 5,
   "name": "Bookshelf of worn plain cloth-bound books with blank spines 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "bookshelf of worn plain cloth-bound books with blank spines",
   "glow_concept": null,
   "prompt": "a heavy floor-standing piece of wooden storage furniture: a cupboard, dresser or laden shelf unit with thick boards, made to stand against a wall, bookshelf of worn plain cloth-bound books with blank spines, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:17:26+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "cupboards_and_shelves/cupboard_005/lit_1/sprite.webp",
+      "pixellab_object_id": "65e344f3-b6d3-4b23-94f3-9c22dbe0ab58",
+      "generated_at": "2026-08-16T11:34:23+00:00",
+      "glow_concept": "lamplight seeping from behind the cupboard doors",
+      "difference_from_source": 0.7409,
+      "glow_score": 0.0776
+    },
+    "LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_005/lit_2/sprite.webp",
+      "pixellab_object_id": "dfb22314-df63-465f-a655-49ad1121b115",
+      "generated_at": "2026-08-16T11:33:41+00:00",
+      "glow_concept": "a glowing kettle resting on the sideboard",
+      "difference_from_source": 0.8925,
+      "glow_score": 0.1209
+    },
     "NOT_LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_005/sprite.webp",
       "pixellab_object_id": "57b3d7e8-6ffd-45c9-9724-13ffc0d59ca4",
       "generated_at": "2026-08-13T22:17:26+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cupboards_and_shelves/cupboard_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0cb781a7-7f25-4213-b553-d8aa52524f40",
+      "generated_at": "2026-08-16T11:32:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2691,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cupboards_and_shelves/cupboard_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f634a649-1780-401f-8582-4b454d720356",
+      "generated_at": "2026-08-16T11:33:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5376,
+      "glow_score": 0.0008
+    },
+    "NOT_LIT_4": {
+      "sprite": "cupboards_and_shelves/cupboard_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c3d20a72-02ef-4640-b7fd-c179a52cb4a4",
+      "generated_at": "2026-08-16T11:33:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1823,
+      "glow_score": 0.0027
     }
   }
 }
