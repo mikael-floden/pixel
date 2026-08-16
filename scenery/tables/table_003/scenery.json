@@ -5,7 +5,7 @@
   "rank": 103,
   "index": 3,
   "name": "Table set with bowls and bread 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "table set with bowls and bread",
   "glow_concept": null,
   "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, table set with bowls and bread, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:28:57+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "tables/table_003/lit_1/sprite.webp",
+      "pixellab_object_id": "0210611e-ce4f-428b-822d-c92f7d255629",
+      "generated_at": "2026-08-16T22:50:21+00:00",
+      "glow_concept": "a lit candle stub in a brass holder on the tabletop",
+      "difference_from_source": 0.6974,
+      "glow_score": 0.2134
+    },
+    "LIT_2": {
+      "sprite": "tables/table_003/lit_2/sprite.webp",
+      "pixellab_object_id": "1f254be5-5970-40f0-8d0f-3e9064c6ca12",
+      "generated_at": "2026-08-16T22:50:22+00:00",
+      "glow_concept": "a small glass-hooded oil lamp glowing at its center",
+      "difference_from_source": 0.9834,
+      "glow_score": 0.2979
+    },
     "NOT_LIT_1": {
       "sprite": "tables/table_003/sprite.webp",
       "pixellab_object_id": "97b7b2b1-1358-4126-a2f2-ed0b235f2dd2",
       "generated_at": "2026-08-13T21:28:57+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "tables/table_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b946ac00-c4a2-4c8f-8174-365fd6635395",
+      "generated_at": "2026-08-16T22:49:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5596,
+      "glow_score": 0.0253
+    },
+    "NOT_LIT_3": {
+      "sprite": "tables/table_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "95c04ff1-7d22-46ac-bab6-b4f462e00586",
+      "generated_at": "2026-08-16T22:49:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6225,
+      "glow_score": 0.0274
+    },
+    "NOT_LIT_4": {
+      "sprite": "tables/table_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c306842b-2fa4-4394-84ca-265acf4349c2",
+      "generated_at": "2026-08-16T22:49:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5932,
+      "glow_score": 0.0465
     }
   }
 }

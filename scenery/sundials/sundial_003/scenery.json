@@ -5,7 +5,7 @@
   "rank": 93,
   "index": 3,
   "name": "Ivy-wrapped old sundial 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ivy-wrapped old sundial",
   "glow_concept": null,
   "prompt": "a stone pedestal sundial standing on grass, with a round engraved dial plate and a triangular gnomon, ivy-wrapped old sundial, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:40:38+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "sundials/sundial_003/lit_1/sprite.webp",
+      "pixellab_object_id": "65f71128-7bb6-48ca-8c9b-b562bc1d0f73",
+      "generated_at": "2026-08-16T22:49:05+00:00",
+      "glow_concept": "a wrong-time shadow glowing where no sun stands",
+      "difference_from_source": 0.8958,
+      "glow_score": 0.0374
+    },
+    "LIT_2": {
+      "sprite": "sundials/sundial_003/lit_2/sprite.webp",
+      "pixellab_object_id": "524c279b-c07d-4e2b-bab5-0baa8bc1cbe6",
+      "generated_at": "2026-08-16T22:49:23+00:00",
+      "glow_concept": "dial numerals lit like small windows",
+      "difference_from_source": 0.9246,
+      "glow_score": 0.0796
+    },
     "NOT_LIT_1": {
       "sprite": "sundials/sundial_003/sprite.webp",
       "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
       "generated_at": "2026-08-13T20:40:38+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "sundials/sundial_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1a853e08-18a9-4fdf-8835-1d16ed0b48ff",
+      "generated_at": "2026-08-16T22:47:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8008,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "sundials/sundial_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "4c075069-4b10-4f82-b404-bf11863f9d0b",
+      "generated_at": "2026-08-16T22:48:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7443,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "sundials/sundial_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "393ba1c0-3427-469e-b042-edbbf9561eb8",
+      "generated_at": "2026-08-16T22:48:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7574,
+      "glow_score": 0.0
     }
   }
 }
