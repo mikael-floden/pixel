@@ -5,8 +5,8 @@
   "group": "scarecrows",
   "rank": 26,
   "index": 20,
-  "name": "Dress-and-shawl scarecrow 020 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Dress-and-shawl scarecrow 020",
+  "lights": null,
   "variety": "dress-and-shawl scarecrow",
   "glow_concept": "twin ember-orange eyes in the sack face",
   "prompt": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, dress-and-shawl scarecrow, large, twice human height, self-emissive at night, softly radiating light: twin ember-orange eyes in the sack face",
@@ -35,6 +35,46 @@
       "sprite": "scarecrows/scarecrow_020/sprite.webp",
       "pixellab_object_id": "c91c0691-4e16-4777-8931-3e9eb32f464b",
       "generated_at": "2026-08-13T23:10:11+00:00"
+    },
+    "LIT_2": {
+      "sprite": "scarecrows/scarecrow_020/lit_2/sprite.webp",
+      "pixellab_object_id": "72f63bd6-ec31-4bcb-863f-c13fc72ce91a",
+      "generated_at": "2026-08-16T20:38:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5803,
+      "glow_score": 0.0069
+    },
+    "LIT_3": {
+      "sprite": "scarecrows/scarecrow_020/lit_3/sprite.webp",
+      "pixellab_object_id": "7e3ed9b5-170f-49a2-996c-6541bed9e70a",
+      "generated_at": "2026-08-16T20:38:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6288,
+      "glow_score": 0.0141
+    },
+    "LIT_4": {
+      "sprite": "scarecrows/scarecrow_020/lit_4/sprite.webp",
+      "pixellab_object_id": "f0b0ddaf-19bd-491e-82d1-efd3093547e0",
+      "generated_at": "2026-08-16T20:38:38+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8611,
+      "glow_score": 0.0549
+    },
+    "NOT_LIT_1": {
+      "sprite": "scarecrows/scarecrow_020/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3ad53c51-2b8a-42da-a7c5-ad0de3a668cb",
+      "generated_at": "2026-08-16T20:39:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5224,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "scarecrows/scarecrow_020/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2a8d3575-0477-4504-844d-9cac3ba23f26",
+      "generated_at": "2026-08-16T20:39:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4067,
+      "glow_score": 0.0
     }
   }
 }

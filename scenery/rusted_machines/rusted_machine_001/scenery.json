@@ -5,7 +5,7 @@
   "rank": 68,
   "index": 1,
   "name": "Exposed gear-train frame 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "exposed gear-train frame",
   "glow_concept": null,
   "prompt": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, exposed gear-train frame, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:55:33+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "rusted_machines/rusted_machine_001/lit_1/sprite.webp",
+      "pixellab_object_id": "e63de474-526a-4757-a302-91d45b8a32b0",
+      "generated_at": "2026-08-16T20:32:22+00:00",
+      "glow_concept": "blue sparks arcing between corroded terminals",
+      "difference_from_source": 0.795,
+      "glow_score": 0.0191
+    },
+    "LIT_2": {
+      "sprite": "rusted_machines/rusted_machine_001/lit_2/sprite.webp",
+      "pixellab_object_id": "f638dc63-7d72-4065-94d9-f3fff3a73a7e",
+      "generated_at": "2026-08-16T20:33:00+00:00",
+      "glow_concept": "a small pilot flame under the boiler",
+      "difference_from_source": 0.6766,
+      "glow_score": 0.0225
+    },
     "NOT_LIT_1": {
       "sprite": "rusted_machines/rusted_machine_001/sprite.webp",
       "pixellab_object_id": "bb4a74aa-c67c-4858-bf1b-71bbbc94330c",
       "generated_at": "2026-08-13T01:55:33+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "rusted_machines/rusted_machine_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e6a194ff-475f-4fbe-b37b-3f725cb9f91b",
+      "generated_at": "2026-08-16T20:31:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.673,
+      "glow_score": 0.007
+    },
+    "NOT_LIT_3": {
+      "sprite": "rusted_machines/rusted_machine_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "a905ba45-2680-4723-a4b7-474e68cab619",
+      "generated_at": "2026-08-16T20:31:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7082,
+      "glow_score": 0.0039
+    },
+    "NOT_LIT_4": {
+      "sprite": "rusted_machines/rusted_machine_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "a862e3f4-8373-40b1-a3ad-80fafd2ed5fd",
+      "generated_at": "2026-08-16T20:31:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7163,
+      "glow_score": 0.0075
     }
   }
 }

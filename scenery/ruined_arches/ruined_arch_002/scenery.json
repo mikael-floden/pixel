@@ -4,8 +4,8 @@
   "group": "ruined_arches",
   "rank": 51,
   "index": 2,
-  "name": "Round roman arch 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Round roman arch 002",
+  "lights": null,
   "variety": "round roman arch",
   "glow_concept": "luminous briar roses climbing one side",
   "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, round roman arch, tall, about two people high, self-emissive at night, softly radiating light: luminous briar roses climbing one side",
@@ -59,6 +59,22 @@
       "glow_concept": null,
       "difference_from_source": 0.6282,
       "glow_score": 0.0108
+    },
+    "NOT_LIT_1": {
+      "sprite": "ruined_arches/ruined_arch_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "060fa1ae-8ff1-490b-8f20-8bfcb1c630c7",
+      "generated_at": "2026-08-16T20:30:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9431,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "ruined_arches/ruined_arch_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "729da282-6b50-477a-bf46-d9e3956a0ed7",
+      "generated_at": "2026-08-16T20:31:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9791,
+      "glow_score": 0.0
     }
   }
 }

@@ -5,7 +5,7 @@
   "rank": 26,
   "index": 5,
   "name": "Fresh straw, bright kerchief 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "fresh straw, bright kerchief",
   "glow_concept": null,
   "prompt": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, fresh straw, bright kerchief, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T11:18:21+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "scarecrows/scarecrow_005/lit_1/sprite.webp",
+      "pixellab_object_id": "52e16866-0af3-480e-bf07-f76eb879ac5d",
+      "generated_at": "2026-08-16T20:36:51+00:00",
+      "glow_concept": "lantern hung from an outstretched arm",
+      "difference_from_source": 0.9174,
+      "glow_score": 0.0691
+    },
+    "LIT_2": {
+      "sprite": "scarecrows/scarecrow_005/lit_2/sprite.webp",
+      "pixellab_object_id": "feda483f-2256-4c05-8784-127a22fa8484",
+      "generated_at": "2026-08-16T20:36:52+00:00",
+      "glow_concept": "soul-light heart glowing through the coat",
+      "difference_from_source": 0.7639,
+      "glow_score": 0.0498
+    },
     "NOT_LIT_1": {
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
       "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
       "generated_at": "2026-08-13T11:18:21+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "scarecrows/scarecrow_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "89465395-7b4d-4c87-8f5a-2e2ba1930135",
+      "generated_at": "2026-08-16T20:36:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8805,
+      "glow_score": 0.1293
+    },
+    "NOT_LIT_3": {
+      "sprite": "scarecrows/scarecrow_005/not_lit_3/sprite.webp",
+      "pixellab_object_id": "91373e33-2949-49e7-bb82-3a6bde4178d6",
+      "generated_at": "2026-08-16T20:35:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5948,
+      "glow_score": 0.0224
+    },
+    "NOT_LIT_4": {
+      "sprite": "scarecrows/scarecrow_005/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
+      "generated_at": "2026-08-16T20:35:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7883,
+      "glow_score": 0.1087
     }
   }
 }

@@ -37805,6 +37805,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "ruined_arches/ruined_arch_001/lit_1/sprite.webp",
+          "pixellab_object_id": "c496a7d6-a768-410d-8cbf-a07c34347f9d",
+          "generated_at": "2026-08-16T20:33:37+00:00",
+          "glow_concept": "pinpoints of light in the crumbled mortar joints",
+          "difference_from_source": 0.3562,
+          "glow_score": 0.0372,
+          "art_hash": "29060d3cdbe1fa75"
+        },
         "LIT_2": {
           "sprite": "ruined_arches/ruined_arch_001/lit_2/sprite.webp",
           "pixellab_object_id": "970a0b6f-0a28-4d16-951d-32e2dcef0840",
@@ -37853,9 +37862,9 @@
     {
       "id": "ruined_arch_002",
       "rel": "ruined_arches/ruined_arch_002",
-      "name": "Round roman arch 002 \u00b7 lit",
+      "name": "Round roman arch 002",
       "category": "ruined_arches",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, round roman arch, tall, about two people high, self-emissive at night, softly radiating light: luminous briar roses climbing one side",
       "view": "low top-down",
       "size": 160,
@@ -37907,6 +37916,24 @@
           "difference_from_source": 0.6282,
           "glow_score": 0.0108,
           "art_hash": "805570ee88b50c6e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ruined_arches/ruined_arch_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "060fa1ae-8ff1-490b-8f20-8bfcb1c630c7",
+          "generated_at": "2026-08-16T20:30:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9431,
+          "glow_score": 0.0,
+          "art_hash": "2095b297c42cbb8a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ruined_arches/ruined_arch_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "729da282-6b50-477a-bf46-d9e3956a0ed7",
+          "generated_at": "2026-08-16T20:31:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9791,
+          "glow_score": 0.0,
+          "art_hash": "8b7880a8bc32060b"
         }
       },
       "animations": []
@@ -37916,7 +37943,7 @@
       "rel": "rusted_machines/rusted_machine_001",
       "name": "Exposed gear-train frame 001",
       "category": "rusted_machines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, exposed gear-train frame, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -37936,11 +37963,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "rusted_machines/rusted_machine_001/lit_1/sprite.webp",
+          "pixellab_object_id": "e63de474-526a-4757-a302-91d45b8a32b0",
+          "generated_at": "2026-08-16T20:32:22+00:00",
+          "glow_concept": "blue sparks arcing between corroded terminals",
+          "difference_from_source": 0.795,
+          "glow_score": 0.0191,
+          "art_hash": "466ecee441984cb6"
+        },
+        "LIT_2": {
+          "sprite": "rusted_machines/rusted_machine_001/lit_2/sprite.webp",
+          "pixellab_object_id": "f638dc63-7d72-4065-94d9-f3fff3a73a7e",
+          "generated_at": "2026-08-16T20:33:00+00:00",
+          "glow_concept": "a small pilot flame under the boiler",
+          "difference_from_source": 0.6766,
+          "glow_score": 0.0225,
+          "art_hash": "f88eb4fe8a1f87a6"
+        },
         "NOT_LIT_1": {
           "sprite": "rusted_machines/rusted_machine_001/sprite.webp",
           "pixellab_object_id": "bb4a74aa-c67c-4858-bf1b-71bbbc94330c",
           "generated_at": "2026-08-13T01:55:33+00:00",
           "art_hash": "7b9cc64f654cb468"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rusted_machines/rusted_machine_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e6a194ff-475f-4fbe-b37b-3f725cb9f91b",
+          "generated_at": "2026-08-16T20:31:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.673,
+          "glow_score": 0.007,
+          "art_hash": "d2ccd099f5a93be1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "rusted_machines/rusted_machine_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a905ba45-2680-4723-a4b7-474e68cab619",
+          "generated_at": "2026-08-16T20:31:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7082,
+          "glow_score": 0.0039,
+          "art_hash": "21611a06594f64bb"
+        },
+        "NOT_LIT_4": {
+          "sprite": "rusted_machines/rusted_machine_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a862e3f4-8373-40b1-a3ad-80fafd2ed5fd",
+          "generated_at": "2026-08-16T20:31:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7163,
+          "glow_score": 0.0075,
+          "art_hash": "6d4520ce025fd5e0"
         }
       },
       "animations": []
@@ -37948,9 +38020,9 @@
     {
       "id": "rusted_machine_900",
       "rel": "rusted_machines/rusted_machine_900",
-      "name": "Hand-crank water pump 900 \u00b7 lit",
+      "name": "Hand-crank water pump 900",
       "category": "rusted_machines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rusted derelict machine of boiler, pipes, gears and a big flywheel mounted on an iron frame, streaked with corrosion, hand-crank water pump, about as tall as an adult person, self-emissive at night, softly radiating light: copper coils holding a faint galvanic glow",
       "view": "low top-down",
       "size": 128,
@@ -37975,6 +38047,51 @@
           "pixellab_object_id": "74048d51-d7b6-4b8d-a696-f14515db43b4",
           "generated_at": "2026-08-13T19:46:47+00:00",
           "art_hash": "0b39c07164ca6be2"
+        },
+        "LIT_2": {
+          "sprite": "rusted_machines/rusted_machine_900/lit_2/sprite.webp",
+          "pixellab_object_id": "696df45a-5514-46e2-9e05-9995bffb01ac",
+          "generated_at": "2026-08-16T20:33:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6509,
+          "glow_score": 0.0864,
+          "art_hash": "ec48baf0bf7edf7f"
+        },
+        "LIT_3": {
+          "sprite": "rusted_machines/rusted_machine_900/lit_3/sprite.webp",
+          "pixellab_object_id": "1708636d-878e-42a5-b9cd-cc5b465b48d9",
+          "generated_at": "2026-08-16T20:35:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5633,
+          "glow_score": 0.008,
+          "art_hash": "7778ba22d0deaaa3"
+        },
+        "LIT_4": {
+          "sprite": "rusted_machines/rusted_machine_900/lit_4/sprite.webp",
+          "pixellab_object_id": "dc2f9d40-67c6-42a5-bfa9-d93560e75cd1",
+          "generated_at": "2026-08-16T20:34:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7858,
+          "glow_score": 0.0,
+          "art_hash": "38027314a0f5b2e0"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rusted_machines/rusted_machine_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "be5ea5e3-a46a-4cf0-82fb-3507d80140c2",
+          "generated_at": "2026-08-16T20:36:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.892,
+          "glow_score": 0.0,
+          "art_hash": "697d097f3effddc4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rusted_machines/rusted_machine_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "380ea4aa-f006-4f0b-a000-0d9ec825c6b5",
+          "generated_at": "2026-08-16T20:34:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9646,
+          "glow_score": 0.0,
+          "art_hash": "6cf1399f02b39fdf"
         }
       },
       "animations": []
@@ -37984,7 +38101,7 @@
       "rel": "scarecrows/scarecrow_005",
       "name": "Fresh straw, bright kerchief 005",
       "category": "scarecrows",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a scarecrow on a cross-pole frame wearing old patched clothes, a stuffed sack head, straw spilling from the sleeves, fresh straw, bright kerchief, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -38004,11 +38121,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "scarecrows/scarecrow_005/lit_1/sprite.webp",
+          "pixellab_object_id": "52e16866-0af3-480e-bf07-f76eb879ac5d",
+          "generated_at": "2026-08-16T20:36:51+00:00",
+          "glow_concept": "lantern hung from an outstretched arm",
+          "difference_from_source": 0.9174,
+          "glow_score": 0.0691,
+          "art_hash": "50f477d6c59cc3d7"
+        },
+        "LIT_2": {
+          "sprite": "scarecrows/scarecrow_005/lit_2/sprite.webp",
+          "pixellab_object_id": "feda483f-2256-4c05-8784-127a22fa8484",
+          "generated_at": "2026-08-16T20:36:52+00:00",
+          "glow_concept": "soul-light heart glowing through the coat",
+          "difference_from_source": 0.7639,
+          "glow_score": 0.0498,
+          "art_hash": "4a178ea7780d0831"
+        },
         "NOT_LIT_1": {
           "sprite": "scarecrows/scarecrow_005/sprite.webp",
           "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
           "generated_at": "2026-08-13T11:18:21+00:00",
           "art_hash": "7da9997817ce728b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "scarecrows/scarecrow_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "89465395-7b4d-4c87-8f5a-2e2ba1930135",
+          "generated_at": "2026-08-16T20:36:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8805,
+          "glow_score": 0.1293,
+          "art_hash": "ab3f31672b985dac"
+        },
+        "NOT_LIT_3": {
+          "sprite": "scarecrows/scarecrow_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "91373e33-2949-49e7-bb82-3a6bde4178d6",
+          "generated_at": "2026-08-16T20:35:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5948,
+          "glow_score": 0.0224,
+          "art_hash": "d380d8d66daf5b11"
+        },
+        "NOT_LIT_4": {
+          "sprite": "scarecrows/scarecrow_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
+          "generated_at": "2026-08-16T20:35:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7883,
+          "glow_score": 0.1087,
+          "art_hash": "0e2bfc98082c1937"
         }
       },
       "animations": []
@@ -38050,9 +38212,9 @@
     {
       "id": "scarecrow_020",
       "rel": "scarecrows/scarecrow_020",
-      "name": "Dress-and-shawl scarecrow 020 \u00b7 lit",
+      "name": "Dress-and-shawl scarecrow 020",
       "category": "scarecrows",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, dress-and-shawl scarecrow, large, twice human height, self-emissive at night, softly radiating light: twin ember-orange eyes in the sack face",
       "view": "low top-down",
       "size": 64,
@@ -38077,6 +38239,51 @@
           "pixellab_object_id": "c91c0691-4e16-4777-8931-3e9eb32f464b",
           "generated_at": "2026-08-13T23:10:11+00:00",
           "art_hash": "4a91c09fcf443ab5"
+        },
+        "LIT_2": {
+          "sprite": "scarecrows/scarecrow_020/lit_2/sprite.webp",
+          "pixellab_object_id": "72f63bd6-ec31-4bcb-863f-c13fc72ce91a",
+          "generated_at": "2026-08-16T20:38:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5803,
+          "glow_score": 0.0069,
+          "art_hash": "f885fff07d832bb2"
+        },
+        "LIT_3": {
+          "sprite": "scarecrows/scarecrow_020/lit_3/sprite.webp",
+          "pixellab_object_id": "7e3ed9b5-170f-49a2-996c-6541bed9e70a",
+          "generated_at": "2026-08-16T20:38:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6288,
+          "glow_score": 0.0141,
+          "art_hash": "2446431140bb74fe"
+        },
+        "LIT_4": {
+          "sprite": "scarecrows/scarecrow_020/lit_4/sprite.webp",
+          "pixellab_object_id": "f0b0ddaf-19bd-491e-82d1-efd3093547e0",
+          "generated_at": "2026-08-16T20:38:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8611,
+          "glow_score": 0.0549,
+          "art_hash": "ba98479b5587d5e2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "scarecrows/scarecrow_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3ad53c51-2b8a-42da-a7c5-ad0de3a668cb",
+          "generated_at": "2026-08-16T20:39:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5224,
+          "glow_score": 0.0,
+          "art_hash": "22b414d44b671238"
+        },
+        "NOT_LIT_2": {
+          "sprite": "scarecrows/scarecrow_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2a8d3575-0477-4504-844d-9cac3ba23f26",
+          "generated_at": "2026-08-16T20:39:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4067,
+          "glow_score": 0.0,
+          "art_hash": "3e020fbcbfb759f0"
         }
       },
       "animations": []
@@ -38111,6 +38318,24 @@
           "pixellab_object_id": "b505bfd1-464e-46df-bee4-a2a3a02fca3d",
           "generated_at": "2026-08-13T23:35:00+00:00",
           "art_hash": "c98ac918e3065e96"
+        },
+        "LIT_2": {
+          "sprite": "scarecrows/scarecrow_022/lit_2/sprite.webp",
+          "pixellab_object_id": "1316b5e9-bf9c-4fe7-8e2b-8ddc39b6ac7a",
+          "generated_at": "2026-08-16T20:39:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5703,
+          "glow_score": 0.081,
+          "art_hash": "734494bccb0dfb80"
+        },
+        "LIT_3": {
+          "sprite": "scarecrows/scarecrow_022/lit_3/sprite.webp",
+          "pixellab_object_id": "5a5ee691-ffb4-4fed-a098-c29a7fc911a1",
+          "generated_at": "2026-08-16T20:39:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6453,
+          "glow_score": 0.014,
+          "art_hash": "2519082271f752df"
         }
       },
       "animations": []
