@@ -14660,9 +14660,9 @@
     {
       "id": "cliff_shrub_012",
       "rel": "cliff_shrubs/cliff_shrub_012",
-      "name": "Dark holly bush 012 \u00b7 lit",
+      "name": "Dark holly bush 012",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, dark holly bush, two shrubs from one crack, tall, about three times human height, self-emissive at night, softly radiating light: blossoms glowing along the branches",
       "view": "low top-down",
       "size": 192,
@@ -14714,6 +14714,24 @@
           "difference_from_source": 0.3586,
           "glow_score": 0.032,
           "art_hash": "bc86d553408a056f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "f9d6b014-5e5c-49bc-a8da-d750f44a74ec",
+          "generated_at": "2026-08-16T09:57:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8136,
+          "glow_score": 0.0,
+          "art_hash": "2995ef08b6c61e15"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6fce21b1-883e-4cf1-9bed-02ea4c23e156",
+          "generated_at": "2026-08-16T09:57:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.284,
+          "glow_score": 0.0,
+          "art_hash": "5505d1f5da9445e6"
         }
       },
       "animations": []
@@ -14723,7 +14741,7 @@
       "rel": "cliff_shrubs/cliff_shrub_013",
       "name": "Flowering broom in yellow 013",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, flowering broom in yellow, half its branches dead, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -14743,6 +14761,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_013/lit_1/sprite.webp",
+          "pixellab_object_id": "094565cb-3a41-4b01-b87d-0fadb1b5d79b",
+          "generated_at": "2026-08-16T09:58:58+00:00",
+          "glow_concept": "the leaves shining faintly",
+          "difference_from_source": 0.7418,
+          "glow_score": 0.0837,
+          "art_hash": "792b2039b7f49f54"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_013/lit_2/sprite.webp",
+          "pixellab_object_id": "61709fa6-557c-4c59-9306-326be34b73c7",
+          "generated_at": "2026-08-16T09:58:35+00:00",
+          "glow_concept": "blossoms glowing along the branches",
+          "difference_from_source": 0.446,
+          "glow_score": 0.1137,
+          "art_hash": "939b24c2e5f93fb2"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_013/sprite.webp",
           "pixellab_object_id": "19f43907-f2b1-4a13-97ec-1be4239951d0",
@@ -14757,6 +14793,24 @@
           "difference_from_source": 0.7182,
           "glow_score": 0.0901,
           "art_hash": "f3171179e6823f60"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "d08411b1-489a-4c09-baa8-224a1b4f6491",
+          "generated_at": "2026-08-16T09:57:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.642,
+          "glow_score": 0.0453,
+          "art_hash": "3c4145c3fad771f3"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fb3e8da7-74b3-4d09-b8ce-ee9a85a459de",
+          "generated_at": "2026-08-16T09:57:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5819,
+          "glow_score": 0.0986,
+          "art_hash": "dca23166448657d1"
         }
       },
       "animations": []
@@ -14764,9 +14818,9 @@
     {
       "id": "cliff_shrub_014",
       "rel": "cliff_shrubs/cliff_shrub_014",
-      "name": "Wind-flattened juniper 014 \u00b7 lit",
+      "name": "Wind-flattened juniper 014",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, wind-flattened juniper, a bird nest in its crown, roughly six feet tall, human height, self-emissive at night, softly radiating light: light in the crack at its root",
       "view": "low top-down",
       "size": 192,
@@ -14791,6 +14845,51 @@
           "pixellab_object_id": "05e80a5e-6527-458f-9e4a-fd6429903fca",
           "generated_at": "2026-08-14T03:57:57+00:00",
           "art_hash": "62340541602a28ef"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/lit_2/sprite.webp",
+          "pixellab_object_id": "a65280cc-a328-408d-9979-8b1797593315",
+          "generated_at": "2026-08-16T09:58:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9123,
+          "glow_score": 0.0,
+          "art_hash": "e7eda69c7064fdb4"
+        },
+        "LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/lit_3/sprite.webp",
+          "pixellab_object_id": "a0e3b9b4-d890-4f05-89ee-4f047382e183",
+          "generated_at": "2026-08-16T09:58:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6081,
+          "glow_score": 0.0041,
+          "art_hash": "ad0f31d5aa8865bb"
+        },
+        "LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/lit_4/sprite.webp",
+          "pixellab_object_id": "a1ce674d-0a35-4a48-a0fb-8647b6d5d761",
+          "generated_at": "2026-08-16T09:58:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2512,
+          "glow_score": 0.0055,
+          "art_hash": "dd84b8adab76eac5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "334d1d47-eb95-4caa-aea6-d7b1dc7c0521",
+          "generated_at": "2026-08-16T09:58:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7709,
+          "glow_score": 0.0084,
+          "art_hash": "0ed9593405447c42"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ed876926-7d5a-4230-ae13-8c91bb62f81c",
+          "generated_at": "2026-08-16T09:58:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9852,
+          "glow_score": 0.0,
+          "art_hash": "790b3775754814f2"
         }
       },
       "animations": []
@@ -14800,7 +14899,7 @@
       "rel": "cliff_shrubs/cliff_shrub_015",
       "name": "Stunted twisted pine 015",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, stunted twisted pine, growing from a narrow crack, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -14820,11 +14919,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_015/lit_1/sprite.webp",
+          "pixellab_object_id": "d61f76d1-0c73-4565-b212-e6d34b91ef45",
+          "generated_at": "2026-08-16T09:59:51+00:00",
+          "glow_concept": "blossoms glowing along the branches",
+          "difference_from_source": 0.4772,
+          "glow_score": 0.0891,
+          "art_hash": "8ba44c2d60f2c248"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_015/lit_2/sprite.webp",
+          "pixellab_object_id": "55d42397-2162-4de6-baac-374f9af6d3b0",
+          "generated_at": "2026-08-16T10:00:03+00:00",
+          "glow_concept": "light in the crack at its root",
+          "difference_from_source": 0.4176,
+          "glow_score": 0.0277,
+          "art_hash": "99f398c373e44b95"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_015/sprite.webp",
           "pixellab_object_id": "34d86554-8682-419b-ac94-6a82ba191515",
           "generated_at": "2026-08-14T03:59:28+00:00",
           "art_hash": "ff9a3b3fdbf53fb4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "98a26cda-4150-45ff-9ac9-e37b2ebbed04",
+          "generated_at": "2026-08-16T09:58:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8699,
+          "glow_score": 0.0014,
+          "art_hash": "77d566f886fed2a3"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "64d731a9-a759-4764-82c0-b0ce088bcca4",
+          "generated_at": "2026-08-16T09:59:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9113,
+          "glow_score": 0.0026,
+          "art_hash": "224a2e55d6563489"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "65bf6b9b-c7b1-400f-b1e0-50c95954048d",
+          "generated_at": "2026-08-16T09:59:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8097,
+          "glow_score": 0.0008,
+          "art_hash": "01375e9516856f5b"
         }
       },
       "animations": []
@@ -14832,9 +14976,9 @@
     {
       "id": "cliff_shrub_016",
       "rel": "cliff_shrubs/cliff_shrub_016",
-      "name": "Grey-leaved sea buckthorn 016 \u00b7 lit",
+      "name": "Grey-leaved sea buckthorn 016",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, grey-leaved sea buckthorn, perched on a tiny ledge, tall, about three times human height, self-emissive at night, softly radiating light: the leaves shining faintly",
       "view": "low top-down",
       "size": 192,
@@ -14859,6 +15003,51 @@
           "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
           "generated_at": "2026-08-14T03:59:39+00:00",
           "art_hash": "c08b1ec60fd7c404"
+        },
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/lit_2/sprite.webp",
+          "pixellab_object_id": "3dda49bc-d3b3-43d0-a0d4-1eaadf60c3e0",
+          "generated_at": "2026-08-16T09:59:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6328,
+          "glow_score": 0.082,
+          "art_hash": "cad4697aff572b70"
+        },
+        "LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/lit_3/sprite.webp",
+          "pixellab_object_id": "d5ac804f-fa78-436f-b435-14f1b92163e4",
+          "generated_at": "2026-08-16T10:00:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.565,
+          "glow_score": 0.1106,
+          "art_hash": "68a176363088b3ac"
+        },
+        "LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/lit_4/sprite.webp",
+          "pixellab_object_id": "8327cfc8-8b55-44ee-8f74-e5263783cab4",
+          "generated_at": "2026-08-16T10:00:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9162,
+          "glow_score": 0.0627,
+          "art_hash": "763e9d684059608d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "11d75d0a-3b9b-47f4-9c8c-0252957eef6b",
+          "generated_at": "2026-08-16T10:00:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.53,
+          "glow_score": 0.055,
+          "art_hash": "3e06728951b240b2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d75a25c1-a60a-40f2-9754-8f2836211c40",
+          "generated_at": "2026-08-16T10:00:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7864,
+          "glow_score": 0.0,
+          "art_hash": "d0b416555e54dd02"
         }
       },
       "animations": []
@@ -14868,7 +15057,7 @@
       "rel": "cliff_shrubs/cliff_shrub_017",
       "name": "Autumn-red rowan sapling 017",
       "category": "cliff_shrubs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, autumn-red rowan sapling, hanging almost upside down, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -14888,11 +15077,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_017/lit_2/sprite.webp",
+          "pixellab_object_id": "ccfee0f1-98ca-4b81-97d0-c3e9d5f02ff2",
+          "generated_at": "2026-08-16T10:01:32+00:00",
+          "glow_concept": "light in the crack at its root",
+          "difference_from_source": 0.1873,
+          "glow_score": 0.0512,
+          "art_hash": "5a33aa9094dae247"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_017/sprite.webp",
           "pixellab_object_id": "5750f173-355a-4ab5-b332-a8c984e2b710",
           "generated_at": "2026-08-14T05:02:52+00:00",
           "art_hash": "2dd080584d2ba3ee"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ef81028a-7b06-4315-bde3-767c5ea232b5",
+          "generated_at": "2026-08-16T10:01:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8344,
+          "glow_score": 0.0,
+          "art_hash": "f72d068aaa53c05e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "70debd06-df7c-4f99-bf38-d0a9718e6ccd",
+          "generated_at": "2026-08-16T10:00:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9168,
+          "glow_score": 0.003,
+          "art_hash": "e072555a9468737f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "99d32e26-e67c-4f0f-b121-1dbef3df0942",
+          "generated_at": "2026-08-16T10:00:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6718,
+          "glow_score": 0.0,
+          "art_hash": "2276fa0a31cdf243"
         }
       },
       "animations": []

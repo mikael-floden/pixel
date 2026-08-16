@@ -6,7 +6,7 @@
   "rank": 157,
   "index": 13,
   "name": "Flowering broom in yellow 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "flowering broom in yellow",
   "modifier": "half its branches dead",
   "glow_concept": null,
@@ -32,6 +32,22 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "cliff_shrubs/cliff_shrub_013/lit_1/sprite.webp",
+      "pixellab_object_id": "094565cb-3a41-4b01-b87d-0fadb1b5d79b",
+      "generated_at": "2026-08-16T09:58:58+00:00",
+      "glow_concept": "the leaves shining faintly",
+      "difference_from_source": 0.7418,
+      "glow_score": 0.0837
+    },
+    "LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_013/lit_2/sprite.webp",
+      "pixellab_object_id": "61709fa6-557c-4c59-9306-326be34b73c7",
+      "generated_at": "2026-08-16T09:58:35+00:00",
+      "glow_concept": "blossoms glowing along the branches",
+      "difference_from_source": 0.446,
+      "glow_score": 0.1137
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_013/sprite.webp",
       "pixellab_object_id": "19f43907-f2b1-4a13-97ec-1be4239951d0",
@@ -44,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.7182,
       "glow_score": 0.0901
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d08411b1-489a-4c09-baa8-224a1b4f6491",
+      "generated_at": "2026-08-16T09:57:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.642,
+      "glow_score": 0.0453
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "fb3e8da7-74b3-4d09-b8ce-ee9a85a459de",
+      "generated_at": "2026-08-16T09:57:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5819,
+      "glow_score": 0.0986
     }
   }
 }

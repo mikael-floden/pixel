@@ -6,7 +6,7 @@
   "rank": 157,
   "index": 17,
   "name": "Autumn-red rowan sapling 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "autumn-red rowan sapling",
   "modifier": "hanging almost upside down",
   "glow_concept": null,
@@ -32,10 +32,42 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/lit_2/sprite.webp",
+      "pixellab_object_id": "ccfee0f1-98ca-4b81-97d0-c3e9d5f02ff2",
+      "generated_at": "2026-08-16T10:01:32+00:00",
+      "glow_concept": "light in the crack at its root",
+      "difference_from_source": 0.1873,
+      "glow_score": 0.0512
+    },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_017/sprite.webp",
       "pixellab_object_id": "5750f173-355a-4ab5-b332-a8c984e2b710",
       "generated_at": "2026-08-14T05:02:52+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ef81028a-7b06-4315-bde3-767c5ea232b5",
+      "generated_at": "2026-08-16T10:01:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8344,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "70debd06-df7c-4f99-bf38-d0a9718e6ccd",
+      "generated_at": "2026-08-16T10:00:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9168,
+      "glow_score": 0.003
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "99d32e26-e67c-4f0f-b121-1dbef3df0942",
+      "generated_at": "2026-08-16T10:00:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6718,
+      "glow_score": 0.0
     }
   }
 }
