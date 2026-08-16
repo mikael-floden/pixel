@@ -1,0 +1,42 @@
+{
+  "_comment": "tiles 3.0 (/tiles) — rebuilt from scratch alongside tiles2. Three things make it different: (1) outline_mode=segmentation, so no baked outline to post-process away; (2) the FLAT BASE TILE — every ground type must have one tile whose top surface is a single flat colour, so the game can fill huge areas with it and the player can never see where the repeat starts; (3) every ground type is generated OVER every other, so the map agent picks the walkable TOP and the sideways WALL independently. Transitions/cliffs/slopes come from /create-tileset (lower+upper+spread_x/slope_size/raggedness), not from per-pair sheets. No tiles taller than 1 level — scenery owns objects now.",
+
+  "tile": {
+    "type": "isometric",
+    "size": 64,
+    "view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+
+  "_prompt_comment": "THE KEY LESSON from the maintainer's own prompt tests: naming the MATERIAL gets you texture you cannot flatten ('clean single colour grass' still returns detailed grass). Naming the COLOUR gets you the flat fill we actually want. So every type carries `color_words` used to build prompts, and `material_words` kept only for the later detailed-variant pass. `hex` is the intended resting colour — the QA target the generated top is measured against, not something sent to the API.",
+
+  "ground_types": [
+    { "id": "grass",         "category": "solid",  "color_words": "pure flat green",              "material_words": "lush green grass",        "hex": "#3f8a3a" },
+    { "id": "snow",          "category": "solid",  "color_words": "pure flat white",              "material_words": "clean fresh snow",        "hex": "#e8eef0" },
+    { "id": "ice",           "category": "solid",  "color_words": "pure flat pale cyan",          "material_words": "translucent crystal ice", "hex": "#9fd8e6" },
+    { "id": "black_rock",    "category": "solid",  "color_words": "pure flat near-black charcoal","material_words": "dark volcanic rock",      "hex": "#2c2c2e" },
+    { "id": "light_beach",   "category": "solid",  "color_words": "pure flat pale sand yellow",   "material_words": "pale sandy beach",        "hex": "#e0cf9a" },
+    { "id": "grey_stone",    "category": "solid",  "color_words": "pure flat medium grey",        "material_words": "rugged grey mountain rock","hex": "#8a8f8c" },
+    { "id": "light_soil",    "category": "solid",  "color_words": "pure flat light warm brown",   "material_words": "dry light soil",          "hex": "#b08a5c" },
+    { "id": "dark_mud",      "category": "solid",  "color_words": "pure flat dark cold brown",    "material_words": "wet dark mud",            "hex": "#4a3728" },
+    { "id": "parquet_floor", "category": "solid",  "color_words": "pure flat warm tan",           "material_words": "wooden parquet floor",    "hex": "#c39a63" },
+    { "id": "paving_stone",  "category": "solid",  "color_words": "pure flat cool light grey",    "material_words": "cut paving stone slabs",  "hex": "#b6b8b5" },
+
+    { "id": "water",         "category": "liquid", "color_words": "pure flat medium blue",        "material_words": "clear calm water",        "hex": "#3f7fbf" },
+    { "id": "deep_water",    "category": "liquid", "color_words": "pure flat dark navy blue",     "material_words": "deep dark ocean water",   "hex": "#1b3a5c" },
+    { "id": "lava",          "category": "liquid", "color_words": "pure flat dark orange",        "material_words": "molten glowing lava",     "hex": "#c2500f" },
+    { "id": "slime",         "category": "liquid", "color_words": "pure flat bright yellow-green","material_words": "thick bubbling slime",    "hex": "#7fbf3f" }
+  ],
+
+  "_base_prompt_comment": "16 tiles come back per call, so we ask for 16 numbered attempts at the SAME flat fill rather than 16 different-looking tiles — then pick the flattest by measurement (pipeline/flatness.py). Asking for variety here is what produced texture in tiles2.",
+  "prompts": {
+    "flat_base": "isometric tile of {color}. Every one of the 16 tiles is the SAME single completely uniform {color} surface: {variations}. The top surface is one solid flat colour with no texture, no pattern, no speckles, no blades, no grain, no noise, no highlights and no shading gradient. No outline, no border, no grid lines, no dark edges.",
+    "flat_base_variations": "1) flat 2) flat 3) flat 4) flat 5) flat 6) flat 7) flat 8) flat 9) flat 10) flat 11) flat 12) flat 13) flat 14) flat 15) flat 16) flat",
+    "over": "isometric tile with a top surface of {top_color} and side walls of {side_color}. All 16 tiles identical: the flat top is one solid uniform {top_color}, the vertical sides are {side_color}. No texture, no pattern, no noise on either surface. No outline, no border, no dark edges."
+  },
+
+  "budget": { "min_generations_remaining": 0, "min_usd": 5.0 }
+}
