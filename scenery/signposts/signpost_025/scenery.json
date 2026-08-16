@@ -6,7 +6,7 @@
   "rank": 8,
   "index": 25,
   "name": "Flower-garlanded signpost 025",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "flower-garlanded signpost",
   "modifier": "patched with mismatched materials",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "signposts/signpost_025/lit_1/sprite.webp",
+      "pixellab_object_id": "c5db0b8d-e274-4420-84af-bddce0f82fe2",
+      "generated_at": "2026-08-16T20:53:48+00:00",
+      "glow_concept": "small oil lamp bracketed beneath the arms",
+      "difference_from_source": 0.807,
+      "glow_score": 0.0631
+    },
+    "LIT_2": {
+      "sprite": "signposts/signpost_025/lit_2/sprite.webp",
+      "pixellab_object_id": "f8bbc5df-935f-487a-8f6c-17d7b373d0e3",
+      "generated_at": "2026-08-16T20:56:54+00:00",
+      "glow_concept": "rune-burned names shining through the wood",
+      "difference_from_source": 0.9479,
+      "glow_score": 0.0749
+    },
     "NOT_LIT_1": {
       "sprite": "signposts/signpost_025/sprite.webp",
       "pixellab_object_id": "02b9f6ef-d5bd-4875-961a-b0b5e0e0d3f4",
       "generated_at": "2026-08-14T00:34:35+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "signposts/signpost_025/not_lit_2/sprite.webp",
+      "pixellab_object_id": "fbdeefe5-988d-40ed-8e6e-8f9fdc3a49bf",
+      "generated_at": "2026-08-16T20:53:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4248,
+      "glow_score": 0.0242
+    },
+    "NOT_LIT_3": {
+      "sprite": "signposts/signpost_025/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c3b53d9a-2266-4922-8021-8c8662e0cdd2",
+      "generated_at": "2026-08-16T20:53:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.306,
+      "glow_score": 0.0282
+    },
+    "NOT_LIT_4": {
+      "sprite": "signposts/signpost_025/not_lit_4/sprite.webp",
+      "pixellab_object_id": "283e7af9-5333-406b-b0ee-e0e1f11a6d6e",
+      "generated_at": "2026-08-16T20:53:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5029,
+      "glow_score": 0.0236
     }
   }
 }

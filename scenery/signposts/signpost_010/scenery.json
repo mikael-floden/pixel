@@ -4,8 +4,8 @@
   "group": "signposts",
   "rank": 8,
   "index": 10,
-  "name": "Crooked many-armed post 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Crooked many-armed post 010",
+  "lights": null,
   "variety": "crooked many-armed post",
   "glow_concept": "small oil lamp bracketed beneath the arms",
   "prompt": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, crooked many-armed post, large, twice human height, self-emissive at night, softly radiating light: small oil lamp bracketed beneath the arms",
@@ -35,6 +35,46 @@
       "sprite": "signposts/signpost_010/sprite.webp",
       "pixellab_object_id": "bccbc74b-ff97-4d51-bee1-4e2b8e4a8c8d",
       "generated_at": "2026-08-13T21:29:41+00:00"
+    },
+    "LIT_2": {
+      "sprite": "signposts/signpost_010/lit_2/sprite.webp",
+      "pixellab_object_id": "fc29d135-3812-4853-bea8-b335b3514d43",
+      "generated_at": "2026-08-16T20:50:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8054,
+      "glow_score": 0.036
+    },
+    "LIT_3": {
+      "sprite": "signposts/signpost_010/lit_3/sprite.webp",
+      "pixellab_object_id": "63ac919c-06d9-4ad7-8a83-dc94f0376f75",
+      "generated_at": "2026-08-16T20:50:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7078,
+      "glow_score": 0.0123
+    },
+    "LIT_4": {
+      "sprite": "signposts/signpost_010/lit_4/sprite.webp",
+      "pixellab_object_id": "ccf65d09-ff47-4f1b-a61c-c7c21c941ab3",
+      "generated_at": "2026-08-16T20:53:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7594,
+      "glow_score": 0.0051
+    },
+    "NOT_LIT_1": {
+      "sprite": "signposts/signpost_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e27f48a4-07c6-482c-9357-53b048a92fa1",
+      "generated_at": "2026-08-16T20:53:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7887,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "signposts/signpost_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2f101418-b1a4-47f5-8fd4-45e1802826c9",
+      "generated_at": "2026-08-16T20:53:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3804,
+      "glow_score": 0.0
     }
   }
 }

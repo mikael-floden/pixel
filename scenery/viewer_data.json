@@ -38686,9 +38686,9 @@
     {
       "id": "signpost_004",
       "rel": "signposts/signpost_004",
-      "name": "Cast-iron city signpost 004 \u00b7 lit",
+      "name": "Cast-iron city signpost 004",
       "category": "signposts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden fingerpost with several arrow-shaped direction boards pointing different ways at different heights, cast-iron city signpost, large, well above head height of a person, self-emissive at night, softly radiating light: painted place-names glowing like embers",
       "view": "low top-down",
       "size": 128,
@@ -38731,6 +38731,33 @@
           "difference_from_source": 0.1834,
           "glow_score": 0.074,
           "art_hash": "6341b33c8b684d5c"
+        },
+        "LIT_4": {
+          "sprite": "signposts/signpost_004/lit_4/sprite.webp",
+          "pixellab_object_id": "b1b03495-6c4a-464a-9856-424ab27f6bf6",
+          "generated_at": "2026-08-16T20:47:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.819,
+          "glow_score": 0.0973,
+          "art_hash": "10f2b86df67306a0"
+        },
+        "NOT_LIT_1": {
+          "sprite": "signposts/signpost_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "36a96e53-0b90-4392-8422-fb2fab26f4ff",
+          "generated_at": "2026-08-16T20:47:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8986,
+          "glow_score": 0.0071,
+          "art_hash": "254ee40ab778c982"
+        },
+        "NOT_LIT_2": {
+          "sprite": "signposts/signpost_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4223c0b7-e86c-47bb-90cd-f4d452f3823e",
+          "generated_at": "2026-08-16T20:53:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8349,
+          "glow_score": 0.0,
+          "art_hash": "b52eecc1ec17a8b9"
         }
       },
       "animations": []
@@ -38740,7 +38767,7 @@
       "rel": "signposts/signpost_009",
       "name": "Rope-and-plank trail sign 009",
       "category": "signposts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, rope-and-plank trail sign, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -38760,11 +38787,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "signposts/signpost_009/lit_1/sprite.webp",
+          "pixellab_object_id": "4b78b5ad-45e9-46e0-bf2d-eb6b95953053",
+          "generated_at": "2026-08-16T20:49:40+00:00",
+          "glow_concept": "painted place-names glowing like embers",
+          "difference_from_source": 0.9055,
+          "glow_score": 0.0791,
+          "art_hash": "5ea8220d66528a87"
+        },
+        "LIT_2": {
+          "sprite": "signposts/signpost_009/lit_2/sprite.webp",
+          "pixellab_object_id": "99335875-b162-4c9e-8af6-37a287371968",
+          "generated_at": "2026-08-16T20:50:08+00:00",
+          "glow_concept": "gilded lettering lit from within",
+          "difference_from_source": 0.9396,
+          "glow_score": 0.1025,
+          "art_hash": "a610a11d2e8dbe2c"
+        },
         "NOT_LIT_1": {
           "sprite": "signposts/signpost_009/sprite.webp",
           "pixellab_object_id": "8dc6888f-5d37-4d11-9777-e02e0e17941a",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "700a467deace7f52"
+        },
+        "NOT_LIT_2": {
+          "sprite": "signposts/signpost_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f09d470d-d747-415c-b99d-cd34cfe19ae8",
+          "generated_at": "2026-08-16T20:50:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5838,
+          "glow_score": 0.0,
+          "art_hash": "c029557b3238858d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "signposts/signpost_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ed81a94f-8f51-458f-b8e2-73cd36ef8b7f",
+          "generated_at": "2026-08-16T20:51:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6477,
+          "glow_score": 0.0,
+          "art_hash": "d4905714076b1b3d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "signposts/signpost_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4c9e00bb-4f2e-413e-a8d5-1e3ccddc1693",
+          "generated_at": "2026-08-16T20:49:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9645,
+          "glow_score": 0.1471,
+          "art_hash": "d42e0369f6800f3d"
         }
       },
       "animations": []
@@ -38772,9 +38844,9 @@
     {
       "id": "signpost_010",
       "rel": "signposts/signpost_010",
-      "name": "Crooked many-armed post 010 \u00b7 lit",
+      "name": "Crooked many-armed post 010",
       "category": "signposts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, crooked many-armed post, large, twice human height, self-emissive at night, softly radiating light: small oil lamp bracketed beneath the arms",
       "view": "low top-down",
       "size": 128,
@@ -38799,6 +38871,51 @@
           "pixellab_object_id": "bccbc74b-ff97-4d51-bee1-4e2b8e4a8c8d",
           "generated_at": "2026-08-13T21:29:41+00:00",
           "art_hash": "ac5df56402626ac0"
+        },
+        "LIT_2": {
+          "sprite": "signposts/signpost_010/lit_2/sprite.webp",
+          "pixellab_object_id": "fc29d135-3812-4853-bea8-b335b3514d43",
+          "generated_at": "2026-08-16T20:50:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8054,
+          "glow_score": 0.036,
+          "art_hash": "e255bd2aa8aa6cfb"
+        },
+        "LIT_3": {
+          "sprite": "signposts/signpost_010/lit_3/sprite.webp",
+          "pixellab_object_id": "63ac919c-06d9-4ad7-8a83-dc94f0376f75",
+          "generated_at": "2026-08-16T20:50:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7078,
+          "glow_score": 0.0123,
+          "art_hash": "4a258de2dfc91db2"
+        },
+        "LIT_4": {
+          "sprite": "signposts/signpost_010/lit_4/sprite.webp",
+          "pixellab_object_id": "ccf65d09-ff47-4f1b-a61c-c7c21c941ab3",
+          "generated_at": "2026-08-16T20:53:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7594,
+          "glow_score": 0.0051,
+          "art_hash": "c8a97085171e3f57"
+        },
+        "NOT_LIT_1": {
+          "sprite": "signposts/signpost_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e27f48a4-07c6-482c-9357-53b048a92fa1",
+          "generated_at": "2026-08-16T20:53:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7887,
+          "glow_score": 0.0,
+          "art_hash": "fdb901173a9e4f38"
+        },
+        "NOT_LIT_2": {
+          "sprite": "signposts/signpost_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2f101418-b1a4-47f5-8fd4-45e1802826c9",
+          "generated_at": "2026-08-16T20:53:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3804,
+          "glow_score": 0.0,
+          "art_hash": "974f993fb032cb44"
         }
       },
       "animations": []
@@ -38808,7 +38925,7 @@
       "rel": "signposts/signpost_025",
       "name": "Flower-garlanded signpost 025",
       "category": "signposts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stout wooden fingerpost with thick heavy blank arrow boards of bare weathered wood, set in a solid base, flower-garlanded signpost, patched with mismatched materials, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -38828,11 +38945,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "signposts/signpost_025/lit_1/sprite.webp",
+          "pixellab_object_id": "c5db0b8d-e274-4420-84af-bddce0f82fe2",
+          "generated_at": "2026-08-16T20:53:48+00:00",
+          "glow_concept": "small oil lamp bracketed beneath the arms",
+          "difference_from_source": 0.807,
+          "glow_score": 0.0631,
+          "art_hash": "83be2bd28661d1bd"
+        },
+        "LIT_2": {
+          "sprite": "signposts/signpost_025/lit_2/sprite.webp",
+          "pixellab_object_id": "f8bbc5df-935f-487a-8f6c-17d7b373d0e3",
+          "generated_at": "2026-08-16T20:56:54+00:00",
+          "glow_concept": "rune-burned names shining through the wood",
+          "difference_from_source": 0.9479,
+          "glow_score": 0.0749,
+          "art_hash": "9fa3daa3390b8653"
+        },
         "NOT_LIT_1": {
           "sprite": "signposts/signpost_025/sprite.webp",
           "pixellab_object_id": "02b9f6ef-d5bd-4875-961a-b0b5e0e0d3f4",
           "generated_at": "2026-08-14T00:34:35+00:00",
           "art_hash": "c75b7a8dbc71df10"
+        },
+        "NOT_LIT_2": {
+          "sprite": "signposts/signpost_025/not_lit_2/sprite.webp",
+          "pixellab_object_id": "fbdeefe5-988d-40ed-8e6e-8f9fdc3a49bf",
+          "generated_at": "2026-08-16T20:53:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4248,
+          "glow_score": 0.0242,
+          "art_hash": "7c8cdd6682554f06"
+        },
+        "NOT_LIT_3": {
+          "sprite": "signposts/signpost_025/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c3b53d9a-2266-4922-8021-8c8662e0cdd2",
+          "generated_at": "2026-08-16T20:53:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.306,
+          "glow_score": 0.0282,
+          "art_hash": "0671bacb77009d7d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "signposts/signpost_025/not_lit_4/sprite.webp",
+          "pixellab_object_id": "283e7af9-5333-406b-b0ee-e0e1f11a6d6e",
+          "generated_at": "2026-08-16T20:53:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5029,
+          "glow_score": 0.0236,
+          "art_hash": "0bf489cfc692e9d1"
         }
       },
       "animations": []
@@ -38867,6 +39029,33 @@
           "pixellab_object_id": "2a01fa09-625f-4910-9887-295ea32e140b",
           "generated_at": "2026-08-14T01:17:02+00:00",
           "art_hash": "38e3b937fa91070d"
+        },
+        "LIT_2": {
+          "sprite": "signposts/signpost_028/lit_2/sprite.webp",
+          "pixellab_object_id": "2bc87aed-f0e1-48b1-9c16-588293d864f0",
+          "generated_at": "2026-08-16T20:56:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2727,
+          "glow_score": 0.0702,
+          "art_hash": "c2aecbcc325fce44"
+        },
+        "LIT_3": {
+          "sprite": "signposts/signpost_028/lit_3/sprite.webp",
+          "pixellab_object_id": "a998f224-e755-4ddc-a6ae-78d7d0743966",
+          "generated_at": "2026-08-16T20:56:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4912,
+          "glow_score": 0.0513,
+          "art_hash": "04d939eecc514854"
+        },
+        "LIT_4": {
+          "sprite": "signposts/signpost_028/lit_4/sprite.webp",
+          "pixellab_object_id": "3ba69172-0783-4648-90b6-0ee7255d35a2",
+          "generated_at": "2026-08-16T20:56:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5027,
+          "glow_score": 0.0347,
+          "art_hash": "a5eac3d8f4c28876"
         }
       },
       "animations": []
@@ -38876,7 +39065,7 @@
       "rel": "sky_stairs/sky_stair_001",
       "name": "Ancient sky stair 001",
       "category": "sky_stairs",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a flight of worn stone steps rising out of the grass and simply ending in mid-air, mossy treads, no rail and nothing above, ancient sky stair, seven steps and gone, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -38896,11 +39085,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "sky_stairs/sky_stair_001/lit_1/sprite.webp",
+          "pixellab_object_id": "8d19956d-02db-4f1b-8770-b7845ec21dce",
+          "generated_at": "2026-08-16T20:56:33+00:00",
+          "glow_concept": "light where the stair ends",
+          "difference_from_source": 0.8135,
+          "glow_score": 0.0296,
+          "art_hash": "66bcb7affe62ab4f"
+        },
         "NOT_LIT_1": {
           "sprite": "sky_stairs/sky_stair_001/sprite.webp",
           "pixellab_object_id": "01f0fe53-214b-43ef-b5dc-d96e6040ab1b",
           "generated_at": "2026-08-14T04:37:13+00:00",
           "art_hash": "a61cd4b867d29a5a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "sky_stairs/sky_stair_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cd45f4d1-45c3-4e29-8065-cc03956e0c88",
+          "generated_at": "2026-08-16T20:55:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2815,
+          "glow_score": 0.0125,
+          "art_hash": "83d75e2c10ab9799"
+        },
+        "NOT_LIT_3": {
+          "sprite": "sky_stairs/sky_stair_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ebc0ff39-9813-4d7b-be55-884fe9f62229",
+          "generated_at": "2026-08-16T20:55:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3946,
+          "glow_score": 0.0008,
+          "art_hash": "7e7004e9ac52d9de"
+        },
+        "NOT_LIT_4": {
+          "sprite": "sky_stairs/sky_stair_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "242052af-23e0-4095-9f03-7326162302a5",
+          "generated_at": "2026-08-16T20:56:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4367,
+          "glow_score": 0.0,
+          "art_hash": "df5b354cbceb5bfd"
         }
       },
       "animations": []
