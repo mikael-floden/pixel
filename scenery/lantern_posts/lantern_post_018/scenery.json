@@ -5,8 +5,8 @@
   "group": "lantern_posts",
   "rank": 5,
   "index": 18,
-  "name": "Tar-blackened coastal post 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tar-blackened coastal post 018",
+  "lights": null,
   "variety": "tar-blackened coastal post",
   "modifier": "old and settling into the ground",
   "glow_concept": "steady candle flame behind horn panes",
@@ -36,6 +36,46 @@
       "sprite": "lantern_posts/lantern_post_018/sprite.webp",
       "pixellab_object_id": "0eceb489-6ee1-473e-99f9-38c3bcdb15e1",
       "generated_at": "2026-08-14T01:29:23+00:00"
+    },
+    "LIT_2": {
+      "sprite": "lantern_posts/lantern_post_018/lit_2/sprite.webp",
+      "pixellab_object_id": "e31cd615-e934-4ba2-92f5-abd6d01fb6ab",
+      "generated_at": "2026-08-16T17:24:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5111,
+      "glow_score": 0.0329
+    },
+    "LIT_3": {
+      "sprite": "lantern_posts/lantern_post_018/lit_3/sprite.webp",
+      "pixellab_object_id": "3af57676-fe17-4e27-8e66-2054553eb5b1",
+      "generated_at": "2026-08-16T17:24:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5173,
+      "glow_score": 0.0286
+    },
+    "LIT_4": {
+      "sprite": "lantern_posts/lantern_post_018/lit_4/sprite.webp",
+      "pixellab_object_id": "70f7c40f-c7ae-4780-98c5-996ca908be8a",
+      "generated_at": "2026-08-16T17:25:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7116,
+      "glow_score": 0.0252
+    },
+    "NOT_LIT_1": {
+      "sprite": "lantern_posts/lantern_post_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "55678755-e3f2-46cd-af22-8ea7c804499b",
+      "generated_at": "2026-08-16T17:24:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2498,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "lantern_posts/lantern_post_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "410d3f78-0701-4629-90a0-416c1626029f",
+      "generated_at": "2026-08-16T17:25:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5681,
+      "glow_score": 0.0
     }
   }
 }
