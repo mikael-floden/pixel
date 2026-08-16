@@ -5,8 +5,8 @@
   "group": "stones",
   "rank": 2,
   "index": 18,
-  "name": "Split rock with sharp cleft 018 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Split rock with sharp cleft 018",
+  "lights": null,
   "variety": "split rock with sharp cleft",
   "modifier": "young and vigorous",
   "glow_concept": "ring of ghost-blue lichen circles",
@@ -36,6 +36,46 @@
       "sprite": "stones/stone_018/sprite.webp",
       "pixellab_object_id": "c824cb8f-046f-4cff-94ff-6b43d20cf7b8",
       "generated_at": "2026-08-14T01:33:34+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_018/lit_2/sprite.webp",
+      "pixellab_object_id": "6d8baef3-ac0a-4cb8-8842-59d1a23a9925",
+      "generated_at": "2026-08-16T21:48:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7415,
+      "glow_score": 0.0186
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_018/lit_3/sprite.webp",
+      "pixellab_object_id": "5df16686-2457-4d47-a221-349655eaad7a",
+      "generated_at": "2026-08-16T21:48:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8907,
+      "glow_score": 0.0564
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_018/lit_4/sprite.webp",
+      "pixellab_object_id": "23170918-8df0-4541-bd4e-f4eaa99aaf2b",
+      "generated_at": "2026-08-16T21:48:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8229,
+      "glow_score": 0.0247
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_018/not_lit_1/sprite.webp",
+      "pixellab_object_id": "3152c790-bc6a-442c-ab13-d8cabb4ab95f",
+      "generated_at": "2026-08-16T21:49:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9265,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_018/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d87dcd80-c94e-4445-a1b1-51ada52593a7",
+      "generated_at": "2026-08-16T21:49:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8741,
+      "glow_score": 0.0
     }
   }
 }
