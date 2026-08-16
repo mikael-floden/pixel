@@ -6,7 +6,7 @@
   "rank": 16,
   "index": 17,
   "name": "Fieldstone arch niche 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "fieldstone arch niche",
   "modifier": "recently maintained",
   "glow_concept": null,
@@ -32,10 +32,34 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "flame_niches/flame_niche_017/lit_2/sprite.webp",
+      "pixellab_object_id": "20dc2451-6639-4eeb-aa0d-64fd44effb18",
+      "generated_at": "2026-08-16T14:01:25+00:00",
+      "glow_concept": "gilded niche interior reflecting warm candlelight",
+      "difference_from_source": 0.8994,
+      "glow_score": 0.1898
+    },
     "NOT_LIT_1": {
       "sprite": "flame_niches/flame_niche_017/sprite.webp",
       "pixellab_object_id": "8f4006ad-6fc0-4b35-b447-1612b667f6e8",
       "generated_at": "2026-08-14T02:16:41+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "flame_niches/flame_niche_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "09893521-057d-445b-9c7c-3b9a80f59ae6",
+      "generated_at": "2026-08-16T14:00:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5078,
+      "glow_score": 0.0209
+    },
+    "NOT_LIT_4": {
+      "sprite": "flame_niches/flame_niche_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8b2d47ef-36fd-408a-8c11-d5f1a20143e2",
+      "generated_at": "2026-08-16T14:01:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7374,
+      "glow_score": 0.0
     }
   }
 }
