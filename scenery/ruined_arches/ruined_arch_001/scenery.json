@@ -5,7 +5,7 @@
   "rank": 51,
   "index": 1,
   "name": "Post-and-lintel dolmen arch 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "post-and-lintel dolmen arch",
   "glow_concept": null,
   "prompt": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, post-and-lintel dolmen arch, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:26:13+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "ruined_arches/ruined_arch_001/lit_2/sprite.webp",
+      "pixellab_object_id": "970a0b6f-0a28-4d16-951d-32e2dcef0840",
+      "generated_at": "2026-08-16T20:28:44+00:00",
+      "glow_concept": "cold aurora shimmer hanging under the arch",
+      "difference_from_source": 0.5743,
+      "glow_score": 0.1535
+    },
     "NOT_LIT_1": {
       "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
       "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
       "generated_at": "2026-08-13T01:26:13+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "ruined_arches/ruined_arch_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "164c1b58-f986-4a9e-9d9f-178ba5a49010",
+      "generated_at": "2026-08-16T20:27:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3968,
+      "glow_score": 0.0445
+    },
+    "NOT_LIT_3": {
+      "sprite": "ruined_arches/ruined_arch_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "c7d4f263-5e9b-4c9e-915b-7b7401ac097e",
+      "generated_at": "2026-08-16T20:27:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.37,
+      "glow_score": 0.0011
+    },
+    "NOT_LIT_4": {
+      "sprite": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "8ad6a990-e767-484c-945d-4dbfd518ed81",
+      "generated_at": "2026-08-16T20:28:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4385,
+      "glow_score": 0.0058
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "rugs_and_hides",
   "rank": 108,
   "index": 12,
-  "name": "Brown bearskin hide rug 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Brown bearskin hide rug 012",
+  "lights": null,
   "variety": "brown bearskin hide rug",
   "glow_concept": "pattern threads shimmering with woven memory-light",
   "prompt": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, brown bearskin hide rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: pattern threads shimmering with woven memory-light",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.2879,
       "glow_score": 0.1574
+    },
+    "LIT_4": {
+      "sprite": "rugs_and_hides/rug_012/lit_4/sprite.webp",
+      "pixellab_object_id": "7da47d9f-08e2-4e16-b025-e411bf867ea9",
+      "generated_at": "2026-08-16T20:21:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3153,
+      "glow_score": 0.1137
+    },
+    "NOT_LIT_1": {
+      "sprite": "rugs_and_hides/rug_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "994a5e20-1ecf-4276-a478-3f8f6cf38914",
+      "generated_at": "2026-08-16T20:22:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8687,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "rugs_and_hides/rug_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a05b09dd-9d69-4a31-8f66-e2e9bd3159cd",
+      "generated_at": "2026-08-16T20:22:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8567,
+      "glow_score": 0.0
     }
   }
 }

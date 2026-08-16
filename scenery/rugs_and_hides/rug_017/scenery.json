@@ -6,7 +6,7 @@
   "rank": 108,
   "index": 17,
   "name": "Plaited reed floor mat 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "plaited reed floor mat",
   "modifier": "child-sized",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "rugs_and_hides/rug_017/lit_1/sprite.webp",
+      "pixellab_object_id": "95782256-dde8-4c08-ad5b-ec5948a5ca52",
+      "generated_at": "2026-08-16T20:25:48+00:00",
+      "glow_concept": "pattern threads shimmering with woven memory-light",
+      "difference_from_source": 0.5715,
+      "glow_score": 0.1713
+    },
+    "LIT_2": {
+      "sprite": "rugs_and_hides/rug_017/lit_2/sprite.webp",
+      "pixellab_object_id": "2cb1c5d0-3961-4c96-8dfb-e1e7830ceba5",
+      "generated_at": "2026-08-16T20:26:08+00:00",
+      "glow_concept": "warm hearthlight reflected across the pile",
+      "difference_from_source": 0.8535,
+      "glow_score": 0.2988
+    },
     "NOT_LIT_1": {
       "sprite": "rugs_and_hides/rug_017/sprite.webp",
       "pixellab_object_id": "2b16acb5-c377-4791-b84b-ac9ca77f00aa",
       "generated_at": "2026-08-14T02:46:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "rugs_and_hides/rug_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "2551ec69-3284-40ed-b8bd-3f8e02781ca8",
+      "generated_at": "2026-08-16T20:24:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5057,
+      "glow_score": 0.0981
+    },
+    "NOT_LIT_3": {
+      "sprite": "rugs_and_hides/rug_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "16560eea-1d6e-4736-a26c-fa47a540d0be",
+      "generated_at": "2026-08-16T20:25:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4737,
+      "glow_score": 0.1843
+    },
+    "NOT_LIT_4": {
+      "sprite": "rugs_and_hides/rug_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "4044283d-560a-4780-8142-c03948d85dcf",
+      "generated_at": "2026-08-16T20:25:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6314,
+      "glow_score": 0.2005
     }
   }
 }

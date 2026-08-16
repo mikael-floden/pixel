@@ -37467,9 +37467,9 @@
     {
       "id": "rug_012",
       "rel": "rugs_and_hides/rug_012",
-      "name": "Brown bearskin hide rug 012 \u00b7 lit",
+      "name": "Brown bearskin hide rug 012",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, brown bearskin hide rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: pattern threads shimmering with woven memory-light",
       "view": "low top-down",
       "size": 64,
@@ -37512,6 +37512,33 @@
           "difference_from_source": 0.2879,
           "glow_score": 0.1574,
           "art_hash": "7b1a9a1522d59484"
+        },
+        "LIT_4": {
+          "sprite": "rugs_and_hides/rug_012/lit_4/sprite.webp",
+          "pixellab_object_id": "7da47d9f-08e2-4e16-b025-e411bf867ea9",
+          "generated_at": "2026-08-16T20:21:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3153,
+          "glow_score": 0.1137,
+          "art_hash": "d12307b24e8f21b2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rugs_and_hides/rug_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "994a5e20-1ecf-4276-a478-3f8f6cf38914",
+          "generated_at": "2026-08-16T20:22:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8687,
+          "glow_score": 0.0,
+          "art_hash": "e1565181f2d13bc9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a05b09dd-9d69-4a31-8f66-e2e9bd3159cd",
+          "generated_at": "2026-08-16T20:22:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8567,
+          "glow_score": 0.0,
+          "art_hash": "98d0eb31fc56eeb7"
         }
       },
       "animations": []
@@ -37519,9 +37546,9 @@
     {
       "id": "rug_014",
       "rel": "rugs_and_hides/rug_014",
-      "name": "Striped rag rug 014 \u00b7 lit",
+      "name": "Striped rag rug 014",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, striped rag rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: warm hearthlight reflected across the pile",
       "view": "low top-down",
       "size": 64,
@@ -37546,6 +37573,51 @@
           "pixellab_object_id": "3db3c876-a704-41c2-94b3-4c1e7a176d74",
           "generated_at": "2026-08-13T23:14:49+00:00",
           "art_hash": "c190d4a3e4f3cee3"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_014/lit_2/sprite.webp",
+          "pixellab_object_id": "69328274-abb8-45c1-815c-a519b39b8876",
+          "generated_at": "2026-08-16T20:22:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6232,
+          "glow_score": 0.2215,
+          "art_hash": "e33c34bfea291e88"
+        },
+        "LIT_3": {
+          "sprite": "rugs_and_hides/rug_014/lit_3/sprite.webp",
+          "pixellab_object_id": "df68e75f-772d-463d-abbf-1236284d3715",
+          "generated_at": "2026-08-16T20:22:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.537,
+          "glow_score": 0.2491,
+          "art_hash": "bb57f5f4b22ffa78"
+        },
+        "LIT_4": {
+          "sprite": "rugs_and_hides/rug_014/lit_4/sprite.webp",
+          "pixellab_object_id": "b58c64c9-76cf-40d6-980a-9509c0eb110a",
+          "generated_at": "2026-08-16T20:23:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6525,
+          "glow_score": 0.306,
+          "art_hash": "531f9031889e2785"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rugs_and_hides/rug_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "5edcb852-c2ce-4763-9a87-9c8233967cc1",
+          "generated_at": "2026-08-16T20:23:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5834,
+          "glow_score": 0.0749,
+          "art_hash": "cbf42a3bb545e6aa"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7482be3f-2c32-4154-9d27-60ebd32256f6",
+          "generated_at": "2026-08-16T20:23:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8604,
+          "glow_score": 0.0,
+          "art_hash": "5ceb43e2e2053383"
         }
       },
       "animations": []
@@ -37553,9 +37625,9 @@
     {
       "id": "rug_016",
       "rel": "rugs_and_hides/rug_016",
-      "name": "Patch-sewn quilt rug 016 \u00b7 lit",
+      "name": "Patch-sewn quilt rug 016",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, patch-sewn quilt rug, roughly six feet tall, human height, self-emissive at night, softly radiating light: pattern threads shimmering with woven memory-light",
       "view": "low top-down",
       "size": 64,
@@ -37580,6 +37652,51 @@
           "pixellab_object_id": "32164f92-a753-413e-9d25-ef7b65c498d2",
           "generated_at": "2026-08-13T23:44:46+00:00",
           "art_hash": "205abbc0bb8e3d2b"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_016/lit_2/sprite.webp",
+          "pixellab_object_id": "135dde56-1e23-42c4-93ea-68e9b26adb9d",
+          "generated_at": "2026-08-16T20:24:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8391,
+          "glow_score": 0.2402,
+          "art_hash": "0f3c7241dcdd40b0"
+        },
+        "LIT_3": {
+          "sprite": "rugs_and_hides/rug_016/lit_3/sprite.webp",
+          "pixellab_object_id": "f1e656e7-0a96-49c4-8676-194a8258ef88",
+          "generated_at": "2026-08-16T20:24:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9337,
+          "glow_score": 0.217,
+          "art_hash": "4445098e28fdc816"
+        },
+        "LIT_4": {
+          "sprite": "rugs_and_hides/rug_016/lit_4/sprite.webp",
+          "pixellab_object_id": "80a26221-388c-456b-a5d8-be1b16905ae0",
+          "generated_at": "2026-08-16T20:24:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7036,
+          "glow_score": 0.3417,
+          "art_hash": "1cba3d111723497f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "rugs_and_hides/rug_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a68690a8-9407-4ffd-8461-2570b87388e7",
+          "generated_at": "2026-08-16T20:24:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8591,
+          "glow_score": 0.0,
+          "art_hash": "d765998a9c301a2a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "abfee1d4-5398-42fd-a964-5957563aad42",
+          "generated_at": "2026-08-16T20:24:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8939,
+          "glow_score": 0.0,
+          "art_hash": "b4be590922599c0e"
         }
       },
       "animations": []
@@ -37589,7 +37706,7 @@
       "rel": "rugs_and_hides/rug_017",
       "name": "Plaited reed floor mat 017",
       "category": "rugs_and_hides",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a flat woven floor rug lying on the ground seen from above, thick fabric with a bold folk pattern, completely flat underfoot, plaited reed floor mat, child-sized, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -37609,11 +37726,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "rugs_and_hides/rug_017/lit_1/sprite.webp",
+          "pixellab_object_id": "95782256-dde8-4c08-ad5b-ec5948a5ca52",
+          "generated_at": "2026-08-16T20:25:48+00:00",
+          "glow_concept": "pattern threads shimmering with woven memory-light",
+          "difference_from_source": 0.5715,
+          "glow_score": 0.1713,
+          "art_hash": "2bb12056ce458e46"
+        },
+        "LIT_2": {
+          "sprite": "rugs_and_hides/rug_017/lit_2/sprite.webp",
+          "pixellab_object_id": "2cb1c5d0-3961-4c96-8dfb-e1e7830ceba5",
+          "generated_at": "2026-08-16T20:26:08+00:00",
+          "glow_concept": "warm hearthlight reflected across the pile",
+          "difference_from_source": 0.8535,
+          "glow_score": 0.2988,
+          "art_hash": "23786aa6b987a1c9"
+        },
         "NOT_LIT_1": {
           "sprite": "rugs_and_hides/rug_017/sprite.webp",
           "pixellab_object_id": "2b16acb5-c377-4791-b84b-ac9ca77f00aa",
           "generated_at": "2026-08-14T02:46:20+00:00",
           "art_hash": "2146752678c2cba5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "rugs_and_hides/rug_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2551ec69-3284-40ed-b8bd-3f8e02781ca8",
+          "generated_at": "2026-08-16T20:24:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5057,
+          "glow_score": 0.0981,
+          "art_hash": "8fa6e90a96c67aa9"
+        },
+        "NOT_LIT_3": {
+          "sprite": "rugs_and_hides/rug_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "16560eea-1d6e-4736-a26c-fa47a540d0be",
+          "generated_at": "2026-08-16T20:25:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4737,
+          "glow_score": 0.1843,
+          "art_hash": "1920062e3742fd3a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "rugs_and_hides/rug_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4044283d-560a-4780-8142-c03948d85dcf",
+          "generated_at": "2026-08-16T20:25:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6314,
+          "glow_score": 0.2005,
+          "art_hash": "a57d08a6a6b19b6c"
         }
       },
       "animations": []
@@ -37623,7 +37785,7 @@
       "rel": "ruined_arches/ruined_arch_001",
       "name": "Post-and-lintel dolmen arch 001",
       "category": "ruined_arches",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a freestanding ruined stone archway with crumbling voussoirs, a worn threshold, and rubble at its feet, post-and-lintel dolmen arch, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -37643,11 +37805,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "ruined_arches/ruined_arch_001/lit_2/sprite.webp",
+          "pixellab_object_id": "970a0b6f-0a28-4d16-951d-32e2dcef0840",
+          "generated_at": "2026-08-16T20:28:44+00:00",
+          "glow_concept": "cold aurora shimmer hanging under the arch",
+          "difference_from_source": 0.5743,
+          "glow_score": 0.1535,
+          "art_hash": "beced4f763468b3d"
+        },
         "NOT_LIT_1": {
           "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
           "pixellab_object_id": "5e8e1299-db6a-4b43-bafc-66cbe284db7d",
           "generated_at": "2026-08-13T01:26:13+00:00",
           "art_hash": "2e54a1ae7277312a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ruined_arches/ruined_arch_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "164c1b58-f986-4a9e-9d9f-178ba5a49010",
+          "generated_at": "2026-08-16T20:27:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3968,
+          "glow_score": 0.0445,
+          "art_hash": "572f92caefdb67b1"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ruined_arches/ruined_arch_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c7d4f263-5e9b-4c9e-915b-7b7401ac097e",
+          "generated_at": "2026-08-16T20:27:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.37,
+          "glow_score": 0.0011,
+          "art_hash": "e22edfb6a853df03"
+        },
+        "NOT_LIT_4": {
+          "sprite": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "8ad6a990-e767-484c-945d-4dbfd518ed81",
+          "generated_at": "2026-08-16T20:28:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4385,
+          "glow_score": 0.0058,
+          "art_hash": "3aca4ed169f49a83"
         }
       },
       "animations": []
@@ -37682,6 +37880,33 @@
           "pixellab_object_id": "213a34bf-7043-4230-811f-43ad108a4891",
           "generated_at": "2026-08-13T04:39:53+00:00",
           "art_hash": "a043e99d0936fc10"
+        },
+        "LIT_2": {
+          "sprite": "ruined_arches/ruined_arch_002/lit_2/sprite.webp",
+          "pixellab_object_id": "30013f77-cc73-446d-a77f-25df780ddca3",
+          "generated_at": "2026-08-16T20:28:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3221,
+          "glow_score": 0.0567,
+          "art_hash": "18bee62946bec1ed"
+        },
+        "LIT_3": {
+          "sprite": "ruined_arches/ruined_arch_002/lit_3/sprite.webp",
+          "pixellab_object_id": "baae5772-01ef-43e8-b94a-e2acaf47b9cb",
+          "generated_at": "2026-08-16T20:28:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6068,
+          "glow_score": 0.0703,
+          "art_hash": "0c431ab7c4e17976"
+        },
+        "LIT_4": {
+          "sprite": "ruined_arches/ruined_arch_002/lit_4/sprite.webp",
+          "pixellab_object_id": "3ebf9e9f-b23f-4308-990b-31082eb7b6f7",
+          "generated_at": "2026-08-16T20:29:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6282,
+          "glow_score": 0.0108,
+          "art_hash": "805570ee88b50c6e"
         }
       },
       "animations": []
