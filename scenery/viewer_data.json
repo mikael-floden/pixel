@@ -1887,6 +1887,15 @@
           "generated_at": "2026-08-15T14:47:58+00:00",
           "art_hash": "a4e81c88e04f0439"
         },
+        "NOT_LIT_1": {
+          "sprite": "ancient_trees/ancient_tree_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a7512064-4164-40a3-9242-96e43e4383fe",
+          "generated_at": "2026-08-16T14:27:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.412,
+          "glow_score": 0.0004,
+          "art_hash": "5615dac0dc5aa505"
+        },
         "NOT_LIT_10": {
           "sprite": "ancient_trees/ancient_tree_002/not_lit_10/sprite.webp",
           "pixellab_object_id": "acaadc9b-9f38-4e5e-b029-1f5320c9f3da",
@@ -21894,6 +21903,15 @@
           "glow_score": 0.0453,
           "art_hash": "8a22c6263aefd29b"
         },
+        "NOT_LIT_4": {
+          "sprite": "fallen_logs/fallen_log_006/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6e9ebdc6-b583-449b-9196-efe9150010c4",
+          "generated_at": "2026-08-16T14:26:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7446,
+          "glow_score": 0.1148,
+          "art_hash": "1e7226cb512313ae"
+        },
         "NOT_LIT_5": {
           "sprite": "fallen_logs/fallen_log_006/not_lit_5/sprite.webp",
           "pixellab_object_id": "0c19da40-c561-4d27-8419-8804fef86604",
@@ -25762,9 +25780,9 @@
     {
       "id": "giant_fallen_bell_002",
       "rel": "giant_fallen_bells/giant_fallen_bell_002",
-      "name": "Verdigris ship's bell 002 \u00b7 lit",
+      "name": "Verdigris ship's bell 002",
       "category": "giant_fallen_bells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a huge bronze temple bell lying toppled in the grass, cracked and green with age, half sunk into the ground, verdigris ship's bell, split down one side, roughly six feet tall, human height, self-emissive at night, softly radiating light: a soft hum of light inside the crack",
       "view": "low top-down",
       "size": 64,
@@ -25816,6 +25834,24 @@
           "difference_from_source": 0.8803,
           "glow_score": 0.0366,
           "art_hash": "2eca5902cbfd007e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3ff9d159-2c60-4e7b-ae8b-c35c090f8c03",
+          "generated_at": "2026-08-16T14:26:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8571,
+          "glow_score": 0.0,
+          "art_hash": "9e24e0ebca46658e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6ca5d387-8b98-4270-b317-ec18f8e1d1fb",
+          "generated_at": "2026-08-16T14:26:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9138,
+          "glow_score": 0.0,
+          "art_hash": "37325ab0df97675c"
         }
       },
       "animations": []
@@ -25825,7 +25861,7 @@
       "rel": "giant_mushrooms/giant_mushroom_001",
       "name": "Leaning crooked giant 001",
       "category": "giant_mushrooms",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, leaning crooked giant, tall, about two people high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 192,
@@ -25845,6 +25881,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "giant_mushrooms/giant_mushroom_001/lit_1/sprite.webp",
+          "pixellab_object_id": "474d910a-7988-40ac-bfcb-4cba58ae9ec2",
+          "generated_at": "2026-08-16T14:26:41+00:00",
+          "glow_concept": "glowing sap veins climbing the thick stalk",
+          "difference_from_source": 0.8381,
+          "glow_score": 0.0603,
+          "art_hash": "e901201666d7e46a"
+        },
+        "LIT_2": {
+          "sprite": "giant_mushrooms/giant_mushroom_001/lit_2/sprite.webp",
+          "pixellab_object_id": "eed98c62-ae3d-4211-a524-e34a76a40fd1",
+          "generated_at": "2026-08-16T14:27:12+00:00",
+          "glow_concept": "cap spots lit like little cottage windows",
+          "difference_from_source": 0.6654,
+          "glow_score": 0.0164,
+          "art_hash": "1154331423fe59e2"
+        },
         "NOT_LIT_1": {
           "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
           "pixellab_object_id": "dd56fe56-5fcb-4186-b9f9-4e5f1e381b45",
@@ -25859,6 +25913,24 @@
           "difference_from_source": 0.7274,
           "glow_score": 0.0,
           "art_hash": "ff31bfed5fd8df50"
+        },
+        "NOT_LIT_3": {
+          "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "baedfb78-b89f-4266-9401-aa073e1aa6e8",
+          "generated_at": "2026-08-16T14:27:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2575,
+          "glow_score": 0.0,
+          "art_hash": "0304ba6370641b2b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "giant_mushrooms/giant_mushroom_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d2f257c5-f045-42dc-9503-c47dcf09acfe",
+          "generated_at": "2026-08-16T14:26:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2597,
+          "glow_score": 0.0,
+          "art_hash": "bef3dcb1ba3a5f2a"
         }
       },
       "animations": []
@@ -25866,9 +25938,9 @@
     {
       "id": "giant_mushroom_002",
       "rel": "giant_mushrooms/giant_mushroom_002",
-      "name": "Drooping wavy-brimmed cap 002 \u00b7 lit",
+      "name": "Drooping wavy-brimmed cap 002",
       "category": "giant_mushrooms",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a huge tree-sized mushroom with a thick fibrous stalk and a broad domed cap, drooping wavy-brimmed cap, tall, about two people high, self-emissive at night, softly radiating light: band of foxfire ringing the stalk base",
       "view": "low top-down",
       "size": 192,
@@ -25893,6 +25965,51 @@
           "pixellab_object_id": "699c17a8-1cdd-432b-8c8e-6e544d08e8dd",
           "generated_at": "2026-08-13T05:28:11+00:00",
           "art_hash": "0a768a883d4f57cc"
+        },
+        "LIT_2": {
+          "sprite": "giant_mushrooms/giant_mushroom_002/lit_2/sprite.webp",
+          "pixellab_object_id": "e686d372-363e-46b1-b726-1a4c101b7ea8",
+          "generated_at": "2026-08-16T14:27:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4069,
+          "glow_score": 0.0733,
+          "art_hash": "f426a67b08b5b20c"
+        },
+        "LIT_3": {
+          "sprite": "giant_mushrooms/giant_mushroom_002/lit_3/sprite.webp",
+          "pixellab_object_id": "d1b7fc05-c743-41a8-b7f7-e4163b6d8b20",
+          "generated_at": "2026-08-16T14:27:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.892,
+          "glow_score": 0.1077,
+          "art_hash": "ec95501a512b9c2e"
+        },
+        "LIT_4": {
+          "sprite": "giant_mushrooms/giant_mushroom_002/lit_4/sprite.webp",
+          "pixellab_object_id": "99fce8a3-a93d-4957-82f1-dcf342d576a3",
+          "generated_at": "2026-08-16T14:28:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7576,
+          "glow_score": 0.0531,
+          "art_hash": "74b9bbb5b87d8a8f"
+        },
+        "NOT_LIT_1": {
+          "sprite": "giant_mushrooms/giant_mushroom_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "26c7a056-e142-45a2-899b-59e1a8909a6a",
+          "generated_at": "2026-08-16T14:27:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7813,
+          "glow_score": 0.0,
+          "art_hash": "ec4a847a9063c8ba"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_mushrooms/giant_mushroom_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "856fb845-9b61-466d-8975-e2028923e678",
+          "generated_at": "2026-08-16T14:27:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1517,
+          "glow_score": 0.0385,
+          "art_hash": "70b6d59c3e1a5cd0"
         }
       },
       "animations": []
@@ -25900,9 +26017,9 @@
     {
       "id": "giant_skull_002",
       "rel": "giant_skulls/giant_skull_002",
-      "name": "Crested skull 002 \u00b7 lit",
+      "name": "Crested skull 002",
       "category": "giant_skulls",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "the huge weathered skull of an ancient beast resting in the meadow, horned and moss-patched, big enough to walk into, crested skull, half-buried jaw, roughly six feet tall, human height, self-emissive at night, softly radiating light: soul-light pooling under the jaw",
       "view": "low top-down",
       "size": 128,
@@ -25927,6 +26044,51 @@
           "pixellab_object_id": "59ae47ec-64d2-4991-910b-19e7d28b7084",
           "generated_at": "2026-08-14T02:04:26+00:00",
           "art_hash": "3319a9b5357e3f28"
+        },
+        "LIT_2": {
+          "sprite": "giant_skulls/giant_skull_002/lit_2/sprite.webp",
+          "pixellab_object_id": "4bbc87fa-5da5-4369-863b-fd181e9e83ed",
+          "generated_at": "2026-08-16T14:29:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8573,
+          "glow_score": 0.1367,
+          "art_hash": "027420d500154322"
+        },
+        "LIT_3": {
+          "sprite": "giant_skulls/giant_skull_002/lit_3/sprite.webp",
+          "pixellab_object_id": "77db9d45-3e82-432e-bd9d-3d2061d81710",
+          "generated_at": "2026-08-16T14:31:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6643,
+          "glow_score": 0.188,
+          "art_hash": "f9fb0a393449798f"
+        },
+        "LIT_4": {
+          "sprite": "giant_skulls/giant_skull_002/lit_4/sprite.webp",
+          "pixellab_object_id": "6f37fd27-0088-44a2-ad88-2746fcbe58b8",
+          "generated_at": "2026-08-16T14:30:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.815,
+          "glow_score": 0.273,
+          "art_hash": "6caee92a98bf94ba"
+        },
+        "NOT_LIT_1": {
+          "sprite": "giant_skulls/giant_skull_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8942b734-bc65-4505-a5a7-2233431b5f03",
+          "generated_at": "2026-08-16T14:29:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8152,
+          "glow_score": 0.1474,
+          "art_hash": "942d4e8693a79439"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_skulls/giant_skull_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f5080364-ab84-4d91-9fa3-b55af3571649",
+          "generated_at": "2026-08-16T14:30:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9843,
+          "glow_score": 0.0,
+          "art_hash": "50cf0b561eb44ce2"
         }
       },
       "animations": []
@@ -25934,9 +26096,9 @@
     {
       "id": "giant_snail_shell_002",
       "rel": "giant_snail_shells/giant_snail_shell_002",
-      "name": "Banded brown shell 002 \u00b7 lit",
+      "name": "Banded brown shell 002",
       "category": "giant_snail_shells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, banded brown shell, striped in faded bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: pearly shimmer along the whorls",
       "view": "low top-down",
       "size": 64,
@@ -25961,6 +26123,51 @@
           "pixellab_object_id": "b4789150-ed75-405b-aae1-7c6080dad867",
           "generated_at": "2026-08-14T01:10:28+00:00",
           "art_hash": "a2a50b0e7fffc944"
+        },
+        "LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_002/lit_2/sprite.webp",
+          "pixellab_object_id": "e33b5e3e-52ac-4e21-b11a-27337074f54d",
+          "generated_at": "2026-08-16T14:29:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8054,
+          "glow_score": 0.2444,
+          "art_hash": "aec774d1018919c3"
+        },
+        "LIT_3": {
+          "sprite": "giant_snail_shells/giant_snail_shell_002/lit_3/sprite.webp",
+          "pixellab_object_id": "2012fe03-b3d3-4c3c-ac91-ab26e7675d20",
+          "generated_at": "2026-08-16T14:29:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4343,
+          "glow_score": 0.0516,
+          "art_hash": "06e2ffa56cdcc301"
+        },
+        "LIT_4": {
+          "sprite": "giant_snail_shells/giant_snail_shell_002/lit_4/sprite.webp",
+          "pixellab_object_id": "0857a20b-939a-4234-9eef-cc1d65443ca9",
+          "generated_at": "2026-08-16T14:29:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5202,
+          "glow_score": 0.0392,
+          "art_hash": "5ed05a727ac72384"
+        },
+        "NOT_LIT_1": {
+          "sprite": "giant_snail_shells/giant_snail_shell_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4e8235fe-238d-4870-947a-0421c27533b9",
+          "generated_at": "2026-08-16T14:30:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7438,
+          "glow_score": 0.0,
+          "art_hash": "3a6787236fa45d21"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0ff089ac-d10c-4e73-8805-972a37cc9668",
+          "generated_at": "2026-08-16T14:31:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8322,
+          "glow_score": 0.0,
+          "art_hash": "7dc45c0509a0be66"
         }
       },
       "animations": []
@@ -25970,7 +26177,7 @@
       "rel": "giant_snail_shells/giant_snail_shell_003",
       "name": "Moss-green shell 003",
       "category": "giant_snail_shells",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, moss-green shell, half-buried in leaf litter, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25990,11 +26197,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "giant_snail_shells/giant_snail_shell_003/lit_1/sprite.webp",
+          "pixellab_object_id": "b2c540f3-136d-4ece-a3a7-a3c8bb5c011b",
+          "generated_at": "2026-08-16T14:31:33+00:00",
+          "glow_concept": "pearly shimmer along the whorls",
+          "difference_from_source": 0.8911,
+          "glow_score": 0.3182,
+          "art_hash": "209241683ec8cb45"
+        },
+        "LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_003/lit_2/sprite.webp",
+          "pixellab_object_id": "097683b2-37b4-401c-80f7-2866a18c7298",
+          "generated_at": "2026-08-16T14:32:25+00:00",
+          "glow_concept": "glow-snails clustered on the rim",
+          "difference_from_source": 0.8702,
+          "glow_score": 0.1047,
+          "art_hash": "e399f1c11a0c7a5f"
+        },
         "NOT_LIT_1": {
           "sprite": "giant_snail_shells/giant_snail_shell_003/sprite.webp",
           "pixellab_object_id": "7934ba98-b099-4d33-aa16-7c7b93e135fb",
           "generated_at": "2026-08-14T02:46:12+00:00",
           "art_hash": "e30215292e319f4c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "giant_snail_shells/giant_snail_shell_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1940e237-df96-444a-8c0f-194449db3a46",
+          "generated_at": "2026-08-16T14:32:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6942,
+          "glow_score": 0.1177,
+          "art_hash": "79d02087457d5970"
+        },
+        "NOT_LIT_3": {
+          "sprite": "giant_snail_shells/giant_snail_shell_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1fe05db2-b8e3-455c-b0f9-b6cfd1ee6b08",
+          "generated_at": "2026-08-16T14:30:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5475,
+          "glow_score": 0.0904,
+          "art_hash": "f85117349f403a88"
+        },
+        "NOT_LIT_4": {
+          "sprite": "giant_snail_shells/giant_snail_shell_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fd24882e-5efe-447e-a8bd-136acff5f46d",
+          "generated_at": "2026-08-16T14:31:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7228,
+          "glow_score": 0.1765,
+          "art_hash": "47a58d4f7634d5f9"
         }
       },
       "animations": []
@@ -26002,9 +26254,9 @@
     {
       "id": "giant_snail_shell_004",
       "rel": "giant_snail_shells/giant_snail_shell_004",
-      "name": "Chalk-white shell 004 \u00b7 lit",
+      "name": "Chalk-white shell 004",
       "category": "giant_snail_shells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "an enormous empty spiral snail shell resting on its side in the grass, weathered and mossy, big enough to shelter in, chalk-white shell, home to nesting birds, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-snails clustered on the rim",
       "view": "low top-down",
       "size": 64,
@@ -26029,6 +26281,24 @@
           "pixellab_object_id": "cc6abfc6-6981-49f1-8c5d-1a9bd7911d2d",
           "generated_at": "2026-08-14T04:35:48+00:00",
           "art_hash": "792be09ba9f05eb5"
+        },
+        "LIT_3": {
+          "sprite": "giant_snail_shells/giant_snail_shell_004/lit_3/sprite.webp",
+          "pixellab_object_id": "12273450-61ce-4f0b-8a68-e52b142659d7",
+          "generated_at": "2026-08-16T14:32:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7699,
+          "glow_score": 0.1425,
+          "art_hash": "28e5f9d102deca19"
+        },
+        "NOT_LIT_1": {
+          "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "bbe18868-33ef-425c-91a7-a3247dcc0da2",
+          "generated_at": "2026-08-16T14:32:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8226,
+          "glow_score": 0.0,
+          "art_hash": "a5ed1dd39dd3de55"
         }
       },
       "animations": []
@@ -30767,6 +31037,15 @@
           "generated_at": "2026-08-15T15:57:53+00:00",
           "art_hash": "132f87433b58ef5f"
         },
+        "NOT_LIT_6": {
+          "sprite": "petrified_stumps/petrified_stump_002/not_lit_6/sprite.webp",
+          "pixellab_object_id": "5ab3a3da-709d-424c-b6b6-294266e75d0d",
+          "generated_at": "2026-08-16T14:26:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3134,
+          "glow_score": 0.0772,
+          "art_hash": "9e08ea664056b04b"
+        },
         "NOT_LIT_7": {
           "sprite": "petrified_stumps/petrified_stump_002/not_lit_7/sprite.webp",
           "pixellab_object_id": "ca8f6558-6653-4654-8dcc-f05a3eb1269e",
@@ -35230,6 +35509,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "stumps/stump_001/lit_1/sprite.webp",
+          "pixellab_object_id": "0cdd1994-9fa1-4f07-a673-efe60983ac98",
+          "generated_at": "2026-08-16T14:27:01+00:00",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.3024,
+          "glow_score": 0.0922,
+          "art_hash": "bf5224ef6b917afa"
+        },
         "LIT_2": {
           "sprite": "stumps/stump_001/lit_2/sprite.webp",
           "pixellab_object_id": "5087322a-ee7a-4f1c-9e82-9ea7cb4f98d9",
@@ -35273,6 +35561,15 @@
           "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "43c7ad78603c1b1a"
         },
+        "NOT_LIT_2": {
+          "sprite": "stumps/stump_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5a660a26-1939-4c2c-b349-72ec4955d099",
+          "generated_at": "2026-08-16T14:27:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2145,
+          "glow_score": 0.0971,
+          "art_hash": "43967937fe1f4723"
+        },
         "NOT_LIT_3": {
           "sprite": "stumps/stump_001/not_lit_3/sprite.webp",
           "pixellab_object_id": "3a3620a2-4f11-4f65-84f3-60c52c634575",
@@ -35308,6 +35605,24 @@
           "difference_from_source": 0.6767,
           "glow_score": 0.0061,
           "art_hash": "1e26da88b30636ef"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_001/not_lit_7/sprite.webp",
+          "pixellab_object_id": "f6c0604e-e02f-4dbb-9905-ba54e84dd911",
+          "generated_at": "2026-08-16T14:27:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8388,
+          "glow_score": 0.1391,
+          "art_hash": "5552ea294b1f6e46"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_001/not_lit_8/sprite.webp",
+          "pixellab_object_id": "85547969-35c8-409c-8c34-254c9c8f747a",
+          "generated_at": "2026-08-16T14:26:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7023,
+          "glow_score": 0.058,
+          "art_hash": "a07627e0e43f5846"
         },
         "NOT_LIT_9": {
           "sprite": "stumps/stump_001/not_lit_9/sprite.webp",
@@ -35388,6 +35703,15 @@
           "glow_score": 0.0,
           "generated_at": "2026-08-15T16:13:33+00:00",
           "art_hash": "cbb8498ff6d5bdc4"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_002/not_lit_10/sprite.webp",
+          "pixellab_object_id": "1d83266d-62d0-47fc-9686-09ae1635b2c8",
+          "generated_at": "2026-08-16T14:27:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8203,
+          "glow_score": 0.015,
+          "art_hash": "00ed77219a866b46"
         },
         "NOT_LIT_2": {
           "sprite": "stumps/stump_002/not_lit_2/sprite.webp",
@@ -36140,6 +36464,24 @@
           "glow_score": 0.0882,
           "art_hash": "c17a8e79436ed59a"
         },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0b5584a5-a522-4f7a-bba3-52b1681724bb",
+          "generated_at": "2026-08-16T14:25:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2739,
+          "glow_score": 0.1331,
+          "art_hash": "dd1795aed6f3e070"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_011/not_lit_5/sprite.webp",
+          "pixellab_object_id": "cf417c95-c49c-4245-b430-1af45f415930",
+          "generated_at": "2026-08-16T14:25:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5831,
+          "glow_score": 0.1485,
+          "art_hash": "3d874a606e205022"
+        },
         "NOT_LIT_7": {
           "sprite": "stumps/stump_011/not_lit_7/sprite.webp",
           "pixellab_object_id": "d0eba096-f75c-4152-a78f-7b5b67ec3735",
@@ -36148,6 +36490,15 @@
           "glow_score": 0.1399,
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "ebdf29d6b9b9cc53"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_011/not_lit_8/sprite.webp",
+          "pixellab_object_id": "e4fa2583-1011-44b2-a30d-a03d5118b466",
+          "generated_at": "2026-08-16T14:25:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.539,
+          "glow_score": 0.1439,
+          "art_hash": "1e63bba40d39ba4d"
         },
         "NOT_LIT_9": {
           "sprite": "stumps/stump_011/not_lit_9/sprite.webp",
@@ -36202,6 +36553,15 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "120c4d2dac38f758"
         },
+        "LIT_3": {
+          "sprite": "stumps/stump_012/lit_3/sprite.webp",
+          "pixellab_object_id": "066e7da9-0cfb-4ae8-ae34-6abc5663985d",
+          "generated_at": "2026-08-16T14:26:00+00:00",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.4174,
+          "glow_score": 0.152,
+          "art_hash": "2f09a989c2fa2de7"
+        },
         "LIT_4": {
           "sprite": "stumps/stump_012/lit_4/sprite.webp",
           "pixellab_object_id": "756bc51e-e2d4-4ffb-bd06-3f6881711e9f",
@@ -36219,6 +36579,15 @@
           "glow_score": 0.1117,
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "a5cb1696901adfe1"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_012/not_lit_10/sprite.webp",
+          "pixellab_object_id": "a8539891-befb-4b96-96af-0d60ea035b3b",
+          "generated_at": "2026-08-16T14:26:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8523,
+          "glow_score": 0.1646,
+          "art_hash": "63f4fed684dec532"
         },
         "NOT_LIT_2": {
           "sprite": "stumps/stump_012/not_lit_2/sprite.webp",
@@ -36256,6 +36625,15 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "08ad43d9ec9c8cc3"
         },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_012/not_lit_6/sprite.webp",
+          "pixellab_object_id": "37d83a00-36f2-4d6f-b975-6257336c9fb9",
+          "generated_at": "2026-08-16T14:26:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4453,
+          "glow_score": 0.1716,
+          "art_hash": "fbda27e20df878ea"
+        },
         "NOT_LIT_7": {
           "sprite": "stumps/stump_012/not_lit_7/sprite.webp",
           "pixellab_object_id": "a18ace35-2624-40f1-8aff-24ddfcb005fb",
@@ -36273,6 +36651,15 @@
           "glow_score": 0.178,
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "66e937bdaa70529a"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_012/not_lit_9/sprite.webp",
+          "pixellab_object_id": "c859e0d8-9ea1-4270-9ee8-610e09b957f4",
+          "generated_at": "2026-08-16T14:26:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7334,
+          "glow_score": 0.1968,
+          "art_hash": "ffb74fbc855df119"
         }
       },
       "animations": []
@@ -36363,6 +36750,15 @@
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "4bcf6f1210fba0c2"
         },
+        "NOT_LIT_3": {
+          "sprite": "stumps/stump_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "39037b36-52db-4027-8a98-09989ee6f99f",
+          "generated_at": "2026-08-16T14:26:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.891,
+          "glow_score": 0.0148,
+          "art_hash": "1b21118e6f58f1c4"
+        },
         "NOT_LIT_4": {
           "sprite": "stumps/stump_013/not_lit_4/sprite.webp",
           "pixellab_object_id": "ca7d5429-8405-428e-b5c9-8abe9976762c",
@@ -36407,6 +36803,15 @@
           "glow_score": 0.0546,
           "generated_at": "2026-08-15T16:37:29+00:00",
           "art_hash": "ee27a71c8e059218"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_013/not_lit_9/sprite.webp",
+          "pixellab_object_id": "ac40f19f-b03b-4863-b362-bb0afd619159",
+          "generated_at": "2026-08-16T14:26:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.757,
+          "glow_score": 0.0678,
+          "art_hash": "1ebca05715d3687e"
         }
       },
       "animations": []
@@ -36595,6 +37000,42 @@
           "generated_at": "2026-08-14T01:36:17+00:00",
           "art_hash": "9a8b7ccbca21e326"
         },
+        "LIT_2": {
+          "sprite": "stumps/stump_016/lit_2/sprite.webp",
+          "pixellab_object_id": "86b79398-ebec-40ab-add1-d57df01035d2",
+          "generated_at": "2026-08-16T14:26:06+00:00",
+          "glow_concept": "growth rings glowing like concentric embers",
+          "difference_from_source": 0.6474,
+          "glow_score": 0.1226,
+          "art_hash": "6b501f389a694c2e"
+        },
+        "LIT_3": {
+          "sprite": "stumps/stump_016/lit_3/sprite.webp",
+          "pixellab_object_id": "6b4e33ca-f8f8-48ea-a4b1-7cdecd5fa770",
+          "generated_at": "2026-08-16T14:26:07+00:00",
+          "glow_concept": "ring of glowing mushrooms around the base",
+          "difference_from_source": 0.4913,
+          "glow_score": 0.1244,
+          "art_hash": "36966cd88ce397ad"
+        },
+        "LIT_4": {
+          "sprite": "stumps/stump_016/lit_4/sprite.webp",
+          "pixellab_object_id": "2c800c82-7e14-44eb-8869-811ae25cf033",
+          "generated_at": "2026-08-16T14:26:08+00:00",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.825,
+          "glow_score": 0.144,
+          "art_hash": "f431dc3bd0428fd9"
+        },
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e63af1d7-455e-4ce8-8cfb-2490f4ec3f0f",
+          "generated_at": "2026-08-16T14:26:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4754,
+          "glow_score": 0.1465,
+          "art_hash": "62e05e819a4a062e"
+        },
         "NOT_LIT_10": {
           "sprite": "stumps/stump_016/not_lit_10/sprite.webp",
           "pixellab_object_id": "00c30d26-81fc-4dfe-924b-d18bdd8dc88c",
@@ -36711,6 +37152,15 @@
           "generated_at": "2026-08-14T01:46:19+00:00",
           "art_hash": "2839e604cf8a930a"
         },
+        "LIT_2": {
+          "sprite": "stumps/stump_020/lit_2/sprite.webp",
+          "pixellab_object_id": "abf88bed-7d75-4f0b-8752-801b8c63e5bd",
+          "generated_at": "2026-08-16T14:26:10+00:00",
+          "glow_concept": "a single candle burning on the cut face",
+          "difference_from_source": 0.4233,
+          "glow_score": 0.2379,
+          "art_hash": "4ba83b2616ed16d0"
+        },
         "LIT_3": {
           "sprite": "stumps/stump_020/lit_3/sprite.webp",
           "pixellab_object_id": "174c4a33-4ea5-44ef-941a-2197c6e02029",
@@ -36729,6 +37179,24 @@
           "generated_at": "2026-08-15T16:53:36+00:00",
           "art_hash": "4a0e885627abed96"
         },
+        "NOT_LIT_1": {
+          "sprite": "stumps/stump_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4e933749-dbeb-4ee1-8373-d3751afc50b0",
+          "generated_at": "2026-08-16T14:26:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6478,
+          "glow_score": 0.0247,
+          "art_hash": "22b4f3a62d30b28d"
+        },
+        "NOT_LIT_10": {
+          "sprite": "stumps/stump_020/not_lit_10/sprite.webp",
+          "pixellab_object_id": "29188b4f-6f6d-4343-969c-8119743f5e94",
+          "generated_at": "2026-08-16T14:26:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4119,
+          "glow_score": 0.1433,
+          "art_hash": "3cd45110109b69ec"
+        },
         "NOT_LIT_2": {
           "sprite": "stumps/stump_020/not_lit_2/sprite.webp",
           "pixellab_object_id": "c65bec1c-554a-4c06-b92e-febbb7e6575c",
@@ -36746,6 +37214,60 @@
           "glow_score": 0.0818,
           "generated_at": "2026-08-15T16:53:36+00:00",
           "art_hash": "28e418acb3c32d1b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "stumps/stump_020/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0eb63069-5c82-4011-8aed-7d0194fe79be",
+          "generated_at": "2026-08-16T14:26:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6434,
+          "glow_score": 0.0699,
+          "art_hash": "eba3e25ede23962a"
+        },
+        "NOT_LIT_5": {
+          "sprite": "stumps/stump_020/not_lit_5/sprite.webp",
+          "pixellab_object_id": "edc412c1-1301-47cc-a72b-8753f7e7f767",
+          "generated_at": "2026-08-16T14:26:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5927,
+          "glow_score": 0.0211,
+          "art_hash": "2e01f2c3f3442e13"
+        },
+        "NOT_LIT_6": {
+          "sprite": "stumps/stump_020/not_lit_6/sprite.webp",
+          "pixellab_object_id": "cf39f2a9-8554-4144-8f8e-4b81ee85e05e",
+          "generated_at": "2026-08-16T14:26:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5394,
+          "glow_score": 0.164,
+          "art_hash": "90c13a94858601ec"
+        },
+        "NOT_LIT_7": {
+          "sprite": "stumps/stump_020/not_lit_7/sprite.webp",
+          "pixellab_object_id": "cc352bc4-2d9a-4674-b918-81b129d65213",
+          "generated_at": "2026-08-16T14:26:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5536,
+          "glow_score": 0.1558,
+          "art_hash": "a3832f83b90d8e4d"
+        },
+        "NOT_LIT_8": {
+          "sprite": "stumps/stump_020/not_lit_8/sprite.webp",
+          "pixellab_object_id": "0eb2da9e-5e32-4b5a-9768-8f0560bb37c8",
+          "generated_at": "2026-08-16T14:26:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7327,
+          "glow_score": 0.0822,
+          "art_hash": "0434b3ec18088b74"
+        },
+        "NOT_LIT_9": {
+          "sprite": "stumps/stump_020/not_lit_9/sprite.webp",
+          "pixellab_object_id": "652b53c0-4e34-4eb6-aa32-985c4e1362bd",
+          "generated_at": "2026-08-16T14:26:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3418,
+          "glow_score": 0.0115,
+          "art_hash": "fb9f81093cce8a39"
         }
       },
       "animations": []
