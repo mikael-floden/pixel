@@ -62,8 +62,34 @@ def _regions(a):
     return {"top": dia & op, "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
 
 
-def snap(img, top_hex, side_hex, keep_wall_shading=True):
-    """Rewrite each surface to its palette colour. Returns a new RGBA image."""
+def _rgb2hsv(px):
+    return np.asarray(Image.fromarray(px.clip(0, 255).astype(np.uint8)[None, :, :], "RGB")
+                      .convert("HSV"), dtype=float)[0]
+
+
+def _hsv2rgb(px):
+    return np.asarray(Image.fromarray(px.clip(0, 255).astype(np.uint8)[None, :, :], "HSV")
+                      .convert("RGB"), dtype=float)[0]
+
+
+def snap(img, top_hex, side_hex, keep_wall_texture=True):
+    """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
+
+    TOP — overwritten with a single flat colour. That is the whole point of the base
+    tile: a featureless fill has nothing for the eye to lock onto, so an arbitrarily
+    large field of it shows no visible repeat.
+
+    WALLS — recoloured but NOT flattened. The walls are not decoration; they are every
+    cliff and mountain face in the game, so they have to keep reading as the material
+    (rock looks like rock, soil like soil). Flattening them produced clean but dead
+    cardboard-looking cliffs. So the wall keeps its own luminance detail and only its
+    HUE and SATURATION are forced to the palette, with the brightness RESCALED so the
+    mean lands on the palette colour while the texture's contrast survives around it.
+
+    The left/right lighting difference is preserved either way — the generator lights
+    the two faces differently, and that is what makes a tile read as a solid block
+    rather than a sticker.
+    """
     a = np.asarray(img.convert("RGBA")).astype(float)
     reg = _regions(a)
     if not reg:
@@ -71,24 +97,41 @@ def snap(img, top_hex, side_hex, keep_wall_shading=True):
     out = a.copy()
     top = _hex(top_hex)
     side = _hex(side_hex)
+    side_hsv = _rgb2hsv(side[None, :])[0]
 
-    # Relative wall brightness, measured before we overwrite anything. Falls back to
-    # a conventional iso lighting split if a wall is missing or degenerate, so a tile
-    # never comes out with two identically-lit faces (which reads as a flat sticker).
     lum = {}
     for k in ("left", "right"):
         m = reg[k]
         lum[k] = float(a[:, :, :3][m].mean()) if m.sum() > 20 else None
-    if keep_wall_shading and lum["left"] and lum["right"]:
+    if lum["left"] and lum["right"]:
         mean = (lum["left"] + lum["right"]) / 2.0 or 1.0
-        fac = {k: (lum[k] / mean) for k in ("left", "right")}
+        fac = {k: lum[k] / mean for k in ("left", "right")}
     else:
         fac = {"left": 0.86, "right": 1.10}
 
-    for k, colour in (("top", top), ("left", side * fac["left"]), ("right", side * fac["right"])):
+    if reg["top"].sum():
+        out[:, :, :3][reg["top"]] = np.clip(top, 0, 255)
+
+    for k in ("left", "right"):
         m = reg[k]
-        if m.sum():
-            out[:, :, :3][m] = np.clip(colour, 0, 255)
+        if not m.sum():
+            continue
+        px = a[:, :, :3][m]
+        if not keep_wall_texture:
+            out[:, :, :3][m] = np.clip(side * fac[k], 0, 255)
+            continue
+        hsv = _rgb2hsv(px)
+        v = hsv[:, 2]
+        vm = float(v.mean()) or 1.0
+        target_v = float(side_hsv[2]) * fac[k]
+        # Rescale rather than offset: a multiplicative fit keeps the texture's
+        # contrast proportional to its new brightness, so a dark material stays
+        # legible instead of having its detail crushed flat by a constant shift.
+        hsv[:, 2] = np.clip(v * (target_v / vm), 0, 255)
+        hsv[:, 0] = side_hsv[0]
+        hsv[:, 1] = side_hsv[1]
+        out[:, :, :3][m] = _hsv2rgb(hsv)
+
     out[:, :, 3] = a[:, :, 3]
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
@@ -100,9 +143,9 @@ def main():
     ap.add_argument("--top", required=True)
     ap.add_argument("--side", required=True)
     ap.add_argument("--flat-walls", action="store_true",
-                    help="ignore the generator's wall lighting and use the standard split")
+                    help="also flatten the walls (normally they KEEP their material texture)")
     args = ap.parse_args()
-    im = snap(Image.open(args.src), args.top, args.side, not args.flat_walls)
+    im = snap(Image.open(args.src), args.top, args.side, keep_wall_texture=not args.flat_walls)
     im.save(args.dst)
     f = flatness.faces(args.dst)
     for k in ("top", "left", "right"):
