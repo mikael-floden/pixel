@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 803,
+  "scenery_count": 801,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -198,7 +198,7 @@
       "name": "Stump",
       "type": "NATURE",
       "quota": 54,
-      "done": 13
+      "done": 12
     },
     {
       "rank": 25,
@@ -1382,7 +1382,7 @@
       "name": "Window",
       "type": "WINDOW",
       "quota": 400,
-      "done": 62
+      "done": 61
     }
   ],
   "categories": {
@@ -1492,7 +1492,7 @@
     "stones": 46,
     "story_posts": 8,
     "streetlights": 6,
-    "stumps": 13,
+    "stumps": 12,
     "sundials": 2,
     "tables": 10,
     "telegraph_poles": 4,
@@ -1512,7 +1512,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 62,
+    "windows": 61,
     "wisteria_snags": 1,
     "witch_rings": 1,
     "woodpiles": 2
@@ -25308,7 +25308,7 @@
       "rel": "flower_stands/flower_stand_015",
       "name": "White oxeye daisies 015",
       "category": "flower_stands",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, white oxeye daisies, with butterflies resting on it, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -25328,11 +25328,29 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "flower_stands/flower_stand_015/lit_2/sprite.webp",
+          "pixellab_object_id": "8deb438f-c93b-4a37-b0cf-6bbe6a7d5319",
+          "generated_at": "2026-08-16T14:13:58+00:00",
+          "glow_concept": "petals edged with soft white light",
+          "difference_from_source": 0.3469,
+          "glow_score": 0.18,
+          "art_hash": "a67b31795f8f593f"
+        },
         "NOT_LIT_1": {
           "sprite": "flower_stands/flower_stand_015/sprite.webp",
           "pixellab_object_id": "75ebfd5d-fc0a-4307-9643-e8a930596244",
           "generated_at": "2026-08-14T02:39:51+00:00",
           "art_hash": "5099b217f733e273"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_stands/flower_stand_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "83167734-8525-45e7-9356-7727d41127b5",
+          "generated_at": "2026-08-16T14:14:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5681,
+          "glow_score": 0.0769,
+          "art_hash": "b2b094ababcd604d"
         },
         "NOT_LIT_3": {
           "sprite": "flower_stands/flower_stand_015/not_lit_3/sprite.webp",
@@ -25342,6 +25360,15 @@
           "difference_from_source": 0.2877,
           "glow_score": 0.1614,
           "art_hash": "4d45546478009d55"
+        },
+        "NOT_LIT_4": {
+          "sprite": "flower_stands/flower_stand_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "88f445da-ac6f-431d-8bad-9b60a681bfd4",
+          "generated_at": "2026-08-16T14:15:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5971,
+          "glow_score": 0.1715,
+          "art_hash": "dfe2240694c5a8f3"
         }
       },
       "animations": []
@@ -25351,7 +25378,7 @@
       "rel": "flower_trellises/flower_trellis_001",
       "name": "Mixed pastel sweet peas 001",
       "category": "flower_trellises",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a freestanding wooden lattice trellis on stout legs, covered in climbing flowering vines, mixed pastel sweet peas, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -25371,11 +25398,29 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "flower_trellises/flower_trellis_001/lit_1/sprite.webp",
+          "pixellab_object_id": "d3745ae5-20a0-4721-9b93-72afb8187152",
+          "generated_at": "2026-08-16T14:15:53+00:00",
+          "glow_concept": "pollen sifting down as glowing dust",
+          "difference_from_source": 0.6318,
+          "glow_score": 0.1263,
+          "art_hash": "6b00b31876d9c48d"
+        },
         "NOT_LIT_1": {
           "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
           "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
           "generated_at": "2026-08-13T01:48:01+00:00",
           "art_hash": "28f5821b771c4999"
+        },
+        "NOT_LIT_2": {
+          "sprite": "flower_trellises/flower_trellis_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6e5e1393-1f07-4c04-be77-8e8ef653051b",
+          "generated_at": "2026-08-16T14:15:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7028,
+          "glow_score": 0.0616,
+          "art_hash": "062c34fb068f817a"
         }
       },
       "animations": []
@@ -35716,158 +35761,6 @@
           "glow_score": 0.0,
           "generated_at": "2026-08-15T16:27:38+00:00",
           "art_hash": "08b92a18da607cdf"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "stump_009",
-      "rel": "stumps/stump_009",
-      "name": "Stump colonised by a whole moss world 009",
-      "category": "stumps",
-      "lights": null,
-      "description": "a cut tree stump with visible growth rings on the flat top, ragged bark sides, and small mushrooms and shoots around the base, stump colonised by a whole moss world, unusually broad and squat, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 0.66,
-        "world_px_height": 25,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T01:37:58+00:00",
-      "pixellab_object_id": "17b4f7db-a651-4bd7-b4f2-dcb80587c4e2",
-      "sprite": "stumps/stump_009/sprite.webp",
-      "art_hash": "fa32511b2013d7c1",
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "stumps/stump_009/lit_1/sprite.webp",
-          "pixellab_object_id": "be140496-8bde-47d6-aa1c-6894af9a154d",
-          "glow_concept": "foxfire seeping from gaps in the bark",
-          "difference_from_source": 0.3667,
-          "glow_score": 0.2125,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "c3de531a28f0d2f8"
-        },
-        "LIT_2": {
-          "sprite": "stumps/stump_009/lit_2/sprite.webp",
-          "pixellab_object_id": "2bcf62e3-22f9-4a43-80ad-58f77a159e1f",
-          "glow_concept": "luminous green sapling sprouting from the center",
-          "difference_from_source": 0.6279,
-          "glow_score": 0.2023,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "e0b92d942f219f5d"
-        },
-        "LIT_3": {
-          "sprite": "stumps/stump_009/lit_3/sprite.webp",
-          "pixellab_object_id": "ea10bde9-bb8a-4abc-8c08-6c91653e8166",
-          "glow_concept": "shelf undersides shedding pale spore light downward",
-          "difference_from_source": 0.6878,
-          "glow_score": 0.0947,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "54d1f499b4a4fdf8"
-        },
-        "LIT_4": {
-          "sprite": "stumps/stump_009/lit_4/sprite.webp",
-          "pixellab_object_id": "86bcd4ae-345e-4993-94e5-bf9433db0a5b",
-          "glow_concept": "growth rings glowing like concentric embers",
-          "difference_from_source": 0.8507,
-          "glow_score": 0.2758,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "013bd5e8b7177131"
-        },
-        "NOT_LIT_1": {
-          "sprite": "stumps/stump_009/sprite.webp",
-          "pixellab_object_id": "17b4f7db-a651-4bd7-b4f2-dcb80587c4e2",
-          "glow_score": 0.1356,
-          "generated_at": "2026-08-14T01:37:59+00:00",
-          "art_hash": "fa32511b2013d7c1"
-        },
-        "NOT_LIT_10": {
-          "sprite": "stumps/stump_009/not_lit_10/sprite.webp",
-          "pixellab_object_id": "5d60fefb-9bf0-4e08-af42-175d5ae76e70",
-          "glow_concept": null,
-          "difference_from_source": 0.69,
-          "glow_score": 0.1477,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "4bb6ac484865e3a2"
-        },
-        "NOT_LIT_2": {
-          "sprite": "stumps/stump_009/not_lit_2/sprite.webp",
-          "pixellab_object_id": "781e2bbf-097c-498d-8036-4820d93f332c",
-          "glow_concept": null,
-          "difference_from_source": 0.9365,
-          "glow_score": 0.0021,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "2ae7ca4670cfc671"
-        },
-        "NOT_LIT_3": {
-          "sprite": "stumps/stump_009/not_lit_3/sprite.webp",
-          "pixellab_object_id": "8fc14633-8d56-43af-88e9-ac220cf8780b",
-          "glow_concept": null,
-          "difference_from_source": 0.3371,
-          "glow_score": 0.1366,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "f70373df0dd7e5ec"
-        },
-        "NOT_LIT_4": {
-          "sprite": "stumps/stump_009/not_lit_4/sprite.webp",
-          "pixellab_object_id": "4b6c2158-c853-4086-b600-9810108e8eb9",
-          "glow_concept": null,
-          "difference_from_source": 0.9833,
-          "glow_score": 0.0,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "549a9942ac11f97d"
-        },
-        "NOT_LIT_5": {
-          "sprite": "stumps/stump_009/not_lit_5/sprite.webp",
-          "pixellab_object_id": "4053d835-be48-458d-a03b-99bce13b5c03",
-          "glow_concept": null,
-          "difference_from_source": 0.8377,
-          "glow_score": 0.1344,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "48cfc1d9a737b686"
-        },
-        "NOT_LIT_6": {
-          "sprite": "stumps/stump_009/not_lit_6/sprite.webp",
-          "pixellab_object_id": "6410b428-f028-428d-84fe-7d218a1293a6",
-          "glow_concept": null,
-          "difference_from_source": 0.8303,
-          "glow_score": 0.0324,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "702d129822ab367c"
-        },
-        "NOT_LIT_7": {
-          "sprite": "stumps/stump_009/not_lit_7/sprite.webp",
-          "pixellab_object_id": "195ee40c-4e53-43ac-ae06-3ac5b7e2d1ab",
-          "glow_concept": null,
-          "difference_from_source": 0.3896,
-          "glow_score": 0.0026,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "daf49101a50554c6"
-        },
-        "NOT_LIT_8": {
-          "sprite": "stumps/stump_009/not_lit_8/sprite.webp",
-          "pixellab_object_id": "476b570a-85ac-48ad-98ff-4ea4cfd13b71",
-          "glow_concept": null,
-          "difference_from_source": 0.9905,
-          "glow_score": 0.1892,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "fd3b3ddf46333524"
-        },
-        "NOT_LIT_9": {
-          "sprite": "stumps/stump_009/not_lit_9/sprite.webp",
-          "pixellab_object_id": "cda9cf24-5793-4f1d-ae67-8854ffde3069",
-          "glow_concept": null,
-          "difference_from_source": 0.5827,
-          "glow_score": 0.0199,
-          "generated_at": "2026-08-15T16:27:38+00:00",
-          "art_hash": "8a4f90c637749c50"
         }
       },
       "animations": []
@@ -51990,69 +51883,6 @@
           "pixellab_object_id": "5ea54d7c-8f10-46da-ba83-8f7f671497ed",
           "generated_at": "2026-08-14T06:46:02+00:00",
           "art_hash": "d0b53141e810b713"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "window_042",
-      "rel": "windows/window_042",
-      "name": "A rectangular window under a slate drip-ledge 042",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window under a slate drip-ledge, a bird's nest tucked in the upper corner, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.38,
-        "world_px_height": 52,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          23,
-          11,
-          76,
-          86
-        ],
-        "content_px_height": 75,
-        "canvas_render_px": 67
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T06:49:23+00:00",
-      "pixellab_object_id": "3a9fa51a-0ed9-49f3-9f82-f39ddb34b1cb",
-      "sprite": "windows/window_042/sprite.webp",
-      "art_hash": "8cc2b95e550e7abb",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_042/rotations/south-east.webp",
-        "south-west": "windows/window_042/rotations/south-west.webp",
-        "south": "windows/window_042/sprite.webp"
-      },
-      "states": {
-        "LIGHTS_ON": {
-          "sprite": "windows/window_042/lights_on/sprite.webp",
-          "rotations": {
-            "south": "windows/window_042/lights_on/sprite.webp",
-            "south-east": "windows/window_042/lights_on/rotations/south-east.webp",
-            "south-west": "windows/window_042/lights_on/rotations/south-west.webp"
-          },
-          "pixellab_object_id": "14932eb9-a4bc-4b1c-b65c-ab37057ad5a2",
-          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
-          "generated_at": "2026-08-14T08:18:22+00:00",
-          "art_hash": "736a6cf1415dcc9d"
-        },
-        "LIGHTS_OFF": {
-          "sprite": "windows/window_042/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_042/rotations/south-east.webp",
-            "south-west": "windows/window_042/rotations/south-west.webp",
-            "south": "windows/window_042/sprite.webp"
-          },
-          "pixellab_object_id": "3a9fa51a-0ed9-49f3-9f82-f39ddb34b1cb",
-          "generated_at": "2026-08-14T06:50:14+00:00",
-          "art_hash": "8cc2b95e550e7abb"
         }
       },
       "animations": []
