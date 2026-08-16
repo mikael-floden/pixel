@@ -5,7 +5,7 @@
   "rank": 3,
   "index": 1,
   "name": "Briar-rose grown stone 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "briar-rose grown stone",
   "glow_concept": null,
   "prompt": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:42:29+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "graves/grave_001/lit_1/sprite.webp",
+      "pixellab_object_id": "37418f65-58e9-4095-abf9-fe58692ddf48",
+      "generated_at": "2026-08-16T14:46:51+00:00",
+      "glow_concept": "pale soul-wisp hovering above the stone",
+      "difference_from_source": 0.6946,
+      "glow_score": 0.1016
+    },
+    "LIT_2": {
+      "sprite": "graves/grave_001/lit_2/sprite.webp",
+      "pixellab_object_id": "f970fc4c-56dc-4a93-9bb2-fc71fef26f89",
+      "generated_at": "2026-08-16T14:47:22+00:00",
+      "glow_concept": "bioluminescent moss veining the cracks",
+      "difference_from_source": 0.5008,
+      "glow_score": 0.0273
+    },
     "NOT_LIT_1": {
       "sprite": "graves/grave_001/sprite.webp",
       "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
       "generated_at": "2026-08-12T23:42:29+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "graves/grave_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f08b0cc2-e588-4a2f-af7c-0d455b7dcc3a",
+      "generated_at": "2026-08-16T14:46:49+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5834,
+      "glow_score": 0.0372
+    },
+    "NOT_LIT_3": {
+      "sprite": "graves/grave_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "7d9372fc-cc0e-4e25-b676-a3d0c726ee13",
+      "generated_at": "2026-08-16T14:46:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.562,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "graves/grave_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "2a75d4e3-f110-4314-a618-b6dbbb2fa706",
+      "generated_at": "2026-08-16T14:46:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.607,
+      "glow_score": 0.0039
     }
   }
 }

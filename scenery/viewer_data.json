@@ -27151,6 +27151,15 @@
           "difference_from_source": 0.7647,
           "glow_score": 0.0,
           "art_hash": "975ba18034509c0e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "gravel_piles/gravel_pile_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b8f920db-4039-473c-95f1-e70a217f46b7",
+          "generated_at": "2026-08-16T14:46:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.752,
+          "glow_score": 0.0008,
+          "art_hash": "8331e268372766e2"
         }
       },
       "animations": []
@@ -27160,7 +27169,7 @@
       "rel": "graves/grave_001",
       "name": "Briar-rose grown stone 001",
       "category": "graves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, briar-rose grown stone, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -27180,11 +27189,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "graves/grave_001/lit_1/sprite.webp",
+          "pixellab_object_id": "37418f65-58e9-4095-abf9-fe58692ddf48",
+          "generated_at": "2026-08-16T14:46:51+00:00",
+          "glow_concept": "pale soul-wisp hovering above the stone",
+          "difference_from_source": 0.6946,
+          "glow_score": 0.1016,
+          "art_hash": "2b98b788b5216e62"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_001/lit_2/sprite.webp",
+          "pixellab_object_id": "f970fc4c-56dc-4a93-9bb2-fc71fef26f89",
+          "generated_at": "2026-08-16T14:47:22+00:00",
+          "glow_concept": "bioluminescent moss veining the cracks",
+          "difference_from_source": 0.5008,
+          "glow_score": 0.0273,
+          "art_hash": "3ea329d41840e646"
+        },
         "NOT_LIT_1": {
           "sprite": "graves/grave_001/sprite.webp",
           "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
           "generated_at": "2026-08-12T23:42:29+00:00",
           "art_hash": "d80ea6851c3f4ce4"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f08b0cc2-e588-4a2f-af7c-0d455b7dcc3a",
+          "generated_at": "2026-08-16T14:46:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5834,
+          "glow_score": 0.0372,
+          "art_hash": "af0544829b788cc0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "graves/grave_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "7d9372fc-cc0e-4e25-b676-a3d0c726ee13",
+          "generated_at": "2026-08-16T14:46:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.562,
+          "glow_score": 0.0,
+          "art_hash": "418dc616e69f946e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "graves/grave_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "2a75d4e3-f110-4314-a618-b6dbbb2fa706",
+          "generated_at": "2026-08-16T14:46:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.607,
+          "glow_score": 0.0039,
+          "art_hash": "24310d6bbc8647a5"
         }
       },
       "animations": []
@@ -27194,7 +27248,7 @@
       "rel": "graves/grave_003",
       "name": "Marble stone, gilded name 003",
       "category": "graves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -27214,11 +27268,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "graves/grave_003/lit_1/sprite.webp",
+          "pixellab_object_id": "da97c23a-539a-43e7-b730-cfd7f6cf17a7",
+          "generated_at": "2026-08-16T14:48:25+00:00",
+          "glow_concept": "bioluminescent moss veining the cracks",
+          "difference_from_source": 0.8814,
+          "glow_score": 0.0688,
+          "art_hash": "a9c8b767ce2d31a7"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_003/lit_2/sprite.webp",
+          "pixellab_object_id": "aed45153-50f4-4d3c-87b6-3e14160845e7",
+          "generated_at": "2026-08-16T14:48:14+00:00",
+          "glow_concept": "thin soulstone vein glinting through the rock",
+          "difference_from_source": 0.4815,
+          "glow_score": 0.0359,
+          "art_hash": "c4ae6a8f54596872"
+        },
         "NOT_LIT_1": {
           "sprite": "graves/grave_003/sprite.webp",
           "pixellab_object_id": "0f313687-f3a4-453e-b5c5-8143607b618d",
           "generated_at": "2026-08-13T06:18:16+00:00",
           "art_hash": "31856474fc9ac3c0"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b2858642-8310-4778-825e-d0995ca0ad3c",
+          "generated_at": "2026-08-16T14:47:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3934,
+          "glow_score": 0.0314,
+          "art_hash": "9a781b4ba200d89a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "graves/grave_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ff5c83a3-c7b4-4c82-aaa6-30dea48507e3",
+          "generated_at": "2026-08-16T14:47:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5134,
+          "glow_score": 0.0,
+          "art_hash": "4caa730d55ad4636"
+        },
+        "NOT_LIT_4": {
+          "sprite": "graves/grave_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "48527023-9df6-41b5-8e13-b61da5700966",
+          "generated_at": "2026-08-16T14:48:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5208,
+          "glow_score": 0.0018,
+          "art_hash": "d31ad760f3c0f339"
         }
       },
       "animations": []
@@ -27226,9 +27325,9 @@
     {
       "id": "grave_004",
       "rel": "graves/grave_004",
-      "name": "Toppled half-sunk stone 004 \u00b7 lit",
+      "name": "Toppled half-sunk stone 004",
       "category": "graves",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, toppled half-sunk stone, waist-high to an adult person, self-emissive at night, softly radiating light: single votive candle flickering at the base",
       "view": "low top-down",
       "size": 64,
@@ -27253,6 +27352,42 @@
           "pixellab_object_id": "82a7fc26-6609-49ae-985c-aae8b39f995c",
           "generated_at": "2026-08-13T08:45:01+00:00",
           "art_hash": "c5f0f00c2c745f70"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_004/lit_2/sprite.webp",
+          "pixellab_object_id": "3a1dd5a6-4155-400a-87a6-cea47ad9509a",
+          "generated_at": "2026-08-16T14:48:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2803,
+          "glow_score": 0.0247,
+          "art_hash": "2cb93ed254e8ae0a"
+        },
+        "LIT_3": {
+          "sprite": "graves/grave_004/lit_3/sprite.webp",
+          "pixellab_object_id": "a4c47487-0ed1-4626-b794-5a7d0e2c1eb4",
+          "generated_at": "2026-08-16T14:49:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3248,
+          "glow_score": 0.0194,
+          "art_hash": "89e8f27188a08126"
+        },
+        "LIT_4": {
+          "sprite": "graves/grave_004/lit_4/sprite.webp",
+          "pixellab_object_id": "885842a6-daa6-4f70-b49c-8c085f466af2",
+          "generated_at": "2026-08-16T14:49:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5092,
+          "glow_score": 0.0274,
+          "art_hash": "a4281d869fccd613"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "18c044a1-c581-43f4-9d72-b3a5852f9582",
+          "generated_at": "2026-08-16T14:50:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9292,
+          "glow_score": 0.0,
+          "art_hash": "155589b08037d095"
         }
       },
       "animations": []
@@ -27262,7 +27397,7 @@
       "rel": "graves/grave_005",
       "name": "Sea-worn driftwood marker 005",
       "category": "graves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, sea-worn driftwood marker, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -27282,11 +27417,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "graves/grave_005/lit_1/sprite.webp",
+          "pixellab_object_id": "f44537b4-fd81-41b7-8c56-e8f10123e122",
+          "generated_at": "2026-08-16T14:50:45+00:00",
+          "glow_concept": "single votive candle flickering at the base",
+          "difference_from_source": 0.8901,
+          "glow_score": 0.0357,
+          "art_hash": "6cd74c8cc63f1e84"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_005/lit_2/sprite.webp",
+          "pixellab_object_id": "ec345201-81d5-424f-bf8e-ca82bd25f43e",
+          "generated_at": "2026-08-16T14:51:46+00:00",
+          "glow_concept": "pale soul-wisp hovering above the stone",
+          "difference_from_source": 0.9779,
+          "glow_score": 0.0973,
+          "art_hash": "91465a5acce11641"
+        },
         "NOT_LIT_1": {
           "sprite": "graves/grave_005/sprite.webp",
           "pixellab_object_id": "76e4cfb8-5465-410f-acba-d646ab2cf159",
           "generated_at": "2026-08-13T09:55:40+00:00",
           "art_hash": "4d3a624d34aae100"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "66f542b1-28a7-4b53-b5e2-b93e05bf727e",
+          "generated_at": "2026-08-16T14:50:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5772,
+          "glow_score": 0.0084,
+          "art_hash": "a429affa444d66d6"
+        },
+        "NOT_LIT_3": {
+          "sprite": "graves/grave_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "00000ed9-c0f3-4541-a3aa-a95bc28a4eee",
+          "generated_at": "2026-08-16T14:49:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3288,
+          "glow_score": 0.0157,
+          "art_hash": "277c243053cc0494"
+        },
+        "NOT_LIT_4": {
+          "sprite": "graves/grave_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d237c20f-9be6-4e76-bcf5-1dfbf12b2d3d",
+          "generated_at": "2026-08-16T14:49:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5411,
+          "glow_score": 0.0006,
+          "art_hash": "e11d58a987f0c16f"
         }
       },
       "animations": []
@@ -27296,7 +27476,7 @@
       "rel": "graves/grave_017",
       "name": "Marble stone, gilded name 017",
       "category": "graves",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a weathered granite headstone with a carved name, standing on a low grassy mound with small wildflowers at its base, marble stone, gilded name, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -27316,11 +27496,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "graves/grave_017/lit_1/sprite.webp",
+          "pixellab_object_id": "ea05ea7f-aba7-4e29-ac80-25f0e3035459",
+          "generated_at": "2026-08-16T14:51:47+00:00",
+          "glow_concept": "luminous white flowers blooming against the stone",
+          "difference_from_source": 0.6403,
+          "glow_score": 0.0788,
+          "art_hash": "be1b711276faa3b0"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_017/lit_2/sprite.webp",
+          "pixellab_object_id": "9455aac4-930a-4f08-8a16-ef53e94a0e4d",
+          "generated_at": "2026-08-16T14:52:38+00:00",
+          "glow_concept": "the epitaph glowing in unreadable soul-script",
+          "difference_from_source": 0.8958,
+          "glow_score": 0.0943,
+          "art_hash": "31f1a6f463412b4f"
+        },
         "NOT_LIT_1": {
           "sprite": "graves/grave_017/sprite.webp",
           "pixellab_object_id": "7281d064-4807-4041-a74e-02a171c6280c",
           "generated_at": "2026-08-13T23:46:30+00:00",
           "art_hash": "3c1bc31a15cfc141"
+        },
+        "NOT_LIT_2": {
+          "sprite": "graves/grave_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "86f298f4-5ffd-4e95-9970-0817bef85dd9",
+          "generated_at": "2026-08-16T14:51:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5431,
+          "glow_score": 0.008,
+          "art_hash": "72feff24cd274e6b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "graves/grave_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "65c8a2e9-7d49-448d-8c58-b040604bd848",
+          "generated_at": "2026-08-16T14:50:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5163,
+          "glow_score": 0.0073,
+          "art_hash": "887df4d30090e17e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "graves/grave_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "830ff630-c9c4-465a-85c7-efd7c50d9580",
+          "generated_at": "2026-08-16T14:51:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7791,
+          "glow_score": 0.143,
+          "art_hash": "af82900aa7c24151"
         }
       },
       "animations": []
@@ -27355,6 +27580,15 @@
           "pixellab_object_id": "ea8124a0-f256-4436-9305-c123afa8a00b",
           "generated_at": "2026-08-13T22:18:43+00:00",
           "art_hash": "64f809a6ea29d86d"
+        },
+        "LIT_2": {
+          "sprite": "graves/grave_020/lit_2/sprite.webp",
+          "pixellab_object_id": "b3314c4b-735f-4ed9-9435-934249c87159",
+          "generated_at": "2026-08-16T14:52:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5776,
+          "glow_score": 0.0365,
+          "art_hash": "f291f1565d044980"
         }
       },
       "animations": []
