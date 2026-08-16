@@ -288,6 +288,25 @@ Like a proxy, so I can see what I edit without my thumb being in the way."* So:
   finger-pixel moves the ellipse one screen pixel, which at the default 2x zoom
   is half a frame pixel — ordinary thumb movement lands sub-pixel corrections
   with no fine mode. Only the knob stops at the rim; the shadow keeps going.
+- The pad is **geared down near the origin**: the first 60px of thumb travel
+  per axis moves the ellipse at 0.3, everything past it at 1:1 (maintainer
+  2026-08-16: *"I just like it to be able to move the shadow slower. To make
+  small adjustments now it means moving my thumb a mm. Small movements should
+  change placement slower"*). He asked for SMALL movements specifically, so
+  this is pointer acceleration and not a flat slowdown — flat, a badly-placed
+  shadow would take five drags. Measured on his phone (~5.6 css px/mm) at 2x
+  zoom: 1mm of thumb was 2.8 frame px and is now 0.84, while 180px of thumb
+  still carries it 69 frame px in one gesture. The gain is a function of
+  DISTANCE from where the finger went down, never of speed, so returning the
+  thumb to the start returns the shadow exactly (measured: 0.00px of drift) —
+  a velocity curve drifts, and phone frame rates make velocity noisy. The knob
+  measures the fine zone rather than the raw finger, so it reaching the rim is
+  the visible tell that you are now travelling rather than adjusting.
+- **A note that corrects nothing is deleted, not stored.** The fine zone
+  invites nudging out and back, which used to leave `dx 0, dy 0, w = was.w` —
+  and the games agent would read that as "he confirmed this one", a claim the
+  gesture never made. There is no gesture for confirming a shadow, so a no-op
+  can only be an accident.
 - Two **rails** for size. Absolute values, unlike the pad's relative gesture:
   the thumb can be anywhere along a rail he is not looking at while his eye
   stays on the ellipse, and the travel shows how much range is left.

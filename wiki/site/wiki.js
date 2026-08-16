@@ -441,7 +441,16 @@ function setShadowNote(entity, clip, st, dir, patch) {
   const doc = shadowNotes();
   const id = shadowNoteId(entity, st, dir);
   const base = shadowBase(entity, clip);
-  if (!patch) delete (doc.overrides ??= {})[id];
+  // A NOTE THAT CORRECTS NOTHING IS NOT A NOTE. Dragging out and coming back —
+  // which the pad's fine zone invites, since a nudge is now a real gesture —
+  // otherwise stored `dx 0, dy 0, w = was.w, h = was.h`, and the games agent
+  // would read that as "he confirmed this one", a claim he never made. There
+  // is no gesture for confirming a shadow, so a no-op can only be an accident:
+  // it drops the entry instead, which also un-does a committed note when he
+  // decides the measurement was right after all.
+  const noop = patch && Math.abs(patch.cx - base.cx) < 0.05 && Math.abs(patch.cy - base.cy) < 0.05
+    && Math.abs(patch.w - base.w) < 0.05 && Math.abs(patch.h - base.h) < 0.05;
+  if (!patch || noop) delete (doc.overrides ??= {})[id];
   else {
     (doc.overrides ??= {})[id] = {
       // What he moved it to, as a delta from the measurement — a delta is what
@@ -974,6 +983,32 @@ function makePlayer(entity, kind, opts = {}) {
    * over the art is one more thing hiding the art — which is the whole
    * complaint.
    */
+  /* HOW FAR THE SHADOW MOVES PER MILLIMETRE OF THUMB (maintainer 2026-08-16:
+   * "I just like it to be able to move the shadow slower. To make small
+   * adjustments now it means moving my thumb a mm. Small movements should
+   * change placement slower to make it easier to do small adjustments").
+   *
+   * He asked for SMALL movements specifically, so this is pointer acceleration
+   * rather than a flat slowdown — a flat one would make a badly-placed shadow
+   * take several drags to fix. Per axis: the first PAD_FINE_ZONE of thumb
+   * travel is geared down to PAD_FINE, everything past it runs 1:1, so one
+   * drag can still cross the frame.
+   *
+   * DISTANCE-based, never speed-based: the mapping is a pure function of how
+   * far the finger is from where it went down, so returning to the start
+   * returns the shadow to exactly where it was — a velocity curve drifts, and
+   * on a phone the frame rate makes the velocity itself noisy.
+   *
+   * Measured on his phone (393 css px ≈ 70mm, so ~5.6px/mm) at the default 2x
+   * zoom: 1mm of thumb was 2.8 frame px and is now 0.84 — a shadow that can be
+   * nudged a pixel at a time, which is the size of the corrections he is
+   * making (his first 25 notes moved it 0.2 to 12.5px).
+   */
+  const PAD_FINE_ZONE = 60, PAD_FINE = 0.3;
+  const padGain = (d) => {
+    const a = Math.abs(d);
+    return Math.sign(d) * (Math.min(a, PAD_FINE_ZONE) * PAD_FINE + Math.max(0, a - PAD_FINE_ZONE));
+  };
   const padKnob = h("span", { class: "pad-knob" });
   const padEl = h("div", {
     class: "shadow-pad", title: "Drag to move the shadow — your thumb stays off the art",
@@ -993,10 +1028,14 @@ function makePlayer(entity, kind, opts = {}) {
   });
   padEl.addEventListener("pointermove", (ev) => {
     if (!padDrag) return;
-    const dx = ev.clientX - padDrag.x, dy = ev.clientY - padDrag.y;
+    const dx = padGain(ev.clientX - padDrag.x), dy = padGain(ev.clientY - padDrag.y);
     const r = padEl.getBoundingClientRect();
     const lim = Math.max(8, Math.min(r.width, r.height) / 2 - 20);
-    padKnob.style.transform = `translate(${Math.max(-lim, Math.min(lim, dx))}px, ${Math.max(-lim, Math.min(lim, dy))}px)`;
+    // The knob measures the FINE ZONE, not the raw finger: it reaches the rim
+    // exactly where the gain turns coarse, so "knob pinned at the edge" is the
+    // visible tell that you are now travelling rather than adjusting.
+    const knob = (d) => Math.max(-lim, Math.min(lim, (d / PAD_FINE_ZONE) * lim));
+    padKnob.style.transform = `translate(${knob(ev.clientX - padDrag.x)}px, ${knob(ev.clientY - padDrag.y)}px)`;
     const f = padDrag.from;
     setShadowNote(entity, clip, cur.state, cur.dir, { ...f, cx: f.cx + dx * padDrag.k, cy: f.cy + dy * padDrag.k });
     onShadowEdit?.(); refreshShadowBar(); draw();

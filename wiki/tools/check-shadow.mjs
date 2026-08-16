@@ -212,20 +212,22 @@ const held = await padPush(24, -16);
 const moved = await look();
 const [nowX, nowY] = [cxOf(moved), cyOf(moved)];
 console.log("after pad:", JSON.stringify({ read: moved.read, from: [Math.round(wasX), Math.round(wasY)], to: [Math.round(nowX), Math.round(nowY)], pending: moved.pending }));
-ok(nowX > wasX + 12 && nowY < wasY - 8,
+// Thresholds are the GEARED distances, not the thumb's: 24px of thumb inside
+// the fine zone is 7px of shadow, and that is the feature.
+ok(nowX > wasX + 4 && nowY < wasY - 2,
   `dragging the PAD moves the shadow under the monster (${Math.round(wasX)},${Math.round(wasY)} → ${Math.round(nowX)},${Math.round(nowY)})`);
-// A trackpad, not a joystick: the shadow travels exactly as far as the thumb.
+// FINE NEAR THE ORIGIN, 1:1 FAR FROM IT (maintainer 2026-08-16: "I just like
+// it to be able to move the shadow slower ... small movements should change
+// placement slower to make it easier to do small adjustments"). A flat
+// slowdown would make a badly-placed shadow take several drags, so the first
+// 60px of thumb per axis is geared to 0.3 and everything past it runs 1:1.
 // Vertically the BOTTOM RIM is the honest tracker — the sprite is drawn over
 // the shadow, so an ellipse pushed up loses its top rows to the body and its
 // visible centre lags the real one. The rim below the feet is never covered.
-const dxErr = Math.abs((nowX - wasX) - 24);
-const dyErr = Math.abs((ellBox(moved).y1 - ellBox(before).y1) + 16);
-// AND THE ART MUST NOT MOVE. The canvas is centred in the stage, so a canvas
-// that resizes with the ellipse slides the monster under his thumb: measured
-// at 8px per 16px push before the box was pinned to the clip.
-const artShift = Math.round(Math.abs((moved.canvas.box.y + moved.scrollY) - (before.canvas.box.y + before.scrollY)));
-ok(artShift <= 1, `and the monster does not move while he places it (${artShift}px)`);
-ok(dxErr <= 3 && dyErr <= 3, `and it tracks the finger 1:1 on screen (off by ${dxErr.toFixed(1)}, ${dyErr.toFixed(1)}px)`);
+const dxGot = nowX - wasX, dyGot = ellBox(moved).y1 - ellBox(before).y1;
+console.log("gain:", JSON.stringify({ pushed: [24, -16], got: [+dxGot.toFixed(1), +dyGot.toFixed(1)] }));
+ok(Math.abs(dxGot - 24 * 0.3) <= 2 && Math.abs(dyGot + 16 * 0.3) <= 2,
+  `a small push moves it SLOWLY — 24,−16px of thumb gives ${dxGot.toFixed(1)},${dyGot.toFixed(1)}px of shadow, not 24,−16`);
 ok(held.pad?.held === true && /matrix/.test(held.pad?.knob ?? ""), "the knob follows the finger while held");
 ok(moved.pad?.held === false, "and lets go when the finger does");
 ok(/moved [+−]/.test(moved.read ?? ""), `the readout says how far, in frame pixels (“${moved.read}”)`);
@@ -264,6 +266,43 @@ ok(/69\.0 × 32\.0 px/.test(taller.read ?? ""), `and the readout follows both (�
 ok(taller.ell.x1 <= taller.canvas.w - 2 && taller.ell.x0 >= 1 && taller.ell.y1 <= taller.canvas.h - 2,
   `the enlarged ellipse still fits inside the canvas (x ${taller.ell.x0}-${taller.ell.x1} of ${taller.canvas.w}, bottom ${taller.ell.y1} of ${taller.canvas.h})`);
 ok(taller.pending === 1, `and the two rails are still ONE entry (${taller.pending})`);
+
+// …BUT A LONG DRAG STILL TRAVELS. Past the fine zone the gain returns to 1:1,
+// so a badly-placed shadow is still one gesture, not five.
+await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
+await p.waitForTimeout(300);
+await padPush(180, 0);
+const far = await look();
+// Read the app's own FRAME-pixel report here, not the pixels: past ~28 frame
+// px the ellipse leaves the pinned canvas (which is sized for the corrections
+// he actually makes), so a pixel read saturates while the note keeps moving.
+const farGot = Number(/moved \+([\d.]+)/.exec(far.read ?? "")?.[1] ?? NaN);
+const expected = (60 * 0.3 + (180 - 60)) / 2;        // fine zone, then 1:1, at 2x
+console.log("long drag:", JSON.stringify({ pushedPx: 180, gotFramePx: farGot, expected }));
+ok(Math.abs(farGot - expected) <= 2, `180px of thumb still carries it ${farGot} frame px (fine zone then 1:1, expected ${expected})`);
+ok(farGot > 40, "so one gesture is enough to move a badly-placed shadow right across the creature");
+
+// AND IT IS REVERSIBLE. The gain is a function of DISTANCE from where the
+// finger went down, never of speed, so going out and coming back lands exactly
+// where it started — a velocity curve drifts, and that is unusable for placing
+// something by eye.
+await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
+await p.waitForTimeout(300);
+const preBack = await look();
+const { pt } = await padCentre();
+await p.mouse.move(pt.x, pt.y);
+await p.mouse.down();
+for (const d of [30, 90, 150, 90, 30, 0]) await p.mouse.move(pt.x + d, pt.y);
+await p.mouse.up();
+await p.waitForTimeout(250);
+const back = await look();
+const drift = Math.abs(cxOf(back) - cxOf(preBack));
+console.log("out and back:", JSON.stringify({ drift: +drift.toFixed(2), read: back.read }));
+ok(drift <= 1, `bringing the thumb back to where it started puts the shadow back (${drift.toFixed(2)}px of drift)`);
+// …and leaves NO note. "dx 0, dy 0" would read to the games agent as "he
+// confirmed this one", a claim the gesture never made.
+console.log("no-op note:", JSON.stringify({ read: back.read }));
+ok(/measurement/.test(back.read ?? ""), `it reads as untouched again, with no zero-delta note left behind (“${back.read}”)`);
 
 // DIRECT DRAG STILL WORKS (mouse/desktop) — the proxy is an addition, not a
 // replacement, and the gate would otherwise stop covering it.
