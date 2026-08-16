@@ -6,7 +6,7 @@
   "rank": 35,
   "index": 9,
   "name": "Three posts bound together 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "three posts bound together",
   "glow_concept": null,
   "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, three posts bound together, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "dock_pilings/dock_piling_009/lit_1/sprite.webp",
+      "pixellab_object_id": "90a06e54-6db1-4e7c-a3f1-86f7201180f4",
+      "generated_at": "2026-08-16T11:45:29+00:00",
+      "glow_concept": "a glowing algae skirt below the tide stain",
+      "difference_from_source": 0.4816,
+      "glow_score": 0.0467
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_009/lit_2/sprite.webp",
+      "pixellab_object_id": "30f220e1-5e05-45ca-9659-c9309862176a",
+      "generated_at": "2026-08-16T11:45:18+00:00",
+      "glow_concept": "rope wraps smoldering with faint ember light",
+      "difference_from_source": 0.6806,
+      "glow_score": 0.0015
+    },
     "NOT_LIT_1": {
       "sprite": "dock_pilings/dock_piling_009/sprite.webp",
       "pixellab_object_id": "f0d57658-be80-4046-ae72-45e902cea020",
       "generated_at": "2026-08-13T23:56:13+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "78ea91c9-2e3d-415a-877b-3b5e4cea6797",
+      "generated_at": "2026-08-16T11:44:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8188,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "dock_pilings/dock_piling_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "d3ce9c35-f56b-49a2-a64a-7652c6273147",
+      "generated_at": "2026-08-16T11:44:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6214,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "dock_pilings/dock_piling_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "92031aeb-2fec-4aeb-895a-9398e883acb2",
+      "generated_at": "2026-08-16T11:44:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3937,
+      "glow_score": 0.0
     }
   }
 }

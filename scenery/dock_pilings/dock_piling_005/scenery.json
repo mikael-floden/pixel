@@ -5,7 +5,7 @@
   "rank": 35,
   "index": 5,
   "name": "Pair of leaning pilings 005",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "pair of leaning pilings",
   "glow_concept": null,
   "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, pair of leaning pilings, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,34 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T11:18:21+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "dock_pilings/dock_piling_005/lit_1/sprite.webp",
+      "pixellab_object_id": "e319b45a-f619-4e40-a06c-82de6f72377f",
+      "generated_at": "2026-08-16T11:40:14+00:00",
+      "glow_concept": "carved tally marks shining down one post",
+      "difference_from_source": 0.6214,
+      "glow_score": 0.0853
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_005/lit_2/sprite.webp",
+      "pixellab_object_id": "a58e016a-e131-4228-9171-e6e099d3001a",
+      "generated_at": "2026-08-16T11:40:15+00:00",
+      "glow_concept": "a wisp of soul-light perched on the tallest post",
+      "difference_from_source": 0.8093,
+      "glow_score": 0.0536
+    },
     "NOT_LIT_1": {
       "sprite": "dock_pilings/dock_piling_005/sprite.webp",
       "pixellab_object_id": "e882a682-12e2-4bc9-9505-b7d0630ff9b2",
       "generated_at": "2026-08-13T11:18:21+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_005/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f6392085-fd44-439b-9c4a-8ac58ece687e",
+      "generated_at": "2026-08-16T11:40:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5249,
+      "glow_score": 0.0051
     },
     "NOT_LIT_3": {
       "sprite": "dock_pilings/dock_piling_005/not_lit_3/sprite.webp",

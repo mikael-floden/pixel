@@ -5,8 +5,8 @@
   "group": "dock_pilings",
   "rank": 35,
   "index": 8,
-  "name": "White gull-stained pilings 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White gull-stained pilings 008",
+  "lights": null,
   "variety": "white gull-stained pilings",
   "glow_concept": "rope wraps smoldering with faint ember light",
   "prompt": "a cluster of weathered wooden dock pilings bound with tarred rope, the broken remnant of a pier standing at the shoreline, white gull-stained pilings, roughly six feet tall, human height, self-emissive at night, softly radiating light: rope wraps smoldering with faint ember light",
@@ -35,6 +35,46 @@
       "sprite": "dock_pilings/dock_piling_008/sprite.webp",
       "pixellab_object_id": "4a0685a9-b04f-4761-aeff-7c2482286408",
       "generated_at": "2026-08-13T23:22:06+00:00"
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_008/lit_2/sprite.webp",
+      "pixellab_object_id": "4e3be793-dad6-4fae-a4ec-51781f1d6b4f",
+      "generated_at": "2026-08-16T11:42:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.782,
+      "glow_score": 0.09
+    },
+    "LIT_3": {
+      "sprite": "dock_pilings/dock_piling_008/lit_3/sprite.webp",
+      "pixellab_object_id": "4e16cd78-359a-4756-bc86-3cfcf00befee",
+      "generated_at": "2026-08-16T11:43:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8044,
+      "glow_score": 0.0046
+    },
+    "LIT_4": {
+      "sprite": "dock_pilings/dock_piling_008/lit_4/sprite.webp",
+      "pixellab_object_id": "e43db28d-0ce3-41d6-bd14-77739277c9a0",
+      "generated_at": "2026-08-16T11:43:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9157,
+      "glow_score": 0.0906
+    },
+    "NOT_LIT_1": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "7521818c-e395-4894-bd13-53eb0bb26055",
+      "generated_at": "2026-08-16T11:43:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7244,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e3763b52-92ba-4024-9dee-114d4dfe685f",
+      "generated_at": "2026-08-16T11:43:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3683,
+      "glow_score": 0.0
     }
   }
 }
