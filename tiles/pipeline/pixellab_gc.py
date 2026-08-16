@@ -81,6 +81,81 @@ def set_status(ids, status):
     return n
 
 
+FEEDBACK = os.path.join(REPO, "live", "feedback", "tiles.json")
+
+
+def read_wiki_feedback():
+    """Read the maintainer's wiki review for this domain.
+
+    Format (pixel-wiki-feedback@1, the same channel the scenery domain already uses —
+    3,554 entries in live/feedback/objects.json as of 2026-08-16):
+
+        entries: { "<entity path>": {status: approved|rejected, rating: 1-5,
+                                     art: "<hash>", updated_at: "..."} }
+
+    We only READ it — live/ belongs to another domain. Returns
+    {entity_path: {status, rating}}. Empty until the wiki ships Tiles 3.0 review
+    support; wiring it now means the first batch of reviews is actionable the moment
+    it lands rather than needing code written under time pressure.
+    """
+    if not os.path.isfile(FEEDBACK):
+        return {}
+    with open(FEEDBACK) as f:
+        doc = json.load(f)
+    out = {}
+    for k, v in (doc.get("entries") or {}).items():
+        if isinstance(v, dict) and v.get("status"):
+            out[k] = {"status": v["status"], "rating": v.get("rating"),
+                      "updated_at": v.get("updated_at")}
+    return out
+
+
+def apply_wiki_feedback():
+    """Map wiki verdicts onto our tile_ids.
+
+    A review names a TILE (a cell/sheet/tile path); we delete by SHEET, since a
+    tile_id is the whole 16-tile generation. So a sheet is only marked rejected when
+    the maintainer has rejected every reviewed tile in it — one bad tile in a sheet
+    that also contains an approved one must not delete the approved art. Ratings are
+    kept on the record because they are the ground truth the wall metric needs to be
+    calibrated against; the current score disagrees with the maintainer's eye in
+    places, and guessing at that is what a rating fixes.
+    """
+    fb = read_wiki_feedback()
+    if not fb:
+        return {"reviewed": 0, "approved": 0, "rejected": 0, "unmatched": 0}
+    reg = load()
+    # our sheets carry the cell + sheet in their purpose (matrix:<top>_over_<side>);
+    # match a review path against that, tolerant of how the wiki chooses to key them
+    by_cell = {}
+    for tid, meta in reg["items"].items():
+        p = meta.get("purpose", "")
+        if p.startswith("matrix:"):
+            by_cell.setdefault(p.split(":", 1)[1], []).append(tid)
+    verdicts = {}
+    unmatched = 0
+    for path, v in fb.items():
+        norm = path.replace("__over__", "_over_").strip("/")
+        hit = next((c for c in by_cell if c and c in norm), None)
+        if not hit:
+            unmatched += 1
+            continue
+        for tid in by_cell[hit]:
+            verdicts.setdefault(tid, []).append(v)
+    n_a = n_r = 0
+    for tid, vs in verdicts.items():
+        approved = any(x["status"] == "approved" for x in vs)
+        reg["items"][tid]["status"] = "approved" if approved else "rejected"
+        reg["items"][tid]["reviewed"] = _now()
+        ratings = [x["rating"] for x in vs if x.get("rating")]
+        if ratings:
+            reg["items"][tid]["rating"] = max(ratings)
+        n_a += bool(approved)
+        n_r += (not approved)
+    save(reg)
+    return {"reviewed": len(fb), "approved": n_a, "rejected": n_r, "unmatched": unmatched}
+
+
 def referenced_ids():
     """Every tile_id mentioned anywhere in the repo's tracked files. The independent
     safety net: if art derived from an id is still committed, the id is in use, no
@@ -100,10 +175,16 @@ def main():
     ap.add_argument("--apply", action="store_true", help="actually delete (default: dry run)")
     ap.add_argument("--keep", nargs="*", default=None, metavar="ID")
     ap.add_argument("--reject", nargs="*", default=None, metavar="ID")
+    ap.add_argument("--from-wiki", action="store_true",
+                    help="pull approve/reject verdicts from live/feedback/tiles.json")
     ap.add_argument("--reject-pending", action="store_true",
                     help="treat every still-unreviewed id as rejected")
     args = ap.parse_args()
 
+    if args.from_wiki:
+        r = apply_wiki_feedback()
+        print(f"wiki feedback: {r['reviewed']} reviewed -> {r['approved']} sheets approved, "
+              f"{r['rejected']} rejected, {r['unmatched']} not ours/unmatched")
     if args.keep:
         print(f"marked {set_status(args.keep, 'approved')} approved")
     if args.reject:
