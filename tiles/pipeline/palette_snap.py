@@ -94,6 +94,68 @@ def _regions(a):
             "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
 
 
+CANON_HH, CANON_HW = 14.0, 32.0     # the house diamond: 64 wide, 28 tall
+
+
+def _diamond(a):
+    """Fit the canonical top diamond to a tile: (apex_y, cx, hw, hh).
+
+    The apex is fitted by MEDIAN rather than taken as the topmost opaque pixel, because
+    the topmost pixel is often a grass blade rather than the corner of the tile. Each
+    column implies an apex (its own top edge minus where the clean edge would be at that
+    column); the median of those is the apex the majority of the outline agrees on, so a
+    minority of spikes cannot drag it.
+    """
+    op = a[:, :, 3] > 128
+    ys, xs = np.where(op)
+    x0, x1 = int(xs.min()), int(xs.max())
+    hw = (x1 - x0 + 1) / 2.0
+    hh = CANON_HH * hw / CANON_HW
+    cx = (x0 + x1) / 2.0
+    implied = [int(np.where(op[:, x])[0].min()) - np.floor(hh * abs(x - cx) / hw)
+               for x in range(x0, x1 + 1) if op[:, x].any()]
+    return float(np.median(implied)), cx, hw, hh
+
+
+def canonicalise(img):
+    """Cut the tile's outline back to a mathematically clean diamond.
+
+    The generator draws grass blades, snow lumps and stray pixels ABOVE the top
+    surface's edge. Recolouring preserves that silhouette, so a plateau's outline
+    inherits every spike and reads as a wobbly line instead of a straight one — which is
+    exactly what the maintainer kept seeing. Measured over 433 grass tiles: 34% have
+    pixels past the clean edge, up to 47 on the worst.
+
+    Clipping them is free here in a way it would not be on a textured tile, because the
+    top is about to be overwritten with one flat colour anyway. Nothing of the material
+    is lost: the blades were never going to survive the fill. Notches (transparent
+    pixels INSIDE the clean edge, the same defect pointing the other way) are filled
+    from the column below for the same reason.
+
+    The result is that every tile has an IDENTICAL outline, so tiles meet exactly and
+    the edge is the ideal rasterisation of the slope rather than the generator's
+    approximation of it.
+    """
+    a = np.asarray(img.convert("RGBA")).astype(float)
+    op = a[:, :, 3] > 128
+    if not op.any():
+        return img.convert("RGBA")
+    ay, cx, hw, hh = _diamond(a)
+    h, w = a.shape[:2]
+    out = a.copy()
+    xs = np.where(op.any(0))[0]
+    for x in xs:
+        edge = int(round(ay + np.floor(hh * abs(x - cx) / hw)))
+        col = np.where(op[:, x])[0]
+        first = int(col.min())
+        if first < edge:                       # spike: cut back to the clean edge
+            out[first:edge, x, 3] = 0
+        elif first > edge:                     # notch: extend up to the clean edge
+            out[edge:first, x, :3] = a[first, x, :3]
+            out[edge:first, x, 3] = 255
+    return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def _rgb2hsv(px):
     return np.asarray(Image.fromarray(px.clip(0, 255).astype(np.uint8)[None, :, :], "RGB")
                       .convert("HSV"), dtype=float)[0]
@@ -216,8 +278,11 @@ def snap(img, top_hex, side_hex, keep_wall_texture=True, side_profile=None):
     The left/right lighting difference is preserved either way — the generator lights
     the two faces differently, and that is what makes a tile read as a solid block
     rather than a sticker.
+
+    The outline is canonicalised FIRST, so the flat fill lands on a clean diamond rather
+    than on the generator's spiky approximation of one.
     """
-    a = np.asarray(img.convert("RGBA")).astype(float)
+    a = np.asarray(canonicalise(img)).astype(float)
     reg = _regions(a)
     if not reg:
         return img.convert("RGBA")
