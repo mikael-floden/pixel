@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-16T12:34:59.097Z",
+  "updated_at": "2026-08-16T12:36:37.348Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -8977,10 +8977,10 @@
       "updated_at": "2026-08-14T07:02:13.662Z"
     },
     "scenery/windows/window_052": {
-      "rating": 5,
-      "updated_at": "2026-08-14T11:21:38.286Z",
-      "status": "approved",
-      "art": "e0dd2725a5c03a0b"
+      "rating": 1,
+      "updated_at": "2026-08-16T12:36:28.641Z",
+      "status": "rejected",
+      "art": "6945946354792186"
     },
     "scenery/windows/window_058": {
       "rating": 4,
@@ -9127,14 +9127,16 @@
       "art": "0dc822f4b9246fc2"
     },
     "scenery/windows/window_052#lights_off#south-west": {
-      "status": "approved",
-      "art": "6945946354792186",
-      "updated_at": "2026-08-14T11:21:13.516Z"
+      "status": "rejected",
+      "art": "df62f8cbcbee93e9",
+      "updated_at": "2026-08-16T12:36:33.402Z",
+      "rating": 1
     },
     "scenery/windows/window_052#lights_off#south": {
-      "status": "approved",
+      "status": "rejected",
       "art": "6945946354792186",
-      "updated_at": "2026-08-14T12:39:48.258Z"
+      "updated_at": "2026-08-16T12:36:35.580Z",
+      "rating": 1
     },
     "scenery/trees/tree_085#not_lit_1#south": {
       "status": "approved",
@@ -17887,6 +17889,107 @@
       "updated_at": "2026-08-16T12:34:57.778Z",
       "art": "e934ffcf0d3cfdc5",
       "status": "approved"
+    },
+    "scenery/stones/stone_031": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:10.280Z",
+      "status": "approved",
+      "art": "7227626ad22c197c"
+    },
+    "scenery/stones/stone_031#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:12.285Z",
+      "status": "approved",
+      "art": "7227626ad22c197c"
+    },
+    "scenery/windows/window_033": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:17.218Z",
+      "status": "approved",
+      "art": "4428b8bafd5dece1"
+    },
+    "scenery/windows/window_033#static#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:18.592Z",
+      "status": "approved",
+      "art": "4428b8bafd5dece1"
+    },
+    "scenery/windows/window_033#static#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:25.776Z",
+      "status": "approved",
+      "art": "8243c2eafa60822b"
+    },
+    "scenery/windows/window_033#static#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:32.177Z",
+      "status": "approved",
+      "art": "fb3c97826a135684"
+    },
+    "scenery/windows/window_055": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:46.090Z",
+      "status": "approved",
+      "art": "359dc80ca538f36f"
+    },
+    "scenery/windows/window_055#static#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:52.652Z",
+      "status": "approved",
+      "art": "359dc80ca538f36f"
+    },
+    "scenery/windows/window_055#static#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:54.747Z",
+      "status": "approved",
+      "art": "667902331260409c"
+    },
+    "scenery/windows/window_055#static#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:35:57.052Z",
+      "status": "approved",
+      "art": "6f7354a669de93de"
+    },
+    "scenery/stones/stone_036": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:01.216Z",
+      "status": "approved",
+      "art": "115e58bfb5a85f82"
+    },
+    "scenery/stones/stone_036#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:02.524Z",
+      "status": "approved",
+      "art": "115e58bfb5a85f82"
+    },
+    "scenery/windows/window_036": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:06.842Z",
+      "status": "approved",
+      "art": "6359f656f07192f3"
+    },
+    "scenery/windows/window_036#static#south": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:08.605Z",
+      "status": "approved",
+      "art": "6359f656f07192f3"
+    },
+    "scenery/windows/window_036#static#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:11.804Z",
+      "status": "approved",
+      "art": "ef7edb0e355d46cd"
+    },
+    "scenery/windows/window_036#static#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-16T12:36:13.598Z",
+      "status": "approved",
+      "art": "52f04d9dd62f90c1"
+    },
+    "scenery/windows/window_052#lights_off#south-east": {
+      "status": "rejected",
+      "art": "74ea830e9513c16e",
+      "updated_at": "2026-08-16T12:36:30.345Z"
     }
   }
 }
