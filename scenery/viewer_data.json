@@ -25511,9 +25511,9 @@
     {
       "id": "fern_014",
       "rel": "ferns/fern_014",
-      "name": "Copper autumn bracken 014 \u00b7 lit",
+      "name": "Copper autumn bracken 014",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, copper autumn bracken, with fallen leaves collected at its base, waist-high, self-emissive at night, softly radiating light: luminous spore dots lining the frond undersides",
       "view": "low top-down",
       "size": 64,
@@ -25538,6 +25538,51 @@
           "pixellab_object_id": "c9758c21-5383-489b-8044-bb51ff28c1cf",
           "generated_at": "2026-08-14T01:40:15+00:00",
           "art_hash": "29b5e1bd28821743"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_014/lit_2/sprite.webp",
+          "pixellab_object_id": "916bcb1e-0564-4ca0-8f61-4746a2782c77",
+          "generated_at": "2026-08-16T12:18:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8626,
+          "glow_score": 0.036,
+          "art_hash": "09995e2774324547"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_014/lit_3/sprite.webp",
+          "pixellab_object_id": "eef9c4dc-ceeb-424a-9878-0511ed4d6a25",
+          "generated_at": "2026-08-16T12:14:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8651,
+          "glow_score": 0.0076,
+          "art_hash": "6efadeaddbe0fccd"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_014/lit_4/sprite.webp",
+          "pixellab_object_id": "44730d68-58e5-4b60-a243-c196559d4ba9",
+          "generated_at": "2026-08-16T12:14:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8088,
+          "glow_score": 0.0254,
+          "art_hash": "cf9556e30d7304d7"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "daa68e21-365d-441b-8f87-1992039ae08b",
+          "generated_at": "2026-08-16T12:14:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6549,
+          "glow_score": 0.0005,
+          "art_hash": "306907c0f94f4513"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3c527f99-8f31-4e15-9705-725b39fd211b",
+          "generated_at": "2026-08-16T12:14:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8279,
+          "glow_score": 0.0,
+          "art_hash": "0a1809c0d3740fe0"
         }
       },
       "animations": []
@@ -25545,9 +25590,9 @@
     {
       "id": "fern_016",
       "rel": "ferns/fern_016",
-      "name": "Lady fern fountain 016 \u00b7 lit",
+      "name": "Lady fern fountain 016",
       "category": "ferns",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a bushy clump of arching ferns rising from a shaggy root crown, lady fern fountain, leaning noticeably to one side, small, knee-high, self-emissive at night, softly radiating light: central fiddlehead coil glowing as it unrolls",
       "view": "low top-down",
       "size": 64,
@@ -25572,6 +25617,51 @@
           "pixellab_object_id": "fa9bfe98-1997-490c-b232-4a387bfe4e19",
           "generated_at": "2026-08-14T01:48:16+00:00",
           "art_hash": "eb1025c29421d41b"
+        },
+        "LIT_2": {
+          "sprite": "ferns/fern_016/lit_2/sprite.webp",
+          "pixellab_object_id": "fa783182-3be7-44b2-8609-67eaa18f4384",
+          "generated_at": "2026-08-16T12:15:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6884,
+          "glow_score": 0.0591,
+          "art_hash": "24dd3cd52aa1dac3"
+        },
+        "LIT_3": {
+          "sprite": "ferns/fern_016/lit_3/sprite.webp",
+          "pixellab_object_id": "50cec0ee-d1f4-49c2-9930-5f9320b197c6",
+          "generated_at": "2026-08-16T12:15:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7647,
+          "glow_score": 0.0054,
+          "art_hash": "d9df23d4e98e62f2"
+        },
+        "LIT_4": {
+          "sprite": "ferns/fern_016/lit_4/sprite.webp",
+          "pixellab_object_id": "2ffc273e-0758-4fff-af8f-43dc3caacd8e",
+          "generated_at": "2026-08-16T12:15:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.787,
+          "glow_score": 0.013,
+          "art_hash": "0c10f78db760adee"
+        },
+        "NOT_LIT_1": {
+          "sprite": "ferns/fern_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "faaa24ef-7833-4da3-995c-3d6d19557131",
+          "generated_at": "2026-08-16T12:16:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6033,
+          "glow_score": 0.0,
+          "art_hash": "624d892208140be7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "ferns/fern_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f47597c9-0e09-43c9-b98a-8b67ec302109",
+          "generated_at": "2026-08-16T12:16:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7668,
+          "glow_score": 0.0,
+          "art_hash": "8a93c13625b92d98"
         }
       },
       "animations": []
@@ -25579,9 +25669,9 @@
     {
       "id": "fish_drying_rack_002",
       "rel": "fish_drying_racks/fish_drying_rack_002",
-      "name": "Rack with net draped over 002 \u00b7 lit",
+      "name": "Rack with net draped over 002",
       "category": "fish_drying_racks",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with net draped over, about as tall as an adult person, self-emissive at night, softly radiating light: a tallow lamp hanging from the crossbar",
       "view": "low top-down",
       "size": 96,
@@ -25606,6 +25696,51 @@
           "pixellab_object_id": "7a1fc934-df2d-4b1e-874b-337f4acb7c40",
           "generated_at": "2026-08-13T04:25:57+00:00",
           "art_hash": "a335a8ebb8713d8d"
+        },
+        "LIT_2": {
+          "sprite": "fish_drying_racks/fish_drying_rack_002/lit_2/sprite.webp",
+          "pixellab_object_id": "956192cb-531a-44cf-845e-21b32e76edc0",
+          "generated_at": "2026-08-16T12:16:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6651,
+          "glow_score": 0.0094,
+          "art_hash": "c51173ae24a82e6d"
+        },
+        "LIT_3": {
+          "sprite": "fish_drying_racks/fish_drying_rack_002/lit_3/sprite.webp",
+          "pixellab_object_id": "c4d3fb18-b110-43c5-bfaf-ed0e2eb50901",
+          "generated_at": "2026-08-16T12:19:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5166,
+          "glow_score": 0.0175,
+          "art_hash": "663e17ad4aa9e861"
+        },
+        "LIT_4": {
+          "sprite": "fish_drying_racks/fish_drying_rack_002/lit_4/sprite.webp",
+          "pixellab_object_id": "916ea6ae-1145-4849-91c0-2585ce5e5c4c",
+          "generated_at": "2026-08-16T12:16:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.743,
+          "glow_score": 0.0241,
+          "art_hash": "532749ba1a07fec5"
+        },
+        "NOT_LIT_1": {
+          "sprite": "fish_drying_racks/fish_drying_rack_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "77c8f514-f13a-4da9-ac9f-13fd07edc444",
+          "generated_at": "2026-08-16T12:16:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4572,
+          "glow_score": 0.0025,
+          "art_hash": "e661c6aca0338c4e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fish_drying_racks/fish_drying_rack_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d53d8975-ea04-4d00-9a5b-81d2e18239e0",
+          "generated_at": "2026-08-16T12:17:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7472,
+          "glow_score": 0.0037,
+          "art_hash": "4a42c050cf6179db"
         }
       },
       "animations": []
@@ -25615,7 +25750,7 @@
       "rel": "fish_drying_racks/fish_drying_rack_003",
       "name": "Rack with few large fish 003",
       "category": "fish_drying_racks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with few large fish, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -25635,11 +25770,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_2": {
+          "sprite": "fish_drying_racks/fish_drying_rack_003/lit_2/sprite.webp",
+          "pixellab_object_id": "3ffa661e-c2ca-4cb3-9521-ee6ca9d61590",
+          "generated_at": "2026-08-16T12:19:12+00:00",
+          "glow_concept": "fish scales shimmering with pale soul-light",
+          "difference_from_source": 0.8554,
+          "glow_score": 0.1284,
+          "art_hash": "2725493973188632"
+        },
         "NOT_LIT_1": {
           "sprite": "fish_drying_racks/fish_drying_rack_003/sprite.webp",
           "pixellab_object_id": "c0eb793a-3729-4178-8b61-9be86c5a247d",
           "generated_at": "2026-08-13T07:52:47+00:00",
           "art_hash": "412a75a7be3a76a5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e3569221-beb0-477e-8a5c-c1362166dca5",
+          "generated_at": "2026-08-16T12:18:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4548,
+          "glow_score": 0.0476,
+          "art_hash": "fe103175461fb1df"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "7a68d9a6-e954-461f-8fdd-1992abbdfe1b",
+          "generated_at": "2026-08-16T12:18:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5939,
+          "glow_score": 0.0875,
+          "art_hash": "79c3bc6fb78fe1e4"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "1942c771-9e8d-4cf9-a4e5-cabea12f5ecd",
+          "generated_at": "2026-08-16T12:19:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5926,
+          "glow_score": 0.0103,
+          "art_hash": "ac4935b0d3310bfc"
         }
       },
       "animations": []
@@ -25649,7 +25820,7 @@
       "rel": "fish_drying_racks/fish_drying_rack_005",
       "name": "Winter rack with frozen fish 005",
       "category": "fish_drying_racks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, winter rack with frozen fish, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -25669,11 +25840,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "fish_drying_racks/fish_drying_rack_005/lit_1/sprite.webp",
+          "pixellab_object_id": "ad8cf219-22c8-475d-b75a-dc1cf727fe29",
+          "generated_at": "2026-08-16T12:20:34+00:00",
+          "glow_concept": "tiny votive candles strung along the frame",
+          "difference_from_source": 0.7268,
+          "glow_score": 0.1081,
+          "art_hash": "6237810b012e6a5e"
+        },
         "NOT_LIT_1": {
           "sprite": "fish_drying_racks/fish_drying_rack_005/sprite.webp",
           "pixellab_object_id": "3a5aa1a3-a783-420b-adcf-ad2fbf89ec3f",
           "generated_at": "2026-08-13T12:04:08+00:00",
           "art_hash": "ea1ee03b5c2e80de"
+        },
+        "NOT_LIT_2": {
+          "sprite": "fish_drying_racks/fish_drying_rack_005/not_lit_2/sprite.webp",
+          "pixellab_object_id": "acdad331-075e-4129-bf36-8fc5a6dc603b",
+          "generated_at": "2026-08-16T12:19:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6096,
+          "glow_score": 0.0078,
+          "art_hash": "337aa7c0672a8f39"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fish_drying_racks/fish_drying_rack_005/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f690f065-87d1-4449-8ff1-ae7aaaabd999",
+          "generated_at": "2026-08-16T12:19:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.848,
+          "glow_score": 0.0605,
+          "art_hash": "5445c3199fc316d8"
+        },
+        "NOT_LIT_4": {
+          "sprite": "fish_drying_racks/fish_drying_rack_005/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fed070b6-dd41-409d-834e-99b0cd4c1a70",
+          "generated_at": "2026-08-16T12:21:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6625,
+          "glow_score": 0.1643,
+          "art_hash": "64a50674b3d1e7ee"
         }
       },
       "animations": []
@@ -25683,7 +25890,7 @@
       "rel": "fish_drying_racks/fish_drying_rack_007",
       "name": "Rack with salted white fillets 007",
       "category": "fish_drying_racks",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with salted white fillets, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -25703,11 +25910,29 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "fish_drying_racks/fish_drying_rack_007/lit_1/sprite.webp",
+          "pixellab_object_id": "4fd95a1e-201f-4370-8e05-ee520e7244e0",
+          "generated_at": "2026-08-16T12:21:14+00:00",
+          "glow_concept": "glowing smoke curling through the hanging fish",
+          "difference_from_source": 0.6418,
+          "glow_score": 0.1132,
+          "art_hash": "203fe60397d87914"
+        },
         "NOT_LIT_1": {
           "sprite": "fish_drying_racks/fish_drying_rack_007/sprite.webp",
           "pixellab_object_id": "8bcabb43-49b2-4918-b300-b456d099e144",
           "generated_at": "2026-08-13T22:14:18+00:00",
           "art_hash": "0b2a3c70a28c1809"
+        },
+        "NOT_LIT_3": {
+          "sprite": "fish_drying_racks/fish_drying_rack_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "c4f0f24a-90f5-4ca4-ae9d-ff26e3e7f5ea",
+          "generated_at": "2026-08-16T12:21:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5956,
+          "glow_score": 0.055,
+          "art_hash": "e57ddd25ad537152"
         }
       },
       "animations": []

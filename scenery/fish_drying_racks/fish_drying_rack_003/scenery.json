@@ -5,7 +5,7 @@
   "rank": 44,
   "index": 3,
   "name": "Rack with few large fish 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "rack with few large fish",
   "glow_concept": null,
   "prompt": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with few large fish, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T07:52:47+00:00",
   "states": {
+    "LIT_2": {
+      "sprite": "fish_drying_racks/fish_drying_rack_003/lit_2/sprite.webp",
+      "pixellab_object_id": "3ffa661e-c2ca-4cb3-9521-ee6ca9d61590",
+      "generated_at": "2026-08-16T12:19:12+00:00",
+      "glow_concept": "fish scales shimmering with pale soul-light",
+      "difference_from_source": 0.8554,
+      "glow_score": 0.1284
+    },
     "NOT_LIT_1": {
       "sprite": "fish_drying_racks/fish_drying_rack_003/sprite.webp",
       "pixellab_object_id": "c0eb793a-3729-4178-8b61-9be86c5a247d",
       "generated_at": "2026-08-13T07:52:47+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e3569221-beb0-477e-8a5c-c1362166dca5",
+      "generated_at": "2026-08-16T12:18:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4548,
+      "glow_score": 0.0476
+    },
+    "NOT_LIT_3": {
+      "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "7a68d9a6-e954-461f-8fdd-1992abbdfe1b",
+      "generated_at": "2026-08-16T12:18:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5939,
+      "glow_score": 0.0875
+    },
+    "NOT_LIT_4": {
+      "sprite": "fish_drying_racks/fish_drying_rack_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1942c771-9e8d-4cf9-a4e5-cabea12f5ecd",
+      "generated_at": "2026-08-16T12:19:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5926,
+      "glow_score": 0.0103
     }
   }
 }

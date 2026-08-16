@@ -5,8 +5,8 @@
   "group": "ferns",
   "rank": 42,
   "index": 14,
-  "name": "Copper autumn bracken 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Copper autumn bracken 014",
+  "lights": null,
   "variety": "copper autumn bracken",
   "modifier": "with fallen leaves collected at its base",
   "glow_concept": "luminous spore dots lining the frond undersides",
@@ -36,6 +36,46 @@
       "sprite": "ferns/fern_014/sprite.webp",
       "pixellab_object_id": "c9758c21-5383-489b-8044-bb51ff28c1cf",
       "generated_at": "2026-08-14T01:40:15+00:00"
+    },
+    "LIT_2": {
+      "sprite": "ferns/fern_014/lit_2/sprite.webp",
+      "pixellab_object_id": "916bcb1e-0564-4ca0-8f61-4746a2782c77",
+      "generated_at": "2026-08-16T12:18:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8626,
+      "glow_score": 0.036
+    },
+    "LIT_3": {
+      "sprite": "ferns/fern_014/lit_3/sprite.webp",
+      "pixellab_object_id": "eef9c4dc-ceeb-424a-9878-0511ed4d6a25",
+      "generated_at": "2026-08-16T12:14:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8651,
+      "glow_score": 0.0076
+    },
+    "LIT_4": {
+      "sprite": "ferns/fern_014/lit_4/sprite.webp",
+      "pixellab_object_id": "44730d68-58e5-4b60-a243-c196559d4ba9",
+      "generated_at": "2026-08-16T12:14:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8088,
+      "glow_score": 0.0254
+    },
+    "NOT_LIT_1": {
+      "sprite": "ferns/fern_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "daa68e21-365d-441b-8f87-1992039ae08b",
+      "generated_at": "2026-08-16T12:14:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6549,
+      "glow_score": 0.0005
+    },
+    "NOT_LIT_2": {
+      "sprite": "ferns/fern_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "3c527f99-8f31-4e15-9705-725b39fd211b",
+      "generated_at": "2026-08-16T12:14:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8279,
+      "glow_score": 0.0
     }
   }
 }
