@@ -5,8 +5,8 @@
   "group": "dock_pilings",
   "rank": 35,
   "index": 16,
-  "name": "Pilings with iron mooring cleat 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pilings with iron mooring cleat 016",
+  "lights": null,
   "variety": "pilings with iron mooring cleat",
   "modifier": "with climbing flowers at one corner",
   "glow_concept": "ghost-blue barnacle rings glowing at the waterline",
@@ -36,6 +36,38 @@
       "sprite": "dock_pilings/dock_piling_016/sprite.webp",
       "pixellab_object_id": "4a0cefd2-42c4-4993-a021-2d3936ea6bf0",
       "generated_at": "2026-08-14T01:48:18+00:00"
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_016/lit_2/sprite.webp",
+      "pixellab_object_id": "ad846b83-87a0-4805-b8da-8ee240b4b557",
+      "generated_at": "2026-08-16T11:50:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3238,
+      "glow_score": 0.0281
+    },
+    "LIT_3": {
+      "sprite": "dock_pilings/dock_piling_016/lit_3/sprite.webp",
+      "pixellab_object_id": "e5050fc6-c4d1-4777-816d-c9c517d45155",
+      "generated_at": "2026-08-16T11:50:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9258,
+      "glow_score": 0.0079
+    },
+    "LIT_4": {
+      "sprite": "dock_pilings/dock_piling_016/lit_4/sprite.webp",
+      "pixellab_object_id": "83076c4d-2cfd-4133-932f-c46a10d8c652",
+      "generated_at": "2026-08-16T11:52:08+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9256,
+      "glow_score": 0.0056
+    },
+    "NOT_LIT_1": {
+      "sprite": "dock_pilings/dock_piling_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "f8451a69-2f81-4273-ad94-7a56e6f25ebd",
+      "generated_at": "2026-08-16T11:52:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7952,
+      "glow_score": 0.0
     }
   }
 }

@@ -6,7 +6,7 @@
   "rank": 35,
   "index": 13,
   "name": "Single bollard post with iron ring 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "single bollard post with iron ring",
   "modifier": "bird-favored, with droppings and a nest",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "dock_pilings/dock_piling_013/lit_1/sprite.webp",
+      "pixellab_object_id": "6ac7b7e5-4fe8-4bfa-958c-54ed65a9f69d",
+      "generated_at": "2026-08-16T11:49:18+00:00",
+      "glow_concept": "carved tally marks shining down one post",
+      "difference_from_source": 0.9217,
+      "glow_score": 0.0588
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_013/lit_2/sprite.webp",
+      "pixellab_object_id": "dc5b0fa4-98fd-4a38-b4b9-01dcf61bbf6d",
+      "generated_at": "2026-08-16T11:49:19+00:00",
+      "glow_concept": "a wisp of soul-light perched on the tallest post",
+      "difference_from_source": 0.2269,
+      "glow_score": 0.0701
+    },
     "NOT_LIT_1": {
       "sprite": "dock_pilings/dock_piling_013/sprite.webp",
       "pixellab_object_id": "5fa02842-7b92-48e8-989f-1f290e319459",
       "generated_at": "2026-08-14T01:53:44+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1d369ebe-5f1a-4963-8a63-947d090ca84b",
+      "generated_at": "2026-08-16T11:48:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2663,
+      "glow_score": 0.0252
+    },
+    "NOT_LIT_3": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "96b40137-e376-4399-b30f-db65f3c190a1",
+      "generated_at": "2026-08-16T11:49:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8213,
+      "glow_score": 0.0065
+    },
+    "NOT_LIT_4": {
+      "sprite": "dock_pilings/dock_piling_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ff009cf0-12c2-4471-94a2-d228c9576124",
+      "generated_at": "2026-08-16T11:49:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.711,
+      "glow_score": 0.0026
     }
   }
 }

@@ -5,8 +5,8 @@
   "group": "dock_pilings",
   "rank": 35,
   "index": 14,
-  "name": "Single tall barnacled piling 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Single tall barnacled piling 014",
+  "lights": null,
   "variety": "single tall barnacled piling",
   "modifier": "recently maintained",
   "glow_concept": "carved tally marks shining down one post",
@@ -36,6 +36,46 @@
       "sprite": "dock_pilings/dock_piling_014/sprite.webp",
       "pixellab_object_id": "b2747524-14e7-4220-b8f1-76fb2226308b",
       "generated_at": "2026-08-14T01:40:36+00:00"
+    },
+    "LIT_2": {
+      "sprite": "dock_pilings/dock_piling_014/lit_2/sprite.webp",
+      "pixellab_object_id": "f42f3162-32fa-4938-a43f-d105ed4f69a0",
+      "generated_at": "2026-08-16T11:51:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2341,
+      "glow_score": 0.0315
+    },
+    "LIT_3": {
+      "sprite": "dock_pilings/dock_piling_014/lit_3/sprite.webp",
+      "pixellab_object_id": "bbb55eac-1d55-495e-add4-3788c871171b",
+      "generated_at": "2026-08-16T11:50:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5008,
+      "glow_score": 0.0295
+    },
+    "LIT_4": {
+      "sprite": "dock_pilings/dock_piling_014/lit_4/sprite.webp",
+      "pixellab_object_id": "cff98fa2-5153-4c36-a234-a6bcda20c94d",
+      "generated_at": "2026-08-16T11:52:07+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5404,
+      "glow_score": 0.0266
+    },
+    "NOT_LIT_1": {
+      "sprite": "dock_pilings/dock_piling_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "dce485ca-1745-4a61-a30e-9cbe4426aeae",
+      "generated_at": "2026-08-16T11:51:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.1709,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "dock_pilings/dock_piling_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e2c5a8ff-3827-4a6f-a0fd-ef2c949786d3",
+      "generated_at": "2026-08-16T11:50:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5764,
+      "glow_score": 0.0
     }
   }
 }
