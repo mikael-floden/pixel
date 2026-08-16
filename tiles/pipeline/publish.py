@@ -46,15 +46,23 @@ def candidates(cell_dir):
             if not q:
                 continue
             f = flatness.faces(p)
-            if not f or not f["top"] or f["top"]["share"] < flatness.CLEAN_TOP:
-                continue      # dirty top = no-go, regardless of how good the wall is
+            if not f or not f["top"]:
+                continue
+            # Gate on whether the SHIPPED tile tiles cleanly, not on whether the
+            # generator happened to draw a flat top. palette_snap overwrites the top
+            # regardless, so a raw-flatness gate only throws away good art — measured,
+            # 182 of the 238 tiles it rejected were already seamless after postprocess,
+            # several of them with the best edge spill in the whole set.
+            if flatness.seam_px(p) > 0:
+                continue
             out.append({
                 "path": p, "wall": q,
                 "top_share": round(f["top"]["share"], 4) if f and f["top"] else None,
+                "overhang": round(flatness.overhang(p), 3),
                 "tile_id": meta.get("tile_id"), "style": meta.get("style"),
                 "prompt": meta.get("prompt"),
             })
-    out.sort(key=lambda c: -c["wall"]["score"])
+    out.sort(key=lambda c: -c["wall"]["score"] * (1.0 + c["overhang"]))
     return out
 
 
@@ -97,7 +105,7 @@ def main():
                 "wall_score": c["wall"]["score"],
                 "wall": {k: c["wall"][k] for k in
                          ("tiling", "discretion", "structure", "contrast", "edges")},
-                "top_share": c["top_share"],
+                "top_share": c["top_share"], "overhang": c["overhang"],
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1

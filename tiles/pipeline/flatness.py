@@ -162,6 +162,49 @@ def overhang(path, cap=200.0):
     return min(spill / cap, 1.0)
 
 
+def seam_px(path, top_hex=None):
+    """Off-colour pixels inside the top surface of an assembled flat field — the thing
+    a clean top is actually FOR.
+
+    The maintainer's insight: prompting for grass rather than for green gives a better
+    transition but a dirtier top, and the postprocess overwrites the top anyway, so the
+    dirty top costs nothing. Measured and true — every tile the old flatness gate
+    rejected comes back with exactly ONE colour on its top after postprocess.
+
+    So gating on the RAW top's flatness threw away 182 perfectly good tiles out of 238
+    rejected, including several with the best edge spill in the whole set at a raw share
+    of 0.40. What matters is not whether the generator drew a flat top; it is whether the
+    SHIPPED tile tiles cleanly. That is this, and it is measured on the postprocessed
+    art laid out as a real field.
+
+    Lazy imports: palette_snap imports this module, so they cannot be taken at import
+    time.
+    """
+    import palette_snap
+    import render
+    im = Image.open(path).convert("RGBA")
+    if top_hex is None:
+        a = np.asarray(im).astype(float)
+        reg = palette_snap._regions(a)
+        if not reg or not reg["top"].any():
+            return 10 ** 6
+        med = np.median(a[:, :, :3][reg["top"]], 0)
+        top_hex = "".join(f"{int(v):02x}" for v in med)
+    sn = palette_snap.snap(im, top_hex)
+    tgt = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)])
+    b = np.asarray(render.plateau(sn, 3, 3, level=1)).astype(int)
+    op = b[:, :, 3] > 128
+    flat = (np.abs(b[:, :, :3] - tgt).max(2) <= 2) & op
+    bad = 0
+    for y in np.where(flat.any(1))[0]:
+        xs = np.where(flat[y])[0]
+        if len(xs) < 3:
+            continue
+        sl = slice(int(xs.min()), int(xs.max()) + 1)
+        bad += int(((~flat[y, sl]) & op[y, sl]).sum())
+    return bad
+
+
 def select_best(paths, gate=CLEAN_TOP):
     """Pick a cell's best tile: CLEAN TOP first as a gate, then wall quality.
 
@@ -188,10 +231,10 @@ def select_best(paths, gate=CLEAN_TOP):
         scored.append((p, q, float(f["top"]["share"])))
     if not scored:
         return None
-    clean = [x for x in scored if x[2] >= gate]
-    pool = clean or []
-    if not pool:
-        return None                     # no clean top in this sheet: nothing to offer
+    pool = [x for x in scored if seam_px(x[0]) == 0]
+    if not pool:                        # nothing tiles cleanly; fall back to the
+        pool = scored                   # flattest raw top rather than offering nothing
+        pool = [x for x in pool if x[2] >= gate] or scored
     return max(pool, key=lambda x: x[1]["score"] * (1.0 + overhang(x[0])))
 
 def wall_quality(path, ideal_contrast=26.0, tol=18.0):

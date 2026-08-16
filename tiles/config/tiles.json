@@ -1,6 +1,5 @@
 {
-  "_comment": "tiles 3.0 (/tiles) — rebuilt from scratch alongside tiles2. Three things make it different: (1) outline_mode=segmentation, so no baked outline to post-process away; (2) the FLAT BASE TILE — every ground type must have one tile whose top surface is a single flat colour, so the game can fill huge areas with it and the player can never see where the repeat starts; (3) every ground type is generated OVER every other, so the map agent picks the walkable TOP and the sideways WALL independently. Transitions/cliffs/slopes come from /create-tileset (lower+upper+spread_x/slope_size/raggedness), not from per-pair sheets. No tiles taller than 1 level — scenery owns objects now.",
-
+  "_comment": "tiles 3.0 (/tiles) \u2014 rebuilt from scratch alongside tiles2. Three things make it different: (1) outline_mode=segmentation, so no baked outline to post-process away; (2) the FLAT BASE TILE \u2014 every ground type must have one tile whose top surface is a single flat colour, so the game can fill huge areas with it and the player can never see where the repeat starts; (3) every ground type is generated OVER every other, so the map agent picks the walkable TOP and the sideways WALL independently. Transitions/cliffs/slopes come from /create-tileset (lower+upper+spread_x/slope_size/raggedness), not from per-pair sheets. No tiles taller than 1 level \u2014 scenery owns objects now.",
   "tile": {
     "type": "isometric",
     "size": 64,
@@ -10,43 +9,140 @@
     "flat_top_px": 2,
     "outline_mode": "segmentation"
   },
-
-  "_prompt_comment": "THE KEY LESSON from the maintainer's own prompt tests: naming the MATERIAL gets you texture you cannot flatten ('clean single colour grass' still returns detailed grass). Naming the COLOUR gets you the flat fill we actually want. So every type carries `color_words` used to build prompts, and `material_words` kept only for the later detailed-variant pass. `hex` is the intended resting colour — the QA target the generated top is measured against, not something sent to the API.",
-
+  "_prompt_comment": "Ask for the MATERIAL, not the colour. Asking for a colour ('pure flat green') buys a clean top we do not need \u2014 palette_snap overwrites the top with the palette colour regardless, and every tile the old flatness gate rejected came back at exactly one colour after it. What a colour prompt CANNOT buy is the transition: told it is painting green, the generator draws a clean cut where the paint stops, and the result reads as green over soil instead of grass over soil. Told it is growing grass, it tufts the blades down over the edge, which is the thing the maintainer calls ten stars and the one thing no postprocess can add, because the spill lives on the WALL and the wall is never touched.",
   "ground_types": [
-    { "id": "grass",         "category": "solid",  "color_words": "pure flat green",              "material_words": "lush green grass",        "hex": "#3f8a3a", "wall_contrast": 0.8 },
-    { "id": "snow",          "category": "solid",  "color_words": "pure flat white",              "material_words": "clean fresh snow",        "hex": "#e8eef0", "wall_contrast": 0.65 },
-    { "id": "ice",           "category": "solid",  "color_words": "pure flat pale cyan",          "material_words": "translucent crystal ice", "hex": "#9fd8e6", "wall_contrast": 1.4 },
-    { "id": "black_rock",    "category": "solid",  "color_words": "pure flat near-black charcoal","material_words": "dark volcanic rock",      "hex": "#2c2c2e", "wall_contrast": 1.3 },
-    { "id": "light_beach",   "category": "solid",  "color_words": "pure flat pale sand yellow",   "material_words": "pale sandy beach",        "hex": "#e0cf9a", "wall_contrast": 0.7 },
-    { "id": "grey_stone",    "category": "solid",  "color_words": "pure flat medium grey",        "material_words": "rugged grey mountain rock","hex": "#8a8f8c", "wall_contrast": 1.2 },
-    { "id": "light_soil",    "category": "solid",  "color_words": "pure flat light warm brown",   "material_words": "dry light soil",          "hex": "#b08a5c", "wall_contrast": 0.9 },
-    { "id": "dark_mud",      "category": "solid",  "color_words": "pure flat dark cold brown",    "material_words": "wet dark mud",            "hex": "#4a3728", "wall_contrast": 0.55 },
-    { "id": "parquet_floor", "category": "solid",  "color_words": "pure flat warm tan",           "material_words": "wooden parquet floor",    "hex": "#c39a63", "wall_contrast": 1.0 },
-    { "id": "paving_stone",  "category": "solid",  "color_words": "pure flat cool light grey",    "material_words": "cut paving stone slabs",  "hex": "#b6b8b5", "wall_contrast": 1.15 },
-
-    { "id": "water",         "category": "liquid", "color_words": "pure flat medium blue",        "material_words": "clear calm water",        "hex": "#3f7fbf", "wall_contrast": 0.8 },
-    { "id": "deep_water",    "category": "liquid", "color_words": "pure flat dark navy blue",     "material_words": "deep dark ocean water",   "hex": "#1b3a5c", "wall_contrast": 0.75 },
-    { "id": "lava",          "category": "liquid", "color_words": "pure flat dark orange",        "material_words": "molten glowing lava",     "hex": "#c2500f", "wall_contrast": 1.3 },
-    { "id": "slime",         "category": "liquid", "color_words": "pure flat bright yellow-green","material_words": "thick bubbling slime",    "hex": "#7fbf3f", "wall_contrast": 0.85 }
+    {
+      "id": "grass",
+      "category": "solid",
+      "color_words": "pure flat green",
+      "material_words": "lush green grass",
+      "hex": "#3f8a3a",
+      "wall_contrast": 0.8
+    },
+    {
+      "id": "snow",
+      "category": "solid",
+      "color_words": "pure flat white",
+      "material_words": "clean fresh snow",
+      "hex": "#e8eef0",
+      "wall_contrast": 0.65
+    },
+    {
+      "id": "ice",
+      "category": "solid",
+      "color_words": "pure flat pale cyan",
+      "material_words": "translucent crystal ice",
+      "hex": "#9fd8e6",
+      "wall_contrast": 1.4
+    },
+    {
+      "id": "black_rock",
+      "category": "solid",
+      "color_words": "pure flat near-black charcoal",
+      "material_words": "dark volcanic rock",
+      "hex": "#2c2c2e",
+      "wall_contrast": 1.3
+    },
+    {
+      "id": "light_beach",
+      "category": "solid",
+      "color_words": "pure flat pale sand yellow",
+      "material_words": "pale sandy beach",
+      "hex": "#e0cf9a",
+      "wall_contrast": 0.7
+    },
+    {
+      "id": "grey_stone",
+      "category": "solid",
+      "color_words": "pure flat medium grey",
+      "material_words": "rugged grey mountain rock",
+      "hex": "#8a8f8c",
+      "wall_contrast": 1.2
+    },
+    {
+      "id": "light_soil",
+      "category": "solid",
+      "color_words": "pure flat light warm brown",
+      "material_words": "dry light soil",
+      "hex": "#b08a5c",
+      "wall_contrast": 0.9
+    },
+    {
+      "id": "dark_mud",
+      "category": "solid",
+      "color_words": "pure flat dark cold brown",
+      "material_words": "wet dark mud",
+      "hex": "#4a3728",
+      "wall_contrast": 0.55
+    },
+    {
+      "id": "parquet_floor",
+      "category": "solid",
+      "color_words": "pure flat warm tan",
+      "material_words": "wooden parquet floor",
+      "hex": "#c39a63",
+      "wall_contrast": 1.0
+    },
+    {
+      "id": "paving_stone",
+      "category": "solid",
+      "color_words": "pure flat cool light grey",
+      "material_words": "cut paving stone slabs",
+      "hex": "#b6b8b5",
+      "wall_contrast": 1.15
+    },
+    {
+      "id": "water",
+      "category": "liquid",
+      "color_words": "pure flat medium blue",
+      "material_words": "clear calm water",
+      "hex": "#3f7fbf",
+      "wall_contrast": 0.8
+    },
+    {
+      "id": "deep_water",
+      "category": "liquid",
+      "color_words": "pure flat dark navy blue",
+      "material_words": "deep dark ocean water",
+      "hex": "#1b3a5c",
+      "wall_contrast": 0.75
+    },
+    {
+      "id": "lava",
+      "category": "liquid",
+      "color_words": "pure flat dark orange",
+      "material_words": "molten glowing lava",
+      "hex": "#c2500f",
+      "wall_contrast": 1.3
+    },
+    {
+      "id": "slime",
+      "category": "liquid",
+      "color_words": "pure flat bright yellow-green",
+      "material_words": "thick bubbling slime",
+      "hex": "#7fbf3f",
+      "wall_contrast": 0.85
+    }
   ],
-
-  "_base_prompt_comment": "MEASURED, not guessed. An 8-strategy bake-off (identical pinned harness, only the prompt varying; see docs/BAKEOFF.md) settled these. Three results shaped the templates below: (1) flatness is EASY — five different prompts reached share >= 0.99, so it is not the discriminator; (2) COLOUR ACCURACY is the hard part, and only anchoring an explicit #hex landed it (dE 5.7 vs 21-31 for every prompt that named the colour in words alone) — which is why every template carries {hex}; (3) naming the material ('single color 100% pure green') is read as a STYLE hint and ignored as an instruction: it scored 0.825 with visible grass blades. Long negation lists ('no texture, no pattern, no speckles...') do work but drift the hue badly on their own. Ask for a flat surface AND pin the hex.",
+  "_base_prompt_comment": "MEASURED, not guessed. An 8-strategy bake-off (identical pinned harness, only the prompt varying; see docs/BAKEOFF.md) settled these. Three results shaped the templates below: (1) flatness is EASY \u2014 five different prompts reached share >= 0.99, so it is not the discriminator; (2) COLOUR ACCURACY is the hard part, and only anchoring an explicit #hex landed it (dE 5.7 vs 21-31 for every prompt that named the colour in words alone) \u2014 which is why every template carries {hex}; (3) naming the material ('single color 100% pure green') is read as a STYLE hint and ignored as an instruction: it scored 0.825 with visible grass blades. Long negation lists ('no texture, no pattern, no speckles...') do work but drift the hue badly on their own. Ask for a flat surface AND pin the hex.",
   "prompts": {
     "flat_base": "solid uniform #{hex} {color}, one single flat colour, completely smooth, no texture",
-    "over": "isometric tile with a completely flat uniform #{top_hex} {top_color} top surface and plain #{side_hex} {side_color} side walls, no texture on the top, no outline"
+    "over": "isometric ground tile. {top_material} on top of {side_material}. The {top_word} grows over the edge and tufts down over the {side_word} below, so the two meet naturally with no hard line between them. The {side_word} side walls show their own surface detail. Seen from above, the {top_word} surface is even and uniform. No outline.",
+    "over_colour": "isometric tile with a completely flat uniform #{top_hex} {top_color} top surface and plain #{side_hex} {side_color} side walls, no texture on the top, no outline"
   },
-  "_accept_comment": "THE WALL IS THE PRODUCT. It becomes every cliff and mountain face in the game, and postprocess can only recolour it — it cannot invent crack structure that was never generated. The flat top, by contrast, is free: palette_snap rewrites the whole top surface, so a source measured at only 0.547 flat with visible grass still comes out at exactly 1.000. So a sheet is kept or discarded almost entirely on wall quality, and min_share exists only to catch a tile with no usable top region at all. The clean top matters for CONTROL — being able to place a clean tile versus a textured one — not because it is hard to obtain. Textured-top variants come later and are out of scope now. Wall score is flatness.wall_quality(): spread + local gradient + capped colour count. The gradient term is what does the work: one probe scored 13 distinct wall colours yet 0.81 edges, a smooth gradient with no structure, and landed at 3.62 against 2.18 for a wall we flattened deliberately — a colour count alone would have passed it as textured. Good generated walls run 14-21.",
+  "_accept_comment": "THE WALL IS THE PRODUCT. It becomes every cliff and mountain face in the game, and postprocess can only recolour it \u2014 it cannot invent crack structure that was never generated. The flat top, by contrast, is free: palette_snap rewrites the whole top surface, so a source measured at only 0.547 flat with visible grass still comes out at exactly 1.000. So a sheet is kept or discarded almost entirely on wall quality, and min_share exists only to catch a tile with no usable top region at all. The clean top matters for CONTROL \u2014 being able to place a clean tile versus a textured one \u2014 not because it is hard to obtain. Textured-top variants come later and are out of scope now. Wall score is flatness.wall_quality(): spread + local gradient + capped colour count. The gradient term is what does the work: one probe scored 13 distinct wall colours yet 0.81 edges, a smooth gradient with no structure, and landed at 3.62 against 2.18 for a wall we flattened deliberately \u2014 a colour count alone would have passed it as textured. Good generated walls run 14-21.",
   "accept": {
     "min_wall_score": 8.0,
     "min_wall_edges": 6.0,
-    "min_share": 0.40,
+    "min_share": 0.4,
     "max_dE": 45.0,
     "require_geom": true,
     "require_three_faces": true,
     "max_protrusion_px": 1,
     "_rank_by": "wall_score"
   },
-
-  "budget": { "min_generations_remaining": 0, "min_usd": 5.0 }
+  "budget": {
+    "min_generations_remaining": 0,
+    "min_usd": 5.0
+  }
 }

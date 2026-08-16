@@ -48,18 +48,23 @@ FIXED = dict(tile_size=64, tile_view="high top-down", view_angle=28.0,
              depth_ratio=0.5, tile_type="isometric", flat_top_px=2,
              outline_mode="segmentation")
 
-# Two prompt styles per cell. They failed differently in the bake-off — the maintainer's
-# own wording produced the richest lava wall, the explicit top-flat/walls-textured
-# phrasing produced the most natural stone — so running both widens the candidate pool
-# for the same money rather than betting on one.
-STYLES = {
-    "maintainer": lambda t, s: f"clean single color {t} on top of clean {s}",
-    "explicit": lambda t, s: (
-        f"isometric ground tile. The flat top surface is clean single colour {t}, "
-        f"completely smooth with no texture. The vertical side walls are {s} with its "
-        f"natural surface detail clearly visible. Top perfectly flat, walls textured. "
-        f"No outline."),
-}
+# Two prompt styles per cell, both now asking for the MATERIAL rather than for a colour.
+#
+# Asking for a colour ("clean single colour green") buys a flat top we do not need:
+# palette_snap overwrites the top with the palette colour anyway, and measured over the
+# whole matrix, every tile the old flatness gate rejected came back at exactly ONE colour
+# after postprocess. What a colour prompt cannot buy is the transition — told it is
+# painting green, the generator draws a clean cut where the paint stops and the tile
+# reads as green over soil. Told it is growing grass, it tufts the blades down over the
+# edge, which is the property the maintainer scores ten stars and the one thing no
+# postprocess can add, because the spill lives on the WALL and the wall is never touched.
+#
+# Read from config so there is ONE source of truth. These lived here as hardcoded
+# lambdas while config/tiles.json carried its own unused copy, which is exactly how an
+# edit lands in the wrong file and changes nothing.
+def STYLE_PROMPTS(cfg_doc):
+    p = cfg_doc["prompts"]
+    return {"material": p["over"], "colour": p.get("over_colour", p["over"])}
 
 
 def cfg():
@@ -99,8 +104,13 @@ def generate_cell(client, top_g, side_g, style, sheets, seed0=11):
     os.makedirs(d, exist_ok=True)
     made = []
     for i in range(sheets):
-        style_name = list(STYLES)[i % len(STYLES)]
-        prompt = STYLES[style_name](top_g["material_words"], side_g["material_words"])
+        styles = STYLE_PROMPTS(cfg())
+        style_name = list(styles)[i % len(styles)]
+        prompt = styles[style_name].format(
+            top_material=top_g["material_words"], side_material=side_g["material_words"],
+            top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "),
+            top_hex=top_g["hex"].lstrip("#"), side_hex=side_g["hex"].lstrip("#"),
+            top_color=top_g["color_words"], side_color=side_g["color_words"])
         sdir = os.path.join(d, f"sheet_{len(os.listdir(d)):02d}_{style_name}")
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
