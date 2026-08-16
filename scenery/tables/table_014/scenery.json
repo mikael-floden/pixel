@@ -5,8 +5,8 @@
   "group": "tables",
   "rank": 103,
   "index": 14,
-  "name": "Bare scrubbed pine table 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Bare scrubbed pine table 014",
+  "lights": null,
   "variety": "bare scrubbed pine table",
   "glow_concept": "a lit candle stub in a brass holder on the tabletop",
   "prompt": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, bare scrubbed pine table, waist-high, self-emissive at night, softly radiating light: a lit candle stub in a brass holder on the tabletop",
@@ -35,6 +35,46 @@
       "sprite": "tables/table_014/sprite.webp",
       "pixellab_object_id": "d914f92a-bb7a-4210-a001-f0d23da4a259",
       "generated_at": "2026-08-13T23:42:50+00:00"
+    },
+    "LIT_2": {
+      "sprite": "tables/table_014/lit_2/sprite.webp",
+      "pixellab_object_id": "9abda865-81bd-4aef-8b04-790451eec521",
+      "generated_at": "2026-08-16T23:01:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8049,
+      "glow_score": 0.0158
+    },
+    "LIT_3": {
+      "sprite": "tables/table_014/lit_3/sprite.webp",
+      "pixellab_object_id": "0e481fc1-0c59-45a9-ab67-7c846ba9c98c",
+      "generated_at": "2026-08-16T23:02:26+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.828,
+      "glow_score": 0.0111
+    },
+    "LIT_4": {
+      "sprite": "tables/table_014/lit_4/sprite.webp",
+      "pixellab_object_id": "38a7a14c-8d7b-4d34-9446-81b344aa26ca",
+      "generated_at": "2026-08-16T23:02:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8116,
+      "glow_score": 0.0241
+    },
+    "NOT_LIT_1": {
+      "sprite": "tables/table_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "d105d483-b696-4943-b82e-b3b85f81a7ed",
+      "generated_at": "2026-08-16T23:01:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8663,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "tables/table_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b2843403-24d7-4327-984c-1064119b3e67",
+      "generated_at": "2026-08-16T23:02:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7871,
+      "glow_score": 0.2562
     }
   }
 }

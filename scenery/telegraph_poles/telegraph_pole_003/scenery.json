@@ -5,7 +5,7 @@
   "rank": 43,
   "index": 3,
   "name": "Frost-rimed winter pole 003",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "frost-rimed winter pole",
   "glow_concept": null,
   "prompt": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, frost-rimed winter pole, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T07:45:28+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "telegraph_poles/telegraph_pole_003/lit_1/sprite.webp",
+      "pixellab_object_id": "a8a2603e-4fb6-4c41-81d4-e91d41cd747d",
+      "generated_at": "2026-08-16T23:04:27+00:00",
+      "glow_concept": "ceramic insulators glowing like small lanterns",
+      "difference_from_source": 0.6149,
+      "glow_score": 0.1271
+    },
+    "LIT_2": {
+      "sprite": "telegraph_poles/telegraph_pole_003/lit_2/sprite.webp",
+      "pixellab_object_id": "b7a19e4f-8df9-42bb-be2e-3ae63184f785",
+      "generated_at": "2026-08-16T23:04:55+00:00",
+      "glow_concept": "pulses of light traveling along the sagging wire",
+      "difference_from_source": 0.3964,
+      "glow_score": 0.1524
+    },
     "NOT_LIT_1": {
       "sprite": "telegraph_poles/telegraph_pole_003/sprite.webp",
       "pixellab_object_id": "a944e349-7895-4b5b-b672-1738e8707cf4",
       "generated_at": "2026-08-13T07:45:28+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "telegraph_poles/telegraph_pole_003/not_lit_2/sprite.webp",
+      "pixellab_object_id": "bdee3407-f15e-45ea-bd91-feb9aeea8e85",
+      "generated_at": "2026-08-16T23:03:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4101,
+      "glow_score": 0.1455
+    },
+    "NOT_LIT_3": {
+      "sprite": "telegraph_poles/telegraph_pole_003/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3284ec42-f8bd-477d-9f32-37625952cbbc",
+      "generated_at": "2026-08-16T23:04:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.467,
+      "glow_score": 0.0916
+    },
+    "NOT_LIT_4": {
+      "sprite": "telegraph_poles/telegraph_pole_003/not_lit_4/sprite.webp",
+      "pixellab_object_id": "0c6ce39a-8fc5-4789-ab92-3c6e18d928f8",
+      "generated_at": "2026-08-16T23:04:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5204,
+      "glow_score": 0.0899
     }
   }
 }

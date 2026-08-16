@@ -5,8 +5,8 @@
   "group": "tables",
   "rank": 103,
   "index": 16,
-  "name": "Map table with rolled charts 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Map table with rolled charts 016",
+  "lights": null,
   "variety": "map table with rolled charts",
   "modifier": "with carved decorative trim",
   "glow_concept": "a small glass-hooded oil lamp glowing at its center",
@@ -36,6 +36,46 @@
       "sprite": "tables/table_016/sprite.webp",
       "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
       "generated_at": "2026-08-14T01:46:17+00:00"
+    },
+    "LIT_2": {
+      "sprite": "tables/table_016/lit_2/sprite.webp",
+      "pixellab_object_id": "8858d39a-c5df-41d1-9eca-28f95d16b792",
+      "generated_at": "2026-08-16T23:02:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5484,
+      "glow_score": 0.1003
+    },
+    "LIT_3": {
+      "sprite": "tables/table_016/lit_3/sprite.webp",
+      "pixellab_object_id": "196dda3f-99d1-4350-9356-7fc9f0684da1",
+      "generated_at": "2026-08-16T23:03:06+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5355,
+      "glow_score": 0.2278
+    },
+    "LIT_4": {
+      "sprite": "tables/table_016/lit_4/sprite.webp",
+      "pixellab_object_id": "3bc4e0a3-f87e-48c5-b55e-2b084eb2b5c8",
+      "generated_at": "2026-08-16T23:03:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6068,
+      "glow_score": 0.1941
+    },
+    "NOT_LIT_1": {
+      "sprite": "tables/table_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "c9382749-48b9-4b32-82bd-e213ee460751",
+      "generated_at": "2026-08-16T23:03:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8409,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "tables/table_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f2cf3def-424d-4e8b-83a9-a04253427372",
+      "generated_at": "2026-08-16T23:03:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8827,
+      "glow_score": 0.0
     }
   }
 }

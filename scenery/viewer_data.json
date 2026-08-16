@@ -48245,6 +48245,15 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "tables/table_011/lit_1/sprite.webp",
+          "pixellab_object_id": "e7369752-8103-4389-8ff1-8e2d8ab04d25",
+          "generated_at": "2026-08-16T23:03:46+00:00",
+          "glow_concept": "a lit candle stub in a brass holder on the tabletop",
+          "difference_from_source": 0.3269,
+          "glow_score": 0.1635,
+          "art_hash": "b22e83a35eba49fc"
+        },
         "LIT_2": {
           "sprite": "tables/table_011/lit_2/sprite.webp",
           "pixellab_object_id": "59a02a15-4f97-4977-bdd1-8bb6f89bbddf",
@@ -48356,6 +48365,15 @@
           "difference_from_source": 0.7959,
           "glow_score": 0.0,
           "art_hash": "4e512b9d22149c97"
+        },
+        "NOT_LIT_2": {
+          "sprite": "tables/table_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c3de4e07-68f9-45f2-ae87-3c42a4d9c16d",
+          "generated_at": "2026-08-16T23:00:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7952,
+          "glow_score": 0.0,
+          "art_hash": "a2b93e1ada5812b2"
         }
       },
       "animations": []
@@ -48363,9 +48381,9 @@
     {
       "id": "table_014",
       "rel": "tables/table_014",
-      "name": "Bare scrubbed pine table 014 \u00b7 lit",
+      "name": "Bare scrubbed pine table 014",
       "category": "tables",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, bare scrubbed pine table, waist-high, self-emissive at night, softly radiating light: a lit candle stub in a brass holder on the tabletop",
       "view": "low top-down",
       "size": 64,
@@ -48390,6 +48408,51 @@
           "pixellab_object_id": "d914f92a-bb7a-4210-a001-f0d23da4a259",
           "generated_at": "2026-08-13T23:42:50+00:00",
           "art_hash": "22d8016ecb14fa85"
+        },
+        "LIT_2": {
+          "sprite": "tables/table_014/lit_2/sprite.webp",
+          "pixellab_object_id": "9abda865-81bd-4aef-8b04-790451eec521",
+          "generated_at": "2026-08-16T23:01:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8049,
+          "glow_score": 0.0158,
+          "art_hash": "6f13bba77027d05a"
+        },
+        "LIT_3": {
+          "sprite": "tables/table_014/lit_3/sprite.webp",
+          "pixellab_object_id": "0e481fc1-0c59-45a9-ab67-7c846ba9c98c",
+          "generated_at": "2026-08-16T23:02:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.828,
+          "glow_score": 0.0111,
+          "art_hash": "ca0e06efe9932bab"
+        },
+        "LIT_4": {
+          "sprite": "tables/table_014/lit_4/sprite.webp",
+          "pixellab_object_id": "38a7a14c-8d7b-4d34-9446-81b344aa26ca",
+          "generated_at": "2026-08-16T23:02:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8116,
+          "glow_score": 0.0241,
+          "art_hash": "8ee121f57b4410da"
+        },
+        "NOT_LIT_1": {
+          "sprite": "tables/table_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d105d483-b696-4943-b82e-b3b85f81a7ed",
+          "generated_at": "2026-08-16T23:01:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8663,
+          "glow_score": 0.0,
+          "art_hash": "859ba3547211394e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "tables/table_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b2843403-24d7-4327-984c-1064119b3e67",
+          "generated_at": "2026-08-16T23:02:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7871,
+          "glow_score": 0.2562,
+          "art_hash": "62b7def47b9bcb20"
         }
       },
       "animations": []
@@ -48397,9 +48460,9 @@
     {
       "id": "table_016",
       "rel": "tables/table_016",
-      "name": "Map table with rolled charts 016 \u00b7 lit",
+      "name": "Map table with rolled charts 016",
       "category": "tables",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a stout wooden household table with thick legs and a heavy top, set for daily life, standing solidly on the floor, map table with rolled charts, with carved decorative trim, waist-high, self-emissive at night, softly radiating light: a small glass-hooded oil lamp glowing at its center",
       "view": "low top-down",
       "size": 64,
@@ -48424,6 +48487,51 @@
           "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
           "generated_at": "2026-08-14T01:46:17+00:00",
           "art_hash": "d65d0b9a79cae375"
+        },
+        "LIT_2": {
+          "sprite": "tables/table_016/lit_2/sprite.webp",
+          "pixellab_object_id": "8858d39a-c5df-41d1-9eca-28f95d16b792",
+          "generated_at": "2026-08-16T23:02:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5484,
+          "glow_score": 0.1003,
+          "art_hash": "2919c79788f293ee"
+        },
+        "LIT_3": {
+          "sprite": "tables/table_016/lit_3/sprite.webp",
+          "pixellab_object_id": "196dda3f-99d1-4350-9356-7fc9f0684da1",
+          "generated_at": "2026-08-16T23:03:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5355,
+          "glow_score": 0.2278,
+          "art_hash": "322d79331f50bf92"
+        },
+        "LIT_4": {
+          "sprite": "tables/table_016/lit_4/sprite.webp",
+          "pixellab_object_id": "3bc4e0a3-f87e-48c5-b55e-2b084eb2b5c8",
+          "generated_at": "2026-08-16T23:03:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6068,
+          "glow_score": 0.1941,
+          "art_hash": "b3227625045935c0"
+        },
+        "NOT_LIT_1": {
+          "sprite": "tables/table_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "c9382749-48b9-4b32-82bd-e213ee460751",
+          "generated_at": "2026-08-16T23:03:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8409,
+          "glow_score": 0.0,
+          "art_hash": "7e9394f4f4879709"
+        },
+        "NOT_LIT_2": {
+          "sprite": "tables/table_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f2cf3def-424d-4e8b-83a9-a04253427372",
+          "generated_at": "2026-08-16T23:03:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8827,
+          "glow_score": 0.0,
+          "art_hash": "70e000969b92a9b2"
         }
       },
       "animations": []
@@ -48433,7 +48541,7 @@
       "rel": "telegraph_poles/telegraph_pole_003",
       "name": "Frost-rimed winter pole 003",
       "category": "telegraph_poles",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, frost-rimed winter pole, towering, several times the height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -48453,11 +48561,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "telegraph_poles/telegraph_pole_003/lit_1/sprite.webp",
+          "pixellab_object_id": "a8a2603e-4fb6-4c41-81d4-e91d41cd747d",
+          "generated_at": "2026-08-16T23:04:27+00:00",
+          "glow_concept": "ceramic insulators glowing like small lanterns",
+          "difference_from_source": 0.6149,
+          "glow_score": 0.1271,
+          "art_hash": "e8618d69ba341312"
+        },
+        "LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_003/lit_2/sprite.webp",
+          "pixellab_object_id": "b7a19e4f-8df9-42bb-be2e-3ae63184f785",
+          "generated_at": "2026-08-16T23:04:55+00:00",
+          "glow_concept": "pulses of light traveling along the sagging wire",
+          "difference_from_source": 0.3964,
+          "glow_score": 0.1524,
+          "art_hash": "82897868bcd5ea1a"
+        },
         "NOT_LIT_1": {
           "sprite": "telegraph_poles/telegraph_pole_003/sprite.webp",
           "pixellab_object_id": "a944e349-7895-4b5b-b672-1738e8707cf4",
           "generated_at": "2026-08-13T07:45:28+00:00",
           "art_hash": "22aaf37ae59523b2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "bdee3407-f15e-45ea-bd91-feb9aeea8e85",
+          "generated_at": "2026-08-16T23:03:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4101,
+          "glow_score": 0.1455,
+          "art_hash": "131a805b8573309f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "telegraph_poles/telegraph_pole_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "3284ec42-f8bd-477d-9f32-37625952cbbc",
+          "generated_at": "2026-08-16T23:04:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.467,
+          "glow_score": 0.0916,
+          "art_hash": "3745b64f842d3708"
+        },
+        "NOT_LIT_4": {
+          "sprite": "telegraph_poles/telegraph_pole_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0c6ce39a-8fc5-4789-ab92-3c6e18d928f8",
+          "generated_at": "2026-08-16T23:04:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5204,
+          "glow_score": 0.0899,
+          "art_hash": "f355c4f279ac6bc0"
         }
       },
       "animations": []
@@ -48465,9 +48618,9 @@
     {
       "id": "telegraph_pole_004",
       "rel": "telegraph_poles/telegraph_pole_004",
-      "name": "Single crossarm pine pole 004 \u00b7 lit",
+      "name": "Single crossarm pine pole 004",
       "category": "telegraph_poles",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tall weathered wooden telegraph pole with a crossarm, ceramic insulators, and a sagging cut wire, single crossarm pine pole, towering, several times the height of a person, self-emissive at night, softly radiating light: pale ghost-fire crackling on the crossarm tips",
       "view": "low top-down",
       "size": 256,
@@ -48492,6 +48645,51 @@
           "pixellab_object_id": "b7bb14bb-8f77-489e-a368-92b66a5f6988",
           "generated_at": "2026-08-13T09:42:07+00:00",
           "art_hash": "76c0be647ad70307"
+        },
+        "LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_004/lit_2/sprite.webp",
+          "pixellab_object_id": "19927b10-f798-48d6-ad32-10f99d234803",
+          "generated_at": "2026-08-16T23:05:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3236,
+          "glow_score": 0.1154,
+          "art_hash": "5933e8783120ecfd"
+        },
+        "LIT_3": {
+          "sprite": "telegraph_poles/telegraph_pole_004/lit_3/sprite.webp",
+          "pixellab_object_id": "14f5bb67-1afa-4ce9-b9d7-de5df6703007",
+          "generated_at": "2026-08-16T23:04:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6299,
+          "glow_score": 0.1132,
+          "art_hash": "8a139a832bf1efcf"
+        },
+        "LIT_4": {
+          "sprite": "telegraph_poles/telegraph_pole_004/lit_4/sprite.webp",
+          "pixellab_object_id": "668cd44b-5bc5-4d31-aa54-9192b8f4e045",
+          "generated_at": "2026-08-16T23:05:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4533,
+          "glow_score": 0.0733,
+          "art_hash": "6c0e21c64cf12d38"
+        },
+        "NOT_LIT_1": {
+          "sprite": "telegraph_poles/telegraph_pole_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d3abacc5-f905-4520-9fdf-356014b622f3",
+          "generated_at": "2026-08-16T23:05:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3778,
+          "glow_score": 0.0,
+          "art_hash": "a8bda2d74374b770"
+        },
+        "NOT_LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "20c12384-4a10-4c6f-8dc1-765718a7ec55",
+          "generated_at": "2026-08-16T23:05:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5786,
+          "glow_score": 0.0,
+          "art_hash": "118cb46d9782f9c6"
         }
       },
       "animations": []
@@ -48526,6 +48724,33 @@
           "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
           "generated_at": "2026-08-13T13:18:31+00:00",
           "art_hash": "87f66398d7d86851"
+        },
+        "LIT_2": {
+          "sprite": "telegraph_poles/telegraph_pole_006/lit_2/sprite.webp",
+          "pixellab_object_id": "6247d60e-dc36-49ed-a66a-5b82319fa5df",
+          "generated_at": "2026-08-16T23:06:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5117,
+          "glow_score": 0.0132,
+          "art_hash": "b0895ca7f462bb10"
+        },
+        "LIT_3": {
+          "sprite": "telegraph_poles/telegraph_pole_006/lit_3/sprite.webp",
+          "pixellab_object_id": "8f872cab-5c00-403f-8a13-1982be82f824",
+          "generated_at": "2026-08-16T23:06:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4666,
+          "glow_score": 0.0139,
+          "art_hash": "9dcf2c26bc3f2cae"
+        },
+        "LIT_4": {
+          "sprite": "telegraph_poles/telegraph_pole_006/lit_4/sprite.webp",
+          "pixellab_object_id": "a26c97b1-f39f-4de9-88e7-833ae989974c",
+          "generated_at": "2026-08-16T23:06:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5791,
+          "glow_score": 0.0204,
+          "art_hash": "8683a5c7bbfe1978"
         }
       },
       "animations": []
