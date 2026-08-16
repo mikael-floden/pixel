@@ -12290,9 +12290,9 @@
     {
       "id": "cliff_feature_002",
       "rel": "cliff_features/cliff_feature_002",
-      "name": "Honeycomb-weathered rock pockets 002 \u00b7 lit",
+      "name": "Honeycomb-weathered rock pockets 002",
       "category": "cliff_features",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, honeycomb-weathered rock pockets, roughly six feet tall, human height, self-emissive at night, softly radiating light: soulstone seam glowing inside the crack",
       "view": "low top-down",
       "size": 128,
@@ -12318,6 +12318,15 @@
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "a128f31bce5b1dd2"
         },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_002/lit_2/sprite.webp",
+          "pixellab_object_id": "ab74b45b-f12d-4bf2-850a-964d5dd6a3d7",
+          "generated_at": "2026-08-16T09:18:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8407,
+          "glow_score": 0.0,
+          "art_hash": "c9d8c3fbb65661e4"
+        },
         "LIT_3": {
           "sprite": "cliff_features/cliff_feature_002/lit_3/sprite.webp",
           "pixellab_object_id": "d6937a6e-001c-4f6c-8ebe-685ef5d7142c",
@@ -12335,6 +12344,24 @@
           "difference_from_source": 0.7848,
           "glow_score": 0.0284,
           "art_hash": "4f5b1324c44f6585"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_features/cliff_feature_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "93335956-802f-46e3-b13a-8f491bc8acbd",
+          "generated_at": "2026-08-16T09:18:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6547,
+          "glow_score": 0.0,
+          "art_hash": "36b6623b975ad809"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e66d24d4-9bd8-47fb-b863-d801bb60b822",
+          "generated_at": "2026-08-16T09:18:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8623,
+          "glow_score": 0.0,
+          "art_hash": "22e793952377f1cf"
         }
       },
       "animations": []
@@ -12344,7 +12371,7 @@
       "rel": "cliff_features/cliff_feature_007",
       "name": "Dark water seep staining the stone 007",
       "category": "cliff_features",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, dark water seep staining the stone, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -12364,11 +12391,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_features/cliff_feature_007/lit_1/sprite.webp",
+          "pixellab_object_id": "dc2cbe01-317f-4182-bb88-7f1a0a17d46c",
+          "generated_at": "2026-08-16T09:21:08+00:00",
+          "glow_concept": "warm light spilling from a deep crevice",
+          "difference_from_source": 0.9315,
+          "glow_score": 0.0055,
+          "art_hash": "3b49fb4c9a4b7ae8"
+        },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_007/lit_2/sprite.webp",
+          "pixellab_object_id": "48a77921-d0b3-4032-b7a2-4734044e452c",
+          "generated_at": "2026-08-16T09:20:36+00:00",
+          "glow_concept": "glow-lichen shelf shining pale green",
+          "difference_from_source": 0.897,
+          "glow_score": 0.2323,
+          "art_hash": "d15f0ab40e2d380d"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_features/cliff_feature_007/sprite.webp",
           "pixellab_object_id": "89b281fd-10ce-48a0-98b9-9c2b7a433a98",
           "generated_at": "2026-08-13T22:17:25+00:00",
           "art_hash": "fcaf309bb9c198ff"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a166d083-ac41-4fa2-b893-77f2ce960242",
+          "generated_at": "2026-08-16T09:18:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4561,
+          "glow_score": 0.0,
+          "art_hash": "49356e9c834ce550"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_features/cliff_feature_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "55ed2d6e-0638-421f-9f0d-a9272b02a3d9",
+          "generated_at": "2026-08-16T09:19:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4421,
+          "glow_score": 0.0,
+          "art_hash": "496efdc0dba8497d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_features/cliff_feature_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "59ad6ff9-5df2-40db-a3ea-0ce3cf4bcfab",
+          "generated_at": "2026-08-16T09:19:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7334,
+          "glow_score": 0.0,
+          "art_hash": "a2c7111ed4c22e4b"
         }
       },
       "animations": []
@@ -12376,9 +12448,9 @@
     {
       "id": "cliff_feature_010",
       "rel": "cliff_features/cliff_feature_010",
-      "name": "Deep cracked seam with ferns growing out 010 \u00b7 lit",
+      "name": "Deep cracked seam with ferns growing out 010",
       "category": "cliff_features",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, deep cracked seam with ferns growing out, large, twice human height, self-emissive at night, softly radiating light: soulstone seam glowing inside the crack",
       "view": "low top-down",
       "size": 128,
@@ -12403,6 +12475,51 @@
           "pixellab_object_id": "39aedc60-a864-4cda-b4c8-afc3abcac9a2",
           "generated_at": "2026-08-13T23:43:24+00:00",
           "art_hash": "7828a1404ccadbb4"
+        },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_010/lit_2/sprite.webp",
+          "pixellab_object_id": "65aecccf-4bd9-4b5e-b435-44c2295a39d5",
+          "generated_at": "2026-08-16T09:20:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2682,
+          "glow_score": 0.0539,
+          "art_hash": "31a8898470d99d4d"
+        },
+        "LIT_3": {
+          "sprite": "cliff_features/cliff_feature_010/lit_3/sprite.webp",
+          "pixellab_object_id": "c92c6c02-7dee-4376-8666-5290a99fabed",
+          "generated_at": "2026-08-16T09:21:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3903,
+          "glow_score": 0.0457,
+          "art_hash": "8c3441ee25397150"
+        },
+        "LIT_4": {
+          "sprite": "cliff_features/cliff_feature_010/lit_4/sprite.webp",
+          "pixellab_object_id": "70b478c3-7f9f-4ad1-ae86-20165bab7d94",
+          "generated_at": "2026-08-16T09:21:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6513,
+          "glow_score": 0.0,
+          "art_hash": "85870acb5703c330"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_features/cliff_feature_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "288029e2-fd3d-4d3e-a80a-7f0817296e84",
+          "generated_at": "2026-08-16T09:22:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.1739,
+          "glow_score": 0.0,
+          "art_hash": "54ad5d88741abc37"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4edc9bef-54ba-496b-9abc-cf55c0559124",
+          "generated_at": "2026-08-16T09:21:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2176,
+          "glow_score": 0.0,
+          "art_hash": "e60228e0dad5ec08"
         }
       },
       "animations": []
@@ -12410,9 +12527,9 @@
     {
       "id": "cliff_feature_900",
       "rel": "cliff_features/cliff_feature_900",
-      "name": "Jutting mossy stone ledge 900 \u00b7 lit",
+      "name": "Jutting mossy stone ledge 900",
       "category": "cliff_features",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, jutting mossy stone ledge, roughly six feet tall, human height, self-emissive at night, softly radiating light: glow-lichen shelf shining pale green",
       "view": "low top-down",
       "size": 128,
@@ -12437,6 +12554,51 @@
           "pixellab_object_id": "2bae38db-6dba-4a1a-8c0a-129f138159c2",
           "generated_at": "2026-08-13T23:03:51+00:00",
           "art_hash": "873af6267243c7c9"
+        },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_900/lit_2/sprite.webp",
+          "pixellab_object_id": "47df5ba5-96e2-4fca-b2ea-a21ddfb906d0",
+          "generated_at": "2026-08-16T09:22:22+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3485,
+          "glow_score": 0.0186,
+          "art_hash": "7c591a2532017d8f"
+        },
+        "LIT_3": {
+          "sprite": "cliff_features/cliff_feature_900/lit_3/sprite.webp",
+          "pixellab_object_id": "892c1b87-3873-4796-a96c-84d9a5c07144",
+          "generated_at": "2026-08-16T09:23:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7665,
+          "glow_score": 0.0043,
+          "art_hash": "c0874f6c8e327835"
+        },
+        "LIT_4": {
+          "sprite": "cliff_features/cliff_feature_900/lit_4/sprite.webp",
+          "pixellab_object_id": "9046ca3e-c81a-42c4-914c-5acbe43c0fc9",
+          "generated_at": "2026-08-16T09:24:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6965,
+          "glow_score": 0.0131,
+          "art_hash": "22c4366aacf1fe70"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_features/cliff_feature_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2b8d71ba-c07f-4574-976e-37bcf7825bcd",
+          "generated_at": "2026-08-16T09:24:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9126,
+          "glow_score": 0.0,
+          "art_hash": "f76d979cc0fdd233"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e12ecb56-02ea-4a02-8e83-5c7f1f9a4a11",
+          "generated_at": "2026-08-16T09:23:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9926,
+          "glow_score": 0.0,
+          "art_hash": "137d9840ae79ad91"
         }
       },
       "animations": []
@@ -12444,9 +12606,9 @@
     {
       "id": "cliff_feature_902",
       "rel": "cliff_features/cliff_feature_902",
-      "name": "Clay swallow nests under an overhang 902 \u00b7 lit",
+      "name": "Clay swallow nests under an overhang 902",
       "category": "cliff_features",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, clay swallow nests under an overhang, large, twice human height, self-emissive at night, softly radiating light: warm light spilling from a deep crevice",
       "view": "low top-down",
       "size": 128,
@@ -12471,6 +12633,51 @@
           "pixellab_object_id": "9e4cb1c8-be6a-4a96-a2d4-f1d9ebc35351",
           "generated_at": "2026-08-13T23:15:04+00:00",
           "art_hash": "9a71fb4d56440ea0"
+        },
+        "LIT_2": {
+          "sprite": "cliff_features/cliff_feature_902/lit_2/sprite.webp",
+          "pixellab_object_id": "6fd2b280-d2bf-42e9-be57-7039f2425ef0",
+          "generated_at": "2026-08-16T09:25:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3597,
+          "glow_score": 0.0247,
+          "art_hash": "13af82f4ffce5630"
+        },
+        "LIT_3": {
+          "sprite": "cliff_features/cliff_feature_902/lit_3/sprite.webp",
+          "pixellab_object_id": "ec04d8b6-ef59-48f0-aebc-f72d848f9046",
+          "generated_at": "2026-08-16T09:25:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5123,
+          "glow_score": 0.0313,
+          "art_hash": "ce5168eb995b776b"
+        },
+        "LIT_4": {
+          "sprite": "cliff_features/cliff_feature_902/lit_4/sprite.webp",
+          "pixellab_object_id": "2358786d-ae70-42e3-b821-265c5c317de8",
+          "generated_at": "2026-08-16T09:24:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8411,
+          "glow_score": 0.0781,
+          "art_hash": "98030610bc91b4fe"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_features/cliff_feature_902/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6e02e412-9038-482a-9b65-1f76212c2cb1",
+          "generated_at": "2026-08-16T09:25:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2949,
+          "glow_score": 0.0,
+          "art_hash": "5989db711114ebdb"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_902/not_lit_2/sprite.webp",
+          "pixellab_object_id": "11bb5d0d-d91b-4723-baf5-9a2c2f388aa6",
+          "generated_at": "2026-08-16T09:26:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7156,
+          "glow_score": 0.0,
+          "art_hash": "d6c39069edbb1aa7"
         }
       },
       "animations": []
@@ -12505,6 +12712,24 @@
           "pixellab_object_id": "cfeeaab9-d843-4c36-8e3a-133fe9a6d18a",
           "generated_at": "2026-08-13T23:28:58+00:00",
           "art_hash": "63e6d0a47e8f7bf3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_features/cliff_feature_903/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3b9df5e2-1e5e-4f8d-8ee7-85a85d3c67b8",
+          "generated_at": "2026-08-16T09:26:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6261,
+          "glow_score": 0.2097,
+          "art_hash": "29b486af63f59638"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_features/cliff_feature_903/not_lit_3/sprite.webp",
+          "pixellab_object_id": "7ca166ef-92c7-4aa0-a800-8902c5ba8f5b",
+          "generated_at": "2026-08-16T09:26:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6409,
+          "glow_score": 0.2616,
+          "art_hash": "11c2c68db34b160f"
         }
       },
       "animations": []
