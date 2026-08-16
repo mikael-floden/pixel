@@ -26563,6 +26563,15 @@
           "difference_from_source": 1.0,
           "glow_score": 0.0,
           "art_hash": "8a1d8ed9c1f604ea"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0e879d21-ce0a-4e0b-86f0-814213d006ba",
+          "generated_at": "2026-08-16T14:42:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9739,
+          "glow_score": 0.0,
+          "art_hash": "f767a90c984f9e6c"
         }
       },
       "animations": []
@@ -26651,7 +26660,7 @@
       "rel": "grass_tufts/grass_tuft_007",
       "name": "Frost-rimed winter tuft 007",
       "category": "grass_tufts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, frost-rimed winter tuft, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -26671,6 +26680,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_007/lit_1/sprite.webp",
+          "pixellab_object_id": "5187481b-a92c-4de7-9179-f32f84453e12",
+          "generated_at": "2026-08-16T14:42:50+00:00",
+          "glow_concept": "fireflies resting low between the blades",
+          "difference_from_source": 0.3539,
+          "glow_score": 0.1586,
+          "art_hash": "f82bf3e2d03c45a3"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_007/lit_2/sprite.webp",
+          "pixellab_object_id": "999a3e2a-e1ab-41a7-91ed-4e34082cc47b",
+          "generated_at": "2026-08-16T14:40:15+00:00",
+          "glow_concept": "faint green foxfire at the roots",
+          "difference_from_source": 0.5546,
+          "glow_score": 0.1405,
+          "art_hash": "3ec5c1dd0eb4f90a"
+        },
         "NOT_LIT_1": {
           "sprite": "grass_tufts/grass_tuft_007/sprite.webp",
           "pixellab_object_id": "bb0d4772-cbbc-4d25-aab8-9bd03f56180c",
@@ -26685,6 +26712,15 @@
           "difference_from_source": 0.329,
           "glow_score": 0.0676,
           "art_hash": "782684d5197cb544"
+        },
+        "NOT_LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "90698e5c-f546-45d3-a70a-e44b9e71d44f",
+          "generated_at": "2026-08-16T14:41:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7924,
+          "glow_score": 0.0,
+          "art_hash": "5e9cd56c44353bc3"
         },
         "NOT_LIT_4": {
           "sprite": "grass_tufts/grass_tuft_007/not_lit_4/sprite.webp",
@@ -26703,7 +26739,7 @@
       "rel": "grass_tufts/grass_tuft_009",
       "name": "Wind-flattened leaning tuft 009",
       "category": "grass_tufts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, wind-flattened leaning tuft, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 48,
@@ -26723,6 +26759,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_009/lit_1/sprite.webp",
+          "pixellab_object_id": "a11c81cb-7c99-4173-8bd7-ca9f74f4a88f",
+          "generated_at": "2026-08-16T14:40:16+00:00",
+          "glow_concept": "faint green foxfire at the roots",
+          "difference_from_source": 0.3883,
+          "glow_score": 0.1358,
+          "art_hash": "df31a2910ded2e58"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_009/lit_2/sprite.webp",
+          "pixellab_object_id": "7eb6665b-4ea4-4bab-bfd6-6bb744ce7e24",
+          "generated_at": "2026-08-16T14:41:27+00:00",
+          "glow_concept": "seed heads glowing like tiny lamps",
+          "difference_from_source": 0.7722,
+          "glow_score": 0.1374,
+          "art_hash": "8c314043090634e5"
+        },
         "NOT_LIT_1": {
           "sprite": "grass_tufts/grass_tuft_009/sprite.webp",
           "pixellab_object_id": "78bcc653-cce8-4ceb-8789-27ffe209b2fa",
@@ -26737,6 +26791,24 @@
           "difference_from_source": 0.1903,
           "glow_score": 0.0,
           "art_hash": "2c4d29e0bdad5e1c"
+        },
+        "NOT_LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "68ced7bc-9467-4e0f-b3a9-fb223dbbc179",
+          "generated_at": "2026-08-16T14:40:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6414,
+          "glow_score": 0.0017,
+          "art_hash": "85da68ab77b9bcdd"
+        },
+        "NOT_LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "38ed697e-26f8-468e-849a-c30af768397f",
+          "generated_at": "2026-08-16T14:40:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7968,
+          "glow_score": 0.0,
+          "art_hash": "336758c091262560"
         }
       },
       "animations": []
@@ -26744,9 +26816,9 @@
     {
       "id": "grass_tuft_010",
       "rel": "grass_tufts/grass_tuft_010",
-      "name": "Lush green spring tuft 010 \u00b7 lit",
+      "name": "Lush green spring tuft 010",
       "category": "grass_tufts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, lush green spring tuft, small, knee-high, self-emissive at night, softly radiating light: fireflies resting low between the blades",
       "view": "low top-down",
       "size": 48,
@@ -26771,6 +26843,51 @@
           "pixellab_object_id": "75bc818a-4a4e-44e9-9c57-a66c29638c29",
           "generated_at": "2026-08-13T23:38:23+00:00",
           "art_hash": "ace2a08bcc0d600b"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_010/lit_2/sprite.webp",
+          "pixellab_object_id": "183ca37f-542a-4370-a8aa-67a328903533",
+          "generated_at": "2026-08-16T14:41:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.785,
+          "glow_score": 0.0613,
+          "art_hash": "8f17932b0eb6ecb2"
+        },
+        "LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_010/lit_3/sprite.webp",
+          "pixellab_object_id": "9fd3208b-6cb3-4991-a951-68ac887b8864",
+          "generated_at": "2026-08-16T14:41:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2473,
+          "glow_score": 0.0047,
+          "art_hash": "05e432150c9cf838"
+        },
+        "LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_010/lit_4/sprite.webp",
+          "pixellab_object_id": "84e349fb-47f7-4fe9-bf71-a23fe1982b68",
+          "generated_at": "2026-08-16T14:41:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2556,
+          "glow_score": 0.0,
+          "art_hash": "fa89d21f7b399163"
+        },
+        "NOT_LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "836ff268-0b3f-4baa-8c62-c99e761cc92b",
+          "generated_at": "2026-08-16T14:43:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9939,
+          "glow_score": 0.0,
+          "art_hash": "b29238b0ed4703ea"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "57ab103f-4e3f-4623-97e5-60130e3539f5",
+          "generated_at": "2026-08-16T14:43:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5914,
+          "glow_score": 0.0083,
+          "art_hash": "d470caf8a46218dc"
         }
       },
       "animations": []
@@ -26778,9 +26895,9 @@
     {
       "id": "grass_tuft_900",
       "rel": "grass_tufts/grass_tuft_900",
-      "name": "Tuft with white cotton-grass 900 \u00b7 lit",
+      "name": "Tuft with white cotton-grass 900",
       "category": "grass_tufts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, tuft with white cotton-grass, small, knee-high, self-emissive at night, softly radiating light: seed heads glowing like tiny lamps",
       "view": "low top-down",
       "size": 48,
@@ -26805,6 +26922,51 @@
           "pixellab_object_id": "d2283caf-5287-4a47-827e-1776ccb3386d",
           "generated_at": "2026-08-13T23:21:58+00:00",
           "art_hash": "63483b12fb8e0a09"
+        },
+        "LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_900/lit_2/sprite.webp",
+          "pixellab_object_id": "3fe62898-c1bd-445a-9b32-59093ba9662f",
+          "generated_at": "2026-08-16T14:43:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8073,
+          "glow_score": 0.0497,
+          "art_hash": "13e91ba9689f7aa1"
+        },
+        "LIT_3": {
+          "sprite": "grass_tufts/grass_tuft_900/lit_3/sprite.webp",
+          "pixellab_object_id": "9e736add-7474-4cfa-ae07-e102352f4b64",
+          "generated_at": "2026-08-16T14:45:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9523,
+          "glow_score": 0.1074,
+          "art_hash": "8135042c3b5e71c9"
+        },
+        "LIT_4": {
+          "sprite": "grass_tufts/grass_tuft_900/lit_4/sprite.webp",
+          "pixellab_object_id": "5748aee1-cb5e-4bca-9081-d71bf5e0a947",
+          "generated_at": "2026-08-16T14:43:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8941,
+          "glow_score": 0.1038,
+          "art_hash": "4148fc77e12aa79d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "grass_tufts/grass_tuft_900/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3f88bbc6-6c79-44ea-a906-61ceb5d446e0",
+          "generated_at": "2026-08-16T14:43:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9842,
+          "glow_score": 0.0,
+          "art_hash": "d5f8e9ca02fdf2d7"
+        },
+        "NOT_LIT_2": {
+          "sprite": "grass_tufts/grass_tuft_900/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a606a3e5-101a-4be8-8717-fa074c1c51de",
+          "generated_at": "2026-08-16T14:43:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7559,
+          "glow_score": 0.0,
+          "art_hash": "9a4dce6106cb012f"
         }
       },
       "animations": []
@@ -26858,7 +27020,7 @@
       "rel": "gravel_piles/gravel_pile_001",
       "name": "Shell-and-pebble beach pile 001",
       "category": "gravel_piles",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a loose heaped mound of small stones and gravel with scattered pebbles spilling around its base, shell-and-pebble beach pile, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -26878,11 +27040,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "gravel_piles/gravel_pile_001/lit_1/sprite.webp",
+          "pixellab_object_id": "71f0982c-f1ea-4615-8248-a3b2403dcea1",
+          "generated_at": "2026-08-16T14:45:33+00:00",
+          "glow_concept": "trickle of glowing pebbles down one side",
+          "difference_from_source": 0.5803,
+          "glow_score": 0.2984,
+          "art_hash": "ab9390c47191304f"
+        },
         "NOT_LIT_1": {
           "sprite": "gravel_piles/gravel_pile_001/sprite.webp",
           "pixellab_object_id": "5a3efe9a-9112-474c-b1e0-20dfd2bb6f48",
           "generated_at": "2026-08-13T01:32:12+00:00",
           "art_hash": "29b9a319dbf2a7e1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "gravel_piles/gravel_pile_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b26230fc-5d58-4993-84e4-912a09bac2fe",
+          "generated_at": "2026-08-16T14:44:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4969,
+          "glow_score": 0.1121,
+          "art_hash": "2d2bfd64ab530039"
+        },
+        "NOT_LIT_3": {
+          "sprite": "gravel_piles/gravel_pile_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "1f4b0dc8-9f7a-4a94-8273-bdc77b02b708",
+          "generated_at": "2026-08-16T14:44:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8704,
+          "glow_score": 0.0848,
+          "art_hash": "dcbe514fa2c9e856"
+        },
+        "NOT_LIT_4": {
+          "sprite": "gravel_piles/gravel_pile_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "dc8c8daa-1e23-4bf6-926a-0433c73aff4b",
+          "generated_at": "2026-08-16T14:44:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3683,
+          "glow_score": 0.0759,
+          "art_hash": "7ca2ac190e88e96f"
         }
       },
       "animations": []
@@ -26890,9 +27088,9 @@
     {
       "id": "gravel_pile_002",
       "rel": "gravel_piles/gravel_pile_002",
-      "name": "Slate chip pile 002 \u00b7 lit",
+      "name": "Slate chip pile 002",
       "category": "gravel_piles",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a loose heaped mound of small stones and gravel with scattered pebbles spilling around its base, slate chip pile, small, knee-high to an adult person, self-emissive at night, softly radiating light: one bright glowing shard atop the pile",
       "view": "low top-down",
       "size": 64,
@@ -26917,6 +27115,42 @@
           "pixellab_object_id": "4df336d8-6a72-400a-885e-b08036902b71",
           "generated_at": "2026-08-13T04:45:04+00:00",
           "art_hash": "aaa8d78ac6ef9658"
+        },
+        "LIT_2": {
+          "sprite": "gravel_piles/gravel_pile_002/lit_2/sprite.webp",
+          "pixellab_object_id": "ffa37615-7076-4f83-ac79-79f021110504",
+          "generated_at": "2026-08-16T14:45:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3663,
+          "glow_score": 0.1479,
+          "art_hash": "883db9a945485ee0"
+        },
+        "LIT_3": {
+          "sprite": "gravel_piles/gravel_pile_002/lit_3/sprite.webp",
+          "pixellab_object_id": "8b275583-59df-4ca1-8e5b-d20f825d9f4f",
+          "generated_at": "2026-08-16T14:45:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5927,
+          "glow_score": 0.1111,
+          "art_hash": "4a1492b7d1cc093c"
+        },
+        "LIT_4": {
+          "sprite": "gravel_piles/gravel_pile_002/lit_4/sprite.webp",
+          "pixellab_object_id": "b34b2eae-7a27-464c-b760-ee3b35a18f2a",
+          "generated_at": "2026-08-16T14:45:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8363,
+          "glow_score": 0.0985,
+          "art_hash": "bb85595e61c46d92"
+        },
+        "NOT_LIT_1": {
+          "sprite": "gravel_piles/gravel_pile_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b1741067-899d-4d2e-92b5-6b591c252791",
+          "generated_at": "2026-08-16T14:45:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7647,
+          "glow_score": 0.0,
+          "art_hash": "975ba18034509c0e"
         }
       },
       "animations": []

@@ -6,7 +6,7 @@
   "rank": 36,
   "index": 9,
   "name": "Wind-flattened leaning tuft 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "wind-flattened leaning tuft",
   "glow_concept": null,
   "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, wind-flattened leaning tuft, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "grass_tufts/grass_tuft_009/lit_1/sprite.webp",
+      "pixellab_object_id": "a11c81cb-7c99-4173-8bd7-ca9f74f4a88f",
+      "generated_at": "2026-08-16T14:40:16+00:00",
+      "glow_concept": "faint green foxfire at the roots",
+      "difference_from_source": 0.3883,
+      "glow_score": 0.1358
+    },
+    "LIT_2": {
+      "sprite": "grass_tufts/grass_tuft_009/lit_2/sprite.webp",
+      "pixellab_object_id": "7eb6665b-4ea4-4bab-bfd6-6bb744ce7e24",
+      "generated_at": "2026-08-16T14:41:27+00:00",
+      "glow_concept": "seed heads glowing like tiny lamps",
+      "difference_from_source": 0.7722,
+      "glow_score": 0.1374
+    },
     "NOT_LIT_1": {
       "sprite": "grass_tufts/grass_tuft_009/sprite.webp",
       "pixellab_object_id": "78bcc653-cce8-4ceb-8789-27ffe209b2fa",
@@ -42,6 +58,22 @@
       "generated_at": "2026-08-16T14:39:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.1903,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "grass_tufts/grass_tuft_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "68ced7bc-9467-4e0f-b3a9-fb223dbbc179",
+      "generated_at": "2026-08-16T14:40:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6414,
+      "glow_score": 0.0017
+    },
+    "NOT_LIT_4": {
+      "sprite": "grass_tufts/grass_tuft_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "38ed697e-26f8-468e-849a-c30af768397f",
+      "generated_at": "2026-08-16T14:40:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7968,
       "glow_score": 0.0
     }
   }

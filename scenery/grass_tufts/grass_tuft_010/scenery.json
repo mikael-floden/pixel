@@ -5,8 +5,8 @@
   "group": "grass_tufts",
   "rank": 36,
   "index": 10,
-  "name": "Lush green spring tuft 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Lush green spring tuft 010",
+  "lights": null,
   "variety": "lush green spring tuft",
   "glow_concept": "fireflies resting low between the blades",
   "prompt": "a tuft of tall wild grass with arching blades and a few thin seed stems rising above it, lush green spring tuft, small, knee-high, self-emissive at night, softly radiating light: fireflies resting low between the blades",
@@ -35,6 +35,46 @@
       "sprite": "grass_tufts/grass_tuft_010/sprite.webp",
       "pixellab_object_id": "75bc818a-4a4e-44e9-9c57-a66c29638c29",
       "generated_at": "2026-08-13T23:38:23+00:00"
+    },
+    "LIT_2": {
+      "sprite": "grass_tufts/grass_tuft_010/lit_2/sprite.webp",
+      "pixellab_object_id": "183ca37f-542a-4370-a8aa-67a328903533",
+      "generated_at": "2026-08-16T14:41:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.785,
+      "glow_score": 0.0613
+    },
+    "LIT_3": {
+      "sprite": "grass_tufts/grass_tuft_010/lit_3/sprite.webp",
+      "pixellab_object_id": "9fd3208b-6cb3-4991-a951-68ac887b8864",
+      "generated_at": "2026-08-16T14:41:29+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2473,
+      "glow_score": 0.0047
+    },
+    "LIT_4": {
+      "sprite": "grass_tufts/grass_tuft_010/lit_4/sprite.webp",
+      "pixellab_object_id": "84e349fb-47f7-4fe9-bf71-a23fe1982b68",
+      "generated_at": "2026-08-16T14:41:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2556,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_1": {
+      "sprite": "grass_tufts/grass_tuft_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "836ff268-0b3f-4baa-8c62-c99e761cc92b",
+      "generated_at": "2026-08-16T14:43:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9939,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "grass_tufts/grass_tuft_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "57ab103f-4e3f-4623-97e5-60130e3539f5",
+      "generated_at": "2026-08-16T14:43:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5914,
+      "glow_score": 0.0083
     }
   }
 }
