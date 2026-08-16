@@ -5,7 +5,7 @@
   "rank": 2,
   "index": 13,
   "name": "Red iron-stained stone 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "red iron-stained stone",
   "glow_concept": null,
   "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, red iron-stained stone, completely unlit, no glow, no light sources, no self-emission",
@@ -30,10 +30,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:22:20+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_013/lit_1/sprite.webp",
+      "pixellab_object_id": "386a4031-fdf0-4e5a-b613-7f047d63310a",
+      "generated_at": "2026-08-16T21:45:01+00:00",
+      "glow_concept": "molten orange soulstone veins in deep cracks",
+      "difference_from_source": 0.3146,
+      "glow_score": 0.1102
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_013/sprite.webp",
       "pixellab_object_id": "42f3bac2-9813-4fbe-91e2-337c43a3b5df",
       "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "74015386-7bcc-459b-ac28-286fd0c35568",
+      "generated_at": "2026-08-16T21:44:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.447,
+      "glow_score": 0.0176
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3d150b64-25ef-4940-a9f1-2efc9b0bc633",
+      "generated_at": "2026-08-16T21:44:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3814,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "85ba5039-3284-488f-97ae-904034e26fe5",
+      "generated_at": "2026-08-16T21:44:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4264,
+      "glow_score": 0.0
     }
   }
 }

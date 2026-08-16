@@ -4,8 +4,8 @@
   "group": "stones",
   "rank": 2,
   "index": 10,
-  "name": "Flaking layered slate stone 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Flaking layered slate stone 010",
+  "lights": null,
   "variety": "flaking layered slate stone",
   "glow_concept": "molten orange soulstone veins in deep cracks",
   "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flaking layered slate stone, self-emissive at night, softly radiating light: molten orange soulstone veins in deep cracks",
@@ -34,6 +34,46 @@
       "sprite": "stones/stone_010/sprite.webp",
       "pixellab_object_id": "60cdd3fb-d189-4cdc-a1c6-4b9eff055b5e",
       "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_010/lit_2/sprite.webp",
+      "pixellab_object_id": "95a8aa2c-aef0-4c2a-8fc8-4eb774734ac7",
+      "generated_at": "2026-08-16T21:42:13+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7754,
+      "glow_score": 0.1195
+    },
+    "LIT_3": {
+      "sprite": "stones/stone_010/lit_3/sprite.webp",
+      "pixellab_object_id": "9a6d6e7b-b7d2-43e9-878d-3ade1669570d",
+      "generated_at": "2026-08-16T21:42:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.649,
+      "glow_score": 0.0791
+    },
+    "LIT_4": {
+      "sprite": "stones/stone_010/lit_4/sprite.webp",
+      "pixellab_object_id": "f98c3552-744a-4a0f-a629-14959a118bbf",
+      "generated_at": "2026-08-16T21:42:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7338,
+      "glow_score": 0.0519
+    },
+    "NOT_LIT_1": {
+      "sprite": "stones/stone_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "772e2eac-e414-4d81-9cd1-44e4fcef97d2",
+      "generated_at": "2026-08-16T21:43:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5303,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a72d4881-1096-48b3-8bb8-a3a951f53126",
+      "generated_at": "2026-08-16T21:43:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8863,
+      "glow_score": 0.0
     }
   }
 }

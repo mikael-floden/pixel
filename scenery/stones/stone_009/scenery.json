@@ -5,7 +5,7 @@
   "rank": 2,
   "index": 9,
   "name": "Flat lichen-covered slab 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "flat lichen-covered slab",
   "glow_concept": null,
   "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, flat lichen-covered slab, completely unlit, no glow, no light sources, no self-emission",
@@ -30,10 +30,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:22:20+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_009/lit_1/sprite.webp",
+      "pixellab_object_id": "90b43f40-48f0-4385-8746-b1cc969003ae",
+      "generated_at": "2026-08-16T21:42:12+00:00",
+      "glow_concept": "thin runes etched glowing warm amber",
+      "difference_from_source": 0.8559,
+      "glow_score": 0.0408
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_009/lit_2/sprite.webp",
+      "pixellab_object_id": "56255e2a-292e-4dde-9671-8944693f27c8",
+      "generated_at": "2026-08-16T21:42:23+00:00",
+      "glow_concept": "patches of luminous blue-green moss",
+      "difference_from_source": 0.8087,
+      "glow_score": 0.0576
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_009/sprite.webp",
       "pixellab_object_id": "6be24f44-5d4f-4070-b046-372b155259da",
       "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "b7271ab3-684d-491c-98b4-f968762ad494",
+      "generated_at": "2026-08-16T21:41:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.645,
+      "glow_score": 0.0424
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "b9afd8ad-d246-4a30-9e75-32a933a52aca",
+      "generated_at": "2026-08-16T21:41:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5251,
+      "glow_score": 0.0355
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "dc8c9bf2-318c-4409-a2fc-fdb59c46f373",
+      "generated_at": "2026-08-16T21:41:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.515,
+      "glow_score": 0.0245
     }
   }
 }

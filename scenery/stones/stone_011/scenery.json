@@ -5,7 +5,7 @@
   "rank": 2,
   "index": 11,
   "name": "Dark basalt block 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "dark basalt block",
   "glow_concept": null,
   "prompt": "a single natural fieldstone boulder resting on the ground, rounded and weathered, with subtle cracks, pits and patches of moss, dark basalt block, completely unlit, no glow, no light sources, no self-emission",
@@ -30,10 +30,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:22:20+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "stones/stone_011/lit_1/sprite.webp",
+      "pixellab_object_id": "f512f558-a191-4bf6-8fcd-bb5e823f6508",
+      "generated_at": "2026-08-16T21:43:12+00:00",
+      "glow_concept": "ring of ghost-blue lichen circles",
+      "difference_from_source": 0.459,
+      "glow_score": 0.0858
+    },
+    "LIT_2": {
+      "sprite": "stones/stone_011/lit_2/sprite.webp",
+      "pixellab_object_id": "8b883491-0a11-48c5-86d1-0a92042a472e",
+      "generated_at": "2026-08-16T21:43:23+00:00",
+      "glow_concept": "ember light leaking from a hollow beneath",
+      "difference_from_source": 0.4765,
+      "glow_score": 0.0344
+    },
     "NOT_LIT_1": {
       "sprite": "stones/stone_011/sprite.webp",
       "pixellab_object_id": "d435c5be-1a68-4c27-91f7-24f665ee853f",
       "generated_at": "2026-08-12T23:22:20+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "stones/stone_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "792d0af4-c576-4318-a05d-70f7bd19ce58",
+      "generated_at": "2026-08-16T21:43:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.303,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "stones/stone_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "3ccb19c9-fd08-4b40-8b09-383a5c5d6224",
+      "generated_at": "2026-08-16T21:43:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3332,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "87ec7a08-ae3d-4b72-8361-6473ffa03a8f",
+      "generated_at": "2026-08-16T21:43:11+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2362,
+      "glow_score": 0.0
     }
   }
 }
