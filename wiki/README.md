@@ -216,6 +216,52 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
+## Two ground systems: World (Tiles 3.0) and Tiles OLD
+
+The tiles agent is building **Tiles 3.0** in `tiles/`, to replace `tiles2/`
+(maintainer 2026-08-16: *"When the new tile system is complete the old /tiles2
+will be removed. This however is a big task and we will need the wiki in order
+to know if /tiles (3.0) works … Tiles OLD and World? World is the new Tiles 3.0
+system"*). The NEW system takes the good name; both live in the nav until the
+migration lands, and when `tiles2/` goes, one row of `SECTIONS` goes with it.
+
+**The review unit is the CANDIDATE**, because that is the question the tiles
+agent asks. `tiles/review/manifest.json` (`tiles3/review@1`) offers two or
+three generations per "A over B" pair, ranked by a measured wall score, and
+defines what a verdict means — *"`tile_id` is the PixelLab generation a
+rejection should delete … A DELETED cell is tombstoned and never regenerated,
+unlike a rejected one."* So the pair's page shows every candidate side by side
+with its art, its score against the agent's own acceptance bar, the three
+measurements behind that rank, how flat the top came out, and its prompt.
+
+- **Verdicts ride the manifest's own keys** (`tiles/<cell>/<n>`) in the `tiles`
+  feedback file that agent already reads — no id scheme of the wiki's invention
+  to keep in sync. Feedback ids are repo paths, so 3.0's `tiles/…` and 2.0's
+  `tiles2/…` share one file without colliding.
+- **The pair carries its own separate verdict** ("drop this pair"). Tombstoning
+  a pairing that should not exist is a different decision from rejecting one
+  generation of it.
+- **Every number is the agent's.** The wiki never scores a tile itself: the two
+  would drift and his verdict would be about a ranking nobody else can
+  reproduce. The gate asserts the scores match the manifest to the decimal.
+- **The pairs are read LIVE**, not from the build. Every other domain is
+  settled art; this one is a factory running right now, so the admin's World
+  section refetches the manifest through the staging root his art already comes
+  from and rebuilds the list from it. The baked copy is the fallback.
+
+**The player's encyclopedia is unchanged, deliberately.** "Tiles OLD" is a
+migration word that means nothing to a reader, and an unfinished ground system
+in the encyclopedia is a promise the game cannot keep. So a player still sees
+ONE ground section called World — `tiles2`, the tiles the game actually renders
+— and 3.0 is `adminOnly` until it ships. That is also why prod needs no deploy
+plumbing yet: the admin reads both the manifest and the art from the repo, so
+the section works the moment the site deploys. When 3.0 becomes what the game
+renders, `tiles/` needs the five-place checklist above **plus** an `alwaysShip`
+entry in `games2/config/publish.json` (the curate stage's include list, the
+games agent's file).
+
+Gate: `wiki/tools/check-world.mjs`.
+
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed
