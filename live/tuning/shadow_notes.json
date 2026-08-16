@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-shadow-notes@1",
-  "updated_at": "2026-08-16T11:21:59.849Z",
+  "updated_at": "2026-08-16T11:26:06.500Z",
   "overrides": {
     "monsters/crystal_horn#idle#south": {
       "dx": -0.23,
@@ -137,6 +137,142 @@
         "h": 176
       },
       "updated_at": "2026-08-16T11:21:54.554Z"
+    },
+    "monsters/crystal_lynx#idle#south": {
+      "dx": 0.49,
+      "dy": -4.93,
+      "w": 32.74,
+      "h": 28.28,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 60,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:22:57.799Z"
+    },
+    "monsters/crystal_lynx#idle#south-east": {
+      "dx": 4.47,
+      "dy": -4.81,
+      "w": 44.86,
+      "h": 21.99,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 56.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:23:45.192Z"
+    },
+    "monsters/crystal_lynx#idle#east": {
+      "dx": -4.45,
+      "dy": -1.44,
+      "w": 49.45,
+      "h": 13,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 61,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:23:55.075Z"
+    },
+    "monsters/crystal_lynx#idle#north-east": {
+      "dx": 3.66,
+      "dy": -6.11,
+      "w": 41.99,
+      "h": 21.54,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 57.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:09.957Z"
+    },
+    "monsters/crystal_lynx#idle#north": {
+      "dx": -0.63,
+      "dy": -5.98,
+      "w": 33,
+      "h": 22.84,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 61,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:19.540Z"
+    },
+    "monsters/crystal_lynx#idle#north-west": {
+      "dx": -3.15,
+      "dy": -7.39,
+      "w": 41.49,
+      "h": 23.65,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 62.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:24:54.918Z"
+    },
+    "monsters/crystal_lynx#idle#west": {
+      "dx": 2.96,
+      "dy": -3.08,
+      "w": 44.77,
+      "h": 20.15,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 59,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:25:30.402Z"
+    },
+    "monsters/crystal_lynx#idle#south-west": {
+      "dx": -1.95,
+      "dy": -3.97,
+      "w": 47.47,
+      "h": 24.28,
+      "was": {
+        "w": 33,
+        "h": 13,
+        "cx": 63.5,
+        "cy": 84.35
+      },
+      "frame": {
+        "w": 120,
+        "h": 120
+      },
+      "updated_at": "2026-08-16T11:25:58.887Z"
     }
   }
 }
