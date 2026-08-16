@@ -62,8 +62,14 @@ def candidates(cell_dir):
                 "tile_id": meta.get("tile_id"), "style": meta.get("style"),
                 "prompt": meta.get("prompt"),
             })
-    out.sort(key=lambda c: -c["wall"]["score"] * (1.0 + c["overhang"]))
-    return out
+    # The maintainer's spill threshold is a GATE, not a ranking term — they went
+    # through every grass cell and circled the ones whose transition was not good
+    # enough, and a tile without it is the wrong tile however good its cliff. Within
+    # the tiles that have it, the wall decides, because the wall builds the game.
+    withspill = [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG]
+    out = withspill or out
+    out.sort(key=lambda c: -c["wall"]["score"])
+    return out, bool(withspill)
 
 
 def main():
@@ -89,7 +95,8 @@ def main():
         cell = os.path.basename(d)
         if cell.replace("__over__", "_over_") in dead:
             continue
-        cands = candidates(d)[:args.top]
+        cands, has_spill = candidates(d)
+        cands = cands[:args.top]
         if not cands:
             continue
         top, side = cell.split("__over__")
@@ -109,7 +116,8 @@ def main():
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1
-        manifest["cells"][cell] = {"top": top, "side": side, "candidates": entries}
+        manifest["cells"][cell] = {"top": top, "side": side, "candidates": entries,
+                                   "needs_regeneration": not has_spill}
 
     with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)
@@ -117,7 +125,9 @@ def main():
           f"-> {os.path.relpath(REVIEW, os.path.dirname(ROOT))}/")
     for cell, c in manifest["cells"].items():
         best = c["candidates"][0]
-        print(f"  {cell:32s} best wall={best['wall_score']:5.2f} [{best['style']}]")
+        flag = "  NEEDS REGEN (no transition in this cell)" if c["needs_regeneration"] else ""
+        print(f"  {cell:32s} wall={best['wall_score']:5.2f} spill={best['overhang']:.2f}"
+              f" [{best['style']}]{flag}")
 
 
 if __name__ == "__main__":

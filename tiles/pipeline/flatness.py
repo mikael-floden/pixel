@@ -122,6 +122,20 @@ def faces(path):
 
 CLEAN_TOP = 0.93   # calibrated against the maintainer's own accept/reject, see below
 
+# Minimum edge spill. Calibrated exactly like CLEAN_TOP: the maintainer went through all
+# 14 grass cells and circled the ones whose transition was not good enough. Every cell
+# they kept scores >= 0.36 (grass 1.00, slime 1.00, light_soil 0.94, grey_stone 0.94,
+# lava 0.57, dark_mud 0.46, light_beach 0.36); every cell they circled scores <= 0.10
+# (parquet_floor 0.10, ice 0.09, paving_stone 0.09, black_rock 0.07, deep_water 0.07,
+# snow 0.07, water 0.07). Nothing lands in between, so the threshold sits in the gap.
+#
+# It is a GATE and not a ranking term. As a multiplier on wall score it was worthless
+# where it mattered: paving_stone had a seamless tile at 0.61 spill and shipped one at
+# 0.09 because the flat-walled candidate scored higher on the wall, and snow shipped
+# 0.07 while holding a 0.81. A tile without the transition is not a worse tile, it is
+# the wrong tile.
+MIN_OVERHANG = 0.25
+
 
 def overhang(path, cap=200.0):
     """How much of the TOP material spills down over the wall — 0.0 to 1.0.
@@ -231,11 +245,14 @@ def select_best(paths, gate=CLEAN_TOP):
         scored.append((p, q, float(f["top"]["share"])))
     if not scored:
         return None
-    pool = [x for x in scored if seam_px(x[0]) == 0]
-    if not pool:                        # nothing tiles cleanly; fall back to the
-        pool = scored                   # flattest raw top rather than offering nothing
-        pool = [x for x in pool if x[2] >= gate] or scored
-    return max(pool, key=lambda x: x[1]["score"] * (1.0 + overhang(x[0])))
+    seamless = [x for x in scored if seam_px(x[0]) == 0]
+    pool = [x for x in seamless if overhang(x[0]) >= MIN_OVERHANG]
+    if not pool:
+        # No tile in this cell has the transition. Offer the best that at least tiles
+        # cleanly rather than nothing, but the caller should treat the cell as needing
+        # regeneration — no ranking can conjure a spill that was never generated.
+        pool = seamless or [x for x in scored if x[2] >= gate] or scored
+    return max(pool, key=lambda x: x[1]["score"])
 
 def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     """Score the WALLS on the three things the maintainer actually judges them on.
