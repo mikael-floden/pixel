@@ -47,21 +47,33 @@ DX, DY = 32, 14
 def wall_height(tile):
     """How far one floor drops — MEASURED, like DY and the top diamond.
 
-    A floor's cliff face runs from the top diamond's bottom vertex to the bottom of the
-    silhouette, so that distance IS the stacking pitch: offset two blocks by it and the
-    lower one's wall starts exactly where the upper one's ends. On a 64px tile it is 17.
+    A floor's cliff face runs from the bottom of the TOP REGION to the bottom of the
+    silhouette, so that distance is the stacking pitch: offset two blocks by it and the
+    upper one's wall ends exactly where the lower one's begins, covering the lower
+    block's top surface completely.
 
-    Guessing 16 (the tidy power of two) overlaps every floor by a row, which puts a
-    hitch into the vertical repeat at each storey — precisely the thing a multi-floor
-    render exists to show. Every constant in this file has now been wrong once by
-    assuming a round number, so this one is read off the art too.
+    It must come from palette_snap's own mask, not from the bare diamond, or the two
+    disagree by the boundary row the mask deliberately includes. Deriving it from the
+    diamond gave 17 where the mask's wall is 16, and that one row exposed 114 pixels of
+    each lower floor's top per tile — which is what put bright green stripes across the
+    cliff at every storey in a 3-floor render.
+
+    Taken as the MINIMUM across columns, since the wall is a row shorter at the tile's
+    left and right corners than in the middle, and a pitch that fits the tallest column
+    still leaks at the shortest.
     """
-    a = np.asarray(tile.convert("RGBA"))
+    a = np.asarray(tile.convert("RGBA")).astype(float)
     op = a[:, :, 3] > 128
-    ys, xs = np.where(op)
-    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
-    hh = float(np.mean([int(np.where(op[:, x])[0].min()) - y0 for x in (x0, x1)]))
-    return int(round(int(ys.max()) - (y0 + 2 * hh)))
+    reg = palette_snap._regions(a)
+    if not reg:
+        return 0
+    gaps = []
+    for x in range(a.shape[1]):
+        t = np.where(reg["top"][:, x])[0]
+        o = np.where(op[:, x])[0]
+        if len(t) and len(o):
+            gaps.append(int(o.max()) - int(t.max()))
+    return int(min(gaps)) if gaps else 0
 
 
 def plateau(tile, cols=4, rows=4, level=1, pad=8, floors=1):
