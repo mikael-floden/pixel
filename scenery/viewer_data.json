@@ -11721,6 +11721,15 @@
           "difference_from_source": 0.8143,
           "glow_score": 0.0,
           "art_hash": "7195aaaa5a98cdc6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "chairs_and_benches/chair_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f12c441a-353e-470b-b543-b85a68c88c91",
+          "generated_at": "2026-08-16T09:11:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8826,
+          "glow_score": 0.0,
+          "art_hash": "443f5c3d37c2b57e"
         }
       },
       "animations": []
@@ -11773,6 +11782,15 @@
           "difference_from_source": 0.4037,
           "glow_score": 0.0667,
           "art_hash": "6c999f451a1f611a"
+        },
+        "LIT_4": {
+          "sprite": "charcoal_kilns/charcoal_kiln_002/lit_4/sprite.webp",
+          "pixellab_object_id": "d70c9d49-b2bf-48df-8c1f-fa26a807ce92",
+          "generated_at": "2026-08-16T09:12:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.802,
+          "glow_score": 0.1335,
+          "art_hash": "7276aa107adefdea"
         },
         "NOT_LIT_1": {
           "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_1/sprite.webp",
@@ -11861,6 +11879,15 @@
           "difference_from_source": 0.7451,
           "glow_score": 0.0,
           "art_hash": "8c2ef3b90b4bf1ac"
+        },
+        "NOT_LIT_2": {
+          "sprite": "chimney_stacks/chimney_stack_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "184ec5e5-7036-494e-aaef-90963cacaace",
+          "generated_at": "2026-08-16T09:11:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6796,
+          "glow_score": 0.0,
+          "art_hash": "58aea52d17ccd762"
         }
       },
       "animations": []
@@ -11898,6 +11925,15 @@
           "difference_from_source": 0.8154,
           "glow_score": 0.1947,
           "art_hash": "753b885547802943"
+        },
+        "LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_001/lit_2/sprite.webp",
+          "pixellab_object_id": "70631cb9-6eda-4dfa-b9ca-859f0816c579",
+          "generated_at": "2026-08-16T09:11:44+00:00",
+          "glow_concept": "the water glowing white as it falls",
+          "difference_from_source": 0.7322,
+          "glow_score": 0.2681,
+          "art_hash": "21d695b7453b92e1"
         },
         "NOT_LIT_1": {
           "sprite": "cliff_falls/cliff_fall_001/sprite.webp",
@@ -11938,9 +11974,9 @@
     {
       "id": "cliff_fall_004",
       "rel": "cliff_falls/cliff_fall_004",
-      "name": "A broad white curtain 004 \u00b7 lit",
+      "name": "A broad white curtain 004",
       "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a narrow waterfall pouring straight down a vertical rock face, a tall white ribbon of falling water breaking into mist, wet dark stone and green moss to either side, a broad white curtain, landing in a small rock basin, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
       "view": "low top-down",
       "size": 256,
@@ -11965,6 +12001,51 @@
           "pixellab_object_id": "44ab6785-f6f0-4ca4-908d-f44a28f98a19",
           "generated_at": "2026-08-14T03:09:39+00:00",
           "art_hash": "be53dfb8c343e320"
+        },
+        "LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_004/lit_2/sprite.webp",
+          "pixellab_object_id": "f3858039-c4c0-4a26-be60-a604b05aab28",
+          "generated_at": "2026-08-16T09:11:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4112,
+          "glow_score": 0.0626,
+          "art_hash": "25e8267e2e460df9"
+        },
+        "LIT_3": {
+          "sprite": "cliff_falls/cliff_fall_004/lit_3/sprite.webp",
+          "pixellab_object_id": "cb03be9b-7865-43f6-804c-d7f02e0e506b",
+          "generated_at": "2026-08-16T09:12:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4826,
+          "glow_score": 0.0734,
+          "art_hash": "fa5b86250dddddd0"
+        },
+        "LIT_4": {
+          "sprite": "cliff_falls/cliff_fall_004/lit_4/sprite.webp",
+          "pixellab_object_id": "02b9f96f-deec-4e67-be89-62b288e5ab11",
+          "generated_at": "2026-08-16T09:12:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5109,
+          "glow_score": 0.1039,
+          "art_hash": "1e0116346d50709e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_falls/cliff_fall_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ade8037f-994b-4a18-80ce-2df38d1aec13",
+          "generated_at": "2026-08-16T09:13:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7969,
+          "glow_score": 0.0,
+          "art_hash": "8d2a73e7d1ae831f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4bafddda-8b6b-46b1-b5d0-389ca7033e5d",
+          "generated_at": "2026-08-16T09:16:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6084,
+          "glow_score": 0.0,
+          "art_hash": "e07c3a97f3e99d80"
         }
       },
       "animations": []
@@ -11974,7 +12055,7 @@
       "rel": "cliff_falls/cliff_fall_011",
       "name": "Stepped, breaking on two ledges 011",
       "category": "cliff_falls",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush wild jungle overgrowth, tropical and abundant, layered leaves of several sizes and greens, hanging creepers and tendrils, rich and alive, fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, stepped, breaking on two ledges, long strands running the whole height, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 256,
@@ -11994,11 +12075,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "cliff_falls/cliff_fall_011/lit_1/sprite.webp",
+          "pixellab_object_id": "4271a041-b600-40d1-9365-3a26e264e714",
+          "generated_at": "2026-08-16T09:13:31+00:00",
+          "glow_concept": "the water glowing white as it falls",
+          "difference_from_source": 0.7593,
+          "glow_score": 0.1605,
+          "art_hash": "b20c9d54b954440a"
+        },
+        "LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_011/lit_2/sprite.webp",
+          "pixellab_object_id": "ba46ba4f-ffa0-4452-a3f1-bac778c58387",
+          "generated_at": "2026-08-16T09:13:44+00:00",
+          "glow_concept": "light welling from the mist",
+          "difference_from_source": 0.8089,
+          "glow_score": 0.0919,
+          "art_hash": "79c5d1de992c338c"
+        },
         "NOT_LIT_1": {
           "sprite": "cliff_falls/cliff_fall_011/sprite.webp",
           "pixellab_object_id": "c8c47090-5441-46ce-8c0d-b308e06dced6",
           "generated_at": "2026-08-14T05:24:48+00:00",
           "art_hash": "17c74307aeb3689c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7651c3f2-ce32-4abd-bec4-36adc69478b3",
+          "generated_at": "2026-08-16T09:13:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4877,
+          "glow_score": 0.0639,
+          "art_hash": "5b82a937217592a7"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_falls/cliff_fall_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "235e02ba-0ef7-436c-a438-69601eeb888d",
+          "generated_at": "2026-08-16T09:12:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6539,
+          "glow_score": 0.0548,
+          "art_hash": "7a64cdfec3e98d97"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_falls/cliff_fall_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7de7e4a4-6ddb-4872-88de-9507c4a10f9f",
+          "generated_at": "2026-08-16T09:13:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2972,
+          "glow_score": 0.0442,
+          "art_hash": "a51707a2f9e340eb"
         }
       },
       "animations": []
@@ -12006,9 +12132,9 @@
     {
       "id": "cliff_fall_014",
       "rel": "cliff_falls/cliff_fall_014",
-      "name": "A fine misting veil 014 \u00b7 lit",
+      "name": "A fine misting veil 014",
       "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a fine misting veil, one thick tendril reaching far out alone, towering, many times human height, self-emissive at night, softly radiating light: the water glowing white as it falls",
       "view": "low top-down",
       "size": 256,
@@ -12033,6 +12159,51 @@
           "pixellab_object_id": "b3aabb45-1dfa-4d31-afac-af599412dfbf",
           "generated_at": "2026-08-14T05:00:45+00:00",
           "art_hash": "4d31a904ddea8652"
+        },
+        "LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_014/lit_2/sprite.webp",
+          "pixellab_object_id": "16d755f0-f60b-443a-87ba-026ffaa9bf7c",
+          "generated_at": "2026-08-16T09:13:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5891,
+          "glow_score": 0.2938,
+          "art_hash": "591089ca1b2e4003"
+        },
+        "LIT_3": {
+          "sprite": "cliff_falls/cliff_fall_014/lit_3/sprite.webp",
+          "pixellab_object_id": "e743ae10-c2e4-4b7e-b63e-71b26d60afa8",
+          "generated_at": "2026-08-16T09:14:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7841,
+          "glow_score": 0.2647,
+          "art_hash": "4497c55603a96366"
+        },
+        "LIT_4": {
+          "sprite": "cliff_falls/cliff_fall_014/lit_4/sprite.webp",
+          "pixellab_object_id": "df298fae-33fa-4f58-9806-4faf0af0f9a5",
+          "generated_at": "2026-08-16T09:14:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.686,
+          "glow_score": 0.2582,
+          "art_hash": "e1e61e67530a8991"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_falls/cliff_fall_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3a16ca7e-a412-48f1-8ac1-3fc3a3c421dd",
+          "generated_at": "2026-08-16T09:14:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9453,
+          "glow_score": 0.0,
+          "art_hash": "a9733d6c704af5ed"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2dcbfcd6-fd24-45b2-8422-eef8095c6fb1",
+          "generated_at": "2026-08-16T09:15:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9593,
+          "glow_score": 0.0,
+          "art_hash": "f2791c533797f47b"
         }
       },
       "animations": []
@@ -12040,9 +12211,9 @@
     {
       "id": "cliff_fall_016",
       "rel": "cliff_falls/cliff_fall_016",
-      "name": "A broad white curtain 016 \u00b7 lit",
+      "name": "A broad white curtain 016",
       "category": "cliff_falls",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a broad white curtain, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
       "view": "low top-down",
       "size": 256,
@@ -12067,6 +12238,51 @@
           "pixellab_object_id": "0cd316e4-07bd-4a7a-bd6e-839e4e3d7976",
           "generated_at": "2026-08-14T05:02:11+00:00",
           "art_hash": "017815d64a897286"
+        },
+        "LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_016/lit_2/sprite.webp",
+          "pixellab_object_id": "5776f335-5bc9-4f1a-9171-e39f4b8f59d5",
+          "generated_at": "2026-08-16T09:16:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4876,
+          "glow_score": 0.1951,
+          "art_hash": "8cdd3cadcff8d7a6"
+        },
+        "LIT_3": {
+          "sprite": "cliff_falls/cliff_fall_016/lit_3/sprite.webp",
+          "pixellab_object_id": "49913c87-1b64-464f-9371-85445fed6eb9",
+          "generated_at": "2026-08-16T09:15:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9401,
+          "glow_score": 0.1491,
+          "art_hash": "7cd003a4f911802d"
+        },
+        "LIT_4": {
+          "sprite": "cliff_falls/cliff_fall_016/lit_4/sprite.webp",
+          "pixellab_object_id": "d018d9cd-5b6e-429b-aebe-9d5c23697b54",
+          "generated_at": "2026-08-16T09:15:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.74,
+          "glow_score": 0.1147,
+          "art_hash": "2a06e0b26c403ae6"
+        },
+        "NOT_LIT_1": {
+          "sprite": "cliff_falls/cliff_fall_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "77642210-fad9-4d1f-810e-114653f89d95",
+          "generated_at": "2026-08-16T09:15:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9442,
+          "glow_score": 0.0,
+          "art_hash": "a2f7195004d0433e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "cliff_falls/cliff_fall_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "71b3ca29-4fd4-41b8-9213-0fa3e73cb716",
+          "generated_at": "2026-08-16T09:16:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.946,
+          "glow_score": 0.0,
+          "art_hash": "43e4e9d1fec718bd"
         }
       },
       "animations": []
@@ -12101,6 +12317,24 @@
           "pixellab_object_id": "a7c6e716-a4af-465e-b747-e480f706f54f",
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "a128f31bce5b1dd2"
+        },
+        "LIT_3": {
+          "sprite": "cliff_features/cliff_feature_002/lit_3/sprite.webp",
+          "pixellab_object_id": "d6937a6e-001c-4f6c-8ebe-685ef5d7142c",
+          "generated_at": "2026-08-16T09:17:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7247,
+          "glow_score": 0.0818,
+          "art_hash": "18b03651ee5a93f4"
+        },
+        "LIT_4": {
+          "sprite": "cliff_features/cliff_feature_002/lit_4/sprite.webp",
+          "pixellab_object_id": "a4860f5e-88bf-4446-8b60-56c997635e3b",
+          "generated_at": "2026-08-16T09:17:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7848,
+          "glow_score": 0.0284,
+          "art_hash": "4f5b1324c44f6585"
         }
       },
       "animations": []
