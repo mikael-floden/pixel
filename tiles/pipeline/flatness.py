@@ -136,6 +136,18 @@ CLEAN_TOP = 0.93   # calibrated against the maintainer's own accept/reject, see 
 # the wrong tile.
 MIN_OVERHANG = 0.25
 
+# Minimum fringe CLARITY, calibrated the same way and on the same eye. Having fixed the
+# retint, the maintainer looked again and named exactly the cells this catches: "only the
+# grass on ice overhang still isn't part of the grass palette theme". Measured over the
+# current picks, ice scores 0.039 and slime 0.042 while every cell they accepted scores
+# 0.246 to 0.321 — nothing in between, so the threshold sits in the gap.
+#
+# Distinct from MIN_OVERHANG on purpose. ice scores 0.92 spill and slime 1.00: plenty of
+# the top material hangs over. It just cannot be TOLD APART from the wall it hangs on,
+# because the generator drew the two as one gradient, and postprocess cannot select what
+# is not separable.
+MIN_CLARITY = 0.12
+
 
 def overhang(path, cap=200.0):
     """How much of the TOP material spills down over the wall — 0.0 to 1.0.
@@ -174,6 +186,49 @@ def overhang(path, cap=200.0):
     dh = np.minimum(dh, 255.0 - dh)          # hue is circular
     spill = int(((dh < 22) & (hsv[:, 1] > 55)).sum())
     return min(spill / cap, 1.0)
+
+
+def fringe_clarity(path):
+    """How DECISIVELY the overhanging fringe reads as the top material, 0-1.
+
+    `overhang` counts how much spills over the edge; this asks whether what spilled can
+    still be told apart from the wall it landed on. They come apart when the two
+    materials are close in hue: on grass over ice the fringe blends into the ice across
+    a gradient — hue 112 at the top of the wall rising to 125 deeper in, against ice's
+    own 127 — so a tile can score a full 1.00 spill and still have no pixel that is
+    decisively grass. Postprocess then cannot retint it, because there is nothing to
+    select, and the overhang ships in the wrong palette.
+
+    So it is measured as the share of wall pixels whose hue is nearer the TOP material
+    than the wall's by a clear margin, rather than merely nearer. Selecting for it is the
+    fix; no postprocess can separate two materials the generator drew as one.
+    """
+    import palette_snap
+    try:
+        a = np.asarray(palette_snap.canonicalise(
+            Image.open(path).convert("RGBA"))).astype(float)
+    except Exception:
+        return 0.0
+    reg = palette_snap._regions(a)
+    if not reg:
+        return 0.0
+    rgb, wall = a[:, :, :3], reg["left"] | reg["right"]
+    if wall.sum() < 200 or reg["top"].sum() < 200:
+        return 0.0
+    tref = palette_snap._rgb2hsv(np.median(rgb[reg["top"]], 0)[None, :])[0]
+    ys, xs = np.where(wall)
+    low = []
+    for x in np.unique(xs):
+        c = np.where(wall[:, x])[0]
+        lo = int(c.min()) + int(0.4 * (int(c.max()) - int(c.min())))
+        low.extend(rgb[lo:int(c.max()) + 1, x])
+    if len(low) < 20:
+        return 0.0
+    wmat = palette_snap._rgb2hsv(np.median(np.array(low), 0)[None, :])[0]
+    hsv = palette_snap._rgb2hsv(rgb[wall])
+    dt = np.abs(hsv[:, 0] - tref[0]); dt = np.minimum(dt, 255.0 - dt)
+    dw = np.abs(hsv[:, 0] - wmat[0]); dw = np.minimum(dw, 255.0 - dw)
+    return float(((dw - dt) > 12).sum()) / float(wall.sum())
 
 
 def seam_px(path, top_hex=None):

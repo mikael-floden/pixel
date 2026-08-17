@@ -115,7 +115,7 @@ def cell_parts(cell, types):
     return by_id.get(top), by_id.get(side)
 
 
-def evaluate(paths, min_wall):
+def evaluate(paths, min_wall, min_clarity=0.0):
     """Best tile in this sheet that clears every calibrated gate, or None."""
     best = None
     for p in paths:
@@ -124,6 +124,10 @@ def evaluate(paths, min_wall):
             continue
         if flatness.overhang(p) < flatness.MIN_OVERHANG:
             continue
+        # A spill that cannot be told apart from the wall it lands on is not usable:
+        # postprocess has nothing to select, so it ships in the wrong palette.
+        if flatness.fringe_clarity(p) < min_clarity:
+            continue
         if flatness.seam_px(p) != 0:
             continue
         if not best or q["score"] > best[1]:
@@ -131,21 +135,21 @@ def evaluate(paths, min_wall):
     return best
 
 
-def cell_status(cell, min_wall):
+def cell_status(cell, min_wall, min_clarity=0.0):
     d = os.path.join(OUT, cell)
-    return evaluate(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))), min_wall)
+    return evaluate(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))), min_wall, min_clarity)
 
 
-def failing_cells(min_wall):
+def failing_cells(min_wall, min_clarity=0.0):
     out = []
     for d in sorted(glob.glob(os.path.join(OUT, "*__over__*"))):
         cell = os.path.basename(d)
-        if not cell_status(cell, min_wall):
+        if not cell_status(cell, min_wall, min_clarity):
             out.append(cell)
     return out
 
 
-def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd):
+def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_clarity=0.0):
     """Roll this cell until a tile clears the bar, or until `attempts` is used up."""
     d = os.path.join(OUT, cell)
     os.makedirs(d, exist_ok=True)
@@ -192,7 +196,7 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd):
             json.dump({"cell": cell, "prompt": prompt, "tile_id": tile_id,
                        "style": f"chase{i % len(PHRASINGS)}", "n_tiles": len(paths),
                        "settings": matrix.FIXED}, f, indent=2)
-        hit = evaluate(paths, min_wall)
+        hit = evaluate(paths, min_wall, min_clarity)
         best_oh = max((flatness.overhang(p) for p in paths), default=0.0)
         print(f"    roll {n + 1}/{attempts}: best spill {best_oh:.2f} "
               f"{'-> PASS' if hit else ''}", flush=True)
@@ -205,6 +209,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--attempts", type=int, default=10,
                     help="rolls per cell before giving up (the maintainer's own number)")
+    ap.add_argument("--min-clarity", type=float, default=0.0,
+                    help="minimum share of wall pixels that read decisively as the top material")
     ap.add_argument("--min-wall", type=float, default=2.0,
                     help="a dead flat cliff is not a win")
     ap.add_argument("--max-usd", type=float, default=20.0)
@@ -216,7 +222,7 @@ def main():
 
     types = matrix.cfg()["ground_types"]
     dead = tombstones.load().get("cells", {})
-    cells = args.cells or failing_cells(args.min_wall)
+    cells = args.cells or failing_cells(args.min_wall, args.min_clarity)
     cells = [c for c in cells if c.replace("__over__", "_over_") not in dead]
 
     print(f"{len(cells)} cell(s) with no tile clearing the bar "
@@ -245,7 +251,7 @@ def main():
         print(f"\n{cell}")
         try:
             hit = chase(client, cell, top_g, side_g, args.attempts, args.min_wall,
-                        spent, args.max_usd)
+                        spent, args.max_usd, args.min_clarity)
         except BudgetExhausted as e:
             print("stopping:", e)
             break
