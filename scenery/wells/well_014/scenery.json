@@ -5,8 +5,8 @@
   "group": "wells",
   "rank": 11,
   "index": 14,
-  "name": "Open stone ring, no roof 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Open stone ring, no roof 014",
+  "lights": null,
   "variety": "open stone ring, no roof",
   "modifier": "leaning slightly",
   "glow_concept": "soft blue soul-light rising from the water below",
@@ -36,6 +36,46 @@
       "sprite": "wells/well_014/sprite.webp",
       "pixellab_object_id": "c7a41cc6-070e-49b5-bddd-70d2091cca4c",
       "generated_at": "2026-08-14T01:42:48+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wells/well_014/lit_2/sprite.webp",
+      "pixellab_object_id": "93333fec-8e31-4fd5-abfb-60aa6006947d",
+      "generated_at": "2026-08-17T13:02:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6462,
+      "glow_score": 0.0101
+    },
+    "LIT_3": {
+      "sprite": "wells/well_014/lit_3/sprite.webp",
+      "pixellab_object_id": "ee523093-c452-4839-82c8-103a6b0baa21",
+      "generated_at": "2026-08-17T13:03:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5838,
+      "glow_score": 0.0032
+    },
+    "LIT_4": {
+      "sprite": "wells/well_014/lit_4/sprite.webp",
+      "pixellab_object_id": "0c953476-07ca-4269-b398-bc00d68712fe",
+      "generated_at": "2026-08-17T13:04:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8774,
+      "glow_score": 0.0395
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "59f6c11e-0fea-42f1-9c0a-f2b9f1e0dff5",
+      "generated_at": "2026-08-17T13:03:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8544,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_014/not_lit_2/sprite.webp",
+      "pixellab_object_id": "9e654c63-6080-4fa3-8c00-6636928e3f0f",
+      "generated_at": "2026-08-17T13:08:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9774,
+      "glow_score": 0.0
     }
   }
 }

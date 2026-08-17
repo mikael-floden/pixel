@@ -6,7 +6,7 @@
   "rank": 11,
   "index": 17,
   "name": "Whitewashed stone, red-painted roof 017",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "whitewashed stone, red-painted roof",
   "modifier": "bird-favored, with droppings and a nest",
   "glow_concept": null,
@@ -32,10 +32,42 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "wells/well_017/lit_1/sprite.webp",
+      "pixellab_object_id": "7f9e5993-271a-4e91-9bdc-dd217239f3f6",
+      "generated_at": "2026-08-17T13:09:06+00:00",
+      "glow_concept": "hanging tin lantern lit under the roof peak",
+      "difference_from_source": 0.4034,
+      "glow_score": 0.3257
+    },
     "NOT_LIT_1": {
       "sprite": "wells/well_017/sprite.webp",
       "pixellab_object_id": "8916dd49-ca5f-44ca-85d3-6fbe311c8b05",
       "generated_at": "2026-08-14T00:37:12+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_017/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1434c2bc-4c4a-4959-99ba-ffc16c134582",
+      "generated_at": "2026-08-17T13:06:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5935,
+      "glow_score": 0.2056
+    },
+    "NOT_LIT_3": {
+      "sprite": "wells/well_017/not_lit_3/sprite.webp",
+      "pixellab_object_id": "0c260d52-f0ae-4137-8838-5f6b657b86dd",
+      "generated_at": "2026-08-17T13:07:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3925,
+      "glow_score": 0.2803
+    },
+    "NOT_LIT_4": {
+      "sprite": "wells/well_017/not_lit_4/sprite.webp",
+      "pixellab_object_id": "557b3a23-e3a5-4e2f-bd95-dcb90b1e6c42",
+      "generated_at": "2026-08-17T13:07:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6216,
+      "glow_score": 0.0072
     }
   }
 }

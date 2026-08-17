@@ -5,7 +5,7 @@
   "rank": 11,
   "index": 11,
   "name": "Briar roses climbing the posts 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "briar roses climbing the posts",
   "glow_concept": null,
   "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, briar roses climbing the posts, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:39:43+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "wells/well_011/lit_1/sprite.webp",
+      "pixellab_object_id": "65a9d54a-4bd4-4bb8-9aa5-17d28288684c",
+      "generated_at": "2026-08-17T12:58:36+00:00",
+      "glow_concept": "soulstone vein glinting through cracked stonework",
+      "difference_from_source": 0.8712,
+      "glow_score": 0.033
+    },
+    "LIT_2": {
+      "sprite": "wells/well_011/lit_2/sprite.webp",
+      "pixellab_object_id": "5ce7e37b-76ab-4400-804d-cfe49d2e5f81",
+      "generated_at": "2026-08-17T13:00:09+00:00",
+      "glow_concept": "soft blue soul-light rising from the water below",
+      "difference_from_source": 0.9313,
+      "glow_score": 0.0299
+    },
     "NOT_LIT_1": {
       "sprite": "wells/well_011/sprite.webp",
       "pixellab_object_id": "58cdbe47-441f-441f-bc8d-8f65f7f9d7d8",

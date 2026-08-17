@@ -5,8 +5,8 @@
   "group": "wells",
   "rank": 11,
   "index": 12,
-  "name": "Snow-capped winter well 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Snow-capped winter well 012",
+  "lights": null,
   "variety": "snow-capped winter well",
   "modifier": "moss-capped",
   "glow_concept": "soulstone vein glinting through cracked stonework",
@@ -36,6 +36,46 @@
       "sprite": "wells/well_012/sprite.webp",
       "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
       "generated_at": "2026-08-14T00:45:06+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wells/well_012/lit_2/sprite.webp",
+      "pixellab_object_id": "9fa5d7a4-c151-4e65-859c-51293fd14d7f",
+      "generated_at": "2026-08-17T12:58:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6371,
+      "glow_score": 0.0676
+    },
+    "LIT_3": {
+      "sprite": "wells/well_012/lit_3/sprite.webp",
+      "pixellab_object_id": "63ca6ed9-88f7-4b4d-a8e2-f1c69be2d2f0",
+      "generated_at": "2026-08-17T12:58:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5268,
+      "glow_score": 0.078
+    },
+    "LIT_4": {
+      "sprite": "wells/well_012/lit_4/sprite.webp",
+      "pixellab_object_id": "047a55bf-3883-4c90-a08b-b6ec8aca4994",
+      "generated_at": "2026-08-17T12:58:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5437,
+      "glow_score": 0.0524
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "072e78cb-0e12-4762-832a-cbb1b4104a84",
+      "generated_at": "2026-08-17T12:59:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9675,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ed3ce4a4-3829-4bb2-8c3a-a299675808fd",
+      "generated_at": "2026-08-17T13:00:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.953,
+      "glow_score": 0.0
     }
   }
 }

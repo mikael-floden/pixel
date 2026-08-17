@@ -65684,7 +65684,7 @@
       "rel": "wells/well_011",
       "name": "Briar roses climbing the posts 011",
       "category": "wells",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, briar roses climbing the posts, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -65704,6 +65704,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wells/well_011/lit_1/sprite.webp",
+          "pixellab_object_id": "65a9d54a-4bd4-4bb8-9aa5-17d28288684c",
+          "generated_at": "2026-08-17T12:58:36+00:00",
+          "glow_concept": "soulstone vein glinting through cracked stonework",
+          "difference_from_source": 0.8712,
+          "glow_score": 0.033,
+          "art_hash": "8a67e91b0b7bdf7d"
+        },
+        "LIT_2": {
+          "sprite": "wells/well_011/lit_2/sprite.webp",
+          "pixellab_object_id": "5ce7e37b-76ab-4400-804d-cfe49d2e5f81",
+          "generated_at": "2026-08-17T13:00:09+00:00",
+          "glow_concept": "soft blue soul-light rising from the water below",
+          "difference_from_source": 0.9313,
+          "glow_score": 0.0299,
+          "art_hash": "05ef12d66649d64b"
+        },
         "NOT_LIT_1": {
           "sprite": "wells/well_011/sprite.webp",
           "pixellab_object_id": "58cdbe47-441f-441f-bc8d-8f65f7f9d7d8",
@@ -65743,9 +65761,9 @@
     {
       "id": "well_012",
       "rel": "wells/well_012",
-      "name": "Snow-capped winter well 012 \u00b7 lit",
+      "name": "Snow-capped winter well 012",
       "category": "wells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, snow-capped winter well, moss-capped, large, twice human height, self-emissive at night, softly radiating light: soulstone vein glinting through cracked stonework",
       "view": "low top-down",
       "size": 128,
@@ -65770,6 +65788,51 @@
           "pixellab_object_id": "047d690f-371e-452d-873b-f28f96f665df",
           "generated_at": "2026-08-14T00:45:06+00:00",
           "art_hash": "d30a4dce53b6fd01"
+        },
+        "LIT_2": {
+          "sprite": "wells/well_012/lit_2/sprite.webp",
+          "pixellab_object_id": "9fa5d7a4-c151-4e65-859c-51293fd14d7f",
+          "generated_at": "2026-08-17T12:58:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6371,
+          "glow_score": 0.0676,
+          "art_hash": "3b10ad84fc08a6b2"
+        },
+        "LIT_3": {
+          "sprite": "wells/well_012/lit_3/sprite.webp",
+          "pixellab_object_id": "63ca6ed9-88f7-4b4d-a8e2-f1c69be2d2f0",
+          "generated_at": "2026-08-17T12:58:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5268,
+          "glow_score": 0.078,
+          "art_hash": "3db21dba0a5fed36"
+        },
+        "LIT_4": {
+          "sprite": "wells/well_012/lit_4/sprite.webp",
+          "pixellab_object_id": "047a55bf-3883-4c90-a08b-b6ec8aca4994",
+          "generated_at": "2026-08-17T12:58:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5437,
+          "glow_score": 0.0524,
+          "art_hash": "de3c84e98e5c7f13"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wells/well_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "072e78cb-0e12-4762-832a-cbb1b4104a84",
+          "generated_at": "2026-08-17T12:59:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9675,
+          "glow_score": 0.0,
+          "art_hash": "40ef995503891fb6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ed3ce4a4-3829-4bb2-8c3a-a299675808fd",
+          "generated_at": "2026-08-17T13:00:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.953,
+          "glow_score": 0.0,
+          "art_hash": "43fe49972b49befd"
         }
       },
       "animations": []
@@ -65779,7 +65842,7 @@
       "rel": "wells/well_013",
       "name": "Timber-clad shaft, turf roof 013",
       "category": "wells",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, timber-clad shaft, turf roof, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -65799,11 +65862,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wells/well_013/lit_1/sprite.webp",
+          "pixellab_object_id": "109b150e-59fb-4d1e-8a14-1aa0a10062cb",
+          "generated_at": "2026-08-17T13:01:25+00:00",
+          "glow_concept": "glowing runes carved around the stone rim",
+          "difference_from_source": 0.9098,
+          "glow_score": 0.0302,
+          "art_hash": "6c3e8ee7f44ab221"
+        },
+        "LIT_2": {
+          "sprite": "wells/well_013/lit_2/sprite.webp",
+          "pixellab_object_id": "a6200adb-188a-482c-8276-4b944c8b8bcf",
+          "generated_at": "2026-08-17T13:02:28+00:00",
+          "glow_concept": "raised bucket brimming with luminous water",
+          "difference_from_source": 0.8989,
+          "glow_score": 0.0509,
+          "art_hash": "0bfb9ebdf9e64112"
+        },
         "NOT_LIT_1": {
           "sprite": "wells/well_013/sprite.webp",
           "pixellab_object_id": "ced55b48-3641-4866-b1a8-3e9a01553a74",
           "generated_at": "2026-08-13T22:05:57+00:00",
           "art_hash": "eb86ec16a6e9ef5a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e8845982-2502-4bfd-bed5-689b1095b594",
+          "generated_at": "2026-08-17T13:00:20+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6246,
+          "glow_score": 0.0,
+          "art_hash": "0efd4674d8b30de4"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wells/well_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "46c9817e-8836-41d4-8934-0e94ec61ed35",
+          "generated_at": "2026-08-17T13:01:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7098,
+          "glow_score": 0.0,
+          "art_hash": "b1f09629e4405912"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wells/well_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c71e0197-655d-44cc-bc47-f31bd9ab3b6f",
+          "generated_at": "2026-08-17T13:03:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5679,
+          "glow_score": 0.0,
+          "art_hash": "af0d23e18e1ccc6b"
         }
       },
       "animations": []
@@ -65811,9 +65919,9 @@
     {
       "id": "well_014",
       "rel": "wells/well_014",
-      "name": "Open stone ring, no roof 014 \u00b7 lit",
+      "name": "Open stone ring, no roof 014",
       "category": "wells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, open stone ring, no roof, leaning slightly, roughly six feet tall, human height, self-emissive at night, softly radiating light: soft blue soul-light rising from the water below",
       "view": "low top-down",
       "size": 128,
@@ -65838,6 +65946,51 @@
           "pixellab_object_id": "c7a41cc6-070e-49b5-bddd-70d2091cca4c",
           "generated_at": "2026-08-14T01:42:48+00:00",
           "art_hash": "13fd6765864de33c"
+        },
+        "LIT_2": {
+          "sprite": "wells/well_014/lit_2/sprite.webp",
+          "pixellab_object_id": "93333fec-8e31-4fd5-abfb-60aa6006947d",
+          "generated_at": "2026-08-17T13:02:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6462,
+          "glow_score": 0.0101,
+          "art_hash": "bb260f70f6753ea3"
+        },
+        "LIT_3": {
+          "sprite": "wells/well_014/lit_3/sprite.webp",
+          "pixellab_object_id": "ee523093-c452-4839-82c8-103a6b0baa21",
+          "generated_at": "2026-08-17T13:03:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5838,
+          "glow_score": 0.0032,
+          "art_hash": "4a40287695b20a00"
+        },
+        "LIT_4": {
+          "sprite": "wells/well_014/lit_4/sprite.webp",
+          "pixellab_object_id": "0c953476-07ca-4269-b398-bc00d68712fe",
+          "generated_at": "2026-08-17T13:04:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8774,
+          "glow_score": 0.0395,
+          "art_hash": "e27f2c2abb40bcc8"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wells/well_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "59f6c11e-0fea-42f1-9c0a-f2b9f1e0dff5",
+          "generated_at": "2026-08-17T13:03:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8544,
+          "glow_score": 0.0,
+          "art_hash": "4cfe3506a5731edd"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "9e654c63-6080-4fa3-8c00-6636928e3f0f",
+          "generated_at": "2026-08-17T13:08:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9774,
+          "glow_score": 0.0,
+          "art_hash": "e4e2d517b5b8adc1"
         }
       },
       "animations": []
@@ -65881,7 +66034,7 @@
       "rel": "wells/well_017",
       "name": "Whitewashed stone, red-painted roof 017",
       "category": "wells",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, whitewashed stone, red-painted roof, bird-favored, with droppings and a nest, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -65901,11 +66054,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wells/well_017/lit_1/sprite.webp",
+          "pixellab_object_id": "7f9e5993-271a-4e91-9bdc-dd217239f3f6",
+          "generated_at": "2026-08-17T13:09:06+00:00",
+          "glow_concept": "hanging tin lantern lit under the roof peak",
+          "difference_from_source": 0.4034,
+          "glow_score": 0.3257,
+          "art_hash": "9ae431b89b17ade0"
+        },
         "NOT_LIT_1": {
           "sprite": "wells/well_017/sprite.webp",
           "pixellab_object_id": "8916dd49-ca5f-44ca-85d3-6fbe311c8b05",
           "generated_at": "2026-08-14T00:37:12+00:00",
           "art_hash": "27bc0697189af633"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1434c2bc-4c4a-4959-99ba-ffc16c134582",
+          "generated_at": "2026-08-17T13:06:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5935,
+          "glow_score": 0.2056,
+          "art_hash": "80b8ca0bc2c342d2"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wells/well_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0c260d52-f0ae-4137-8838-5f6b657b86dd",
+          "generated_at": "2026-08-17T13:07:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3925,
+          "glow_score": 0.2803,
+          "art_hash": "0a2e37dd009b7c80"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wells/well_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "557b3a23-e3a5-4e2f-bd95-dcb90b1e6c42",
+          "generated_at": "2026-08-17T13:07:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6216,
+          "glow_score": 0.0072,
+          "art_hash": "bf9e49f2b3e3445a"
         }
       },
       "animations": []
@@ -65940,6 +66129,24 @@
           "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
           "generated_at": "2026-08-14T00:50:07+00:00",
           "art_hash": "fa2ccc57db673041"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_019/not_lit_2/sprite.webp",
+          "pixellab_object_id": "113c1949-60ee-44b9-aa6a-ec49a60c92fa",
+          "generated_at": "2026-08-17T13:08:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4044,
+          "glow_score": 0.0066,
+          "art_hash": "f5b7c05a65a3b3c0"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wells/well_019/not_lit_3/sprite.webp",
+          "pixellab_object_id": "232f46c1-6016-4a18-bb56-f52b51aadc69",
+          "generated_at": "2026-08-17T13:08:29+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4873,
+          "glow_score": 0.0147,
+          "art_hash": "ad184ff65de092ed"
         }
       },
       "animations": []
@@ -65974,6 +66181,24 @@
           "pixellab_object_id": "260c65b5-441e-45d9-abdd-07b5d80aeb66",
           "generated_at": "2026-08-14T04:37:11+00:00",
           "art_hash": "9ea36c9aaa21b197"
+        },
+        "NOT_LIT_2": {
+          "sprite": "whale_bones/whale_bone_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ac1458ab-5308-487d-ba0d-0d12aae9d860",
+          "generated_at": "2026-08-17T13:09:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5114,
+          "glow_score": 0.2771,
+          "art_hash": "17259d150db9b05b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "whale_bones/whale_bone_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7a7749c0-72f2-417a-947e-1f84e272bf04",
+          "generated_at": "2026-08-17T13:09:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3833,
+          "glow_score": 0.2866,
+          "art_hash": "d9a0233146d8c6d4"
         }
       },
       "animations": []
