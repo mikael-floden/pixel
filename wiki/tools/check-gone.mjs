@@ -166,6 +166,39 @@ ok(dark.gone === null, "the deleted piece is gone on the dark theme too");
 ok(dark.broke?.failed === true && /not loading/.test(dark.broke?.note ?? ""), "and the not-loading note still appears there");
 ok(ratio >= 3, `legible on the theme he reviews in (${ratio.toFixed(1)}:1)`);
 
+// ------------------------------------------- A SECTION CANNOT DELETE ITSELF
+// Measured 2026-08-17: the tiles agent moved a path in their manifest, the
+// wiki's live World refresh double-prefixed it, and EVERY card 404'd. This
+// function believed all of them and the section read "0 pairs" — reported as
+// "can't see the tiles in the wiki". Losing a piece to a deletion is the
+// feature; losing a section is always a bug, and the honest failure is the
+// per-card "not loading" state, which says where to look.
+const wipe = await ctx.newPage();
+const wipeWarn = [];
+wipe.on("console", (m) => { if (m.type() === "warning") wipeWarn.push(m.text()); });
+await wipe.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
+// Every piece of scenery art 404s at once — a broken path, not a purge.
+await wipe.route("**/scenery/**", (r) => r.fulfill({ status: 404, body: "" }));
+await wipe.addInitScript(() => { localStorage.removeItem("wiki-admin-token"); sessionStorage.clear(); });
+await wipe.goto(`${W}#/objects`, { waitUntil: "load" });
+await wipe.waitForTimeout(2000);
+for (let i = 0, last = -1; i < 10; i++) {
+  await wipe.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
+  await wipe.waitForTimeout(500);
+  const n = await wipe.evaluate(() => document.querySelectorAll("a.card").length);
+  if (n === last) break;
+  last = n;
+}
+const after = await wipe.evaluate(() => ({
+  cards: document.querySelectorAll("a.card").length,
+  failed: document.querySelectorAll(".thumb.art-failed, .thumb.art-gone").length,
+}));
+const total = DATA.domains.objects.length;
+console.log("whole-domain 404:", JSON.stringify({ ...after, listed: total, warned: wipeWarn.length }));
+ok(after.cards > total * 0.5, `the section survives (${after.cards} of ${total} still listed, not 0)`);
+ok(after.failed > 0, `and says so on the cards it cannot draw (${after.failed} marked)`);
+ok(wipeWarn.some((w) => /not loading|404|paths/i.test(w)), `with a console warning naming the real cause (“${(wipeWarn[0] ?? "").slice(0, 90)}”)`);
+
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 await b.close();
 console.log(fails.length ? `\nFAILED ${fails.length}` : "\nAll good.");

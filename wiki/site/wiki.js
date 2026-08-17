@@ -172,6 +172,18 @@ function dropGoneEntity(url) {
     if (i >= 0) { hit = { domain, entity: list[i], i }; break; }
   }
   if (!hit) return false;
+  // A WHOLE DOMAIN CANNOT HAVE BEEN DELETED — that is a broken path, and the
+  // wiki must not present one as thirty-four deletions.
+  //
+  // Measured 2026-08-17: the tiles agent moved `file` in their review manifest
+  // from domain-relative to repo-relative, the live World refresh kept adding
+  // its own `tiles/` prefix, and every card requested `tiles/tiles/review/…`.
+  // Every one 404'd, this function believed all of them, and the section read
+  // "0 pairs" — the maintainer's report was "can't see the tiles in the wiki".
+  // Losing a piece to a real deletion is the feature; losing a SECTION is
+  // always a bug, and the honest failure is the per-card "not loading" state,
+  // which says where to look.
+  if (!prunableNow(hit.domain)) return false;
   forgetEntity(hit.domain, hit.i);
   goneArt.add(hit.entity.preview);
   try { sessionStorage.setItem("wiki-gone-art", JSON.stringify([...goneArt])); } catch { /* private mode */ }
@@ -194,9 +206,50 @@ function scheduleGoneRerender() {
   if (keepScrollY == null) keepScrollY = window.scrollY;
   goneTimer = setTimeout(() => { goneTimer = null; route(); }, 200);
 }
+/** How much of one domain this session is willing to believe has been deleted.
+ *  Deletions arrive a few at a time (he rejects a piece, the agent removes it);
+ *  a quarter of a domain at once is a path bug, not a purge. The floor lets a
+ *  tiny domain lose a piece or two without tripping. */
+const PRUNE_SHARE = 0.25, PRUNE_FLOOR = 4;
+const pruned = {};
+function prunableNow(domain) {
+  const live = state.data.domains[domain]?.length ?? 0;
+  const n = (pruned[domain] ?? 0) + 1;
+  const cap = Math.max(PRUNE_FLOOR, Math.round((live + (pruned[domain] ?? 0)) * PRUNE_SHARE));
+  if (n > cap) {
+    // Said once per domain, and loudly: this is the state where the page is
+    // telling the truth about art it cannot fetch, and something upstream is
+    // wrong with the paths.
+    if (!pruned[`${domain}!warned`]) {
+      pruned[`${domain}!warned`] = 1;
+      console.warn(`[wiki] ${domain}: ${n} pieces 404'd — that is more than a domain loses to deletions. Treating the rest as "not loading" rather than deleting them; check the art paths in data.json.`);
+    }
+    return false;
+  }
+  pruned[domain] = n;
+  return true;
+}
 function forgetEntity(domain, i) {
   state.data.domains[domain].splice(i, 1);
-  if (state.data.counts?.[domain] > 0) state.data.counts[domain] -= 1;
+  syncCounts(domain);
+}
+/** Counts are DERIVED from the list, never decremented alongside it. The first
+ *  cut decremented `counts[domain]` only, so a domain with a second count —
+ *  World has one per candidate — could show "0 pairs · 93 candidates", two
+ *  numbers from the same data disagreeing on screen (maintainer 2026-08-17). */
+function syncCounts(domain) {
+  const list = state.data.domains[domain] ?? [];
+  if (!state.data.counts) return;
+  if (domain in state.data.counts) state.data.counts[domain] = list.length;
+  if (domain === "world") state.data.counts.world_candidates = list.reduce((n, c) => n + (c.candidates?.length ?? 0), 0);
+  if (domain === "tiles") {
+    state.data.counts.tile_types = list.length;
+    state.data.counts.tiles = list.reduce((n, t) => n + (t.tileCount ?? 0), 0);
+  }
+  if (domain === "characters") {
+    state.data.counts.characters = list.filter((c) => c.kind !== "npc").length;
+    state.data.counts.npcs = list.filter((c) => c.kind === "npc").length;
+  }
 }
 /** Applied once the manifest is loaded, so a piece already known to be gone
  *  never flashes into the grid a second time. */
@@ -2716,8 +2769,11 @@ async function refreshWorldPairs() {
   // domain. What must not happen is the LIST being older than the agent.
   const was = state.data.domains.world?.length ?? 0;
   state.data.domains.world = worldLive;
-  state.data.counts.world = worldLive.length;
-  state.data.counts.world_candidates = worldLive.reduce((n, c) => n + c.candidates.length, 0);
+  syncCounts("world");
+  // The live manifest OUTRANKS anything pruned from the baked list: a pair
+  // dropped because the build named a path the agent has since renamed is not
+  // deleted, it just moved, and the manifest is where it says so.
+  pruned.world = 0;
   return worldLive.length !== was || true;
 }
 /** Passed / short of the agent's own acceptance bar, so a score reads as a

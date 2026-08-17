@@ -48,7 +48,14 @@ const REJECTED = [byNew[0], byNew[6], byNew[41], byNew[80]].map((o) => o.path);
 // piece now means "about the art that used to be here", which is a different
 // case entirely and is exercised on its own below.
 const entries = {};
-const after = (path) => new Date(Date.parse(objs.find((o) => o.path === path).added) + 3600e3).toISOString();
+// A piece with no `added` date is a real fault and is asserted above — but it
+// must not CRASH the run and hide every other check with it (measured
+// 2026-08-17: one undated scenery piece threw "Invalid time value" and took
+// the whole gate down). Undated falls back to now.
+const after = (path) => {
+  const t = Date.parse(objs.find((o) => o.path === path)?.added ?? "");
+  return new Date((Number.isFinite(t) ? t : Date.now()) + 3600e3).toISOString();
+};
 for (const p of APPROVED) entries[p] = { status: "approved", updated_at: after(p) };
 for (const p of REJECTED) entries[p] = { status: "rejected", updated_at: after(p) };
 
