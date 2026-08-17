@@ -30,6 +30,13 @@ on:
       - "games2/**"
       - "characters2/**"
       - "tiles2/**"
+      # Tiles 3.0. Without this line the domain is in the image (Dockerfile COPYs it,
+      # .dockerignore allows it) but nothing ever REBUILDS the image when it changes,
+      # so the wiki's World section serves whatever tiles happened to be baked in by
+      # someone else's deploy. Third allowlist in the chain that has to name a new
+      # domain explicitly, after .dockerignore and the Dockerfile — added by the tiles
+      # agent 2026-08-17 with the maintainer's go-ahead.
+      - "tiles/**"
       - "maps2/**"
       - "scenery/**"
       - "sounds/**"
@@ -43,6 +50,10 @@ on:
       - "wiki/**"
       - "!wiki/site/data.json"
       - ".github/workflows/nangijala-deploy.yml"
+      # The image's allowlist itself: adding or removing a domain there changes what
+      # ships, and previously changed it silently until some other domain's push
+      # happened to trigger a build.
+      - ".dockerignore"
   workflow_dispatch: {}       # manual: force a roll without any commit
 
 # CONCURRENCY — NO SHARED GROUP, because a shared one can DEADLOCK THE WHOLE
