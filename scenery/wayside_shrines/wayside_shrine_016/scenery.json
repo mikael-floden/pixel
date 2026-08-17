@@ -5,8 +5,8 @@
   "group": "wayside_shrines",
   "rank": 19,
   "index": 16,
-  "name": "Tiny painted icon shrine 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Tiny painted icon shrine 016",
+  "lights": null,
   "variety": "tiny painted icon shrine",
   "glow_concept": "painted icon inside glowing gently",
   "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, tiny painted icon shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted icon inside glowing gently",
@@ -36,12 +36,44 @@
       "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
       "generated_at": "2026-08-13T23:10:02+00:00"
     },
+    "LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_016/lit_2/sprite.webp",
+      "pixellab_object_id": "c3e94033-d675-4a02-a104-35c1465fdf0c",
+      "generated_at": "2026-08-17T12:25:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5485,
+      "glow_score": 0.0191
+    },
     "LIT_3": {
       "sprite": "wayside_shrines/wayside_shrine_016/lit_3/sprite.webp",
       "pixellab_object_id": "3b032bab-d0d4-4736-a346-8b8ca7f5e240",
       "generated_at": "2026-08-17T12:25:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4602,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "wayside_shrines/wayside_shrine_016/lit_4/sprite.webp",
+      "pixellab_object_id": "eac92422-1887-4427-b8a2-c956a254fcde",
+      "generated_at": "2026-08-17T12:26:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6874,
+      "glow_score": 0.0193
+    },
+    "NOT_LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4bd22870-108f-4302-b2d7-e833a8028972",
+      "generated_at": "2026-08-17T12:26:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4859,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "d4483697-efcb-4713-8a74-fe6a2b4d10c6",
+      "generated_at": "2026-08-17T12:28:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7721,
       "glow_score": 0.0
     }
   }

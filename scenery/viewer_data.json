@@ -63862,6 +63862,15 @@
           "glow_score": 0.1057,
           "art_hash": "a7fdb8a6f2e3a3f3"
         },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_011/lit_2/sprite.webp",
+          "pixellab_object_id": "fa0f5706-7180-4da1-ae39-e0635461f413",
+          "generated_at": "2026-08-17T12:27:09+00:00",
+          "glow_concept": "painted door symbols traced in light",
+          "difference_from_source": 0.7196,
+          "glow_score": 0.3046,
+          "art_hash": "0090d07f6cba9ddd"
+        },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
           "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
@@ -64059,9 +64068,9 @@
     {
       "id": "wayside_shrine_016",
       "rel": "wayside_shrines/wayside_shrine_016",
-      "name": "Tiny painted icon shrine 016 \u00b7 lit",
+      "name": "Tiny painted icon shrine 016",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, tiny painted icon shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: painted icon inside glowing gently",
       "view": "low top-down",
       "size": 64,
@@ -64087,6 +64096,15 @@
           "generated_at": "2026-08-13T23:10:02+00:00",
           "art_hash": "cd9ba54dc330fedb"
         },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_016/lit_2/sprite.webp",
+          "pixellab_object_id": "c3e94033-d675-4a02-a104-35c1465fdf0c",
+          "generated_at": "2026-08-17T12:25:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5485,
+          "glow_score": 0.0191,
+          "art_hash": "643b826628989638"
+        },
         "LIT_3": {
           "sprite": "wayside_shrines/wayside_shrine_016/lit_3/sprite.webp",
           "pixellab_object_id": "3b032bab-d0d4-4736-a346-8b8ca7f5e240",
@@ -64095,6 +64113,33 @@
           "difference_from_source": 0.4602,
           "glow_score": 0.0,
           "art_hash": "b8b89538d09455f7"
+        },
+        "LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_016/lit_4/sprite.webp",
+          "pixellab_object_id": "eac92422-1887-4427-b8a2-c956a254fcde",
+          "generated_at": "2026-08-17T12:26:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6874,
+          "glow_score": 0.0193,
+          "art_hash": "d050b79e1bb7062d"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4bd22870-108f-4302-b2d7-e833a8028972",
+          "generated_at": "2026-08-17T12:26:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4859,
+          "glow_score": 0.0,
+          "art_hash": "7a9b217b60aafbcd"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d4483697-efcb-4713-8a74-fe6a2b4d10c6",
+          "generated_at": "2026-08-17T12:28:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7721,
+          "glow_score": 0.0,
+          "art_hash": "d84c9f919b9078a6"
         }
       },
       "animations": []
@@ -64102,9 +64147,9 @@
     {
       "id": "wayside_shrine_020",
       "rel": "wayside_shrines/wayside_shrine_020",
-      "name": "Open-front stone hut shrine 020 \u00b7 lit",
+      "name": "Open-front stone hut shrine 020",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, open-front stone hut shrine, roughly six feet tall, human height, self-emissive at night, softly radiating light: pale white soul-candles that never shorten",
       "view": "low top-down",
       "size": 64,
@@ -64129,6 +64174,51 @@
           "pixellab_object_id": "2af41c85-eea9-46bb-a274-77116922dd70",
           "generated_at": "2026-08-13T23:33:08+00:00",
           "art_hash": "ae125d0fd29b22cd"
+        },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_020/lit_2/sprite.webp",
+          "pixellab_object_id": "f6c807f0-4a0f-4312-bb82-c9a1057ba06b",
+          "generated_at": "2026-08-17T12:27:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.88,
+          "glow_score": 0.0,
+          "art_hash": "0ebb4dc21850a0c5"
+        },
+        "LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_020/lit_3/sprite.webp",
+          "pixellab_object_id": "d656daeb-9faa-43da-b3c5-4bbc07590da7",
+          "generated_at": "2026-08-17T12:27:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.517,
+          "glow_score": 0.0015,
+          "art_hash": "c86a01bd9272873d"
+        },
+        "LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_020/lit_4/sprite.webp",
+          "pixellab_object_id": "1d79ef07-dfb6-4a51-8daf-42115be1d62e",
+          "generated_at": "2026-08-17T12:27:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7492,
+          "glow_score": 0.0375,
+          "art_hash": "ba376176e1170691"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "a38a70e0-8399-452a-be19-6c7f5de16a16",
+          "generated_at": "2026-08-17T12:27:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8535,
+          "glow_score": 0.0,
+          "art_hash": "adcef896090527a1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "944638a5-7713-4f0b-93e8-f939d0af6586",
+          "generated_at": "2026-08-17T12:27:49+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8028,
+          "glow_score": 0.001,
+          "art_hash": "674aca977805dc7f"
         }
       },
       "animations": []
@@ -64136,9 +64226,9 @@
     {
       "id": "waystone_008",
       "rel": "waystones/waystone_008",
-      "name": "White quartz-veined stone 008 \u00b7 lit",
+      "name": "White quartz-veined stone 008",
       "category": "waystones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, waist-high to an adult person, self-emissive at night, softly radiating light: glowworms clustered in the carved lettering",
       "view": "low top-down",
       "size": 64,
@@ -64163,6 +64253,51 @@
           "pixellab_object_id": "fe4d8a2b-ecc0-41a9-9222-925b203f8395",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "49ea8d14223d345e"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_008/lit_2/sprite.webp",
+          "pixellab_object_id": "fa6b62bb-2257-4a23-84d7-8d2593c3a85d",
+          "generated_at": "2026-08-17T12:28:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5357,
+          "glow_score": 0.0711,
+          "art_hash": "8373491289942075"
+        },
+        "LIT_3": {
+          "sprite": "waystones/waystone_008/lit_3/sprite.webp",
+          "pixellab_object_id": "f11fdde5-3a2e-47d7-a3b1-e63ec7c9a167",
+          "generated_at": "2026-08-17T12:28:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5938,
+          "glow_score": 0.0795,
+          "art_hash": "c927cbd86d851ded"
+        },
+        "LIT_4": {
+          "sprite": "waystones/waystone_008/lit_4/sprite.webp",
+          "pixellab_object_id": "6ac03479-e8ce-4862-bec2-e99721261e91",
+          "generated_at": "2026-08-17T12:28:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4965,
+          "glow_score": 0.0864,
+          "art_hash": "386e799517d40686"
+        },
+        "NOT_LIT_1": {
+          "sprite": "waystones/waystone_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "ab2c322d-debd-4d94-84be-7fbc5b4787c2",
+          "generated_at": "2026-08-17T12:29:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4037,
+          "glow_score": 0.0012,
+          "art_hash": "8a251e4a208bd931"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "5c89cd00-de55-483d-b65d-2a553187e860",
+          "generated_at": "2026-08-17T12:29:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.656,
+          "glow_score": 0.0,
+          "art_hash": "e5f7f9742cee40b7"
         }
       },
       "animations": []
@@ -64172,7 +64307,7 @@
       "rel": "waystones/waystone_009",
       "name": "Sea-smoothed coastal stone 009",
       "category": "waystones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, waist-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -64192,11 +64327,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "waystones/waystone_009/lit_1/sprite.webp",
+          "pixellab_object_id": "0e89e15c-95a8-4d9d-9db6-875550e859a0",
+          "generated_at": "2026-08-17T12:29:43+00:00",
+          "glow_concept": "carved runes glowing warm amber",
+          "difference_from_source": 0.4402,
+          "glow_score": 0.0832,
+          "art_hash": "5d501119928b386b"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_009/lit_2/sprite.webp",
+          "pixellab_object_id": "c0a8e5b6-ad9b-4455-89a4-a2477ecc799a",
+          "generated_at": "2026-08-17T12:30:20+00:00",
+          "glow_concept": "soulstone veins threading the rock alight",
+          "difference_from_source": 0.8659,
+          "glow_score": 0.15,
+          "art_hash": "5a3c32eb9dbe3c9d"
+        },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_009/sprite.webp",
           "pixellab_object_id": "9f9343d6-2f00-463c-973b-7e6f6e095814",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "4b001599ed61d05e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "073c2f56-c282-47f7-9eac-01fd57d7e030",
+          "generated_at": "2026-08-17T12:29:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.262,
+          "glow_score": 0.0,
+          "art_hash": "e0222099c0c00792"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "101f508c-4a75-4f7f-b0f4-ed64d9bf5446",
+          "generated_at": "2026-08-17T12:29:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4492,
+          "glow_score": 0.0,
+          "art_hash": "cecd21bfac558f01"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d87c9cea-4876-4fa9-80d7-7daef5ad36cf",
+          "generated_at": "2026-08-17T12:29:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4983,
+          "glow_score": 0.0,
+          "art_hash": "606bbe51025618e2"
         }
       },
       "animations": []
@@ -64204,9 +64384,9 @@
     {
       "id": "waystone_010",
       "rel": "waystones/waystone_010",
-      "name": "Knot-pattern carved stone 010 \u00b7 lit",
+      "name": "Knot-pattern carved stone 010",
       "category": "waystones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, knot-pattern carved stone, small, knee-high, self-emissive at night, softly radiating light: ring of foxfire mushrooms at the base",
       "view": "low top-down",
       "size": 64,
@@ -64231,6 +64411,51 @@
           "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
           "generated_at": "2026-08-13T20:46:10+00:00",
           "art_hash": "b1ae10de74e6d6a1"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_010/lit_2/sprite.webp",
+          "pixellab_object_id": "b7a7747b-cb8a-4741-87b6-d47c2a672734",
+          "generated_at": "2026-08-17T12:31:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3383,
+          "glow_score": 0.0715,
+          "art_hash": "1a67cffb0779cd43"
+        },
+        "LIT_3": {
+          "sprite": "waystones/waystone_010/lit_3/sprite.webp",
+          "pixellab_object_id": "f6bd6c44-c759-413b-8da0-924f546e3b4e",
+          "generated_at": "2026-08-17T12:30:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.425,
+          "glow_score": 0.0714,
+          "art_hash": "2b2deb7238c911ff"
+        },
+        "LIT_4": {
+          "sprite": "waystones/waystone_010/lit_4/sprite.webp",
+          "pixellab_object_id": "acff107b-52bc-4ff5-9566-8415d744584f",
+          "generated_at": "2026-08-17T12:31:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5236,
+          "glow_score": 0.0653,
+          "art_hash": "8de86a6beb71a6d4"
+        },
+        "NOT_LIT_1": {
+          "sprite": "waystones/waystone_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "62b78f30-6d7f-47d5-bbae-dc0d6c70c534",
+          "generated_at": "2026-08-17T12:31:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9149,
+          "glow_score": 0.0,
+          "art_hash": "639eb3a41e912a5b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "ec524576-1f26-4c37-8168-c01bf6e7974a",
+          "generated_at": "2026-08-17T12:31:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9315,
+          "glow_score": 0.0,
+          "art_hash": "f13a246354d7a9b3"
         }
       },
       "animations": []
@@ -64265,6 +64490,24 @@
           "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
           "generated_at": "2026-08-13T21:37:46+00:00",
           "art_hash": "94bbc7fe32c273b2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e91fcd4f-a0ee-4705-8e77-883c30ab7292",
+          "generated_at": "2026-08-17T12:31:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3749,
+          "glow_score": 0.0,
+          "art_hash": "84456dc227c02a87"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "8c99cdb3-a43c-4f53-8069-d9739ab78912",
+          "generated_at": "2026-08-17T12:31:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4363,
+          "glow_score": 0.0,
+          "art_hash": "f8c0e873a47d372e"
         }
       },
       "animations": []

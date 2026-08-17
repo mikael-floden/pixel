@@ -4,8 +4,8 @@
   "group": "waystones",
   "rank": 6,
   "index": 10,
-  "name": "Knot-pattern carved stone 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Knot-pattern carved stone 010",
+  "lights": null,
   "variety": "knot-pattern carved stone",
   "glow_concept": "ring of foxfire mushrooms at the base",
   "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, knot-pattern carved stone, small, knee-high, self-emissive at night, softly radiating light: ring of foxfire mushrooms at the base",
@@ -35,6 +35,46 @@
       "sprite": "waystones/waystone_010/sprite.webp",
       "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
       "generated_at": "2026-08-13T20:46:10+00:00"
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_010/lit_2/sprite.webp",
+      "pixellab_object_id": "b7a7747b-cb8a-4741-87b6-d47c2a672734",
+      "generated_at": "2026-08-17T12:31:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3383,
+      "glow_score": 0.0715
+    },
+    "LIT_3": {
+      "sprite": "waystones/waystone_010/lit_3/sprite.webp",
+      "pixellab_object_id": "f6bd6c44-c759-413b-8da0-924f546e3b4e",
+      "generated_at": "2026-08-17T12:30:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.425,
+      "glow_score": 0.0714
+    },
+    "LIT_4": {
+      "sprite": "waystones/waystone_010/lit_4/sprite.webp",
+      "pixellab_object_id": "acff107b-52bc-4ff5-9566-8415d744584f",
+      "generated_at": "2026-08-17T12:31:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5236,
+      "glow_score": 0.0653
+    },
+    "NOT_LIT_1": {
+      "sprite": "waystones/waystone_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "62b78f30-6d7f-47d5-bbae-dc0d6c70c534",
+      "generated_at": "2026-08-17T12:31:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9149,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ec524576-1f26-4c37-8168-c01bf6e7974a",
+      "generated_at": "2026-08-17T12:31:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9315,
+      "glow_score": 0.0
     }
   }
 }
