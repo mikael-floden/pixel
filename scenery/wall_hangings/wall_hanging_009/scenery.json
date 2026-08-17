@@ -6,7 +6,7 @@
   "rank": 110,
   "index": 9,
   "name": "Small mounted shelf of jars on brackets 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "small mounted shelf of jars on brackets",
   "glow_concept": null,
   "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, small mounted shelf of jars on brackets, waist-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "wall_hangings/wall_hanging_009/lit_1/sprite.webp",
+      "pixellab_object_id": "859685a3-ad2e-402c-928b-901090b262a2",
+      "generated_at": "2026-08-17T11:38:19+00:00",
+      "glow_concept": "jars glowing on the mounted shelf",
+      "difference_from_source": 0.7665,
+      "glow_score": 0.0708
+    },
+    "LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_009/lit_2/sprite.webp",
+      "pixellab_object_id": "2275e9f3-ccb6-4f81-81ef-2f0929b24207",
+      "generated_at": "2026-08-17T11:38:09+00:00",
+      "glow_concept": "embroidery threads shimmering with memory-light",
+      "difference_from_source": 0.7609,
+      "glow_score": 0.0884
+    },
     "NOT_LIT_1": {
       "sprite": "wall_hangings/wall_hanging_009/sprite.webp",
       "pixellab_object_id": "13853458-bfea-4922-8164-fbf64fbbb547",
       "generated_at": "2026-08-13T22:59:45+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e6a40030-eb58-4b24-bbe2-45cd253b1fe1",
+      "generated_at": "2026-08-17T11:36:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9158,
+      "glow_score": 0.0259
+    },
+    "NOT_LIT_3": {
+      "sprite": "wall_hangings/wall_hanging_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "53979ca0-81e4-4050-8410-78bd182c259f",
+      "generated_at": "2026-08-17T11:37:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4803,
+      "glow_score": 0.0145
+    },
+    "NOT_LIT_4": {
+      "sprite": "wall_hangings/wall_hanging_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5a035697-d586-4f0f-a363-d79e3f0e78c4",
+      "generated_at": "2026-08-17T11:37:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5223,
+      "glow_score": 0.0093
     }
   }
 }

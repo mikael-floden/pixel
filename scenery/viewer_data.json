@@ -50760,9 +50760,9 @@
     {
       "id": "torch_post_022",
       "rel": "torch_posts/torch_post_022",
-      "name": "Birch-bark wrapped torch 022 \u00b7 lit",
+      "name": "Birch-bark wrapped torch 022",
       "category": "torch_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, birch-bark wrapped torch, old and settling into the ground, roughly six feet tall, human height, self-emissive at night, softly radiating light: ember-crusted head glowing without open flame",
       "view": "low top-down",
       "size": 64,
@@ -50814,6 +50814,24 @@
           "difference_from_source": 0.5868,
           "glow_score": 0.141,
           "art_hash": "ea55c6bdf910de13"
+        },
+        "NOT_LIT_1": {
+          "sprite": "torch_posts/torch_post_022/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b136f98a-33d5-4c6a-b47c-dbea6c376439",
+          "generated_at": "2026-08-17T11:32:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4521,
+          "glow_score": 0.0,
+          "art_hash": "0f2e0272b5716873"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_022/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a240d2b8-7837-409e-8634-bc3bf36fee39",
+          "generated_at": "2026-08-17T11:33:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7721,
+          "glow_score": 0.0,
+          "art_hash": "cf88040cfd5af4ab"
         }
       },
       "animations": []
@@ -50821,9 +50839,9 @@
     {
       "id": "torch_post_024",
       "rel": "torch_posts/torch_post_024",
-      "name": "Banded ceremonial torch post 024 \u00b7 lit",
+      "name": "Banded ceremonial torch post 024",
       "category": "torch_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, banded ceremonial torch post, overgrown at the base, large, twice human height, self-emissive at night, softly radiating light: slow blue resin flame with white core",
       "view": "low top-down",
       "size": 64,
@@ -50848,6 +50866,51 @@
           "pixellab_object_id": "b54b2a57-6761-4f14-abb5-34f71b0bc91b",
           "generated_at": "2026-08-14T01:46:15+00:00",
           "art_hash": "962ec248e095d12d"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_024/lit_2/sprite.webp",
+          "pixellab_object_id": "65cdb66f-4468-4793-ab8b-b211d7a6bf0b",
+          "generated_at": "2026-08-17T11:32:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7164,
+          "glow_score": 0.1583,
+          "art_hash": "f9a198f421183136"
+        },
+        "LIT_3": {
+          "sprite": "torch_posts/torch_post_024/lit_3/sprite.webp",
+          "pixellab_object_id": "2c810a3a-c068-4bcb-9abc-780cbef981e2",
+          "generated_at": "2026-08-17T11:33:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7474,
+          "glow_score": 0.1907,
+          "art_hash": "93e42c73a7e2e8fb"
+        },
+        "LIT_4": {
+          "sprite": "torch_posts/torch_post_024/lit_4/sprite.webp",
+          "pixellab_object_id": "3f9db236-17e8-458c-9531-0c7ab48d1e0d",
+          "generated_at": "2026-08-17T11:34:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8543,
+          "glow_score": 0.1106,
+          "art_hash": "af3921e1f0a9ad23"
+        },
+        "NOT_LIT_1": {
+          "sprite": "torch_posts/torch_post_024/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d3ec7de0-2373-4898-a1fa-298d700345da",
+          "generated_at": "2026-08-17T11:34:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8831,
+          "glow_score": 0.0,
+          "art_hash": "4bb8444e23901b4c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_024/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a965889c-ed96-4559-8245-4f7650d37130",
+          "generated_at": "2026-08-17T11:34:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8913,
+          "glow_score": 0.0,
+          "art_hash": "3a8321afce3d824e"
         }
       },
       "animations": []
@@ -50857,7 +50920,7 @@
       "rel": "trailing_planters/trailing_planter_003",
       "name": "Blue-painted barrel, petunias 003",
       "category": "trailing_planters",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, blue-painted barrel, petunias, small, knee-high to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -50877,11 +50940,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "trailing_planters/trailing_planter_003/lit_1/sprite.webp",
+          "pixellab_object_id": "b04ad7bd-b3c4-42fd-9404-8d6c1016b6bf",
+          "generated_at": "2026-08-17T11:34:59+00:00",
+          "glow_concept": "iron hoops etched with faintly glowing runes",
+          "difference_from_source": 0.5737,
+          "glow_score": 0.0801,
+          "art_hash": "492defaa3e72afe3"
+        },
+        "LIT_2": {
+          "sprite": "trailing_planters/trailing_planter_003/lit_2/sprite.webp",
+          "pixellab_object_id": "17ce7d98-a831-447e-8839-696274320a9b",
+          "generated_at": "2026-08-17T11:36:48+00:00",
+          "glow_concept": "blossoms glowing like banked coals",
+          "difference_from_source": 0.8925,
+          "glow_score": 0.1441,
+          "art_hash": "b33ac8e28f97a7a9"
+        },
         "NOT_LIT_1": {
           "sprite": "trailing_planters/trailing_planter_003/sprite.webp",
           "pixellab_object_id": "76dcc926-13c3-4169-9fcf-8a521a520436",
           "generated_at": "2026-08-13T19:23:23+00:00",
           "art_hash": "6a8868b5a0b50006"
+        },
+        "NOT_LIT_2": {
+          "sprite": "trailing_planters/trailing_planter_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "a3fc0b98-392d-4ba3-984a-6cf41279aa49",
+          "generated_at": "2026-08-17T11:34:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7444,
+          "glow_score": 0.0553,
+          "art_hash": "b6c5af6430438f71"
+        },
+        "NOT_LIT_3": {
+          "sprite": "trailing_planters/trailing_planter_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ef6496e8-dd10-4c8f-ad34-d40148b9eab5",
+          "generated_at": "2026-08-17T11:33:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.503,
+          "glow_score": 0.1308,
+          "art_hash": "5e23adb1692e5818"
+        },
+        "NOT_LIT_4": {
+          "sprite": "trailing_planters/trailing_planter_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b80160df-7850-4c45-8cfc-da6b6a0266ec",
+          "generated_at": "2026-08-17T11:34:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.687,
+          "glow_score": 0.0622,
+          "art_hash": "c0800c0c54f62dd9"
         }
       },
       "animations": []
@@ -50889,9 +50997,9 @@
     {
       "id": "trailing_planter_004",
       "rel": "trailing_planters/trailing_planter_004",
-      "name": "Rope-bound barrel, morning glories 004 \u00b7 lit",
+      "name": "Rope-bound barrel, morning glories 004",
       "category": "trailing_planters",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, rope-bound barrel, morning glories, waist-high, self-emissive at night, softly radiating light: light leaking through cracks between the staves",
       "view": "low top-down",
       "size": 64,
@@ -50916,6 +51024,42 @@
           "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
           "generated_at": "2026-08-13T20:37:16+00:00",
           "art_hash": "8c4c80bf5bef4fc2"
+        },
+        "LIT_2": {
+          "sprite": "trailing_planters/trailing_planter_004/lit_2/sprite.webp",
+          "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
+          "generated_at": "2026-08-17T11:35:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6803,
+          "glow_score": 0.0122,
+          "art_hash": "b93ded71587160b7"
+        },
+        "LIT_3": {
+          "sprite": "trailing_planters/trailing_planter_004/lit_3/sprite.webp",
+          "pixellab_object_id": "a432a368-4fbc-4a4c-bd27-967543411b82",
+          "generated_at": "2026-08-17T11:36:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2945,
+          "glow_score": 0.0284,
+          "art_hash": "730b7f6fc1c6523a"
+        },
+        "LIT_4": {
+          "sprite": "trailing_planters/trailing_planter_004/lit_4/sprite.webp",
+          "pixellab_object_id": "c6a9b55f-4655-4011-8f9a-e0bccf1327a8",
+          "generated_at": "2026-08-17T11:36:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6663,
+          "glow_score": 0.0191,
+          "art_hash": "1e87f3fd56a0163f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "trailing_planters/trailing_planter_004/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7de54a94-30d3-430c-8263-ed7935956303",
+          "generated_at": "2026-08-17T11:36:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8544,
+          "glow_score": 0.0,
+          "art_hash": "cac7898081ef8750"
         }
       },
       "animations": []
@@ -61328,7 +61472,7 @@
       "rel": "wall_hangings/wall_hanging_009",
       "name": "Small mounted shelf of jars on brackets 009",
       "category": "wall_hangings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, small mounted shelf of jars on brackets, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -61348,11 +61492,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_009/lit_1/sprite.webp",
+          "pixellab_object_id": "859685a3-ad2e-402c-928b-901090b262a2",
+          "generated_at": "2026-08-17T11:38:19+00:00",
+          "glow_concept": "jars glowing on the mounted shelf",
+          "difference_from_source": 0.7665,
+          "glow_score": 0.0708,
+          "art_hash": "be5a259b17ceab3d"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_009/lit_2/sprite.webp",
+          "pixellab_object_id": "2275e9f3-ccb6-4f81-81ef-2f0929b24207",
+          "generated_at": "2026-08-17T11:38:09+00:00",
+          "glow_concept": "embroidery threads shimmering with memory-light",
+          "difference_from_source": 0.7609,
+          "glow_score": 0.0884,
+          "art_hash": "662be1a77e8a5868"
+        },
         "NOT_LIT_1": {
           "sprite": "wall_hangings/wall_hanging_009/sprite.webp",
           "pixellab_object_id": "13853458-bfea-4922-8164-fbf64fbbb547",
           "generated_at": "2026-08-13T22:59:45+00:00",
           "art_hash": "3401ff8fe3090c46"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e6a40030-eb58-4b24-bbe2-45cd253b1fe1",
+          "generated_at": "2026-08-17T11:36:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9158,
+          "glow_score": 0.0259,
+          "art_hash": "bb7f48102de73675"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "53979ca0-81e4-4050-8410-78bd182c259f",
+          "generated_at": "2026-08-17T11:37:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4803,
+          "glow_score": 0.0145,
+          "art_hash": "58e26d4889094427"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5a035697-d586-4f0f-a363-d79e3f0e78c4",
+          "generated_at": "2026-08-17T11:37:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5223,
+          "glow_score": 0.0093,
+          "art_hash": "dfa1284549533d79"
         }
       },
       "animations": []
@@ -61360,9 +61549,9 @@
     {
       "id": "wall_hanging_010",
       "rel": "wall_hangings/wall_hanging_010",
-      "name": "Mounted deer antlers on a wooden plaque 010 \u00b7 lit",
+      "name": "Mounted deer antlers on a wooden plaque 010",
       "category": "wall_hangings",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, mounted deer antlers on a wooden plaque, small, knee-high, self-emissive at night, softly radiating light: embroidery threads shimmering with memory-light",
       "view": "low top-down",
       "size": 64,
@@ -61387,6 +61576,42 @@
           "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
           "generated_at": "2026-08-13T22:53:34+00:00",
           "art_hash": "68420aef3abcf06e"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_010/lit_2/sprite.webp",
+          "pixellab_object_id": "5a24358a-9087-4e1c-bf54-39783871a248",
+          "generated_at": "2026-08-17T11:37:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7183,
+          "glow_score": 0.0209,
+          "art_hash": "88b550ce81c0c6c9"
+        },
+        "LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_010/lit_3/sprite.webp",
+          "pixellab_object_id": "21d91e66-4fc1-44f0-b384-696c237e706b",
+          "generated_at": "2026-08-17T11:38:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8707,
+          "glow_score": 0.2285,
+          "art_hash": "8b4ceaf06b6e4882"
+        },
+        "LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_010/lit_4/sprite.webp",
+          "pixellab_object_id": "11c62289-a423-4f35-9d04-29c55812f715",
+          "generated_at": "2026-08-17T11:38:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6248,
+          "glow_score": 0.1301,
+          "art_hash": "59b6e0b0050ec785"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "54318e23-acaf-4a9b-a6d3-5ee50d792f74",
+          "generated_at": "2026-08-17T11:39:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9276,
+          "glow_score": 0.0,
+          "art_hash": "29d26863a5d58014"
         }
       },
       "animations": []
@@ -61421,6 +61646,15 @@
           "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
           "generated_at": "2026-08-13T23:07:33+00:00",
           "art_hash": "6d6153f232da62b3"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "80d06196-a3e4-495c-b553-36533d601cf9",
+          "generated_at": "2026-08-17T11:39:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7405,
+          "glow_score": 0.3745,
+          "art_hash": "c8abae4bf0d48f2d"
         }
       },
       "animations": []

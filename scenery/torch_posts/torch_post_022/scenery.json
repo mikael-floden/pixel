@@ -5,8 +5,8 @@
   "group": "torch_posts",
   "rank": 7,
   "index": 22,
-  "name": "Birch-bark wrapped torch 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Birch-bark wrapped torch 022",
+  "lights": null,
   "variety": "birch-bark wrapped torch",
   "modifier": "old and settling into the ground",
   "glow_concept": "ember-crusted head glowing without open flame",
@@ -60,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.5868,
       "glow_score": 0.141
+    },
+    "NOT_LIT_1": {
+      "sprite": "torch_posts/torch_post_022/not_lit_1/sprite.webp",
+      "pixellab_object_id": "b136f98a-33d5-4c6a-b47c-dbea6c376439",
+      "generated_at": "2026-08-17T11:32:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4521,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a240d2b8-7837-409e-8634-bc3bf36fee39",
+      "generated_at": "2026-08-17T11:33:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7721,
+      "glow_score": 0.0
     }
   }
 }

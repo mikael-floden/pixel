@@ -5,8 +5,8 @@
   "group": "wall_hangings",
   "rank": 110,
   "index": 10,
-  "name": "Mounted deer antlers on a wooden plaque 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Mounted deer antlers on a wooden plaque 010",
+  "lights": null,
   "variety": "mounted deer antlers on a wooden plaque",
   "glow_concept": "embroidery threads shimmering with memory-light",
   "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, mounted deer antlers on a wooden plaque, small, knee-high, self-emissive at night, softly radiating light: embroidery threads shimmering with memory-light",
@@ -35,6 +35,38 @@
       "sprite": "wall_hangings/wall_hanging_010/sprite.webp",
       "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
       "generated_at": "2026-08-13T22:53:34+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_010/lit_2/sprite.webp",
+      "pixellab_object_id": "5a24358a-9087-4e1c-bf54-39783871a248",
+      "generated_at": "2026-08-17T11:37:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7183,
+      "glow_score": 0.0209
+    },
+    "LIT_3": {
+      "sprite": "wall_hangings/wall_hanging_010/lit_3/sprite.webp",
+      "pixellab_object_id": "21d91e66-4fc1-44f0-b384-696c237e706b",
+      "generated_at": "2026-08-17T11:38:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8707,
+      "glow_score": 0.2285
+    },
+    "LIT_4": {
+      "sprite": "wall_hangings/wall_hanging_010/lit_4/sprite.webp",
+      "pixellab_object_id": "11c62289-a423-4f35-9d04-29c55812f715",
+      "generated_at": "2026-08-17T11:38:57+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6248,
+      "glow_score": 0.1301
+    },
+    "NOT_LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "54318e23-acaf-4a9b-a6d3-5ee50d792f74",
+      "generated_at": "2026-08-17T11:39:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9276,
+      "glow_score": 0.0
     }
   }
 }

@@ -4,8 +4,8 @@
   "group": "trailing_planters",
   "rank": 77,
   "index": 4,
-  "name": "Rope-bound barrel, morning glories 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rope-bound barrel, morning glories 004",
+  "lights": null,
   "variety": "rope-bound barrel, morning glories",
   "glow_concept": "light leaking through cracks between the staves",
   "prompt": "a heavy terracotta pot packed with flowers, thick vines cascading down over its sides, sitting solidly on the ground, rope-bound barrel, morning glories, waist-high, self-emissive at night, softly radiating light: light leaking through cracks between the staves",
@@ -35,6 +35,38 @@
       "sprite": "trailing_planters/trailing_planter_004/sprite.webp",
       "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
       "generated_at": "2026-08-13T20:37:16+00:00"
+    },
+    "LIT_2": {
+      "sprite": "trailing_planters/trailing_planter_004/lit_2/sprite.webp",
+      "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
+      "generated_at": "2026-08-17T11:35:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6803,
+      "glow_score": 0.0122
+    },
+    "LIT_3": {
+      "sprite": "trailing_planters/trailing_planter_004/lit_3/sprite.webp",
+      "pixellab_object_id": "a432a368-4fbc-4a4c-bd27-967543411b82",
+      "generated_at": "2026-08-17T11:36:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2945,
+      "glow_score": 0.0284
+    },
+    "LIT_4": {
+      "sprite": "trailing_planters/trailing_planter_004/lit_4/sprite.webp",
+      "pixellab_object_id": "c6a9b55f-4655-4011-8f9a-e0bccf1327a8",
+      "generated_at": "2026-08-17T11:36:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6663,
+      "glow_score": 0.0191
+    },
+    "NOT_LIT_2": {
+      "sprite": "trailing_planters/trailing_planter_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7de54a94-30d3-430c-8263-ed7935956303",
+      "generated_at": "2026-08-17T11:36:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8544,
+      "glow_score": 0.0
     }
   }
 }
