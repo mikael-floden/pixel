@@ -225,6 +225,33 @@ to know if /tiles (3.0) works … Tiles OLD and World? World is the new Tiles 3.
 system"*). The NEW system takes the good name; both live in the nav until the
 migration lands, and when `tiles2/` goes, one row of `SECTIONS` goes with it.
 
+**Three levels**, the way he thinks about ground (maintainer 2026-08-17):
+`#/world` the ground types → `#/world/<top>` every wall that ground can stand
+on → `#/world/<top>/<side>` the pair itself. The types are DERIVED from the
+pairs, so the live manifest refresh reshapes the section without a rebuild, and
+a pair is addressed by its two halves rather than its cell key — the pair IS
+"grass over snow", and a url that says so survives the agent renaming keys.
+
+**The pair page shows the set LAID OUT AS GROUND, above the individual
+verdicts** — "does this set work as ground" is the question those verdicts are
+answers to. A **1×9 flat run** (a long run is what shows a repeat; a 3×3 hides
+one behind its own corners) and the **V from Tiles OLD**, verbatim: three
+3-high stacks meeting at a corner, every level rolling its own tile. Both are
+drawn by `isoScene()`, the same composer the Tiles OLD page uses — the game's
+own projection at the game's own scale, so a strip here measures what a strip
+measures in the world.
+
+- **Randomize** rolls both shapes from ONE seed, so the two views always show
+  the same roll, and repaints only the scenes: re-routing would rebuild the
+  verdict rows under his finger and lose the scroll.
+- **The pool** is "+ unreviewed" (default) or "approved only"; with nothing
+  approved the second says so rather than drawing an empty box.
+- **A rejected tile is never in the mix** under either setting. He rejected it;
+  drawing it in the picture of the finished ground would be the wiki arguing
+  with him. A verdict cast on the page repaints the layout and its count —
+  they were computed at render time once, which left both stale until the page
+  was re-entered, and that is precisely what the toggle exists to prevent.
+
 **The review unit is the CANDIDATE**, because that is the question the tiles
 agent asks. `tiles/review/manifest.json` (`tiles3/review@1`) offers two or
 three generations per "A over B" pair, ranked by a measured wall score, and
