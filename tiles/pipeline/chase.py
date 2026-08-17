@@ -55,6 +55,7 @@ import flatness
 import matrix
 import pixellab_gc
 import tombstones
+import vertical
 from pixellab_client import BudgetExhausted, PixelLabClient, PixelLabError
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -109,14 +110,101 @@ PHRASINGS = [
 ]
 
 
+# Nine ways to ask for the OPPOSITE thing, for the 14 same-over-same cells. Every
+# phrasing above pushes the top material down over the edge; these push a single
+# material with nothing hanging over it, because that lip is what puts a stripe at every
+# storey when the tile is stacked to build a cliff.
+#
+# The framing is not a guess. Grouping all 4,897 raw tiles by the prompt that produced
+# them, the one existing phrasing with NO spill language — `explicit` — already wins
+# every axis that matters here: lip 0.059 against 0.154-0.228 for the chase phrasings,
+# vertical seam 0.208 against 0.451-0.757, wall score 3.52 against 1.86-2.56. Measured
+# within a single cell (snow-over-snow, the only one carrying both families) the no-spill
+# sheets halve the band: cap 24.4 against 49.9. These extend that framing rather than
+# inventing one, and they deliberately probe different metaphors — a block, a quarry
+# face, a cut section, a cliff, an extrusion — because the maintainer's own method is to
+# roll many interpretations, not many seeds.
+#
+# Format with the same four keys as PHRASINGS so the .format() call is unchanged; none
+# uses {side_material} or {side_word}, since on these cells the side IS the top.
+PHRASINGS_SAME = [
+    "isometric ground tile cut from a single block of {top_material}. The flat top "
+    "surface is clean single colour {top_word}, completely smooth with no texture. The "
+    "vertical side walls are the same {top_material} seen from the side, with its "
+    "natural surface detail clearly visible all the way down. The top edge is a clean "
+    "straight line and nothing hangs over it. Top perfectly flat, walls textured. "
+    "No outline.",
+
+    "a solid block of {top_material}. Isometric view. One material all the way through: "
+    "flat even {top_word} on top, the same {top_word} continuing straight down the "
+    "vertical sides. No rim, no lip, no cap, no shadow band — the sides are simply the "
+    "inside of the block. No outline.",
+
+    "isometric tile cut from a {top_material} quarry. The top is the quarry floor, flat "
+    "and even. The sides are freshly cut {top_word} faces, sheer and vertical, showing "
+    "the material's own grain and tool marks evenly from top to bottom. The cut edge "
+    "along the top is sharp and straight. No outline.",
+
+    "isometric cross-section through {top_material}. The top face is the exposed "
+    "surface, flat and one even tone; the sides are the same {top_material} sliced "
+    "open, so the wall is the inside of what you see on top. Continuous material, no "
+    "seam, no band and no colour change where the top meets the sides. No outline.",
+
+    "isometric tile of a sheer {top_material} cliff. Flat {top_word} plateau on top, "
+    "dropping straight down into a tall vertical {top_word} cliff face with even "
+    "texture over its whole height. Nothing overhangs the brink; the plateau ends "
+    "exactly at the edge. No outline.",
+
+    # The one that names the actual requirement: these tiles exist to be stacked.
+    "one repeating segment of a tall {top_material} wall, isometric. The {top_word} "
+    "texture leaves the bottom edge exactly as it enters the top edge, so many copies "
+    "stack into one continuous wall with no line where they join. Flat even {top_word} "
+    "on the top face. No outline.",
+
+    "isometric ground tile: a flat {top_material} surface extruded downwards. The top "
+    "face is smooth uniform {top_word}; the vertical faces are that same {top_word} "
+    "extruded, evenly textured over their whole height. The boundary between top and "
+    "side is a single clean edge — no fringe, no darker band, no shading strip. "
+    "No outline.",
+
+    "isometric block of {top_material}. Flat plain {top_word} on top. The side walls "
+    "are {top_word} whose grain, cracks and shading run VERTICALLY down the face, "
+    "unbroken from the top edge to the bottom edge — no horizontal layers, no ledge, "
+    "no shelf, no band. No outline.",
+
+    "clean single color {top_material} to clean {top_material}. Solid {top_word} block, "
+    "flat top, plain {top_word} sides, no outline.",
+]
+
+
+def phrasings_for(cell):
+    top, side = cell.split("__over__")
+    return PHRASINGS_SAME if top == side else PHRASINGS
+
+
 def cell_parts(cell, types):
     top, side = cell.split("__over__")
     by_id = {t["id"]: t for t in types}
     return by_id.get(top), by_id.get(side)
 
 
-def passing(paths, min_wall, min_clarity=0.0):
+def passing(paths, min_wall, min_clarity=0.0, same=False):
     """EVERY tile in these paths that clears the calibrated gates, best wall first.
+
+    `same` inverts the target, because the maintainer's requirement for the 14
+    same-over-same cells is the opposite of every other cell's: "it's best if 'same over
+    same' doesn't have that spill-over-effect, becouse it's that effect that make the
+    tile hard to repeat vertically". Those cells build the wall under a "top only" tile,
+    so they must stack level on level without a stripe at every storey.
+
+    MIN_OVERHANG is therefore not inverted, it is WAIVED — inverting it would be just as
+    wrong, because the metric is degenerate on same-material tiles: it finds the top
+    material in the wall by hue, and there is no hue difference to find. It returns
+    exactly 1.000 for every grass/ice/light_soil tile and 0.000 for most
+    grey_stone/black_rock, on saturation alone. vertical.band measures the band that
+    actually appears when the tile is stacked, and is used to ORDER the survivors rather
+    than to gate them, since six cells is not enough to fit a threshold on and the
+    maintainer wants alternatives to choose between.
 
     Plural on purpose. This used to return only the winner, because a cell needed one
     good tile. It needs three: the maintainer reviews by choosing, and told me so —
@@ -130,7 +218,7 @@ def passing(paths, min_wall, min_clarity=0.0):
         q = flatness.wall_quality(p)
         if not q or q["score"] < min_wall:
             continue
-        if flatness.overhang(p) < flatness.MIN_OVERHANG:
+        if not same and flatness.overhang(p) < flatness.MIN_OVERHANG:
             continue
         # A spill that cannot be told apart from the wall it lands on is not usable:
         # postprocess has nothing to select, so it ships in the wrong palette.
@@ -139,7 +227,14 @@ def passing(paths, min_wall, min_clarity=0.0):
         if flatness.seam_px(p) > flatness.SEAM_TOL:
             continue
         out.append((p, q["score"], flatness.overhang(p)))
-    out.sort(key=lambda t: -t[1])
+    if same:
+        # Least-banded first: these tiles exist to be stacked, so the tile that stacks
+        # without a stripe is the best one however good another tile's cliff is.
+        b = {t[0]: (vertical.band(t[0]) if vertical.band(t[0]) is not None else 1e9)
+             for t in out}
+        out.sort(key=lambda t: (b[t[0]], -t[1]))
+    else:
+        out.sort(key=lambda t: -t[1])
     return out
 
 
@@ -151,8 +246,9 @@ def evaluate(paths, min_wall, min_clarity=0.0):
 
 def cell_passing(cell, min_wall, min_clarity=0.0):
     d = os.path.join(OUT, cell)
+    top, side = cell.split("__over__")
     return passing(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))),
-                   min_wall, min_clarity)
+                   min_wall, min_clarity, same=(top == side))
 
 
 def cell_status(cell, min_wall, min_clarity=0.0):
@@ -192,7 +288,8 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             print(f"    budget reached (~${spent[0]:.2f})")
             return None
         i = existing + n
-        prompt = PHRASINGS[i % len(PHRASINGS)].format(
+        ph = phrasings_for(cell)
+        prompt = ph[i % len(ph)].format(
             top_material=top_g["material_words"], side_material=side_g["material_words"],
             top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "))
         # The suffix carries the PID because two chases can legitimately target the same
@@ -200,7 +297,9 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         # from the directory listing when the cell STARTS. Without this they pick the
         # same name and silently overwrite each other's tiles. Costs nothing when only
         # one run is active.
-        sdir = os.path.join(d, f"sheet_{i:02d}_chase{i % len(PHRASINGS)}_{os.getpid()}")
+        tag = ("same" if len(ph) == len(PHRASINGS_SAME) and phrasings_for(cell) is PHRASINGS_SAME
+               else "chase")
+        sdir = os.path.join(d, f"sheet_{i:02d}_{tag}{i % len(ph)}_{os.getpid()}")
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
         os.makedirs(sdir, exist_ok=True)
@@ -241,7 +340,7 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             pass
         with open(os.path.join(sdir, "meta.json"), "w") as f:
             json.dump({"cell": cell, "prompt": prompt, "tile_id": tile_id,
-                       "style": f"chase{i % len(PHRASINGS)}", "n_tiles": len(paths),
+                       "style": f"{tag}{i % len(ph)}", "n_tiles": len(paths),
                        "settings": matrix.FIXED}, f, indent=2)
         # Counted over the WHOLE cell, not this sheet: three candidates accumulated
         # across three rolls is exactly as good a choice for the maintainer as three

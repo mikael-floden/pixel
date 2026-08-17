@@ -31,6 +31,7 @@ import flatness
 import no_invention
 import palette_snap
 import tombstones
+import vertical
 
 from PIL import Image
 
@@ -98,6 +99,10 @@ def candidates(cell_dir, side_hex=None, same=False):
                 "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
                             if side_hex else None,
                 "clarity": round(flatness.fringe_clarity(p), 3),
+                # The band that appears when this tile is stacked on itself. Lower
+                # is better; it is what decides a same-over-same tile.
+                "band": (lambda b: round(b, 2) if b is not None else None)(
+                    vertical.band(p)),
                 "tile_id": meta.get("tile_id"), "style": meta.get("style"),
                 "prompt": meta.get("prompt"),
             })
@@ -113,10 +118,20 @@ def candidates(cell_dir, side_hex=None, same=False):
     # declared done while shipping something the generator was still being paid to
     # replace. The tiers below degrade in the maintainer's own priority order, and a
     # cell that lands on a lower tier is FLAGGED rather than quietly shipped.
-    full = [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG
+    #
+    # X-over-X waives the spill requirement entirely, because on those cells it is the
+    # maintainer's stated ANTI-goal — "it's best if 'same over same' doesn't have that
+    # spill-over-effect, becouse it's that effect that make the tile hard to repeat
+    # vertically" — and because flatness.overhang is degenerate there anyway (it hunts
+    # the top material in the wall by hue, and on same-over-same there is no hue
+    # difference to find: exactly 1.000 for every grass/ice/light_soil tile, 0.000 for
+    # most grey_stone/black_rock, on saturation alone).
+    spill_ok = (lambda c: True) if same else (
+        lambda c: c["overhang"] >= flatness.MIN_OVERHANG)
+    full = [c for c in out if spill_ok(c)
             and c["wall"]["score"] >= MIN_WALL
             and c["clarity"] >= flatness.MIN_CLARITY]
-    withspill = full or [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG]
+    withspill = full or [c for c in out if spill_ok(c)]
     out = withspill or out
     # X-over-X is exempt: the wall IS the top's material by construction, so the only
     # thing this could measure there is SHADE — and snap()'s same-material rule moves the
@@ -127,7 +142,14 @@ def candidates(cell_dir, side_hex=None, same=False):
              and c["wall_err"] <= flatness.MAX_WALL_ERR]
     if not same:
         out = right or out
-    out.sort(key=lambda c: -c["wall"]["score"])
+    # Least-banded first on X-over-X: those tiles exist to be stacked into a cliff
+    # under a "top only" tile, so the one that stacks without a stripe is the best
+    # one however good another tile's wall score.
+    if same:
+        out.sort(key=lambda c: (c["band"] if c["band"] is not None else 1e9,
+                                -c["wall"]["score"]))
+    else:
+        out.sort(key=lambda c: -c["wall"]["score"])
     return out, bool(withspill), same or bool(right), bool(full)
 
 
@@ -221,6 +243,7 @@ def main():
                          ("tiling", "discretion", "structure", "contrast", "edges")},
                 "top_share": c["top_share"], "overhang": c["overhang"],
                 "wall_err": c["wall_err"], "clarity": c["clarity"],
+                "band": c["band"],
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1
