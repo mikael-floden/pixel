@@ -149,8 +149,17 @@ function probeArt(url) {
   return artProbe.get(url);
 }
 /** Paths already served by the repo, so the second card of a domain the image
- *  does not carry goes straight there instead of 404ing first. */
-const repoDomains = new Set();
+ *  does not carry goes straight there instead of 404ing first.
+ *
+ *  SEEDED, NOT ONLY DISCOVERED (2026-08-17). Discovery costs one 404 per domain
+ *  and, worse, the first cards of that domain race the discovery and fall into
+ *  the "the agent removed this" path — which is exactly what a whole World page
+ *  of "removed" cards was. `tiles` (3.0) is in the repo and NOT in the image:
+ *  the curate stage ships the domains the GAME reads, and nothing renders 3.0
+ *  yet, so /assets/tiles/** is a guaranteed 404 for every tile and for the
+ *  review manifest. A domain that is known not to ship must never be ASKED of
+ *  the image — the 404 is not information, it is the arrangement. */
+const repoDomains = new Set(["tiles"]);
 async function onArtMissing(img) {
   const url = img.src;
   // ASK THE REPO BEFORE BELIEVING IT IS GONE. The image only holds what has
@@ -167,7 +176,15 @@ async function onArtMissing(img) {
   }
   // Local chrome (section icons, the gold coin) is baked into the page and
   // cannot be "removed by an agent" — a miss there is a plain load failure.
-  const verdict = /\/icons\//.test(url) ? "failed" : await probeArt(url);
+  //
+  // NEITHER CAN A DOMAIN THE IMAGE NEVER CARRIED. If this url is still on the
+  // image's origin for a repo-only domain, the 404 says the deploy does not
+  // ship 3.0 — which is true, deliberate, and says NOTHING about whether the
+  // agent still has the file. Believing it cost a whole World page of "removed"
+  // cards while every one of those tiles sat in the repo (2026-08-17).
+  const domain = new URL(url, location.href).pathname.replace(/^.*\/assets\//, "").split("/")[0];
+  const unshipped = repoDomains.has(domain) && !url.startsWith(String(repoBase ?? " "));
+  const verdict = (/\/icons\//.test(url) || unshipped) ? "failed" : await probeArt(url);
   // GONE MEANS GONE — the piece leaves the wiki, it does not become a
   // tombstone (maintainer 2026-08-16, on three "removed" cards sitting in his
   // partly-reviewed filter: "why is the object not removed then removed? Why
@@ -2799,9 +2816,19 @@ const worldMeta = () => state.data.worldMeta ?? {};
 let worldLive = null;   // null = not fetched yet, [] = fetched and empty
 async function refreshWorldPairs() {
   if (!state.admin || worldLive) return false;
-  const man = await fetchJson(new URL("tiles/review/manifest.json", ROOT));
+  // THROUGH assetUrl, so it goes where the ART goes: tiles/ is a repo-only
+  // domain and the image answers 404 for every path under it.
+  const man = await fetchJson(assetUrl("tiles/review/manifest.json"));
   const cells = Object.entries(man?.cells ?? {});
-  if (!cells.length) { worldLive = []; return false; }
+  // A FAILED FETCH MUST NOT EMPTY THE SECTION (2026-08-17, on a World page
+  // reading "0 ground types · 0 pairs"). worldLive doubles as the "already
+  // refreshed" flag, so assigning [] both replaced the baked 56 pairs with
+  // nothing AND made the guard above refuse to try again for the rest of the
+  // session — one bad response and the section stayed empty until a reload.
+  // Leaving it null keeps the baked list on screen and lets the next visit
+  // retry: the live list is an IMPROVEMENT on the build, never a replacement
+  // for it.
+  if (!cells.length) return false;
   const names = new Map((worldMeta().groundTypes ?? []).map((g) => [g.id, g.name]));
   const nice = (id) => names.get(id) ?? String(id ?? "").replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const dead = new Set(worldMeta().tombstoned ?? []);
@@ -3008,20 +3035,16 @@ function viewWorld() {
     h("p", { class: "muted" }, state.admin
       ? "Tiles 3.0 — the ground system being built to replace Tiles OLD. Open a ground type to see every wall it can stand on."
       : "The ground of Nangijala. Open a ground to see the cliffs it makes where the land steps down."),
-    // HOW IT IS MADE IS THE GAME MASTER'S BUSINESS (maintainer 2026-08-17:
-    // "I feel this is too technical for players that visits the World page.
-    // Normal players will just get confused"). Colour zones, outline passes and
-    // candidate counts are the factory talking about itself; a reader came for
-    // the ground.
-    state.admin ? h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "What is new",
-        h("span", { class: "pill" }, `${types.length} ground types`),
-        h("span", { class: "pill" }, `${all.length} pairs`),
-        h("span", { class: "pill" }, `${state.data.counts?.world_candidates ?? 0} candidates`)),
-      h("ul", { class: "plain-list" },
-        h("li", {}, h("b", {}, "No baked outline"), " — generated as colour zones, so none of Tiles OLD's four outline-fighting passes exist."),
-        h("li", {}, h("b", {}, "Top and wall are separate"), " — “grass over grey stone”, so the map agent picks the surface you walk on and the wall you see independently."),
-        h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))) : null,
+    // THE "WHAT IS NEW" PANEL IS GONE, for everyone (maintainer 2026-08-17,
+    // first "I feel this is too technical for players that visits the World
+    // page. Normal players will just get confused", then, still seeing it as
+    // admin: "didn't you fix that landing page on World overview to not have
+    // that text?"). Hiding it from players was the wrong read of the first
+    // note: colour zones and outline passes are the factory describing its own
+    // process, and the person who asked for the section already knows how it is
+    // made. What a ground page owes anyone, him included, is the grounds.
+    state.admin ? h("p", { class: "muted" },
+      `${types.length} ground types · ${all.length} pairs · ${state.data.counts?.world_candidates ?? 0} candidates`) : null,
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     types.length ? h("div", { class: "grid" }, ...types.map((t) =>
       h("a", { class: "card", href: `#/world/${t.id}` },
