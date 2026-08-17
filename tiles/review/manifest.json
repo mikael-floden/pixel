@@ -1397,6 +1397,140 @@
       ],
       "needs_regeneration": false
     },
+    "ice__over__light_soil": {
+      "top": "ice",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/ice__over__light_soil/0",
+          "before": "tiles/review/ice__over__light_soil/0_before.webp",
+          "after": "tiles/review/ice__over__light_soil/0_after.webp",
+          "file": "tiles/review/ice__over__light_soil/0_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 6.32,
+          "wall": {
+            "tiling": 0.576,
+            "discretion": 0.713,
+            "structure": 0.991,
+            "contrast": 31.16,
+            "edges": 11.89
+          },
+          "top_share": 0.3254,
+          "overhang": 1.0,
+          "tile_id": "eb0aae78-b9f1-4855-b312-911643c69520",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with translucent crystal ice growing on top. The ice spills over the rim and hangs down the light soil face in an uneven fringe. Flat even ice seen from above. No outline."
+        },
+        {
+          "key": "tiles/ice__over__light_soil/1",
+          "before": "tiles/review/ice__over__light_soil/1_before.webp",
+          "after": "tiles/review/ice__over__light_soil/1_after.webp",
+          "file": "tiles/review/ice__over__light_soil/1_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 6.19,
+          "wall": {
+            "tiling": 0.567,
+            "discretion": 0.682,
+            "structure": 1.0,
+            "contrast": 31.73,
+            "edges": 13.15
+          },
+          "top_share": 0.4935,
+          "overhang": 1.0,
+          "tile_id": "eb0aae78-b9f1-4855-b312-911643c69520",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with translucent crystal ice growing on top. The ice spills over the rim and hangs down the light soil face in an uneven fringe. Flat even ice seen from above. No outline."
+        },
+        {
+          "key": "tiles/ice__over__light_soil/2",
+          "before": "tiles/review/ice__over__light_soil/2_before.webp",
+          "after": "tiles/review/ice__over__light_soil/2_after.webp",
+          "file": "tiles/review/ice__over__light_soil/2_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 5.38,
+          "wall": {
+            "tiling": 0.366,
+            "discretion": 0.748,
+            "structure": 1.0,
+            "contrast": 30.54,
+            "edges": 12.909
+          },
+          "top_share": 0.4527,
+          "overhang": 1.0,
+          "tile_id": "eb0aae78-b9f1-4855-b312-911643c69520",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with translucent crystal ice growing on top. The ice spills over the rim and hangs down the light soil face in an uneven fringe. Flat even ice seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "ice__over__parquet_floor": {
+      "top": "ice",
+      "side": "parquet_floor",
+      "candidates": [
+        {
+          "key": "tiles/ice__over__parquet_floor/0",
+          "before": "tiles/review/ice__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/ice__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/ice__over__parquet_floor/0_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 2.38,
+          "wall": {
+            "tiling": 0.124,
+            "discretion": 0.376,
+            "structure": 1.0,
+            "contrast": 37.23,
+            "edges": 22.072
+          },
+          "top_share": 0.2708,
+          "overhang": 1.0,
+          "tile_id": "c52fdec1-d5d0-4e14-b1e2-2b0f8d5f2264",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with translucent crystal ice. The cap overhangs slightly, ice draping down onto the parquet floor beneath it. Uniform flat ice top. No outline."
+        },
+        {
+          "key": "tiles/ice__over__parquet_floor/1",
+          "before": "tiles/review/ice__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/ice__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/ice__over__parquet_floor/1_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 2.2,
+          "wall": {
+            "tiling": 0.09,
+            "discretion": 0.379,
+            "structure": 1.0,
+            "contrast": 37.18,
+            "edges": 28.589
+          },
+          "top_share": 0.2482,
+          "overhang": 1.0,
+          "tile_id": "c52fdec1-d5d0-4e14-b1e2-2b0f8d5f2264",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with translucent crystal ice. The cap overhangs slightly, ice draping down onto the parquet floor beneath it. Uniform flat ice top. No outline."
+        },
+        {
+          "key": "tiles/ice__over__parquet_floor/2",
+          "before": "tiles/review/ice__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/ice__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/ice__over__parquet_floor/2_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 1.98,
+          "wall": {
+            "tiling": 0.058,
+            "discretion": 0.368,
+            "structure": 1.0,
+            "contrast": 37.37,
+            "edges": 25.462
+          },
+          "top_share": 0.2542,
+          "overhang": 1.0,
+          "tile_id": "c52fdec1-d5d0-4e14-b1e2-2b0f8d5f2264",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with translucent crystal ice. The cap overhangs slightly, ice draping down onto the parquet floor beneath it. Uniform flat ice top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "ice__over__paving_stone": {
       "top": "ice",
       "side": "paving_stone",
@@ -2667,6 +2801,26 @@
           "after": "tiles/review/snow__over__deep_water/1_after.webp",
           "file": "tiles/review/snow__over__deep_water/1_after.webp",
           "palette_top": "#d8e4de",
+          "wall_score": 2.05,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.979,
+            "structure": 0.466,
+            "contrast": 26.38,
+            "edges": 5.591
+          },
+          "top_share": 0.91,
+          "overhang": 1.0,
+          "tile_id": "80ca6037-93e4-4cb6-818f-f8331d276cc0",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of deep dark ocean water. Ragged snow edge overhanging the deep water cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
+        },
+        {
+          "key": "tiles/snow__over__deep_water/2",
+          "before": "tiles/review/snow__over__deep_water/2_before.webp",
+          "after": "tiles/review/snow__over__deep_water/2_after.webp",
+          "file": "tiles/review/snow__over__deep_water/2_after.webp",
+          "palette_top": "#d8e4de",
           "wall_score": 1.7,
           "wall": {
             "tiling": 0.051,
@@ -2676,26 +2830,6 @@
             "edges": 10.925
           },
           "top_share": 0.5511,
-          "overhang": 1.0,
-          "tile_id": "0314824b-2ba5-4b9d-b6a8-87f9d8605957",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean deep dark ocean water"
-        },
-        {
-          "key": "tiles/snow__over__deep_water/2",
-          "before": "tiles/review/snow__over__deep_water/2_before.webp",
-          "after": "tiles/review/snow__over__deep_water/2_after.webp",
-          "file": "tiles/review/snow__over__deep_water/2_after.webp",
-          "palette_top": "#d8e4de",
-          "wall_score": 1.35,
-          "wall": {
-            "tiling": 0.31,
-            "discretion": 0.575,
-            "structure": 0.315,
-            "contrast": 33.65,
-            "edges": 3.783
-          },
-          "top_share": 0.4601,
           "overhang": 1.0,
           "tile_id": "0314824b-2ba5-4b9d-b6a8-87f9d8605957",
           "style": "maintainer",
