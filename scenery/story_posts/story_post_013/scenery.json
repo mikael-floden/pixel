@@ -6,7 +6,7 @@
   "rank": 21,
   "index": 13,
   "name": "Charred rune-burned post 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "charred rune-burned post",
   "glow_concept": null,
   "prompt": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, charred rune-burned post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "story_posts/story_post_013/lit_1/sprite.webp",
+      "pixellab_object_id": "9cffc150-126d-40bc-a0be-f017d4b5fd3c",
+      "generated_at": "2026-08-17T19:34:22+00:00",
+      "glow_concept": "luminous ribbons streaming from the top",
+      "difference_from_source": 0.9601,
+      "glow_score": 0.3009
+    },
+    "LIT_2": {
+      "sprite": "story_posts/story_post_013/lit_2/sprite.webp",
+      "pixellab_object_id": "7b3c0173-4460-46f0-b1da-0827a63d6759",
+      "generated_at": "2026-08-17T19:34:22+00:00",
+      "glow_concept": "oil lantern hooked below the finial",
+      "difference_from_source": 0.792,
+      "glow_score": 0.0233
+    },
     "NOT_LIT_1": {
       "sprite": "story_posts/story_post_013/sprite.webp",
       "pixellab_object_id": "08c37543-8c02-4645-882d-64898739bfcd",
       "generated_at": "2026-08-13T23:52:10+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "story_posts/story_post_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "0052e090-9e4c-43ec-b4ac-9bee3ea81928",
+      "generated_at": "2026-08-17T19:32:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5573,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "story_posts/story_post_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "4be6daad-9a0e-40c0-8e29-35b0237b34ae",
+      "generated_at": "2026-08-17T19:32:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7064,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "story_posts/story_post_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c42a31fd-0cd6-4262-bb1a-3f560b81d9fb",
+      "generated_at": "2026-08-17T19:32:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6409,
+      "glow_score": 0.0
     }
   }
 }

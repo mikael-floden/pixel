@@ -45018,7 +45018,7 @@
       "rel": "story_posts/story_post_013",
       "name": "Charred rune-burned post 013",
       "category": "story_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, charred rune-burned post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -45038,11 +45038,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "story_posts/story_post_013/lit_1/sprite.webp",
+          "pixellab_object_id": "9cffc150-126d-40bc-a0be-f017d4b5fd3c",
+          "generated_at": "2026-08-17T19:34:22+00:00",
+          "glow_concept": "luminous ribbons streaming from the top",
+          "difference_from_source": 0.9601,
+          "glow_score": 0.3009,
+          "art_hash": "a69747fde7b88d01"
+        },
+        "LIT_2": {
+          "sprite": "story_posts/story_post_013/lit_2/sprite.webp",
+          "pixellab_object_id": "7b3c0173-4460-46f0-b1da-0827a63d6759",
+          "generated_at": "2026-08-17T19:34:22+00:00",
+          "glow_concept": "oil lantern hooked below the finial",
+          "difference_from_source": 0.792,
+          "glow_score": 0.0233,
+          "art_hash": "5c3cebe858b115d2"
+        },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_013/sprite.webp",
           "pixellab_object_id": "08c37543-8c02-4645-882d-64898739bfcd",
           "generated_at": "2026-08-13T23:52:10+00:00",
           "art_hash": "54fbe2a789ec862a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "story_posts/story_post_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0052e090-9e4c-43ec-b4ac-9bee3ea81928",
+          "generated_at": "2026-08-17T19:32:30+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5573,
+          "glow_score": 0.0,
+          "art_hash": "ea3edcd9dc5c178a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "story_posts/story_post_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "4be6daad-9a0e-40c0-8e29-35b0237b34ae",
+          "generated_at": "2026-08-17T19:32:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7064,
+          "glow_score": 0.0,
+          "art_hash": "849501b6af6ff883"
+        },
+        "NOT_LIT_4": {
+          "sprite": "story_posts/story_post_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c42a31fd-0cd6-4262-bb1a-3f560b81d9fb",
+          "generated_at": "2026-08-17T19:32:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6409,
+          "glow_score": 0.0,
+          "art_hash": "31167d277b9049e5"
         }
       },
       "animations": []
@@ -64781,7 +64826,7 @@
       "rel": "waystones/waystone_019",
       "name": "Moss-capped boundary stone 019",
       "category": "waystones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, moss-capped boundary stone, recently maintained, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -64801,11 +64846,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "waystones/waystone_019/lit_1/sprite.webp",
+          "pixellab_object_id": "59e6a022-f829-4add-8cd7-6e2472fad17a",
+          "generated_at": "2026-08-17T19:36:13+00:00",
+          "glow_concept": "ring of foxfire mushrooms at the base",
+          "difference_from_source": 0.8754,
+          "glow_score": 0.1451,
+          "art_hash": "7c464eb6510f4bb0"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_019/lit_2/sprite.webp",
+          "pixellab_object_id": "8e9529c8-10d0-4dc1-81e8-2cb038767914",
+          "generated_at": "2026-08-17T19:36:34+00:00",
+          "glow_concept": "warm handprint glow where travelers touch",
+          "difference_from_source": 0.4332,
+          "glow_score": 0.066,
+          "art_hash": "738ea9dd27805968"
+        },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_019/sprite.webp",
           "pixellab_object_id": "195f9a55-5bf6-44c3-bce5-f740cbd8c81f",
           "generated_at": "2026-08-14T01:24:27+00:00",
           "art_hash": "1b40991b4d584293"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_019/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e2b452d7-d0f2-4855-9519-0c3d3d5c8346",
+          "generated_at": "2026-08-17T19:34:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2507,
+          "glow_score": 0.0,
+          "art_hash": "8f9fbf0ae84c5d17"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_019/not_lit_3/sprite.webp",
+          "pixellab_object_id": "0288c7dc-7fb5-4171-b7f1-c689cd8c8640",
+          "generated_at": "2026-08-17T19:35:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6545,
+          "glow_score": 0.0,
+          "art_hash": "fbc0c89908fb85ac"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_019/not_lit_4/sprite.webp",
+          "pixellab_object_id": "83694faf-1399-4d4f-a854-5439f0b26774",
+          "generated_at": "2026-08-17T19:36:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7234,
+          "glow_score": 0.0,
+          "art_hash": "67fe3e63d61885ea"
         }
       },
       "animations": []
@@ -65919,9 +66009,9 @@
     {
       "id": "well_016",
       "rel": "wells/well_016",
-      "name": "Rough granite blocks, thatched roof 016 \u00b7 lit",
+      "name": "Rough granite blocks, thatched roof 016",
       "category": "wells",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, rough granite blocks, thatched roof, patched with mismatched materials, large, twice human height, self-emissive at night, softly radiating light: hanging tin lantern lit under the roof peak",
       "view": "low top-down",
       "size": 128,
@@ -65946,6 +66036,51 @@
           "pixellab_object_id": "cb4c2d5f-bcee-4f89-8af6-58bf77e82b08",
           "generated_at": "2026-08-14T01:51:10+00:00",
           "art_hash": "659c4a9bccc8526b"
+        },
+        "LIT_2": {
+          "sprite": "wells/well_016/lit_2/sprite.webp",
+          "pixellab_object_id": "0128745a-f407-40af-ad68-079cf1c981f1",
+          "generated_at": "2026-08-17T19:38:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6444,
+          "glow_score": 0.1762,
+          "art_hash": "703d5d8db823648a"
+        },
+        "LIT_3": {
+          "sprite": "wells/well_016/lit_3/sprite.webp",
+          "pixellab_object_id": "a8401739-2de4-4afa-85db-3dffd92762f4",
+          "generated_at": "2026-08-17T19:38:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8017,
+          "glow_score": 0.1127,
+          "art_hash": "c468521dd5b12c76"
+        },
+        "LIT_4": {
+          "sprite": "wells/well_016/lit_4/sprite.webp",
+          "pixellab_object_id": "72a00422-4bec-4870-a831-e90837f84592",
+          "generated_at": "2026-08-17T19:39:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7537,
+          "glow_score": 0.0694,
+          "art_hash": "f5aadb0467d32379"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wells/well_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "4773f8a5-e3da-4386-8939-f7f80cf4699b",
+          "generated_at": "2026-08-17T19:39:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9994,
+          "glow_score": 0.0,
+          "art_hash": "12cf2879ff1af067"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wells/well_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "63fa8c60-44af-45ab-9e7e-b4899c9c0eee",
+          "generated_at": "2026-08-17T19:44:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9947,
+          "glow_score": 0.0,
+          "art_hash": "854636cd364ab79a"
         }
       },
       "animations": []
