@@ -4,8 +4,8 @@
   "group": "toadstool_rings",
   "rank": 39,
   "index": 6,
-  "name": "Wide ring of pale caps 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Wide ring of pale caps 006",
+  "lights": null,
   "variety": "wide ring of pale caps",
   "glow_concept": "alternating caps glowing in a dotted circle",
   "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, wide ring of pale caps, small, knee-high to an adult person, self-emissive at night, softly radiating light: alternating caps glowing in a dotted circle",
@@ -35,6 +35,38 @@
       "sprite": "toadstool_rings/toadstool_ring_006/sprite.webp",
       "pixellab_object_id": "2cbf8e3b-f49c-433c-9fe9-1e94580fdea5",
       "generated_at": "2026-08-13T13:18:31+00:00"
+    },
+    "LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_006/lit_2/sprite.webp",
+      "pixellab_object_id": "b1c619a1-0042-4934-b26b-b1fd234752a6",
+      "generated_at": "2026-08-17T10:58:23+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5072,
+      "glow_score": 0.1785
+    },
+    "LIT_3": {
+      "sprite": "toadstool_rings/toadstool_ring_006/lit_3/sprite.webp",
+      "pixellab_object_id": "476275bd-7694-4c68-a86d-e63775f72268",
+      "generated_at": "2026-08-17T10:58:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4637,
+      "glow_score": 0.1368
+    },
+    "LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_006/lit_4/sprite.webp",
+      "pixellab_object_id": "ab0fa441-7465-4a9d-8ea7-a2709c5a45d3",
+      "generated_at": "2026-08-17T10:59:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5245,
+      "glow_score": 0.1692
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ba28fb85-e50a-4b6b-be61-f6bdf9203331",
+      "generated_at": "2026-08-17T10:59:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9936,
+      "glow_score": 0.0
     }
   }
 }

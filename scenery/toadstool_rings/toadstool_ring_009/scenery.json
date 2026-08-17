@@ -6,7 +6,7 @@
   "rank": 39,
   "index": 9,
   "name": "Snow-dusted winter ring 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "snow-dusted winter ring",
   "glow_concept": null,
   "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, snow-dusted winter ring, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "toadstool_rings/toadstool_ring_009/lit_1/sprite.webp",
+      "pixellab_object_id": "d97f714a-155a-474d-895b-7f5644ff5ba8",
+      "generated_at": "2026-08-17T10:59:43+00:00",
+      "glow_concept": "every cap lit from inside like paper lanterns",
+      "difference_from_source": 0.5838,
+      "glow_score": 0.1061
+    },
+    "LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_009/lit_2/sprite.webp",
+      "pixellab_object_id": "528b8397-4393-45aa-a927-ef1b949921c4",
+      "generated_at": "2026-08-17T11:00:03+00:00",
+      "glow_concept": "glowing mycelium threads linking the toadstools underground",
+      "difference_from_source": 0.5814,
+      "glow_score": 0.1002
+    },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_009/sprite.webp",
       "pixellab_object_id": "ff2e0781-aa1a-4f20-a8cd-2fb6aa8cfeac",
       "generated_at": "2026-08-13T23:23:53+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a92103ef-379d-4317-bb42-5a23f3d1cdfa",
+      "generated_at": "2026-08-17T10:59:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5302,
+      "glow_score": 0.1036
+    },
+    "NOT_LIT_3": {
+      "sprite": "toadstool_rings/toadstool_ring_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "8593415c-1d48-45c8-9503-c95f29ec1e1d",
+      "generated_at": "2026-08-17T10:59:21+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7158,
+      "glow_score": 0.2773
     }
   }
 }
