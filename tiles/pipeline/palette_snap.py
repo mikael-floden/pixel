@@ -385,6 +385,51 @@ def middle_floor(img, band=4):
 SPILL_SPREAD = 16.0     # tiles2 grass measures value std 16.2 — the look being matched
 
 
+def align_wall(a, reg, side_hex):
+    """Put the wall material on the palette too, by SHIFTING it rather than replacing it.
+
+    A type has to look like itself whichever face it is on. The maintainer caught this
+    on ice-over-grass: the grass TOP of a grass tile is snapped to the palette, but the
+    grass WALL under an ice tile was left exactly as generated — 22 hue units and 25
+    luminance away from the same material's palette colour. Nothing in the pipeline was
+    treating "grass as a wall" as the same material as "grass as a top".
+
+    The reason it was left alone is real and still applies: an earlier version forced
+    every wall pixel to one hue and saturation and collapsed the colour variety that
+    makes rock read as rock — lava's hue spread went 106.9 to 14.2. So this shifts
+    instead. Each pixel keeps its own deviation from the material's median; only the
+    median moves onto the palette. Alignment without flattening.
+
+    VALUE IS NOT TOUCHED. A vertical face catches less light than a horizontal one, so a
+    wall of the same material is legitimately darker than the top and forcing them
+    together would erase the shading that makes a tile read as a solid block. Only hue
+    and saturation say WHICH material this is; value says where the light is.
+    """
+    wall = reg["left"] | reg["right"]
+    if not wall.any() or not side_hex:
+        return None
+    rgb = a[:, :, :3]
+    # measure the material away from the fringe, which is the OTHER material
+    ys, xs = np.where(wall)
+    low = []
+    for x in np.unique(xs):
+        c = np.where(wall[:, x])[0]
+        lo = int(c.min()) + int(0.4 * (int(c.max()) - int(c.min())))
+        low.extend(rgb[lo:int(c.max()) + 1, x])
+    if len(low) < 20:
+        return None
+    med = _rgb2hsv(np.median(np.array(low), 0)[None, :])[0]
+    tgt = _rgb2hsv(_hex(side_hex)[None, :])[0]
+    dh = float(tgt[0]) - float(med[0])
+    ds = float(tgt[1]) - float(med[1])
+    hsv = _rgb2hsv(rgb[wall])
+    hsv[:, 0] = (hsv[:, 0] + dh) % 256.0
+    hsv[:, 1] = np.clip(hsv[:, 1] + ds, 0, 255)
+    out = rgb.copy()
+    out[ys, xs] = _hsv2rgb(hsv)
+    return out, wall
+
+
 def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
                  max_frac=0.50, max_depth=0.34):
     """Pull the TOP material's overhanging blades to the palette, and nothing else.
@@ -532,6 +577,15 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         fac = {k: lum[k] / mean for k in ("left", "right")}
     else:
         fac = {"left": 0.86, "right": 1.10}
+
+    # The wall material goes on the palette FIRST, so the spill retint that follows
+    # compares against an aligned wall rather than a raw one.
+    if side_hex and not align_walls:
+        r = align_wall(a, reg, side_hex)
+        if r:
+            newrgb, m = r
+            out[:, :, :3][m] = newrgb[m]
+            a = out.copy()
 
     if reg["top"].sum():
         # Overwrite the top with the one palette colour. This looks like the bigger

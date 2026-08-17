@@ -3,6 +3,998 @@
   "domain": "tiles",
   "_comment": "Candidates awaiting the maintainer's verdict. Each carries BEFORE (raw generator output) and AFTER (what ships) so the wiki can show the postprocess itself, not just its result. Ranked on WALL quality \u2014 tiling, discretion, structure. `tile_id` is the PixelLab generation a rejection should delete; `cell` is the X-over-Y pair. A DELETED cell is tombstoned and never regenerated, unlike a rejected one.",
   "cells": {
+    "black_rock__over__black_rock": {
+      "top": "black_rock",
+      "side": "black_rock",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__black_rock/0",
+          "before": "tiles/review/black_rock__over__black_rock/0_before.webp",
+          "after": "tiles/review/black_rock__over__black_rock/0_after.webp",
+          "file": "tiles/review/black_rock__over__black_rock/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 7.25,
+          "wall": {
+            "tiling": 0.853,
+            "discretion": 0.659,
+            "structure": 0.946,
+            "contrast": 19.86,
+            "edges": 11.357
+          },
+          "top_share": 0.9421,
+          "overhang": 0.75,
+          "tile_id": "7a47fb99-d81b-4cc2-b274-8f60ea17e84b",
+          "style": "chase4",
+          "prompt": "isometric cube of dark volcanic rock capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the black rock beneath it. Uniform flat black rock top. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__black_rock/1",
+          "before": "tiles/review/black_rock__over__black_rock/1_before.webp",
+          "after": "tiles/review/black_rock__over__black_rock/1_after.webp",
+          "file": "tiles/review/black_rock__over__black_rock/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 5.67,
+          "wall": {
+            "tiling": 0.713,
+            "discretion": 0.592,
+            "structure": 0.862,
+            "contrast": 18.65,
+            "edges": 10.343
+          },
+          "top_share": 0.974,
+          "overhang": 0.655,
+          "tile_id": "7a47fb99-d81b-4cc2-b274-8f60ea17e84b",
+          "style": "chase4",
+          "prompt": "isometric cube of dark volcanic rock capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the black rock beneath it. Uniform flat black rock top. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__black_rock/2",
+          "before": "tiles/review/black_rock__over__black_rock/2_before.webp",
+          "after": "tiles/review/black_rock__over__black_rock/2_after.webp",
+          "file": "tiles/review/black_rock__over__black_rock/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.33,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.623,
+            "structure": 0.832,
+            "contrast": 19.22,
+            "edges": 9.987
+          },
+          "top_share": 0.9338,
+          "overhang": 0.585,
+          "tile_id": "7a47fb99-d81b-4cc2-b274-8f60ea17e84b",
+          "style": "chase4",
+          "prompt": "isometric cube of dark volcanic rock capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the black rock beneath it. Uniform flat black rock top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__dark_mud": {
+      "top": "black_rock",
+      "side": "dark_mud",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__dark_mud/0",
+          "before": "tiles/review/black_rock__over__dark_mud/0_before.webp",
+          "after": "tiles/review/black_rock__over__dark_mud/0_after.webp",
+          "file": "tiles/review/black_rock__over__dark_mud/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.64,
+          "wall": {
+            "tiling": 0.152,
+            "discretion": 0.427,
+            "structure": 0.959,
+            "contrast": 15.68,
+            "edges": 11.505
+          },
+          "top_share": 0.3811,
+          "overhang": 0.685,
+          "tile_id": "09b35009-09ca-4a21-87fb-ace29aa76032",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of wet dark mud. The black rock grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__dark_mud/1",
+          "before": "tiles/review/black_rock__over__dark_mud/1_before.webp",
+          "after": "tiles/review/black_rock__over__dark_mud/1_after.webp",
+          "file": "tiles/review/black_rock__over__dark_mud/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.53,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.434,
+            "structure": 0.782,
+            "contrast": 15.8,
+            "edges": 9.387
+          },
+          "top_share": 0.4976,
+          "overhang": 0.4,
+          "tile_id": "09b35009-09ca-4a21-87fb-ace29aa76032",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of wet dark mud. The black rock grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__deep_water": {
+      "top": "black_rock",
+      "side": "deep_water",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__deep_water/0",
+          "before": "tiles/review/black_rock__over__deep_water/0_before.webp",
+          "after": "tiles/review/black_rock__over__deep_water/0_after.webp",
+          "file": "tiles/review/black_rock__over__deep_water/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.17,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.937,
+            "structure": 0.514,
+            "contrast": 27.13,
+            "edges": 6.169
+          },
+          "top_share": 0.9917,
+          "overhang": 1.0,
+          "tile_id": "df8e34da-3d1c-4f5d-8e31-c154323f10ad",
+          "style": "chase5",
+          "prompt": "isometric ground tile, dark volcanic rock over deep dark ocean water, photographed from above. Soft irregular boundary where black rock meets deep water \u2014 the black rock creeps down over the deep water. Plain even black rock surface. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__deep_water/1",
+          "before": "tiles/review/black_rock__over__deep_water/1_before.webp",
+          "after": "tiles/review/black_rock__over__deep_water/1_after.webp",
+          "file": "tiles/review/black_rock__over__deep_water/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.17,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.916,
+            "structure": 0.527,
+            "contrast": 27.51,
+            "edges": 6.328
+          },
+          "top_share": 0.9988,
+          "overhang": 1.0,
+          "tile_id": "df8e34da-3d1c-4f5d-8e31-c154323f10ad",
+          "style": "chase5",
+          "prompt": "isometric ground tile, dark volcanic rock over deep dark ocean water, photographed from above. Soft irregular boundary where black rock meets deep water \u2014 the black rock creeps down over the deep water. Plain even black rock surface. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__deep_water/2",
+          "before": "tiles/review/black_rock__over__deep_water/2_before.webp",
+          "after": "tiles/review/black_rock__over__deep_water/2_after.webp",
+          "file": "tiles/review/black_rock__over__deep_water/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.02,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.959,
+            "structure": 0.467,
+            "contrast": 25.27,
+            "edges": 5.605
+          },
+          "top_share": 0.9976,
+          "overhang": 1.0,
+          "tile_id": "df8e34da-3d1c-4f5d-8e31-c154323f10ad",
+          "style": "chase5",
+          "prompt": "isometric ground tile, dark volcanic rock over deep dark ocean water, photographed from above. Soft irregular boundary where black rock meets deep water \u2014 the black rock creeps down over the deep water. Plain even black rock surface. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__grass": {
+      "top": "black_rock",
+      "side": "grass",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__grass/0",
+          "before": "tiles/review/black_rock__over__grass/0_before.webp",
+          "after": "tiles/review/black_rock__over__grass/0_after.webp",
+          "file": "tiles/review/black_rock__over__grass/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 6.78,
+          "wall": {
+            "tiling": 0.417,
+            "discretion": 0.998,
+            "structure": 1.0,
+            "contrast": 25.97,
+            "edges": 12.451
+          },
+          "top_share": 0.3788,
+          "overhang": 0.715,
+          "tile_id": "1bf58561-05b2-4276-957d-9c69e422fa95",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the grass face in an uneven fringe. Flat even black rock seen from above. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__grass/1",
+          "before": "tiles/review/black_rock__over__grass/1_before.webp",
+          "after": "tiles/review/black_rock__over__grass/1_after.webp",
+          "file": "tiles/review/black_rock__over__grass/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 3.9,
+          "wall": {
+            "tiling": 0.072,
+            "discretion": 0.777,
+            "structure": 1.0,
+            "contrast": 30.01,
+            "edges": 13.563
+          },
+          "top_share": 0.5165,
+          "overhang": 0.685,
+          "tile_id": "1bf58561-05b2-4276-957d-9c69e422fa95",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the grass face in an uneven fringe. Flat even black rock seen from above. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__grass/2",
+          "before": "tiles/review/black_rock__over__grass/2_before.webp",
+          "after": "tiles/review/black_rock__over__grass/2_after.webp",
+          "file": "tiles/review/black_rock__over__grass/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.08,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.463,
+            "structure": 1.0,
+            "contrast": 35.67,
+            "edges": 14.542
+          },
+          "top_share": 0.3361,
+          "overhang": 0.85,
+          "tile_id": "1bf58561-05b2-4276-957d-9c69e422fa95",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the grass face in an uneven fringe. Flat even black rock seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__grey_stone": {
+      "top": "black_rock",
+      "side": "grey_stone",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__grey_stone/0",
+          "before": "tiles/review/black_rock__over__grey_stone/0_before.webp",
+          "after": "tiles/review/black_rock__over__grey_stone/0_after.webp",
+          "file": "tiles/review/black_rock__over__grey_stone/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.02,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.45,
+            "structure": 1.0,
+            "contrast": 35.9,
+            "edges": 13.876
+          },
+          "top_share": 0.9905,
+          "overhang": 0.925,
+          "tile_id": "d89fcd0f-26a9-4bb5-8325-40efed0fba1a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of rugged grey mountain rock. The black rock grows over the edge and tufts down over the grey stone below, so the two meet naturally with no hard line between them. The grey stone side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__ice": {
+      "top": "black_rock",
+      "side": "ice",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__ice/0",
+          "before": "tiles/review/black_rock__over__ice/0_before.webp",
+          "after": "tiles/review/black_rock__over__ice/0_after.webp",
+          "file": "tiles/review/black_rock__over__ice/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 7.72,
+          "wall": {
+            "tiling": 0.773,
+            "discretion": 0.771,
+            "structure": 1.0,
+            "contrast": 30.12,
+            "edges": 20.358
+          },
+          "top_share": 0.6881,
+          "overhang": 1.0,
+          "tile_id": "566ff98f-71e2-468b-9a6f-efd20a8b0cdc",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed translucent crystal ice. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed ice sides. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__ice/1",
+          "before": "tiles/review/black_rock__over__ice/1_before.webp",
+          "after": "tiles/review/black_rock__over__ice/1_after.webp",
+          "file": "tiles/review/black_rock__over__ice/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.08,
+          "wall": {
+            "tiling": 0.08,
+            "discretion": 0.364,
+            "structure": 1.0,
+            "contrast": 37.45,
+            "edges": 13.847
+          },
+          "top_share": 0.5343,
+          "overhang": 1.0,
+          "tile_id": "66c9d137-0baa-4c6d-b47c-cd1ccf6a721d",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of translucent crystal ice. The black rock grows over the edge and tufts down over the ice below, so the two meet naturally with no hard line between them. The ice side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__ice/2",
+          "before": "tiles/review/black_rock__over__ice/2_before.webp",
+          "after": "tiles/review/black_rock__over__ice/2_after.webp",
+          "file": "tiles/review/black_rock__over__ice/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.47,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.355,
+            "structure": 0.92,
+            "contrast": 37.61,
+            "edges": 11.038
+          },
+          "top_share": 0.5775,
+          "overhang": 0.62,
+          "tile_id": "2b48deae-a2b1-4b11-b244-5f2d4637b10a",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dark volcanic rock covering a block of translucent crystal ice. Ragged black rock edge overhanging the ice cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__lava": {
+      "top": "black_rock",
+      "side": "lava",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__lava/0",
+          "before": "tiles/review/black_rock__over__lava/0_before.webp",
+          "after": "tiles/review/black_rock__over__lava/0_after.webp",
+          "file": "tiles/review/black_rock__over__lava/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 3.02,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.672,
+            "structure": 1.0,
+            "contrast": 31.9,
+            "edges": 14.502
+          },
+          "top_share": 0.8475,
+          "overhang": 0.82,
+          "tile_id": "1988feb7-5c5f-4a87-9350-76bb042e834a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of molten glowing lava. The black rock grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__lava/1",
+          "before": "tiles/review/black_rock__over__lava/1_before.webp",
+          "after": "tiles/review/black_rock__over__lava/1_after.webp",
+          "file": "tiles/review/black_rock__over__lava/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.68,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.596,
+            "structure": 1.0,
+            "contrast": 33.27,
+            "edges": 12.467
+          },
+          "top_share": 0.8061,
+          "overhang": 0.965,
+          "tile_id": "1988feb7-5c5f-4a87-9350-76bb042e834a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of molten glowing lava. The black rock grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__lava/2",
+          "before": "tiles/review/black_rock__over__lava/2_before.webp",
+          "after": "tiles/review/black_rock__over__lava/2_after.webp",
+          "file": "tiles/review/black_rock__over__lava/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.88,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.417,
+            "structure": 1.0,
+            "contrast": 36.49,
+            "edges": 14.05
+          },
+          "top_share": 0.3329,
+          "overhang": 0.355,
+          "tile_id": "1988feb7-5c5f-4a87-9350-76bb042e834a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dark volcanic rock on top of molten glowing lava. The black rock grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__light_beach": {
+      "top": "black_rock",
+      "side": "light_beach",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__light_beach/0",
+          "before": "tiles/review/black_rock__over__light_beach/0_before.webp",
+          "after": "tiles/review/black_rock__over__light_beach/0_after.webp",
+          "file": "tiles/review/black_rock__over__light_beach/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 4.17,
+          "wall": {
+            "tiling": 0.536,
+            "discretion": 0.789,
+            "structure": 0.641,
+            "contrast": 29.8,
+            "edges": 7.695
+          },
+          "top_share": 0.4941,
+          "overhang": 0.755,
+          "tile_id": "e0ca8a76-9927-4ac4-8a38-2bf39b304f12",
+          "style": "chase1",
+          "prompt": "isometric terrain block of pale sandy beach with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the light beach face in an uneven fringe. Flat even black rock seen from above. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__light_beach/1",
+          "before": "tiles/review/black_rock__over__light_beach/1_before.webp",
+          "after": "tiles/review/black_rock__over__light_beach/1_after.webp",
+          "file": "tiles/review/black_rock__over__light_beach/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 3.18,
+          "wall": {
+            "tiling": 0.671,
+            "discretion": 0.942,
+            "structure": 0.401,
+            "contrast": 24.95,
+            "edges": 4.813
+          },
+          "top_share": 0.4102,
+          "overhang": 0.67,
+          "tile_id": "e0ca8a76-9927-4ac4-8a38-2bf39b304f12",
+          "style": "chase1",
+          "prompt": "isometric terrain block of pale sandy beach with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the light beach face in an uneven fringe. Flat even black rock seen from above. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__light_beach/2",
+          "before": "tiles/review/black_rock__over__light_beach/2_before.webp",
+          "after": "tiles/review/black_rock__over__light_beach/2_after.webp",
+          "file": "tiles/review/black_rock__over__light_beach/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.83,
+          "wall": {
+            "tiling": 0.71,
+            "discretion": 0.0,
+            "structure": 0.468,
+            "contrast": 96.19,
+            "edges": 5.621
+          },
+          "top_share": 0.3427,
+          "overhang": 1.0,
+          "tile_id": "e0ca8a76-9927-4ac4-8a38-2bf39b304f12",
+          "style": "chase1",
+          "prompt": "isometric terrain block of pale sandy beach with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the light beach face in an uneven fringe. Flat even black rock seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__light_soil": {
+      "top": "black_rock",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__light_soil/0",
+          "before": "tiles/review/black_rock__over__light_soil/0_before.webp",
+          "after": "tiles/review/black_rock__over__light_soil/0_after.webp",
+          "file": "tiles/review/black_rock__over__light_soil/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.38,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.307,
+            "structure": 1.0,
+            "contrast": 38.48,
+            "edges": 13.527
+          },
+          "top_share": 0.8272,
+          "overhang": 1.0,
+          "tile_id": "c017c997-19e0-47aa-95a8-4b7f1480772f",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed dry light soil. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed light soil sides. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__light_soil/1",
+          "before": "tiles/review/black_rock__over__light_soil/1_before.webp",
+          "after": "tiles/review/black_rock__over__light_soil/1_after.webp",
+          "file": "tiles/review/black_rock__over__light_soil/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.36,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.303,
+            "structure": 1.0,
+            "contrast": 38.54,
+            "edges": 17.099
+          },
+          "top_share": 0.7411,
+          "overhang": 1.0,
+          "tile_id": "c017c997-19e0-47aa-95a8-4b7f1480772f",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed dry light soil. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed light soil sides. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__light_soil/2",
+          "before": "tiles/review/black_rock__over__light_soil/2_before.webp",
+          "after": "tiles/review/black_rock__over__light_soil/2_after.webp",
+          "file": "tiles/review/black_rock__over__light_soil/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.35,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.299,
+            "structure": 1.0,
+            "contrast": 38.61,
+            "edges": 22.048
+          },
+          "top_share": 0.6253,
+          "overhang": 1.0,
+          "tile_id": "c017c997-19e0-47aa-95a8-4b7f1480772f",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed dry light soil. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed light soil sides. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__parquet_floor": {
+      "top": "black_rock",
+      "side": "parquet_floor",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__parquet_floor/0",
+          "before": "tiles/review/black_rock__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/black_rock__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/black_rock__over__parquet_floor/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 4.31,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.958,
+            "structure": 1.0,
+            "contrast": 26.76,
+            "edges": 14.21
+          },
+          "top_share": 0.5733,
+          "overhang": 1.0,
+          "tile_id": "052b047a-b11d-41b2-a2b9-dc6291b87b9e",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the parquet floor beneath it. Uniform flat black rock top. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__parquet_floor/1",
+          "before": "tiles/review/black_rock__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/black_rock__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/black_rock__over__parquet_floor/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 4.29,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.954,
+            "structure": 1.0,
+            "contrast": 26.83,
+            "edges": 15.029
+          },
+          "top_share": 0.5154,
+          "overhang": 1.0,
+          "tile_id": "052b047a-b11d-41b2-a2b9-dc6291b87b9e",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the parquet floor beneath it. Uniform flat black rock top. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__parquet_floor/2",
+          "before": "tiles/review/black_rock__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/black_rock__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/black_rock__over__parquet_floor/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 4.24,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.942,
+            "structure": 1.0,
+            "contrast": 27.04,
+            "edges": 13.891
+          },
+          "top_share": 0.5851,
+          "overhang": 1.0,
+          "tile_id": "052b047a-b11d-41b2-a2b9-dc6291b87b9e",
+          "style": "chase4",
+          "prompt": "isometric cube of wooden parquet floor capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the parquet floor beneath it. Uniform flat black rock top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__slime": {
+      "top": "black_rock",
+      "side": "slime",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__slime/0",
+          "before": "tiles/review/black_rock__over__slime/0_before.webp",
+          "after": "tiles/review/black_rock__over__slime/0_after.webp",
+          "file": "tiles/review/black_rock__over__slime/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.49,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.559,
+            "structure": 0.99,
+            "contrast": 33.94,
+            "edges": 11.876
+          },
+          "top_share": 0.9764,
+          "overhang": 0.425,
+          "tile_id": "ba67ae49-cb5b-443a-83e7-cfd1ae940ca2",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dark volcanic rock covering a block of thick bubbling slime. Ragged black rock edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__slime/1",
+          "before": "tiles/review/black_rock__over__slime/1_before.webp",
+          "after": "tiles/review/black_rock__over__slime/1_after.webp",
+          "file": "tiles/review/black_rock__over__slime/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.21,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.492,
+            "structure": 1.0,
+            "contrast": 35.14,
+            "edges": 13.705
+          },
+          "top_share": 0.9811,
+          "overhang": 0.39,
+          "tile_id": "ba67ae49-cb5b-443a-83e7-cfd1ae940ca2",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dark volcanic rock covering a block of thick bubbling slime. Ragged black rock edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__slime/2",
+          "before": "tiles/review/black_rock__over__slime/2_before.webp",
+          "after": "tiles/review/black_rock__over__slime/2_after.webp",
+          "file": "tiles/review/black_rock__over__slime/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 1.15,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.255,
+            "structure": 1.0,
+            "contrast": 39.42,
+            "edges": 15.213
+          },
+          "top_share": 0.9894,
+          "overhang": 0.475,
+          "tile_id": "ba67ae49-cb5b-443a-83e7-cfd1ae940ca2",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dark volcanic rock covering a block of thick bubbling slime. Ragged black rock edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__snow": {
+      "top": "black_rock",
+      "side": "snow",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__snow/0",
+          "before": "tiles/review/black_rock__over__snow/0_before.webp",
+          "after": "tiles/review/black_rock__over__snow/0_after.webp",
+          "file": "tiles/review/black_rock__over__snow/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.32,
+          "wall": {
+            "tiling": 0.5,
+            "discretion": 0.494,
+            "structure": 0.466,
+            "contrast": 35.11,
+            "edges": 5.598
+          },
+          "top_share": 0.6265,
+          "overhang": 1.0,
+          "tile_id": "36a2d34f-2ff5-443a-bd6a-1c657f0cfdba",
+          "style": "chase5",
+          "prompt": "isometric ground tile, dark volcanic rock over clean fresh snow, photographed from above. Soft irregular boundary where black rock meets snow \u2014 the black rock creeps down over the snow. Plain even black rock surface. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__snow/1",
+          "before": "tiles/review/black_rock__over__snow/1_before.webp",
+          "after": "tiles/review/black_rock__over__snow/1_after.webp",
+          "file": "tiles/review/black_rock__over__snow/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 57.93,
+            "edges": 16.787
+          },
+          "top_share": 0.4863,
+          "overhang": 1.0,
+          "tile_id": "019abe20-513e-47de-818e-6b61409e385d",
+          "style": "chase1",
+          "prompt": "isometric terrain block of clean fresh snow with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the snow face in an uneven fringe. Flat even black rock seen from above. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__snow/2",
+          "before": "tiles/review/black_rock__over__snow/2_before.webp",
+          "after": "tiles/review/black_rock__over__snow/2_after.webp",
+          "file": "tiles/review/black_rock__over__snow/2_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 46.13,
+            "edges": 23.798
+          },
+          "top_share": 0.4238,
+          "overhang": 1.0,
+          "tile_id": "019abe20-513e-47de-818e-6b61409e385d",
+          "style": "chase1",
+          "prompt": "isometric terrain block of clean fresh snow with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the snow face in an uneven fringe. Flat even black rock seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "black_rock__over__water": {
+      "top": "black_rock",
+      "side": "water",
+      "candidates": [
+        {
+          "key": "tiles/black_rock__over__water/0",
+          "before": "tiles/review/black_rock__over__water/0_before.webp",
+          "after": "tiles/review/black_rock__over__water/0_after.webp",
+          "file": "tiles/review/black_rock__over__water/0_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 2.41,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.853,
+            "structure": 0.627,
+            "contrast": 28.64,
+            "edges": 7.519
+          },
+          "top_share": 0.7728,
+          "overhang": 1.0,
+          "tile_id": "59fc1fa0-f78d-4e82-8db6-8ef75e3865c1",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dark volcanic rock covering a block of clear calm water. Ragged black rock edge overhanging the water cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline."
+        },
+        {
+          "key": "tiles/black_rock__over__water/1",
+          "before": "tiles/review/black_rock__over__water/1_before.webp",
+          "after": "tiles/review/black_rock__over__water/1_after.webp",
+          "file": "tiles/review/black_rock__over__water/1_after.webp",
+          "palette_top": "#1e1e24",
+          "wall_score": 0.13,
+          "wall": {
+            "tiling": 0.024,
+            "discretion": 0.176,
+            "structure": 0.139,
+            "contrast": 11.18,
+            "edges": 1.669
+          },
+          "top_share": 0.4342,
+          "overhang": 1.0,
+          "tile_id": "6166bb86-1600-4f3d-a33d-5674a519adc3",
+          "style": "chase1",
+          "prompt": "isometric terrain block of clear calm water with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the water face in an uneven fringe. Flat even black rock seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "dark_mud__over__grass": {
+      "top": "dark_mud",
+      "side": "grass",
+      "candidates": [
+        {
+          "key": "tiles/dark_mud__over__grass/0",
+          "before": "tiles/review/dark_mud__over__grass/0_before.webp",
+          "after": "tiles/review/dark_mud__over__grass/0_after.webp",
+          "file": "tiles/review/dark_mud__over__grass/0_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 4.3,
+          "wall": {
+            "tiling": 0.058,
+            "discretion": 0.885,
+            "structure": 1.0,
+            "contrast": 23.94,
+            "edges": 13.526
+          },
+          "top_share": 0.4764,
+          "overhang": 1.0,
+          "tile_id": "f7e01a69-cbea-4847-bbd3-e58d04af3b4c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with wet dark mud growing on top. The dark mud spills over the rim and hangs down the grass face in an uneven fringe. Flat even dark mud seen from above. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__grass/1",
+          "before": "tiles/review/dark_mud__over__grass/1_before.webp",
+          "after": "tiles/review/dark_mud__over__grass/1_after.webp",
+          "file": "tiles/review/dark_mud__over__grass/1_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 4.1,
+          "wall": {
+            "tiling": 0.09,
+            "discretion": 0.801,
+            "structure": 1.0,
+            "contrast": 22.41,
+            "edges": 12.589
+          },
+          "top_share": 0.4134,
+          "overhang": 1.0,
+          "tile_id": "f7e01a69-cbea-4847-bbd3-e58d04af3b4c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with wet dark mud growing on top. The dark mud spills over the rim and hangs down the grass face in an uneven fringe. Flat even dark mud seen from above. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__grass/2",
+          "before": "tiles/review/dark_mud__over__grass/2_before.webp",
+          "after": "tiles/review/dark_mud__over__grass/2_after.webp",
+          "file": "tiles/review/dark_mud__over__grass/2_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 3.85,
+          "wall": {
+            "tiling": 0.331,
+            "discretion": 0.681,
+            "structure": 0.789,
+            "contrast": 20.26,
+            "edges": 9.462
+          },
+          "top_share": 0.3629,
+          "overhang": 0.35,
+          "tile_id": "f7e01a69-cbea-4847-bbd3-e58d04af3b4c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with wet dark mud growing on top. The dark mud spills over the rim and hangs down the grass face in an uneven fringe. Flat even dark mud seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "dark_mud__over__ice": {
+      "top": "dark_mud",
+      "side": "ice",
+      "candidates": [
+        {
+          "key": "tiles/dark_mud__over__ice/0",
+          "before": "tiles/review/dark_mud__over__ice/0_before.webp",
+          "after": "tiles/review/dark_mud__over__ice/0_after.webp",
+          "file": "tiles/review/dark_mud__over__ice/0_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 5.22,
+          "wall": {
+            "tiling": 0.682,
+            "discretion": 0.438,
+            "structure": 0.912,
+            "contrast": 36.12,
+            "edges": 10.942
+          },
+          "top_share": 0.4496,
+          "overhang": 0.54,
+          "tile_id": "e1927935-c32d-423d-8ec2-c8515f29dd92",
+          "style": "chase1",
+          "prompt": "isometric terrain block of translucent crystal ice with wet dark mud growing on top. The dark mud spills over the rim and hangs down the ice face in an uneven fringe. Flat even dark mud seen from above. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__ice/1",
+          "before": "tiles/review/dark_mud__over__ice/1_before.webp",
+          "after": "tiles/review/dark_mud__over__ice/1_after.webp",
+          "file": "tiles/review/dark_mud__over__ice/1_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 1.59,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.473,
+            "structure": 0.745,
+            "contrast": 35.48,
+            "edges": 8.939
+          },
+          "top_share": 0.7884,
+          "overhang": 0.315,
+          "tile_id": "4cd247d7-ff48-4e26-a710-149d54d21119",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of wet dark mud covering a block of translucent crystal ice. Ragged dark mud edge overhanging the ice cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__ice/2",
+          "before": "tiles/review/dark_mud__over__ice/2_before.webp",
+          "after": "tiles/review/dark_mud__over__ice/2_after.webp",
+          "file": "tiles/review/dark_mud__over__ice/2_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 1.56,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.507,
+            "structure": 0.686,
+            "contrast": 34.88,
+            "edges": 8.227
+          },
+          "top_share": 0.6667,
+          "overhang": 0.28,
+          "tile_id": "4cd247d7-ff48-4e26-a710-149d54d21119",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of wet dark mud covering a block of translucent crystal ice. Ragged dark mud edge overhanging the ice cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "dark_mud__over__snow": {
+      "top": "dark_mud",
+      "side": "snow",
+      "candidates": [
+        {
+          "key": "tiles/dark_mud__over__snow/0",
+          "before": "tiles/review/dark_mud__over__snow/0_before.webp",
+          "after": "tiles/review/dark_mud__over__snow/0_after.webp",
+          "file": "tiles/review/dark_mud__over__snow/0_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 70.64,
+            "edges": 16.012
+          },
+          "top_share": 0.9941,
+          "overhang": 1.0,
+          "tile_id": "b196f095-9ac4-4343-abbd-c87fcea37819",
+          "style": "chase4",
+          "prompt": "isometric cube of clean fresh snow capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the snow beneath it. Uniform flat dark mud top. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__snow/1",
+          "before": "tiles/review/dark_mud__over__snow/1_before.webp",
+          "after": "tiles/review/dark_mud__over__snow/1_after.webp",
+          "file": "tiles/review/dark_mud__over__snow/1_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 66.34,
+            "edges": 15.711
+          },
+          "top_share": 0.7654,
+          "overhang": 1.0,
+          "tile_id": "b196f095-9ac4-4343-abbd-c87fcea37819",
+          "style": "chase4",
+          "prompt": "isometric cube of clean fresh snow capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the snow beneath it. Uniform flat dark mud top. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__snow/2",
+          "before": "tiles/review/dark_mud__over__snow/2_before.webp",
+          "after": "tiles/review/dark_mud__over__snow/2_after.webp",
+          "file": "tiles/review/dark_mud__over__snow/2_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 76.31,
+            "edges": 19.602
+          },
+          "top_share": 0.7645,
+          "overhang": 1.0,
+          "tile_id": "b196f095-9ac4-4343-abbd-c87fcea37819",
+          "style": "chase4",
+          "prompt": "isometric cube of clean fresh snow capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the snow beneath it. Uniform flat dark mud top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "grass__over__black_rock": {
       "top": "grass",
       "side": "black_rock",
@@ -857,6 +1849,884 @@
           "tile_id": "b8952ac1-e4c8-46b6-a5b8-fb7927f0fb13",
           "style": "chase4",
           "prompt": "isometric cube of clear calm water capped with lush green grass. The cap overhangs slightly, grass draping down onto the water beneath it. Uniform flat grass top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__black_rock": {
+      "top": "grey_stone",
+      "side": "black_rock",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__black_rock/0",
+          "before": "tiles/review/grey_stone__over__black_rock/0_before.webp",
+          "after": "tiles/review/grey_stone__over__black_rock/0_after.webp",
+          "file": "tiles/review/grey_stone__over__black_rock/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 4.37,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.971,
+            "structure": 1.0,
+            "contrast": 26.52,
+            "edges": 14.095
+          },
+          "top_share": 0.7444,
+          "overhang": 1.0,
+          "tile_id": "bf0f7d7e-6587-414e-b0dd-289cf34681ea",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed dark volcanic rock. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed black rock sides. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__black_rock/1",
+          "before": "tiles/review/grey_stone__over__black_rock/1_before.webp",
+          "after": "tiles/review/grey_stone__over__black_rock/1_after.webp",
+          "file": "tiles/review/grey_stone__over__black_rock/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.9,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.957,
+            "structure": 0.905,
+            "contrast": 25.23,
+            "edges": 10.858
+          },
+          "top_share": 0.7737,
+          "overhang": 1.0,
+          "tile_id": "bf0f7d7e-6587-414e-b0dd-289cf34681ea",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed dark volcanic rock. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed black rock sides. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__black_rock/2",
+          "before": "tiles/review/grey_stone__over__black_rock/2_before.webp",
+          "after": "tiles/review/grey_stone__over__black_rock/2_after.webp",
+          "file": "tiles/review/grey_stone__over__black_rock/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.65,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.961,
+            "structure": 0.844,
+            "contrast": 26.71,
+            "edges": 10.122
+          },
+          "top_share": 0.8533,
+          "overhang": 1.0,
+          "tile_id": "bf0f7d7e-6587-414e-b0dd-289cf34681ea",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed dark volcanic rock. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed black rock sides. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__dark_mud": {
+      "top": "grey_stone",
+      "side": "dark_mud",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__dark_mud/0",
+          "before": "tiles/review/grey_stone__over__dark_mud/0_before.webp",
+          "after": "tiles/review/grey_stone__over__dark_mud/0_after.webp",
+          "file": "tiles/review/grey_stone__over__dark_mud/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 4.81,
+          "wall": {
+            "tiling": 0.275,
+            "discretion": 0.734,
+            "structure": 1.0,
+            "contrast": 21.21,
+            "edges": 12.653
+          },
+          "top_share": 0.6336,
+          "overhang": 1.0,
+          "tile_id": "dd05cd21-c030-41e2-804f-c7dbdb68a0b7",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of wet dark mud. The grey stone grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__dark_mud/1",
+          "before": "tiles/review/grey_stone__over__dark_mud/1_before.webp",
+          "after": "tiles/review/grey_stone__over__dark_mud/1_after.webp",
+          "file": "tiles/review/grey_stone__over__dark_mud/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 4.7,
+          "wall": {
+            "tiling": 0.341,
+            "discretion": 0.651,
+            "structure": 0.978,
+            "contrast": 19.72,
+            "edges": 11.731
+          },
+          "top_share": 0.4686,
+          "overhang": 1.0,
+          "tile_id": "dd05cd21-c030-41e2-804f-c7dbdb68a0b7",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of wet dark mud. The grey stone grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__dark_mud/2",
+          "before": "tiles/review/grey_stone__over__dark_mud/2_before.webp",
+          "after": "tiles/review/grey_stone__over__dark_mud/2_after.webp",
+          "file": "tiles/review/grey_stone__over__dark_mud/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.14,
+          "wall": {
+            "tiling": 0.145,
+            "discretion": 0.564,
+            "structure": 0.941,
+            "contrast": 18.14,
+            "edges": 11.294
+          },
+          "top_share": 0.7435,
+          "overhang": 1.0,
+          "tile_id": "dd05cd21-c030-41e2-804f-c7dbdb68a0b7",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of wet dark mud. The grey stone grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__deep_water": {
+      "top": "grey_stone",
+      "side": "deep_water",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__deep_water/0",
+          "before": "tiles/review/grey_stone__over__deep_water/0_before.webp",
+          "after": "tiles/review/grey_stone__over__deep_water/0_after.webp",
+          "file": "tiles/review/grey_stone__over__deep_water/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 2.91,
+          "wall": {
+            "tiling": 0.709,
+            "discretion": 0.314,
+            "structure": 0.547,
+            "contrast": 13.65,
+            "edges": 6.568
+          },
+          "top_share": 0.2967,
+          "overhang": 1.0,
+          "tile_id": "ccba5bca-f43e-4811-8706-2a4cd9ab8402",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed deep dark ocean water. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed deep water sides. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__deep_water/1",
+          "before": "tiles/review/grey_stone__over__deep_water/1_before.webp",
+          "after": "tiles/review/grey_stone__over__deep_water/1_after.webp",
+          "file": "tiles/review/grey_stone__over__deep_water/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 2.65,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.791,
+            "structure": 0.743,
+            "contrast": 22.25,
+            "edges": 8.912
+          },
+          "top_share": 0.2683,
+          "overhang": 1.0,
+          "tile_id": "ccba5bca-f43e-4811-8706-2a4cd9ab8402",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed deep dark ocean water. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed deep water sides. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__deep_water/2",
+          "before": "tiles/review/grey_stone__over__deep_water/2_before.webp",
+          "after": "tiles/review/grey_stone__over__deep_water/2_after.webp",
+          "file": "tiles/review/grey_stone__over__deep_water/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 2.35,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.745,
+            "structure": 0.702,
+            "contrast": 21.4,
+            "edges": 8.429
+          },
+          "top_share": 0.2834,
+          "overhang": 1.0,
+          "tile_id": "01e56391-5365-4aa9-a685-abe827eecacc",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of deep dark ocean water. The grey stone grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__grass": {
+      "top": "grey_stone",
+      "side": "grass",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__grass/0",
+          "before": "tiles/review/grey_stone__over__grass/0_before.webp",
+          "after": "tiles/review/grey_stone__over__grass/0_after.webp",
+          "file": "tiles/review/grey_stone__over__grass/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 5.14,
+          "wall": {
+            "tiling": 0.154,
+            "discretion": 0.953,
+            "structure": 1.0,
+            "contrast": 26.84,
+            "edges": 16.593
+          },
+          "top_share": 0.4822,
+          "overhang": 1.0,
+          "tile_id": "ace0bc49-eb9e-4b06-8aa7-b13df4f27ee3",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of lush green grass. The grey stone grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__grass/1",
+          "before": "tiles/review/grey_stone__over__grass/1_before.webp",
+          "after": "tiles/review/grey_stone__over__grass/1_after.webp",
+          "file": "tiles/review/grey_stone__over__grass/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.42,
+          "wall": {
+            "tiling": 0.249,
+            "discretion": 0.641,
+            "structure": 0.804,
+            "contrast": 19.55,
+            "edges": 9.646
+          },
+          "top_share": 0.8877,
+          "overhang": 0.94,
+          "tile_id": "041a88ad-ccc0-4d5c-9c0a-1ca38619bb4d",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the grass face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__grey_stone": {
+      "top": "grey_stone",
+      "side": "grey_stone",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__grey_stone/0",
+          "before": "tiles/review/grey_stone__over__grey_stone/0_before.webp",
+          "after": "tiles/review/grey_stone__over__grey_stone/0_after.webp",
+          "file": "tiles/review/grey_stone__over__grey_stone/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 2.17,
+          "wall": {
+            "tiling": 0.012,
+            "discretion": 0.468,
+            "structure": 1.0,
+            "contrast": 35.57,
+            "edges": 17.068
+          },
+          "top_share": 0.7588,
+          "overhang": 1.0,
+          "tile_id": "1cddec61-3cbd-4cb5-9ee1-526fd6ebd50a",
+          "style": "chase4",
+          "prompt": "isometric cube of rugged grey mountain rock capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the grey stone beneath it. Uniform flat grey stone top. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__grey_stone/1",
+          "before": "tiles/review/grey_stone__over__grey_stone/1_before.webp",
+          "after": "tiles/review/grey_stone__over__grey_stone/1_after.webp",
+          "file": "tiles/review/grey_stone__over__grey_stone/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 1.58,
+          "wall": {
+            "tiling": 0.031,
+            "discretion": 0.313,
+            "structure": 1.0,
+            "contrast": 38.37,
+            "edges": 12.851
+          },
+          "top_share": 0.8162,
+          "overhang": 1.0,
+          "tile_id": "1cddec61-3cbd-4cb5-9ee1-526fd6ebd50a",
+          "style": "chase4",
+          "prompt": "isometric cube of rugged grey mountain rock capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the grey stone beneath it. Uniform flat grey stone top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__ice": {
+      "top": "grey_stone",
+      "side": "ice",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__ice/0",
+          "before": "tiles/review/grey_stone__over__ice/0_before.webp",
+          "after": "tiles/review/grey_stone__over__ice/0_after.webp",
+          "file": "tiles/review/grey_stone__over__ice/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 53.33,
+            "edges": 15.581
+          },
+          "top_share": 0.7378,
+          "overhang": 1.0,
+          "tile_id": "660aaa6b-d835-4e55-8275-6fbaeb5f4044",
+          "style": "chase1",
+          "prompt": "isometric terrain block of translucent crystal ice with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the ice face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__ice/1",
+          "before": "tiles/review/grey_stone__over__ice/1_before.webp",
+          "after": "tiles/review/grey_stone__over__ice/1_after.webp",
+          "file": "tiles/review/grey_stone__over__ice/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 53.75,
+            "edges": 16.827
+          },
+          "top_share": 0.7494,
+          "overhang": 1.0,
+          "tile_id": "660aaa6b-d835-4e55-8275-6fbaeb5f4044",
+          "style": "chase1",
+          "prompt": "isometric terrain block of translucent crystal ice with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the ice face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__lava": {
+      "top": "grey_stone",
+      "side": "lava",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__lava/0",
+          "before": "tiles/review/grey_stone__over__lava/0_before.webp",
+          "after": "tiles/review/grey_stone__over__lava/0_after.webp",
+          "file": "tiles/review/grey_stone__over__lava/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 5.23,
+          "wall": {
+            "tiling": 0.279,
+            "discretion": 0.821,
+            "structure": 1.0,
+            "contrast": 29.23,
+            "edges": 13.153
+          },
+          "top_share": 0.3156,
+          "overhang": 1.0,
+          "tile_id": "ea75daaa-a448-47d7-ad8c-b364650e7183",
+          "style": "chase1",
+          "prompt": "isometric terrain block of molten glowing lava with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the lava face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__lava/1",
+          "before": "tiles/review/grey_stone__over__lava/1_before.webp",
+          "after": "tiles/review/grey_stone__over__lava/1_after.webp",
+          "file": "tiles/review/grey_stone__over__lava/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 1.2,
+          "wall": {
+            "tiling": 0.541,
+            "discretion": 0.415,
+            "structure": 0.247,
+            "contrast": 15.47,
+            "edges": 2.969
+          },
+          "top_share": 0.446,
+          "overhang": 1.0,
+          "tile_id": "ea75daaa-a448-47d7-ad8c-b364650e7183",
+          "style": "chase1",
+          "prompt": "isometric terrain block of molten glowing lava with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the lava face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__lava/2",
+          "before": "tiles/review/grey_stone__over__lava/2_before.webp",
+          "after": "tiles/review/grey_stone__over__lava/2_after.webp",
+          "file": "tiles/review/grey_stone__over__lava/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 45.79,
+            "edges": 23.348
+          },
+          "top_share": 0.4674,
+          "overhang": 1.0,
+          "tile_id": "216b6ef9-23ea-4459-b8d7-ebe9e7570492",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of molten glowing lava. The grey stone grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__light_beach": {
+      "top": "grey_stone",
+      "side": "light_beach",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__light_beach/0",
+          "before": "tiles/review/grey_stone__over__light_beach/0_before.webp",
+          "after": "tiles/review/grey_stone__over__light_beach/0_after.webp",
+          "file": "tiles/review/grey_stone__over__light_beach/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 4.41,
+          "wall": {
+            "tiling": 0.518,
+            "discretion": 0.565,
+            "structure": 0.819,
+            "contrast": 33.84,
+            "edges": 9.823
+          },
+          "top_share": 0.8791,
+          "overhang": 0.0,
+          "tile_id": "9d2611ff-91d5-4a4d-9940-c6d304eb07ce",
+          "style": "chase4",
+          "prompt": "isometric cube of pale sandy beach capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the light beach beneath it. Uniform flat grey stone top. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__light_beach/1",
+          "before": "tiles/review/grey_stone__over__light_beach/1_before.webp",
+          "after": "tiles/review/grey_stone__over__light_beach/1_after.webp",
+          "file": "tiles/review/grey_stone__over__light_beach/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.52,
+          "wall": {
+            "tiling": 0.198,
+            "discretion": 0.686,
+            "structure": 0.843,
+            "contrast": 31.65,
+            "edges": 10.117
+          },
+          "top_share": 0.9953,
+          "overhang": 0.005,
+          "tile_id": "c44fb75f-7053-4c8a-8de4-51f70d6cdbfa",
+          "style": "chase5",
+          "prompt": "isometric ground tile, rugged grey mountain rock over pale sandy beach, photographed from above. Soft irregular boundary where grey stone meets light beach \u2014 the grey stone creeps down over the light beach. Plain even grey stone surface. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__light_beach/2",
+          "before": "tiles/review/grey_stone__over__light_beach/2_before.webp",
+          "after": "tiles/review/grey_stone__over__light_beach/2_after.webp",
+          "file": "tiles/review/grey_stone__over__light_beach/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 3.0,
+          "wall": {
+            "tiling": 0.228,
+            "discretion": 0.8,
+            "structure": 0.618,
+            "contrast": 29.59,
+            "edges": 7.411
+          },
+          "top_share": 0.9953,
+          "overhang": 0.045,
+          "tile_id": "c44fb75f-7053-4c8a-8de4-51f70d6cdbfa",
+          "style": "chase5",
+          "prompt": "isometric ground tile, rugged grey mountain rock over pale sandy beach, photographed from above. Soft irregular boundary where grey stone meets light beach \u2014 the grey stone creeps down over the light beach. Plain even grey stone surface. No outline."
+        }
+      ],
+      "needs_regeneration": true
+    },
+    "grey_stone__over__light_soil": {
+      "top": "grey_stone",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__light_soil/0",
+          "before": "tiles/review/grey_stone__over__light_soil/0_before.webp",
+          "after": "tiles/review/grey_stone__over__light_soil/0_after.webp",
+          "file": "tiles/review/grey_stone__over__light_soil/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 5.44,
+          "wall": {
+            "tiling": 0.275,
+            "discretion": 0.873,
+            "structure": 1.0,
+            "contrast": 28.28,
+            "edges": 16.201
+          },
+          "top_share": 0.8337,
+          "overhang": 1.0,
+          "tile_id": "11138740-4dde-4d04-9447-cf279969c45c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the light soil face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__light_soil/1",
+          "before": "tiles/review/grey_stone__over__light_soil/1_before.webp",
+          "after": "tiles/review/grey_stone__over__light_soil/1_after.webp",
+          "file": "tiles/review/grey_stone__over__light_soil/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 5.33,
+          "wall": {
+            "tiling": 0.287,
+            "discretion": 0.833,
+            "structure": 1.0,
+            "contrast": 29.01,
+            "edges": 20.789
+          },
+          "top_share": 0.8497,
+          "overhang": 1.0,
+          "tile_id": "11138740-4dde-4d04-9447-cf279969c45c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the light soil face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__light_soil/2",
+          "before": "tiles/review/grey_stone__over__light_soil/2_before.webp",
+          "after": "tiles/review/grey_stone__over__light_soil/2_after.webp",
+          "file": "tiles/review/grey_stone__over__light_soil/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 4.68,
+          "wall": {
+            "tiling": 0.109,
+            "discretion": 0.907,
+            "structure": 1.0,
+            "contrast": 27.67,
+            "edges": 14.896
+          },
+          "top_share": 0.8399,
+          "overhang": 1.0,
+          "tile_id": "11138740-4dde-4d04-9447-cf279969c45c",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the light soil face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__parquet_floor": {
+      "top": "grey_stone",
+      "side": "parquet_floor",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__parquet_floor/0",
+          "before": "tiles/review/grey_stone__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/grey_stone__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/grey_stone__over__parquet_floor/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 7.01,
+          "wall": {
+            "tiling": 0.563,
+            "discretion": 0.916,
+            "structure": 0.971,
+            "contrast": 27.52,
+            "edges": 11.647
+          },
+          "top_share": 0.9929,
+          "overhang": 1.0,
+          "tile_id": "44d28816-6547-4065-9065-ce7dfc2ebf0c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of wooden parquet floor. Ragged grey stone edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__parquet_floor/1",
+          "before": "tiles/review/grey_stone__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/grey_stone__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/grey_stone__over__parquet_floor/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 6.16,
+          "wall": {
+            "tiling": 0.451,
+            "discretion": 0.817,
+            "structure": 1.0,
+            "contrast": 22.7,
+            "edges": 18.343
+          },
+          "top_share": 1.0,
+          "overhang": 1.0,
+          "tile_id": "2066c1dc-fb6c-44ba-8661-eaabb321953f",
+          "style": "chase1",
+          "prompt": "isometric terrain block of wooden parquet floor with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the parquet floor face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__parquet_floor/2",
+          "before": "tiles/review/grey_stone__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/grey_stone__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/grey_stone__over__parquet_floor/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 5.67,
+          "wall": {
+            "tiling": 0.229,
+            "discretion": 0.98,
+            "structure": 1.0,
+            "contrast": 26.36,
+            "edges": 16.601
+          },
+          "top_share": 1.0,
+          "overhang": 1.0,
+          "tile_id": "2066c1dc-fb6c-44ba-8661-eaabb321953f",
+          "style": "chase1",
+          "prompt": "isometric terrain block of wooden parquet floor with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the parquet floor face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__paving_stone": {
+      "top": "grey_stone",
+      "side": "paving_stone",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__paving_stone/0",
+          "before": "tiles/review/grey_stone__over__paving_stone/0_before.webp",
+          "after": "tiles/review/grey_stone__over__paving_stone/0_after.webp",
+          "file": "tiles/review/grey_stone__over__paving_stone/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 7.06,
+          "wall": {
+            "tiling": 0.476,
+            "discretion": 0.989,
+            "structure": 1.0,
+            "contrast": 26.21,
+            "edges": 18.367
+          },
+          "top_share": 0.6734,
+          "overhang": 0.4,
+          "tile_id": "2cd2c2f0-a147-45b4-8aae-f4e057464c01",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of cut paving stone slabs. The grey stone grows over the edge and tufts down over the paving stone below, so the two meet naturally with no hard line between them. The paving stone side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__paving_stone/1",
+          "before": "tiles/review/grey_stone__over__paving_stone/1_before.webp",
+          "after": "tiles/review/grey_stone__over__paving_stone/1_after.webp",
+          "file": "tiles/review/grey_stone__over__paving_stone/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 6.78,
+          "wall": {
+            "tiling": 0.441,
+            "discretion": 0.967,
+            "structure": 1.0,
+            "contrast": 26.6,
+            "edges": 17.734
+          },
+          "top_share": 0.6201,
+          "overhang": 0.395,
+          "tile_id": "2cd2c2f0-a147-45b4-8aae-f4e057464c01",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of cut paving stone slabs. The grey stone grows over the edge and tufts down over the paving stone below, so the two meet naturally with no hard line between them. The paving stone side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__paving_stone/2",
+          "before": "tiles/review/grey_stone__over__paving_stone/2_before.webp",
+          "after": "tiles/review/grey_stone__over__paving_stone/2_after.webp",
+          "file": "tiles/review/grey_stone__over__paving_stone/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 6.7,
+          "wall": {
+            "tiling": 0.434,
+            "discretion": 0.959,
+            "structure": 1.0,
+            "contrast": 26.74,
+            "edges": 18.409
+          },
+          "top_share": 0.7716,
+          "overhang": 0.35,
+          "tile_id": "2cd2c2f0-a147-45b4-8aae-f4e057464c01",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of cut paving stone slabs. The grey stone grows over the edge and tufts down over the paving stone below, so the two meet naturally with no hard line between them. The paving stone side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__slime": {
+      "top": "grey_stone",
+      "side": "slime",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__slime/0",
+          "before": "tiles/review/grey_stone__over__slime/0_before.webp",
+          "after": "tiles/review/grey_stone__over__slime/0_after.webp",
+          "file": "tiles/review/grey_stone__over__slime/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 1.47,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.326,
+            "structure": 1.0,
+            "contrast": 38.13,
+            "edges": 12.181
+          },
+          "top_share": 0.205,
+          "overhang": 0.38,
+          "tile_id": "fd6a7af9-779b-4f8b-8c55-c1e5265d3c36",
+          "style": "chase1",
+          "prompt": "isometric terrain block of thick bubbling slime with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the slime face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__slime/1",
+          "before": "tiles/review/grey_stone__over__slime/1_before.webp",
+          "after": "tiles/review/grey_stone__over__slime/1_after.webp",
+          "file": "tiles/review/grey_stone__over__slime/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 1.33,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.296,
+            "structure": 1.0,
+            "contrast": 38.67,
+            "edges": 19.11
+          },
+          "top_share": 0.3974,
+          "overhang": 0.49,
+          "tile_id": "fd6a7af9-779b-4f8b-8c55-c1e5265d3c36",
+          "style": "chase1",
+          "prompt": "isometric terrain block of thick bubbling slime with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the slime face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__slime/2",
+          "before": "tiles/review/grey_stone__over__slime/2_before.webp",
+          "after": "tiles/review/grey_stone__over__slime/2_after.webp",
+          "file": "tiles/review/grey_stone__over__slime/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 1.06,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.235,
+            "structure": 1.0,
+            "contrast": 39.77,
+            "edges": 16.07
+          },
+          "top_share": 0.3412,
+          "overhang": 0.45,
+          "tile_id": "fd6a7af9-779b-4f8b-8c55-c1e5265d3c36",
+          "style": "chase1",
+          "prompt": "isometric terrain block of thick bubbling slime with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the slime face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__snow": {
+      "top": "grey_stone",
+      "side": "snow",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__snow/0",
+          "before": "tiles/review/grey_stone__over__snow/0_before.webp",
+          "after": "tiles/review/grey_stone__over__snow/0_after.webp",
+          "file": "tiles/review/grey_stone__over__snow/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.51,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.113,
+            "structure": 1.0,
+            "contrast": 41.97,
+            "edges": 12.08
+          },
+          "top_share": 0.4158,
+          "overhang": 1.0,
+          "tile_id": "ecfa70f4-b12d-4d67-bdd8-02c1a59c7741",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of clean fresh snow. The grey stone grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__snow/1",
+          "before": "tiles/review/grey_stone__over__snow/1_before.webp",
+          "after": "tiles/review/grey_stone__over__snow/1_after.webp",
+          "file": "tiles/review/grey_stone__over__snow/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 57.44,
+            "edges": 15.893
+          },
+          "top_share": 0.9267,
+          "overhang": 0.27,
+          "tile_id": "ff714b7e-a8b2-4f09-b7e6-23eca7dc505e",
+          "style": "chase1",
+          "prompt": "isometric terrain block of clean fresh snow with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the snow face in an uneven fringe. Flat even grey stone seen from above. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__snow/2",
+          "before": "tiles/review/grey_stone__over__snow/2_before.webp",
+          "after": "tiles/review/grey_stone__over__snow/2_after.webp",
+          "file": "tiles/review/grey_stone__over__snow/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 0.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 63.83,
+            "edges": 15.545
+          },
+          "top_share": 0.8839,
+          "overhang": 1.0,
+          "tile_id": "63b1432e-b86b-480f-99e3-8dfa4fc95b1b",
+          "style": "chase4",
+          "prompt": "isometric cube of clean fresh snow capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the snow beneath it. Uniform flat grey stone top. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "grey_stone__over__water": {
+      "top": "grey_stone",
+      "side": "water",
+      "candidates": [
+        {
+          "key": "tiles/grey_stone__over__water/0",
+          "before": "tiles/review/grey_stone__over__water/0_before.webp",
+          "after": "tiles/review/grey_stone__over__water/0_after.webp",
+          "file": "tiles/review/grey_stone__over__water/0_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 7.43,
+          "wall": {
+            "tiling": 0.731,
+            "discretion": 0.936,
+            "structure": 0.903,
+            "contrast": 27.15,
+            "edges": 10.832
+          },
+          "top_share": 0.3933,
+          "overhang": 1.0,
+          "tile_id": "b5fa66b5-049d-43c5-812f-21baaa2e4e3d",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of clear calm water. The grey stone grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__water/1",
+          "before": "tiles/review/grey_stone__over__water/1_before.webp",
+          "after": "tiles/review/grey_stone__over__water/1_after.webp",
+          "file": "tiles/review/grey_stone__over__water/1_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 6.42,
+          "wall": {
+            "tiling": 0.495,
+            "discretion": 0.994,
+            "structure": 0.893,
+            "contrast": 25.9,
+            "edges": 10.711
+          },
+          "top_share": 0.4181,
+          "overhang": 1.0,
+          "tile_id": "b5fa66b5-049d-43c5-812f-21baaa2e4e3d",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of clear calm water. The grey stone grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/grey_stone__over__water/2",
+          "before": "tiles/review/grey_stone__over__water/2_before.webp",
+          "after": "tiles/review/grey_stone__over__water/2_after.webp",
+          "file": "tiles/review/grey_stone__over__water/2_after.webp",
+          "palette_top": "#72786c",
+          "wall_score": 6.29,
+          "wall": {
+            "tiling": 0.624,
+            "discretion": 0.898,
+            "structure": 0.843,
+            "contrast": 27.84,
+            "edges": 10.111
+          },
+          "top_share": 0.3029,
+          "overhang": 1.0,
+          "tile_id": "b5fa66b5-049d-43c5-812f-21baaa2e4e3d",
+          "style": "chase0",
+          "prompt": "isometric ground tile. rugged grey mountain rock on top of clear calm water. The grey stone grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline."
         }
       ],
       "needs_regeneration": false

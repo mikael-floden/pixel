@@ -21,6 +21,7 @@ Scores (top diamond only — the side walls are a different material by design):
 
 from __future__ import annotations
 
+import os
 import sys
 
 import numpy as np
@@ -255,6 +256,58 @@ def fringe_clarity(path):
     return float(((dw - dt) > 12).sum()) / float(wall.sum())
 
 
+def wall_material_err(path, side_hex):
+    """How far the WALL is from the side material it was asked for, in hue (or in
+    luminance when either colour is too grey for hue to mean anything).
+
+    "X over Y" is a claim about TWO materials and the generator will happily return a
+    plausible pairing it chose itself. faces() has said exactly that in its docstring
+    since the first commit — and nothing ever gated on it, so 9 of 56 cells shipped with
+    a wall that is not the requested material at all: snow-over-grass with a BROWN wall,
+    grass-over-snow with a GREY one, black_rock-over-snow 172 luminance out.
+
+    Cheap to check and impossible to fix downstream, which makes it a selection
+    criterion: postprocess can put a wall on the palette but it cannot turn soil into
+    snow.
+    """
+    import palette_snap
+    try:
+        a = np.asarray(palette_snap.canonicalise(
+            Image.open(path).convert("RGBA"))).astype(float)
+    except Exception:
+        return 999.0
+    reg = palette_snap._regions(a)
+    if not reg:
+        return 999.0
+    w = reg["left"] | reg["right"]
+    if w.sum() < 200:
+        return 999.0
+    rgb = a[:, :, :3]
+    ys, xs = np.where(w)
+    low = []
+    for x in np.unique(xs):
+        c = np.where(w[:, x])[0]
+        lo = int(c.min()) + int(0.4 * (int(c.max()) - int(c.min())))
+        low.extend(rgb[lo:int(c.max()) + 1, x])
+    if len(low) < 20:
+        return 999.0
+    med = np.median(np.array(low), 0)
+    tgt = np.array([int(side_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    hm = palette_snap._rgb2hsv(med[None, :])[0]
+    ht = palette_snap._rgb2hsv(tgt[None, :])[0]
+    if ht[1] < 50 or hm[1] < 50:
+        lum = lambda c: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+        return abs(float(lum(med)) - float(lum(tgt))) / 2.0    # scaled onto the hue scale
+    d = abs(float(hm[0]) - float(ht[0]))
+    return min(d, 255.0 - d)
+
+
+# A wall further than this from its material is the wrong material, not a bad shade.
+# Set from the gap in the measured distribution: the 47 cells that look right sit at
+# 0-32, the 9 the maintainer's ice-over-grass report exposed sit at 32-172.
+MAX_WALL_ERR = 30.0
+
+
 def seam_px(path, top_hex=None):
     """Off-colour pixels inside the top surface of an assembled flat field — the thing
     a clean top is actually FOR.
@@ -303,6 +356,22 @@ def seam_px(path, top_hex=None):
     return bad
 
 
+def _side_hex(path):
+    """The palette colour of the SIDE material, from the cell directory's own name."""
+    import json
+    cell = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(path))))
+    if "__over__" not in cell:
+        return None
+    side = cell.split("__over__")[1]
+    try:
+        pal = json.load(open(os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "config", "palette.json")))["types"]
+    except Exception:
+        return None
+    return (pal.get(side) or {}).get("top")
+
+
 def select_best(paths, gate=CLEAN_TOP):
     """Pick a cell's best tile: CLEAN TOP first as a gate, then wall quality.
 
@@ -330,8 +399,14 @@ def select_best(paths, gate=CLEAN_TOP):
     if not scored:
         return None
     seamless = [x for x in scored if seam_px(x[0]) <= SEAM_TOL]
+    # The WALL must be the material the cell asked for. "X over Y" is a claim about two
+    # materials and nothing downstream can turn soil into snow, so this belongs here
+    # rather than in postprocess — 9 of 56 cells shipped a wall that was not Y at all
+    # until it was checked.
+    side = _side_hex(paths[0]) if paths else None
     pool = [x for x in seamless
-            if overhang(x[0]) >= MIN_OVERHANG and fringe_clarity(x[0]) >= MIN_CLARITY]
+            if overhang(x[0]) >= MIN_OVERHANG and fringe_clarity(x[0]) >= MIN_CLARITY
+            and (not side or wall_material_err(x[0], side) <= MAX_WALL_ERR)]
     if not pool:
         # No tile in this cell has the transition. Offer the best that at least tiles
         # cleanly rather than nothing, but the caller should treat the cell as needing
