@@ -2833,8 +2833,8 @@ function wallVerdict(score) {
     ? { cls: "ok", text: `wall ${score} — over the bar (${min})` }
     : { cls: "warn", text: `wall ${score} — under the bar (${min})` };
 }
-/** Where a cell stands with HIM, which is not the same as where it stands with
- *  the agent: a cell is settled once one of its candidates is approved. */
+/** Where a pair stands with HIM — entirely the sum of its tiles' verdicts,
+ *  since a pair carries none of its own (see viewWorldPair). */
 function cellReview(cell) {
   let approved = 0, rejected = 0;
   for (const c of cell.candidates) {
@@ -2842,8 +2842,6 @@ function cellReview(cell) {
     if (st === "approved") approved++;
     else if (st === "rejected") rejected++;
   }
-  const piece = fb("tiles", cell.path).status;
-  if (piece === "rejected") return { key: "dropped", cls: "err", text: "drop the pair" };
   if (approved) return { key: "picked", cls: "ok", text: `picked${approved > 1 ? ` (${approved})` : ""}` };
   if (rejected === cell.candidates.length) return { key: "redo", cls: "err", text: "all rejected — redo" };
   if (rejected) return { key: "partly", cls: "warn", text: `${rejected} of ${cell.candidates.length} rejected` };
@@ -2854,7 +2852,7 @@ const WORLD_FILTERS = {
   open: { label: "not reviewed", title: "No candidate judged yet — the work to do" },
   partly: { label: "partly", title: "Some candidates judged, none picked yet" },
   picked: { label: "picked", title: "A candidate approved — this pair is settled" },
-  redo: { label: "redo", title: "Every candidate rejected, or the pair dropped" },
+  redo: { label: "redo", title: "Every tile in the set rejected" },
 };
 const WORLD_FILTER_KEY = "wiki-world-filter";
 /* SEE THE TILE BEFORE THE POSTPROCESS TOUCHED IT (maintainer 2026-08-17: "a
@@ -2988,7 +2986,7 @@ function viewWorldType(top) {
   const filter = WORLD_FILTERS[read] ? read : "all";
   const hit = (c) => {
     const r = cellReview(c).key;
-    return filter === "all" || (filter === "redo" ? r === "redo" || r === "dropped" : r === filter);
+    return filter === "all" || r === filter;
   };
   const list = state.admin ? t.pairs.filter(hit) : t.pairs;
   return h("div", {},
@@ -2997,7 +2995,7 @@ function viewWorldType(top) {
     h("p", { class: "muted" }, `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`),
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
     state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
-      const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => (id === "redo" ? ["redo", "dropped"] : [id]).includes(cellReview(c).key)).length;
+      const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => cellReview(c).key === id).length;
       return [id, `${f.label} ${n}`, f.title];
     }), filter, () => route()) : null,
     list.length ? h("div", { class: "grid" }, ...list.map((c) => {
@@ -3019,9 +3017,10 @@ function viewWorldType(top) {
  * individual tiles in the tileset help me understand how the tileset looks
  * like when tiled together. I need both a 3x3 flat ground and the V shape from
  * tiles 2.0 had. What tiles should be used in this visualization? You should
- * use random tiles from the tileset … a Randomize button … and of course we
- * need a toggle for if we should only have approved tiles or include
- * unreviewed tiles in the randomization set."
+ * use random tiles from the tileset." That first cut was one shared card per
+ * PAIR with a Randomize button and an approved/unreviewed pool; it was replaced
+ * the same day by a preview per TILE (see tileScenes), which needs no roll and
+ * sits beside the wall switch that decides how its cliff is built.
  *
  * Both shapes are drawn by `isoScene`, the SAME composer Tiles OLD uses — the
  * game's own projection at the game's own scale, so a strip here measures what
@@ -3070,103 +3069,52 @@ const WALL_MODES = {
   top: { label: "top only", title: "Only ever the top of a column; whatever stacks under it is the pure tile" },
 };
 
-const WORLD_POOL_KEY = "wiki-world-pool";
-const WORLD_POOLS = {
-  open: { label: "+ unreviewed", title: "Randomize over approved AND unreviewed tiles — rejected ones never appear" },
-  approved: { label: "approved only", title: "Randomize over the tiles you have approved" },
-};
-const worldPool = () => {
-  try { return WORLD_POOLS[localStorage.getItem(WORLD_POOL_KEY)] ? localStorage.getItem(WORLD_POOL_KEY) : "open"; }
-  catch { return "open"; }
-};
-function poolFor(cell) {
-  const live = cell.candidates.filter((c) => fb("tiles", c.key).status !== "rejected");
-  const approved = live.filter((c) => fb("tiles", c.key).status === "approved");
-  return worldPool() === "approved" ? approved : live;
-}
-/** A small deterministic PRNG so one Randomize press gives ONE picture, not a
- *  different one per shape — the two views have to be showing the same roll. */
-const mulberry = (seed) => () => {
-  seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
-  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-};
-/** What the courses under the crown are made of, in words — the flag is only
- *  useful if the picture says which rule it is following. */
-function wallSource(cell, pool) {
-  const walkers = pool.filter((c) => !topOnly(c.key));
-  const base = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
-  const haveBase = base && poolFor(base).some((c) => !topOnly(c.key));
-  if (walkers.length === pool.length && pool.length) return "Three 3-high stacks; this set builds its own wall.";
-  if (walkers.length) return `Three 3-high stacks; the wall is built from the ${walkers.length} tile${walkers.length === 1 ? "" : "s"} in this set that can stack.`;
-  if (haveBase) return `Three 3-high stacks; every tile here is top-only, so the wall is ${typeLabelWorld(cell.side).toLowerCase()} over itself.`;
-  return "Three 3-high stacks; no wall-capable tile yet, so the set is stacked as it is.";
-}
-function worldScenes(cell, seed) {
-  const pool = poolFor(cell);
-  const box = h("div", { class: "world-scenes" });
-  if (!pool.length) {
-    box.append(h("p", { class: "muted" }, worldPool() === "approved"
-      ? "No approved tiles in this set yet — switch to “+ unreviewed” to see it tiled."
-      : "Every tile in this set is rejected, so there is nothing to lay out."));
-    return box;
-  }
-  const rnd = mulberry(seed);
-  const pick = () => {
-    const c = pool[Math.floor(rnd() * pool.length) % pool.length];
-    return (worldView() === "before" && c.raw) ? c.raw : c.art;
-  };
-  // 3x3 FLAT GROUND — the same patch Tiles OLD's tile page uses, so a field of
-  // 3.0 is judged in the shape he has been judging 2.0 in. Nine cells, each
-  // rolling its own tile: the seams that matter are the ones between
-  // neighbours on BOTH axes, which a single row cannot show.
-  const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: pick() })));
-  // THE V, from Tiles OLD's tile page: three 3-high stacks meeting at a corner.
-  //
-  // ONLY THE CROWN IS THE PAIR. Maintainer 2026-08-17: "The two bottom layers
-  // in a V shape should always take the tile from grass over grass, ice over
-  // ice etc. That tile type is the type that always should be used in the game
-  // when a tile is not at the top."
-  //
-  // A buried cell is all WALL — its own top is covered by the cell above — so
-  // the tile that belongs there is the wall material over itself: for "grass
-  // over ice" the crown is grass-topped with ice walls and everything under it
-  // is ice over ice. Rolling the pair at every level instead left the pair's
-  // OWN top peeking as a rim between courses (visible in the first cut: bands
-  // of grass between the ice), which is a cliff the game will never build.
-  // WHAT STACKS UNDER THE CROWN. By default a tile builds its own wall, so the
-  // courses come from this set — but only from the tiles that CAN: one marked
-  // "top only" is exactly the tile that must not appear in a wall. When none
-  // of them can, the wall is the pure tile, the wall material over itself.
-  const walkers = pool.filter((c) => !topOnly(c.key));
-  const base = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
-  const basePool = base ? poolFor(base).filter((c) => !topOnly(c.key)) : [];
-  const artOf = (c) => ((worldView() === "before" && c.raw) ? c.raw : c.art);
-  // Nothing left to build with — no wall-capable tile in the set and no self
-  // pair for the material yet (the agent is still filling the matrix). Fall
-  // back to the set, since a rim is a smaller lie than a hole.
-  const pickBase = () => {
-    const from = walkers.length ? walkers : basePool.length ? basePool : pool;
-    return artOf(from[Math.floor(rnd() * from.length) % from.length]);
-  };
+/* ---- HOW THIS ONE TILE LOOKS WHEN IT IS TILED ----
+ * Maintainer 2026-08-17: "The individual tile preview under Tiles in this set
+ * should inside the same preview have the 3x3 on the left side and the V stack
+ * on the right side. I feel I need this in order to review individual tiles.
+ * This also makes sense because it's on the individual tile we have the own
+ * wall / top only selection … we can remove the old Laid out as ground card.
+ * That card is no longer needed." And on why they share one box: "just to save
+ * space on the page."
+ *
+ * So the preview belongs to the TILE, beside the numbers and the wall mode
+ * that describe it, and there is nothing to randomize any more — one tile, one
+ * picture, the same every time you look at it. Both shapes share one
+ * chessboard and carry no captions of their own: the whole point of putting
+ * them together is the space it saves, and two headings would spend it again.
+ */
+function tileScenes(cell, cand) {
+  const stage = h("div", { class: "iso-stage checker tile-stage" });
+  const art = (c) => ((worldView() === "before" && c.raw) ? c.raw : c.art);
+  const face = art(cand);
+  // THE COURSES FOLLOW THIS TILE'S OWN WALL MODE — which is the reason the
+  // preview belongs on the card carrying that switch. "own wall" stacks the
+  // tile itself; "top only" stacks the pure <side> over <side> tile, the one
+  // the game uses when a cell is not on top.
+  const pure = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
+  const pureArt = pure?.candidates.find((c) => fb("tiles", c.key).status === "approved")
+    ?? pure?.candidates.find((c) => fb("tiles", c.key).status !== "rejected")
+    ?? pure?.candidates[0];
+  // No pure tile for that material yet: stack the tile itself and say so,
+  // rather than draw a cliff out of nothing.
+  const course = topOnly(cand.key) ? (pureArt ? art(pureArt) : face) : face;
+  const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: face })));
   const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
-    ...pos, lvl: 2, img: pickBase(), top: pick(), stack: [pickBase(), pickBase()],
+    ...pos, lvl: 2, img: course, top: face, stack: [course, course],
   }));
-  const paths = [...new Set([...flat, ...vee].flatMap((d) => [d.img, d.top, ...(d.stack ?? [])]).filter(Boolean))];
-  loadImages(paths, (images) => {
-    box.replaceChildren(
-      h("div", { class: "world-scene" },
-        h("div", { class: "panel-title" }, "Tiled flat — 3×3"),
-        h("p", { class: "muted iso-hint" }, "Nine cells of open ground, each its own tile from the set."),
-        h("div", { class: "iso-stage checker" }, isoScene(flat, images))),
-      h("div", { class: "world-scene", "data-tiles": [...new Set(vee.flatMap((d) => [d.img, ...(d.stack ?? [])]))].join(" ") },
-        h("div", { class: "panel-title" }, "Stacked — a cliff corner"),
-        h("p", { class: "muted iso-hint" }, wallSource(cell, pool)),
-        h("div", { class: "iso-stage checker" }, isoScene(vee, images))));
+  // What the scene was actually composed from — the crown and the courses.
+  // Published because a canvas cannot be inspected the way an <img> can, and
+  // both the before/after switch and the wall mode are only meaningful if what
+  // they produced can be read back.
+  stage.dataset.face = face ?? "";
+  stage.dataset.course = course ?? "";
+  loadImages([face, course].filter(Boolean), (images) => {
+    stage.replaceChildren(isoScene(flat, images), isoScene(vee, images));
   });
-  return box;
+  return stage;
 }
+
 function viewWorldPair(top, side) {
   refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const siblings = worldTypes().find((t) => t.id === top)?.pairs ?? [];
@@ -3174,26 +3122,12 @@ function viewWorldPair(top, side) {
   if (!c) return h("p", {}, "Unknown pair.");
   const r = cellReview(c);
   const t = worldMeta().tile ?? {};
-  // The roll lives OUTSIDE the render so Randomize repaints only the scenes:
-  // re-routing would rebuild the verdict rows under his finger and lose the
-  // page's scroll.
-  let seed = (Date.now() ^ (c.id.length * 2654435761)) | 0;
-  const sceneBox = h("div", {}, worldScenes(c, seed));
-  const mixPill = h("span", { class: "pill" }, `${poolFor(c).length} of ${c.candidates.length} in the mix`);
-  const reroll = () => { seed = (seed * 1103515245 + 12345) | 0; sceneBox.replaceChildren(worldScenes(c, seed)); };
-  // A VERDICT CHANGES THE PICTURE. Rejecting a tile takes it out of the mix,
-  // approving one puts it in — and both were computed at render time, so the
-  // layout and its count stayed stale until the page was left and re-entered.
-  // That is the whole point of the pool toggle: what he is looking at has to
-  // be what his verdicts say the ground will be made of.
-  const onVerdict = () => {
-    mixPill.textContent = `${poolFor(c).length} of ${c.candidates.length} in the mix`;
-    sceneBox.replaceChildren(worldScenes(c, seed));
-  };
+  // A verdict or a wall-mode change repaints the tile it was cast on — its
+  // cliff is built from its own setting, so the picture has to follow.
+  const cards = h("div", { class: "grid world-cands" });
+  const drawCards = () => cards.replaceChildren(...c.candidates.map((cand, i) => worldCandidate(c, cand, i, drawCards)));
+  drawCards();
   return h("div", {},
-    // The pager walks the SIDES within this ground type — crumbRow builds
-    // `#/<base>/<id>`, and here the last path segment is the wall, not the
-    // cell key.
     crumbRow(`#/world/${top}`, `← ${typeLabelWorld(top)}`, `world/${top}`,
       siblings.map((x) => ({ id: x.side, name: x.name })), c.side),
     h("div", { class: "detail-head" },
@@ -3204,24 +3138,12 @@ function viewWorldPair(top, side) {
           h("span", { class: "pill" }, `walk on ${typeLabelWorld(c.top).toLowerCase()}`),
           h("span", { class: "pill" }, `wall of ${typeLabelWorld(c.side).toLowerCase()}`),
           state.admin ? h("span", { class: `pill ${r.cls}` }, r.text) : null),
-        h("p", { class: "muted" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. ${state.admin ? "Approve the ones to keep; reject the ones to regenerate." : ""}`),
-        state.admin ? h("div", {},
-          h("div", { class: "muted", style: "margin:10px 0 4px" }, "The pair itself"),
-          feedbackRow("tiles", c.path, {
-            reject: "✕ drop this pair",
-            rejectTitle: "This pairing should not exist — the agent tombstones it and never generates it again",
-            rejectedLabel: "dropped",
-          })) : null)),
-    // THE TILED VIEW COMES FIRST. "Does this set work as ground" is the
-    // question the individual verdicts are answers to, so it is read before
-    // them, not after.
-    h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Laid out as ground", mixPill),
-      state.admin ? h("div", { class: "world-viewbar" },
-        h("button", { class: "ghost-btn", onclick: reroll, title: "Roll a different set of tiles into both layouts" }, "🎲 Randomize"),
-        sortBar(WORLD_POOL_KEY, Object.entries(WORLD_POOLS).map(([id, v]) => [id, v.label, v.title]), worldPool(), () => route()),
-        h("span", { class: "muted" }, "rejected tiles never appear")) : null,
-      sceneBox),
+        // NO VERDICT ON THE PAIR (maintainer 2026-08-17: "you can also remove
+        // the approve/reject/rate at the top of the page. The review will only
+        // ever happen on the individual tiles themselves"). The pair is a
+        // heading now, not a thing to judge — which also means one place to
+        // cast a verdict instead of two that could disagree.
+        h("p", { class: "muted" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. ${state.admin ? "Approve the ones to keep; reject the ones to regenerate." : ""}`))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Tiles in this set",
         h("span", { class: "pill" }, "ranked by wall score")),
@@ -3229,7 +3151,8 @@ function viewWorldPair(top, side) {
         h("span", { class: "muted" }, "Show"),
         sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()),
         c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
-      h("div", { class: "grid world-cands" }, ...c.candidates.map((cand, i) => worldCandidate(c, cand, i, onVerdict))),
+      h("p", { class: "muted", style: "margin:2px 0 0" }, "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."),
+      cards,
       h("p", { class: "muted", style: "margin:10px 0 0" },
         `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`)));
 }
@@ -3254,7 +3177,7 @@ function worldCandidate(cell, cand, i, onVerdict) {
   const st = state.admin ? fb("tiles", cand.key).status : null;
   const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
   return h("div", { class: `card world-cand${st === "approved" ? " picked" : st === "rejected" ? " dropped" : ""}` },
-    worldArt(cand, `${cell.name} — generation ${i + 1}`),
+    tileScenes(cell, cand),
     h("div", { class: "card-name" }, `#${i + 1}`,
       v ? h("span", { class: `pill ${v.cls}`, title: v.text, style: "margin-left:8px" }, `wall ${cand.wallScore}`) : null),
     cand.wall ? h("div", { class: "card-sub metric-row" },

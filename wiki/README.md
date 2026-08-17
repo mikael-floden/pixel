@@ -232,30 +232,30 @@ pairs, so the live manifest refresh reshapes the section without a rebuild, and
 a pair is addressed by its two halves rather than its cell key — the pair IS
 "grass over snow", and a url that says so survives the agent renaming keys.
 
-**The pair page shows the set LAID OUT AS GROUND, above the individual
-verdicts** — "does this set work as ground" is the question those verdicts are
-answers to. A **3×3 flat patch** — the same shape Tiles OLD's tile page uses,
-so a field of 3.0 is judged in the shape he has been judging 2.0 in, and the
-seams that matter are the ones between neighbours on BOTH axes — and the **V
-from Tiles OLD**, verbatim: three
-3-high stacks meeting at a corner, every level rolling its own tile. Both are
-drawn by `isoScene()`, the same composer the Tiles OLD page uses — the game's
-own projection at the game's own scale, so a strip here measures what a strip
-measures in the world.
+**Both previews live on the TILE, in ONE box** (maintainer 2026-08-17: *"The
+individual tile preview under 'Tiles in this set' should inside the same
+preview have the 3x3 on the left side and the V stack on the right side. I feel
+I need this in order to review individual tiles … Why I want the two types of
+previews in the same preview is just to save space on the page"*). Left, a
+**3×3 flat patch** — the shape Tiles OLD's tile page uses, so a field of 3.0 is
+judged in the shape he has been judging 2.0 in, and the seams that matter are
+the ones between neighbours on BOTH axes. Right, the **V from Tiles OLD**:
+three 3-high stacks meeting at a corner. Both come from `isoScene()`, the same
+composer Tiles OLD uses — the game's own projection at the game's own scale, so
+a strip here measures what a strip measures in the world.
 
-- **Randomize** rolls both shapes from ONE seed, so the two views always show
-  the same roll, and repaints only the scenes: re-routing would rebuild the
-  verdict rows under his finger and lose the scroll.
-- **The pool** is "+ unreviewed" (default) or "approved only"; with nothing
-  approved the second says so rather than drawing an empty box.
-- **A rejected tile is never in the mix** under either setting. He rejected it;
-  drawing it in the picture of the finished ground would be the wiki arguing
-  with him. A verdict cast on the page repaints the layout and its count —
-  they were computed at render time once, which left both stale until the page
-  was re-entered, and that is precisely what the toggle exists to prevent.
+- **A tile's preview shows THAT tile**, never a roll of its neighbours. There
+  is no seed, no Randomize and no approved-only pool: the earlier shared "laid
+  out as ground" card mixed the whole set, which answered "does this set work"
+  while the verdict under it asked "does this tile work". One question per
+  card. The mixed card is gone.
+- **The V follows the tile's own wall mode**, which is the other half of why
+  the two shapes belong together: flipping "own wall" ⇄ "top only" on this card
+  changes the cliff drawn six inches away, and there is nothing to compare it
+  against if the cliff lives in a different card built from different tiles.
 
 **The review unit is the CANDIDATE**, because that is the question the tiles
-agent asks. `tiles/review/manifest.json` (`tiles3/review@1`) offers two or
+agent asks. `tiles/review/manifest.json` (`tiles3/review@2`) offers two or
 three generations per "A over B" pair, ranked by a measured wall score, and
 defines what a verdict means — *"`tile_id` is the PixelLab generation a
 rejection should delete … A DELETED cell is tombstoned and never regenerated,
@@ -267,9 +267,12 @@ measurements behind that rank, how flat the top came out, and its prompt.
   feedback file that agent already reads — no id scheme of the wiki's invention
   to keep in sync. Feedback ids are repo paths, so 3.0's `tiles/…` and 2.0's
   `tiles2/…` share one file without colliding.
-- **The pair carries its own separate verdict** ("drop this pair"). Tombstoning
-  a pairing that should not exist is a different decision from rejecting one
-  generation of it.
+- **The pair carries NO verdict of its own** (maintainer 2026-08-17: *"You can
+  also remove the approve/reject/rate at the top of the page. The review will
+  only ever happen on the individual tiles themselves"*). The pair's state is
+  the sum of its tiles', so the filters count approved/redo/unreviewed pairs
+  from the candidates and nothing else — there is no "dropped pair" any more,
+  and the wiki cannot tombstone a cell.
 - **Every number is the agent's.** The wiki never scores a tile itself: the two
   would drift and his verdict would be about a ranking nobody else can
   reproduce. The gate asserts the scores match the manifest to the decimal.
@@ -277,6 +280,33 @@ measurements behind that rank, how flat the top came out, and its prompt.
   settled art; this one is a factory running right now, so the admin's World
   section refetches the manifest through the staging root his art already comes
   from and rebuilds the list from it. The baked copy is the fallback.
+
+**The pure `X over X` tile is what ground IS.** Maintainer 2026-08-17: *"That
+tile type is the type that always should be used in the game when a tile is not
+at the top."* So the wiki uses it in the two places a tile stands for more than
+itself — the type card on `#/world` (grass is shown as "grass over grass", not
+whichever pairing sorts first) and the courses under a V. It is picked by
+verdict, approved first, then unreviewed, never a rejected one; a type whose
+self pair has not been generated yet falls back to its own art rather than
+drawing an empty box. **This is a wiki rule, not a game change** — he asked for
+it in the review surface (*"You should implement it in the wiki and not in the
+game ofc"*).
+
+- **Wall mode is per tile, and defaults to "own wall"** (maintainer 2026-08-17:
+  *"some tiles in fact do look good and can build a wall and some need help
+  from the … pure tile. By default a tile should be able to create it's own
+  wall, but I as an admin should be able to change the tile to top tile
+  only"*). The strip under each tile switches it; "top only" stacks the pure
+  tile beneath that tile's crown instead. It is a PROPERTY, not a verdict —
+  a top-tile-only tile is a tile with one job — so it saves to
+  `live/tuning/tile_walls.json` (`pixel-wiki-tile-walls@1`), not to the
+  feedback file, and clearing it deletes the entry rather than storing the
+  default.
+- **Before / after** (admin, whole-section) switches every tile between the
+  generator's raw output (`before`) and what the postprocess made of it
+  (`after`, the file that ships). One truth per screen: the pair's own portrait
+  follows the switch too, and paging keeps the mode. A candidate with no
+  `before` says "no before" rather than silently showing the after twice.
 
 **The player's encyclopedia is unchanged, deliberately.** "Tiles OLD" is a
 migration word that means nothing to a reader, and an unfinished ground system

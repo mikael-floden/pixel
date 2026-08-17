@@ -150,7 +150,7 @@ await p.waitForTimeout(1800);
 const page = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
   cands: document.querySelectorAll(".world-cand").length,
-  art: [...document.querySelectorAll(".world-cand")].filter((c) => [...c.querySelectorAll("img")].some((i) => i.complete && i.naturalWidth > 0)).length,
+  art: [...document.querySelectorAll(".world-cand")].filter((c) => [...c.querySelectorAll("canvas")].some((cv) => cv.width > 1)).length,
   scores: [...document.querySelectorAll(".world-cand .card-name")].map((x) => x.textContent.trim()),
   metrics: document.querySelector(".world-cand .metric-row")?.textContent ?? "",
   verdicts: document.querySelectorAll(".world-cand .verdict").length,
@@ -160,12 +160,15 @@ const page = await p.evaluate(() => ({
 }));
 console.log("cell page:", JSON.stringify(page));
 ok(page.cands === cell.candidates.length, `every generation of the pair is shown (${page.cands})`);
-ok(page.art === page.cands, `each drawing its own tile (${page.art}/${page.cands})`);
+ok(page.art === page.cands, `each drawing its own preview (${page.art}/${page.cands})`);
 ok(page.verdicts === page.cands, "each with its OWN verdict — the candidate is the review unit");
 ok(/tiling/.test(page.metrics) && /discretion/.test(page.metrics) && /structure/.test(page.metrics),
   `and the measurements behind its rank, named (“${page.metrics.trim()}”)`);
 ok(/wall \d/.test(page.scores[0] ?? ""), `with the score itself on the card (“${page.scores[0]}”)`);
-ok(/drop this pair/.test(page.pairVerdict), "the PAIR has its own verdict too — tombstone it, never regenerate");
+// No verdict on the pair any more (maintainer 2026-08-17: "the review will
+// only ever happen on the individual tiles themselves") — one place to cast a
+// verdict instead of two that could disagree.
+ok(!/approve|✕/.test(page.pairVerdict), `and the PAIR itself carries none (“${page.pairVerdict}”)`);
 ok(page.prompt, "and the prompt that produced it is there to read");
 ok(/\d+ \/ \d+/.test(page.pager ?? ""), `‹ › walks the pairs (${page.pager})`);
 
@@ -232,161 +235,52 @@ ok(freshTop.types.includes("#/world/sand"), "a ground type the agent generated a
 ok(fresh.has, `and its pair under it (“${fresh.name}”)`);
 ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 1).join("") || "none"})`);
 
-// ------------------------------------------ 4b. the set, laid out as ground
-// Maintainer 2026-08-17: "help me understand how the tileset looks like when
-// tiled together. I need both a 3x3 flat ground and the V shape from tiles 2.0
-// had … use random tiles from the tileset … a Randomize button … a toggle for
-// if we should only have approved tiles or include unreviewed tiles."
-// The fixture must be a pair whose WALL material HAS a self pair, or the
-// buried-course rule below is never exercised — it falls through to its
-// fallback and the check quietly proves nothing.
-const hasSelf = (side) => CELLS.some((x) => x.top === side && x.side === side);
-// It must also be a pair of two DIFFERENT materials: on a self pair the crown
-// and the courses are the same tile by definition, and the rule is satisfied
-// without being tested.
-const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id && c.top !== c.side && hasSelf(c.side))
+// ---------------------------------- 4b. every tile shows how IT tiles
+// Maintainer 2026-08-17: "The individual tile preview under Tiles in this set
+// should inside the same preview have the 3x3 on the left side and the V stack
+// on the right side … we can remove the old Laid out as ground card", and on
+// why they share one box: "just to save space on the page."
+const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id && c.top !== c.side && CELLS.some((x) => x.top === c.side && x.side === c.side))
   ?? CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id) ?? cell;
 await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
-await p.waitForTimeout(2600);
-// A SCENE IS JUDGED BY ITS PIXELS. Both shapes are canvases composed at run
-// time, so "did it draw" is a count of opaque pixels and "did it change" is a
-// hash of them — an <img> that resolved proves nothing here.
-const scenes = () => p.evaluate(() => [...document.querySelectorAll(".world-scene canvas")].map((cv) => {
-  const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
-  let opaque = 0, sig = 0;
-  for (let i = 0; i < d.length; i += 4) {
-    if (d[i + 3] > 8) opaque++;
-    sig = (sig * 31 + d[i] + d[i + 1] * 3 + d[i + 2] * 7 + d[i + 3] * 11) >>> 0;
-  }
-  return { w: cv.width, h: cv.height, opaque, sig };
-}));
-const heads = await p.evaluate(() => [...document.querySelectorAll(".world-scene .panel-title")].map((x) => x.textContent.trim()));
-const lay = await scenes();
-console.log("layouts:", JSON.stringify({ heads, lay }));
-ok(lay.length === 2, `the pair page lays the set out in TWO shapes (${lay.length})`);
-ok(/3×3|3x3/i.test(heads[0] ?? ""), `a flat 3×3 patch (“${heads[0]}”)`);
-ok(/cliff|stack/i.test(heads[1] ?? ""), `and the V from Tiles OLD — a cliff corner (“${heads[1]}”)`);
-// ONLY THE CROWN IS THE PAIR in the sense that matters: what stacks under it
-// is decided by the tile's WALL MODE, which section 4c drives end to end. Here
-// it is only asserted that the courses are published at all, since 4c reads
-// them.
-const buried = await p.evaluate(() => (document.querySelectorAll(".world-scene")[1]?.dataset.tiles ?? "").split(" ").filter(Boolean));
-ok(buried.length > 0, `the cliff publishes the tiles it stacked under the crown (${buried.length})`);
-ok(lay.every((s) => s.opaque > 2000), `both actually composed (${lay.map((s) => s.opaque).join(", ")} opaque px)`);
-// A 3x3 iso patch spans (c−r) from −2..2, so its canvas is 4*dx + one tile
-// wide. Measured against the geometry rather than asserted loosely: "did it
-// lay down nine cells" is exactly what a broken layout gets wrong.
-const iso = DATA.iso ?? { dx: 32, tilePx: 64, dy: 15 };
-const want3 = iso.dx * 4 + iso.tilePx;
-ok(Math.abs(lay[0].w - want3) <= 12, `the flat one really is a 3×3 patch (${lay[0].w}px against ${want3} for three cells each way)`);
-ok(lay[0].h > iso.tilePx, `standing a diamond tall, not a single row (${lay[0].h}px)`);
-
-// RANDOMIZE gives a different roll of the same set.
-let changed = false;
-for (let i = 0; i < 6 && !changed; i++) {
-  await p.evaluate(() => [...document.querySelectorAll("button")].find((b) => /Randomize/.test(b.textContent)).click());
-  await p.waitForTimeout(700);
-  const next = await scenes();
-  changed = next.some((s, j) => s.sig !== lay[j].sig);
-}
-ok(changed, `Randomize rolls a different set of tiles into the layouts (${many.candidates.length} to choose from)`);
-
-// THE POOL TOGGLE. With nothing approved, "approved only" has nothing to lay
-// out and must SAY so rather than draw an empty box.
-await p.evaluate(() => document.querySelector('[data-bar="wiki-world-pool"] [data-sort="approved"]')?.click());
-await p.waitForTimeout(900);
-const empty = await p.evaluate(() => ({
-  canvases: document.querySelectorAll(".world-scene canvas").length,
-  msg: document.querySelector(".world-scenes p")?.textContent ?? "",
-  pill: [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "",
-}));
-console.log("approved-only, none approved:", JSON.stringify(empty));
-ok(empty.canvases === 0 && /no approved tiles/i.test(empty.msg),
-  `"approved only" with nothing approved explains itself (“${empty.msg.slice(0, 60)}”)`);
-ok(/0 of \d+/.test(empty.pill), `and the mix count says so too (“${empty.pill}”)`);
-
-// Approve one tile and it becomes the whole mix.
-await p.evaluate(() => document.querySelector(".world-cand .verdict button")?.click());
-await p.waitForTimeout(900);
-const oneApproved = await p.evaluate(() => ({
-  canvases: document.querySelectorAll(".world-scene canvas").length,
-  pill: [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "",
-}));
-console.log("approved-only, one approved:", JSON.stringify(oneApproved));
-ok(oneApproved.canvases === 2, "approving one tile gives the layouts something to draw");
-ok(/^1 of /.test(oneApproved.pill), `and it is the only one in the mix (“${oneApproved.pill}”)`);
-
-// A REJECTED TILE IS NEVER IN THE MIX, under either setting — he rejected it,
-// and drawing it in the picture of the finished ground would be the wiki
-// arguing with him.
-await p.evaluate(() => document.querySelector('[data-bar="wiki-world-pool"] [data-sort="open"]')?.click());
-await p.waitForTimeout(800);
-const beforeReject = await p.evaluate(() => [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "");
-await p.evaluate(() => {
-  const rows = [...document.querySelectorAll(".world-cand .verdict")];
-  const last = rows[rows.length - 1];
-  [...last.querySelectorAll("button")].find((b) => /✕/.test(b.textContent))?.click();
-});
-await p.waitForTimeout(900);
-const afterReject = await p.evaluate(() => [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "");
-console.log("reject drops it from the mix:", JSON.stringify({ beforeReject, afterReject }));
-const n = (t) => Number(/(\d+) of/.exec(t)?.[1] ?? NaN);
-ok(n(afterReject) === n(beforeReject) - 1, `rejecting a tile takes it out of the mix (${beforeReject} → ${afterReject})`);
-
-// ------------------------------------------- 4c. can this tile build a wall?
-// Maintainer 2026-08-17: "some tiles in fact do look good and can build a wall
-// and some need help from the stone over stone / grass over grass (the pure
-// tile). By default a tile should be able to create it's own wall, but I as an
-// admin should be able to change the tile to top tile only. A top-tile-only
-// tile should then use the 100% (x over x) tile for building the wall."
-await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
-await p.waitForTimeout(2600);
-const courses = () => p.evaluate(() => ({
-  tiles: (document.querySelectorAll(".world-scene")[1]?.dataset.tiles ?? "").split(" ").filter(Boolean),
-  caption: document.querySelectorAll(".world-scene .iso-hint")[1]?.textContent ?? "",
+await p.waitForTimeout(2800);
+const perTile = () => p.evaluate(() => ({
+  cards: document.querySelectorAll(".world-cand").length,
+  stages: document.querySelectorAll(".world-cand .tile-stage").length,
+  // Two canvases per tile, side by side in ONE box: the flat patch and the V.
+  shapes: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => [...st.querySelectorAll("canvas")].map((cv) => {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
+    return { w: cv.width, h: cv.height, opaque, x: Math.round(cv.getBoundingClientRect().x) };
+  })),
+  courses: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.course),
+  oldCard: [...document.querySelectorAll(".panel-title")].some((t) => /laid out as ground/i.test(t.textContent)),
+  randomize: [...document.querySelectorAll("button")].some((b) => /Randomize/.test(b.textContent)),
   modes: [...document.querySelectorAll(".wall-mode")].map((m) => m.querySelector(".sortbar-btn.sel")?.textContent.trim()),
 }));
-const byDefault = await courses();
-console.log("by default:", JSON.stringify(byDefault));
-ok(byDefault.modes.length === many.candidates.length, `every tile carries a wall mode (${byDefault.modes.length})`);
-ok(byDefault.modes.every((m) => m === "own wall"), `and defaults to building its own wall (${byDefault.modes.join(", ")})`);
-ok(byDefault.tiles.every((t) => t.includes(`${many.top}__over__${many.side}/`)),
-  "so the cliff is built from THIS set, not the pure tile");
-ok(/builds its own wall/i.test(byDefault.caption), `and the caption says so (“${byDefault.caption}”)`);
+const own = await perTile();
+console.log("per tile:", JSON.stringify({ cards: own.cards, stages: own.stages, first: own.shapes[0], courses: own.courses.slice(0, 1), oldCard: own.oldCard, randomize: own.randomize }));
+ok(own.stages === own.cards && own.cards > 1, `every tile carries its own preview (${own.stages}/${own.cards})`);
+ok(own.shapes.every((sh) => sh.length === 2), "holding BOTH shapes, in one box");
+ok(own.shapes.every((sh) => sh[0].x < sh[1].x), "the 3×3 on the left, the cliff on the right");
+const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
+ok(own.shapes.every((sh) => Math.abs(sh[0].w - (iso.dx * 4 + iso.tilePx)) <= 12), "the flat one a real 3×3 patch");
+ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actually composed");
+ok(!own.oldCard && !own.randomize, "the shared “Laid out as ground” card and its Randomize are gone");
 
-// Mark every tile top-only and the wall must come from the pure tile instead.
-await p.evaluate(() => document.querySelectorAll('.wall-mode [data-sort="top"]').forEach((b) => b.click()));
-await p.waitForTimeout(1000);
-const allTop = await courses();
-console.log("all top-only:", JSON.stringify(allTop));
-ok(allTop.modes.every((m) => m === "top only"), "marking them top-only takes");
-ok(allTop.tiles.length > 0 && allTop.tiles.every((t) => t.includes(`${many.side}__over__${many.side}/`)),
-  `and the wall becomes the pure ${many.side} over ${many.side} tile (${allTop.tiles.length} courses)`);
-ok(/top-only/i.test(allTop.caption), `with the caption following (“${allTop.caption}”)`);
-
-// One tile back to "own wall" and IT is what the wall is built from — the
-// per-tile granularity is the point: one generation of a pair can stack and
-// its neighbour cannot.
-await p.evaluate(() => document.querySelector('.wall-mode [data-sort="own"]')?.click());
-await p.waitForTimeout(1000);
-const mixed = await courses();
-console.log("one wall-capable:", JSON.stringify(mixed));
-ok(mixed.modes.filter((m) => m === "own wall").length === 1, "one tile back to own wall");
-ok(mixed.tiles.length === 1 && mixed.tiles[0].includes(`${many.top}__over__${many.side}/`),
-  `and the whole wall is built from that one tile (${mixed.tiles.join(", ")})`);
-
-// IT COMMITS LIKE EVERYTHING ELSE, into its own document.
-await p.evaluate(() => [...document.querySelectorAll("#savebar button")].find((x) => /Commit/.test(x.textContent))?.click());
-await p.waitForTimeout(1400);
-const wallPost = posted.find((x) => x.file === "tuning/tile_walls");
-console.log("posted:", JSON.stringify(wallPost ?? null).slice(0, 220));
-ok(!!wallPost, `the flags commit on the live channel (${posted.map((x) => x.file).join(", ")})`);
-ok(Object.keys(wallPost?.set ?? {}).every((k) => /^tiles\/.+\/\d+$/.test(k)),
-  `keyed by the tile, using the manifest's own key (${Object.keys(wallPost?.set ?? {})[0]})`);
-const entry = Object.values(wallPost?.set ?? {})[0];
-ok(entry === null || entry?.top_only === true, `a marked tile records top_only (${JSON.stringify(entry)})`);
-ok(Object.values(wallPost?.set ?? {}).some((v) => v === null),
-  "and one set back to the default is a DELETE, not a stored false — the file holds only what differs");
+// THE CLIFF FOLLOWS THIS TILE'S OWN WALL MODE — the reason the preview lives
+// on the card that carries the switch.
+ok(own.courses.every((c) => c?.includes(`${many.top}__over__${many.side}/`)),
+  `by default a tile stacks itself (${own.courses[0]?.split("/").slice(-2).join("/")})`);
+await p.evaluate(() => document.querySelector('.wall-mode [data-sort="top"]')?.click());
+await p.waitForTimeout(900);
+const flipped = await perTile();
+console.log("first tile top-only:", JSON.stringify({ courses: flipped.courses, modes: flipped.modes }));
+ok(flipped.modes[0] === "top only", "marking one tile top-only takes");
+ok(flipped.courses[0]?.includes(`${many.side}__over__${many.side}/`),
+  `and ITS cliff switches to the pure ${many.side} tile (${flipped.courses[0]?.split("/").slice(-2).join("/")})`);
+ok(flipped.courses.slice(1).every((c) => c?.includes(`${many.top}__over__${many.side}/`)),
+  "while its neighbours, untouched, still stack themselves — the setting is per tile");
 
 // ------------------------------------- 5. before / after the postprocess
 // Maintainer 2026-08-17: "a button/switch to view a tile before it was post
@@ -400,18 +294,11 @@ ok(flat.filter((c) => c.raw).every((c) => c.raw !== c.art), "which is a differen
 
 await p.goto(`${W}#/world/${cell.top}/${cell.side}`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
+// The tile cards are composed CANVASES now, so what the switch produced is
+// read from the paths they were built from rather than from an <img> src.
 const shot = () => p.evaluate(() => ({
   mode: [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].map((b) => (b.classList.contains("sel") ? "*" : "") + b.textContent.trim()),
-  // What is actually PAINTED, not what the markup intends.
-  shown: [...document.querySelectorAll(".world-cand .world-art")].map((a) => {
-    const vis = (i) => i && getComputedStyle(i).display !== "none";
-    return vis(a.querySelector(".art-before")) ? "before" : vis(a.querySelector(".art-after")) ? "after" : "none";
-  }),
-  // Both must be in the DOM: the flip has to be instant, and a src swap
-  // re-decodes — the blink is exactly what a comparison must not have.
-  loaded: [...document.querySelectorAll(".world-cand .world-art img")].filter((i) => i.complete && i.naturalWidth > 0).length,
-  imgs: document.querySelectorAll(".world-cand .world-art img").length,
-  tags: [...document.querySelectorAll(".world-cand .art-tag")].map((t) => t.textContent),
+  faces: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.face),
   portrait: (() => {
     const a = document.querySelector(".detail-head .world-art");
     if (!a) return null;
@@ -419,38 +306,26 @@ const shot = () => p.evaluate(() => ({
     return vis(a.querySelector(".art-before")) ? "before" : "after";
   })(),
 }));
-// The wall-mode row made the cards taller, so the lower ones keep their art
-// lazy — "both images are decoded" has to ask for them first or it measures
-// the viewport instead of the markup.
-await p.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
-await p.waitForTimeout(1200);
 const asShipped = await shot();
 console.log("after :", JSON.stringify(asShipped));
 ok(asShipped.mode[0] === "*After", `it opens on what the game gets (${asShipped.mode.join(" ")})`);
-ok(asShipped.shown.every((x) => x === "after"), "every candidate showing its postprocessed tile");
-ok(asShipped.tags.length === 0, "with no badge — the shipped tile is the default, and a badge on it would be noise");
-ok(asShipped.loaded === asShipped.imgs && asShipped.imgs === asShipped.shown.length * 2,
-  `both images already decoded, so the flip cannot blink (${asShipped.loaded}/${asShipped.imgs})`);
+ok(asShipped.faces.every((f) => /_after\.webp$/.test(f ?? "")), "and every tile preview is composed from the postprocessed art");
 
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Before/.test(b.textContent)).click());
-await p.waitForTimeout(900);
+await p.waitForTimeout(1000);
 const asRaw = await shot();
 console.log("before:", JSON.stringify(asRaw));
 ok(asRaw.mode[1] === "*Before", "the switch flips the whole set");
-ok(asRaw.shown.every((x) => x === "before"), "every candidate now showing the generator's raw output");
-ok(asRaw.tags.every((t) => /before/.test(t)) && asRaw.tags.length === asRaw.shown.length,
-  "each badged, so mid-comparison the screen always answers “which am I looking at”");
-ok(asRaw.portrait === "before", "and the pair's own portrait follows — one truth per screen, never two");
+ok(asRaw.faces.every((f) => /_before\.webp$/.test(f ?? "")), "and every preview is rebuilt from the generator's raw output");
+ok(asRaw.portrait === "before", "the pair's own portrait follows — one truth per screen, never two");
 
-// THE MODE IS A PREFERENCE. He pages ‹ › through 34 pairs judging one property;
-// a mode that reset on every page turn would have to be re-pressed 34 times.
-await p.evaluate(() => document.querySelector(".detail-nav a, .detail-nav button, .crumb-row a[href^='#/world/']")?.click());
+// THE MODE IS A PREFERENCE. He pages ‹ › through the pairs judging one
+// property; a mode that reset on every page turn would be re-pressed each time.
 await p.goto(`${W}#/world/${SIDES[1].top}/${SIDES[1].side}`, { waitUntil: "load" });
-await p.waitForTimeout(1600);
+await p.waitForTimeout(2000);
 const nextPair = await shot();
-console.log("next pair:", JSON.stringify({ mode: nextPair.mode, shown: nextPair.shown }));
+console.log("next pair:", JSON.stringify({ mode: nextPair.mode }));
 ok(nextPair.mode[1] === "*Before", "paging to the next pair keeps the mode");
-ok(nextPair.shown.every((x) => x === "before"), "and lands showing the same side of the comparison");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 

@@ -1182,3 +1182,11 @@ input[type="range"] { accent-color: var(--accent); }
 .wall-mode { display: flex; align-items: center; gap: 8px; }
 .wall-mode .sortbar { flex: none; }
 .wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }
+
+/* ---- World: one tile, both shapes, one box ----
+   Side by side to save vertical space on a page that already carries a card
+   per tile (maintainer 2026-08-17). The stage scrolls rather than scaling:
+   these canvases are drawn at the game's own 1:1, and resampling pixel art to
+   make it fit is the one thing that is never allowed. */
+.tile-stage { display: flex; align-items: flex-end; gap: 10px; overflow-x: auto; padding: 6px; }
+.tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
