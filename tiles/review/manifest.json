@@ -4383,6 +4383,26 @@
           "after": "tiles/review/light_soil__over__slime/0_after.webp",
           "file": "tiles/review/light_soil__over__slime/0_after.webp",
           "palette_top": "#c09c6c",
+          "wall_score": 8.03,
+          "wall": {
+            "tiling": 0.695,
+            "discretion": 0.936,
+            "structure": 1.0,
+            "contrast": 27.16,
+            "edges": 14.209
+          },
+          "top_share": 0.8521,
+          "overhang": 1.0,
+          "tile_id": "f2b0290f-6d34-4cea-a4ba-54017a6b1c3b",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of thick bubbling slime. Ragged light soil edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__slime/1",
+          "before": "tiles/review/light_soil__over__slime/1_before.webp",
+          "after": "tiles/review/light_soil__over__slime/1_after.webp",
+          "file": "tiles/review/light_soil__over__slime/1_after.webp",
+          "palette_top": "#c09c6c",
           "wall_score": 4.65,
           "wall": {
             "tiling": 0.332,
@@ -4398,44 +4418,24 @@
           "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
         },
         {
-          "key": "tiles/light_soil__over__slime/1",
-          "before": "tiles/review/light_soil__over__slime/1_before.webp",
-          "after": "tiles/review/light_soil__over__slime/1_after.webp",
-          "file": "tiles/review/light_soil__over__slime/1_after.webp",
-          "palette_top": "#c09c6c",
-          "wall_score": 4.2,
-          "wall": {
-            "tiling": 0.227,
-            "discretion": 0.656,
-            "structure": 1.0,
-            "contrast": 32.2,
-            "edges": 12.324
-          },
-          "top_share": 0.9976,
-          "overhang": 1.0,
-          "tile_id": "6c7b7e03-db13-4b85-9b92-b3655387fc34",
-          "style": "chase0",
-          "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
-        },
-        {
           "key": "tiles/light_soil__over__slime/2",
           "before": "tiles/review/light_soil__over__slime/2_before.webp",
           "after": "tiles/review/light_soil__over__slime/2_after.webp",
           "file": "tiles/review/light_soil__over__slime/2_after.webp",
           "palette_top": "#c09c6c",
-          "wall_score": 3.98,
+          "wall_score": 4.32,
           "wall": {
-            "tiling": 0.173,
-            "discretion": 0.673,
-            "structure": 1.0,
-            "contrast": 31.89,
-            "edges": 12.161
+            "tiling": 0.249,
+            "discretion": 0.661,
+            "structure": 0.995,
+            "contrast": 32.11,
+            "edges": 11.945
           },
-          "top_share": 0.9976,
+          "top_share": 0.9823,
           "overhang": 1.0,
-          "tile_id": "6c7b7e03-db13-4b85-9b92-b3655387fc34",
-          "style": "chase0",
-          "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+          "tile_id": "f2b0290f-6d34-4cea-a4ba-54017a6b1c3b",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of thick bubbling slime. Ragged light soil edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
         }
       ],
       "needs_regeneration": false
@@ -5328,6 +5328,26 @@
           "after": "tiles/review/snow__over__snow/0_after.webp",
           "file": "tiles/review/snow__over__snow/0_after.webp",
           "palette_top": "#d8e4de",
+          "wall_score": 5.3,
+          "wall": {
+            "tiling": 0.498,
+            "discretion": 0.715,
+            "structure": 0.89,
+            "contrast": 31.14,
+            "edges": 10.683
+          },
+          "top_share": 0.9711,
+          "overhang": 1.0,
+          "tile_id": "5c728749-2fee-45e8-b093-b1a34edad4ab",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of clean fresh snow. Ragged snow edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
+        },
+        {
+          "key": "tiles/snow__over__snow/1",
+          "before": "tiles/review/snow__over__snow/1_before.webp",
+          "after": "tiles/review/snow__over__snow/1_after.webp",
+          "file": "tiles/review/snow__over__snow/1_after.webp",
+          "palette_top": "#d8e4de",
           "wall_score": 4.81,
           "wall": {
             "tiling": 0.309,
@@ -5343,10 +5363,10 @@
           "prompt": "clean single color clean fresh snow on top of clean clean fresh snow"
         },
         {
-          "key": "tiles/snow__over__snow/1",
-          "before": "tiles/review/snow__over__snow/1_before.webp",
-          "after": "tiles/review/snow__over__snow/1_after.webp",
-          "file": "tiles/review/snow__over__snow/1_after.webp",
+          "key": "tiles/snow__over__snow/2",
+          "before": "tiles/review/snow__over__snow/2_before.webp",
+          "after": "tiles/review/snow__over__snow/2_after.webp",
+          "file": "tiles/review/snow__over__snow/2_after.webp",
           "palette_top": "#d8e4de",
           "wall_score": 4.73,
           "wall": {
@@ -5357,26 +5377,6 @@
             "edges": 11.932
           },
           "top_share": 0.8753,
-          "overhang": 1.0,
-          "tile_id": "512226fb-3b5b-4b8e-8c1f-ae777ea98867",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean clean fresh snow"
-        },
-        {
-          "key": "tiles/snow__over__snow/2",
-          "before": "tiles/review/snow__over__snow/2_before.webp",
-          "after": "tiles/review/snow__over__snow/2_after.webp",
-          "file": "tiles/review/snow__over__snow/2_after.webp",
-          "palette_top": "#d8e4de",
-          "wall_score": 4.7,
-          "wall": {
-            "tiling": 0.275,
-            "discretion": 0.757,
-            "structure": 0.955,
-            "contrast": 30.38,
-            "edges": 11.454
-          },
-          "top_share": 0.8622,
           "overhang": 1.0,
           "tile_id": "512226fb-3b5b-4b8e-8c1f-ae777ea98867",
           "style": "maintainer",

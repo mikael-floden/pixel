@@ -171,6 +171,11 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
         os.makedirs(sdir, exist_ok=True)
+        # Marker so a sweep can tell "this roll is still generating" from "this roll
+        # died and left nothing". Deleting an in-flight directory is not hypothetical:
+        # a tidy-up of zero-tile sheets removed one a live chase was about to write
+        # into, and that cell crashed with FileNotFoundError mid-run.
+        open(os.path.join(sdir, ".inflight"), "w").close()
         try:
             images, tile_id = client.create_tiles(description=prompt, seed=101 + i * 7,
                                                   **matrix.FIXED)
@@ -197,6 +202,10 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             p = os.path.join(sdir, f"tile_{j:02d}.png")
             im.save(p)
             paths.append(p)
+        try:
+            os.remove(os.path.join(sdir, ".inflight"))
+        except OSError:
+            pass
         with open(os.path.join(sdir, "meta.json"), "w") as f:
             json.dump({"cell": cell, "prompt": prompt, "tile_id": tile_id,
                        "style": f"chase{i % len(PHRASINGS)}", "n_tiles": len(paths),
