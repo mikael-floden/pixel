@@ -162,7 +162,12 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         prompt = PHRASINGS[i % len(PHRASINGS)].format(
             top_material=top_g["material_words"], side_material=side_g["material_words"],
             top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "))
-        sdir = os.path.join(d, f"sheet_{i:02d}_chase{i % len(PHRASINGS)}")
+        # The suffix carries the PID because two chases can legitimately target the same
+        # cell — a bulk row run and a targeted fix — and both compute their sheet index
+        # from the directory listing when the cell STARTS. Without this they pick the
+        # same name and silently overwrite each other's tiles. Costs nothing when only
+        # one run is active.
+        sdir = os.path.join(d, f"sheet_{i:02d}_chase{i % len(PHRASINGS)}_{os.getpid()}")
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
         os.makedirs(sdir, exist_ok=True)
