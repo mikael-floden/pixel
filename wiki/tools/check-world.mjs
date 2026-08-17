@@ -254,6 +254,9 @@ const perTile = () => p.evaluate(() => ({
     let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
     return { w: cv.width, h: cv.height, opaque, x: Math.round(cv.getBoundingClientRect().x) };
   })),
+  divs: document.querySelectorAll(".world-cand .tile-stage .tile-div").length,
+  // The divider must sit BETWEEN the rows, not decorate one of them.
+  order: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => [...st.children].map((k) => k.className.replace("tile-row ", ""))),
   zooms: [...document.querySelectorAll(".world-cand .tile-row.zooms")].map((row) => [...row.querySelectorAll("canvas")].map((cv) => {
     const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
     let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
@@ -291,12 +294,15 @@ ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actuall
 // have now"). Integer scales, nearest neighbour — the only kind of zoom pixel
 // art survives.
 console.log("zooms:", JSON.stringify(own.zooms[0]), "| slack:", JSON.stringify(own.slack.slice(0, 2)));
-ok(own.zooms.length === own.cards && own.zooms.every((z) => z.length === 2), `every tile is magnified too (${own.zooms.length} rows)`);
-ok(own.zooms.every((z) => z[0].z === "2" && z[1].z === "4"), "2x on the left, 4x on the right");
-ok(own.zooms.every((z) => z[0].x < z[1].x && z[0].w === iso.tilePx * 2 && z[1].w === iso.tilePx * 4),
-  `at exactly those scales (${own.zooms[0]?.map((z) => z.w).join(" / ")}px from a ${iso.tilePx}px tile)`);
-ok(own.zooms.every((z) => z.every((c) => c.opaque > 1000)), "and both actually drawn");
-ok(own.zooms.every((z, i) => z[0].x >= (own.shapes[i]?.[0]?.x ?? 0) - 400), "above the scenes, in the same box");
+ok(own.zooms.length === own.cards && own.zooms.every((z) => z.length === 1), `every tile is magnified too — ONE tile (${own.zooms.length} rows)`);
+ok(own.zooms.every((z) => z[0].z === "2" && z[0].w === iso.tilePx * 2),
+  `at 2×, and only 2× (${own.zooms[0]?.[0]?.w}px from a ${iso.tilePx}px tile)`);
+ok(own.zooms.every((z) => z[0].opaque > 1000), "and actually drawn");
+// A SEAM BETWEEN THE ROWS, because they are not at the same scale.
+console.log("stage order:", JSON.stringify(own.order[0]));
+ok(own.divs === own.cards, `a divider on every card (${own.divs}/${own.cards})`);
+ok(own.order.every((k) => k.indexOf("tile-div") === k.indexOf("zooms") + 1 && k.indexOf("tile-div") < k.indexOf("scenes")),
+  "sitting between the magnified tile and the scenes, not decorating either");
 // The slack is SPLIT, never piled on one side. 6px of tolerance: two fixed
 // canvas widths in a fluid box rarely divide evenly.
 ok(own.slack.filter(Boolean).every((s) => Math.abs(s.left - s.right) <= 6),

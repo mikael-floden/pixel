@@ -3211,7 +3211,13 @@ function tileScenes(cell, cand) {
       // (maintainer 2026-08-17: "look how much space we have on left vs right
       // side").
       stage.replaceChildren(...[
-        h("div", { class: "tile-row zooms" }, ...[zoomTile(images[face], 2), zoomTile(images[face], 4)].filter(Boolean)),
+        h("div", { class: "tile-row zooms" }, zoomTile(images[face], 2)),
+        // A RULE BETWEEN THE TWO ROWS, because they are not drawn at the same
+        // scale (maintainer 2026-08-17: "so it doesn't look like it's the same
+        // preview window since this one doesn't share the scaling"). One
+        // chessboard with no seam reads as one picture, and a 2× tile beside a
+        // 1:1 field would be a lie about how big the tile is.
+        h("div", { class: "tile-div" }),
         h("div", { class: "tile-row scenes" }, isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso)),
         chip,
       ].filter(Boolean));
@@ -3220,17 +3226,19 @@ function tileScenes(cell, cand) {
   paint();
   return stage;
 }
-/* THE TILE AT 2x AND AT 4x, ABOVE THE SCENES (maintainer 2026-08-17: "another
- * preview where you show a single 2x zoomed tile (to the left) and another 4x
- * zoomed tile (to the right) … this will make the card bigger, but that's ok.
- * This preview should be just on top of the preview we have now").
+/* THE TILE ITSELF, MAGNIFIED, ABOVE THE SCENES (maintainer 2026-08-17: "another
+ * preview where you show a single 2x zoomed tile … This preview should be just
+ * on top of the preview we have now"). It shipped as a 2x/4x pair for half an
+ * hour and came straight back — "the 4x was way too big, it's enough with one
+ * centered at 2x" — which also gave the card its page margins back: 128px asks
+ * nothing of the layout, where 384px of art on a 393px screen asked for
+ * everything.
  *
- * The scenes answer "does it tile"; this answers "what IS it" — at 4x a 64px
- * tile is 256px, which is where the postprocess's palette snap, the outline
- * clipping and the overhang are actually visible. INTEGER scales and nearest
- * neighbour, like every other pixel in this repo: 2x and 4x land each art pixel
- * on a whole block, which is the only reason a magnified pixel-art tile is
- * worth looking at.
+ * The scenes answer "does it tile"; this answers "what IS it" — 2x is where the
+ * postprocess's palette snap and the clipped outline are readable at all.
+ * INTEGER scale and nearest neighbour, like every other pixel in this repo:
+ * each art pixel lands on a whole block, which is the only reason a magnified
+ * pixel-art tile is worth looking at.
  */
 function zoomTile(im, z) {
   if (!im) return null;
@@ -3284,9 +3292,7 @@ function viewWorldPair(top, side) {
         h("p", { class: "muted" }, state.admin
           ? `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. Approve the ones to keep; reject the ones to regenerate.`
           : `${typeLabelWorld(c.top)} you walk on, ${typeLabelWorld(c.side).toLowerCase()} in the cliff below it.`))),
-    // world-panel: on a phone this one gives up the page margin too, because a
-    // 4x tile beside a 2x one is 384px of art that cannot be resampled to fit.
-    h("div", { class: "panel world-panel" },
+    h("div", { class: "panel" },
       state.admin
         ? h("div", { class: "panel-title" }, "Tiles in this set", h("span", { class: "pill" }, "ranked by wall score"))
         : h("div", { class: "panel-title" }, "How it looks"),

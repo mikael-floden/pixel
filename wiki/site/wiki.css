@@ -680,10 +680,6 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
      and the cliff beside it need every pixel a phone has, and this is the one
      card whose content is measured in the game's own units. */
   .world-cands .world-cand { margin-inline: -16px; border-radius: 0; }
-  /* …and the panel gives up the page margin for the same reason, one level up:
-     the 4x zoom row is 384px of art on a 393px screen, and pixel art is never
-     resampled to fit. Only this panel — the rest of the page keeps its margin. */
-  .world-panel { margin-inline: -14px; border-radius: 0; border-left: none; border-right: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
@@ -1234,10 +1230,15 @@ input[type="range"] { accent-color: var(--accent); }
    flush against one edge with a hand's width of chessboard at the other
    (maintainer 2026-08-17). Centring splits the slack in two. */
 .tile-row { display: flex; align-items: flex-end; justify-content: center; gap: 6px; overflow-x: auto; }
-/* The 4x tile is 256px wide beside the 2x's 128; on a narrow phone that pair
-   stacks rather than being cropped or resampled — the zoom is the whole point
-   of the row, so it is the ROW that gives way. */
-.tile-row.zooms { flex-wrap: wrap; gap: 4px; align-items: center; }
+.tile-row.zooms { align-items: center; }
+/* THE TWO ROWS ARE NOT AT THE SAME SCALE, so a seam says where one ends: on one
+   unbroken chessboard a 2× tile beside a 1:1 field reads as one picture, and
+   therefore as a lie about how big the tile is (maintainer 2026-08-17). */
+/* --muted at half strength, NOT --border: this line lies on the chessboard, and
+   the border token is tuned to read against a flat surface — on the checker it
+   disappears in the light theme. --muted is a mid grey in both themes, so one
+   rule carries both. */
+.tile-div { height: 1px; background: var(--muted); opacity: 0.5; margin: 2px 12px; flex: none; }
 .tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
 /* BEFORE/AFTER WITHIN REACH OF THE TILE IT CHANGES (maintainer 2026-08-17:
    "that button might be higher up so I have to scroll. Can you place that

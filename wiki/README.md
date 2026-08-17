@@ -245,18 +245,24 @@ composer Tiles OLD uses — the game's own projection at the game's own scale, s
 a strip here measures what a strip measures in the world.
 
 - **The tile itself is magnified above them** (maintainer 2026-08-17: *"another
-  preview where you show a single 2x zoomed tile (to the left) and another 4x
-  zoomed tile (to the right) … Yes this will make the card bigger, but that's
-  ok"*). The scenes answer "does it tile"; the zooms answer "what IS it" — at 4×
-  a 64px tile is 256px, which is where the palette snap, the clipped outline and
-  the overhang are actually visible. Integer scales and nearest neighbour, the
-  only zoom pixel art survives. Both rows share one chessboard and both flip
-  with that tile's before/after chip.
-- **Every row is centred**, and the room for a 384px pair of zooms comes from
-  the margins, never from resampling: on a phone this panel gives up the page
-  margin the way the card already gives up the panel's. Where even that is not
-  enough (a 375px screen) the zoom row **wraps** — the row gives way, not the
-  pixels.
+  preview where you show a single 2x zoomed tile … This preview should be just
+  on top of the preview we have now"*). The scenes answer "does it tile"; the
+  zoom answers "what IS it" — 2× is where the palette snap and the clipped
+  outline are readable at all. Integer scale and nearest neighbour, the only
+  zoom pixel art survives; it flips with that tile's before/after chip like
+  everything else on the card. It shipped for half an hour as a 2×/4× pair and
+  came straight back — *"the 4x was way too big, it's enough with one centered
+  at 2x"* — which also gave the page its margins back: 128px asks nothing of the
+  layout, where 384px of art on a 393px screen asked for everything.
+- **A rule separates the two rows**, because they are not drawn at the same
+  scale (*"so it doesn't look like it's the same preview window since this one
+  doesn't share the scaling"*). One unbroken chessboard would read as one
+  picture, and a 2× tile beside a 1:1 field is then a lie about how big the tile
+  is. It is `--muted` at half strength, not `--border`: this line lies on the
+  chessboard, where the border token vanishes in the light theme.
+- **Every row is centred.** Two canvases of fixed pixel widths never fill a
+  fluid box, and packing them left piled the whole leftover on the right —
+  27px of chessboard on one side and none on the other.
 - **A tile's preview shows THAT tile**, never a roll of its neighbours. There
   is no seed, no Randomize and no approved-only pool: the earlier shared "laid
   out as ground" card mixed the whole set, which answered "does this set work"
