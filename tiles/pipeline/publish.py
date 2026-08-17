@@ -49,6 +49,10 @@ def _save(im, path):
     without `exact` libwebp rewrites the RGB under fully-transparent pixels."""
     im.convert("RGBA").save(path, "WEBP", lossless=True, exact=True)
 
+# Same number chase.py defaults --min-wall to. A dead flat cliff is not a win, and
+# the two components must not disagree about the bar.
+MIN_WALL = 2.0
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MATRIX = os.path.join(ROOT, "matrix")
 REVIEW = os.path.join(ROOT, "review")
@@ -85,7 +89,7 @@ def candidates(cell_dir, side_hex=None, same=False):
             # regardless, so a raw-flatness gate only throws away good art — measured,
             # 182 of the 238 tiles it rejected were already seamless after postprocess,
             # several of them with the best edge spill in the whole set.
-            if flatness.seam_px(p) > 0:
+            if flatness.seam_px(p) > flatness.SEAM_TOL:
                 continue
             out.append({
                 "path": p, "wall": q,
@@ -93,6 +97,7 @@ def candidates(cell_dir, side_hex=None, same=False):
                 "overhang": round(flatness.overhang(p), 3),
                 "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
                             if side_hex else None,
+                "clarity": round(flatness.fringe_clarity(p), 3),
                 "tile_id": meta.get("tile_id"), "style": meta.get("style"),
                 "prompt": meta.get("prompt"),
             })
@@ -100,7 +105,18 @@ def candidates(cell_dir, side_hex=None, same=False):
     # through every grass cell and circled the ones whose transition was not good
     # enough, and a tile without it is the wrong tile however good its cliff. Within
     # the tiles that have it, the wall decides, because the wall builds the game.
-    withspill = [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG]
+    # ONE BAR, not two. chase.py rolls a cell until three tiles clear
+    # wall>=2.0 / spill / clarity / seam, and publish then shipped whatever ranked
+    # highest whether or not it cleared any of them — so check_gates found published
+    # tiles at wall 0.00 and 0.06 in cells whose chase had been told 2.0 was the
+    # minimum. Two components disagreeing about what "good" means is how a cell gets
+    # declared done while shipping something the generator was still being paid to
+    # replace. The tiers below degrade in the maintainer's own priority order, and a
+    # cell that lands on a lower tier is FLAGGED rather than quietly shipped.
+    full = [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG
+            and c["wall"]["score"] >= MIN_WALL
+            and c["clarity"] >= flatness.MIN_CLARITY]
+    withspill = full or [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG]
     out = withspill or out
     # X-over-X is exempt: the wall IS the top's material by construction, so the only
     # thing this could measure there is SHADE — and snap()'s same-material rule moves the
@@ -112,7 +128,7 @@ def candidates(cell_dir, side_hex=None, same=False):
     if not same:
         out = right or out
     out.sort(key=lambda c: -c["wall"]["score"])
-    return out, bool(withspill), same or bool(right)
+    return out, bool(withspill), same or bool(right), bool(full)
 
 
 def main():
@@ -143,7 +159,7 @@ def main():
         if cell.replace("__over__", "_over_") in dead:
             continue
         top, side = cell.split("__over__")
-        cands, has_spill, right_wall = candidates(
+        cands, has_spill, right_wall, all_gates = candidates(
             d, (PALETTE.get(side) or {}).get("top"), same=(top == side))
         cands = cands[:args.top]
         if not cands:
@@ -204,7 +220,7 @@ def main():
                 "wall": {k: c["wall"][k] for k in
                          ("tiling", "discretion", "structure", "contrast", "edges")},
                 "top_share": c["top_share"], "overhang": c["overhang"],
-                "wall_err": c["wall_err"],
+                "wall_err": c["wall_err"], "clarity": c["clarity"],
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1
@@ -213,7 +229,11 @@ def main():
                                    # The wall is not the material this cell asked for —
                                    # broken ART, not broken postprocess. Flagged so a
                                    # review can skip it rather than diagnose it.
-                                   "wrong_wall_material": not right_wall}
+                                   "wrong_wall_material": not right_wall,
+                                   # No candidate clears every gate chase was told
+                                   # to hit. The cell ships its best available and
+                                   # stays on the worklist.
+                                   "below_bar": not all_gates}
 
     with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)
@@ -222,6 +242,8 @@ def main():
     for cell, c in manifest["cells"].items():
         best = c["candidates"][0]
         flag = "  NEEDS REGEN (no transition in this cell)" if c["needs_regeneration"] else ""
+        if c["below_bar"]:
+            flag += "  BELOW BAR"
         if c["wrong_wall_material"]:
             flag += f"  WRONG WALL MATERIAL (off by {best['wall_err']:.0f})"
         print(f"  {cell:32s} wall={best['wall_score']:5.2f} spill={best['overhang']:.2f}"
