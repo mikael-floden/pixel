@@ -51052,6 +51052,15 @@
           "glow_score": 0.0191,
           "art_hash": "1e87f3fd56a0163f"
         },
+        "NOT_LIT_1": {
+          "sprite": "trailing_planters/trailing_planter_004/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6d8441d3-042e-441d-b13c-d4da7ff49f46",
+          "generated_at": "2026-08-17T11:42:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8583,
+          "glow_score": 0.0,
+          "art_hash": "867c47d5afa7827f"
+        },
         "NOT_LIT_2": {
           "sprite": "trailing_planters/trailing_planter_004/not_lit_2/sprite.webp",
           "pixellab_object_id": "7de54a94-30d3-430c-8263-ed7935956303",
@@ -61604,6 +61613,15 @@
           "glow_score": 0.1301,
           "art_hash": "59b6e0b0050ec785"
         },
+        "NOT_LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "eb8b3aa0-7f3a-4519-b2e4-3f3eba960075",
+          "generated_at": "2026-08-17T11:39:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7559,
+          "glow_score": 0.0,
+          "art_hash": "50741e3da86df62e"
+        },
         "NOT_LIT_2": {
           "sprite": "wall_hangings/wall_hanging_010/not_lit_2/sprite.webp",
           "pixellab_object_id": "54318e23-acaf-4a9b-a6d3-5ee50d792f74",
@@ -61621,7 +61639,7 @@
       "rel": "wall_hangings/wall_hanging_011",
       "name": "Braided garlic strings 011",
       "category": "wall_hangings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, braided garlic strings, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -61641,6 +61659,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_011/lit_1/sprite.webp",
+          "pixellab_object_id": "46fc6667-8908-4a6c-bb7b-6b9515fb3bb6",
+          "generated_at": "2026-08-17T11:41:34+00:00",
+          "glow_concept": "embroidery threads shimmering with memory-light",
+          "difference_from_source": 0.8335,
+          "glow_score": 0.1046,
+          "art_hash": "10d059f502201cab"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_011/lit_2/sprite.webp",
+          "pixellab_object_id": "1d96b825-ec0b-45d9-842d-12c27d361f5c",
+          "generated_at": "2026-08-17T11:40:45+00:00",
+          "glow_concept": "the candle sconce lit warm",
+          "difference_from_source": 0.9442,
+          "glow_score": 0.3245,
+          "art_hash": "b5676be188a08782"
+        },
         "NOT_LIT_1": {
           "sprite": "wall_hangings/wall_hanging_011/sprite.webp",
           "pixellab_object_id": "52a3adef-93a5-4795-9409-65d61dbacb37",
@@ -61655,6 +61691,24 @@
           "difference_from_source": 0.7405,
           "glow_score": 0.3745,
           "art_hash": "c8abae4bf0d48f2d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "79bcf757-e555-4886-8da4-685592124834",
+          "generated_at": "2026-08-17T11:45:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.85,
+          "glow_score": 0.1521,
+          "art_hash": "a824b2c82d236f79"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5d56a390-2edd-4b2d-83a8-8e33162d5d5d",
+          "generated_at": "2026-08-17T11:39:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8868,
+          "glow_score": 0.2792,
+          "art_hash": "57ef26555fa55984"
         }
       },
       "animations": []
@@ -61662,9 +61716,9 @@
     {
       "id": "wall_hanging_012",
       "rel": "wall_hangings/wall_hanging_012",
-      "name": "Herb bundles drying on a rail 012 \u00b7 lit",
+      "name": "Herb bundles drying on a rail 012",
       "category": "wall_hangings",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, herb bundles drying on a rail, small, knee-high, self-emissive at night, softly radiating light: jars glowing on the mounted shelf",
       "view": "low top-down",
       "size": 64,
@@ -61689,6 +61743,51 @@
           "pixellab_object_id": "a627fc98-2043-4994-84eb-980edf1629ef",
           "generated_at": "2026-08-13T23:01:47+00:00",
           "art_hash": "2e5adda5e33b941c"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_012/lit_2/sprite.webp",
+          "pixellab_object_id": "aadc8afb-72a5-4098-903b-acb6d0066697",
+          "generated_at": "2026-08-17T11:41:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7576,
+          "glow_score": 0.0181,
+          "art_hash": "af85aa2f4d2d6972"
+        },
+        "LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_012/lit_3/sprite.webp",
+          "pixellab_object_id": "df8031d5-4b90-4e7f-b237-4ac505374b20",
+          "generated_at": "2026-08-17T11:41:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7862,
+          "glow_score": 0.0,
+          "art_hash": "b4d5747226d1ace2"
+        },
+        "LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_012/lit_4/sprite.webp",
+          "pixellab_object_id": "23dc8c03-bfce-454f-9db3-8893c03ce95c",
+          "generated_at": "2026-08-17T11:41:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6371,
+          "glow_score": 0.0107,
+          "art_hash": "68c1f6affd8b6b00"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "d56bda80-73ce-48f3-92c5-09cf010a9bd2",
+          "generated_at": "2026-08-17T11:41:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5781,
+          "glow_score": 0.0,
+          "art_hash": "3152fd4111c9d6ef"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "7af3bab2-aa71-401f-9f08-0887958eb7ae",
+          "generated_at": "2026-08-17T11:46:57+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8692,
+          "glow_score": 0.0,
+          "art_hash": "6cf801b02c655d80"
         }
       },
       "animations": []
@@ -61696,9 +61795,9 @@
     {
       "id": "wall_hanging_014",
       "rel": "wall_hangings/wall_hanging_014",
-      "name": "Round woven basket-lid display 014 \u00b7 lit",
+      "name": "Round woven basket-lid display 014",
       "category": "wall_hangings",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, round woven basket-lid display, small, knee-high, self-emissive at night, softly radiating light: the candle sconce lit warm",
       "view": "low top-down",
       "size": 64,
@@ -61723,6 +61822,42 @@
           "pixellab_object_id": "88d24a23-5bfb-40f7-83a8-e5774ace75d9",
           "generated_at": "2026-08-13T23:16:31+00:00",
           "art_hash": "0c6c3bd2f964350c"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_014/lit_2/sprite.webp",
+          "pixellab_object_id": "ce8b35b3-0642-452b-a732-68efa5b6bc4e",
+          "generated_at": "2026-08-17T11:42:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4982,
+          "glow_score": 0.1126,
+          "art_hash": "854fe85e988019d2"
+        },
+        "LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_014/lit_3/sprite.webp",
+          "pixellab_object_id": "b7ee6d4f-0b83-41e8-b9f3-13a12984e288",
+          "generated_at": "2026-08-17T11:42:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4405,
+          "glow_score": 0.1256,
+          "art_hash": "1587a7e77fa7c466"
+        },
+        "LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_014/lit_4/sprite.webp",
+          "pixellab_object_id": "c5e1532e-f758-4fd8-944a-be3e07512191",
+          "generated_at": "2026-08-17T11:43:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8697,
+          "glow_score": 0.0071,
+          "art_hash": "99ad08c8528be5fd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "e2bd206b-c075-4bb4-a9db-c394cf334348",
+          "generated_at": "2026-08-17T11:43:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8175,
+          "glow_score": 0.0065,
+          "art_hash": "6894d5a48d75c2c8"
         }
       },
       "animations": []
@@ -61730,9 +61865,9 @@
     {
       "id": "wall_hanging_016",
       "rel": "wall_hangings/wall_hanging_016",
-      "name": "Hunting horn hanging on a strap 016 \u00b7 lit",
+      "name": "Hunting horn hanging on a strap 016",
       "category": "wall_hangings",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, hunting horn hanging on a strap, waist-high, self-emissive at night, softly radiating light: embroidery threads shimmering with memory-light",
       "view": "low top-down",
       "size": 64,
@@ -61757,6 +61892,51 @@
           "pixellab_object_id": "bd793115-4128-4a86-8943-faf45f670a3f",
           "generated_at": "2026-08-13T23:45:40+00:00",
           "art_hash": "36c2eed9679ed48a"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_016/lit_2/sprite.webp",
+          "pixellab_object_id": "7689e5da-8bed-40b1-88b0-c1a2135bcba3",
+          "generated_at": "2026-08-17T11:44:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6026,
+          "glow_score": 0.0687,
+          "art_hash": "02c75a148482ac86"
+        },
+        "LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_016/lit_3/sprite.webp",
+          "pixellab_object_id": "0775ed1e-c0a3-40b2-b9a5-71a0759a634f",
+          "generated_at": "2026-08-17T11:44:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6907,
+          "glow_score": 0.0458,
+          "art_hash": "69406a6893a2c91e"
+        },
+        "LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_016/lit_4/sprite.webp",
+          "pixellab_object_id": "594184b5-5c1d-4864-8483-77ef50fc92bd",
+          "generated_at": "2026-08-17T11:45:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7854,
+          "glow_score": 0.0303,
+          "art_hash": "78d3bba8958be296"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "52f83cdf-eea5-4bea-83de-bd9d3a2c9ad8",
+          "generated_at": "2026-08-17T11:45:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7953,
+          "glow_score": 0.0,
+          "art_hash": "82942046d4eaef4c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "1f860f3e-da59-49bf-b1f6-4b47bac9f998",
+          "generated_at": "2026-08-17T11:45:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5814,
+          "glow_score": 0.0,
+          "art_hash": "a53e6b64ac6debc6"
         }
       },
       "animations": []
@@ -61766,7 +61946,7 @@
       "rel": "wall_hangings/wall_hanging_017",
       "name": "Kitchen rack of hanging spoons and ladles 017",
       "category": "wall_hangings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, kitchen rack of hanging spoons and ladles, inlaid with tiny soulstone chips, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -61786,11 +61966,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_017/lit_1/sprite.webp",
+          "pixellab_object_id": "06d45b00-8025-40e5-9fc8-77d286e55b4a",
+          "generated_at": "2026-08-17T11:47:16+00:00",
+          "glow_concept": "embroidery threads shimmering with memory-light",
+          "difference_from_source": 0.8597,
+          "glow_score": 0.0865,
+          "art_hash": "546ade0d2934c6a1"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_017/lit_2/sprite.webp",
+          "pixellab_object_id": "e88be4e0-7fdf-4af2-bae9-3066f5cbcdf8",
+          "generated_at": "2026-08-17T11:47:18+00:00",
+          "glow_concept": "the candle sconce lit warm",
+          "difference_from_source": 0.8884,
+          "glow_score": 0.0709,
+          "art_hash": "88731b0584554b28"
+        },
         "NOT_LIT_1": {
           "sprite": "wall_hangings/wall_hanging_017/sprite.webp",
           "pixellab_object_id": "7c833f2b-bd62-4481-a1fc-aade1f09e5a5",
           "generated_at": "2026-08-14T02:27:57+00:00",
           "art_hash": "e27d493bba584ec1"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_017/not_lit_2/sprite.webp",
+          "pixellab_object_id": "d7525efe-fe9a-43b7-8b02-e8149f984350",
+          "generated_at": "2026-08-17T11:46:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3789,
+          "glow_score": 0.0,
+          "art_hash": "264735e812136707"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_017/not_lit_3/sprite.webp",
+          "pixellab_object_id": "2d238d04-063e-4b57-8c24-9bc05f0c1842",
+          "generated_at": "2026-08-17T11:46:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9692,
+          "glow_score": 0.0063,
+          "art_hash": "f7698fe436574d33"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_017/not_lit_4/sprite.webp",
+          "pixellab_object_id": "68f598df-c911-4c99-82b1-e09d2bda4eff",
+          "generated_at": "2026-08-17T11:46:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4927,
+          "glow_score": 0.0,
+          "art_hash": "8d80c1f2dc5b7a82"
         }
       },
       "animations": []

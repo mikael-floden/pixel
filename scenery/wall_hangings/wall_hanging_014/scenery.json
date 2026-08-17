@@ -5,8 +5,8 @@
   "group": "wall_hangings",
   "rank": 110,
   "index": 14,
-  "name": "Round woven basket-lid display 014 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Round woven basket-lid display 014",
+  "lights": null,
   "variety": "round woven basket-lid display",
   "glow_concept": "the candle sconce lit warm",
   "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, round woven basket-lid display, small, knee-high, self-emissive at night, softly radiating light: the candle sconce lit warm",
@@ -35,6 +35,38 @@
       "sprite": "wall_hangings/wall_hanging_014/sprite.webp",
       "pixellab_object_id": "88d24a23-5bfb-40f7-83a8-e5774ace75d9",
       "generated_at": "2026-08-13T23:16:31+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_014/lit_2/sprite.webp",
+      "pixellab_object_id": "ce8b35b3-0642-452b-a732-68efa5b6bc4e",
+      "generated_at": "2026-08-17T11:42:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4982,
+      "glow_score": 0.1126
+    },
+    "LIT_3": {
+      "sprite": "wall_hangings/wall_hanging_014/lit_3/sprite.webp",
+      "pixellab_object_id": "b7ee6d4f-0b83-41e8-b9f3-13a12984e288",
+      "generated_at": "2026-08-17T11:42:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4405,
+      "glow_score": 0.1256
+    },
+    "LIT_4": {
+      "sprite": "wall_hangings/wall_hanging_014/lit_4/sprite.webp",
+      "pixellab_object_id": "c5e1532e-f758-4fd8-944a-be3e07512191",
+      "generated_at": "2026-08-17T11:43:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8697,
+      "glow_score": 0.0071
+    },
+    "NOT_LIT_1": {
+      "sprite": "wall_hangings/wall_hanging_014/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e2bd206b-c075-4bb4-a9db-c394cf334348",
+      "generated_at": "2026-08-17T11:43:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8175,
+      "glow_score": 0.0065
     }
   }
 }

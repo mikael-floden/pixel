@@ -5,8 +5,8 @@
   "group": "wall_hangings",
   "rank": 110,
   "index": 16,
-  "name": "Hunting horn hanging on a strap 016 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Hunting horn hanging on a strap 016",
+  "lights": null,
   "variety": "hunting horn hanging on a strap",
   "glow_concept": "embroidery threads shimmering with memory-light",
   "prompt": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, hunting horn hanging on a strap, waist-high, self-emissive at night, softly radiating light: embroidery threads shimmering with memory-light",
@@ -35,6 +35,46 @@
       "sprite": "wall_hangings/wall_hanging_016/sprite.webp",
       "pixellab_object_id": "bd793115-4128-4a86-8943-faf45f670a3f",
       "generated_at": "2026-08-13T23:45:40+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_016/lit_2/sprite.webp",
+      "pixellab_object_id": "7689e5da-8bed-40b1-88b0-c1a2135bcba3",
+      "generated_at": "2026-08-17T11:44:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6026,
+      "glow_score": 0.0687
+    },
+    "LIT_3": {
+      "sprite": "wall_hangings/wall_hanging_016/lit_3/sprite.webp",
+      "pixellab_object_id": "0775ed1e-c0a3-40b2-b9a5-71a0759a634f",
+      "generated_at": "2026-08-17T11:44:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6907,
+      "glow_score": 0.0458
+    },
+    "LIT_4": {
+      "sprite": "wall_hangings/wall_hanging_016/lit_4/sprite.webp",
+      "pixellab_object_id": "594184b5-5c1d-4864-8483-77ef50fc92bd",
+      "generated_at": "2026-08-17T11:45:01+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7854,
+      "glow_score": 0.0303
+    },
+    "NOT_LIT_1": {
+      "sprite": "wall_hangings/wall_hanging_016/not_lit_1/sprite.webp",
+      "pixellab_object_id": "52f83cdf-eea5-4bea-83de-bd9d3a2c9ad8",
+      "generated_at": "2026-08-17T11:45:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7953,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "wall_hangings/wall_hanging_016/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1f860f3e-da59-49bf-b1f6-4b47bac9f998",
+      "generated_at": "2026-08-17T11:45:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5814,
+      "glow_score": 0.0
     }
   }
 }
