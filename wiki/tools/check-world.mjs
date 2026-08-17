@@ -79,32 +79,58 @@ ok(adminNav.includes("World") && adminNav.includes("Tiles OLD"),
 ok(adminNav.indexOf("World") < adminNav.indexOf("Tiles OLD"),
   "with the new system first — the one being replaced is not the one you reach first");
 
-// ------------------------------------------------------------- 2. the pairs
+// --------------------------------------------------- 2. three levels of ground
+// Maintainer 2026-08-17: "The top level tiles are still grass, ice, snow, etc.
+// When clicking on a tile type, lets say grass you will get to a page with all
+// different grass pairs/sets … Clicking on grass over snow will make it
+// possible to review every tile that is part of that set."
+const TOPS = [...new Set(CELLS.map((c) => c.top))];
+const TOP = TOPS[0], SIDES = CELLS.filter((c) => c.top === TOP);
 await p.goto(`${W}#/world`, { waitUntil: "load" });
+await p.waitForTimeout(2400);
+const lvl1 = await p.evaluate(() => ({
+  h1: document.querySelector("h1")?.textContent,
+  cards: document.querySelectorAll("a.card").length,
+  names: [...document.querySelectorAll("a.card .card-name")].map((x) => x.textContent),
+  hrefs: [...document.querySelectorAll("a.card")].map((a) => a.getAttribute("href")),
+}));
+console.log("level 1 (types):", JSON.stringify(lvl1));
+ok(lvl1.cards === TOPS.length, `the top level is GROUND TYPES, not pairs (${lvl1.cards} for ${TOPS.length} types)`);
+ok(lvl1.names.every((n) => !/ over /.test(n)), `each named as a ground (${lvl1.names.join(", ")})`);
+ok(lvl1.hrefs.every((x) => /^#\/world\/[a-z0-9_]+$/.test(x)), "opening one ground type, not one pair");
+
+await p.goto(`${W}#/world/${TOP}`, { waitUntil: "load" });
+await p.waitForTimeout(2200);
+const lvl2 = await p.evaluate(() => ({
+  h1: document.querySelector("h1")?.textContent,
+  cards: document.querySelectorAll("a.card").length,
+  names: [...document.querySelectorAll("a.card .card-name")].map((x) => x.textContent).slice(0, 3),
+  hrefs: [...document.querySelectorAll("a.card")].map((a) => a.getAttribute("href")).slice(0, 3),
+}));
+console.log("level 2 (pairs):", JSON.stringify(lvl2));
+ok(lvl2.cards === SIDES.length, `the type page lists every pair that walks on it (${lvl2.cards}/${SIDES.length})`);
+ok(lvl2.names.every((n) => /^over /.test(n)), `named by the WALL, since the ground is the page you are on (${lvl2.names.join(", ")})`);
+ok(lvl2.hrefs.every((x) => x.startsWith(`#/world/${TOP}/`)), "each opening its own pair");
+
+// The type page is where the pairs live now, and every one must draw.
+await p.goto(`${W}#/world/${TOP}`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
 // Cards below the fold keep their art lazy, so "does every pair draw?" has to
 // ask for the whole grid first — otherwise it measures the viewport.
 await p.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
 await p.waitForTimeout(1200);
 const list = await p.evaluate(() => ({
-  h1: document.querySelector("h1")?.textContent,
   cards: document.querySelectorAll("a.card").length,
-  first: document.querySelector("a.card .card-name")?.textContent,
-  hrefs: [...document.querySelectorAll("a.card")].map((a) => a.getAttribute("href")).slice(0, 3),
   art: [...document.querySelectorAll("a.card")].filter((c) => [...c.querySelectorAll("img")].some((i) => i.complete && i.naturalWidth > 0)).length,
   filters: [...document.querySelectorAll(".sortbar button")].map((x) => x.textContent.trim()),
 }));
-console.log("World overview:", JSON.stringify(list));
-ok(list.h1 === "World", `the new system is the section called World (“${list.h1}”)`);
-ok(list.cards === CELLS.length, `every pair is listed (${list.cards}/${CELLS.length})`);
-ok(list.art === list.cards, `and every one of them draws its tile (${list.art}/${list.cards})`);
-ok(/ over /.test(list.first ?? ""), `named as the pair it is (“${list.first}”)`);
-ok(list.hrefs.every((h) => h.startsWith("#/world/")), "each opens its own page");
+console.log("pairs of one type:", JSON.stringify(list));
+ok(list.art === list.cards && list.cards > 0, `every pair draws its tile (${list.art}/${list.cards})`);
 ok(list.filters.some((f) => /not reviewed/.test(f)), `with a review filter to find the work (${list.filters.join(" | ")})`);
 
 // ------------------------------------------------------------- 3. the review
 const cell = CELLS.find((c) => c.candidates.length > 1) ?? CELLS[0];
-await p.goto(`${W}#/world/${cell.id}`, { waitUntil: "load" });
+await p.goto(`${W}#/world/${cell.top}/${cell.side}`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
 const page = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
@@ -172,17 +198,108 @@ await live.addInitScript(() => {
   localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
   localStorage.removeItem("wiki-world-filter");
 });
+// It is a new GROUND TYPE as well as a new pair, so it has to reshape both
+// levels — the type list and that type's pairs.
 await live.goto(`${W}#/world`, { waitUntil: "load" });
 await live.waitForTimeout(3000);
-const fresh = await live.evaluate((id) => ({
-  cards: document.querySelectorAll("a.card").length,
-  has: !!document.querySelector(`a.card[href="#/world/${id}"]`),
-  name: document.querySelector(`a.card[href="#/world/${id}"] .card-name`)?.textContent ?? null,
-}), FRESH);
-console.log("live manifest:", JSON.stringify(fresh));
-ok(fresh.has, `a pair the agent generated after the last build still shows up (“${fresh.name}”)`);
-ok(fresh.cards === CELLS.length + 1, `and the count follows it (${fresh.cards} = ${CELLS.length} + 1)`);
+const freshTop = await live.evaluate(() => ({
+  types: [...document.querySelectorAll("a.card")].map((a) => a.getAttribute("href")),
+}));
+await live.goto(`${W}#/world/sand`, { waitUntil: "load" });
+await live.waitForTimeout(2200);
+const fresh = await live.evaluate(() => ({
+  h1: document.querySelector("h1")?.textContent,
+  has: !!document.querySelector('a.card[href="#/world/sand/moonstone"]'),
+  name: document.querySelector('a.card[href="#/world/sand/moonstone"] .card-name')?.textContent ?? null,
+}));
+console.log("live manifest:", JSON.stringify({ ...fresh, types: freshTop.types.length }));
+ok(freshTop.types.includes("#/world/sand"), "a ground type the agent generated after the last build appears at the top level");
+ok(fresh.has, `and its pair under it (“${fresh.name}”)`);
 ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 1).join("") || "none"})`);
+
+// ------------------------------------------ 4b. the set, laid out as ground
+// Maintainer 2026-08-17: "help me understand how the tileset looks like when
+// tiled together. I need both a 1x9 flat ground and the V shape from tiles 2.0
+// had … use random tiles from the tileset … a Randomize button … a toggle for
+// if we should only have approved tiles or include unreviewed tiles."
+const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id) ?? cell;
+await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+// A SCENE IS JUDGED BY ITS PIXELS. Both shapes are canvases composed at run
+// time, so "did it draw" is a count of opaque pixels and "did it change" is a
+// hash of them — an <img> that resolved proves nothing here.
+const scenes = () => p.evaluate(() => [...document.querySelectorAll(".world-scene canvas")].map((cv) => {
+  const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+  let opaque = 0, sig = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] > 8) opaque++;
+    sig = (sig * 31 + d[i] + d[i + 1] * 3 + d[i + 2] * 7 + d[i + 3] * 11) >>> 0;
+  }
+  return { w: cv.width, h: cv.height, opaque, sig };
+}));
+const heads = await p.evaluate(() => [...document.querySelectorAll(".world-scene .panel-title")].map((x) => x.textContent.trim()));
+const lay = await scenes();
+console.log("layouts:", JSON.stringify({ heads, lay }));
+ok(lay.length === 2, `the pair page lays the set out in TWO shapes (${lay.length})`);
+ok(/nine in a row/i.test(heads[0] ?? ""), `a flat run of nine (“${heads[0]}”)`);
+ok(/cliff|stack/i.test(heads[1] ?? ""), `and the V from Tiles OLD — a cliff corner (“${heads[1]}”)`);
+ok(lay.every((s) => s.opaque > 2000), `both actually composed (${lay.map((s) => s.opaque).join(", ")} opaque px)`);
+// Nine cells along one iso axis span 9*dx either way — a strip, not a square.
+const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
+ok(lay[0].w >= iso.dx * 8, `the flat one really is nine wide (${lay[0].w}px, ≥ ${iso.dx * 8})`);
+ok(lay[0].w > lay[1].w, "and wider than the cliff, which is three cells across");
+
+// RANDOMIZE gives a different roll of the same set.
+let changed = false;
+for (let i = 0; i < 6 && !changed; i++) {
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((b) => /Randomize/.test(b.textContent)).click());
+  await p.waitForTimeout(700);
+  const next = await scenes();
+  changed = next.some((s, j) => s.sig !== lay[j].sig);
+}
+ok(changed, `Randomize rolls a different set of tiles into the layouts (${many.candidates.length} to choose from)`);
+
+// THE POOL TOGGLE. With nothing approved, "approved only" has nothing to lay
+// out and must SAY so rather than draw an empty box.
+await p.evaluate(() => document.querySelector('[data-bar="wiki-world-pool"] [data-sort="approved"]')?.click());
+await p.waitForTimeout(900);
+const empty = await p.evaluate(() => ({
+  canvases: document.querySelectorAll(".world-scene canvas").length,
+  msg: document.querySelector(".world-scenes p")?.textContent ?? "",
+  pill: [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "",
+}));
+console.log("approved-only, none approved:", JSON.stringify(empty));
+ok(empty.canvases === 0 && /no approved tiles/i.test(empty.msg),
+  `"approved only" with nothing approved explains itself (“${empty.msg.slice(0, 60)}”)`);
+ok(/0 of \d+/.test(empty.pill), `and the mix count says so too (“${empty.pill}”)`);
+
+// Approve one tile and it becomes the whole mix.
+await p.evaluate(() => document.querySelector(".world-cand .verdict button")?.click());
+await p.waitForTimeout(900);
+const oneApproved = await p.evaluate(() => ({
+  canvases: document.querySelectorAll(".world-scene canvas").length,
+  pill: [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "",
+}));
+console.log("approved-only, one approved:", JSON.stringify(oneApproved));
+ok(oneApproved.canvases === 2, "approving one tile gives the layouts something to draw");
+ok(/^1 of /.test(oneApproved.pill), `and it is the only one in the mix (“${oneApproved.pill}”)`);
+
+// A REJECTED TILE IS NEVER IN THE MIX, under either setting — he rejected it,
+// and drawing it in the picture of the finished ground would be the wiki
+// arguing with him.
+await p.evaluate(() => document.querySelector('[data-bar="wiki-world-pool"] [data-sort="open"]')?.click());
+await p.waitForTimeout(800);
+const beforeReject = await p.evaluate(() => [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "");
+await p.evaluate(() => {
+  const rows = [...document.querySelectorAll(".world-cand .verdict")];
+  const last = rows[rows.length - 1];
+  [...last.querySelectorAll("button")].find((b) => /✕/.test(b.textContent))?.click();
+});
+await p.waitForTimeout(900);
+const afterReject = await p.evaluate(() => [...document.querySelectorAll(".pill")].find((x) => /in the mix/.test(x.textContent))?.textContent ?? "");
+console.log("reject drops it from the mix:", JSON.stringify({ beforeReject, afterReject }));
+const n = (t) => Number(/(\d+) of/.exec(t)?.[1] ?? NaN);
+ok(n(afterReject) === n(beforeReject) - 1, `rejecting a tile takes it out of the mix (${beforeReject} → ${afterReject})`);
 
 // ------------------------------------- 5. before / after the postprocess
 // Maintainer 2026-08-17: "a button/switch to view a tile before it was post
@@ -194,10 +311,10 @@ const withRaw = flat.filter((c) => c.raw).length;
 ok(withRaw > 0, `and carries the BEFORE beside it (${withRaw}/${flat.length} candidates)`);
 ok(flat.filter((c) => c.raw).every((c) => c.raw !== c.art), "which is a different file — a comparison of one image is not one");
 
-await p.goto(`${W}#/world/${cell.id}`, { waitUntil: "load" });
+await p.goto(`${W}#/world/${cell.top}/${cell.side}`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
 const shot = () => p.evaluate(() => ({
-  mode: [...document.querySelectorAll(".world-viewbar button")].map((b) => (b.classList.contains("sel") ? "*" : "") + b.textContent.trim()),
+  mode: [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].map((b) => (b.classList.contains("sel") ? "*" : "") + b.textContent.trim()),
   // What is actually PAINTED, not what the markup intends.
   shown: [...document.querySelectorAll(".world-cand .world-art")].map((a) => {
     const vis = (i) => i && getComputedStyle(i).display !== "none";
@@ -223,7 +340,7 @@ ok(asShipped.tags.length === 0, "with no badge — the shipped tile is the defau
 ok(asShipped.loaded === asShipped.imgs && asShipped.imgs === asShipped.shown.length * 2,
   `both images already decoded, so the flip cannot blink (${asShipped.loaded}/${asShipped.imgs})`);
 
-await p.evaluate(() => [...document.querySelectorAll(".world-viewbar button")].find((b) => /Before/.test(b.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Before/.test(b.textContent)).click());
 await p.waitForTimeout(900);
 const asRaw = await shot();
 console.log("before:", JSON.stringify(asRaw));
@@ -236,13 +353,13 @@ ok(asRaw.portrait === "before", "and the pair's own portrait follows — one tru
 // THE MODE IS A PREFERENCE. He pages ‹ › through 34 pairs judging one property;
 // a mode that reset on every page turn would have to be re-pressed 34 times.
 await p.evaluate(() => document.querySelector(".detail-nav a, .detail-nav button, .crumb-row a[href^='#/world/']")?.click());
-await p.goto(`${W}#/world/${CELLS[1].id}`, { waitUntil: "load" });
+await p.goto(`${W}#/world/${SIDES[1].top}/${SIDES[1].side}`, { waitUntil: "load" });
 await p.waitForTimeout(1600);
 const nextPair = await shot();
 console.log("next pair:", JSON.stringify({ mode: nextPair.mode, shown: nextPair.shown }));
 ok(nextPair.mode[1] === "*Before", "paging to the next pair keeps the mode");
 ok(nextPair.shown.every((x) => x === "before"), "and lands showing the same side of the comparison");
-await p.evaluate(() => [...document.querySelectorAll(".world-viewbar button")].find((b) => /After/.test(b.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 
 // ------------------------------------------------------------- 6. the player
