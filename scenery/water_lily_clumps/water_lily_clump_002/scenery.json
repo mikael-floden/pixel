@@ -4,8 +4,8 @@
   "group": "water_lily_clumps",
   "rank": 63,
   "index": 2,
-  "name": "Night-closed folded blossoms 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Night-closed folded blossoms 002",
+  "lights": null,
   "variety": "night-closed folded blossoms",
   "glow_concept": "soul-light shining up through gaps between pads",
   "prompt": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, night-closed folded blossoms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soul-light shining up through gaps between pads",
@@ -35,6 +35,30 @@
       "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
       "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
       "generated_at": "2026-08-13T04:58:17+00:00"
+    },
+    "LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/lit_2/sprite.webp",
+      "pixellab_object_id": "332fdb28-447f-402c-bbdc-2db5cda81179",
+      "generated_at": "2026-08-17T12:05:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3425,
+      "glow_score": 0.349
+    },
+    "LIT_4": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/lit_4/sprite.webp",
+      "pixellab_object_id": "15ca01aa-198b-49a0-a681-fc9cc809be0a",
+      "generated_at": "2026-08-17T12:06:39+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8561,
+      "glow_score": 0.0226
+    },
+    "NOT_LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6e4576f7-4f11-4738-8cdf-af0bf2eea412",
+      "generated_at": "2026-08-17T12:05:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9995,
+      "glow_score": 0.0
     }
   }
 }

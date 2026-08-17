@@ -62418,9 +62418,9 @@
     {
       "id": "washing_line_010",
       "rel": "washing_lines/washing_line_010",
-      "name": "Small child-size clothes 010 \u00b7 lit",
+      "name": "Small child-size clothes 010",
       "category": "washing_lines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, small child-size clothes, large, twice human height, self-emissive at night, softly radiating light: embroidered hems stitched in shining thread",
       "view": "low top-down",
       "size": 128,
@@ -62445,6 +62445,51 @@
           "pixellab_object_id": "7fc8a564-f707-443b-813b-3bfc13c5bac8",
           "generated_at": "2026-08-13T21:58:39+00:00",
           "art_hash": "517bbda1a794235d"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_010/lit_2/sprite.webp",
+          "pixellab_object_id": "baf0c5c3-90ce-4e93-aa3d-fcd73b3a52db",
+          "generated_at": "2026-08-17T11:57:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5812,
+          "glow_score": 0.0099,
+          "art_hash": "de389da260eb3017"
+        },
+        "LIT_3": {
+          "sprite": "washing_lines/washing_line_010/lit_3/sprite.webp",
+          "pixellab_object_id": "0bd5577c-28e0-4617-966d-c7b7dfa2041c",
+          "generated_at": "2026-08-17T11:59:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.607,
+          "glow_score": 0.2183,
+          "art_hash": "061974922b073afd"
+        },
+        "LIT_4": {
+          "sprite": "washing_lines/washing_line_010/lit_4/sprite.webp",
+          "pixellab_object_id": "8460e2c3-1310-4fe0-8189-60c7b9608939",
+          "generated_at": "2026-08-17T11:58:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5884,
+          "glow_score": 0.2142,
+          "art_hash": "bfcc5166e7096204"
+        },
+        "NOT_LIT_1": {
+          "sprite": "washing_lines/washing_line_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "6f576fa8-58b0-415c-9662-3ccc5904bd1e",
+          "generated_at": "2026-08-17T11:58:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9761,
+          "glow_score": 0.0,
+          "art_hash": "b37912257de4a522"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "2f91a66e-98c1-4276-b040-728c6d46f8f9",
+          "generated_at": "2026-08-17T11:58:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9838,
+          "glow_score": 0.0,
+          "art_hash": "a3af0eda7f76f1f0"
         }
       },
       "animations": []
@@ -62454,7 +62499,7 @@
       "rel": "washing_lines/washing_line_011",
       "name": "Patched work clothes row 011",
       "category": "washing_lines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, patched work clothes row, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -62474,11 +62519,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "washing_lines/washing_line_011/lit_1/sprite.webp",
+          "pixellab_object_id": "5fc0d1e1-6fb0-47f1-8068-0a3c0ab609bb",
+          "generated_at": "2026-08-17T12:02:08+00:00",
+          "glow_concept": "garments filled with the warm light of wearers",
+          "difference_from_source": 0.6634,
+          "glow_score": 0.118,
+          "art_hash": "69175241ec53b635"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_011/lit_2/sprite.webp",
+          "pixellab_object_id": "24d60909-cfb3-469e-a523-800d55590143",
+          "generated_at": "2026-08-17T12:02:55+00:00",
+          "glow_concept": "glowworm-dotted rope like strung beads",
+          "difference_from_source": 0.8377,
+          "glow_score": 0.1596,
+          "art_hash": "1fd384120ed7c1c9"
+        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_011/sprite.webp",
           "pixellab_object_id": "1636fb42-f449-4c5d-812d-c062a933262f",
           "generated_at": "2026-08-13T23:58:48+00:00",
           "art_hash": "4ec1edb2d9b4c64a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "e227e005-fd6b-4f25-a6ed-8d2d8b9ad2c4",
+          "generated_at": "2026-08-17T12:00:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5525,
+          "glow_score": 0.1339,
+          "art_hash": "3a7294247a70e4ce"
+        },
+        "NOT_LIT_3": {
+          "sprite": "washing_lines/washing_line_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "73b74f6f-5372-454c-a2e8-9324ada7108b",
+          "generated_at": "2026-08-17T11:59:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5968,
+          "glow_score": 0.142,
+          "art_hash": "caf3b3805693b84b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "washing_lines/washing_line_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "c55507a1-990e-437f-8514-e23e70818d65",
+          "generated_at": "2026-08-17T12:00:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9153,
+          "glow_score": 0.1288,
+          "art_hash": "e35f4009854eb0d3"
         }
       },
       "animations": []
@@ -62486,9 +62576,9 @@
     {
       "id": "washing_line_016",
       "rel": "washing_lines/washing_line_016",
-      "name": "Empty line, dangling pegs 016 \u00b7 lit",
+      "name": "Empty line, dangling pegs 016",
       "category": "washing_lines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, empty line, dangling pegs, bird-favored, with droppings and a nest, roughly six feet tall, human height, self-emissive at night, softly radiating light: one garment glowing while the rest hang dark",
       "view": "low top-down",
       "size": 128,
@@ -62513,6 +62603,51 @@
           "pixellab_object_id": "d50f140d-21aa-4394-af92-2eda0bbe1e9c",
           "generated_at": "2026-08-14T01:57:44+00:00",
           "art_hash": "71f855d5b7e86914"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_016/lit_2/sprite.webp",
+          "pixellab_object_id": "9300b910-b8d6-432a-baa6-c0d4c3f4f899",
+          "generated_at": "2026-08-17T12:02:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.711,
+          "glow_score": 0.2003,
+          "art_hash": "c47593ebf0f3f9fe"
+        },
+        "LIT_3": {
+          "sprite": "washing_lines/washing_line_016/lit_3/sprite.webp",
+          "pixellab_object_id": "27dae415-521e-4f99-91ea-2d557989e42c",
+          "generated_at": "2026-08-17T12:01:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6253,
+          "glow_score": 0.1716,
+          "art_hash": "fbca8d3217cbf64d"
+        },
+        "LIT_4": {
+          "sprite": "washing_lines/washing_line_016/lit_4/sprite.webp",
+          "pixellab_object_id": "aa2850cc-05e3-4a51-9986-5cdc58264a57",
+          "generated_at": "2026-08-17T12:02:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6196,
+          "glow_score": 0.1835,
+          "art_hash": "317417341c825232"
+        },
+        "NOT_LIT_1": {
+          "sprite": "washing_lines/washing_line_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "51b9bf97-491b-4a35-9beb-528e046c94f4",
+          "generated_at": "2026-08-17T12:03:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.834,
+          "glow_score": 0.0,
+          "art_hash": "c77b2faadb529419"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "0617354e-f58c-4ec4-a193-24119ee85659",
+          "generated_at": "2026-08-17T12:03:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8881,
+          "glow_score": 0.0,
+          "art_hash": "470949580e32a445"
         }
       },
       "animations": []
@@ -62978,7 +63113,7 @@
       "rel": "water_lily_clumps/water_lily_clump_001",
       "name": "Frost-edged late pads 001",
       "category": "water_lily_clumps",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, frost-edged late pads, tiny, ankle-height to an adult person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -62998,11 +63133,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "water_lily_clumps/water_lily_clump_001/lit_1/sprite.webp",
+          "pixellab_object_id": "e04eaec4-29cf-4e8a-81ef-d8ee20daab47",
+          "generated_at": "2026-08-17T12:04:51+00:00",
+          "glow_concept": "glowing pollen hearts at each bloom's center",
+          "difference_from_source": 0.8458,
+          "glow_score": 0.1024,
+          "art_hash": "6eada7c4ad93fa7b"
+        },
+        "LIT_2": {
+          "sprite": "water_lily_clumps/water_lily_clump_001/lit_2/sprite.webp",
+          "pixellab_object_id": "9acadbbc-0982-496d-9f41-ebaa2d216f4d",
+          "generated_at": "2026-08-17T12:04:32+00:00",
+          "glow_concept": "soul-light shining up through gaps between pads",
+          "difference_from_source": 0.2907,
+          "glow_score": 0.1049,
+          "art_hash": "2538355593462d60"
+        },
         "NOT_LIT_1": {
           "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
           "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
           "generated_at": "2026-08-13T01:45:58+00:00",
           "art_hash": "ddc4a6bfe2e37b1f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "c551a1cb-486f-465a-a2f4-9bc63ce84221",
+          "generated_at": "2026-08-17T12:03:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7503,
+          "glow_score": 0.1418,
+          "art_hash": "f8d93a7c4fb4f991"
+        },
+        "NOT_LIT_3": {
+          "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "fc3b5f94-8187-431f-9893-a12f50c3c741",
+          "generated_at": "2026-08-17T12:04:01+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.732,
+          "glow_score": 0.0286,
+          "art_hash": "4fa9981a8008743c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "42cc315f-65f1-44e5-b1ff-3d074c766174",
+          "generated_at": "2026-08-17T12:04:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8029,
+          "glow_score": 0.1221,
+          "art_hash": "6d4c05322642be34"
         }
       },
       "animations": []
@@ -63010,9 +63190,9 @@
     {
       "id": "water_lily_clump_002",
       "rel": "water_lily_clumps/water_lily_clump_002",
-      "name": "Night-closed folded blossoms 002 \u00b7 lit",
+      "name": "Night-closed folded blossoms 002",
       "category": "water_lily_clumps",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a floating clump of overlapping round water lily pads with a few cupped blossoms and short trailing stems, drawn alone with no water beneath, night-closed folded blossoms, tiny, ankle-height to an adult person, self-emissive at night, softly radiating light: soul-light shining up through gaps between pads",
       "view": "low top-down",
       "size": 64,
@@ -63037,6 +63217,33 @@
           "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
           "generated_at": "2026-08-13T04:58:17+00:00",
           "art_hash": "ff601fc8b1f4ce3c"
+        },
+        "LIT_2": {
+          "sprite": "water_lily_clumps/water_lily_clump_002/lit_2/sprite.webp",
+          "pixellab_object_id": "332fdb28-447f-402c-bbdc-2db5cda81179",
+          "generated_at": "2026-08-17T12:05:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3425,
+          "glow_score": 0.349,
+          "art_hash": "7293955f4dfc0a48"
+        },
+        "LIT_4": {
+          "sprite": "water_lily_clumps/water_lily_clump_002/lit_4/sprite.webp",
+          "pixellab_object_id": "15ca01aa-198b-49a0-a681-fc9cc809be0a",
+          "generated_at": "2026-08-17T12:06:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8561,
+          "glow_score": 0.0226,
+          "art_hash": "64962d311799246e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "water_lily_clumps/water_lily_clump_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6e4576f7-4f11-4738-8cdf-af0bf2eea412",
+          "generated_at": "2026-08-17T12:05:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9995,
+          "glow_score": 0.0,
+          "art_hash": "50f592d7373972a0"
         }
       },
       "animations": []
@@ -63071,6 +63278,24 @@
           "pixellab_object_id": "b14bbdf1-439e-4475-9c4f-c1c76503f3bc",
           "generated_at": "2026-08-14T01:56:43+00:00",
           "art_hash": "d00647249ef5b31b"
+        },
+        "LIT_2": {
+          "sprite": "water_lily_clumps/water_lily_clump_004/lit_2/sprite.webp",
+          "pixellab_object_id": "d0bb75e2-496f-4cf8-8336-19caf1d2c321",
+          "generated_at": "2026-08-17T12:06:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6957,
+          "glow_score": 0.1168,
+          "art_hash": "8b0b52849f3f1ee7"
+        },
+        "LIT_4": {
+          "sprite": "water_lily_clumps/water_lily_clump_004/lit_4/sprite.webp",
+          "pixellab_object_id": "2322ccd9-a24e-4ff5-ae7e-0bc5fb68e421",
+          "generated_at": "2026-08-17T12:06:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8685,
+          "glow_score": 0.1235,
+          "art_hash": "0baf26a9690cde4f"
         }
       },
       "animations": []
