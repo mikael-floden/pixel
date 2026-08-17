@@ -83,6 +83,55 @@ def rejections():
     return todo, legacy
 
 
+def clear_verdicts(rel_ids, why):
+    """Strip status + rating + note so a piece RETURNS TO HIS REVIEW QUEUE.
+
+    Maintainer, 2026-08-17: "When you find something you think is confusing
+    like this you must remove the rating and the approval/rejection so I can
+    find them again with my filters in the wiki next time I try to see what
+    still needs review. I will work in batches when I have time and then I will
+    not remember what you write to me here."
+
+    That is the whole point: a note in a chat message is not a work queue. If
+    this agent declines to act on a verdict, the ONLY place that decision can
+    survive is the wiki's own filters, and a piece is only in the needs-review
+    filter while it carries no verdict. Telling him in chat and leaving the
+    verdict in place means the piece looks decided to both of us and is never
+    seen again.
+
+    This writes live/feedback/objects.json, which the LIVE SERVER owns. It is a
+    deliberate exception on his instruction, so it is done as surgically as
+    possible: read, delete three keys, write back with the same 2-space,
+    non-escaped formatting the server uses, touching nothing else."""
+    if not rel_ids:
+        return 0
+    try:
+        with open(FEEDBACK_PATH, encoding="utf-8") as f:
+            doc = json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"  ! could not clear verdicts ({e}) — they stay as they are")
+        return 0
+    entries = doc.get("entries") or {}
+    n = 0
+    for rel in rel_ids:
+        e = entries.get(f"scenery/{rel}")
+        if not e:
+            continue
+        for k in ("status", "rating", "note"):
+            e.pop(k, None)
+        # An entry with nothing but a timestamp is noise; drop it entirely so
+        # the piece reads as genuinely untouched.
+        if not any(k in e for k in ("status", "rating", "note")):
+            entries.pop(f"scenery/{rel}", None)
+        n += 1
+    if n:
+        with open(FEEDBACK_PATH, "w", encoding="utf-8") as f:
+            json.dump(doc, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        print(f"  feedback: cleared {n} verdict(s) ({why}) — back in his queue")
+    return n
+
+
 def apply_rejections(client):
     """Delete every non-stale rejected piece (store first, then repo).
     Returns removed rel ids; the CALLER owns the viewer rebuild + commit."""
@@ -103,21 +152,19 @@ def apply_rejections(client):
         # the maintainer confirm; deleting five-star art on a slip is a far
         # worse failure than leaving one rejection outstanding.
         rating = verdict.get("rating") or 0
-        sub = [x for k2, x in entries.items()
-               if k2.startswith(f"scenery/{rel}#")]
-        sub_ok = sum(1 for x in sub if x.get("status") == "approved")
-        # A DAMNING RATING IS NOT A MISCLICK. "Every state approved" alone used
-        # to be enough to hold a deletion, which blocked fallen_log_004 and
-        # _005 — both rated ONE STAR and rejected, with a single approved
-        # state each (2026-08-16). One star plus a rejection is the most
-        # consistent judgement he can express; refusing to act on it makes the
-        # guard the thing that ignores him. The guard exists for the opposite
-        # shape — five-star art rejected by a stray tap — so a low rating now
-        # overrides the all-states-approved signal.
-        deliberate = 0 < rating <= 1
-        if not deliberate and (rating >= 4 or (sub and sub_ok == len(sub))):
-            conflicted.append(
-                f"{rel} (rating {rating}, {sub_ok}/{len(sub)} states approved)")
+        # A BARE REJECTION IS DELIBERATE, NOT SUSPICIOUS. Maintainer,
+        # 2026-08-17: "I will also start to reject without given a star more
+        # going forward. It's just for me to be able to review faster by not
+        # having to press both on one star and reject." So an unrated rejection
+        # is now his NORMAL fast path and must never be held.
+        #
+        # "Every state approved" is therefore no longer a signal either: it will
+        # co-occur with bare rejections constantly, and holding on it would
+        # quietly ignore most of what he does. Only art he explicitly rated
+        # HIGHLY and then rejected still reads as a stray tap — that is the one
+        # shape this guard was built for.
+        if rating >= 4:
+            conflicted.append(f"{rel} (rating {rating})")
             continue
         committed_at = _sprite_committed_at(rel)
         if not (verdict_at and committed_at and committed_at < verdict_at):
@@ -151,13 +198,20 @@ def apply_rejections(client):
         removed.append(rel)
     if conflicted:
         print(f"  feedback: {len(conflicted)} CONTRADICTORY rejection(s) NOT "
-              f"deleted — high rating and/or every state approved, which reads "
-              f"as a misclick. Confirm before these go:")
+              f"deleted — rated highly AND rejected, which reads as a stray "
+              f"tap. Their verdicts are CLEARED so they return to his queue:")
         for c in conflicted:
             print(f"      {c}")
+        clear_verdicts([c.split(" (")[0] for c in conflicted],
+                       "held as contradictory")
     if stale:
+        # A verdict about art that no longer exists is spent. Leaving it in
+        # place makes the piece look decided in the wiki's piece-level filters,
+        # so it silently never comes back to him — the same trap as the
+        # contradictory ones. Clear it and let the current art be judged.
         print(f"  feedback: {len(stale)} rejection(s) predate the current art "
-              f"(slot re-rolled since) — awaiting re-review, untouched")
+              f"(slot re-rolled since) — clearing so the NEW art gets judged")
+        clear_verdicts(stale, "verdict predates the current art")
     if removed:
         head = ", ".join(removed[:5])
         print(f"  feedback: removed {len(removed)} rejected piece(s): {head}"
