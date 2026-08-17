@@ -182,6 +182,26 @@ def phrasings_for(cell):
     return PHRASINGS_SAME if top == side else PHRASINGS
 
 
+def _stale_family(cell):
+    """True when this cell has NO sheet from the prompt family it should be using.
+
+    A cell whose art all predates a prompt change is not really satisfied, it is
+    satisfied by superseded work — and the satisfied-check alone cannot tell those
+    apart, so a prompt change silently fails to reach exactly the cells that already
+    had something.
+
+    That happened, and it is measurable. When PHRASINGS_SAME landed, six of the
+    fourteen same-over-same cells already had passing tiles (the waived overhang gate
+    freed a lot of art at once), so every one of them was skipped and none ever got a
+    no-spill roll. The eight cells that did: median stacking band 4.38, range 0.8-7.8.
+    The six that were skipped: median 16.57, range 5.2-48.9 — and they are all three of
+    the cells that visibly stripe when stacked.
+    """
+    if cell.split("__over__")[0] != cell.split("__over__")[1]:
+        return False        # only the same-over-same family has been superseded so far
+    return not glob.glob(os.path.join(OUT, cell, "sheet_*_same*"))
+
+
 def cell_parts(cell, types):
     top, side = cell.split("__over__")
     by_id = {t["id"]: t for t in types}
@@ -279,7 +299,7 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
     # parallel in the first place. Makes the chase idempotent and lets concurrent
     # workers share a worklist safely.
     done = cell_passing(cell, min_wall, min_clarity)
-    if len(done) >= need:
+    if len(done) >= need and not _stale_family(cell):
         print(f"    already has {len(done)}/{need} passing — skipping", flush=True)
         return done[0]
     existing = len([x for x in os.listdir(d) if x.startswith("sheet_")])
