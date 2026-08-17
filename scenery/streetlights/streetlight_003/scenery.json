@@ -5,7 +5,7 @@
   "rank": 15,
   "index": 3,
   "name": "Cracked derelict tilted lamp 003",
-  "lights": null,
+  "lights": "LIGHTS_OFF",
   "variety": "cracked derelict tilted lamp",
   "glow_concept": null,
   "prompt": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, cracked derelict tilted lamp, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -33,19 +33,13 @@
   "states": {
     "LIT_1": {
       "sprite": "streetlights/streetlight_003/lit_1/sprite.webp",
-      "pixellab_object_id": "96071fbe-c1ed-41c7-b6a5-71c4eb4bda33",
-      "generated_at": "2026-08-17T20:52:37+00:00",
-      "glow_concept": "the open flame burning warm and steady",
-      "difference_from_source": 0.5034,
-      "glow_score": 0.0871
+      "glow_score": 0.0871,
+      "recovered": true
     },
     "LIT_2": {
       "sprite": "streetlights/streetlight_003/lit_2/sprite.webp",
-      "pixellab_object_id": "f9ce991f-903b-4e30-a154-6826fa9a6bc3",
-      "generated_at": "2026-08-17T20:56:05+00:00",
-      "glow_concept": "a low guttering flame nearly out",
-      "difference_from_source": 0.8683,
-      "glow_score": 0.0328
+      "glow_score": 0.0328,
+      "recovered": true
     },
     "NOT_LIT_1": {
       "sprite": "streetlights/streetlight_003/sprite.webp",
@@ -54,27 +48,24 @@
     },
     "NOT_LIT_2": {
       "sprite": "streetlights/streetlight_003/not_lit_2/sprite.webp",
-      "pixellab_object_id": "07bf53f8-d4b5-47a5-90b6-5fd7fb2984de",
-      "generated_at": "2026-08-17T20:50:17+00:00",
+      "pixellab_object_id": "5a76cb5d-b68d-44fe-a262-432eb27c70b4",
+      "generated_at": "2026-08-17T20:53:42+00:00",
       "glow_concept": null,
-      "difference_from_source": 1.0,
-      "glow_score": 0.1906
+      "difference_from_source": 0.7455,
+      "glow_score": 0.0
     },
     "NOT_LIT_3": {
       "sprite": "streetlights/streetlight_003/not_lit_3/sprite.webp",
-      "pixellab_object_id": "82114836-aee6-4fe1-963a-97a6be0edb5e",
-      "generated_at": "2026-08-17T20:50:36+00:00",
+      "pixellab_object_id": "5965f025-63c3-4b03-9008-ce843c047ee1",
+      "generated_at": "2026-08-17T20:57:18+00:00",
       "glow_concept": null,
-      "difference_from_source": 0.9531,
-      "glow_score": 0.0729
+      "difference_from_source": 0.9289,
+      "glow_score": 0.0593
     },
     "NOT_LIT_4": {
       "sprite": "streetlights/streetlight_003/not_lit_4/sprite.webp",
-      "pixellab_object_id": "fa463115-44d7-4eac-b0a7-56c444295799",
-      "generated_at": "2026-08-17T20:51:37+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7677,
-      "glow_score": 0.0011
+      "glow_score": 0.0011,
+      "recovered": true
     }
   }
 }
