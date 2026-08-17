@@ -259,7 +259,12 @@ def seam_px(path, top_hex=None):
             return 10 ** 6
         med = np.median(a[:, :, :3][reg["top"]], 0)
         top_hex = "".join(f"{int(v):02x}" for v in med)
-    sn = palette_snap.snap(im, top_hex)
+    # spill=False on purpose. This measures whether the TOP SURFACE tiles cleanly, and
+    # that is all it was calibrated for. With the fringe retint on, a tile's overhanging
+    # blades — which are varied by design — register as "off-colour pixels inside the
+    # field" and disqualify it: light_beach fell from 0.36 spill to 0.14 that way,
+    # because the gate started rejecting the exact property it is supposed to protect.
+    sn = palette_snap.snap(im, top_hex, spill=False)
     tgt = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)])
     b = np.asarray(render.plateau(sn, 3, 3, level=1)).astype(int)
     op = b[:, :, 3] > 128
@@ -301,7 +306,8 @@ def select_best(paths, gate=CLEAN_TOP):
     if not scored:
         return None
     seamless = [x for x in scored if seam_px(x[0]) == 0]
-    pool = [x for x in seamless if overhang(x[0]) >= MIN_OVERHANG]
+    pool = [x for x in seamless
+            if overhang(x[0]) >= MIN_OVERHANG and fringe_clarity(x[0]) >= MIN_CLARITY]
     if not pool:
         # No tile in this cell has the transition. Offer the best that at least tiles
         # cleanly rather than nothing, but the caller should treat the cell as needing

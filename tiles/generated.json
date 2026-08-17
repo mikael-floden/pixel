@@ -68,6 +68,12 @@
       "purpose": "matrix:snow_over_snow",
       "status": "pending"
     },
+    "195a3daf-9354-413e-a5ce-a592378ee9c5": {
+      "created": "2026-08-17T10:50:09+00:00",
+      "prompt": "isometric ground tile. translucent crystal ice on top of dry light soil. The ice grows over the edge and tufts down over the light soil below, so the two meet naturally with no hard line between them. The light soil side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline.",
+      "purpose": "matrix:ice_over_light_soil",
+      "status": "pending"
+    },
     "19b65a23-eb22-4ba1-b363-a3f1c672d0c9": {
       "created": "2026-08-16T17:47:25+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour translucent crystal ice, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -90,6 +96,12 @@
       "created": "2026-08-16T11:15:54+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_light_beach",
+      "status": "pending"
+    },
+    "21db08cd-8071-4a5f-b6fc-650058d094e5": {
+      "created": "2026-08-17T10:54:32+00:00",
+      "prompt": "isometric tile: a layer of translucent crystal ice covering a block of wet dark mud. Ragged ice edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
+      "purpose": "matrix:ice_over_dark_mud",
       "status": "pending"
     },
     "22ba4de6-d227-44db-9fb8-4c3aa7614ebf": {
@@ -320,6 +332,12 @@
       "purpose": "matrix:grass_over_black_rock",
       "status": "pending"
     },
+    "659e378e-f8ce-411a-97a9-13c351bb5ea8": {
+      "created": "2026-08-17T10:49:54+00:00",
+      "prompt": "isometric ground tile, lush green grass over translucent crystal ice, photographed from above. Soft irregular boundary where grass meets ice \u2014 the grass creeps down over the ice. Plain even grass surface. No outline.",
+      "purpose": "matrix:grass_over_ice",
+      "status": "pending"
+    },
     "666e9bab-6580-4397-b3ac-4098ae6789f3": {
       "created": "2026-08-16T19:44:07+00:00",
       "prompt": "isometric ground tile, clean fresh snow over dry light soil, photographed from above. Soft irregular boundary where snow meets light soil \u2014 the snow creeps down over the light soil. Plain even snow surface. No outline.",
@@ -330,6 +348,12 @@
       "created": "2026-08-16T16:30:32+00:00",
       "prompt": "clean single color lush green grass on top of clean cut paving stone slabs",
       "purpose": "matrix:grass_over_paving_stone",
+      "status": "pending"
+    },
+    "6cc7d3bd-acd0-4735-9dc6-7c7c3b23d19d": {
+      "created": "2026-08-17T10:52:36+00:00",
+      "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed thick bubbling slime. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed slime sides. No outline.",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "6cefe68d-605a-4188-b7a4-5d5cb710908d": {
@@ -374,10 +398,22 @@
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
     },
+    "71e3afe0-4422-4b24-b8e8-c32fa9ae4f02": {
+      "created": "2026-08-17T10:51:20+00:00",
+      "prompt": "isometric tile: a layer of lush green grass covering a block of thick bubbling slime. Ragged grass edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
+      "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
     "72ecede7-6603-4a30-9952-be6e6c29c886": {
       "created": "2026-08-16T16:39:03+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_deep_water",
+      "status": "pending"
+    },
+    "73e509d7-d3a5-4d26-875b-9fa43205b3e2": {
+      "created": "2026-08-17T10:52:56+00:00",
+      "prompt": "isometric terrain block of wet dark mud with translucent crystal ice growing on top. The ice spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even ice seen from above. No outline.",
+      "purpose": "matrix:ice_over_dark_mud",
       "status": "pending"
     },
     "783a5028-9525-4357-b642-a47887ed9a24": {
@@ -506,6 +542,12 @@
       "created": "2026-08-16T17:45:31+00:00",
       "prompt": "clean single color translucent crystal ice on top of clean pale sandy beach",
       "purpose": "matrix:ice_over_light_beach",
+      "status": "pending"
+    },
+    "ba9fac48-8154-4a01-9c23-69797184d110": {
+      "created": "2026-08-17T10:51:21+00:00",
+      "prompt": "isometric ground tile. translucent crystal ice on top of wet dark mud. The ice grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline.",
+      "purpose": "matrix:ice_over_dark_mud",
       "status": "pending"
     },
     "bc0f3ce4-ca69-46e5-a3c1-c88321000cc8": {
@@ -674,6 +716,12 @@
       "created": "2026-08-16T17:29:48+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are thick bubbling slime with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:snow_over_slime",
+      "status": "pending"
+    },
+    "dce0a5c5-f872-4e62-b5a8-0462cdb673bf": {
+      "created": "2026-08-17T10:53:40+00:00",
+      "prompt": "isometric cube of thick bubbling slime capped with lush green grass. The cap overhangs slightly, grass draping down onto the slime beneath it. Uniform flat grass top. No outline.",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "e10cfea2-03de-4934-9d2d-466aad8d201b": {
