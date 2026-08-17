@@ -38099,9 +38099,9 @@
     {
       "id": "scarecrow_018",
       "rel": "scarecrows/scarecrow_018",
-      "name": "Crow-feather trimmed hat 018 \u00b7 lit",
+      "name": "Crow-feather trimmed hat 018",
       "category": "scarecrows",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a scarecrow with a plump stuffed sack head and thick bulky patched clothes packed fat with straw, on a stout timber post, crow-feather trimmed hat, roughly six feet tall, human height, self-emissive at night, softly radiating light: lantern hung from an outstretched arm",
       "view": "low top-down",
       "size": 64,
@@ -38126,6 +38126,51 @@
           "pixellab_object_id": "aa8d1141-d7f8-4ad0-a701-f580295f177e",
           "generated_at": "2026-08-13T23:03:22+00:00",
           "art_hash": "70c1d75396582391"
+        },
+        "LIT_2": {
+          "sprite": "scarecrows/scarecrow_018/lit_2/sprite.webp",
+          "pixellab_object_id": "c0b72e3c-cc89-42fb-a781-95feebabacc0",
+          "generated_at": "2026-08-17T20:49:02+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.733,
+          "glow_score": 0.0397,
+          "art_hash": "e7e93057040dbb8a"
+        },
+        "LIT_3": {
+          "sprite": "scarecrows/scarecrow_018/lit_3/sprite.webp",
+          "pixellab_object_id": "cbe7bb2a-f67f-46e1-97ab-7d2153cc4c70",
+          "generated_at": "2026-08-17T20:48:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7857,
+          "glow_score": 0.0135,
+          "art_hash": "eeb836cf4477dc3c"
+        },
+        "LIT_4": {
+          "sprite": "scarecrows/scarecrow_018/lit_4/sprite.webp",
+          "pixellab_object_id": "d5bc9cfc-ef70-4ff5-9050-8d351b5f0cc0",
+          "generated_at": "2026-08-17T20:48:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6118,
+          "glow_score": 0.0154,
+          "art_hash": "1056e29e02e32f9e"
+        },
+        "NOT_LIT_1": {
+          "sprite": "scarecrows/scarecrow_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "3a4b57d5-e9c4-40dd-a992-72a10d9d0f63",
+          "generated_at": "2026-08-17T20:52:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8632,
+          "glow_score": 0.0,
+          "art_hash": "0e5752f804cb2605"
+        },
+        "NOT_LIT_2": {
+          "sprite": "scarecrows/scarecrow_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "3bb9bdeb-d060-43ff-8a19-009dd94d7574",
+          "generated_at": "2026-08-17T20:48:44+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9249,
+          "glow_score": 0.0,
+          "art_hash": "5b8861d13525270c"
         }
       },
       "animations": []
@@ -45334,7 +45379,7 @@
       "rel": "streetlights/streetlight_003",
       "name": "Cracked derelict tilted lamp 003",
       "category": "streetlights",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a tall lamppost with a slender fluted column, a glass-paned lantern head on top, and a widened base plate at the ground, cracked derelict tilted lamp, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 160,
@@ -45354,11 +45399,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "streetlights/streetlight_003/lit_1/sprite.webp",
+          "pixellab_object_id": "96071fbe-c1ed-41c7-b6a5-71c4eb4bda33",
+          "generated_at": "2026-08-17T20:52:37+00:00",
+          "glow_concept": "the open flame burning warm and steady",
+          "difference_from_source": 0.5034,
+          "glow_score": 0.0871,
+          "art_hash": "ac341017bad8ead3"
+        },
+        "LIT_2": {
+          "sprite": "streetlights/streetlight_003/lit_2/sprite.webp",
+          "pixellab_object_id": "f9ce991f-903b-4e30-a154-6826fa9a6bc3",
+          "generated_at": "2026-08-17T20:56:05+00:00",
+          "glow_concept": "a low guttering flame nearly out",
+          "difference_from_source": 0.8683,
+          "glow_score": 0.0328,
+          "art_hash": "972d20236e568c9a"
+        },
         "NOT_LIT_1": {
           "sprite": "streetlights/streetlight_003/sprite.webp",
           "pixellab_object_id": "79e7db04-7537-4f8f-ba6a-181cbd03a34d",
           "generated_at": "2026-08-13T06:49:21+00:00",
           "art_hash": "9a47212a836bfbe2"
+        },
+        "NOT_LIT_2": {
+          "sprite": "streetlights/streetlight_003/not_lit_2/sprite.webp",
+          "pixellab_object_id": "07bf53f8-d4b5-47a5-90b6-5fd7fb2984de",
+          "generated_at": "2026-08-17T20:50:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 1.0,
+          "glow_score": 0.1906,
+          "art_hash": "ed2bf5eaadeb1fad"
+        },
+        "NOT_LIT_3": {
+          "sprite": "streetlights/streetlight_003/not_lit_3/sprite.webp",
+          "pixellab_object_id": "82114836-aee6-4fe1-963a-97a6be0edb5e",
+          "generated_at": "2026-08-17T20:50:36+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9531,
+          "glow_score": 0.0729,
+          "art_hash": "98224acdbce80842"
+        },
+        "NOT_LIT_4": {
+          "sprite": "streetlights/streetlight_003/not_lit_4/sprite.webp",
+          "pixellab_object_id": "fa463115-44d7-4eac-b0a7-56c444295799",
+          "generated_at": "2026-08-17T20:51:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7677,
+          "glow_score": 0.0011,
+          "art_hash": "2ab01e91edcdde8e"
         }
       },
       "animations": []
