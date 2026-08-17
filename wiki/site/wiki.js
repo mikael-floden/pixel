@@ -3243,7 +3243,17 @@ const WALL_MODES = {
  * them together is the space it saves, and two headings would spend it again.
  */
 function tileScenes(cell, cand) {
-  const stage = h("div", { class: "iso-stage checker tile-stage" });
+  // TWO PREVIEWS, TWO BOXES (maintainer 2026-08-17, after a rule between them
+  // was not enough: "I don't like it, there should be some separation between
+  // the preview on top and bottom (it's not the same preview)"). They are not
+  // at the same scale, so one chessboard makes them one picture and a 2× tile
+  // over a 1:1 field becomes a lie about how big the tile is. A line drawn
+  // across a shared box says "same window, new section"; two boxes with the
+  // card's own surface between them say what is true.
+  const stage = h("div", { class: "tile-preview" });
+  const zoomBox = h("div", { class: "iso-stage checker tile-stage zoom-box" });
+  const sceneBox = h("div", { class: "iso-stage checker tile-stage scene-box" });
+  stage.append(zoomBox, sceneBox);
   // THE COURSES FOLLOW THIS TILE'S OWN WALL MODE — which is the reason the
   // preview belongs on the card carrying that switch. "own wall" stacks the
   // tile itself; "top only" stacks the pure <side> over <side> tile, the one
@@ -3298,22 +3308,11 @@ function tileScenes(cell, cand) {
     // on a phone.
     loadImages([face, course].filter(Boolean), (images) => {
       const iso = worldIso();
-      // TWO ROWS, ONE CHESSBOARD: the tile ITSELF magnified on top, then what it
-      // builds underneath. Both rows are CENTRED — left-aligned, the 27px the
-      // scenes leave over all piled up on the right and read as a lopsided box
-      // (maintainer 2026-08-17: "look how much space we have on left vs right
-      // side").
-      stage.replaceChildren(...[
-        h("div", { class: "tile-row zooms" }, zoomTile(images[face], 2)),
-        // A RULE BETWEEN THE TWO ROWS, because they are not drawn at the same
-        // scale (maintainer 2026-08-17: "so it doesn't look like it's the same
-        // preview window since this one doesn't share the scaling"). One
-        // chessboard with no seam reads as one picture, and a 2× tile beside a
-        // 1:1 field would be a lie about how big the tile is.
-        h("div", { class: "tile-div" }),
-        h("div", { class: "tile-row scenes" }, isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso)),
-        chip,
-      ].filter(Boolean));
+      // Both rows are CENTRED — left-aligned, the 27px the scenes leave over all
+      // piled up on the right and read as a lopsided box (maintainer 2026-08-17:
+      // "look how much space we have on left vs right side").
+      zoomBox.replaceChildren(...[h("div", { class: "tile-row zooms" }, zoomTile(images[face], 2)), chip].filter(Boolean));
+      sceneBox.replaceChildren(h("div", { class: "tile-row scenes" }, isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso)));
     });
   }
   paint();

@@ -254,12 +254,13 @@ a strip here measures what a strip measures in the world.
   came straight back — *"the 4x was way too big, it's enough with one centered
   at 2x"* — which also gave the page its margins back: 128px asks nothing of the
   layout, where 384px of art on a 393px screen asked for everything.
-- **A rule separates the two rows**, because they are not drawn at the same
-  scale (*"so it doesn't look like it's the same preview window since this one
-  doesn't share the scaling"*). One unbroken chessboard would read as one
-  picture, and a 2× tile beside a 1:1 field is then a lie about how big the tile
-  is. It is `--muted` at half strength, not `--border`: this line lies on the
-  chessboard, where the border token vanishes in the light theme.
+- **They are TWO boxes, not one with a line in it** (maintainer 2026-08-17,
+  after a rule inside a shared chessboard was not enough: *"there should be some
+  separation between the preview on top and bottom — it's not the same
+  preview"*). They are not drawn at the same scale, so one unbroken chessboard
+  makes them one picture and the 2× tile becomes a lie about how big a tile is.
+  A line says "same window, new section"; a gap of the card's own surface says
+  what is actually true.
 - **Every row is centred.** Two canvases of fixed pixel widths never fill a
   fluid box, and packing them left piled the whole leftover on the right —
   27px of chessboard on one side and none on the other.

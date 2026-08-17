@@ -1231,14 +1231,14 @@ input[type="range"] { accent-color: var(--accent); }
    (maintainer 2026-08-17). Centring splits the slack in two. */
 .tile-row { display: flex; align-items: flex-end; justify-content: center; gap: 6px; overflow-x: auto; }
 .tile-row.zooms { align-items: center; }
-/* THE TWO ROWS ARE NOT AT THE SAME SCALE, so a seam says where one ends: on one
-   unbroken chessboard a 2× tile beside a 1:1 field reads as one picture, and
-   therefore as a lie about how big the tile is (maintainer 2026-08-17). */
-/* --muted at half strength, NOT --border: this line lies on the chessboard, and
-   the border token is tuned to read against a flat surface — on the checker it
-   disappears in the light theme. --muted is a mid grey in both themes, so one
-   rule carries both. */
-.tile-div { height: 1px; background: var(--muted); opacity: 0.5; margin: 2px 12px; flex: none; }
+/* TWO PREVIEWS, TWO BOXES (maintainer 2026-08-17, after a rule drawn inside one
+   box was not enough: "there should be some separation between the preview on
+   top and bottom — it's not the same preview"). They are not at the same scale,
+   so one chessboard makes them one picture, and a 2× tile over a 1:1 field
+   becomes a lie about how big the tile is. A line says "same window, new
+   section"; a gap of the card's own surface says what is true. */
+.tile-preview { display: flex; flex-direction: column; gap: 10px; }
+.tile-preview .tile-stage { border-block: 1px solid var(--border); }
 .tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
 /* BEFORE/AFTER WITHIN REACH OF THE TILE IT CHANGES (maintainer 2026-08-17:
    "that button might be higher up so I have to scroll. Can you place that

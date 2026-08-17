@@ -246,7 +246,8 @@ await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
 await p.waitForTimeout(2800);
 const perTile = () => p.evaluate(() => ({
   cards: document.querySelectorAll(".world-cand").length,
-  stages: document.querySelectorAll(".world-cand .tile-stage").length,
+  stages: document.querySelectorAll(".world-cand .tile-preview").length,
+  boxes: document.querySelectorAll(".world-cand .tile-preview .tile-stage").length,
   // TWO ROWS in ONE box: the tile magnified (2x, 4x) over what it builds
   // (the flat patch and the V).
   shapes: [...document.querySelectorAll(".world-cand .tile-row.scenes")].map((row) => [...row.querySelectorAll("canvas")].map((cv) => {
@@ -254,9 +255,14 @@ const perTile = () => p.evaluate(() => ({
     let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
     return { w: cv.width, h: cv.height, opaque, x: Math.round(cv.getBoundingClientRect().x) };
   })),
-  divs: document.querySelectorAll(".world-cand .tile-stage .tile-div").length,
-  // The divider must sit BETWEEN the rows, not decorate one of them.
-  order: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => [...st.children].map((k) => k.className.replace("tile-row ", ""))),
+  // The two previews must be SEPARATE boxes with real space between them, not
+  // two halves of one chessboard.
+  split: [...document.querySelectorAll(".world-cand .tile-preview")].map((pv) => {
+    const [a, b] = [...pv.querySelectorAll(".tile-stage")];
+    if (!a || !b) return null;
+    const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+    return { gap: Math.round(rb.top - ra.bottom), zoomFirst: a.classList.contains("zoom-box") && b.classList.contains("scene-box") };
+  }),
   zooms: [...document.querySelectorAll(".world-cand .tile-row.zooms")].map((row) => [...row.querySelectorAll("canvas")].map((cv) => {
     const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
     let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
@@ -271,7 +277,7 @@ const perTile = () => p.evaluate(() => ({
     const first = cvs[0].getBoundingClientRect(), last = cvs[cvs.length - 1].getBoundingClientRect();
     return { left: Math.round(first.x - box.x), right: Math.round(box.right - last.right) };
   }),
-  courses: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.course),
+  courses: [...document.querySelectorAll(".world-cand .tile-preview")].map((st) => st.dataset.course),
   // BOTH AT ONCE OR IT SAVED NOTHING — a stage wider than its box hides the
   // cliff behind a sideways scroll, which is the second look the one box was
   // meant to remove. Measured on his phone's width.
@@ -299,10 +305,11 @@ ok(own.zooms.every((z) => z[0].z === "2" && z[0].w === iso.tilePx * 2),
   `at 2×, and only 2× (${own.zooms[0]?.[0]?.w}px from a ${iso.tilePx}px tile)`);
 ok(own.zooms.every((z) => z[0].opaque > 1000), "and actually drawn");
 // A SEAM BETWEEN THE ROWS, because they are not at the same scale.
-console.log("stage order:", JSON.stringify(own.order[0]));
-ok(own.divs === own.cards, `a divider on every card (${own.divs}/${own.cards})`);
-ok(own.order.every((k) => k.indexOf("tile-div") === k.indexOf("zooms") + 1 && k.indexOf("tile-div") < k.indexOf("scenes")),
-  "sitting between the magnified tile and the scenes, not decorating either");
+console.log("split:", JSON.stringify(own.split[0]));
+ok(own.boxes === own.cards * 2, `the two previews are two BOXES, not one (${own.boxes} for ${own.cards} tiles)`);
+ok(own.split.filter(Boolean).every((s) => s.gap >= 6),
+  `with the card's own surface between them (${own.split.filter(Boolean).map((s) => s.gap + "px").join(", ")})`);
+ok(own.split.filter(Boolean).every((s) => s.zoomFirst), "the magnified tile above, the scenes below");
 // The slack is SPLIT, never piled on one side. 6px of tolerance: two fixed
 // canvas widths in a fluid box rarely divide evenly.
 ok(own.slack.filter(Boolean).every((s) => Math.abs(s.left - s.right) <= 6),
@@ -316,7 +323,7 @@ ok(own.slack.filter(Boolean).every((s) => Math.abs(s.left - s.right) <= 6),
 // rather than trusted from the attribute: the height IS the arithmetic.
 const PITCH = 14, PAD = 2, TILE = DATA.iso?.tilePx ?? 64;
 const geo = await p.evaluate(() => {
-  const st = document.querySelector(".world-cand .tile-stage");
+  const st = document.querySelector(".world-cand .tile-preview");
   // The SCENES row — the zoom row above it is drawn at whole multiples of the
   // tile and says nothing about the projection.
   const cv = st.querySelectorAll(".tile-row.scenes canvas");
@@ -368,7 +375,7 @@ await p.waitForTimeout(1800);
 // read from the paths they were built from rather than from an <img> src.
 const shot = () => p.evaluate(() => ({
   mode: [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].map((b) => (b.classList.contains("sel") ? "*" : "") + b.textContent.trim()),
-  faces: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.face),
+  faces: [...document.querySelectorAll(".world-cand .tile-preview")].map((st) => st.dataset.face),
   portrait: (() => {
     const a = document.querySelector(".detail-head .world-art");
     if (!a) return null;
@@ -408,12 +415,12 @@ await p.waitForTimeout(500);
 // either the postprocess or the page.
 await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
 await p.waitForTimeout(2600);
-const chips = () => p.evaluate(() => [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => ({
+const chips = () => p.evaluate(() => [...document.querySelectorAll(".world-cand .tile-preview")].map((st) => ({
   label: st.querySelector(".stage-flip")?.textContent ?? null,
   view: st.dataset.view,
   face: st.dataset.face,
 })));
-const press = (i) => p.evaluate((n) => document.querySelectorAll(".world-cand .tile-stage")[n].querySelector(".stage-flip").click(), i);
+const press = (i) => p.evaluate((n) => document.querySelectorAll(".world-cand .tile-preview")[n].querySelector(".stage-flip").click(), i);
 const rest = await chips();
 console.log("chips:", JSON.stringify(rest.map((c) => `${c.label}/${c.view}`)));
 ok(rest.length > 1 && rest.every((c) => c.label), `every tile carries the switch on its own picture (${rest.length}/${rest.length})`);
