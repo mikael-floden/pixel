@@ -5,7 +5,7 @@
   "rank": 19,
   "index": 15,
   "name": "Shingle-roofed post shrine 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "shingle-roofed post shrine",
   "glow_concept": null,
   "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, shingle-roofed post shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:06:53+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_015/lit_1/sprite.webp",
+      "pixellab_object_id": "79006b95-538d-4157-8d26-b882ada5a2d5",
+      "generated_at": "2026-08-17T12:25:15+00:00",
+      "glow_concept": "warm interior light spilling from the doorway",
+      "difference_from_source": 0.9291,
+      "glow_score": 0.1453
+    },
+    "LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_015/lit_2/sprite.webp",
+      "pixellab_object_id": "91ad2706-6c78-42cb-9841-6878ed3fa6b8",
+      "generated_at": "2026-08-17T12:24:38+00:00",
+      "glow_concept": "tiny hanging lamp under the eaves",
+      "difference_from_source": 0.5772,
+      "glow_score": 0.1222
+    },
     "NOT_LIT_1": {
       "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
       "pixellab_object_id": "20066dd7-c8b1-4bd1-81f5-2dc96ad3de36",
       "generated_at": "2026-08-13T22:06:53+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "929fc486-34ed-44d7-94f5-da2e204943cd",
+      "generated_at": "2026-08-17T12:23:32+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.456,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "wayside_shrines/wayside_shrine_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "bee6a914-efbc-4b1a-ad0c-2f568719b74f",
+      "generated_at": "2026-08-17T12:24:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6691,
+      "glow_score": 0.0012
+    },
+    "NOT_LIT_4": {
+      "sprite": "wayside_shrines/wayside_shrine_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "a90e0f32-ff7d-41f7-b25e-3b4787db2969",
+      "generated_at": "2026-08-17T12:24:19+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.754,
+      "glow_score": 0.0
     }
   }
 }

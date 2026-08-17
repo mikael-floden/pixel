@@ -62300,6 +62300,15 @@
           "glow_score": 0.2735,
           "art_hash": "9fcffd39f28335f3"
         },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_007/lit_2/sprite.webp",
+          "pixellab_object_id": "fc0610bc-a084-434e-bef6-a7696847a75e",
+          "generated_at": "2026-08-17T12:25:14+00:00",
+          "glow_concept": "embroidered hems stitched in shining thread",
+          "difference_from_source": 0.958,
+          "glow_score": 0.1717,
+          "art_hash": "2659abd1ab712b92"
+        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_007/sprite.webp",
           "pixellab_object_id": "98579073-7272-4c7a-bcd6-e5f14d0e2e0b",
@@ -63664,9 +63673,9 @@
     {
       "id": "waterwheel_008",
       "rel": "waterwheels/waterwheel_008",
-      "name": "Wheel sunk to its axle in grass 008 \u00b7 lit",
+      "name": "Wheel sunk to its axle in grass 008",
       "category": "waterwheels",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "an old abandoned wooden waterwheel detached from any mill, leaning half-fallen against a mossy stone stub, its planks weathered and gaps in its paddles, overgrown with ivy and moss, long out of use, wheel sunk to its axle in grass, weathered silver-grey, tall, about three times human height, self-emissive at night, softly radiating light: soul-light seeping from the axle hollow",
       "view": "low top-down",
       "size": 128,
@@ -63691,6 +63700,51 @@
           "pixellab_object_id": "3839e085-93da-4255-901f-660b8ba20821",
           "generated_at": "2026-08-14T01:57:19+00:00",
           "art_hash": "dbd13acb8c66d8a7"
+        },
+        "LIT_2": {
+          "sprite": "waterwheels/waterwheel_008/lit_2/sprite.webp",
+          "pixellab_object_id": "fb2cb348-4084-4bfd-a1f3-dbb3be26a227",
+          "generated_at": "2026-08-17T12:17:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8859,
+          "glow_score": 0.0038,
+          "art_hash": "166d7a9c3da0688a"
+        },
+        "LIT_3": {
+          "sprite": "waterwheels/waterwheel_008/lit_3/sprite.webp",
+          "pixellab_object_id": "13c2556c-3455-4568-ad3b-c6ae2ba55cee",
+          "generated_at": "2026-08-17T12:17:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9212,
+          "glow_score": 0.0589,
+          "art_hash": "87fac12b5681cb82"
+        },
+        "LIT_4": {
+          "sprite": "waterwheels/waterwheel_008/lit_4/sprite.webp",
+          "pixellab_object_id": "16fe6997-4f96-4c0a-b192-b58f8a71e50f",
+          "generated_at": "2026-08-17T12:17:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8506,
+          "glow_score": 0.0261,
+          "art_hash": "db049f2f448ae293"
+        },
+        "NOT_LIT_1": {
+          "sprite": "waterwheels/waterwheel_008/not_lit_1/sprite.webp",
+          "pixellab_object_id": "c709f27e-0e9c-476e-aa8a-343ddba5bf73",
+          "generated_at": "2026-08-17T12:19:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8721,
+          "glow_score": 0.0,
+          "art_hash": "7a40281b31210853"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waterwheels/waterwheel_008/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b14d6b86-5137-44d7-a644-3d5102697e90",
+          "generated_at": "2026-08-17T12:20:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9083,
+          "glow_score": 0.0,
+          "art_hash": "a92fc66c06837db7"
         }
       },
       "animations": []
@@ -63698,9 +63752,9 @@
     {
       "id": "wayside_shrine_010",
       "rel": "wayside_shrines/wayside_shrine_010",
-      "name": "Red-painted shrine box 010 \u00b7 lit",
+      "name": "Red-painted shrine box 010",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, red-painted shrine box, roughly six feet tall, human height, self-emissive at night, softly radiating light: wisps sheltering under the roof",
       "view": "low top-down",
       "size": 64,
@@ -63725,6 +63779,51 @@
           "pixellab_object_id": "fdf0cb2b-d62a-424a-b58c-cc6d52ff26c7",
           "generated_at": "2026-08-13T21:20:53+00:00",
           "art_hash": "d659966fc4ea3578"
+        },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_010/lit_2/sprite.webp",
+          "pixellab_object_id": "c38a59da-2618-4bcb-a3de-f0547451547a",
+          "generated_at": "2026-08-17T12:18:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5541,
+          "glow_score": 0.0,
+          "art_hash": "30dd1bda446afe60"
+        },
+        "LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_010/lit_3/sprite.webp",
+          "pixellab_object_id": "b077b3d8-a538-4d76-82d8-ba793a0a66ec",
+          "generated_at": "2026-08-17T12:18:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6499,
+          "glow_score": 0.0345,
+          "art_hash": "2aec858f5cbe6d99"
+        },
+        "LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_010/lit_4/sprite.webp",
+          "pixellab_object_id": "f4b3acee-60a6-42ce-83b9-0ad3dfa99789",
+          "generated_at": "2026-08-17T12:19:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8586,
+          "glow_score": 0.0,
+          "art_hash": "584bfbbe9af67d47"
+        },
+        "NOT_LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_010/not_lit_1/sprite.webp",
+          "pixellab_object_id": "2fd670b1-fd62-4609-89ac-4b00ad0078be",
+          "generated_at": "2026-08-17T12:19:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8411,
+          "glow_score": 0.0,
+          "art_hash": "87c912293bfbd9e9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_010/not_lit_2/sprite.webp",
+          "pixellab_object_id": "74b1f4cf-c90c-4a00-9150-7de70edbbce5",
+          "generated_at": "2026-08-17T12:19:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2606,
+          "glow_score": 0.0038,
+          "art_hash": "7daa70271f7fc67d"
         }
       },
       "animations": []
@@ -63734,7 +63833,7 @@
       "rel": "wayside_shrines/wayside_shrine_011",
       "name": "Birch-bark roofed shrine 011",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, birch-bark roofed shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 96,
@@ -63754,11 +63853,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_011/lit_1/sprite.webp",
+          "pixellab_object_id": "7639d1e6-4e67-4d5c-a3d2-e069e08e3c34",
+          "generated_at": "2026-08-17T12:22:45+00:00",
+          "glow_concept": "rooftop finial star shining pale",
+          "difference_from_source": 0.8779,
+          "glow_score": 0.1057,
+          "art_hash": "a7fdb8a6f2e3a3f3"
+        },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
           "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
           "generated_at": "2026-08-13T20:14:44+00:00",
           "art_hash": "6af5c11912af9ec5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_011/not_lit_2/sprite.webp",
+          "pixellab_object_id": "21096533-3606-4187-8fac-7472d9be4184",
+          "generated_at": "2026-08-17T12:21:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8448,
+          "glow_score": 0.0234,
+          "art_hash": "edc6a91a0a054193"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_011/not_lit_3/sprite.webp",
+          "pixellab_object_id": "6eb57f86-1626-44f3-9963-b376d366023d",
+          "generated_at": "2026-08-17T12:20:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7695,
+          "glow_score": 0.0307,
+          "art_hash": "9c96eda3d319c62f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "27129b5b-6754-4a41-97a4-85035ef764aa",
+          "generated_at": "2026-08-17T12:21:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5342,
+          "glow_score": 0.1339,
+          "art_hash": "db029ba4de8b0747"
         }
       },
       "animations": []
@@ -63768,7 +63903,7 @@
       "rel": "wayside_shrines/wayside_shrine_013",
       "name": "Ivy-eaten ruined shrine 013",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, ivy-eaten ruined shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -63788,11 +63923,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_013/lit_1/sprite.webp",
+          "pixellab_object_id": "db240b14-307e-487b-a6bd-ceac2bf201b3",
+          "generated_at": "2026-08-17T12:22:36+00:00",
+          "glow_concept": "painted door symbols traced in light",
+          "difference_from_source": 0.7876,
+          "glow_score": 0.0539,
+          "art_hash": "1c3f5e78aede2a1c"
+        },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_013/lit_2/sprite.webp",
+          "pixellab_object_id": "d477d3a5-d3aa-4427-b2d7-a00cf99d254f",
+          "generated_at": "2026-08-17T12:23:31+00:00",
+          "glow_concept": "wisps sheltering under the roof",
+          "difference_from_source": 0.6928,
+          "glow_score": 0.1047,
+          "art_hash": "6597fb80ff20ff01"
+        },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_013/sprite.webp",
           "pixellab_object_id": "13e50a0b-70f9-488f-a710-6a02d5963a91",
           "generated_at": "2026-08-13T21:41:45+00:00",
           "art_hash": "8616f6b806f8d512"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cfa10f7f-4870-4562-924c-5783cd3f7fe9",
+          "generated_at": "2026-08-17T12:21:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8962,
+          "glow_score": 0.0,
+          "art_hash": "e262df2354fe2894"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "6a93a72a-5753-4246-9e56-7b911831e734",
+          "generated_at": "2026-08-17T12:22:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4064,
+          "glow_score": 0.0062,
+          "art_hash": "c6f509c214770507"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "303f2c6a-b057-4ab6-92c1-8e59c21ff794",
+          "generated_at": "2026-08-17T12:22:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5569,
+          "glow_score": 0.0039,
+          "art_hash": "32d31a42e3066de8"
         }
       },
       "animations": []
@@ -63802,7 +63982,7 @@
       "rel": "wayside_shrines/wayside_shrine_015",
       "name": "Shingle-roofed post shrine 015",
       "category": "wayside_shrines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, shingle-roofed post shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -63822,11 +64002,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wayside_shrines/wayside_shrine_015/lit_1/sprite.webp",
+          "pixellab_object_id": "79006b95-538d-4157-8d26-b882ada5a2d5",
+          "generated_at": "2026-08-17T12:25:15+00:00",
+          "glow_concept": "warm interior light spilling from the doorway",
+          "difference_from_source": 0.9291,
+          "glow_score": 0.1453,
+          "art_hash": "40d9bff6737f68ef"
+        },
+        "LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_015/lit_2/sprite.webp",
+          "pixellab_object_id": "91ad2706-6c78-42cb-9841-6878ed3fa6b8",
+          "generated_at": "2026-08-17T12:24:38+00:00",
+          "glow_concept": "tiny hanging lamp under the eaves",
+          "difference_from_source": 0.5772,
+          "glow_score": 0.1222,
+          "art_hash": "043edc23a7c682ad"
+        },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
           "pixellab_object_id": "20066dd7-c8b1-4bd1-81f5-2dc96ad3de36",
           "generated_at": "2026-08-13T22:06:53+00:00",
           "art_hash": "c4b8915c8f26dff8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wayside_shrines/wayside_shrine_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "929fc486-34ed-44d7-94f5-da2e204943cd",
+          "generated_at": "2026-08-17T12:23:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.456,
+          "glow_score": 0.0,
+          "art_hash": "a647e4e4e500be1f"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "bee6a914-efbc-4b1a-ad0c-2f568719b74f",
+          "generated_at": "2026-08-17T12:24:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6691,
+          "glow_score": 0.0012,
+          "art_hash": "0e6eb7ae3f831d5b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wayside_shrines/wayside_shrine_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a90e0f32-ff7d-41f7-b25e-3b4787db2969",
+          "generated_at": "2026-08-17T12:24:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.754,
+          "glow_score": 0.0,
+          "art_hash": "0aa7799924adfd17"
         }
       },
       "animations": []
@@ -63861,6 +64086,15 @@
           "pixellab_object_id": "91771a37-d054-4c8e-9b8b-cc6318313c02",
           "generated_at": "2026-08-13T23:10:02+00:00",
           "art_hash": "cd9ba54dc330fedb"
+        },
+        "LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_016/lit_3/sprite.webp",
+          "pixellab_object_id": "3b032bab-d0d4-4736-a346-8b8ca7f5e240",
+          "generated_at": "2026-08-17T12:25:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4602,
+          "glow_score": 0.0,
+          "art_hash": "b8b89538d09455f7"
         }
       },
       "animations": []

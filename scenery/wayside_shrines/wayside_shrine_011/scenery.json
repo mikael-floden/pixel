@@ -5,7 +5,7 @@
   "rank": 19,
   "index": 11,
   "name": "Birch-bark roofed shrine 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "birch-bark roofed shrine",
   "glow_concept": null,
   "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, birch-bark roofed shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T20:14:44+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_011/lit_1/sprite.webp",
+      "pixellab_object_id": "7639d1e6-4e67-4d5c-a3d2-e069e08e3c34",
+      "generated_at": "2026-08-17T12:22:45+00:00",
+      "glow_concept": "rooftop finial star shining pale",
+      "difference_from_source": 0.8779,
+      "glow_score": 0.1057
+    },
     "NOT_LIT_1": {
       "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
       "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
       "generated_at": "2026-08-13T20:14:44+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "21096533-3606-4187-8fac-7472d9be4184",
+      "generated_at": "2026-08-17T12:21:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8448,
+      "glow_score": 0.0234
+    },
+    "NOT_LIT_3": {
+      "sprite": "wayside_shrines/wayside_shrine_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "6eb57f86-1626-44f3-9963-b376d366023d",
+      "generated_at": "2026-08-17T12:20:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7695,
+      "glow_score": 0.0307
+    },
+    "NOT_LIT_4": {
+      "sprite": "wayside_shrines/wayside_shrine_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "27129b5b-6754-4a41-97a4-85035ef764aa",
+      "generated_at": "2026-08-17T12:21:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5342,
+      "glow_score": 0.1339
     }
   }
 }

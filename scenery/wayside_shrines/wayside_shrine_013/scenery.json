@@ -5,7 +5,7 @@
   "rank": 19,
   "index": 13,
   "name": "Ivy-eaten ruined shrine 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ivy-eaten ruined shrine",
   "glow_concept": null,
   "prompt": "a small sturdy stone shrine standing directly on the ground on a broad base, thick walls, a shallow arched alcove sheltering a candle, heavy slab roof, ivy-eaten ruined shrine, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:41:45+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "wayside_shrines/wayside_shrine_013/lit_1/sprite.webp",
+      "pixellab_object_id": "db240b14-307e-487b-a6bd-ceac2bf201b3",
+      "generated_at": "2026-08-17T12:22:36+00:00",
+      "glow_concept": "painted door symbols traced in light",
+      "difference_from_source": 0.7876,
+      "glow_score": 0.0539
+    },
+    "LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_013/lit_2/sprite.webp",
+      "pixellab_object_id": "d477d3a5-d3aa-4427-b2d7-a00cf99d254f",
+      "generated_at": "2026-08-17T12:23:31+00:00",
+      "glow_concept": "wisps sheltering under the roof",
+      "difference_from_source": 0.6928,
+      "glow_score": 0.1047
+    },
     "NOT_LIT_1": {
       "sprite": "wayside_shrines/wayside_shrine_013/sprite.webp",
       "pixellab_object_id": "13e50a0b-70f9-488f-a710-6a02d5963a91",
       "generated_at": "2026-08-13T21:41:45+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "wayside_shrines/wayside_shrine_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "cfa10f7f-4870-4562-924c-5783cd3f7fe9",
+      "generated_at": "2026-08-17T12:21:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8962,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "wayside_shrines/wayside_shrine_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "6a93a72a-5753-4246-9e56-7b911831e734",
+      "generated_at": "2026-08-17T12:22:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4064,
+      "glow_score": 0.0062
+    },
+    "NOT_LIT_4": {
+      "sprite": "wayside_shrines/wayside_shrine_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "303f2c6a-b057-4ab6-92c1-8e59c21ff794",
+      "generated_at": "2026-08-17T12:22:46+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5569,
+      "glow_score": 0.0039
     }
   }
 }
