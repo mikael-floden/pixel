@@ -536,14 +536,27 @@ function buildWorld() {
         // The manifest's own key IS the feedback id — no id scheme of the
         // wiki's invention to keep in sync with the agent's.
         key: c.key ?? `tiles/${id}/${c.file?.split("/").pop()?.replace(/\.\w+$/, "")}`,
-        art: c.file ? `tiles/${c.file}` : null,
+        // BEFORE and AFTER the postprocess (tiles3/review@2, shipped by the
+        // tiles agent 2026-08-17 for exactly this). Both are repo-relative,
+        // like every other domain's art. `file` is their @1 alias of `after`,
+        // so a manifest still on @1 keeps resolving.
+        art: c.after ?? c.file ?? null,
+        raw: c.before ?? null,
         wallScore: c.wall_score ?? null,
         wall: c.wall ?? null,
         topShare: c.top_share ?? null,
+        // How far the top surface droops over the wall — the thing "grass
+        // over rock" is trying to achieve — and the flat colour the top
+        // settled on.
+        overhang: c.overhang ?? null,
+        paletteTop: c.palette_top ?? null,
         tileId: c.tile_id ?? null,
         style: c.style ?? null,
         prompt: c.prompt ?? null,
       }))
+      // The BEFORE is optional: a candidate generated before @2 has none, and
+      // its card simply offers no comparison rather than a broken toggle.
+      .map((c) => ({ ...c, raw: c.raw && existsSync(join(ROOT, c.raw)) ? c.raw : null }))
       .filter((c) => c.art && existsSync(join(ROOT, c.art)));
     if (!cands.length) continue;
     cells.push({

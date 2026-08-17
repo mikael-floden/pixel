@@ -2699,8 +2699,9 @@ async function refreshWorldPairs() {
   const dead = new Set(worldMeta().tombstoned ?? []);
   worldLive = cells.map(([id, cell]) => {
     const cands = (cell.candidates ?? []).map((c) => ({
-      key: c.key, art: c.file ? `tiles/${c.file}` : null,
+      key: c.key, art: c.after ?? c.file ?? null, raw: c.before ?? null,
       wallScore: c.wall_score ?? null, wall: c.wall ?? null, topShare: c.top_share ?? null,
+      overhang: c.overhang ?? null, paletteTop: c.palette_top ?? null,
       tileId: c.tile_id ?? null, style: c.style ?? null, prompt: c.prompt ?? null,
     })).filter((c) => c.art && c.key);
     const top = cell.top ?? id.split("__over__")[0], side = cell.side ?? id.split("__over__")[1];
@@ -2752,6 +2753,44 @@ const WORLD_FILTERS = {
   redo: { label: "redo", title: "Every candidate rejected, or the pair dropped" },
 };
 const WORLD_FILTER_KEY = "wiki-world-filter";
+/* SEE THE TILE BEFORE THE POSTPROCESS TOUCHED IT (maintainer 2026-08-17: "a
+ * button/switch to view a tile before it was post processed. I think the
+ * tiles-agent has prepared for this feature").
+ *
+ * They had: `tiles3/review@2` gives every candidate a `before` (the
+ * generator's raw output) beside its `after` (what the game gets). This is the
+ * viewer for it.
+ *
+ * The switch is a PREFERENCE, not a per-card toggle: he pages ‹ › through
+ * pairs while judging one property at a time, and a mode that reset on every
+ * page turn would make him re-press it 34 times. It also flips the overview,
+ * so the section never shows two different truths at once.
+ *
+ * Both images are always in the DOM and CSS decides which is visible, so the
+ * flip is instant and A/B actually comparable — a src swap re-decodes and the
+ * blink is exactly what a comparison must not have. They are ~2 KB each. */
+const WORLD_VIEW_KEY = "wiki-world-view";
+const WORLD_VIEWS = {
+  after: { label: "After", title: "What the game gets — the postprocessed tile" },
+  before: { label: "Before", title: "The generator's raw output, before any postprocess" },
+};
+const worldView = () => {
+  try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
+  catch { return "after"; }
+};
+/** The pair of images every World card draws. `raw` is optional — a candidate
+ *  from before @2 has none, and then there is nothing to compare and no switch
+ *  worth showing on it. */
+function worldArt(cand, alt, box = "thumb") {
+  const showRaw = worldView() === "before" && cand.raw;
+  return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}` },
+    h("img", { class: "art-after", src: assetUrl(cand.art), alt, loading: "lazy" }),
+    cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — before postprocess`, loading: "lazy" }) : null,
+    // The badge is not decoration: mid-comparison, "which one am I looking
+    // at" is the one question the screen must always answer.
+    showRaw ? h("span", { class: "art-tag" }, "before") : null,
+    worldView() === "before" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, "no before") : null);
+}
 function viewWorld() {
   // Fire-and-forget: the baked list draws immediately, the live one replaces
   // it a moment later. Re-rendering only when the fetch actually landed keeps
@@ -2781,6 +2820,9 @@ function viewWorld() {
         h("li", {}, h("b", {}, "No baked outline"), " — generated as colour zones, so none of Tiles OLD's four outline-fighting passes exist."),
         h("li", {}, h("b", {}, "Top and wall are separate"), " — “grass over grey stone”, so the map agent picks the surface you walk on and the wall you see independently."),
         h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))),
+    // ONE switch for the whole section — "pick one in this set", the control
+    // he asked every filter to use.
+    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
     state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
       const n = id === "all" ? q.length : q.filter((c) => (id === "redo" ? ["redo", "dropped"] : [id]).includes(cellReview(c).key)).length;
       return [id, `${f.label} ${n}`, f.title];
@@ -2789,7 +2831,7 @@ function viewWorld() {
       const r = cellReview(c);
       const v = wallVerdict(c.best);
       return h("a", { class: "card", href: `#/world/${c.id}` },
-        h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
+        worldArt(c.candidates[0], c.name),
         h("div", { class: "card-name" }, c.name),
         h("div", { class: "card-sub" }, `${c.candidates.length} candidate${c.candidates.length === 1 ? "" : "s"}`),
         h("div", { class: "card-badges" },
@@ -2809,7 +2851,7 @@ function viewWorldCell(id) {
     crumbRow("#/world", `← ${label("world")}`, "world", all, c.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait-col" },
-        h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name }))),
+        worldArt(c.candidates[0], c.name, "portrait")),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
         h("div", { class: "spawn-line" },
@@ -2830,6 +2872,13 @@ function viewWorldCell(id) {
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Candidates",
         h("span", { class: "pill" }, "ranked by wall score")),
+      // The switch sits WITH the tiles it flips: this is the page where he
+      // compares, and reaching back to the section header to do it would put
+      // the control and its effect on different screens.
+      state.admin ? h("div", { class: "world-viewbar" },
+        h("span", { class: "muted" }, "Show"),
+        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()),
+        c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
       h("div", { class: "grid world-cands" }, ...c.candidates.map((cand, i) => worldCandidate(c, cand, i))),
       h("p", { class: "muted", style: "margin:10px 0 0" },
         `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`)));
@@ -2843,7 +2892,7 @@ function worldCandidate(cell, cand, i) {
   const st = state.admin ? fb("tiles", cand.key).status : null;
   const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
   return h("div", { class: `card world-cand${st === "approved" ? " picked" : st === "rejected" ? " dropped" : ""}` },
-    h("div", { class: "thumb checker" }, h("img", { src: assetUrl(cand.art), alt: `${cell.name} — generation ${i + 1}`, loading: "lazy" })),
+    worldArt(cand, `${cell.name} — generation ${i + 1}`),
     h("div", { class: "card-name" }, `#${i + 1}`,
       v ? h("span", { class: `pill ${v.cls}`, title: v.text, style: "margin-left:8px" }, `wall ${cand.wallScore}`) : null),
     cand.wall ? h("div", { class: "card-sub metric-row" },
@@ -2851,8 +2900,14 @@ function worldCandidate(cell, cand, i) {
       h("span", { title: "how well the wall repeats without a visible seam" }, `tiling ${num(cand.wall.tiling)}`),
       h("span", { title: "how quietly the wall texture sits — loud walls fight the art on top" }, `discretion ${num(cand.wall.discretion)}`),
       h("span", { title: "whether the wall reads as a real surface rather than noise" }, `structure ${num(cand.wall.structure)}`)) : null,
-    cand.topShare != null
-      ? h("div", { class: "card-sub" }, `top surface ${(cand.topShare * 100).toFixed(1)}% one colour`)
+    cand.topShare != null || cand.overhang != null
+      ? h("div", { class: "card-sub metric-row" },
+        cand.topShare != null ? h("span", { title: "how much of the top surface is a single flat colour — what lets a whole field paint from one tile" }, `top ${(cand.topShare * 100).toFixed(1)}% flat`) : null,
+        // New in @2, and the point of "A over B": the top should droop over
+        // the wall rather than be cut off at it.
+        cand.overhang != null ? h("span", { title: "how far the top surface droops over the wall instead of being cut off at it" }, `overhang ${num(cand.overhang)}`) : null,
+        cand.paletteTop ? h("span", { class: "swatch-wrap", title: `the flat colour the top settled on — ${cand.paletteTop}` },
+          h("span", { class: "swatch", style: `background:${/^#[0-9a-f]{3,8}$/i.test(cand.paletteTop) ? cand.paletteTop : "transparent"}` }), cand.paletteTop) : null)
       : null,
     state.admin ? h("div", { class: "card-sub" },
       feedbackRow("tiles", cand.key, {

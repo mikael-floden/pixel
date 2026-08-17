@@ -91,7 +91,7 @@ const list = await p.evaluate(() => ({
   cards: document.querySelectorAll("a.card").length,
   first: document.querySelector("a.card .card-name")?.textContent,
   hrefs: [...document.querySelectorAll("a.card")].map((a) => a.getAttribute("href")).slice(0, 3),
-  art: [...document.querySelectorAll("a.card img")].filter((i) => i.complete && i.naturalWidth > 0).length,
+  art: [...document.querySelectorAll("a.card")].filter((c) => [...c.querySelectorAll("img")].some((i) => i.complete && i.naturalWidth > 0)).length,
   filters: [...document.querySelectorAll(".sortbar button")].map((x) => x.textContent.trim()),
 }));
 console.log("World overview:", JSON.stringify(list));
@@ -109,7 +109,7 @@ await p.waitForTimeout(1800);
 const page = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
   cands: document.querySelectorAll(".world-cand").length,
-  art: [...document.querySelectorAll(".world-cand img")].filter((i) => i.complete && i.naturalWidth > 0).length,
+  art: [...document.querySelectorAll(".world-cand")].filter((c) => [...c.querySelectorAll("img")].some((i) => i.complete && i.naturalWidth > 0)).length,
   scores: [...document.querySelectorAll(".world-cand .card-name")].map((x) => x.textContent.trim()),
   metrics: document.querySelector(".world-cand .metric-row")?.textContent ?? "",
   verdicts: document.querySelectorAll(".world-cand .verdict").length,
@@ -184,7 +184,68 @@ ok(fresh.has, `a pair the agent generated after the last build still shows up (�
 ok(fresh.cards === CELLS.length + 1, `and the count follows it (${fresh.cards} = ${CELLS.length} + 1)`);
 ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 1).join("") || "none"})`);
 
-// ------------------------------------------------------------- 5. the player
+// ------------------------------------- 5. before / after the postprocess
+// Maintainer 2026-08-17: "a button/switch to view a tile before it was post
+// processed. I think the tiles-agent has prepared for this feature." They had:
+// tiles3/review@2 gives every candidate a `before` beside its `after`.
+ok(flat.every((c) => c.art?.endsWith("_after.webp") || !/_before/.test(c.art ?? "")),
+  "the build takes the manifest's AFTER as the tile that ships");
+const withRaw = flat.filter((c) => c.raw).length;
+ok(withRaw > 0, `and carries the BEFORE beside it (${withRaw}/${flat.length} candidates)`);
+ok(flat.filter((c) => c.raw).every((c) => c.raw !== c.art), "which is a different file — a comparison of one image is not one");
+
+await p.goto(`${W}#/world/${cell.id}`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const shot = () => p.evaluate(() => ({
+  mode: [...document.querySelectorAll(".world-viewbar button")].map((b) => (b.classList.contains("sel") ? "*" : "") + b.textContent.trim()),
+  // What is actually PAINTED, not what the markup intends.
+  shown: [...document.querySelectorAll(".world-cand .world-art")].map((a) => {
+    const vis = (i) => i && getComputedStyle(i).display !== "none";
+    return vis(a.querySelector(".art-before")) ? "before" : vis(a.querySelector(".art-after")) ? "after" : "none";
+  }),
+  // Both must be in the DOM: the flip has to be instant, and a src swap
+  // re-decodes — the blink is exactly what a comparison must not have.
+  loaded: [...document.querySelectorAll(".world-cand .world-art img")].filter((i) => i.complete && i.naturalWidth > 0).length,
+  imgs: document.querySelectorAll(".world-cand .world-art img").length,
+  tags: [...document.querySelectorAll(".world-cand .art-tag")].map((t) => t.textContent),
+  portrait: (() => {
+    const a = document.querySelector(".detail-head .world-art");
+    if (!a) return null;
+    const vis = (i) => i && getComputedStyle(i).display !== "none";
+    return vis(a.querySelector(".art-before")) ? "before" : "after";
+  })(),
+}));
+const asShipped = await shot();
+console.log("after :", JSON.stringify(asShipped));
+ok(asShipped.mode[0] === "*After", `it opens on what the game gets (${asShipped.mode.join(" ")})`);
+ok(asShipped.shown.every((x) => x === "after"), "every candidate showing its postprocessed tile");
+ok(asShipped.tags.length === 0, "with no badge — the shipped tile is the default, and a badge on it would be noise");
+ok(asShipped.loaded === asShipped.imgs && asShipped.imgs === asShipped.shown.length * 2,
+  `both images already decoded, so the flip cannot blink (${asShipped.loaded}/${asShipped.imgs})`);
+
+await p.evaluate(() => [...document.querySelectorAll(".world-viewbar button")].find((b) => /Before/.test(b.textContent)).click());
+await p.waitForTimeout(900);
+const asRaw = await shot();
+console.log("before:", JSON.stringify(asRaw));
+ok(asRaw.mode[1] === "*Before", "the switch flips the whole set");
+ok(asRaw.shown.every((x) => x === "before"), "every candidate now showing the generator's raw output");
+ok(asRaw.tags.every((t) => /before/.test(t)) && asRaw.tags.length === asRaw.shown.length,
+  "each badged, so mid-comparison the screen always answers “which am I looking at”");
+ok(asRaw.portrait === "before", "and the pair's own portrait follows — one truth per screen, never two");
+
+// THE MODE IS A PREFERENCE. He pages ‹ › through 34 pairs judging one property;
+// a mode that reset on every page turn would have to be re-pressed 34 times.
+await p.evaluate(() => document.querySelector(".detail-nav a, .detail-nav button, .crumb-row a[href^='#/world/']")?.click());
+await p.goto(`${W}#/world/${CELLS[1].id}`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+const nextPair = await shot();
+console.log("next pair:", JSON.stringify({ mode: nextPair.mode, shown: nextPair.shown }));
+ok(nextPair.mode[1] === "*Before", "paging to the next pair keeps the mode");
+ok(nextPair.shown.every((x) => x === "before"), "and lands showing the same side of the comparison");
+await p.evaluate(() => [...document.querySelectorAll(".world-viewbar button")].find((b) => /After/.test(b.textContent)).click());
+await p.waitForTimeout(500);
+
+// ------------------------------------------------------------- 6. the player
 // He asked for a migration surface, not a change to the encyclopedia.
 const pub = await ctx.newPage();
 await pub.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
