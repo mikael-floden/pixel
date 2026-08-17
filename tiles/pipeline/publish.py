@@ -126,6 +126,7 @@ def main():
         os.makedirs(cd, exist_ok=True)
         entries = []
         top_hex = PALETTE.get(top, {}).get("top")
+        side_hex = PALETTE.get(side, {}).get("top")
         for i, c in enumerate(cands):
             # BOTH states ship, because the maintainer judges the postprocess as well
             # as the art and cannot do that from one image. `before` is the generator's
@@ -135,7 +136,11 @@ def main():
             before = os.path.join(cd, f"{i}_before.webp")
             after = os.path.join(cd, f"{i}_after.webp")
             _save(raw, before)
-            _save(palette_snap.snap(raw, top_hex, same_material=(top == side))
+            # side_hex is what puts the WALL material on the palette too. Omitting it
+            # silently skips that alignment — the published art looked unchanged after
+            # the fix landed because this call never asked for it.
+            _save(palette_snap.snap(raw, top_hex, side_hex=side_hex,
+                                    same_material=(top == side))
                   if top_hex else raw, after)
             entries.append({
                 "key": f"tiles/{cell}/{i}",

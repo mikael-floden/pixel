@@ -928,6 +928,53 @@
       ],
       "needs_regeneration": false
     },
+    "dark_mud__over__light_beach": {
+      "top": "dark_mud",
+      "side": "light_beach",
+      "candidates": [
+        {
+          "key": "tiles/dark_mud__over__light_beach/0",
+          "before": "tiles/review/dark_mud__over__light_beach/0_before.webp",
+          "after": "tiles/review/dark_mud__over__light_beach/0_after.webp",
+          "file": "tiles/review/dark_mud__over__light_beach/0_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 2.62,
+          "wall": {
+            "tiling": 0.166,
+            "discretion": 0.49,
+            "structure": 0.841,
+            "contrast": 35.18,
+            "edges": 10.093
+          },
+          "top_share": 0.6903,
+          "overhang": 1.0,
+          "tile_id": "c50f7a2c-08fd-454a-b151-1b93b29eb5cd",
+          "style": "chase0",
+          "prompt": "isometric ground tile. wet dark mud on top of pale sandy beach. The dark mud grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/dark_mud__over__light_beach/1",
+          "before": "tiles/review/dark_mud__over__light_beach/1_before.webp",
+          "after": "tiles/review/dark_mud__over__light_beach/1_after.webp",
+          "file": "tiles/review/dark_mud__over__light_beach/1_after.webp",
+          "palette_top": "#51402b",
+          "wall_score": 0.68,
+          "wall": {
+            "tiling": 0.056,
+            "discretion": 0.083,
+            "structure": 1.0,
+            "contrast": 42.51,
+            "edges": 14.137
+          },
+          "top_share": 0.7293,
+          "overhang": 1.0,
+          "tile_id": "c50f7a2c-08fd-454a-b151-1b93b29eb5cd",
+          "style": "chase0",
+          "prompt": "isometric ground tile. wet dark mud on top of pale sandy beach. The dark mud grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "dark_mud__over__snow": {
       "top": "dark_mud",
       "side": "snow",
@@ -3859,6 +3906,26 @@
           "before": "tiles/review/light_soil__over__grass/0_before.webp",
           "after": "tiles/review/light_soil__over__grass/0_after.webp",
           "file": "tiles/review/light_soil__over__grass/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.78,
+          "wall": {
+            "tiling": 0.299,
+            "discretion": 0.981,
+            "structure": 0.955,
+            "contrast": 25.66,
+            "edges": 11.457
+          },
+          "top_share": 0.2688,
+          "overhang": 0.945,
+          "tile_id": "51e85e4a-4282-4ca3-957d-a60aafd61c95",
+          "style": "chase1",
+          "prompt": "isometric terrain block of lush green grass with dry light soil growing on top. The light soil spills over the rim and hangs down the grass face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__grass/1",
+          "before": "tiles/review/light_soil__over__grass/1_before.webp",
+          "after": "tiles/review/light_soil__over__grass/1_after.webp",
+          "file": "tiles/review/light_soil__over__grass/1_after.webp",
           "palette_top": "#c09c6c",
           "wall_score": 3.88,
           "wall": {
