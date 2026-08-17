@@ -122,6 +122,14 @@ COPY --from=build /app/client/dist client/dist
 # sound and music pages play, now fetched from the repo (wiki.js resolves
 # composer/** against the CDN), so no player carries it.
 COPY --from=curate /shipped/ /assets/
+# …AND THE WIKI REGISTRY BUILT FROM THIS IMAGE'S OWN ART. The build stage runs
+# wiki/build.mjs against its own /assets (see it above), but the runtime copies
+# /assets from CURATE, so that output was discarded on every deploy and the
+# deployed wiki served the data.json last COMMITTED — including its `git_sha`,
+# which is the version stamp in the wiki's header. Measured 2026-08-17: the
+# live stamp read a commit six pushes and three hours old, so the one thing
+# telling the Game Master which build he is looking at named the wrong build.
+COPY --from=build /assets/wiki/site/data.json /assets/wiki/site/data.json
 ENV ASSETS_ROOT=/assets
 
 ARG GIT_SHA=dev
