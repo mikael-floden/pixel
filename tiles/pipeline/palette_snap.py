@@ -420,14 +420,36 @@ def align_wall(a, reg, side_hex):
         return None
     med = _rgb2hsv(np.median(np.array(low), 0)[None, :])[0]
     tgt = _rgb2hsv(_hex(side_hex)[None, :])[0]
-    dh = float(tgt[0]) - float(med[0])
+
+    # A GREY HAS NO HUE, so do not read one off it. grey_stone's wall measures hue 164
+    # and its palette colour hue 63 — both near-grey, both meaningless — and taking the
+    # difference produced a -101 shift applied to every wall pixel. The stone did not
+    # care, but the saturated green fringe sitting on it wrapped from hue 62 to 217 and
+    # the maintainer got a MAGENTA line along his grass. Saturation still moves; hue is
+    # simply not defined for these materials.
+    achromatic = float(med[1]) < 45.0 or float(tgt[1]) < 45.0
+    dh = 0.0 if achromatic else float(tgt[0]) - float(med[0])
     ds = float(tgt[1]) - float(med[1])
+
     hsv = _rgb2hsv(rgb[wall])
-    hsv[:, 0] = (hsv[:, 0] + dh) % 256.0
-    hsv[:, 1] = np.clip(hsv[:, 1] + ds, 0, 255)
+    # Shift only what IS the wall material. The fringe is the other material lying on
+    # top of it and belongs to retint_spill; dragging it by the wall's delta moves it
+    # away from its own palette colour, which is the opposite of the point.
+    dm = np.abs(hsv[:, 0] - med[0])
+    dm = np.minimum(dm, 255.0 - dm)
+    # BOTH conditions, not either. Including near-grey pixels handed them the
+    # material's saturation boost at a shifted hue — on black_rock-over-grass that is
+    # +112 saturation, which turns a neutral shadow into a vivid colour and was the
+    # second source of magenta. A grey pixel in a wall is shadow or highlight; it
+    # carries no hue to correct and should stay neutral.
+    mine = (dm < 40.0) & (hsv[:, 1] >= 45.0)
+    hsv[mine, 0] = (hsv[mine, 0] + dh) % 256.0
+    hsv[mine, 1] = np.clip(hsv[mine, 1] + ds, 0, 255)
     out = rgb.copy()
-    out[ys, xs] = _hsv2rgb(hsv)
-    return out, wall
+    out[ys[mine], xs[mine]] = _hsv2rgb(hsv[mine])
+    m = np.zeros(wall.shape, bool)
+    m[ys[mine], xs[mine]] = True
+    return out, m
 
 
 def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
