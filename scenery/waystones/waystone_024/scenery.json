@@ -5,8 +5,8 @@
   "group": "waystones",
   "rank": 6,
   "index": 24,
-  "name": "Lichen-ringed old stone 024 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Lichen-ringed old stone 024",
+  "lights": null,
   "variety": "lichen-ringed old stone",
   "modifier": "bird-favored, with droppings and a nest",
   "glow_concept": "warm handprint glow where travelers touch",
@@ -36,6 +36,46 @@
       "sprite": "waystones/waystone_024/sprite.webp",
       "pixellab_object_id": "e84514f7-deab-4c96-8d9b-deb670b8008b",
       "generated_at": "2026-08-14T01:29:31+00:00"
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_024/lit_2/sprite.webp",
+      "pixellab_object_id": "eb56df29-7a99-42af-9a68-587fbb43a7c4",
+      "generated_at": "2026-08-17T12:40:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5619,
+      "glow_score": 0.0556
+    },
+    "LIT_3": {
+      "sprite": "waystones/waystone_024/lit_3/sprite.webp",
+      "pixellab_object_id": "0045ae03-45d5-4aa7-a9d0-2f862722bddc",
+      "generated_at": "2026-08-17T12:40:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5168,
+      "glow_score": 0.0939
+    },
+    "LIT_4": {
+      "sprite": "waystones/waystone_024/lit_4/sprite.webp",
+      "pixellab_object_id": "9aef428d-e5df-4110-890e-949ea1094cda",
+      "generated_at": "2026-08-17T12:40:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5194,
+      "glow_score": 0.0675
+    },
+    "NOT_LIT_1": {
+      "sprite": "waystones/waystone_024/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e5fdde38-8c0e-4fed-9965-998456afd79e",
+      "generated_at": "2026-08-17T12:40:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9678,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_024/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7ffc3fc6-0dfa-4dae-b81b-b5db20ef231b",
+      "generated_at": "2026-08-17T12:41:12+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.571,
+      "glow_score": 0.0
     }
   }
 }

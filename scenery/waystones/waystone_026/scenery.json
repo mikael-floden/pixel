@@ -5,8 +5,8 @@
   "group": "waystones",
   "rank": 6,
   "index": 26,
-  "name": "Rounded granite milestone 026 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rounded granite milestone 026",
+  "lights": null,
   "variety": "rounded granite milestone",
   "modifier": "reinforced with iron bands",
   "glow_concept": "glowworms clustered in the carved lettering",
@@ -36,6 +36,46 @@
       "sprite": "waystones/waystone_026/sprite.webp",
       "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
       "generated_at": "2026-08-14T02:17:33+00:00"
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_026/lit_2/sprite.webp",
+      "pixellab_object_id": "7b37b5b6-46a4-4195-a793-5a8b19ae50c6",
+      "generated_at": "2026-08-17T12:41:31+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6265,
+      "glow_score": 0.0313
+    },
+    "LIT_3": {
+      "sprite": "waystones/waystone_026/lit_3/sprite.webp",
+      "pixellab_object_id": "04f8fa13-e292-4bdc-81e3-8db0b853d631",
+      "generated_at": "2026-08-17T12:41:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5981,
+      "glow_score": 0.0961
+    },
+    "LIT_4": {
+      "sprite": "waystones/waystone_026/lit_4/sprite.webp",
+      "pixellab_object_id": "47aab005-d546-49b5-adfd-d12002caf5af",
+      "generated_at": "2026-08-17T12:42:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4883,
+      "glow_score": 0.039
+    },
+    "NOT_LIT_1": {
+      "sprite": "waystones/waystone_026/not_lit_1/sprite.webp",
+      "pixellab_object_id": "47119c65-3028-4c25-be5e-ecb6ec524052",
+      "generated_at": "2026-08-17T12:41:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8386,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_026/not_lit_2/sprite.webp",
+      "pixellab_object_id": "ee353997-8003-4cc2-b874-150ec2100d3f",
+      "generated_at": "2026-08-17T12:42:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8128,
+      "glow_score": 0.0
     }
   }
 }

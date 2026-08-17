@@ -5,8 +5,8 @@
   "group": "waystones",
   "rank": 6,
   "index": 22,
-  "name": "White quartz-veined stone 022 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "White quartz-veined stone 022",
+  "lights": null,
   "variety": "white quartz-veined stone",
   "modifier": "weathered silver-grey",
   "glow_concept": "inner light leaking through hairline cracks",
@@ -52,6 +52,30 @@
       "glow_concept": null,
       "difference_from_source": 0.7778,
       "glow_score": 0.0552
+    },
+    "LIT_4": {
+      "sprite": "waystones/waystone_022/lit_4/sprite.webp",
+      "pixellab_object_id": "2984a1b7-1f6d-4d3c-a421-54685ce74116",
+      "generated_at": "2026-08-17T12:39:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5577,
+      "glow_score": 0.075
+    },
+    "NOT_LIT_1": {
+      "sprite": "waystones/waystone_022/not_lit_1/sprite.webp",
+      "pixellab_object_id": "8595a0a5-6ccf-4602-813f-4978a9356324",
+      "generated_at": "2026-08-17T12:40:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7059,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_022/not_lit_2/sprite.webp",
+      "pixellab_object_id": "8f2bf89e-a502-422c-97fe-a9813d62526e",
+      "generated_at": "2026-08-17T12:40:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8927,
+      "glow_score": 0.0
     }
   }
 }
