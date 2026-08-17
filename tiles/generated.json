@@ -6,6 +6,12 @@
       "purpose": "matrix:lava_over_black_rock",
       "status": "pending"
     },
+    "0137e48f-f4b1-4b54-bb45-ce5fd9407445": {
+      "created": "2026-08-17T20:46:30+00:00",
+      "prompt": "isometric ground tile. deep dark ocean water on top of clear calm water. The deep water grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the deep water surface is even and uniform. No outline.",
+      "purpose": "matrix:deep_water_over_water",
+      "status": "pending"
+    },
     "01791839-841d-4c8b-90d4-3b5605b4e92d": {
       "created": "2026-08-17T20:35:50+00:00",
       "prompt": "isometric ground tile. deep dark ocean water on top of dark volcanic rock. The deep water grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the deep water surface is even and uniform. No outline.",
@@ -34,6 +40,12 @@
       "created": "2026-08-16T17:21:49+00:00",
       "prompt": "clean single color clean fresh snow on top of clean deep dark ocean water",
       "purpose": "matrix:snow_over_deep_water",
+      "status": "pending"
+    },
+    "033ded2f-6630-4801-bc8a-77bd8e76592d": {
+      "created": "2026-08-17T20:46:17+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken dark volcanic rock. Sides: wet dark mud with visible texture. Between them the black rock overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
     "03aaf233-5eb9-45e3-8c87-47a2f24fd092": {
@@ -414,6 +426,12 @@
       "purpose": "matrix:grass_over_snow",
       "status": "pending"
     },
+    "27ff0750-09c3-4b7f-887f-3c604bbd1559": {
+      "created": "2026-08-17T20:46:30+00:00",
+      "prompt": "isometric tile: a layer of thick bubbling slime covering a block of clear calm water. Ragged slime edge overhanging the water cliff, individual strands breaking the line. Smooth uniform slime on the top face. No outline.",
+      "purpose": "matrix:slime_over_water",
+      "status": "pending"
+    },
     "29f133d1-aa7e-4fd9-8925-ad9f02307009": {
       "created": "2026-08-17T17:00:17+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of dry light soil. The black rock grows over the edge and tufts down over the light soil below, so the two meet naturally with no hard line between them. The light soil side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
@@ -528,6 +546,12 @@
       "created": "2026-08-17T19:10:43+00:00",
       "prompt": "isometric tile: a layer of wet dark mud covering a block of clean fresh snow. Ragged dark mud edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "3b9fa9ed-6dd1-4f93-a6d3-9f4ee81349fe": {
+      "created": "2026-08-17T20:45:29+00:00",
+      "prompt": "top-down isometric ground block. Thick deep dark ocean water carpet over exposed wet dark mud. Where the two meet the deep water droops over the edge instead of being cut off. Even deep water surface, detailed dark mud sides. No outline.",
+      "purpose": "matrix:deep_water_over_dark_mud",
       "status": "pending"
     },
     "3c62645a-7a06-42e0-9719-a92d2ae6a582": {
@@ -740,6 +764,12 @@
       "purpose": "matrix:grass_over_snow",
       "status": "pending"
     },
+    "58dbe8b1-ef1f-401d-b084-3321b94e9e0e": {
+      "created": "2026-08-17T20:44:49+00:00",
+      "prompt": "isometric terrain block of clear calm water with thick bubbling slime growing on top. The slime spills over the rim and hangs down the water face in an uneven fringe. Flat even slime seen from above. No outline.",
+      "purpose": "matrix:slime_over_water",
+      "status": "pending"
+    },
     "596234fa-303d-45c1-b85b-b474ca0623f8": {
       "created": "2026-08-17T19:27:49+00:00",
       "prompt": "top-down isometric ground block. Thick wet dark mud carpet over exposed lush green grass. Where the two meet the dark mud droops over the edge instead of being cut off. Even dark mud surface, detailed grass sides. No outline.",
@@ -818,10 +848,22 @@
       "purpose": "matrix:light_soil_over_grey_stone",
       "status": "pending"
     },
+    "61fc92e1-48d9-4db1-93e6-993c7887ce9b": {
+      "created": "2026-08-17T20:45:55+00:00",
+      "prompt": "isometric ground tile. wooden parquet floor on top of clean fresh snow. The parquet floor grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the parquet floor surface is even and uniform. No outline.",
+      "purpose": "matrix:parquet_floor_over_snow",
+      "status": "pending"
+    },
     "63b1432e-b86b-480f-99e3-8dfa4fc95b1b": {
       "created": "2026-08-17T17:52:04+00:00",
       "prompt": "isometric cube of clean fresh snow capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the snow beneath it. Uniform flat grey stone top. No outline.",
       "purpose": "matrix:grey_stone_over_snow",
+      "status": "pending"
+    },
+    "642383f0-6948-4eed-a69e-01db10d5b23a": {
+      "created": "2026-08-17T20:45:04+00:00",
+      "prompt": "isometric cube of dark volcanic rock capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the black rock beneath it. Uniform flat snow top. No outline.",
+      "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
     "649ccf8c-a69f-4129-916d-9424d119c7ea": {
@@ -872,6 +914,12 @@
       "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
+    "66eda275-160c-49c0-9cb9-739cbd20d0c3": {
+      "created": "2026-08-17T20:45:00+00:00",
+      "prompt": "isometric ground tile, dark volcanic rock over wet dark mud, photographed from above. Soft irregular boundary where black rock meets dark mud \u2014 the black rock creeps down over the dark mud. Plain even black rock surface. No outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
     "67390cfe-90b9-46a8-8aa1-f30b41529fc7": {
       "created": "2026-08-17T19:02:08+00:00",
       "prompt": "isometric ground tile, rugged grey mountain rock over thick bubbling slime, photographed from above. Soft irregular boundary where grey stone meets slime \u2014 the grey stone creeps down over the slime. Plain even grey stone surface. No outline.",
@@ -906,6 +954,12 @@
       "created": "2026-08-16T16:30:32+00:00",
       "prompt": "clean single color lush green grass on top of clean cut paving stone slabs",
       "purpose": "matrix:grass_over_paving_stone",
+      "status": "pending"
+    },
+    "6be756e0-6223-4a8f-b7c5-11913f97798d": {
+      "created": "2026-08-17T20:45:54+00:00",
+      "prompt": "isometric ground tile. clear calm water on top of dark volcanic rock. The water grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the water surface is even and uniform. No outline.",
+      "purpose": "matrix:water_over_black_rock",
       "status": "pending"
     },
     "6c7b7e03-db13-4b85-9b92-b3655387fc34": {
@@ -1038,6 +1092,12 @@
       "created": "2026-08-16T11:06:17+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_snow",
+      "status": "pending"
+    },
+    "7e58ad91-d57a-4c05-9ea3-3bdc1e1abb3b": {
+      "created": "2026-08-17T20:44:46+00:00",
+      "prompt": "isometric terrain block of clear calm water with cut paving stone slabs growing on top. The paving stone spills over the rim and hangs down the water face in an uneven fringe. Flat even paving stone seen from above. No outline.",
+      "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
     "8012a306-9bed-4348-b76c-d84fb0661d37": {
@@ -1666,6 +1726,12 @@
       "purpose": "matrix:light_soil_over_deep_water",
       "status": "pending"
     },
+    "ce603273-3cdf-4bbb-9ff6-70e1fb40a1c7": {
+      "created": "2026-08-17T20:45:03+00:00",
+      "prompt": "isometric terrain block of clear calm water with wooden parquet floor growing on top. The parquet floor spills over the rim and hangs down the water face in an uneven fringe. Flat even parquet floor seen from above. No outline.",
+      "purpose": "matrix:parquet_floor_over_water",
+      "status": "pending"
+    },
     "ce68ce77-bc19-4fcf-b2e6-72ba53c9fb95": {
       "created": "2026-08-16T17:07:26+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are dry light soil with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -1870,6 +1936,12 @@
       "purpose": "matrix:dark_mud_over_ice",
       "status": "pending"
     },
+    "e4d3213e-6e3c-4bca-8d7e-dffa793ddbdb": {
+      "created": "2026-08-17T20:44:29+00:00",
+      "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed clear calm water. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed water sides. No outline.",
+      "purpose": "matrix:black_rock_over_water",
+      "status": "pending"
+    },
     "e60ab08f-e7d2-439b-b8df-583ea896e1a5": {
       "created": "2026-08-16T16:41:50+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are molten glowing lava with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -1940,6 +2012,12 @@
       "created": "2026-08-16T16:47:16+00:00",
       "prompt": "clean single color clean fresh snow on top of clean lush green grass",
       "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
+    "eca8f3df-7f36-4ba3-b591-27db81dd3f04": {
+      "created": "2026-08-17T20:44:21+00:00",
+      "prompt": "isometric ground tile. wooden parquet floor on top of dark volcanic rock. The parquet floor grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the parquet floor surface is even and uniform. No outline.",
+      "purpose": "matrix:parquet_floor_over_black_rock",
       "status": "pending"
     },
     "ecd12ae6-f651-4f7b-bbd1-8e9eb17ad55a": {
