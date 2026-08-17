@@ -342,6 +342,50 @@ ok(nextPair.mode[1] === "*Before", "paging to the next pair keeps the mode");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 
+// -------------------------------- 5b. and the same switch ON EVERY TILE
+// Maintainer 2026-08-17: "When looking at tiles in Tiles in this set I
+// sometimes want to toggle between before and after, but that button might be
+// higher up so I have to scroll. Can you place that button so I have access to
+// it for each tile?" It OVERRIDES for that tile instead of flipping the set —
+// otherwise the tiles beside it move too and the difference he sees could be
+// either the postprocess or the page.
+await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const chips = () => p.evaluate(() => [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => ({
+  label: st.querySelector(".stage-flip")?.textContent ?? null,
+  view: st.dataset.view,
+  face: st.dataset.face,
+})));
+const press = (i) => p.evaluate((n) => document.querySelectorAll(".world-cand .tile-stage")[n].querySelector(".stage-flip").click(), i);
+const rest = await chips();
+console.log("chips:", JSON.stringify(rest.map((c) => `${c.label}/${c.view}`)));
+ok(rest.length > 1 && rest.every((c) => c.label), `every tile carries the switch on its own picture (${rest.length}/${rest.length})`);
+ok(rest.every((c) => c.view === "after"), "all of them starting on what the game gets");
+await press(1);
+await p.waitForTimeout(900);
+const peek = await chips();
+console.log("after pressing tile 2:", JSON.stringify(peek.map((c) => `${c.label}/${c.face?.split("/").pop()}`)));
+ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
+  `pressing one tile's chip rebuilds THAT preview from the raw output (${peek[1].face?.split("/").pop()})`);
+ok(peek.filter((_, i) => i !== 1).every((c) => c.view === "after" && /_after\.webp$/.test(c.face ?? "")),
+  "while the tiles beside it hold still — the difference he sees is the postprocess, not the page");
+ok(/before/.test(peek[1].label ?? ""), `and the chip says which of the two he is looking at (“${peek[1].label}”)`);
+await press(1);
+await p.waitForTimeout(900);
+const backAgain = await chips();
+ok(backAgain[1].view === "after" && /_after\.webp$/.test(backAgain[1].face ?? ""), "pressing it again puts that tile back");
+// THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "After" for the
+// set has to mean all of it, or a tile left on before would be read as one the
+// postprocess did nothing to.
+await press(0);
+await p.waitForTimeout(700);
+ok((await chips())[0].view === "before", "a peek can be left open on any tile");
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
+await p.waitForTimeout(1400);
+const cleared = await chips();
+console.log("after the set-wide After:", JSON.stringify(cleared.map((c) => c.view)));
+ok(cleared.every((c) => c.view === "after"), "and the set-wide switch clears every peek — “After” for the set means all of it");
+
 // ------------------------------------------------------------- 6. the player
 // He asked for a migration surface, not a change to the encyclopedia.
 const pub = await ctx.newPage();

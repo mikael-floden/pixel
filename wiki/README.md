@@ -307,6 +307,17 @@ game ofc"*).
   (`after`, the file that ships). One truth per screen: the pair's own portrait
   follows the switch too, and paging keeps the mode. A candidate with no
   `before` says "no before" rather than silently showing the after twice.
+- **And the same switch sits on every tile**, as a chip on its own picture
+  (maintainer 2026-08-17: *"that button might be higher up so I have to scroll.
+  Can you place that button so I have access to it for each tile?"*). The chip
+  **overrides for that tile only** — the tiles beside it hold still, so a
+  difference he sees is the postprocess and not the page — and it says which of
+  the two he is looking at, because mid-comparison that is the one question the
+  picture must answer. It rides on the art rather than under it: a row below
+  would push the next tile down and spend the vertical space the shared box
+  just saved. The override is not persisted and clears when the set-wide switch
+  is used or another pair is opened: it answers "what did this one look like
+  before", which is a question about the tile in front of him, not a setting.
 
 **Everything above is the GAME MASTER's page. A reader gets the ground.**
 Maintainer 2026-08-17, looking at the "What is new" panel: *"I feel this is too

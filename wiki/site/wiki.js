@@ -2887,6 +2887,25 @@ const worldView = () => {
   try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
   catch { return "after"; }
 };
+/* ONE TILE CAN PEEK ON ITS OWN (maintainer 2026-08-17: "When looking at tiles
+ * in Tiles in this set I sometimes want to toggle between before and after, but
+ * that button might be higher up so I have to scroll. Can you place that button
+ * so I have access to it for each tile?").
+ *
+ * The set-wide switch stays what it is — a MODE, remembered across pairs — and
+ * every tile gets a chip on its own picture that overrides it for that tile
+ * only. Overriding rather than flipping the mode is what makes it a comparison:
+ * the tile under his thumb changes and the ones beside it hold still, so a
+ * difference he sees is the postprocess and not the page.
+ *
+ * The override is DELIBERATELY NOT PERSISTED, and clears when the set-wide
+ * switch is used or another pair is opened: it answers "what did this one look
+ * like before", which is a question about the tile in front of him, not a
+ * setting he wants to find again tomorrow.
+ */
+const tileViews = new Map();
+let tileViewsPair = null;
+const tileView = (key) => tileViews.get(key) ?? worldView();
 /** The pair of images every World card draws. `raw` is optional — a candidate
  *  from before @2 has none, and then there is nothing to compare and no switch
  *  worth showing on it. */
@@ -2977,7 +2996,7 @@ function viewWorld() {
         h("li", {}, h("b", {}, "No baked outline"), " — generated as colour zones, so none of Tiles OLD's four outline-fighting passes exist."),
         h("li", {}, h("b", {}, "Top and wall are separate"), " — “grass over grey stone”, so the map agent picks the surface you walk on and the wall you see independently."),
         h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))) : null,
-    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
+    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     types.length ? h("div", { class: "grid" }, ...types.map((t) =>
       h("a", { class: "card", href: `#/world/${t.id}` },
         t.face ? worldArt(t.face, t.name) : h("div", { class: "thumb checker" }),
@@ -3011,7 +3030,7 @@ function viewWorldType(top) {
     h("p", { class: "muted" }, state.admin
       ? `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`
       : `Walking on ${t.name.toLowerCase()} — and the cliff below it where the land steps down.`),
-    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
+    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => cellReview(c).key === id).length;
       return [id, `${f.label} ${n}`, f.title];
@@ -3106,8 +3125,6 @@ const WALL_MODES = {
  */
 function tileScenes(cell, cand) {
   const stage = h("div", { class: "iso-stage checker tile-stage" });
-  const art = (c) => ((worldView() === "before" && c.raw) ? c.raw : c.art);
-  const face = art(cand);
   // THE COURSES FOLLOW THIS TILE'S OWN WALL MODE — which is the reason the
   // preview belongs on the card carrying that switch. "own wall" stacks the
   // tile itself; "top only" stacks the pure <side> over <side> tile, the one
@@ -3116,25 +3133,54 @@ function tileScenes(cell, cand) {
   const pureArt = pure?.candidates.find((c) => fb("tiles", c.key).status === "approved")
     ?? pure?.candidates.find((c) => fb("tiles", c.key).status !== "rejected")
     ?? pure?.candidates[0];
-  // No pure tile for that material yet: stack the tile itself and say so,
-  // rather than draw a cliff out of nothing.
-  const course = topOnly(cand.key) ? (pureArt ? art(pureArt) : face) : face;
-  const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: face })));
-  const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
-    ...pos, lvl: 2, img: course, top: face, stack: [course, course],
-  }));
-  // What the scene was actually composed from — the crown and the courses.
-  // Published because a canvas cannot be inspected the way an <img> can, and
-  // both the before/after switch and the wall mode are only meaningful if what
-  // they produced can be read back.
-  stage.dataset.face = face ?? "";
-  stage.dataset.course = course ?? "";
-  // pad 2, not the usual 4: the two canvases sit on one chessboard that already
-  // frames them, and 8px of transparent margin is 8px the cliff does not have
-  // on a phone.
-  loadImages([face, course].filter(Boolean), (images) => {
-    stage.replaceChildren(isoScene(flat, images, 1, 2), isoScene(vee, images, 1, 2));
+  // The chip lives ON the picture it changes and is never rebuilt, so its label
+  // turns over the instant it is pressed rather than when the art finishes
+  // decoding. Admin-only: it is a review instrument, like everything else the
+  // Game Master gets on this card.
+  const chip = state.admin ? h("button", { class: "stage-flip", type: "button" }) : null;
+  chip?.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (!cand.raw) return;
+    tileViews.set(cand.key, tileView(cand.key) === "before" ? "after" : "before");
+    paint();
   });
+  function paint() {
+    const mode = tileView(cand.key);
+    const art = (c) => ((mode === "before" && c.raw) ? c.raw : c.art);
+    const face = art(cand);
+    // No pure tile for that material yet: stack the tile itself and say so,
+    // rather than draw a cliff out of nothing.
+    const course = topOnly(cand.key) ? (pureArt ? art(pureArt) : face) : face;
+    const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: face })));
+    const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
+      ...pos, lvl: 2, img: course, top: face, stack: [course, course],
+    }));
+    // What the scene was actually composed from — the crown and the courses.
+    // Published because a canvas cannot be inspected the way an <img> can, and
+    // both the before/after switch and the wall mode are only meaningful if what
+    // they produced can be read back.
+    stage.dataset.face = face ?? "";
+    stage.dataset.course = course ?? "";
+    stage.dataset.view = cand.raw ? mode : "after";
+    if (chip) {
+      // The chip says WHAT YOU ARE LOOKING AT, not what pressing it does: mid
+      // comparison, "which one is this" is the one question the picture must
+      // always answer, and it is the same job the ⟳ badge does on the portrait.
+      chip.textContent = cand.raw ? (mode === "before" ? "⇄ before" : "⇄ after") : "no before";
+      chip.className = `stage-flip${mode === "before" && cand.raw ? " on" : ""}`;
+      chip.disabled = !cand.raw;
+      chip.title = !cand.raw ? "No raw output was published for this tile"
+        : mode === "before" ? "The generator's raw output — tap for the tile the game gets"
+          : "What the game gets — tap for the generator's raw output";
+    }
+    // pad 2, not the usual 4: the two canvases sit on one chessboard that already
+    // frames them, and 8px of transparent margin is 8px the cliff does not have
+    // on a phone.
+    loadImages([face, course].filter(Boolean), (images) => {
+      stage.replaceChildren(...[isoScene(flat, images, 1, 2), isoScene(vee, images, 1, 2), chip].filter(Boolean));
+    });
+  }
+  paint();
   return stage;
 }
 
@@ -3145,6 +3191,11 @@ function viewWorldPair(top, side) {
   if (!c) return h("p", {}, "Unknown pair.");
   const r = cellReview(c);
   const t = worldMeta().tile ?? {};
+  // A peek belongs to the pair it was taken in. Keyed on the pair rather than
+  // cleared on every render, because this function re-runs whenever a verdict
+  // lands or the live manifest refreshes — and a peek that vanished under his
+  // thumb would be worse than no peek at all.
+  if (tileViewsPair !== c.id) { tileViews.clear(); tileViewsPair = c.id; }
   // A verdict or a wall-mode change repaints the tile it was cast on — its
   // cliff is built from its own setting, so the picture has to follow.
   const cards = h("div", { class: "grid world-cands" });
@@ -3181,7 +3232,7 @@ function viewWorldPair(top, side) {
         : h("div", { class: "panel-title" }, "How it looks"),
       state.admin ? h("div", { class: "world-viewbar" },
         h("span", { class: "muted" }, "Show"),
-        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()),
+        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }),
         c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
       h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin
         ? "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."

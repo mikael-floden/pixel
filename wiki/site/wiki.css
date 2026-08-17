@@ -1206,5 +1206,20 @@ input[type="range"] { accent-color: var(--accent); }
    last resort on a narrower screen than that. Both shapes visible at once IS
    the feature: a scrollbar between them would put back the second look the one
    box removed. */
-.tile-stage { display: flex; align-items: flex-end; gap: 6px; overflow-x: auto; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
+.tile-stage { position: relative; display: flex; align-items: flex-end; gap: 6px; overflow-x: auto; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
 .tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
+/* BEFORE/AFTER WITHIN REACH OF THE TILE IT CHANGES (maintainer 2026-08-17:
+   "that button might be higher up so I have to scroll. Can you place that
+   button so I have access to it for each tile?"). On the picture, not under it:
+   a row below the art would push the next tile down the page and cost the
+   vertical space the one box just saved. It reads as a badge because it is one
+   — the label says which of the two you are looking at. */
+.stage-flip {
+  position: absolute; top: 6px; right: 10px; z-index: 1;
+  font: inherit; font-size: 12px; line-height: 1; font-weight: 600;
+  padding: 8px 11px; border-radius: 999px; cursor: pointer;
+  background: var(--surface); color: var(--muted);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.stage-flip.on { background: var(--accent); color: #fff; border-color: transparent; }
+.stage-flip[disabled] { cursor: default; opacity: 0.6; font-weight: 400; }
