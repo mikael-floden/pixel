@@ -5,8 +5,8 @@
   "group": "witch_rings",
   "rank": 115,
   "index": 2,
-  "name": "Nine-stone ring 002 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Nine-stone ring 002",
+  "lights": null,
   "variety": "nine-stone ring",
   "modifier": "half-swallowed by moss",
   "glow_concept": "a faint ring of light on the grass",
@@ -36,6 +36,46 @@
       "sprite": "witch_rings/witch_ring_002/sprite.webp",
       "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
       "generated_at": "2026-08-14T01:10:46+00:00"
+    },
+    "LIT_2": {
+      "sprite": "witch_rings/witch_ring_002/lit_2/sprite.webp",
+      "pixellab_object_id": "b25c11e4-2f29-4ae2-8cf4-3a05b43f3d2b",
+      "generated_at": "2026-08-17T13:16:18+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2992,
+      "glow_score": 0.0685
+    },
+    "LIT_3": {
+      "sprite": "witch_rings/witch_ring_002/lit_3/sprite.webp",
+      "pixellab_object_id": "bac3940d-8555-4e13-ad9f-595c7d2fbff1",
+      "generated_at": "2026-08-17T13:15:58+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5815,
+      "glow_score": 0.062
+    },
+    "LIT_4": {
+      "sprite": "witch_rings/witch_ring_002/lit_4/sprite.webp",
+      "pixellab_object_id": "26b57b62-e80b-4904-a20b-b96004161bed",
+      "generated_at": "2026-08-17T13:16:09+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.557,
+      "glow_score": 0.0841
+    },
+    "NOT_LIT_1": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_1/sprite.webp",
+      "pixellab_object_id": "e7f7224a-a075-4cf7-9c34-2d8978f28252",
+      "generated_at": "2026-08-17T13:16:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9714,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "witch_rings/witch_ring_002/not_lit_2/sprite.webp",
+      "pixellab_object_id": "61336711-5004-4e93-bbd3-6c5c89646dbd",
+      "generated_at": "2026-08-17T13:17:36+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2753,
+      "glow_score": 0.0592
     }
   }
 }

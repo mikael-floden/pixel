@@ -6,7 +6,7 @@
   "rank": 47,
   "index": 9,
   "name": "Whitewashed smock mill 009",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "whitewashed smock mill",
   "glow_concept": null,
   "prompt": "a small stout field windmill with a solid timber tower and four broad heavy sails on thick wooden frames, shingled cap, whitewashed smock mill, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,42 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "windmills/windmill_009/lit_2/sprite.webp",
+      "pixellab_object_id": "582de158-6177-4d8c-92ec-b83afe021d55",
+      "generated_at": "2026-08-17T13:17:24+00:00",
+      "glow_concept": "glowing grain dust drifting from the loading door",
+      "difference_from_source": 0.7942,
+      "glow_score": 0.117
+    },
     "NOT_LIT_1": {
       "sprite": "windmills/windmill_009/sprite.webp",
       "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
       "generated_at": "2026-08-13T23:24:43+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "windmills/windmill_009/not_lit_2/sprite.webp",
+      "pixellab_object_id": "6dd81177-15aa-4754-8469-ea467d0cf998",
+      "generated_at": "2026-08-17T13:12:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.521,
+      "glow_score": 0.0023
+    },
+    "NOT_LIT_3": {
+      "sprite": "windmills/windmill_009/not_lit_3/sprite.webp",
+      "pixellab_object_id": "0cf27c2a-acac-4ea2-9a6c-3ab560001255",
+      "generated_at": "2026-08-17T13:13:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7281,
+      "glow_score": 0.0578
+    },
+    "NOT_LIT_4": {
+      "sprite": "windmills/windmill_009/not_lit_4/sprite.webp",
+      "pixellab_object_id": "cb89a177-c533-4051-b723-4ad35d6946fc",
+      "generated_at": "2026-08-17T13:13:03+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.2179,
+      "glow_score": 0.1007
     }
   }
 }
