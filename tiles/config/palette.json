@@ -4,59 +4,88 @@
   "types": {
     "grass": {
       "top": "#0c483c",
-      "source": "tiles2/saturated_grass (measured)"
+      "source": "tiles2/saturated_grass (measured)",
+      "wall": "#116353",
+      "wall_n": 7
     },
     "snow": {
       "top": "#d8e4de",
-      "source": "tiles2/regular_snow (measured)"
+      "source": "tiles2/regular_snow (measured)",
+      "wall": "#d0dbd5",
+      "wall_n": 7
     },
     "ice": {
       "top": "#a8f0fc",
-      "source": "tiles2/crystal_ice (measured)"
+      "source": "tiles2/crystal_ice (measured)",
+      "wall": "#76a9b1",
+      "wall_n": 7
     },
     "black_rock": {
       "top": "#1e1e24",
-      "source": "tiles2/black_mountain (measured)"
+      "source": "tiles2/black_mountain (measured)",
+      "wall": "#212128",
+      "wall_n": 7
     },
     "light_beach": {
       "top": "#ead2a2",
-      "source": "tiles2/light_sand (measured)"
+      "source": "tiles2/light_sand (measured)",
+      "wall": "#cdb88e",
+      "wall_n": 7
     },
     "grey_stone": {
       "top": "#72786c",
-      "source": "tiles2/stone_mountain (measured)"
+      "source": "tiles2/stone_mountain (measured)",
+      "wall": "#555950",
+      "wall_n": 6
     },
     "light_soil": {
       "top": "#c09c6c",
-      "source": "tiles2/lightdark_dirt (measured)"
+      "source": "tiles2/lightdark_dirt (measured)",
+      "wall": "#907551",
+      "wall_n": 6
     },
     "dark_mud": {
       "top": "#51402b",
-      "source": "derived from tiles2/lightdark_dirt \u2014 2.0 has no separate dark_mud"
+      "source": "derived from tiles2/lightdark_dirt \u2014 2.0 has no separate dark_mud",
+      "wall": "#3b2e1f",
+      "wall_n": 6
     },
     "parquet_floor": {
       "top": "#82523c",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
+      "wall": "#8a5740",
+      "wall_n": 6
     },
     "paving_stone": {
       "top": "#72786c",
-      "source": "tiles2/stone_mountain (measured)"
+      "source": "tiles2/stone_mountain (measured)",
+      "wall": "#5e6359",
+      "wall_n": 6
     },
     "water": {
       "top": "#428a90",
-      "source": "tiles2/clear_water (measured)"
+      "source": "tiles2/clear_water (measured)",
+      "wall": "#39787c",
+      "wall_n": 6
     },
     "deep_water": {
       "top": "#1b3e41",
-      "source": "derived from tiles2/clear_water \u2014 2.0 has no separate deep_water"
+      "source": "derived from tiles2/clear_water \u2014 2.0 has no separate deep_water",
+      "wall": "#132b2d",
+      "wall_n": 6
     },
     "lava": {
       "top": "#be350e",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
+      "wall": "#df3c11",
+      "wall_n": 6
     },
     "slime": {
       "top": "#1fa32c",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
+      "wall": "#1d9829",
+      "wall_n": 6
     }
-  }
+  },
+  "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall."
 }
