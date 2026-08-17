@@ -165,6 +165,47 @@ def load_retired():
         return {k: set(v) for k, v in json.load(f).items()}
 
 
+RETIRED_STATES = os.path.join(ROOT, "config", "retired_states.json")
+
+
+def load_retired_states():
+    """{"group/piece_id": {"NOT_LIT_3", ...}} — states DELETED on his verdict
+    and which must never be regenerated.
+
+    THE PRUNING PHASE NEEDS THIS OR IT UNDOES ITSELF. Maintainer, 2026-08-17:
+    "when I reject from here on - that doesn't mean something new should be
+    generated. I will reject a lot of things and what's left is what we will
+    stay with." Generation is finished; he is now cutting the library down to
+    what he wants to keep.
+
+    But state_variants plans by asking "which of this piece's six states are
+    missing?" — so a state he rejects and this agent deletes reads as a gap,
+    and the next scheduled run helpfully generates a replacement. His entire
+    pruning pass would be silently reverted by the scheduler, at his own
+    expense, and the rejected slot would come back with art he never asked for.
+
+    Same argument as load_retired() for whole pieces, one level down."""
+    if not os.path.exists(RETIRED_STATES):
+        return {}
+    with open(RETIRED_STATES) as f:
+        return {k: set(v) for k, v in json.load(f).items()}
+
+
+def retire_states(pairs):
+    """Mark (rel_id, STATE) pairs as never-regenerate; returns count added."""
+    ret = load_retired_states()
+    added = 0
+    for rel, state in pairs:
+        s = str(state).upper()
+        if s not in ret.setdefault(rel, set()):
+            ret[rel].add(s)
+            added += 1
+    with open(RETIRED_STATES, "w") as f:
+        json.dump({k: sorted(v) for k, v in sorted(ret.items()) if v}, f, indent=1)
+        f.write("\n")
+    return added
+
+
 def retire(ids):
     """Mark rel-ids ('group/piece_id') retired; returns the number added."""
     ret = load_retired()

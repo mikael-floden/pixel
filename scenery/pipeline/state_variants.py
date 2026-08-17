@@ -135,13 +135,13 @@ def in_scope(cfg):
             continue
         if not man.get("pixellab_object_id"):
             continue
-        anchor, todo = plan_for(man)
+        anchor, todo = plan_for(man, rel)
         if todo:
             out.append((rel, man, anchor, todo))
     return out
 
 
-def plan_for(man):
+def plan_for(man, rel=None):
     """(anchor state, [states still missing]) for one piece.
 
     The ANCHOR is the existing art and is never regenerated. It is found by
@@ -158,7 +158,13 @@ def plan_for(man):
     # His rule: four in your own condition, two in the opposite.
     targets = (LIT + NOT_LIT[:2]) if own_lit else (NOT_LIT + LIT[:2])
     have = {s.upper() for s in states}
-    return anchor, [s for s in targets if s != anchor and s not in have]
+    # A STATE HE REJECTED IS NOT A GAP TO FILL. From 2026-08-17 a rejection
+    # means delete-and-stop, not delete-and-retry, so a deleted state must stay
+    # deleted — otherwise this planner reads it as missing and the next
+    # scheduled run regenerates it, quietly reverting his pruning.
+    retired = factory.load_retired_states().get(rel or "", set())
+    return anchor, [s for s in targets
+                    if s != anchor and s not in have and s not in retired]
 
 
 def ensure_anchor(rel, man, anchor):
