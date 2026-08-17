@@ -445,15 +445,23 @@ def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     op = a[:, :, 3] > 200
     if not op.any():
         return None
-    ys, xs = np.where(op)
-    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
-    bw = x1 - x0 + 1
-    cx = (x0 + x1) / 2.0
-    hd = bw / 2.0
-    cy = y0 + hd / 2.0
-    yy, xx = np.mgrid[0:h, 0:w]
-    wall = (yy > cy + (hd / 2.0) * (1.0 - np.abs(xx - cx) / (bw / 2.0))) & op
-    wall = _erode(wall, 1)
+    # The diamond is MEASURED, via the one function that already does it correctly, so
+    # all three modules agree on where the wall starts. This used to assume the usual
+    # 2:1 diamond (half-height = bw/4 = 16), but tiles 3.0's top is 64x28 — half-height
+    # 14 — so the mask began 2 rows BELOW the true top of the wall. The same off-by-two
+    # was found and fixed in palette_snap._regions and flatness._surfaces and was left
+    # here, in the function that RANKS every candidate and gates the chase.
+    #
+    # Those two rows are not incidental: they are exactly where the top material's lip
+    # sits, which means seam_v — the term that scores whether a wall repeats DOWNWARDS —
+    # was blind to the band it exists to measure. Measured on
+    # grass__over__grass/sheet_01_explicit/tile_14.png the true wall runs rows 38..54 at
+    # centre and this mask ran 41..54.
+    import palette_snap
+    reg = palette_snap._regions(a)
+    if not reg:
+        return None
+    wall = _erode(reg["left"] | reg["right"], 1)
     if wall.sum() < 40:
         return None
 
