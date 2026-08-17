@@ -43,6 +43,32 @@ drawing tiles with a band of wall showing between them — tiles2 by 2 px, tiles
 That band is the faint grid visible across a flat field, and the irregular step in a
 plateau's back edge.
 
+## The recommendation, and why it is one change rather than two
+
+The maintainer asked the load-bearing question: is this the game agent's problem today,
+or only when the game switches to tiles 3.0? It is today, because a SINGLE value serves
+both generations. Leak counts over the full sets, every tile:
+
+| DY | tiles2 (640) | tiles 3.0 (56) |
+|----|-------------:|---------------:|
+| 13 | 0            | 0 |
+| **14** | **3**    | **0** |
+| 15 (current) | 629 | 56 |
+
+The three stragglers at 14 are all from ONE tiles2 sheet
+(`saturated_grass/base/base_226963752`, tiles 02/08/15) — a sheet to reroll, not a
+systematic mismatch. So `ISO_DY = 14` fixes the game as it ships today AND is already
+right when 3.0 arrives. 13 is the bulletproof alternative at the cost of 1px more
+overlap everywhere.
+
+## The outline theory, tested and rejected
+
+The maintainer wondered whether tiles2's outline made 15 correct for it — an outlined
+tile showing a border between tiles could be the intended look. Measuring the
+silhouette's outermost ring against the pixels two in: grass +0.1, stone +0.7. No dark
+border. tiles2's own client docstring agrees: "There is deliberately NO outline." What
+leaks at 15 is wall texture, in both generations, so DY=14 is not a new-art preference.
+
 ## What is NOT established
 
 * Measured on ONE tile per generation. Before any constant moves this wants running
