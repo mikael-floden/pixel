@@ -28,6 +28,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import flatness
+import no_invention
 import palette_snap
 import tombstones
 
@@ -54,8 +55,20 @@ REVIEW = os.path.join(ROOT, "review")
 REPO = os.path.dirname(ROOT)
 
 
-def candidates(cell_dir):
-    """Every tile in a cell, scored on its wall, best first."""
+def candidates(cell_dir, side_hex=None, same=False):
+    """Every tile in a cell, scored on its wall, best first.
+
+    WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
+    and the generator answers it with whatever pairing it finds plausible: asked for
+    black rock over grass it returned small black stones over grass over LIGHT GREY
+    STONE — a three-layer tile whose wall is stone, not the grass that was asked for.
+
+    That is the whole reason wall alignment kept inventing colours. The transform was
+    being handed a grey wall and a green target and told to make them agree, so it had
+    to manufacture green that was nowhere in the image. No postprocess can fix this
+    one: the material simply is not in the art. It is a SELECTION problem, and a cell
+    with no correct-material candidate needs re-rolling, not tinting.
+    """
     out = []
     for sheet in sorted(glob.glob(os.path.join(cell_dir, "sheet_*"))):
         mp = os.path.join(sheet, "meta.json")
@@ -78,6 +91,8 @@ def candidates(cell_dir):
                 "path": p, "wall": q,
                 "top_share": round(f["top"]["share"], 4) if f and f["top"] else None,
                 "overhang": round(flatness.overhang(p), 3),
+                "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
+                            if side_hex else None,
                 "tile_id": meta.get("tile_id"), "style": meta.get("style"),
                 "prompt": meta.get("prompt"),
             })
@@ -87,8 +102,17 @@ def candidates(cell_dir):
     # the tiles that have it, the wall decides, because the wall builds the game.
     withspill = [c for c in out if c["overhang"] >= flatness.MIN_OVERHANG]
     out = withspill or out
+    # X-over-X is exempt: the wall IS the top's material by construction, so the only
+    # thing this could measure there is SHADE — and snap()'s same-material rule moves the
+    # whole face onto the palette anyway. Left in, it called snow-over-snow's correctly
+    # generated snow wall "the wrong material" because the generator shaded it bluer than
+    # the palette's near-white.
+    right = [c for c in out if c["wall_err"] is not None
+             and c["wall_err"] <= flatness.MAX_WALL_ERR]
+    if not same:
+        out = right or out
     out.sort(key=lambda c: -c["wall"]["score"])
-    return out, bool(withspill)
+    return out, bool(withspill), same or bool(right)
 
 
 def main():
@@ -113,15 +137,17 @@ def main():
                              "regenerated, unlike a rejected one."),
                 "cells": {}}
     n_pub = 0
+    invented = []
     for d in sorted(glob.glob(os.path.join(MATRIX, "*__over__*"))):
         cell = os.path.basename(d)
         if cell.replace("__over__", "_over_") in dead:
             continue
-        cands, has_spill = candidates(d)
+        top, side = cell.split("__over__")
+        cands, has_spill, right_wall = candidates(
+            d, (PALETTE.get(side) or {}).get("top"), same=(top == side))
         cands = cands[:args.top]
         if not cands:
             continue
-        top, side = cell.split("__over__")
         cd = os.path.join(REVIEW, cell)
         os.makedirs(cd, exist_ok=True)
         entries = []
@@ -147,9 +173,23 @@ def main():
             # two failures. side_hex stays measured in the palette, ready for an
             # implementation that converges dull and vivid onto one target without
             # amplifying either.
-            _save(palette_snap.snap(raw, top_hex, same_material=(top == side))
-                  if top_hex else raw, after)
+            proc = (palette_snap.snap(raw, top_hex, same_material=(top == side))
+                    if top_hex else raw)
+            # THE GUARD. Every three attempts at wall alignment put a colour into the
+            # art that was in neither the art nor the palette, and every one was caught
+            # by the maintainer by eye, in the wiki — which spends the review budget on
+            # my bugs and makes starting a review conditional on the postprocess already
+            # being right. So the invariant is enforced here instead: a tile whose
+            # postprocess invented a visible patch of colour ships RAW and says so, and
+            # the review never contains one. See no_invention.py.
+            inv = no_invention.check(raw, proc, top_hex) if top_hex else {}
+            if inv.get("blob", 0) > no_invention.MAX_BLOB:
+                invented.append((f"tiles/{cell}/{i}", inv))
+                proc = raw
+            _save(proc, after)
             entries.append({
+                "postprocess": "raw (guard: invented colour)" if inv.get(
+                    "blob", 0) > no_invention.MAX_BLOB else "palette",
                 "key": f"tiles/{cell}/{i}",
                 # REPO-relative, matching how the wiki addresses every other
                 # domain's art (tiles2/<type>/base/...). Tiles-relative paths would
@@ -164,11 +204,16 @@ def main():
                 "wall": {k: c["wall"][k] for k in
                          ("tiling", "discretion", "structure", "contrast", "edges")},
                 "top_share": c["top_share"], "overhang": c["overhang"],
+                "wall_err": c["wall_err"],
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1
         manifest["cells"][cell] = {"top": top, "side": side, "candidates": entries,
-                                   "needs_regeneration": not has_spill}
+                                   "needs_regeneration": not has_spill,
+                                   # The wall is not the material this cell asked for —
+                                   # broken ART, not broken postprocess. Flagged so a
+                                   # review can skip it rather than diagnose it.
+                                   "wrong_wall_material": not right_wall}
 
     with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)
@@ -177,8 +222,24 @@ def main():
     for cell, c in manifest["cells"].items():
         best = c["candidates"][0]
         flag = "  NEEDS REGEN (no transition in this cell)" if c["needs_regeneration"] else ""
+        if c["wrong_wall_material"]:
+            flag += f"  WRONG WALL MATERIAL (off by {best['wall_err']:.0f})"
         print(f"  {cell:32s} wall={best['wall_score']:5.2f} spill={best['overhang']:.2f}"
               f" [{best['style']}]{flag}")
+    wrong = [k for k, c in manifest["cells"].items() if c["wrong_wall_material"]]
+    if wrong:
+        print(f"\n{len(wrong)} cell(s) have no candidate whose wall is the material "
+              f"asked for — these need re-rolling, not postprocessing:")
+        for k in wrong:
+            print(f"   {k:40s} off by {manifest['cells'][k]['candidates'][0]['wall_err']:.0f}")
+    if invented:
+        print(f"\nGUARD: {len(invented)} tile(s) shipped RAW — postprocess invented a colour")
+        for key, inv in invented[:10]:
+            s = inv.get("sample") or {}
+            print(f"   {key:40s} blob {inv['blob']:5d} px  {s.get('from')} -> {s.get('to')}")
+    else:
+        print("\nGUARD: no invented colours — every published tile is the art's own "
+              "colours plus the palette's.")
 
 
 if __name__ == "__main__":
