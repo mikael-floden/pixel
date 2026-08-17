@@ -237,7 +237,15 @@ ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 
 // tiled together. I need both a 3x3 flat ground and the V shape from tiles 2.0
 // had … use random tiles from the tileset … a Randomize button … a toggle for
 // if we should only have approved tiles or include unreviewed tiles."
-const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id) ?? cell;
+// The fixture must be a pair whose WALL material HAS a self pair, or the
+// buried-course rule below is never exercised — it falls through to its
+// fallback and the check quietly proves nothing.
+const hasSelf = (side) => CELLS.some((x) => x.top === side && x.side === side);
+// It must also be a pair of two DIFFERENT materials: on a self pair the crown
+// and the courses are the same tile by definition, and the rule is satisfied
+// without being tested.
+const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id && c.top !== c.side && hasSelf(c.side))
+  ?? CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id) ?? cell;
 await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
 await p.waitForTimeout(2600);
 // A SCENE IS JUDGED BY ITS PIXELS. Both shapes are canvases composed at run
@@ -258,6 +266,22 @@ console.log("layouts:", JSON.stringify({ heads, lay }));
 ok(lay.length === 2, `the pair page lays the set out in TWO shapes (${lay.length})`);
 ok(/3×3|3x3/i.test(heads[0] ?? ""), `a flat 3×3 patch (“${heads[0]}”)`);
 ok(/cliff|stack/i.test(heads[1] ?? ""), `and the V from Tiles OLD — a cliff corner (“${heads[1]}”)`);
+// ONLY THE CROWN IS THE PAIR (maintainer 2026-08-17: "The two bottom layers in
+// a V shape should always take the tile from grass over grass, ice over ice …
+// the type that always should be used in the game when a tile is not at the
+// top"). A buried cell is all wall, so it is the WALL material over itself —
+// the scene publishes what it actually drew below the crown.
+const buried = await p.evaluate(() => (document.querySelectorAll(".world-scene")[1]?.dataset.tiles ?? "").split(" ").filter(Boolean));
+const selfSide = CELLS.find((x) => x.top === many.side && x.side === many.side);
+console.log("buried courses:", JSON.stringify({ side: many.side, hasSelfPair: !!selfSide, buried }));
+if (selfSide) {
+  ok(buried.length > 0 && buried.every((t) => t.includes(`${many.side}__over__${many.side}/`)),
+    `everything under the crown is ${many.side} over ${many.side} — the tile the game stacks (${buried.length} course tiles)`);
+  ok(!buried.some((t) => t.includes(`${many.top}__over__${many.side}/`)),
+    "and never the pair itself, whose own top would show as a rim between courses");
+} else {
+  console.log(`  (${many.side} has no self pair yet — the scene falls back to the set)`);
+}
 ok(lay.every((s) => s.opaque > 2000), `both actually composed (${lay.map((s) => s.opaque).join(", ")} opaque px)`);
 // A 3x3 iso patch spans (c−r) from −2..2, so its canvas is 4*dx + one tile
 // wide. Measured against the geometry rather than asserted loosely: "did it

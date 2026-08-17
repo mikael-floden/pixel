@@ -3025,11 +3025,31 @@ function worldScenes(cell, seed) {
   // rolling its own tile: the seams that matter are the ones between
   // neighbours on BOTH axes, which a single row cannot show.
   const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: pick() })));
-  // THE V, from Tiles OLD's tile page: three 3-high stacks meeting at a
-  // corner. Every level of every stack rolls its own tile, which is the
-  // question — does the wall still read as one surface when the run is mixed?
+  // THE V, from Tiles OLD's tile page: three 3-high stacks meeting at a corner.
+  //
+  // ONLY THE CROWN IS THE PAIR. Maintainer 2026-08-17: "The two bottom layers
+  // in a V shape should always take the tile from grass over grass, ice over
+  // ice etc. That tile type is the type that always should be used in the game
+  // when a tile is not at the top."
+  //
+  // A buried cell is all WALL — its own top is covered by the cell above — so
+  // the tile that belongs there is the wall material over itself: for "grass
+  // over ice" the crown is grass-topped with ice walls and everything under it
+  // is ice over ice. Rolling the pair at every level instead left the pair's
+  // OWN top peeking as a rim between courses (visible in the first cut: bands
+  // of grass between the ice), which is a cliff the game will never build.
+  const base = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
+  const basePool = base ? poolFor(base) : [];
+  // No self pair for the wall material yet (the agent is still filling the
+  // matrix): fall back to the set's own tiles, since a rim is a smaller lie
+  // than a hole.
+  const pickBase = () => {
+    if (!basePool.length) return pick();
+    const c = basePool[Math.floor(rnd() * basePool.length) % basePool.length];
+    return (worldView() === "before" && c.raw) ? c.raw : c.art;
+  };
   const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
-    ...pos, lvl: 2, img: pick(), top: pick(), stack: [pick(), pick()],
+    ...pos, lvl: 2, img: pickBase(), top: pick(), stack: [pickBase(), pickBase()],
   }));
   const paths = [...new Set([...flat, ...vee].flatMap((d) => [d.img, d.top, ...(d.stack ?? [])]).filter(Boolean))];
   loadImages(paths, (images) => {
@@ -3038,9 +3058,11 @@ function worldScenes(cell, seed) {
         h("div", { class: "panel-title" }, "Tiled flat — 3×3"),
         h("p", { class: "muted iso-hint" }, "Nine cells of open ground, each its own tile from the set."),
         h("div", { class: "iso-stage checker" }, isoScene(flat, images))),
-      h("div", { class: "world-scene" },
+      h("div", { class: "world-scene", "data-tiles": [...new Set(vee.flatMap((d) => [d.img, ...(d.stack ?? [])]))].join(" ") },
         h("div", { class: "panel-title" }, "Stacked — a cliff corner"),
-        h("p", { class: "muted iso-hint" }, "Three 3-high stacks meeting at a corner, every level its own tile."),
+        h("p", { class: "muted iso-hint" }, base
+          ? `Three 3-high stacks; only the crown is this pair — everything under it is ${typeLabelWorld(cell.side).toLowerCase()} over itself, the way the game builds a cliff.`
+          : "Three 3-high stacks meeting at a corner, every level its own tile."),
         h("div", { class: "iso-stage checker" }, isoScene(vee, images))));
   });
   return box;
