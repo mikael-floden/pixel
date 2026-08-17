@@ -382,8 +382,80 @@ def middle_floor(img, band=4):
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+SPILL_SPREAD = 16.0     # tiles2 grass measures value std 16.2 — the look being matched
+
+
+def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=55, guard=25,
+                 max_frac=0.30, max_depth=0.34):
+    """Pull the TOP material's overhanging blades to the palette, and nothing else.
+
+    The tufts that fall over the edge are the best thing about these tiles, and they sit
+    in the WALL region — which snap() deliberately never touches. That was right while
+    the palette came from the generator, because the blades already matched the top. It
+    broke the moment the palette moved to the game's own colour: the surface became deep
+    pine and the blades stayed the raw bright green, +47 to +103 too bright, glaring
+    along every edge.
+
+    So the blades move with the surface they grow from. Selection is by HUE against the
+    top's own median, measured from this tile, which is safe here for a reason worth
+    stating: this is the same colour inference that went wrong in tiles2, and it went
+    wrong there by hunting a whole image for a material. Here the candidate set is one
+    region, the reference is measured from the tile itself, and the whole thing is
+    skipped when the wall's hue is within `guard` of the top's — grass over grass or over
+    slime cannot be separated by hue, so it is not attempted.
+
+    Value is REMAPPED, not preserved: the blades keep their relative light and shade but
+    land on the palette's brightness, with their spread compressed to tiles2's own
+    (std 16.2 on real grass). Compressed only, never amplified — stretching contrast to
+    hit a target is what turned a stone wall into zigzag earlier in this pipeline.
+    """
+    wall = reg["left"] | reg["right"]
+    if not wall.any() or not reg["top"].any():
+        return None
+    rgb = a[:, :, :3]
+    tref = _rgb2hsv(np.median(rgb[reg["top"]], 0)[None, :])[0]
+    wref = _rgb2hsv(np.median(rgb[wall], 0)[None, :])[0]
+    sep = abs(float(wref[0]) - float(tref[0]))
+    sep = min(sep, 255.0 - sep)
+    if sep <= guard:
+        return None                     # wall is the same colour family; cannot separate
+
+    hsv = _rgb2hsv(rgb[wall])
+    dh = np.abs(hsv[:, 0] - tref[0])
+    dh = np.minimum(dh, 255.0 - dh)
+    sel = (dh < hue_tol) & (hsv[:, 1] > sat_floor)
+    if sel.sum() < 8 or sel.mean() > max_frac:
+        return None
+    # A spill is a FRINGE: it hugs the top of the wall. The wall's own material fills the
+    # whole strip. That difference is GEOMETRIC and it is what actually separates the two
+    # — hue does not: grass over grass separates by 31 and ice by 34, so no hue threshold
+    # tells them apart, while their depths are 0.25 and 0.11. Measured across the matrix,
+    # every genuine fringe sits at 0.06-0.13 and slime's green wall at 0.50.
+    ys, xs = np.where(wall)
+    top_of_col = {}
+    for x in np.unique(xs):
+        col = np.where(wall[:, x])[0]
+        top_of_col[x] = (int(col.min()), max(1, int(col.max()) - int(col.min())))
+    depth = np.array([(y - top_of_col[x][0]) / top_of_col[x][1] for y, x in zip(ys, xs)])
+    if float(depth[sel].mean()) > max_depth:
+        return None
+
+    tgt = _rgb2hsv(_hex(top_hex)[None, :])[0]
+    v = hsv[sel, 2]
+    scale = min(1.0, SPILL_SPREAD / float(v.std() or SPILL_SPREAD))
+    hsv[sel, 0] = tgt[0]
+    hsv[sel, 1] = tgt[1]
+    hsv[sel, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
+    out = rgb.copy()
+    idx = np.where(wall)
+    out[idx[0], idx[1]] = _hsv2rgb(hsv)
+    m = np.zeros(wall.shape, bool)
+    m[idx[0][sel], idx[1][sel]] = True
+    return out, m
+
+
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
-         align_walls=False):
+         align_walls=False, spill=True, same_material=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -436,6 +508,31 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         # It cannot reach the border the maintainer wants kept: that border lives in the
         # WALL region, which this function no longer touches at all.
         out[:, :, :3][reg["top"]] = np.clip(top, 0, 255)
+
+    # The overhanging blades belong to the top material, so they move with it. This is
+    # the ONLY thing that writes into the wall region, and it writes only pixels the
+    # hue test picked out; the rock itself is still untouched.
+    if spill and same_material:
+        # X-over-X: the wall IS the top's material, so the whole face moves with it, not
+        # just a fringe. This needs no detection at all — the cell name says both
+        # materials — which is worth preferring wherever it is available, because the
+        # hue test cannot tell this case from grass-over-slime (they separate by 31 and
+        # 29) and the fringe rules therefore skip both.
+        m = reg["left"] | reg["right"]
+        if m.any():
+            tgt = _rgb2hsv(_hex(top_hex)[None, :])[0]
+            hsv = _rgb2hsv(a[:, :, :3][m])
+            v = hsv[:, 2]
+            scale = min(1.0, SPILL_SPREAD / float(v.std() or SPILL_SPREAD))
+            hsv[:, 0] = tgt[0]
+            hsv[:, 1] = tgt[1]
+            hsv[:, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
+            out[:, :, :3][m] = _hsv2rgb(hsv)
+    elif spill:
+        r = retint_spill(a, reg, top_hex)
+        if r:
+            newrgb, m = r
+            out[:, :, :3][m] = newrgb[m]
 
     for k in ("left", "right") if align_walls else ():
         m = reg[k]

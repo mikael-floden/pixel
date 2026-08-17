@@ -135,7 +135,8 @@ def main():
             before = os.path.join(cd, f"{i}_before.webp")
             after = os.path.join(cd, f"{i}_after.webp")
             _save(raw, before)
-            _save(palette_snap.snap(raw, top_hex) if top_hex else raw, after)
+            _save(palette_snap.snap(raw, top_hex, same_material=(top == side))
+                  if top_hex else raw, after)
             entries.append({
                 "key": f"tiles/{cell}/{i}",
                 # REPO-relative, matching how the wiki addresses every other
