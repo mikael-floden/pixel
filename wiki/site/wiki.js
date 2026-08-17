@@ -2859,9 +2859,23 @@ function worldTypes() {
   }
   for (const t of by.values()) {
     t.pairs.sort((a, b) => a.name.localeCompare(b.name));
-    // The type's face is its best-scoring tile — the one that most nearly
-    // shows what this ground is meant to look like.
-    t.face = t.pairs.flatMap((p) => p.candidates).sort((a, b) => (b.wallScore ?? 0) - (a.wallScore ?? 0))[0] ?? null;
+    // THE TYPE'S FACE IS ITS SELF PAIR — grass over grass, ice over ice
+    // (maintainer 2026-08-17). A card that big shows the WALL as much as the
+    // top, so picking the best-scoring tile from any pair meant "Grass" was
+    // represented by grass over light soil and "Snow" by snow over parquet:
+    // the thumbnail advertised the neighbour instead of the ground. Over
+    // itself, everything in the picture is the type.
+    //
+    // Within that pair, a tile he has APPROVED outranks the highest-scoring
+    // one — once he has picked, the pick is what this ground looks like.
+    const self = t.pairs.find((p) => p.side === t.id);
+    const faceOf = (p) => p && (p.candidates.find((c) => fb("tiles", c.key).status === "approved") ?? p.candidates[0]);
+    // No self pair generated yet: fall back to the best tile anywhere, so a
+    // type is never faceless while the agent is still filling the matrix.
+    t.face = faceOf(self)
+      ?? t.pairs.flatMap((p) => p.candidates).sort((a, b) => (b.wallScore ?? 0) - (a.wallScore ?? 0))[0]
+      ?? null;
+    t.selfFaced = !!self;
     t.open = t.pairs.filter((p) => cellReview(p).key === "open").length;
     t.picked = t.pairs.filter((p) => cellReview(p).key === "picked").length;
   }

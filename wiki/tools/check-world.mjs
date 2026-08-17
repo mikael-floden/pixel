@@ -98,6 +98,21 @@ console.log("level 1 (types):", JSON.stringify(lvl1));
 ok(lvl1.cards === TOPS.length, `the top level is GROUND TYPES, not pairs (${lvl1.cards} for ${TOPS.length} types)`);
 ok(lvl1.names.every((n) => !/ over /.test(n)), `each named as a ground (${lvl1.names.join(", ")})`);
 ok(lvl1.hrefs.every((x) => /^#\/world\/[a-z0-9_]+$/.test(x)), "opening one ground type, not one pair");
+// THE FACE IS THE SELF PAIR (maintainer 2026-08-17: "you should always take
+// the grass over grass, ice over ice"). A card that big shows the WALL as much
+// as the top, so a best-of-all-pairs face had "Grass" advertising light soil.
+const faces = await p.evaluate(() => [...document.querySelectorAll("a.card")].map((a) => ({
+  type: a.getAttribute("href").split("/").pop(),
+  // The visible one, since the before/after switch keeps both in the DOM.
+  src: [...a.querySelectorAll("img")].find((i) => getComputedStyle(i).display !== "none")?.getAttribute("src") ?? "",
+})));
+console.log("type faces:", JSON.stringify(faces));
+for (const f of faces) {
+  const self = CELLS.find((c) => c.top === f.type && c.side === f.type);
+  if (!self) { console.log(`  (${f.type} has no self pair yet — falls back)`); continue; }
+  ok(f.src.includes(`${f.type}__over__${f.type}/`),
+    `${f.type} is represented by ${f.type} over ${f.type} (…${f.src.slice(-46)})`);
+}
 
 await p.goto(`${W}#/world/${TOP}`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
