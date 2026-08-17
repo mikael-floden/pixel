@@ -177,6 +177,15 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
     """Roll this cell until `need` tiles clear the bar, or until `attempts` is used up."""
     d = os.path.join(OUT, cell)
     os.makedirs(d, exist_ok=True)
+    # Check BEFORE rolling, not after. Without this a re-run — or a second worker whose
+    # cell list overlaps this one's — pays for a sheet before discovering the cell was
+    # already satisfied, which at $0.096 a sheet is the whole reason to run workers in
+    # parallel in the first place. Makes the chase idempotent and lets concurrent
+    # workers share a worklist safely.
+    done = cell_passing(cell, min_wall, min_clarity)
+    if len(done) >= need:
+        print(f"    already has {len(done)}/{need} passing — skipping", flush=True)
+        return done[0]
     existing = len([x for x in os.listdir(d) if x.startswith("sheet_")])
     for n in range(attempts):
         if spent[0] >= max_usd:
