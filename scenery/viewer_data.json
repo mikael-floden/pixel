@@ -64465,7 +64465,7 @@
       "rel": "waystones/waystone_011",
       "name": "Sea-smoothed coastal stone 011",
       "category": "waystones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -64485,6 +64485,24 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "waystones/waystone_011/lit_1/sprite.webp",
+          "pixellab_object_id": "22bf757e-7deb-49b9-8a2f-a8bd42070946",
+          "generated_at": "2026-08-17T12:32:54+00:00",
+          "glow_concept": "glowing unreadable runes flowing down the stone face",
+          "difference_from_source": 0.8358,
+          "glow_score": 0.0921,
+          "art_hash": "a4677ab731b7e060"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_011/lit_2/sprite.webp",
+          "pixellab_object_id": "78278c5a-7c5a-4fa4-bb3e-d56af814b53f",
+          "generated_at": "2026-08-17T12:33:03+00:00",
+          "glow_concept": "carved runes glowing warm amber",
+          "difference_from_source": 0.8831,
+          "glow_score": 0.0607,
+          "art_hash": "7e7ab2c3d5cefd14"
+        },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_011/sprite.webp",
           "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
@@ -64508,6 +64526,15 @@
           "difference_from_source": 0.4363,
           "glow_score": 0.0,
           "art_hash": "f8c0e873a47d372e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_011/not_lit_4/sprite.webp",
+          "pixellab_object_id": "f24bbcf7-3807-418f-9d6b-5d812424b885",
+          "generated_at": "2026-08-17T12:32:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7489,
+          "glow_score": 0.0,
+          "art_hash": "245b702d4ae98b7f"
         }
       },
       "animations": []
@@ -64515,9 +64542,9 @@
     {
       "id": "waystone_012",
       "rel": "waystones/waystone_012",
-      "name": "White quartz-veined stone 012 \u00b7 lit",
+      "name": "White quartz-veined stone 012",
       "category": "waystones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, roughly six feet tall, human height, self-emissive at night, softly radiating light: cap of luminous blue moss",
       "view": "low top-down",
       "size": 64,
@@ -64542,6 +64569,51 @@
           "pixellab_object_id": "868180a7-e9d1-4ab0-864d-56081952ffdc",
           "generated_at": "2026-08-13T21:49:40+00:00",
           "art_hash": "9a7cb3ac078a09e0"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_012/lit_2/sprite.webp",
+          "pixellab_object_id": "234de9c2-4a48-45f9-a7f9-da118756b14a",
+          "generated_at": "2026-08-17T12:33:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7223,
+          "glow_score": 0.0521,
+          "art_hash": "9720b9ef79a7c30e"
+        },
+        "LIT_3": {
+          "sprite": "waystones/waystone_012/lit_3/sprite.webp",
+          "pixellab_object_id": "a0377bd8-64cd-469c-9651-d0e833e8ac53",
+          "generated_at": "2026-08-17T12:33:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8382,
+          "glow_score": 0.1315,
+          "art_hash": "036db33c3f3a8f01"
+        },
+        "LIT_4": {
+          "sprite": "waystones/waystone_012/lit_4/sprite.webp",
+          "pixellab_object_id": "44fb7494-d67c-411e-8823-9cf59a865d2c",
+          "generated_at": "2026-08-17T12:33:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6171,
+          "glow_score": 0.0499,
+          "art_hash": "d2bc6f7ff25b5fcd"
+        },
+        "NOT_LIT_1": {
+          "sprite": "waystones/waystone_012/not_lit_1/sprite.webp",
+          "pixellab_object_id": "fa59768c-01ab-4d63-9c3a-5a7b783b356d",
+          "generated_at": "2026-08-17T12:33:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9022,
+          "glow_score": 0.0,
+          "art_hash": "ce5e73cba079004c"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_012/not_lit_2/sprite.webp",
+          "pixellab_object_id": "bf152a6c-7213-41c2-a0e3-44105ef12f05",
+          "generated_at": "2026-08-17T12:34:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7071,
+          "glow_score": 0.0,
+          "art_hash": "5a3743d619738640"
         }
       },
       "animations": []
@@ -64551,7 +64623,7 @@
       "rel": "waystones/waystone_013",
       "name": "Half-sunken meadow stone 013",
       "category": "waystones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, half-sunken meadow stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -64571,11 +64643,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "waystones/waystone_013/lit_1/sprite.webp",
+          "pixellab_object_id": "c505df03-1102-4534-9699-49baf59edff6",
+          "generated_at": "2026-08-17T12:34:48+00:00",
+          "glow_concept": "inner light leaking through hairline cracks",
+          "difference_from_source": 0.6333,
+          "glow_score": 0.1735,
+          "art_hash": "df90b9184332d848"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_013/lit_2/sprite.webp",
+          "pixellab_object_id": "a43772e9-5526-4951-b97a-aebb5eb22266",
+          "generated_at": "2026-08-17T12:34:50+00:00",
+          "glow_concept": "engraved pointing hand lit like a signpost",
+          "difference_from_source": 0.2559,
+          "glow_score": 0.0787,
+          "art_hash": "9f7ad4153df5e50c"
+        },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_013/sprite.webp",
           "pixellab_object_id": "35ff9adf-a1bd-4764-8427-b25673fd0e92",
           "generated_at": "2026-08-13T22:03:43+00:00",
           "art_hash": "e42830d57a96a4fe"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_013/not_lit_2/sprite.webp",
+          "pixellab_object_id": "aba8a62b-38ea-4832-94b2-946a62b1eb4f",
+          "generated_at": "2026-08-17T12:34:00+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5605,
+          "glow_score": 0.0,
+          "art_hash": "67cb3bbf020aa378"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_013/not_lit_3/sprite.webp",
+          "pixellab_object_id": "58455ea1-7dca-4325-a2ca-4a4c348c1232",
+          "generated_at": "2026-08-17T12:34:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4198,
+          "glow_score": 0.0,
+          "art_hash": "c17f3ee42fbedd63"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_013/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a439531b-411e-4611-81e3-140cf0fb1599",
+          "generated_at": "2026-08-17T12:34:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6466,
+          "glow_score": 0.0,
+          "art_hash": "983c1fb7f95b6550"
         }
       },
       "animations": []
@@ -64585,7 +64702,7 @@
       "rel": "waystones/waystone_015",
       "name": "Leaning cracked stone 015",
       "category": "waystones",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, leaning cracked stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -64605,11 +64722,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "waystones/waystone_015/lit_1/sprite.webp",
+          "pixellab_object_id": "7a8a3884-bcd8-49a2-b25e-ae7573683c35",
+          "generated_at": "2026-08-17T12:36:05+00:00",
+          "glow_concept": "cap of luminous blue moss",
+          "difference_from_source": 0.5868,
+          "glow_score": 0.1602,
+          "art_hash": "e69576431ec2c5b5"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_015/lit_2/sprite.webp",
+          "pixellab_object_id": "79e3a42f-8519-4091-a6f2-a64931f3824f",
+          "generated_at": "2026-08-17T12:36:14+00:00",
+          "glow_concept": "ring of foxfire mushrooms at the base",
+          "difference_from_source": 0.9305,
+          "glow_score": 0.1378,
+          "art_hash": "593e35a7b3e78126"
+        },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_015/sprite.webp",
           "pixellab_object_id": "27dc6ee1-860f-400a-8db8-fc9fb2d5c785",
           "generated_at": "2026-08-13T23:47:06+00:00",
           "art_hash": "c483c51bfca9d41e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "375a965d-1e22-4baf-b23c-dc2edbb641f3",
+          "generated_at": "2026-08-17T12:36:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4338,
+          "glow_score": 0.0,
+          "art_hash": "9d6e5485e55b3466"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "21dd4257-7ee3-48d7-bae9-322b97a4e059",
+          "generated_at": "2026-08-17T12:35:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5728,
+          "glow_score": 0.0,
+          "art_hash": "284b8afa16d1fb2c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5fceb1d5-4e54-497d-b258-91d895b10bf6",
+          "generated_at": "2026-08-17T12:35:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5118,
+          "glow_score": 0.0,
+          "art_hash": "3337d213ab683764"
         }
       },
       "animations": []
@@ -64617,9 +64779,9 @@
     {
       "id": "waystone_016",
       "rel": "waystones/waystone_016",
-      "name": "Rounded granite milestone 016 \u00b7 lit",
+      "name": "Rounded granite milestone 016",
       "category": "waystones",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, rounded granite milestone, overgrown at the base, roughly six feet tall, human height, self-emissive at night, softly radiating light: carved runes glowing warm amber",
       "view": "low top-down",
       "size": 64,
@@ -64644,6 +64806,51 @@
           "pixellab_object_id": "1b14d3a5-4c60-4f8d-8fd4-5b599de69fc9",
           "generated_at": "2026-08-14T00:32:17+00:00",
           "art_hash": "44b856ee62a87bfa"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_016/lit_2/sprite.webp",
+          "pixellab_object_id": "d5cebbe1-27fa-49eb-9201-fa3a21fb102e",
+          "generated_at": "2026-08-17T12:36:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5931,
+          "glow_score": 0.0,
+          "art_hash": "f452187b3c53c220"
+        },
+        "LIT_3": {
+          "sprite": "waystones/waystone_016/lit_3/sprite.webp",
+          "pixellab_object_id": "81e66aff-46c7-4415-8523-66f17fd9f968",
+          "generated_at": "2026-08-17T12:37:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2594,
+          "glow_score": 0.051,
+          "art_hash": "cd190908c2eed834"
+        },
+        "LIT_4": {
+          "sprite": "waystones/waystone_016/lit_4/sprite.webp",
+          "pixellab_object_id": "c6b6317b-be58-4f75-9ac4-ba88db563502",
+          "generated_at": "2026-08-17T12:37:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5634,
+          "glow_score": 0.0637,
+          "art_hash": "ecbbd53f6725d634"
+        },
+        "NOT_LIT_1": {
+          "sprite": "waystones/waystone_016/not_lit_1/sprite.webp",
+          "pixellab_object_id": "8db15a50-de9a-489d-a733-e295d835272e",
+          "generated_at": "2026-08-17T12:37:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5606,
+          "glow_score": 0.0,
+          "art_hash": "9ca1d059e4fbcfb9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "waystones/waystone_016/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b77b6a6c-fa0d-4d68-9750-c5f108417e2b",
+          "generated_at": "2026-08-17T12:37:39+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8046,
+          "glow_score": 0.0,
+          "art_hash": "17e1be94886147a9"
         }
       },
       "animations": []
@@ -64712,6 +64919,24 @@
           "pixellab_object_id": "daf27ead-0bf8-41d2-8857-cffdf1ec5024",
           "generated_at": "2026-08-14T01:18:44+00:00",
           "art_hash": "d19e470b00b698d1"
+        },
+        "LIT_2": {
+          "sprite": "waystones/waystone_022/lit_2/sprite.webp",
+          "pixellab_object_id": "0d4423ec-5a7b-4450-a099-0b7ac99415cc",
+          "generated_at": "2026-08-17T12:39:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3519,
+          "glow_score": 0.0845,
+          "art_hash": "9ef3b56dc7f9beec"
+        },
+        "LIT_3": {
+          "sprite": "waystones/waystone_022/lit_3/sprite.webp",
+          "pixellab_object_id": "ad1526f6-e2d4-4f9f-82c0-24e1205c9714",
+          "generated_at": "2026-08-17T12:38:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7778,
+          "glow_score": 0.0552,
+          "art_hash": "c09b156ecea08dd7"
         }
       },
       "animations": []

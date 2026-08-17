@@ -5,7 +5,7 @@
   "rank": 6,
   "index": 11,
   "name": "Sea-smoothed coastal stone 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "sea-smoothed coastal stone",
   "glow_concept": null,
   "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, sea-smoothed coastal stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:37:46+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "waystones/waystone_011/lit_1/sprite.webp",
+      "pixellab_object_id": "22bf757e-7deb-49b9-8a2f-a8bd42070946",
+      "generated_at": "2026-08-17T12:32:54+00:00",
+      "glow_concept": "glowing unreadable runes flowing down the stone face",
+      "difference_from_source": 0.8358,
+      "glow_score": 0.0921
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_011/lit_2/sprite.webp",
+      "pixellab_object_id": "78278c5a-7c5a-4fa4-bb3e-d56af814b53f",
+      "generated_at": "2026-08-17T12:33:03+00:00",
+      "glow_concept": "carved runes glowing warm amber",
+      "difference_from_source": 0.8831,
+      "glow_score": 0.0607
+    },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_011/sprite.webp",
       "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
@@ -50,6 +66,14 @@
       "generated_at": "2026-08-17T12:31:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4363,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "waystones/waystone_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f24bbcf7-3807-418f-9d6b-5d812424b885",
+      "generated_at": "2026-08-17T12:32:17+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7489,
       "glow_score": 0.0
     }
   }

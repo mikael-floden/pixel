@@ -6,7 +6,7 @@
   "rank": 6,
   "index": 15,
   "name": "Leaning cracked stone 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "leaning cracked stone",
   "glow_concept": null,
   "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, leaning cracked stone, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "waystones/waystone_015/lit_1/sprite.webp",
+      "pixellab_object_id": "7a8a3884-bcd8-49a2-b25e-ae7573683c35",
+      "generated_at": "2026-08-17T12:36:05+00:00",
+      "glow_concept": "cap of luminous blue moss",
+      "difference_from_source": 0.5868,
+      "glow_score": 0.1602
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_015/lit_2/sprite.webp",
+      "pixellab_object_id": "79e3a42f-8519-4091-a6f2-a64931f3824f",
+      "generated_at": "2026-08-17T12:36:14+00:00",
+      "glow_concept": "ring of foxfire mushrooms at the base",
+      "difference_from_source": 0.9305,
+      "glow_score": 0.1378
+    },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_015/sprite.webp",
       "pixellab_object_id": "27dc6ee1-860f-400a-8db8-fc9fb2d5c785",
       "generated_at": "2026-08-13T23:47:06+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "375a965d-1e22-4baf-b23c-dc2edbb641f3",
+      "generated_at": "2026-08-17T12:36:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4338,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "waystones/waystone_015/not_lit_3/sprite.webp",
+      "pixellab_object_id": "21dd4257-7ee3-48d7-bae9-322b97a4e059",
+      "generated_at": "2026-08-17T12:35:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5728,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "waystones/waystone_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "5fceb1d5-4e54-497d-b258-91d895b10bf6",
+      "generated_at": "2026-08-17T12:35:27+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5118,
+      "glow_score": 0.0
     }
   }
 }

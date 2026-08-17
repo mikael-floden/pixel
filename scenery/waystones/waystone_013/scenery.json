@@ -5,7 +5,7 @@
   "rank": 6,
   "index": 13,
   "name": "Half-sunken meadow stone 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "half-sunken meadow stone",
   "glow_concept": null,
   "prompt": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, half-sunken meadow stone, small, knee-high, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:03:43+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "waystones/waystone_013/lit_1/sprite.webp",
+      "pixellab_object_id": "c505df03-1102-4534-9699-49baf59edff6",
+      "generated_at": "2026-08-17T12:34:48+00:00",
+      "glow_concept": "inner light leaking through hairline cracks",
+      "difference_from_source": 0.6333,
+      "glow_score": 0.1735
+    },
+    "LIT_2": {
+      "sprite": "waystones/waystone_013/lit_2/sprite.webp",
+      "pixellab_object_id": "a43772e9-5526-4951-b97a-aebb5eb22266",
+      "generated_at": "2026-08-17T12:34:50+00:00",
+      "glow_concept": "engraved pointing hand lit like a signpost",
+      "difference_from_source": 0.2559,
+      "glow_score": 0.0787
+    },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_013/sprite.webp",
       "pixellab_object_id": "35ff9adf-a1bd-4764-8427-b25673fd0e92",
       "generated_at": "2026-08-13T22:03:43+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "waystones/waystone_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "aba8a62b-38ea-4832-94b2-946a62b1eb4f",
+      "generated_at": "2026-08-17T12:34:00+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5605,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "waystones/waystone_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "58455ea1-7dca-4325-a2ca-4a4c348c1232",
+      "generated_at": "2026-08-17T12:34:28+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4198,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "waystones/waystone_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "a439531b-411e-4611-81e3-140cf0fb1599",
+      "generated_at": "2026-08-17T12:34:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6466,
+      "glow_score": 0.0
     }
   }
 }
