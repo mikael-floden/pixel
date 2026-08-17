@@ -4,8 +4,8 @@
   "group": "torch_posts",
   "rank": 7,
   "index": 6,
-  "name": "Stone-socketed torch post 006 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Stone-socketed torch post 006",
+  "lights": null,
   "variety": "stone-socketed torch post",
   "glow_concept": "smokeless pale-blue soul-flame",
   "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, stone-socketed torch post, about as tall as an adult person, self-emissive at night, softly radiating light: smokeless pale-blue soul-flame",
@@ -35,6 +35,38 @@
       "sprite": "torch_posts/torch_post_006/sprite.webp",
       "pixellab_object_id": "539bd21f-b7ff-48ac-8126-adb82410704e",
       "generated_at": "2026-08-13T12:04:09+00:00"
+    },
+    "LIT_2": {
+      "sprite": "torch_posts/torch_post_006/lit_2/sprite.webp",
+      "pixellab_object_id": "e7359e5c-6679-46f7-9a29-97d7f7b0b886",
+      "generated_at": "2026-08-17T11:20:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9266,
+      "glow_score": 0.1253
+    },
+    "LIT_3": {
+      "sprite": "torch_posts/torch_post_006/lit_3/sprite.webp",
+      "pixellab_object_id": "8abea272-1771-4313-b18b-da22597c6ffd",
+      "generated_at": "2026-08-17T11:19:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8935,
+      "glow_score": 0.2628
+    },
+    "LIT_4": {
+      "sprite": "torch_posts/torch_post_006/lit_4/sprite.webp",
+      "pixellab_object_id": "a59635d1-8f40-4fba-ab34-b11d541e7a6a",
+      "generated_at": "2026-08-17T11:19:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7933,
+      "glow_score": 0.1715
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_006/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7fdda653-1c72-4757-9b1e-20980d565aab",
+      "generated_at": "2026-08-17T11:19:51+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9015,
+      "glow_score": 0.0
     }
   }
 }
