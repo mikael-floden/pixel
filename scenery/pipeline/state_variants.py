@@ -409,7 +409,23 @@ def main():
             break
         before = len(flight)
         while queue and len(flight) < PARALLEL and not drain and errors < ERROR_STOP:
-            rel, man, anchor, state = queue.pop(0)
+            # ONE IN-FLIGHT EDIT PER SOURCE OBJECT. PixelLab fails a state job
+            # when several edits of the SAME object run at once, and it fails it
+            # SILENTLY — status just comes back "failed", which this loop
+            # retries without a word. That combination cost 120 wasted
+            # generations on the last two pieces of the whole pass: they were
+            # the only work left, so all five of each piece's states went out
+            # together against one object and every attempt failed, twelve
+            # prompts deep, ten states over. Earlier batches never hit it
+            # because eight in-flight jobs were spread across eight different
+            # pieces. Resubmitting one of those same states alone completed
+            # first time.
+            in_flight_srcs = {e[5].get("pixellab_object_id") for e in flight}
+            idx = next((i for i, q in enumerate(queue)
+                        if q[1].get("pixellab_object_id") not in in_flight_srcs), None)
+            if idx is None:
+                break                      # everything queued shares a busy source
+            rel, man, anchor, state = queue.pop(idx)
             # A glow concept is only USED when the state crosses from dark to
             # lit — a lit->lit variant keeps the light it already has and gets
             # no lighting clause at all. Computing one anyway meant finalize
@@ -476,7 +492,15 @@ def main():
                     if not retry:
                         fail += 1
             else:
+                # NEVER RETRY IN SILENCE. This branch used to just set
+                # retry=True and print nothing, so twelve consecutive server-
+                # side failures produced one bare "gave up after 12 prompts"
+                # with no cause anywhere in the log. It sent me down two wrong
+                # diagnoses in a row — first the gates, then a dead source
+                # object — while the real cause was never written down.
                 retry = True
+                print(f"  ~ {rel} {state}: PixelLab job failed "
+                      f"(attempt {attempt + 1}/{MAX_PROMPT_TRIES})", flush=True)
             if retry:
                 nxt = attempt + 1
                 if nxt >= MAX_PROMPT_TRIES:
