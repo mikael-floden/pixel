@@ -41,10 +41,32 @@ async function composerRoot() {
   return composerBase;
 }
 
+/** Does the deployed image carry this domain at all?
+ *
+ *  THE ARRANGEMENT, in the maintainer's words (2026-08-17): "we use the repo
+ *  for unreleased content to make the GCP bill less expensive. Once it's in the
+ *  game it will be part of the game." So a domain the game does not render yet
+ *  is absent from the image BY DESIGN, its every path 404s there, and that 404
+ *  carries no information about whether the file exists.
+ *
+ *  Which domains those are is DATA, not a list to keep in step by hand: the
+ *  curate stage publishes what it shipped in `/shipset.json`, so a domain
+ *  missing from its `stats` is repo-only, and the day the game starts rendering
+ *  it the same file starts saying so with no wiki change. `tiles` is seeded
+ *  below as well, because it is repo-only TODAY and the shipset arrives a round
+ *  trip after the first cards ask for art. Unknown (dev, an old image, a failed
+ *  fetch) falls back to the lazy discovery it always had. */
+const isUnshipped = (dom) => repoDomains.has(dom) || (shippedDomains ? !shippedDomains.has(dom) : false);
+let shippedDomains = null;
+async function loadShipset() {
+  const d = await fetchJson(new URL("/shipset.json", location.href));
+  if (d?.stats && typeof d.stats === "object") shippedDomains = new Set(Object.keys(d.stats));
+  return shippedDomains;
+}
 const assetUrl = (rel) => {
-  // A domain the image has already proved it does not carry is fetched from
-  // the repo directly — one 404 per domain, not one per card.
-  if (repoBase && typeof rel === "string" && repoDomains.has(rel.split("/")[0])) return new URL(rel, repoBase).href;
+  // A domain the image does not carry is fetched from the repo directly — not
+  // 404ed once per card first.
+  if (repoBase && typeof rel === "string" && isUnshipped(rel.split("/")[0])) return new URL(rel, repoBase).href;
   return new URL(rel, ROOT).href;
 };
 
@@ -160,8 +182,53 @@ function probeArt(url) {
  *  review manifest. A domain that is known not to ship must never be ASKED of
  *  the image — the 404 is not information, it is the arrangement. */
 const repoDomains = new Set(["tiles"]);
+/** Art that 404d at the image BEFORE the repo base was known. Without this the
+ *  first cards of an unshipped domain are stuck on "not loading" for the life
+ *  of the page: repoTwin needs repoBase, and the miss is over by the time it
+ *  arrives (2026-08-17 — the World section, every face blank). */
+const repoMisses = new Set();
+let repoBaseKnown = false;   // true once the base is up OR the upgrade gave up
+function retryRepoMisses() {
+  if (!repoBase) return;
+  repoBaseKnown = true;
+  // ...AND EVERY IMAGE ALREADY ON THE PAGE pointing at the image's origin for a
+  // domain the image does not carry. Those cannot merely be waiting: that URL
+  // will 404 whenever it is finally requested. The hidden before/after twin is
+  // the case that made this necessary — it is `loading="lazy"` and off screen,
+  // so it never fetches, never errors, and would sit on a dead URL until the
+  // moment he flips the switch and watches it blink.
+  for (const img of document.images) {
+    const src = img.getAttribute("src") ?? "";
+    if (!src.startsWith(ROOT.href ?? String(ROOT))) continue;
+    const dom = src.slice(String(ROOT).length).split("/")[0];
+    if (!isUnshipped(dom)) continue;
+    const twin = repoTwin(src);
+    if (twin && twin !== src) img.src = twin;
+  }
+  for (const img of repoMisses) {
+    repoMisses.delete(img);
+    if (!img.isConnected) continue;
+    const twin = repoTwin(img.dataset.imageSrc || img.src);
+    if (!twin) continue;
+    img.dataset.triedRepo = "1";
+    const box = img.closest(".thumb, .portrait");
+    box?.classList.remove("art-failed", "art-gone");
+    box?.querySelector(".art-note")?.remove();
+    if (!img.isConnected && box) box.prepend(img);
+    img.src = twin;
+  }
+}
 async function onArtMissing(img) {
   const url = img.src;
+  // The repo base is not up yet — hold this one rather than judging it. Only
+  // while an upgrade is actually coming: a reader never gets a repo base, and
+  // holding their missing art would replace an honest "not loading" with
+  // nothing at all.
+  if (!repoBaseKnown && state.admin && !img.dataset.triedRepo && !/\/icons\//.test(url) && img.isConnected) {
+    img.dataset.imageSrc = url;
+    repoMisses.add(img);
+    return;
+  }
   // ASK THE REPO BEFORE BELIEVING IT IS GONE. The image only holds what has
   // shipped, so a 404 here is the ordinary case for a domain still in
   // development — not evidence that anything was deleted.
@@ -183,7 +250,10 @@ async function onArtMissing(img) {
   // agent still has the file. Believing it cost a whole World page of "removed"
   // cards while every one of those tiles sat in the repo (2026-08-17).
   const domain = new URL(url, location.href).pathname.replace(/^.*\/assets\//, "").split("/")[0];
-  const unshipped = repoDomains.has(domain) && !url.startsWith(String(repoBase ?? " "));
+  // ...and only while we are still asking the IMAGE for it: once a url has
+  // been retried against the repo, a 404 THERE is real news.
+  const fromRepo = !!repoBase && url.startsWith(String(repoBase));
+  const unshipped = isUnshipped(domain) && !fromRepo;
   const verdict = (/\/icons\//.test(url) || unshipped) ? "failed" : await probeArt(url);
   // GONE MEANS GONE — the piece leaves the wiki, it does not become a
   // tombstone (maintainer 2026-08-16, on three "removed" cards sitting in his
@@ -5722,7 +5792,15 @@ async function checkAdmin() {
  */
 let repoBase = null;                 // set once the repo's sha is known
 async function useStagingRoot() {
+  // THE BASE FIRST, THE SHA SECOND. Pinning to a commit is a caching nicety;
+  // KNOWING WHERE THE REPO IS decides where the first card asks for its art,
+  // and every miss before that is a card that 404s at the image and cannot be
+  // retried. `main` is correct immediately, the pinned sha replaces it a round
+  // trip later, and an injected base needs no sha at all.
+  repoBase = stagingBase("main");
+  retryRepoMisses();
   repoBase = stagingBase(await stagingSha());
+  retryRepoMisses();
   return await fetchJson(new URL("wiki/site/data.json", repoBase));
 }
 /** The same art, asked of the repo instead of the image. */
@@ -5774,7 +5852,12 @@ async function upgradeToStaging() {
     drawStamp(full);
     keepScrollY = window.scrollY;
     route();
-  } finally { stagingPending = false; }
+  } finally {
+    stagingPending = false;
+    // No base after all (offline, a blocked fetch): stop holding art hostage.
+    repoBaseKnown = true;
+    if (!repoBase) for (const img of [...repoMisses]) { repoMisses.delete(img); onArtMissing(img); }
+  }
 }
 
 (async function boot() {
@@ -5784,6 +5867,11 @@ async function upgradeToStaging() {
   const [data, admin] = await Promise.all([
     fetchJson(new URL("data.json", location.href)),
     checkAdmin(),
+    // WHAT THIS DEPLOY ACTUALLY CARRIES — one small same-origin file, fetched
+    // beside the manifest rather than after it, because the answer decides
+    // WHERE the first card's art is asked for. Its absence is not an error:
+    // unknown falls back to asking the image and learning from the miss.
+    loadShipset(),
   ]);
   if (admin) setAdmin(true); // before first route() so widgets render editable
   else localStorage.removeItem("wiki-admin-token");
