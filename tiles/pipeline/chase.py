@@ -115,9 +115,17 @@ def cell_parts(cell, types):
     return by_id.get(top), by_id.get(side)
 
 
-def evaluate(paths, min_wall, min_clarity=0.0):
-    """Best tile in this sheet that clears every calibrated gate, or None."""
-    best = None
+def passing(paths, min_wall, min_clarity=0.0):
+    """EVERY tile in these paths that clears the calibrated gates, best wall first.
+
+    Plural on purpose. This used to return only the winner, because a cell needed one
+    good tile. It needs three: the maintainer reviews by choosing, and told me so —
+    "when I review I will try to pick the one I like the most, and with more
+    alternatives we will get a better looking game. I don't want to approve something
+    if we can get something even better." A chase that stops at the first hit hands
+    them a cell with nothing to choose between.
+    """
+    out = []
     for p in paths:
         q = flatness.wall_quality(p)
         if not q or q["score"] < min_wall:
@@ -130,27 +138,43 @@ def evaluate(paths, min_wall, min_clarity=0.0):
             continue
         if flatness.seam_px(p) > flatness.SEAM_TOL:
             continue
-        if not best or q["score"] > best[1]:
-            best = (p, q["score"], flatness.overhang(p))
-    return best
+        out.append((p, q["score"], flatness.overhang(p)))
+    out.sort(key=lambda t: -t[1])
+    return out
+
+
+def evaluate(paths, min_wall, min_clarity=0.0):
+    """Best single tile, or None. Kept for callers that only want the winner."""
+    hits = passing(paths, min_wall, min_clarity)
+    return hits[0] if hits else None
+
+
+def cell_passing(cell, min_wall, min_clarity=0.0):
+    d = os.path.join(OUT, cell)
+    return passing(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))),
+                   min_wall, min_clarity)
 
 
 def cell_status(cell, min_wall, min_clarity=0.0):
-    d = os.path.join(OUT, cell)
-    return evaluate(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))), min_wall, min_clarity)
+    hits = cell_passing(cell, min_wall, min_clarity)
+    return hits[0] if hits else None
 
 
-def failing_cells(min_wall, min_clarity=0.0):
+def failing_cells(min_wall, min_clarity=0.0, need=1):
+    """Cells that do not yet have `need` tiles clearing the bar — including cells that
+    have never been generated at all, which the directory scan alone cannot see."""
     out = []
-    for d in sorted(glob.glob(os.path.join(OUT, "*__over__*"))):
-        cell = os.path.basename(d)
-        if not cell_status(cell, min_wall, min_clarity):
+    have = {os.path.basename(d) for d in glob.glob(os.path.join(OUT, "*__over__*"))}
+    ids = [t["id"] for t in matrix.cfg()["ground_types"]]
+    for cell in [f"{a}__over__{b}" for a in ids for b in ids]:
+        if cell not in have or len(cell_passing(cell, min_wall, min_clarity)) < need:
             out.append(cell)
     return out
 
 
-def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_clarity=0.0):
-    """Roll this cell until a tile clears the bar, or until `attempts` is used up."""
+def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_clarity=0.0,
+          need=1):
+    """Roll this cell until `need` tiles clear the bar, or until `attempts` is used up."""
     d = os.path.join(OUT, cell)
     os.makedirs(d, exist_ok=True)
     existing = len([x for x in os.listdir(d) if x.startswith("sheet_")])
@@ -210,13 +234,19 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             json.dump({"cell": cell, "prompt": prompt, "tile_id": tile_id,
                        "style": f"chase{i % len(PHRASINGS)}", "n_tiles": len(paths),
                        "settings": matrix.FIXED}, f, indent=2)
-        hit = evaluate(paths, min_wall, min_clarity)
+        # Counted over the WHOLE cell, not this sheet: three candidates accumulated
+        # across three rolls is exactly as good a choice for the maintainer as three
+        # from one lucky sheet, and stopping early on either is what leaves a cell with
+        # nothing to pick between.
+        hits = cell_passing(cell, min_wall, min_clarity)
         best_oh = max((flatness.overhang(p) for p in paths), default=0.0)
         print(f"    roll {n + 1}/{attempts}: best spill {best_oh:.2f} "
-              f"{'-> PASS' if hit else ''}", flush=True)
-        if hit:
-            return hit
-    return None
+              f"-> {len(hits)}/{need} passing"
+              f"{' DONE' if len(hits) >= need else ''}", flush=True)
+        if len(hits) >= need:
+            return hits[0]
+    hits = cell_passing(cell, min_wall, min_clarity)
+    return hits[0] if hits else None
 
 
 def main():
@@ -230,17 +260,21 @@ def main():
     ap.add_argument("--max-usd", type=float, default=20.0)
     ap.add_argument("--min-usd", type=float, default=1.0,
                     help="never take the shared account below this")
+    ap.add_argument("--min-candidates", type=int, default=3,
+                    help="keep rolling until the cell has this many tiles clearing "
+                         "the bar — the maintainer reviews by CHOOSING")
     ap.add_argument("--cells", nargs="*", default=None)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     types = matrix.cfg()["ground_types"]
     dead = tombstones.load().get("cells", {})
-    cells = args.cells or failing_cells(args.min_wall, args.min_clarity)
+    cells = args.cells or failing_cells(args.min_wall, args.min_clarity,
+                                        need=args.min_candidates)
     cells = [c for c in cells if c.replace("__over__", "_over_") not in dead]
 
-    print(f"{len(cells)} cell(s) with no tile clearing the bar "
-          f"(seam 0, spill >= {flatness.MIN_OVERHANG}, wall >= {args.min_wall})")
+    print(f"{len(cells)} cell(s) with fewer than {args.min_candidates} tiles clearing "
+          f"the bar (seam 0, spill >= {flatness.MIN_OVERHANG}, wall >= {args.min_wall})")
     for c in cells:
         print(f"   {c}")
     print(f"\nup to {args.attempts} rolls each -> at most "
@@ -265,7 +299,8 @@ def main():
         print(f"\n{cell}")
         try:
             hit = chase(client, cell, top_g, side_g, args.attempts, args.min_wall,
-                        spent, args.max_usd, args.min_clarity)
+                        spent, args.max_usd, args.min_clarity,
+                        need=args.min_candidates)
         except BudgetExhausted as e:
             print("stopping:", e)
             break
