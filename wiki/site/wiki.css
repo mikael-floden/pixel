@@ -680,6 +680,10 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
      and the cliff beside it need every pixel a phone has, and this is the one
      card whose content is measured in the game's own units. */
   .world-cands .world-cand { margin-inline: -16px; border-radius: 0; }
+  /* …and the panel gives up the page margin for the same reason, one level up:
+     the 4x zoom row is 384px of art on a 393px screen, and pixel art is never
+     resampled to fit. Only this panel — the rest of the page keeps its margin. */
+  .world-panel { margin-inline: -14px; border-radius: 0; border-left: none; border-right: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
@@ -1224,7 +1228,16 @@ input[type="range"] { accent-color: var(--accent); }
    last resort on a narrower screen than that. Both shapes visible at once IS
    the feature: a scrollbar between them would put back the second look the one
    box removed. */
-.tile-stage { position: relative; display: flex; align-items: flex-end; gap: 6px; overflow-x: auto; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
+.tile-stage { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
+/* CENTRED, NOT LEFT-PACKED. Two canvases of fixed pixel widths never fill the
+   box exactly, and flex-start put every leftover pixel on the right — a tile
+   flush against one edge with a hand's width of chessboard at the other
+   (maintainer 2026-08-17). Centring splits the slack in two. */
+.tile-row { display: flex; align-items: flex-end; justify-content: center; gap: 6px; overflow-x: auto; }
+/* The 4x tile is 256px wide beside the 2x's 128; on a narrow phone that pair
+   stacks rather than being cropped or resampled — the zoom is the whole point
+   of the row, so it is the ROW that gives way. */
+.tile-row.zooms { flex-wrap: wrap; gap: 4px; align-items: center; }
 .tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }
 /* BEFORE/AFTER WITHIN REACH OF THE TILE IT CHANGES (maintainer 2026-08-17:
    "that button might be higher up so I have to scroll. Can you place that

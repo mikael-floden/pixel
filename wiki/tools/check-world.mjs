@@ -247,17 +247,32 @@ await p.waitForTimeout(2800);
 const perTile = () => p.evaluate(() => ({
   cards: document.querySelectorAll(".world-cand").length,
   stages: document.querySelectorAll(".world-cand .tile-stage").length,
-  // Two canvases per tile, side by side in ONE box: the flat patch and the V.
-  shapes: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => [...st.querySelectorAll("canvas")].map((cv) => {
+  // TWO ROWS in ONE box: the tile magnified (2x, 4x) over what it builds
+  // (the flat patch and the V).
+  shapes: [...document.querySelectorAll(".world-cand .tile-row.scenes")].map((row) => [...row.querySelectorAll("canvas")].map((cv) => {
     const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
     let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
     return { w: cv.width, h: cv.height, opaque, x: Math.round(cv.getBoundingClientRect().x) };
   })),
+  zooms: [...document.querySelectorAll(".world-cand .tile-row.zooms")].map((row) => [...row.querySelectorAll("canvas")].map((cv) => {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let opaque = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 8) opaque++;
+    return { z: cv.dataset.zoom, w: cv.width, opaque, x: Math.round(cv.getBoundingClientRect().x) };
+  })),
+  // CENTRED, not packed against one edge: the leftover has to be split, or a
+  // tile sits flush left with a hand's width of chessboard on the right.
+  slack: [...document.querySelectorAll(".world-cand .tile-row")].map((row) => {
+    const cvs = [...row.querySelectorAll("canvas")];
+    if (!cvs.length) return null;
+    const box = row.getBoundingClientRect();
+    const first = cvs[0].getBoundingClientRect(), last = cvs[cvs.length - 1].getBoundingClientRect();
+    return { left: Math.round(first.x - box.x), right: Math.round(box.right - last.right) };
+  }),
   courses: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.course),
   // BOTH AT ONCE OR IT SAVED NOTHING — a stage wider than its box hides the
   // cliff behind a sideways scroll, which is the second look the one box was
   // meant to remove. Measured on his phone's width.
-  fits: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.scrollWidth - st.clientWidth),
+  fits: [...document.querySelectorAll(".world-cand .tile-row")].map((row) => row.scrollWidth - row.clientWidth),
   oldCard: [...document.querySelectorAll(".panel-title")].some((t) => /laid out as ground/i.test(t.textContent)),
   randomize: [...document.querySelectorAll("button")].some((b) => /Randomize/.test(b.textContent)),
   modes: [...document.querySelectorAll(".wall-mode")].map((m) => m.querySelector(".sortbar-btn.sel")?.textContent.trim()),
@@ -270,6 +285,22 @@ ok(own.shapes.every((sh) => sh[0].x < sh[1].x), "the 3×3 on the left, the cliff
 const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
 ok(own.shapes.every((sh) => Math.abs(sh[0].w - (iso.dx * 4 + iso.tilePx)) <= 12), "the flat one a real 3×3 patch");
 ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actually composed");
+// THE TILE ITSELF, MAGNIFIED, ON TOP (maintainer 2026-08-17: "another preview
+// where you show a single 2x zoomed tile (to the left) and another 4x zoomed
+// tile (to the right) … This preview should be just on top of the preview we
+// have now"). Integer scales, nearest neighbour — the only kind of zoom pixel
+// art survives.
+console.log("zooms:", JSON.stringify(own.zooms[0]), "| slack:", JSON.stringify(own.slack.slice(0, 2)));
+ok(own.zooms.length === own.cards && own.zooms.every((z) => z.length === 2), `every tile is magnified too (${own.zooms.length} rows)`);
+ok(own.zooms.every((z) => z[0].z === "2" && z[1].z === "4"), "2x on the left, 4x on the right");
+ok(own.zooms.every((z) => z[0].x < z[1].x && z[0].w === iso.tilePx * 2 && z[1].w === iso.tilePx * 4),
+  `at exactly those scales (${own.zooms[0]?.map((z) => z.w).join(" / ")}px from a ${iso.tilePx}px tile)`);
+ok(own.zooms.every((z) => z.every((c) => c.opaque > 1000)), "and both actually drawn");
+ok(own.zooms.every((z, i) => z[0].x >= (own.shapes[i]?.[0]?.x ?? 0) - 400), "above the scenes, in the same box");
+// The slack is SPLIT, never piled on one side. 6px of tolerance: two fixed
+// canvas widths in a fluid box rarely divide evenly.
+ok(own.slack.filter(Boolean).every((s) => Math.abs(s.left - s.right) <= 6),
+  `each row centred, the leftover split (${own.slack.filter(Boolean).map((s) => `${s.left}/${s.right}`).join(", ")})`);
 
 // AT 3.0'S OWN PITCH, NOT THE GAME'S (maintainer 2026-08-17: "The new tiles are
 // meant to be drawn with DY=14 and not DY=15 as we used in the old tile
@@ -280,7 +311,9 @@ ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actuall
 const PITCH = 14, PAD = 2, TILE = DATA.iso?.tilePx ?? 64;
 const geo = await p.evaluate(() => {
   const st = document.querySelector(".world-cand .tile-stage");
-  const cv = st.querySelectorAll("canvas");
+  // The SCENES row — the zoom row above it is drawn at whole multiples of the
+  // tile and says nothing about the projection.
+  const cv = st.querySelectorAll(".tile-row.scenes canvas");
   return { dy: st.dataset.dy, flatH: cv[0]?.height, veeH: cv[1]?.height };
 });
 console.log("pitch:", JSON.stringify({ ...geo, at14: 4 * PITCH + TILE + 2 * PAD, at15: 4 * 15 + TILE + 2 * PAD }));

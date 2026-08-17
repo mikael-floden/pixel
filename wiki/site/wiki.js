@@ -3205,11 +3205,41 @@ function tileScenes(cell, cand) {
     // on a phone.
     loadImages([face, course].filter(Boolean), (images) => {
       const iso = worldIso();
-      stage.replaceChildren(...[isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso), chip].filter(Boolean));
+      // TWO ROWS, ONE CHESSBOARD: the tile ITSELF magnified on top, then what it
+      // builds underneath. Both rows are CENTRED — left-aligned, the 27px the
+      // scenes leave over all piled up on the right and read as a lopsided box
+      // (maintainer 2026-08-17: "look how much space we have on left vs right
+      // side").
+      stage.replaceChildren(...[
+        h("div", { class: "tile-row zooms" }, ...[zoomTile(images[face], 2), zoomTile(images[face], 4)].filter(Boolean)),
+        h("div", { class: "tile-row scenes" }, isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso)),
+        chip,
+      ].filter(Boolean));
     });
   }
   paint();
   return stage;
+}
+/* THE TILE AT 2x AND AT 4x, ABOVE THE SCENES (maintainer 2026-08-17: "another
+ * preview where you show a single 2x zoomed tile (to the left) and another 4x
+ * zoomed tile (to the right) … this will make the card bigger, but that's ok.
+ * This preview should be just on top of the preview we have now").
+ *
+ * The scenes answer "does it tile"; this answers "what IS it" — at 4x a 64px
+ * tile is 256px, which is where the postprocess's palette snap, the outline
+ * clipping and the overhang are actually visible. INTEGER scales and nearest
+ * neighbour, like every other pixel in this repo: 2x and 4x land each art pixel
+ * on a whole block, which is the only reason a magnified pixel-art tile is
+ * worth looking at.
+ */
+function zoomTile(im, z) {
+  if (!im) return null;
+  const canvas = h("canvas", { width: im.width * z, height: im.height * z, class: "iso-canvas zoom-tile" });
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(im, 0, 0, im.width * z, im.height * z);
+  canvas.dataset.zoom = String(z);
+  return canvas;
 }
 
 function viewWorldPair(top, side) {
@@ -3254,7 +3284,9 @@ function viewWorldPair(top, side) {
         h("p", { class: "muted" }, state.admin
           ? `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. Approve the ones to keep; reject the ones to regenerate.`
           : `${typeLabelWorld(c.top)} you walk on, ${typeLabelWorld(c.side).toLowerCase()} in the cliff below it.`))),
-    h("div", { class: "panel" },
+    // world-panel: on a phone this one gives up the page margin too, because a
+    // 4x tile beside a 2x one is 384px of art that cannot be resampled to fit.
+    h("div", { class: "panel world-panel" },
       state.admin
         ? h("div", { class: "panel-title" }, "Tiles in this set", h("span", { class: "pill" }, "ranked by wall score"))
         : h("div", { class: "panel-title" }, "How it looks"),

@@ -244,6 +244,19 @@ three 3-high stacks meeting at a corner. Both come from `isoScene()`, the same
 composer Tiles OLD uses — the game's own projection at the game's own scale, so
 a strip here measures what a strip measures in the world.
 
+- **The tile itself is magnified above them** (maintainer 2026-08-17: *"another
+  preview where you show a single 2x zoomed tile (to the left) and another 4x
+  zoomed tile (to the right) … Yes this will make the card bigger, but that's
+  ok"*). The scenes answer "does it tile"; the zooms answer "what IS it" — at 4×
+  a 64px tile is 256px, which is where the palette snap, the clipped outline and
+  the overhang are actually visible. Integer scales and nearest neighbour, the
+  only zoom pixel art survives. Both rows share one chessboard and both flip
+  with that tile's before/after chip.
+- **Every row is centred**, and the room for a 384px pair of zooms comes from
+  the margins, never from resampling: on a phone this panel gives up the page
+  margin the way the card already gives up the panel's. Where even that is not
+  enough (a 375px screen) the zoom row **wraps** — the row gives way, not the
+  pixels.
 - **A tile's preview shows THAT tile**, never a roll of its neighbours. There
   is no seed, no Randomize and no approved-only pool: the earlier shared "laid
   out as ground" card mixed the whole set, which answered "does this set work"
