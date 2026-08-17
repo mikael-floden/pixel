@@ -35,6 +35,13 @@ COPY games2/scripts/shipset.mjs games2/scripts/shipset.mjs
 COPY scenery/ scenery/
 COPY characters2/ characters2/
 COPY tiles2/ tiles2/
+# Tiles 3.0 review set — the 3rd-generation tile system, in development alongside
+# tiles2 (which is unaffected and still what the game renders). Only the reviewable
+# output is tracked (~200 KB of lossless WebP + manifest); tiles/matrix is
+# gitignored so the raw candidate sheets never enter the build context. Added by
+# the tiles agent 2026-08-17 with the maintainer's explicit go-ahead, so the wiki
+# can show each candidate before and after postprocess. — see coordination/tiles.json
+COPY tiles/ tiles/
 COPY maps2/ maps2/
 COPY sounds/ sounds/
 COPY music/ music/

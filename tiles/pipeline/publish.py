@@ -28,11 +28,25 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import flatness
+import palette_snap
 import tombstones
+
+from PIL import Image
+
+PALETTE = json.load(open(os.path.join(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))), "config", "measured_palette.json")))
+
+
+def _save(im, path):
+    """Lossless WebP. BOTH flags are non-default in Pillow and both matter: without
+    `lossless` you silently get lossy VP8 and ringing on every hard pixel-art edge,
+    without `exact` libwebp rewrites the RGB under fully-transparent pixels."""
+    im.convert("RGBA").save(path, "WEBP", lossless=True, exact=True)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MATRIX = os.path.join(ROOT, "matrix")
 REVIEW = os.path.join(ROOT, "review")
+REPO = os.path.dirname(ROOT)
 
 
 def candidates(cell_dir):
@@ -83,8 +97,11 @@ def main():
     os.makedirs(REVIEW, exist_ok=True)
     dead = tombstones.load().get("cells", {})
 
-    manifest = {"schema": "tiles3/review@1", "domain": "tiles",
-                "_comment": ("Candidates awaiting the maintainer's verdict. Ranked on WALL "
+    manifest = {"schema": "tiles3/review@2", "domain": "tiles",
+                "_comment": ("Candidates awaiting the maintainer's verdict. Each carries "
+                             "BEFORE (raw generator output) and AFTER (what ships) so the "
+                             "wiki can show the postprocess itself, not just its result. "
+                             "Ranked on WALL "
                              "quality — tiling, discretion, structure. `tile_id` is the "
                              "PixelLab generation a rejection should delete; `cell` is the "
                              "X-over-Y pair. A DELETED cell is tombstoned and never "
@@ -103,12 +120,28 @@ def main():
         cd = os.path.join(REVIEW, cell)
         os.makedirs(cd, exist_ok=True)
         entries = []
+        top_hex = PALETTE.get(top, {}).get("top")
         for i, c in enumerate(cands):
-            dst = os.path.join(cd, f"{i}.png")
-            shutil.copyfile(c["path"], dst)
+            # BOTH states ship, because the maintainer judges the postprocess as well
+            # as the art and cannot do that from one image. `before` is the generator's
+            # output untouched; `after` is what the game gets — top snapped to the
+            # shared palette colour, outline spikes clipped, WALL NOT TOUCHED.
+            raw = Image.open(c["path"]).convert("RGBA")
+            before = os.path.join(cd, f"{i}_before.webp")
+            after = os.path.join(cd, f"{i}_after.webp")
+            _save(raw, before)
+            _save(palette_snap.snap(raw, top_hex) if top_hex else raw, after)
             entries.append({
                 "key": f"tiles/{cell}/{i}",
-                "file": os.path.relpath(dst, ROOT),
+                # REPO-relative, matching how the wiki addresses every other
+                # domain's art (tiles2/<type>/base/...). Tiles-relative paths would
+                # resolve only for code that already knows this domain's root.
+                "before": os.path.relpath(before, REPO),
+                "after": os.path.relpath(after, REPO),
+                # `file` kept pointing at `after` so anything written against
+                # tiles3/review@1 keeps resolving to the shipped image.
+                "file": os.path.relpath(after, REPO),
+                "palette_top": top_hex,
                 "wall_score": c["wall"]["score"],
                 "wall": {k: c["wall"][k] for k in
                          ("tiling", "discretion", "structure", "contrast", "edges")},

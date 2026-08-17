@@ -113,3 +113,28 @@ tiles/
   "the generation produced nothing".
 - A finished generation is fetchable by id (`fetch_tiles`) and costs nothing, so an
   interrupted run never has to pay twice.
+
+## The review set (what the wiki renders)
+
+`tiles/review/manifest.json`, schema **`tiles3/review@2`**. Every candidate carries
+BOTH states, because the maintainer judges the postprocess as well as the art and
+cannot do that from one image:
+
+| field | meaning |
+|---|---|
+| `before` | the generator's output, untouched. Repo-relative path to a lossless WebP. |
+| `after`  | what the game gets. Same tile with the top surface snapped to the shared palette colour and the outline's spikes clipped. **The wall is not touched — 0 px changed** — which is why the border where the top material meets the rock survives. |
+| `file`   | alias of `after`, kept so anything written against `@1` still resolves. |
+| `palette_top` | the hex `after` was snapped to. |
+| `overhang` | 0–1, how much of the top material tufts down over the wall. The gate is **0.25**, calibrated against the maintainer's own verdict on all 14 grass cells: everything they kept scored ≥ 0.36, everything they rejected ≤ 0.10. |
+| `wall_score` | tiling / discretion / structure; a dead flat cliff scores near 0. |
+| `top_share` | flatness of the RAW top. Deliberately **not** a gate — the postprocess overwrites the top anyway, and gating on it discarded 182 tiles that were already seamless once shipped. |
+| `tile_id` | the PixelLab generation, so a rejection can actually delete it. |
+| `key` | stable id (`tiles/<cell>/<n>`) for `live/feedback/tiles.json`. |
+
+`needs_regeneration` on a cell means no candidate in it clears the spill gate — the
+transition was never drawn, and no amount of re-ranking will produce one.
+
+Paths are **repo-relative**, matching how the wiki addresses every other domain's art.
+Verdicts are read back from `live/feedback/tiles.json` in the `pixel-wiki-feedback@1`
+format the scenery domain already uses.

@@ -1,7 +1,7 @@
 {
-  "schema": "tiles3/review@1",
+  "schema": "tiles3/review@2",
   "domain": "tiles",
-  "_comment": "Candidates awaiting the maintainer's verdict. Ranked on WALL quality \u2014 tiling, discretion, structure. `tile_id` is the PixelLab generation a rejection should delete; `cell` is the X-over-Y pair. A DELETED cell is tombstoned and never regenerated, unlike a rejected one.",
+  "_comment": "Candidates awaiting the maintainer's verdict. Each carries BEFORE (raw generator output) and AFTER (what ships) so the wiki can show the postprocess itself, not just its result. Ranked on WALL quality \u2014 tiling, discretion, structure. `tile_id` is the PixelLab generation a rejection should delete; `cell` is the X-over-Y pair. A DELETED cell is tombstoned and never regenerated, unlike a rejected one.",
   "cells": {
     "grass__over__black_rock": {
       "top": "grass",
@@ -9,7 +9,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__black_rock/0",
-          "file": "review/grass__over__black_rock/0.png",
+          "before": "tiles/review/grass__over__black_rock/0_before.webp",
+          "after": "tiles/review/grass__over__black_rock/0_after.webp",
+          "file": "tiles/review/grass__over__black_rock/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.6,
           "wall": {
             "tiling": 0.0,
@@ -33,7 +36,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__dark_mud/0",
-          "file": "review/grass__over__dark_mud/0.png",
+          "before": "tiles/review/grass__over__dark_mud/0_before.webp",
+          "after": "tiles/review/grass__over__dark_mud/0_after.webp",
+          "file": "tiles/review/grass__over__dark_mud/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.28,
           "wall": {
             "tiling": 0.0,
@@ -50,7 +56,10 @@
         },
         {
           "key": "tiles/grass__over__dark_mud/1",
-          "file": "review/grass__over__dark_mud/1.png",
+          "before": "tiles/review/grass__over__dark_mud/1_before.webp",
+          "after": "tiles/review/grass__over__dark_mud/1_after.webp",
+          "file": "tiles/review/grass__over__dark_mud/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 1.07,
           "wall": {
             "tiling": 0.068,
@@ -67,7 +76,10 @@
         },
         {
           "key": "tiles/grass__over__dark_mud/2",
-          "file": "review/grass__over__dark_mud/2.png",
+          "before": "tiles/review/grass__over__dark_mud/2_before.webp",
+          "after": "tiles/review/grass__over__dark_mud/2_after.webp",
+          "file": "tiles/review/grass__over__dark_mud/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 0.89,
           "wall": {
             "tiling": 0.103,
@@ -91,7 +103,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__deep_water/0",
-          "file": "review/grass__over__deep_water/0.png",
+          "before": "tiles/review/grass__over__deep_water/0_before.webp",
+          "after": "tiles/review/grass__over__deep_water/0_after.webp",
+          "file": "tiles/review/grass__over__deep_water/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.8,
           "wall": {
             "tiling": 0.085,
@@ -108,7 +123,10 @@
         },
         {
           "key": "tiles/grass__over__deep_water/1",
-          "file": "review/grass__over__deep_water/1.png",
+          "before": "tiles/review/grass__over__deep_water/1_before.webp",
+          "after": "tiles/review/grass__over__deep_water/1_after.webp",
+          "file": "tiles/review/grass__over__deep_water/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.49,
           "wall": {
             "tiling": 0.0,
@@ -125,7 +143,10 @@
         },
         {
           "key": "tiles/grass__over__deep_water/2",
-          "file": "review/grass__over__deep_water/2.png",
+          "before": "tiles/review/grass__over__deep_water/2_before.webp",
+          "after": "tiles/review/grass__over__deep_water/2_after.webp",
+          "file": "tiles/review/grass__over__deep_water/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.39,
           "wall": {
             "tiling": 0.0,
@@ -149,7 +170,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__grass/0",
-          "file": "review/grass__over__grass/0.png",
+          "before": "tiles/review/grass__over__grass/0_before.webp",
+          "after": "tiles/review/grass__over__grass/0_after.webp",
+          "file": "tiles/review/grass__over__grass/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 6.06,
           "wall": {
             "tiling": 0.381,
@@ -166,7 +190,10 @@
         },
         {
           "key": "tiles/grass__over__grass/1",
-          "file": "review/grass__over__grass/1.png",
+          "before": "tiles/review/grass__over__grass/1_before.webp",
+          "after": "tiles/review/grass__over__grass/1_after.webp",
+          "file": "tiles/review/grass__over__grass/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 5.9,
           "wall": {
             "tiling": 0.49,
@@ -183,7 +210,10 @@
         },
         {
           "key": "tiles/grass__over__grass/2",
-          "file": "review/grass__over__grass/2.png",
+          "before": "tiles/review/grass__over__grass/2_before.webp",
+          "after": "tiles/review/grass__over__grass/2_after.webp",
+          "file": "tiles/review/grass__over__grass/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 5.67,
           "wall": {
             "tiling": 0.283,
@@ -207,7 +237,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__grey_stone/0",
-          "file": "review/grass__over__grey_stone/0.png",
+          "before": "tiles/review/grass__over__grey_stone/0_before.webp",
+          "after": "tiles/review/grass__over__grey_stone/0_after.webp",
+          "file": "tiles/review/grass__over__grey_stone/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 5.8,
           "wall": {
             "tiling": 0.545,
@@ -231,7 +264,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__ice/0",
-          "file": "review/grass__over__ice/0.png",
+          "before": "tiles/review/grass__over__ice/0_before.webp",
+          "after": "tiles/review/grass__over__ice/0_after.webp",
+          "file": "tiles/review/grass__over__ice/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.88,
           "wall": {
             "tiling": 0.261,
@@ -248,7 +284,10 @@
         },
         {
           "key": "tiles/grass__over__ice/1",
-          "file": "review/grass__over__ice/1.png",
+          "before": "tiles/review/grass__over__ice/1_before.webp",
+          "after": "tiles/review/grass__over__ice/1_after.webp",
+          "file": "tiles/review/grass__over__ice/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 0.0,
           "wall": {
             "tiling": 0.0,
@@ -265,7 +304,10 @@
         },
         {
           "key": "tiles/grass__over__ice/2",
-          "file": "review/grass__over__ice/2.png",
+          "before": "tiles/review/grass__over__ice/2_before.webp",
+          "after": "tiles/review/grass__over__ice/2_after.webp",
+          "file": "tiles/review/grass__over__ice/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 0.0,
           "wall": {
             "tiling": 0.0,
@@ -289,7 +331,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__lava/0",
-          "file": "review/grass__over__lava/0.png",
+          "before": "tiles/review/grass__over__lava/0_before.webp",
+          "after": "tiles/review/grass__over__lava/0_after.webp",
+          "file": "tiles/review/grass__over__lava/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.07,
           "wall": {
             "tiling": 0.256,
@@ -306,7 +351,10 @@
         },
         {
           "key": "tiles/grass__over__lava/1",
-          "file": "review/grass__over__lava/1.png",
+          "before": "tiles/review/grass__over__lava/1_before.webp",
+          "after": "tiles/review/grass__over__lava/1_after.webp",
+          "file": "tiles/review/grass__over__lava/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.3,
           "wall": {
             "tiling": 0.314,
@@ -323,7 +371,10 @@
         },
         {
           "key": "tiles/grass__over__lava/2",
-          "file": "review/grass__over__lava/2.png",
+          "before": "tiles/review/grass__over__lava/2_before.webp",
+          "after": "tiles/review/grass__over__lava/2_after.webp",
+          "file": "tiles/review/grass__over__lava/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.34,
           "wall": {
             "tiling": 0.0,
@@ -347,7 +398,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__light_beach/0",
-          "file": "review/grass__over__light_beach/0.png",
+          "before": "tiles/review/grass__over__light_beach/0_before.webp",
+          "after": "tiles/review/grass__over__light_beach/0_after.webp",
+          "file": "tiles/review/grass__over__light_beach/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 6.06,
           "wall": {
             "tiling": 0.508,
@@ -371,7 +425,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__light_soil/0",
-          "file": "review/grass__over__light_soil/0.png",
+          "before": "tiles/review/grass__over__light_soil/0_before.webp",
+          "after": "tiles/review/grass__over__light_soil/0_after.webp",
+          "file": "tiles/review/grass__over__light_soil/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 5.07,
           "wall": {
             "tiling": 0.441,
@@ -388,7 +445,10 @@
         },
         {
           "key": "tiles/grass__over__light_soil/1",
-          "file": "review/grass__over__light_soil/1.png",
+          "before": "tiles/review/grass__over__light_soil/1_before.webp",
+          "after": "tiles/review/grass__over__light_soil/1_after.webp",
+          "file": "tiles/review/grass__over__light_soil/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.92,
           "wall": {
             "tiling": 0.498,
@@ -405,7 +465,10 @@
         },
         {
           "key": "tiles/grass__over__light_soil/2",
-          "file": "review/grass__over__light_soil/2.png",
+          "before": "tiles/review/grass__over__light_soil/2_before.webp",
+          "after": "tiles/review/grass__over__light_soil/2_after.webp",
+          "file": "tiles/review/grass__over__light_soil/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.8,
           "wall": {
             "tiling": 0.52,
@@ -429,7 +492,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__parquet_floor/0",
-          "file": "review/grass__over__parquet_floor/0.png",
+          "before": "tiles/review/grass__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/grass__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/grass__over__parquet_floor/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.75,
           "wall": {
             "tiling": 0.257,
@@ -446,7 +512,10 @@
         },
         {
           "key": "tiles/grass__over__parquet_floor/1",
-          "file": "review/grass__over__parquet_floor/1.png",
+          "before": "tiles/review/grass__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/grass__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/grass__over__parquet_floor/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.7,
           "wall": {
             "tiling": 0.244,
@@ -463,7 +532,10 @@
         },
         {
           "key": "tiles/grass__over__parquet_floor/2",
-          "file": "review/grass__over__parquet_floor/2.png",
+          "before": "tiles/review/grass__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/grass__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/grass__over__parquet_floor/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.56,
           "wall": {
             "tiling": 0.211,
@@ -487,7 +559,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__paving_stone/0",
-          "file": "review/grass__over__paving_stone/0.png",
+          "before": "tiles/review/grass__over__paving_stone/0_before.webp",
+          "after": "tiles/review/grass__over__paving_stone/0_after.webp",
+          "file": "tiles/review/grass__over__paving_stone/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.77,
           "wall": {
             "tiling": 0.61,
@@ -504,7 +579,10 @@
         },
         {
           "key": "tiles/grass__over__paving_stone/1",
-          "file": "review/grass__over__paving_stone/1.png",
+          "before": "tiles/review/grass__over__paving_stone/1_before.webp",
+          "after": "tiles/review/grass__over__paving_stone/1_after.webp",
+          "file": "tiles/review/grass__over__paving_stone/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.33,
           "wall": {
             "tiling": 0.345,
@@ -521,7 +599,10 @@
         },
         {
           "key": "tiles/grass__over__paving_stone/2",
-          "file": "review/grass__over__paving_stone/2.png",
+          "before": "tiles/review/grass__over__paving_stone/2_before.webp",
+          "after": "tiles/review/grass__over__paving_stone/2_after.webp",
+          "file": "tiles/review/grass__over__paving_stone/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 1.03,
           "wall": {
             "tiling": 0.2,
@@ -545,7 +626,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__slime/0",
-          "file": "review/grass__over__slime/0.png",
+          "before": "tiles/review/grass__over__slime/0_before.webp",
+          "after": "tiles/review/grass__over__slime/0_after.webp",
+          "file": "tiles/review/grass__over__slime/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.9,
           "wall": {
             "tiling": 0.0,
@@ -562,7 +646,10 @@
         },
         {
           "key": "tiles/grass__over__slime/1",
-          "file": "review/grass__over__slime/1.png",
+          "before": "tiles/review/grass__over__slime/1_before.webp",
+          "after": "tiles/review/grass__over__slime/1_after.webp",
+          "file": "tiles/review/grass__over__slime/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.6,
           "wall": {
             "tiling": 0.0,
@@ -579,7 +666,10 @@
         },
         {
           "key": "tiles/grass__over__slime/2",
-          "file": "review/grass__over__slime/2.png",
+          "before": "tiles/review/grass__over__slime/2_before.webp",
+          "after": "tiles/review/grass__over__slime/2_after.webp",
+          "file": "tiles/review/grass__over__slime/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.6,
           "wall": {
             "tiling": 0.0,
@@ -603,7 +693,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__snow/0",
-          "file": "review/grass__over__snow/0.png",
+          "before": "tiles/review/grass__over__snow/0_before.webp",
+          "after": "tiles/review/grass__over__snow/0_after.webp",
+          "file": "tiles/review/grass__over__snow/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.88,
           "wall": {
             "tiling": 0.0,
@@ -620,7 +713,10 @@
         },
         {
           "key": "tiles/grass__over__snow/1",
-          "file": "review/grass__over__snow/1.png",
+          "before": "tiles/review/grass__over__snow/1_before.webp",
+          "after": "tiles/review/grass__over__snow/1_after.webp",
+          "file": "tiles/review/grass__over__snow/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.87,
           "wall": {
             "tiling": 0.229,
@@ -637,7 +733,10 @@
         },
         {
           "key": "tiles/grass__over__snow/2",
-          "file": "review/grass__over__snow/2.png",
+          "before": "tiles/review/grass__over__snow/2_before.webp",
+          "after": "tiles/review/grass__over__snow/2_after.webp",
+          "file": "tiles/review/grass__over__snow/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 2.86,
           "wall": {
             "tiling": 0.0,
@@ -661,7 +760,10 @@
       "candidates": [
         {
           "key": "tiles/grass__over__water/0",
-          "file": "review/grass__over__water/0.png",
+          "before": "tiles/review/grass__over__water/0_before.webp",
+          "after": "tiles/review/grass__over__water/0_after.webp",
+          "file": "tiles/review/grass__over__water/0_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.38,
           "wall": {
             "tiling": 0.154,
@@ -678,7 +780,10 @@
         },
         {
           "key": "tiles/grass__over__water/1",
-          "file": "review/grass__over__water/1.png",
+          "before": "tiles/review/grass__over__water/1_before.webp",
+          "after": "tiles/review/grass__over__water/1_after.webp",
+          "file": "tiles/review/grass__over__water/1_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 4.3,
           "wall": {
             "tiling": 0.472,
@@ -695,7 +800,10 @@
         },
         {
           "key": "tiles/grass__over__water/2",
-          "file": "review/grass__over__water/2.png",
+          "before": "tiles/review/grass__over__water/2_before.webp",
+          "after": "tiles/review/grass__over__water/2_after.webp",
+          "file": "tiles/review/grass__over__water/2_after.webp",
+          "palette_top": "#64b84d",
           "wall_score": 3.98,
           "wall": {
             "tiling": 0.191,
@@ -719,7 +827,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__black_rock/0",
-          "file": "review/ice__over__black_rock/0.png",
+          "before": "tiles/review/ice__over__black_rock/0_before.webp",
+          "after": "tiles/review/ice__over__black_rock/0_after.webp",
+          "file": "tiles/review/ice__over__black_rock/0_after.webp",
+          "palette_top": null,
           "wall_score": 5.33,
           "wall": {
             "tiling": 0.381,
@@ -736,7 +847,10 @@
         },
         {
           "key": "tiles/ice__over__black_rock/1",
-          "file": "review/ice__over__black_rock/1.png",
+          "before": "tiles/review/ice__over__black_rock/1_before.webp",
+          "after": "tiles/review/ice__over__black_rock/1_after.webp",
+          "file": "tiles/review/ice__over__black_rock/1_after.webp",
+          "palette_top": null,
           "wall_score": 3.24,
           "wall": {
             "tiling": 0.0,
@@ -753,7 +867,10 @@
         },
         {
           "key": "tiles/ice__over__black_rock/2",
-          "file": "review/ice__over__black_rock/2.png",
+          "before": "tiles/review/ice__over__black_rock/2_before.webp",
+          "after": "tiles/review/ice__over__black_rock/2_after.webp",
+          "file": "tiles/review/ice__over__black_rock/2_after.webp",
+          "palette_top": null,
           "wall_score": 3.18,
           "wall": {
             "tiling": 0.132,
@@ -777,7 +894,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__grass/0",
-          "file": "review/ice__over__grass/0.png",
+          "before": "tiles/review/ice__over__grass/0_before.webp",
+          "after": "tiles/review/ice__over__grass/0_after.webp",
+          "file": "tiles/review/ice__over__grass/0_after.webp",
+          "palette_top": null,
           "wall_score": 3.07,
           "wall": {
             "tiling": 0.0,
@@ -794,7 +914,10 @@
         },
         {
           "key": "tiles/ice__over__grass/1",
-          "file": "review/ice__over__grass/1.png",
+          "before": "tiles/review/ice__over__grass/1_before.webp",
+          "after": "tiles/review/ice__over__grass/1_after.webp",
+          "file": "tiles/review/ice__over__grass/1_after.webp",
+          "palette_top": null,
           "wall_score": 2.82,
           "wall": {
             "tiling": 0.0,
@@ -811,7 +934,10 @@
         },
         {
           "key": "tiles/ice__over__grass/2",
-          "file": "review/ice__over__grass/2.png",
+          "before": "tiles/review/ice__over__grass/2_before.webp",
+          "after": "tiles/review/ice__over__grass/2_after.webp",
+          "file": "tiles/review/ice__over__grass/2_after.webp",
+          "palette_top": null,
           "wall_score": 2.28,
           "wall": {
             "tiling": 0.0,
@@ -835,7 +961,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__grey_stone/0",
-          "file": "review/ice__over__grey_stone/0.png",
+          "before": "tiles/review/ice__over__grey_stone/0_before.webp",
+          "after": "tiles/review/ice__over__grey_stone/0_after.webp",
+          "file": "tiles/review/ice__over__grey_stone/0_after.webp",
+          "palette_top": null,
           "wall_score": 4.41,
           "wall": {
             "tiling": 0.376,
@@ -852,7 +981,10 @@
         },
         {
           "key": "tiles/ice__over__grey_stone/1",
-          "file": "review/ice__over__grey_stone/1.png",
+          "before": "tiles/review/ice__over__grey_stone/1_before.webp",
+          "after": "tiles/review/ice__over__grey_stone/1_after.webp",
+          "file": "tiles/review/ice__over__grey_stone/1_after.webp",
+          "palette_top": null,
           "wall_score": 4.07,
           "wall": {
             "tiling": 0.214,
@@ -869,7 +1001,10 @@
         },
         {
           "key": "tiles/ice__over__grey_stone/2",
-          "file": "review/ice__over__grey_stone/2.png",
+          "before": "tiles/review/ice__over__grey_stone/2_before.webp",
+          "after": "tiles/review/ice__over__grey_stone/2_after.webp",
+          "file": "tiles/review/ice__over__grey_stone/2_after.webp",
+          "palette_top": null,
           "wall_score": 4.06,
           "wall": {
             "tiling": 0.0,
@@ -893,7 +1028,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__ice/0",
-          "file": "review/ice__over__ice/0.png",
+          "before": "tiles/review/ice__over__ice/0_before.webp",
+          "after": "tiles/review/ice__over__ice/0_after.webp",
+          "file": "tiles/review/ice__over__ice/0_after.webp",
+          "palette_top": null,
           "wall_score": 4.51,
           "wall": {
             "tiling": 0.512,
@@ -910,7 +1048,10 @@
         },
         {
           "key": "tiles/ice__over__ice/1",
-          "file": "review/ice__over__ice/1.png",
+          "before": "tiles/review/ice__over__ice/1_before.webp",
+          "after": "tiles/review/ice__over__ice/1_after.webp",
+          "file": "tiles/review/ice__over__ice/1_after.webp",
+          "palette_top": null,
           "wall_score": 3.67,
           "wall": {
             "tiling": 0.367,
@@ -927,7 +1068,10 @@
         },
         {
           "key": "tiles/ice__over__ice/2",
-          "file": "review/ice__over__ice/2.png",
+          "before": "tiles/review/ice__over__ice/2_before.webp",
+          "after": "tiles/review/ice__over__ice/2_after.webp",
+          "file": "tiles/review/ice__over__ice/2_after.webp",
+          "palette_top": null,
           "wall_score": 2.92,
           "wall": {
             "tiling": 0.242,
@@ -951,7 +1095,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__light_beach/0",
-          "file": "review/ice__over__light_beach/0.png",
+          "before": "tiles/review/ice__over__light_beach/0_before.webp",
+          "after": "tiles/review/ice__over__light_beach/0_after.webp",
+          "file": "tiles/review/ice__over__light_beach/0_after.webp",
+          "palette_top": null,
           "wall_score": 6.96,
           "wall": {
             "tiling": 0.645,
@@ -968,7 +1115,10 @@
         },
         {
           "key": "tiles/ice__over__light_beach/1",
-          "file": "review/ice__over__light_beach/1.png",
+          "before": "tiles/review/ice__over__light_beach/1_before.webp",
+          "after": "tiles/review/ice__over__light_beach/1_after.webp",
+          "file": "tiles/review/ice__over__light_beach/1_after.webp",
+          "palette_top": null,
           "wall_score": 6.41,
           "wall": {
             "tiling": 0.689,
@@ -985,7 +1135,10 @@
         },
         {
           "key": "tiles/ice__over__light_beach/2",
-          "file": "review/ice__over__light_beach/2.png",
+          "before": "tiles/review/ice__over__light_beach/2_before.webp",
+          "after": "tiles/review/ice__over__light_beach/2_after.webp",
+          "file": "tiles/review/ice__over__light_beach/2_after.webp",
+          "palette_top": null,
           "wall_score": 6.19,
           "wall": {
             "tiling": 0.696,
@@ -1009,7 +1162,10 @@
       "candidates": [
         {
           "key": "tiles/ice__over__snow/0",
-          "file": "review/ice__over__snow/0.png",
+          "before": "tiles/review/ice__over__snow/0_before.webp",
+          "after": "tiles/review/ice__over__snow/0_after.webp",
+          "file": "tiles/review/ice__over__snow/0_after.webp",
+          "palette_top": null,
           "wall_score": 2.95,
           "wall": {
             "tiling": 0.478,
@@ -1026,7 +1182,10 @@
         },
         {
           "key": "tiles/ice__over__snow/1",
-          "file": "review/ice__over__snow/1.png",
+          "before": "tiles/review/ice__over__snow/1_before.webp",
+          "after": "tiles/review/ice__over__snow/1_after.webp",
+          "file": "tiles/review/ice__over__snow/1_after.webp",
+          "palette_top": null,
           "wall_score": 2.41,
           "wall": {
             "tiling": 0.391,
@@ -1043,7 +1202,10 @@
         },
         {
           "key": "tiles/ice__over__snow/2",
-          "file": "review/ice__over__snow/2.png",
+          "before": "tiles/review/ice__over__snow/2_before.webp",
+          "after": "tiles/review/ice__over__snow/2_after.webp",
+          "file": "tiles/review/ice__over__snow/2_after.webp",
+          "palette_top": null,
           "wall_score": 2.15,
           "wall": {
             "tiling": 0.336,
@@ -1067,7 +1229,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__black_rock/0",
-          "file": "review/snow__over__black_rock/0.png",
+          "before": "tiles/review/snow__over__black_rock/0_before.webp",
+          "after": "tiles/review/snow__over__black_rock/0_after.webp",
+          "file": "tiles/review/snow__over__black_rock/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.35,
           "wall": {
             "tiling": 0.13,
@@ -1084,7 +1249,10 @@
         },
         {
           "key": "tiles/snow__over__black_rock/1",
-          "file": "review/snow__over__black_rock/1.png",
+          "before": "tiles/review/snow__over__black_rock/1_before.webp",
+          "after": "tiles/review/snow__over__black_rock/1_after.webp",
+          "file": "tiles/review/snow__over__black_rock/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.52,
           "wall": {
             "tiling": 0.0,
@@ -1101,7 +1269,10 @@
         },
         {
           "key": "tiles/snow__over__black_rock/2",
-          "file": "review/snow__over__black_rock/2.png",
+          "before": "tiles/review/snow__over__black_rock/2_before.webp",
+          "after": "tiles/review/snow__over__black_rock/2_after.webp",
+          "file": "tiles/review/snow__over__black_rock/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.43,
           "wall": {
             "tiling": 0.0,
@@ -1125,7 +1296,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__dark_mud/0",
-          "file": "review/snow__over__dark_mud/0.png",
+          "before": "tiles/review/snow__over__dark_mud/0_before.webp",
+          "after": "tiles/review/snow__over__dark_mud/0_after.webp",
+          "file": "tiles/review/snow__over__dark_mud/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.81,
           "wall": {
             "tiling": 0.651,
@@ -1142,7 +1316,10 @@
         },
         {
           "key": "tiles/snow__over__dark_mud/1",
-          "file": "review/snow__over__dark_mud/1.png",
+          "before": "tiles/review/snow__over__dark_mud/1_before.webp",
+          "after": "tiles/review/snow__over__dark_mud/1_after.webp",
+          "file": "tiles/review/snow__over__dark_mud/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.12,
           "wall": {
             "tiling": 0.0,
@@ -1159,7 +1336,10 @@
         },
         {
           "key": "tiles/snow__over__dark_mud/2",
-          "file": "review/snow__over__dark_mud/2.png",
+          "before": "tiles/review/snow__over__dark_mud/2_before.webp",
+          "after": "tiles/review/snow__over__dark_mud/2_after.webp",
+          "file": "tiles/review/snow__over__dark_mud/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.37,
           "wall": {
             "tiling": 0.265,
@@ -1183,7 +1363,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__deep_water/0",
-          "file": "review/snow__over__deep_water/0.png",
+          "before": "tiles/review/snow__over__deep_water/0_before.webp",
+          "after": "tiles/review/snow__over__deep_water/0_after.webp",
+          "file": "tiles/review/snow__over__deep_water/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.97,
           "wall": {
             "tiling": 0.0,
@@ -1200,7 +1383,10 @@
         },
         {
           "key": "tiles/snow__over__deep_water/1",
-          "file": "review/snow__over__deep_water/1.png",
+          "before": "tiles/review/snow__over__deep_water/1_before.webp",
+          "after": "tiles/review/snow__over__deep_water/1_after.webp",
+          "file": "tiles/review/snow__over__deep_water/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.7,
           "wall": {
             "tiling": 0.051,
@@ -1217,7 +1403,10 @@
         },
         {
           "key": "tiles/snow__over__deep_water/2",
-          "file": "review/snow__over__deep_water/2.png",
+          "before": "tiles/review/snow__over__deep_water/2_before.webp",
+          "after": "tiles/review/snow__over__deep_water/2_after.webp",
+          "file": "tiles/review/snow__over__deep_water/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.35,
           "wall": {
             "tiling": 0.31,
@@ -1241,7 +1430,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__grass/0",
-          "file": "review/snow__over__grass/0.png",
+          "before": "tiles/review/snow__over__grass/0_before.webp",
+          "after": "tiles/review/snow__over__grass/0_after.webp",
+          "file": "tiles/review/snow__over__grass/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.78,
           "wall": {
             "tiling": 0.0,
@@ -1258,7 +1450,10 @@
         },
         {
           "key": "tiles/snow__over__grass/1",
-          "file": "review/snow__over__grass/1.png",
+          "before": "tiles/review/snow__over__grass/1_before.webp",
+          "after": "tiles/review/snow__over__grass/1_after.webp",
+          "file": "tiles/review/snow__over__grass/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.54,
           "wall": {
             "tiling": 0.0,
@@ -1275,7 +1470,10 @@
         },
         {
           "key": "tiles/snow__over__grass/2",
-          "file": "review/snow__over__grass/2.png",
+          "before": "tiles/review/snow__over__grass/2_before.webp",
+          "after": "tiles/review/snow__over__grass/2_after.webp",
+          "file": "tiles/review/snow__over__grass/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.26,
           "wall": {
             "tiling": 0.0,
@@ -1299,7 +1497,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__grey_stone/0",
-          "file": "review/snow__over__grey_stone/0.png",
+          "before": "tiles/review/snow__over__grey_stone/0_before.webp",
+          "after": "tiles/review/snow__over__grey_stone/0_after.webp",
+          "file": "tiles/review/snow__over__grey_stone/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 6.46,
           "wall": {
             "tiling": 0.402,
@@ -1316,7 +1517,10 @@
         },
         {
           "key": "tiles/snow__over__grey_stone/1",
-          "file": "review/snow__over__grey_stone/1.png",
+          "before": "tiles/review/snow__over__grey_stone/1_before.webp",
+          "after": "tiles/review/snow__over__grey_stone/1_after.webp",
+          "file": "tiles/review/snow__over__grey_stone/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.24,
           "wall": {
             "tiling": 0.075,
@@ -1333,7 +1537,10 @@
         },
         {
           "key": "tiles/snow__over__grey_stone/2",
-          "file": "review/snow__over__grey_stone/2.png",
+          "before": "tiles/review/snow__over__grey_stone/2_before.webp",
+          "after": "tiles/review/snow__over__grey_stone/2_after.webp",
+          "file": "tiles/review/snow__over__grey_stone/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.58,
           "wall": {
             "tiling": 0.168,
@@ -1357,7 +1564,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__ice/0",
-          "file": "review/snow__over__ice/0.png",
+          "before": "tiles/review/snow__over__ice/0_before.webp",
+          "after": "tiles/review/snow__over__ice/0_after.webp",
+          "file": "tiles/review/snow__over__ice/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.26,
           "wall": {
             "tiling": 0.061,
@@ -1374,7 +1584,10 @@
         },
         {
           "key": "tiles/snow__over__ice/1",
-          "file": "review/snow__over__ice/1.png",
+          "before": "tiles/review/snow__over__ice/1_before.webp",
+          "after": "tiles/review/snow__over__ice/1_after.webp",
+          "file": "tiles/review/snow__over__ice/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.74,
           "wall": {
             "tiling": 0.14,
@@ -1391,7 +1604,10 @@
         },
         {
           "key": "tiles/snow__over__ice/2",
-          "file": "review/snow__over__ice/2.png",
+          "before": "tiles/review/snow__over__ice/2_before.webp",
+          "after": "tiles/review/snow__over__ice/2_after.webp",
+          "file": "tiles/review/snow__over__ice/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.6,
           "wall": {
             "tiling": 0.156,
@@ -1415,7 +1631,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__lava/0",
-          "file": "review/snow__over__lava/0.png",
+          "before": "tiles/review/snow__over__lava/0_before.webp",
+          "after": "tiles/review/snow__over__lava/0_after.webp",
+          "file": "tiles/review/snow__over__lava/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.47,
           "wall": {
             "tiling": 0.0,
@@ -1432,7 +1651,10 @@
         },
         {
           "key": "tiles/snow__over__lava/1",
-          "file": "review/snow__over__lava/1.png",
+          "before": "tiles/review/snow__over__lava/1_before.webp",
+          "after": "tiles/review/snow__over__lava/1_after.webp",
+          "file": "tiles/review/snow__over__lava/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.63,
           "wall": {
             "tiling": 0.0,
@@ -1449,7 +1671,10 @@
         },
         {
           "key": "tiles/snow__over__lava/2",
-          "file": "review/snow__over__lava/2.png",
+          "before": "tiles/review/snow__over__lava/2_before.webp",
+          "after": "tiles/review/snow__over__lava/2_after.webp",
+          "file": "tiles/review/snow__over__lava/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.23,
           "wall": {
             "tiling": 0.0,
@@ -1473,7 +1698,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__light_beach/0",
-          "file": "review/snow__over__light_beach/0.png",
+          "before": "tiles/review/snow__over__light_beach/0_before.webp",
+          "after": "tiles/review/snow__over__light_beach/0_after.webp",
+          "file": "tiles/review/snow__over__light_beach/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.9,
           "wall": {
             "tiling": 0.428,
@@ -1490,7 +1718,10 @@
         },
         {
           "key": "tiles/snow__over__light_beach/1",
-          "file": "review/snow__over__light_beach/1.png",
+          "before": "tiles/review/snow__over__light_beach/1_before.webp",
+          "after": "tiles/review/snow__over__light_beach/1_after.webp",
+          "file": "tiles/review/snow__over__light_beach/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.84,
           "wall": {
             "tiling": 0.637,
@@ -1514,7 +1745,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__light_soil/0",
-          "file": "review/snow__over__light_soil/0.png",
+          "before": "tiles/review/snow__over__light_soil/0_before.webp",
+          "after": "tiles/review/snow__over__light_soil/0_after.webp",
+          "file": "tiles/review/snow__over__light_soil/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.05,
           "wall": {
             "tiling": 0.0,
@@ -1531,7 +1765,10 @@
         },
         {
           "key": "tiles/snow__over__light_soil/1",
-          "file": "review/snow__over__light_soil/1.png",
+          "before": "tiles/review/snow__over__light_soil/1_before.webp",
+          "after": "tiles/review/snow__over__light_soil/1_after.webp",
+          "file": "tiles/review/snow__over__light_soil/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.47,
           "wall": {
             "tiling": 0.253,
@@ -1548,7 +1785,10 @@
         },
         {
           "key": "tiles/snow__over__light_soil/2",
-          "file": "review/snow__over__light_soil/2.png",
+          "before": "tiles/review/snow__over__light_soil/2_before.webp",
+          "after": "tiles/review/snow__over__light_soil/2_after.webp",
+          "file": "tiles/review/snow__over__light_soil/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 1.23,
           "wall": {
             "tiling": 0.003,
@@ -1572,7 +1812,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__parquet_floor/0",
-          "file": "review/snow__over__parquet_floor/0.png",
+          "before": "tiles/review/snow__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/snow__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/snow__over__parquet_floor/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 6.95,
           "wall": {
             "tiling": 0.596,
@@ -1589,7 +1832,10 @@
         },
         {
           "key": "tiles/snow__over__parquet_floor/1",
-          "file": "review/snow__over__parquet_floor/1.png",
+          "before": "tiles/review/snow__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/snow__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/snow__over__parquet_floor/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 5.61,
           "wall": {
             "tiling": 0.32,
@@ -1606,7 +1852,10 @@
         },
         {
           "key": "tiles/snow__over__parquet_floor/2",
-          "file": "review/snow__over__parquet_floor/2.png",
+          "before": "tiles/review/snow__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/snow__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/snow__over__parquet_floor/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.84,
           "wall": {
             "tiling": 0.319,
@@ -1630,7 +1879,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__paving_stone/0",
-          "file": "review/snow__over__paving_stone/0.png",
+          "before": "tiles/review/snow__over__paving_stone/0_before.webp",
+          "after": "tiles/review/snow__over__paving_stone/0_after.webp",
+          "file": "tiles/review/snow__over__paving_stone/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 3.19,
           "wall": {
             "tiling": 0.0,
@@ -1654,7 +1906,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__slime/0",
-          "file": "review/snow__over__slime/0.png",
+          "before": "tiles/review/snow__over__slime/0_before.webp",
+          "after": "tiles/review/snow__over__slime/0_after.webp",
+          "file": "tiles/review/snow__over__slime/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.41,
           "wall": {
             "tiling": 0.212,
@@ -1671,7 +1926,10 @@
         },
         {
           "key": "tiles/snow__over__slime/1",
-          "file": "review/snow__over__slime/1.png",
+          "before": "tiles/review/snow__over__slime/1_before.webp",
+          "after": "tiles/review/snow__over__slime/1_after.webp",
+          "file": "tiles/review/snow__over__slime/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.11,
           "wall": {
             "tiling": 0.127,
@@ -1688,7 +1946,10 @@
         },
         {
           "key": "tiles/snow__over__slime/2",
-          "file": "review/snow__over__slime/2.png",
+          "before": "tiles/review/snow__over__slime/2_before.webp",
+          "after": "tiles/review/snow__over__slime/2_after.webp",
+          "file": "tiles/review/snow__over__slime/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 2.0,
           "wall": {
             "tiling": 0.057,
@@ -1712,7 +1973,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__snow/0",
-          "file": "review/snow__over__snow/0.png",
+          "before": "tiles/review/snow__over__snow/0_before.webp",
+          "after": "tiles/review/snow__over__snow/0_after.webp",
+          "file": "tiles/review/snow__over__snow/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.81,
           "wall": {
             "tiling": 0.309,
@@ -1729,7 +1993,10 @@
         },
         {
           "key": "tiles/snow__over__snow/1",
-          "file": "review/snow__over__snow/1.png",
+          "before": "tiles/review/snow__over__snow/1_before.webp",
+          "after": "tiles/review/snow__over__snow/1_after.webp",
+          "file": "tiles/review/snow__over__snow/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.73,
           "wall": {
             "tiling": 0.275,
@@ -1746,7 +2013,10 @@
         },
         {
           "key": "tiles/snow__over__snow/2",
-          "file": "review/snow__over__snow/2.png",
+          "before": "tiles/review/snow__over__snow/2_before.webp",
+          "after": "tiles/review/snow__over__snow/2_after.webp",
+          "file": "tiles/review/snow__over__snow/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.7,
           "wall": {
             "tiling": 0.275,
@@ -1770,7 +2040,10 @@
       "candidates": [
         {
           "key": "tiles/snow__over__water/0",
-          "file": "review/snow__over__water/0.png",
+          "before": "tiles/review/snow__over__water/0_before.webp",
+          "after": "tiles/review/snow__over__water/0_after.webp",
+          "file": "tiles/review/snow__over__water/0_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 6.21,
           "wall": {
             "tiling": 0.401,
@@ -1787,7 +2060,10 @@
         },
         {
           "key": "tiles/snow__over__water/1",
-          "file": "review/snow__over__water/1.png",
+          "before": "tiles/review/snow__over__water/1_before.webp",
+          "after": "tiles/review/snow__over__water/1_after.webp",
+          "file": "tiles/review/snow__over__water/1_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 5.16,
           "wall": {
             "tiling": 0.271,
@@ -1804,7 +2080,10 @@
         },
         {
           "key": "tiles/snow__over__water/2",
-          "file": "review/snow__over__water/2.png",
+          "before": "tiles/review/snow__over__water/2_before.webp",
+          "after": "tiles/review/snow__over__water/2_after.webp",
+          "file": "tiles/review/snow__over__water/2_after.webp",
+          "palette_top": "#e0f0f7",
           "wall_score": 4.96,
           "wall": {
             "tiling": 0.24,

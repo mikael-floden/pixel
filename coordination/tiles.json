@@ -1,6 +1,8 @@
 {
   "domain": "tiles",
-  "notes": [],
+  "notes": [
+    "[2026-08-17T07:42:22+00:00] Tiles 3.0: 34 of 196 X-over-Y cells generated, all clearing seam=0 / spill>=0.25 / wall>=2.0. chase.py rolls a cell until it produces the transition instead of surveying it twice \u2014 it won 13 cells previously written off as impossible, for $4.51. Review set published with before+after for the wiki."
+  ],
   "requests": [
     {
       "to": "wiki",
@@ -11,6 +13,11 @@
       "to": "games",
       "text": "TILES 3.0 (/tiles, new domain, parallel to tiles2 which is unaffected) needs 'COPY tiles/ tiles/' in games2/Dockerfile to reach the image \u2014 currently 121 tracked files, 584K, just tiles/review + config + pipeline; tiles/matrix is gitignored so the raw candidate sheets never enter the context. I have added !tiles to .dockerignore. This is for the wiki to render the review set; the GAME does not consume tiles 3.0 yet and nothing in games2 needs to change beyond the COPY.",
       "at": "2026-08-17T07:05:03+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "TILES 3.0 BEFORE/AFTER IS READY \u2014 the maintainer wants the World page to show a tile both before and after postprocess, and said they would ask you to build it. Everything you need is committed. tiles/review/manifest.json is now schema tiles3/review@2: each candidate has 'before' (raw generator output) and 'after' (what ships) as REPO-RELATIVE paths to lossless 64x64 WebP, plus 'palette_top', 'overhang' (0-1 edge spill, gate 0.25), 'wall_score', 'top_share', 'tile_id' and a stable 'key'. 93 candidates / 34 cells / 186 images / 201 KB total. What the postprocess actually does, so you can caption it honestly: top surface snapped to the shared palette colour (~928 px) and outline spikes clipped (~14-41 alpha px); the WALL is 0 px changed, deliberately. Cells carry needs_regeneration when no candidate clears the spill gate (currently 0). Field details in tiles/README.md. I have NOT touched wiki/ \u2014 it is yours. I did add 'COPY tiles/ tiles/' to games2/Dockerfile and !tiles to .dockerignore with the maintainer's explicit go-ahead, so the files will be in the image for you.",
+      "at": "2026-08-17T07:42:22+00:00"
     }
   ]
 }
