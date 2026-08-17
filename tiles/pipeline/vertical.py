@@ -68,7 +68,6 @@ together without a second pass.
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import os
 import sys
@@ -301,8 +300,14 @@ def band(src, levels=4, level_px=LEVEL_PX, top_hex=None, same_material=False,
         }
     if not parts["faces"]:
         return None
-    for k in ("band", "lip", "base", "step", "interior", "texture"):
+    for k in ("band", "lip", "base", "step", "interior"):
         parts[k] = round(max(f[k] for f in parts["faces"].values()), 2)
+    # texture takes the MIN across faces, alone among these. Every other number is a
+    # defect and the worse face is the one you see; texture is the opposite — it exists
+    # to expose a wall that scores well by having nothing on it, and a tile with one dead
+    # face and one textured one is that tile. ice__over__ice/2 measures 0.65 left and
+    # 0.00 right; the max would report it as textured.
+    parts["texture"] = round(min(f["texture"] for f in parts["faces"].values()), 2)
     parts["worst_face"] = max(parts["faces"], key=lambda f: parts["faces"][f]["band"])
     score = parts["band"] + (LEAK_PENALTY if parts["leak"] > LEAK_TOL else 0.0)
     parts["score"] = round(score, 2)
