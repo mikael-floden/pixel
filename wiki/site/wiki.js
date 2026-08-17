@@ -271,7 +271,7 @@ const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
-  tuning: { monsters: null, constants: null, shadow_notes: null },
+  tuning: { monsters: null, constants: null, shadow_notes: null, tile_walls: null },
   dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
   // Per file: WHICH ids this session actually edited. Saves send exactly
   // these ids as a delta — the server merges them into the current document,
@@ -1664,7 +1664,11 @@ function aggroPill(st) {
 }
 /** A row of mutually exclusive sort buttons. Its own fixed-height row, so the
  *  grid below it never shifts as the order changes. */
-function sortBar(key, options, current, onPick) {
+/** `persist: false` for a strip whose choice belongs to the DATA rather than
+ *  to this browser — the per-tile wall mode is one control per tile, and
+ *  remembering hundreds of them in localStorage would be storing the document
+ *  twice, in a place that can go stale against it. */
+function sortBar(key, options, current, onPick, { persist = true } = {}) {
   // The row carries its storage key: three of these stack on the Scenery page
   // (type, sort, review status) and several share chip ids like "all", so
   // anything selecting a chip — including the gates — needs to say which row
@@ -1673,7 +1677,7 @@ function sortBar(key, options, current, onPick) {
   row.append(...options.map(([id, label, title]) => h("button", {
     class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
     role: "radio", "aria-checked": id === current ? "true" : "false",
-    onclick: () => { try { localStorage.setItem(key, id); } catch { /* private mode */ } onPick(id); },
+    onclick: () => { if (persist) { try { localStorage.setItem(key, id); } catch { /* private mode */ } } onPick(id); },
   }, label)));
   // The strip pans instead of wrapping, so the chosen chip can start off
   // screen — 8 types do not fit a phone. Bring it into view once laid out.
@@ -2984,6 +2988,44 @@ function viewWorldType(top) {
  * showing it in the picture of what the ground will look like would be the
  * wiki arguing with him.
  */
+/* CAN THIS TILE BUILD ITS OWN WALL? (maintainer 2026-08-17, after seeing the
+ * cliffs: "some tiles in fact do look good and can build a wall and some need
+ * help from the stone over stone / grass over grass (the pure tile). By
+ * default a tile should be able to create it's own wall, but I as an admin
+ * should be able to change the tile to top tile only. A top-tile-only tile
+ * should then use the 100% (x over x) tile for building the wall.")
+ *
+ * A PROPERTY OF THE TILE, not a verdict on it — a top-tile-only tile is not
+ * worse, it is a tile with one job — so it rides its own live document rather
+ * than overloading the feedback file four other agents share. Per TILE and not
+ * per pair, because the wall metrics that decide it (tiling, discretion,
+ * structure) are measured per tile: one generation of a pair can stack and its
+ * neighbour cannot.
+ *
+ * DEFAULT IS "OWN WALL", which is what he asked for and also the safe way
+ * round: a wrongly-defaulted tile shows a bad wall in the preview and gets
+ * marked, where a wrongly-defaulted "top only" would silently hide a tile that
+ * was fine.
+ */
+const TILEWALL_KEY = "tuning/tile_walls";
+const tileWalls = () => state.tuning.tile_walls ?? (state.tuning.tile_walls = { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} });
+const topOnly = (key) => tileWalls().overrides?.[key]?.top_only === true;
+function setTopOnly(key, on) {
+  const doc = tileWalls();
+  // Absent means the default, so "own wall" DELETES rather than writing false:
+  // a file of explicit defaults would grow to every tile ever generated and
+  // say nothing.
+  if (!on) delete (doc.overrides ??= {})[key];
+  else (doc.overrides ??= {})[key] = { top_only: true, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(TILEWALL_KEY, key);
+  markDirty(TILEWALL_KEY);
+}
+const WALL_MODES = {
+  own: { label: "own wall", title: "This tile stacks to build its own cliff — the default" },
+  top: { label: "top only", title: "Only ever the top of a column; whatever stacks under it is the pure tile" },
+};
+
 const WORLD_POOL_KEY = "wiki-world-pool";
 const WORLD_POOLS = {
   open: { label: "+ unreviewed", title: "Randomize over approved AND unreviewed tiles — rejected ones never appear" },
@@ -3006,6 +3048,17 @@ const mulberry = (seed) => () => {
   t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
+/** What the courses under the crown are made of, in words — the flag is only
+ *  useful if the picture says which rule it is following. */
+function wallSource(cell, pool) {
+  const walkers = pool.filter((c) => !topOnly(c.key));
+  const base = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
+  const haveBase = base && poolFor(base).some((c) => !topOnly(c.key));
+  if (walkers.length === pool.length && pool.length) return "Three 3-high stacks; this set builds its own wall.";
+  if (walkers.length) return `Three 3-high stacks; the wall is built from the ${walkers.length} tile${walkers.length === 1 ? "" : "s"} in this set that can stack.`;
+  if (haveBase) return `Three 3-high stacks; every tile here is top-only, so the wall is ${typeLabelWorld(cell.side).toLowerCase()} over itself.`;
+  return "Three 3-high stacks; no wall-capable tile yet, so the set is stacked as it is.";
+}
 function worldScenes(cell, seed) {
   const pool = poolFor(cell);
   const box = h("div", { class: "world-scenes" });
@@ -3038,15 +3091,20 @@ function worldScenes(cell, seed) {
   // is ice over ice. Rolling the pair at every level instead left the pair's
   // OWN top peeking as a rim between courses (visible in the first cut: bands
   // of grass between the ice), which is a cliff the game will never build.
+  // WHAT STACKS UNDER THE CROWN. By default a tile builds its own wall, so the
+  // courses come from this set — but only from the tiles that CAN: one marked
+  // "top only" is exactly the tile that must not appear in a wall. When none
+  // of them can, the wall is the pure tile, the wall material over itself.
+  const walkers = pool.filter((c) => !topOnly(c.key));
   const base = worldCells().find((x) => x.top === cell.side && x.side === cell.side);
-  const basePool = base ? poolFor(base) : [];
-  // No self pair for the wall material yet (the agent is still filling the
-  // matrix): fall back to the set's own tiles, since a rim is a smaller lie
-  // than a hole.
+  const basePool = base ? poolFor(base).filter((c) => !topOnly(c.key)) : [];
+  const artOf = (c) => ((worldView() === "before" && c.raw) ? c.raw : c.art);
+  // Nothing left to build with — no wall-capable tile in the set and no self
+  // pair for the material yet (the agent is still filling the matrix). Fall
+  // back to the set, since a rim is a smaller lie than a hole.
   const pickBase = () => {
-    if (!basePool.length) return pick();
-    const c = basePool[Math.floor(rnd() * basePool.length) % basePool.length];
-    return (worldView() === "before" && c.raw) ? c.raw : c.art;
+    const from = walkers.length ? walkers : basePool.length ? basePool : pool;
+    return artOf(from[Math.floor(rnd() * from.length) % from.length]);
   };
   const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
     ...pos, lvl: 2, img: pickBase(), top: pick(), stack: [pickBase(), pickBase()],
@@ -3060,9 +3118,7 @@ function worldScenes(cell, seed) {
         h("div", { class: "iso-stage checker" }, isoScene(flat, images))),
       h("div", { class: "world-scene", "data-tiles": [...new Set(vee.flatMap((d) => [d.img, ...(d.stack ?? [])]))].join(" ") },
         h("div", { class: "panel-title" }, "Stacked — a cliff corner"),
-        h("p", { class: "muted iso-hint" }, base
-          ? `Three 3-high stacks; only the crown is this pair — everything under it is ${typeLabelWorld(cell.side).toLowerCase()} over itself, the way the game builds a cliff.`
-          : "Three 3-high stacks meeting at a corner, every level its own tile."),
+        h("p", { class: "muted iso-hint" }, wallSource(cell, pool)),
         h("div", { class: "iso-stage checker" }, isoScene(vee, images))));
   });
   return box;
@@ -3137,6 +3193,18 @@ function viewWorldPair(top, side) {
  *  verdict. The metrics are the agent's own — `wall_score` is what it ranks
  *  by, and the four parts are published so a low score is explainable rather
  *  than merely low. */
+/** The wall-mode strip, which has to REDRAW ITSELF: a pick-one that keeps
+ *  showing the old pick after you press it is worse than no control at all. */
+function wallModeRow(cand, onVerdict) {
+  const box = h("div", { class: "card-sub wall-mode" });
+  const draw = () => box.replaceChildren(
+    h("span", { class: "muted" }, "Wall"),
+    sortBar(`tile-wall:${cand.key}`, Object.entries(WALL_MODES).map(([id, m]) => [id, m.label, m.title]),
+      topOnly(cand.key) ? "top" : "own",
+      (v) => { setTopOnly(cand.key, v === "top"); draw(); onVerdict?.(); }, { persist: false }));
+  draw();
+  return box;
+}
 function worldCandidate(cell, cand, i, onVerdict) {
   const v = wallVerdict(cand.wallScore);
   const st = state.admin ? fb("tiles", cand.key).status : null;
@@ -3159,6 +3227,10 @@ function worldCandidate(cell, cand, i, onVerdict) {
         cand.paletteTop ? h("span", { class: "swatch-wrap", title: `the flat colour the top settled on — ${cand.paletteTop}` },
           h("span", { class: "swatch", style: `background:${/^#[0-9a-f]{3,8}$/i.test(cand.paletteTop) ? cand.paletteTop : "transparent"}` }), cand.paletteTop) : null)
       : null,
+    // CAN IT BUILD A WALL? Its own row, above the verdict: this is not a
+    // judgement on the tile, it is what the tile is FOR, and a tile marked
+    // top-only is still a keeper.
+    state.admin ? wallModeRow(cand, onVerdict) : null,
     state.admin ? h("div", { class: "card-sub" },
       feedbackRow("tiles", cand.key, {
         onchange: onVerdict,
@@ -5258,21 +5330,23 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
-       fromApi((s) => s.tuning.shadow_notes),
+       fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
         fetchJson(new URL("live/tuning/constants.json", ROOT)),
         fetchJson(new URL("live/tuning/sfx_requests.json", ROOT)),
         fetchJson(new URL("live/tuning/shadow_notes.json", ROOT)),
+        fetchJson(new URL("live/tuning/tile_walls.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   state.tuning.sfx_requests = sfxReq ?? { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   state.tuning.shadow_notes = shadowNotes ?? { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
+  state.tuning.tile_walls = tileWalls ?? { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

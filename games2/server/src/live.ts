@@ -56,6 +56,13 @@ const LIVE_FILES: Record<string, string> = {
   // <monster>#<state>#<direction>, each carrying what the wiki drew and what
   // he moved it to. See live/README.md.
   "tuning/shadow_notes.json": "tuning/shadow_notes",
+  // WHICH TILES MAY BUILD THEIR OWN WALL. Tiles 3.0 generates a tile as "A
+  // over B" — top A, walls B — and most can be stacked to make a cliff out of
+  // themselves. Some cannot, and the Game Master marks those TOP TILE ONLY, so
+  // whatever stacks under them is the pure "B over B" tile instead. Consumed
+  // by the tiles agent and, when 3.0 ships, by whatever paints the ground.
+  // See live/README.md.
+  "tuning/tile_walls.json": "tuning/tile_walls",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -71,6 +78,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
+  if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -349,7 +357,7 @@ export function registerLiveRoutes(app: express.Application): void {
       fetched_at: fetchedAt,
       tuning: {
         monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
-        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"),
+        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });

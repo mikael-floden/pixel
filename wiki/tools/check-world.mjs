@@ -266,22 +266,12 @@ console.log("layouts:", JSON.stringify({ heads, lay }));
 ok(lay.length === 2, `the pair page lays the set out in TWO shapes (${lay.length})`);
 ok(/3×3|3x3/i.test(heads[0] ?? ""), `a flat 3×3 patch (“${heads[0]}”)`);
 ok(/cliff|stack/i.test(heads[1] ?? ""), `and the V from Tiles OLD — a cliff corner (“${heads[1]}”)`);
-// ONLY THE CROWN IS THE PAIR (maintainer 2026-08-17: "The two bottom layers in
-// a V shape should always take the tile from grass over grass, ice over ice …
-// the type that always should be used in the game when a tile is not at the
-// top"). A buried cell is all wall, so it is the WALL material over itself —
-// the scene publishes what it actually drew below the crown.
+// ONLY THE CROWN IS THE PAIR in the sense that matters: what stacks under it
+// is decided by the tile's WALL MODE, which section 4c drives end to end. Here
+// it is only asserted that the courses are published at all, since 4c reads
+// them.
 const buried = await p.evaluate(() => (document.querySelectorAll(".world-scene")[1]?.dataset.tiles ?? "").split(" ").filter(Boolean));
-const selfSide = CELLS.find((x) => x.top === many.side && x.side === many.side);
-console.log("buried courses:", JSON.stringify({ side: many.side, hasSelfPair: !!selfSide, buried }));
-if (selfSide) {
-  ok(buried.length > 0 && buried.every((t) => t.includes(`${many.side}__over__${many.side}/`)),
-    `everything under the crown is ${many.side} over ${many.side} — the tile the game stacks (${buried.length} course tiles)`);
-  ok(!buried.some((t) => t.includes(`${many.top}__over__${many.side}/`)),
-    "and never the pair itself, whose own top would show as a rim between courses");
-} else {
-  console.log(`  (${many.side} has no self pair yet — the scene falls back to the set)`);
-}
+ok(buried.length > 0, `the cliff publishes the tiles it stacked under the crown (${buried.length})`);
 ok(lay.every((s) => s.opaque > 2000), `both actually composed (${lay.map((s) => s.opaque).join(", ")} opaque px)`);
 // A 3x3 iso patch spans (c−r) from −2..2, so its canvas is 4*dx + one tile
 // wide. Measured against the geometry rather than asserted loosely: "did it
@@ -343,6 +333,61 @@ console.log("reject drops it from the mix:", JSON.stringify({ beforeReject, afte
 const n = (t) => Number(/(\d+) of/.exec(t)?.[1] ?? NaN);
 ok(n(afterReject) === n(beforeReject) - 1, `rejecting a tile takes it out of the mix (${beforeReject} → ${afterReject})`);
 
+// ------------------------------------------- 4c. can this tile build a wall?
+// Maintainer 2026-08-17: "some tiles in fact do look good and can build a wall
+// and some need help from the stone over stone / grass over grass (the pure
+// tile). By default a tile should be able to create it's own wall, but I as an
+// admin should be able to change the tile to top tile only. A top-tile-only
+// tile should then use the 100% (x over x) tile for building the wall."
+await p.goto(`${W}#/world/${many.top}/${many.side}`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const courses = () => p.evaluate(() => ({
+  tiles: (document.querySelectorAll(".world-scene")[1]?.dataset.tiles ?? "").split(" ").filter(Boolean),
+  caption: document.querySelectorAll(".world-scene .iso-hint")[1]?.textContent ?? "",
+  modes: [...document.querySelectorAll(".wall-mode")].map((m) => m.querySelector(".sortbar-btn.sel")?.textContent.trim()),
+}));
+const byDefault = await courses();
+console.log("by default:", JSON.stringify(byDefault));
+ok(byDefault.modes.length === many.candidates.length, `every tile carries a wall mode (${byDefault.modes.length})`);
+ok(byDefault.modes.every((m) => m === "own wall"), `and defaults to building its own wall (${byDefault.modes.join(", ")})`);
+ok(byDefault.tiles.every((t) => t.includes(`${many.top}__over__${many.side}/`)),
+  "so the cliff is built from THIS set, not the pure tile");
+ok(/builds its own wall/i.test(byDefault.caption), `and the caption says so (“${byDefault.caption}”)`);
+
+// Mark every tile top-only and the wall must come from the pure tile instead.
+await p.evaluate(() => document.querySelectorAll('.wall-mode [data-sort="top"]').forEach((b) => b.click()));
+await p.waitForTimeout(1000);
+const allTop = await courses();
+console.log("all top-only:", JSON.stringify(allTop));
+ok(allTop.modes.every((m) => m === "top only"), "marking them top-only takes");
+ok(allTop.tiles.length > 0 && allTop.tiles.every((t) => t.includes(`${many.side}__over__${many.side}/`)),
+  `and the wall becomes the pure ${many.side} over ${many.side} tile (${allTop.tiles.length} courses)`);
+ok(/top-only/i.test(allTop.caption), `with the caption following (“${allTop.caption}”)`);
+
+// One tile back to "own wall" and IT is what the wall is built from — the
+// per-tile granularity is the point: one generation of a pair can stack and
+// its neighbour cannot.
+await p.evaluate(() => document.querySelector('.wall-mode [data-sort="own"]')?.click());
+await p.waitForTimeout(1000);
+const mixed = await courses();
+console.log("one wall-capable:", JSON.stringify(mixed));
+ok(mixed.modes.filter((m) => m === "own wall").length === 1, "one tile back to own wall");
+ok(mixed.tiles.length === 1 && mixed.tiles[0].includes(`${many.top}__over__${many.side}/`),
+  `and the whole wall is built from that one tile (${mixed.tiles.join(", ")})`);
+
+// IT COMMITS LIKE EVERYTHING ELSE, into its own document.
+await p.evaluate(() => [...document.querySelectorAll("#savebar button")].find((x) => /Commit/.test(x.textContent))?.click());
+await p.waitForTimeout(1400);
+const wallPost = posted.find((x) => x.file === "tuning/tile_walls");
+console.log("posted:", JSON.stringify(wallPost ?? null).slice(0, 220));
+ok(!!wallPost, `the flags commit on the live channel (${posted.map((x) => x.file).join(", ")})`);
+ok(Object.keys(wallPost?.set ?? {}).every((k) => /^tiles\/.+\/\d+$/.test(k)),
+  `keyed by the tile, using the manifest's own key (${Object.keys(wallPost?.set ?? {})[0]})`);
+const entry = Object.values(wallPost?.set ?? {})[0];
+ok(entry === null || entry?.top_only === true, `a marked tile records top_only (${JSON.stringify(entry)})`);
+ok(Object.values(wallPost?.set ?? {}).some((v) => v === null),
+  "and one set back to the default is a DELETE, not a stored false — the file holds only what differs");
+
 // ------------------------------------- 5. before / after the postprocess
 // Maintainer 2026-08-17: "a button/switch to view a tile before it was post
 // processed. I think the tiles-agent has prepared for this feature." They had:
@@ -374,6 +419,11 @@ const shot = () => p.evaluate(() => ({
     return vis(a.querySelector(".art-before")) ? "before" : "after";
   })(),
 }));
+// The wall-mode row made the cards taller, so the lower ones keep their art
+// lazy — "both images are decoded" has to ask for them first or it measures
+// the viewport instead of the markup.
+await p.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach((im) => { im.loading = "eager"; }));
+await p.waitForTimeout(1200);
 const asShipped = await shot();
 console.log("after :", JSON.stringify(asShipped));
 ok(asShipped.mode[0] === "*After", `it opens on what the game gets (${asShipped.mode.join(" ")})`);

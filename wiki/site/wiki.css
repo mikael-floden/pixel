@@ -1179,3 +1179,6 @@ input[type="range"] { accent-color: var(--accent); }
 .world-scene .panel-title { margin-bottom: 2px; }
 .world-scene .iso-stage { border-radius: 10px; padding: 6px; overflow-x: auto; }
 .world-scene .iso-canvas { display: block; image-rendering: pixelated; }
+.wall-mode { display: flex; align-items: center; gap: 8px; }
+.wall-mode .sortbar { flex: none; }
+.wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }

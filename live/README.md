@@ -64,6 +64,28 @@ paths** — changing monster stats or rating a sound never restarts the game.
     scaled if the art is ever re-exported at another size.
   - `updated_at` — when it was made. An entry with no `dx`/`dy`/size change
     cannot occur: clearing a note deletes the entry.
+- `live/tuning/tile_walls.json` — `pixel-wiki-tile-walls@1`. **Which Tiles 3.0
+  tiles may build their own wall.** A tile is generated as "A over B" — top A,
+  side walls B — and most stack into a cliff of themselves; some do not, and
+  the Game Master marks those **top tile only**, meaning whatever stacks under
+  them is the pure `B over B` tile (maintainer 2026-08-17: "by default a tile
+  should be able to create it's own wall, but I as an admin should be able to
+  change the tile to top tile only. A top-tile-only tile should then use the
+  100% (x over x) tile for building the wall"). **Consumed by the tiles agent**
+  and, when 3.0 becomes the shipped ground, by whatever paints it.
+  - Keyed by the tile, using the review manifest's own key:
+    `overrides["tiles/<top>__over__<side>/<n>"] = { top_only: true, updated_at }`.
+  - **Per TILE, not per pair** — the wall metrics that decide it (tiling,
+    discretion, structure) are measured per tile, so one generation of a pair
+    can stack and its neighbour cannot.
+  - **Absent means the default**, which is "builds its own wall". Setting a
+    tile back deletes its entry rather than storing `false`: a file of explicit
+    defaults would grow to every tile ever generated and say nothing. That also
+    makes the safe direction the default one — a wrongly-defaulted tile shows a
+    bad wall in the wiki's cliff preview and gets marked, where a wrongly
+    top-only tile would silently hide a tile that was fine.
+  - It is a PROPERTY, not a verdict: a top-tile-only tile is not worse, it is a
+    tile with one job, which is why it does not live in `feedback/tiles.json`.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed
