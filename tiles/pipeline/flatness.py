@@ -148,6 +148,13 @@ MIN_OVERHANG = 0.25
 # is not separable.
 MIN_CLARITY = 0.12
 
+# Seam tolerance. This was an absolute == 0 and that is stricter than the defect: a
+# handful of the top material's own blades showing where two tiles meet is grass, not a
+# grid line. The distribution has a natural break there — measured over 448 tiles, 392
+# sit at exactly 0, 406 at <= 8, and then it jumps to 42 tiles above 8. snow over
+# paving_stone was rejected at SIX pixels while carrying a full 1.00 spill.
+SEAM_TOL = 8
+
 
 def overhang(path, cap=200.0):
     """How much of the TOP material spills down over the wall — 0.0 to 1.0.
@@ -225,6 +232,23 @@ def fringe_clarity(path):
     if len(low) < 20:
         return 0.0
     wmat = palette_snap._rgb2hsv(np.median(np.array(low), 0)[None, :])[0]
+    # WAIVED when the two materials are the same colour by nature. Clarity exists so the
+    # retint has something to select; where the top and the wall share a hue there is
+    # nothing to correct, and demanding separability asks the generator for a difference
+    # the materials do not have. ice over water, light_soil over light_beach and
+    # light_soil over parquet_floor separate by 7-8 hue units and scored 0 across all 96
+    # tiles each — unsatisfiable — while their fringes ship 0-7 hue units and 9-38
+    # luminance from the palette, i.e. already right. Compare the cells the maintainer
+    # actually circled, which were ~45 hue units and +47 to +103 luminance out.
+    #
+    # The waiver is deliberately narrow. grass over slime separates by only 2 and is NOT
+    # waived: those are genuinely different materials that happen to be green, the
+    # difference is real, and a chase found a tile carrying it at 0.228.
+    sep = abs(float(wmat[0]) - float(tref[0]))
+    sep = min(sep, 255.0 - sep)
+    if sep < 12:
+        return 1.0
+
     hsv = palette_snap._rgb2hsv(rgb[wall])
     dt = np.abs(hsv[:, 0] - tref[0]); dt = np.minimum(dt, 255.0 - dt)
     dw = np.abs(hsv[:, 0] - wmat[0]); dw = np.minimum(dw, 255.0 - dw)
@@ -305,7 +329,7 @@ def select_best(paths, gate=CLEAN_TOP):
         scored.append((p, q, float(f["top"]["share"])))
     if not scored:
         return None
-    seamless = [x for x in scored if seam_px(x[0]) == 0]
+    seamless = [x for x in scored if seam_px(x[0]) <= SEAM_TOL]
     pool = [x for x in seamless
             if overhang(x[0]) >= MIN_OVERHANG and fringe_clarity(x[0]) >= MIN_CLARITY]
     if not pool:

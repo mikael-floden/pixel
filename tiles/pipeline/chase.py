@@ -128,7 +128,7 @@ def evaluate(paths, min_wall, min_clarity=0.0):
         # postprocess has nothing to select, so it ships in the wrong palette.
         if flatness.fringe_clarity(p) < min_clarity:
             continue
-        if flatness.seam_px(p) != 0:
+        if flatness.seam_px(p) > flatness.SEAM_TOL:
             continue
         if not best or q["score"] > best[1]:
             best = (p, q["score"], flatness.overhang(p))

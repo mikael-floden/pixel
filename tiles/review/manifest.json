@@ -995,6 +995,73 @@
       ],
       "needs_regeneration": false
     },
+    "ice__over__deep_water": {
+      "top": "ice",
+      "side": "deep_water",
+      "candidates": [
+        {
+          "key": "tiles/ice__over__deep_water/0",
+          "before": "tiles/review/ice__over__deep_water/0_before.webp",
+          "after": "tiles/review/ice__over__deep_water/0_after.webp",
+          "file": "tiles/review/ice__over__deep_water/0_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 2.21,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.752,
+            "structure": 0.652,
+            "contrast": 30.46,
+            "edges": 7.828
+          },
+          "top_share": 0.2967,
+          "overhang": 1.0,
+          "tile_id": "1fd0e148-5ff4-43a0-9f80-6ba1c0653f29",
+          "style": "chase0",
+          "prompt": "isometric ground tile. translucent crystal ice on top of deep dark ocean water. The ice grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/ice__over__deep_water/1",
+          "before": "tiles/review/ice__over__deep_water/1_before.webp",
+          "after": "tiles/review/ice__over__deep_water/1_after.webp",
+          "file": "tiles/review/ice__over__deep_water/1_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 2.13,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.545,
+            "structure": 0.868,
+            "contrast": 34.19,
+            "edges": 10.415
+          },
+          "top_share": 0.4225,
+          "overhang": 1.0,
+          "tile_id": "1fd0e148-5ff4-43a0-9f80-6ba1c0653f29",
+          "style": "chase0",
+          "prompt": "isometric ground tile. translucent crystal ice on top of deep dark ocean water. The ice grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/ice__over__deep_water/2",
+          "before": "tiles/review/ice__over__deep_water/2_before.webp",
+          "after": "tiles/review/ice__over__deep_water/2_after.webp",
+          "file": "tiles/review/ice__over__deep_water/2_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 2.01,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.634,
+            "structure": 0.706,
+            "contrast": 32.59,
+            "edges": 8.474
+          },
+          "top_share": 0.4521,
+          "overhang": 1.0,
+          "tile_id": "1fd0e148-5ff4-43a0-9f80-6ba1c0653f29",
+          "style": "chase0",
+          "prompt": "isometric ground tile. translucent crystal ice on top of deep dark ocean water. The ice grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "ice__over__grass": {
       "top": "ice",
       "side": "grass",
@@ -1196,6 +1263,73 @@
       ],
       "needs_regeneration": false
     },
+    "ice__over__lava": {
+      "top": "ice",
+      "side": "lava",
+      "candidates": [
+        {
+          "key": "tiles/ice__over__lava/0",
+          "before": "tiles/review/ice__over__lava/0_before.webp",
+          "after": "tiles/review/ice__over__lava/0_after.webp",
+          "file": "tiles/review/ice__over__lava/0_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 4.46,
+          "wall": {
+            "tiling": 0.339,
+            "discretion": 0.577,
+            "structure": 1.0,
+            "contrast": 33.62,
+            "edges": 17.695
+          },
+          "top_share": 0.2076,
+          "overhang": 0.64,
+          "tile_id": "d13d56ff-6b8d-4234-9a9e-65814dd4f2be",
+          "style": "chase1",
+          "prompt": "isometric terrain block of molten glowing lava with translucent crystal ice growing on top. The ice spills over the rim and hangs down the lava face in an uneven fringe. Flat even ice seen from above. No outline."
+        },
+        {
+          "key": "tiles/ice__over__lava/1",
+          "before": "tiles/review/ice__over__lava/1_before.webp",
+          "after": "tiles/review/ice__over__lava/1_after.webp",
+          "file": "tiles/review/ice__over__lava/1_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 3.87,
+          "wall": {
+            "tiling": 0.576,
+            "discretion": 0.156,
+            "structure": 1.0,
+            "contrast": 41.2,
+            "edges": 16.181
+          },
+          "top_share": 0.6457,
+          "overhang": 0.685,
+          "tile_id": "25858f03-761c-46a0-a763-189913d22fdd",
+          "style": "chase4",
+          "prompt": "isometric cube of molten glowing lava capped with translucent crystal ice. The cap overhangs slightly, ice draping down onto the lava beneath it. Uniform flat ice top. No outline."
+        },
+        {
+          "key": "tiles/ice__over__lava/2",
+          "before": "tiles/review/ice__over__lava/2_before.webp",
+          "after": "tiles/review/ice__over__lava/2_after.webp",
+          "file": "tiles/review/ice__over__lava/2_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 3.22,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.716,
+            "structure": 1.0,
+            "contrast": 31.12,
+            "edges": 14.107
+          },
+          "top_share": 0.1706,
+          "overhang": 1.0,
+          "tile_id": "d13d56ff-6b8d-4234-9a9e-65814dd4f2be",
+          "style": "chase1",
+          "prompt": "isometric terrain block of molten glowing lava with translucent crystal ice growing on top. The ice spills over the rim and hangs down the lava face in an uneven fringe. Flat even ice seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "ice__over__light_beach": {
       "top": "ice",
       "side": "light_beach",
@@ -1330,6 +1464,53 @@
       ],
       "needs_regeneration": false
     },
+    "ice__over__slime": {
+      "top": "ice",
+      "side": "slime",
+      "candidates": [
+        {
+          "key": "tiles/ice__over__slime/0",
+          "before": "tiles/review/ice__over__slime/0_before.webp",
+          "after": "tiles/review/ice__over__slime/0_after.webp",
+          "file": "tiles/review/ice__over__slime/0_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 3.94,
+          "wall": {
+            "tiling": 0.3,
+            "discretion": 0.655,
+            "structure": 0.857,
+            "contrast": 32.21,
+            "edges": 10.281
+          },
+          "top_share": 0.3467,
+          "overhang": 0.865,
+          "tile_id": "66435e2c-6cd3-4f24-b275-8f73748a2489",
+          "style": "chase0",
+          "prompt": "isometric ground tile. translucent crystal ice on top of thick bubbling slime. The ice grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/ice__over__slime/1",
+          "before": "tiles/review/ice__over__slime/1_before.webp",
+          "after": "tiles/review/ice__over__slime/1_after.webp",
+          "file": "tiles/review/ice__over__slime/1_after.webp",
+          "palette_top": "#a8f0fc",
+          "wall_score": 3.76,
+          "wall": {
+            "tiling": 0.305,
+            "discretion": 0.618,
+            "structure": 0.842,
+            "contrast": 32.87,
+            "edges": 10.105
+          },
+          "top_share": 0.2761,
+          "overhang": 0.86,
+          "tile_id": "66435e2c-6cd3-4f24-b275-8f73748a2489",
+          "style": "chase0",
+          "prompt": "isometric ground tile. translucent crystal ice on top of thick bubbling slime. The ice grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
     "ice__over__snow": {
       "top": "ice",
       "side": "snow",
@@ -1460,6 +1641,864 @@
           "tile_id": "da1b0efa-9976-4862-bea6-d1b45b22c8e6",
           "style": "chase1",
           "prompt": "isometric terrain block of clear calm water with translucent crystal ice growing on top. The ice spills over the rim and hangs down the water face in an uneven fringe. Flat even ice seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__black_rock": {
+      "top": "light_soil",
+      "side": "black_rock",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__black_rock/0",
+          "before": "tiles/review/light_soil__over__black_rock/0_before.webp",
+          "after": "tiles/review/light_soil__over__black_rock/0_after.webp",
+          "file": "tiles/review/light_soil__over__black_rock/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.25,
+          "wall": {
+            "tiling": 0.68,
+            "discretion": 0.78,
+            "structure": 1.0,
+            "contrast": 22.04,
+            "edges": 16.173
+          },
+          "top_share": 0.848,
+          "overhang": 0.73,
+          "tile_id": "d174cafc-4440-4c9a-aee0-4b6fcbac170a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of dark volcanic rock. The light soil grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__black_rock/1",
+          "before": "tiles/review/light_soil__over__black_rock/1_before.webp",
+          "after": "tiles/review/light_soil__over__black_rock/1_after.webp",
+          "file": "tiles/review/light_soil__over__black_rock/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.12,
+          "wall": {
+            "tiling": 0.705,
+            "discretion": 0.72,
+            "structure": 1.0,
+            "contrast": 20.96,
+            "edges": 16.037
+          },
+          "top_share": 0.8154,
+          "overhang": 0.745,
+          "tile_id": "d174cafc-4440-4c9a-aee0-4b6fcbac170a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of dark volcanic rock. The light soil grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__black_rock/2",
+          "before": "tiles/review/light_soil__over__black_rock/2_before.webp",
+          "after": "tiles/review/light_soil__over__black_rock/2_after.webp",
+          "file": "tiles/review/light_soil__over__black_rock/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 6.63,
+          "wall": {
+            "tiling": 0.653,
+            "discretion": 0.676,
+            "structure": 1.0,
+            "contrast": 20.17,
+            "edges": 13.294
+          },
+          "top_share": 0.7988,
+          "overhang": 0.86,
+          "tile_id": "d174cafc-4440-4c9a-aee0-4b6fcbac170a",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of dark volcanic rock. The light soil grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__dark_mud": {
+      "top": "light_soil",
+      "side": "dark_mud",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__dark_mud/0",
+          "before": "tiles/review/light_soil__over__dark_mud/0_before.webp",
+          "after": "tiles/review/light_soil__over__dark_mud/0_after.webp",
+          "file": "tiles/review/light_soil__over__dark_mud/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 6.12,
+          "wall": {
+            "tiling": 0.297,
+            "discretion": 0.997,
+            "structure": 1.0,
+            "contrast": 26.05,
+            "edges": 14.776
+          },
+          "top_share": 0.9088,
+          "overhang": 1.0,
+          "tile_id": "cc714cb8-c560-4344-b18f-afd1e2fdbca0",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of wet dark mud. The light soil grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__dark_mud/1",
+          "before": "tiles/review/light_soil__over__dark_mud/1_before.webp",
+          "after": "tiles/review/light_soil__over__dark_mud/1_after.webp",
+          "file": "tiles/review/light_soil__over__dark_mud/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.39,
+          "wall": {
+            "tiling": 0.164,
+            "discretion": 0.997,
+            "structure": 1.0,
+            "contrast": 25.95,
+            "edges": 16.228
+          },
+          "top_share": 0.8981,
+          "overhang": 1.0,
+          "tile_id": "cc714cb8-c560-4344-b18f-afd1e2fdbca0",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of wet dark mud. The light soil grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__dark_mud/2",
+          "before": "tiles/review/light_soil__over__dark_mud/2_before.webp",
+          "after": "tiles/review/light_soil__over__dark_mud/2_after.webp",
+          "file": "tiles/review/light_soil__over__dark_mud/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 4.49,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.999,
+            "structure": 1.0,
+            "contrast": 26.02,
+            "edges": 14.609
+          },
+          "top_share": 0.8114,
+          "overhang": 1.0,
+          "tile_id": "cc714cb8-c560-4344-b18f-afd1e2fdbca0",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of wet dark mud. The light soil grows over the edge and tufts down over the dark mud below, so the two meet naturally with no hard line between them. The dark mud side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__deep_water": {
+      "top": "light_soil",
+      "side": "deep_water",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__deep_water/0",
+          "before": "tiles/review/light_soil__over__deep_water/0_before.webp",
+          "after": "tiles/review/light_soil__over__deep_water/0_after.webp",
+          "file": "tiles/review/light_soil__over__deep_water/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.44,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.923,
+            "structure": 0.586,
+            "contrast": 27.39,
+            "edges": 7.037
+          },
+          "top_share": 0.7787,
+          "overhang": 1.0,
+          "tile_id": "f2bac148-fa32-49ba-bdc2-35a5644f9cdc",
+          "style": "chase1",
+          "prompt": "isometric terrain block of deep dark ocean water with dry light soil growing on top. The light soil spills over the rim and hangs down the deep water face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__deep_water/1",
+          "before": "tiles/review/light_soil__over__deep_water/1_before.webp",
+          "after": "tiles/review/light_soil__over__deep_water/1_after.webp",
+          "file": "tiles/review/light_soil__over__deep_water/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.27,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.554,
+            "structure": 0.912,
+            "contrast": 34.03,
+            "edges": 10.945
+          },
+          "top_share": 0.7654,
+          "overhang": 1.0,
+          "tile_id": "f2bac148-fa32-49ba-bdc2-35a5644f9cdc",
+          "style": "chase1",
+          "prompt": "isometric terrain block of deep dark ocean water with dry light soil growing on top. The light soil spills over the rim and hangs down the deep water face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__deep_water/2",
+          "before": "tiles/review/light_soil__over__deep_water/2_before.webp",
+          "after": "tiles/review/light_soil__over__deep_water/2_after.webp",
+          "file": "tiles/review/light_soil__over__deep_water/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.0,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.597,
+            "structure": 0.746,
+            "contrast": 33.26,
+            "edges": 8.949
+          },
+          "top_share": 0.9147,
+          "overhang": 1.0,
+          "tile_id": "f2bac148-fa32-49ba-bdc2-35a5644f9cdc",
+          "style": "chase1",
+          "prompt": "isometric terrain block of deep dark ocean water with dry light soil growing on top. The light soil spills over the rim and hangs down the deep water face in an uneven fringe. Flat even light soil seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__grass": {
+      "top": "light_soil",
+      "side": "grass",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__grass/0",
+          "before": "tiles/review/light_soil__over__grass/0_before.webp",
+          "after": "tiles/review/light_soil__over__grass/0_after.webp",
+          "file": "tiles/review/light_soil__over__grass/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 3.88,
+          "wall": {
+            "tiling": 0.09,
+            "discretion": 0.752,
+            "structure": 1.0,
+            "contrast": 30.47,
+            "edges": 19.592
+          },
+          "top_share": 0.7728,
+          "overhang": 1.0,
+          "tile_id": "c9f44b5a-a7d5-4757-8927-3f4631ef752c",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of lush green grass. The light soil grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__grey_stone": {
+      "top": "light_soil",
+      "side": "grey_stone",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__grey_stone/0",
+          "before": "tiles/review/light_soil__over__grey_stone/0_before.webp",
+          "after": "tiles/review/light_soil__over__grey_stone/0_after.webp",
+          "file": "tiles/review/light_soil__over__grey_stone/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.2,
+          "wall": {
+            "tiling": 0.469,
+            "discretion": 0.894,
+            "structure": 0.788,
+            "contrast": 27.9,
+            "edges": 9.451
+          },
+          "top_share": 0.9752,
+          "overhang": 0.995,
+          "tile_id": "618fdb37-08d7-4832-9248-cc1cad2dcb2c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of rugged grey mountain rock. Ragged light soil edge overhanging the grey stone cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__grey_stone/1",
+          "before": "tiles/review/light_soil__over__grey_stone/1_before.webp",
+          "after": "tiles/review/light_soil__over__grey_stone/1_after.webp",
+          "file": "tiles/review/light_soil__over__grey_stone/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 4.8,
+          "wall": {
+            "tiling": 0.485,
+            "discretion": 0.948,
+            "structure": 0.692,
+            "contrast": 26.93,
+            "edges": 8.299
+          },
+          "top_share": 0.9302,
+          "overhang": 1.0,
+          "tile_id": "618fdb37-08d7-4832-9248-cc1cad2dcb2c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of rugged grey mountain rock. Ragged light soil edge overhanging the grey stone cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__grey_stone/2",
+          "before": "tiles/review/light_soil__over__grey_stone/2_before.webp",
+          "after": "tiles/review/light_soil__over__grey_stone/2_after.webp",
+          "file": "tiles/review/light_soil__over__grey_stone/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 4.8,
+          "wall": {
+            "tiling": 0.259,
+            "discretion": 0.836,
+            "structure": 0.926,
+            "contrast": 28.95,
+            "edges": 11.109
+          },
+          "top_share": 0.8909,
+          "overhang": 1.0,
+          "tile_id": "618fdb37-08d7-4832-9248-cc1cad2dcb2c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of rugged grey mountain rock. Ragged light soil edge overhanging the grey stone cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__ice": {
+      "top": "light_soil",
+      "side": "ice",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__ice/0",
+          "before": "tiles/review/light_soil__over__ice/0_before.webp",
+          "after": "tiles/review/light_soil__over__ice/0_after.webp",
+          "file": "tiles/review/light_soil__over__ice/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.55,
+          "wall": {
+            "tiling": 0.281,
+            "discretion": 0.889,
+            "structure": 1.0,
+            "contrast": 28.0,
+            "edges": 12.493
+          },
+          "top_share": 0.987,
+          "overhang": 0.44,
+          "tile_id": "b61b15f0-3277-4de9-aa72-742a60993c6f",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of translucent crystal ice. The light soil grows over the edge and tufts down over the ice below, so the two meet naturally with no hard line between them. The ice side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__ice/1",
+          "before": "tiles/review/light_soil__over__ice/1_before.webp",
+          "after": "tiles/review/light_soil__over__ice/1_after.webp",
+          "file": "tiles/review/light_soil__over__ice/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.11,
+          "wall": {
+            "tiling": 0.33,
+            "discretion": 0.733,
+            "structure": 1.0,
+            "contrast": 30.8,
+            "edges": 15.488
+          },
+          "top_share": 0.8533,
+          "overhang": 0.4,
+          "tile_id": "b61b15f0-3277-4de9-aa72-742a60993c6f",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of translucent crystal ice. The light soil grows over the edge and tufts down over the ice below, so the two meet naturally with no hard line between them. The ice side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__ice/2",
+          "before": "tiles/review/light_soil__over__ice/2_before.webp",
+          "after": "tiles/review/light_soil__over__ice/2_after.webp",
+          "file": "tiles/review/light_soil__over__ice/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.02,
+          "wall": {
+            "tiling": 0.345,
+            "discretion": 0.695,
+            "structure": 1.0,
+            "contrast": 31.5,
+            "edges": 17.119
+          },
+          "top_share": 0.8651,
+          "overhang": 0.545,
+          "tile_id": "b61b15f0-3277-4de9-aa72-742a60993c6f",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of translucent crystal ice. The light soil grows over the edge and tufts down over the ice below, so the two meet naturally with no hard line between them. The ice side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__lava": {
+      "top": "light_soil",
+      "side": "lava",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__lava/0",
+          "before": "tiles/review/light_soil__over__lava/0_before.webp",
+          "after": "tiles/review/light_soil__over__lava/0_after.webp",
+          "file": "tiles/review/light_soil__over__lava/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.99,
+          "wall": {
+            "tiling": 0.505,
+            "discretion": 0.713,
+            "structure": 1.0,
+            "contrast": 31.16,
+            "edges": 16.6
+          },
+          "top_share": 0.8391,
+          "overhang": 1.0,
+          "tile_id": "3c62645a-7a06-42e0-9719-a92d2ae6a582",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of molten glowing lava. The light soil grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__light_beach": {
+      "top": "light_soil",
+      "side": "light_beach",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__light_beach/0",
+          "before": "tiles/review/light_soil__over__light_beach/0_before.webp",
+          "after": "tiles/review/light_soil__over__light_beach/0_after.webp",
+          "file": "tiles/review/light_soil__over__light_beach/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.6,
+          "wall": {
+            "tiling": 0.325,
+            "discretion": 0.465,
+            "structure": 0.669,
+            "contrast": 35.64,
+            "edges": 8.031
+          },
+          "top_share": 0.9787,
+          "overhang": 1.0,
+          "tile_id": "b69b0692-4725-4598-8a21-a720763a9f91",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of pale sandy beach. Ragged light soil edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__light_beach/1",
+          "before": "tiles/review/light_soil__over__light_beach/1_before.webp",
+          "after": "tiles/review/light_soil__over__light_beach/1_after.webp",
+          "file": "tiles/review/light_soil__over__light_beach/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.23,
+          "wall": {
+            "tiling": 0.25,
+            "discretion": 0.361,
+            "structure": 0.743,
+            "contrast": 37.51,
+            "edges": 8.913
+          },
+          "top_share": 0.9574,
+          "overhang": 1.0,
+          "tile_id": "b69b0692-4725-4598-8a21-a720763a9f91",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of pale sandy beach. Ragged light soil edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__light_beach/2",
+          "before": "tiles/review/light_soil__over__light_beach/2_before.webp",
+          "after": "tiles/review/light_soil__over__light_beach/2_after.webp",
+          "file": "tiles/review/light_soil__over__light_beach/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 1.95,
+          "wall": {
+            "tiling": 0.197,
+            "discretion": 0.379,
+            "structure": 0.697,
+            "contrast": 37.17,
+            "edges": 8.366
+          },
+          "top_share": 0.968,
+          "overhang": 1.0,
+          "tile_id": "b69b0692-4725-4598-8a21-a720763a9f91",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of pale sandy beach. Ragged light soil edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__light_soil": {
+      "top": "light_soil",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__light_soil/0",
+          "before": "tiles/review/light_soil__over__light_soil/0_before.webp",
+          "after": "tiles/review/light_soil__over__light_soil/0_after.webp",
+          "file": "tiles/review/light_soil__over__light_soil/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.25,
+          "wall": {
+            "tiling": 0.551,
+            "discretion": 0.938,
+            "structure": 1.0,
+            "contrast": 24.88,
+            "edges": 13.63
+          },
+          "top_share": 0.7107,
+          "overhang": 1.0,
+          "tile_id": "1e9eb3a8-016d-49cb-b945-f4362f959656",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with dry light soil growing on top. The light soil spills over the rim and hangs down the light soil face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__light_soil/1",
+          "before": "tiles/review/light_soil__over__light_soil/1_before.webp",
+          "after": "tiles/review/light_soil__over__light_soil/1_after.webp",
+          "file": "tiles/review/light_soil__over__light_soil/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.97,
+          "wall": {
+            "tiling": 0.27,
+            "discretion": 0.996,
+            "structure": 1.0,
+            "contrast": 26.07,
+            "edges": 15.151
+          },
+          "top_share": 0.8935,
+          "overhang": 1.0,
+          "tile_id": "1e9eb3a8-016d-49cb-b945-f4362f959656",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with dry light soil growing on top. The light soil spills over the rim and hangs down the light soil face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__light_soil/2",
+          "before": "tiles/review/light_soil__over__light_soil/2_before.webp",
+          "after": "tiles/review/light_soil__over__light_soil/2_after.webp",
+          "file": "tiles/review/light_soil__over__light_soil/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 3.14,
+          "wall": {
+            "tiling": 0.177,
+            "discretion": 0.481,
+            "structure": 1.0,
+            "contrast": 35.34,
+            "edges": 20.574
+          },
+          "top_share": 0.7787,
+          "overhang": 1.0,
+          "tile_id": "1e9eb3a8-016d-49cb-b945-f4362f959656",
+          "style": "chase1",
+          "prompt": "isometric terrain block of dry light soil with dry light soil growing on top. The light soil spills over the rim and hangs down the light soil face in an uneven fringe. Flat even light soil seen from above. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__parquet_floor": {
+      "top": "light_soil",
+      "side": "parquet_floor",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__parquet_floor/0",
+          "before": "tiles/review/light_soil__over__parquet_floor/0_before.webp",
+          "after": "tiles/review/light_soil__over__parquet_floor/0_after.webp",
+          "file": "tiles/review/light_soil__over__parquet_floor/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.45,
+          "wall": {
+            "tiling": 0.815,
+            "discretion": 0.66,
+            "structure": 1.0,
+            "contrast": 32.13,
+            "edges": 25.42
+          },
+          "top_share": 0.8306,
+          "overhang": 1.0,
+          "tile_id": "f2ad7870-4835-4a22-b04f-db1458bd6489",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of wooden parquet floor. Ragged light soil edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__parquet_floor/1",
+          "before": "tiles/review/light_soil__over__parquet_floor/1_before.webp",
+          "after": "tiles/review/light_soil__over__parquet_floor/1_after.webp",
+          "file": "tiles/review/light_soil__over__parquet_floor/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.29,
+          "wall": {
+            "tiling": 0.736,
+            "discretion": 0.72,
+            "structure": 1.0,
+            "contrast": 31.03,
+            "edges": 25.377
+          },
+          "top_share": 0.8627,
+          "overhang": 1.0,
+          "tile_id": "f2ad7870-4835-4a22-b04f-db1458bd6489",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of wooden parquet floor. Ragged light soil edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__parquet_floor/2",
+          "before": "tiles/review/light_soil__over__parquet_floor/2_before.webp",
+          "after": "tiles/review/light_soil__over__parquet_floor/2_after.webp",
+          "file": "tiles/review/light_soil__over__parquet_floor/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.07,
+          "wall": {
+            "tiling": 0.712,
+            "discretion": 0.7,
+            "structure": 1.0,
+            "contrast": 31.41,
+            "edges": 25.823
+          },
+          "top_share": 0.8473,
+          "overhang": 1.0,
+          "tile_id": "f2ad7870-4835-4a22-b04f-db1458bd6489",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of wooden parquet floor. Ragged light soil edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__paving_stone": {
+      "top": "light_soil",
+      "side": "paving_stone",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__paving_stone/0",
+          "before": "tiles/review/light_soil__over__paving_stone/0_before.webp",
+          "after": "tiles/review/light_soil__over__paving_stone/0_after.webp",
+          "file": "tiles/review/light_soil__over__paving_stone/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.61,
+          "wall": {
+            "tiling": 0.753,
+            "discretion": 0.771,
+            "structure": 1.0,
+            "contrast": 21.88,
+            "edges": 13.321
+          },
+          "top_share": 0.9031,
+          "overhang": 1.0,
+          "tile_id": "a63ae3f6-115d-4cb4-80c1-5517459e53d1",
+          "style": "chase1",
+          "prompt": "isometric terrain block of cut paving stone slabs with dry light soil growing on top. The light soil spills over the rim and hangs down the paving stone face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__paving_stone/1",
+          "before": "tiles/review/light_soil__over__paving_stone/1_before.webp",
+          "after": "tiles/review/light_soil__over__paving_stone/1_after.webp",
+          "file": "tiles/review/light_soil__over__paving_stone/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.34,
+          "wall": {
+            "tiling": 0.631,
+            "discretion": 0.86,
+            "structure": 1.0,
+            "contrast": 28.51,
+            "edges": 14.941
+          },
+          "top_share": 0.8674,
+          "overhang": 1.0,
+          "tile_id": "0ea6867f-0949-4621-8c70-e569b5b1766c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of cut paving stone slabs. Ragged light soil edge overhanging the paving stone cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__paving_stone/2",
+          "before": "tiles/review/light_soil__over__paving_stone/2_before.webp",
+          "after": "tiles/review/light_soil__over__paving_stone/2_after.webp",
+          "file": "tiles/review/light_soil__over__paving_stone/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 7.1,
+          "wall": {
+            "tiling": 0.636,
+            "discretion": 0.801,
+            "structure": 1.0,
+            "contrast": 29.57,
+            "edges": 14.697
+          },
+          "top_share": 0.9608,
+          "overhang": 1.0,
+          "tile_id": "0ea6867f-0949-4621-8c70-e569b5b1766c",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of cut paving stone slabs. Ragged light soil edge overhanging the paving stone cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__slime": {
+      "top": "light_soil",
+      "side": "slime",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__slime/0",
+          "before": "tiles/review/light_soil__over__slime/0_before.webp",
+          "after": "tiles/review/light_soil__over__slime/0_after.webp",
+          "file": "tiles/review/light_soil__over__slime/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 4.65,
+          "wall": {
+            "tiling": 0.332,
+            "discretion": 0.94,
+            "structure": 0.768,
+            "contrast": 27.07,
+            "edges": 9.215
+          },
+          "top_share": 0.9976,
+          "overhang": 1.0,
+          "tile_id": "6c7b7e03-db13-4b85-9b92-b3655387fc34",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__slime/1",
+          "before": "tiles/review/light_soil__over__slime/1_before.webp",
+          "after": "tiles/review/light_soil__over__slime/1_after.webp",
+          "file": "tiles/review/light_soil__over__slime/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 4.2,
+          "wall": {
+            "tiling": 0.227,
+            "discretion": 0.656,
+            "structure": 1.0,
+            "contrast": 32.2,
+            "edges": 12.324
+          },
+          "top_share": 0.9976,
+          "overhang": 1.0,
+          "tile_id": "6c7b7e03-db13-4b85-9b92-b3655387fc34",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__slime/2",
+          "before": "tiles/review/light_soil__over__slime/2_before.webp",
+          "after": "tiles/review/light_soil__over__slime/2_after.webp",
+          "file": "tiles/review/light_soil__over__slime/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 3.98,
+          "wall": {
+            "tiling": 0.173,
+            "discretion": 0.673,
+            "structure": 1.0,
+            "contrast": 31.89,
+            "edges": 12.161
+          },
+          "top_share": 0.9976,
+          "overhang": 1.0,
+          "tile_id": "6c7b7e03-db13-4b85-9b92-b3655387fc34",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of thick bubbling slime. The light soil grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__snow": {
+      "top": "light_soil",
+      "side": "snow",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__snow/0",
+          "before": "tiles/review/light_soil__over__snow/0_before.webp",
+          "after": "tiles/review/light_soil__over__snow/0_after.webp",
+          "file": "tiles/review/light_soil__over__snow/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.63,
+          "wall": {
+            "tiling": 0.361,
+            "discretion": 0.811,
+            "structure": 1.0,
+            "contrast": 29.41,
+            "edges": 18.884
+          },
+          "top_share": 0.9988,
+          "overhang": 1.0,
+          "tile_id": "4c777d39-ca1a-461f-a585-86617a24441a",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of clean fresh snow. Ragged light soil edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__snow/1",
+          "before": "tiles/review/light_soil__over__snow/1_before.webp",
+          "after": "tiles/review/light_soil__over__snow/1_after.webp",
+          "file": "tiles/review/light_soil__over__snow/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.47,
+          "wall": {
+            "tiling": 0.509,
+            "discretion": 0.592,
+            "structure": 1.0,
+            "contrast": 33.34,
+            "edges": 22.41
+          },
+          "top_share": 0.9775,
+          "overhang": 1.0,
+          "tile_id": "4c777d39-ca1a-461f-a585-86617a24441a",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of clean fresh snow. Ragged light soil edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__snow/2",
+          "before": "tiles/review/light_soil__over__snow/2_before.webp",
+          "after": "tiles/review/light_soil__over__snow/2_after.webp",
+          "file": "tiles/review/light_soil__over__snow/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 5.37,
+          "wall": {
+            "tiling": 0.351,
+            "discretion": 0.763,
+            "structure": 1.0,
+            "contrast": 30.26,
+            "edges": 19.642
+          },
+          "top_share": 0.9858,
+          "overhang": 1.0,
+          "tile_id": "4c777d39-ca1a-461f-a585-86617a24441a",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of dry light soil covering a block of clean fresh snow. Ragged light soil edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline."
+        }
+      ],
+      "needs_regeneration": false
+    },
+    "light_soil__over__water": {
+      "top": "light_soil",
+      "side": "water",
+      "candidates": [
+        {
+          "key": "tiles/light_soil__over__water/0",
+          "before": "tiles/review/light_soil__over__water/0_before.webp",
+          "after": "tiles/review/light_soil__over__water/0_after.webp",
+          "file": "tiles/review/light_soil__over__water/0_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 2.5,
+          "wall": {
+            "tiling": 0.297,
+            "discretion": 0.923,
+            "structure": 0.432,
+            "contrast": 27.39,
+            "edges": 5.185
+          },
+          "top_share": 0.5378,
+          "overhang": 0.685,
+          "tile_id": "4c4cfd7a-93ca-4df4-963e-fcb2ea8bc56a",
+          "style": "chase1",
+          "prompt": "isometric terrain block of clear calm water with dry light soil growing on top. The light soil spills over the rim and hangs down the water face in an uneven fringe. Flat even light soil seen from above. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__water/1",
+          "before": "tiles/review/light_soil__over__water/1_before.webp",
+          "after": "tiles/review/light_soil__over__water/1_after.webp",
+          "file": "tiles/review/light_soil__over__water/1_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 1.78,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.396,
+            "structure": 1.0,
+            "contrast": 36.88,
+            "edges": 19.486
+          },
+          "top_share": 0.604,
+          "overhang": 0.7,
+          "tile_id": "4a6433e7-7df3-4fe0-9c23-894a5f77b66f",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of clear calm water. The light soil grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/light_soil__over__water/2",
+          "before": "tiles/review/light_soil__over__water/2_before.webp",
+          "after": "tiles/review/light_soil__over__water/2_after.webp",
+          "file": "tiles/review/light_soil__over__water/2_after.webp",
+          "palette_top": "#c09c6c",
+          "wall_score": 1.77,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.434,
+            "structure": 0.909,
+            "contrast": 36.19,
+            "edges": 10.906
+          },
+          "top_share": 0.8998,
+          "overhang": 0.925,
+          "tile_id": "4a6433e7-7df3-4fe0-9c23-894a5f77b66f",
+          "style": "chase0",
+          "prompt": "isometric ground tile. dry light soil on top of clear calm water. The light soil grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline."
         }
       ],
       "needs_regeneration": false
