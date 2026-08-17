@@ -4,8 +4,8 @@
   "group": "wells",
   "rank": 11,
   "index": 8,
-  "name": "Rune-carved rim stones 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Rune-carved rim stones 008",
+  "lights": null,
   "variety": "rune-carved rim stones",
   "glow_concept": "raised bucket brimming with luminous water",
   "prompt": "a round fieldstone well with thick stone walls and a heavy peaked wooden roof on two stout posts, a chunky windlass, rune-carved rim stones, large, twice human height, self-emissive at night, softly radiating light: raised bucket brimming with luminous water",
@@ -35,6 +35,46 @@
       "sprite": "wells/well_008/sprite.webp",
       "pixellab_object_id": "4bbe8cc3-3b70-4ac4-9acf-35c91d1ba062",
       "generated_at": "2026-08-13T21:53:55+00:00"
+    },
+    "LIT_2": {
+      "sprite": "wells/well_008/lit_2/sprite.webp",
+      "pixellab_object_id": "1f080b2e-02e8-45e0-b849-debc57213b8c",
+      "generated_at": "2026-08-17T12:49:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5462,
+      "glow_score": 0.0486
+    },
+    "LIT_3": {
+      "sprite": "wells/well_008/lit_3/sprite.webp",
+      "pixellab_object_id": "9b9c3428-34f5-45c1-8e88-e1992dc3c3ab",
+      "generated_at": "2026-08-17T12:49:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6547,
+      "glow_score": 0.0
+    },
+    "LIT_4": {
+      "sprite": "wells/well_008/lit_4/sprite.webp",
+      "pixellab_object_id": "de2beb26-fe0d-4c19-93d9-c48dbec7c52a",
+      "generated_at": "2026-08-17T12:50:05+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7337,
+      "glow_score": 0.044
+    },
+    "NOT_LIT_1": {
+      "sprite": "wells/well_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "16ef0931-b086-4183-ae9c-ebc9b05f5f90",
+      "generated_at": "2026-08-17T12:52:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7956,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "wells/well_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7efc8131-66cd-495b-9c25-1451c6f3c619",
+      "generated_at": "2026-08-17T12:52:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8834,
+      "glow_score": 0.0
     }
   }
 }
