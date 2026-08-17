@@ -41,7 +41,12 @@ async function composerRoot() {
   return composerBase;
 }
 
-const assetUrl = (rel) => new URL(rel, ROOT).href;
+const assetUrl = (rel) => {
+  // A domain the image has already proved it does not carry is fetched from
+  // the repo directly — one 404 per domain, not one per card.
+  if (repoBase && typeof rel === "string" && repoDomains.has(rel.split("/")[0])) return new URL(rel, repoBase).href;
+  return new URL(rel, ROOT).href;
+};
 
 /** Same as assetUrl but for composer audio, which the deployed image lacks.
  *  Async because the base is resolved once on first use. */
@@ -60,10 +65,24 @@ async function composerUrl(rel) {
  *  `access-control-allow-origin: *` — a genuinely different origin, exercising
  *  the identical cross-origin + canvas-tainting path with no internet. */
 const STAGING_REPO = "mikael-floden/pixel";
+/* RAW, NOT jsDELIVR (measured 2026-08-17, from the maintainer's report that
+ * neither the tiles nor the scenery would render — every card reading
+ * "removed", and his question, "is it the CORS request that fails or what?").
+ *
+ * It was not CORS. Same repo, same minute, same file:
+ *     raw.githubusercontent @sha   200 in  0.6 s
+ *     cdn.jsdelivr @main           200 in 17.1 s
+ *     cdn.jsdelivr @<fresh sha>    TIMEOUT at 25 s
+ * This repo is large and pushed every few minutes, so a pinned sha is one the
+ * CDN has essentially never cached, and a cold fetch of it is what every image
+ * on the page was waiting on. jsDelivr was chosen for its immutable
+ * `max-age=31536000` against raw's 300 — but a cache header is worth nothing
+ * on a request that does not finish.
+ */
 function stagingBase(sha) {
   const override = (() => { try { return localStorage.getItem("ml-staging-base"); } catch { return null; } })();
   if (override) return new URL(override.endsWith("/") ? override : override + "/");
-  return new URL(`https://cdn.jsdelivr.net/gh/${STAGING_REPO}@${sha}/`);
+  return new URL(`https://raw.githubusercontent.com/${STAGING_REPO}/${sha}/`);
 }
 
 /** The commit to pin staging reads to. HEAD of main, not the deployed sha —
@@ -129,8 +148,23 @@ function probeArt(url) {
   }
   return artProbe.get(url);
 }
+/** Paths already served by the repo, so the second card of a domain the image
+ *  does not carry goes straight there instead of 404ing first. */
+const repoDomains = new Set();
 async function onArtMissing(img) {
   const url = img.src;
+  // ASK THE REPO BEFORE BELIEVING IT IS GONE. The image only holds what has
+  // shipped, so a 404 here is the ordinary case for a domain still in
+  // development — not evidence that anything was deleted.
+  if (!/\/icons\//.test(url) && img.isConnected && !img.dataset.triedRepo) {
+    const twin = repoTwin(url);
+    if (twin && twin !== url) {
+      img.dataset.triedRepo = "1";
+      repoDomains.add(new URL(url, location.href).pathname.replace(/^.*\/assets\//, "").split("/")[0]);
+      img.src = twin;
+      return;
+    }
+  }
   // Local chrome (section icons, the gold coin) is baked into the page and
   // cannot be "removed by an agent" — a miss there is a plain load failure.
   const verdict = /\/icons\//.test(url) ? "failed" : await probeArt(url);
@@ -147,6 +181,10 @@ async function onArtMissing(img) {
   const box = img.closest(".thumb, .portrait");
   img.remove();
   if (!box) return;   // a small inline icon just goes quiet
+  // ONE FRAME, ONE NOTE. A World card holds two images — the shipped tile and
+  // its raw twin — so a missing piece fires this twice and stacked two
+  // "removed" captions on top of each other (maintainer's screenshot).
+  if (box.querySelector(".art-note")) return;
   // What is left here is the OTHER case: the art did not load, but nothing
   // says it is gone. That one must stay visible — a piece silently vanishing
   // because a CDN blinked is the failure this distinction exists to prevent.
@@ -172,6 +210,12 @@ function dropGoneEntity(url) {
     if (i >= 0) { hit = { domain, entity: list[i], i }; break; }
   }
   if (!hit) return false;
+  // NOT WHILE THE REPO'S COPY IS STILL ON ITS WAY. Until the staging upgrade
+  // lands, art resolves against the IMAGE, which by design does not carry the
+  // domains that have not shipped — Tiles 3.0 today. Every one of those 404s,
+  // and believing them would delete the section a second before the data that
+  // makes it resolvable arrives.
+  if (stagingPending) return false;
   // A WHOLE DOMAIN CANNOT HAVE BEEN DELETED — that is a broken path, and the
   // wiki must not present one as thirty-four deletions.
   //
@@ -5548,27 +5592,100 @@ async function checkAdmin() {
  *  Falls back to the local copy on any failure: a CDN hiccup, a rate-limited
  *  GitHub API or an offline phone must degrade to "the wiki shows in-game
  *  content", never to a blank page. */
+/* THE ART SWITCH IS NOT CONDITIONAL ON THE MANIFEST FETCH — that was the bug
+ * behind "I can't see any tiles at all" (maintainer 2026-08-17, every World
+ * card reading "removed").
+ *
+ * ROOT used to move to the repo only if the 1.1 MB data.json came back. When
+ * that fetch was slow or failed, ROOT stayed on the IMAGE — which by design
+ * does not carry a domain that has not shipped — so every Tiles 3.0 tile 404'd
+ * and the wiki dutifully reported the whole section as deleted. The art and
+ * the manifest are two different needs: the art is the one that MUST come from
+ * the repo, and it is cheap.
+ *
+ * So a small reachable probe decides the switch (constants.json, a few hundred
+ * bytes) and the big manifest is fetched separately and may fail without
+ * costing anything.
+ */
+/* THE IMAGE SERVES THE ART; THE REPO IS THE FALLBACK. The wiki used to point
+ * ROOT at the repo wholesale for an admin, which made every one of ~800 cards
+ * depend on one external origin being healthy — and when it was not, the page
+ * reported the entire domain as deleted.
+ *
+ * The image is same-origin, instant, and holds everything that has SHIPPED.
+ * What it cannot hold is art that has not — Tiles 3.0 today — so a 404 against
+ * it is the signal to ask the repo (see repoRetry). The cost is that a piece
+ * whose art changed IN PLACE since the last deploy shows the deployed version
+ * until the next one; the deploy fires on every art push, so that window is
+ * minutes, and it is a far smaller price than a section that will not render.
+ */
+let repoBase = null;                 // set once the repo's sha is known
 async function useStagingRoot() {
-  const sha = await stagingSha();
-  const base = stagingBase(sha);
-  const full = await fetchJson(new URL("wiki/site/data.json", base));
-  if (!full) return null;
-  ROOT = base; // every assetUrl() from here resolves against the repo
-  return full;
+  repoBase = stagingBase(await stagingSha());
+  return await fetchJson(new URL("wiki/site/data.json", repoBase));
+}
+/** The same art, asked of the repo instead of the image. */
+function repoTwin(url) {
+  if (!repoBase) return null;
+  const rel = new URL(url, location.href).pathname.replace(/^.*\/assets\//, "");
+  if (!rel || rel.startsWith("/")) return null;
+  return new URL(rel, repoBase).href;
+}
+
+/** The topbar's build stamp — a function because the staging upgrade replaces
+ *  the data underneath it and the stamp has to follow. */
+function drawStamp(data) {
+  const d = new Date(data.generated_at);
+  const p = (n) => String(n).padStart(2, "0");
+  $("#build-stamp").replaceChildren(
+    h("div", { class: "stamp-date" }, `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`),
+    ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []));
+}
+/* THE ADMIN'S FULLER COPY ARRIVES AFTER THE FIRST PAINT, NOT BEFORE IT.
+ *
+ * An admin reads the REPO rather than the image, so the boot used to await:
+ * a GitHub API call for HEAD's sha, then the whole 1.1 MB data.json from
+ * jsDelivr at that sha — and main moves every few minutes, so the sha is
+ * almost always one the CDN has never served and has to fetch cold. All of it
+ * in front of the first paint, which is what he sat through: "the game is
+ * currently stuck in loading the wiki … it was just very slow" (2026-08-17).
+ *
+ * The image's own data.json is already local and already complete for
+ * everything that ships, so the wiki paints from that at once and the repo's
+ * copy swaps in when it lands — the same pattern the World pairs use. Nothing
+ * is lost: the staging copy is what carries art the game has not shipped, and
+ * it replaces the list the moment it arrives.
+ */
+let stagingPending = false;
+async function upgradeToStaging() {
+  stagingPending = true;
+  try {
+    const full = await useStagingRoot();
+    if (!full) return;
+    state.data = full;
+    // The World pairs are read LIVE from the tiles agent and are newer than
+    // ANY build, including this one — so the swap must not throw them away.
+    // (Caught by check-world: after the upgrade the section fell back to the
+    // build's ground types and lost the one the agent had just generated.)
+    if (worldLive) { state.data.domains.world = worldLive; syncCounts("world"); }
+    pruneKnownGone();
+    buildKnownIds();
+    drawStamp(full);
+    keepScrollY = window.scrollY;
+    route();
+  } finally { stagingPending = false; }
 }
 
 (async function boot() {
   initChrome();
-  let [data, admin] = await Promise.all([
+  // Everything the first paint needs, in parallel — the live files do not
+  // depend on the manifest, so they no longer wait for it.
+  const [data, admin] = await Promise.all([
     fetchJson(new URL("data.json", location.href)),
     checkAdmin(),
   ]);
   if (admin) setAdmin(true); // before first route() so widgets render editable
   else localStorage.removeItem("wiki-admin-token");
-  if (admin) {
-    const full = await useStagingRoot();
-    if (full) data = full;
-  }
   if (!data) {
     $("#content").replaceChildren(h("p", {}, "data.json missing — run ", h("code", {}, "node wiki/build.mjs"), " and reload."));
     return;
@@ -5577,17 +5694,10 @@ async function useStagingRoot() {
   pruneKnownGone();   // pieces this session already found deleted never come back
   await loadLiveFiles();
   buildKnownIds();
-  // Topbar stamp: the build DATE on one line, the deployed git sha under it —
-  // no "built" prefix (maintainer 2026-07-30). Fixed compact format so the
-  // date can never wrap on a phone (toLocaleString did).
-  {
-    const d = new Date(data.generated_at);
-    const p = (n) => String(n).padStart(2, "0");
-    $("#build-stamp").replaceChildren(
-      h("div", { class: "stamp-date" }, `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`),
-      ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []));
-  }
+  drawStamp(data);
   route();
+  // …and only now, with the wiki on screen and usable, fetch the repo's copy.
+  if (admin) upgradeToStaging();
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
     state, route,
