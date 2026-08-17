@@ -1,0 +1,62 @@
+{
+  "schema": "tiles3/palette@1",
+  "_comment": "The game's palette, taken from tiles2 rather than from the generator. tiles2 re-tints its whole tileset to the HUD's muted-forest theme via postprocess.palette (grass and dirt are colours the DESIGNER supplied); an earlier tiles 3.0 palette was measured from what PixelLab happens to produce, which is the generator's average and not an art direction at all. That is why 3.0 grass came out a bright yellow-green (#64b84d, hue 107deg) against 2.0's deep pine (hue 166deg) \u2014 90 luminance apart. Values here are tiles2's ACTUAL APPEARANCE, not its configured target: 2.0 harmonises hue/sat while keeping each pixel's own value, so its art lands well above its target, and a flat 3.0 top has to match what the eye sees.",
+  "types": {
+    "grass": {
+      "top": "#0c483c",
+      "source": "tiles2/saturated_grass (measured)"
+    },
+    "snow": {
+      "top": "#d8e4de",
+      "source": "tiles2/regular_snow (measured)"
+    },
+    "ice": {
+      "top": "#a8f0fc",
+      "source": "tiles2/crystal_ice (measured)"
+    },
+    "black_rock": {
+      "top": "#1e1e24",
+      "source": "tiles2/black_mountain (measured)"
+    },
+    "light_beach": {
+      "top": "#ead2a2",
+      "source": "tiles2/light_sand (measured)"
+    },
+    "grey_stone": {
+      "top": "#72786c",
+      "source": "tiles2/stone_mountain (measured)"
+    },
+    "light_soil": {
+      "top": "#c09c6c",
+      "source": "tiles2/lightdark_dirt (measured)"
+    },
+    "dark_mud": {
+      "top": "#51402b",
+      "source": "derived from tiles2/lightdark_dirt \u2014 2.0 has no separate dark_mud"
+    },
+    "parquet_floor": {
+      "top": "#82523c",
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+    },
+    "paving_stone": {
+      "top": "#72786c",
+      "source": "tiles2/stone_mountain (measured)"
+    },
+    "water": {
+      "top": "#428a90",
+      "source": "tiles2/clear_water (measured)"
+    },
+    "deep_water": {
+      "top": "#1b3e41",
+      "source": "derived from tiles2/clear_water \u2014 2.0 has no separate deep_water"
+    },
+    "lava": {
+      "top": "#be350e",
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+    },
+    "slime": {
+      "top": "#1fa32c",
+      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied."
+    }
+  }
+}

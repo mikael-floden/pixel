@@ -33,8 +33,13 @@ import tombstones
 
 from PIL import Image
 
-PALETTE = json.load(open(os.path.join(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__))), "config", "measured_palette.json")))
+# config/palette.json is the GAME's palette, carried over from tiles2 so 3.0 reads as
+# the same world. measured_palette.json is only what the generator happens to produce —
+# useful evidence, never the target: taking it as one is what made 3.0 grass a bright
+# yellow-green against 2.0's deep pine.
+_CFG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
+PALETTE = {k: {"top": v["top"]} for k, v in
+           json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
 
 def _save(im, path):
