@@ -50365,9 +50365,9 @@
     {
       "id": "torch_post_014",
       "rel": "torch_posts/torch_post_014",
-      "name": "Double-torch crossarm post 014 \u00b7 lit",
+      "name": "Double-torch crossarm post 014",
       "category": "torch_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, double-torch crossarm post, reinforced with iron bands, roughly six feet tall, human height, self-emissive at night, softly radiating light: ember-crusted head glowing without open flame",
       "view": "low top-down",
       "size": 64,
@@ -50402,6 +50402,15 @@
           "glow_score": 0.0726,
           "art_hash": "9a247ccf66d3f50b"
         },
+        "LIT_3": {
+          "sprite": "torch_posts/torch_post_014/lit_3/sprite.webp",
+          "pixellab_object_id": "c9098915-5923-4586-a1d1-72e35afa99eb",
+          "generated_at": "2026-08-17T11:27:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4812,
+          "glow_score": 0.1244,
+          "art_hash": "18fd7e5a418ce6be"
+        },
         "LIT_4": {
           "sprite": "torch_posts/torch_post_014/lit_4/sprite.webp",
           "pixellab_object_id": "4aeaad75-8226-49f7-8f07-4a4b2ec08482",
@@ -50410,6 +50419,24 @@
           "difference_from_source": 0.8632,
           "glow_score": 0.0618,
           "art_hash": "e185c8d7ebdb2dbb"
+        },
+        "NOT_LIT_1": {
+          "sprite": "torch_posts/torch_post_014/not_lit_1/sprite.webp",
+          "pixellab_object_id": "09b92879-c3cd-4a3e-9e8b-650c217de7ce",
+          "generated_at": "2026-08-17T11:27:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.86,
+          "glow_score": 0.0,
+          "art_hash": "f9a07583f83d37d9"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4ac16960-4d82-4cd2-a2bf-a9353ad80f7b",
+          "generated_at": "2026-08-17T11:28:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2578,
+          "glow_score": 0.0065,
+          "art_hash": "78afb242f38915e2"
         }
       },
       "animations": []
@@ -50419,7 +50446,7 @@
       "rel": "torch_posts/torch_post_015",
       "name": "Iron sconce on oak post 015",
       "category": "torch_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, iron sconce on oak post, recently maintained, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -50439,11 +50466,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "torch_posts/torch_post_015/lit_1/sprite.webp",
+          "pixellab_object_id": "1266f897-ae6e-494a-8265-c6198bc17f0c",
+          "generated_at": "2026-08-17T11:27:56+00:00",
+          "glow_concept": "ember-crusted head glowing without open flame",
+          "difference_from_source": 0.6165,
+          "glow_score": 0.1356,
+          "art_hash": "ae6e359cdad7406e"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_015/lit_2/sprite.webp",
+          "pixellab_object_id": "64cf2240-89cc-445c-bdb0-92956f2b8f87",
+          "generated_at": "2026-08-17T11:29:02+00:00",
+          "glow_concept": "halo of glow-moths circling the head",
+          "difference_from_source": 0.5206,
+          "glow_score": 0.0385,
+          "art_hash": "1a84134c41baf62d"
+        },
         "NOT_LIT_1": {
           "sprite": "torch_posts/torch_post_015/sprite.webp",
           "pixellab_object_id": "774a83f8-0de1-4340-bae8-a739b09bfd99",
           "generated_at": "2026-08-14T00:44:50+00:00",
           "art_hash": "4b4684171195586e"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_015/not_lit_2/sprite.webp",
+          "pixellab_object_id": "f9e85d8f-83e3-4468-ae6c-7ead8a975ad7",
+          "generated_at": "2026-08-17T11:27:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.253,
+          "glow_score": 0.0077,
+          "art_hash": "22208daccfd9c95a"
+        },
+        "NOT_LIT_3": {
+          "sprite": "torch_posts/torch_post_015/not_lit_3/sprite.webp",
+          "pixellab_object_id": "fd1883e0-d727-4e59-9209-3e6331642ff9",
+          "generated_at": "2026-08-17T11:27:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5913,
+          "glow_score": 0.0157,
+          "art_hash": "50dca4a44e240d64"
+        },
+        "NOT_LIT_4": {
+          "sprite": "torch_posts/torch_post_015/not_lit_4/sprite.webp",
+          "pixellab_object_id": "56f196a5-acdf-4e50-93c9-149b606e2144",
+          "generated_at": "2026-08-17T11:28:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3355,
+          "glow_score": 0.0022,
+          "art_hash": "783bf0547969290c"
         }
       },
       "animations": []
@@ -50451,9 +50523,9 @@
     {
       "id": "torch_post_018",
       "rel": "torch_posts/torch_post_018",
-      "name": "Stone-socketed torch post 018 \u00b7 lit",
+      "name": "Stone-socketed torch post 018",
       "category": "torch_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, stone-socketed torch post, weathered silver-grey, roughly six feet tall, human height, self-emissive at night, softly radiating light: smokeless pale-blue soul-flame",
       "view": "low top-down",
       "size": 64,
@@ -50478,6 +50550,51 @@
           "pixellab_object_id": "c3106603-9642-4b8d-ae11-2ac01976ed94",
           "generated_at": "2026-08-14T01:20:07+00:00",
           "art_hash": "97c845d2e9288ea8"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_018/lit_2/sprite.webp",
+          "pixellab_object_id": "084b7b3f-705f-48ed-97a5-3781d9add603",
+          "generated_at": "2026-08-17T11:28:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8591,
+          "glow_score": 0.1126,
+          "art_hash": "406d37447ec36495"
+        },
+        "LIT_3": {
+          "sprite": "torch_posts/torch_post_018/lit_3/sprite.webp",
+          "pixellab_object_id": "dba811ad-0f0a-4240-85eb-6fd2d2c95267",
+          "generated_at": "2026-08-17T11:28:34+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.858,
+          "glow_score": 0.1967,
+          "art_hash": "9672b828d4bdbc67"
+        },
+        "LIT_4": {
+          "sprite": "torch_posts/torch_post_018/lit_4/sprite.webp",
+          "pixellab_object_id": "ca141b53-08de-43da-8d6a-5c9093182715",
+          "generated_at": "2026-08-17T11:29:11+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.441,
+          "glow_score": 0.1784,
+          "art_hash": "5bc66e6892cad8e2"
+        },
+        "NOT_LIT_1": {
+          "sprite": "torch_posts/torch_post_018/not_lit_1/sprite.webp",
+          "pixellab_object_id": "54cb1445-312d-4f9a-993c-a24ccd059344",
+          "generated_at": "2026-08-17T11:29:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9571,
+          "glow_score": 0.0,
+          "art_hash": "b1f827729df1fe3a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_018/not_lit_2/sprite.webp",
+          "pixellab_object_id": "54dfaa1e-2cdc-447f-a3df-a1ea441b5111",
+          "generated_at": "2026-08-17T11:30:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8237,
+          "glow_score": 0.0,
+          "art_hash": "50037527ffbf7823"
         }
       },
       "animations": []
@@ -50485,9 +50602,9 @@
     {
       "id": "torch_post_020",
       "rel": "torch_posts/torch_post_020",
-      "name": "Brass-cupped torch post 020 \u00b7 lit",
+      "name": "Brass-cupped torch post 020",
       "category": "torch_posts",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, brass-cupped torch post, snow-dusted, large, twice human height, self-emissive at night, softly radiating light: halo of glow-moths circling the head",
       "view": "low top-down",
       "size": 64,
@@ -50512,6 +50629,51 @@
           "pixellab_object_id": "90ee212e-034e-4763-b6a4-d835528f6df0",
           "generated_at": "2026-08-14T01:35:20+00:00",
           "art_hash": "127d5735ff9e1380"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_020/lit_2/sprite.webp",
+          "pixellab_object_id": "ccab7938-aaff-475c-b49c-438bbe7ed847",
+          "generated_at": "2026-08-17T11:30:27+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9508,
+          "glow_score": 0.0475,
+          "art_hash": "fd495f75b6e7a788"
+        },
+        "LIT_3": {
+          "sprite": "torch_posts/torch_post_020/lit_3/sprite.webp",
+          "pixellab_object_id": "b05a847b-8054-44b4-b86b-59853d7ba83b",
+          "generated_at": "2026-08-17T11:30:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8649,
+          "glow_score": 0.1843,
+          "art_hash": "c18f59fd89429ce8"
+        },
+        "LIT_4": {
+          "sprite": "torch_posts/torch_post_020/lit_4/sprite.webp",
+          "pixellab_object_id": "74c1474d-2510-4de9-bc69-42d94bad8431",
+          "generated_at": "2026-08-17T11:30:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7086,
+          "glow_score": 0.0113,
+          "art_hash": "bb35cadb2b04e541"
+        },
+        "NOT_LIT_1": {
+          "sprite": "torch_posts/torch_post_020/not_lit_1/sprite.webp",
+          "pixellab_object_id": "68520d5f-b0a3-44f2-b039-cb9118f6e7fc",
+          "generated_at": "2026-08-17T11:30:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6117,
+          "glow_score": 0.0,
+          "art_hash": "448683e57bae85be"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_020/not_lit_2/sprite.webp",
+          "pixellab_object_id": "94a67356-7245-4980-b44e-dd14ab51283e",
+          "generated_at": "2026-08-17T11:30:37+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5931,
+          "glow_score": 0.0474,
+          "art_hash": "c4dcac0ac2b0f9bc"
         }
       },
       "animations": []
@@ -50521,7 +50683,7 @@
       "rel": "torch_posts/torch_post_021",
       "name": "Leaning trailside torch 021",
       "category": "torch_posts",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, leaning trailside torch, moss-capped, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -50541,11 +50703,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "torch_posts/torch_post_021/lit_1/sprite.webp",
+          "pixellab_object_id": "9e5058ea-53a3-45ab-a36c-0c8d77a1e4ea",
+          "generated_at": "2026-08-17T11:32:22+00:00",
+          "glow_concept": "molten pitch dripping in glowing beads",
+          "difference_from_source": 0.6218,
+          "glow_score": 0.1454,
+          "art_hash": "57e90ff1de484638"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_021/lit_2/sprite.webp",
+          "pixellab_object_id": "5a2f9fd4-c150-4eb2-ac1d-082858142d94",
+          "generated_at": "2026-08-17T11:31:26+00:00",
+          "glow_concept": "unreadable charms glowing faintly up the post",
+          "difference_from_source": 0.5464,
+          "glow_score": 0.0087,
+          "art_hash": "43eae47a6562c59e"
+        },
         "NOT_LIT_1": {
           "sprite": "torch_posts/torch_post_021/sprite.webp",
           "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
           "generated_at": "2026-08-14T01:42:08+00:00",
           "art_hash": "cbe865712aa3992b"
+        },
+        "NOT_LIT_2": {
+          "sprite": "torch_posts/torch_post_021/not_lit_2/sprite.webp",
+          "pixellab_object_id": "cad24576-71d5-44e9-866f-9cbf98a0ca9b",
+          "generated_at": "2026-08-17T11:31:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7859,
+          "glow_score": 0.0,
+          "art_hash": "5453c2cea37a3823"
+        },
+        "NOT_LIT_3": {
+          "sprite": "torch_posts/torch_post_021/not_lit_3/sprite.webp",
+          "pixellab_object_id": "152f6367-09e1-445e-9e38-cc3a2e730f56",
+          "generated_at": "2026-08-17T11:31:06+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7014,
+          "glow_score": 0.0,
+          "art_hash": "cb5c7fa06e69fb13"
+        },
+        "NOT_LIT_4": {
+          "sprite": "torch_posts/torch_post_021/not_lit_4/sprite.webp",
+          "pixellab_object_id": "e13e2ffe-e8ca-46c5-b84b-5f798507e792",
+          "generated_at": "2026-08-17T11:31:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7789,
+          "glow_score": 0.034,
+          "art_hash": "a87c97fffd60d50e"
         }
       },
       "animations": []
@@ -50580,6 +50787,33 @@
           "pixellab_object_id": "4b02ce35-fa73-440e-af4b-94476ae3cccd",
           "generated_at": "2026-08-14T01:39:54+00:00",
           "art_hash": "cad05393475fbfab"
+        },
+        "LIT_2": {
+          "sprite": "torch_posts/torch_post_022/lit_2/sprite.webp",
+          "pixellab_object_id": "ecea6bcf-ef46-487b-a623-5abb8f5a6892",
+          "generated_at": "2026-08-17T11:32:13+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5596,
+          "glow_score": 0.1448,
+          "art_hash": "6d22698676271bc7"
+        },
+        "LIT_3": {
+          "sprite": "torch_posts/torch_post_022/lit_3/sprite.webp",
+          "pixellab_object_id": "ff649611-e214-4f07-b579-f56bac585ea2",
+          "generated_at": "2026-08-17T11:31:54+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7951,
+          "glow_score": 0.2178,
+          "art_hash": "59094584257324b9"
+        },
+        "LIT_4": {
+          "sprite": "torch_posts/torch_post_022/lit_4/sprite.webp",
+          "pixellab_object_id": "f9f15af0-d9ba-4470-a398-075d8f833569",
+          "generated_at": "2026-08-17T11:32:23+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5868,
+          "glow_score": 0.141,
+          "art_hash": "ea55c6bdf910de13"
         }
       },
       "animations": []
