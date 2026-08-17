@@ -61858,6 +61858,15 @@
           "difference_from_source": 0.8175,
           "glow_score": 0.0065,
           "art_hash": "6894d5a48d75c2c8"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_014/not_lit_2/sprite.webp",
+          "pixellab_object_id": "385b2bb7-fd4d-45ea-bcac-d7e86eb21729",
+          "generated_at": "2026-08-17T11:49:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8979,
+          "glow_score": 0.0,
+          "art_hash": "9b302974f2af4b3f"
         }
       },
       "animations": []
@@ -62025,7 +62034,7 @@
       "rel": "wall_hangings/wall_hanging_019",
       "name": "Hunting bow and quiver on pegs 019",
       "category": "wall_hangings",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "a solid decorative piece made to hang flat on an interior wall, seen straight on, chunky and clearly readable at a glance, hunting bow and quiver on pegs, lovingly repaired with mismatched parts, waist-high, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 64,
@@ -62045,11 +62054,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "wall_hangings/wall_hanging_019/lit_1/sprite.webp",
+          "pixellab_object_id": "8565ce91-1e9a-442f-91a7-18c140f8578b",
+          "generated_at": "2026-08-17T11:48:28+00:00",
+          "glow_concept": "jars glowing on the mounted shelf",
+          "difference_from_source": 0.3545,
+          "glow_score": 0.1302,
+          "art_hash": "aff7fa714afcb791"
+        },
+        "LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_019/lit_2/sprite.webp",
+          "pixellab_object_id": "99f3f540-e816-430e-ad91-9e162ce7521d",
+          "generated_at": "2026-08-17T11:48:37+00:00",
+          "glow_concept": "embroidery threads shimmering with memory-light",
+          "difference_from_source": 0.7091,
+          "glow_score": 0.0461,
+          "art_hash": "a9853c169b5dd97b"
+        },
         "NOT_LIT_1": {
           "sprite": "wall_hangings/wall_hanging_019/sprite.webp",
           "pixellab_object_id": "69097aea-0820-48fc-a023-c54d35e26d1f",
           "generated_at": "2026-08-14T02:47:10+00:00",
           "art_hash": "af88f395697e9362"
+        },
+        "NOT_LIT_2": {
+          "sprite": "wall_hangings/wall_hanging_019/not_lit_2/sprite.webp",
+          "pixellab_object_id": "34d3e01f-915c-4594-800c-e8c84a0152f3",
+          "generated_at": "2026-08-17T11:47:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2734,
+          "glow_score": 0.0075,
+          "art_hash": "a127213156e2ba13"
+        },
+        "NOT_LIT_3": {
+          "sprite": "wall_hangings/wall_hanging_019/not_lit_3/sprite.webp",
+          "pixellab_object_id": "fc943682-e5e3-421a-852d-89e14229f2d3",
+          "generated_at": "2026-08-17T11:48:16+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8006,
+          "glow_score": 0.0048,
+          "art_hash": "c46932b4804522f4"
+        },
+        "NOT_LIT_4": {
+          "sprite": "wall_hangings/wall_hanging_019/not_lit_4/sprite.webp",
+          "pixellab_object_id": "2152ef76-81fb-4074-9d10-0dc2cce86deb",
+          "generated_at": "2026-08-17T11:48:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4087,
+          "glow_score": 0.0149,
+          "art_hash": "475478feef67b470"
         }
       },
       "animations": []
@@ -62059,7 +62113,7 @@
       "rel": "washing_lines/washing_line_001",
       "name": "Lace and Sunday whites 001",
       "category": "washing_lines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, lace and Sunday whites, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -62079,11 +62133,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "washing_lines/washing_line_001/lit_1/sprite.webp",
+          "pixellab_object_id": "eb2dde78-6a42-402d-bdbf-aca8f9b34ea2",
+          "generated_at": "2026-08-17T11:51:30+00:00",
+          "glow_concept": "one garment glowing while the rest hang dark",
+          "difference_from_source": 0.9775,
+          "glow_score": 0.2161,
+          "art_hash": "1ca400d129bc23bb"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_001/lit_2/sprite.webp",
+          "pixellab_object_id": "0e045d40-0223-424a-932f-3ef4682ac51f",
+          "generated_at": "2026-08-17T11:50:53+00:00",
+          "glow_concept": "white linens glowing moonlit from within",
+          "difference_from_source": 0.7588,
+          "glow_score": 0.3289,
+          "art_hash": "50598488833e739a"
+        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_001/sprite.webp",
           "pixellab_object_id": "d1a46fc9-45c2-4fae-b0e1-c416635ac639",
           "generated_at": "2026-08-13T01:07:23+00:00",
           "art_hash": "2af18cef6b1daf2f"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_001/not_lit_2/sprite.webp",
+          "pixellab_object_id": "92c29d25-1839-40f4-95a7-3d11c976a109",
+          "generated_at": "2026-08-17T11:50:43+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7852,
+          "glow_score": 0.0545,
+          "art_hash": "053c2714ae35b5eb"
+        },
+        "NOT_LIT_3": {
+          "sprite": "washing_lines/washing_line_001/not_lit_3/sprite.webp",
+          "pixellab_object_id": "f1cb748c-78af-4075-a549-07fd992e5c83",
+          "generated_at": "2026-08-17T11:49:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6294,
+          "glow_score": 0.3708,
+          "art_hash": "69a4ed2da89ac7cd"
+        },
+        "NOT_LIT_4": {
+          "sprite": "washing_lines/washing_line_001/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0f50b139-8b78-4c49-9f38-463a16085a7d",
+          "generated_at": "2026-08-17T11:51:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6618,
+          "glow_score": 0.22,
+          "art_hash": "02bdd4ee627ace89"
         }
       },
       "animations": []
@@ -62091,9 +62190,9 @@
     {
       "id": "washing_line_002",
       "rel": "washing_lines/washing_line_002",
-      "name": "Dye-stained craftsman's cloths 002 \u00b7 lit",
+      "name": "Dye-stained craftsman's cloths 002",
       "category": "washing_lines",
-      "lights": "LIGHTS_ON",
+      "lights": null,
       "description": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, dye-stained craftsman's cloths, large, well above head height of a person, self-emissive at night, softly radiating light: glowworm-dotted rope like strung beads",
       "view": "low top-down",
       "size": 128,
@@ -62118,6 +62217,51 @@
           "pixellab_object_id": "a6f0b50c-a22e-4399-8325-0103a997d63f",
           "generated_at": "2026-08-13T04:18:48+00:00",
           "art_hash": "0d9fdc6de80cf499"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_002/lit_2/sprite.webp",
+          "pixellab_object_id": "594a952b-8226-4dd2-a597-790128ea70c6",
+          "generated_at": "2026-08-17T11:54:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.594,
+          "glow_score": 0.0603,
+          "art_hash": "0007093f00549989"
+        },
+        "LIT_3": {
+          "sprite": "washing_lines/washing_line_002/lit_3/sprite.webp",
+          "pixellab_object_id": "09f9558d-563f-4b9b-8fed-6d36165ff478",
+          "generated_at": "2026-08-17T11:51:12+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5975,
+          "glow_score": 0.0096,
+          "art_hash": "18a5fcdc5da3bec0"
+        },
+        "LIT_4": {
+          "sprite": "washing_lines/washing_line_002/lit_4/sprite.webp",
+          "pixellab_object_id": "8d1dd79f-6c87-48bc-b42b-8951e16d9d19",
+          "generated_at": "2026-08-17T11:52:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8245,
+          "glow_score": 0.2109,
+          "art_hash": "a572804b4fffd4b8"
+        },
+        "NOT_LIT_1": {
+          "sprite": "washing_lines/washing_line_002/not_lit_1/sprite.webp",
+          "pixellab_object_id": "b023f3aa-32f5-4a3c-87d2-c0cb83e5f5b3",
+          "generated_at": "2026-08-17T11:53:33+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9666,
+          "glow_score": 0.0,
+          "art_hash": "47f9d0d613c3abf5"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_002/not_lit_2/sprite.webp",
+          "pixellab_object_id": "b74ab675-616d-49ae-bd4e-5caf43707247",
+          "generated_at": "2026-08-17T11:53:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9698,
+          "glow_score": 0.0,
+          "art_hash": "8856b5a719eaf90d"
         }
       },
       "animations": []
@@ -62127,7 +62271,7 @@
       "rel": "washing_lines/washing_line_007",
       "name": "Fisherman's nets and oilskins 007",
       "category": "washing_lines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, fisherman's nets and oilskins, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -62147,11 +62291,47 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "washing_lines/washing_line_007/lit_1/sprite.webp",
+          "pixellab_object_id": "25e1daaf-0bc6-4286-a2a4-0aa59074581e",
+          "generated_at": "2026-08-17T11:54:52+00:00",
+          "glow_concept": "storm lantern hooked on one post",
+          "difference_from_source": 0.999,
+          "glow_score": 0.2735,
+          "art_hash": "9fcffd39f28335f3"
+        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_007/sprite.webp",
           "pixellab_object_id": "98579073-7272-4c7a-bcd6-e5f14d0e2e0b",
           "generated_at": "2026-08-13T21:47:13+00:00",
           "art_hash": "18498a4d07e85ae6"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_007/not_lit_2/sprite.webp",
+          "pixellab_object_id": "4b3ca02d-9db8-4ae0-b826-06f1e5e5f169",
+          "generated_at": "2026-08-17T11:53:24+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6463,
+          "glow_score": 0.0032,
+          "art_hash": "2eedf3db76cf034e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "washing_lines/washing_line_007/not_lit_3/sprite.webp",
+          "pixellab_object_id": "197876b8-900f-4594-96bd-6dae257c11c4",
+          "generated_at": "2026-08-17T11:53:14+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5454,
+          "glow_score": 0.072,
+          "art_hash": "30dd7ee235fec242"
+        },
+        "NOT_LIT_4": {
+          "sprite": "washing_lines/washing_line_007/not_lit_4/sprite.webp",
+          "pixellab_object_id": "30473afd-e410-4663-83c9-a21662af5f5f",
+          "generated_at": "2026-08-17T11:55:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6518,
+          "glow_score": 0.0153,
+          "art_hash": "bf6dfb72b640d47c"
         }
       },
       "animations": []
@@ -62161,7 +62341,7 @@
       "rel": "washing_lines/washing_line_009",
       "name": "Quilts and woven blankets 009",
       "category": "washing_lines",
-      "lights": "LIGHTS_OFF",
+      "lights": null,
       "description": "two stout wooden posts with a sagging rope hung with big billowing sheets and clothes filling the space, quilts and woven blankets, large, twice human height, completely unlit, no glow, no light sources, no self-emission",
       "view": "low top-down",
       "size": 128,
@@ -62181,11 +62361,56 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
+        "LIT_1": {
+          "sprite": "washing_lines/washing_line_009/lit_1/sprite.webp",
+          "pixellab_object_id": "0f9f7d60-c5f4-419c-9b9c-b47356119d42",
+          "generated_at": "2026-08-17T11:55:56+00:00",
+          "glow_concept": "embroidered hems stitched in shining thread",
+          "difference_from_source": 0.7223,
+          "glow_score": 0.1265,
+          "art_hash": "f2310946e315ea13"
+        },
+        "LIT_2": {
+          "sprite": "washing_lines/washing_line_009/lit_2/sprite.webp",
+          "pixellab_object_id": "b439de4a-50a2-4a59-9fbb-93a26033f1f1",
+          "generated_at": "2026-08-17T11:56:54+00:00",
+          "glow_concept": "garments filled with the warm light of wearers",
+          "difference_from_source": 0.9093,
+          "glow_score": 0.3919,
+          "art_hash": "a9bbd503127cf294"
+        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_009/sprite.webp",
           "pixellab_object_id": "9c5dd823-6c2e-4564-9e69-36c367855465",
           "generated_at": "2026-08-13T22:14:27+00:00",
           "art_hash": "d20b6d081b8e1b2a"
+        },
+        "NOT_LIT_2": {
+          "sprite": "washing_lines/washing_line_009/not_lit_2/sprite.webp",
+          "pixellab_object_id": "6f902f62-8cfa-4273-8e1b-b269b3f1eb06",
+          "generated_at": "2026-08-17T11:55:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5608,
+          "glow_score": 0.3345,
+          "art_hash": "cc626e531bf87ce5"
+        },
+        "NOT_LIT_3": {
+          "sprite": "washing_lines/washing_line_009/not_lit_3/sprite.webp",
+          "pixellab_object_id": "12df20d9-feb5-4b40-a38a-67e749d7ac88",
+          "generated_at": "2026-08-17T11:56:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6796,
+          "glow_score": 0.2934,
+          "art_hash": "429d2aa84f2c7d2f"
+        },
+        "NOT_LIT_4": {
+          "sprite": "washing_lines/washing_line_009/not_lit_4/sprite.webp",
+          "pixellab_object_id": "13f9d8fd-01f0-42ad-b629-07b0d55b3fed",
+          "generated_at": "2026-08-17T11:55:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6713,
+          "glow_score": 0.0893,
+          "art_hash": "05a6e5c47a7baa31"
         }
       },
       "animations": []

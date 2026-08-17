@@ -5,7 +5,7 @@
   "rank": 40,
   "index": 1,
   "name": "Lace and Sunday whites 001",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "lace and Sunday whites",
   "glow_concept": null,
   "prompt": "two wooden posts holding a sagging rope line hung with pegged linens and clothes, lace and Sunday whites, large, well above head height of a person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:07:23+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "washing_lines/washing_line_001/lit_1/sprite.webp",
+      "pixellab_object_id": "eb2dde78-6a42-402d-bdbf-aca8f9b34ea2",
+      "generated_at": "2026-08-17T11:51:30+00:00",
+      "glow_concept": "one garment glowing while the rest hang dark",
+      "difference_from_source": 0.9775,
+      "glow_score": 0.2161
+    },
+    "LIT_2": {
+      "sprite": "washing_lines/washing_line_001/lit_2/sprite.webp",
+      "pixellab_object_id": "0e045d40-0223-424a-932f-3ef4682ac51f",
+      "generated_at": "2026-08-17T11:50:53+00:00",
+      "glow_concept": "white linens glowing moonlit from within",
+      "difference_from_source": 0.7588,
+      "glow_score": 0.3289
+    },
     "NOT_LIT_1": {
       "sprite": "washing_lines/washing_line_001/sprite.webp",
       "pixellab_object_id": "d1a46fc9-45c2-4fae-b0e1-c416635ac639",
       "generated_at": "2026-08-13T01:07:23+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "washing_lines/washing_line_001/not_lit_2/sprite.webp",
+      "pixellab_object_id": "92c29d25-1839-40f4-95a7-3d11c976a109",
+      "generated_at": "2026-08-17T11:50:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7852,
+      "glow_score": 0.0545
+    },
+    "NOT_LIT_3": {
+      "sprite": "washing_lines/washing_line_001/not_lit_3/sprite.webp",
+      "pixellab_object_id": "f1cb748c-78af-4075-a549-07fd992e5c83",
+      "generated_at": "2026-08-17T11:49:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6294,
+      "glow_score": 0.3708
+    },
+    "NOT_LIT_4": {
+      "sprite": "washing_lines/washing_line_001/not_lit_4/sprite.webp",
+      "pixellab_object_id": "0f50b139-8b78-4c49-9f38-463a16085a7d",
+      "generated_at": "2026-08-17T11:51:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6618,
+      "glow_score": 0.22
     }
   }
 }
