@@ -6,7 +6,7 @@
   "rank": 39,
   "index": 15,
   "name": "Ring of golden waxcaps 015",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ring of golden waxcaps",
   "modifier": "with thick exposed roots",
   "glow_concept": null,
@@ -32,10 +32,34 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_015/lit_2/sprite.webp",
+      "pixellab_object_id": "a7a4c86f-8c85-4891-be93-23f46c8eaddd",
+      "generated_at": "2026-08-17T11:09:57+00:00",
+      "glow_concept": "glowing mycelium threads linking the toadstools underground",
+      "difference_from_source": 0.662,
+      "glow_score": 0.1882
+    },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_015/sprite.webp",
       "pixellab_object_id": "5e53c746-358f-44c2-80e7-23df86efe400",
       "generated_at": "2026-08-14T01:46:29+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_015/not_lit_2/sprite.webp",
+      "pixellab_object_id": "1c0ce84b-ea8d-45bd-b289-4028109f9714",
+      "generated_at": "2026-08-17T11:08:42+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3875,
+      "glow_score": 0.1898
+    },
+    "NOT_LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_015/not_lit_4/sprite.webp",
+      "pixellab_object_id": "33c7b669-524d-4f25-ad02-3403450b4d44",
+      "generated_at": "2026-08-17T11:10:16+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5688,
+      "glow_score": 0.1503
     }
   }
 }

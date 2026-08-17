@@ -4,8 +4,8 @@
   "group": "toadstool_rings",
   "rank": 39,
   "index": 10,
-  "name": "Ring around a mossy stone 010 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Ring around a mossy stone 010",
+  "lights": null,
   "variety": "ring around a mossy stone",
   "glow_concept": "glowing mycelium threads linking the toadstools underground",
   "prompt": "a circle of toadstools growing as a fairy ring on bare trodden forest soil, ring around a mossy stone, small, knee-high, self-emissive at night, softly radiating light: glowing mycelium threads linking the toadstools underground",
@@ -51,6 +51,30 @@
       "glow_concept": null,
       "difference_from_source": 0.4284,
       "glow_score": 0.1161
+    },
+    "LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_010/lit_4/sprite.webp",
+      "pixellab_object_id": "8ac55a51-bea9-490b-b2f7-daf8b5b0ba34",
+      "generated_at": "2026-08-17T11:02:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9334,
+      "glow_score": 0.0724
+    },
+    "NOT_LIT_1": {
+      "sprite": "toadstool_rings/toadstool_ring_010/not_lit_1/sprite.webp",
+      "pixellab_object_id": "94aeb16a-8618-47c4-8566-84107fa47bc8",
+      "generated_at": "2026-08-17T11:01:33+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9779,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_010/not_lit_2/sprite.webp",
+      "pixellab_object_id": "42b0997b-9dff-4ff6-957f-355eda7679f9",
+      "generated_at": "2026-08-17T11:02:54+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8095,
+      "glow_score": 0.0
     }
   }
 }

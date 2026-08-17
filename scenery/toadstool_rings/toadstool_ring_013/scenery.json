@@ -6,7 +6,7 @@
   "rank": 39,
   "index": 13,
   "name": "Ring in flowering meadow grass 013",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "ring in flowering meadow grass",
   "modifier": "rain-dark and glistening",
   "glow_concept": null,
@@ -32,10 +32,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "toadstool_rings/toadstool_ring_013/lit_1/sprite.webp",
+      "pixellab_object_id": "7895753d-7c13-4450-8a10-5b77fa527440",
+      "generated_at": "2026-08-17T11:06:16+00:00",
+      "glow_concept": "every cap lit from inside like paper lanterns",
+      "difference_from_source": 0.8641,
+      "glow_score": 0.1671
+    },
+    "LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_013/lit_2/sprite.webp",
+      "pixellab_object_id": "8c6a1235-7f57-481d-a487-deb82ecfadc7",
+      "generated_at": "2026-08-17T11:09:01+00:00",
+      "glow_concept": "glowing mycelium threads linking the toadstools underground",
+      "difference_from_source": 0.7709,
+      "glow_score": 0.2116
+    },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_013/sprite.webp",
       "pixellab_object_id": "5afad5a6-3456-47c5-8a4b-d3e3f2d9e9de",
       "generated_at": "2026-08-14T01:40:02+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_2/sprite.webp",
+      "pixellab_object_id": "e8d49b29-2ac0-4fff-b1f0-4729f2e5cd1f",
+      "generated_at": "2026-08-17T11:05:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5537,
+      "glow_score": 0.0514
+    },
+    "NOT_LIT_3": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_3/sprite.webp",
+      "pixellab_object_id": "ccae78f4-a565-4e00-b5ff-fe705ec942d7",
+      "generated_at": "2026-08-17T11:04:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4952,
+      "glow_score": 0.0764
+    },
+    "NOT_LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_013/not_lit_4/sprite.webp",
+      "pixellab_object_id": "f1a3c38a-25ab-4692-b791-dc7371b52711",
+      "generated_at": "2026-08-17T11:05:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.513,
+      "glow_score": 0.0549
     }
   }
 }
