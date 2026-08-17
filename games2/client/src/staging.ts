@@ -32,6 +32,38 @@
 const REPO = "mikael-floden/pixel";
 let base: string | null = null; // trailing slash; null = staging inactive
 
+/**
+ * fetch WITH A DEADLINE. Every fetch on the boot path needs one, and none had
+ * one until 2026-08-15 (maintainer: "when I start the game it's sometimes
+ * stuck on a black screen").
+ *
+ * THE BUG THIS FIXES, because a try/catch is not enough: an admin's
+ * loadWorldsList awaits isAdmin() -> stagingWorlds() -> resolveStagingBase(),
+ * which fetches api.github.com and then cdn.jsdelivr.net. Every one of those
+ * was wrapped in try/catch, so a FAILING request was handled — but a HANGING
+ * one is not catchable. It just never settles, the await never returns, and
+ * boot() never reaches the select screen. What the player gets is the version
+ * badge (drawn before the first await) alone on a black page, forever, with no
+ * spinner and nothing to retry.
+ *
+ * api.github.com rate-limits unauthenticated callers to 60/hour PER IP, and
+ * the resolved sha is cached in sessionStorage, so the call happens once per
+ * fresh session — which is exactly "sometimes, when I start the game".
+ *
+ * Aborting is strictly better than waiting here: every caller of these already
+ * degrades gracefully to "no staging worlds", which costs an admin nothing but
+ * three extra rows in the picker.
+ */
+export async function fetchSoon(url: string, ms = 3000, init?: RequestInit): Promise<Response> {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), ms);
+  try {
+    return await fetch(url, { ...init, signal: ac.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export function stagingActive(): boolean {
   return base !== null;
 }
@@ -48,7 +80,9 @@ export async function resolveStagingBase(): Promise<string | null> {
     if (hit) return `https://cdn.jsdelivr.net/gh/${REPO}@${hit}/`;
   } catch {}
   try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/commits/main`);
+    // 2.5s: this is an admin nicety (three extra picker rows). It must never
+    // be the reason the game does not start.
+    const r = await fetchSoon(`https://api.github.com/repos/${REPO}/commits/main`, 2500);
     const sha = ((await r.json()) as { sha?: string })?.sha;
     if (sha) {
       try {
@@ -70,7 +104,7 @@ export async function enterStaging(world: string): Promise<boolean> {
   const b = await resolveStagingBase();
   if (!b) return false;
   try {
-    const probe = await fetch(`${b}maps2/worlds/${world.replace(/[^a-z0-9_-]/gi, "")}/world.json`);
+    const probe = await fetchSoon(`${b}maps2/worlds/${world.replace(/[^a-z0-9_-]/gi, "")}/world.json`, 5000);
     if (!probe.ok) return false;
   } catch {
     return false;

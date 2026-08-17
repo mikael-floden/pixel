@@ -28,7 +28,7 @@ export interface World {
 }
 
 import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
-import { gameUrl, resolveStagingBase } from "./staging";
+import { gameUrl, resolveStagingBase, fetchSoon } from "./staging";
 
 export type { WorldProp, Deck };
 
@@ -114,7 +114,7 @@ export interface WorldInfo {
  * hasn't run yet). */
 export async function loadWorldsList(): Promise<WorldInfo[]> {
   try {
-    const res = await fetch("/worlds.json", { cache: "no-cache" });
+    const res = await fetchSoon("/worlds.json", 8000, { cache: "no-cache" });
     if (res.ok) {
       const list = (await res.json()) as WorldInfo[];
       if (Array.isArray(list) && list.length) {
@@ -154,7 +154,7 @@ async function stagingWorlds(have: Set<string>): Promise<WorldInfo[]> {
   try {
     const base = await resolveStagingBase();
     if (!base) return [];
-    const res = await fetch(`${base}games2/config/publish.json`);
+    const res = await fetchSoon(`${base}games2/config/publish.json`, 2500);
     if (!res.ok) return [];
     const policy = (await res.json()) as { devWorlds?: string[] };
     return (policy.devWorlds ?? [])
@@ -181,7 +181,7 @@ function isAdmin(): Promise<boolean> {
     try {
       const token = localStorage.getItem("wiki-admin-token");
       if (!token) return false;
-      const res = await fetch("/api/wiki/me", {
+      const res = await fetchSoon("/api/wiki/me", 3000, {
         headers: { authorization: `Bearer ${token}` },
         cache: "no-store",
       });

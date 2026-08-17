@@ -398,4 +398,45 @@ async function boot() {
   mountAmbient(game);
 }
 
-boot();
+/**
+ * BOOT MUST NEVER DEAD-END ON A BLACK PAGE (maintainer 2026-08-15, with a
+ * screenshot of exactly that: the version badge alone, nothing else).
+ *
+ * `showVersion()` runs before the first await, so the badge is what you get
+ * when anything after it throws or hangs — and until now `boot()` was called
+ * with no catch at all, so ONE rejected fetch on the path (loadManifest,
+ * loadWorldsList) took the whole screen with it, silently, with nothing to
+ * retry. The hang half is fixed at the source (fetchSoon in staging.ts); this
+ * is the backstop for everything else, including whatever we break next.
+ *
+ * Deliberately dependency-free: inline styles, no theme tokens, no imports. If
+ * boot died, anything it was supposed to set up may be missing, so this cannot
+ * rely on any of it.
+ */
+boot().catch((err) => {
+  console.error("[nangijala] boot failed:", err);
+  try {
+    if (document.getElementById("ml-bootfail")) return;
+    const box = document.createElement("div");
+    box.id = "ml-bootfail";
+    box.setAttribute("role", "alert");
+    box.style.cssText =
+      "position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;gap:16px;" +
+      "align-items:center;justify-content:center;padding:24px;text-align:center;background:#000;" +
+      "color:#e8e6e1;font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
+    const h = document.createElement("div");
+    h.textContent = "Nangijala could not start";
+    h.style.cssText = "font-size:19px;font-weight:600";
+    const p = document.createElement("div");
+    p.textContent = "Something failed to load. Check your connection and try again.";
+    p.style.cssText = "color:#a8a49c;max-width:22rem";
+    const btn = document.createElement("button");
+    btn.textContent = "Reload";
+    btn.style.cssText =
+      "font:inherit;font-weight:600;padding:11px 26px;border-radius:9px;border:1px solid #4a4640;" +
+      "background:#d97757;color:#fff;cursor:pointer";
+    btn.onclick = () => location.reload();
+    box.append(h, p, btn);
+    document.body.appendChild(box);
+  } catch {}
+});
