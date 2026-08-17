@@ -33,6 +33,26 @@
           "after": "tiles/review/grass__over__black_rock/1_after.webp",
           "file": "tiles/review/grass__over__black_rock/1_after.webp",
           "palette_top": "#0c483c",
+          "wall_score": 4.44,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.988,
+            "structure": 1.0,
+            "contrast": 25.78,
+            "edges": 14.244
+          },
+          "top_share": 0.6269,
+          "overhang": 0.495,
+          "tile_id": "52bb3e95-3c5d-48c2-b053-9805fb0db1d0",
+          "style": "chase3",
+          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed dark volcanic rock. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed black rock sides. No outline."
+        },
+        {
+          "key": "tiles/grass__over__black_rock/2",
+          "before": "tiles/review/grass__over__black_rock/2_before.webp",
+          "after": "tiles/review/grass__over__black_rock/2_after.webp",
+          "file": "tiles/review/grass__over__black_rock/2_after.webp",
+          "palette_top": "#0c483c",
           "wall_score": 4.42,
           "wall": {
             "tiling": 0.0,
@@ -43,26 +63,6 @@
           },
           "top_share": 0.8874,
           "overhang": 1.0,
-          "tile_id": "5fcaacc7-6f6c-46f1-9867-20cd340c3734",
-          "style": "chase2",
-          "prompt": "isometric tile: a layer of lush green grass covering a block of dark volcanic rock. Ragged grass edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
-        },
-        {
-          "key": "tiles/grass__over__black_rock/2",
-          "before": "tiles/review/grass__over__black_rock/2_before.webp",
-          "after": "tiles/review/grass__over__black_rock/2_after.webp",
-          "file": "tiles/review/grass__over__black_rock/2_after.webp",
-          "palette_top": "#0c483c",
-          "wall_score": 4.22,
-          "wall": {
-            "tiling": 0.0,
-            "discretion": 0.937,
-            "structure": 1.0,
-            "contrast": 27.14,
-            "edges": 14.783
-          },
-          "top_share": 0.6568,
-          "overhang": 0.75,
           "tile_id": "5fcaacc7-6f6c-46f1-9867-20cd340c3734",
           "style": "chase2",
           "prompt": "isometric tile: a layer of lush green grass covering a block of dark volcanic rock. Ragged grass edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
@@ -79,26 +79,6 @@
           "before": "tiles/review/grass__over__dark_mud/0_before.webp",
           "after": "tiles/review/grass__over__dark_mud/0_after.webp",
           "file": "tiles/review/grass__over__dark_mud/0_after.webp",
-          "palette_top": "#0c483c",
-          "wall_score": 1.07,
-          "wall": {
-            "tiling": 0.068,
-            "discretion": 0.618,
-            "structure": 0.339,
-            "contrast": 19.12,
-            "edges": 4.071
-          },
-          "top_share": 0.6313,
-          "overhang": 0.27,
-          "tile_id": "26ee1860-a66a-4435-93b7-f58f49873ba6",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean wet dark mud"
-        },
-        {
-          "key": "tiles/grass__over__dark_mud/1",
-          "before": "tiles/review/grass__over__dark_mud/1_before.webp",
-          "after": "tiles/review/grass__over__dark_mud/1_after.webp",
-          "file": "tiles/review/grass__over__dark_mud/1_after.webp",
           "palette_top": "#0c483c",
           "wall_score": 0.89,
           "wall": {
@@ -127,6 +107,26 @@
           "after": "tiles/review/grass__over__deep_water/0_after.webp",
           "file": "tiles/review/grass__over__deep_water/0_after.webp",
           "palette_top": "#0c483c",
+          "wall_score": 4.35,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.966,
+            "structure": 1.0,
+            "contrast": 26.61,
+            "edges": 13.47
+          },
+          "top_share": 0.8499,
+          "overhang": 0.305,
+          "tile_id": "a0248157-2e46-4608-b8a8-1dca64284675",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of lush green grass covering a block of deep dark ocean water. Ragged grass edge overhanging the deep water cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
+        },
+        {
+          "key": "tiles/grass__over__deep_water/1",
+          "before": "tiles/review/grass__over__deep_water/1_before.webp",
+          "after": "tiles/review/grass__over__deep_water/1_after.webp",
+          "file": "tiles/review/grass__over__deep_water/1_after.webp",
+          "palette_top": "#0c483c",
           "wall_score": 3.89,
           "wall": {
             "tiling": 0.126,
@@ -142,10 +142,10 @@
           "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         },
         {
-          "key": "tiles/grass__over__deep_water/1",
-          "before": "tiles/review/grass__over__deep_water/1_before.webp",
-          "after": "tiles/review/grass__over__deep_water/1_after.webp",
-          "file": "tiles/review/grass__over__deep_water/1_after.webp",
+          "key": "tiles/grass__over__deep_water/2",
+          "before": "tiles/review/grass__over__deep_water/2_before.webp",
+          "after": "tiles/review/grass__over__deep_water/2_after.webp",
+          "file": "tiles/review/grass__over__deep_water/2_after.webp",
           "palette_top": "#0c483c",
           "wall_score": 3.8,
           "wall": {
@@ -157,26 +157,6 @@
           },
           "top_share": 0.3804,
           "overhang": 0.375,
-          "tile_id": "31bbf543-0f22-4f10-88dd-84373adb1040",
-          "style": "chase3",
-          "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline."
-        },
-        {
-          "key": "tiles/grass__over__deep_water/2",
-          "before": "tiles/review/grass__over__deep_water/2_before.webp",
-          "after": "tiles/review/grass__over__deep_water/2_after.webp",
-          "file": "tiles/review/grass__over__deep_water/2_after.webp",
-          "palette_top": "#0c483c",
-          "wall_score": 3.49,
-          "wall": {
-            "tiling": 0.0,
-            "discretion": 0.918,
-            "structure": 0.845,
-            "contrast": 27.48,
-            "edges": 10.146
-          },
-          "top_share": 0.2556,
-          "overhang": 0.53,
           "tile_id": "31bbf543-0f22-4f10-88dd-84373adb1040",
           "style": "chase3",
           "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline."
@@ -194,6 +174,26 @@
           "after": "tiles/review/grass__over__grass/0_after.webp",
           "file": "tiles/review/grass__over__grass/0_after.webp",
           "palette_top": "#0c483c",
+          "wall_score": 6.15,
+          "wall": {
+            "tiling": 0.684,
+            "discretion": 0.53,
+            "structure": 1.0,
+            "contrast": 17.55,
+            "edges": 13.758
+          },
+          "top_share": 0.3733,
+          "overhang": 1.0,
+          "tile_id": "c118cd73-8174-42a1-809f-ac51b3cd7c56",
+          "style": "maintainer",
+          "prompt": "clean single color lush green grass on top of clean lush green grass"
+        },
+        {
+          "key": "tiles/grass__over__grass/1",
+          "before": "tiles/review/grass__over__grass/1_before.webp",
+          "after": "tiles/review/grass__over__grass/1_after.webp",
+          "file": "tiles/review/grass__over__grass/1_after.webp",
+          "palette_top": "#0c483c",
           "wall_score": 6.06,
           "wall": {
             "tiling": 0.381,
@@ -209,10 +209,10 @@
           "prompt": "clean single color lush green grass on top of clean lush green grass"
         },
         {
-          "key": "tiles/grass__over__grass/1",
-          "before": "tiles/review/grass__over__grass/1_before.webp",
-          "after": "tiles/review/grass__over__grass/1_after.webp",
-          "file": "tiles/review/grass__over__grass/1_after.webp",
+          "key": "tiles/grass__over__grass/2",
+          "before": "tiles/review/grass__over__grass/2_before.webp",
+          "after": "tiles/review/grass__over__grass/2_after.webp",
+          "file": "tiles/review/grass__over__grass/2_after.webp",
           "palette_top": "#0c483c",
           "wall_score": 5.9,
           "wall": {
@@ -227,26 +227,6 @@
           "tile_id": "c118cd73-8174-42a1-809f-ac51b3cd7c56",
           "style": "maintainer",
           "prompt": "clean single color lush green grass on top of clean lush green grass"
-        },
-        {
-          "key": "tiles/grass__over__grass/2",
-          "before": "tiles/review/grass__over__grass/2_before.webp",
-          "after": "tiles/review/grass__over__grass/2_after.webp",
-          "file": "tiles/review/grass__over__grass/2_after.webp",
-          "palette_top": "#0c483c",
-          "wall_score": 5.67,
-          "wall": {
-            "tiling": 0.283,
-            "discretion": 0.914,
-            "structure": 1.0,
-            "contrast": 24.45,
-            "edges": 13.646
-          },
-          "top_share": 1.0,
-          "overhang": 1.0,
-          "tile_id": "d986002c-2588-4d3d-a8c6-46baf9f56b16",
-          "style": "explicit",
-          "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are lush green grass with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
         }
       ],
       "needs_regeneration": false
@@ -328,19 +308,19 @@
           "after": "tiles/review/grass__over__ice/2_after.webp",
           "file": "tiles/review/grass__over__ice/2_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 0.93,
+          "wall_score": 0.0,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.214,
-            "structure": 0.963,
-            "contrast": 40.15,
-            "edges": 11.552
+            "discretion": 0.0,
+            "structure": 1.0,
+            "contrast": 45.92,
+            "edges": 16.124
           },
-          "top_share": 0.3936,
-          "overhang": 1.0,
-          "tile_id": "c048ce91-6d28-44cf-aab9-2f024311c0b6",
-          "style": "chase2",
-          "prompt": "isometric tile: a layer of lush green grass covering a block of translucent crystal ice. Ragged grass edge overhanging the ice cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
+          "top_share": 1.0,
+          "overhang": 0.26,
+          "tile_id": "4b06579b-0bbb-4d2b-82e4-38d88e3a9373",
+          "style": "chase4",
+          "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline."
         }
       ],
       "needs_regeneration": false
@@ -354,26 +334,6 @@
           "before": "tiles/review/grass__over__lava/0_before.webp",
           "after": "tiles/review/grass__over__lava/0_after.webp",
           "file": "tiles/review/grass__over__lava/0_after.webp",
-          "palette_top": "#0c483c",
-          "wall_score": 4.07,
-          "wall": {
-            "tiling": 0.256,
-            "discretion": 0.792,
-            "structure": 0.819,
-            "contrast": 29.75,
-            "edges": 9.83
-          },
-          "top_share": 0.4476,
-          "overhang": 0.575,
-          "tile_id": "d832da3a-1cbf-4ae3-bd26-c2762146bf50",
-          "style": "maintainer",
-          "prompt": "clean single color lush green grass on top of clean molten glowing lava"
-        },
-        {
-          "key": "tiles/grass__over__lava/1",
-          "before": "tiles/review/grass__over__lava/1_before.webp",
-          "after": "tiles/review/grass__over__lava/1_after.webp",
-          "file": "tiles/review/grass__over__lava/1_after.webp",
           "palette_top": "#0c483c",
           "wall_score": 3.3,
           "wall": {
@@ -390,10 +350,10 @@
           "prompt": "clean single color lush green grass on top of clean molten glowing lava"
         },
         {
-          "key": "tiles/grass__over__lava/2",
-          "before": "tiles/review/grass__over__lava/2_before.webp",
-          "after": "tiles/review/grass__over__lava/2_after.webp",
-          "file": "tiles/review/grass__over__lava/2_after.webp",
+          "key": "tiles/grass__over__lava/1",
+          "before": "tiles/review/grass__over__lava/1_before.webp",
+          "after": "tiles/review/grass__over__lava/1_after.webp",
+          "file": "tiles/review/grass__over__lava/1_after.webp",
           "palette_top": "#0c483c",
           "wall_score": 3.08,
           "wall": {
@@ -405,6 +365,26 @@
           },
           "top_share": 0.3841,
           "overhang": 0.565,
+          "tile_id": "d832da3a-1cbf-4ae3-bd26-c2762146bf50",
+          "style": "maintainer",
+          "prompt": "clean single color lush green grass on top of clean molten glowing lava"
+        },
+        {
+          "key": "tiles/grass__over__lava/2",
+          "before": "tiles/review/grass__over__lava/2_before.webp",
+          "after": "tiles/review/grass__over__lava/2_after.webp",
+          "file": "tiles/review/grass__over__lava/2_after.webp",
+          "palette_top": "#0c483c",
+          "wall_score": 2.34,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.52,
+            "structure": 1.0,
+            "contrast": 34.64,
+            "edges": 14.588
+          },
+          "top_share": 0.454,
+          "overhang": 0.44,
           "tile_id": "d832da3a-1cbf-4ae3-bd26-c2762146bf50",
           "style": "maintainer",
           "prompt": "clean single color lush green grass on top of clean molten glowing lava"
@@ -479,6 +459,73 @@
       ],
       "needs_regeneration": true
     },
+    "grass__over__light_soil": {
+      "top": "grass",
+      "side": "light_soil",
+      "candidates": [
+        {
+          "key": "tiles/grass__over__light_soil/0",
+          "before": "tiles/review/grass__over__light_soil/0_before.webp",
+          "after": "tiles/review/grass__over__light_soil/0_after.webp",
+          "file": "tiles/review/grass__over__light_soil/0_after.webp",
+          "palette_top": "#0c483c",
+          "wall_score": 3.32,
+          "wall": {
+            "tiling": 0.2,
+            "discretion": 0.739,
+            "structure": 0.75,
+            "contrast": 30.71,
+            "edges": 9.0
+          },
+          "top_share": 0.7995,
+          "overhang": 0.425,
+          "tile_id": "064b13a6-b0b6-4364-88be-ab4eb89a83f0",
+          "style": "maintainer",
+          "prompt": "clean single color lush green grass on top of clean dry light soil"
+        },
+        {
+          "key": "tiles/grass__over__light_soil/1",
+          "before": "tiles/review/grass__over__light_soil/1_before.webp",
+          "after": "tiles/review/grass__over__light_soil/1_after.webp",
+          "file": "tiles/review/grass__over__light_soil/1_after.webp",
+          "palette_top": "#0c483c",
+          "wall_score": 3.3,
+          "wall": {
+            "tiling": 0.207,
+            "discretion": 0.91,
+            "structure": 0.631,
+            "contrast": 24.37,
+            "edges": 7.573
+          },
+          "top_share": 0.8667,
+          "overhang": 0.43,
+          "tile_id": "064b13a6-b0b6-4364-88be-ab4eb89a83f0",
+          "style": "maintainer",
+          "prompt": "clean single color lush green grass on top of clean dry light soil"
+        },
+        {
+          "key": "tiles/grass__over__light_soil/2",
+          "before": "tiles/review/grass__over__light_soil/2_before.webp",
+          "after": "tiles/review/grass__over__light_soil/2_after.webp",
+          "file": "tiles/review/grass__over__light_soil/2_after.webp",
+          "palette_top": "#0c483c",
+          "wall_score": 3.29,
+          "wall": {
+            "tiling": 0.138,
+            "discretion": 0.718,
+            "structure": 0.824,
+            "contrast": 31.08,
+            "edges": 9.888
+          },
+          "top_share": 0.7589,
+          "overhang": 0.485,
+          "tile_id": "064b13a6-b0b6-4364-88be-ab4eb89a83f0",
+          "style": "maintainer",
+          "prompt": "clean single color lush green grass on top of clean dry light soil"
+        }
+      ],
+      "needs_regeneration": false
+    },
     "grass__over__parquet_floor": {
       "top": "grass",
       "side": "parquet_floor",
@@ -489,16 +536,16 @@
           "after": "tiles/review/grass__over__parquet_floor/0_after.webp",
           "file": "tiles/review/grass__over__parquet_floor/0_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 5.24,
+          "wall_score": 4.92,
           "wall": {
-            "tiling": 0.383,
-            "discretion": 0.696,
+            "tiling": 0.348,
+            "discretion": 0.667,
             "structure": 1.0,
-            "contrast": 31.46,
-            "edges": 20.028
+            "contrast": 32.0,
+            "edges": 20.242
           },
-          "top_share": 0.7772,
-          "overhang": 0.51,
+          "top_share": 0.7753,
+          "overhang": 0.93,
           "tile_id": "e9d7ae97-8674-476f-9b2b-f79b2593f564",
           "style": "chase2",
           "prompt": "isometric tile: a layer of lush green grass covering a block of wooden parquet floor. Ragged grass edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline."
@@ -623,13 +670,13 @@
           "after": "tiles/review/grass__over__slime/0_after.webp",
           "file": "tiles/review/grass__over__slime/0_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 2.9,
+          "wall_score": 2.6,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.644,
-            "structure": 1.0,
-            "contrast": 32.4,
-            "edges": 13.969
+            "discretion": 0.65,
+            "structure": 0.888,
+            "contrast": 32.3,
+            "edges": 10.658
           },
           "top_share": 1.0,
           "overhang": 1.0,
@@ -643,13 +690,13 @@
           "after": "tiles/review/grass__over__slime/1_after.webp",
           "file": "tiles/review/grass__over__slime/1_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 2.6,
+          "wall_score": 2.42,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.577,
+            "discretion": 0.537,
             "structure": 1.0,
-            "contrast": 33.61,
-            "edges": 12.657
+            "contrast": 34.33,
+            "edges": 16.805
           },
           "top_share": 1.0,
           "overhang": 1.0,
@@ -663,13 +710,13 @@
           "after": "tiles/review/grass__over__slime/2_after.webp",
           "file": "tiles/review/grass__over__slime/2_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 2.6,
+          "wall_score": 2.14,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.65,
-            "structure": 0.888,
-            "contrast": 32.3,
-            "edges": 10.658
+            "discretion": 0.475,
+            "structure": 1.0,
+            "contrast": 35.45,
+            "edges": 19.193
           },
           "top_share": 1.0,
           "overhang": 1.0,
@@ -690,16 +737,16 @@
           "after": "tiles/review/grass__over__snow/0_after.webp",
           "file": "tiles/review/grass__over__snow/0_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 3.9,
+          "wall_score": 2.87,
           "wall": {
-            "tiling": 0.201,
-            "discretion": 0.958,
-            "structure": 0.72,
-            "contrast": 25.24,
-            "edges": 8.636
+            "tiling": 0.229,
+            "discretion": 0.614,
+            "structure": 0.714,
+            "contrast": 32.95,
+            "edges": 8.566
           },
-          "top_share": 0.5502,
-          "overhang": 0.715,
+          "top_share": 0.5136,
+          "overhang": 0.35,
           "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
           "style": "chase5",
           "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
@@ -710,16 +757,16 @@
           "after": "tiles/review/grass__over__snow/1_after.webp",
           "file": "tiles/review/grass__over__snow/1_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 2.88,
+          "wall_score": 2.62,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.771,
-            "structure": 0.831,
-            "contrast": 30.12,
-            "edges": 9.975
+            "discretion": 0.851,
+            "structure": 0.685,
+            "contrast": 28.68,
+            "edges": 8.218
           },
-          "top_share": 0.5065,
-          "overhang": 0.75,
+          "top_share": 0.4698,
+          "overhang": 0.695,
           "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
           "style": "chase5",
           "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
@@ -730,16 +777,16 @@
           "after": "tiles/review/grass__over__snow/2_after.webp",
           "file": "tiles/review/grass__over__snow/2_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 2.7,
+          "wall_score": 2.56,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.762,
-            "structure": 0.786,
-            "contrast": 30.28,
-            "edges": 9.438
+            "discretion": 0.768,
+            "structure": 0.742,
+            "contrast": 30.18,
+            "edges": 8.9
           },
-          "top_share": 0.4982,
-          "overhang": 0.76,
+          "top_share": 0.3766,
+          "overhang": 0.345,
           "tile_id": "5f5d2c91-5120-44b1-9a27-0fdedee74772",
           "style": "chase5",
           "prompt": "isometric ground tile, lush green grass over clean fresh snow, photographed from above. Soft irregular boundary where grass meets snow \u2014 the grass creeps down over the snow. Plain even grass surface. No outline."
@@ -777,13 +824,13 @@
           "after": "tiles/review/grass__over__water/1_after.webp",
           "file": "tiles/review/grass__over__water/1_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 4.3,
+          "wall_score": 3.65,
           "wall": {
-            "tiling": 0.472,
-            "discretion": 0.675,
-            "structure": 0.764,
-            "contrast": 20.15,
-            "edges": 9.169
+            "tiling": 0.153,
+            "discretion": 0.694,
+            "structure": 0.921,
+            "contrast": 31.52,
+            "edges": 11.054
           },
           "top_share": 1.0,
           "overhang": 1.0,
@@ -797,16 +844,16 @@
           "after": "tiles/review/grass__over__water/2_after.webp",
           "file": "tiles/review/grass__over__water/2_after.webp",
           "palette_top": "#0c483c",
-          "wall_score": 4.13,
+          "wall_score": 2.72,
           "wall": {
-            "tiling": 0.416,
-            "discretion": 0.41,
-            "structure": 1.0,
-            "contrast": 36.62,
-            "edges": 12.707
+            "tiling": 0.431,
+            "discretion": 0.457,
+            "structure": 0.614,
+            "contrast": 35.78,
+            "edges": 7.372
           },
-          "top_share": 0.7859,
-          "overhang": 0.32,
+          "top_share": 0.7832,
+          "overhang": 0.455,
           "tile_id": "d94ce7e1-486a-4017-900a-a90cc03ce170",
           "style": "chase3",
           "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed clear calm water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed water sides. No outline."
@@ -931,15 +978,15 @@
           "after": "tiles/review/ice__over__grass/2_after.webp",
           "file": "tiles/review/ice__over__grass/2_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 2.28,
+          "wall_score": 2.72,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.506,
+            "discretion": 0.605,
             "structure": 1.0,
-            "contrast": 34.88,
-            "edges": 22.924
+            "contrast": 33.11,
+            "edges": 16.735
           },
-          "top_share": 1.0,
+          "top_share": 0.9609,
           "overhang": 1.0,
           "tile_id": "718c90c6-fa75-49ce-82ac-762fc8e5338a",
           "style": "explicit",
@@ -1092,15 +1139,15 @@
           "after": "tiles/review/ice__over__light_beach/0_after.webp",
           "file": "tiles/review/ice__over__light_beach/0_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 6.96,
+          "wall_score": 6.41,
           "wall": {
-            "tiling": 0.645,
-            "discretion": 0.757,
-            "structure": 1.0,
-            "contrast": 21.63,
-            "edges": 20.468
+            "tiling": 0.689,
+            "discretion": 0.946,
+            "structure": 0.797,
+            "contrast": 25.03,
+            "edges": 9.566
           },
-          "top_share": 0.9976,
+          "top_share": 0.9798,
           "overhang": 1.0,
           "tile_id": "19b65a23-eb22-4ba1-b363-a3f1c672d0c9",
           "style": "explicit",
@@ -1112,16 +1159,16 @@
           "after": "tiles/review/ice__over__light_beach/1_after.webp",
           "file": "tiles/review/ice__over__light_beach/1_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 6.19,
+          "wall_score": 6.24,
           "wall": {
-            "tiling": 0.696,
-            "discretion": 0.915,
-            "structure": 0.779,
-            "contrast": 27.54,
-            "edges": 9.351
+            "tiling": 0.451,
+            "discretion": 0.975,
+            "structure": 0.909,
+            "contrast": 25.55,
+            "edges": 10.902
           },
-          "top_share": 0.9976,
-          "overhang": 1.0,
+          "top_share": 0.9988,
+          "overhang": 0.83,
           "tile_id": "19b65a23-eb22-4ba1-b363-a3f1c672d0c9",
           "style": "explicit",
           "prompt": "isometric ground tile. The flat top surface is clean single colour translucent crystal ice, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline."
@@ -1132,13 +1179,13 @@
           "after": "tiles/review/ice__over__light_beach/2_after.webp",
           "file": "tiles/review/ice__over__light_beach/2_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 4.04,
+          "wall_score": 6.19,
           "wall": {
-            "tiling": 0.648,
-            "discretion": 0.708,
-            "structure": 0.599,
-            "contrast": 20.74,
-            "edges": 7.19
+            "tiling": 0.696,
+            "discretion": 0.915,
+            "structure": 0.779,
+            "contrast": 27.54,
+            "edges": 9.351
           },
           "top_share": 0.9976,
           "overhang": 1.0,
@@ -1159,15 +1206,15 @@
           "after": "tiles/review/ice__over__snow/0_after.webp",
           "file": "tiles/review/ice__over__snow/0_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 2.95,
+          "wall_score": 3.03,
           "wall": {
-            "tiling": 0.478,
-            "discretion": 0.799,
-            "structure": 0.474,
-            "contrast": 29.62,
-            "edges": 5.688
+            "tiling": 0.477,
+            "discretion": 0.777,
+            "structure": 0.495,
+            "contrast": 30.01,
+            "edges": 5.936
           },
-          "top_share": 0.2476,
+          "top_share": 0.4208,
           "overhang": 1.0,
           "tile_id": "48b83dba-edfe-4343-ad92-a1e032ec4410",
           "style": "explicit",
@@ -1179,15 +1226,15 @@
           "after": "tiles/review/ice__over__snow/1_after.webp",
           "file": "tiles/review/ice__over__snow/1_after.webp",
           "palette_top": "#a8f0fc",
-          "wall_score": 2.41,
+          "wall_score": 2.95,
           "wall": {
-            "tiling": 0.391,
-            "discretion": 0.726,
-            "structure": 0.445,
-            "contrast": 30.93,
-            "edges": 5.335
+            "tiling": 0.478,
+            "discretion": 0.799,
+            "structure": 0.474,
+            "contrast": 29.62,
+            "edges": 5.688
           },
-          "top_share": 0.4265,
+          "top_share": 0.2476,
           "overhang": 1.0,
           "tile_id": "48b83dba-edfe-4343-ad92-a1e032ec4410",
           "style": "explicit",
@@ -1293,16 +1340,16 @@
           "after": "tiles/review/snow__over__dark_mud/0_after.webp",
           "file": "tiles/review/snow__over__dark_mud/0_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 2.37,
+          "wall_score": 3.12,
           "wall": {
-            "tiling": 0.265,
-            "discretion": 0.768,
-            "structure": 0.483,
-            "contrast": 21.83,
-            "edges": 5.794
+            "tiling": 0.0,
+            "discretion": 0.954,
+            "structure": 0.727,
+            "contrast": 25.17,
+            "edges": 8.726
           },
-          "top_share": 0.5273,
-          "overhang": 0.45,
+          "top_share": 0.9119,
+          "overhang": 0.59,
           "tile_id": "60b4c087-bb7a-4f0c-ab41-77d05a3c9f0a",
           "style": "maintainer",
           "prompt": "clean single color clean fresh snow on top of clean wet dark mud"
@@ -1427,46 +1474,6 @@
           "after": "tiles/review/snow__over__grass/0_after.webp",
           "file": "tiles/review/snow__over__grass/0_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 3.78,
-          "wall": {
-            "tiling": 0.0,
-            "discretion": 0.841,
-            "structure": 1.0,
-            "contrast": 28.86,
-            "edges": 15.89
-          },
-          "top_share": 0.9457,
-          "overhang": 0.395,
-          "tile_id": "bc0f3ce4-ca69-46e5-a3c1-c88321000cc8",
-          "style": "chase1",
-          "prompt": "isometric terrain block of lush green grass with clean fresh snow growing on top. The snow spills over the rim and hangs down the grass face in an uneven fringe. Flat even snow seen from above. No outline."
-        },
-        {
-          "key": "tiles/snow__over__grass/1",
-          "before": "tiles/review/snow__over__grass/1_before.webp",
-          "after": "tiles/review/snow__over__grass/1_after.webp",
-          "file": "tiles/review/snow__over__grass/1_after.webp",
-          "palette_top": "#d8e4de",
-          "wall_score": 1.61,
-          "wall": {
-            "tiling": 0.0,
-            "discretion": 0.444,
-            "structure": 0.803,
-            "contrast": 36.0,
-            "edges": 9.637
-          },
-          "top_share": 0.2912,
-          "overhang": 0.3,
-          "tile_id": "a04f263e-ebbb-4f09-98ed-cb3d6968e187",
-          "style": "chase5",
-          "prompt": "isometric ground tile, clean fresh snow over lush green grass, photographed from above. Soft irregular boundary where snow meets grass \u2014 the snow creeps down over the grass. Plain even snow surface. No outline."
-        },
-        {
-          "key": "tiles/snow__over__grass/2",
-          "before": "tiles/review/snow__over__grass/2_before.webp",
-          "after": "tiles/review/snow__over__grass/2_after.webp",
-          "file": "tiles/review/snow__over__grass/2_after.webp",
-          "palette_top": "#d8e4de",
           "wall_score": 1.26,
           "wall": {
             "tiling": 0.0,
@@ -1477,6 +1484,46 @@
           },
           "top_share": 0.9516,
           "overhang": 0.58,
+          "tile_id": "ed05020c-0e6d-40af-819c-f76f96d44469",
+          "style": "chase0",
+          "prompt": "isometric ground tile. clean fresh snow on top of lush green grass. The snow grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the snow surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/snow__over__grass/1",
+          "before": "tiles/review/snow__over__grass/1_before.webp",
+          "after": "tiles/review/snow__over__grass/1_after.webp",
+          "file": "tiles/review/snow__over__grass/1_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 0.62,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.138,
+            "structure": 1.0,
+            "contrast": 41.52,
+            "edges": 21.265
+          },
+          "top_share": 0.9562,
+          "overhang": 0.65,
+          "tile_id": "ed05020c-0e6d-40af-819c-f76f96d44469",
+          "style": "chase0",
+          "prompt": "isometric ground tile. clean fresh snow on top of lush green grass. The snow grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the snow surface is even and uniform. No outline."
+        },
+        {
+          "key": "tiles/snow__over__grass/2",
+          "before": "tiles/review/snow__over__grass/2_before.webp",
+          "after": "tiles/review/snow__over__grass/2_after.webp",
+          "file": "tiles/review/snow__over__grass/2_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 0.57,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.126,
+            "structure": 1.0,
+            "contrast": 41.73,
+            "edges": 20.94
+          },
+          "top_share": 0.9551,
+          "overhang": 0.675,
           "tile_id": "ed05020c-0e6d-40af-819c-f76f96d44469",
           "style": "chase0",
           "prompt": "isometric ground tile. clean fresh snow on top of lush green grass. The snow grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the snow surface is even and uniform. No outline."
@@ -1628,16 +1675,56 @@
           "after": "tiles/review/snow__over__lava/0_after.webp",
           "file": "tiles/review/snow__over__lava/0_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 2.23,
+          "wall_score": 3.23,
           "wall": {
             "tiling": 0.0,
-            "discretion": 0.831,
-            "structure": 0.597,
-            "contrast": 29.04,
-            "edges": 7.159
+            "discretion": 0.718,
+            "structure": 1.0,
+            "contrast": 31.07,
+            "edges": 12.758
           },
-          "top_share": 0.4503,
-          "overhang": 0.56,
+          "top_share": 0.4154,
+          "overhang": 0.345,
+          "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
+          "style": "chase7",
+          "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
+        },
+        {
+          "key": "tiles/snow__over__lava/1",
+          "before": "tiles/review/snow__over__lava/1_before.webp",
+          "after": "tiles/review/snow__over__lava/1_after.webp",
+          "file": "tiles/review/snow__over__lava/1_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 3.08,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.738,
+            "structure": 0.928,
+            "contrast": 30.72,
+            "edges": 11.131
+          },
+          "top_share": 0.4615,
+          "overhang": 0.49,
+          "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
+          "style": "chase7",
+          "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
+        },
+        {
+          "key": "tiles/snow__over__lava/2",
+          "before": "tiles/review/snow__over__lava/2_before.webp",
+          "after": "tiles/review/snow__over__lava/2_after.webp",
+          "file": "tiles/review/snow__over__lava/2_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 2.85,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.634,
+            "structure": 1.0,
+            "contrast": 32.6,
+            "edges": 12.978
+          },
+          "top_share": 0.4584,
+          "overhang": 0.525,
           "tile_id": "7ae117e5-3108-42ea-84ae-20115fa9040b",
           "style": "chase7",
           "prompt": "a block of molten glowing lava with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline."
@@ -1668,6 +1755,26 @@
           "tile_id": "022633b0-759d-43dd-816d-ea2e60fac6dd",
           "style": "maintainer",
           "prompt": "clean single color clean fresh snow on top of clean pale sandy beach"
+        },
+        {
+          "key": "tiles/snow__over__light_beach/1",
+          "before": "tiles/review/snow__over__light_beach/1_before.webp",
+          "after": "tiles/review/snow__over__light_beach/1_after.webp",
+          "file": "tiles/review/snow__over__light_beach/1_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 1.84,
+          "wall": {
+            "tiling": 0.637,
+            "discretion": 0.882,
+            "structure": 0.246,
+            "contrast": 23.88,
+            "edges": 2.949
+          },
+          "top_share": 0.8539,
+          "overhang": 0.33,
+          "tile_id": "022633b0-759d-43dd-816d-ea2e60fac6dd",
+          "style": "maintainer",
+          "prompt": "clean single color clean fresh snow on top of clean pale sandy beach"
         }
       ],
       "needs_regeneration": false
@@ -1682,19 +1789,59 @@
           "after": "tiles/review/snow__over__light_soil/0_after.webp",
           "file": "tiles/review/snow__over__light_soil/0_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 1.47,
+          "wall_score": 1.93,
           "wall": {
-            "tiling": 0.253,
-            "discretion": 0.787,
-            "structure": 0.298,
-            "contrast": 22.17,
-            "edges": 3.574
+            "tiling": 0.0,
+            "discretion": 0.429,
+            "structure": 1.0,
+            "contrast": 36.27,
+            "edges": 21.718
           },
-          "top_share": 0.4211,
-          "overhang": 1.0,
-          "tile_id": "666e9bab-6580-4397-b3ac-4098ae6789f3",
-          "style": "chase5",
-          "prompt": "isometric ground tile, clean fresh snow over dry light soil, photographed from above. Soft irregular boundary where snow meets light soil \u2014 the snow creeps down over the light soil. Plain even snow surface. No outline."
+          "top_share": 0.8778,
+          "overhang": 0.77,
+          "tile_id": "42ecf7d3-0f78-402f-8e54-2a6d1df8a56f",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of dry light soil. Ragged snow edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
+        },
+        {
+          "key": "tiles/snow__over__light_soil/1",
+          "before": "tiles/review/snow__over__light_soil/1_before.webp",
+          "after": "tiles/review/snow__over__light_soil/1_after.webp",
+          "file": "tiles/review/snow__over__light_soil/1_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 1.82,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.405,
+            "structure": 1.0,
+            "contrast": 36.71,
+            "edges": 21.524
+          },
+          "top_share": 0.8814,
+          "overhang": 0.835,
+          "tile_id": "42ecf7d3-0f78-402f-8e54-2a6d1df8a56f",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of dry light soil. Ragged snow edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
+        },
+        {
+          "key": "tiles/snow__over__light_soil/2",
+          "before": "tiles/review/snow__over__light_soil/2_before.webp",
+          "after": "tiles/review/snow__over__light_soil/2_after.webp",
+          "file": "tiles/review/snow__over__light_soil/2_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 1.79,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.398,
+            "structure": 1.0,
+            "contrast": 36.83,
+            "edges": 22.524
+          },
+          "top_share": 0.8719,
+          "overhang": 0.84,
+          "tile_id": "42ecf7d3-0f78-402f-8e54-2a6d1df8a56f",
+          "style": "chase2",
+          "prompt": "isometric tile: a layer of clean fresh snow covering a block of dry light soil. Ragged snow edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
         }
       ],
       "needs_regeneration": false
@@ -1776,6 +1923,26 @@
           "after": "tiles/review/snow__over__paving_stone/0_after.webp",
           "file": "tiles/review/snow__over__paving_stone/0_after.webp",
           "palette_top": "#d8e4de",
+          "wall_score": 3.25,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.899,
+            "structure": 0.804,
+            "contrast": 24.19,
+            "edges": 9.649
+          },
+          "top_share": 0.7718,
+          "overhang": 1.0,
+          "tile_id": "48449d27-775c-40c9-b2ea-0d7cc9bf1c61",
+          "style": "chase5",
+          "prompt": "isometric ground tile, clean fresh snow over cut paving stone slabs, photographed from above. Soft irregular boundary where snow meets paving stone \u2014 the snow creeps down over the paving stone. Plain even snow surface. No outline."
+        },
+        {
+          "key": "tiles/snow__over__paving_stone/1",
+          "before": "tiles/review/snow__over__paving_stone/1_before.webp",
+          "after": "tiles/review/snow__over__paving_stone/1_after.webp",
+          "file": "tiles/review/snow__over__paving_stone/1_after.webp",
+          "palette_top": "#d8e4de",
           "wall_score": 3.19,
           "wall": {
             "tiling": 0.0,
@@ -1785,6 +1952,26 @@
             "edges": 9.187
           },
           "top_share": 0.8198,
+          "overhang": 1.0,
+          "tile_id": "48449d27-775c-40c9-b2ea-0d7cc9bf1c61",
+          "style": "chase5",
+          "prompt": "isometric ground tile, clean fresh snow over cut paving stone slabs, photographed from above. Soft irregular boundary where snow meets paving stone \u2014 the snow creeps down over the paving stone. Plain even snow surface. No outline."
+        },
+        {
+          "key": "tiles/snow__over__paving_stone/2",
+          "before": "tiles/review/snow__over__paving_stone/2_before.webp",
+          "after": "tiles/review/snow__over__paving_stone/2_after.webp",
+          "file": "tiles/review/snow__over__paving_stone/2_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 3.16,
+          "wall": {
+            "tiling": 0.0,
+            "discretion": 0.937,
+            "structure": 0.748,
+            "contrast": 24.87,
+            "edges": 8.978
+          },
+          "top_share": 0.5919,
           "overhang": 1.0,
           "tile_id": "48449d27-775c-40c9-b2ea-0d7cc9bf1c61",
           "style": "chase5",
@@ -1803,19 +1990,19 @@
           "after": "tiles/review/snow__over__slime/0_after.webp",
           "file": "tiles/review/snow__over__slime/0_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 1.91,
+          "wall_score": 2.41,
           "wall": {
-            "tiling": 0.278,
-            "discretion": 0.086,
-            "structure": 1.0,
-            "contrast": 42.45,
-            "edges": 23.554
+            "tiling": 0.212,
+            "discretion": 0.326,
+            "structure": 0.915,
+            "contrast": 38.13,
+            "edges": 10.981
           },
-          "top_share": 1.0,
-          "overhang": 0.5,
-          "tile_id": "0fbbad8b-abf9-4f86-a77d-e2f0f2982cc5",
-          "style": "chase2",
-          "prompt": "isometric tile: a layer of clean fresh snow covering a block of thick bubbling slime. Ragged snow edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline."
+          "top_share": 0.9138,
+          "overhang": 0.34,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
         },
         {
           "key": "tiles/snow__over__slime/1",
@@ -1823,19 +2010,39 @@
           "after": "tiles/review/snow__over__slime/1_after.webp",
           "file": "tiles/review/snow__over__slime/1_after.webp",
           "palette_top": "#d8e4de",
-          "wall_score": 0.0,
+          "wall_score": 2.11,
           "wall": {
-            "tiling": 0.0,
-            "discretion": 0.0,
-            "structure": 1.0,
-            "contrast": 57.36,
-            "edges": 13.864
+            "tiling": 0.127,
+            "discretion": 0.443,
+            "structure": 0.783,
+            "contrast": 36.03,
+            "edges": 9.401
           },
-          "top_share": 0.4196,
-          "overhang": 0.815,
-          "tile_id": "d656c0c0-cd4f-4605-b802-95671d6b8e21",
-          "style": "maintainer",
-          "prompt": "clean single color clean fresh snow on top of clean thick bubbling slime"
+          "top_share": 0.8985,
+          "overhang": 0.37,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
+        },
+        {
+          "key": "tiles/snow__over__slime/2",
+          "before": "tiles/review/snow__over__slime/2_before.webp",
+          "after": "tiles/review/snow__over__slime/2_after.webp",
+          "file": "tiles/review/snow__over__slime/2_after.webp",
+          "palette_top": "#d8e4de",
+          "wall_score": 2.0,
+          "wall": {
+            "tiling": 0.057,
+            "discretion": 0.375,
+            "structure": 1.0,
+            "contrast": 37.25,
+            "edges": 11.995
+          },
+          "top_share": 0.8865,
+          "overhang": 0.47,
+          "tile_id": "384a33c8-97d0-4dc2-89b9-8e28d341ec55",
+          "style": "chase4",
+          "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline."
         }
       ],
       "needs_regeneration": false

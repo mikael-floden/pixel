@@ -385,8 +385,8 @@ def middle_floor(img, band=4):
 SPILL_SPREAD = 16.0     # tiles2 grass measures value std 16.2 — the look being matched
 
 
-def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=55, guard=25,
-                 max_frac=0.30, max_depth=0.34):
+def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
+                 max_frac=0.50, max_depth=0.34):
     """Pull the TOP material's overhanging blades to the palette, and nothing else.
 
     The tufts that fall over the edge are the best thing about these tiles, and they sit
@@ -418,28 +418,66 @@ def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=55, guard=25,
     sep = abs(float(wref[0]) - float(tref[0]))
     sep = min(sep, 255.0 - sep)
     if sep <= guard:
-        return None                     # wall is the same colour family; cannot separate
+        # Only a floor for the truly indistinguishable. It used to sit at 25 and that
+        # was too high: grass over slime separates by exactly 25.0 and got skipped, so
+        # its fringe kept the old bright green while everything around it moved. DEPTH
+        # is what guards the same-material case now, and it does it on geometry rather
+        # than on a hue threshold that has to be tuned per pair.
+        return None
 
     hsv = _rgb2hsv(rgb[wall])
-    dh = np.abs(hsv[:, 0] - tref[0])
-    dh = np.minimum(dh, 255.0 - dh)
-    sel = (dh < hue_tol) & (hsv[:, 1] > sat_floor)
+    # NEAREST OF TWO REFERENCES, not a window around one. A blade is not a single hue:
+    # the generator draws the fringe across a wide range, and where it meets the rock it
+    # blends further. A hue window sized to catch the core misses the rest — measured on
+    # a retinted tile, pixels at 24 and 43 hue units from the top's median survived as
+    # #358139 and #2b6648, bright yellow-greens sitting on a deep pine surface, which is
+    # exactly what the maintainer circled. Widening the window instead would start
+    # swallowing the wall.
+    #
+    # So ask the only question that actually matters: is this pixel closer to the TOP
+    # material or to the WALL material? Both references come from this tile. The wall's
+    # is taken from its LOWER 60%, which is wall by construction and cannot be polluted
+    # by the fringe being classified.
+    ys_w, xs_w = np.where(wall)
+    lowref = []
+    for x in np.unique(xs_w):
+        col = np.where(wall[:, x])[0]
+        lo = int(col.min()) + int(0.4 * (int(col.max()) - int(col.min())))
+        lowref.extend(rgb[lo:int(col.max()) + 1, x])
+    if len(lowref) < 20:
+        return None
+    wmat = _rgb2hsv(np.median(np.array(lowref), 0)[None, :])[0]
+    _COLTOP = {}
+    for x in np.unique(xs_w):
+        col = np.where(wall[:, x])[0]
+        _COLTOP[x] = (int(col.min()), max(1, int(col.max()) - int(col.min())))
+
+    # Compare in HUE, not in RGB. A blade in shadow is dark but still green, and RGB
+    # distance is dominated by brightness: #2f6b33 — a shaded grass pixel — sits closer
+    # to brown wood than to lit grass, so an RGB nearest-reference test hands it to the
+    # wall and it survives as a stray green. Measured, that left 147 such pixels on
+    # parquet_floor alone. Hue is what the two materials actually differ by.
+    #
+    # Near-grey pixels carry no reliable hue, so anything below the saturation floor is
+    # left to the wall rather than guessed at.
+    dt = np.abs(hsv[:, 0] - tref[0]); dt = np.minimum(dt, 255.0 - dt)
+    dw = np.abs(hsv[:, 0] - wmat[0]); dw = np.minimum(dw, 255.0 - dw)
+    sel = (dt < dw) & (hsv[:, 1] > sat_floor)
+    # max_frac is only a backstop against a pathological selection. DEPTH is the real
+    # test — a large fringe is still a fringe, and capping on size skipped snow at 31%
+    # and water at 34% whose depths were 0.19 and 0.16, i.e. hugging the top exactly as
+    # a fringe does.
     if sel.sum() < 8 or sel.mean() > max_frac:
         return None
-    # A spill is a FRINGE: it hugs the top of the wall. The wall's own material fills the
-    # whole strip. That difference is GEOMETRIC and it is what actually separates the two
-    # — hue does not: grass over grass separates by 31 and ice by 34, so no hue threshold
-    # tells them apart, while their depths are 0.25 and 0.11. Measured across the matrix,
-    # every genuine fringe sits at 0.06-0.13 and slime's green wall at 0.50.
-    ys, xs = np.where(wall)
-    top_of_col = {}
-    for x in np.unique(xs):
-        col = np.where(wall[:, x])[0]
-        top_of_col[x] = (int(col.min()), max(1, int(col.max()) - int(col.min())))
-    depth = np.array([(y - top_of_col[x][0]) / top_of_col[x][1] for y, x in zip(ys, xs)])
+    # A spill is a FRINGE: it hugs the top of the wall, while the wall's own material
+    # fills the strip. That difference is GEOMETRIC, and it is the only thing that
+    # separates the two when both are the same colour family — hue cannot, since grass
+    # over grass separates from its wall by 31 and grass over ice by 34. Measured across
+    # the matrix, every genuine fringe sits at depth 0.06-0.13 and slime's green wall at
+    # 0.50. Without this a green wall gets repainted as grass.
+    depth = np.array([(y - _COLTOP[x][0]) / _COLTOP[x][1] for y, x in zip(ys_w, xs_w)])
     if float(depth[sel].mean()) > max_depth:
         return None
-
     tgt = _rgb2hsv(_hex(top_hex)[None, :])[0]
     v = hsv[sel, 2]
     scale = min(1.0, SPILL_SPREAD / float(v.std() or SPILL_SPREAD))
