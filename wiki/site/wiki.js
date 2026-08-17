@@ -3109,8 +3109,11 @@ function tileScenes(cell, cand) {
   // they produced can be read back.
   stage.dataset.face = face ?? "";
   stage.dataset.course = course ?? "";
+  // pad 2, not the usual 4: the two canvases sit on one chessboard that already
+  // frames them, and 8px of transparent margin is 8px the cliff does not have
+  // on a phone.
   loadImages([face, course].filter(Boolean), (images) => {
-    stage.replaceChildren(isoScene(flat, images), isoScene(vee, images));
+    stage.replaceChildren(isoScene(flat, images, 1, 2), isoScene(vee, images, 1, 2));
   });
   return stage;
 }

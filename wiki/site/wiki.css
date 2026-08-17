@@ -658,6 +658,10 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
      below it — crumb, portrait, the prev/next buttons' right gap — sat at
      14px (maintainer 2026-07-30). */
   #topbar { padding: 12px 14px; }
+  /* A World tile's card gives its 16px of panel padding to the art: the 3×3
+     and the cliff beside it need every pixel a phone has, and this is the one
+     card whose content is measured in the game's own units. */
+  .world-cands .world-cand { margin-inline: -16px; border-radius: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
@@ -1145,7 +1149,15 @@ input[type="range"] { accent-color: var(--accent); }
 .plain-list { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
 .plain-list li { margin: 4px 0; }
 .plain-list b { color: var(--ink); }
-.world-cands .world-cand { gap: 6px; }
+/* A COLUMN HAS TO HOLD BOTH SHAPES, or the auto-fill grid hands a tile 232px
+   for 334px of art and the cliff goes back behind a scrollbar — the same
+   failure as the phone, on a wide screen. 380px is the 3×3 plus the cliff plus
+   the card's padding; below that the grid drops to one card per row rather
+   than cutting the art.
+   overflow-hidden because the stage inside bleeds to this border: the card's
+   own radius is what rounds it. */
+.world-cands { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)); }
+.world-cands .world-cand { gap: 6px; overflow: hidden; }
 .world-cand.picked { outline: 2px solid var(--good); }
 .world-cand.dropped { outline: 2px solid var(--bad); opacity: 0.55; }
 .world-cand .thumb { height: 132px; }
@@ -1175,10 +1187,6 @@ input[type="range"] { accent-color: var(--accent); }
 /* ---- World: the set laid out as ground ----
    Both shapes share the tile page's chessboard and its real-scale canvas, so
    a strip here measures what a strip measures in the world. */
-.world-scenes { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
-.world-scene .panel-title { margin-bottom: 2px; }
-.world-scene .iso-stage { border-radius: 10px; padding: 6px; overflow-x: auto; }
-.world-scene .iso-canvas { display: block; image-rendering: pixelated; }
 .wall-mode { display: flex; align-items: center; gap: 8px; }
 .wall-mode .sortbar { flex: none; }
 .wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }
@@ -1187,6 +1195,16 @@ input[type="range"] { accent-color: var(--accent); }
    Side by side to save vertical space on a page that already carries a card
    per tile (maintainer 2026-08-17). The stage scrolls rather than scaling:
    these canvases are drawn at the game's own 1:1, and resampling pixel art to
-   make it fit is the one thing that is never allowed. */
-.tile-stage { display: flex; align-items: flex-end; gap: 10px; overflow-x: auto; padding: 6px; }
+   make it fit is the one thing that is never allowed.
+
+   WHICH MEANS THE ROOM HAS TO COME FROM THE PADDING. A 3×3 field is 200px and
+   a cliff corner 136px at that scale; a phone's card offered 305. So the stage
+   spans its card edge to edge and, on a phone, the card spans the panel's
+   padding as well — the same trade the tiles2 pair-row makes ("those 28px of
+   panel padding are exactly what two 3×3 fields need"). 393px of viewport ends
+   up holding ~340px of art with room to spare, and overflow-x stays as the
+   last resort on a narrower screen than that. Both shapes visible at once IS
+   the feature: a scrollbar between them would put back the second look the one
+   box removed. */
+.tile-stage { display: flex; align-items: flex-end; gap: 6px; overflow-x: auto; padding: 4px 0; margin-inline: -12px; border-radius: 0; }
 .tile-stage .iso-canvas { flex: none; display: block; image-rendering: pixelated; }

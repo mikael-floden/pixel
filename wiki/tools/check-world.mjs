@@ -254,6 +254,10 @@ const perTile = () => p.evaluate(() => ({
     return { w: cv.width, h: cv.height, opaque, x: Math.round(cv.getBoundingClientRect().x) };
   })),
   courses: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.dataset.course),
+  // BOTH AT ONCE OR IT SAVED NOTHING — a stage wider than its box hides the
+  // cliff behind a sideways scroll, which is the second look the one box was
+  // meant to remove. Measured on his phone's width.
+  fits: [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.scrollWidth - st.clientWidth),
   oldCard: [...document.querySelectorAll(".panel-title")].some((t) => /laid out as ground/i.test(t.textContent)),
   randomize: [...document.querySelectorAll("button")].some((b) => /Randomize/.test(b.textContent)),
   modes: [...document.querySelectorAll(".wall-mode")].map((m) => m.querySelector(".sortbar-btn.sel")?.textContent.trim()),
@@ -266,6 +270,15 @@ ok(own.shapes.every((sh) => sh[0].x < sh[1].x), "the 3×3 on the left, the cliff
 const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
 ok(own.shapes.every((sh) => Math.abs(sh[0].w - (iso.dx * 4 + iso.tilePx)) <= 12), "the flat one a real 3×3 patch");
 ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actually composed");
+ok(own.fits.every((over) => over <= 1), `both fitting a 393px phone at once, no sideways scroll (worst ${Math.max(...own.fits)}px over)`);
+// AND ON A WIDE SCREEN, where the danger is the opposite one: an auto-fill
+// grid happily hands a tile a 232px column and clips the cliff in it.
+await p.setViewportSize({ width: 1280, height: 900 });
+await p.waitForTimeout(400);
+const wide = await p.evaluate(() => [...document.querySelectorAll(".world-cand .tile-stage")].map((st) => st.scrollWidth - st.clientWidth));
+await p.setViewportSize({ width: 393, height: 851 });
+await p.waitForTimeout(400);
+ok(wide.every((over) => over <= 1), `and on a 1280px desktop, where the grid must widen its column instead of clipping (worst ${Math.max(...wide)}px over)`);
 ok(!own.oldCard && !own.randomize, "the shared “Laid out as ground” card and its Randomize are gone");
 
 // THE CLIFF FOLLOWS THIS TILE'S OWN WALL MODE — the reason the preview lives
