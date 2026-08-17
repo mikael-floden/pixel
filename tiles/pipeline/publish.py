@@ -136,11 +136,18 @@ def main():
             before = os.path.join(cd, f"{i}_before.webp")
             after = os.path.join(cd, f"{i}_after.webp")
             _save(raw, before)
-            # side_hex is what puts the WALL material on the palette too. Omitting it
-            # silently skips that alignment — the published art looked unchanged after
-            # the fix landed because this call never asked for it.
-            _save(palette_snap.snap(raw, top_hex, side_hex=side_hex,
-                                    same_material=(top == side))
+            # WALL ALIGNMENT IS OFF. It is the right idea — the maintainer is correct
+            # that grass under an ice tile should match grass under a grass tile — and
+            # every implementation of it so far has invented colours that were not in
+            # the art: a hue read off a grey drew a MAGENTA line along the grass edge,
+            # a proportional saturation fix turned dull walls vivid (1413 magenta px),
+            # and the version after that made ice-over-light_soil's wall RED, which is
+            # what the maintainer saw. Shipping the wall exactly as generated is
+            # inconsistent between cells but never wrong, and that is the better of the
+            # two failures. side_hex stays measured in the palette, ready for an
+            # implementation that converges dull and vivid onto one target without
+            # amplifying either.
+            _save(palette_snap.snap(raw, top_hex, same_material=(top == side))
                   if top_hex else raw, after)
             entries.append({
                 "key": f"tiles/{cell}/{i}",
