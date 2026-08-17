@@ -184,6 +184,12 @@ interface BeaconVisual extends BodyVisual {
   tint: number;
   born: number; // ms, for the pulse phase
   period: number; // ms per half-pulse (run beats faster)
+  /** The two ADD passes over `lit` — see syncBeacon. The original beacon drew
+   * the glow AND the ring additively, i.e. two additive layers over the
+   * ground; one composite drawn once is measurably dimmer (gate peak 214 vs
+   * 247), so the pair is restored rather than approximated. */
+  litAdd?: Phaser.GameObjects.Sprite;
+  litAdd2?: Phaser.GameObjects.Sprite;
 }
 
 // The walk-to beacon's pulse, baked as textures instead of a scale tween — see
@@ -2291,13 +2297,18 @@ export class WorldScene extends Phaser.Scene {
         if (!m) return null;
         const cam = this.cameras.main;
         const sp = m.sprite;
+        // Report the DRAWN copy, not the world sprite: the latter is the
+        // cover pipeline's stand-in and is deliberately alpha 0 (see
+        // syncBeacon), so reading it would tell a gate the beacon is invisible
+        // while it is plainly on screen.
+        const shown = m.lit;
         return {
           x: sp.x,
           y: sp.y,
           sx: (sp.x - cam.worldView.x) * cam.zoom,
           sy: (sp.y - cam.worldView.y) * cam.zoom,
-          alpha: sp.alpha,
-          visible: sp.visible,
+          alpha: shown?.alpha ?? 0,
+          visible: !!shown?.visible,
           // Cover state, so a gate can assert the beacon really is being
           // occluded and outlined rather than merely drawn on top.
           depth: sp.depth,
@@ -4579,11 +4590,12 @@ export class WorldScene extends Phaser.Scene {
     for (const av of this.avatars.values()) this.syncCoverOutline(av);
     for (const mv2 of this.monsters.values()) this.syncCoverOutline(mv2);
     for (const nv of this.npcs.values()) this.syncCoverOutline(nv);
-    // The walk-to beacon takes the identical treatment — it resolves its depth
-    // and registers its slot here (same freshness window), then gets the same
-    // outline over whatever the terrain covers.
+    // The walk-to beacon resolves its depth and registers its cover slot here
+    // (the same freshness window), but it does NOT go through
+    // syncCoverOutline: that path is room-gated for bodies, and a beacon must
+    // never be hidden by which room it is in. syncBeacon draws its own
+    // covered/uncovered passes — see there.
     this.syncBeacon();
-    if (this.tapMarker) this.syncCoverOutline(this.tapMarker);
 
     // Rings for monsters that left the room entirely.
     for (const [id, ring] of this.monsterRings) {
@@ -7956,7 +7968,7 @@ export class WorldScene extends Phaser.Scene {
     if (!b) return;
     this.tapMarker = undefined;
     this.releaseCoverSlot(b);
-    const parts = [b.sprite, b.lit, b.hidden].filter(Boolean) as Phaser.GameObjects.GameObject[];
+    const parts = [b.sprite, b.lit, b.litAdd, b.litAdd2, b.hidden].filter(Boolean) as Phaser.GameObjects.GameObject[];
     if (!fade) {
       for (const p of parts) p.destroy();
       return;
@@ -7986,7 +7998,19 @@ export class WorldScene extends Phaser.Scene {
     const u = t <= 1 ? t : 2 - t; // 0..1..0
     const step = Math.min(TAP_PULSE_STEPS - 1, Math.max(0, Math.round(u * (TAP_PULSE_STEPS - 1))));
     const alpha = 1 - 0.45 * u;
-    b.sprite.setTexture(tapBeaconKey(step)).setAlpha(alpha).setVisible(true);
+    // THE WORLD COPY PAINTS NOTHING — it exists only to carry the texture,
+    // position and depth that resolveBodyDepth and the cover rasteriser read.
+    // Painting it would be actively harmful indoors, where cells outside my
+    // room render at ZERO ambient: the beacon would go black exactly when you
+    // most need it, while the passes below already draw every pixel of it at
+    // full brightness above the darkness overlay.
+    //
+    // ALPHA 0, NOT visible:false — registerCoverSlot requires `sprite.visible`
+    // and would silently skip the beacon, dropping it to the no-slot fallback
+    // forever (drawn whole, on top of everything, occluding nothing). The atlas
+    // is unaffected by this alpha: coverDrawBody blits through its own image at
+    // alpha 1.
+    b.sprite.setTexture(tapBeaconKey(step)).setAlpha(0).setVisible(true);
     b.ly = b.sprite.y;
     b.lx = b.sprite.x;
     // Occluder-aware depth + coverY + the cover slot, from the shared code the
@@ -8002,26 +8026,71 @@ export class WorldScene extends Phaser.Scene {
     const sp = b.sprite;
     const fw = sp.frame.cutWidth;
     const fh = sp.frame.cutHeight;
-    if (!b.lit) b.lit = this.add.sprite(sp.x, sp.y, sp.texture.key);
-    b.lit
-      .setVisible(true)
-      .setTexture(slot ? this.coverE!.key : sp.texture.key, slot ? slot.name : sp.frame.name)
-      .setPosition(sp.x, sp.y)
-      .setOrigin(slot ? (0.5 * fw + RING_PAD) / slot.w : 0.5, slot ? (0.5 * fh + RING_PAD) / slot.h : 0.5)
-      .setScale(1)
-      .setAlpha(alpha)
-      .setTint(b.tint)
-      .setDepth(900_000.5); // exactly where the whole marker used to live
+    const key = slot ? this.coverE!.key : sp.texture.key;
+    const frameName = slot ? slot.name : sp.frame.name;
+    const ox = slot ? (0.5 * fw + RING_PAD) / slot.w : 0.5;
+    const oy = slot ? (0.5 * fh + RING_PAD) / slot.h : 0.5;
+    const place = (s: Phaser.GameObjects.Sprite, k: string, f: string) =>
+      s.setVisible(true).setTexture(k, f).setPosition(sp.x, sp.y).setOrigin(ox, oy).setScale(1).setDepth(900_000.5);
+
+    // THE VISIBLE PART, DRAWN TWICE FROM ONE SLOT — this is what gives the
+    // beacon its punch back (maintainer 2026-08-15: "changed color now and
+    // doesn't pop as much"). Compositing the three layers into one texture for
+    // the cover pipeline flattened the ADD blend the glow and ring used to
+    // carry, and a normal-blended glow reads as a sticker. Drawing the SAME
+    // surface twice restores the original compositing exactly: a NORMAL pass
+    // lays down the dark under-rim and the solid ring (what makes it legible on
+    // snow, where additive light cannot darken anything), then an ADD pass
+    // lifts only the bright pixels (what makes it glow in the dark). The rim is
+    // near-black, so the ADD pass adds nothing to it — the two passes do not
+    // fight.
+    if (!b.lit) b.lit = this.add.sprite(sp.x, sp.y, key);
+    if (!b.litAdd) b.litAdd = this.add.sprite(sp.x, sp.y, key).setBlendMode(Phaser.BlendModes.ADD);
+    if (!b.litAdd2) b.litAdd2 = this.add.sprite(sp.x, sp.y, key).setBlendMode(Phaser.BlendModes.ADD);
+    // FULL alpha on both passes — the pulse already carries the fade, and
+    // multiplying it again is what left the beacon measurably dimmer than the
+    // one it replaced (gate peak luminance 206 vs the original 247).
+    place(b.lit, key, frameName).setAlpha(alpha).setTint(b.tint);
+    place(b.litAdd, key, frameName).setAlpha(alpha).setTint(b.tint);
+    place(b.litAdd2, key, frameName).setAlpha(alpha).setTint(b.tint);
+
+    // THE COVERED PART IS THE BEACON'S OWN SHAPE, GHOSTED — not the white
+    // hairline every body gets (maintainer: "the thin pixel border ... looks
+    // ugly"). That outline is built for a FIGURE, where a silhouette reads as a
+    // person; run it around a soft radial glow and you get a spidery ellipse
+    // that describes nothing. So the beacon consumes the C surface (what IS
+    // covered) instead of O (its outline) and draws it as a dimmed copy of
+    // itself — still obviously the marker, still obviously behind something.
+    //
+    // AND IT IS NEVER ROOM-GATED, which is the invisible-marker fix
+    // (maintainer: "when I click to walk inside a house I can't see the marker
+    // at all"). syncCoverOutline suppresses the ring for anything sealed in a
+    // room that is not mine — correct for a monster, wrong for a beacon: tap
+    // into a house from outside and the roof covers the marker (so E is empty
+    // and the passes above vanish) while inHiddenRoom killed the outline too,
+    // leaving nothing on screen at all. The beacon is UI. Where you told your
+    // character to walk must always be visible, indoors, through a roof, from
+    // any room.
+    if (!b.hidden) b.hidden = this.add.sprite(sp.x, sp.y, key);
+    const ghost = b.hidden as Phaser.GameObjects.Sprite;
     if (slot) {
+      place(ghost, this.coverC!.key, slot.name)
+        .setAlpha(alpha * 0.5)
+        .setTint(b.tint)
+        .setDepth(900_000.49); // just under the visible passes; they never overlap
+      if (ghost.isCropped) ghost.setCrop();
       if (b.lit.isCropped) b.lit.setCrop();
-    } else if (b.coverY !== undefined) {
-      // FALLBACK (no slot this frame): the flat crop at the covering column's
-      // top line, the same rule syncLitCopy falls back to.
-      const frameTop = sp.y - sp.displayHeight * sp.originY;
-      const cropH = b.coverY - frameTop;
-      if (cropH <= 0) b.lit.setVisible(false);
-      else b.lit.setCrop(0, 0, fw, cropH);
-    } else if (b.lit.isCropped) b.lit.setCrop();
+      if (b.litAdd.isCropped) b.litAdd.setCrop();
+    } else {
+      // NO SLOT (Canvas renderer, or the atlas is full): degrade to the
+      // pre-2026-08-15 behaviour — draw the whole beacon, uncut, on top. It
+      // cannot then show you what is in front of it, but it is never invisible,
+      // and that is the trade this feature must always make.
+      ghost.setVisible(false);
+      if (b.lit.isCropped) b.lit.setCrop();
+      if (b.litAdd.isCropped) b.litAdd.setCrop();
+      if (b.litAdd2.isCropped) b.litAdd2.setCrop();
+    }
   }
 
   private clearMoveTarget() {
