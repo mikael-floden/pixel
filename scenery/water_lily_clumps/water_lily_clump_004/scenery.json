@@ -5,8 +5,8 @@
   "group": "water_lily_clumps",
   "rank": 63,
   "index": 4,
-  "name": "Pads beaded with dew 004 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Pads beaded with dew 004",
+  "lights": null,
   "variety": "pads beaded with dew",
   "modifier": "leaning noticeably to one side",
   "glow_concept": "dew beads lit like tiny stars",
@@ -45,6 +45,14 @@
       "difference_from_source": 0.6957,
       "glow_score": 0.1168
     },
+    "LIT_3": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/lit_3/sprite.webp",
+      "pixellab_object_id": "98292dd5-d000-442a-9e85-7af61b89f505",
+      "generated_at": "2026-08-17T12:08:15+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3681,
+      "glow_score": 0.1306
+    },
     "LIT_4": {
       "sprite": "water_lily_clumps/water_lily_clump_004/lit_4/sprite.webp",
       "pixellab_object_id": "2322ccd9-a24e-4ff5-ae7e-0bc5fb68e421",
@@ -52,6 +60,22 @@
       "glow_concept": null,
       "difference_from_source": 0.8685,
       "glow_score": 0.1235
+    },
+    "NOT_LIT_1": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_1/sprite.webp",
+      "pixellab_object_id": "460a1f6a-3c47-4894-9559-97451898ab63",
+      "generated_at": "2026-08-17T12:07:30+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.822,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_2/sprite.webp",
+      "pixellab_object_id": "7486f05a-67e0-46f1-8641-cdb07a02b08c",
+      "generated_at": "2026-08-17T12:08:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8228,
+      "glow_score": 0.0
     }
   }
 }
