@@ -234,8 +234,10 @@ a pair is addressed by its two halves rather than its cell key — the pair IS
 
 **The pair page shows the set LAID OUT AS GROUND, above the individual
 verdicts** — "does this set work as ground" is the question those verdicts are
-answers to. A **1×9 flat run** (a long run is what shows a repeat; a 3×3 hides
-one behind its own corners) and the **V from Tiles OLD**, verbatim: three
+answers to. A **3×3 flat patch** — the same shape Tiles OLD's tile page uses,
+so a field of 3.0 is judged in the shape he has been judging 2.0 in, and the
+seams that matter are the ones between neighbours on BOTH axes — and the **V
+from Tiles OLD**, verbatim: three
 3-high stacks meeting at a corner, every level rolling its own tile. Both are
 drawn by `isoScene()`, the same composer the Tiles OLD page uses — the game's
 own projection at the game's own scale, so a strip here measures what a strip

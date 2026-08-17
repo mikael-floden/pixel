@@ -219,7 +219,7 @@ ok(liveErrs.length === 0, `no page errors on the live path (${liveErrs.slice(0, 
 
 // ------------------------------------------ 4b. the set, laid out as ground
 // Maintainer 2026-08-17: "help me understand how the tileset looks like when
-// tiled together. I need both a 1x9 flat ground and the V shape from tiles 2.0
+// tiled together. I need both a 3x3 flat ground and the V shape from tiles 2.0
 // had … use random tiles from the tileset … a Randomize button … a toggle for
 // if we should only have approved tiles or include unreviewed tiles."
 const many = CELLS.find((c) => c.candidates.length > 2 && c.id !== cell.id) ?? cell;
@@ -241,13 +241,16 @@ const heads = await p.evaluate(() => [...document.querySelectorAll(".world-scene
 const lay = await scenes();
 console.log("layouts:", JSON.stringify({ heads, lay }));
 ok(lay.length === 2, `the pair page lays the set out in TWO shapes (${lay.length})`);
-ok(/nine in a row/i.test(heads[0] ?? ""), `a flat run of nine (“${heads[0]}”)`);
+ok(/3×3|3x3/i.test(heads[0] ?? ""), `a flat 3×3 patch (“${heads[0]}”)`);
 ok(/cliff|stack/i.test(heads[1] ?? ""), `and the V from Tiles OLD — a cliff corner (“${heads[1]}”)`);
 ok(lay.every((s) => s.opaque > 2000), `both actually composed (${lay.map((s) => s.opaque).join(", ")} opaque px)`);
-// Nine cells along one iso axis span 9*dx either way — a strip, not a square.
-const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
-ok(lay[0].w >= iso.dx * 8, `the flat one really is nine wide (${lay[0].w}px, ≥ ${iso.dx * 8})`);
-ok(lay[0].w > lay[1].w, "and wider than the cliff, which is three cells across");
+// A 3x3 iso patch spans (c−r) from −2..2, so its canvas is 4*dx + one tile
+// wide. Measured against the geometry rather than asserted loosely: "did it
+// lay down nine cells" is exactly what a broken layout gets wrong.
+const iso = DATA.iso ?? { dx: 32, tilePx: 64, dy: 15 };
+const want3 = iso.dx * 4 + iso.tilePx;
+ok(Math.abs(lay[0].w - want3) <= 12, `the flat one really is a 3×3 patch (${lay[0].w}px against ${want3} for three cells each way)`);
+ok(lay[0].h > iso.tilePx, `standing a diamond tall, not a single row (${lay[0].h}px)`);
 
 // RANDOMIZE gives a different roll of the same set.
 let changed = false;

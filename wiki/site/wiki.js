@@ -2955,7 +2955,7 @@ function viewWorldType(top) {
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "we need to make that page where I review the
  * individual tiles in the tileset help me understand how the tileset looks
- * like when tiled together. I need both a 1x9 flat ground and the V shape from
+ * like when tiled together. I need both a 3x3 flat ground and the V shape from
  * tiles 2.0 had. What tiles should be used in this visualization? You should
  * use random tiles from the tileset … a Randomize button … and of course we
  * need a toggle for if we should only have approved tiles or include
@@ -3006,9 +3006,11 @@ function worldScenes(cell, seed) {
     const c = pool[Math.floor(rnd() * pool.length) % pool.length];
     return (worldView() === "before" && c.raw) ? c.raw : c.art;
   };
-  // 1x9 FLAT GROUND: nine cells along one iso axis. A long run is what shows
-  // a repeat — a 3x3 can hide one behind its own corners.
-  const flat = Array.from({ length: 9 }, (_, c) => ({ c, r: 0, img: pick() }));
+  // 3x3 FLAT GROUND — the same patch Tiles OLD's tile page uses, so a field of
+  // 3.0 is judged in the shape he has been judging 2.0 in. Nine cells, each
+  // rolling its own tile: the seams that matter are the ones between
+  // neighbours on BOTH axes, which a single row cannot show.
+  const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: pick() })));
   // THE V, from Tiles OLD's tile page: three 3-high stacks meeting at a
   // corner. Every level of every stack rolls its own tile, which is the
   // question — does the wall still read as one surface when the run is mixed?
@@ -3019,8 +3021,8 @@ function worldScenes(cell, seed) {
   loadImages(paths, (images) => {
     box.replaceChildren(
       h("div", { class: "world-scene" },
-        h("div", { class: "panel-title" }, "Tiled flat — nine in a row"),
-        h("p", { class: "muted iso-hint" }, "A long run is what shows a repeat."),
+        h("div", { class: "panel-title" }, "Tiled flat — 3×3"),
+        h("p", { class: "muted iso-hint" }, "Nine cells of open ground, each its own tile from the set."),
         h("div", { class: "iso-stage checker" }, isoScene(flat, images))),
       h("div", { class: "world-scene" },
         h("div", { class: "panel-title" }, "Stacked — a cliff corner"),
