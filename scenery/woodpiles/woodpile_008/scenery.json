@@ -5,8 +5,8 @@
   "group": "woodpiles",
   "rank": 87,
   "index": 8,
-  "name": "Fresh pale split-pine stack 008 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Fresh pale split-pine stack 008",
+  "lights": null,
   "variety": "fresh pale split-pine stack",
   "glow_concept": "sparks of light drifting off fresh-split wood",
   "prompt": "a neatly stacked pile of split firewood logs with a chopping block and an axe standing beside it, fresh pale split-pine stack, waist-high, self-emissive at night, softly radiating light: sparks of light drifting off fresh-split wood",
@@ -35,6 +35,46 @@
       "sprite": "woodpiles/woodpile_008/sprite.webp",
       "pixellab_object_id": "5dd55055-68b8-4ed1-9249-3d261a8c13dc",
       "generated_at": "2026-08-13T22:57:09+00:00"
+    },
+    "LIT_2": {
+      "sprite": "woodpiles/woodpile_008/lit_2/sprite.webp",
+      "pixellab_object_id": "f1f859cb-7b6d-4ba8-bf6f-7f0f3971b254",
+      "generated_at": "2026-08-17T13:19:44+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5857,
+      "glow_score": 0.2324
+    },
+    "LIT_3": {
+      "sprite": "woodpiles/woodpile_008/lit_3/sprite.webp",
+      "pixellab_object_id": "acc428a6-25ca-4764-b1df-6b4a56da7dd3",
+      "generated_at": "2026-08-17T13:19:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7241,
+      "glow_score": 0.1001
+    },
+    "LIT_4": {
+      "sprite": "woodpiles/woodpile_008/lit_4/sprite.webp",
+      "pixellab_object_id": "e3a1639f-0618-4766-a65c-db68429dcb5f",
+      "generated_at": "2026-08-17T13:20:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.73,
+      "glow_score": 0.1596
+    },
+    "NOT_LIT_1": {
+      "sprite": "woodpiles/woodpile_008/not_lit_1/sprite.webp",
+      "pixellab_object_id": "6cdf4493-9947-4bd1-80c2-f892ecd332d3",
+      "generated_at": "2026-08-17T13:20:48+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8804,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "woodpiles/woodpile_008/not_lit_2/sprite.webp",
+      "pixellab_object_id": "df2a9a8f-3df9-473b-abf4-9fb4b6b44874",
+      "generated_at": "2026-08-17T13:20:04+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8171,
+      "glow_score": 0.0
     }
   }
 }
