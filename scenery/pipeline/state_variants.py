@@ -24,6 +24,24 @@ and they were calibrated on 438 of his verdicts.
     python3 pipeline/state_variants.py --dry-run
     python3 pipeline/state_variants.py --limit 5        # a pilot
     python3 pipeline/state_variants.py                  # the whole domain
+
+RUN EXACTLY ONE OF THESE AT A TIME, and let the GitHub Actions runner
+(.github/workflows/scenery-states.yml) be the one. Two passes cost real money
+and real time here, twice:
+
+  1) An agent-session pass and the scheduled runner both running the full plan
+     generated the SAME states twice, then collided in git over the identical
+     paths.
+  2) Splitting the groups alphabetically between them did not help, because the
+     scheduled run takes NO --groups filter — it plans over every group, so a
+     "back half" local pass met it head-on at `stones` within minutes. Resolving
+     that rebase left conflict markers in a manifest, which killed the local run
+     with a JSONDecodeError on the next viewer_build.
+
+There is no throughput to win by doubling up: both processes plan from the same
+filesystem, so the second one is generating art the first is already paying for.
+If a second pass is ever genuinely wanted, BOTH sides must carry disjoint
+--groups, the scheduled one included.
 """
 
 from __future__ import annotations
