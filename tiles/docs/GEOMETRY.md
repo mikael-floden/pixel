@@ -61,6 +61,21 @@ systematic mismatch. So `ISO_DY = 14` fixes the game as it ships today AND is al
 right when 3.0 arrives. 13 is the bulletproof alternative at the cost of 1px more
 overlap everywhere.
 
+## The maintainer's verdict, which reverses the recommendation above
+
+Shown tiles2 at 13, 14 and 15 and tiles 3.0 at the same, his call was: **15 looks best
+on tiles2** (less zigzaggy) and **14 looks best on tiles 3.0**. So `ISO_DY` stays at 15
+while tiles2 is what the game draws, and moves to 14 as part of the switch — the
+sequencing he asked about in the first place.
+
+The measurement above is not wrong, but the conclusion I drew from it was. 629/640
+tiles2 tiles do leak wall at 15 and that band is real. A CONSISTENT 2px band at every
+boundary reads as tile definition rather than as a fault, though, and that is plausibly
+part of how the old tileset is meant to look. `pitch.py` answers "does the lattice
+close", which is geometry. It cannot answer "is a closed lattice what we want here",
+which is art direction. Worth remembering the next time a clean measurement seems to
+settle a question about how something should LOOK.
+
 ## The outline theory, tested and rejected
 
 The maintainer wondered whether tiles2's outline made 15 correct for it — an outlined
