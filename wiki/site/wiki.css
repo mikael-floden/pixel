@@ -211,8 +211,26 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .pill.warn { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
 .pill.err { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
 
-/* ---- buttons ---- */
-button { font: inherit; cursor: pointer; }
+/* ---- buttons ----
+   NO PLATFORM PRESS EFFECT (maintainer 2026-08-17, seeing a blue fill under his
+   thumb: "Why did you do the button down effect blue? Is that part of our CSS
+   style guide? … Is it a default html effect leaking through?" — it was: the
+   WebKit/Blink tap highlight, which is a translucent BLUE on this device and
+   owes nothing to our palette, where --accent is terracotta and nothing is
+   blue). It is killed here rather than per control, because it leaks on every
+   button and only becomes obvious on one sitting over art.
+   touch-action: manipulation drops the 300ms double-tap-zoom wait with it — the
+   same treatment .stars button already had. */
+button {
+  font: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* Something has to replace it, or a tap has no acknowledgement at all. Ours is
+   the press itself: the control dips, in its own colours. */
+button:active:not(:disabled) { filter: brightness(0.94); }
+/* Keyboard focus stays visible — the ring is the palette's, not the browser's. */
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .primary-btn {
   background: var(--accent); color: #fff; border: none; border-radius: 9px;
   padding: 7px 16px; font-weight: 600;
@@ -1220,6 +1238,10 @@ input[type="range"] { accent-color: var(--accent); }
   padding: 8px 11px; border-radius: 999px; cursor: pointer;
   background: var(--surface); color: var(--muted);
   border: 1px solid var(--border); box-shadow: var(--shadow);
+  user-select: none; -webkit-user-select: none;   /* a long press must not select the label */
 }
 .stage-flip.on { background: var(--accent); color: #fff; border-color: transparent; }
+/* Pressed: it sinks a hair. Small, because the real feedback is the picture
+   under it changing. */
+.stage-flip:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.94); }
 .stage-flip[disabled] { cursor: default; opacity: 0.6; font-weight: 400; }

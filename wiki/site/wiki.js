@@ -2906,6 +2906,32 @@ const worldView = () => {
 const tileViews = new Map();
 let tileViewsPair = null;
 const tileView = (key) => tileViews.get(key) ?? worldView();
+
+/* THE 3.0 LATTICE CLOSES AT A PITCH OF 14, THE GAME DRAWS AT 15 (maintainer
+ * 2026-08-17: "The new tiles are meant to be drawn with DY=14 and not DY=15 as
+ * we used in the old tile system").
+ *
+ * It is the art that differs, not a preference: a 3.0 tile's top diamond is
+ * 64x28, so a vertical pitch of 14 is the largest step at which each tile's
+ * wall is fully covered by the tile in front of it. The tiles agent measured
+ * every pitch from 12 to 17 by painting the top and the walls and counting wall
+ * pixels that still have top surface below them — zero at 14, 960 at 15
+ * (tiles/docs/GEOMETRY.md). That leak is the faint grid across a flat field and
+ * the ragged step in a plateau's back edge.
+ *
+ * SO THE TWO GENERATIONS ARE DRAWN AT DIFFERENT PITCHES HERE, deliberately.
+ * `games2/shared` ships ISO_DY = 15 and Tiles OLD keeps it — his verdict, shown
+ * all three: "15 looks best on tiles2 (less zigzaggy), 14 looks best on tiles
+ * 3.0" — and the constant moves to 14 with the switch to 3.0. Until then the
+ * World section has to draw 3.0 the way 3.0 is meant to be drawn, or he would
+ * be judging tiles through a projection they were never made for.
+ *
+ * NOT THE WIKI'S NUMBER TO INVENT: it is the tiles agent's measurement, and it
+ * has been asked to publish the projection in its manifest so this follows the
+ * art instead of tracking it by hand.
+ */
+const WORLD_DY = 14;
+const worldIso = () => ({ ...(state.data.iso ?? { tilePx: 64, dx: 32, levelPx: 16 }), dy: WORLD_DY });
 /** The pair of images every World card draws. `raw` is optional — a candidate
  *  from before @2 has none, and then there is nothing to compare and no switch
  *  worth showing on it. */
@@ -3162,6 +3188,7 @@ function tileScenes(cell, cand) {
     stage.dataset.face = face ?? "";
     stage.dataset.course = course ?? "";
     stage.dataset.view = cand.raw ? mode : "after";
+    stage.dataset.dy = String(worldIso().dy);
     if (chip) {
       // The chip says WHAT YOU ARE LOOKING AT, not what pressing it does: mid
       // comparison, "which one is this" is the one question the picture must
@@ -3177,7 +3204,8 @@ function tileScenes(cell, cand) {
     // frames them, and 8px of transparent margin is 8px the cliff does not have
     // on a phone.
     loadImages([face, course].filter(Boolean), (images) => {
-      stage.replaceChildren(...[isoScene(flat, images, 1, 2), isoScene(vee, images, 1, 2), chip].filter(Boolean));
+      const iso = worldIso();
+      stage.replaceChildren(...[isoScene(flat, images, 1, 2, iso), isoScene(vee, images, 1, 2, iso), chip].filter(Boolean));
     });
   }
   paint();
@@ -3405,8 +3433,8 @@ function viewTileType(id) {
  *  `max-width:100%` then RESAMPLED the pixel art by a fraction. */
 /** [a, b] -> [a, divider, b]; a lone cell is left alone. */
 const withDivider = (cells) => (cells.length > 1 ? [cells[0], h("div", { class: "pair-div" }), cells[1]] : cells);
-function isoScene(cells, images, scale = 1, pad = 4) {
-  const iso = state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
+function isoScene(cells, images, scale = 1, pad = 4, isoIn = null) {
+  const iso = isoIn ?? state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
   const draws = [];
   for (const cell of cells) {
     const lvl = cell.lvl ?? 0;

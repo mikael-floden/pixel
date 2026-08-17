@@ -270,6 +270,24 @@ ok(own.shapes.every((sh) => sh[0].x < sh[1].x), "the 3×3 on the left, the cliff
 const iso = DATA.iso ?? { dx: 32, tilePx: 64 };
 ok(own.shapes.every((sh) => Math.abs(sh[0].w - (iso.dx * 4 + iso.tilePx)) <= 12), "the flat one a real 3×3 patch");
 ok(own.shapes.every((sh) => sh.every((c) => c.opaque > 1500)), "and both actually composed");
+
+// AT 3.0'S OWN PITCH, NOT THE GAME'S (maintainer 2026-08-17: "The new tiles are
+// meant to be drawn with DY=14 and not DY=15 as we used in the old tile
+// system"). A 3.0 tile's top diamond is 64x28, so 14 is the largest step where
+// each tile's wall is covered by the tile in front; the tiles agent measured
+// 960px of leaked wall at 15 (tiles/docs/GEOMETRY.md). Measured off the canvas
+// rather than trusted from the attribute: the height IS the arithmetic.
+const PITCH = 14, PAD = 2, TILE = DATA.iso?.tilePx ?? 64;
+const geo = await p.evaluate(() => {
+  const st = document.querySelector(".world-cand .tile-stage");
+  const cv = st.querySelectorAll("canvas");
+  return { dy: st.dataset.dy, flatH: cv[0]?.height, veeH: cv[1]?.height };
+});
+console.log("pitch:", JSON.stringify({ ...geo, at14: 4 * PITCH + TILE + 2 * PAD, at15: 4 * 15 + TILE + 2 * PAD }));
+ok(geo.dy === String(PITCH), `the World previews declare 3.0's pitch (dy ${geo.dy})`);
+ok(geo.flatH === 4 * PITCH + TILE + 2 * PAD,
+  `and the 3×3 is COMPOSED at it — ${geo.flatH}px = 4×${PITCH} + ${TILE} + 2×${PAD}, where the game's 15 would give ${4 * 15 + TILE + 2 * PAD}`);
+ok(DATA.iso?.dy === 15, `while the build still carries the game's own 15, which is what Tiles OLD is drawn with (${DATA.iso?.dy})`);
 ok(own.fits.every((over) => over <= 1), `both fitting a 393px phone at once, no sideways scroll (worst ${Math.max(...own.fits)}px over)`);
 // AND ON A WIDE SCREEN, where the danger is the opposite one: an auto-fill
 // grid happily hands a tile a 232px column and clips the cliff in it.
@@ -385,6 +403,25 @@ await p.waitForTimeout(1400);
 const cleared = await chips();
 console.log("after the set-wide After:", JSON.stringify(cleared.map((c) => c.view)));
 ok(cleared.every((c) => c.view === "after"), "and the set-wide switch clears every peek — “After” for the set means all of it");
+
+// NO PLATFORM PRESS EFFECT ANYWHERE (maintainer 2026-08-17: "Why did you do the
+// button down effect blue? Is that part of our CSS style guide? … Is it a
+// default html effect leaking through?" — it was the WebKit/Blink tap
+// highlight, blue on his device and nothing to do with a palette whose accent
+// is terracotta). Asserted across every button on the page, not just the chip:
+// the leak was never specific to it.
+const pressFx = await p.evaluate(() => {
+  const btns = [...document.querySelectorAll("button")];
+  return {
+    n: btns.length,
+    tap: [...new Set(btns.map((x) => getComputedStyle(x).webkitTapHighlightColor))],
+    touch: [...new Set(btns.map((x) => getComputedStyle(x).touchAction))],
+  };
+});
+console.log("press:", JSON.stringify(pressFx));
+ok(pressFx.n > 10 && pressFx.tap.every((v) => /rgba\(0, 0, 0, 0\)|transparent/.test(v)),
+  `no platform tap highlight on any of the ${pressFx.n} buttons (${pressFx.tap.join(" ")})`);
+ok(pressFx.touch.every((v) => v === "manipulation"), `and no double-tap-zoom wait on a press (${pressFx.touch.join(" ")})`);
 
 // ------------------------------------------------------------- 6. the player
 // He asked for a migration surface, not a change to the encyclopedia.
