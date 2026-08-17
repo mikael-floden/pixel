@@ -1436,7 +1436,11 @@ const SECTIONS = {
   // loses its adminOnly, and nothing else moves.
   tiles:      { label: () => (state.admin ? "Tiles OLD" : "World"),
                 noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
-  world:      { label: "World",         noun: "pairs",      icon: "world",      count: (d) => d.counts.world, adminOnly: true },
+  // "Pairs" is how the factory counts this ground and how the Game Master
+  // reviews it; a reader is looking at grounds. Same number either way — one
+  // tile per pair is what a player is shown.
+  world:      { label: "World",         noun: () => (state.admin ? "pairs" : "grounds"),
+                icon: "world",      count: (d) => d.counts.world, adminOnly: true },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
@@ -1459,6 +1463,9 @@ const SECTIONS = {
 const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
+/** What a section counts, in the voice of whoever is reading — the Game Master
+ *  counts the units he works in, a player counts the things themselves. */
+const noun = (slug) => { const n = SECTIONS[slug]?.noun; return (typeof n === "function" ? n() : n) ?? ""; };
 /** The maintainer's 48x48 pixel art, drawn ONLY at whole multiples of 48 and
  *  never resampled — `image-rendering: pixelated` plus an exact CSS size, so
  *  a phone's 2x/3x device pixels land on clean pixel boundaries. */
@@ -1663,7 +1670,7 @@ function viewHome() {
   // "the wiki start page looks so boring without icons").
   const tiles = SECTION_ORDER
     .filter((slug) => !SECTIONS[slug].adminOnly || state.admin)
-    .map((slug) => [slug, SECTIONS[slug].count(state.data), SECTIONS[slug].noun]);
+    .map((slug) => [slug, SECTIONS[slug].count(state.data), noun(slug)]);
   // Feedback whose asset no longer exists = the producing agent acted on it.
   const resolved = [];
   for (const [domain, f] of Object.entries(state.feedback)) {
@@ -2955,8 +2962,13 @@ function viewWorld() {
     sectionHead("world"),
     h("p", { class: "muted" }, state.admin
       ? "Tiles 3.0 — the ground system being built to replace Tiles OLD. Open a ground type to see every wall it can stand on."
-      : "The ground of Nangijala — every walkable surface over every wall it can stand on."),
-    h("div", { class: "panel" },
+      : "The ground of Nangijala. Open a ground to see the cliffs it makes where the land steps down."),
+    // HOW IT IS MADE IS THE GAME MASTER'S BUSINESS (maintainer 2026-08-17:
+    // "I feel this is too technical for players that visits the World page.
+    // Normal players will just get confused"). Colour zones, outline passes and
+    // candidate counts are the factory talking about itself; a reader came for
+    // the ground.
+    state.admin ? h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "What is new",
         h("span", { class: "pill" }, `${types.length} ground types`),
         h("span", { class: "pill" }, `${all.length} pairs`),
@@ -2964,13 +2976,17 @@ function viewWorld() {
       h("ul", { class: "plain-list" },
         h("li", {}, h("b", {}, "No baked outline"), " — generated as colour zones, so none of Tiles OLD's four outline-fighting passes exist."),
         h("li", {}, h("b", {}, "Top and wall are separate"), " — “grass over grey stone”, so the map agent picks the surface you walk on and the wall you see independently."),
-        h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))),
+        h("li", {}, h("b", {}, "A flat top by measurement"), " — the top surface is one colour, so a whole field paints from one tile with no visible repeat."))) : null,
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
     types.length ? h("div", { class: "grid" }, ...types.map((t) =>
       h("a", { class: "card", href: `#/world/${t.id}` },
         t.face ? worldArt(t.face, t.name) : h("div", { class: "thumb checker" }),
         h("div", { class: "card-name" }, t.name),
-        h("div", { class: "card-sub" }, `${t.pairs.length} pair${t.pairs.length === 1 ? "" : "s"}`),
+        h("div", { class: "card-sub" }, state.admin
+          ? `${t.pairs.length} pair${t.pairs.length === 1 ? "" : "s"}`
+          // "Pair" is the factory's word for it. A reader is being told what
+          // this ground can sit on top of.
+          : `over ${t.pairs.length} ground${t.pairs.length === 1 ? "" : "s"}`),
         h("div", { class: "card-badges" },
           state.admin && t.open ? h("span", { class: "pill warn" }, `${t.open} to review`) : null,
           state.admin && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null))))
@@ -2992,7 +3008,9 @@ function viewWorldType(top) {
   return h("div", {},
     crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
     h("div", { class: "sect-head" }, h("h1", {}, t.name)),
-    h("p", { class: "muted" }, `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`),
+    h("p", { class: "muted" }, state.admin
+      ? `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`
+      : `Walking on ${t.name.toLowerCase()} — and the cliff below it where the land steps down.`),
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()) : null,
     state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => cellReview(c).key === id).length;
@@ -3005,11 +3023,13 @@ function viewWorldType(top) {
         worldArt(c.candidates[0], c.name),
         // The TOP is the page you are on, so the card names the wall.
         h("div", { class: "card-name" }, `over ${typeLabelWorld(c.side).toLowerCase()}`),
-        h("div", { class: "card-sub" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"}`),
+        // How many generations exist of it is a fact about the factory, not
+        // about the ground.
+        state.admin ? h("div", { class: "card-sub" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"}`) : null,
         h("div", { class: "card-badges" },
-          v ? h("span", { class: `pill ${v.cls}` }, `wall ${c.best}`) : null,
+          state.admin && v ? h("span", { class: `pill ${v.cls}` }, `wall ${c.best}`) : null,
           state.admin && r.key !== "open" ? h("span", { class: `pill ${r.cls}` }, r.text) : null,
-          c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
+          state.admin && c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
     })) : h("p", { class: "muted" }, "Nothing in this filter."));
 }
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
@@ -3128,7 +3148,13 @@ function viewWorldPair(top, side) {
   // A verdict or a wall-mode change repaints the tile it was cast on — its
   // cliff is built from its own setting, so the picture has to follow.
   const cards = h("div", { class: "grid world-cands" });
-  const drawCards = () => cards.replaceChildren(...c.candidates.map((cand, i) => worldCandidate(c, cand, i, drawCards)));
+  // A READER SEES ONE GROUND, not the three tries it took to get there: the
+  // one he approved, or the agent's best if he has not looked yet. Three
+  // near-identical pictures with no explanation is the same confusion as the
+  // numbers under them, in another form.
+  const shown = () => (state.admin ? c.candidates
+    : [c.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? c.candidates[0]].filter(Boolean));
+  const drawCards = () => cards.replaceChildren(...shown().map((cand, i) => worldCandidate(c, cand, i, drawCards)));
   drawCards();
   return h("div", {},
     crumbRow(`#/world/${top}`, `← ${typeLabelWorld(top)}`, `world/${top}`,
@@ -3146,18 +3172,24 @@ function viewWorldPair(top, side) {
         // ever happen on the individual tiles themselves"). The pair is a
         // heading now, not a thing to judge — which also means one place to
         // cast a verdict instead of two that could disagree.
-        h("p", { class: "muted" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. ${state.admin ? "Approve the ones to keep; reject the ones to regenerate." : ""}`))),
+        h("p", { class: "muted" }, state.admin
+          ? `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. Approve the ones to keep; reject the ones to regenerate.`
+          : `${typeLabelWorld(c.top)} you walk on, ${typeLabelWorld(c.side).toLowerCase()} in the cliff below it.`))),
     h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Tiles in this set",
-        h("span", { class: "pill" }, "ranked by wall score")),
+      state.admin
+        ? h("div", { class: "panel-title" }, "Tiles in this set", h("span", { class: "pill" }, "ranked by wall score"))
+        : h("div", { class: "panel-title" }, "How it looks"),
       state.admin ? h("div", { class: "world-viewbar" },
         h("span", { class: "muted" }, "Show"),
         sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => route()),
         c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
-      h("p", { class: "muted", style: "margin:2px 0 0" }, "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."),
+      h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin
+        ? "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."
+        : "A field of it, and the corner where the land steps down."),
       cards,
-      h("p", { class: "muted", style: "margin:10px 0 0" },
-        `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`)));
+      // How it was generated is workshop talk.
+      state.admin ? h("p", { class: "muted", style: "margin:10px 0 0" },
+        `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`) : null));
 }
 /** One generation of one pair: the art, what was measured about it, and the
  *  verdict. The metrics are the agent's own — `wall_score` is what it ranks
@@ -3181,14 +3213,17 @@ function worldCandidate(cell, cand, i, onVerdict) {
   const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
   return h("div", { class: `card world-cand${st === "approved" ? " picked" : st === "rejected" ? " dropped" : ""}` },
     tileScenes(cell, cand),
-    h("div", { class: "card-name" }, `#${i + 1}`,
-      v ? h("span", { class: `pill ${v.cls}`, title: v.text, style: "margin-left:8px" }, `wall ${cand.wallScore}`) : null),
-    cand.wall ? h("div", { class: "card-sub metric-row" },
+    // THE RANK AND THE MEASUREMENTS ARE THE REVIEW, not the ground. A reader
+    // gets the picture; a number called "discretion 0.81" only asks them to
+    // wonder what they are supposed to do about it.
+    state.admin ? h("div", { class: "card-name" }, `#${i + 1}`,
+      v ? h("span", { class: `pill ${v.cls}`, title: v.text, style: "margin-left:8px" }, `wall ${cand.wallScore}`) : null) : null,
+    state.admin && cand.wall ? h("div", { class: "card-sub metric-row" },
       // Named, not lettered: he has to be able to read WHY one beat another.
       h("span", { title: "how well the wall repeats without a visible seam" }, `tiling ${num(cand.wall.tiling)}`),
       h("span", { title: "how quietly the wall texture sits — loud walls fight the art on top" }, `discretion ${num(cand.wall.discretion)}`),
       h("span", { title: "whether the wall reads as a real surface rather than noise" }, `structure ${num(cand.wall.structure)}`)) : null,
-    cand.topShare != null || cand.overhang != null
+    state.admin && (cand.topShare != null || cand.overhang != null)
       ? h("div", { class: "card-sub metric-row" },
         cand.topShare != null ? h("span", { title: "how much of the top surface is a single flat colour — what lets a whole field paint from one tile" }, `top ${(cand.topShare * 100).toFixed(1)}% flat`) : null,
         // New in @2, and the point of "A over B": the top should droop over

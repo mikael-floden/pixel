@@ -308,6 +308,27 @@ game ofc"*).
   follows the switch too, and paging keeps the mode. A candidate with no
   `before` says "no before" rather than silently showing the after twice.
 
+**Everything above is the GAME MASTER's page. A reader gets the ground.**
+Maintainer 2026-08-17, looking at the "What is new" panel: *"I feel this is too
+technical for players that visits the World page. Normal players will just get
+confused."* The section is admin-only in the nav, but `#/world` renders for
+anyone who has the link, so the page itself has to know who is reading. Behind
+`state.admin`: the "What is new" panel, the rank and wall score, the four
+measurements, the flat-top and overhang numbers, the palette swatch, the wall
+mode, the verdicts, the before/after switch, the prompt, and "Generated at
+64px…". What is left for a reader is what an encyclopedia is for — a picture of
+the ground, the cliff it makes, and a sentence in plain words.
+
+- **A reader sees ONE tile per pair** (the approved one, else the agent's
+  best). Three near-identical pictures with no explanation is the same
+  confusion as the numbers under them, in another form.
+- **The counts change words with the audience**: the Game Master's "56 pairs"
+  is a reader's "56 grounds", and a type card says "over 14 grounds" rather
+  than "14 pairs". Same number, different question being answered.
+- The gate reads the rendered text of all three levels as a player and fails on
+  a word from the factory — and asserts the Game Master still sees each of them,
+  so the check cannot pass by deleting his instruments.
+
 **The player's encyclopedia is unchanged, deliberately.** "Tiles OLD" is a
 migration word that means nothing to a reader, and an unfinished ground system
 in the encyclopedia is a promise the game cannot keep. So a player still sees

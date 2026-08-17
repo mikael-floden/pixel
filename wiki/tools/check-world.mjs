@@ -360,6 +360,44 @@ const pubTiles = await pub.evaluate(() => {
 });
 ok(pubTiles === "#/tiles", `and it is the one the game actually renders (${pubTiles})`);
 
+// ------------------------------------------- 7. and the World page in his voice
+// Maintainer 2026-08-17, looking at the "What is new" panel: "I feel this is
+// too technical for players that visits the World page. Normal players will
+// just get confused." The section is admin-only in the nav, but a DIRECT LINK
+// renders it for anyone, so the page itself has to know which audience it is
+// talking to. Every word below is the factory describing its own process.
+const JARGON = /\bcandidate|wall \d|wall score|discretion|structure \d|tiling \d|overhang|% flat|postprocess|manifest|Tiles 3\.0|Tiles OLD|outline mode|colour zones|map agent|tiles agent|tombstoned|baked outline|prompt\b/i;
+const readable = async (hash) => {
+  await pub.goto(`${W}${hash}`, { waitUntil: "load" });
+  await pub.waitForTimeout(2200);
+  return pub.evaluate(() => document.querySelector("#content")?.innerText ?? "");
+};
+const pubLevels = {
+  types: await readable("#/world"),
+  type: await readable(`#/world/${TOP}`),
+  pair: await readable(`#/world/${many.top}/${many.side}`),
+};
+for (const [where, text] of Object.entries(pubLevels)) {
+  const hit = text.match(JARGON);
+  ok(!hit, `a reader on #/world${where === "types" ? "" : `/${where}`} is told about ground, not about the factory${hit ? ` — found “${hit[0]}” in ${JSON.stringify(text.slice(Math.max(0, hit.index - 30), hit.index + 40))}` : ""}`);
+}
+// NON-VACUOUS: the same three pages, read by the Game Master, are FULL of it —
+// this is a split of audiences, not a deletion of his instruments.
+const admLevels = {};
+for (const [k, hash] of [["types", "#/world"], ["type", `#/world/${TOP}`], ["pair", `#/world/${many.top}/${many.side}`]]) {
+  await p.goto(`${W}${hash}`, { waitUntil: "load" });
+  await p.waitForTimeout(2000);
+  admLevels[k] = await p.evaluate(() => document.querySelector("#content")?.innerText ?? "");
+}
+ok(Object.values(admLevels).every((t) => JARGON.test(t)),
+  `while the Game Master still gets every measurement on all three levels (${Object.entries(admLevels).map(([k, t]) => `${k}:${(t.match(JARGON) ?? [""])[0]}`).join(", ")})`);
+// One ground per pair for a reader: three tries at the same tile, unlabelled,
+// is the same confusion in picture form.
+const pubCards = await pub.evaluate(() => document.querySelectorAll(".world-cand").length);
+const admCards = await p.evaluate(() => document.querySelectorAll(".world-cand").length);
+console.log("cards:", JSON.stringify({ player: pubCards, gm: admCards }));
+ok(pubCards === 1 && admCards > 1, `a reader sees ONE tile for the pair, the Game Master every generation (${pubCards} vs ${admCards})`);
+
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 await b.close();
 console.log(fails.length ? `\nFAILED ${fails.length}` : "\nAll good.");
