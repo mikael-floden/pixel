@@ -5,7 +5,7 @@
   "rank": 7,
   "index": 7,
   "name": "Resin-knot pine torch 007",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "resin-knot pine torch",
   "glow_concept": null,
   "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, resin-knot pine torch, about as tall as an adult person, completely unlit, no glow, no light sources, no self-emission",
@@ -31,6 +31,22 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T13:56:24+00:00",
   "states": {
+    "LIT_1": {
+      "sprite": "torch_posts/torch_post_007/lit_1/sprite.webp",
+      "pixellab_object_id": "faa47cfd-82b3-40ae-ad61-c7e3b5b27468",
+      "generated_at": "2026-08-17T11:21:19+00:00",
+      "glow_concept": "ember-crusted head glowing without open flame",
+      "difference_from_source": 0.9127,
+      "glow_score": 0.0339
+    },
+    "LIT_2": {
+      "sprite": "torch_posts/torch_post_007/lit_2/sprite.webp",
+      "pixellab_object_id": "d3356a2d-ddea-45e3-a603-6f8d7e985706",
+      "generated_at": "2026-08-17T11:22:13+00:00",
+      "glow_concept": "halo of glow-moths circling the head",
+      "difference_from_source": 0.82,
+      "glow_score": 0.0502
+    },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_007/sprite.webp",
       "pixellab_object_id": "231927b3-e8cc-48db-9eb9-bfc57fd82a56",

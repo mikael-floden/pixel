@@ -5,8 +5,8 @@
   "group": "torch_posts",
   "rank": 7,
   "index": 12,
-  "name": "Banded ceremonial torch post 012 \u00b7 lit",
-  "lights": "LIGHTS_ON",
+  "name": "Banded ceremonial torch post 012",
+  "lights": null,
   "variety": "banded ceremonial torch post",
   "modifier": "overgrown at the base",
   "glow_concept": "halo of glow-moths circling the head",
@@ -36,6 +36,46 @@
       "sprite": "torch_posts/torch_post_012/sprite.webp",
       "pixellab_object_id": "01b44217-5169-42cc-ac33-953d1f06c9cf",
       "generated_at": "2026-08-14T00:33:38+00:00"
+    },
+    "LIT_2": {
+      "sprite": "torch_posts/torch_post_012/lit_2/sprite.webp",
+      "pixellab_object_id": "6103434f-8bd4-4f6d-919f-1ebfcce2ffb6",
+      "generated_at": "2026-08-17T11:23:41+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7452,
+      "glow_score": 0.0009
+    },
+    "LIT_3": {
+      "sprite": "torch_posts/torch_post_012/lit_3/sprite.webp",
+      "pixellab_object_id": "5b7b41bc-97d9-4111-add4-9f67328778f9",
+      "generated_at": "2026-08-17T11:24:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8133,
+      "glow_score": 0.1142
+    },
+    "LIT_4": {
+      "sprite": "torch_posts/torch_post_012/lit_4/sprite.webp",
+      "pixellab_object_id": "8be544ce-400d-4a19-b157-8c0c8bc2f79e",
+      "generated_at": "2026-08-17T11:24:56+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8794,
+      "glow_score": 0.0613
+    },
+    "NOT_LIT_1": {
+      "sprite": "torch_posts/torch_post_012/not_lit_1/sprite.webp",
+      "pixellab_object_id": "4c35ce60-ccda-483f-9c72-4564a9bd95ea",
+      "generated_at": "2026-08-17T11:26:24+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5983,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_012/not_lit_2/sprite.webp",
+      "pixellab_object_id": "a88e504d-1d9a-4f0e-b1ee-c2f8a03792bf",
+      "generated_at": "2026-08-17T11:26:14+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3191,
+      "glow_score": 0.0
     }
   }
 }

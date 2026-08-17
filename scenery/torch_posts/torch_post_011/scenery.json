@@ -6,7 +6,7 @@
   "rank": 7,
   "index": 11,
   "name": "Charred half-burnt post 011",
-  "lights": "LIGHTS_OFF",
+  "lights": null,
   "variety": "charred half-burnt post",
   "glow_concept": null,
   "prompt": "a rough wooden stake with an oil-soaked cloth-wrapped torch head bound at its top, charred half-burnt post, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
@@ -31,10 +31,50 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
+    "LIT_1": {
+      "sprite": "torch_posts/torch_post_011/lit_1/sprite.webp",
+      "pixellab_object_id": "ce42a21b-0488-46c8-9196-ab6ef28cf6e5",
+      "generated_at": "2026-08-17T11:24:19+00:00",
+      "glow_concept": "ember-crusted head glowing without open flame",
+      "difference_from_source": 0.8668,
+      "glow_score": 0.1038
+    },
+    "LIT_2": {
+      "sprite": "torch_posts/torch_post_011/lit_2/sprite.webp",
+      "pixellab_object_id": "c217797d-20e6-4c55-b5ce-6fe9e67f0f79",
+      "generated_at": "2026-08-17T11:24:29+00:00",
+      "glow_concept": "halo of glow-moths circling the head",
+      "difference_from_source": 0.8995,
+      "glow_score": 0.4249
+    },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_011/sprite.webp",
       "pixellab_object_id": "958217e5-c442-40fa-a32c-c9a57757af2d",
       "generated_at": "2026-08-13T23:29:15+00:00"
+    },
+    "NOT_LIT_2": {
+      "sprite": "torch_posts/torch_post_011/not_lit_2/sprite.webp",
+      "pixellab_object_id": "023b8874-b39e-4305-aa20-0c200592ab8e",
+      "generated_at": "2026-08-17T11:22:25+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7596,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "torch_posts/torch_post_011/not_lit_3/sprite.webp",
+      "pixellab_object_id": "4dfc48cd-d7ad-42e7-80c1-95878c2613ab",
+      "generated_at": "2026-08-17T11:23:22+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6409,
+      "glow_score": 0.0
+    },
+    "NOT_LIT_4": {
+      "sprite": "torch_posts/torch_post_011/not_lit_4/sprite.webp",
+      "pixellab_object_id": "59c53911-ff01-433a-932f-779ec73b47b3",
+      "generated_at": "2026-08-17T11:23:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8699,
+      "glow_score": 0.0
     }
   }
 }
