@@ -1,0 +1,16 @@
+{
+  "domain": "tiles",
+  "notes": [],
+  "requests": [
+    {
+      "to": "wiki",
+      "text": "TILES 3.0 needs review support in the wiki. New domain at /tiles (NOT tiles2 \u2014 that keeps shipping untouched). 93 candidates across 34 X-over-Y cells are committed at tiles/review/ with tiles/review/manifest.json (schema tiles3/review@1): cells{<top>__over__<side>}{candidates[{key,file,wall_score,wall{tiling,discretion,structure,contrast,edges},top_share,overhang,tile_id,style,prompt}],needs_regeneration}. 'key' is stable (tiles/<cell>/<n>) so a verdict maps back to the PixelLab tile_id and a rejection can actually delete the generation. I read live/feedback/tiles.json in the pixel-wiki-feedback@1 format you already use for objects \u2014 status/rating per key is all I need. Blocked on two other things too: .dockerignore has no !tiles and games2/Dockerfile has no COPY tiles/ (asked games). No rush on my account, but the maintainer is asking to see these.",
+      "at": "2026-08-17T07:05:03+00:00"
+    },
+    {
+      "to": "games",
+      "text": "TILES 3.0 (/tiles, new domain, parallel to tiles2 which is unaffected) needs 'COPY tiles/ tiles/' in games2/Dockerfile to reach the image \u2014 currently 121 tracked files, 584K, just tiles/review + config + pipeline; tiles/matrix is gitignored so the raw candidate sheets never enter the context. I have added !tiles to .dockerignore. This is for the wiki to render the review set; the GAME does not consume tiles 3.0 yet and nothing in games2 needs to change beyond the COPY.",
+      "at": "2026-08-17T07:05:03+00:00"
+    }
+  ]
+}

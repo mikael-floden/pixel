@@ -27,6 +27,13 @@ tiles2/*/raw
 music/**/*.wav
 !monsters
 !items
+# Tiles 3.0 (/tiles) — the 3rd-generation isometric tile system, developed in
+# parallel with tiles2, which keeps shipping and is unaffected. Only the reviewable
+# output is tracked (tiles/review + config + pipeline, 121 files / 584K); the raw
+# candidate sheets in tiles/matrix are gitignored and never enter the context.
+# NOTE: this line alone does not put it in the image — games2/Dockerfile also needs
+# `COPY tiles/ tiles/`, which is the game agent's file. Asked on the board 2026-08-17.
+!tiles
 !lore
 !wiki
 !live
