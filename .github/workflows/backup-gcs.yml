@@ -30,9 +30,23 @@ name: backup to gcs
 
 on:
   schedule:
-    # 08:17 UTC — after the art loops' 02:30 pass has normally finished, so the
-    # snapshot catches the day's generated art. Off-round minute on purpose.
-    - cron: "17 8 * * *"
+    # WEEKLY, Mondays 08:17 UTC (maintainer 2026-08-17: "it's enough if we
+    # backup once/week"). 08:17 is after the art loops' 02:30 pass, so the
+    # snapshot catches generated art; off-round minute on purpose.
+    #
+    # WHY WEEKLY AND NOT daily-with-a-2-week-purge, which was the other option
+    # considered: the bucket is NEARLINE, and Nearline bills a 30-DAY MINIMUM
+    # STORAGE DURATION per object. Deleting at 14 days is still charged for 30,
+    # so that combination saves nothing — it just costs restore points. Moving
+    # to Standard to dodge the minimum does not help either, at ~2x the per-GB
+    # rate. Measured on the real 291 MB archive in europe-north1: daily/30d
+    # ~8.7 GB-months (~0.95 kr), weekly/30d ~1.25 GB-months (~0.14 kr). Cutting
+    # FREQUENCY is the only lever that moves the bill.
+    #
+    # Retention stays 30 days, so this keeps ~4 snapshots spanning a month
+    # rather than 14 spanning a fortnight — better coverage of "when did this
+    # break", for a seventh of the cost.
+    - cron: "17 8 * * 1"
   workflow_dispatch: {}
 
 # One backup at a time; a scheduled and a manual run racing would upload two
@@ -90,10 +104,35 @@ jobs:
       # reasoning (and the same 19s saving) documented in nangijala-deploy.yml.
       # `gcloud storage cp` validates a CRC32C checksum end to end, so a
       # corrupted transfer fails the step rather than landing silently.
+      # THE BUCKET NAME IS DERIVED, NOT CONFIGURED (2026-08-17). It used to come
+      # from a repo VARIABLE the bootstrap told you to set by hand, and that
+      # step was never done — so every nightly run since 2026-08-15 expanded to
+      # `gs:///` and died on a gcloud URL-parse error. Three silent failures,
+      # i.e. no backup at all, while the workflow existed and looked healthy.
+      # The bootstrap already names the bucket deterministically
+      # (${PROJECT_ID}-nangijala-backups), so there is nothing here worth
+      # asking a human to retype. The variable still WINS if it is set, for the
+      # case where the bucket is somewhere else.
+      - name: Resolve the backup bucket
+        run: |
+          set -euo pipefail
+          BUCKET="${{ vars.GCS_BACKUP_BUCKET }}"
+          [ -n "$BUCKET" ] || BUCKET="${CLOUDSDK_CORE_PROJECT}-nangijala-backups"
+          echo "BUCKET=$BUCKET" >> "$GITHUB_ENV"
+          # FAIL WITH THE FIX, not with a URL parse error. A missing bucket
+          # means the one-time bootstrap has not been run, and the message says
+          # exactly what to paste — from a phone, into Cloud Shell.
+          if ! gcloud storage buckets describe "gs://$BUCKET" >/dev/null 2>&1; then
+            echo "::error::Backup bucket gs://$BUCKET does not exist or is not readable."
+            echo "::error::Run the one-time setup, from https://shell.cloud.google.com :"
+            echo "::error::  curl -sS https://raw.githubusercontent.com/mikael-floden/pixel/main/.github/gcs-backup-bootstrap.sh | bash"
+            exit 1
+          fi
+
       - name: Upload to the backup bucket
         run: |
           set -euo pipefail
-          gcloud storage cp "$NAME" "gs://${{ vars.GCS_BACKUP_BUCKET }}/$NAME"
+          gcloud storage cp "$NAME" "gs://$BUCKET/$NAME"
 
       # cp exiting 0 is not proof the object is readable at the far end at the
       # right size. Ask GCS what it actually has.
@@ -101,7 +140,7 @@ jobs:
         run: |
           set -euo pipefail
           REMOTE=$(gcloud storage objects describe \
-            "gs://${{ vars.GCS_BACKUP_BUCKET }}/$NAME" --format='value(size)')
+            "gs://$BUCKET/$NAME" --format='value(size)')
           echo "local=$BYTES remote=${REMOTE:-MISSING}"
           [ "$REMOTE" = "$BYTES" ] || { echo "size mismatch or missing — backup NOT trustworthy"; exit 1; }
           echo "verified $NAME ($BYTES bytes)"
@@ -111,10 +150,10 @@ jobs:
           {
             echo "### Backup stored"
             echo ""
-            echo "\`$NAME\` — $(numfmt --to=iec "$BYTES") → \`gs://${{ vars.GCS_BACKUP_BUCKET }}\`"
+            echo "\`$NAME\` — $(numfmt --to=iec "$BYTES") → \`gs://$BUCKET\`"
             echo ""
             echo "Currently retained (lifecycle deletes at 30 days):"
             echo ""
-            gcloud storage ls --long "gs://${{ vars.GCS_BACKUP_BUCKET }}/" \
+            gcloud storage ls --long "gs://$BUCKET/" \
               | sed 's/^/    /'
           } >> "$GITHUB_STEP_SUMMARY"

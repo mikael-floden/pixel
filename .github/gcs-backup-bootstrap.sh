@@ -1,9 +1,24 @@
 #!/usr/bin/env bash
 # One-time setup for the nightly repo backup bucket (.github/workflows/backup-gcs.yml).
 #
-# Run ONCE on your machine (needs `gcloud` + Owner on the project):
+# HOW TO RUN — from a PHONE, deliberately (the maintainer has no laptop, and
+# this script's original "run it on your machine" instruction is exactly why it
+# was never run: the nightly backup then failed silently from 2026-08-15 to
+# 2026-08-17, three nights with no backup at all while the workflow existed and
+# looked healthy).
 #
-#   PROJECT_ID=your-gcp-project ./.github/gcs-backup-bootstrap.sh
+#   1. Open https://shell.cloud.google.com in the phone browser (or the Google
+#      Cloud app's Cloud Shell) — already authenticated, already knows the
+#      project.
+#   2. Paste ONE line:
+#
+#        curl -sS https://raw.githubusercontent.com/mikael-floden/pixel/main/.github/gcs-backup-bootstrap.sh | bash
+#
+#      Nothing to fill in. Override with PROJECT_ID=… / REGION=… / BUCKET=…
+#      before `bash` only if the defaults below are wrong.
+#
+# There is NOTHING to do afterwards: the workflow derives the same bucket name
+# this script creates, so no repo variable has to be set by hand.
 #
 # There are NO credentials to create or store: the deploy service account and
 # the Workload Identity Federation trust that games2/deploy/gcp-bootstrap.sh
@@ -18,7 +33,14 @@
 # rule, which nothing in CI can reach.
 set -euo pipefail
 
-PROJECT_ID="${PROJECT_ID:?set PROJECT_ID=your-gcp-project}"
+# PROJECT: derived, never prompted — Cloud Shell exports DEVSHELL_PROJECT_ID,
+# and `|| true` keeps `set -e` from killing the script on a failed lookup
+# (the ar-cleanup.sh lesson).
+PROJECT_ID="${PROJECT_ID:-${DEVSHELL_PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}}"
+if [ -z "$PROJECT_ID" ]; then
+  echo "No project found. Re-run as:  PROJECT_ID=your-project bash gcs-backup-bootstrap.sh" >&2
+  exit 1
+fi
 REGION="${REGION:-europe-north1}"                  # match the Cloud Run region
 DEPLOY_SA="${DEPLOY_SA:-nangijala-deployer}"       # the EXISTING deploy SA
 BUCKET="${BUCKET:-${PROJECT_ID}-nangijala-backups}" # bucket names are global
@@ -68,14 +90,14 @@ cat <<EOF
 
 ✅ done.
 
-Set ONE repo variable (Settings → Secrets and variables → Actions → Variables):
-
-   GCS_BACKUP_BUCKET = ${BUCKET}
+NOTHING ELSE TO SET. The workflow derives this exact bucket name
+(\${PROJECT_ID}-nangijala-backups) on its own; the GCS_BACKUP_BUCKET repo
+variable is now only an override for a bucket somewhere else.
 
 No secrets. The workflow authenticates through the same keyless Workload
 Identity Federation the deploy already uses.
 
-Then: Actions → "backup to gcs" → Run workflow.
+Verify now: Actions → "backup to gcs" → Run workflow. It runs nightly anyway.
 
 Restore later with:
    gcloud storage ls gs://${BUCKET}

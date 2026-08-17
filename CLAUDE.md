@@ -88,16 +88,37 @@ tiles2/maps2/wiki, 2026-07-31).
 
 **OFF-GITHUB BACKUP.** No human keeps a clone — the agents are the only ones
 who touch git — so GitHub is a single point of failure.
-`.github/workflows/backup-gcs.yml` stores a nightly `git archive HEAD` zip
-(current state, no history; 274 MB) in a GCS bucket, kept 30 days by a
-lifecycle rule. **No secrets exist for it**: it reuses the deploy's keyless
+**IT SILENTLY DID NOTHING FOR ITS FIRST THREE NIGHTS** (2026-08-15..17): the
+bucket name came from a repo VARIABLE that a human was told to set by hand,
+nobody did, and every run expanded to `gs:///` and died on a URL-parse error —
+a backup system that exists, is scheduled, looks healthy and backs up nothing.
+Two causes, both now fixed: the workflow DERIVES the bucket
+(`<project>-nangijala-backups`, the same name the bootstrap creates) instead of
+being told it, and fails with the exact paste-this line when the bucket is
+missing; and the bootstrap, which said "run this on your machine", is a
+Cloud-Shell one-liner like `ar-cleanup.sh` — the maintainer has no machine, which
+is why it was never run. WHEN ADDING ANY OPS STEP HERE: if it needs a laptop, it
+will not happen.
+
+`.github/workflows/backup-gcs.yml` stores a WEEKLY (Mondays) `git archive HEAD`
+zip (current state, no history; measured 291 MB) in a GCS bucket, kept 30 days
+by a lifecycle rule — so ~4 snapshots spanning a month.
+**WEEKLY, and the alternative is a trap worth remembering**: daily-with-a-
+2-week-purge was considered and rejected because the bucket is NEARLINE, which
+bills a **30-day minimum storage duration per object**. Deleting at 14 days is
+still charged for 30, so that combination costs restore points and saves
+nothing; Standard dodges the minimum but costs ~2x per GB. Measured on the real
+archive in europe-north1: daily/30d ~8.7 GB-months (~0.95 kr), weekly/30d
+~1.25 GB-months (~0.14 kr). FREQUENCY is the only lever that moves this bill.
+
+**No secrets exist for it**: it reuses the deploy's keyless
 Workload Identity Federation. The SA holds `objectCreator`+`objectViewer` on
 that bucket and NOT `objectAdmin`, so CI can write and verify a backup but
 *cannot* delete one — which is what keeps "backups live in the same GCP
 project as prod" from meaning "one compromised pipeline loses both". Note the
 archive ships **tracked files only**, which is what keeps the gitignored `.env`
 out of cloud storage — a `tar` of the working tree would leak
-`PIXELLAB_API_KEY`. ~0.8 kr/month. Setup + restore: `.github/BACKUP.md`.
+`PIXELLAB_API_KEY`. ~0.14 kr/month. Setup + restore: `.github/BACKUP.md`.
 
 The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
 cleanly. The only real cross-domain hazard is editing a *shared* file at once;
