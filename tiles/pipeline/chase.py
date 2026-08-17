@@ -324,8 +324,16 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
                   flush=True)
             time.sleep(5)
             continue
-        pixellab_gc.record(tile_id, purpose=f"matrix:{cell.replace('__over__', '_over_')}",
-                           prompt=prompt)
+        # ART TO DISK FIRST, BOOKKEEPING SECOND. The order used to be the other way
+        # round and it cost $11: twelve concurrent workers corrupted the shared
+        # registry, pixellab_gc.record() raised JSONDecodeError, and the exception
+        # unwound out of every one of 116 cells AFTER the sheet was paid for and BEFORE
+        # a single tile was written. Sixteen images per sheet, generated, charged, and
+        # dropped on the floor.
+        #
+        # Nothing between paying and saving may be allowed to fail. meta.json goes down
+        # here too, because it carries the tile_id — which is what let the registry be
+        # rebuilt from the art after that crash instead of losing the ids outright.
         spent[0] += matrix.SHEET_USD
         if not images and tile_id:
             images = client.fetch_tiles(tile_id)       # already paid for; never re-buy
@@ -334,14 +342,21 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             p = os.path.join(sdir, f"tile_{j:02d}.png")
             im.save(p)
             paths.append(p)
-        try:
-            os.remove(os.path.join(sdir, ".inflight"))
-        except OSError:
-            pass
         with open(os.path.join(sdir, "meta.json"), "w") as f:
             json.dump({"cell": cell, "prompt": prompt, "tile_id": tile_id,
                        "style": f"{tag}{i % len(ph)}", "n_tiles": len(paths),
                        "settings": matrix.FIXED}, f, indent=2)
+        try:
+            os.remove(os.path.join(sdir, ".inflight"))
+        except OSError:
+            pass
+        try:
+            pixellab_gc.record(tile_id,
+                               purpose=f"matrix:{cell.replace('__over__', '_over_')}",
+                               prompt=prompt)
+        except Exception as e:                          # noqa: BLE001 — see above
+            print(f"    (registry write failed, art is safe on disk: {str(e)[:60]})",
+                  flush=True)
         # Counted over the WHOLE cell, not this sheet: three candidates accumulated
         # across three rolls is exactly as good a choice for the maintainer as three
         # from one lucky sheet, and stopping early on either is what leaves a cell with

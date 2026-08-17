@@ -29,6 +29,8 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import contextlib
+import fcntl
 import json
 import os
 import subprocess
@@ -44,16 +46,67 @@ def _now():
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
 
 
+_EMPTY = {"schema": "tiles3/generated@1", "items": {}}
+_LOCK = REGISTRY + ".lock"
+
+
 def load():
-    if os.path.isfile(REGISTRY):
+    """Never raise. A corrupt ledger is a bookkeeping problem; it must not be able to
+    take down a generator that is spending real money.
+
+    It happened: twelve concurrent chase workers each did an unlocked
+    read-modify-write of this file, one read a half-written copy, and every one of 116
+    cells then died on the same JSONDecodeError — after the sheet was paid for and
+    before the tiles were saved. $11 of art that was generated and never reached disk.
+    """
+    if not os.path.isfile(REGISTRY):
+        return dict(_EMPTY)
+    try:
         with open(REGISTRY) as f:
             return json.load(f)
-    return {"schema": "tiles3/generated@1", "items": {}}
+    except (json.JSONDecodeError, OSError) as e:
+        # Keep the damaged file for inspection rather than silently discarding what may
+        # be thousands of ids, and carry on from empty — record() merges, so the next
+        # writes rebuild rather than overwrite a good file with a stub.
+        bad = REGISTRY + ".corrupt"
+        try:
+            if not os.path.exists(bad):
+                os.replace(REGISTRY, bad)
+                print(f"  ! {os.path.basename(REGISTRY)} was corrupt ({e}); "
+                      f"moved to {os.path.basename(bad)}")
+        except OSError:
+            pass
+        return dict(_EMPTY)
 
 
 def save(reg):
-    with open(REGISTRY, "w") as f:
+    """ATOMIC. Write beside the target and rename over it — os.replace is atomic on
+    POSIX, so a concurrent reader sees either the whole old file or the whole new one,
+    never the half-written middle."""
+    tmp = f"{REGISTRY}.{os.getpid()}.tmp"
+    with open(tmp, "w") as f:
         json.dump(reg, f, indent=2, sort_keys=True)
+    os.replace(tmp, REGISTRY)
+
+
+@contextlib.contextmanager
+def _locked():
+    """Serialise the read-modify-write across processes. Atomic writes alone stop
+    corruption but not LOST UPDATES: two workers both read, both add their own id, and
+    whichever writes second silently drops the other's — which for this file means a
+    paid generation the GC can no longer see and will never clean up."""
+    with open(_LOCK, "w") as fh:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX)
+        except OSError:
+            pass                     # no locking available: still better than nothing
+        try:
+            yield
+        finally:
+            try:
+                fcntl.flock(fh, fcntl.LOCK_UN)
+            except OSError:
+                pass
 
 
 def record(tile_id, purpose, prompt="", status="pending"):
@@ -61,13 +114,19 @@ def record(tile_id, purpose, prompt="", status="pending"):
     can only ever see — and therefore only ever delete — our own work."""
     if not tile_id:
         return
-    reg = load()
-    reg["items"][tile_id] = {"purpose": purpose, "prompt": prompt[:400],
-                             "status": status, "created": _now()}
-    save(reg)
+    with _locked():
+        reg = load()
+        reg["items"][tile_id] = {"purpose": purpose, "prompt": prompt[:400],
+                                 "status": status, "created": _now()}
+        save(reg)
 
 
 def set_status(ids, status):
+    with _locked():
+        return _set_status(ids, status)
+
+
+def _set_status(ids, status):
     reg = load()
     n = 0
     for i in ids:
