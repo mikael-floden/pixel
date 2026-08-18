@@ -86,6 +86,32 @@ paths** — changing monster stats or rating a sound never restarts the game.
     top-only tile would silently hide a tile that was fine.
   - It is a PROPERTY, not a verdict: a top-tile-only tile is not worse, it is a
     tile with one job, which is why it does not live in `feedback/tiles.json`.
+- `live/tuning/scenery_lights.json` — `pixel-wiki-scenery-lights@1`. **Which
+  scenery states are REALLY lit.** The scenery pipeline names a state `LIT_*` or
+  `NOT_LIT_*` (`LIGHTS_ON`/`LIGHTS_OFF` on windows) — but that name records what
+  the generator was ASKED for, and the AI that draws it sometimes fails to put
+  the light in while the piece comes out good in every other way (maintainer
+  2026-08-17: "the AI that generates the image might fail to produce the light,
+  but the scenery overall looks great. So I want a way to change the state from
+  lit to unlit when doing the review. So we don't have to throw away the art
+  just because it's lit state is wrong"). **Consumed by the scenery agent.**
+  - Keyed `<piece path>#<state>` — the same unit the facet verdicts use:
+    `overrides["scenery/anchors/anchor_001#lit_1"] = { lit: false, was: "lit_1",
+    updated_at }`. The state key is lower-cased exactly as the wiki's clip keys
+    are; `was` carries the name it was generated under so a correction stays
+    readable after the state is re-filed.
+  - **Per STATE, not per piece and not per direction.** The scenery domain's own
+    rule is "read the state key, not the piece" — `lights` on the piece is
+    legacy and null wherever a piece carries both kinds — and the light is a
+    property of the sprite, so all of a state's directions share it.
+  - **Absent means the state's own name is right**, which is the ordinary case.
+    Agreeing with the name again DELETES the entry rather than storing it: this
+    file is a list of CORRECTIONS, and one full of agreements would grow to
+    every state ever opened and say nothing about any of them.
+  - It is a PROPERTY, not a verdict, which is why it is not in
+    `feedback/objects.json`: a `LIT_2` that came out dark is not bad art to
+    reject, it is unlit art filed under the wrong name. Rejecting it would throw
+    away exactly what he asked to keep.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed

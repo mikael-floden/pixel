@@ -63,6 +63,14 @@ const LIVE_FILES: Record<string, string> = {
   // by the tiles agent and, when 3.0 ships, by whatever paints the ground.
   // See live/README.md.
   "tuning/tile_walls.json": "tuning/tile_walls",
+  // WHETHER A SCENERY STATE IS REALLY LIT. The generator names a state LIT_* or
+  // NOT_LIT_*, but the AI that draws it sometimes fails to put the light in —
+  // and the art is otherwise good (maintainer 2026-08-17: "I want a way to
+  // change the state from lit to unlit when doing the review. So we don't have
+  // to throw away the art just because it's lit state is wrong"). One entry per
+  // <piece path>#<state>, correcting the name. Consumed by the scenery agent.
+  // See live/README.md.
+  "tuning/scenery_lights.json": "tuning/scenery_lights",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -79,6 +87,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -358,6 +367,7 @@ export function registerLiveRoutes(app: express.Application): void {
       tuning: {
         monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
         sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"),
+        scenery_lights: docs.get("tuning/scenery_lights"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });

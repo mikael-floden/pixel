@@ -428,6 +428,41 @@ one keeps its card, and nothing resurrects on a re-navigation) and
 images to load before judging it. A gate that models the manifest is asserting
 a page that cannot exist.
 
+## "Lit" is a CLAIM about the art, and he can correct it
+
+Maintainer 2026-08-17: *"Some scenery is supposed to be 'lit up' (like a lamp,
+campfire, glowing rune, etc). However! The AI that generates the image might
+fail to produce the light, but the scenery overall looks great. So I want a way
+to change the state from 'lit' to 'unlit' when doing the review. So we don't
+have to throw away the art just because it's lit state is wrong."*
+
+A scenery state is named `LIT_2` / `NOT_LIT_1` (or `LIGHTS_ON`/`LIGHTS_OFF` on a
+window) by the pipeline that ordered it — the name says what was ASKED FOR, not
+what came back. So the Scenery review carries a **Light** switch on the state
+you are looking at, above its verdict row, and what it writes is a
+**correction**, never a judgement.
+
+- **It is a PROPERTY, not a verdict** — so it saves to
+  `live/tuning/scenery_lights.json` (`pixel-wiki-scenery-lights@1`), not to
+  `feedback/objects.json`. Rejecting a dark `LIT_2` would throw away the art he
+  explicitly asked to keep; the piece is fine, its label is wrong.
+- **Per STATE**, keyed `<piece path>#<state>` — the same unit the facet verdicts
+  use. Not per piece (the scenery domain's own rule is "read the state key, not
+  the piece": `lights` is legacy and null on anything carrying both kinds) and
+  not per direction (the light is a property of the sprite; scenery is
+  south-only anyway).
+- **Absent means the name was right.** Setting it back to what the state is
+  called deletes the entry — a file of agreements would grow to every state he
+  ever opened and describe none of them.
+- **The correction stays legible**: once the two disagree the strip carries a
+  "was lit" / "was unlit" pill, and the saved entry keeps `was: <state>` so the
+  scenery agent can still tell what it was generated as after re-filing it.
+
+Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state,
+commits, and asserts the file, the key, the `was`, that nothing lands in the
+feedback file, that agreeing again DELETES, that the switch follows the state
+chip (unlit → 💡lit) and that a reader never sees the control at all.
+
 ## Where the nadir shadow belonged — training data, not an override
 
 The wiki already drew each monster's ground ellipse from the games agent's own

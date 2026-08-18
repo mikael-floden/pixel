@@ -1206,6 +1206,10 @@ input[type="range"] { accent-color: var(--accent); }
    Both shapes share the tile page's chessboard and its real-scale canvas, so
    a strip here measures what a strip measures in the world. */
 .wall-mode { display: flex; align-items: center; gap: 8px; }
+/* The same strip, on the Scenery review: "is this state really lit?" It sits
+   ABOVE the verdict row and wraps, because a corrected state also carries the
+   pill saying what it was called (maintainer 2026-08-17). */
+.lit-mode { flex-wrap: wrap; margin-bottom: 6px; }
 .wall-mode .sortbar { flex: none; }
 .wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }
 

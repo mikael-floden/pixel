@@ -1909,6 +1909,83 @@ const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
 // scrolling on a phone. Anything else — a monster's walk, a character's die —
 // is still spelled out in words.
 const VARIANT = /^(not[_-]?lit|lit|lights[_-]?off|lights[_-]?on)(?:[_-]?(\d+))?$/i;
+/* IS THIS STATE LIT? (maintainer 2026-08-17: "some scenery is supposed to be
+ * 'lit up' (like a lamp, campfire, glowing rune, etc). However! The AI that
+ * generates the image might fail to produce the light, but the scenery overall
+ * looks great. So I want a way to change the state from 'lit' to 'unlit' when
+ * doing the review. So we don't have to throw away the art just because it's
+ * lit state is wrong.")
+ *
+ * THE STATE'S NAME IS THE CLAIM; the picture is the truth. `LIT_2` says the
+ * generator was asked for a glow, not that one came out — and a piece whose art
+ * is good in every other way should not be thrown away over its label. So the
+ * Game Master can correct it, and the correction is a PROPERTY of the state,
+ * never a verdict on it: an ordinary LIT_2 that is really unlit is not bad art,
+ * it is unlit art filed under the wrong name.
+ *
+ * The scenery domain's own contract is "read the state key, not the piece" —
+ * `lights` on the piece is legacy and null wherever a piece carries both kinds
+ * (scenery/README.md). So this reads the key, and the override corrects it.
+ */
+const SCENERY_LIGHT_KEY = "tuning/scenery_lights";
+const sceneryLights = () => state.tuning.scenery_lights
+  ?? (state.tuning.scenery_lights = { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} });
+/** What the state's NAME claims: true, false, or null for a state that says
+ *  nothing about light at all (a piece's plain `static` / `base`). */
+function litByName(st) {
+  const m = VARIANT.exec(String(st ?? "").trim());
+  if (!m) return null;
+  return /^lit/i.test(m[1]) || /on$/i.test(m[1]);
+}
+const litKey = (path, st) => `${path}#${st}`;
+/** What it REALLY is: his correction if he made one, else the name's claim,
+ *  else unlit — a state nobody has called lit is the ordinary case. */
+function litOf(path, st) {
+  const o = sceneryLights().overrides?.[litKey(path, st)];
+  if (o && typeof o.lit === "boolean") return o.lit;
+  return litByName(st) ?? false;
+}
+const litCorrected = (path, st) => {
+  const o = sceneryLights().overrides?.[litKey(path, st)];
+  return !!o && typeof o.lit === "boolean" && o.lit !== (litByName(st) ?? false);
+};
+function setLit(path, st, lit) {
+  const doc = sceneryLights();
+  const key = litKey(path, st);
+  // AGREEING WITH THE ART'S OWN NAME DELETES THE ENTRY. This file is a list of
+  // CORRECTIONS; storing the ones that change nothing would grow it to every
+  // state ever looked at and say nothing about any of them.
+  if (lit === (litByName(st) ?? false)) delete (doc.overrides ??= {})[key];
+  else (doc.overrides ??= {})[key] = { lit, was: st, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(SCENERY_LIGHT_KEY, key);
+  markDirty(SCENERY_LIGHT_KEY);
+}
+const LIT_MODES = {
+  unlit: { label: "unlit", title: "No light in this art — whatever the state is called" },
+  lit: { label: "💡 lit", title: "This art really does glow" },
+};
+/** The strip itself, which REDRAWS ITSELF: a pick-one that still shows the old
+ *  pick after you press it is worse than no control at all. */
+function litRow(path, st, onChange) {
+  const box = h("div", { class: "card-sub wall-mode lit-mode" });
+  const draw = () => {
+    const now = litOf(path, st);
+    box.replaceChildren(
+      h("span", { class: "muted" }, "Light"),
+      sortBar(`scenery-lit:${path}#${st}`, Object.entries(LIT_MODES).map(([id, m]) => [id, m.label, m.title]),
+        now ? "lit" : "unlit",
+        (v) => { setLit(path, st, v === "lit"); draw(); onChange?.(); }, { persist: false }),
+      // WHAT IT WAS CALLED, once the two disagree — the correction is only
+      // legible next to the claim it corrects.
+      litCorrected(path, st)
+        ? h("span", { class: "pill warn", title: `The scenery agent generated this as ${stateWords(st)}` }, `was ${litByName(st) ? "lit" : "unlit"}`)
+        : null,
+    );
+  };
+  draw();
+  return box;
+}
 function stateLabel(s) {
   const m = VARIANT.exec(String(s).trim());
   if (m) {
@@ -4039,21 +4116,28 @@ function viewObject(id) {
     const st = player?.getState(), dir = player?.getDir();
     if (!st || !dir) return;
     facetPill.replaceChildren(facetName(st, dir));
-    facetBox.replaceChildren(feedbackRow("objects", `${o.path}#${st}#${dir}`, {
-      // The chip the verdict belongs to turns green or red the moment it lands.
-      onchange: () => player.refreshMarks(),
-      // THIS STATE'S OWN ART HASH — plain md5 of the file, published per clip
-      // by build.mjs. The piece's hash used to be stamped here, which meant a
-      // verdict on LIGHTS_ON could not be told apart from one on LIGHTS_OFF
-      // and the producing agent could not auto-consume it (scenery agent,
-      // 2026-08-15: "for state verdicts to self-consume, the wiki needs to
-      // record the state's own hash rather than the piece's"). Falls back to
-      // the piece's while a clip is still unmeasured.
-      stamp: { art: o.animations?.[st]?.dirs?.[dir]?.h ?? o.artHash ?? null },
-      reject: "✕ redo",
-      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
-      rejectedLabel: "to be redone",
-    }));
+    // IS IT REALLY LIT? Above the verdict, because it is not one: a LIT_2 that
+    // came out dark is not art to reject, it is art filed under the wrong name
+    // (maintainer 2026-08-17). Per STATE, not per direction — the light is a
+    // property of the sprite, and scenery is south-only anyway.
+    facetBox.replaceChildren(...[
+      state.admin ? litRow(o.path, st, () => player.refreshMarks()) : null,
+      feedbackRow("objects", `${o.path}#${st}#${dir}`, {
+        // The chip the verdict belongs to turns green or red the moment it lands.
+        onchange: () => player.refreshMarks(),
+        // THIS STATE'S OWN ART HASH — plain md5 of the file, published per clip
+        // by build.mjs. The piece's hash used to be stamped here, which meant a
+        // verdict on LIGHTS_ON could not be told apart from one on LIGHTS_OFF
+        // and the producing agent could not auto-consume it (scenery agent,
+        // 2026-08-15: "for state verdicts to self-consume, the wiki needs to
+        // record the state's own hash rather than the piece's"). Falls back to
+        // the piece's while a clip is still unmeasured.
+        stamp: { art: o.animations?.[st]?.dirs?.[dir]?.h ?? o.artHash ?? null },
+        reject: "✕ redo",
+        rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
+        rejectedLabel: "to be redone",
+      }),
+    ].filter(Boolean));
   };
   if (hasAnims) {
     player = makePlayer(o, "object", { headerEl: facetHead(facetPill, facetBox), ...(ref ? { humanRef: { ...ref, on: humanOn } } : {}) });
