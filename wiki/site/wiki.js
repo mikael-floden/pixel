@@ -963,7 +963,7 @@ function makePlayer(entity, kind, opts = {}) {
   // Salamander II are the same 30x35 creature but ship 78x48 and 48x48
   // frames, so they rendered 1.67x apart — and the 32x23 frog came out 2.5x
   // wider than the 77x121 mammoth. The padding is cropped away with each
-  // clip's measured content box (build.mjs + wiki/tools/webp-pixels.mjs) and everyone
+  // clip's measured content box (build.mjs + wiki/lib/webp-pixels.mjs) and everyone
   // draws at data.artScale: same creature = same size, bigger creature =
   // bigger. The crop is PER CLIP, so it stays put while a clip plays and the
   // animation's motion still shows. Zoom buttons override the scale.
@@ -6131,7 +6131,15 @@ function drawStamp(data) {
   const p = (n) => String(n).padStart(2, "0");
   $("#build-stamp").replaceChildren(
     h("div", { class: "stamp-date" }, `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`),
-    ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []));
+    ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []),
+    // A STAMP THAT CANNOT LIE QUIETLY. The deploy image rebuilds this registry
+    // from its own tree; if that ever fails it falls back to the committed one
+    // and sets this flag (games2/Dockerfile), which used to be an invisible
+    // condition — the wiki simply showed yesterday's sha as if it were today's
+    // build. Now the page says so.
+    ...(data.registry_stale
+      ? [h("div", { class: "stamp-stale", title: "The deploy could not rebuild the wiki's registry, so this page is describing the last COMMITTED one. The sha above is that commit, not the running build." }, "stale registry")]
+      : []));
 }
 /* THE ADMIN'S FULLER COPY ARRIVES AFTER THE FIRST PAINT, NOT BEFORE IT.
  *

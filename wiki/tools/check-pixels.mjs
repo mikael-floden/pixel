@@ -1,6 +1,6 @@
 // THE VP8L DECODER IS PROVEN AGAINST PILLOW, PIXEL FOR PIXEL.
 //
-// wiki/tools/webp-pixels.mjs is what lets build.mjs measure art inside the
+// wiki/lib/webp-pixels.mjs is what lets build.mjs measure art inside the
 // deploy's image build (maintainer 2026-08-13: "It should just work when
 // someone pushes") — node:22-slim has no Python, so the decoder is hand-written
 // JS, and hand-written decoders earn trust by comparison, not by review. This
@@ -20,7 +20,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { decodeWebP } from "./webp-pixels.mjs";
+import { decodeWebP } from "../lib/webp-pixels.mjs";
 
 const ROOT = new URL("../..", import.meta.url).pathname.replace(/\/$/, "");
 const ALL = process.argv.includes("--all");

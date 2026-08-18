@@ -263,6 +263,13 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 .showcase-text .card-badges:empty { display: none; }
 
+/* The stamp's alarm: only ever visible when the deploy fell back to a committed
+   registry, so it is allowed to be loud. */
+.stamp-stale {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+  color: var(--err, #b3453a);
+}
+
 .checker {
   background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
 }

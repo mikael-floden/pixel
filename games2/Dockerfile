@@ -92,9 +92,34 @@ RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict --ship
 ARG GIT_SHA=dev
 ENV VITE_GIT_SHA=$GIT_SHA
 
-# Wiki registry from the art baked into THIS image, so it can never go stale
-# against the deployed art. Never let a wiki hiccup brick the game deploy.
-RUN node /assets/wiki/build.mjs --games2 /app || echo "[wiki] build failed; shipping committed data.json"
+# ---------------------------------------------------------- wiki registry ----
+# THE REGISTRY IS BUILT FROM THE FULL TREE, NOT THE CURATED ONE. The wiki is the
+# Game Master's REVIEW surface: it lists 57 creatures, 193 races and 797 scenery
+# pieces of which the image ships 24, 23 and 3 (the rest is unreleased content
+# that lives in the repo to keep the GCP bill down — maintainer 2026-08-17).
+# wiki.js routes art for anything unshipped to the repo CDN, using /shipset.json
+# to know which is which, so the REGISTRY has to describe everything while the
+# IMAGE still carries only what the game plays. Building it from /assets would
+# publish a wiki with two thirds of the game missing.
+#
+# /full is the curate stage's own input tree — the whole repo it was handed —
+# so this costs one hard-linked layer in a stage that is thrown away, and
+# nothing at runtime.
+#
+# IT MUST NOT SILENTLY FAIL. It did, for weeks: build.mjs imports
+# wiki/lib/webp-pixels.mjs, which used to live in wiki/tools/, which
+# publish.json excludes from the image — so every deploy died on
+# ERR_MODULE_NOT_FOUND, this `||` swallowed it, and the image shipped whatever
+# data.json was last COMMITTED, stamped with that commit's sha. The wiki's
+# version stamp — the one thing telling the Game Master which build he is
+# looking at — named a build from the day before, and nothing anywhere said so.
+# So the fallback now MARKS the file it falls back to, and the wiki shows it.
+# --root EXPLICITLY, even though /full/wiki/build.mjs would default to it:
+# "which root did it read" is the whole bug class here, and the old line's
+# answer (/assets, the curated one) was invisible at the call site.
+COPY --from=curate /src /full
+RUN node /full/wiki/build.mjs --root /full --games2 /app \
+ || node -e 'const f="/full/wiki/site/data.json",fs=require("fs");const d=JSON.parse(fs.readFileSync(f,"utf8"));d.registry_stale=true;fs.writeFileSync(f,JSON.stringify(d));console.error("[wiki] BUILD FAILED — shipping the committed registry, flagged stale")'
 RUN npm run build:client
 
 # --------------------------------------------------------------- runtime ----
@@ -122,14 +147,15 @@ COPY --from=build /app/client/dist client/dist
 # sound and music pages play, now fetched from the repo (wiki.js resolves
 # composer/** against the CDN), so no player carries it.
 COPY --from=curate /shipped/ /assets/
-# …AND THE WIKI REGISTRY BUILT FROM THIS IMAGE'S OWN ART. The build stage runs
-# wiki/build.mjs against its own /assets (see it above), but the runtime copies
-# /assets from CURATE, so that output was discarded on every deploy and the
-# deployed wiki served the data.json last COMMITTED — including its `git_sha`,
-# which is the version stamp in the wiki's header. Measured 2026-08-17: the
-# live stamp read a commit six pushes and three hours old, so the one thing
-# telling the Game Master which build he is looking at named the wrong build.
-COPY --from=build /assets/wiki/site/data.json /assets/wiki/site/data.json
+# …AND THE WIKI REGISTRY BUILT FROM THIS DEPLOY'S OWN TREE (see the build stage:
+# it is built from /full, the whole repo, not from the curated art). The runtime
+# copies /assets from CURATE, so without this line that output is discarded on
+# every deploy and the deployed wiki serves the data.json last COMMITTED —
+# including its `git_sha`, which is the version stamp in the wiki's header.
+# Measured 2026-08-17: the live stamp read a commit six pushes and three hours
+# old, so the one thing telling the Game Master which build he is looking at
+# named the wrong build.
+COPY --from=build /full/wiki/site/data.json /assets/wiki/site/data.json
 ENV ASSETS_ROOT=/assets
 
 ARG GIT_SHA=dev

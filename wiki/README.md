@@ -133,6 +133,71 @@ Verify it without a deploy: copy exactly the Dockerfile's `COPY` list into a
 scratch root and run `node wiki/build.mjs` there. The counts it prints are
 the counts prod will show.
 
+## The deployed registry is built from the FULL tree — and it must say so if it isn't
+
+**Found 2026-08-18, live for weeks.** The wiki's header stamp read `99aa36c13`,
+a commit from the previous afternoon, while the page's own JavaScript was that
+minute's build. The stamp was not lying about the code; it was reporting the
+registry, and the registry was a fossil.
+
+What was happening: `games2/Dockerfile` rebuilds `data.json` inside the image so
+it can never go stale against the deployed art, with a deliberate
+`|| echo "shipping committed data.json"` so a wiki hiccup cannot brick a game
+deploy. `build.mjs` imports `webp-pixels.mjs`, which lived in `wiki/tools/` —
+and `games2/config/publish.json` excludes `^wiki/tools/` from the image, because
+Playwright gates have no business in a container. So **every deploy died on
+`ERR_MODULE_NOT_FOUND` at import**, the `||` swallowed it, the image shipped
+whatever `data.json` was last committed, and the stamp named that commit. A
+fallback that fires on 100% of runs is not a fallback, it is the design — an
+invisible one.
+
+Three things came out of it, all of them here rather than in a commit message
+because each is a trap the next person will otherwise re-lay:
+
+**1. The module moved to `wiki/lib/`.** Anything `build.mjs` imports has to
+exist in the image, so it cannot live beside the gates. `wiki/lib/` ships;
+`wiki/tools/` deliberately does not.
+
+**2. The registry is built from `/full`, not from `/assets`.** This is the part
+that would have looked like a fix and been a catastrophe. The obvious repair —
+make the in-image build succeed — publishes a registry built from the CURATED
+art root, and the curated root is the game's, not the wiki's: **24 creatures
+instead of 57, 23 races instead of 193, 3 scenery pieces instead of 797, and
+zero worlds.** The wiki is the Game Master's review surface for unreleased
+content (*"we use the repo for unreleased content to make the gcp bill less
+expensive"*), and `wiki.js` already routes unshipped art to the repo CDN using
+`/shipset.json` to tell which is which. So the Dockerfile copies the curate
+stage's own input tree — the whole repo it was handed — to `/full` and builds
+the registry from there. The image still carries only what the game plays; the
+registry still describes everything. `--root` is passed EXPLICITLY, because
+"which root did it read" is the entire bug class and the old call site did not
+say.
+
+**3. A fallback that fires now MARKS what it shipped.** If the build ever fails
+again, the Dockerfile sets `registry_stale: true` on the committed `data.json`
+and the header shows a red **stale registry** chip next to the sha, with a
+tooltip saying the sha above belongs to that commit and not to the running
+build. Verified by setting the flag by hand and loading the page.
+
+Rehearse the whole thing without a deploy — no Docker needed, and this is how
+the diagnosis was made in the first place:
+
+```bash
+# what the image sees: the curated root
+node games2/scripts/shipset.mjs --emit /tmp/shipped        # ASSETS_ROOT=<repo>
+cp -r /tmp/shipped/wiki /tmp/w && rm -rf /tmp/shipped/wiki && mv /tmp/w /tmp/shipped/wiki
+node /tmp/shipped/wiki/build.mjs --root /tmp/shipped --games2 <repo>/games2
+
+# what the image now does: the full tree (hard-linked, seconds)
+mkdir /tmp/full && for d in scenery characters2 tiles2 tiles maps2 sounds music \
+  monsters items lore live; do cp -al <repo>/$d /tmp/full/$d; done
+cp -r <repo>/wiki /tmp/full/wiki
+VITE_GIT_SHA=<sha> node /tmp/full/wiki/build.mjs --root /tmp/full --games2 <repo>/games2
+```
+
+The counts each prints are the counts that root would publish, and the second
+one's `git_sha` is what the header will show.
+
 ## Two audiences, one page
 
 Players get a read-only encyclopedia (browse, watch animations, listen).
@@ -573,7 +638,7 @@ in 78×48 and 48×48 frames. Scaling by frame size therefore rendered them
 (maintainer 2026-07-30; the flaw shipped in the first version of the site).
 
 `build.mjs` measures the union of opaque pixels for every clip (decoding the
-WebP itself — `wiki/tools/webp-pixels.mjs`), and picks one `scale` for the
+WebP itself — `wiki/lib/webp-pixels.mjs`), and picks one `scale` for the
 whole roster (so the view a page OPENS on — idle facing south — fits a 300px
 stage). It folds the per-clip box in as `clip.bb` and publishes
 `data.artScale`; the viewer crops the padding and draws everyone at that one
@@ -676,7 +741,7 @@ it appears.
 ### The build measures the art itself — pushes are self-measuring
 
 There is no separate measurement step. `build.mjs` decodes every clip's
-pixels with **`wiki/tools/webp-pixels.mjs`** — a zero-dependency VP8L (WebP
+pixels with **`wiki/lib/webp-pixels.mjs`** — a zero-dependency VP8L (WebP
 lossless) decoder — and computes the content boxes, the per-domain stage
 boxes and the shared scale in the same run that writes `data.json`. Since
 the Dockerfile already reruns this build inside **every deploy's image

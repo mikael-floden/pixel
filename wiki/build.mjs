@@ -20,7 +20,13 @@ import { createHash } from "node:crypto";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
-import { contentBounds } from "./tools/webp-pixels.mjs";
+// NOT tools/ — THE IMAGE DOES NOT SHIP tools/. games2/config/publish.json
+// excludes `^wiki/tools/` (the Playwright gates have no business in a
+// container), so while this module lived there every deploy died on
+// ERR_MODULE_NOT_FOUND at import, the Dockerfile's `|| echo` swallowed it, and
+// the image shipped the last COMMITTED data.json instead of one built from its
+// own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
+import { contentBounds } from "./lib/webp-pixels.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -2023,7 +2029,7 @@ const constants = buildConstants();
 // this build's own data.json — a circular two-pass dance, and art pushed
 // between the passes shipped unmeasured: that is how 33 monsters overflowed
 // the animation viewer while Diretusk, measured weeks earlier, sat inside it.
-// Now every clip is measured right here (wiki/tools/webp-pixels.mjs, a VP8L
+// Now every clip is measured right here (wiki/lib/webp-pixels.mjs, a VP8L
 // decoder proven md5-identical to Pillow over all 24,103 art files), and
 // because this build already runs inside every deploy's image build, art is
 // measured in the same breath it ships. art_bounds.json is only a CACHE keyed

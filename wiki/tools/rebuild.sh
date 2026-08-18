@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Refresh everything the wiki derives from the art domains. ONE pass now:
-# build.mjs measures the art itself (wiki/tools/webp-pixels.mjs) and
+# build.mjs measures the art itself (wiki/lib/webp-pixels.mjs) and
 # art_bounds.json is only its content-hash cache, so the circular
 # build→measure→build dance this script used to choreograph is gone — and with
 # it the failure where art pushed between the passes shipped unmeasured (the
