@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:55:17.690Z",
+  "updated_at": "2026-08-18T19:57:34.989Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -215,6 +215,16 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:55:17.339Z",
       "note": "got a bit to much lava on the ground"
+    },
+    "tiles/grass__over__snow/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:57:11.390Z",
+      "note": "this look like \"grass over soil\" to me. Hard to see the snow in this image"
+    },
+    "tiles/grass__over__snow/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:57:34.598Z",
+      "note": "Tile got the perspective wrong."
     }
   }
 }
