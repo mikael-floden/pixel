@@ -138,8 +138,8 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
     # the top material in the wall by hue, and on same-over-same there is no hue
     # difference to find: exactly 1.000 for every grass/ice/light_soil tile, 0.000 for
     # most grey_stone/black_rock, on saturation alone).
-    spill_ok = (lambda c: True) if same else (
-        lambda c: c["overhang"] >= flatness.MIN_OVERHANG)
+    spill_ok = (lambda c: True) if (same or flatness.indistinguishable(top_hex_c, side_hex)) \
+        else (lambda c: c["overhang"] >= flatness.MIN_OVERHANG)
     full = [c for c in out if spill_ok(c)
             and c["wall"]["score"] >= MIN_WALL
             and c["clarity"] >= flatness.MIN_CLARITY]

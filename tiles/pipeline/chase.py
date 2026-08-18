@@ -313,7 +313,12 @@ def passing(paths, min_wall, min_clarity=0.0, same=False,
         q = flatness.wall_quality(p)
         if not q or q["score"] < min_wall:
             continue
-        if not same and flatness.overhang(p) < flatness.MIN_OVERHANG:
+        # The spill gate is waived on the same grounds as on same-over-same: overhang
+        # finds the top material in the wall BY HUE, so between two materials that share
+        # a colour it measures nothing. paving_stone over grey_stone (identical palette
+        # hex) had 126 of 144 tiles rejected here while only 2 failed on wall quality.
+        if not same and not flatness.indistinguishable(top_hex, side_hex) \
+                and flatness.overhang(p) < flatness.MIN_OVERHANG:
             continue
         # A backwards tile is not a worse tile, it is the wrong tile — the maintainer
         # rejected 22 of them in one pass. Banking one ends the chase on a cell that

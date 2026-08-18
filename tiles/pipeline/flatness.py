@@ -423,6 +423,33 @@ def top_contamination(path, top_hex, side_hex):
 
 
 
+def indistinguishable(top_hex, side_hex):
+    """True when two materials are too close in colour for any hue-based test to mean
+    anything about which is which.
+
+    This guard now governs three separate metrics, because they all fail the same way
+    and each was found the hard way. `overhang` and `fringe_clarity` locate the top
+    material inside the wall BY HUE; `swapped_err` asks which of two colours a surface
+    resembles. Given two materials that share a colour, none of those questions has an
+    answer, and the pipeline was answering them anyway:
+
+      * on same-over-same, overhang returns exactly 1.000 for saturated materials and
+        0.000 for desaturated ones, on the saturation floor alone — a coin flip on the
+        material rather than a measurement of the tile.
+      * paving_stone and grey_stone carry the SAME palette hex (#72786c), and 126 of
+        that cell's 144 tiles were rejected by the spill gate while only 2 failed on
+        wall quality. The cell was reported as needing generation for a year of rolls
+        it could never have satisfied.
+
+    60 in RGB distance, the same threshold top_contamination has always used.
+    """
+    if not top_hex or not side_hex:
+        return False
+    t = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    u = np.array([int(side_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    return float(np.linalg.norm(t - u)) < 60.0
+
+
 def swapped_err(path, top_hex, side_hex):
     """Positive when the TOP reads as the SIDE material — i.e. the tile is BACKWARDS.
 
