@@ -181,14 +181,24 @@ def sweep(review_dir, verbose=False):
     """Run the invariant over every published before/after pair. Returns the failures."""
     man = json.load(open(os.path.join(review_dir, "manifest.json")))
     repo = os.path.dirname(os.path.dirname(os.path.abspath(review_dir)))
+    # The same palette publish uses, INCLUDING each material's wall shade. Without it
+    # this sweep judges by a narrower rule than the code it is checking and reports
+    # tiles that publish passed — it flagged paving_stone and lava for moving their
+    # walls onto the wall colour, which is exactly what they are supposed to do. A
+    # checker that disagrees with the thing it checks is worse than no checker.
+    pal = json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(review_dir))),
+        "tiles", "config", "palette.json")))["types"]
     fails, n = [], 0
     for cell, c in man["cells"].items():
+        side_wall = (pal.get(c.get("side")) or {}).get("wall")
         for e in c["candidates"]:
             top_hex = e.get("palette_top")
             if not top_hex:
                 continue
             r = check(Image.open(os.path.join(repo, e["before"])),
-                      Image.open(os.path.join(repo, e["after"])), top_hex)
+                      Image.open(os.path.join(repo, e["after"])), top_hex,
+                      extra_hex=(side_wall,) if side_wall else ())
             n += 1
             if r.get("error") or r.get("blob", 0) > MAX_BLOB:
                 fails.append({"key": e["key"], **r})
