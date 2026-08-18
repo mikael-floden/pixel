@@ -56,6 +56,34 @@ def save(t):
         json.dump(t, f, indent=2, sort_keys=True)
 
 
+def rejected_tiles():
+    """Raw tiles the maintainer rejected individually, as repo-relative paths.
+
+    Distinct from a cell tombstone. A tombstoned CELL is never regenerated at all; a
+    rejected TILE just never gets published again, while the cell keeps being chased
+    for something better. Both are permanent, because a review the maintainer has
+    already given must not be asked for twice — they said as much when starting
+    triage: "It feels you often get confused by the buggy art that should obviously be
+    removed."
+    """
+    return set((load().get("tiles") or {}).keys())
+
+
+def reject_tiles(paths, reason="wiki reject"):
+    """Record individual tiles as rejected. Returns how many were newly added."""
+    doc = load()
+    doc.setdefault("tiles", {})
+    n = 0
+    for p in paths:
+        if p in doc["tiles"]:
+            continue
+        doc["tiles"][p] = {"reason": reason, "at": _now()}
+        n += 1
+    if n:
+        save(doc)
+    return n
+
+
 def is_dead(cell):
     return cell in load().get("cells", {})
 

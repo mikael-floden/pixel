@@ -60,7 +60,7 @@ REVIEW = os.path.join(ROOT, "review")
 REPO = os.path.dirname(ROOT)
 
 
-def candidates(cell_dir, side_hex=None, same=False):
+def candidates(cell_dir, side_hex=None, same=False, rejected=()):
     """Every tile in a cell, scored on its wall, best first.
 
     WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
@@ -79,6 +79,11 @@ def candidates(cell_dir, side_hex=None, same=False):
         mp = os.path.join(sheet, "meta.json")
         meta = json.load(open(mp)) if os.path.isfile(mp) else {}
         for p in sorted(glob.glob(os.path.join(sheet, "tile_*.png"))):
+            # A tile the maintainer has already rejected never comes back. Publishing
+            # it again asks for the same verdict twice, and their review time is the
+            # scarcest thing in this pipeline.
+            if os.path.relpath(p, REPO) in rejected:
+                continue
             q = flatness.wall_quality(p)
             if not q:
                 continue
@@ -163,6 +168,9 @@ def main():
         shutil.rmtree(REVIEW)
     os.makedirs(REVIEW, exist_ok=True)
     dead = tombstones.load().get("cells", {})
+    rejected = tombstones.rejected_tiles()
+    if rejected:
+        print(f"skipping {len(rejected)} individually rejected tile(s)")
 
     manifest = {"schema": "tiles3/review@2", "domain": "tiles",
                 "_comment": ("Candidates awaiting the maintainer's verdict. Each carries "
@@ -248,6 +256,12 @@ def main():
                 "postprocess": "raw (guard: invented colour)" if inv.get(
                     "blob", 0) > no_invention.MAX_BLOB else "palette",
                 "key": f"tiles/{cell}/{i}",
+                # The RAW tile this candidate came from. Without it a wiki verdict can
+                # only be resolved to a cell, and resolving a per-tile rejection to a
+                # cell is how a single "no" would have marked every generation in that
+                # cell rejected — including sheets holding good art the GC would then
+                # have deleted from PixelLab.
+                "src": os.path.relpath(c["path"], REPO),
                 # REPO-relative, matching how the wiki addresses every other
                 # domain's art (tiles2/<type>/base/...). Tiles-relative paths would
                 # resolve only for code that already knows this domain's root.
