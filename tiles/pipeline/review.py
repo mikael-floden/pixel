@@ -31,8 +31,11 @@ reversible; deleting from PixelLab is not.
 from __future__ import annotations
 
 import argparse
+import datetime
+import glob
 import json
 import os
+import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -42,27 +45,99 @@ import tombstones
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REVIEW = os.path.join(ROOT, "review", "manifest.json")
+# git needs a REPO-RELATIVE path. Passing the absolute one made `git show`
+# and `git log` fail silently, so every verdict fell back to today's manifest
+# — which is the exact failure this module exists to prevent.
+REPO = os.path.dirname(ROOT)
+REVIEW_REL = os.path.relpath(REVIEW, REPO)
+
+
+def _history():
+    """Every published manifest with the time it went live, newest first.
+
+    THE KEY IS POSITIONAL — `tiles/<cell>/<n>` names a RANK, not a tile — so resolving a
+    verdict against the CURRENT manifest is only correct if nothing has been republished
+    since it was cast. Something had: a republish landed at 19:28 in the middle of a
+    review that ran 19:22-20:06, re-ranked ice__over__grass, and the maintainer's
+    rejection of the solid ice block at /0 was applied to the good tile that had since
+    moved into /0. One verdict, exactly inverted, and it would have deleted the tile they
+    had spent the previous hour asking me to fix.
+
+    So a verdict is resolved against the manifest that was live WHEN IT WAS CAST.
+    """
+    out = []
+    log = subprocess.run(["git", "log", "--format=%H %cI", "--", REVIEW_REL],
+                         capture_output=True, text=True, cwd=REPO).stdout.split("\n")
+    for line in log:
+        if not line.strip():
+            continue
+        sha, iso = line.split()
+        out.append((datetime.datetime.fromisoformat(iso), sha))
+    return out
+
+
+def _manifest_at(sha):
+    try:
+        blob = subprocess.run(["git", "show", f"{sha}:{REVIEW_REL}"],
+                              capture_output=True, text=True, check=True, cwd=REPO).stdout
+        return json.loads(blob)["cells"]
+    except Exception:
+        return None
+
+
+def _src_of(entry, cell):
+    """The raw tile behind a published candidate. Older manifests predate the `src`
+    field, so fall back to locating it by generation + wall score — the same identity
+    that was used to untangle the misapplied verdict by hand."""
+    if entry.get("src"):
+        return entry["src"]
+    tid, want = entry.get("tile_id"), entry.get("wall_score")
+    if not tid or want is None:
+        return None
+    import flatness
+    for meta in glob.glob(os.path.join(ROOT, "matrix", cell, "sheet_*", "meta.json")):
+        if json.load(open(meta)).get("tile_id") != tid:
+            continue
+        best = None
+        for t in sorted(glob.glob(os.path.join(os.path.dirname(meta), "tile_*.png"))):
+            q = flatness.wall_quality(t)
+            if not q:
+                continue
+            if best is None or abs(q["score"] - want) < abs(best[1] - want):
+                best = (t, q["score"])
+        if best and abs(best[1] - want) < 0.05:
+            return os.path.relpath(best[0], REPO)
+    return None
 
 
 def resolve():
-    """Map each wiki verdict onto the exact published candidate it names.
-
-    The wiki keys a verdict by the manifest's own `key` (tiles/<cell>/<n>), so this is
-    an exact lookup rather than the substring match against cell names that the old
-    path used. Anything that does not resolve is REPORTED, never guessed at — a verdict
-    landing on the wrong tile is worse than one that lands nowhere.
-    """
+    """Map each wiki verdict onto the exact tile it named, AT THE TIME it was cast."""
     fb = pixellab_gc.read_wiki_feedback()
-    man = json.load(open(REVIEW))["cells"]
-    by_key = {}
-    for cell in man.values():
-        for e in cell["candidates"]:
-            by_key[e["key"]] = e
-    hits, misses = [], []
+    hist = _history()
+    current = json.load(open(REVIEW))["cells"]
+    hits, misses, shifted = [], [], []
     for key, v in fb.items():
-        e = by_key.get(key.strip("/"))
-        (hits if e else misses).append((key, v, e))
-    return hits, misses, by_key
+        k = key.strip("/")
+        cell, idx = k.rsplit("/", 1)
+        cell = cell.split("/", 1)[1]
+        ts = v.get("updated_at")
+        man = current
+        if ts:
+            t = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            for when, sha in hist:
+                if when <= t:
+                    man = _manifest_at(sha) or current
+                    break
+        e = None
+        cands = (man.get(cell) or {}).get("candidates") or []
+        if idx.isdigit() and int(idx) < len(cands):
+            e = dict(cands[int(idx)])
+            e["src"] = _src_of(e, cell)
+            now = (current.get(cell) or {}).get("candidates") or []
+            if int(idx) < len(now) and now[int(idx)].get("tile_id") != e.get("tile_id"):
+                shifted.append(key)
+        (hits if e and e.get("src") else misses).append((key, v, e))
+    return hits, misses, shifted
 
 
 def main():
@@ -70,7 +145,7 @@ def main():
     ap.add_argument("--apply", action="store_true")
     args = ap.parse_args()
 
-    hits, misses, by_key = resolve()
+    hits, misses, shifted = resolve()
     if not hits and not misses:
         print("no wiki verdicts for tiles yet")
         return 0
@@ -82,14 +157,22 @@ def main():
     for k, v, _ in misses:
         print(f"   UNMATCHED (ignored): {k}")
 
+    if shifted:
+        print(f"\nNOTE: {len(shifted)} verdict(s) were cast against an older ranking and "
+              f"have been resolved against it, not against today's:")
+        for k in shifted:
+            print(f"   {k}")
+
     # A generation dies only when everything it produced was rejected.
-    rejected_keys = {k for k, _ in rejects}
+    current = json.load(open(REVIEW))["cells"]
+    rejected_src = {e["src"] for _, e in rejects if e.get("src")}
     by_gen = {}
-    for e in by_key.values():
-        if e.get("tile_id"):
-            by_gen.setdefault(e["tile_id"], []).append(e["key"])
-    doomed = [g for g, keys in by_gen.items()
-              if keys and all(k in rejected_keys for k in keys)]
+    for c in current.values():
+        for e in c["candidates"]:
+            if e.get("tile_id") and e.get("src"):
+                by_gen.setdefault(e["tile_id"], []).append(e["src"])
+    doomed = [g for g, srcs in by_gen.items()
+              if srcs and all(s in rejected_src for s in srcs)]
 
     srcs = [e["src"] for _, e in rejects if e.get("src")]
     missing_src = sum(1 for _, e in rejects if not e.get("src"))
