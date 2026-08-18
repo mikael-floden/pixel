@@ -185,6 +185,45 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .card .card-name { font-weight: 600; font-size: 14.5px; }
 .card .card-sub { color: var(--muted); font-size: 12.5px; }
 .card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
+/* ---- Creatures overview: a SHOWCASE, not a contact sheet ----
+   The card crops to the measured creature and zooms it by a whole number to
+   fill one box, so every creature lands in the same size band however its
+   frame was exported (maintainer 2026-08-18: "some big monsters are displayed
+   with 0.5x zoom and some smaller monsters ... 1x zoom ... the monsters are so
+   small it's hard to even see them"). The art also ANIMATES while it is on
+   screen — one strip per card, swept by CSS steps(), so scrolling the list is
+   the showcase rather than a page you have to click into. */
+.showcase-grid { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 16px; }
+.showcase-card { gap: 5px; }
+.showcase {
+  position: relative; height: 172px; border-radius: 10px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Small, in the corner, over its own scrim so it reads on any creature. */
+.showcase-level {
+  position: absolute; top: 6px; right: 8px;
+  font-size: 12px; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  color: var(--muted); border: 1px solid var(--border);
+}
+.showcase-level b { color: var(--ink); }
+.showcase-art {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;          /* integer zoom, nearest neighbour — the repo's law */
+  flex: none;
+}
+/* ONE keyframe for every card: the per-card geometry rides in custom
+   properties, so 57 creatures animate without 57 rules. */
+@keyframes showcase-run {
+  from { background-position-x: var(--f0); }
+  to   { background-position-x: var(--fn); }
+}
+.showcase-art.play { animation: showcase-run var(--dur, 0.5s) steps(var(--frames, 1)) infinite; }
+.showcase-plain { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+/* A creature that cannot be measured, and anyone who asked the OS for less
+   motion, gets the same picture standing still. */
+@media (prefers-reduced-motion: reduce) { .showcase-art.play { animation: none; } }
+
 .checker {
   background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
 }

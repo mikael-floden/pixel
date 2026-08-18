@@ -1232,6 +1232,50 @@ height, and zero horizontal page overflow — after first asserting the walk
 crosses both placed and unplaced NPCs, or it would prove nothing. Verified 360
 → 1100px: row 22px and no overflow at every width.
 
+## The Creatures overview is a SHOWCASE
+
+Maintainer 2026-08-18: *"I feel the Creatures overview page needs to showcase
+the art a bit better. It feels as if some big monsters are displayed with 0.5x
+zoom and some smaller monsters are displayed with 1x zoom. It's also hard to use
+that page to show to a friend how many cool monsters we have by scrolling in the
+long list — because the monsters are so small it's hard to even see them … I
+feel it's more impactful to just scroll in the overview."*
+
+**Both complaints were one bug.** The card drew `sprite.webp` in a 110px box
+with `object-fit: contain`, so a 256px frame was SHRUNK to fit (a mammoth at
+0.47×) while a 34px frame was left alone (a poring at 1×) — and a frame is
+mostly transparent padding, so the creature inside came out smaller again.
+Nothing on that page was ever drawn at a size anybody chose.
+
+So the card **measures the creature**, exactly as the animation viewer has since
+2026-07-30: `clip.bb` (the union of opaque pixels, measured at build time) is
+the crop, and the card picks the largest **whole-number** zoom that fills its
+box. Integer only — pixel art scaled by a fraction smears — and **per creature**
+rather than the viewer's one shared scale, because a shared scale is what leaves
+a 28px hedgehog invisible beside a 142px shellback. Measured on the real roster:
+the drawn creature went from **28–85px (×3.03 spread)** to **86–150px (×1.74)**.
+
+**And it moves.** The whole roster's idle clips are 296 KB — less than one photo
+— so each card animates the same idle/south its own page opens on, as a CSS
+`steps()` sweep over one strip: no per-frame requests, nothing in a JS frame
+loop, and scrolling the list is a wall of living creatures, which is the thing
+he asked for. An IntersectionObserver arms a card as it approaches the viewport
+and disarms it after, so an off-screen card holds no image and no animation
+(measured: 3 of 57 animating at the top of the list). `prefers-reduced-motion`
+gets the same picture, standing still.
+
+The level moved onto the art as a corner chip: a showcase card is mostly
+picture, and every row of chrome is a row of the next creature pushed off the
+screen.
+
+Gate: `wiki/tools/check-showcase.mjs` — it re-derives every card's crop and zoom
+from `data.json` and compares against the RENDERED page, asserts the size band
+(and computes what the frame-fitted design would have drawn, so the band check
+cannot go vacuous), watches the background actually step through frames, checks
+that the far end of the list is idle while you are at the top, that the card
+still opens its creature, and that reduced motion stops the animation without
+losing the art.
+
 ## Creatures overview: sortable, and "will it attack me" at a glance
 
 - **Sort by name / level / aggressive first** (maintainer 2026-08-06). Its own

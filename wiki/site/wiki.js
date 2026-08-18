@@ -1833,6 +1833,94 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
   return row;
 }
 const MONSTER_SORT_KEY = "wiki-monster-sort";
+/* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
+ * Maintainer 2026-08-18: "I feel the Creatures overview page needs to showcase
+ * the art a bit better. It feels as if some big monsters are displayed with
+ * 0.5x zoom and some smaller monsters are displayed with 1x zoom. It's also
+ * hard to use that page to show to a friend how many cool monsters we have by
+ * scrolling in the long list — because the monsters are so small it's hard to
+ * even see them … I feel it's more impactful to just scroll in the overview."
+ *
+ * BOTH COMPLAINTS ARE ONE BUG: the card drew `sprite.webp` inside a 110px box
+ * with `object-fit: contain`, so a 256px frame was SHRUNK to fit (a mammoth at
+ * 0.47×) while a 34px frame was left alone (a poring at 1×) — and since a frame
+ * is mostly transparent padding, the creature inside it came out smaller again.
+ * Nothing on that page was ever drawn at a size anybody chose.
+ *
+ * So the card measures the CREATURE, exactly as the animation viewer has since
+ * 2026-07-30: `clip.bb` is the union of opaque pixels, measured at build time,
+ * and the card crops to it and picks the largest WHOLE-NUMBER zoom that fills
+ * its box. Integer only — this is pixel art and a fractional zoom smears it —
+ * and per creature rather than one shared scale, because a shared scale is what
+ * leaves a 28px hedgehog invisible next to a 142px shellback. The result is a
+ * band, not a spread: every creature lands between 86 and 150 art px tall
+ * instead of 27 and 121.
+ *
+ * AND IT MOVES. The whole roster's idle clips are 296 KB — less than one photo
+ * — so the card animates the same idle/south the creature's own page opens on,
+ * as a CSS steps() sweep over one strip: no per-frame requests, no JS in the
+ * frame loop, and a scroll down the list is a wall of living creatures, which
+ * is the thing he actually asked for. Armed by an IntersectionObserver so a
+ * card that is not on screen holds no image and no animation.
+ */
+const SHOWCASE_BOX = 150;            // art px the creature is fitted into
+const SHOWCASE_FPS = 8;              // the viewer's own baseFps — same cadence
+const showcaseClip = (m) => m.animations?.idle?.dirs?.south
+  ?? Object.values(m.animations?.idle?.dirs ?? {})[0]
+  ?? Object.values(Object.values(m.animations ?? {})[0]?.dirs ?? {})[0]
+  ?? null;
+/** The largest whole-number zoom that fits the box — the card's whole sizing
+ *  rule, exported so a gate can check the picture against the arithmetic. */
+const showcaseZoom = (w, h) => Math.max(1, Math.min(6, Math.floor(SHOWCASE_BOX / Math.max(w || 1, h || 1)) || 1));
+let showcaseWatch = null;
+/** One card's art: cropped to the measured creature, integer-zoomed, animated
+ *  when it is on screen. */
+function showcaseArt(m) {
+  const clip = showcaseClip(m);
+  const stage = h("div", { class: "showcase checker" });
+  // No measurement (a clip the build could not read): fall back to the plain
+  // preview rather than inventing a crop.
+  if (!clip?.bb || !clip.strip) {
+    stage.append(h("img", { class: "showcase-plain", src: assetUrl(m.preview), alt: m.name, loading: "lazy" }));
+    return stage;
+  }
+  const [x0, y0, x1, y1] = clip.bb;
+  // NOT `h` — that is the DOM helper this whole file is written with, and
+  // shadowing it here put every h(...) below in the temporal dead zone.
+  const aw = Math.max(1, x1 - x0), ah = Math.max(1, y1 - y0);
+  const z = showcaseZoom(aw, ah);
+  const fw = clip.fw ?? m.frameW, fh = clip.fh ?? m.frameH, n = Math.max(1, clip.frames ?? 1);
+  const art = h("div", { class: "showcase-art" });
+  art.style.width = `${aw * z}px`;
+  art.style.height = `${ah * z}px`;
+  art.style.backgroundSize = `${fw * n * z}px ${fh * z}px`;
+  // Frame 0, cropped: the strip is one image and this is a window onto it.
+  art.style.setProperty("--f0", `${-x0 * z}px`);
+  art.style.setProperty("--fn", `${-(x0 + n * fw) * z}px`);
+  art.style.backgroundPositionX = `${-x0 * z}px`;
+  art.style.backgroundPositionY = `${-y0 * z}px`;
+  art.style.setProperty("--frames", String(n));
+  art.style.setProperty("--dur", `${(n / SHOWCASE_FPS).toFixed(2)}s`);
+  art.dataset.strip = assetUrl(clip.strip);
+  art.dataset.zoom = String(z);
+  art.dataset.art = `${aw}x${ah}`;
+  stage.append(art);
+  // LAZY BY OBSERVATION. 57 strips is 296 KB, but a phone should still not
+  // fetch the bottom of the list to show the top of it — and an animation
+  // nobody can see is work nobody asked for.
+  showcaseWatch ??= new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const el = e.target;
+      if (e.isIntersecting) {
+        if (!el.style.backgroundImage) el.style.backgroundImage = `url("${el.dataset.strip}")`;
+        el.classList.add("play");
+      } else el.classList.remove("play");
+    }
+  }, { rootMargin: "300px 0px" });
+  showcaseWatch.observe(art);
+  return stage;
+}
+
 function viewMonsters() {
   const q = state.query;
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
@@ -1862,15 +1950,20 @@ function viewMonsters() {
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
     ], sort, () => route()),
-    h("div", { class: "grid" }, ...sorted.map((m) => {
+    h("div", { class: "grid showcase-grid" }, ...sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
       const st = stat.get(m.id);
       const sp = monsterSpawns(m.id);
-      return h("a", { class: "card", href: `#/monsters/${m.id}` },
-        h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
-        levelBadge(st),
+      // THE LEVEL RIDES ON THE ART, not on a full-width row under it: a
+      // showcase card is mostly picture, and every row of chrome is a row of
+      // the next creature pushed off the screen.
+      const stage = showcaseArt(m);
+      stage.append(h("div", { class: "showcase-level", title: "How hard this creature is to fight" },
+        "Lv ", h("b", {}, String(st.level ?? "?"))));
+      return h("a", { class: "card showcase-card", href: `#/monsters/${m.id}` },
+        stage,
         h("div", { class: "card-name" }, m.name),
         h("div", { class: "card-sub" },
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
