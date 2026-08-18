@@ -30,14 +30,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "stumps/stump_007/lit_1/sprite.webp",
-      "pixellab_object_id": "d4a5fe80-0c72-42f8-85fe-0241d48d993f",
-      "generated_at": "2026-08-16T14:25:47+00:00",
-      "glow_concept": "luminous green sapling sprouting from the center",
-      "difference_from_source": 0.8598,
-      "glow_score": 0.0671
-    },
     "LIT_2": {
       "sprite": "stumps/stump_007/lit_2/sprite.webp",
       "pixellab_object_id": "3a5bb20c-03ac-4fbc-8a13-ceb904b28df6",
@@ -45,14 +37,6 @@
       "difference_from_source": 0.8201,
       "glow_score": 0.0564,
       "generated_at": "2026-08-15T16:27:38+00:00"
-    },
-    "LIT_3": {
-      "sprite": "stumps/stump_007/lit_3/sprite.webp",
-      "pixellab_object_id": "ac98f681-ff17-4e30-8d88-16cc95c64d81",
-      "generated_at": "2026-08-16T14:25:48+00:00",
-      "glow_concept": "growth rings glowing like concentric embers",
-      "difference_from_source": 0.6524,
-      "glow_score": 0.1273
     },
     "LIT_4": {
       "sprite": "stumps/stump_007/lit_4/sprite.webp",
@@ -83,14 +67,6 @@
       "difference_from_source": 0.6626,
       "glow_score": 0.0657,
       "generated_at": "2026-08-15T16:27:38+00:00"
-    },
-    "NOT_LIT_3": {
-      "sprite": "stumps/stump_007/not_lit_3/sprite.webp",
-      "pixellab_object_id": "2251d5a4-69c4-4003-ab80-7a33badc7f93",
-      "generated_at": "2026-08-16T14:25:49+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9031,
-      "glow_score": 0.0363
     },
     "NOT_LIT_4": {
       "sprite": "stumps/stump_007/not_lit_4/sprite.webp",

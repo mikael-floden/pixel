@@ -45,11 +45,6 @@
   "animations": {},
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "states": {
-    "LIT_1": {
-      "sprite": "fallen_logs/fallen_log_014/sprite.webp",
-      "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
-      "glow_score": 0.1816
-    },
     "LIT_2": {
       "sprite": "fallen_logs/fallen_log_014/lit_2/sprite.webp",
       "pixellab_object_id": "4db1b7f4-3328-497e-b6d2-5a981c3cffb6",
@@ -90,6 +85,12 @@
       "difference_from_source": 0.4336,
       "glow_score": 0.1639
     },
+    "NOT_LIT_11": {
+      "sprite": "fallen_logs/fallen_log_014/sprite.webp",
+      "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
+      "glow_score": 0.1816,
+      "relit_from": "LIT_1"
+    },
     "NOT_LIT_2": {
       "sprite": "fallen_logs/fallen_log_014/not_lit_2/sprite.webp",
       "pixellab_object_id": "4bf554e3-40e6-4a54-8a01-5496579ccd95",
@@ -121,14 +122,6 @@
       "glow_concept": null,
       "difference_from_source": 0.52,
       "glow_score": 0.1937
-    },
-    "NOT_LIT_6": {
-      "sprite": "fallen_logs/fallen_log_014/not_lit_6/sprite.webp",
-      "pixellab_object_id": "a79e82e7-c90e-4acb-9d10-2e4b406d5315",
-      "generated_at": "2026-08-17T14:30:13+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8187,
-      "glow_score": 0.1673
     },
     "NOT_LIT_7": {
       "sprite": "fallen_logs/fallen_log_014/not_lit_7/sprite.webp",

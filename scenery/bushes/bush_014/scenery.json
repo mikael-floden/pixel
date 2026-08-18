@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "bushes/bush_014/sprite.webp",
       "pixellab_object_id": "4a9302d2-5a57-4068-83bb-7f361aced0e2",
-      "generated_at": "2026-08-14T02:29:06+00:00"
+      "generated_at": "2026-08-14T02:29:06+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "bushes/bush_014/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "bushes/bush_014/not_lit_4/sprite.webp",
       "pixellab_object_id": "9cc89318-f932-40b9-980e-92e3f0b6ba0b",
       "generated_at": "2026-08-15T21:14:16+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7502,
-      "glow_score": 0.0197
+      "glow_score": 0.0197,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "bushes/bush_014/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "bushes/bush_014/not_lit_5/sprite.webp",
       "pixellab_object_id": "de5eeaa6-fa72-4acc-ae1b-5775f72c4077",
       "generated_at": "2026-08-15T21:13:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7963,
-      "glow_score": 0.0366
+      "glow_score": 0.0366,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "bushes/bush_014/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "bushes/bush_014/not_lit_6/sprite.webp",
       "pixellab_object_id": "38038198-6869-4d9c-a983-a36829ae6827",
       "generated_at": "2026-08-15T21:13:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7248,
-      "glow_score": 0.0371
-    },
-    "NOT_LIT_1": {
-      "sprite": "bushes/bush_014/not_lit_1/sprite.webp",
-      "pixellab_object_id": "5e396365-3413-4b4b-9fdf-0017c577aac0",
-      "generated_at": "2026-08-15T21:14:17+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7588,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "bushes/bush_014/not_lit_2/sprite.webp",
-      "pixellab_object_id": "56fc0792-80ce-4d5c-964c-507c1b5eaa8f",
-      "generated_at": "2026-08-15T21:14:38+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.6365,
-      "glow_score": 0.0
+      "glow_score": 0.0371,
+      "relit_from": "LIT_4"
     }
   }
 }

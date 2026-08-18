@@ -32,50 +32,29 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "water_lily_clumps/water_lily_clump_004/sprite.webp",
       "pixellab_object_id": "b14bbdf1-439e-4475-9c4f-c1c76503f3bc",
-      "generated_at": "2026-08-14T01:56:43+00:00"
+      "generated_at": "2026-08-14T01:56:43+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "water_lily_clumps/water_lily_clump_004/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "d0bb75e2-496f-4cf8-8336-19caf1d2c321",
       "generated_at": "2026-08-17T12:06:11+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6957,
-      "glow_score": 0.1168
+      "glow_score": 0.1168,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "water_lily_clumps/water_lily_clump_004/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_5/sprite.webp",
       "pixellab_object_id": "98292dd5-d000-442a-9e85-7af61b89f505",
       "generated_at": "2026-08-17T12:08:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3681,
-      "glow_score": 0.1306
-    },
-    "LIT_4": {
-      "sprite": "water_lily_clumps/water_lily_clump_004/lit_4/sprite.webp",
-      "pixellab_object_id": "2322ccd9-a24e-4ff5-ae7e-0bc5fb68e421",
-      "generated_at": "2026-08-17T12:06:40+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8685,
-      "glow_score": 0.1235
-    },
-    "NOT_LIT_1": {
-      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "460a1f6a-3c47-4894-9559-97451898ab63",
-      "generated_at": "2026-08-17T12:07:30+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.822,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "water_lily_clumps/water_lily_clump_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "7486f05a-67e0-46f1-8641-cdb07a02b08c",
-      "generated_at": "2026-08-17T12:08:25+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8228,
-      "glow_score": 0.0
+      "glow_score": 0.1306,
+      "relit_from": "LIT_3"
     }
   }
 }

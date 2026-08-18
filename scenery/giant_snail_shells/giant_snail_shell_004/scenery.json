@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "giant_snail_shells/giant_snail_shell_004/sprite.webp",
       "pixellab_object_id": "cc6abfc6-6981-49f1-8c5d-1a9bd7911d2d",
-      "generated_at": "2026-08-14T04:35:48+00:00"
+      "generated_at": "2026-08-14T04:35:48+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "giant_snail_shells/giant_snail_shell_004/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "736b3d43-3078-4554-bcfb-cd4979f3641a",
       "generated_at": "2026-08-16T14:32:41+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8106,
-      "glow_score": 0.021
+      "glow_score": 0.021,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "giant_snail_shells/giant_snail_shell_004/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_5/sprite.webp",
       "pixellab_object_id": "12273450-61ce-4f0b-8a68-e52b142659d7",
       "generated_at": "2026-08-16T14:32:27+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7699,
-      "glow_score": 0.1425
+      "glow_score": 0.1425,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "giant_snail_shells/giant_snail_shell_004/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_6/sprite.webp",
       "pixellab_object_id": "26a3994b-0eb5-4e7f-8a43-c1a801d55d19",
       "generated_at": "2026-08-16T14:32:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4046,
-      "glow_score": 0.1109
-    },
-    "NOT_LIT_1": {
-      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "bbe18868-33ef-425c-91a7-a3247dcc0da2",
-      "generated_at": "2026-08-16T14:32:28+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8226,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "giant_snail_shells/giant_snail_shell_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "6f6292e1-d399-4994-9661-5f51a07efdc9",
-      "generated_at": "2026-08-16T14:32:53+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8806,
-      "glow_score": 0.0025
+      "glow_score": 0.1109,
+      "relit_from": "LIT_4"
     }
   }
 }

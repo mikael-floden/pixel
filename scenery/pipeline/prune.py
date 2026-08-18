@@ -32,8 +32,15 @@ import subprocess
 import sys
 from datetime import datetime
 
+import re
+
 import factory
 import viewer_build
+
+# "Redo to get rid of the owl", "it should be regenerated", "Should be light
+# but still a bit darker, see LIT_1 for style" — all of these are briefs for
+# new art, not instructions to delete.
+REDO_RE = re.compile(r"\b(redo|regenerat|should be)", re.I)
 from pixellab_client import PixelLabClient, PixelLabError
 
 FEEDBACK = os.path.join(os.path.dirname(factory.ROOT), "live", "feedback",
@@ -80,7 +87,7 @@ def rejected_states():
     except (OSError, ValueError) as e:
         print(f"cannot read the feedback file ({e})")
         return []
-    out, spent = [], 0
+    out, spent, redo = [], 0, 0
     for key, v in sorted(entries.items()):
         if (v or {}).get("status") != "rejected" or "#" not in key:
             continue
@@ -99,11 +106,23 @@ def rejected_states():
         # rejection of the PIECE, which feedback.py handles.
         if (ent or {}).get("sprite") == man.get("sprite"):
             continue
+        # A NOTE ASKING FOR A REDO IS NOT A PRUNE. Maintainer 2026-08-18: "The
+        # general rule is of course that you don't regenerate the art I reject.
+        # But on some reviews I made a comment for you to regenerate." Deleting
+        # those would throw away the one thing he took the trouble to ask for,
+        # and deletion is irreversible while a regeneration he dislikes can
+        # simply be rejected again — so the safe error is to regenerate.
+        if REDO_RE.search(v.get("note") or ""):
+            redo += 1
+            continue
         vt, ct = _ts(v.get("updated_at")), _committed(ent.get("sprite"))
         if not (vt and ct and ct < vt):
             spent += 1
             continue                # art is newer than the verdict — not his
         out.append((rel, state))
+    if redo:
+        print(f"  ({redo} rejection(s) ask for a REGENERATION in the note — "
+              f"those go to redo_rejected.py, not here)")
     if spent:
         print(f"  ({spent} rejection(s) describe art that has since been "
               f"regenerated — those verdicts are spent, leaving them alone)")
