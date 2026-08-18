@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T21:31:28.811Z",
+  "updated_at": "2026-08-18T21:35:24.099Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -461,6 +461,33 @@
     "tiles/parquet_floor__over__water/2": {
       "status": "rejected",
       "updated_at": "2026-08-18T21:31:22.666Z"
+    },
+    "tiles/paving_stone__over__ice/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:33:47.619Z"
+    },
+    "tiles/paving_stone__over__lava/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:34:07.041Z"
+    },
+    "tiles/paving_stone__over__lava/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:34:08.628Z"
+    },
+    "tiles/paving_stone__over__light_beach/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:35:13.764Z",
+      "note": "Paving stones are not supposed to be \"clean\". They will be used in the game to build citys."
+    },
+    "tiles/paving_stone__over__light_beach/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:35:18.542Z",
+      "note": "Paving stones are not supposed to be \"clean\". They will be used in the game to build citys."
+    },
+    "tiles/paving_stone__over__light_beach/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:35:23.800Z",
+      "note": "Paving stones are not supposed to be \"clean\". They will be used in the game to build citys."
     }
   }
 }
