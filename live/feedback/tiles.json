@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T21:28:27.501Z",
+  "updated_at": "2026-08-18T21:28:47.676Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -430,6 +430,16 @@
     "tiles/parquet_floor__over__light_beach/0": {
       "status": "rejected",
       "updated_at": "2026-08-18T21:28:27.196Z",
+      "note": "doesn't look like parquet floor. I'm missing that floor feeling. The parquet floor type is not supposed to be a \"clean\" tile. This is indoors and tries to look like something that have a strong repetition."
+    },
+    "tiles/parquet_floor__over__light_beach/1": {
+      "note": "doesn't look like parquet floor. I'm missing that floor feeling. The parquet floor type is not supposed to be a \"clean\" tile. This is indoors and tries to look like something that have a strong repetition.",
+      "updated_at": "2026-08-18T21:28:32.605Z",
+      "status": "rejected"
+    },
+    "tiles/parquet_floor__over__light_beach/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:28:47.346Z",
       "note": "doesn't look like parquet floor. I'm missing that floor feeling. The parquet floor type is not supposed to be a \"clean\" tile. This is indoors and tries to look like something that have a strong repetition."
     }
   }
