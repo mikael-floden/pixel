@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:31:48.630Z",
+  "updated_at": "2026-08-18T19:32:56.903Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -41,6 +41,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:31:48.192Z",
       "note": "the ground doesn't look \"black_rock\" enough. black_rock is near black so I think it's better to not use this image"
+    },
+    "tiles/black_rock__over__deep_water/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:32:56.534Z",
+      "note": "this is an error and looks more like \"deep water over black rock\". Remove!"
     }
   }
 }
