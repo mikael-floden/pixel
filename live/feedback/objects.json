@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-18T17:49:23.795Z",
+  "updated_at": "2026-08-18T18:10:54.237Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -20826,6 +20826,82 @@
       "status": "rejected",
       "art": "467b8369b0775391",
       "updated_at": "2026-08-18T17:49:23.495Z"
+    },
+    "scenery/stones/stone_036#not_lit_1#south": {
+      "status": "rejected",
+      "art": "a90bbf1769675b77",
+      "updated_at": "2026-08-18T18:07:06.122Z"
+    },
+    "scenery/stones/stone_036#not_lit_2#south": {
+      "status": "rejected",
+      "art": "1eff770a071cb608",
+      "updated_at": "2026-08-18T18:07:08.208Z"
+    },
+    "scenery/stones/stone_036#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:07:16.447Z",
+      "status": "approved",
+      "art": "bf6c1c5f51fc7eb2"
+    },
+    "scenery/stones/stone_036#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:07:19.185Z",
+      "status": "approved",
+      "art": "31151869d517bac1"
+    },
+    "scenery/stones/stone_036#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:07:23.611Z",
+      "status": "approved",
+      "art": "779282922adb4992"
+    },
+    "scenery/windows/window_081#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:07:45.305Z",
+      "status": "approved",
+      "art": "d802f4cc3755d738"
+    },
+    "scenery/windows/window_081#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:07:47.056Z",
+      "status": "approved",
+      "art": "cbe3691877937dfb"
+    },
+    "scenery/windows/window_081#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:08:04.316Z",
+      "status": "approved",
+      "art": "8612232c47956166"
+    },
+    "scenery/windows/window_081#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:08:05.579Z",
+      "status": "approved",
+      "art": "98f256656011e049"
+    },
+    "scenery/windows/window_078#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:08:43.208Z",
+      "status": "approved",
+      "art": "172a453ec5018d8f"
+    },
+    "scenery/windows/window_078#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:08:44.305Z",
+      "status": "approved",
+      "art": "1465acce7c04f61c"
+    },
+    "scenery/windows/window_078#lights_on#south-west": {
+      "status": "rejected",
+      "art": "36d7a41d0c4dad48",
+      "updated_at": "2026-08-18T18:10:26.452Z",
+      "note": "You actually have to redo this window, becouse a window is not like other scenery and need all states.\n\nThe wood was removed when the window was lit."
+    },
+    "scenery/windows/window_078#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:10:28.399Z",
+      "status": "approved",
+      "art": "5b185d2687b8dea3"
     }
   }
 }
