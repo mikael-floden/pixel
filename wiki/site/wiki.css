@@ -1245,10 +1245,15 @@ input[type="range"] { accent-color: var(--accent); }
    Both shapes share the tile page's chessboard and its real-scale canvas, so
    a strip here measures what a strip measures in the world. */
 .wall-mode { display: flex; align-items: center; gap: 8px; }
-/* The same strip, on the Scenery review: "is this state really lit?" It sits
-   ABOVE the verdict row and wraps, because a corrected state also carries the
-   pill saying what it was called (maintainer 2026-08-17). */
-.lit-mode { flex-wrap: wrap; margin-bottom: 6px; }
+/* "Is this state really lit?" on the Scenery review — the page's ORDINARY
+   control size, not the tiles card's shrunken one (maintainer 2026-08-18: it
+   was "smaller than the other radio-group-buttons I use on the page"). Sits
+   above the verdict row and wraps, because a corrected state also carries the
+   chip saying what it was generated as. */
+.lit-mode { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.lit-mode .sortbar { flex: none; margin: 0; }
+.lit-mode .sortbar-btn { padding: 9px 16px; font-size: 13.5px; min-height: 38px; }
+.lit-mode .lit-label { font-size: 13.5px; }
 .wall-mode .sortbar { flex: none; }
 .wall-mode .sortbar-btn { padding: 3px 9px; font-size: 12px; }
 

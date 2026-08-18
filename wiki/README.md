@@ -455,8 +455,15 @@ you are looking at, above its verdict row, and what it writes is a
   called deletes the entry — a file of agreements would grow to every state he
   ever opened and describe none of them.
 - **The correction stays legible**: once the two disagree the strip carries a
-  "was lit" / "was unlit" pill, and the saved entry keeps `was: <state>` so the
+  "generated as 💡 lit" chip, and the saved entry keeps `was: <state>` so the
   scenery agent can still tell what it was generated as after re-filing it.
+- **It is the page's ordinary control size.** The first cut reused the tiles
+  card's `.wall-mode` class, which exists to SHRINK a strip into a dense card,
+  and shipped the smallest control on a page full of normal ones (maintainer
+  2026-08-18). It also passed a bare `null` to `replaceChildren`, which
+  stringifies a non-node — so every uncorrected state read "Light unlit 💡lit
+  null". The gate now reads the row's own TEXT NODES and compares its buttons
+  against the other pick-one controls on the same page; either defect fails it.
 
 Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state,
 commits, and asserts the file, the key, the `was`, that nothing lands in the

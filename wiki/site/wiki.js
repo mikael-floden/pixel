@@ -2061,20 +2061,31 @@ const LIT_MODES = {
 /** The strip itself, which REDRAWS ITSELF: a pick-one that still shows the old
  *  pick after you press it is worse than no control at all. */
 function litRow(path, st, onChange) {
-  const box = h("div", { class: "card-sub wall-mode lit-mode" });
+  // NOT `.wall-mode`: that class exists to SHRINK a strip into a dense tiles
+  // card (3px padding, 12px type), and reusing it made this the smallest thing
+  // on a page full of normal controls (maintainer 2026-08-18: "why did you make
+  // the unlit/lit switch so small to click on — smaller than the other
+  // radio-group-buttons I use on the page"). It gets its own class and the
+  // page's ordinary size.
+  const box = h("div", { class: "card-sub lit-mode" });
   const draw = () => {
     const now = litOf(path, st);
-    box.replaceChildren(
-      h("span", { class: "muted" }, "Light"),
+    const claimed = litByName(st);
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Light"),
       sortBar(`scenery-lit:${path}#${st}`, Object.entries(LIT_MODES).map(([id, m]) => [id, m.label, m.title]),
         now ? "lit" : "unlit",
         (v) => { setLit(path, st, v === "lit"); draw(); onChange?.(); }, { persist: false }),
-      // WHAT IT WAS CALLED, once the two disagree — the correction is only
-      // legible next to the claim it corrects.
-      litCorrected(path, st)
-        ? h("span", { class: "pill warn", title: `The scenery agent generated this as ${stateWords(st)}` }, `was ${litByName(st) ? "lit" : "unlit"}`)
+      // WHAT IT WAS GENERATED AS, once the two disagree — a correction is only
+      // legible beside the claim it corrects. Nothing at all when they agree:
+      // this used to be a bare `null` in the argument list, and
+      // replaceChildren STRINGIFIES a non-node, so the row read "Light unlit
+      // 💡lit null" on every uncorrected state (his screenshot).
+      claimed !== null && now !== claimed
+        ? h("span", { class: "pill warn", title: `The scenery agent generated this state as ${stateWords(st)}` },
+          `generated as ${claimed ? "💡 lit" : "unlit"}`)
         : null,
-    );
+    ].filter(Boolean));
   };
   draw();
   return box;

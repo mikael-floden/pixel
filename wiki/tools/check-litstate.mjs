@@ -54,11 +54,26 @@ await p.addInitScript(() => {
 
 const read = () => p.evaluate(() => {
   const row = document.querySelector(".lit-mode");
+  // EVERY TEXT NODE THE ROW OWNS, not just the ones I meant to put there.
+  // `replaceChildren(a, b, null)` STRINGIFIES the null into a text node, and
+  // the row shipped reading "Light unlit 💡lit null" for a whole evening
+  // because this gate only ever looked at the elements it expected
+  // (maintainer 2026-08-18: "why did you write null").
+  const strays = [...(row?.childNodes ?? [])]
+    .filter((n) => n.nodeType === 3 && n.textContent.trim())
+    .map((n) => n.textContent.trim());
+  const btn = row?.querySelector(".sortbar-btn");
+  // The page's OTHER pick-one controls, to compare the tap target against.
+  const others = [...document.querySelectorAll(".seg button")].map((b) => Math.round(b.getBoundingClientRect().height));
   return {
     present: !!row,
     sel: row?.querySelector(".sortbar-btn.sel")?.textContent.trim() ?? null,
     was: [...(row?.querySelectorAll(".pill") ?? [])].map((x) => x.textContent.trim()),
     state: document.querySelector(".facet-head .pill")?.getAttribute("title") ?? "",
+    strays,
+    btnH: btn ? Math.round(btn.getBoundingClientRect().height) : 0,
+    btnW: btn ? Math.round(btn.getBoundingClientRect().width) : 0,
+    otherH: others.length ? Math.min(...others) : 0,
   };
 });
 const press = (which) => p.evaluate((w) => {
@@ -86,7 +101,12 @@ ok(first.sel === "unlit" || first.sel === "💡 lit", `showing what the art is n
 const openState = (first.state.split("·")[0] || "").trim();
 ok(first.sel === (litName(openState) ? "💡 lit" : "unlit"),
   `and it reads the STATE's name, not the piece's (${openState || "base"} → ${first.sel})`);
-ok(first.was.every((t) => !/^was /.test(t)), "with nothing claiming a correction nobody made");
+ok(first.was.length === 0, `with nothing claiming a correction nobody made (${first.was.join(", ") || "no chips"})`);
+// TWO THINGS THE FIRST CUT GOT WRONG, both visible in one screenshot of his.
+ok(first.strays.length === 0, `and no stray text in the row — a null is not a label (${first.strays.join(" | ") || "none"})`);
+ok(first.btnH >= first.otherH && first.btnH >= 36,
+  `at the page's own control size, not smaller than everything around it (${first.btnH}px against the state chips' ${first.otherH}px)`);
+ok(first.btnW >= 60, `and wide enough to hit with a thumb (${first.btnW}px)`);
 
 // 2. CORRECTING IT SAVES, TO THE RIGHT FILE, UNDER THE STATE'S OWN KEY.
 posted.length = 0;
@@ -95,7 +115,8 @@ await p.waitForTimeout(400);
 const flipped = await read();
 console.log("after flipping:", JSON.stringify(flipped));
 ok(flipped.sel !== first.sel, `the switch takes (${first.sel} → ${flipped.sel})`);
-ok(flipped.was.some((t) => /^was /.test(t)), `and says what it was called (${flipped.was.join(", ")})`);
+ok(flipped.was.some((t) => /^generated as /.test(t)), `and says what it was generated as (${flipped.was.join(", ")})`);
+ok(flipped.strays.length === 0, `still with no stray text (${flipped.strays.join(" | ") || "none"})`);
 const commit = () => p.evaluate(() => [...document.querySelectorAll("#savebar button")].find((b) => /commit/i.test(b.textContent))?.click());
 await commit();
 await p.waitForTimeout(900);
@@ -117,7 +138,8 @@ posted.length = 0;
 await press(litName(openState) ? "lit" : "unlit");
 await p.waitForTimeout(400);
 const back = await read();
-ok(back.sel === first.sel && !back.was.some((t) => /^was /.test(t)), "pressing back agrees with the art's own name again");
+ok(back.sel === first.sel && back.was.length === 0 && back.strays.length === 0,
+  "pressing back agrees with the art's own name again, and the chip goes with it");
 await commit();
 await p.waitForTimeout(900);
 const undo = posted.find((x) => x.file === "tuning/scenery_lights");
@@ -136,7 +158,7 @@ const st2 = (second.state.split("·")[0] || "").trim();
 ok(st2 !== openState, `switching state moves the question with it (${openState || "base"} → ${st2})`);
 ok(litName(st2) === true, `and that state really is a LIT one (${st2})`);
 ok(second.sel === "💡 lit", `so the switch reads THAT state's name, not the one before it (${second.sel})`);
-ok(!second.was.some((t) => /^was /.test(t)), "and carries no correction of its own — the two states are two questions");
+ok(second.was.length === 0, "and carries no correction of its own — the two states are two questions");
 
 // 6. A READER NEVER SEES IT. It is a review instrument.
 const pub = await ctx.newPage();
