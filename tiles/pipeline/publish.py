@@ -212,8 +212,22 @@ def main():
             # implementation that converges dull and vivid onto one target without
             # amplifying either.
             wall_hex = (PALETTE.get(side) or {}).get("wall")
+            # ALIGN THE SIDE WALL ONLY WHEN IT IS REALLY THAT MATERIAL. The maintainer
+            # put grass-over-grass under ice-over-grass with the wiki's "top only"
+            # control and asked why the two grasses do not match: because only the
+            # same-over-same wall was ever substituted onto the palette, and the grass
+            # under ice kept whatever green the generator drew.
+            #
+            # The gate is what makes this safe rather than a fourth attempt at the bug
+            # that produced magenta, vivid and red walls. Those all tried to align a
+            # wall that was NOT the requested material — a three-layer tile's grey
+            # stone toward green — so the transform had to manufacture colour. A cell
+            # over MAX_WALL_ERR is left exactly as generated and flagged instead.
+            aligned = (c["wall_err"] is not None
+                       and c["wall_err"] <= flatness.MAX_WALL_ERR)
             proc = (palette_snap.snap(raw, top_hex, same_material=(top == side),
-                                      wall_hex=wall_hex)
+                                      wall_hex=wall_hex,
+                                      side_hex=wall_hex, align_side=aligned)
                     if top_hex else raw)
             # THE GUARD. Every three attempts at wall alignment put a colour into the
             # art that was in neither the art nor the palette, and every one was caught
@@ -230,6 +244,7 @@ def main():
                 proc = raw
             _save(proc, after)
             entries.append({
+                "wall_aligned": bool(aligned),
                 "postprocess": "raw (guard: invented colour)" if inv.get(
                     "blob", 0) > no_invention.MAX_BLOB else "palette",
                 "key": f"tiles/{cell}/{i}",

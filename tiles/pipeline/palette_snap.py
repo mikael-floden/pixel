@@ -391,73 +391,6 @@ def middle_floor(img, band=4):
 SPILL_SPREAD = 16.0     # tiles2 grass measures value std 16.2 — the look being matched
 
 
-def align_wall(a, reg, side_hex):
-    """Put the wall material on the palette too, by SHIFTING it rather than replacing it.
-
-    A type has to look like itself whichever face it is on. The maintainer caught this
-    on ice-over-grass: the grass TOP of a grass tile is snapped to the palette, but the
-    grass WALL under an ice tile was left exactly as generated — 22 hue units and 25
-    luminance away from the same material's palette colour. Nothing in the pipeline was
-    treating "grass as a wall" as the same material as "grass as a top".
-
-    The reason it was left alone is real and still applies: an earlier version forced
-    every wall pixel to one hue and saturation and collapsed the colour variety that
-    makes rock read as rock — lava's hue spread went 106.9 to 14.2. So this shifts
-    instead. Each pixel keeps its own deviation from the material's median; only the
-    median moves onto the palette. Alignment without flattening.
-
-    VALUE IS NOT TOUCHED. A vertical face catches less light than a horizontal one, so a
-    wall of the same material is legitimately darker than the top and forcing them
-    together would erase the shading that makes a tile read as a solid block. Only hue
-    and saturation say WHICH material this is; value says where the light is.
-    """
-    wall = reg["left"] | reg["right"]
-    if not wall.any() or not side_hex:
-        return None
-    rgb = a[:, :, :3]
-    # measure the material away from the fringe, which is the OTHER material
-    ys, xs = np.where(wall)
-    low = []
-    for x in np.unique(xs):
-        c = np.where(wall[:, x])[0]
-        lo = int(c.min()) + int(0.4 * (int(c.max()) - int(c.min())))
-        low.extend(rgb[lo:int(c.max()) + 1, x])
-    if len(low) < 20:
-        return None
-    med = _rgb2hsv(np.median(np.array(low), 0)[None, :])[0]
-    tgt = _rgb2hsv(_hex(side_hex)[None, :])[0]
-
-    # A GREY HAS NO HUE, so do not read one off it. grey_stone's wall measures hue 164
-    # and its palette colour hue 63 — both near-grey, both meaningless — and taking the
-    # difference produced a -101 shift applied to every wall pixel. The stone did not
-    # care, but the saturated green fringe sitting on it wrapped from hue 62 to 217 and
-    # the maintainer got a MAGENTA line along his grass. Saturation still moves; hue is
-    # simply not defined for these materials.
-    achromatic = float(med[1]) < 45.0 or float(tgt[1]) < 45.0
-    dh = 0.0 if achromatic else float(tgt[0]) - float(med[0])
-    ds = float(tgt[1]) - float(med[1])
-
-    hsv = _rgb2hsv(rgb[wall])
-    # Shift only what IS the wall material. The fringe is the other material lying on
-    # top of it and belongs to retint_spill; dragging it by the wall's delta moves it
-    # away from its own palette colour, which is the opposite of the point.
-    dm = np.abs(hsv[:, 0] - med[0])
-    dm = np.minimum(dm, 255.0 - dm)
-    # BOTH conditions, not either. Including near-grey pixels handed them the
-    # material's saturation boost at a shifted hue — on black_rock-over-grass that is
-    # +112 saturation, which turns a neutral shadow into a vivid colour and was the
-    # second source of magenta. A grey pixel in a wall is shadow or highlight; it
-    # carries no hue to correct and should stay neutral.
-    mine = (dm < 40.0) & (hsv[:, 1] >= 45.0)
-    hsv[mine, 0] = (hsv[mine, 0] + dh) % 256.0
-    hsv[mine, 1] = np.clip(hsv[mine, 1] + ds, 0, 255)
-    out = rgb.copy()
-    out[ys[mine], xs[mine]] = _hsv2rgb(hsv[mine])
-    m = np.zeros(wall.shape, bool)
-    m[ys[mine], xs[mine]] = True
-    return out, m
-
-
 def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
                  max_frac=0.50, max_depth=0.34):
     """Pull the TOP material's overhanging blades to the palette, and nothing else.
@@ -565,8 +498,37 @@ def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
     return out, m
 
 
+
+def substitute(a, mask, hex_target, spread=None):
+    """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
+
+    Hue and saturation are SET from the palette, never derived from the art, and only
+    the value carries through — recentred on the target with its spread compressed, so
+    the texture survives but the colour is the palette's. That distinction is the whole
+    safety property: all three wall-alignment attempts that shipped an invented colour
+    (a magenta grass edge, 1413 vivid pixels, a red light_soil) READ a hue off the art
+    and shifted by it, and reading a hue off something near-grey is meaningless. Nothing
+    here reads anything.
+
+    Compressed only, never stretched. Amplifying a spread to hit a target is what turned
+    a stone wall into zigzag earlier in this pipeline.
+    """
+    if not mask.any():
+        return None
+    tgt = _rgb2hsv(_hex(hex_target)[None, :])[0]
+    hsv = _rgb2hsv(a[:, :, :3][mask])
+    v = hsv[:, 2]
+    sp = SPILL_SPREAD if spread is None else spread
+    scale = min(1.0, sp / float(v.std() or sp))
+    hsv[:, 0] = tgt[0]
+    hsv[:, 1] = tgt[1]
+    hsv[:, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
+    return _hsv2rgb(hsv)
+
+
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
-         align_walls=False, spill=True, same_material=False, wall_hex=None):
+         align_walls=False, spill=True, same_material=False, wall_hex=None,
+         align_side=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -606,14 +568,13 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
     else:
         fac = {"left": 0.86, "right": 1.10}
 
-    # The wall material goes on the palette FIRST, so the spill retint that follows
-    # compares against an aligned wall rather than a raw one.
-    if side_hex and not align_walls:
-        r = align_wall(a, reg, side_hex)
-        if r:
-            newrgb, m = r
-            out[:, :, :3][m] = newrgb[m]
-            a = out.copy()
+    # align_wall() is GONE. It used to fire from this exact spot on any call that
+    # passed side_hex, and it is the function that shipped a magenta grass edge, 1413
+    # vivid pixels and a red light_soil — three colours that were in neither the art nor
+    # the palette. Leaving it reachable meant the first caller to pass side_hex for an
+    # unrelated reason would silently re-arm it, which is precisely what wiring up the
+    # side-wall alignment below would have done. substitute() replaces it and cannot
+    # fail the same way, because it reads nothing off the art.
 
     if reg["top"].sum():
         # Overwrite the top with the one palette colour. This looks like the bigger
@@ -656,19 +617,48 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # luminance 48.1 — within 3 of what the generator draws unaided. So the
             # wall goes to the wall colour and the top to the top colour, which is what
             # the palette was built to say.
-            tgt = _rgb2hsv(_hex(wall_hex or top_hex)[None, :])[0]
-            hsv = _rgb2hsv(a[:, :, :3][m])
-            v = hsv[:, 2]
-            scale = min(1.0, SPILL_SPREAD / float(v.std() or SPILL_SPREAD))
-            hsv[:, 0] = tgt[0]
-            hsv[:, 1] = tgt[1]
-            hsv[:, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
-            out[:, :, :3][m] = _hsv2rgb(hsv)
+            px = substitute(a, m, wall_hex or top_hex)
+            if px is not None:
+                out[:, :, :3][m] = px
     elif spill:
+        fringe = np.zeros(reg["top"].shape, bool)
         r = retint_spill(a, reg, top_hex)
         if r:
             newrgb, m = r
             out[:, :, :3][m] = newrgb[m]
+            fringe = m
+        # THE WALL UNDER THE FRINGE IS THE SIDE MATERIAL, and it gets exactly what the
+        # same-over-same path gives it. Until now it got nothing, so the grass under an
+        # ice tile kept the generator's bright yellow-green while the grass under a
+        # GRASS tile was substituted onto the palette's deep pine — the maintainer put
+        # the two side by side with the wiki's "top only" control and asked why they do
+        # not match. They did not match because only one of them was ever aligned.
+        #
+        # Safe now in a way it was not for the three attempts that failed: this
+        # SUBSTITUTES rather than infers (see substitute()), and align_side is only
+        # passed for a cell whose wall has been confirmed to BE the material asked for.
+        # Tinting a three-layer tile's grey-stone wall toward green is what produced
+        # colours that were in neither the art nor the palette.
+        if align_side and side_hex:
+            # THE WALL BODY, not "everything that is not fringe". retint_spill
+            # legitimately declines on some pairs — ice over grass separates by only 5
+            # hue units because that tile's grass is a dark teal, and lava over grass's
+            # candidate pixels sit at depth 0.63, which is wall rather than fringe. On
+            # those the fringe mask is empty, and treating its complement as wall
+            # painted the ICE overhang grass-green: the 10-star transition, erased.
+            #
+            # The lower 60% of each column is wall by construction, which is the same cut
+            # fringe_clarity, wall_material_err and wall_quality already take. Where a
+            # fringe IS found it is excluded as well, so the two rules compose.
+            wall_all = reg["left"] | reg["right"]
+            body = np.zeros_like(wall_all)
+            for x in np.unique(np.where(wall_all)[1]):
+                c = np.where(wall_all[:, x])[0]
+                body[c.min() + int(0.4 * (c.max() - c.min())):c.max() + 1, x] = True
+            m = body & wall_all & ~fringe
+            px = substitute(a, m, side_hex)
+            if px is not None:
+                out[:, :, :3][m] = px
 
     for k in ("left", "right") if align_walls else ():
         m = reg[k]

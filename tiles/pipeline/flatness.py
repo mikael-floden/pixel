@@ -501,7 +501,7 @@ def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
     # THE FRINGE IS THE OTHER MATERIAL, so it is not part of the wall's statistics.
     # Every other wall measurement in this pipeline already says so and cuts the same
-    # way — fringe_clarity, wall_material_err, palette_snap.align_wall and
+    # way — fringe_clarity, wall_material_err, palette_snap.retint_spill and
     # retint_spill all take each column's lower 60%. wall_quality was the only one that
     # did not, and it is the one that GATES.
     #
