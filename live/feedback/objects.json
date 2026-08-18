@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-18T18:31:53.949Z",
+  "updated_at": "2026-08-18T18:36:50.533Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -5216,8 +5216,8 @@
     },
     "scenery/bee_logs/bee_log_002": {
       "rating": 2,
-      "updated_at": "2026-08-14T01:27:06.361Z",
-      "status": "approved",
+      "updated_at": "2026-08-18T18:35:29.039Z",
+      "status": "rejected",
       "art": "e1afece84636cd92"
     },
     "scenery/lightning_oaks/lightning_oak_002": {
@@ -15284,9 +15284,9 @@
       "note": "No door"
     },
     "scenery/bee_logs/bee_log_002#lit_1#south": {
-      "rating": 2,
-      "updated_at": "2026-08-14T01:27:06.361Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:55.481Z",
+      "status": "rejected",
       "art": "e1afece84636cd92"
     },
     "scenery/crystal_trees/crystal_tree_002#lit_1#south": {
@@ -18141,40 +18141,40 @@
       "art": "a473fbaaceb781ba"
     },
     "scenery/bee_logs/bee_log_002#not_lit_1#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:30.601Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:53.459Z",
+      "status": "rejected",
       "art": "364fc3514d5147c1"
     },
     "scenery/bee_logs/bee_log_002#not_lit_2#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:37.428Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:51.674Z",
+      "status": "rejected",
       "art": "2f22ac3becdc1813"
     },
     "scenery/bee_logs/bee_log_002#not_lit_3#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:39.709Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:49.422Z",
+      "status": "rejected",
       "art": "c9f625384ef41078"
     },
     "scenery/bee_logs/bee_log_002#not_lit_5#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:42.775Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:45.713Z",
+      "status": "rejected",
       "art": "02f0d5fbc4e41239"
     },
     "scenery/bee_logs/bee_log_002#not_lit_4#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:46.175Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:47.432Z",
+      "status": "rejected",
       "art": "dba6fd7c40dcdc42"
     },
     "scenery/bee_logs/bee_log_002#not_lit_6#south": {
       "art": "b289ae48db63dcf0",
-      "updated_at": "2026-08-16T12:52:50.235Z",
-      "rating": 5,
-      "status": "approved"
+      "updated_at": "2026-08-18T18:35:44.010Z",
+      "rating": 1,
+      "status": "rejected"
     },
     "scenery/bee_logs/bee_log_002#not_lit_7#south": {
       "status": "rejected",
@@ -18183,27 +18183,27 @@
       "rating": 1
     },
     "scenery/bee_logs/bee_log_002#not_lit_8#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:52:57.973Z",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:42.177Z",
       "art": "e7a28fd989a281ab",
-      "status": "approved"
+      "status": "rejected"
     },
     "scenery/bee_logs/bee_log_002#not_lit_9#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:53:00.143Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:40.261Z",
+      "status": "rejected",
       "art": "15a07536d2141dae"
     },
     "scenery/bee_logs/bee_log_002#not_lit_10#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:53:02.374Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:38.367Z",
+      "status": "rejected",
       "art": "a95d6a0b4e69052f"
     },
     "scenery/bee_logs/bee_log_002#lit_4#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:53:15.758Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:35:33.060Z",
+      "status": "rejected",
       "art": "9d81ad985454e2fd"
     },
     "scenery/stumps/stump_014#not_lit_4#south": {
@@ -21525,6 +21525,84 @@
       "status": "rejected",
       "art": "8ddb296f17063f81",
       "updated_at": "2026-08-18T18:31:55.081Z"
+    },
+    "scenery/stumps/stump_016#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:34:41.102Z",
+      "status": "approved",
+      "art": "62e05e819a4a062e"
+    },
+    "scenery/stumps/stump_016#lit_2#south": {
+      "status": "rejected",
+      "art": "6b501f389a694c2e",
+      "updated_at": "2026-08-18T18:34:55.989Z"
+    },
+    "scenery/stumps/stump_016#lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:35:01.525Z",
+      "status": "approved",
+      "art": "36966cd88ce397ad"
+    },
+    "scenery/stumps/stump_016#lit_4#south": {
+      "status": "rejected",
+      "art": "f431dc3bd0428fd9",
+      "updated_at": "2026-08-18T18:35:07.970Z"
+    },
+    "scenery/bee_logs/bee_log_002#lit_3#south": {
+      "status": "rejected",
+      "art": "cac5ea8c25493580",
+      "updated_at": "2026-08-18T18:35:34.201Z"
+    },
+    "scenery/bee_logs/bee_log_002#lit_2#south": {
+      "status": "rejected",
+      "art": "4924cdfd2af42981",
+      "updated_at": "2026-08-18T18:35:35.565Z"
+    },
+    "scenery/stumps/stump_014#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:36:08.829Z",
+      "status": "approved",
+      "art": "6c1a032ca375cf94"
+    },
+    "scenery/stumps/stump_014#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:36:13.677Z",
+      "status": "approved",
+      "art": "36be4bbdabea5807"
+    },
+    "scenery/stumps/stump_014#not_lit_5#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:36:16.529Z",
+      "status": "approved",
+      "art": "f3fc4df9efd43dd2"
+    },
+    "scenery/stumps/stump_014#not_lit_6#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:36:19.819Z",
+      "status": "approved",
+      "art": "e4e53beed110fda3"
+    },
+    "scenery/stumps/stump_014#not_lit_8#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:36:27.030Z",
+      "status": "approved",
+      "art": "8e45f11b0c308901"
+    },
+    "scenery/stumps/stump_014#not_lit_9#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:36:29.184Z",
+      "status": "approved",
+      "art": "6d00c721044b0e76"
+    },
+    "scenery/stumps/stump_014#lit_3#south": {
+      "status": "rejected",
+      "art": "d7bf03b9732d0474",
+      "updated_at": "2026-08-18T18:36:35.781Z"
+    },
+    "scenery/stumps/stump_014#lit_4#south": {
+      "status": "rejected",
+      "art": "3d10a0e281fea8d3",
+      "updated_at": "2026-08-18T18:36:43.078Z"
     }
   }
 }
