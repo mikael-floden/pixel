@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:22:31.311Z",
+  "updated_at": "2026-08-18T19:26:45.899Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -11,6 +11,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:22:34.025Z",
       "note": "Error art, this looks like ice over ice"
+    },
+    "tiles/ice__over__lava/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:26:48.699Z",
+      "note": "this looks to me like lava over lava with some ice at the very top"
     }
   }
 }
