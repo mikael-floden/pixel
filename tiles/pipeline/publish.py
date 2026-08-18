@@ -60,7 +60,7 @@ REVIEW = os.path.join(ROOT, "review")
 REPO = os.path.dirname(ROOT)
 
 
-def candidates(cell_dir, side_hex=None, same=False, rejected=()):
+def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None):
     """Every tile in a cell, scored on its wall, best first.
 
     WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
@@ -104,6 +104,13 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=()):
                 "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
                             if side_hex else None,
                 "clarity": round(flatness.fringe_clarity(p), 3),
+                # Positive = the top reads as the SIDE material, i.e. backwards.
+                "swapped": round(flatness.swapped_err(p, top_hex_c, side_hex), 1)
+                           if (top_hex_c and side_hex) else None,
+                "top_err": round(flatness.top_material_err(p, top_hex_c), 1)
+                           if top_hex_c else None,
+                "contamination": round(flatness.top_contamination(
+                    p, top_hex_c, side_hex), 3) if (top_hex_c and side_hex) else None,
                 # The band that appears when this tile is stacked on itself. Lower
                 # is better; it is what decides a same-over-same tile.
                 "band": (lambda b: round(b, 2) if b is not None else None)(
@@ -147,6 +154,12 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=()):
              and c["wall_err"] <= flatness.MAX_WALL_ERR]
     if not same:
         out = right or out
+        # And the tile must not be BACKWARDS. Same tier discipline as the wall material:
+        # a cell with a correctly-oriented candidate never ships a reversed one, and a
+        # cell with nothing but reversed ones is flagged rather than quietly shipped.
+        fwd = [c for c in out if c["swapped"] is not None
+               and c["swapped"] <= flatness.MAX_SWAP]
+        out = fwd or out
     # Least-banded first on X-over-X: those tiles exist to be stacked into a cliff
     # under a "top only" tile, so the one that stacks without a stripe is the best
     # one however good another tile's wall score.

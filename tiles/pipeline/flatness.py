@@ -351,6 +351,112 @@ def wall_material_err(path, side_hex):
     return max(min(d, 255.0 - d), abs(float(hm[1]) - float(ht[1])) / 3.0)
 
 
+
+def top_material_err(path, top_hex):
+    """How far the TOP surface is from the material it was asked for.
+
+    THE GAP THIS CLOSES. wall_material_err has guarded the wall for a while and there
+    was never an equivalent for the top — so "X over Y" was only ever half-verified.
+    The maintainer's first triage pass rejected 58 tiles and 39 of them, two thirds,
+    are about the top: 22 where the materials are simply swapped ("this looks like
+    grass over dark mud", "looks more like snow over grey stone", "looks like water
+    over deep water"), 13 where the side material still covers part of the surface,
+    and 4 where the colour is not convincing ("the black rock is not dark enough",
+    "This looks like something blue over something light blue").
+
+    Same two axes as the wall version, for the same reason: hue alone cannot tell a
+    material from a washed-out ghost of it, and lightness alone cannot be used because
+    a surface is legitimately shaded.
+    """
+    import palette_snap
+    try:
+        a = np.asarray(palette_snap.canonicalise(
+            Image.open(path).convert("RGBA"))).astype(float)
+    except Exception:
+        return 999.0
+    reg = palette_snap._regions(a)
+    if not reg or reg["top"].sum() < 100:
+        return 999.0
+    med = np.median(a[:, :, :3][reg["top"]], 0)
+    tgt = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    hm = palette_snap._rgb2hsv(med[None, :])[0]
+    ht = palette_snap._rgb2hsv(tgt[None, :])[0]
+    chroma = lambda c: float(max(c) - min(c))
+    cm, ct = chroma(med), chroma(tgt)
+    if cm < 25 and ct < 25:
+        lum = lambda c: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+        return abs(float(lum(med)) - float(lum(tgt))) / 2.0
+    if cm < 25 or ct < 25:
+        return abs(cm - ct)
+    d = abs(float(hm[0]) - float(ht[0]))
+    return max(min(d, 255.0 - d), abs(float(hm[1]) - float(ht[1])) / 3.0)
+
+
+def top_contamination(path, top_hex, side_hex):
+    """Fraction of the TOP surface that reads as the SIDE material instead.
+
+    The maintainer counted this by eye, repeatedly and in quarters: "I don't like that
+    1/4 of the ground is still slime", "1/2 of the top is still slime", "1/4 of the
+    top is graas", "1/4 of the top/ground is still water". Thirteen rejections say it.
+
+    Nearest-of-two against the two PALETTE colours, which is the same thing that made
+    the wall classification work — both references are fixed, so nothing is inferred
+    from the art. Returns 0.0 when the two materials are too close to tell apart, since
+    a split between near-identical colours is noise rather than contamination.
+    """
+    import palette_snap
+    try:
+        a = np.asarray(palette_snap.canonicalise(
+            Image.open(path).convert("RGBA"))).astype(float)
+    except Exception:
+        return 0.0
+    reg = palette_snap._regions(a)
+    if not reg or reg["top"].sum() < 100:
+        return 0.0
+    t = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    s = np.array([int(side_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    if float(np.linalg.norm(t - s)) < 60.0:
+        return 0.0
+    px = a[:, :, :3][reg["top"]]
+    return float((np.linalg.norm(px - s, axis=1)
+                  < np.linalg.norm(px - t, axis=1)).mean())
+
+
+
+def swapped_err(path, top_hex, side_hex):
+    """Positive when the TOP reads as the SIDE material — i.e. the tile is BACKWARDS.
+
+    The single most common way an "X over Y" cell fails, and there was no check for it.
+    In the maintainer's first triage pass 22 of 58 rejections say some version of it in
+    their own words: "this looks like grass over dark mud", "looks more like snow over
+    grey stone", "looks like water over deep water (deep water is dark near black blue,
+    water is blue/light blue)", "This looks like black stones on grass over stone".
+
+    The measurement is a COMPARISON, not a threshold: how far the top sits from the
+    material it was asked for, minus how far it sits from the other one. Above zero the
+    generator drew the pair the wrong way round. That framing is what makes it work
+    across materials without a per-pair constant — both references are palette entries
+    and the answer is their difference.
+
+    Measured against the maintainer's own labels: the 22 tiles they called swapped score
+    a median of +10.0 with 82% above zero, while the 162 they left alone score -46.0
+    with 6% above zero. At a margin of 20 it catches 45% of the swapped tiles and none
+    of the kept ones.
+    """
+    a = top_material_err(path, top_hex)
+    b = top_material_err(path, side_hex)
+    if a >= 999.0 or b >= 999.0:
+        return -999.0
+    return a - b
+
+
+# A tile whose top reads more like the OTHER material than its own is backwards. Zero is
+# the natural threshold — it is the point where the two distances cross — and it is
+# where the maintainer's labels separate: 82% of the tiles they called swapped are above
+# it, 94% of the ones they kept are below.
+MAX_SWAP = 0.0
+
+
 # A wall further than this from its material is the wrong material, not a bad shade.
 # Set from the gap in the measured distribution: the 47 cells that look right sit at
 # 0-32, the 9 the maintainer's ice-over-grass report exposed sit at 32-172.
