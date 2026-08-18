@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-18T18:36:50.533Z",
+  "updated_at": "2026-08-18T18:39:46.023Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -15296,9 +15296,10 @@
       "art": "de2a06175766b0f0"
     },
     "scenery/driftwood_logs/driftwood_log_901#not_lit_1#south": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:45:13.281Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-18T18:39:12.882Z",
+      "rating": 1,
+      "art": "7f30d02860cf3c08"
     },
     "scenery/fallen_logs/fallen_log_001#not_lit_1#south": {
       "status": "approved",
@@ -18781,9 +18782,9 @@
       "art": "1de5e5a9ac41d5d7"
     },
     "scenery/petrified_stumps/petrified_stump_003#lit_3#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T13:32:49.611Z",
-      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-08-18T18:38:31.038Z",
+      "status": "rejected",
       "art": "3602ebdb00480fe1"
     },
     "scenery/petrified_stumps/petrified_stump_003#lit_4#south": {
@@ -21603,6 +21604,98 @@
       "status": "rejected",
       "art": "3d10a0e281fea8d3",
       "updated_at": "2026-08-18T18:36:43.078Z"
+    },
+    "scenery/stumps/stump_012#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:37:18.571Z",
+      "status": "approved",
+      "art": "b39ed413b9e31a03"
+    },
+    "scenery/stumps/stump_012#not_lit_6#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:37:31.422Z",
+      "status": "approved",
+      "art": "fbda27e20df878ea"
+    },
+    "scenery/stumps/stump_012#not_lit_9#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:37:40.183Z",
+      "status": "approved",
+      "art": "ffb74fbc855df119"
+    },
+    "scenery/stumps/stump_012#not_lit_10#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:37:42.941Z",
+      "status": "approved",
+      "art": "63f4fed684dec532"
+    },
+    "scenery/stumps/stump_012#lit_3#south": {
+      "rating": 2,
+      "updated_at": "2026-08-18T18:37:52.284Z",
+      "status": "approved",
+      "art": "2f09a989c2fa2de7"
+    },
+    "scenery/petrified_stumps/petrified_stump_003#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:38:02.443Z",
+      "status": "approved",
+      "art": "564147bdb8feb8c1"
+    },
+    "scenery/petrified_stumps/petrified_stump_003#not_lit_5#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:38:07.806Z",
+      "status": "approved",
+      "art": "ca01778b1248b13e"
+    },
+    "scenery/petrified_stumps/petrified_stump_003#not_lit_7#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:38:12.320Z",
+      "status": "approved",
+      "art": "c611b4c2afc312bd"
+    },
+    "scenery/petrified_stumps/petrified_stump_003#not_lit_8#south": {
+      "rating": 5,
+      "updated_at": "2026-08-18T18:38:14.548Z",
+      "status": "approved",
+      "art": "266a619e58648766"
+    },
+    "scenery/petrified_stumps/petrified_stump_003#lit_1#south": {
+      "rating": 2,
+      "updated_at": "2026-08-18T18:38:40.033Z",
+      "status": "approved",
+      "art": "8a09f20e805ce48a"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#not_lit_2#south": {
+      "status": "rejected",
+      "art": "8c5f7b69b75d3fb3",
+      "updated_at": "2026-08-18T18:39:02.215Z"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#not_lit_3#south": {
+      "status": "rejected",
+      "art": "697d9698aa951c4f",
+      "updated_at": "2026-08-18T18:39:03.893Z"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#not_lit_6#south": {
+      "status": "rejected",
+      "art": "7e89f9a0e6e84b73",
+      "updated_at": "2026-08-18T18:39:20.785Z"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#not_lit_9#south": {
+      "rating": 3,
+      "updated_at": "2026-08-18T18:39:29.776Z",
+      "status": "approved",
+      "art": "3ccd6be486201043"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#lit_2#south": {
+      "status": "rejected",
+      "art": "0d23e190fa29a8c3",
+      "updated_at": "2026-08-18T18:39:37.888Z"
+    },
+    "scenery/driftwood_logs/driftwood_log_901#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-18T18:39:46.377Z",
+      "status": "approved",
+      "art": "a35b9f7a12fa03fc"
     }
   }
 }
