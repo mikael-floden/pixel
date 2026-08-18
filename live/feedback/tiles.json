@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T21:35:24.099Z",
+  "updated_at": "2026-08-18T21:39:04.695Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -488,6 +488,21 @@
       "status": "rejected",
       "updated_at": "2026-08-18T21:35:23.800Z",
       "note": "Paving stones are not supposed to be \"clean\". They will be used in the game to build citys."
+    },
+    "tiles/paving_stone__over__parquet_floor/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:38:52.020Z",
+      "note": "this is \"parquet floor over paving stone\". I think getting an AI to generate the order her correctly can be hard. Maybe call \"parquet floor\" just wood. The word floor will get the AI to think the wood should be at the top."
+    },
+    "tiles/paving_stone__over__parquet_floor/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:38:58.145Z",
+      "note": "this is \"parquet floor over paving stone\". I think getting an AI to generate the order her correctly can be hard. Maybe call \"parquet floor\" just wood. The word floor will get the AI to think the wood should be at the top."
+    },
+    "tiles/paving_stone__over__parquet_floor/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T21:39:04.491Z",
+      "note": "this is \"parquet floor over paving stone\". I think getting an AI to generate the order her correctly can be hard. Maybe call \"parquet floor\" just wood. The word floor will get the AI to think the wood should be at the top."
     }
   }
 }
