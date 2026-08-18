@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:32:56.903Z",
+  "updated_at": "2026-08-18T19:34:05.908Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -46,6 +46,21 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:32:56.534Z",
       "note": "this is an error and looks more like \"deep water over black rock\". Remove!"
+    },
+    "tiles/black_rock__over__grass/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:33:56.502Z",
+      "note": "This looks like \"black stones on grass over stone\". Remove!"
+    },
+    "tiles/black_rock__over__grass/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:34:01.477Z",
+      "note": "This looks like \"black stones on grass over stone\". Remove!"
+    },
+    "tiles/black_rock__over__grass/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:34:05.526Z",
+      "note": "This looks like \"black stones on grass over stone\". Remove!"
     }
   }
 }
