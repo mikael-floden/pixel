@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T20:52:49.851Z",
+  "updated_at": "2026-08-18T20:53:19.686Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -345,6 +345,16 @@
       "note": "not enough lava on the ground",
       "updated_at": "2026-08-18T20:52:42.582Z",
       "status": "rejected"
+    },
+    "tiles/lava__over__slime/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T20:53:12.951Z",
+      "note": "not enough lava on the ground"
+    },
+    "tiles/lava__over__slime/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T20:53:19.344Z",
+      "note": "not enough lava on the ground"
     }
   }
 }
