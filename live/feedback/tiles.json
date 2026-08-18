@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:48:02.216Z",
+  "updated_at": "2026-08-18T19:49:33.969Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -146,6 +146,15 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:48:01.898Z",
       "note": "doesn't look like dark mud"
+    },
+    "tiles/deep_water__over__deep_water/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:49:31.561Z",
+      "note": "this one might be hard to get right, but I don't like the texture here. Deep blue is just dark deep blue. Kinda texture less to me"
+    },
+    "tiles/deep_water__over__deep_water/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:49:31.563Z"
     }
   }
 }
