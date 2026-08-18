@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-18T18:39:48.608Z",
+  "updated_at": "2026-08-18T18:44:20.524Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/stones/stone_034#lit_1": {
@@ -147,6 +147,11 @@
       "lit": true,
       "was": "not_lit_6",
       "updated_at": "2026-08-18T18:37:31.817Z"
+    },
+    "scenery/fallen_logs/fallen_log_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-18T18:41:02.165Z"
     }
   }
 }
