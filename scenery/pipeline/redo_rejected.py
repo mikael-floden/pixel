@@ -9,7 +9,10 @@ regenerated with the improved prompt and the sibling-similarity gate.
 import json, os, shutil, subprocess, sys, time
 from datetime import datetime
 sys.path.insert(0, os.path.dirname(__file__))
+import re
 import factory, viewer_build, tree_variants as tv
+
+REDO_RE = re.compile(r"\b(redo|regenerat|should be)", re.I)
 from pixellab_client import PixelLabClient, PixelLabError
 from PIL import Image
 
@@ -126,8 +129,23 @@ def rejected_states():
         # (windows' LIGHTS_ON/OFF belong to lights_on.py), so that is the test.
         if not (state.startswith("LIT_") or state.startswith("NOT_LIT_")):
             continue
-        ent = ((factory.read_manifest(rel) or {}).get("states") or {}).get(state)
+        man = factory.read_manifest(rel) or {}
+        ent = (man.get("states") or {}).get(state)
         if not ent or not os.path.exists(os.path.join(factory.ROOT, ent.get("sprite", ""))):
+            continue
+        # REGENERATE ONLY WHAT HE ASKED TO HAVE REGENERATED. Since 2026-08-17 a
+        # rejection means delete-and-stop; the exception is a note that briefs
+        # new art ("Redo to get rid of the owl"). Without this test the module
+        # kept its old meaning and would regenerate every rejection, which is
+        # the precise thing he asked it to stop doing.
+        if not REDO_RE.search(v.get("note") or v.get("comment") or ""):
+            continue
+        # AND NEVER THE ANCHOR. Its sprite IS the piece's own file, so
+        # regenerating it silently replaces the art every card and thumbnail
+        # shows. Three landed here purely because relight.py renamed a state and
+        # carried its verdict across; a rejected anchor is a statement about the
+        # PIECE and belongs to feedback.py.
+        if (ent or {}).get("sprite") == man.get("sprite"):
             continue
         vt, ct = _ts(v.get("updated_at")), _committed(ent["sprite"])
         if not (vt and ct and ct < vt):
