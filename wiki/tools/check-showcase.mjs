@@ -70,9 +70,11 @@ const survey = (p) => p.evaluate(() => {
       stageH: Math.round(stage.height),
       stageW: Math.round(stage.width),
       innerW, innerH,
-      // Where the creature's FEET are, in page coordinates — a shared floor is
-      // a claim about this number, not about the box around it.
-      foot: ar ? Math.round(ar.bottom) : null,
+      // How far the art's own box sits off the middle of its stage, per axis.
+      // "Centred" is a claim about the ART, not about the flex container that
+      // happens to hold it.
+      offY: ar ? Math.abs((ar.top + ar.bottom) / 2 - (stage.top + stage.bottom) / 2) : null,
+      offX: ar ? Math.abs((ar.left + ar.right) / 2 - (stage.left + stage.right) / 2) : null,
       top,
     };
   });
@@ -139,15 +141,16 @@ const unearnedC = s393.cards.filter((c) => c.span.startsWith("2x") && Number(c.d
 ok(unearnedR.length === 0 && unearnedC.length === 0,
   `and a bigger card is one the creature needs (${unearnedR.length + unearnedC.length} taking a cell they would have fitted without)`);
 
-// ONE FLOOR PER ROW. Creatures sharing a row stand on the same line, so the
-// eye compares THEM rather than each to its own box — the whole reason true
-// scale is worth showing.
-const byRow = new Map();
-for (const c of s393.cards) { if (c.span?.endsWith("x1") && c.foot != null) (byRow.get(c.top) ?? byRow.set(c.top, []).get(c.top)).push(c); }
-const together = [...byRow.values()].filter((g) => g.length > 1);
-const ragged = together.filter((g) => Math.max(...g.map((c) => c.foot)) - Math.min(...g.map((c) => c.foot)) > 1);
-ok(together.length > 0 && ragged.length === 0,
-  `creatures sharing a row stand on the same floor (${together.length} rows checked, ${ragged.length} ragged)`);
+// CENTRED, ON EVERY SIZE OF CARD (maintainer 2026-08-18: "the monster is not
+// centered on the 1x1 card … Centering looks best"). The first cut anchored the
+// one-row cards to a shared floor and only the two-row ones centred, so this
+// checks BOTH axes on every card — a rule that holds for three sizes out of
+// four is exactly the bug he spotted.
+const offc = s393.cards.filter((c) => c.offY == null || c.offY > 1.5 || c.offX > 1.5);
+ok(offc.length === 0,
+  `every creature is centred in its stage, whatever the card size (${offc.length} off-centre${offc[0] ? `, e.g. ${offc[0].id} by ${Math.round(offc[0].offY)}px` : ""})`);
+const bySpan = [...new Set(s393.cards.map((c) => c.span))];
+ok(bySpan.length > 1, `checked across ${bySpan.length} card sizes (${bySpan.join(", ")})`);
 
 // ------------------------------------------- 2. THE SMALLEST PHONE, his rule
 const { ctx: c360, p: p360 } = await open(360);

@@ -1295,12 +1295,13 @@ That is the design, and it is exactly what ships:
   ONE column, which loses the whole point on the narrowest device people
   actually hold. Measured: 360px → 2 columns, 393px → 2, 1280px → 6. A desktop
   gets **more** creatures, never bigger ones — the mammoth is 156×242 on both.
-- **Creatures sharing a row stand on the same floor.** The art is bottom-aligned,
-  so a 48px poring beside a 150px wolf is plainly a small thing next to a big
-  one; centred, the eye compares each to its own box instead and half the point
-  of true scale is lost. A two-row card centres instead — its bottom edge is a
-  row below its neighbours' so it shares no floor with anybody, and anchoring it
-  down there left a third of the card as bald sky above a 220px creature.
+- **Every creature is centred in its own stage**, whatever size the card is.
+  The first cut bottom-aligned the one-row cards so row-mates shared a ground
+  line — the theory being that a common floor makes the size difference read.
+  He looked at it and said no: *"the monster is not centered on the 1x1 card.
+  The bigger cards got centering and on the small 1x1 you draw the monster at
+  the bottom of the preview. Centering looks best."* The card is a frame, not a
+  diorama, and one rule across all four sizes reads calmer than two.
 
 **The spans are measured, not computed.** `fitShowcase()` reads a real 1×1
 card's stage after layout — and again on resize — and gives a second cell to any
@@ -1363,9 +1364,9 @@ broken:
   column. "Some cards take up more space" only reads as size if the big card is
   big BECAUSE the creature is.
 
-Then the behaviour: creatures sharing a row stand on one floor (measured off the
-art's own bottom edge, not its box), the background actually steps through
-frames, the far end of the list is idle while you are at the top, a card still
+Then the behaviour: every creature is centred in its stage on both axes
+(measured off the art's own box, so a card that quietly anchors its art fails),
+the background actually steps through frames, the far end of the list is idle while you are at the top, a card still
 opens its creature, and reduced motion stops the animation without losing the
 art.
 

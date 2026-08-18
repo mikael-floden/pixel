@@ -208,22 +208,20 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 /* The art takes whatever the row span left over — no arithmetic to keep in
    step with the stylesheet.
 
-   CREATURES SHARING A ROW STAND ON THE SAME LINE (`align-items: flex-end`),
-   because that is what makes true scale READ. Centred, a 48px poring and a
-   150px wolf both float in the middle of their own boxes and the eye compares
-   each to its frame; standing on a common floor, the poring is plainly a small
-   thing beside a big one.
-   A TWO-ROW CARD CENTRES INSTEAD. Its bottom edge is a row lower than its
-   neighbours', so it shares no floor with anybody and the anchoring buys
-   nothing — while a 220px creature pinned to the bottom of a 385px stage left
-   a third of the card as bald sky.
+   EVERY CREATURE IS CENTRED IN ITS OWN STAGE, whatever the card's size. The
+   first cut bottom-aligned the one-row cards so row-mates shared a floor, on
+   the theory that a common ground line makes the size difference read;
+   maintainer 2026-08-18, looking at it: "the monster is not centered on the
+   1x1 card. The bigger cards got centering and on the small 1x1 you draw the
+   monster at the bottom of the preview. Centering looks best." He is right —
+   the card is a frame, not a diorama, and one rule for all four sizes reads
+   calmer than two.
 
    THE 3px PAD IS THE DESIGN, NOT A FUDGE: it is the breathing room between a
    creature and its frame, and because it is real padding the span decision can
    simply ask "does the art fit this box" with no constant to keep in step. */
 .showcase { position: relative; flex: 1; min-height: 0; border-radius: 8px; overflow: hidden;
-  display: flex; align-items: flex-end; justify-content: center; padding: 3px; }
-.showcase-card[data-span$="x2"] .showcase { align-items: center; }
+  display: flex; align-items: center; justify-content: center; padding: 3px; }
 .showcase-art {
   background-repeat: no-repeat;
   image-rendering: pixelated;          /* the game's own scale, nearest neighbour */
