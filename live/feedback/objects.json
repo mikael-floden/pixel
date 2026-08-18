@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-18T18:18:27.644Z",
+  "updated_at": "2026-08-18T18:20:59.527Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -20975,6 +20975,53 @@
       "status": "rejected",
       "art": "7fbfbf7327d7013e",
       "note": "I don't like all trees having a door like this. So it should be regenerated"
+    },
+    "scenery/owl_snags/owl_snag_001#not_lit_4#south": {
+      "status": "rejected",
+      "art": "40050daa7db222c8",
+      "updated_at": "2026-08-18T18:19:24.462Z",
+      "rating": 1,
+      "note": "Redo so we don't get that same owl in the tree"
+    },
+    "scenery/owl_snags/owl_snag_001#not_lit_7#south": {
+      "rating": 1,
+      "updated_at": "2026-08-18T18:19:46.174Z",
+      "status": "rejected",
+      "art": "1cc313a1cbf36ae0",
+      "note": "Redo to get rid of the owl"
+    },
+    "scenery/owl_snags/owl_snag_001#not_lit_8#south": {
+      "status": "rejected",
+      "art": "5d32a87a14bdf3e9",
+      "updated_at": "2026-08-18T18:20:01.338Z",
+      "rating": 1,
+      "note": "Redo to get rid of the owl"
+    },
+    "scenery/owl_snags/owl_snag_001#not_lit_9#south": {
+      "status": "rejected",
+      "art": "ea37c818fedd7780",
+      "updated_at": "2026-08-18T18:20:16.685Z",
+      "rating": 1,
+      "note": "Redo to get rid of the owl"
+    },
+    "scenery/owl_snags/owl_snag_001#not_lit_10#south": {
+      "status": "rejected",
+      "art": "e6fe1a83595083ae",
+      "updated_at": "2026-08-18T18:20:27.084Z",
+      "rating": 1,
+      "note": "Redo to get rid of the owl"
+    },
+    "scenery/owl_snags/owl_snag_001#lit_3#south": {
+      "status": "approved",
+      "art": "43c39bc5b2eb3110",
+      "updated_at": "2026-08-18T18:20:34.355Z",
+      "rating": 5
+    },
+    "scenery/owl_snags/owl_snag_001#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-18T18:20:59.461Z",
+      "status": "approved",
+      "art": "40e5ee6c4bd2c3f6"
     }
   }
 }
