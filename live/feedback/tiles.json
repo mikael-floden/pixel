@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:35:11.000Z",
+  "updated_at": "2026-08-18T19:35:37.270Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -66,6 +66,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:35:10.576Z",
       "note": "Here the AI failed to even generate a correct tile."
+    },
+    "tiles/black_rock__over__lava/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:35:36.907Z",
+      "note": "Here the AI failed to even generate a correct tile. Remove!"
     }
   }
 }
