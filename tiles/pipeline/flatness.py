@@ -329,7 +329,20 @@ def wall_material_err(path, side_hex):
         # Graded, both are handled on their merits — the grass cases land 49-60 and
         # reject, shaded snow lands near the threshold and is judged rather than
         # condemned.
-        return abs(cm - ct)
+        #
+        # AND LUMINANCE TOO, because chroma alone was not enough either. A near-BLACK
+        # wall and near-WHITE snow both have little colour, so their chroma gap is small
+        # while they could hardly look less alike — lava-over-snow drew a black wall
+        # where snow was asked for, scored 26 against a 30 threshold, and shipped. The
+        # maintainer named it in three words: "looks like black snow".
+        #
+        # Taking the worse of the two gaps moves the catch rate over the 57 tiles that
+        # reach this branch from 9/16 to 13/16 of the ones they rejected, for 3 extra
+        # demotions among the 41 they kept — and this feeds a TIER, so a demotion only
+        # costs anything when a better candidate exists. Those black-snow tiles go from
+        # 26 and 21 to 93.6 and 92.2.
+        _lm = lambda c: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+        return max(abs(cm - ct), abs(float(_lm(med)) - float(_lm(tgt))) / 2.0)
     # HUE AND COLOURFULNESS, because hue alone cannot tell a material from a washed-out
     # ghost of it. ice-over-grass shipped a candidate that is a SOLID ICE BLOCK — no
     # grass anywhere in it — and scored 11.0 against the grass target, well inside the
@@ -496,6 +509,17 @@ def swapped_err(path, top_hex, side_hex):
 # it, 94% of the ones they kept are below.
 MAX_SWAP = 0.0
 
+
+# How much of the top surface may read as the OTHER material. The maintainer counts
+# this by eye and says so in quarters — "not enough lava on the ground" (14 times in one
+# pass), "I don't like that 1/4 of the ground is still slime", "1/2 of the top is graas".
+#
+# A TIER rather than a gate, and deliberately. Measured over 285 labelled tiles the
+# medians separate strongly (0.182 for the ones they flagged against 0.002 for the rest)
+# but the tails overlap: at this threshold it catches 71% of them and would wrongly
+# demote 31% of the tiles they left alone. As a tier that costs nothing — a cleaner
+# candidate wins when one exists, and a cell with nothing cleaner still ships its best.
+MAX_CONTAMINATION = 0.05
 
 # A wall further than this from its material is the wrong material, not a bad shade.
 # Set from the gap in the measured distribution: the 47 cells that look right sit at

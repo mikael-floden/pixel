@@ -160,6 +160,11 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
         fwd = [c for c in out if c["swapped"] is not None
                and c["swapped"] <= flatness.MAX_SWAP]
         out = fwd or out
+        # And the surface should actually BE the material, not mostly it. "not enough
+        # lava on the ground" was 14 of the 24 verdicts in one review pass.
+        clean = [c for c in out if c["contamination"] is not None
+                 and c["contamination"] <= flatness.MAX_CONTAMINATION]
+        out = clean or out
     # Least-banded first on X-over-X: those tiles exist to be stacked into a cliff
     # under a "top only" tile, so the one that stacks without a stripe is the best
     # one however good another tile's wall score.
