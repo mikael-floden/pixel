@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T20:01:08.579Z",
+  "updated_at": "2026-08-18T20:02:36.480Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -240,6 +240,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T20:01:08.179Z",
       "note": "looks like \"ice over ice\" with some stone on the side"
+    },
+    "tiles/grey_stone__over__lava/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T20:02:36.080Z",
+      "note": "The stone on this tile is so big your \"line\" you draw with trying to make the tile look \"clean\" becomes ugly."
     }
   }
 }
