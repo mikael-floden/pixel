@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:34:05.908Z",
+  "updated_at": "2026-08-18T19:35:11.000Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -61,6 +61,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:34:05.526Z",
       "note": "This looks like \"black stones on grass over stone\". Remove!"
+    },
+    "tiles/black_rock__over__ice/0": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:35:10.576Z",
+      "note": "Here the AI failed to even generate a correct tile."
     }
   }
 }
