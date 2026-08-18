@@ -177,9 +177,77 @@ PHRASINGS_SAME = [
 ]
 
 
-def phrasings_for(cell):
+
+# Eight ways to ask for the pair the generator refuses to draw. The maintainer's own
+# workaround, and it is the only thing that gets some cells at all:
+#
+#   "The AI is trained and has seen too many images of the opposite so your 'X over Y'
+#    get swapped to 'Y over X'. I had to use different words and call grass 'the color
+#    green' and other tricks to get what I wanted on some really stubborn images."
+#
+# It is not a superstition, it is measurable and it is CONCENTRATED. Over every raw tile
+# on disk, 112 of the 182 cross pairs never produce a backwards tile at all, while ten
+# produce them more than half the time — and those ten are exactly the pairs with a
+# strong real-world vertical order that the cell asks to invert: water over ICE, deep
+# water over GRASS, deep water over WATER, water over GRASS. The generator is not being
+# unreliable, it is being confidently wrong about which way up the world goes.
+#
+# So these phrasings strip the material NAME off the top surface and name its COLOUR
+# instead, which is what removes the prior. config/tiles.json has carried a `color_words`
+# field for every material since the beginning ("pure flat green", "pure flat pale
+# cyan") and nothing had ever used it — every phrasing above reaches for
+# `material_words`, i.e. for exactly the words that carry the association.
+#
+# Formats with {top_colour} and {side_colour} in addition to the usual four keys.
+PHRASINGS_SWAPPED = [
+    # Colour on top, material below: the minimum change that breaks the association.
+    "isometric ground tile. The flat top surface is {top_colour}, nothing else. The "
+    "vertical side walls below it are {side_material}. The top is {top_colour} and the "
+    "sides are {side_word} — not the other way round. No outline.",
+
+    # Both sides named only by colour: no material words left to associate at all.
+    "isometric block. Top face: {top_colour}. Side faces: {side_colour}. The upper "
+    "surface is {top_colour} and the walls beneath are {side_colour}. Flat even top, "
+    "textured sides. No outline.",
+
+    # Explicit negation of the pairing the generator wants to draw.
+    "isometric terrain tile of {top_material} resting on {side_material}. IMPORTANT: "
+    "the {side_word} is UNDERNEATH and the {top_word} is ON TOP. Do not put the "
+    "{side_word} on top. Seen from above you see only {top_colour}. No outline.",
+
+    # An artificial object has no natural order to appeal to.
+    "isometric block of {side_material} that has been painted {top_colour} across its "
+    "flat top face only. The paint covers the whole upper surface; the vertical sides "
+    "are left as bare {side_material}. No outline.",
+
+    # A thin layer reads as deposited on, rather than growing out of, the base.
+    "isometric tile: a thin layer of {top_material} laid down on top of a thick block "
+    "of {side_material}. The layer is {top_colour} and covers the entire top face. The "
+    "block below it shows {side_word} on every side. No outline.",
+
+    # Cross-section framing states the stack order as a fact about the geometry.
+    "isometric cutaway showing two layers. The upper layer, seen from above, is "
+    "{top_colour}. The lower layer, seen from the side, is {side_material}. Upper layer "
+    "{top_word}, lower layer {side_word}. No outline.",
+
+    # Deposition language: something settled ON something else.
+    "isometric ground tile where {top_material} has settled over a base of "
+    "{side_material}. The whole visible top is {top_colour}; the {side_word} is only "
+    "visible in the walls where the ground has been cut away. No outline.",
+
+    # Terse and mechanical, mirroring the phrasing the maintainer found worked.
+    "isometric tile. top = {top_colour}. sides = {side_colour}. flat top, textured "
+    "sides, no outline.",
+]
+
+
+def phrasings_for(cell, swapped_streak=0):
+    """Which family to ask with. Escalates to the colour-word phrasings once the
+    generator has demonstrated, on this cell, that it will not draw the pair as asked."""
     top, side = cell.split("__over__")
-    return PHRASINGS_SAME if top == side else PHRASINGS
+    if top == side:
+        return PHRASINGS_SAME
+    return PHRASINGS_SWAPPED if swapped_streak >= 2 else PHRASINGS
 
 
 def _stale_family(cell):
@@ -214,7 +282,8 @@ def cell_parts(cell, types):
     return by_id.get(top), by_id.get(side)
 
 
-def passing(paths, min_wall, min_clarity=0.0, same=False):
+def passing(paths, min_wall, min_clarity=0.0, same=False,
+            top_hex=None, side_hex=None):
     """EVERY tile in these paths that clears the calibrated gates, best wall first.
 
     `same` inverts the target, because the maintainer's requirement for the 14
@@ -246,6 +315,12 @@ def passing(paths, min_wall, min_clarity=0.0, same=False):
             continue
         if not same and flatness.overhang(p) < flatness.MIN_OVERHANG:
             continue
+        # A backwards tile is not a worse tile, it is the wrong tile — the maintainer
+        # rejected 22 of them in one pass. Banking one ends the chase on a cell that
+        # still has nothing usable.
+        if not same and top_hex and side_hex:
+            if flatness.swapped_err(p, top_hex, side_hex) > flatness.MAX_SWAP:
+                continue
         # A spill that cannot be told apart from the wall it lands on is not usable:
         # postprocess has nothing to select, so it ships in the wrong palette.
         if flatness.fringe_clarity(p) < min_clarity:
@@ -270,11 +345,23 @@ def evaluate(paths, min_wall, min_clarity=0.0):
     return hits[0] if hits else None
 
 
+def _pal():
+    import json as _json
+    cfg = os.path.join(ROOT, "config", "palette.json")
+    try:
+        return _json.load(open(cfg))["types"]
+    except Exception:
+        return {}
+
+
 def cell_passing(cell, min_wall, min_clarity=0.0):
     d = os.path.join(OUT, cell)
     top, side = cell.split("__over__")
+    pal = _pal()
     return passing(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))),
-                   min_wall, min_clarity, same=(top == side))
+                   min_wall, min_clarity, same=(top == side),
+                   top_hex=(pal.get(top) or {}).get("top"),
+                   side_hex=(pal.get(side) or {}).get("top"))
 
 
 def cell_status(cell, min_wall, min_clarity=0.0):
@@ -295,7 +382,7 @@ def failing_cells(min_wall, min_clarity=0.0, need=1):
 
 
 def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_clarity=0.0,
-          need=1):
+          need=1, force=None):
     """Roll this cell until `need` tiles clear the bar, or until `attempts` is used up."""
     d = os.path.join(OUT, cell)
     os.makedirs(d, exist_ok=True)
@@ -309,22 +396,30 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         print(f"    already has {len(done)}/{need} passing — skipping", flush=True)
         return done[0]
     existing = len([x for x in os.listdir(d) if x.startswith("sheet_")])
+    pal = _pal()
+    tp_hex = (pal.get(top_g["id"]) or {}).get("top")
+    sd_hex = (pal.get(side_g["id"]) or {}).get("top")
+    swapped_streak = 0
     for n in range(attempts):
         if spent[0] >= max_usd:
             print(f"    budget reached (~${spent[0]:.2f})")
             return None
         i = existing + n
-        ph = phrasings_for(cell)
+        ph = (PHRASINGS_SWAPPED if force == "swap" else
+              PHRASINGS if force == "normal" else
+              phrasings_for(cell, swapped_streak))
         prompt = ph[i % len(ph)].format(
             top_material=top_g["material_words"], side_material=side_g["material_words"],
-            top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "))
+            top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "),
+            top_colour=top_g.get("color_words", top_g["material_words"]),
+            side_colour=side_g.get("color_words", side_g["material_words"]))
         # The suffix carries the PID because two chases can legitimately target the same
         # cell — a bulk row run and a targeted fix — and both compute their sheet index
         # from the directory listing when the cell STARTS. Without this they pick the
         # same name and silently overwrite each other's tiles. Costs nothing when only
         # one run is active.
-        tag = ("same" if len(ph) == len(PHRASINGS_SAME) and phrasings_for(cell) is PHRASINGS_SAME
-               else "chase")
+        tag = ("same" if ph is PHRASINGS_SAME
+               else "swap" if ph is PHRASINGS_SWAPPED else "chase")
         sdir = os.path.join(d, f"sheet_{i:02d}_{tag}{i % len(ph)}_{os.getpid()}")
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
@@ -387,6 +482,18 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         # across three rolls is exactly as good a choice for the maintainer as three
         # from one lucky sheet, and stopping early on either is what leaves a cell with
         # nothing to pick between.
+        # Did this whole roll come back backwards? Two in a row and the generator has
+        # told us it will not draw this pair as asked, so stop asking the same way.
+        if tp_hex and sd_hex and top_g["id"] != side_g["id"] and paths:
+            sw = [flatness.swapped_err(p, tp_hex, sd_hex) for p in paths]
+            sw = [x for x in sw if x > -900]
+            if sw and all(x > flatness.MAX_SWAP for x in sw):
+                swapped_streak += 1
+                if swapped_streak == 2:
+                    print(f"    every tile backwards twice — switching to colour-word "
+                          f"phrasings", flush=True)
+            else:
+                swapped_streak = 0
         hits = cell_passing(cell, min_wall, min_clarity)
         best_oh = max((flatness.overhang(p) for p in paths), default=0.0)
         print(f"    roll {n + 1}/{attempts}: best spill {best_oh:.2f} "
@@ -412,6 +519,8 @@ def main():
     ap.add_argument("--min-candidates", type=int, default=3,
                     help="keep rolling until the cell has this many tiles clearing "
                          "the bar — the maintainer reviews by CHOOSING")
+    ap.add_argument("--phrasings", choices=["auto", "swap", "normal"], default="auto",
+                    help="force a phrasing family instead of escalating into it")
     ap.add_argument("--cells", nargs="*", default=None)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -419,7 +528,8 @@ def main():
     types = matrix.cfg()["ground_types"]
     dead = tombstones.load().get("cells", {})
     cells = args.cells or failing_cells(args.min_wall, args.min_clarity,
-                                        need=args.min_candidates)
+                                        need=args.min_candidates,
+                        force=None if args.phrasings == "auto" else args.phrasings)
     cells = [c for c in cells if c.replace("__over__", "_over_") not in dead]
 
     print(f"{len(cells)} cell(s) with fewer than {args.min_candidates} tiles clearing "
@@ -449,7 +559,8 @@ def main():
         try:
             hit = chase(client, cell, top_g, side_g, args.attempts, args.min_wall,
                         spent, args.max_usd, args.min_clarity,
-                        need=args.min_candidates)
+                        need=args.min_candidates,
+                        force=None if args.phrasings == "auto" else args.phrasings)
         except BudgetExhausted as e:
             print("stopping:", e)
             break
