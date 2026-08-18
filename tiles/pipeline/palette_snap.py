@@ -39,6 +39,12 @@ from PIL import Image
 import flatness
 
 
+def _lum_of(px):
+    """Rec.601 luminance. Works on a single RGB triple or an (N,3) array."""
+    px = np.asarray(px, float)
+    return 0.299 * px[..., 0] + 0.587 * px[..., 1] + 0.114 * px[..., 2]
+
+
 def _hex(s):
     s = s.lstrip("#")
     return np.array([int(s[i:i + 2], 16) for i in (0, 2, 4)], float)
@@ -560,7 +566,7 @@ def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
 
 
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
-         align_walls=False, spill=True, same_material=False):
+         align_walls=False, spill=True, same_material=False, wall_hex=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -634,7 +640,23 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         # 29) and the fringe rules therefore skip both.
         m = reg["left"] | reg["right"]
         if m.any():
-            tgt = _rgb2hsv(_hex(top_hex)[None, :])[0]
+            # THE WALL IS DARKER THAN THE TOP. It is the same material seen from the
+            # side, in its own shade — that difference is most of what makes a block
+            # read as a block instead of a sticker, and the generator draws it: on
+            # dark_mud the raw art measures top luminance 70.9 against wall 45.3.
+            #
+            # Moving the wall onto the TOP's colour threw that away and inverted it,
+            # landing the wall at 66.9 — BRIGHTER than the top it sits under. The
+            # maintainer saw it immediately: "the color palette you use to get dark mud
+            # makes dark mud look worse". Washed out, because a cliff lit like a
+            # tabletop has no cliff in it.
+            #
+            # palette.json has carried a MEASURED per-material `wall` colour since the
+            # alignment work, and nothing has ever used it. dark_mud's is #3b2e1f,
+            # luminance 48.1 — within 3 of what the generator draws unaided. So the
+            # wall goes to the wall colour and the top to the top colour, which is what
+            # the palette was built to say.
+            tgt = _rgb2hsv(_hex(wall_hex or top_hex)[None, :])[0]
             hsv = _rgb2hsv(a[:, :, :3][m])
             v = hsv[:, 2]
             scale = min(1.0, SPILL_SPREAD / float(v.std() or SPILL_SPREAD))

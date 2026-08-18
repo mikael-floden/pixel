@@ -316,7 +316,20 @@ def wall_material_err(path, side_hex):
         lum = lambda c: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
         return abs(float(lum(med)) - float(lum(tgt))) / 2.0    # scaled onto the hue scale
     if cm < 25 or ct < 25:
-        return 999.0        # one side has no colour: not the material that was asked for
+        # ONE side has colour and the other does not. Colourfulness is itself a material
+        # property, so the honest distance here is how far apart the two are in CHROMA —
+        # not a hard rejection, and certainly not a luminance comparison, which ignores
+        # the very axis they differ on.
+        #
+        # A hard fail was tried first and over-fired by exactly one direction. It caught
+        # the real defect (black_rock-over-grass, a wall at chroma 0 against a grass
+        # target at 60 — that wall cannot be grass) but also condemned six cells whose
+        # wall is a COLOURED rendering of an achromatic material, all of them "over
+        # snow": snow in shadow is legitimately blue, chroma 40 against the palette's 12.
+        # Graded, both are handled on their merits — the grass cases land 49-60 and
+        # reject, shaded snow lands near the threshold and is judged rather than
+        # condemned.
+        return abs(cm - ct)
     d = abs(float(hm[0]) - float(ht[0]))
     return min(d, 255.0 - d)
 

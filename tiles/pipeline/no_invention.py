@@ -63,7 +63,7 @@ def _lum(px):
     return 0.299 * px[..., 0] + 0.587 * px[..., 1] + 0.114 * px[..., 2]
 
 
-def check(before, after, top_hex):
+def check(before, after, top_hex, extra_hex=()):
     """Violations of the invariant, as a dict of counts plus a sample pixel.
 
     Both images are canonicalised the same way before comparison: postprocess clips the
@@ -75,13 +75,20 @@ def check(before, after, top_hex):
     if a.shape != b.shape:
         return {"error": f"shape {a.shape} vs {b.shape}"}
 
-    tgt = palette_snap._hex(top_hex)
+    # A material has more than one palette colour: the flat top the surface is painted
+    # and the darker `wall` shade the same material takes seen from the side. Both are
+    # PALETTE colours, so both are legitimate destinations — the invariant is "the art's
+    # own colours plus the palette's", not "one hex".
+    targets = [palette_snap._hex(h) for h in (top_hex,) + tuple(extra_hex) if h]
+    tgt = targets[0]
     tgt_hsv = palette_snap._rgb2hsv(tgt[None, :])[0]
 
     op = (a[..., 3] > 128) & (b[..., 3] > 128)
     changed = op & (np.abs(a[..., :3] - b[..., :3]).max(-1) > 2)
     # Rule 1: painted the palette colour. Exactly, because that is what the fill does.
-    is_target = np.abs(b[..., :3] - tgt).max(-1) <= 2
+    is_target = np.zeros(b.shape[:2], bool)
+    for t in targets:
+        is_target |= np.abs(b[..., :3] - t).max(-1) <= 2
     suspect = changed & ~is_target
     if not suspect.any():
         return {"invented": 0, "checked": int(changed.sum())}
@@ -102,10 +109,14 @@ def check(before, after, top_hex):
     # alone: near the target in hue, saturation AND value, with the material's natural
     # spread as slack. Judging greys on luminance instead flagged 36 tiles that were
     # doing exactly what the X-over-X rule says to do — moving a snow wall onto snow.
-    onto = ((hue_gap(hd[:, 0], float(tgt_hsv[0])) <= HUE_TOL)
-            | ((hd[:, 1] < SAT_FLOOR) & (tgt_hsv[1] < SAT_FLOOR)))
-    onto &= hd[:, 1] <= float(tgt_hsv[1]) + SAT_SLACK
-    onto &= np.abs(hd[:, 2] - float(tgt_hsv[2])) <= VAL_SLACK
+    onto = np.zeros(len(hd), bool)
+    for t in targets:
+        th = palette_snap._rgb2hsv(t[None, :])[0]
+        ok = ((hue_gap(hd[:, 0], float(th[0])) <= HUE_TOL)
+              | ((hd[:, 1] < SAT_FLOOR) & (th[1] < SAT_FLOOR)))
+        ok &= hd[:, 1] <= float(th[1]) + SAT_SLACK
+        ok &= np.abs(hd[:, 2] - float(th[2])) <= VAL_SLACK
+        onto |= ok
 
     # Rule 3 — LEFT IN ITS OWN COLOUR. Re-lighting is allowed, re-colouring is not.
     grey = (hs[:, 1] < SAT_FLOOR) & (hd[:, 1] < SAT_FLOOR)
