@@ -1,19 +1,28 @@
 """Clear verdicts whose art has been regenerated since they were made.
 
-The maintainer, seeing an old complaint still attached to a freshly generated
-tree: "When you consume a request and generate something new, the new graphics
-should have no comment or approve/reject."
+The maintainer, seeing his own old complaint still attached to freshly
+generated art: "It's really confusing to me to know if this is what I have said
+on this state or if it's a ghost from something I reported on something
+completely different."
 
-He is right, and the art_hash route cannot do it on its own: the wiki stamps a
-STATE verdict with the hash of the PIECE'S sprite, so regenerating a state does
-not change the hash the verdict carries and the verdict never looks spent.
-Staleness is therefore decided by TIME — was the sprite committed after the
-verdict? — the same rule feedback.py has always used for pieces.
+STALENESS IS NOW DECIDED BY HASH, NOT BY TIME. A verdict carries `art`, the
+md5[:16] of the picture it was given to. When the art on disk hashes
+differently, the verdict is provably about a picture that no longer exists —
+no dates, no inference. This used to be impossible because the wiki stamped a
+STATE verdict with the PIECE's hash; it now stamps the clip's own, so the exact
+route works. Measured on fallen_log_014: not_lit_10 carries c728315868 while
+the file on disk hashes 74dbcbe2c3, and the piece hash is a third value again.
 
-A cleared verdict is a piece of his work being discarded, so the rule is narrow:
-only entries whose art is provably NEWER than the verdict, and the art must
-exist. Approvals go too: an approval of art that no longer exists is not an
-approval of what is on screen now.
+It is also what makes this usable. The old rule asked git for a commit date per
+verdict — one subprocess each, ~3,900 of them — and took long enough that it
+was timing out and silently doing nothing, which is precisely why his ghosts
+survived. Hashing the files is instant.
+
+A cleared verdict is a piece of his work being discarded, so the rule stays
+narrow: the art must still exist, and it must provably differ from what he
+judged. Approvals go too — an approval of art that no longer exists is not an
+approval of what is on screen now. Verdicts with no `art` stamp at all are left
+alone: nothing can be proven about them, and guessing would throw away work.
 
 live/feedback/objects.json belongs to the live server as single writer, so the
 file is rewritten byte-identically apart from the removed entries — ordered
@@ -59,15 +68,45 @@ def sprite_for(key):
     return None
 
 
+def _hash(relpath):
+    import hashlib
+    try:
+        with open(os.path.join(factory.ROOT, relpath), "rb") as f:
+            return hashlib.md5(f.read()).hexdigest()[:16]
+    except OSError:
+        return None
+
+
 def spent(entries):
+    """Keys whose stamped art hash provably differs from the art on disk.
+
+    A STAMP EQUAL TO THE PIECE'S OWN HASH IS AMBIGUOUS AND MUST BE TRUSTED.
+    Verdicts given before the wiki stamped per-clip hashes all carry the PIECE
+    sprite's hash, and so does a legitimately-judged anchor state, whose clip
+    IS the piece sprite. Treating those as mismatches flags 873 verdicts —
+    almost all of them APPROVALS — and clearing them would have thrown away the
+    bulk of his review work and sent him round the whole library again. That is
+    the same rule the wiki's own facetStale applies, for the same reason.
+
+    What remains is exact: a stamp that matches NEITHER the clip on disk NOR
+    the piece sprite can only have come from art that has since been replaced."""
     out = []
     for key, v in entries.items():
+        stamp = (v or {}).get("art")
+        if not stamp:
+            continue                       # unprovable — never guess
         sp = sprite_for(key)
         if not sp:
-            continue                       # piece gone: nothing on screen to confuse him
-        vt, ct = _ts(v.get("updated_at")), _committed(sp)
-        if vt and ct and ct > vt:          # art newer than the verdict
-            out.append(key)
+            continue                       # art gone: nothing on screen to confuse him
+        now = _hash(sp)
+        if not now or now == stamp:
+            continue
+        body = key[len("scenery/"):]
+        rel = body.split("#")[0]
+        piece_sprite = (factory.read_manifest(rel) or {}).get("sprite")
+        if piece_sprite and _hash(piece_sprite) == stamp:
+            continue                       # legacy/anchor stamp — trust it
+        out.append(key)
     return out
 
 
