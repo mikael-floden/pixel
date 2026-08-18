@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:36:31.487Z",
+  "updated_at": "2026-08-18T19:38:07.462Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -76,6 +76,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:36:31.078Z",
       "note": "The black rock is not dark enough"
+    },
+    "tiles/black_rock__over__snow/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:38:07.134Z",
+      "note": "Failed tile perspective (that happens sometimes)"
     }
   }
 }
