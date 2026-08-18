@@ -1834,47 +1834,62 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
 }
 const MONSTER_SORT_KEY = "wiki-monster-sort";
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
- * Maintainer 2026-08-18: "I feel the Creatures overview page needs to showcase
- * the art a bit better. It feels as if some big monsters are displayed with
- * 0.5x zoom and some smaller monsters are displayed with 1x zoom. It's also
- * hard to use that page to show to a friend how many cool monsters we have by
- * scrolling in the long list — because the monsters are so small it's hard to
- * even see them … I feel it's more impactful to just scroll in the overview."
+ * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
+ * zoom and some smaller monsters are displayed with 1x zoom … the monsters are
+ * so small it's hard to even see them … it's more impactful to just scroll in
+ * the overview." Round 2, on the fix: "the Dewling now looks very big compared
+ * to Diretusk. I think just showing the monsters in their TRUE SCALE (I think
+ * the game uses what we call 2x) and just make some cards take up more space
+ * instead. What if a card can be 1x1 (small), 2x1 (wide), 1x2 (tall) or 2x2 …
+ * On mobile two 1x1 can fit on one row. This makes it possible for small
+ * creatures to be displayed more densely and a big monster will get the
+ * 'wow'-effect because it needs a bigger card."
  *
- * BOTH COMPLAINTS ARE ONE BUG: the card drew `sprite.webp` inside a 110px box
- * with `object-fit: contain`, so a 256px frame was SHRUNK to fit (a mammoth at
- * 0.47×) while a 34px frame was left alone (a poring at 1×) — and since a frame
- * is mostly transparent padding, the creature inside it came out smaller again.
- * Nothing on that page was ever drawn at a size anybody chose.
+ * So: EVERY creature is drawn at the game's own scale — `data.artScale`, the
+ * 2× the viewer and the game share — cropped free of its frame padding by the
+ * measured `clip.bb`. Nothing is fitted, shrunk or blown up, which is the whole
+ * point: a mammoth really is four times a poring and the page finally says so.
  *
- * So the card measures the CREATURE, exactly as the animation viewer has since
- * 2026-07-30: `clip.bb` is the union of opaque pixels, measured at build time,
- * and the card crops to it and picks the largest WHOLE-NUMBER zoom that fills
- * its box. Integer only — this is pixel art and a fractional zoom smears it —
- * and per creature rather than one shared scale, because a shared scale is what
- * leaves a 28px hedgehog invisible next to a 142px shellback. The result is a
- * band, not a spread: every creature lands between 86 and 150 art px tall
- * instead of 27 and 121.
+ * WHAT VARIES IS THE CARD, NOT THE ZOOM. A creature that does not fit one cell
+ * takes two — across, down, or both — and `grid-auto-flow: dense` packs the
+ * small ones in around them. Measured on his phone: 45 creatures fit a single
+ * cell, 3 need a tall one and 9 the full 2×2, so a scroll is a dense field of
+ * small things with a giant every screen or so.
  *
- * AND IT MOVES. The whole roster's idle clips are 296 KB — less than one photo
- * — so the card animates the same idle/south the creature's own page opens on,
- * as a CSS steps() sweep over one strip: no per-frame requests, no JS in the
- * frame loop, and a scroll down the list is a wall of living creatures, which
- * is the thing he actually asked for. Armed by an IntersectionObserver so a
- * card that is not on screen holds no image and no animation.
+ * THE SPANS ARE MEASURED, NOT ASSUMED. The cell is whatever the grid actually
+ * gave it — a 360px phone is narrower than a 393px one and a desktop fits six
+ * — so `fitShowcase` reads the real geometry after layout and again on resize,
+ * and any creature wider or taller than one cell claims a second. Deciding from
+ * a hardcoded cell width would clip art on the narrow phones.
+ *
+ * AND IT MOVES. The whole roster's idle clips are 296 KB, so each card animates
+ * the same idle/south its own page opens on — a CSS steps() sweep over one
+ * strip, no per-frame requests, nothing in a JS frame loop. An
+ * IntersectionObserver arms a card near the viewport and disarms it after, so
+ * off-screen cards hold no image and no animation.
  */
-const SHOWCASE_BOX = 150;            // art px the creature is fitted into
-const SHOWCASE_FPS = 8;              // the viewer's own baseFps — same cadence
+// ONE GRID ROW, IN PX — art + its two-line text block. TUNED TO THE ROSTER'S
+// OWN SHAPE, not picked round: measured at 2×, 45 creatures stand 48–150px tall
+// and 12 stand 172–284px, with a clean gap between. A row that leaves the art
+// ~160px puts that gap exactly on the threshold, so the second cell goes to the
+// dozen creatures that genuinely need it. At 184 the line fell mid-cluster and
+// a 130px creature got a 322px stage — a near-twin of the 126px one beside it,
+// looking twice its size for no reason anybody could see.
+const SHOWCASE_ROW = 216;
+const SHOWCASE_GAP = 10;
+// NARROW ENOUGH THAT TWO FIT ON THE SMALLEST PHONE — his explicit
+// requirement ("On mobile two 1x1 can fit on one row"). A 360px device leaves
+// 332px of content, so 168 gave it ONE column and the whole point was lost;
+// 150 keeps two there and simply gives a desktop more of them.
+const SHOWCASE_MINCELL = 150;        // narrowest a 1×1 cell may be
+const showcaseScale = () => state.data.iso?.artScale ?? state.data.artScale ?? 2;
 const showcaseClip = (m) => m.animations?.idle?.dirs?.south
   ?? Object.values(m.animations?.idle?.dirs ?? {})[0]
   ?? Object.values(Object.values(m.animations ?? {})[0]?.dirs ?? {})[0]
   ?? null;
-/** The largest whole-number zoom that fits the box — the card's whole sizing
- *  rule, exported so a gate can check the picture against the arithmetic. */
-const showcaseZoom = (w, h) => Math.max(1, Math.min(6, Math.floor(SHOWCASE_BOX / Math.max(w || 1, h || 1)) || 1));
 let showcaseWatch = null;
-/** One card's art: cropped to the measured creature, integer-zoomed, animated
- *  when it is on screen. */
+/** One card's art: the creature at the game's scale, cropped to its measured
+ *  box, animated while it is on screen. */
 function showcaseArt(m) {
   const clip = showcaseClip(m);
   const stage = h("div", { class: "showcase checker" });
@@ -1888,7 +1903,7 @@ function showcaseArt(m) {
   // NOT `h` — that is the DOM helper this whole file is written with, and
   // shadowing it here put every h(...) below in the temporal dead zone.
   const aw = Math.max(1, x1 - x0), ah = Math.max(1, y1 - y0);
-  const z = showcaseZoom(aw, ah);
+  const z = showcaseScale();
   const fw = clip.fw ?? m.frameW, fh = clip.fh ?? m.frameH, n = Math.max(1, clip.frames ?? 1);
   const art = h("div", { class: "showcase-art" });
   art.style.width = `${aw * z}px`;
@@ -1900,10 +1915,11 @@ function showcaseArt(m) {
   art.style.backgroundPositionX = `${-x0 * z}px`;
   art.style.backgroundPositionY = `${-y0 * z}px`;
   art.style.setProperty("--frames", String(n));
-  art.style.setProperty("--dur", `${(n / SHOWCASE_FPS).toFixed(2)}s`);
+  art.style.setProperty("--dur", `${(n / 8).toFixed(2)}s`);   // the viewer's own baseFps
   art.dataset.strip = assetUrl(clip.strip);
   art.dataset.zoom = String(z);
   art.dataset.art = `${aw}x${ah}`;
+  art.dataset.drawn = `${aw * z}x${ah * z}`;
   stage.append(art);
   // LAZY BY OBSERVATION. 57 strips is 296 KB, but a phone should still not
   // fetch the bottom of the list to show the top of it — and an animation
@@ -1919,6 +1935,87 @@ function showcaseArt(m) {
   }, { rootMargin: "300px 0px" });
   showcaseWatch.observe(art);
   return stage;
+}
+/** Give every card the number of cells its creature actually needs — from the
+ *  geometry the browser really laid out, never from arithmetic over the
+ *  stylesheet. Runs after paint and on resize.
+ *
+ *  THE MEASUREMENT IS THE STAGE ITSELF. A first cut computed the art's room as
+ *  row − text − padding and was 8px optimistic (it forgot the card's own gap
+ *  and borders), so four creatures 130-134px tall were left in a 127px box with
+ *  their ears and feet clipped off. Reading a real 1×1 card's stage cannot
+ *  disagree with the CSS, whatever the CSS later becomes. */
+function fitShowcase(grid) {
+  if (!grid?.isConnected) return;
+  const cards = [...grid.querySelectorAll(".showcase-card")];
+  if (!cards.length) return;
+  const gw = grid.getBoundingClientRect().width;
+  if (!gw) return;
+  const cols = Math.max(1, Math.floor((gw + SHOWCASE_GAP) / (SHOWCASE_MINCELL + SHOWCASE_GAP)));
+  const cell = (gw - (cols - 1) * SHOWCASE_GAP) / cols;
+  // A card that is CURRENTLY 1×1 measures the single-cell stage for everybody.
+  // If none is (every creature big, a filtered list), one is borrowed for a
+  // frame — cheaper than a full reset, which flashes the whole grid small.
+  let probe = cards.find((c) => (c.dataset.span ?? "1x1") === "1x1");
+  let restore = null;
+  if (!probe) {
+    probe = cards[0];
+    restore = { c: probe.style.getPropertyValue("--c"), r: probe.style.getPropertyValue("--r") };
+    probe.style.setProperty("--c", "1");
+    probe.style.setProperty("--r", "1");
+  }
+  const el = probe.querySelector(".showcase");
+  // THE CONTENT BOX, not the border box: the stage carries 3px of padding so a
+  // creature never kisses its frame, and measuring inside it makes "does this
+  // fit" an exact question with no fudge constant to drift out of step with
+  // the stylesheet.
+  const pad = el && getComputedStyle(el);
+  const w1 = el ? el.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight) : 0;
+  const h1 = el ? el.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) : 0;
+  if (restore) { probe.style.setProperty("--c", restore.c || "1"); probe.style.setProperty("--r", restore.r || "1"); }
+  if (!(h1 > 0)) return;
+  // What a span BUYS: one more column is a whole cell plus the gap; one more
+  // row is a whole row plus the gap. Both measured off the single-cell stage.
+  const w2 = w1 + cell + SHOWCASE_GAP, h2 = h1 + SHOWCASE_ROW + SHOWCASE_GAP;
+  let over = 0;
+  for (const card of cards) {
+    const art = card.querySelector(".showcase-art");
+    const [w, hgt] = (art?.dataset.drawn ?? "0x0").split("x").map(Number);
+    // A creature that fits stays small; one that does not takes the second
+    // cell. Two columns is the cap: a THIRD would only serve art nothing in the
+    // roster is near, and it would leave holes dense packing cannot fill.
+    const c = w > w1 && cols > 1 ? 2 : 1;
+    const r = hgt > h1 ? 2 : 1;
+    card.style.setProperty("--c", String(c));
+    card.style.setProperty("--r", String(r));
+    card.dataset.span = `${c}x${r}`;
+    if (w > (c === 2 ? w2 : w1) || hgt > (r === 2 ? h2 : h1)) over++;
+  }
+  grid.dataset.cols = String(cols);
+  // A creature too big even for 2×2 would be clipped, which is the one outcome
+  // this layout must never produce silently. Nothing in the roster is close
+  // (the tallest is 284px against a 321px double stage), so this is a tripwire
+  // for the day the monsters agent ships something enormous.
+  grid.dataset.over = String(over);
+}
+let showcaseFit = null;
+function watchShowcase(grid) {
+  const run = () => fitShowcase(grid);
+  requestAnimationFrame(run);
+  if (showcaseFit) window.removeEventListener("resize", showcaseFit);
+  showcaseFit = () => { if (!grid.isConnected) { window.removeEventListener("resize", showcaseFit); showcaseFit = null; return; } run(); };
+  window.addEventListener("resize", showcaseFit);
+}
+
+/** The grid itself — built here so the fit pass is armed the moment it exists,
+ *  and never forgotten at a call site. */
+function showcaseGrid(...cards) {
+  const grid = h("div", { class: "showcase-grid" }, ...cards);
+  grid.style.setProperty("--sc-row", `${SHOWCASE_ROW}px`);
+  grid.style.setProperty("--sc-gap", `${SHOWCASE_GAP}px`);
+  grid.style.setProperty("--sc-min", `${SHOWCASE_MINCELL}px`);
+  watchShowcase(grid);
+  return grid;
 }
 
 function viewMonsters() {
@@ -1950,30 +2047,51 @@ function viewMonsters() {
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
     ], sort, () => route()),
-    h("div", { class: "grid showcase-grid" }, ...sorted.map((m) => {
+    showcaseGrid(...sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
       const st = stat.get(m.id);
       const sp = monsterSpawns(m.id);
-      // THE LEVEL RIDES ON THE ART, not on a full-width row under it: a
-      // showcase card is mostly picture, and every row of chrome is a row of
-      // the next creature pushed off the screen.
+      // EVERYTHING THAT IS NOT THE PICTURE RIDES ON THE PICTURE, or takes one
+      // line under it. A 1×1 card is 168px wide: a level row, a stats row and a
+      // pill row would leave the creature a letterbox.
+      //
+      // ALL OF IT IN THE TOP CORNERS, stacked. Creatures stand centred and grow
+      // upward from their feet, so the bottom of a full card is where the art
+      // is — a pill parked bottom-left sat across Ashfiend's leg. The top
+      // corners are the reliably empty ones.
       const stage = showcaseArt(m);
-      stage.append(h("div", { class: "showcase-level", title: "How hard this creature is to fight" },
+      stage.append(h("span", { class: "showcase-level", title: "How hard this creature is to fight" },
         "Lv ", h("b", {}, String(st.level ?? "?"))));
+      // THE OTHER MARKS STACK IN THE OPPOSITE CORNER. A creature stands centred
+      // on the bottom of its box and its head is top-CENTRE, so the two top
+      // corners are the reliably empty ones — a pill parked bottom-left sat
+      // across Ashfiend's leg, and both marks in one corner covered Emberjaw's
+      // head.
+      const marks = h("div", { class: "showcase-marks" },
+        // ONLY THE AGGRESSIVE ONES ARE MARKED. "Will it attack me" is the
+        // question this page answers at a glance, and a green "calm" chip on 48
+        // of 57 cards answers it by shouting at everybody. Absence is the calm.
+        ...(isAggressive(st) ? [h("span", { class: "pill err", title: "Attacks on sight" }, "aggressive")] : []),
+        ...(sp ? [] : [h("span", { class: "pill showcase-nospawn", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")]),
+        // THE REVIEW BADGES RIDE UP HERE TOO — ★★★ / approved / remove — and
+        // that is a layout rule, not a taste: they appear only once the Game
+        // Master has judged a creature, so left in the text block they would
+        // add a third line to SOME cards, shrinking those stages below the one
+        // the span was measured from and clipping the art of exactly the
+        // creatures he had just reviewed.
+        ...entityBadge("monsters", m.path));
+      if (marks.children.length) stage.append(marks);
       return h("a", { class: "card showcase-card", href: `#/monsters/${m.id}` },
         stage,
-        h("div", { class: "card-name" }, m.name),
-        h("div", { class: "card-sub" },
-          `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
-        // The habitat count is gone from here (maintainer 2026-08-06) — will
-        // it come for me matters more at a glance, and the count is still on
-        // the creature's own page. "not spawned" stays beside it because it
-        // is a different fact from calm: that one is in no world at all.
-        h("div", { class: "card-sub card-pills" }, aggroPill(st),
-          sp ? null : h("span", { class: "pill", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")),
-        h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
+        // EXACTLY TWO LINES, ALWAYS. Every row of this grid is the same height,
+        // so anything that appears on some cards and not others has to ride on
+        // the art instead (see the marks above).
+        h("div", { class: "showcase-text" },
+          h("div", { class: "card-name" }, m.name),
+          h("div", { class: "card-sub" },
+            `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`)));
     })));
 }
 const monsterLore = (m) => m.loreDesc ?? m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
@@ -2767,7 +2885,15 @@ function viewMonster(id) {
         h("h1", {}, m.name),
         // How many roam the world, tucked under the name and above the
         // description (maintainer 2026-07-30).
-        h("div", { class: "spawn-line" }, (() => {
+        h("div", { class: "spawn-line" },
+          // WHERE "CALM" LIVES NOW. The overview marks only the aggressive
+          // ones — a green pill on 48 of 57 cards answers "will it attack me"
+          // by shouting at everybody — so the creature's own page is where
+          // both states are spelled out in words. The stat grid further down
+          // says "Aggro radius (wu): 0", which is the same fact in a form that
+          // assumes you already know the rule.
+          aggroPill(monsterStats(m.id)),
+          (() => {
           const sp = monsterSpawns(m.id);
           return sp
             ? h("span", { class: "pill ok" }, `${sp.spawned} roaming the world across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)

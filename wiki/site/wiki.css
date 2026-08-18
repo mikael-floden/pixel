@@ -186,30 +186,47 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .card .card-sub { color: var(--muted); font-size: 12.5px; }
 .card-badges { display: flex; gap: 5px; flex-wrap: wrap; }
 /* ---- Creatures overview: a SHOWCASE, not a contact sheet ----
-   The card crops to the measured creature and zooms it by a whole number to
-   fill one box, so every creature lands in the same size band however its
-   frame was exported (maintainer 2026-08-18: "some big monsters are displayed
-   with 0.5x zoom and some smaller monsters ... 1x zoom ... the monsters are so
-   small it's hard to even see them"). The art also ANIMATES while it is on
-   screen — one strip per card, swept by CSS steps(), so scrolling the list is
-   the showcase rather than a page you have to click into. */
-.showcase-grid { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 16px; }
-.showcase-card { gap: 5px; }
-.showcase {
-  position: relative; height: 172px; border-radius: 10px; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
+   Every creature at the GAME's own scale, cropped free of its frame padding —
+   and the CARD grows instead of the zoom shrinking (maintainer 2026-08-18:
+   "just showing the monsters in their true scale … and just make some cards
+   take up more space instead … 1x1 (small), 2x1 (wide), 1x2 (tall) or 2x2 …
+   On mobile two 1x1 can fit on one row"). Spans are assigned in JS from the
+   measured cell, so a narrow phone and a wide desktop both get honest sizes;
+   `dense` packs the small ones into the gaps the big ones leave. */
+.showcase-grid {
+  display: grid;
+  gap: var(--sc-gap, 10px);
+  grid-template-columns: repeat(auto-fill, minmax(var(--sc-min, 168px), 1fr));
+  grid-auto-rows: var(--sc-row, 184px);
+  grid-auto-flow: row dense;
 }
-/* Small, in the corner, over its own scrim so it reads on any creature. */
-.showcase-level {
-  position: absolute; top: 6px; right: 8px;
-  font-size: 12px; padding: 2px 8px; border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-  color: var(--muted); border: 1px solid var(--border);
+.showcase-card {
+  grid-column: span var(--c, 1);
+  grid-row: span var(--r, 1);
+  padding: 8px; gap: 6px; overflow: hidden;
 }
-.showcase-level b { color: var(--ink); }
+/* The art takes whatever the row span left over — no arithmetic to keep in
+   step with the stylesheet.
+
+   CREATURES SHARING A ROW STAND ON THE SAME LINE (`align-items: flex-end`),
+   because that is what makes true scale READ. Centred, a 48px poring and a
+   150px wolf both float in the middle of their own boxes and the eye compares
+   each to its frame; standing on a common floor, the poring is plainly a small
+   thing beside a big one.
+   A TWO-ROW CARD CENTRES INSTEAD. Its bottom edge is a row lower than its
+   neighbours', so it shares no floor with anybody and the anchoring buys
+   nothing — while a 220px creature pinned to the bottom of a 385px stage left
+   a third of the card as bald sky.
+
+   THE 3px PAD IS THE DESIGN, NOT A FUDGE: it is the breathing room between a
+   creature and its frame, and because it is real padding the span decision can
+   simply ask "does the art fit this box" with no constant to keep in step. */
+.showcase { position: relative; flex: 1; min-height: 0; border-radius: 8px; overflow: hidden;
+  display: flex; align-items: flex-end; justify-content: center; padding: 3px; }
+.showcase-card[data-span$="x2"] .showcase { align-items: center; }
 .showcase-art {
   background-repeat: no-repeat;
-  image-rendering: pixelated;          /* integer zoom, nearest neighbour — the repo's law */
+  image-rendering: pixelated;          /* the game's own scale, nearest neighbour */
   flex: none;
 }
 /* ONE keyframe for every card: the per-card geometry rides in custom
@@ -220,9 +237,33 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 .showcase-art.play { animation: showcase-run var(--dur, 0.5s) steps(var(--frames, 1)) infinite; }
 .showcase-plain { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
-/* A creature that cannot be measured, and anyone who asked the OS for less
-   motion, gets the same picture standing still. */
 @media (prefers-reduced-motion: reduce) { .showcase-art.play { animation: none; } }
+
+/* Chrome rides ON the art — a 168px card has no room for a row per fact — and
+   in the TOP corners, because a creature stands on the bottom of its box and a
+   pill parked down there sits across its legs. */
+.showcase-marks {
+  position: absolute; top: 6px; left: 6px; z-index: 1;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+}
+.showcase-marks .pill { font-size: 10.5px; padding: 1px 7px; }
+.showcase-level {
+  position: absolute; top: 6px; right: 6px; z-index: 1;
+  font-size: 12px; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  color: var(--muted); border: 1px solid var(--border);
+}
+.showcase-level b { color: var(--ink); }
+.showcase-nospawn { opacity: 0.8; }
+/* Name and stats: two tight lines that never wrap, so every row is the height
+   the grid says it is. */
+.showcase-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.showcase-text .card-name { font-size: 14px; line-height: 1.25; }
+.showcase-text .card-sub { font-size: 11.5px; line-height: 1.25; }
+.showcase-text .card-name, .showcase-text .card-sub {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.showcase-text .card-badges:empty { display: none; }
 
 .checker {
   background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;

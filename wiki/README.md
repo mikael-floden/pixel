@@ -1242,25 +1242,92 @@ crosses both placed and unplaced NPCs, or it would prove nothing. Verified 360
 ## The Creatures overview is a SHOWCASE
 
 Maintainer 2026-08-18: *"I feel the Creatures overview page needs to showcase
-the art a bit better. It feels as if some big monsters are displayed with 0.5x
-zoom and some smaller monsters are displayed with 1x zoom. It's also hard to use
-that page to show to a friend how many cool monsters we have by scrolling in the
-long list — because the monsters are so small it's hard to even see them … I
-feel it's more impactful to just scroll in the overview."*
+the art a bit better … it's hard to use that page to show to a friend how many
+cool monsters we have by scrolling in the long list — because the monsters are
+so small it's hard to even see them … I feel it's more impactful to just scroll
+in the overview."*
 
-**Both complaints were one bug.** The card drew `sprite.webp` in a 110px box
-with `object-fit: contain`, so a 256px frame was SHRUNK to fit (a mammoth at
-0.47×) while a 34px frame was left alone (a poring at 1×) — and a frame is
-mostly transparent padding, so the creature inside came out smaller again.
-Nothing on that page was ever drawn at a size anybody chose.
+**The original bug was that nothing on that page was ever drawn at a size
+anybody chose.** The card drew `sprite.webp` in a 110px box with
+`object-fit: contain`, so a 256px frame was SHRUNK to fit (a mammoth at 0.47×)
+while a 34px frame was left alone (a poring at 1×) — and a frame is mostly
+transparent padding, so the creature inside came out smaller again.
 
-So the card **measures the creature**, exactly as the animation viewer has since
-2026-07-30: `clip.bb` (the union of opaque pixels, measured at build time) is
-the crop, and the card picks the largest **whole-number** zoom that fills its
-box. Integer only — pixel art scaled by a fraction smears — and **per creature**
-rather than the viewer's one shared scale, because a shared scale is what leaves
-a 28px hedgehog invisible beside a 142px shellback. Measured on the real roster:
-the drawn creature went from **28–85px (×3.03 spread)** to **86–150px (×1.74)**.
+The first fix cropped to the measured creature (`clip.bb`, the union of opaque
+pixels, computed at build time) and picked the largest whole-number zoom that
+filled the box. Bigger, but wrong, and he said so immediately: *"the Dewling now
+looks very big compared to Diretusk."* Fitting every creature to one box is just
+the original bug with the sign flipped — a per-card zoom still throws away the
+one thing the art is telling you, which is **how big the thing is**.
+
+### True scale, and the CARD is what varies
+
+*"I think just showing the monsters in their true scale (I think the game uses
+what we call 2x) and just make some cards take up more space instead … what if
+a card can be 1x1 (small), 2x1 (wide), 1x2 (tall) or 2x2 (wide and tall). On
+mobile two 1x1 can fit on one row. This makes it possible for small creatures to
+be displayed more densely and a big monster will get the 'wow'-effect because it
+needs a bigger card."*
+
+That is the design, and it is exactly what ships:
+
+- **One scale for the whole roster: `data.artScale`**, the 2× the game and the
+  animation viewer already draw at. No per-card zoom, no fitting. `clip.bb`
+  survives, but only to crop the frame's padding away — it never changes a size.
+  Measured: creatures land between **48 and 284 drawn px tall**, and that spread
+  is the point rather than something to flatten. A mammoth is **242px** next to
+  a **74px** poring.
+- **A creature that does not fit one cell claims a second** — across, down, or
+  both. `grid-auto-flow: dense` then packs the small ones back into the holes
+  the big ones leave, so the page stays a solid field with no ragged gaps.
+  Current roster on his phone: **45 single cells, 3 tall, 9 full 2×2**; on a
+  desktop the narrower column tips one more creature wide, so all four spans
+  appear (44 / 2 / 10 / one 2×1).
+- **The row height is tuned to the roster's own shape**, not picked round. At 2×
+  the creatures fall into two groups with a clean gap between them: 45 stand
+  48–150px tall, 12 stand 172–284px. A 216px row leaves the art **159px**, which
+  puts that gap exactly on the threshold, so a second cell goes to the dozen
+  that genuinely need one. The first cut used 184 and split the *cluster*: a
+  130px creature was handed a 322px stage while its 126px neighbour kept a 128px
+  one, looking twice its size for no reason anybody could see.
+- **Two 1×1 on one row on mobile, as asked.** The cell floor is 150px, not the
+  168 the first cut used: a 360px phone leaves 332px of content, and 168 gave it
+  ONE column, which loses the whole point on the narrowest device people
+  actually hold. Measured: 360px → 2 columns, 393px → 2, 1280px → 6. A desktop
+  gets **more** creatures, never bigger ones — the mammoth is 156×242 on both.
+- **Creatures sharing a row stand on the same floor.** The art is bottom-aligned,
+  so a 48px poring beside a 150px wolf is plainly a small thing next to a big
+  one; centred, the eye compares each to its own box instead and half the point
+  of true scale is lost. A two-row card centres instead — its bottom edge is a
+  row below its neighbours' so it shares no floor with anybody, and anchoring it
+  down there left a third of the card as bald sky above a 220px creature.
+
+**The spans are measured, not computed.** `fitShowcase()` reads a real 1×1
+card's stage after layout — and again on resize — and gives a second cell to any
+creature wider or taller than it fits. A first cut derived the art's room from
+row − text − padding instead and was 8px optimistic (it forgot the card's gap
+and borders), which clipped the ears and feet off four creatures. Reading the
+browser's own geometry cannot disagree with the CSS, whatever the CSS becomes.
+It measures the stage's CONTENT box, so the 3px of breathing room between a
+creature and its frame is real padding rather than a constant in the JS that
+would drift out of step with the stylesheet. Two columns is the cap: a third
+would serve art nothing is near, and would open holes dense packing cannot fill.
+`grid.dataset.over` counts anything too big even for 2×2 — zero today, a
+tripwire for the day the monsters agent ships something enormous.
+
+**Chrome rides on the art, in the TOP corners.** A 1×1 card has no room for a
+row per fact, and creatures stand on the bottom of their box and grow upward, so
+the bottom corners are where the art is — a pill parked bottom-left sat across
+Ashfiend's leg. Level chips top-right; `aggressive`, `not spawned` and the Game
+Master's review badges stack top-left. **Those badges being up there is a layout
+rule, not a taste**: they appear only once he has starred or rejected a
+creature, so in the text block they would add a third line to *some* cards,
+shrinking exactly those stages below the one the spans were measured from and
+clipping the art of the creatures he had just reviewed. The text block is two
+lines on every card, always. The green `calm` pill was dropped from the
+overview: on 48 of 57 cards it answered "will it attack me" by shouting at
+everybody, so absence is the calm and the word moved to the creature's own page,
+where there is room to say it and to explain the rule.
 
 **And it moves.** The whole roster's idle clips are 296 KB — less than one photo
 — so each card animates the same idle/south its own page opens on, as a CSS
@@ -1268,20 +1335,39 @@ the drawn creature went from **28–85px (×3.03 spread)** to **86–150px (×1.
 loop, and scrolling the list is a wall of living creatures, which is the thing
 he asked for. An IntersectionObserver arms a card as it approaches the viewport
 and disarms it after, so an off-screen card holds no image and no animation
-(measured: 3 of 57 animating at the top of the list). `prefers-reduced-motion`
+(measured: 6 of 57 animating at the top of the list). `prefers-reduced-motion`
 gets the same picture, standing still.
 
-The level moved onto the art as a corner chip: a showcase card is mostly
-picture, and every row of chrome is a row of the next creature pushed off the
-screen.
+Gate: `wiki/tools/check-showcase.mjs` re-derives every crop from `data.json` and
+compares it against the RENDERED page — that the scale is one number and it is
+the game's, that a mammoth really does tower over a poring, that every card is
+one of the four legal spans and the roster genuinely uses the range, that **no
+card clips its own art** and none overflows even 2×2, and that a creature is the
+same size on a phone and a desktop. It re-runs the whole layout at 360, 393 and
+1280px (his phone is 393) and counts SHARED ROWS at each, because "two 1×1 fit
+on one row" is a claim about the packing and not about a column count.
 
-Gate: `wiki/tools/check-showcase.mjs` — it re-derives every card's crop and zoom
-from `data.json` and compares against the RENDERED page, asserts the size band
-(and computes what the frame-fitted design would have drawn, so the band check
-cannot go vacuous), watches the background actually step through frames, checks
-that the far end of the list is idle while you are at the top, that the card
-still opens its creature, and that reduced motion stops the animation without
-losing the art.
+Three of its checks exist because of bugs this design can have without looking
+broken:
+
+- **every single cell is the same box.** One 1×1 card is measured and its stage
+  applied to all 57, so a card that is quietly shorter than the probe gets a
+  span that clips it. This is the check that caught a stray `*/` in the
+  stylesheet silently disabling the whole `.showcase` rule — the page still drew
+  every creature, it had simply stopped being a layout.
+- **the text block is exactly two lines, with no badge row in it** — the
+  structural half of the rule above, so the regression cannot come back through
+  the markup.
+- **a bigger card is one the creature needs.** Every 2-row card must hold art
+  that would not have fitted one row, every 2-column card art too wide for one
+  column. "Some cards take up more space" only reads as size if the big card is
+  big BECAUSE the creature is.
+
+Then the behaviour: creatures sharing a row stand on one floor (measured off the
+art's own bottom edge, not its box), the background actually steps through
+frames, the far end of the list is idle while you are at the top, a card still
+opens its creature, and reduced motion stops the animation without losing the
+art.
 
 ## Creatures overview: sortable, and "will it attack me" at a glance
 
@@ -1292,22 +1378,39 @@ losing the art.
   names (Emberwing, Nightmule, Ashfiend…). **by level** is hardest first;
   **aggressive first** puts the ones that hunt you before the rest and orders
   each half hardest-first, which is the question that sort answers.
-- **A red `aggressive` / green `calm` pill replaced the habitat line** on the
-  card. The habitat count is still on the creature's own page; whether it comes
-  for you unprompted matters more in a grid.
+- **A red `aggressive` mark replaced the habitat line** on the card. The
+  habitat count is still on the creature's own page; whether it comes for you
+  unprompted matters more in a grid.
+  - **Only the aggressive ones are marked** (2026-08-18, with the showcase).
+    A green `calm` on 48 of 57 cards answers "will it attack me" by shouting at
+    everybody, so absence is the calm — and the WORD moved to the creature's
+    own page, in the spawn line, where there is room to say it and to explain
+    the rule in a tooltip. The stat grid there gives `Aggro radius (wu): 0`,
+    which is the same fact in a form that assumes you already know the rule.
   - **It is LIVE data, not a build-time snapshot.** A monster proximity-aggros
     only when its aggro radius is above zero and the tuning default is 0 —
-    passive by default, 9 of 24 hunt. The pill reads through `monsterStats`,
+    passive by default, 9 of 57 hunt. The mark reads through `monsterStats`,
     the same live doc the stats editor writes, so re-tuning a radius in the
-    wiki re-colours the pill with no rebuild.
+    wiki re-marks the card with no rebuild.
   - `not spawned` survives beside it: a creature in no world at all is a
     different fact from a calm one, and it was carried by the line that went.
   - Gate: **`wiki/tools/check-creatures.mjs`** derives its expectation from
-    `live/tuning/monsters.json` rather than a list typed into the gate, checks
-    each pill against its own creature's radius, asserts the two pills are
-    genuinely red- and green-dominant by COMPUTED COLOUR (two words in the same
-    colour would pass a text-only check), and drives all three sorts plus the
-    reload that proves the choice sticks.
+    `live/tuning/monsters.json` rather than a list typed into the gate, and
+    checks the mark against each creature's own radius in BOTH directions —
+    "absence is the calm" is only true if the absence is checked as hard as the
+    presence. `aggressive` must be red-dominant by COMPUTED COLOUR on the
+    overview (two words in the same colour would pass a text-only check) and
+    `calm` green-dominant on the creature page it moved to, or half the claim
+    would go unchecked. Then all three sorts and the reload that proves the
+    choice sticks.
+  - **A GATE THAT WENT QUIET, and how.** The showcase moved the level onto the
+    art, and this gate kept reading the old `.thumb-chip`: every card reported
+    level 0, so "by level is hardest first" spent a fortnight comparing 0 ≥ 0
+    fifty-seven times and passing. Repaired 2026-08-18 — the read now returns
+    `null` rather than `0` when the chip is missing, and the gate asserts it
+    found a real spread of levels (20 distinct) and that each equals the TUNED
+    level before it judges the order. A selector that stops matching must fail
+    the gate, not soften it.
 
 - **ONE PLAY BUTTON PER SEPARATELY-AUDIBLE THING** (maintainer 2026-08-06, on
   the player view of a creature page: "why is the group in a group? Why 3 play
