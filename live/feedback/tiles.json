@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:46:53.906Z",
+  "updated_at": "2026-08-18T19:47:33.821Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -136,6 +136,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:46:53.545Z",
       "note": "the black rock is not dark enough"
+    },
+    "tiles/deep_water__over__black_rock/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:47:33.525Z",
+      "note": "this tile looks just bad (estetics) so I had to remove it"
     }
   }
 }
