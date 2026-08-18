@@ -330,8 +330,25 @@ def wall_material_err(path, side_hex):
         # reject, shaded snow lands near the threshold and is judged rather than
         # condemned.
         return abs(cm - ct)
+    # HUE AND COLOURFULNESS, because hue alone cannot tell a material from a washed-out
+    # ghost of it. ice-over-grass shipped a candidate that is a SOLID ICE BLOCK — no
+    # grass anywhere in it — and scored 11.0 against the grass target, well inside the
+    # gate, because a pale cyan sits only 16 hue units from deep green. Its saturation
+    # was off by 151 and its value by 115, and both were ignored. The maintainer found
+    # it by eye, again: "Ice can't impossible have any green".
+    #
+    # Saturation is the right second axis and lightness is not. A wall is the material
+    # in shadow, so it is legitimately DARKER than the palette — that is why this
+    # measured hue in the first place — but shading does not wash the colour out of a
+    # pigment. Measured against seven walls labelled by eye, the saturation gap splits
+    # them with a wide margin and nothing else does: walls that really show the material
+    # score 10/56/61/62, walls that do not score 134/145/211. Hue overlaps (a wrong wall
+    # at 11 against a right one at 22); CIELab dE overlaps too (29.2 wrong against 32.2
+    # right).
+    #
+    # /3.0 puts it on the same scale as the hue term so one threshold governs both.
     d = abs(float(hm[0]) - float(ht[0]))
-    return min(d, 255.0 - d)
+    return max(min(d, 255.0 - d), abs(float(hm[1]) - float(ht[1])) / 3.0)
 
 
 # A wall further than this from its material is the wrong material, not a bad shade.

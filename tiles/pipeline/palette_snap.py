@@ -640,25 +640,41 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         # Tinting a three-layer tile's grey-stone wall toward green is what produced
         # colours that were in neither the art nor the palette.
         if align_side and side_hex:
-            # THE WALL BODY, not "everything that is not fringe". retint_spill
-            # legitimately declines on some pairs — ice over grass separates by only 5
-            # hue units because that tile's grass is a dark teal, and lava over grass's
-            # candidate pixels sit at depth 0.63, which is wall rather than fringe. On
-            # those the fringe mask is empty, and treating its complement as wall
-            # painted the ICE overhang grass-green: the 10-star transition, erased.
+            # ASK EACH PIXEL WHICH MATERIAL IT IS, against the two PALETTE colours.
             #
-            # The lower 60% of each column is wall by construction, which is the same cut
-            # fringe_clarity, wall_material_err and wall_quality already take. Where a
-            # fringe IS found it is excluded as well, so the two rules compose.
+            # The maintainer's insight, and it removes the need for detection entirely:
+            # "Ice can't impossible have any green, so you must in this case know that
+            # green is supposed to be grass. It feels like you are trying to solve this
+            # by drawing a line or something." That is exactly what the previous version
+            # did — it took the lower 60% of the wall as "the wall" and left the rest,
+            # so a bright band of grass under the ice lip kept the generator's colour.
+            # A line drawn across the art, not an answer about the art.
+            #
+            # An X-over-Y wall holds exactly two materials and BOTH palette colours are
+            # known, so nearest-of-two decides it with nothing inferred. Measured on the
+            # cell the maintainer was reviewing: 93% of the wall classifies as grass, 7%
+            # as ice, and the 7% is the thin lip along the top edge.
+            #
+            # This is not the hue-off-a-median inference that failed three times. The
+            # references are fixed palette entries, and the classification is a distance,
+            # not a shift.
             wall_all = reg["left"] | reg["right"]
-            body = np.zeros_like(wall_all)
-            for x in np.unique(np.where(wall_all)[1]):
-                c = np.where(wall_all[:, x])[0]
-                body[c.min() + int(0.4 * (c.max() - c.min())):c.max() + 1, x] = True
-            m = body & wall_all & ~fringe
-            px = substitute(a, m, side_hex)
-            if px is not None:
-                out[:, :, :3][m] = px
+            t_rgb, s_rgb = _hex(top_hex), _hex(side_hex)
+            # Only when the two materials are actually distinguishable. Grass over slime
+            # sits close enough that the split would be noise — there the fringe rules
+            # above already handle it, and substituting either way lands on nearly the
+            # same colour anyway.
+            if float(np.linalg.norm(t_rgb - s_rgb)) >= 60.0:
+                d_t = np.linalg.norm(a[:, :, :3] - t_rgb, axis=2)
+                d_s = np.linalg.norm(a[:, :, :3] - s_rgb, axis=2)
+                m_side = wall_all & (d_s <= d_t)
+                m_top = wall_all & (d_t < d_s)
+                for mask, hx in ((m_side, side_hex), (m_top, top_hex)):
+                    if mask.sum() < 8:
+                        continue
+                    px = substitute(a, mask, hx)
+                    if px is not None:
+                        out[:, :, :3][mask] = px
 
     for k in ("left", "right") if align_walls else ():
         m = reg[k]
