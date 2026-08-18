@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:57:34.989Z",
+  "updated_at": "2026-08-18T19:59:06.765Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -225,6 +225,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:57:34.598Z",
       "note": "Tile got the perspective wrong."
+    },
+    "tiles/grey_stone__over__deep_water/1": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:59:06.375Z",
+      "note": "the crack in this tile is to big to be used"
     }
   }
 }
