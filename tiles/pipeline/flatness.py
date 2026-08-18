@@ -443,6 +443,19 @@ def swapped_err(path, top_hex, side_hex):
     with 6% above zero. At a margin of 20 it catches 45% of the swapped tiles and none
     of the kept ones.
     """
+    # UNANSWERABLE when the two materials share a colour. paving_stone and grey_stone
+    # carry the SAME palette hex (#72786c, distance 0), so asking which of them the top
+    # looks like is a coin flip — and the gate was rejecting that cell's tiles on the
+    # result. deep_water/dark_mud (55) and black_rock/grass (52) sit close enough to be
+    # just as meaningless. Returning "not swapped" is right rather than merely safe:
+    # if the two are indistinguishable then the tile cannot be visibly backwards.
+    #
+    # Same 60 threshold and same reasoning as top_contamination, which already declines
+    # on this basis.
+    t = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    u = np.array([int(side_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    if float(np.linalg.norm(t - u)) < 60.0:
+        return -999.0
     a = top_material_err(path, top_hex)
     b = top_material_err(path, side_hex)
     if a >= 999.0 or b >= 999.0:
