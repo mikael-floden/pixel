@@ -293,11 +293,30 @@ def wall_material_err(path, side_hex):
         return 999.0
     med = np.median(np.array(low), 0)
     tgt = np.array([int(side_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)], float)
+    # ROUTING BY ABSOLUTE CHROMA, and a grey wall against a coloured target is a FAIL
+    # rather than a brightness question.
+    #
+    # The old test routed on HSV saturation < 50 and then compared luminance. That is
+    # how a three-layer tile passed unnoticed: black_rock-over-grass drew black stones
+    # over grass over LIGHT GREY STONE, and its grey wall was scored on brightness
+    # against a green target and came out 6.7 — comfortably inside the gate. Brightness
+    # cannot distinguish "grey stone" from "grass"; only chroma can, and when one side
+    # has none there is no meaningful distance to compute. Inventing one is the same
+    # mistake that painted the grass magenta, one function over.
+    #
+    # Deliberately the TIGHTENING direction. The looser variants tested alongside this
+    # each recovered cells by lowering the bar — they dropped the published wall score
+    # in 11 of 13 cells they touched, landing rank-0 at wall 0.00, trading one named
+    # defect for a hard seam repeated down every cliff.
     hm = palette_snap._rgb2hsv(med[None, :])[0]
     ht = palette_snap._rgb2hsv(tgt[None, :])[0]
-    if ht[1] < 50 or hm[1] < 50:
+    chroma = lambda c: float(max(c) - min(c))
+    cm, ct = chroma(med), chroma(tgt)
+    if cm < 25 and ct < 25:
         lum = lambda c: 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
         return abs(float(lum(med)) - float(lum(tgt))) / 2.0    # scaled onto the hue scale
+    if cm < 25 or ct < 25:
+        return 999.0        # one side has no colour: not the material that was asked for
     d = abs(float(hm[0]) - float(ht[0]))
     return min(d, 255.0 - d)
 
@@ -467,6 +486,33 @@ def wall_quality(path, ideal_contrast=26.0, tol=18.0):
 
     rgb = a[:, :, :3]
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
+    # THE FRINGE IS THE OTHER MATERIAL, so it is not part of the wall's statistics.
+    # Every other wall measurement in this pipeline already says so and cuts the same
+    # way — fringe_clarity, wall_material_err, palette_snap.align_wall and
+    # retint_spill all take each column's lower 60%. wall_quality was the only one that
+    # did not, and it is the one that GATES.
+    #
+    # The cost was severe and invisible. `seam_v` compares the top two rows of the wall
+    # against the bottom two; on an X-over-Y tile the top rows ARE the overhang that
+    # MIN_OVERHANG separately requires, so the term was largely a restatement of how far
+    # apart the two materials sit in brightness: r(pair's palette luminance separation,
+    # seam_v) = +0.565 over 12,847 tiles, collapsing to +0.133 measured on the body.
+    # That made the wall gate unsatisfiable BY CONSTRUCTION for high-contrast pairs —
+    # wall >= 2.0 passed 56.8% of tiles at low luminance separation and 12.7% at high —
+    # and the 19 cells that could not reach three candidates were exactly those pairs.
+    #
+    # Worse, it inverted the ranking against the maintainer's own first criterion:
+    # r(overhang, wall score) = -0.156, i.e. the tile with the better transition scored
+    # the worse wall. Re-ranked on the body, grass-over-snow's top pick goes from a
+    # BROWN wall to a snow wall with grass spilling over it.
+    body = np.zeros_like(wall)
+    for x in np.unique(np.where(wall)[1]):
+        c = np.where(wall[:, x])[0]
+        body[c.min() + int(0.4 * (c.max() - c.min())):c.max() + 1, x] = True
+    body &= wall
+    if body.sum() < 40:
+        body = wall
+
     v = lum[wall]
     mean = float(v.mean()) or 1.0
     contrast = float(v.std())          # absolute, dark-material safe
@@ -483,14 +529,15 @@ def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     # So the honest test is to compare each edge of the wall band against the edge it
     # will actually abut, and see how big the jump is relative to the wall's own
     # internal variation — a seam only reads as a line if it is worse than the texture.
-    def _seam(axis):
+    def _seam(axis, region=None):
+        region = wall if region is None else region
         prof = []
-        idx = np.where(wall.any(axis=axis))[0]
+        idx = np.where(region.any(axis=axis))[0]
         if len(idx) < 6:
             return None
         lo, hi = int(idx.min()), int(idx.max())
         for i in (lo, lo + 1, hi - 1, hi):
-            band = wall.take(i, axis=1 - axis)
+            band = region.take(i, axis=1 - axis)
             vals = lum.take(i, axis=1 - axis)[band]
             prof.append(float(vals.mean()) if band.sum() else None)
         if any(p is None for p in prof):
@@ -500,7 +547,10 @@ def wall_quality(path, ideal_contrast=26.0, tol=18.0):
         return abs(near - far) / (mean or 1.0)
 
     seam_h = _seam(0)
-    seam_v = _seam(1)
+    # seam_v ONLY on the body: vertically, the rows it compares are the fringe.
+    # seam_h compares the LEFT and RIGHT edges of the wall, which the fringe spans
+    # equally, so it is not contaminated and is left measuring the whole face.
+    seam_v = _seam(1, body)
 
     # --- combine ------------------------------------------------------------
     # discretion: a triangular band around ideal_spread, so flat AND garish both lose

@@ -196,10 +196,16 @@ def _stale_family(cell):
     no-spill roll. The eight cells that did: median stacking band 4.38, range 0.8-7.8.
     The six that were skipped: median 16.57, range 5.2-48.9 — and they are all three of
     the cells that visibly stripe when stacked.
+
+    THREE sheets, not one. The first version of this asked only whether a sheet from the
+    right family existed, which bought each stale cell exactly one roll and then declared
+    it satisfied — and one 16-tile sheet yields about one tile clearing the bar, which is
+    not enough to beat an incumbent chosen from twenty. All six stale cells still shipped
+    their old art afterwards. The family has to supply a real choice, not a token.
     """
     if cell.split("__over__")[0] != cell.split("__over__")[1]:
         return False        # only the same-over-same family has been superseded so far
-    return not glob.glob(os.path.join(OUT, cell, "sheet_*_same*"))
+    return len(glob.glob(os.path.join(OUT, cell, "sheet_*_same*"))) < 3
 
 
 def cell_parts(cell, types):
