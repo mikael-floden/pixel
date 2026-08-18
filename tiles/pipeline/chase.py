@@ -516,8 +516,9 @@ def main():
                     help="rolls per cell before giving up (the maintainer's own number)")
     ap.add_argument("--min-clarity", type=float, default=0.0,
                     help="minimum share of wall pixels that read decisively as the top material")
-    ap.add_argument("--min-wall", type=float, default=2.0,
-                    help="a dead flat cliff is not a win")
+    ap.add_argument("--min-wall", type=float, default=1.0,
+                    help="a dead flat cliff is not a win; see MIN_WALL in publish.py "
+                         "for why this is 1.0 and not 2.0")
     ap.add_argument("--max-usd", type=float, default=20.0)
     ap.add_argument("--min-usd", type=float, default=1.0,
                     help="never take the shared account below this")

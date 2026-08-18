@@ -50,9 +50,23 @@ def _save(im, path):
     without `exact` libwebp rewrites the RGB under fully-transparent pixels."""
     im.convert("RGBA").save(path, "WEBP", lossless=True, exact=True)
 
-# Same number chase.py defaults --min-wall to. A dead flat cliff is not a win, and
-# the two components must not disagree about the bar.
-MIN_WALL = 2.0
+# Same number chase.py defaults --min-wall to; the two components must not disagree.
+#
+# LOWERED FROM 2.0, because it was not earning its cost. The gate exists for a real
+# reason — gating on spill alone once shipped a cell at wall 0.00, a dead flat cardboard
+# cliff — but 2.0 was a guess, and measured against the maintainer's own 309 verdicts the
+# wall score does not predict their judgement AT ALL: tiles they rejected score a median
+# 3.92, tiles they kept 4.26, point-biserial r = -0.058. It was rejecting HALF of every
+# sheet on a number unrelated to whether the tile is any good, and it left 15 of 16 stuck
+# cells unable to reach three candidates.
+#
+# At 1.0 six of those sixteen fill up with art already on disk. The maintainer's own
+# framing settles where to land: "It's ok you pass through some error to me. Your filter
+# just have to be good enough to not give me obvious crap." A dead flat wall is obvious
+# crap; a wall scoring 1.4 is a judgement call, and the judgement is theirs.
+#
+# Wall score remains the RANKING term, which is where a metric with no threshold belongs.
+MIN_WALL = 1.0
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MATRIX = os.path.join(ROOT, "matrix")
