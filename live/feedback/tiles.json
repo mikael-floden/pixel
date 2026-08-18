@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "tiles",
-  "updated_at": "2026-08-18T19:53:52.034Z",
+  "updated_at": "2026-08-18T19:55:17.690Z",
   "entries": {
     "tiles/snow__over__dark_mud/2": {
       "status": "rejected",
@@ -210,6 +210,11 @@
       "status": "rejected",
       "updated_at": "2026-08-18T19:53:51.697Z",
       "note": "looks like water over deep water (deep water is dark near black blue, water is blue/light blue)."
+    },
+    "tiles/grass__over__lava/2": {
+      "status": "rejected",
+      "updated_at": "2026-08-18T19:55:17.339Z",
+      "note": "got a bit to much lava on the ground"
     }
   }
 }
