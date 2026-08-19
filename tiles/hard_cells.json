@@ -1,5 +1,29 @@
 {
   "cells": {
+    "black_rock__over__slime": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "dark_mud__over__black_rock": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "dark_mud__over__slime": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
     "deep_water__over__light_beach": {
       "attempts": 5,
       "candidates": 2,
@@ -16,9 +40,49 @@
       ],
       "wanted": 3
     },
+    "grass__over__dark_mud": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grass__over__grey_stone": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
     "grass__over__light_beach": {
       "attempts": 5,
       "candidates": 2,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grass__over__light_soil": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grass__over__parquet_floor": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grass__over__paving_stone": {
+      "attempts": 5,
+      "candidates": 0,
       "families_tried": [
         "ladder x5"
       ],
@@ -32,7 +96,151 @@
       ],
       "wanted": 3
     },
+    "grass__over__water": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grey_stone__over__ice": {
+      "attempts": 5,
+      "candidates": 2,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grey_stone__over__lava": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
     "grey_stone__over__light_beach": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grey_stone__over__light_soil": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "grey_stone__over__water": {
+      "attempts": 5,
+      "candidates": 2,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "parquet_floor__over__light_beach": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "parquet_floor__over__light_soil": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__dark_mud": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__deep_water": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__ice": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__light_beach": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__light_soil": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "paving_stone__over__slime": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "slime__over__deep_water": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "slime__over__grey_stone": {
+      "attempts": 5,
+      "candidates": 1,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "slime__over__light_soil": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "slime__over__paving_stone": {
+      "attempts": 5,
+      "candidates": 0,
+      "families_tried": [
+        "ladder x5"
+      ],
+      "wanted": 3
+    },
+    "water__over__deep_water": {
       "attempts": 5,
       "candidates": 0,
       "families_tried": [

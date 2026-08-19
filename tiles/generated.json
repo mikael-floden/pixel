@@ -55,10 +55,22 @@
       "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
+    "021bd50b-1c98-4ed5-a553-d3fcd2c04032": {
+      "created": "2026-08-19T10:57:45+00:00",
+      "prompt": "isometric terrain block of dry light soil with thick bubbling slime growing on top. The slime spills over the rim and hangs down the light soil face in an uneven fringe. Flat even slime seen from above. No outline.",
+      "purpose": "matrix:slime_over_light_soil",
+      "status": "pending"
+    },
     "022633b0-759d-43dd-816d-ea2e60fac6dd": {
       "created": "2026-08-16T16:59:51+00:00",
       "prompt": "clean single color clean fresh snow on top of clean pale sandy beach",
       "purpose": "matrix:snow_over_light_beach",
+      "status": "pending"
+    },
+    "022cc036-de11-4e42-b724-005c39e8a584": {
+      "created": "2026-08-19T10:35:26+00:00",
+      "prompt": "isometric cube. pure flat green lid, cut paving stone slabs body. No outline.",
+      "purpose": "matrix:grass_over_paving_stone",
       "status": "pending"
     },
     "0291fe41-15d9-435e-ad56-c6d2a702f30d": {
@@ -128,6 +140,12 @@
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
     },
+    "0488badd-4d16-4757-a58b-bce46af1d9a0": {
+      "created": "2026-08-19T10:30:07+00:00",
+      "prompt": "isometric tile: a layer of lush green grass covering a block of dry light soil. Ragged grass edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
+      "purpose": "matrix:grass_over_light_soil",
+      "status": "pending"
+    },
     "0496e602-36f9-4076-8b78-f437cf70507b": {
       "created": "2026-08-17T20:43:58+00:00",
       "prompt": "isometric tile: a layer of deep dark ocean water covering a block of wet dark mud. Ragged deep water edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform deep water on the top face. No outline.",
@@ -138,6 +156,18 @@
       "created": "2026-08-17T22:47:47+00:00",
       "prompt": "isometric ground tile, cut paving stone slabs over molten glowing lava, photographed from above. Soft irregular boundary where paving stone meets lava \u2014 the paving stone creeps down over the lava. Plain even paving stone surface. No outline.",
       "purpose": "matrix:paving_stone_over_lava",
+      "status": "pending"
+    },
+    "04d2762b-d543-4785-9ef6-24fcbf2a0bec": {
+      "created": "2026-08-19T10:46:16+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken molten glowing lava. Sides: thick bubbling slime with visible texture. Between them the lava overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:lava_over_slime",
+      "status": "pending"
+    },
+    "04d65597-badd-4f93-86c4-95da19310b36": {
+      "created": "2026-08-19T10:41:12+00:00",
+      "prompt": "isometric terrain tile of cut paving stone slabs resting on deep dark ocean water. IMPORTANT: the deep water is UNDERNEATH and the paving stone is ON TOP. Do not put the deep water on top. Seen from above you see only pure flat cool light grey. No outline.",
+      "purpose": "matrix:paving_stone_over_deep_water",
       "status": "pending"
     },
     "04db0d6d-d9a1-4551-860c-4343ed9de265": {
@@ -212,6 +242,12 @@
       "purpose": "matrix:water_over_lava",
       "status": "pending"
     },
+    "08117a20-d20a-48fe-b91a-ebf6aa35344d": {
+      "created": "2026-08-19T10:52:54+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat bright yellow-green, nothing else. The vertical side walls below it are dry light soil. The top is pure flat bright yellow-green and the sides are light soil \u2014 not the other way round. No outline.",
+      "purpose": "matrix:slime_over_light_soil",
+      "status": "pending"
+    },
     "082e213f-3dcc-4a7a-9a07-ea97a9ce55ba": {
       "created": "2026-08-18T20:44:33+00:00",
       "prompt": "isometric terrain tile of rugged grey mountain rock resting on translucent crystal ice. IMPORTANT: the ice is UNDERNEATH and the grey stone is ON TOP. Do not put the ice on top. Seen from above you see only pure flat medium grey. No outline.",
@@ -278,10 +314,28 @@
       "purpose": "matrix:slime_over_ice",
       "status": "pending"
     },
+    "0a9f2352-e84e-4dc1-ba12-5d64a82967e3": {
+      "created": "2026-08-19T10:30:46+00:00",
+      "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed thick bubbling slime. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed slime sides. No outline.",
+      "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "0af9efc7-bcc1-4128-ac95-bc8ab62ea588": {
+      "created": "2026-08-19T10:46:35+00:00",
+      "prompt": "isometric cube. pure flat near-black charcoal lid, thick bubbling slime body. No outline.",
+      "purpose": "matrix:black_rock_over_slime",
+      "status": "pending"
+    },
     "0b1626d9-cb5f-4656-9af8-07545c817945": {
       "created": "2026-08-17T10:56:55+00:00",
       "prompt": "isometric ground tile. translucent crystal ice on top of cut paving stone slabs. The ice grows over the edge and tufts down over the paving stone below, so the two meet naturally with no hard line between them. The paving stone side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline.",
       "purpose": "matrix:ice_over_paving_stone",
+      "status": "pending"
+    },
+    "0b23ee03-e01f-4287-8aeb-69027cfbc4ee": {
+      "created": "2026-08-19T11:10:12+00:00",
+      "prompt": "isometric tile. Side walls: cut paving stone slabs. Top: flat pure flat bright yellow-green. No outline.",
+      "purpose": "matrix:slime_over_paving_stone",
       "status": "pending"
     },
     "0b377776-f774-474b-9263-6117722dcaf5": {
@@ -290,10 +344,34 @@
       "purpose": "matrix:ice_over_parquet_floor",
       "status": "pending"
     },
+    "0b51f928-e98b-4284-a805-271573b3e0f8": {
+      "created": "2026-08-19T10:52:49+00:00",
+      "prompt": "a chunk of translucent crystal ice, isometric, with pure flat cool light grey on its flat upper face. The sides are ice. No outline.",
+      "purpose": "matrix:paving_stone_over_ice",
+      "status": "pending"
+    },
+    "0b555b21-7478-4b6a-9454-5ddf05dc2067": {
+      "created": "2026-08-19T10:32:23+00:00",
+      "prompt": "isometric terrain block of clear calm water with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the water face in an uneven fringe. Flat even grey stone seen from above. No outline.",
+      "purpose": "matrix:grey_stone_over_water",
+      "status": "pending"
+    },
     "0b6d771e-7a47-4aa6-8e0e-71b43b450f17": {
       "created": "2026-08-17T23:55:43+00:00",
       "prompt": "isometric tile cut from a translucent crystal ice quarry. The top is the quarry floor, flat and even. The sides are freshly cut ice faces, sheer and vertical, showing the material's own grain and tool marks evenly from top to bottom. The cut edge along the top is sharp and straight. No outline.",
       "purpose": "matrix:ice_over_ice",
+      "status": "pending"
+    },
+    "0b7ee95a-32d7-442d-b68b-50348182e15b": {
+      "created": "2026-08-19T10:39:04+00:00",
+      "prompt": "flat pure flat dark cold brown on top of dark volcanic rock. isometric. no outline.",
+      "purpose": "matrix:dark_mud_over_black_rock",
+      "status": "pending"
+    },
+    "0b80db14-273b-49ec-9092-67f3e169cb26": {
+      "created": "2026-08-19T10:56:51+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken thick bubbling slime. Sides: deep dark ocean water with visible texture. Between them the slime overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:slime_over_deep_water",
       "status": "pending"
     },
     "0b9224a9-924b-4f96-bf2e-ec06fa4a37c8": {
@@ -324,6 +402,12 @@
       "created": "2026-08-17T22:35:16+00:00",
       "prompt": "isometric ground tile. wet dark mud on top of clean fresh snow. The dark mud grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "0d4b9628-fb7e-4e5c-8317-ce6ce79f5f10": {
+      "created": "2026-08-19T10:35:43+00:00",
+      "prompt": "isometric terrain tile: grass above, grey stone below. No outline.",
+      "purpose": "matrix:grass_over_grey_stone",
       "status": "pending"
     },
     "0d5bf628-44e6-47a4-b381-d02abae76756": {
@@ -454,10 +538,22 @@
       "purpose": "matrix:grey_stone_over_slime",
       "status": "pending"
     },
+    "11d5820a-a21e-45f4-94fe-35ca506a5134": {
+      "created": "2026-08-19T10:52:18+00:00",
+      "prompt": "isometric block of deep dark ocean water that has been painted pure flat bright yellow-green across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare deep dark ocean water. No outline.",
+      "purpose": "matrix:slime_over_deep_water",
+      "status": "pending"
+    },
     "11e60a37-0fd7-4a5d-8422-d88d25e2ad18": {
       "created": "2026-08-17T22:27:58+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of dry light soil. The black rock grows over the edge and tufts down over the light soil below, so the two meet naturally with no hard line between them. The light soil side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
       "purpose": "matrix:black_rock_over_light_soil",
+      "status": "pending"
+    },
+    "122d7db6-f47e-4e4d-975b-afe6ce507666": {
+      "created": "2026-08-19T10:37:57+00:00",
+      "prompt": "isometric ground tile where wooden parquet floor has taken over a pale sandy beach block. The parquet floor rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_beach",
       "status": "pending"
     },
     "12658b91-840b-47af-abe7-e9165acb342b": {
@@ -470,6 +566,12 @@
       "created": "2026-08-17T22:35:47+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken wet dark mud. Sides: deep dark ocean water with visible texture. Between them the dark mud overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:dark_mud_over_deep_water",
+      "status": "pending"
+    },
+    "12a16958-cc2d-48d8-8a66-26903afcc943": {
+      "created": "2026-08-19T10:37:06+00:00",
+      "prompt": "a block of wet dark mud with lush green grass established across the top and spilling over every edge. Isometric view. The grass surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:grass_over_dark_mud",
       "status": "pending"
     },
     "13c8b445-467c-4746-af7e-1bbfb9a16fc7": {
@@ -496,6 +598,12 @@
       "purpose": "matrix:snow_over_deep_water",
       "status": "pending"
     },
+    "15a21447-755a-4077-b968-5ed37f466233": {
+      "created": "2026-08-19T10:32:00+00:00",
+      "prompt": "isometric tile. top = pure flat green. sides = pure flat medium grey. flat top, textured sides, no outline.",
+      "purpose": "matrix:grass_over_grey_stone",
+      "status": "pending"
+    },
     "15ad4e1f-74d7-4200-a7d0-c5fdcc9a1e04": {
       "created": "2026-08-17T11:00:09+00:00",
       "prompt": "isometric ground tile, lush green grass over pale sandy beach, photographed from above. Soft irregular boundary where grass meets light beach \u2014 the grass creeps down over the light beach. Plain even grass surface. No outline.",
@@ -506,6 +614,12 @@
       "created": "2026-08-17T22:48:54+00:00",
       "prompt": "isometric cube of pale sandy beach capped with cut paving stone slabs. The cap overhangs slightly, paving stone draping down onto the light beach beneath it. Uniform flat paving stone top. No outline.",
       "purpose": "matrix:paving_stone_over_light_beach",
+      "status": "pending"
+    },
+    "167ab85e-f240-4b9c-a37b-67c5c42a2aba": {
+      "created": "2026-08-19T10:35:31+00:00",
+      "prompt": "lush green grass ground tile on a clear calm water block, isometric. No outline.",
+      "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
     "167cef5c-c744-44db-b6cc-3dbc0d327023": {
@@ -538,6 +652,12 @@
       "purpose": "matrix:snow_over_snow",
       "status": "pending"
     },
+    "1770c6da-48cd-4d92-ad85-c445cb51b84d": {
+      "created": "2026-08-19T10:42:51+00:00",
+      "prompt": "isometric ground tile. wet dark mud on top of thick bubbling slime. The dark mud grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline.",
+      "purpose": "matrix:dark_mud_over_slime",
+      "status": "pending"
+    },
     "17a0bc31-57ed-4637-a1b7-fee48694ea89": {
       "created": "",
       "prompt": "isometric terrain block of clean fresh snow with thick bubbling slime growing on top. The slime spills over the rim and hangs down the snow face in an uneven fringe. Flat even slime seen from above. No outline.",
@@ -550,6 +670,12 @@
       "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
+    "181c1349-79f5-466e-ad09-47f1b285b19a": {
+      "created": "2026-08-19T10:58:01+00:00",
+      "prompt": "isometric terrain block of thick bubbling slime with deep dark ocean water growing on top. The deep water spills over the rim and hangs down the slime face in an uneven fringe. Flat even deep water seen from above. No outline.",
+      "purpose": "matrix:deep_water_over_slime",
+      "status": "pending"
+    },
     "186c7d56-68c2-4a82-b214-48a88f215743": {
       "created": "2026-08-17T17:12:16+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of wooden parquet floor. The black rock grows over the edge and tufts down over the parquet floor below, so the two meet naturally with no hard line between them. The parquet floor side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
@@ -560,6 +686,12 @@
       "created": "2026-08-17T22:30:40+00:00",
       "prompt": "isometric cube of cut paving stone slabs capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the paving stone beneath it. Uniform flat dark mud top. No outline.",
       "purpose": "matrix:dark_mud_over_paving_stone",
+      "status": "pending"
+    },
+    "192cbe72-495a-4312-a1ce-1a1f9888f328": {
+      "created": "2026-08-19T10:30:45+00:00",
+      "prompt": "isometric tile: a layer of translucent crystal ice covering a block of dark volcanic rock. Ragged ice edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
+      "purpose": "matrix:ice_over_black_rock",
       "status": "pending"
     },
     "19452bb6-1bd2-4782-b1c1-c900c24e0b7c": {
@@ -598,6 +730,12 @@
       "purpose": "matrix:light_beach_over_grass",
       "status": "pending"
     },
+    "19ef9809-9470-4fd8-affa-faf8dadf9772": {
+      "created": "2026-08-19T10:51:05+00:00",
+      "prompt": "isometric ground tile, wooden parquet floor over cut paving stone slabs, photographed from above. Soft irregular boundary where parquet floor meets paving stone \u2014 the parquet floor creeps down over the paving stone. Plain even parquet floor surface. No outline.",
+      "purpose": "matrix:parquet_floor_over_paving_stone",
+      "status": "pending"
+    },
     "1a16847b-6d86-48d3-9b08-7a24148945c9": {
       "created": "2026-08-17T22:40:54+00:00",
       "prompt": "isometric ground tile. dry light soil on top of pale sandy beach. The light soil grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline.",
@@ -616,6 +754,12 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "1a7bddf0-7464-41e9-a98e-8b5a92ebde9b": {
+      "created": "2026-08-19T10:43:35+00:00",
+      "prompt": "isometric tile, rugged grey mountain rock on pale sandy beach. The walls must be light beach and nothing else. No outline.",
+      "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
     "1a84426e-5bc2-4cdb-b7fe-473af07a98b5": {
       "created": "2026-08-19T10:00:12+00:00",
       "prompt": "isometric tile, rugged grey mountain rock on pale sandy beach. The walls must be light beach and nothing else. No outline.",
@@ -626,6 +770,12 @@
       "created": "2026-08-17T22:30:46+00:00",
       "prompt": "isometric ground tile, pale sandy beach over wooden parquet floor, photographed from above. Soft irregular boundary where light beach meets parquet floor \u2014 the light beach creeps down over the parquet floor. Plain even light beach surface. No outline.",
       "purpose": "matrix:light_beach_over_parquet_floor",
+      "status": "pending"
+    },
+    "1b330c1e-60a6-43f8-af4d-4bffd2bcc30d": {
+      "created": "2026-08-19T10:52:30+00:00",
+      "prompt": "isometric ground tile where molten glowing lava has settled over a base of pale sandy beach. The whole visible top is pure flat dark orange; the light beach is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:lava_over_light_beach",
       "status": "pending"
     },
     "1b5a377b-4d89-4957-97b1-9409be644720": {
@@ -689,6 +839,12 @@
       "purpose": "matrix:parquet_floor_over_ice",
       "status": "pending"
     },
+    "1ca43aaa-5a7b-4af7-aef4-57941bfbb039": {
+      "created": "2026-08-19T10:30:44+00:00",
+      "prompt": "isometric cube of deep dark ocean water capped with lush green grass. The cap overhangs slightly, grass draping down onto the deep water beneath it. Uniform flat grass top. No outline.",
+      "purpose": "matrix:grass_over_deep_water",
+      "status": "pending"
+    },
     "1cc3ba75-05f3-42e9-ad00-71eed22fd4ad": {
       "created": "2026-08-17T23:24:23+00:00",
       "prompt": "a block of dark volcanic rock with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -701,6 +857,12 @@
       "purpose": "matrix:slime_over_light_beach",
       "status": "pending"
     },
+    "1cd349cb-d1d8-481d-9789-5dc2daa2e42e": {
+      "created": "2026-08-19T10:50:30+00:00",
+      "prompt": "isometric tile, cut paving stone slabs on pale sandy beach. The walls must be light beach and nothing else. No outline.",
+      "purpose": "matrix:paving_stone_over_light_beach",
+      "status": "pending"
+    },
     "1cddec61-3cbd-4cb5-9ee1-526fd6ebd50a": {
       "created": "2026-08-17T18:28:49+00:00",
       "prompt": "isometric cube of rugged grey mountain rock capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the grey stone beneath it. Uniform flat grey stone top. No outline.",
@@ -711,6 +873,12 @@
       "created": "2026-08-17T20:38:29+00:00",
       "prompt": "isometric terrain block of wet dark mud with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even black rock seen from above. No outline.",
       "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
+    "1d1efbd6-1ceb-4baa-ade0-eb96bef25107": {
+      "created": "2026-08-19T10:32:29+00:00",
+      "prompt": "isometric ground tile where dark volcanic rock has settled over a base of translucent crystal ice. The whole visible top is pure flat near-black charcoal; the ice is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
     "1d73f4c3-eaf2-41cc-a1ee-90329c59c0a8": {
@@ -750,6 +918,12 @@
       "purpose": "matrix:light_soil_over_light_soil",
       "status": "pending"
     },
+    "1ec48d46-a143-4e5a-9a18-4ced37cd025a": {
+      "created": "2026-08-19T11:06:57+00:00",
+      "prompt": "isometric cube of cut paving stone slabs capped with thick bubbling slime. The cap overhangs slightly, slime draping down onto the paving stone beneath it. Uniform flat slime top. No outline.",
+      "purpose": "matrix:slime_over_paving_stone",
+      "status": "pending"
+    },
     "1eca57fb-a0ae-4963-b51d-04141bea39de": {
       "created": "2026-08-17T16:24:10+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of clean fresh snow. The black rock grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
@@ -760,6 +934,12 @@
       "created": "2026-08-18T00:49:10+00:00",
       "prompt": "isometric block of wet dark mud. Flat plain dark mud on top. The side walls are dark mud whose grain, cracks and shading run VERTICALLY down the face, unbroken from the top edge to the bottom edge \u2014 no horizontal layers, no ledge, no shelf, no band. No outline.",
       "purpose": "matrix:dark_mud_over_dark_mud",
+      "status": "pending"
+    },
+    "1f38586d-7597-41fc-b02d-0de00d8a7ad1": {
+      "created": "2026-08-19T10:45:15+00:00",
+      "prompt": "isometric tile, dark volcanic rock on thick bubbling slime. The walls must be slime and nothing else. No outline.",
+      "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
     "1fd0e148-5ff4-43a0-9f80-6ba1c0653f29": {
@@ -835,6 +1015,12 @@
       "purpose": "matrix:light_beach_over_dark_mud",
       "status": "pending"
     },
+    "21c2b671-1ba9-456e-ad5f-9c6c51c01110": {
+      "created": "2026-08-19T11:08:23+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat bright yellow-green. The lower layer, seen from the side, is cut paving stone slabs. Upper layer slime, lower layer paving stone. No outline.",
+      "purpose": "matrix:slime_over_paving_stone",
+      "status": "pending"
+    },
     "21d45159-6a85-4bbe-a4b3-e08176de8a32": {
       "created": "2026-08-17T22:13:04+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: deep dark ocean water with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -887,6 +1073,18 @@
       "created": "2026-08-17T23:38:51+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of clean fresh snow. The black rock grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
       "purpose": "matrix:black_rock_over_snow",
+      "status": "pending"
+    },
+    "23e8807e-c262-4c5f-bc06-3521c8f60b95": {
+      "created": "2026-08-19T10:30:44+00:00",
+      "prompt": "isometric tile: a layer of lush green grass covering a block of cut paving stone slabs. Ragged grass edge overhanging the paving stone cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
+      "purpose": "matrix:grass_over_paving_stone",
+      "status": "pending"
+    },
+    "2407fdd6-9532-4076-845b-a2dbd00b8b4e": {
+      "created": "2026-08-19T10:46:45+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat dark navy blue. The lower layer, seen from the side, is rugged grey mountain rock. Upper layer deep water, lower layer grey stone. No outline.",
+      "purpose": "matrix:deep_water_over_grey_stone",
       "status": "pending"
     },
     "2433b521-2052-4f30-8848-be41a1db399f": {
@@ -1033,6 +1231,18 @@
       "purpose": "matrix:slime_over_snow",
       "status": "pending"
     },
+    "28b37255-c248-43e1-ab28-b07a27f8676f": {
+      "created": "2026-08-19T10:56:12+00:00",
+      "prompt": "wooden parquet floor ground tile on a cut paving stone slabs block, isometric. No outline.",
+      "purpose": "matrix:parquet_floor_over_paving_stone",
+      "status": "pending"
+    },
+    "28cfd978-190d-435b-92ff-14ae6059406b": {
+      "created": "2026-08-19T10:56:51+00:00",
+      "prompt": "isometric tile, thick bubbling slime on rugged grey mountain rock. The walls must be grey stone and nothing else. No outline.",
+      "purpose": "matrix:slime_over_grey_stone",
+      "status": "pending"
+    },
     "28d78f94-6c76-4762-8174-2670bbb5be9c": {
       "created": "2026-08-17T23:30:39+00:00",
       "prompt": "top-down isometric ground block. Thick translucent crystal ice carpet over exposed wet dark mud. Where the two meet the ice droops over the edge instead of being cut off. Even ice surface, detailed dark mud sides. No outline.",
@@ -1075,6 +1285,12 @@
       "purpose": "matrix:dark_mud_over_water",
       "status": "pending"
     },
+    "29b45abd-0984-4ea0-b256-fa5ebf219844": {
+      "created": "2026-08-19T10:36:52+00:00",
+      "prompt": "a block of deep dark ocean water with cut paving stone slabs established across the top and spilling over every edge. Isometric view. The paving stone surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:paving_stone_over_deep_water",
+      "status": "pending"
+    },
     "29d3632a-584e-4538-9584-f30d31251990": {
       "created": "2026-08-17T22:26:20+00:00",
       "prompt": "isometric cube of molten glowing lava capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the lava beneath it. Uniform flat black rock top. No outline.",
@@ -1106,6 +1322,12 @@
       "purpose": "probe:bakeoff(backfilled)",
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
+    },
+    "2a3ecb06-6aa7-4e64-be34-1208fbcf4a3b": {
+      "created": "2026-08-19T10:38:25+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat cool light grey, nothing else. The vertical side walls below it are deep dark ocean water. The top is pure flat cool light grey and the sides are deep water \u2014 not the other way round. No outline.",
+      "purpose": "matrix:paving_stone_over_deep_water",
+      "status": "pending"
     },
     "2aaa5e52-c3b4-4c4a-96ec-bc0a3243160e": {
       "created": "2026-08-16T16:27:20+00:00",
@@ -1153,6 +1375,12 @@
       "created": "2026-08-17T22:58:33+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken thick bubbling slime. Sides: wooden parquet floor with visible texture. Between them the slime overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:slime_over_parquet_floor",
+      "status": "pending"
+    },
+    "2c91a964-0e67-4fc6-b2ae-f195a3b01c23": {
+      "created": "2026-08-19T10:55:15+00:00",
+      "prompt": "isometric ground tile, molten glowing lava over dry light soil, photographed from above. Soft irregular boundary where lava meets light soil \u2014 the lava creeps down over the light soil. Plain even lava surface. No outline.",
+      "purpose": "matrix:lava_over_light_soil",
       "status": "pending"
     },
     "2cd2c2f0-a147-45b4-8aae-f4e057464c01": {
@@ -1221,6 +1449,12 @@
       "purpose": "matrix:slime_over_light_soil",
       "status": "pending"
     },
+    "30a1815a-08e4-4a80-8808-1e121b23b88e": {
+      "created": "2026-08-19T10:55:52+00:00",
+      "prompt": "isometric tile: a layer of molten glowing lava covering a block of cut paving stone slabs. Ragged lava edge overhanging the paving stone cliff, individual strands breaking the line. Smooth uniform lava on the top face. No outline.",
+      "purpose": "matrix:lava_over_paving_stone",
+      "status": "pending"
+    },
     "30ec9e00-c5e3-48f8-a6b8-b472311e6a79": {
       "created": "2026-08-19T09:43:56+00:00",
       "prompt": "a chunk of pale sandy beach, isometric, with pure flat dark navy blue on its flat upper face. The sides are light beach. No outline.",
@@ -1231,6 +1465,12 @@
       "created": "2026-08-17T17:03:46+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of dry light soil. Ragged black rock edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
       "purpose": "matrix:black_rock_over_light_soil",
+      "status": "pending"
+    },
+    "315f34c2-dabd-4e12-8797-86f2689cb74b": {
+      "created": "2026-08-19T10:54:44+00:00",
+      "prompt": "isometric ground tile with tall pale sandy beach side walls, clearly light beach, textured from top to bottom. Plain pure flat dark orange top. No outline.",
+      "purpose": "matrix:lava_over_light_beach",
       "status": "pending"
     },
     "31bbf543-0f22-4f10-88dd-84373adb1040": {
@@ -1251,6 +1491,24 @@
       "purpose": "matrix:lava_over_slime",
       "status": "pending"
     },
+    "336349bc-7197-40c8-9811-fc297f68b7d5": {
+      "created": "2026-08-19T10:54:47+00:00",
+      "prompt": "a chunk of dry light soil, isometric, with pure flat bright yellow-green on its flat upper face. The sides are light soil. No outline.",
+      "purpose": "matrix:slime_over_light_soil",
+      "status": "pending"
+    },
+    "3378f858-a9be-4c13-9b7b-facefb749a74": {
+      "created": "2026-08-19T10:37:43+00:00",
+      "prompt": "isometric ground tile. lush green grass on top of rugged grey mountain rock. The grass grows over the edge and tufts down over the grey stone below, so the two meet naturally with no hard line between them. The grey stone side walls show their own surface detail. Seen from above, the grass surface is even and uniform. No outline.",
+      "purpose": "matrix:grass_over_grey_stone",
+      "status": "pending"
+    },
+    "338e276e-8ae8-41c6-b169-1da8b3467f28": {
+      "created": "2026-08-19T10:47:21+00:00",
+      "prompt": "isometric cube of wet dark mud capped with cut paving stone slabs. The cap overhangs slightly, paving stone draping down onto the dark mud beneath it. Uniform flat paving stone top. No outline.",
+      "purpose": "matrix:paving_stone_over_dark_mud",
+      "status": "pending"
+    },
     "33c78dbe-1f71-457d-ad39-aeaec56f3187": {
       "created": "2026-08-16T17:23:18+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -1267,6 +1525,12 @@
       "created": "2026-08-17T23:40:43+00:00",
       "prompt": "isometric ground tile where cut paving stone slabs has taken over a translucent crystal ice block. The paving stone rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
       "purpose": "matrix:paving_stone_over_ice",
+      "status": "pending"
+    },
+    "340bbe39-6d64-4fb1-9bbc-2b7602984e9e": {
+      "created": "2026-08-19T10:39:01+00:00",
+      "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of dry light soil. Ragged grey stone edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
+      "purpose": "matrix:grey_stone_over_light_soil",
       "status": "pending"
     },
     "3415bedd-5092-45c0-b1ce-18f0b2d963df": {
@@ -1305,10 +1569,22 @@
       "purpose": "matrix:parquet_floor_over_water",
       "status": "pending"
     },
+    "347e4c6e-482c-4d7f-bd7e-ecffbeccf626": {
+      "created": "2026-08-19T10:43:22+00:00",
+      "prompt": "isometric terrain block of wet dark mud with thick bubbling slime growing on top. The slime spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even slime seen from above. No outline.",
+      "purpose": "matrix:slime_over_dark_mud",
+      "status": "pending"
+    },
     "3530b256-5695-49a8-b324-b31f1dd45117": {
       "created": "2026-08-17T22:46:09+00:00",
       "prompt": "isometric cube of pale sandy beach capped with clear calm water. The cap overhangs slightly, water draping down onto the light beach beneath it. Uniform flat water top. No outline.",
       "purpose": "matrix:water_over_light_beach",
+      "status": "pending"
+    },
+    "3568f9b0-a248-4448-a06b-469a9dcd96f1": {
+      "created": "2026-08-19T10:32:28+00:00",
+      "prompt": "isometric block of dry light soil that has been painted pure flat green across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare dry light soil. No outline.",
+      "purpose": "matrix:grass_over_light_soil",
       "status": "pending"
     },
     "3578c0cc-2676-4c49-9a1c-86b0b2f5c94b": {
@@ -1321,6 +1597,12 @@
       "created": "2026-08-17T19:15:24+00:00",
       "prompt": "isometric ground tile, wet dark mud over clean fresh snow, photographed from above. Soft irregular boundary where dark mud meets snow \u2014 the dark mud creeps down over the snow. Plain even dark mud surface. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "362adf25-8d35-457a-8293-37dc8fc01eb0": {
+      "created": "2026-08-19T10:46:03+00:00",
+      "prompt": "isometric ground tile, rugged grey mountain rock over translucent crystal ice, photographed from above. Soft irregular boundary where grey stone meets ice \u2014 the grey stone creeps down over the ice. Plain even grey stone surface. No outline.",
+      "purpose": "matrix:grey_stone_over_ice",
       "status": "pending"
     },
     "36a2d34f-2ff5-443a-bd6a-1c657f0cfdba": {
@@ -1341,10 +1623,28 @@
       "purpose": "matrix:deep_water_over_light_soil",
       "status": "pending"
     },
+    "376989e2-20e5-4b57-bf5c-f3d860cb5034": {
+      "created": "2026-08-19T10:39:36+00:00",
+      "prompt": "isometric ground tile, rugged grey mountain rock over clear calm water, photographed from above. Soft irregular boundary where grey stone meets water \u2014 the grey stone creeps down over the water. Plain even grey stone surface. No outline.",
+      "purpose": "matrix:grey_stone_over_water",
+      "status": "pending"
+    },
+    "379d5007-47a0-41ee-bc56-9c55dbb230cd": {
+      "created": "2026-08-19T10:33:56+00:00",
+      "prompt": "isometric terrain block of dark volcanic rock with wet dark mud growing on top. The dark mud spills over the rim and hangs down the black rock face in an uneven fringe. Flat even dark mud seen from above. No outline.",
+      "purpose": "matrix:dark_mud_over_black_rock",
+      "status": "pending"
+    },
     "379dd3b7-7ea0-43fa-898d-d3d834ad1cc3": {
       "created": "2026-08-16T17:15:34+00:00",
       "prompt": "clean single color clean fresh snow on top of clean cut paving stone slabs",
       "purpose": "matrix:snow_over_paving_stone",
+      "status": "pending"
+    },
+    "37a11482-0e00-457c-89bf-4d160b4ee21c": {
+      "created": "2026-08-19T10:52:17+00:00",
+      "prompt": "isometric terrain block of thick bubbling slime with cut paving stone slabs growing on top. The paving stone spills over the rim and hangs down the slime face in an uneven fringe. Flat even paving stone seen from above. No outline.",
+      "purpose": "matrix:paving_stone_over_slime",
       "status": "pending"
     },
     "38074ed6-9b96-46e8-b103-9da527a4e9c5": {
@@ -1376,6 +1676,18 @@
       "created": "2026-08-19T09:59:15+00:00",
       "prompt": "isometric block. Thick pale sandy beach walls, thin deep dark ocean water surface on top. No outline.",
       "purpose": "matrix:deep_water_over_light_beach",
+      "status": "pending"
+    },
+    "389ab4df-f5b7-4a62-b63b-0739805ec2c9": {
+      "created": "2026-08-19T10:40:59+00:00",
+      "prompt": "isometric tile: a thin layer of rugged grey mountain rock laid down on top of a thick block of translucent crystal ice. The layer is pure flat medium grey and covers the entire top face. The block below it shows ice on every side. No outline.",
+      "purpose": "matrix:grey_stone_over_ice",
+      "status": "pending"
+    },
+    "38e154d6-b558-477f-8372-14c6e32c6506": {
+      "created": "2026-08-19T10:55:08+00:00",
+      "prompt": "isometric cube. pure flat bright yellow-green lid, deep dark ocean water body. No outline.",
+      "purpose": "matrix:slime_over_deep_water",
       "status": "pending"
     },
     "39e9e671-a7be-4c70-a9ab-0afe4cbee1a6": {
@@ -1438,6 +1750,18 @@
       "purpose": "matrix:paving_stone_over_grey_stone",
       "status": "pending"
     },
+    "3cf56cce-6e51-42c1-afff-aaa2ccfb8ba4": {
+      "created": "2026-08-19T10:47:48+00:00",
+      "prompt": "isometric cube. pure flat cool light grey lid, dry light soil body. No outline.",
+      "purpose": "matrix:paving_stone_over_light_soil",
+      "status": "pending"
+    },
+    "3d180156-38f9-423e-b86b-6035519e5d8b": {
+      "created": "2026-08-19T10:41:53+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken wooden parquet floor. Sides: thick bubbling slime with visible texture. Between them the parquet floor overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:parquet_floor_over_slime",
+      "status": "pending"
+    },
     "3d1c50c7-7981-4f43-8a91-8618f33a283e": {
       "created": "2026-08-16T11:11:41+00:00",
       "prompt": "clean single color lush green grass on top of clean dark volcanic rock",
@@ -1450,10 +1774,28 @@
       "purpose": "matrix:parquet_floor_over_lava",
       "status": "pending"
     },
+    "3dd7ae83-d395-496e-9ca2-772823a361f9": {
+      "created": "2026-08-19T11:14:21+00:00",
+      "prompt": "isometric game tile of thick bubbling slime growing over cut paving stone slabs. Overgrown edges, slime cascading down the paving stone walls. Flat clean slime on top. No outline.",
+      "purpose": "matrix:slime_over_paving_stone",
+      "status": "pending"
+    },
     "3df4dd73-e083-4903-b411-c47ddf719d87": {
       "created": "2026-08-17T22:38:04+00:00",
       "prompt": "top-down isometric ground block. Thick clear calm water carpet over exposed rugged grey mountain rock. Where the two meet the water droops over the edge instead of being cut off. Even water surface, detailed grey stone sides. No outline.",
       "purpose": "matrix:water_over_grey_stone",
+      "status": "pending"
+    },
+    "3dfe57ad-dca1-47bd-a0f1-929d7d0934b0": {
+      "created": "2026-08-19T10:39:55+00:00",
+      "prompt": "isometric cube of deep dark ocean water capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the deep water beneath it. Uniform flat grey stone top. No outline.",
+      "purpose": "matrix:grey_stone_over_deep_water",
+      "status": "pending"
+    },
+    "3e2618c8-7855-45e7-aeab-b1342c221a17": {
+      "created": "2026-08-19T10:36:15+00:00",
+      "prompt": "flat pure flat near-black charcoal on top of wet dark mud. isometric. no outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
     "3e2c3418-a01c-4b36-914b-b21bbbce9d0c": {
@@ -1466,6 +1808,12 @@
       "created": "2026-08-17T10:59:06+00:00",
       "prompt": "isometric cube of pale sandy beach capped with lush green grass. The cap overhangs slightly, grass draping down onto the light beach beneath it. Uniform flat grass top. No outline.",
       "purpose": "matrix:grass_over_light_beach",
+      "status": "pending"
+    },
+    "3e6ae44f-c4fc-4162-a2c4-de1f2b8ad85e": {
+      "created": "2026-08-19T10:44:22+00:00",
+      "prompt": "rugged grey mountain rock ground tile on a translucent crystal ice block, isometric. No outline.",
+      "purpose": "matrix:grey_stone_over_ice",
       "status": "pending"
     },
     "3ede927c-d999-47b5-8ed1-e33dad82e772": {
@@ -1530,6 +1878,12 @@
       "purpose": "matrix:dark_mud_over_water",
       "status": "pending"
     },
+    "413acbb2-4857-4e3c-9b71-2bbae3a75ac7": {
+      "created": "2026-08-19T10:44:37+00:00",
+      "prompt": "isometric wooden parquet floor over pale sandy beach tile. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
     "41994cc9-c73b-4854-9a23-47f10736c57b": {
       "created": "2026-08-17T16:21:04+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of lush green grass. The black rock grows over the edge and tufts down over the grass below, so the two meet naturally with no hard line between them. The grass side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
@@ -1542,10 +1896,28 @@
       "purpose": "matrix:ice_over_deep_water",
       "status": "pending"
     },
+    "41ed39b9-24b4-4b21-92a4-33c0c2157372": {
+      "created": "2026-08-19T10:30:34+00:00",
+      "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed wet dark mud. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed dark mud sides. No outline.",
+      "purpose": "matrix:grass_over_dark_mud",
+      "status": "pending"
+    },
+    "42437c70-f531-423f-8f90-6a1547f7ca02": {
+      "created": "2026-08-19T10:52:33+00:00",
+      "prompt": "isometric game tile of deep dark ocean water growing over translucent crystal ice. Overgrown edges, deep water cascading down the ice walls. Flat clean deep water on top. No outline.",
+      "purpose": "matrix:deep_water_over_ice",
+      "status": "pending"
+    },
     "4249acd5-f353-45cc-9f41-e6ca4be748d5": {
       "created": "2026-08-18T00:55:02+00:00",
       "prompt": "a solid block of wet dark mud. Isometric view. One material all the way through: flat even dark mud on top, the same dark mud continuing straight down the vertical sides. No rim, no lip, no cap, no shadow band \u2014 the sides are simply the inside of the block. No outline.",
       "purpose": "matrix:dark_mud_over_dark_mud",
+      "status": "pending"
+    },
+    "42da3675-620b-412e-a96a-eeea0c377373": {
+      "created": "2026-08-19T10:57:32+00:00",
+      "prompt": "isometric ground tile where molten glowing lava has settled over a base of dry light soil. The whole visible top is pure flat dark orange; the light soil is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:lava_over_light_soil",
       "status": "pending"
     },
     "42e12dcf-f285-47b7-8850-f3a28a6ee916": {
@@ -1558,6 +1930,12 @@
       "created": "2026-08-16T19:39:22+00:00",
       "prompt": "isometric tile: a layer of clean fresh snow covering a block of dry light soil. Ragged snow edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline.",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "4388dbf0-5ad0-4ba8-96ec-798ad06e8564": {
+      "created": "2026-08-19T10:49:33+00:00",
+      "prompt": "top-down isometric ground block. Thick cut paving stone slabs carpet over exposed translucent crystal ice. Where the two meet the paving stone droops over the edge instead of being cut off. Even paving stone surface, detailed ice sides. No outline.",
+      "purpose": "matrix:paving_stone_over_ice",
       "status": "pending"
     },
     "439aa851-8926-4407-a242-c399d191b97e": {
@@ -1590,6 +1968,12 @@
       "purpose": "matrix:grey_stone_over_parquet_floor",
       "status": "pending"
     },
+    "44f624a6-c7f9-40fb-863f-6a6230969262": {
+      "created": "2026-08-19T10:43:08+00:00",
+      "prompt": "isometric tile. Side walls: deep dark ocean water. Top: flat pure flat medium grey. No outline.",
+      "purpose": "matrix:grey_stone_over_deep_water",
+      "status": "pending"
+    },
     "4509fa9d-7163-4090-85da-75087c8387b7": {
       "created": "2026-08-17T20:50:01+00:00",
       "prompt": "isometric tile: a layer of wet dark mud covering a block of clear calm water. Ragged dark mud edge overhanging the water cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline.",
@@ -1600,6 +1984,12 @@
       "created": "2026-08-17T22:49:12+00:00",
       "prompt": "a block of rugged grey mountain rock with cut paving stone slabs established across the top and spilling over every edge. Isometric view. The paving stone surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:paving_stone_over_grey_stone",
+      "status": "pending"
+    },
+    "45aa0f6e-fd2d-40bb-85d3-a9def77cf1c8": {
+      "created": "2026-08-19T10:55:59+00:00",
+      "prompt": "isometric ground tile where thick bubbling slime has settled over a base of clear calm water. The whole visible top is pure flat bright yellow-green; the water is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:slime_over_water",
       "status": "pending"
     },
     "462951d3-094a-4b54-b736-5120e90fdb6e": {
@@ -1624,6 +2014,12 @@
       "created": "2026-08-17T22:28:50+00:00",
       "prompt": "isometric game tile of clean fresh snow growing over thick bubbling slime. Overgrown edges, snow cascading down the slime walls. Flat clean snow on top. No outline.",
       "purpose": "matrix:snow_over_slime",
+      "status": "pending"
+    },
+    "46cd1093-44bd-4ad1-984c-8319e5c50c15": {
+      "created": "2026-08-19T10:41:00+00:00",
+      "prompt": "isometric ground tile where cut paving stone slabs has taken over a wooden parquet floor block. The paving stone rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
+      "purpose": "matrix:paving_stone_over_parquet_floor",
       "status": "pending"
     },
     "47552108-8fc2-4110-a9ad-7268e5a9223c": {
@@ -1660,6 +2056,12 @@
       "created": "2026-08-16T17:37:25+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour translucent crystal ice, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:ice_over_snow",
+      "status": "pending"
+    },
+    "498c8da0-6c3e-49d0-abe6-e47b5459acfe": {
+      "created": "2026-08-19T10:51:17+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken molten glowing lava. Sides: wooden parquet floor with visible texture. Between them the lava overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:lava_over_parquet_floor",
       "status": "pending"
     },
     "49ad7055-05f5-48f5-84de-13f6922fd84b": {
@@ -1716,6 +2118,12 @@
       "purpose": "matrix:lava_over_parquet_floor",
       "status": "pending"
     },
+    "4aff9f5e-b597-4c14-9395-3d0f3085b489": {
+      "created": "2026-08-19T10:50:36+00:00",
+      "prompt": "isometric tile. Side walls: wet dark mud. Top: flat pure flat cool light grey. No outline.",
+      "purpose": "matrix:paving_stone_over_dark_mud",
+      "status": "pending"
+    },
     "4b06579b-0bbb-4d2b-82e4-38d88e3a9373": {
       "created": "2026-08-16T18:57:40+00:00",
       "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline.",
@@ -1764,6 +2172,12 @@
       "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
+    "4c487011-330d-4092-8c4f-8d9b32812983": {
+      "created": "2026-08-19T10:37:36+00:00",
+      "prompt": "flat pure flat medium grey on top of clear calm water. isometric. no outline.",
+      "purpose": "matrix:grey_stone_over_water",
+      "status": "pending"
+    },
     "4c4cfd7a-93ca-4df4-963e-fcb2ea8bc56a": {
       "created": "2026-08-17T12:17:19+00:00",
       "prompt": "isometric terrain block of clear calm water with dry light soil growing on top. The light soil spills over the rim and hangs down the water face in an uneven fringe. Flat even light soil seen from above. No outline.",
@@ -1780,6 +2194,12 @@
       "created": "",
       "prompt": "isometric tile: a layer of wet dark mud covering a block of deep dark ocean water. Ragged dark mud edge overhanging the deep water cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline.",
       "purpose": "matrix:dark_mud_over_deep_water",
+      "status": "pending"
+    },
+    "4c710cc0-8597-404e-aded-9c1bb28ff60c": {
+      "created": "2026-08-19T10:34:16+00:00",
+      "prompt": "isometric tile. top pure flat green. walls pure flat warm tan, textured. no outline.",
+      "purpose": "matrix:grass_over_parquet_floor",
       "status": "pending"
     },
     "4c777d39-ca1a-461f-a585-86617a24441a": {
@@ -1806,10 +2226,28 @@
       "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
+    "4d3a0b1b-5463-46fb-8ebf-33682f80b588": {
+      "created": "2026-08-19T10:39:47+00:00",
+      "prompt": "isometric game tile of dark volcanic rock growing over thick bubbling slime. Overgrown edges, black rock cascading down the slime walls. Flat clean black rock on top. No outline.",
+      "purpose": "matrix:black_rock_over_slime",
+      "status": "pending"
+    },
+    "4d4d8877-76ec-4082-9d07-db06afd6703d": {
+      "created": "2026-08-19T10:31:06+00:00",
+      "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed wooden parquet floor. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed parquet floor sides. No outline.",
+      "purpose": "matrix:grass_over_parquet_floor",
+      "status": "pending"
+    },
     "4da0fcf8-ad7b-41ca-a5f8-ffb8867f717e": {
       "created": "2026-08-19T09:41:11+00:00",
       "prompt": "isometric ground tile. cut paving stone slabs on top of translucent crystal ice. The paving stone grows over the edge and tufts down over the ice below, so the two meet naturally with no hard line between them. The ice side walls show their own surface detail. Seen from above, the paving stone surface is even and uniform. No outline.",
       "purpose": "matrix:paving_stone_over_ice",
+      "status": "pending"
+    },
+    "4da38b04-4b82-4ab6-89a0-0cb2b28abc34": {
+      "created": "2026-08-19T10:36:24+00:00",
+      "prompt": "isometric cube. pure flat green lid, dry light soil body. No outline.",
+      "purpose": "matrix:grass_over_light_soil",
       "status": "pending"
     },
     "4ddaf0b0-52b7-4288-8119-e8646609d702": {
@@ -1896,6 +2334,12 @@
       "purpose": "matrix:ice_over_deep_water",
       "status": "pending"
     },
+    "50ee4dac-f235-4178-bc2a-b687429b71fc": {
+      "created": "2026-08-19T11:05:07+00:00",
+      "prompt": "isometric game tile of clear calm water growing over deep dark ocean water. Overgrown edges, water cascading down the deep water walls. Flat clean water on top. No outline.",
+      "purpose": "matrix:water_over_deep_water",
+      "status": "pending"
+    },
     "50f62ebb-8467-4dd4-b33f-7c7fd355afba": {
       "created": "2026-08-17T22:50:26+00:00",
       "prompt": "a block of translucent crystal ice with cut paving stone slabs established across the top and spilling over every edge. Isometric view. The paving stone surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -1906,6 +2350,12 @@
       "created": "2026-08-17T22:53:00+00:00",
       "prompt": "isometric cube of translucent crystal ice capped with molten glowing lava. The cap overhangs slightly, lava draping down onto the ice beneath it. Uniform flat lava top. No outline.",
       "purpose": "matrix:lava_over_ice",
+      "status": "pending"
+    },
+    "510e4965-5178-4d82-b8e3-2ef6ca893e9b": {
+      "created": "2026-08-19T11:00:35+00:00",
+      "prompt": "isometric cube. pure flat dark orange lid, cut paving stone slabs body. No outline.",
+      "purpose": "matrix:lava_over_paving_stone",
       "status": "pending"
     },
     "512226fb-3b5b-4b8e-8c1f-ae777ea98867": {
@@ -1924,6 +2374,12 @@
       "created": "2026-08-17T19:31:58+00:00",
       "prompt": "isometric terrain block of lush green grass with dry light soil growing on top. The light soil spills over the rim and hangs down the grass face in an uneven fringe. Flat even light soil seen from above. No outline.",
       "purpose": "matrix:light_soil_over_grass",
+      "status": "pending"
+    },
+    "51eddeb0-2a4b-4622-8b23-5e5739dc3ea1": {
+      "created": "2026-08-19T10:35:48+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat green, nothing else. The vertical side walls below it are thick bubbling slime. The top is pure flat green and the sides are slime \u2014 not the other way round. No outline.",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "5201a0c4-34ee-414a-a0f2-a9c22e5fd1c2": {
@@ -1966,6 +2422,12 @@
       "created": "2026-08-19T10:10:26+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken dark volcanic rock. Sides: cut paving stone slabs with visible texture. Between them the black rock overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:black_rock_over_paving_stone",
+      "status": "pending"
+    },
+    "549eeaf4-9095-4fbe-a58e-a0f626c571dc": {
+      "created": "2026-08-19T10:35:18+00:00",
+      "prompt": "isometric ground tile where wet dark mud has settled over a base of rugged grey mountain rock. The whole visible top is pure flat dark cold brown; the grey stone is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:dark_mud_over_grey_stone",
       "status": "pending"
     },
     "55440933-5b29-4c51-93fb-518e83a8c4b7": {
@@ -2102,6 +2564,12 @@
       "purpose": "matrix:snow_over_lava",
       "status": "pending"
     },
+    "59160b9c-5aa1-487a-8fd5-6c3f4b873fb1": {
+      "created": "2026-08-19T11:01:40+00:00",
+      "prompt": "isometric tile. Side walls: deep dark ocean water. Top: flat pure flat medium blue. No outline.",
+      "purpose": "matrix:water_over_deep_water",
+      "status": "pending"
+    },
     "596234fa-303d-45c1-b85b-b474ca0623f8": {
       "created": "2026-08-17T19:27:49+00:00",
       "prompt": "top-down isometric ground block. Thick wet dark mud carpet over exposed lush green grass. Where the two meet the dark mud droops over the edge instead of being cut off. Even dark mud surface, detailed grass sides. No outline.",
@@ -2118,6 +2586,12 @@
       "created": "2026-08-19T09:44:16+00:00",
       "prompt": "isometric tile. top pure flat medium grey. walls pure flat pale sand yellow, textured. no outline.",
       "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
+    "59c2431a-702e-488e-ad3f-bccced3d873b": {
+      "created": "2026-08-19T10:34:12+00:00",
+      "prompt": "isometric terrain tile of rugged grey mountain rock resting on clear calm water. IMPORTANT: the water is UNDERNEATH and the grey stone is ON TOP. Do not put the water on top. Seen from above you see only pure flat medium grey. No outline.",
+      "purpose": "matrix:grey_stone_over_water",
       "status": "pending"
     },
     "59fc1fa0-f78d-4e82-8db6-8ef75e3865c1": {
@@ -2240,10 +2714,28 @@
       "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
+    "5d654727-c8f2-4a8f-9dd9-2edadcc9ca68": {
+      "created": "2026-08-19T10:45:17+00:00",
+      "prompt": "flat pure flat medium grey on top of wet dark mud. isometric. no outline.",
+      "purpose": "matrix:grey_stone_over_dark_mud",
+      "status": "pending"
+    },
+    "5d66346b-295b-4361-9a25-a7399561c738": {
+      "created": "2026-08-19T11:02:18+00:00",
+      "prompt": "deep dark ocean water ground tile on a thick bubbling slime block, isometric. No outline.",
+      "purpose": "matrix:deep_water_over_slime",
+      "status": "pending"
+    },
     "5dba1d17-db2b-466b-ad98-c24b44620321": {
       "created": "2026-08-19T10:15:34+00:00",
       "prompt": "isometric terrain tile: deep water above, slime below. No outline.",
       "purpose": "matrix:deep_water_over_slime",
+      "status": "pending"
+    },
+    "5dc5093f-8859-4a06-a88b-56cafa720cad": {
+      "created": "2026-08-19T10:32:04+00:00",
+      "prompt": "isometric ground tile where lush green grass has settled over a base of clear calm water. The whole visible top is pure flat green; the water is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
     "5e7ae326-ca1e-4739-8d0e-2932d35c5546": {
@@ -2258,6 +2750,12 @@
       "purpose": "matrix:grass_over_snow",
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
+    },
+    "5f69198e-ef6d-4327-94a9-ba12ef5cf58b": {
+      "created": "2026-08-19T10:58:34+00:00",
+      "prompt": "isometric cube. pure flat bright yellow-green lid, rugged grey mountain rock body. No outline.",
+      "purpose": "matrix:slime_over_grey_stone",
+      "status": "pending"
     },
     "5fcaacc7-6f6c-46f1-9867-20cd340c3734": {
       "created": "2026-08-16T18:48:30+00:00",
@@ -2362,6 +2860,12 @@
       "purpose": "matrix:parquet_floor_over_snow",
       "status": "pending"
     },
+    "621fbe28-fffa-403e-980e-6a3bffec2213": {
+      "created": "2026-08-19T10:34:35+00:00",
+      "prompt": "a chunk of wet dark mud, isometric, with pure flat near-black charcoal on its flat upper face. The sides are dark mud. No outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
     "625a7f1a-0722-4cdf-86ab-efa35a159495": {
       "created": "2026-08-17T22:25:51+00:00",
       "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of clean fresh snow. Ragged grey stone edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
@@ -2374,6 +2878,12 @@
       "purpose": "matrix:grey_stone_over_snow",
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
+    },
+    "62cb42d1-53e3-40d6-9ac6-e8a19dae2cf7": {
+      "created": "2026-08-19T10:45:49+00:00",
+      "prompt": "isometric terrain tile of thick bubbling slime resting on translucent crystal ice. IMPORTANT: the ice is UNDERNEATH and the slime is ON TOP. Do not put the ice on top. Seen from above you see only pure flat bright yellow-green. No outline.",
+      "purpose": "matrix:slime_over_ice",
+      "status": "pending"
     },
     "62ea4c3a-ac37-459d-a797-60c03e1aa4ec": {
       "created": "2026-08-17T22:39:58+00:00",
@@ -2409,6 +2919,12 @@
       "created": "2026-08-16T11:12:54+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are dark volcanic rock with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_black_rock",
+      "status": "pending"
+    },
+    "64d6e889-df49-4475-b6f3-ee48b89dc696": {
+      "created": "2026-08-19T10:59:52+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat medium blue. The lower layer, seen from the side, is deep dark ocean water. Upper layer water, lower layer deep water. No outline.",
+      "purpose": "matrix:water_over_deep_water",
       "status": "pending"
     },
     "64f32b31-ffef-456d-af7f-06e4e4e8b9bb": {
@@ -2527,6 +3043,18 @@
       "purpose": "matrix:slime_over_light_beach",
       "status": "pending"
     },
+    "683a0b3a-0526-4fc9-997d-9943f4d68b4f": {
+      "created": "2026-08-19T10:46:26+00:00",
+      "prompt": "top-down isometric ground block. Thick wooden parquet floor carpet over exposed pale sandy beach. Where the two meet the parquet floor droops over the edge instead of being cut off. Even parquet floor surface, detailed light beach sides. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
+    "6845ef12-8807-4b18-8375-fb31d4e0227f": {
+      "created": "2026-08-19T10:48:58+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat cool light grey. The lower layer, seen from the side, is wet dark mud. Upper layer paving stone, lower layer dark mud. No outline.",
+      "purpose": "matrix:paving_stone_over_dark_mud",
+      "status": "pending"
+    },
     "6869098e-caff-449a-915e-fac38d514c09": {
       "created": "2026-08-17T11:09:11+00:00",
       "prompt": "isometric ground tile. translucent crystal ice on top of molten glowing lava. The ice grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the ice surface is even and uniform. No outline.",
@@ -2543,6 +3071,12 @@
       "created": "2026-08-17T20:43:07+00:00",
       "prompt": "isometric ground tile. pale sandy beach on top of clear calm water. The light beach grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the light beach surface is even and uniform. No outline.",
       "purpose": "matrix:light_beach_over_water",
+      "status": "pending"
+    },
+    "68e11628-a241-47b5-8927-ee4c97036974": {
+      "created": "2026-08-19T10:37:59+00:00",
+      "prompt": "isometric block. Thick thick bubbling slime walls, thin wet dark mud surface on top. No outline.",
+      "purpose": "matrix:dark_mud_over_slime",
       "status": "pending"
     },
     "6942efb0-925f-4148-b7f7-925d6fdf74c5": {
@@ -2563,6 +3097,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "69bae496-5968-401c-85b6-6cc4057d3174": {
+      "created": "2026-08-19T10:35:53+00:00",
+      "prompt": "a chunk of clear calm water, isometric, with pure flat medium grey on its flat upper face. The sides are water. No outline.",
+      "purpose": "matrix:grey_stone_over_water",
+      "status": "pending"
+    },
     "69bc1969-0e84-412e-8e6b-1da5775da1fa": {
       "created": "2026-08-17T20:43:11+00:00",
       "prompt": "isometric cube of wet dark mud capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the dark mud beneath it. Uniform flat black rock top. No outline.",
@@ -2575,6 +3115,12 @@
       "purpose": "matrix:deep_water_over_deep_water",
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
+    },
+    "6a035185-83f2-4a79-a609-02b7b731855b": {
+      "created": "2026-08-19T11:12:42+00:00",
+      "prompt": "isometric tile, flat pure flat bright yellow-green top, pure flat cool light grey sides. No outline.",
+      "purpose": "matrix:slime_over_paving_stone",
+      "status": "pending"
     },
     "6a347335-f375-4c33-8651-b33ac831b14d": {
       "created": "2026-08-17T18:22:15+00:00",
@@ -2592,6 +3138,12 @@
       "created": "2026-08-19T10:12:34+00:00",
       "prompt": "isometric tile: a thin layer of cut paving stone slabs laid down on top of a thick block of thick bubbling slime. The layer is pure flat cool light grey and covers the entire top face. The block below it shows slime on every side. No outline.",
       "purpose": "matrix:paving_stone_over_slime",
+      "status": "pending"
+    },
+    "6b986ecb-acea-440d-a85c-69095fd892d4": {
+      "created": "2026-08-19T10:37:25+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: cut paving stone slabs with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grass_over_paving_stone",
       "status": "pending"
     },
     "6bab366f-1155-4133-a0d7-441e91929d53": {
@@ -2656,6 +3208,12 @@
       "purpose": "matrix:deep_water_over_dark_mud",
       "status": "pending"
     },
+    "6d280d3b-5a08-40c1-81cb-46cb3c2c1c1e": {
+      "created": "2026-08-19T11:03:01+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken molten glowing lava. Sides: cut paving stone slabs with visible texture. Between them the lava overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:lava_over_paving_stone",
+      "status": "pending"
+    },
     "6d4c3bc0-58ff-43d4-ab59-83f899514df3": {
       "created": "2026-08-17T16:27:43+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of clean fresh snow. Ragged black rock edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
@@ -2682,16 +3240,40 @@
       "purpose": "matrix:dark_mud_over_light_soil",
       "status": "pending"
     },
+    "6e5eae49-3a07-41a5-a0a5-563a70ae9ca3": {
+      "created": "2026-08-19T10:35:34+00:00",
+      "prompt": "isometric terrain tile of wet dark mud resting on dark volcanic rock. IMPORTANT: the black rock is UNDERNEATH and the dark mud is ON TOP. Do not put the black rock on top. Seen from above you see only pure flat dark cold brown. No outline.",
+      "purpose": "matrix:dark_mud_over_black_rock",
+      "status": "pending"
+    },
     "6ea5d23d-ec97-4c3b-8227-bab9b2967a78": {
       "created": "2026-08-17T20:40:15+00:00",
       "prompt": "top-down isometric ground block. Thick deep dark ocean water carpet over exposed dark volcanic rock. Where the two meet the deep water droops over the edge instead of being cut off. Even deep water surface, detailed black rock sides. No outline.",
       "purpose": "matrix:deep_water_over_black_rock",
       "status": "pending"
     },
+    "6ec92e43-8086-466b-958b-d66857b52575": {
+      "created": "2026-08-19T10:47:43+00:00",
+      "prompt": "isometric ground tile. rugged grey mountain rock on top of pale sandy beach. The grey stone grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
+      "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
     "6eff5544-e959-4e82-999d-dd12227f474b": {
       "created": "2026-08-19T09:56:28+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken cut paving stone slabs. Sides: molten glowing lava with visible texture. Between them the paving stone overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:paving_stone_over_lava",
+      "status": "pending"
+    },
+    "6f1f3cef-6071-48e0-a328-f52533460abf": {
+      "created": "2026-08-19T10:33:35+00:00",
+      "prompt": "isometric block of molten glowing lava that has been painted pure flat medium grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare molten glowing lava. No outline.",
+      "purpose": "matrix:grey_stone_over_lava",
+      "status": "pending"
+    },
+    "6f2571b4-ba00-470d-8d5c-e6cb1e1c9202": {
+      "created": "2026-08-19T10:40:49+00:00",
+      "prompt": "isometric terrain tile of rugged grey mountain rock resting on wet dark mud. IMPORTANT: the dark mud is UNDERNEATH and the grey stone is ON TOP. Do not put the dark mud on top. Seen from above you see only pure flat medium grey. No outline.",
+      "purpose": "matrix:grey_stone_over_dark_mud",
       "status": "pending"
     },
     "6f4ea0c2-32b7-4396-8ad6-39da661156b1": {
@@ -2706,10 +3288,22 @@
       "purpose": "matrix:deep_water_over_light_beach",
       "status": "pending"
     },
+    "6fde8d42-1940-40ac-9d9c-a85d4c87fde0": {
+      "created": "2026-08-19T10:39:15+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken rugged grey mountain rock. Sides: molten glowing lava with visible texture. Between them the grey stone overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grey_stone_over_lava",
+      "status": "pending"
+    },
     "6ff9ccfb-f526-4e61-bd30-08fd2fe7cab6": {
       "created": "2026-08-17T23:22:33+00:00",
       "prompt": "isometric game tile of clean fresh snow growing over dry light soil. Overgrown edges, snow cascading down the light soil walls. Flat clean snow on top. No outline.",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "70036760-baa7-473b-9884-59d6f8c4f3b5": {
+      "created": "2026-08-19T11:00:54+00:00",
+      "prompt": "isometric ground tile with tall thick bubbling slime side walls, clearly slime, textured from top to bottom. Plain pure flat dark navy blue top. No outline.",
+      "purpose": "matrix:deep_water_over_slime",
       "status": "pending"
     },
     "7037598c-005e-4f46-b323-d0bd516b7174": {
@@ -2742,6 +3336,12 @@
       "purpose": "matrix:parquet_floor_over_slime",
       "status": "pending"
     },
+    "7179fa58-e6ed-4abe-80b0-3f6490caa486": {
+      "created": "2026-08-19T10:37:37+00:00",
+      "prompt": "isometric block. Top face: pure flat green. Side faces: pure flat bright yellow-green. The upper surface is pure flat green and the walls beneath are pure flat bright yellow-green. Flat even top, textured sides. No outline.",
+      "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
     "718c90c6-fa75-49ce-82ac-762fc8e5338a": {
       "created": "2026-08-16T17:33:55+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour translucent crystal ice, completely smooth with no texture. The vertical side walls are lush green grass with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -2766,6 +3366,18 @@
       "created": "2026-08-17T10:51:20+00:00",
       "prompt": "isometric tile: a layer of lush green grass covering a block of thick bubbling slime. Ragged grass edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "72009733-096b-4d69-a5e8-8be9858c3eff": {
+      "created": "2026-08-19T10:45:38+00:00",
+      "prompt": "isometric cube. pure flat medium grey lid, pale sandy beach body. No outline.",
+      "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
+    "7200fdff-8dcf-4459-9cc1-7b6316b9590b": {
+      "created": "2026-08-19T10:38:55+00:00",
+      "prompt": "isometric terrain block of wet dark mud with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even grey stone seen from above. No outline.",
+      "purpose": "matrix:grey_stone_over_dark_mud",
       "status": "pending"
     },
     "720fe38e-7346-4b66-9a0c-f69a9de34014": {
@@ -2840,6 +3452,12 @@
       "purpose": "matrix:light_beach_over_slime",
       "status": "pending"
     },
+    "7517b828-6a52-42e0-b181-2dbb46acc1ac": {
+      "created": "2026-08-19T10:59:23+00:00",
+      "prompt": "isometric tile: a thin layer of deep dark ocean water laid down on top of a thick block of thick bubbling slime. The layer is pure flat dark navy blue and covers the entire top face. The block below it shows slime on every side. No outline.",
+      "purpose": "matrix:deep_water_over_slime",
+      "status": "pending"
+    },
     "754546e6-fad3-4dac-8098-371f81609a00": {
       "created": "2026-08-17T22:34:03+00:00",
       "prompt": "top-down isometric ground block. Thick wooden parquet floor carpet over exposed deep dark ocean water. Where the two meet the parquet floor droops over the edge instead of being cut off. Even parquet floor surface, detailed deep water sides. No outline.",
@@ -2858,6 +3476,24 @@
       "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
+    "75e48a3d-c218-443f-a134-677c00a5eb92": {
+      "created": "2026-08-19T10:33:43+00:00",
+      "prompt": "isometric tile, lush green grass on cut paving stone slabs. The walls must be paving stone and nothing else. No outline.",
+      "purpose": "matrix:grass_over_paving_stone",
+      "status": "pending"
+    },
+    "765744e7-000e-4657-b533-6f3b7edff35a": {
+      "created": "2026-08-19T10:45:00+00:00",
+      "prompt": "isometric cube. pure flat medium grey lid, dry light soil body. No outline.",
+      "purpose": "matrix:grey_stone_over_light_soil",
+      "status": "pending"
+    },
+    "765cc653-5154-4bdd-8f30-6fc76e867ed8": {
+      "created": "2026-08-19T10:36:31+00:00",
+      "prompt": "isometric lush green grass over wooden parquet floor tile. No outline.",
+      "purpose": "matrix:grass_over_parquet_floor",
+      "status": "pending"
+    },
     "76c7c3d0-5a25-4a0f-8e9b-a4923a4a62e2": {
       "created": "2026-08-17T23:24:41+00:00",
       "prompt": "isometric ground tile cut from a single block of deep dark ocean water. The flat top surface is clean single colour deep water, completely smooth with no texture. The vertical side walls are the same deep dark ocean water seen from the side, with its natural surface detail clearly visible all the way down. The top edge is a clean straight line and nothing hangs over it. Top perfectly flat, walls t",
@@ -2868,6 +3504,18 @@
       "created": "",
       "prompt": "isometric terrain block of wet dark mud with clear calm water growing on top. The water spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even water seen from above. No outline.",
       "purpose": "matrix:water_over_dark_mud",
+      "status": "pending"
+    },
+    "775b99fa-fc09-46e9-ad48-d894ba140953": {
+      "created": "2026-08-19T10:48:20+00:00",
+      "prompt": "a chunk of thick bubbling slime, isometric, with pure flat cool light grey on its flat upper face. The sides are slime. No outline.",
+      "purpose": "matrix:paving_stone_over_slime",
+      "status": "pending"
+    },
+    "777605df-9333-4051-8bc0-13dba76f17f9": {
+      "created": "2026-08-19T10:47:46+00:00",
+      "prompt": "a block of molten glowing lava with wooden parquet floor established across the top and spilling over every edge. Isometric view. The parquet floor surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:parquet_floor_over_lava",
       "status": "pending"
     },
     "779bb284-a127-4e4d-9da1-80c804fdb9db": {
@@ -2888,16 +3536,34 @@
       "purpose": "matrix:snow_over_parquet_floor",
       "status": "pending"
     },
+    "7879532b-81b2-48ab-89b7-a489713349a7": {
+      "created": "2026-08-19T10:44:33+00:00",
+      "prompt": "isometric tile: a thin layer of cut paving stone slabs laid down on top of a thick block of clear calm water. The layer is pure flat cool light grey and covers the entire top face. The block below it shows water on every side. No outline.",
+      "purpose": "matrix:paving_stone_over_water",
+      "status": "pending"
+    },
     "79977473-9a4b-4a54-86b1-520db4fd5870": {
       "created": "2026-08-17T23:56:15+00:00",
       "prompt": "a solid block of dry light soil. Isometric view. One material all the way through: flat even light soil on top, the same light soil continuing straight down the vertical sides. No rim, no lip, no cap, no shadow band \u2014 the sides are simply the inside of the block. No outline.",
       "purpose": "matrix:light_soil_over_light_soil",
       "status": "pending"
     },
+    "79bebf54-f8b7-4f8e-82ff-b1b51a99f44a": {
+      "created": "2026-08-19T10:47:01+00:00",
+      "prompt": "isometric game tile of cut paving stone slabs growing over pale sandy beach. Overgrown edges, paving stone cascading down the light beach walls. Flat clean paving stone on top. No outline.",
+      "purpose": "matrix:paving_stone_over_light_beach",
+      "status": "pending"
+    },
     "79f726df-9dde-469e-9566-0b40f8adc3f1": {
       "created": "2026-08-17T23:34:50+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: thick bubbling slime with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:snow_over_slime",
+      "status": "pending"
+    },
+    "7a393828-2d6c-481f-9da7-06f54a508082": {
+      "created": "2026-08-19T10:45:48+00:00",
+      "prompt": "isometric tile, flat pure flat medium grey top, pure flat dark navy blue sides. No outline.",
+      "purpose": "matrix:grey_stone_over_deep_water",
       "status": "pending"
     },
     "7a47fb99-d81b-4cc2-b274-8f60ea17e84b": {
@@ -2919,10 +3585,22 @@
       "purpose": "matrix:snow_over_lava",
       "status": "pending"
     },
+    "7b5644d8-efdc-4aea-aa58-cbe5acb30698": {
+      "created": "2026-08-19T10:59:04+00:00",
+      "prompt": "isometric tile, molten glowing lava on cut paving stone slabs. The walls must be paving stone and nothing else. No outline.",
+      "purpose": "matrix:lava_over_paving_stone",
+      "status": "pending"
+    },
     "7b5e1669-8dcd-48ba-a1ac-d561018ec51f": {
       "created": "2026-08-16T11:06:17+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_snow",
+      "status": "pending"
+    },
+    "7bbf8834-ce63-489e-aa42-ab0597dfa636": {
+      "created": "2026-08-19T10:35:30+00:00",
+      "prompt": "isometric tile, rugged grey mountain rock on molten glowing lava. The walls must be lava and nothing else. No outline.",
+      "purpose": "matrix:grey_stone_over_lava",
       "status": "pending"
     },
     "7c074e1b-c9b1-47a6-8886-11677241d7d8": {
@@ -2955,6 +3633,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "7d8f055f-2b7c-4c36-a781-e7cf54434f15": {
+      "created": "2026-08-19T10:51:22+00:00",
+      "prompt": "a chunk of molten glowing lava, isometric, with pure flat warm tan on its flat upper face. The sides are lava. No outline.",
+      "purpose": "matrix:parquet_floor_over_lava",
+      "status": "pending"
+    },
     "7dbe8031-920a-4ec0-8d6b-15e26f190c9c": {
       "created": "2026-08-17T23:39:13+00:00",
       "prompt": "isometric game tile of cut paving stone slabs growing over translucent crystal ice. Overgrown edges, paving stone cascading down the ice walls. Flat clean paving stone on top. No outline.",
@@ -2967,6 +3651,18 @@
       "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
+    "7e8bf8cd-994d-4c62-907c-18f18cf691e7": {
+      "created": "2026-08-19T10:38:35+00:00",
+      "prompt": "isometric cube of dark volcanic rock capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the black rock beneath it. Uniform flat grey stone top. No outline.",
+      "purpose": "matrix:grey_stone_over_black_rock",
+      "status": "pending"
+    },
+    "7ec1ee3b-537e-4b91-b5d5-f51d2c95a924": {
+      "created": "2026-08-19T10:32:38+00:00",
+      "prompt": "isometric ground tile where dark volcanic rock has settled over a base of wet dark mud. The whole visible top is pure flat near-black charcoal; the dark mud is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
     "7fe046a6-015a-4f55-834b-0aa2162e5cdf": {
       "created": "2026-08-17T22:26:50+00:00",
       "prompt": "isometric ground tile, pale sandy beach over lush green grass, photographed from above. Soft irregular boundary where light beach meets grass \u2014 the light beach creeps down over the grass. Plain even light beach surface. No outline.",
@@ -2977,6 +3673,12 @@
       "created": "2026-08-17T22:35:06+00:00",
       "prompt": "isometric cube of molten glowing lava capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the lava beneath it. Uniform flat dark mud top. No outline.",
       "purpose": "matrix:dark_mud_over_lava",
+      "status": "pending"
+    },
+    "7ff2d953-1b25-4860-b392-d36b68a9d866": {
+      "created": "2026-08-19T11:03:38+00:00",
+      "prompt": "isometric ground tile, deep dark ocean water over thick bubbling slime, photographed from above. Soft irregular boundary where deep water meets slime \u2014 the deep water creeps down over the slime. Plain even deep water surface. No outline.",
+      "purpose": "matrix:deep_water_over_slime",
       "status": "pending"
     },
     "8012a306-9bed-4348-b76c-d84fb0661d37": {
@@ -3007,6 +3709,12 @@
       "created": "",
       "prompt": "isometric terrain block of wooden parquet floor with thick bubbling slime growing on top. The slime spills over the rim and hangs down the parquet floor face in an uneven fringe. Flat even slime seen from above. No outline.",
       "purpose": "matrix:slime_over_parquet_floor",
+      "status": "pending"
+    },
+    "80a4681f-1d75-4a84-a420-e5dcd765d3bf": {
+      "created": "2026-08-19T10:52:18+00:00",
+      "prompt": "isometric tile, flat pure flat cool light grey top, pure flat dark cold brown sides. No outline.",
+      "purpose": "matrix:paving_stone_over_dark_mud",
       "status": "pending"
     },
     "80b7f975-46c9-4893-afaa-859e1e0ca2bc": {
@@ -3063,6 +3771,12 @@
       "purpose": "matrix:dark_mud_over_dark_mud",
       "status": "pending"
     },
+    "81c0f5fd-7e27-418d-b5c1-a9b8c8fd0e10": {
+      "created": "2026-08-19T10:43:20+00:00",
+      "prompt": "isometric tile, rugged grey mountain rock on dry light soil. The walls must be light soil and nothing else. No outline.",
+      "purpose": "matrix:grey_stone_over_light_soil",
+      "status": "pending"
+    },
     "81fd7055-51de-4bb3-a5cc-1958a953395f": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:36+00:00",
@@ -3112,6 +3826,12 @@
       "created": "2026-08-18T20:48:03+00:00",
       "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat medium grey. The lower layer, seen from the side, is pale sandy beach. Upper layer grey stone, lower layer light beach. No outline.",
       "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
+    "8389af63-1567-4916-b292-3cfa2a1ab108": {
+      "created": "2026-08-19T10:53:39+00:00",
+      "prompt": "isometric tile: a layer of cut paving stone slabs covering a block of pale sandy beach. Ragged paving stone edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform paving stone on the top face. No outline.",
+      "purpose": "matrix:paving_stone_over_light_beach",
       "status": "pending"
     },
     "842c8a63-1f40-40e7-881a-8a5aedc2549a": {
@@ -3199,6 +3919,12 @@
       "created": "2026-08-17T18:15:39+00:00",
       "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of pale sandy beach. Ragged grey stone edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
       "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
+    "8903f769-04b3-41d2-8754-d6d949ae358b": {
+      "created": "2026-08-19T10:59:08+00:00",
+      "prompt": "isometric ground tile with tall dry light soil side walls, clearly light soil, textured from top to bottom. Plain pure flat dark orange top. No outline.",
+      "purpose": "matrix:lava_over_light_soil",
       "status": "pending"
     },
     "890ca270-c971-4b4d-8d64-36ad4a07958c": {
@@ -3340,10 +4066,22 @@
       "purpose": "matrix:black_rock_over_lava",
       "status": "pending"
     },
+    "8f71deb1-8c46-4e39-b7ca-9e3afd9826c3": {
+      "created": "2026-08-19T10:49:31+00:00",
+      "prompt": "isometric terrain tile of cut paving stone slabs resting on dark volcanic rock. IMPORTANT: the black rock is UNDERNEATH and the paving stone is ON TOP. Do not put the black rock on top. Seen from above you see only pure flat cool light grey. No outline.",
+      "purpose": "matrix:paving_stone_over_black_rock",
+      "status": "pending"
+    },
     "8fa290d4-df4b-4d1a-8b68-c7b04ff114c9": {
       "created": "2026-08-18T00:46:04+00:00",
       "prompt": "one repeating segment of a tall wet dark mud wall, isometric. The dark mud texture leaves the bottom edge exactly as it enters the top edge, so many copies stack into one continuous wall with no line where they join. Flat even dark mud on the top face. No outline.",
       "purpose": "matrix:dark_mud_over_dark_mud",
+      "status": "pending"
+    },
+    "8fce14e5-49e2-4123-a2ff-61e55bd75712": {
+      "created": "2026-08-19T10:42:50+00:00",
+      "prompt": "top-down isometric ground block. Thick cut paving stone slabs carpet over exposed clear calm water. Where the two meet the paving stone droops over the edge instead of being cut off. Even paving stone surface, detailed water sides. No outline.",
+      "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
     "8fe885ff-cc75-4e57-b298-ee964bb0f620": {
@@ -3395,6 +4133,12 @@
       "purpose": "matrix:dark_mud_over_parquet_floor",
       "status": "pending"
     },
+    "9281f2ea-63bd-40a6-b602-98baf7661576": {
+      "created": "2026-08-19T10:57:30+00:00",
+      "prompt": "isometric block of cut paving stone slabs that has been painted pure flat dark orange across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare cut paving stone slabs. No outline.",
+      "purpose": "matrix:lava_over_paving_stone",
+      "status": "pending"
+    },
     "92a77bcc-ce8a-431a-a1fa-9b715bf9b59b": {
       "created": "2026-08-17T22:53:43+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken molten glowing lava. Sides: clean fresh snow with visible texture. Between them the lava overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -3417,6 +4161,12 @@
       "created": "2026-08-18T20:50:20+00:00",
       "prompt": "isometric tile: a thin layer of rugged grey mountain rock laid down on top of a thick block of clean fresh snow. The layer is pure flat medium grey and covers the entire top face. The block below it shows snow on every side. No outline.",
       "purpose": "matrix:grey_stone_over_snow",
+      "status": "pending"
+    },
+    "93a8b515-c0cf-4d5f-a453-febca66ba993": {
+      "created": "2026-08-19T10:34:18+00:00",
+      "prompt": "isometric tile. top = pure flat green. sides = pure flat bright yellow-green. flat top, textured sides, no outline.",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "93ac5c47-3fd4-41e5-8009-d1300ee4816f": {
@@ -3461,6 +4211,12 @@
       "purpose": "matrix:water_over_grass",
       "status": "pending"
     },
+    "9473488e-8935-4a97-8eec-3bfc9d3ed666": {
+      "created": "2026-08-19T10:39:39+00:00",
+      "prompt": "isometric terrain block of translucent crystal ice with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the ice face in an uneven fringe. Flat even grey stone seen from above. No outline.",
+      "purpose": "matrix:grey_stone_over_ice",
+      "status": "pending"
+    },
     "94892bb4-03d6-449e-88a2-b4a5fdb82dab": {
       "created": "2026-08-17T22:27:27+00:00",
       "prompt": "a block of thick bubbling slime with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -3477,6 +4233,12 @@
       "created": "2026-08-17T19:33:15+00:00",
       "prompt": "isometric terrain block of thick bubbling slime with dry light soil growing on top. The light soil spills over the rim and hangs down the slime face in an uneven fringe. Flat even light soil seen from above. No outline.",
       "purpose": "matrix:light_soil_over_slime",
+      "status": "pending"
+    },
+    "94bea122-fa83-46f8-bb8d-437170eac35b": {
+      "created": "2026-08-19T10:37:54+00:00",
+      "prompt": "isometric cube. pure flat medium grey lid, molten glowing lava body. No outline.",
+      "purpose": "matrix:grey_stone_over_lava",
       "status": "pending"
     },
     "94ceaa26-a8d0-463c-9c97-ac25db517241": {
@@ -3514,6 +4276,12 @@
       "created": "2026-08-16T17:36:02+00:00",
       "prompt": "clean single color translucent crystal ice on top of clean clean fresh snow",
       "purpose": "matrix:ice_over_snow",
+      "status": "pending"
+    },
+    "9637e84c-6c7a-41a8-94ba-eb32adbed415": {
+      "created": "2026-08-19T10:33:46+00:00",
+      "prompt": "isometric ground tile with tall clear calm water side walls, clearly water, textured from top to bottom. Plain pure flat green top. No outline.",
+      "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
     "96aea049-bfa0-4530-b94a-c75561530bb8": {
@@ -3588,6 +4356,12 @@
       "purpose": "matrix:water_over_lava",
       "status": "pending"
     },
+    "99f2de86-081c-4545-b1d3-699da515c6af": {
+      "created": "2026-08-19T10:48:59+00:00",
+      "prompt": "isometric block. Top face: pure flat cool light grey. Side faces: pure flat pale sand yellow. The upper surface is pure flat cool light grey and the walls beneath are pure flat pale sand yellow. Flat even top, textured sides. No outline.",
+      "purpose": "matrix:paving_stone_over_light_beach",
+      "status": "pending"
+    },
     "9a6f6f39-b333-4f48-9264-29e072ee8570": {
       "created": "2026-08-17T11:01:18+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: pale sandy beach with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -3612,6 +4386,12 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "9ab3eb98-dae2-420e-adc6-f55d2fdc058f": {
+      "created": "2026-08-19T10:32:16+00:00",
+      "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of molten glowing lava. Ragged grey stone edge overhanging the lava cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
+      "purpose": "matrix:grey_stone_over_lava",
+      "status": "pending"
+    },
     "9b3c6012-8493-43ad-aa2a-15a92aad13f3": {
       "created": "2026-08-17T22:55:00+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken thick bubbling slime. Sides: clean fresh snow with visible texture. Between them the slime overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -3628,6 +4408,12 @@
       "created": "2026-08-17T20:51:24+00:00",
       "prompt": "top-down isometric ground block. Thick deep dark ocean water carpet over exposed clear calm water. Where the two meet the deep water droops over the edge instead of being cut off. Even deep water surface, detailed water sides. No outline.",
       "purpose": "matrix:deep_water_over_water",
+      "status": "pending"
+    },
+    "9c462274-d165-423b-9403-a44758e22a6d": {
+      "created": "2026-08-19T10:39:45+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken rugged grey mountain rock. Sides: pale sandy beach with visible texture. Between them the grey stone overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
     "9c8e4df5-008c-4d10-84ff-d8e834eade85": {
@@ -3678,6 +4464,12 @@
       "purpose": "matrix:grass_over_ice",
       "status": "pending"
     },
+    "9e0c9e08-c6a3-445c-9cbe-bb1cffc32609": {
+      "created": "2026-08-19T10:55:13+00:00",
+      "prompt": "isometric block of rugged grey mountain rock that has been painted pure flat bright yellow-green across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare rugged grey mountain rock. No outline.",
+      "purpose": "matrix:slime_over_grey_stone",
+      "status": "pending"
+    },
     "9e3f04e8-44bb-4043-a2c5-fac0b286c228": {
       "created": "2026-08-17T11:24:18+00:00",
       "prompt": "isometric ground tile. dry light soil on top of clean fresh snow. The light soil grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the light soil surface is even and uniform. No outline.",
@@ -3714,6 +4506,24 @@
       "purpose": "matrix:parquet_floor_over_water",
       "status": "pending"
     },
+    "9f5cbbe5-512b-463e-8021-d3fb667a0e68": {
+      "created": "2026-08-19T10:43:39+00:00",
+      "prompt": "isometric tile: a layer of molten glowing lava covering a block of clear calm water. Ragged lava edge overhanging the water cliff, individual strands breaking the line. Smooth uniform lava on the top face. No outline.",
+      "purpose": "matrix:lava_over_water",
+      "status": "pending"
+    },
+    "9f5dea28-d5cc-489e-a233-c086eae3029e": {
+      "created": "2026-08-19T10:43:13+00:00",
+      "prompt": "isometric block. Top face: pure flat near-black charcoal. Side faces: pure flat bright yellow-green. The upper surface is pure flat near-black charcoal and the walls beneath are pure flat bright yellow-green. Flat even top, textured sides. No outline.",
+      "purpose": "matrix:black_rock_over_slime",
+      "status": "pending"
+    },
+    "9f790288-e4ea-4a14-8021-4ecac5989c5a": {
+      "created": "2026-08-19T10:30:36+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: rugged grey mountain rock with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grass_over_grey_stone",
+      "status": "pending"
+    },
     "9fc70d09-3ef2-4665-b239-db91e79f22f7": {
       "created": "2026-08-17T23:30:43+00:00",
       "prompt": "top-down isometric ground block. Thick clean fresh snow carpet over exposed thick bubbling slime. Where the two meet the snow droops over the edge instead of being cut off. Even snow surface, detailed slime sides. No outline.",
@@ -3744,6 +4554,12 @@
       "purpose": "matrix:grass_over_deep_water",
       "status": "pending"
     },
+    "a044a4a6-fed7-4657-b88a-3b7397ae413b": {
+      "created": "2026-08-19T10:41:17+00:00",
+      "prompt": "isometric block of dry light soil that has been painted pure flat medium grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare dry light soil. No outline.",
+      "purpose": "matrix:grey_stone_over_light_soil",
+      "status": "pending"
+    },
     "a04593d8-ee76-4a37-9fd6-8670fb38d5d9": {
       "created": "2026-08-17T22:50:36+00:00",
       "prompt": "isometric ground tile, cut paving stone slabs over dry light soil, photographed from above. Soft irregular boundary where paving stone meets light soil \u2014 the paving stone creeps down over the light soil. Plain even paving stone surface. No outline.",
@@ -3768,6 +4584,12 @@
       "purpose": "matrix:light_beach_over_slime",
       "status": "pending"
     },
+    "a187a64f-ac81-4238-9b1c-1d446ed36f01": {
+      "created": "2026-08-19T10:51:31+00:00",
+      "prompt": "a block of dry light soil with thick bubbling slime established across the top and spilling over every edge. Isometric view. The slime surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:slime_over_light_soil",
+      "status": "pending"
+    },
     "a1cad7c9-8fc1-474e-a6d7-80becf4a86d0": {
       "created": "2026-08-17T20:53:54+00:00",
       "prompt": "isometric ground tile. pale sandy beach on top of deep dark ocean water. The light beach grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the light beach surface is even and uniform. No outline.",
@@ -3778,6 +4600,12 @@
       "created": "2026-08-17T11:29:57+00:00",
       "prompt": "top-down isometric ground block. Thick dry light soil carpet over exposed clean fresh snow. Where the two meet the light soil droops over the edge instead of being cut off. Even light soil surface, detailed snow sides. No outline.",
       "purpose": "matrix:light_soil_over_snow",
+      "status": "pending"
+    },
+    "a2a22c23-e95d-43f7-a8a6-13ce5909501b": {
+      "created": "2026-08-19T11:00:36+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken thick bubbling slime. Sides: rugged grey mountain rock with visible texture. Between them the slime overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:slime_over_grey_stone",
       "status": "pending"
     },
     "a2cb5a93-2632-469d-90b4-9255f92e2946": {
@@ -3796,6 +4624,12 @@
       "created": "",
       "prompt": "isometric ground tile. molten glowing lava on top of deep dark ocean water. The lava grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the lava surface is even and uniform. No outline.",
       "purpose": "matrix:lava_over_deep_water",
+      "status": "pending"
+    },
+    "a35876fb-3dcf-4f49-aeac-021c3e66414e": {
+      "created": "2026-08-19T10:36:42+00:00",
+      "prompt": "isometric tile. top pure flat warm tan. walls pure flat light warm brown, textured. no outline.",
+      "purpose": "matrix:parquet_floor_over_light_soil",
       "status": "pending"
     },
     "a35a0265-abf1-462a-b689-5503a23e4c8d": {
@@ -3840,6 +4674,12 @@
       "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
+    "a687cd2e-1cbf-47ea-affd-df57413f6fcc": {
+      "created": "2026-08-19T10:42:40+00:00",
+      "prompt": "isometric tile. top pure flat warm tan. walls pure flat pale sand yellow, textured. no outline.",
+      "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
     "a6bd812e-dfdb-43b9-930c-70cb13d5e246": {
       "created": "2026-08-17T22:39:46+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of thick bubbling slime. The grey stone grows over the edge and tufts down over the slime below, so the two meet naturally with no hard line between them. The slime side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
@@ -3864,6 +4704,12 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "a6ed537a-7a25-487b-a406-1235f1c03476": {
+      "created": "2026-08-19T10:46:28+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken rugged grey mountain rock. Sides: dry light soil with visible texture. Between them the grey stone overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grey_stone_over_light_soil",
+      "status": "pending"
+    },
     "a787fefe-7916-442c-8859-553944861ee5": {
       "created": "2026-08-17T22:55:17+00:00",
       "prompt": "isometric cube of dry light soil capped with clear calm water. The cap overhangs slightly, water draping down onto the light soil beneath it. Uniform flat water top. No outline.",
@@ -3874,6 +4720,12 @@
       "created": "2026-08-17T18:04:57+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of dark volcanic rock. The grey stone grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
       "purpose": "matrix:grey_stone_over_black_rock",
+      "status": "pending"
+    },
+    "a806b998-ea38-47e3-a9ae-09f4e2b01291": {
+      "created": "2026-08-19T10:32:31+00:00",
+      "prompt": "isometric ground tile where lush green grass has settled over a base of thick bubbling slime. The whole visible top is pure flat green; the slime is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
     "a846a225-7845-40f4-8834-ad0e36a75101": {
@@ -3954,6 +4806,12 @@
       "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
+    "aac4a035-6820-4f18-a6d5-688e36cd0a93": {
+      "created": "2026-08-19T10:50:35+00:00",
+      "prompt": "isometric tile: a layer of thick bubbling slime covering a block of deep dark ocean water. Ragged slime edge overhanging the deep water cliff, individual strands breaking the line. Smooth uniform slime on the top face. No outline.",
+      "purpose": "matrix:slime_over_deep_water",
+      "status": "pending"
+    },
     "ab87beca-cca9-4fce-b8d4-82e43fd4fde5": {
       "created": "2026-08-17T22:25:48+00:00",
       "prompt": "isometric cube of dry light soil capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the light soil beneath it. Uniform flat snow top. No outline.",
@@ -3983,6 +4841,12 @@
       "created": "2026-08-18T20:42:31+00:00",
       "prompt": "isometric ground tile. The flat top surface is pure flat warm tan, nothing else. The vertical side walls below it are pale sandy beach. The top is pure flat warm tan and the sides are light beach \u2014 not the other way round. No outline.",
       "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
+    "ac5849b4-1ea2-4982-b82c-ad3568b2362e": {
+      "created": "2026-08-19T10:54:43+00:00",
+      "prompt": "flat pure flat cool light grey on top of translucent crystal ice. isometric. no outline.",
+      "purpose": "matrix:paving_stone_over_ice",
       "status": "pending"
     },
     "ac58fe5a-c06f-4f7f-b5c8-9f40ea472eda": {
@@ -4034,6 +4898,12 @@
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
     },
+    "ad767208-35e3-4d42-bec3-11f6e58a43ee": {
+      "created": "2026-08-19T10:40:06+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat medium grey. The lower layer, seen from the side, is dark volcanic rock. Upper layer grey stone, lower layer black rock. No outline.",
+      "purpose": "matrix:grey_stone_over_black_rock",
+      "status": "pending"
+    },
     "ad876c87-3224-43bf-9919-d57f16088007": {
       "created": "2026-08-17T17:53:21+00:00",
       "prompt": "isometric ground tile, rugged grey mountain rock over clean fresh snow, photographed from above. Soft irregular boundary where grey stone meets snow \u2014 the grey stone creeps down over the snow. Plain even grey stone surface. No outline.",
@@ -4044,6 +4914,12 @@
       "created": "2026-08-19T10:14:04+00:00",
       "prompt": "isometric block. Thick thick bubbling slime walls, thin deep dark ocean water surface on top. No outline.",
       "purpose": "matrix:deep_water_over_slime",
+      "status": "pending"
+    },
+    "ae073833-3a57-45c8-bf3b-d6168fb2b681": {
+      "created": "2026-08-19T11:03:22+00:00",
+      "prompt": "isometric tile, flat pure flat medium blue top, pure flat dark navy blue sides. No outline.",
+      "purpose": "matrix:water_over_deep_water",
       "status": "pending"
     },
     "ae110594-b41b-4363-b18a-5342d1ce1012": {
@@ -4075,6 +4951,12 @@
       "created": "2026-08-17T23:35:39+00:00",
       "prompt": "isometric ground tile where wet dark mud has taken over a clean fresh snow block. The dark mud rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "af29b2a0-abfc-4c5f-839f-690b6feba233": {
+      "created": "2026-08-19T10:42:44+00:00",
+      "prompt": "isometric block of deep dark ocean water that has been painted pure flat cool light grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare deep dark ocean water. No outline.",
+      "purpose": "matrix:paving_stone_over_deep_water",
       "status": "pending"
     },
     "af5e8530-6645-475e-b52b-0c4524ada0a3": {
@@ -4125,16 +5007,34 @@
       "purpose": "matrix:light_beach_over_ice",
       "status": "pending"
     },
+    "b2caabdf-9660-45c3-a37b-4262c4c333ae": {
+      "created": "2026-08-19T10:44:44+00:00",
+      "prompt": "a block of thick bubbling slime with cut paving stone slabs established across the top and spilling over every edge. Isometric view. The paving stone surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:paving_stone_over_slime",
+      "status": "pending"
+    },
     "b30ae3e5-24a6-49d9-9682-42c727aa53d7": {
       "created": "2026-08-17T22:28:35+00:00",
       "prompt": "isometric ground tile, dark volcanic rock over molten glowing lava, photographed from above. Soft irregular boundary where black rock meets lava \u2014 the black rock creeps down over the lava. Plain even black rock surface. No outline.",
       "purpose": "matrix:black_rock_over_lava",
       "status": "pending"
     },
+    "b318dab5-4288-4fe4-a5b8-7bd44ecccaf3": {
+      "created": "2026-08-19T10:32:20+00:00",
+      "prompt": "isometric terrain tile of translucent crystal ice resting on cut paving stone slabs. IMPORTANT: the paving stone is UNDERNEATH and the ice is ON TOP. Do not put the paving stone on top. Seen from above you see only pure flat pale cyan. No outline.",
+      "purpose": "matrix:ice_over_paving_stone",
+      "status": "pending"
+    },
     "b38f4255-f10f-416b-af9e-cc3098485f6e": {
       "created": "2026-08-17T23:43:11+00:00",
       "prompt": "isometric ground tile. cut paving stone slabs on top of rugged grey mountain rock. The paving stone grows over the edge and tufts down over the grey stone below, so the two meet naturally with no hard line between them. The grey stone side walls show their own surface detail. Seen from above, the paving stone surface is even and uniform. No outline.",
       "purpose": "matrix:paving_stone_over_grey_stone",
+      "status": "pending"
+    },
+    "b3ff3f16-d74c-4a84-ab6a-a9f24d54db71": {
+      "created": "2026-08-19T10:37:22+00:00",
+      "prompt": "a chunk of dark volcanic rock, isometric, with pure flat dark cold brown on its flat upper face. The sides are black rock. No outline.",
+      "purpose": "matrix:dark_mud_over_black_rock",
       "status": "pending"
     },
     "b40e850b-6248-4679-917f-cad23034d49d": {
@@ -4191,6 +5091,12 @@
       "purpose": "matrix:grass_over_paving_stone",
       "status": "pending"
     },
+    "b5304bfb-390c-4272-8bbb-650cd00532b8": {
+      "created": "2026-08-19T10:32:24+00:00",
+      "prompt": "isometric ground tile where wooden parquet floor has taken over a dry light soil block. The parquet floor rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_soil",
+      "status": "pending"
+    },
     "b5fa66b5-049d-43c5-812f-21baaa2e4e3d": {
       "created": "2026-08-17T18:41:45+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of clear calm water. The grey stone grows over the edge and tufts down over the water below, so the two meet naturally with no hard line between them. The water side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
@@ -4222,10 +5128,22 @@
       "purpose": "matrix:ice_over_water",
       "status": "pending"
     },
+    "b6f5c6b7-afde-480f-8fe3-839aa33e505a": {
+      "created": "2026-08-19T10:34:10+00:00",
+      "prompt": "isometric block. Thick rugged grey mountain rock walls, thin lush green grass surface on top. No outline.",
+      "purpose": "matrix:grass_over_grey_stone",
+      "status": "pending"
+    },
     "b727ed62-ecbe-4888-9064-644562e80092": {
       "created": "2026-08-18T20:43:10+00:00",
       "prompt": "isometric ground tile where lush green grass has settled over a base of thick bubbling slime. The whole visible top is pure flat green; the slime is only visible in the walls where the ground has been cut away. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "b7439664-afa4-40f7-a934-f36fabfccbb3": {
+      "created": "2026-08-19T10:40:43+00:00",
+      "prompt": "isometric terrain tile of wooden parquet floor resting on pale sandy beach. IMPORTANT: the light beach is UNDERNEATH and the parquet floor is ON TOP. Do not put the light beach on top. Seen from above you see only pure flat warm tan. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_beach",
       "status": "pending"
     },
     "b77bd513-8398-47e0-80c8-87af78f7a704": {
@@ -4264,6 +5182,12 @@
       "purpose": "matrix:ice_over_light_beach",
       "status": "pending"
     },
+    "b8d46bb8-7ebd-4d35-bdeb-e1b2e2835f4f": {
+      "created": "2026-08-19T10:41:58+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken clear calm water. Sides: dry light soil with visible texture. Between them the water overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:water_over_light_soil",
+      "status": "pending"
+    },
     "b8d98818-776c-40e7-8aaa-8a8f2af358c4": {
       "created": "2026-08-17T20:55:09+00:00",
       "prompt": "top-down isometric ground block. Thick clean fresh snow carpet over exposed deep dark ocean water. Where the two meet the snow droops over the edge instead of being cut off. Even snow surface, detailed deep water sides. No outline.",
@@ -4286,6 +5210,12 @@
       "created": "2026-08-18T00:53:33+00:00",
       "prompt": "isometric ground tile cut from a single block of wet dark mud. The flat top surface is clean single colour dark mud, completely smooth with no texture. The vertical side walls are the same wet dark mud seen from the side, with its natural surface detail clearly visible all the way down. The top edge is a clean straight line and nothing hangs over it. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:dark_mud_over_dark_mud",
+      "status": "pending"
+    },
+    "b9ae8a26-013d-4193-9142-5ee33407b4b8": {
+      "created": "2026-08-19T10:53:36+00:00",
+      "prompt": "isometric tile, thick bubbling slime on deep dark ocean water. The walls must be deep water and nothing else. No outline.",
+      "purpose": "matrix:slime_over_deep_water",
       "status": "pending"
     },
     "ba1f79dd-28dc-4c85-93a0-08cc89a4e8fc": {
@@ -4366,6 +5296,12 @@
       "purpose": "matrix:parquet_floor_over_water",
       "status": "pending"
     },
+    "bccbbc80-1489-4970-a72b-5bb0793b63ff": {
+      "created": "2026-08-19T10:39:48+00:00",
+      "prompt": "a chunk of deep dark ocean water, isometric, with pure flat cool light grey on its flat upper face. The sides are deep water. No outline.",
+      "purpose": "matrix:paving_stone_over_deep_water",
+      "status": "pending"
+    },
     "bcdfbe7e-2256-439e-8ecf-9bdd02702a4e": {
       "created": "2026-08-19T09:56:41+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: pale sandy beach with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -4382,6 +5318,12 @@
       "created": "2026-08-17T23:21:05+00:00",
       "prompt": "a block of dry light soil with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "bdc9fa43-6d9b-498d-b441-f9cdbc4853e7": {
+      "created": "2026-08-19T10:34:29+00:00",
+      "prompt": "isometric tile, lush green grass on dry light soil. The walls must be light soil and nothing else. No outline.",
+      "purpose": "matrix:grass_over_light_soil",
       "status": "pending"
     },
     "bdcb8a12-07b1-4bfa-b8a6-6167426754f4": {
@@ -4402,6 +5344,12 @@
       "purpose": "matrix:deep_water_over_ice",
       "status": "pending"
     },
+    "beeeb520-8dce-47d7-8c6f-aaba3d02ab95": {
+      "created": "2026-08-19T10:33:50+00:00",
+      "prompt": "isometric ground tile, wet dark mud over rugged grey mountain rock, photographed from above. Soft irregular boundary where dark mud meets grey stone \u2014 the dark mud creeps down over the grey stone. Plain even dark mud surface. No outline.",
+      "purpose": "matrix:dark_mud_over_grey_stone",
+      "status": "pending"
+    },
     "beefa593-25f5-4ed3-a110-8e3fd3fd96fb": {
       "created": "2026-08-19T09:50:10+00:00",
       "prompt": "top-down isometric ground block. Thick thick bubbling slime carpet over exposed cut paving stone slabs. Where the two meet the slime droops over the edge instead of being cut off. Even slime surface, detailed paving stone sides. No outline.",
@@ -4412,6 +5360,12 @@
       "created": "2026-08-17T18:10:22+00:00",
       "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed dark volcanic rock. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed black rock sides. No outline.",
       "purpose": "matrix:grey_stone_over_black_rock",
+      "status": "pending"
+    },
+    "bf571bf3-378c-4362-998c-4c0df1b94771": {
+      "created": "2026-08-19T10:32:33+00:00",
+      "prompt": "isometric tile: a thin layer of lush green grass laid down on top of a thick block of wooden parquet floor. The layer is pure flat green and covers the entire top face. The block below it shows parquet floor on every side. No outline.",
+      "purpose": "matrix:grass_over_parquet_floor",
       "status": "pending"
     },
     "bfac6e02-ac69-45be-98ce-5a193727b09c": {
@@ -4426,6 +5380,12 @@
       "purpose": "matrix:black_rock_over_light_soil",
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
+    },
+    "c03c85eb-4559-4189-a77d-e0ff6242089c": {
+      "created": "2026-08-19T10:30:19+00:00",
+      "prompt": "isometric terrain block of cut paving stone slabs with translucent crystal ice growing on top. The ice spills over the rim and hangs down the paving stone face in an uneven fringe. Flat even ice seen from above. No outline.",
+      "purpose": "matrix:ice_over_paving_stone",
+      "status": "pending"
     },
     "c048ce91-6d28-44cf-aab9-2f024311c0b6": {
       "created": "2026-08-16T18:54:32+00:00",
@@ -4463,6 +5423,12 @@
       "purpose": "matrix:snow_over_light_beach",
       "status": "pending"
     },
+    "c2192506-77c1-453a-b7e9-007d077614bb": {
+      "created": "2026-08-19T10:48:52+00:00",
+      "prompt": "isometric tile: a layer of dark volcanic rock covering a block of thick bubbling slime. Ragged black rock edge overhanging the slime cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
+      "purpose": "matrix:black_rock_over_slime",
+      "status": "pending"
+    },
     "c21b508a-273b-4a57-ac3d-80275922382d": {
       "created": "",
       "prompt": "isometric terrain block of dry light soil with thick bubbling slime growing on top. The slime spills over the rim and hangs down the light soil face in an uneven fringe. Flat even slime seen from above. No outline.",
@@ -4476,16 +5442,52 @@
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
     },
+    "c27ffeb2-c372-4b90-b5ab-d3dcad59642e": {
+      "created": "2026-08-19T10:41:25+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat medium grey. The lower layer, seen from the side, is deep dark ocean water. Upper layer grey stone, lower layer deep water. No outline.",
+      "purpose": "matrix:grey_stone_over_deep_water",
+      "status": "pending"
+    },
     "c2932971-f7ab-4ec4-8ad5-f8bd385ebc9d": {
       "created": "2026-08-17T20:37:00+00:00",
       "prompt": "isometric ground tile. cut paving stone slabs on top of dark volcanic rock. The paving stone grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the paving stone surface is even and uniform. No outline.",
       "purpose": "matrix:paving_stone_over_black_rock",
       "status": "pending"
     },
+    "c29d2c6f-9f5b-4066-b283-255bf69697de": {
+      "created": "2026-08-19T10:33:45+00:00",
+      "prompt": "isometric tile. top pure flat green. walls pure flat dark cold brown, textured. no outline.",
+      "purpose": "matrix:grass_over_dark_mud",
+      "status": "pending"
+    },
+    "c29e7f23-083c-4394-a254-b603a67dc355": {
+      "created": "2026-08-19T10:48:29+00:00",
+      "prompt": "isometric ground tile, clear calm water over pale sandy beach, photographed from above. Soft irregular boundary where water meets light beach \u2014 the water creeps down over the light beach. Plain even water surface. No outline.",
+      "purpose": "matrix:water_over_light_beach",
+      "status": "pending"
+    },
     "c2f5d94e-458d-4483-b54a-1f70751f45e3": {
       "created": "2026-08-17T22:59:42+00:00",
       "prompt": "a block of dry light soil with wooden parquet floor established across the top and spilling over every edge. Isometric view. The parquet floor surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:parquet_floor_over_light_soil",
+      "status": "pending"
+    },
+    "c2f666e8-5466-473a-b25f-07dddd0ac8ec": {
+      "created": "2026-08-19T10:34:53+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken wet dark mud. Sides: thick bubbling slime with visible texture. Between them the dark mud overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:dark_mud_over_slime",
+      "status": "pending"
+    },
+    "c2f8ac69-9f0e-43f7-9529-e3ef7fbd869f": {
+      "created": "2026-08-19T10:39:30+00:00",
+      "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat warm tan. The lower layer, seen from the side, is dry light soil. Upper layer parquet floor, lower layer light soil. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_soil",
+      "status": "pending"
+    },
+    "c30cd8b1-8dc9-4c7e-85b6-f8921bbd9f13": {
+      "created": "2026-08-19T10:54:01+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat cool light grey, nothing else. The vertical side walls below it are wet dark mud. The top is pure flat cool light grey and the sides are dark mud \u2014 not the other way round. No outline.",
+      "purpose": "matrix:paving_stone_over_dark_mud",
       "status": "pending"
     },
     "c314617f-02d3-4cec-a4df-1a1ba150c50e": {
@@ -4556,6 +5558,12 @@
       "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
+    "c50f4a50-01b1-455a-934c-5693183cac66": {
+      "created": "2026-08-19T10:30:36+00:00",
+      "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed wet dark mud. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed dark mud sides. No outline.",
+      "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
     "c50f7a2c-08fd-454a-b151-1b93b29eb5cd": {
       "created": "2026-08-17T19:28:15+00:00",
       "prompt": "isometric ground tile. wet dark mud on top of pale sandy beach. The dark mud grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline.",
@@ -4590,6 +5598,12 @@
       "created": "2026-08-17T20:41:58+00:00",
       "prompt": "isometric tile: a layer of clean fresh snow covering a block of dark volcanic rock. Ragged snow edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline.",
       "purpose": "matrix:snow_over_black_rock",
+      "status": "pending"
+    },
+    "c63d5cd3-bb66-429f-a625-878cb94fc932": {
+      "created": "2026-08-19T10:39:59+00:00",
+      "prompt": "isometric terrain tile: dark mud above, slime below. No outline.",
+      "purpose": "matrix:dark_mud_over_slime",
       "status": "pending"
     },
     "c63e866c-a057-4abf-b6cf-e14f6da1f329": {
@@ -4628,10 +5642,22 @@
       "purpose": "matrix:snow_over_grey_stone",
       "status": "pending"
     },
+    "c745ee25-a6c9-4bdf-95a2-e69dbc03798f": {
+      "created": "2026-08-19T10:34:38+00:00",
+      "prompt": "isometric terrain tile of wooden parquet floor resting on dry light soil. IMPORTANT: the light soil is UNDERNEATH and the parquet floor is ON TOP. Do not put the light soil on top. Seen from above you see only pure flat warm tan. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_soil",
+      "status": "pending"
+    },
     "c7961521-89a6-4db9-960d-357cf672fb98": {
       "created": "2026-08-17T11:14:13+00:00",
       "prompt": "isometric tile: a layer of translucent crystal ice covering a block of molten glowing lava. Ragged ice edge overhanging the lava cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
       "purpose": "matrix:ice_over_lava",
+      "status": "pending"
+    },
+    "c841b281-27ea-4ce4-96b8-4ee38f9393b2": {
+      "created": "2026-08-19T10:51:13+00:00",
+      "prompt": "isometric ground tile where cut paving stone slabs has settled over a base of translucent crystal ice. The whole visible top is pure flat cool light grey; the ice is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:paving_stone_over_ice",
       "status": "pending"
     },
     "c89792b0-e3cc-4771-8e2c-9378f8430e19": {
@@ -4658,10 +5684,22 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "c92340ae-35a7-49ac-8538-0b3231f39a6b": {
+      "created": "2026-08-19T10:35:27+00:00",
+      "prompt": "isometric lush green grass over wet dark mud tile. No outline.",
+      "purpose": "matrix:grass_over_dark_mud",
+      "status": "pending"
+    },
     "c943fb13-bd97-4501-aec0-90d0e8973371": {
       "created": "2026-08-19T10:03:42+00:00",
       "prompt": "isometric tile: a thin layer of lush green grass laid down on top of a thick block of thick bubbling slime. The layer is pure flat green and covers the entire top face. The block below it shows slime on every side. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "c99789c9-5d81-4854-8680-d2c2b753b443": {
+      "created": "2026-08-19T10:30:34+00:00",
+      "prompt": "a block of cut paving stone slabs with dark volcanic rock established across the top and spilling over every edge. Isometric view. The black rock surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:black_rock_over_paving_stone",
       "status": "pending"
     },
     "c9e880ec-a2b6-41ed-988c-9b0c605c14f5": {
@@ -4860,6 +5898,12 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "d0a84528-83cb-4ecf-b157-ba499e109f84": {
+      "created": "2026-08-19T10:41:13+00:00",
+      "prompt": "isometric ground tile, wet dark mud over dark volcanic rock, photographed from above. Soft irregular boundary where dark mud meets black rock \u2014 the dark mud creeps down over the black rock. Plain even dark mud surface. No outline.",
+      "purpose": "matrix:dark_mud_over_black_rock",
+      "status": "pending"
+    },
     "d11dc038-2c2e-4547-9a26-71efd6a4c516": {
       "created": "2026-08-16T17:42:26+00:00",
       "prompt": "clean single color translucent crystal ice on top of clean dark volcanic rock",
@@ -4962,6 +6006,12 @@
       "purpose": "matrix:dark_mud_over_paving_stone",
       "status": "pending"
     },
+    "d500141b-ab48-4c29-a88b-2fd398b81e8e": {
+      "created": "2026-08-19T10:53:49+00:00",
+      "prompt": "isometric tile: a layer of thick bubbling slime covering a block of rugged grey mountain rock. Ragged slime edge overhanging the grey stone cliff, individual strands breaking the line. Smooth uniform slime on the top face. No outline.",
+      "purpose": "matrix:slime_over_grey_stone",
+      "status": "pending"
+    },
     "d55061c6-2957-490a-b45d-660853bf05b4": {
       "created": "2026-08-17T22:23:08+00:00",
       "prompt": "a block of rugged grey mountain rock with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -4980,6 +6030,18 @@
       "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
+    "d6031f81-cb01-4d81-8914-91276a48221c": {
+      "created": "2026-08-19T10:32:07+00:00",
+      "prompt": "isometric block of cut paving stone slabs that has been painted pure flat green across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare cut paving stone slabs. No outline.",
+      "purpose": "matrix:grass_over_paving_stone",
+      "status": "pending"
+    },
+    "d653e570-ef28-4d9c-8bb0-1943e16cac36": {
+      "created": "2026-08-19T10:54:06+00:00",
+      "prompt": "isometric ground tile, thick bubbling slime over clear calm water, photographed from above. Soft irregular boundary where slime meets water \u2014 the slime creeps down over the water. Plain even slime surface. No outline.",
+      "purpose": "matrix:slime_over_water",
+      "status": "pending"
+    },
     "d656c0c0-cd4f-4605-b802-95671d6b8e21": {
       "created": "2026-08-16T17:27:41+00:00",
       "prompt": "clean single color clean fresh snow on top of clean thick bubbling slime",
@@ -4996,6 +6058,12 @@
       "created": "2026-08-17T22:33:48+00:00",
       "prompt": "a block of wooden parquet floor with pale sandy beach established across the top and spilling over every edge. Isometric view. The light beach surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:light_beach_over_parquet_floor",
+      "status": "pending"
+    },
+    "d6f6892d-b3ea-4067-bcd9-8726bac0a4f0": {
+      "created": "2026-08-19T10:41:30+00:00",
+      "prompt": "isometric block of pale sandy beach that has been painted pure flat medium grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare pale sandy beach. No outline.",
+      "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
     "d7161244-d3bb-454b-93a2-c23ac3a0d39c": {
@@ -5113,6 +6181,24 @@
       "purpose": "matrix:ice_over_water",
       "status": "pending"
     },
+    "da63275b-eb17-4d84-b2a7-de7ff3838f60": {
+      "created": "2026-08-19T10:46:12+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat cool light grey, nothing else. The vertical side walls below it are thick bubbling slime. The top is pure flat cool light grey and the sides are slime \u2014 not the other way round. No outline.",
+      "purpose": "matrix:paving_stone_over_slime",
+      "status": "pending"
+    },
+    "da8864d1-8221-426d-bd93-53c88c63a2a3": {
+      "created": "2026-08-19T10:32:14+00:00",
+      "prompt": "isometric tile: a thin layer of lush green grass laid down on top of a thick block of wet dark mud. The layer is pure flat green and covers the entire top face. The block below it shows dark mud on every side. No outline.",
+      "purpose": "matrix:grass_over_dark_mud",
+      "status": "pending"
+    },
+    "daefb1db-f53d-4afa-9b57-21d2d9a3f64d": {
+      "created": "2026-08-19T10:49:21+00:00",
+      "prompt": "isometric tile: a layer of cut paving stone slabs covering a block of dry light soil. Ragged paving stone edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform paving stone on the top face. No outline.",
+      "purpose": "matrix:paving_stone_over_light_soil",
+      "status": "pending"
+    },
     "dbfc5b88-af8e-42f4-8e06-7548645204e5": {
       "created": "2026-08-17T16:50:27+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of dark volcanic rock. Ragged black rock edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
@@ -5129,6 +6215,12 @@
       "created": "2026-08-16T17:29:48+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are thick bubbling slime with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:snow_over_slime",
+      "status": "pending"
+    },
+    "dc6f6c85-711c-43dd-8ef0-d3db6726243d": {
+      "created": "2026-08-19T10:37:51+00:00",
+      "prompt": "a block of wooden parquet floor with lush green grass established across the top and spilling over every edge. Isometric view. The grass surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:grass_over_parquet_floor",
       "status": "pending"
     },
     "dc88d468-6e4b-463e-bacd-169adee87af7": {
@@ -5167,6 +6259,12 @@
       "purpose": "matrix:light_beach_over_black_rock",
       "status": "pending"
     },
+    "dd7dbe12-6c49-4692-b247-0b02a506f77a": {
+      "created": "2026-08-19T10:30:34+00:00",
+      "prompt": "isometric terrain block of translucent crystal ice with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the ice face in an uneven fringe. Flat even black rock seen from above. No outline.",
+      "purpose": "matrix:black_rock_over_ice",
+      "status": "pending"
+    },
     "ddf7a3e2-48c9-4f73-827f-5a89a7623d5e": {
       "created": "2026-08-17T18:12:00+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of pale sandy beach. The grey stone grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
@@ -5191,6 +6289,12 @@
       "purpose": "matrix:light_beach_over_ice",
       "status": "pending"
     },
+    "de61dbaf-ca99-4685-8a0a-d4c1d09ee533": {
+      "created": "2026-08-19T10:42:43+00:00",
+      "prompt": "isometric ground tile with tall translucent crystal ice side walls, clearly ice, textured from top to bottom. Plain pure flat medium grey top. No outline.",
+      "purpose": "matrix:grey_stone_over_ice",
+      "status": "pending"
+    },
     "de912649-dc2e-4ff6-b80a-a28a3330a513": {
       "created": "2026-08-17T16:45:33+00:00",
       "prompt": "isometric ground tile, dark volcanic rock over translucent crystal ice, photographed from above. Soft irregular boundary where black rock meets ice \u2014 the black rock creeps down over the ice. Plain even black rock surface. No outline.",
@@ -5210,10 +6314,22 @@
       "reviewed": "2026-08-18T21:03:23+00:00",
       "status": "rejected"
     },
+    "dfdf8f8e-e075-430f-83b7-516475a47861": {
+      "created": "2026-08-19T10:49:13+00:00",
+      "prompt": "isometric ground tile. The flat top surface is pure flat warm tan, nothing else. The vertical side walls below it are molten glowing lava. The top is pure flat warm tan and the sides are lava \u2014 not the other way round. No outline.",
+      "purpose": "matrix:parquet_floor_over_lava",
+      "status": "pending"
+    },
     "e08edf9a-51ba-4b5f-9216-a6d925cc7ec7": {
       "created": "2026-08-17T22:38:02+00:00",
       "prompt": "top-down isometric ground block. Thick clear calm water carpet over exposed translucent crystal ice. Where the two meet the water droops over the edge instead of being cut off. Even water surface, detailed ice sides. No outline.",
       "purpose": "matrix:water_over_ice",
+      "status": "pending"
+    },
+    "e0b5d583-bc80-43c7-976d-456dc24b1013": {
+      "created": "2026-08-19T10:45:51+00:00",
+      "prompt": "isometric tile, cut paving stone slabs on dry light soil. The walls must be light soil and nothing else. No outline.",
+      "purpose": "matrix:paving_stone_over_light_soil",
       "status": "pending"
     },
     "e0ca8a76-9927-4ac4-8a38-2bf39b304f12": {
@@ -5276,6 +6392,12 @@
       "purpose": "matrix:grey_stone_over_deep_water",
       "status": "pending"
     },
+    "e32a692e-7a43-44dc-8e68-288f11cb5820": {
+      "created": "2026-08-19T10:41:40+00:00",
+      "prompt": "isometric game tile of cut paving stone slabs growing over dry light soil. Overgrown edges, paving stone cascading down the light soil walls. Flat clean paving stone on top. No outline.",
+      "purpose": "matrix:paving_stone_over_light_soil",
+      "status": "pending"
+    },
     "e356792c-74c8-46e2-9364-b8c311764235": {
       "created": "2026-08-17T17:48:40+00:00",
       "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of clean fresh snow. Ragged grey stone edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
@@ -5286,6 +6408,12 @@
       "created": "2026-08-17T22:51:31+00:00",
       "prompt": "top-down isometric ground block. Thick molten glowing lava carpet over exposed translucent crystal ice. Where the two meet the lava droops over the edge instead of being cut off. Even lava surface, detailed ice sides. No outline.",
       "purpose": "matrix:lava_over_ice",
+      "status": "pending"
+    },
+    "e36f50a6-6103-40b7-be27-725edd5b7149": {
+      "created": "2026-08-19T10:42:44+00:00",
+      "prompt": "a chunk of wet dark mud, isometric, with pure flat medium grey on its flat upper face. The sides are dark mud. No outline.",
+      "purpose": "matrix:grey_stone_over_dark_mud",
       "status": "pending"
     },
     "e37c3532-1c2a-4e28-aea9-068cc82fa16d": {
@@ -5330,10 +6458,28 @@
       "purpose": "matrix:parquet_floor_over_grey_stone",
       "status": "pending"
     },
+    "e52a3cac-56f7-4e72-ab94-168aa69aca50": {
+      "created": "2026-08-19T10:54:45+00:00",
+      "prompt": "isometric ground tile with tall cut paving stone slabs side walls, clearly paving stone, textured from top to bottom. Plain pure flat warm tan top. No outline.",
+      "purpose": "matrix:parquet_floor_over_paving_stone",
+      "status": "pending"
+    },
+    "e54ea463-ac3e-41cc-80ea-734c63f78263": {
+      "created": "2026-08-19T10:56:14+00:00",
+      "prompt": "flat pure flat bright yellow-green on top of dry light soil. isometric. no outline.",
+      "purpose": "matrix:slime_over_light_soil",
+      "status": "pending"
+    },
     "e56799dc-696f-4b26-8c57-309df66b1c8f": {
       "created": "2026-08-19T09:48:22+00:00",
       "prompt": "a block of pale sandy beach with deep dark ocean water established across the top and spilling over every edge. Isometric view. The deep water surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:deep_water_over_light_beach",
+      "status": "pending"
+    },
+    "e5b734f8-52d3-4d5c-b482-695de4cad694": {
+      "created": "2026-08-19T10:32:26+00:00",
+      "prompt": "isometric block of dry light soil that has been painted pure flat pale cyan across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare dry light soil. No outline.",
+      "purpose": "matrix:ice_over_light_soil",
       "status": "pending"
     },
     "e5cb4ac3-2db0-47f6-a955-40ef750664ea": {
@@ -5360,6 +6506,12 @@
       "purpose": "matrix:grass_over_black_rock",
       "status": "pending"
     },
+    "e6e77e02-9a7c-4ec4-8fd7-7f0afdd7f749": {
+      "created": "2026-08-19T10:31:01+00:00",
+      "prompt": "isometric tile: a layer of translucent crystal ice covering a block of dry light soil. Ragged ice edge overhanging the light soil cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
+      "purpose": "matrix:ice_over_light_soil",
+      "status": "pending"
+    },
     "e6f40d71-5983-4765-a4d3-c2a6e37f6a78": {
       "created": "2026-08-16T16:37:15+00:00",
       "prompt": "clean single color lush green grass on top of clean deep dark ocean water",
@@ -5376,6 +6528,12 @@
       "created": "2026-08-16T16:34:03+00:00",
       "prompt": "clean single color lush green grass on top of clean clear calm water",
       "purpose": "matrix:grass_over_water",
+      "status": "pending"
+    },
+    "e822ea7d-0d17-4ef8-8f3b-c1ccf3432950": {
+      "created": "2026-08-19T10:58:09+00:00",
+      "prompt": "isometric cube of deep dark ocean water capped with clear calm water. The cap overhangs slightly, water draping down onto the deep water beneath it. Uniform flat water top. No outline.",
+      "purpose": "matrix:water_over_deep_water",
       "status": "pending"
     },
     "e86751a2-9066-43f2-8178-b407ad9da7d1": {
@@ -5406,6 +6564,12 @@
       "created": "2026-08-17T23:31:22+00:00",
       "prompt": "isometric terrain block of dark volcanic rock with pale sandy beach growing on top. The light beach spills over the rim and hangs down the black rock face in an uneven fringe. Flat even light beach seen from above. No outline.",
       "purpose": "matrix:light_beach_over_black_rock",
+      "status": "pending"
+    },
+    "e96d090e-08de-4bca-b554-e178bdcc47db": {
+      "created": "2026-08-19T10:56:22+00:00",
+      "prompt": "a block of translucent crystal ice with cut paving stone slabs established across the top and spilling over every edge. Isometric view. The paving stone surface itself is calm and uniform; only the rim is ragged. No outline.",
+      "purpose": "matrix:paving_stone_over_ice",
       "status": "pending"
     },
     "e9d7ae97-8674-476f-9b2b-f79b2593f564": {
@@ -5492,6 +6656,12 @@
       "created": "2026-08-16T19:17:16+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: lush green grass with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
+    "ecd9a199-6f75-41d5-be51-2c60c01160f0": {
+      "created": "2026-08-19T10:50:34+00:00",
+      "prompt": "flat pure flat cool light grey on top of thick bubbling slime. isometric. no outline.",
+      "purpose": "matrix:paving_stone_over_slime",
       "status": "pending"
     },
     "ecfa70f4-b12d-4d67-bdd8-02c1a59c7741": {
@@ -5633,6 +6803,12 @@
       "purpose": "matrix:grey_stone_over_ice",
       "status": "pending"
     },
+    "f0a55146-aea3-4c51-88e9-a928695de24f": {
+      "created": "2026-08-19T10:50:55+00:00",
+      "prompt": "isometric ground tile, molten glowing lava over pale sandy beach, photographed from above. Soft irregular boundary where lava meets light beach \u2014 the lava creeps down over the light beach. Plain even lava surface. No outline.",
+      "purpose": "matrix:lava_over_light_beach",
+      "status": "pending"
+    },
     "f0b9c67e-97cd-4b83-9eb0-9ae573d4cfe9": {
       "created": "2026-08-16T09:47:54+00:00",
       "prompt": "clean single color green grass on top of clean lava",
@@ -5643,6 +6819,12 @@
       "created": "2026-08-17T22:38:42+00:00",
       "prompt": "isometric terrain block of deep dark ocean water with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the deep water face in an uneven fringe. Flat even black rock seen from above. No outline.",
       "purpose": "matrix:black_rock_over_deep_water",
+      "status": "pending"
+    },
+    "f0c5f12a-b061-41d8-9702-aecfa1067bf6": {
+      "created": "2026-08-19T10:48:01+00:00",
+      "prompt": "isometric terrain block of dark volcanic rock with cut paving stone slabs growing on top. The paving stone spills over the rim and hangs down the black rock face in an uneven fringe. Flat even paving stone seen from above. No outline.",
+      "purpose": "matrix:paving_stone_over_black_rock",
       "status": "pending"
     },
     "f213ae8a-8244-42e1-a35a-17f0dea2b01c": {
@@ -5673,6 +6855,12 @@
       "created": "2026-08-17T12:20:19+00:00",
       "prompt": "isometric terrain block of deep dark ocean water with dry light soil growing on top. The light soil spills over the rim and hangs down the deep water face in an uneven fringe. Flat even light soil seen from above. No outline.",
       "purpose": "matrix:light_soil_over_deep_water",
+      "status": "pending"
+    },
+    "f2e6bd11-b677-4820-8c63-11b765efabb1": {
+      "created": "2026-08-19T10:37:58+00:00",
+      "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: dry light soil with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
+      "purpose": "matrix:grass_over_light_soil",
       "status": "pending"
     },
     "f2f85e40-7d38-4b3a-9408-0bc79808b768": {
@@ -5723,6 +6911,12 @@
       "purpose": "matrix:parquet_floor_over_water",
       "status": "pending"
     },
+    "f50005da-e14e-4a4a-a0a7-6ace62662ba9": {
+      "created": "2026-08-19T10:45:34+00:00",
+      "prompt": "isometric cube of rugged grey mountain rock capped with deep dark ocean water. The cap overhangs slightly, deep water draping down onto the grey stone beneath it. Uniform flat deep water top. No outline.",
+      "purpose": "matrix:deep_water_over_grey_stone",
+      "status": "pending"
+    },
     "f5920384-9e54-46dd-ac7f-5ac66f531f4c": {
       "created": "2026-08-17T11:58:08+00:00",
       "prompt": "isometric terrain block of wet dark mud with dry light soil growing on top. The light soil spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even light soil seen from above. No outline.",
@@ -5739,6 +6933,18 @@
       "created": "2026-08-17T23:00:09+00:00",
       "prompt": "isometric ground tile where thick bubbling slime has taken over a clean fresh snow block. The slime rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
       "purpose": "matrix:slime_over_snow",
+      "status": "pending"
+    },
+    "f6cb0a34-cd4a-45d1-9857-a06188555eb0": {
+      "created": "2026-08-19T10:48:46+00:00",
+      "prompt": "isometric tile. Side walls: rugged grey mountain rock. Top: flat pure flat dark navy blue. No outline.",
+      "purpose": "matrix:deep_water_over_grey_stone",
+      "status": "pending"
+    },
+    "f6db7a14-eda9-443f-aaf0-aa668371e79d": {
+      "created": "2026-08-19T10:37:30+00:00",
+      "prompt": "isometric ground tile where lush green grass has taken over a clear calm water block. The grass rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
+      "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
     "f6e7cdfb-40fa-4d21-87e5-123ba313a2fa": {
@@ -5796,6 +7002,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "f8124941-7326-491c-82e3-4e8f87f19dc2": {
+      "created": "2026-08-19T10:52:09+00:00",
+      "prompt": "isometric cube. pure flat cool light grey lid, pale sandy beach body. No outline.",
+      "purpose": "matrix:paving_stone_over_light_beach",
+      "status": "pending"
+    },
     "f8764f5c-5bb4-4428-aff9-3df50f0f08cc": {
       "created": "2026-08-17T19:30:10+00:00",
       "prompt": "isometric cube of lush green grass capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the grass beneath it. Uniform flat dark mud top. No outline.",
@@ -5820,6 +7032,18 @@
       "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
+    "fa2a8309-cc38-453a-84e3-21190ea6e88a": {
+      "created": "2026-08-19T10:45:04+00:00",
+      "prompt": "isometric terrain tile of thick bubbling slime resting on wet dark mud. IMPORTANT: the dark mud is UNDERNEATH and the slime is ON TOP. Do not put the dark mud on top. Seen from above you see only pure flat bright yellow-green. No outline.",
+      "purpose": "matrix:slime_over_dark_mud",
+      "status": "pending"
+    },
+    "fa39b980-ab74-43e5-b106-352055a6fc52": {
+      "created": "2026-08-19T10:52:36+00:00",
+      "prompt": "isometric ground tile where wooden parquet floor has settled over a base of cut paving stone slabs. The whole visible top is pure flat warm tan; the paving stone is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:parquet_floor_over_paving_stone",
+      "status": "pending"
+    },
     "fa59ad6c-aab4-4cb4-b420-baca563f500d": {
       "created": "2026-08-16T19:29:59+00:00",
       "prompt": "isometric tile: a layer of clean fresh snow covering a block of molten glowing lava. Ragged snow edge overhanging the lava cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline.",
@@ -5839,10 +7063,22 @@
       "purpose": "matrix:",
       "status": "pending"
     },
+    "fa81e0cf-66ad-48f4-a226-1d1b4c7dd75d": {
+      "created": "2026-08-19T10:43:20+00:00",
+      "prompt": "isometric block. Top face: pure flat cool light grey. Side faces: pure flat light warm brown. The upper surface is pure flat cool light grey and the walls beneath are pure flat light warm brown. Flat even top, textured sides. No outline.",
+      "purpose": "matrix:paving_stone_over_light_soil",
+      "status": "pending"
+    },
     "faaf7317-0df6-40b9-9098-499c381f28bc": {
       "created": "2026-08-17T12:38:58+00:00",
       "prompt": "isometric tile: a layer of translucent crystal ice covering a block of wooden parquet floor. Ragged ice edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
       "purpose": "matrix:ice_over_parquet_floor",
+      "status": "pending"
+    },
+    "fabb19bf-ba7c-4ddd-bf18-e2939f8b852a": {
+      "created": "2026-08-19T10:36:23+00:00",
+      "prompt": "isometric tile. top = pure flat dark cold brown. sides = pure flat bright yellow-green. flat top, textured sides, no outline.",
+      "purpose": "matrix:dark_mud_over_slime",
       "status": "pending"
     },
     "fb039f71-ad19-4b9e-bcd7-e8ebb7c8c34f": {
@@ -5857,10 +7093,22 @@
       "purpose": "matrix:parquet_floor_over_lava",
       "status": "pending"
     },
+    "fc34e26c-d5df-484f-8540-92450884b9ad": {
+      "created": "2026-08-19T10:30:21+00:00",
+      "prompt": "isometric ground tile, lush green grass over clear calm water, photographed from above. Soft irregular boundary where grass meets water \u2014 the grass creeps down over the water. Plain even grass surface. No outline.",
+      "purpose": "matrix:grass_over_water",
+      "status": "pending"
+    },
     "fc6eae10-b25f-457d-b22c-6452bd8ec6ce": {
       "created": "2026-08-17T18:30:14+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of dry light soil. The grey stone grows over the edge and tufts down over the light soil below, so the two meet naturally with no hard line between them. The light soil side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
       "purpose": "matrix:grey_stone_over_light_soil",
+      "status": "pending"
+    },
+    "fc78e271-4edc-4d51-a8ff-4a4b4c792b3d": {
+      "created": "2026-08-19T10:44:16+00:00",
+      "prompt": "isometric ground tile where thick bubbling slime has taken over a translucent crystal ice block. The slime rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
+      "purpose": "matrix:slime_over_ice",
       "status": "pending"
     },
     "fd66588f-8941-45f1-9bdc-a420867edc86": {
@@ -5893,6 +7141,12 @@
       "purpose": "matrix:grass_over_water",
       "status": "pending"
     },
+    "fdf7b07f-e298-40eb-bb7a-487e9c64217b": {
+      "created": "2026-08-19T10:50:06+00:00",
+      "prompt": "isometric ground tile where clear calm water has settled over a base of pale sandy beach. The whole visible top is pure flat medium blue; the light beach is only visible in the walls where the ground has been cut away. No outline.",
+      "purpose": "matrix:water_over_light_beach",
+      "status": "pending"
+    },
     "fe1c9b86-a5de-4c23-b92c-eb3846a77751": {
       "created": "2026-08-17T22:31:44+00:00",
       "prompt": "a block of pale sandy beach with dark volcanic rock established across the top and spilling over every edge. Isometric view. The black rock surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -5909,6 +7163,12 @@
       "created": "2026-08-17T22:19:25+00:00",
       "prompt": "isometric terrain block of wet dark mud with translucent crystal ice growing on top. The ice spills over the rim and hangs down the dark mud face in an uneven fringe. Flat even ice seen from above. No outline.",
       "purpose": "matrix:ice_over_dark_mud",
+      "status": "pending"
+    },
+    "fe9f8733-b481-48d6-854c-c6e29d0991fa": {
+      "created": "2026-08-19T10:38:06+00:00",
+      "prompt": "isometric wooden parquet floor over dry light soil tile. No outline.",
+      "purpose": "matrix:parquet_floor_over_light_soil",
       "status": "pending"
     },
     "feae5c97-d397-4e25-8d50-a579fa3a8b33": {
