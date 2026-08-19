@@ -564,15 +564,77 @@ def seam_px(path, top_hex=None):
     tgt = np.array([int(top_hex.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)])
     b = np.asarray(render.plateau(sn, 3, 3, level=1)).astype(int)
     op = b[:, :, 3] > 128
-    flat = (np.abs(b[:, :, :3] - tgt).max(2) <= 2) & op
-    bad = 0
-    for y in np.where(flat.any(1))[0]:
-        xs = np.where(flat[y])[0]
-        if len(xs) < 3:
-            continue
-        sl = slice(int(xs.min()), int(xs.max()) + 1)
-        bad += int(((~flat[y, sl]) & op[y, sl]).sum())
-    return bad
+
+    # WHERE THE TOP SURFACE IS, DECIDED BY GEOMETRY. This used to be inferred from
+    # COLOUR — take the leftmost and rightmost pixel on each row that matches the target
+    # within 2, and call everything between them "inside the field". That is circular:
+    # the measurement of how off-colour the surface is depended on which pixels were
+    # already the right colour, and it made the metric violently unstable.
+    #
+    # It cost the maintainer their own reference tile. black_rock's palette is derived
+    # FROM `black_rock__over__black_rock/sheet_02_chase2/tile_03.png`, and re-deriving it
+    # moved the target by SIX units in one channel (#1e1e24 -> #1e1d1e). That flipped 165
+    # pixels into "matching", which widened the row spans past the cliff faces, which
+    # swept 1762 WALL pixels into the count as though they were seam. Score 0 -> 1762
+    # against a tolerance of 8, and the tile that DEFINES the material was dropped from
+    # the wiki for not looking enough like itself.
+    #
+    # The top surface is a fact about the shape, so ask the shape. Render the same
+    # plateau of a probe whose top face is white and whose every other pixel is black;
+    # the white is exactly where the tops land, with no colour comparison anywhere. Gaps
+    # enclosed by that region are the seams between neighbours — which is what this was
+    # always trying to count.
+    mask = _assembled_top_mask(im, 3, 3, 1)
+    if mask is None or mask.shape != op.shape:
+        return 10 ** 6
+    holes = _enclosed(mask)
+    off = (np.abs(b[:, :, :3] - tgt).max(2) > 2)
+    # A gap is a seam whether it shows the wrong colour or shows straight through the
+    # ground; both are visible in an assembled field.
+    return int((holes & ((op & off) | ~op)).sum())
+
+
+def _assembled_top_mask(im, cols, rows, level):
+    """Where the top faces land once the field is assembled — geometry, not colour."""
+    import palette_snap
+    import render
+    a = np.asarray(palette_snap.canonicalise(im)).astype(np.uint8).copy()
+    reg = palette_snap._regions(a.astype(float))
+    if not reg or not reg["top"].any():
+        return None
+    a[:, :, :3] = 0
+    a[:, :, :3][reg["top"]] = 255
+    b = np.asarray(render.plateau(Image.fromarray(a, "RGBA"), cols, rows, level=level))
+    return (b[:, :, 3] > 128) & (b[:, :, 0] > 128)
+
+
+def _enclosed(mask):
+    """Pixels NOT in `mask` that cannot reach the border without crossing it.
+
+    Flood fill from the edges rather than a hole-filling library — scipy is not a
+    dependency here and the images are small.
+    """
+    h, w = mask.shape
+    outside = np.zeros((h, w), bool)
+    stack = []
+    for y in range(h):
+        for x in (0, w - 1):
+            if not mask[y, x] and not outside[y, x]:
+                outside[y, x] = True
+                stack.append((y, x))
+    for x in range(w):
+        for y in (0, h - 1):
+            if not mask[y, x] and not outside[y, x]:
+                outside[y, x] = True
+                stack.append((y, x))
+    while stack:
+        y, x = stack.pop()
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            v, u = y + dy, x + dx
+            if 0 <= v < h and 0 <= u < w and not mask[v, u] and not outside[v, u]:
+                outside[v, u] = True
+                stack.append((v, u))
+    return ~mask & ~outside
 
 
 def _top_hex(path):
