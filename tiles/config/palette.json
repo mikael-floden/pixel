@@ -15,9 +15,9 @@
       "wall_n": 7
     },
     "ice": {
-      "top": "#a8f0fc",
-      "source": "tiles2/crystal_ice (measured)",
-      "wall": "#76a9b1",
+      "top": "#99ced1",
+      "source": "reference tile tiles/matrix/ice__over__ice/sheet_00_maintainer/tile_00.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#6eacb2",
       "wall_n": 7
     },
     "black_rock": {
@@ -27,21 +27,21 @@
       "wall_n": 7
     },
     "light_beach": {
-      "top": "#ead2a2",
-      "source": "tiles2/light_sand (measured)",
-      "wall": "#cdb88e",
+      "top": "#e4c495",
+      "source": "reference tile tiles/matrix/light_beach__over__light_beach/sheet_02_same2_18712/tile_05.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#ab9274",
       "wall_n": 7
     },
     "grey_stone": {
-      "top": "#72786c",
-      "source": "tiles2/stone_mountain (measured)",
-      "wall": "#555950",
+      "top": "#808082",
+      "source": "reference tile tiles/matrix/grey_stone__over__grey_stone/sheet_00_chase0/tile_09.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#45474b",
       "wall_n": 6
     },
     "light_soil": {
-      "top": "#c09c6c",
-      "source": "tiles2/lightdark_dirt (measured)",
-      "wall": "#907551",
+      "top": "#c9ab7e",
+      "source": "reference tile tiles/matrix/light_soil__over__light_soil/sheet_02_same2_10066/tile_14.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#9d784b",
       "wall_n": 6
     },
     "dark_mud": {
@@ -69,15 +69,15 @@
       "wall_n": 6
     },
     "deep_water": {
-      "top": "#1b3e41",
-      "source": "derived from tiles2/clear_water \u2014 2.0 has no separate deep_water",
-      "wall": "#132b2d",
+      "top": "#162843",
+      "source": "wall of reference tile tiles/matrix/grass__over__deep_water/sheet_02_chase2/tile_04.png (grass over deep_water) \u2014 the maintainer's chosen look for this material; top reconstructed from deep_water same-over-same lit/shaded ratio (n=6)",
+      "wall": "#102235",
       "wall_n": 6
     },
     "lava": {
-      "top": "#be350e",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
-      "wall": "#df3c11",
+      "top": "#fb7f10",
+      "source": "reference tile tiles/matrix/lava__over__lava/sheet_03_same3_18721/tile_11.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#a73211",
       "wall_n": 6
     },
     "slime": {

@@ -130,6 +130,138 @@ tiles/
   interrupted run never has to pay twice. This is also the whole disaster-recovery
   story — see below.
 
+## The palette is nominated, not measured
+
+A material's colour is not an average of what the generator draws. It is a tile the
+maintainer pointed at:
+
+> "This tile is a good palette for 'dark rock'. Try to find exacy what tile it is based
+> on the ID and make this the palette that every other dark_rock tile should try to
+> mimmic. This means the postprocess script should not really modify this tile at all."
+
+That gives the mechanism its acceptance test, and it is the inverse of the obvious one:
+**running the postprocess on the reference must barely change it.** If recolouring the
+reference moves it a lot, the palette does not describe the thing the maintainer picked,
+and it is the palette that is wrong. `reference.py --check` reports that number for every
+material.
+
+    python tiles/pipeline/reference.py --check                       # what would change
+    python tiles/pipeline/reference.py --material dark_rock --tile c51bfa48 --write
+
+Eight materials are defined this way so far — `dark_mud`, `black_rock`, `deep_water`,
+`grey_stone`, `ice`, `lava`, `light_beach`, `light_soil`. A blanket `--write` deliberately SKIPS them and says so; only naming
+one with `--material` re-references it. Without that guard the sweep would quietly re-derive
+each from generator averages and overwrite the pick with a success message.
+
+Materials anchored to `tiles2` (grass, snow, water…) are locked harder still and need
+`--force`: 3.0 has to read as the same world as the shipping game, and re-deriving grass
+from 3.0 output is what once made it a bright yellow-green. Five anchors have now been
+deliberately broken by a maintainer's pick, each because 2.0's colour was not the one they
+wanted for 3.0:
+
+| material | was | is | what was wrong with it |
+|---|---|---|---|
+| `grey_stone` | `#72786c` | `#808082` | 2.0's `stone_mountain` is a green-olive grey; they picked a neutral one |
+| `ice` | `#a8f0fc` | `#99ced1` | `crystal_ice` is a bright pale cyan; they picked a softer grey-blue |
+| `lava` | `#be350e` | `#fb7f10` | too dark, AND self-inconsistent — its wall `#df3c11` was BRIGHTER than its top, so lava blocks were lit from underneath |
+| `light_beach` | `#ead2a2` | `#e4c495` | shift on the reference 21.6 -> 7.9 |
+| `light_soil` | `#c09c6c` | `#c9ab7e` | shift on the reference 15.5 -> 10.3 |
+
+Breaking `grey_stone`'s anchor has a side effect worth knowing about: `paving_stone` was
+anchored to the SAME 2.0 colour (both were `#72786c`) and still carries it, so the two
+stones no longer match. That is now a choice someone has to make rather than an accident of
+a shared source.
+
+### The acceptance test has a floor, and it is not zero
+
+"This tile shouldn't change at all" cannot be measured as shift alone, because the top face
+is deliberately flattened to one colour — so a reference with any texture in its top can
+never reach zero. Decompose it instead: the top's irreducible spread is the mean distance of
+its own pixels from their own mean, and a correct palette lands ON that floor.
+
+On the `grey_stone` reference the top's floor is 21.4 and the new palette achieves 21.3 —
+i.e. the ONLY thing left is the flattening, and the colour is exactly right. The old palette
+scored 29.0 against the same floor, and that gap was the olive cast. Reporting the single
+number 21.9 -> 16.5 would have hidden both facts.
+
+`ice` is the same story and larger: floor 13.3, new palette 13.4, old palette 33.2. Two
+thirds of what the postprocess was doing to every ice tile in the game was moving it to a
+colour the maintainer did not want.
+
+## Which wall pixels are the wall
+
+An X-over-Y wall holds two materials — the side material, and whatever spills over the top
+edge — and the postprocess has to tell them apart before it can put each on its own palette
+colour. It got that badly wrong, and the maintainer caught it:
+
+> "The 'water over grey_stone' postprocessing you posted looks really fu*ked up. Why did
+> your postpy destroy the rock under the water? The rock almost already had correct color
+> and you totally destroyed it."
+
+**81.7% of that rock wall was classified as WATER and painted teal.** Not because the rock
+was ambiguous — it is light grey and the water is teal — but because the test measured raw
+RGB distance to the two palette colours, and in RGB brightness swamps colour. grey_stone's
+palette wall is dark (`#45474b`), so light grey rock (`#7c8793`) measured 77 from teal water
+and 113 from its own material. The classifier was answering "which palette colour is this
+closest to in brightness".
+
+Two changes, in `palette_snap._split_wall()`:
+
+- **chroma, not RGB** — hue and saturation as a vector, so grey sits at the origin and no
+  lighting difference can move rock onto water. Value is kept at 0.35 weight, because two
+  near-grey materials (snow over grey_stone) have no chroma to separate them.
+- **the tile's own colours, not the palette's** — the palette says what a material *should*
+  look like; the tile says what the generator *drew*, and on 3.0 grass those differ by a
+  lot. The top face is unmixed top material sitting in the same image, so seed from it and
+  from the wall's own median.
+
+Neither is the hue-off-a-median inference that shipped magenta, vivid and red walls: nothing
+here reads a colour to shift BY. It picks which of two fixed palette targets each pixel is
+substituted onto, and `substitute()` still takes hue and saturation from the palette.
+
+Measured over 203 tiles whose wall was independently CONFIRMED to be the side material
+(`wall_err <= 10` going in), by how far the wall lands from its own material afterwards:
+
+| classifier | mean | over `MAX_WALL_ERR` | worst |
+|---|---|---|---|
+| palette + RGB (before) | 4.2 | **7 tiles** | 67.0 |
+| palette + chroma | 1.9 | 2 tiles | 37.0 |
+| own colours + RGB | 3.1 | 5 tiles | 51.0 |
+| own colours + chroma (ships) | **1.6** | **0** | **28.0** |
+
+Zero is the number that matters: no wall that goes in as its own material comes out failing
+to be it.
+
+### When the reference only shows the material as a WALL
+
+`deep_water` was nominated on a `grass over deep_water` tile — the material appears as the
+side face, not the top — and the maintainer flagged the trap in the same sentence:
+
+> "Everything blue in this tile is the palette of deep_water … and be careful becouse this
+> ref-img is 'grass over deep water' and its the dark blue at the bottom that is the color
+> palette for other deep_blue tiles."
+
+They were right. **14% of that wall is grass**, the overhang blades the tile was accepted
+for. Averaging the region naively returns `#1c3538`, a teal, because a seventh of the
+sample is bright green — so the naive read would have made every deep water wall in the
+game slightly grass-coloured, taken from the tile chosen *because its grass overhangs
+well*. `derive_wall()` rejects it by nearest-of-two against the tile's own top face, and
+prints what it threw away: on this tile the rejected pixels average `#64af47` and sit at
+the top of the wall. That printout is the check — if the rejected colour ever comes back
+looking like the kept one, the split found nothing.
+
+The TOP colour cannot come from such a tile at all (a side face is the shaded one). It is
+reconstructed as `reference wall x (same-over-same top / same-over-same wall)`, per channel,
+both measured over the same candidates. Taking the same-over-same top directly was tried
+and rejected: it is 38 units brighter than the maintainer's pick, which pairs to a lift of
+2.00 between one material's two faces — more than any of the fourteen materials shows
+(measured range 0.92-1.70). That ships a deep water whose top is visibly a different blue
+from its own wall, which is the complaint already made twice about grass.
+
+This costs shift on the existing art (mean 27.6 against the old palette's 23.4) because the
+nominated reference is darker than the average deep water the generator draws. That is the
+palette doing its job, not a regression.
+
 ## Two tile types, and why a rejection is not a deletion
 
 The wall-visible set is the DEFAULT, not the whole library. The maintainer:

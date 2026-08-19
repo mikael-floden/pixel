@@ -499,6 +499,123 @@ def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
 
 
 
+def _chroma(rgb):
+    """(x, y, value) with hue and saturation as a VECTOR, so grey sits at the origin.
+
+    Brightness is the thing that has to stop dominating: on the 0-255 RGB cube a light grey
+    rock is nearer to teal water than to its own material's darker wall colour, purely
+    because the two are similar in luminance. Laid out as a chroma vector, grey is at the
+    origin and teal is far from it, and no amount of lighting moves one onto the other.
+
+    Value is kept, at a fraction of its weight, because two near-grey materials (snow over
+    grey_stone, black_rock over grey_stone) have no chroma to separate them and brightness
+    is then the only real signal.
+    """
+    hsv = _rgb2hsv(np.asarray(rgb, float).reshape(-1, 3))
+    ang = hsv[:, 0] * (2 * np.pi / 256.0)
+    return np.stack([hsv[:, 1] * np.cos(ang), hsv[:, 1] * np.sin(ang), hsv[:, 2]], 1)
+
+
+CHROMA_VALUE_WEIGHT = 0.35
+
+# Below this the two clusters are one material and the boundary is noise.
+MIN_SPLIT_SEPARATION = 40.0
+
+
+def _chroma_dist(px, target):
+    c = _chroma(px)
+    t = _chroma(np.asarray(target, float)[None, :])[0]
+    return np.sqrt(((c[:, :2] - t[:2]) ** 2).sum(1)
+                   + (CHROMA_VALUE_WEIGHT * (c[:, 2] - t[2])) ** 2)
+
+
+def _split_wall(a, reg, wall_all):
+    """Which wall pixels are the SIDE material and which are the TOP material spilling over.
+
+    THE BUG THIS REPLACES, in the maintainer's words:
+
+        "The 'water over grey_stone' postprocessing you posted looks really fu*ked up. Why
+         did your postpy destroy the rock under the water? The rock almost already had
+         correct color and you totally destroyed it."
+
+    Measured on that tile: 81.7% of a rock wall was classified as WATER and painted teal.
+    The rock was not ambiguous — it was light grey (#7c8793) and the water is teal — but the
+    old test compared raw RGB distance against the two PALETTE colours, and grey_stone's
+    palette wall is dark (#45474b). In RGB, brightness swamps everything, so light grey rock
+    measured 77 from teal water and 113 from its own material. The classifier was answering
+    "which palette colour is this pixel closest to in brightness", which is not the question.
+
+    Two changes, and both are needed:
+
+      OWN COLOURS, NOT PALETTE COLOURS. The palette says what a material SHOULD look like;
+      the tile says what the generator actually drew, and those differ a lot (3.0's grass is
+      a bright yellow-green, the palette's is a deep pine). The top face is unmixed top
+      material and is right there in the same image, so seed from it and from the wall's own
+      median — a median because the spill is a minority and a median ignores minorities.
+      Same routine as reference.derive_wall(), which found the grass overhang on the
+      deep_water reference cleanly.
+
+      CHROMA, NOT RGB. See _chroma(). This is not the hue-off-a-median inference that
+      shipped magenta, vivid and red walls: nothing here reads a colour to shift BY. It
+      picks which of two fixed palette targets each pixel is substituted onto, and
+      substitute() still sets hue and saturation from the palette and reads nothing.
+
+    Measured over 203 tiles whose wall was independently CONFIRMED to be the side material
+    (wall_err <= 10 going in), by how far the wall lands from its own material afterwards:
+
+        palette + RGB    (before)   mean  4.2   7 tiles over MAX_WALL_ERR   worst 67.0
+        palette + chroma            mean  1.9   2 tiles over               worst 37.0
+        own colours + RGB           mean  3.1   5 tiles over               worst 51.0
+        own colours + chroma (this) mean  1.6   0 tiles over               worst 28.0
+
+    Zero is the number that matters: no wall that went in as its own material comes out
+    failing to be its own material.
+    """
+    rgb = a[:, :, :3]
+    px = rgb[wall_all]
+    if len(px) < 40 or reg["top"].sum() < 40:
+        return wall_all, np.zeros(wall_all.shape, bool)
+    seed_top = np.median(rgb[reg["top"]], 0)
+    w = np.median(px, 0)
+    keep = np.ones(len(px), bool)
+    for _ in range(8):
+        keep = _chroma_dist(px, w) <= _chroma_dist(px, seed_top)
+        if keep.sum() < 20:            # no recognisable wall left; treat it all as wall
+            keep = np.ones(len(px), bool)
+            break
+        nw = px[keep].mean(0)
+        if np.abs(nw - w).max() < 0.5:
+            w = nw
+            break
+        w = nw
+
+    # DID IT ACTUALLY FIND TWO MATERIALS? A two-means split always returns two groups, even
+    # when handed one uniform surface, and then the boundary is wherever the noise happened
+    # to fall. That is not harmless: the two groups get painted DIFFERENT palette colours,
+    # so an invented boundary becomes a visible mottle on a wall that was all one material.
+    #
+    # Measured on grey_stone over dark_mud, which the old palette-distance gate let through:
+    # the two clusters differ by 17 RGB units — one material — yet the split handed 64% of a
+    # dark_mud wall to grey_stone. Same failure the maintainer caught on water over rock,
+    # one step further down.
+    #
+    # When the split does not separate, the answer is already known and does not need
+    # guessing: publish only passes align_side for a wall whose material has been CONFIRMED
+    # (wall_err <= MAX_WALL_ERR), so an unseparated wall is all of the side material. 5 of
+    # 182 cells land here.
+    if keep.sum() >= 20 and (~keep).sum() >= 20:
+        sep = float(np.linalg.norm(px[keep].mean(0) - px[~keep].mean(0)))
+        if sep < MIN_SPLIT_SEPARATION:
+            keep = np.ones(len(px), bool)
+
+    idx = np.where(wall_all)
+    m_side = np.zeros(wall_all.shape, bool)
+    m_top = np.zeros(wall_all.shape, bool)
+    m_side[idx[0][keep], idx[1][keep]] = True
+    m_top[idx[0][~keep], idx[1][~keep]] = True
+    return m_side, m_top
+
+
 def substitute(a, mask, hex_target, spread=None):
     """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
 
@@ -659,22 +776,24 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # references are fixed palette entries, and the classification is a distance,
             # not a shift.
             wall_all = reg["left"] | reg["right"]
-            t_rgb, s_rgb = _hex(top_hex), _hex(side_hex)
-            # Only when the two materials are actually distinguishable. Grass over slime
-            # sits close enough that the split would be noise — there the fringe rules
-            # above already handle it, and substituting either way lands on nearly the
-            # same colour anyway.
-            if float(np.linalg.norm(t_rgb - s_rgb)) >= 60.0:
-                d_t = np.linalg.norm(a[:, :, :3] - t_rgb, axis=2)
-                d_s = np.linalg.norm(a[:, :, :3] - s_rgb, axis=2)
-                m_side = wall_all & (d_s <= d_t)
-                m_top = wall_all & (d_t < d_s)
-                for mask, hx in ((m_side, side_hex), (m_top, top_hex)):
-                    if mask.sum() < 8:
-                        continue
-                    px = substitute(a, mask, hx)
-                    if px is not None:
-                        out[:, :, :3][mask] = px
+            # THE 60-UNIT PALETTE-DISTANCE GATE IS GONE. It asked whether the two PALETTE
+            # colours were far enough apart to tell the materials apart — a fair question
+            # when the classifier compared against those colours, and the wrong question now
+            # that it compares against the tile's own. It measured neither the right thing
+            # nor reliably: it blocked grass over deep_water (39 apart in palette, 130 apart
+            # in the art, so trivially separable) while waving through grey_stone over
+            # dark_mud (139 apart in palette, 17 in the art, i.e. one material). Both
+            # backwards. _split_wall() now decides from the separation it actually finds.
+            #
+            # Measured on the 14 tiles the gate used to block: after this, mean wall_err 5.5,
+            # worst 20.8, none over MAX_WALL_ERR.
+            m_side, m_top = _split_wall(a, reg, wall_all)
+            for mask, hx in ((m_side, side_hex), (m_top, top_hex)):
+                if mask.sum() < 8:
+                    continue
+                px = substitute(a, mask, hx)
+                if px is not None:
+                    out[:, :, :3][mask] = px
 
     for k in ("left", "right") if align_walls else ():
         m = reg[k]
