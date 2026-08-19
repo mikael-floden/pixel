@@ -1,0 +1,626 @@
+{
+  "_comment": "Tiles the filter discarded, shown to the maintainer so they can relax a gate rather than only tighten it. An id here is the same sha1(src)[:8] the review manifest uses, so 'id X is ok' resolves to one specific tile and can be promoted directly.",
+  "schema": "tiles3/reject-gallery@1",
+  "tiles": {
+    "008ffd71": {
+      "cell": "deep_water__over__light_beach",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/deep_water__over__light_beach/sheet_12_chase2_21046/tile_04.png"
+    },
+    "062a14bf": {
+      "cell": "grass__over__light_soil",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__light_soil/sheet_01_maintainer/tile_09.png"
+    },
+    "08af3a8b": {
+      "cell": "grass__over__light_beach",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grass__over__light_beach/sheet_10_swap2_17552/tile_10.png"
+    },
+    "0b3303f9": {
+      "cell": "black_rock__over__slime",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/black_rock__over__slime/sheet_07_chase7_18722/tile_12.png"
+    },
+    "0cd56905": {
+      "cell": "grass__over__water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__water/sheet_08_short2_32648/tile_00.png"
+    },
+    "0e3998ce": {
+      "cell": "paving_stone__over__ice",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/paving_stone__over__ice/sheet_04_chase4_18712/tile_04.png"
+    },
+    "10f2c232": {
+      "cell": "water__over__deep_water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/water__over__deep_water/sheet_08_chase8_32628/tile_02.png"
+    },
+    "167da31c": {
+      "cell": "grass__over__dark_mud",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__dark_mud/sheet_04_swap4_32636/tile_03.png"
+    },
+    "17023d4b": {
+      "cell": "paving_stone__over__light_beach",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__light_beach/sheet_05_swap5_17557/tile_04.png"
+    },
+    "184c736d": {
+      "cell": "grey_stone__over__water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__water/sheet_00_chase0/tile_05.png"
+    },
+    "1a5c2aba": {
+      "cell": "slime__over__deep_water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/slime__over__deep_water/sheet_00_chase0_23097/tile_02.png"
+    },
+    "1d4a2583": {
+      "cell": "grey_stone__over__lava",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grey_stone__over__lava/sheet_05_short5_32660/tile_11.png"
+    },
+    "22f8345a": {
+      "cell": "grass__over__water",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__water/sheet_05_chase5_32648/tile_01.png"
+    },
+    "239c2162": {
+      "cell": "grass__over__dark_mud",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__dark_mud/sheet_05_wall5_32636/tile_11.png"
+    },
+    "2824338b": {
+      "cell": "grass__over__light_soil",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__light_soil/sheet_02_explicit/tile_00.png"
+    },
+    "2c07e0cb": {
+      "cell": "paving_stone__over__light_soil",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/paving_stone__over__light_soil/sheet_05_chase5_18717/tile_01.png"
+    },
+    "32aa8405": {
+      "cell": "grass__over__grey_stone",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grass__over__grey_stone/sheet_00_maintainer/tile_13.png"
+    },
+    "35b4d7e2": {
+      "cell": "parquet_floor__over__light_soil",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/parquet_floor__over__light_soil/sheet_12_short0_32698/tile_10.png"
+    },
+    "387032a9": {
+      "cell": "paving_stone__over__deep_water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/paving_stone__over__deep_water/sheet_06_chase6_18720/tile_11.png"
+    },
+    "38c835fd": {
+      "cell": "dark_mud__over__black_rock",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/dark_mud__over__black_rock/sheet_02_swap2_32673/tile_13.png"
+    },
+    "3a50f89b": {
+      "cell": "dark_mud__over__black_rock",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/dark_mud__over__black_rock/sheet_02_swap2_32673/tile_11.png"
+    },
+    "3aba1d5c": {
+      "cell": "grass__over__parquet_floor",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grass__over__parquet_floor/sheet_06_short0_32640/tile_11.png"
+    },
+    "3d8904b2": {
+      "cell": "dark_mud__over__black_rock",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/dark_mud__over__black_rock/sheet_02_swap2_32673/tile_07.png"
+    },
+    "3e5b3d27": {
+      "cell": "grey_stone__over__ice",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__ice/sheet_14_short2_32632/tile_09.png"
+    },
+    "3ffdfdfb": {
+      "cell": "grey_stone__over__ice",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grey_stone__over__ice/sheet_02_chase2/tile_12.png"
+    },
+    "45acf6d9": {
+      "cell": "slime__over__paving_stone",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/slime__over__paving_stone/sheet_01_chase1_23099/tile_07.png"
+    },
+    "464c69aa": {
+      "cell": "paving_stone__over__deep_water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__deep_water/sheet_03_chase3_18720/tile_00.png"
+    },
+    "491bbf41": {
+      "cell": "deep_water__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/deep_water__over__slime/sheet_10_chase0_25766/tile_00.png"
+    },
+    "4a4a5bb3": {
+      "cell": "slime__over__paving_stone",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/slime__over__paving_stone/sheet_01_chase1_23099/tile_09.png"
+    },
+    "4ad681b0": {
+      "cell": "grass__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__slime/sheet_03_chase3/tile_01.png"
+    },
+    "4c746e2f": {
+      "cell": "grey_stone__over__light_beach",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grey_stone__over__light_beach/sheet_22_wall4_23547/tile_01.png"
+    },
+    "4d4d8a07": {
+      "cell": "grey_stone__over__ice",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__ice/sheet_14_short2_32632/tile_13.png"
+    },
+    "54716e94": {
+      "cell": "grey_stone__over__light_beach",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__light_beach/sheet_28_wall4_32640/tile_03.png"
+    },
+    "5532e2ba": {
+      "cell": "deep_water__over__light_beach",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/deep_water__over__light_beach/sheet_10_chase0_21046/tile_15.png"
+    },
+    "57f05406": {
+      "cell": "grass__over__light_beach",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__light_beach/sheet_08_swap0_17552/tile_04.png"
+    },
+    "5aa78e99": {
+      "cell": "paving_stone__over__slime",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/paving_stone__over__slime/sheet_06_short0_25779/tile_04.png"
+    },
+    "5e293f95": {
+      "cell": "grey_stone__over__water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__water/sheet_00_chase0/tile_02.png"
+    },
+    "5e6c7c89": {
+      "cell": "dark_mud__over__slime",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/dark_mud__over__slime/sheet_07_swap7_32688/tile_14.png"
+    },
+    "5f492a53": {
+      "cell": "grey_stone__over__light_soil",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grey_stone__over__light_soil/sheet_02_chase2_32644/tile_11.png"
+    },
+    "65bbc856": {
+      "cell": "grass__over__paving_stone",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__paving_stone/sheet_05_short5_32644/tile_02.png"
+    },
+    "67525ca8": {
+      "cell": "grass__over__parquet_floor",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__parquet_floor/sheet_04_swap4_32640/tile_12.png"
+    },
+    "6f2ee548": {
+      "cell": "paving_stone__over__light_beach",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__light_beach/sheet_09_swap1_32648/tile_07.png"
+    },
+    "708f82ed": {
+      "cell": "deep_water__over__light_beach",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/deep_water__over__light_beach/sheet_20_wall2_23548/tile_03.png"
+    },
+    "7356f73c": {
+      "cell": "deep_water__over__slime",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/deep_water__over__slime/sheet_15_chase5_32640/tile_10.png"
+    },
+    "759ce3fc": {
+      "cell": "paving_stone__over__dark_mud",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__dark_mud/sheet_07_short1_32656/tile_02.png"
+    },
+    "76d0328c": {
+      "cell": "parquet_floor__over__light_beach",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/parquet_floor__over__light_beach/sheet_04_chase4_18717/tile_10.png"
+    },
+    "76efe021": {
+      "cell": "parquet_floor__over__light_beach",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/parquet_floor__over__light_beach/sheet_04_chase4_18717/tile_07.png"
+    },
+    "77b8c5b5": {
+      "cell": "grass__over__dark_mud",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__dark_mud/sheet_00_maintainer/tile_13.png"
+    },
+    "788cbf2a": {
+      "cell": "slime__over__deep_water",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/slime__over__deep_water/sheet_05_short5_32636/tile_01.png"
+    },
+    "798f84f0": {
+      "cell": "grey_stone__over__light_beach",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grey_stone__over__light_beach/sheet_25_chase5_25776/tile_14.png"
+    },
+    "7c151865": {
+      "cell": "paving_stone__over__ice",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/paving_stone__over__ice/sheet_14_swap6_32640/tile_02.png"
+    },
+    "7d5e3841": {
+      "cell": "grass__over__grey_stone",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/grass__over__grey_stone/sheet_01_explicit/tile_07.png"
+    },
+    "83db9f16": {
+      "cell": "slime__over__deep_water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/slime__over__deep_water/sheet_04_wall4_32636/tile_10.png"
+    },
+    "85829d92": {
+      "cell": "slime__over__light_soil",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/slime__over__light_soil/sheet_09_wall3_32695/tile_01.png"
+    },
+    "875b141d": {
+      "cell": "parquet_floor__over__light_soil",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/parquet_floor__over__light_soil/sheet_06_chase6_18720/tile_08.png"
+    },
+    "884ed951": {
+      "cell": "grass__over__slime",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__slime/sheet_04_chase4/tile_06.png"
+    },
+    "88c269ec": {
+      "cell": "grey_stone__over__light_soil",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grey_stone__over__light_soil/sheet_04_wall4_32644/tile_04.png"
+    },
+    "8a52ce3d": {
+      "cell": "paving_stone__over__light_beach",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__light_beach/sheet_05_swap5_17557/tile_05.png"
+    },
+    "8e35471f": {
+      "cell": "paving_stone__over__slime",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__slime/sheet_01_chase1_29937/tile_07.png"
+    },
+    "9421bc5c": {
+      "cell": "water__over__deep_water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/water__over__deep_water/sheet_03_chase3_18717/tile_15.png"
+    },
+    "94967161": {
+      "cell": "grass__over__paving_stone",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__paving_stone/sheet_00_maintainer/tile_00.png"
+    },
+    "96df3923": {
+      "cell": "paving_stone__over__light_soil",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__light_soil/sheet_12_chase2_32652/tile_14.png"
+    },
+    "9b05af02": {
+      "cell": "black_rock__over__slime",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/black_rock__over__slime/sheet_11_short5_32628/tile_00.png"
+    },
+    "9b87a0e8": {
+      "cell": "slime__over__grey_stone",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/slime__over__grey_stone/sheet_04_wall4_32688/tile_05.png"
+    },
+    "9bc89606": {
+      "cell": "slime__over__light_soil",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/slime__over__light_soil/sheet_09_wall3_32695/tile_12.png"
+    },
+    "9ce7cc13": {
+      "cell": "paving_stone__over__light_beach",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/paving_stone__over__light_beach/sheet_12_chase2_32648/tile_07.png"
+    },
+    "a4ab44c9": {
+      "cell": "grey_stone__over__lava",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grey_stone__over__lava/sheet_05_short5_32660/tile_08.png"
+    },
+    "a508eab7": {
+      "cell": "slime__over__paving_stone",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/slime__over__paving_stone/sheet_04_chase4_32628/tile_10.png"
+    },
+    "a5b187df": {
+      "cell": "slime__over__grey_stone",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/slime__over__grey_stone/sheet_03_swap3_32688/tile_11.png"
+    },
+    "a6838498": {
+      "cell": "parquet_floor__over__light_soil",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/parquet_floor__over__light_soil/sheet_07_chase7_18720/tile_05.png"
+    },
+    "a8d1be3b": {
+      "cell": "paving_stone__over__dark_mud",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__dark_mud/sheet_00_chase0_12039/tile_12.png"
+    },
+    "a9bb88e6": {
+      "cell": "paving_stone__over__dark_mud",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/paving_stone__over__dark_mud/sheet_00_chase0_12039/tile_11.png"
+    },
+    "ab3c107a": {
+      "cell": "water__over__deep_water",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/water__over__deep_water/sheet_03_chase3_18717/tile_00.png"
+    },
+    "ab5d9a6a": {
+      "cell": "grey_stone__over__water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grey_stone__over__water/sheet_05_chase5_32652/tile_14.png"
+    },
+    "abba1b78": {
+      "cell": "paving_stone__over__slime",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/paving_stone__over__slime/sheet_01_chase1_29937/tile_06.png"
+    },
+    "ac1bfed2": {
+      "cell": "grass__over__paving_stone",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__paving_stone/sheet_00_maintainer/tile_09.png"
+    },
+    "ade19f42": {
+      "cell": "black_rock__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/black_rock__over__slime/sheet_11_short5_32628/tile_07.png"
+    },
+    "b31f4e2a": {
+      "cell": "grey_stone__over__light_soil",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grey_stone__over__light_soil/sheet_02_chase2_32644/tile_14.png"
+    },
+    "b404c328": {
+      "cell": "grass__over__slime",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__slime/sheet_11_swap3_23543/tile_03.png"
+    },
+    "b508456c": {
+      "cell": "grass__over__light_soil",
+      "rejected_by": "swapped",
+      "src": "tiles/matrix/grass__over__light_soil/sheet_02_chase2_32632/tile_00.png"
+    },
+    "b783fcd7": {
+      "cell": "paving_stone__over__deep_water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__deep_water/sheet_03_chase3_18720/tile_02.png"
+    },
+    "b7f89748": {
+      "cell": "dark_mud__over__slime",
+      "rejected_by": "wall_material",
+      "src": "tiles/matrix/dark_mud__over__slime/sheet_05_chase5_18712/tile_00.png"
+    },
+    "b82f18aa": {
+      "cell": "parquet_floor__over__light_beach",
+      "rejected_by": "swapped",
+      "src": "tiles/matrix/parquet_floor__over__light_beach/sheet_13_chase3_32695/tile_06.png"
+    },
+    "b9581ad0": {
+      "cell": "paving_stone__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__slime/sheet_08_swap0_32688/tile_11.png"
+    },
+    "bdec837a": {
+      "cell": "slime__over__light_soil",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/slime__over__light_soil/sheet_00_chase0_23103/tile_04.png"
+    },
+    "c038d004": {
+      "cell": "grey_stone__over__water",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grey_stone__over__water/sheet_05_chase5_32652/tile_03.png"
+    },
+    "c42ee9de": {
+      "cell": "dark_mud__over__slime",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/dark_mud__over__slime/sheet_09_short3_32688/tile_01.png"
+    },
+    "c77a0a39": {
+      "cell": "deep_water__over__slime",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/deep_water__over__slime/sheet_05_chase5_18720/tile_15.png"
+    },
+    "c7fcdcce": {
+      "cell": "grass__over__parquet_floor",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__parquet_floor/sheet_04_swap4_32640/tile_04.png"
+    },
+    "c9bd3908": {
+      "cell": "grey_stone__over__lava",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grey_stone__over__lava/sheet_05_short5_32660/tile_04.png"
+    },
+    "ca480f9a": {
+      "cell": "grass__over__slime",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__slime/sheet_12_swap4_23543/tile_11.png"
+    },
+    "caac73ce": {
+      "cell": "grass__over__light_beach",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__light_beach/sheet_14_swap6_21121/tile_06.png"
+    },
+    "cc03bac1": {
+      "cell": "slime__over__grey_stone",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/slime__over__grey_stone/sheet_04_wall4_32688/tile_14.png"
+    },
+    "cf7b4c32": {
+      "cell": "paving_stone__over__deep_water",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/paving_stone__over__deep_water/sheet_11_swap3_32681/tile_07.png"
+    },
+    "d0540a10": {
+      "cell": "grass__over__light_beach",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__light_beach/sheet_14_swap6_21121/tile_14.png"
+    },
+    "d0e6b3fe": {
+      "cell": "paving_stone__over__ice",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__ice/sheet_03_chase3_18712/tile_04.png"
+    },
+    "d2d5fa8e": {
+      "cell": "grass__over__light_soil",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grass__over__light_soil/sheet_04_wall4_32632/tile_10.png"
+    },
+    "d2e2fdee": {
+      "cell": "grey_stone__over__lava",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grey_stone__over__lava/sheet_05_short5_32660/tile_00.png"
+    },
+    "d4783326": {
+      "cell": "slime__over__deep_water",
+      "rejected_by": "seam",
+      "src": "tiles/matrix/slime__over__deep_water/sheet_02_chase2_32636/tile_11.png"
+    },
+    "d55cb2db": {
+      "cell": "paving_stone__over__ice",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/paving_stone__over__ice/sheet_08_chase8_21040/tile_09.png"
+    },
+    "d74114ec": {
+      "cell": "grey_stone__over__light_beach",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grey_stone__over__light_beach/sheet_04_chase4/tile_04.png"
+    },
+    "d789ea27": {
+      "cell": "slime__over__grey_stone",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/slime__over__grey_stone/sheet_03_swap3_32688/tile_09.png"
+    },
+    "d867d847": {
+      "cell": "slime__over__light_soil",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/slime__over__light_soil/sheet_01_chase1_23103/tile_02.png"
+    },
+    "da074401": {
+      "cell": "deep_water__over__slime",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/deep_water__over__slime/sheet_14_short2_32640/tile_15.png"
+    },
+    "dcc37401": {
+      "cell": "water__over__deep_water",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/water__over__deep_water/sheet_08_chase8_32628/tile_11.png"
+    },
+    "e0214620": {
+      "cell": "grass__over__dark_mud",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__dark_mud/sheet_04_swap4_32636/tile_08.png"
+    },
+    "e04f63e5": {
+      "cell": "parquet_floor__over__light_beach",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/parquet_floor__over__light_beach/sheet_04_chase4_18717/tile_03.png"
+    },
+    "e0b23665": {
+      "cell": "deep_water__over__light_beach",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/deep_water__over__light_beach/sheet_11_chase1_21046/tile_00.png"
+    },
+    "e5f97c1a": {
+      "cell": "black_rock__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/black_rock__over__slime/sheet_10_wall4_32628/tile_09.png"
+    },
+    "e8f28496": {
+      "cell": "grass__over__grey_stone",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__grey_stone/sheet_09_short3_32628/tile_00.png"
+    },
+    "ec82f8a8": {
+      "cell": "grey_stone__over__ice",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grey_stone__over__ice/sheet_09_chase9_18728/tile_12.png"
+    },
+    "efd44051": {
+      "cell": "grass__over__water",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__water/sheet_06_swap6_32648/tile_14.png"
+    },
+    "f01d3a90": {
+      "cell": "paving_stone__over__dark_mud",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__dark_mud/sheet_05_swap5_32656/tile_10.png"
+    },
+    "f039feaf": {
+      "cell": "dark_mud__over__slime",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/dark_mud__over__slime/sheet_07_swap7_32688/tile_06.png"
+    },
+    "f083ce9a": {
+      "cell": "slime__over__paving_stone",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/slime__over__paving_stone/sheet_06_wall0_32628/tile_09.png"
+    },
+    "f09c67ff": {
+      "cell": "paving_stone__over__light_soil",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/paving_stone__over__light_soil/sheet_05_chase5_18717/tile_14.png"
+    },
+    "f0a4edd0": {
+      "cell": "grass__over__paving_stone",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/grass__over__paving_stone/sheet_05_short5_32644/tile_00.png"
+    },
+    "f3ec0b68": {
+      "cell": "paving_stone__over__light_soil",
+      "rejected_by": "clarity",
+      "src": "tiles/matrix/paving_stone__over__light_soil/sheet_08_chase8_32652/tile_14.png"
+    },
+    "f7dc5a1f": {
+      "cell": "grey_stone__over__light_soil",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/grey_stone__over__light_soil/sheet_01_chase1/tile_04.png"
+    },
+    "f9e52b1e": {
+      "cell": "dark_mud__over__black_rock",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/dark_mud__over__black_rock/sheet_02_swap2_32673/tile_01.png"
+    },
+    "fa180d34": {
+      "cell": "grass__over__water",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__water/sheet_04_chase4/tile_07.png"
+    },
+    "fa296829": {
+      "cell": "grass__over__grey_stone",
+      "rejected_by": "spill",
+      "src": "tiles/matrix/grass__over__grey_stone/sheet_09_short3_32628/tile_11.png"
+    },
+    "fbdd8cd7": {
+      "cell": "grass__over__parquet_floor",
+      "rejected_by": "wall",
+      "src": "tiles/matrix/grass__over__parquet_floor/sheet_00_maintainer/tile_09.png"
+    },
+    "ff876250": {
+      "cell": "parquet_floor__over__light_soil",
+      "rejected_by": "contamination",
+      "src": "tiles/matrix/parquet_floor__over__light_soil/sheet_04_chase4_18720/tile_11.png"
+    }
+  }
+}
