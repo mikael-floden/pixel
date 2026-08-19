@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T17:28:09.589Z",
+  "updated_at": "2026-08-19T17:32:29.427Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/ferns/fern_006#lit_4": {
@@ -57,6 +57,16 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-19T17:27:50.375Z"
+    },
+    "scenery/mushrooms/mushroom_003#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T17:32:23.530Z"
+    },
+    "scenery/mushrooms/mushroom_003#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T17:32:25.077Z"
     }
   }
 }
