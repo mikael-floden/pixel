@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import hashlib
 import json
 import os
 import shutil
@@ -287,7 +288,22 @@ def main():
                 "wall_aligned": bool(aligned),
                 "postprocess": "raw (guard: invented colour)" if inv.get(
                     "blob", 0) > no_invention.MAX_BLOB else "palette",
-                "key": f"tiles/{cell}/{i}",
+                # STABLE PER TILE, not per rank. The key used to be the candidate's
+                # POSITION — tiles/<cell>/0 — and a position is not an identity. When a
+                # rejected tile was un-published the next tile slid into slot 0 and
+                # inherited the maintainer's rejection and their comment: 126 rejected
+                # keys were still present in the manifest, attached to art they had
+                # never seen. "I don't want old dangling tiles in the wiki I have
+                # removed" — they were not dangling, they were being re-pointed.
+                #
+                # The same defect had already corrupted two verdicts at apply time,
+                # because a republish mid-review re-ranked a cell and moved the tile a
+                # verdict named. Deriving the key from the SOURCE TILE fixes both ends:
+                # a verdict names one specific piece of art forever, and when that art
+                # is removed its key disappears rather than being reassigned.
+                "key": f"tiles/{cell}/{hashlib.sha1(os.path.relpath(c['path'], REPO).encode()).hexdigest()[:8]}",
+                # Kept so anything that wants display order still has it.
+                "rank": i,
                 # The RAW tile this candidate came from. Without it a wiki verdict can
                 # only be resolved to a cell, and resolving a per-tile rejection to a
                 # cell is how a single "no" would have marked every generation in that
