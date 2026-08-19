@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T18:54:03.385Z",
+  "updated_at": "2026-08-19T18:55:11.835Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -20119,6 +20119,42 @@
       "updated_at": "2026-08-19T18:54:03.141Z",
       "status": "approved",
       "art": "8f5b7b5eb5bd155b"
+    },
+    "scenery/windows/window_095#lights_off#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:54:26.257Z",
+      "status": "approved",
+      "art": "893fc3108f1d598d"
+    },
+    "scenery/windows/window_095#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:54:28.836Z",
+      "status": "approved",
+      "art": "9be1f278021d3605"
+    },
+    "scenery/windows/window_095#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:54:29.976Z",
+      "status": "approved",
+      "art": "ab49fbf1a22912a3"
+    },
+    "scenery/windows/window_095#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:54:31.268Z",
+      "status": "approved",
+      "art": "a7991f80d3291270"
+    },
+    "scenery/windows/window_095#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:54:32.712Z",
+      "status": "approved",
+      "art": "9f2a6b791695a98d"
+    },
+    "scenery/windows/window_095#lights_on#south": {
+      "updated_at": "2026-08-19T18:55:13.079Z",
+      "status": "rejected",
+      "art": "56d8a13879288569",
+      "note": "This state has to be regenerated becouse it's a window and they need all states"
     }
   }
 }
