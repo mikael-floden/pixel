@@ -43,7 +43,7 @@ def gates(path):
         "wall": q["score"] if q else 0.0,
         "spill": flatness.overhang(path),
         "clarity": flatness.fringe_clarity(path),
-        "seam": flatness.seam_px(path),
+        "seam": flatness.seam_px(path, flatness._top_hex(path)),
     }
 
 

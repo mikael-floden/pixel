@@ -575,6 +575,21 @@ def seam_px(path, top_hex=None):
     return bad
 
 
+def _top_hex(path):
+    """The palette colour of the TOP material, from the cell directory's own name."""
+    import json
+    cell = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(path))))
+    if "__over__" not in cell:
+        return None
+    try:
+        pal = json.load(open(os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "config", "palette.json")))["types"]
+    except Exception:
+        return None
+    return (pal.get(cell.split("__over__")[0]) or {}).get("top")
+
+
 def _side_hex(path):
     """The palette colour of the SIDE material, from the cell directory's own name."""
     import json
@@ -617,7 +632,7 @@ def select_best(paths, gate=CLEAN_TOP):
         scored.append((p, q, float(f["top"]["share"])))
     if not scored:
         return None
-    seamless = [x for x in scored if seam_px(x[0]) <= SEAM_TOL]
+    seamless = [x for x in scored if seam_px(x[0], _top_hex(x[0])) <= SEAM_TOL]
     # The WALL must be the material the cell asked for. "X over Y" is a claim about two
     # materials and nothing downstream can turn soil into snow, so this belongs here
     # rather than in postprocess — 9 of 56 cells shipped a wall that was not Y at all
@@ -664,7 +679,18 @@ def clears_bar(path, top_hex=None, side_hex=None, side_wall_hex=None, same=False
     f = faces(path)
     if not f or not f["top"]:
         return False, "faces"
-    if seam_px(path) > SEAM_TOL:
+    # MEASURED AGAINST THE COLOUR THE TILE ACTUALLY SHIPS WITH. seam_px derives its
+    # target from the tile's OWN median when none is given, but a tile ships snapped to
+    # the PALETTE colour — so the gate was measuring a tile that will never exist, and
+    # rejecting it for pixels that the snap removes. On a black_rock tile the derived
+    # median was #2c2527 against the palette's #1e1e24: 541 seam pixels measured, 0 in
+    # what ships.
+    #
+    # This is the largest filter in the pipeline and it was the least correct. Sampled
+    # over 400 tiles across the matrix, seam rejection falls from 56% to 11% when the
+    # right target is used: 46% of everything ever generated was thrown away for a
+    # defect that postprocess removes.
+    if seam_px(path, top_hex) > SEAM_TOL:
         return False, "seam"
     ind = indistinguishable(top_hex, side_hex) if (top_hex and side_hex) else False
     if not same and not ind and overhang(path) < MIN_OVERHANG:

@@ -116,7 +116,8 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
             # regardless, so a raw-flatness gate only throws away good art — measured,
             # 182 of the 238 tiles it rejected were already seamless after postprocess,
             # several of them with the best edge spill in the whole set.
-            if not forced and flatness.seam_px(p) > flatness.SEAM_TOL:
+            # Against the palette colour, not the tile's own median — see clears_bar.
+            if not forced and flatness.seam_px(p, top_hex_c) > flatness.SEAM_TOL:
                 continue
             out.append({
                 "path": p, "wall": q, "forced": forced,
