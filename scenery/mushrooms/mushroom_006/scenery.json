@@ -31,50 +31,38 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T12:38:13+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "mushrooms/mushroom_006/sprite.webp",
       "pixellab_object_id": "2e6ecde4-d56e-4f71-a695-ea393982dbbf",
-      "generated_at": "2026-08-13T12:38:13+00:00"
+      "generated_at": "2026-08-13T12:38:13+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "mushrooms/mushroom_006/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_006/not_lit_4/sprite.webp",
       "pixellab_object_id": "b1e5c020-9b75-49de-9d9f-d046d3a4b630",
       "generated_at": "2026-08-16T19:27:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7204,
-      "glow_score": 0.2745
+      "glow_score": 0.2745,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "mushrooms/mushroom_006/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "mushrooms/mushroom_006/not_lit_5/sprite.webp",
       "pixellab_object_id": "589f16bf-f839-48d3-83e9-013f357cd834",
       "generated_at": "2026-08-16T19:28:03+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6469,
-      "glow_score": 0.2642
+      "glow_score": 0.2642,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "mushrooms/mushroom_006/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "mushrooms/mushroom_006/not_lit_6/sprite.webp",
       "pixellab_object_id": "70563e08-4128-4016-a181-c5781b2de2ae",
       "generated_at": "2026-08-16T19:29:18+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8325,
-      "glow_score": 0.2237
-    },
-    "NOT_LIT_1": {
-      "sprite": "mushrooms/mushroom_006/not_lit_1/sprite.webp",
-      "pixellab_object_id": "f41e6bb6-1adf-4623-ad85-233351ead940",
-      "generated_at": "2026-08-16T19:29:29+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8615,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "mushrooms/mushroom_006/not_lit_2/sprite.webp",
-      "pixellab_object_id": "82f0ba89-82e1-4205-a23d-58515e957a39",
-      "generated_at": "2026-08-16T19:31:33+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7874,
-      "glow_score": 0.0
+      "glow_score": 0.2237,
+      "relit_from": "LIT_4"
     }
   }
 }

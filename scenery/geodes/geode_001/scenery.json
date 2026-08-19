@@ -31,26 +31,11 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T02:29:57+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "geodes/geode_001/lit_1/sprite.webp",
-      "pixellab_object_id": "65ffb2c8-3d77-4d01-a5e8-0c93606a80b3",
-      "generated_at": "2026-08-16T14:25:13+00:00",
-      "glow_concept": "thin beam of light escaping the crack",
-      "difference_from_source": 0.5211,
-      "glow_score": 0.3682
-    },
-    "LIT_2": {
-      "sprite": "geodes/geode_001/lit_2/sprite.webp",
-      "pixellab_object_id": "4305a761-c455-4c81-83a8-ca14c18dc36e",
-      "generated_at": "2026-08-16T14:24:32+00:00",
-      "glow_concept": "interior glow pulsing like a slow heartbeat",
-      "difference_from_source": 0.6999,
-      "glow_score": 0.2449
-    },
-    "NOT_LIT_1": {
+    "LIT_3": {
       "sprite": "geodes/geode_001/sprite.webp",
       "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
-      "generated_at": "2026-08-13T02:29:57+00:00"
+      "generated_at": "2026-08-13T02:29:57+00:00",
+      "relit_from": "NOT_LIT_1"
     },
     "NOT_LIT_2": {
       "sprite": "geodes/geode_001/not_lit_2/sprite.webp",

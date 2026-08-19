@@ -30,50 +30,38 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-12T23:22:20+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "stones/stone_012/sprite.webp",
       "pixellab_object_id": "af98029f-3025-4612-9ff2-c78181a98534",
-      "generated_at": "2026-08-12T23:22:20+00:00"
+      "generated_at": "2026-08-12T23:22:20+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "stones/stone_012/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "stones/stone_012/not_lit_4/sprite.webp",
       "pixellab_object_id": "70805e82-908c-4970-84b3-382eb0559b02",
       "generated_at": "2026-08-16T21:43:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7006,
-      "glow_score": 0.2908
+      "glow_score": 0.2908,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "stones/stone_012/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "stones/stone_012/not_lit_5/sprite.webp",
       "pixellab_object_id": "f658bc88-c549-4a11-8e21-fd7e2917d0ec",
       "generated_at": "2026-08-16T21:44:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7036,
-      "glow_score": 0.2115
+      "glow_score": 0.2115,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "stones/stone_012/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "stones/stone_012/not_lit_6/sprite.webp",
       "pixellab_object_id": "4fa46517-c52a-4bce-8a3f-bd92242cbcd1",
       "generated_at": "2026-08-16T21:44:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6027,
-      "glow_score": 0.3628
-    },
-    "NOT_LIT_1": {
-      "sprite": "stones/stone_012/not_lit_1/sprite.webp",
-      "pixellab_object_id": "cfb67e15-6909-498e-ba69-1f801e4e25ee",
-      "generated_at": "2026-08-16T21:44:21+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7068,
-      "glow_score": 0.0147
-    },
-    "NOT_LIT_2": {
-      "sprite": "stones/stone_012/not_lit_2/sprite.webp",
-      "pixellab_object_id": "b1844b0c-9533-49ac-b829-ac46fca38cbd",
-      "generated_at": "2026-08-16T21:44:34+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8456,
-      "glow_score": 0.0175
+      "glow_score": 0.3628,
+      "relit_from": "LIT_4"
     }
   }
 }

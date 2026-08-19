@@ -36,14 +36,6 @@
       "pixellab_object_id": "bdd81821-b7f9-4a9e-9805-164927de068c",
       "generated_at": "2026-08-13T05:05:00+00:00"
     },
-    "LIT_2": {
-      "sprite": "beast_skulls/beast_skull_002/lit_2/sprite.webp",
-      "pixellab_object_id": "73f308e3-7159-44bf-a3e2-dabe2824a27b",
-      "generated_at": "2026-08-15T20:00:50+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.6293,
-      "glow_score": 0.1909
-    },
     "LIT_3": {
       "sprite": "beast_skulls/beast_skull_002/lit_3/sprite.webp",
       "pixellab_object_id": "80a738da-aef0-4d5e-b704-b0925634441e",
@@ -51,14 +43,6 @@
       "glow_concept": null,
       "difference_from_source": 0.7073,
       "glow_score": 0.1412
-    },
-    "LIT_4": {
-      "sprite": "beast_skulls/beast_skull_002/lit_4/sprite.webp",
-      "pixellab_object_id": "6d7bf5ab-7aba-4512-b984-82b8408f8118",
-      "generated_at": "2026-08-15T20:00:40+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.6706,
-      "glow_score": 0.1047
     },
     "NOT_LIT_1": {
       "sprite": "beast_skulls/beast_skull_002/not_lit_1/sprite.webp",
@@ -68,13 +52,14 @@
       "difference_from_source": 0.484,
       "glow_score": 0.1345
     },
-    "NOT_LIT_2": {
-      "sprite": "beast_skulls/beast_skull_002/not_lit_2/sprite.webp",
-      "pixellab_object_id": "c16b0e15-6e2b-4ccc-9d3b-438c7037b41e",
-      "generated_at": "2026-08-15T20:01:43+00:00",
+    "NOT_LIT_3": {
+      "sprite": "beast_skulls/beast_skull_002/not_lit_3/sprite.webp",
+      "pixellab_object_id": "6d7bf5ab-7aba-4512-b984-82b8408f8118",
+      "generated_at": "2026-08-15T20:00:40+00:00",
       "glow_concept": null,
-      "difference_from_source": 0.9659,
-      "glow_score": 0.0
+      "difference_from_source": 0.6706,
+      "glow_score": 0.1047,
+      "relit_from": "LIT_4"
     }
   }
 }
