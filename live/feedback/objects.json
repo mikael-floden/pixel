@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T17:43:27.626Z",
+  "updated_at": "2026-08-19T17:44:51.321Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -4978,19 +4978,19 @@
       "rating": 5
     },
     "scenery/stones/stone_006": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:57:49.570Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:43:43.242Z",
+      "art": "5d74462d85fbb6a9"
     },
     "scenery/stones/stone_007": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:57:52.037Z",
-      "rating": 5
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:43:59.476Z",
+      "art": "42b7ad15c3a6fd80"
     },
     "scenery/stones/stone_008": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:57:59.154Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:44:15.003Z",
+      "art": "3f81187bbb2aae8c"
     },
     "scenery/stones/stone_009": {
       "status": "approved",
@@ -20053,6 +20053,166 @@
       "updated_at": "2026-08-19T17:43:27.165Z",
       "status": "approved",
       "art": "79c303da14eaaab7"
+    },
+    "scenery/stones/stone_006#lit_1#south": {
+      "status": "rejected",
+      "art": "5d74462d85fbb6a9",
+      "updated_at": "2026-08-19T17:43:45.627Z"
+    },
+    "scenery/stones/stone_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "610e285fa9ecbc0c",
+      "updated_at": "2026-08-19T17:43:46.869Z"
+    },
+    "scenery/stones/stone_006#not_lit_2#south": {
+      "status": "rejected",
+      "art": "019a11328cf17d07",
+      "updated_at": "2026-08-19T17:43:47.847Z"
+    },
+    "scenery/stones/stone_006#lit_2#south": {
+      "status": "rejected",
+      "art": "f7f53d8405d3c931",
+      "updated_at": "2026-08-19T17:43:48.609Z"
+    },
+    "scenery/stones/stone_006#lit_3#south": {
+      "status": "rejected",
+      "art": "086302054534dde6",
+      "updated_at": "2026-08-19T17:43:49.422Z"
+    },
+    "scenery/stones/stone_006#lit_4#south": {
+      "status": "rejected",
+      "art": "d4c07e2ef3d64524",
+      "updated_at": "2026-08-19T17:43:50.106Z"
+    },
+    "scenery/stones/stone_007#not_lit_1#south": {
+      "status": "rejected",
+      "art": "42b7ad15c3a6fd80",
+      "updated_at": "2026-08-19T17:44:02.596Z"
+    },
+    "scenery/stones/stone_007#not_lit_3#south": {
+      "status": "rejected",
+      "art": "a05e4f22e3772576",
+      "updated_at": "2026-08-19T17:44:03.467Z"
+    },
+    "scenery/stones/stone_007#not_lit_4#south": {
+      "status": "rejected",
+      "art": "130d103a668d72a3",
+      "updated_at": "2026-08-19T17:44:04.553Z"
+    },
+    "scenery/stones/stone_007#not_lit_2#south": {
+      "status": "rejected",
+      "art": "0b7cc065edb299a8",
+      "updated_at": "2026-08-19T17:44:05.602Z"
+    },
+    "scenery/stones/stone_007#lit_1#south": {
+      "status": "rejected",
+      "art": "cb27b7bd5c86f1c5",
+      "updated_at": "2026-08-19T17:44:06.436Z"
+    },
+    "scenery/stones/stone_007#lit_2#south": {
+      "status": "rejected",
+      "art": "b9e4b6cfe4676bdf",
+      "updated_at": "2026-08-19T17:44:07.161Z"
+    },
+    "scenery/stones/stone_008#lit_1#south": {
+      "status": "rejected",
+      "art": "3f81187bbb2aae8c",
+      "updated_at": "2026-08-19T17:44:16.536Z"
+    },
+    "scenery/stones/stone_008#not_lit_1#south": {
+      "status": "rejected",
+      "art": "9a53fccc3b84a179",
+      "updated_at": "2026-08-19T17:44:17.394Z"
+    },
+    "scenery/stones/stone_008#not_lit_2#south": {
+      "status": "rejected",
+      "art": "df7f7cab6c7786ae",
+      "updated_at": "2026-08-19T17:44:18.107Z"
+    },
+    "scenery/stones/stone_008#lit_2#south": {
+      "status": "rejected",
+      "art": "f5112ca9b6410a46",
+      "updated_at": "2026-08-19T17:44:18.874Z"
+    },
+    "scenery/stones/stone_008#lit_3#south": {
+      "status": "rejected",
+      "art": "b4883a6de51dfd47",
+      "updated_at": "2026-08-19T17:44:19.558Z"
+    },
+    "scenery/stones/stone_008#lit_4#south": {
+      "status": "rejected",
+      "art": "273126f1aa960d98",
+      "updated_at": "2026-08-19T17:44:20.151Z"
+    },
+    "scenery/stones/stone_009#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:27.311Z",
+      "status": "approved",
+      "art": "eb15bb505caae73d"
+    },
+    "scenery/stones/stone_009#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:28.477Z",
+      "status": "approved",
+      "art": "60b9d38528fa7f3f"
+    },
+    "scenery/stones/stone_009#not_lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:29.586Z",
+      "status": "approved",
+      "art": "d47680b7b50637bb"
+    },
+    "scenery/stones/stone_009#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:30.727Z",
+      "status": "approved",
+      "art": "987721d8830e7ee6"
+    },
+    "scenery/stones/stone_009#lit_1#south": {
+      "status": "rejected",
+      "art": "a13e20bcc6beadf7",
+      "updated_at": "2026-08-19T17:44:34.486Z"
+    },
+    "scenery/stones/stone_009#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:35.969Z",
+      "status": "approved",
+      "art": "3c6f0d29962dda37"
+    },
+    "scenery/stones/stone_010#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:42.357Z",
+      "status": "approved",
+      "art": "73af60279ae30954"
+    },
+    "scenery/stones/stone_010#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:43.656Z",
+      "status": "approved",
+      "art": "a951b2b87c385e20"
+    },
+    "scenery/stones/stone_010#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:44.882Z",
+      "status": "approved",
+      "art": "db62959f505e9ad5"
+    },
+    "scenery/stones/stone_010#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:45.982Z",
+      "status": "approved",
+      "art": "c4b2b1fd871367e5"
+    },
+    "scenery/stones/stone_010#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:44:48.894Z",
+      "status": "approved",
+      "art": "5f6a8ec4f8ac799e"
+    },
+    "scenery/stones/stone_010#not_lit_2#south": {
+      "status": "rejected",
+      "art": "1bc963752a3ec60c",
+      "updated_at": "2026-08-19T17:44:50.577Z"
     }
   }
 }
