@@ -80,7 +80,13 @@ def survey():
         if not man:
             continue
         ent = (man.get("states") or {}).get(state)
-        if not ent or ent.get("sprite") != man.get("sprite"):
+        # STATIC and BASE are the WIKI's names for the piece's own art, not
+        # manifest states — so they are anchors too, and they fall through every
+        # other tool: prune.py looks them up in `states` and finds nothing,
+        # ghosts.py deliberately never sweeps them. A rejection there is the
+        # same dead end, one door along.
+        pseudo = ent is None and state in ("STATIC", "BASE")
+        if not pseudo and (not ent or ent.get("sprite") != man.get("sprite")):
             continue                      # not the anchor — prune.py's job
 
         piece = entries.get(f"scenery/{rel}") or {}
@@ -95,6 +101,15 @@ def survey():
                 confusing.append((rel, state, "the piece was approved LATER "
                                               "with this very art"))
                 continue
+
+        # A pseudo-state has no slot of its own to swap out — the only art it
+        # names is the piece's, and dropping that would be rejecting the piece,
+        # which he does with the piece's own button. Nothing to promote, so it
+        # goes back to him.
+        if pseudo:
+            confusing.append((rel, state, "a rejection on the piece's own art "
+                                          "with no state slot to swap"))
+            continue
 
         # Pick his best surviving state. SAME LIGHTING FAMILY FIRST: the piece's
         # face was a lit one or an unlit one, and he rejected the art, not the
