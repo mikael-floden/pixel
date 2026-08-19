@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 766,
+  "scenery_count": 765,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -278,7 +278,7 @@
       "name": "Flower Stand",
       "type": "TOWN",
       "quota": 7,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 35,
@@ -1430,7 +1430,7 @@
     "ferns": 10,
     "fish_drying_racks": 4,
     "flame_niches": 9,
-    "flower_stands": 7,
+    "flower_stands": 6,
     "flower_trellises": 2,
     "frost_flowers": 1,
     "frozen_springs": 1,
@@ -2921,24 +2921,6 @@
           "pixellab_object_id": "6095a411-4673-4e3c-b493-c28d5be0a452",
           "generated_at": "2026-08-14T02:38:53+00:00",
           "art_hash": "1f2a108066eb0b25"
-        },
-        "LIT_2": {
-          "sprite": "barrels/barrel_016/lit_2/sprite.webp",
-          "pixellab_object_id": "830b434d-803f-4d67-bd8d-617403e2aa8a",
-          "generated_at": "2026-08-15T19:45:29+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3237,
-          "glow_score": 0.0154,
-          "art_hash": "0f62e26a6906a43d"
-        },
-        "LIT_3": {
-          "sprite": "barrels/barrel_016/lit_3/sprite.webp",
-          "pixellab_object_id": "f92bbb93-b8cd-43b6-99b7-2f4db14e1b27",
-          "generated_at": "2026-08-15T19:46:00+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7893,
-          "glow_score": 0.0418,
-          "art_hash": "900da33abfd885d0"
         },
         "LIT_4": {
           "sprite": "barrels/barrel_016/lit_4/sprite.webp",
@@ -9116,56 +9098,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "carts/cart_022/sprite.webp",
           "pixellab_object_id": "1689c899-22ac-4996-a075-c2b51523749a",
           "generated_at": "2026-08-14T02:33:59+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "04e2d9168603e6f8"
         },
-        "LIT_2": {
-          "sprite": "carts/cart_022/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "carts/cart_022/not_lit_4/sprite.webp",
           "pixellab_object_id": "9983b896-5607-4c39-ae6b-bf60461f2337",
           "generated_at": "2026-08-15T21:53:07+00:00",
           "glow_concept": null,
           "difference_from_source": 0.4881,
           "glow_score": 0.0364,
+          "relit_from": "LIT_2",
           "art_hash": "613c7dafb1e401c9"
         },
-        "LIT_3": {
-          "sprite": "carts/cart_022/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "carts/cart_022/not_lit_5/sprite.webp",
           "pixellab_object_id": "54a53b9e-1377-457e-9476-a13ae842f7b3",
           "generated_at": "2026-08-15T21:53:37+00:00",
           "glow_concept": null,
           "difference_from_source": 0.617,
           "glow_score": 0.0139,
+          "relit_from": "LIT_3",
           "art_hash": "35ad712379608ec8"
         },
-        "LIT_4": {
-          "sprite": "carts/cart_022/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "carts/cart_022/not_lit_6/sprite.webp",
           "pixellab_object_id": "5236d8e2-a5bc-456f-8cc0-0addc3bb0ee2",
           "generated_at": "2026-08-15T21:54:36+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5714,
           "glow_score": 0.0054,
+          "relit_from": "LIT_4",
           "art_hash": "6f6269e311045de4"
-        },
-        "NOT_LIT_1": {
-          "sprite": "carts/cart_022/not_lit_1/sprite.webp",
-          "pixellab_object_id": "49cc9656-ca0b-42f3-bb42-09c16875e8ef",
-          "generated_at": "2026-08-15T21:56:35+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9256,
-          "glow_score": 0.0,
-          "art_hash": "a8a7c662e473f665"
-        },
-        "NOT_LIT_2": {
-          "sprite": "carts/cart_022/not_lit_2/sprite.webp",
-          "pixellab_object_id": "e4282d86-bb65-416a-8724-1c512d0bed52",
-          "generated_at": "2026-08-15T21:55:44+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9739,
-          "glow_score": 0.0,
-          "art_hash": "6b9600081693916c"
         }
       },
       "animations": []
@@ -22668,24 +22636,6 @@
           "generated_at": "2026-08-14T02:16:41+00:00",
           "art_hash": "57b054836b941e50"
         },
-        "NOT_LIT_2": {
-          "sprite": "flame_niches/flame_niche_017/not_lit_2/sprite.webp",
-          "pixellab_object_id": "09893521-057d-445b-9c7c-3b9a80f59ae6",
-          "generated_at": "2026-08-16T14:00:14+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5078,
-          "glow_score": 0.0209,
-          "art_hash": "2b10c769cd2267d0"
-        },
-        "NOT_LIT_3": {
-          "sprite": "flame_niches/flame_niche_017/not_lit_3/sprite.webp",
-          "pixellab_object_id": "06dc4665-2a6d-4d6d-bb39-f57e3e8a9cb3",
-          "generated_at": "2026-08-16T14:03:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.909,
-          "glow_score": 0.0,
-          "art_hash": "49ef2ff076b68e68"
-        },
         "NOT_LIT_4": {
           "sprite": "flame_niches/flame_niche_017/not_lit_4/sprite.webp",
           "pixellab_object_id": "8b2d47ef-36fd-408a-8c11-d5f1a20143e2",
@@ -23252,85 +23202,6 @@
       "animations": []
     },
     {
-      "id": "flower_stand_012",
-      "rel": "flower_stands/flower_stand_012",
-      "name": "Dry winter seed-head stand 012",
-      "category": "flower_stands",
-      "lights": null,
-      "description": "a stand of tall wildflowers with upright leafy stems and clustered blooms at different heights, dry winter seed-head stand, asymmetric, wind-shaped, waist-high, self-emissive at night, softly radiating light: night-blooms open and shining moon-pale",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.08,
-        "world_px_height": 41,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T02:48:13+00:00",
-      "pixellab_object_id": "3a67fea3-f89a-4962-bbb9-d3279e823b4e",
-      "sprite": "flower_stands/flower_stand_012/sprite.webp",
-      "art_hash": "bf7a713cc6635f6f",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "flower_stands/flower_stand_012/sprite.webp",
-          "pixellab_object_id": "3a67fea3-f89a-4962-bbb9-d3279e823b4e",
-          "generated_at": "2026-08-14T02:48:13+00:00",
-          "art_hash": "bf7a713cc6635f6f"
-        },
-        "LIT_2": {
-          "sprite": "flower_stands/flower_stand_012/lit_2/sprite.webp",
-          "pixellab_object_id": "0950a78f-f33f-4b57-862a-171b047eef06",
-          "generated_at": "2026-08-16T14:11:49+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.741,
-          "glow_score": 0.1667,
-          "art_hash": "d12666cdde1aeedb"
-        },
-        "LIT_3": {
-          "sprite": "flower_stands/flower_stand_012/lit_3/sprite.webp",
-          "pixellab_object_id": "18e0b5fb-753d-49a5-aa8c-9fa07816d42a",
-          "generated_at": "2026-08-16T14:12:01+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8547,
-          "glow_score": 0.1237,
-          "art_hash": "48bd9bf48be44c7e"
-        },
-        "LIT_4": {
-          "sprite": "flower_stands/flower_stand_012/lit_4/sprite.webp",
-          "pixellab_object_id": "a72d7136-cf5b-4883-800f-e6d08b340f58",
-          "generated_at": "2026-08-16T14:12:12+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8043,
-          "glow_score": 0.1174,
-          "art_hash": "f5602c86660a5c6f"
-        },
-        "NOT_LIT_1": {
-          "sprite": "flower_stands/flower_stand_012/not_lit_1/sprite.webp",
-          "pixellab_object_id": "fdbdd475-f31b-4113-a173-83571aeb59af",
-          "generated_at": "2026-08-16T14:12:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 1.0,
-          "glow_score": 0.0,
-          "art_hash": "bb305d48308eef93"
-        },
-        "NOT_LIT_2": {
-          "sprite": "flower_stands/flower_stand_012/not_lit_2/sprite.webp",
-          "pixellab_object_id": "1d2791b2-6c87-42c3-8034-4f421bda2462",
-          "generated_at": "2026-08-16T14:13:24+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9015,
-          "glow_score": 0.0184,
-          "art_hash": "429c17e802bce803"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "flower_stand_015",
       "rel": "flower_stands/flower_stand_015",
       "name": "White oxeye daisies 015",
@@ -23355,24 +23226,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "flower_stands/flower_stand_015/lit_1/sprite.webp",
-          "pixellab_object_id": "4a9765b2-a2ba-4c42-99e8-3e331b4bee29",
-          "generated_at": "2026-08-16T14:17:58+00:00",
-          "glow_concept": "luminous golden pollen motes drifting upward",
-          "difference_from_source": 0.8734,
-          "glow_score": 0.3247,
-          "art_hash": "42711605f6094cb3"
-        },
-        "LIT_2": {
-          "sprite": "flower_stands/flower_stand_015/lit_2/sprite.webp",
-          "pixellab_object_id": "8deb438f-c93b-4a37-b0cf-6bbe6a7d5319",
-          "generated_at": "2026-08-16T14:13:58+00:00",
-          "glow_concept": "petals edged with soft white light",
-          "difference_from_source": 0.3469,
-          "glow_score": 0.18,
-          "art_hash": "a67b31795f8f593f"
-        },
         "NOT_LIT_1": {
           "sprite": "flower_stands/flower_stand_015/sprite.webp",
           "pixellab_object_id": "75ebfd5d-fc0a-4307-9643-e8a930596244",
@@ -23607,15 +23460,6 @@
           "glow_score": 0.3808,
           "art_hash": "a640d280259a2cb9"
         },
-        "LIT_3": {
-          "sprite": "frost_flowers/frost_flower_002/lit_3/sprite.webp",
-          "pixellab_object_id": "dae7b0e1-0f94-4483-93ee-73143fd1f69d",
-          "generated_at": "2026-08-16T14:20:56+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9087,
-          "glow_score": 0.3521,
-          "art_hash": "15e31e36099b80b0"
-        },
         "LIT_4": {
           "sprite": "frost_flowers/frost_flower_002/lit_4/sprite.webp",
           "pixellab_object_id": "083af356-a366-4d90-b6dc-3221a648b248",
@@ -23624,15 +23468,6 @@
           "difference_from_source": 0.8661,
           "glow_score": 0.3923,
           "art_hash": "52a2453cd83a80f1"
-        },
-        "NOT_LIT_1": {
-          "sprite": "frost_flowers/frost_flower_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "3e6f7d21-ee0b-473a-b3fa-4ddb60f71052",
-          "generated_at": "2026-08-16T14:22:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9972,
-          "glow_score": 0.0,
-          "art_hash": "ea4b30c8d73ce5d8"
         },
         "NOT_LIT_2": {
           "sprite": "frost_flowers/frost_flower_002/not_lit_2/sprite.webp",
@@ -25450,15 +25285,6 @@
           "glow_score": 0.1168,
           "art_hash": "e72d6df856e83b16"
         },
-        "LIT_4": {
-          "sprite": "graves/grave_034/lit_4/sprite.webp",
-          "pixellab_object_id": "b3ec0544-54cc-42b0-8bb7-291b32025b47",
-          "generated_at": "2026-08-16T14:57:19+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8016,
-          "glow_score": 0.0,
-          "art_hash": "4165d08fcd78e3e3"
-        },
         "NOT_LIT_1": {
           "sprite": "graves/grave_034/not_lit_1/sprite.webp",
           "pixellab_object_id": "2af4cb77-2b21-49d5-8e08-39a1fc352d35",
@@ -25468,14 +25294,15 @@
           "glow_score": 0.0,
           "art_hash": "083ef95bbf04d87e"
         },
-        "NOT_LIT_2": {
-          "sprite": "graves/grave_034/not_lit_2/sprite.webp",
-          "pixellab_object_id": "3748c706-08d0-467f-b4b2-2c1019aa834f",
-          "generated_at": "2026-08-16T14:57:54+00:00",
+        "NOT_LIT_3": {
+          "sprite": "graves/grave_034/not_lit_3/sprite.webp",
+          "pixellab_object_id": "b3ec0544-54cc-42b0-8bb7-291b32025b47",
+          "generated_at": "2026-08-16T14:57:19+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.9537,
-          "glow_score": 0.0006,
-          "art_hash": "21cc60f7d9e8b312"
+          "difference_from_source": 0.8016,
+          "glow_score": 0.0,
+          "relit_from": "LIT_4",
+          "art_hash": "4165d08fcd78e3e3"
         }
       },
       "animations": []
@@ -29512,15 +29339,6 @@
           "difference_from_source": 0.3287,
           "glow_score": 0.0,
           "art_hash": "a2daf0b9b981d3a6"
-        },
-        "NOT_LIT_2": {
-          "sprite": "lantern_posts/lantern_post_020/not_lit_2/sprite.webp",
-          "pixellab_object_id": "a2c62cce-4e14-460d-8e6f-1b0b4d9e6ffe",
-          "generated_at": "2026-08-16T17:32:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8905,
-          "glow_score": 0.0,
-          "art_hash": "893d5f46510420d0"
         }
       },
       "animations": []
@@ -29582,15 +29400,6 @@
           "difference_from_source": 0.9344,
           "glow_score": 0.0494,
           "art_hash": "26e491a4ae86dc78"
-        },
-        "NOT_LIT_1": {
-          "sprite": "lantern_posts/lantern_post_026/not_lit_1/sprite.webp",
-          "pixellab_object_id": "4f631faf-053c-498a-8ce1-3392da07ba8b",
-          "generated_at": "2026-08-16T17:27:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6279,
-          "glow_score": 0.004,
-          "art_hash": "ff09478ebe79c2f6"
         },
         "NOT_LIT_2": {
           "sprite": "lantern_posts/lantern_post_026/not_lit_2/sprite.webp",
@@ -32520,30 +32329,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "offering_tables/offering_table_016/sprite.webp",
-          "pixellab_object_id": "2dc174d9-73e1-46a0-be0d-9f68c3c0f015",
-          "generated_at": "2026-08-14T02:14:53+00:00",
-          "art_hash": "039847741d96789c"
-        },
-        "LIT_2": {
-          "sprite": "offering_tables/offering_table_016/lit_2/sprite.webp",
-          "pixellab_object_id": "955a1314-671d-475e-9d79-c94f3105fac3",
-          "generated_at": "2026-08-16T19:50:18+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9352,
-          "glow_score": 0.1329,
-          "art_hash": "b8817330987cbbf2"
-        },
-        "LIT_3": {
-          "sprite": "offering_tables/offering_table_016/lit_3/sprite.webp",
-          "pixellab_object_id": "2794a7e7-334c-4b63-bdd9-6427f477b1ca",
-          "generated_at": "2026-08-16T19:49:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5263,
-          "glow_score": 0.0774,
-          "art_hash": "f0668439302a49f5"
-        },
         "LIT_4": {
           "sprite": "offering_tables/offering_table_016/lit_4/sprite.webp",
           "pixellab_object_id": "42727934-02e6-458d-b2c2-398b20ae3e4a",
@@ -32553,15 +32338,6 @@
           "glow_score": 0.1034,
           "art_hash": "08c943e593397184"
         },
-        "NOT_LIT_1": {
-          "sprite": "offering_tables/offering_table_016/not_lit_1/sprite.webp",
-          "pixellab_object_id": "eb42183c-0a74-4996-8f93-dce6d77eceda",
-          "generated_at": "2026-08-16T19:51:18+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8767,
-          "glow_score": 0.0,
-          "art_hash": "4cb2bb7df4913180"
-        },
         "NOT_LIT_2": {
           "sprite": "offering_tables/offering_table_016/not_lit_2/sprite.webp",
           "pixellab_object_id": "9c091f59-599b-464a-9dda-4c16f6d1cb34",
@@ -32570,6 +32346,33 @@
           "difference_from_source": 0.5137,
           "glow_score": 0.0887,
           "art_hash": "e30715d4e36e5f5b"
+        },
+        "NOT_LIT_3": {
+          "sprite": "offering_tables/offering_table_016/sprite.webp",
+          "pixellab_object_id": "2dc174d9-73e1-46a0-be0d-9f68c3c0f015",
+          "generated_at": "2026-08-14T02:14:53+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "039847741d96789c"
+        },
+        "NOT_LIT_4": {
+          "sprite": "offering_tables/offering_table_016/not_lit_4/sprite.webp",
+          "pixellab_object_id": "955a1314-671d-475e-9d79-c94f3105fac3",
+          "generated_at": "2026-08-16T19:50:18+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9352,
+          "glow_score": 0.1329,
+          "relit_from": "LIT_2",
+          "art_hash": "b8817330987cbbf2"
+        },
+        "NOT_LIT_5": {
+          "sprite": "offering_tables/offering_table_016/not_lit_5/sprite.webp",
+          "pixellab_object_id": "2794a7e7-334c-4b63-bdd9-6427f477b1ca",
+          "generated_at": "2026-08-16T19:49:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5263,
+          "glow_score": 0.0774,
+          "relit_from": "LIT_3",
+          "art_hash": "f0668439302a49f5"
         }
       },
       "animations": []
@@ -32599,48 +32402,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "offering_tables/offering_table_018/sprite.webp",
-          "pixellab_object_id": "46beb370-b45f-4225-b1a7-57482330a390",
-          "generated_at": "2026-08-14T02:18:40+00:00",
-          "art_hash": "60b39fe58c8d0032"
-        },
-        "LIT_2": {
-          "sprite": "offering_tables/offering_table_018/lit_2/sprite.webp",
-          "pixellab_object_id": "63a8fe6b-3357-4289-876d-99968abda32f",
-          "generated_at": "2026-08-16T19:51:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8752,
-          "glow_score": 0.1658,
-          "art_hash": "0d2fa80a198decc8"
-        },
-        "LIT_3": {
-          "sprite": "offering_tables/offering_table_018/lit_3/sprite.webp",
-          "pixellab_object_id": "17e4b86d-063d-4a6c-a04f-185e2ac7a006",
-          "generated_at": "2026-08-16T19:51:19+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9283,
-          "glow_score": 0.0806,
-          "art_hash": "7df26be431797a46"
-        },
-        "LIT_4": {
-          "sprite": "offering_tables/offering_table_018/lit_4/sprite.webp",
-          "pixellab_object_id": "162b5520-a324-47d8-b526-c5c9ffc11f27",
-          "generated_at": "2026-08-16T19:51:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3187,
-          "glow_score": 0.2183,
-          "art_hash": "3acb32889419e7b0"
-        },
-        "NOT_LIT_1": {
-          "sprite": "offering_tables/offering_table_018/not_lit_1/sprite.webp",
-          "pixellab_object_id": "7a799357-ce93-4a79-ac7c-58da2c779ede",
-          "generated_at": "2026-08-16T19:51:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8115,
-          "glow_score": 0.0,
-          "art_hash": "d615f6908ee362fc"
-        },
         "NOT_LIT_2": {
           "sprite": "offering_tables/offering_table_018/not_lit_2/sprite.webp",
           "pixellab_object_id": "df63aac8-6aa3-461e-a9d9-cec75c3b97a1",
@@ -32649,6 +32410,43 @@
           "difference_from_source": 0.7575,
           "glow_score": 0.0,
           "art_hash": "20ab2a58eaf1d475"
+        },
+        "NOT_LIT_3": {
+          "sprite": "offering_tables/offering_table_018/sprite.webp",
+          "pixellab_object_id": "46beb370-b45f-4225-b1a7-57482330a390",
+          "generated_at": "2026-08-14T02:18:40+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "60b39fe58c8d0032"
+        },
+        "NOT_LIT_4": {
+          "sprite": "offering_tables/offering_table_018/not_lit_4/sprite.webp",
+          "pixellab_object_id": "63a8fe6b-3357-4289-876d-99968abda32f",
+          "generated_at": "2026-08-16T19:51:08+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.8752,
+          "glow_score": 0.1658,
+          "relit_from": "LIT_2",
+          "art_hash": "0d2fa80a198decc8"
+        },
+        "NOT_LIT_5": {
+          "sprite": "offering_tables/offering_table_018/not_lit_5/sprite.webp",
+          "pixellab_object_id": "17e4b86d-063d-4a6c-a04f-185e2ac7a006",
+          "generated_at": "2026-08-16T19:51:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9283,
+          "glow_score": 0.0806,
+          "relit_from": "LIT_3",
+          "art_hash": "7df26be431797a46"
+        },
+        "NOT_LIT_6": {
+          "sprite": "offering_tables/offering_table_018/not_lit_6/sprite.webp",
+          "pixellab_object_id": "162b5520-a324-47d8-b526-c5c9ffc11f27",
+          "generated_at": "2026-08-16T19:51:48+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3187,
+          "glow_score": 0.2183,
+          "relit_from": "LIT_4",
+          "art_hash": "3acb32889419e7b0"
         }
       },
       "animations": []
@@ -32710,24 +32508,6 @@
           "difference_from_source": 0.5373,
           "glow_score": 0.0763,
           "art_hash": "d48647c72b08d1c1"
-        },
-        "NOT_LIT_1": {
-          "sprite": "offering_tables/offering_table_020/not_lit_1/sprite.webp",
-          "pixellab_object_id": "2146049c-8947-40ac-88ab-017ffa575e5d",
-          "generated_at": "2026-08-16T19:52:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9007,
-          "glow_score": 0.0008,
-          "art_hash": "38f330cfca7d5858"
-        },
-        "NOT_LIT_2": {
-          "sprite": "offering_tables/offering_table_020/not_lit_2/sprite.webp",
-          "pixellab_object_id": "ab43fd37-0498-4797-ac82-165cf3845834",
-          "generated_at": "2026-08-16T19:52:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8913,
-          "glow_score": 0.0064,
-          "art_hash": "50271018b2c7f615"
         }
       },
       "animations": []
@@ -35902,24 +35682,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "sky_stairs/sky_stair_001/lit_1/sprite.webp",
-          "pixellab_object_id": "8d19956d-02db-4f1b-8770-b7845ec21dce",
-          "generated_at": "2026-08-16T20:56:33+00:00",
-          "glow_concept": "light where the stair ends",
-          "difference_from_source": 0.8135,
-          "glow_score": 0.0296,
-          "art_hash": "66bcb7affe62ab4f"
-        },
-        "LIT_2": {
-          "sprite": "sky_stairs/sky_stair_001/lit_2/sprite.webp",
-          "pixellab_object_id": "f21b2f8d-8c04-44c9-8002-69a963e7d821",
-          "generated_at": "2026-08-16T20:57:27+00:00",
-          "glow_concept": "soul-lights drifting off the top step",
-          "difference_from_source": 0.8884,
-          "glow_score": 0.0244,
-          "art_hash": "d21aa98ee3e7c71e"
-        },
         "NOT_LIT_1": {
           "sprite": "sky_stairs/sky_stair_001/sprite.webp",
           "pixellab_object_id": "01f0fe53-214b-43ef-b5dc-d96e6040ab1b",
@@ -35934,15 +35696,6 @@
           "difference_from_source": 0.2815,
           "glow_score": 0.0125,
           "art_hash": "83d75e2c10ab9799"
-        },
-        "NOT_LIT_3": {
-          "sprite": "sky_stairs/sky_stair_001/not_lit_3/sprite.webp",
-          "pixellab_object_id": "ebc0ff39-9813-4d7b-be55-884fe9f62229",
-          "generated_at": "2026-08-16T20:55:02+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3946,
-          "glow_score": 0.0008,
-          "art_hash": "7e7004e9ac52d9de"
         },
         "NOT_LIT_4": {
           "sprite": "sky_stairs/sky_stair_001/not_lit_4/sprite.webp",
@@ -36004,33 +35757,6 @@
           "difference_from_source": 0.3389,
           "glow_score": 0.1204,
           "art_hash": "94694b7634f063a9"
-        },
-        "LIT_4": {
-          "sprite": "sky_stairs/sky_stair_002/lit_4/sprite.webp",
-          "pixellab_object_id": "84e74dc7-6e46-4721-b8da-4fa87d341e13",
-          "generated_at": "2026-08-16T20:58:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6612,
-          "glow_score": 0.0618,
-          "art_hash": "73f1dfebd6681d01"
-        },
-        "NOT_LIT_1": {
-          "sprite": "sky_stairs/sky_stair_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "d6201f00-93aa-4dd4-a458-2b850941784c",
-          "generated_at": "2026-08-16T20:58:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9964,
-          "glow_score": 0.0,
-          "art_hash": "28211cc8693d10ab"
-        },
-        "NOT_LIT_2": {
-          "sprite": "sky_stairs/sky_stair_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "e0caab85-572c-4d51-9a63-80c1534ed78a",
-          "generated_at": "2026-08-16T20:58:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9936,
-          "glow_score": 0.0,
-          "art_hash": "3743221f143fa3d3"
         }
       },
       "animations": []
@@ -36101,15 +35827,6 @@
           "difference_from_source": 0.9084,
           "glow_score": 0.0,
           "art_hash": "af9286c40f8b53c3"
-        },
-        "NOT_LIT_2": {
-          "sprite": "sleeping_giants/sleeping_giant_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "45906a16-cd99-4ead-b6c8-f492e0ce54ea",
-          "generated_at": "2026-08-16T20:59:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2418,
-          "glow_score": 0.0,
-          "art_hash": "89f2088f9950d3e1"
         }
       },
       "animations": []
@@ -60465,48 +60182,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "waystones/waystone_026/sprite.webp",
-          "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
-          "generated_at": "2026-08-14T02:17:33+00:00",
-          "art_hash": "6531d987534f863b"
-        },
-        "LIT_2": {
-          "sprite": "waystones/waystone_026/lit_2/sprite.webp",
-          "pixellab_object_id": "7b37b5b6-46a4-4195-a793-5a8b19ae50c6",
-          "generated_at": "2026-08-17T12:41:31+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6265,
-          "glow_score": 0.0313,
-          "art_hash": "1b8b88b67c012f85"
-        },
-        "LIT_3": {
-          "sprite": "waystones/waystone_026/lit_3/sprite.webp",
-          "pixellab_object_id": "04f8fa13-e292-4bdc-81e3-8db0b853d631",
-          "generated_at": "2026-08-17T12:41:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5981,
-          "glow_score": 0.0961,
-          "art_hash": "b101bcedc8f22a6a"
-        },
-        "LIT_4": {
-          "sprite": "waystones/waystone_026/lit_4/sprite.webp",
-          "pixellab_object_id": "47aab005-d546-49b5-adfd-d12002caf5af",
-          "generated_at": "2026-08-17T12:42:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4883,
-          "glow_score": 0.039,
-          "art_hash": "c62de045fa5bd4a2"
-        },
-        "NOT_LIT_1": {
-          "sprite": "waystones/waystone_026/not_lit_1/sprite.webp",
-          "pixellab_object_id": "47119c65-3028-4c25-be5e-ecb6ec524052",
-          "generated_at": "2026-08-17T12:41:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8386,
-          "glow_score": 0.0,
-          "art_hash": "35605475d6ae8d4f"
-        },
         "NOT_LIT_2": {
           "sprite": "waystones/waystone_026/not_lit_2/sprite.webp",
           "pixellab_object_id": "ee353997-8003-4cc2-b874-150ec2100d3f",
@@ -60515,6 +60190,43 @@
           "difference_from_source": 0.8128,
           "glow_score": 0.0,
           "art_hash": "a2133b496149d6cc"
+        },
+        "NOT_LIT_3": {
+          "sprite": "waystones/waystone_026/sprite.webp",
+          "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
+          "generated_at": "2026-08-14T02:17:33+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "6531d987534f863b"
+        },
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_026/not_lit_4/sprite.webp",
+          "pixellab_object_id": "7b37b5b6-46a4-4195-a793-5a8b19ae50c6",
+          "generated_at": "2026-08-17T12:41:31+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6265,
+          "glow_score": 0.0313,
+          "relit_from": "LIT_2",
+          "art_hash": "1b8b88b67c012f85"
+        },
+        "NOT_LIT_5": {
+          "sprite": "waystones/waystone_026/not_lit_5/sprite.webp",
+          "pixellab_object_id": "04f8fa13-e292-4bdc-81e3-8db0b853d631",
+          "generated_at": "2026-08-17T12:41:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5981,
+          "glow_score": 0.0961,
+          "relit_from": "LIT_3",
+          "art_hash": "b101bcedc8f22a6a"
+        },
+        "NOT_LIT_6": {
+          "sprite": "waystones/waystone_026/not_lit_6/sprite.webp",
+          "pixellab_object_id": "47aab005-d546-49b5-adfd-d12002caf5af",
+          "generated_at": "2026-08-17T12:42:09+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4883,
+          "glow_score": 0.039,
+          "relit_from": "LIT_4",
+          "art_hash": "c62de045fa5bd4a2"
         }
       },
       "animations": []
@@ -60585,15 +60297,6 @@
           "difference_from_source": 0.7336,
           "glow_score": 0.0,
           "art_hash": "f27f5342be67e7a1"
-        },
-        "NOT_LIT_2": {
-          "sprite": "waystones/waystone_030/not_lit_2/sprite.webp",
-          "pixellab_object_id": "18a25cac-a5ca-42a2-9944-8a84235ba4ae",
-          "generated_at": "2026-08-17T12:43:18+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7425,
-          "glow_score": 0.0,
-          "art_hash": "c8dce65b357ff9dd"
         }
       },
       "animations": []

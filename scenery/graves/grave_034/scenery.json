@@ -53,14 +53,6 @@
       "difference_from_source": 0.4765,
       "glow_score": 0.1168
     },
-    "LIT_4": {
-      "sprite": "graves/grave_034/lit_4/sprite.webp",
-      "pixellab_object_id": "b3ec0544-54cc-42b0-8bb7-291b32025b47",
-      "generated_at": "2026-08-16T14:57:19+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8016,
-      "glow_score": 0.0
-    },
     "NOT_LIT_1": {
       "sprite": "graves/grave_034/not_lit_1/sprite.webp",
       "pixellab_object_id": "2af4cb77-2b21-49d5-8e08-39a1fc352d35",
@@ -69,13 +61,14 @@
       "difference_from_source": 0.8522,
       "glow_score": 0.0
     },
-    "NOT_LIT_2": {
-      "sprite": "graves/grave_034/not_lit_2/sprite.webp",
-      "pixellab_object_id": "3748c706-08d0-467f-b4b2-2c1019aa834f",
-      "generated_at": "2026-08-16T14:57:54+00:00",
+    "NOT_LIT_3": {
+      "sprite": "graves/grave_034/not_lit_3/sprite.webp",
+      "pixellab_object_id": "b3ec0544-54cc-42b0-8bb7-291b32025b47",
+      "generated_at": "2026-08-16T14:57:19+00:00",
       "glow_concept": null,
-      "difference_from_source": 0.9537,
-      "glow_score": 0.0006
+      "difference_from_source": 0.8016,
+      "glow_score": 0.0,
+      "relit_from": "LIT_4"
     }
   }
 }
