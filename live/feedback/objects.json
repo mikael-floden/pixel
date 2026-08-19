@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T17:40:36.352Z",
+  "updated_at": "2026-08-19T17:42:23.122Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -4630,9 +4630,9 @@
       "rating": 5
     },
     "scenery/reed_beds/reed_bed_001": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:57:12.734Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:41:21.291Z",
+      "art": "8f5eafd18cc5ed19"
     },
     "scenery/reed_beds/reed_bed_004": {
       "status": "rejected",
@@ -4963,9 +4963,9 @@
       "rating": 4
     },
     "scenery/stones/stone_003": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:57:41.598Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:42:05.202Z",
+      "art": "c70b74cf40d86948"
     },
     "scenery/stones/stone_004": {
       "status": "approved",
@@ -19854,6 +19854,137 @@
       "status": "rejected",
       "art": "854f8e7b726d9f40",
       "updated_at": "2026-08-19T17:40:36.294Z"
+    },
+    "scenery/mushrooms/mushroom_001#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:40:49.907Z",
+      "status": "approved",
+      "art": "1998adf74f12b47a"
+    },
+    "scenery/mushrooms/mushroom_001#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:40:52.953Z",
+      "status": "approved",
+      "art": "df25782cf3302791"
+    },
+    "scenery/mushrooms/mushroom_001#not_lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:40:54.780Z",
+      "status": "approved",
+      "art": "05ca5611133d7b0a"
+    },
+    "scenery/mushrooms/mushroom_001#not_lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:40:56.672Z",
+      "status": "approved",
+      "art": "85a869bfe64ac09d"
+    },
+    "scenery/mushrooms/mushroom_001#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:41:04.335Z",
+      "status": "approved",
+      "art": "5f31d65c35ec60c7"
+    },
+    "scenery/mushrooms/mushroom_001#lit_1#south": {
+      "status": "rejected",
+      "art": "e467252613e96809",
+      "updated_at": "2026-08-19T17:41:05.823Z"
+    },
+    "scenery/reed_beds/reed_bed_001#lit_2#south": {
+      "status": "rejected",
+      "art": "89476242862101fc",
+      "updated_at": "2026-08-19T17:41:15.401Z"
+    },
+    "scenery/reed_beds/reed_bed_001#lit_1#south": {
+      "status": "rejected",
+      "art": "c0fd5dad6c0bbf36",
+      "updated_at": "2026-08-19T17:41:16.206Z"
+    },
+    "scenery/reed_beds/reed_bed_001#not_lit_4#south": {
+      "status": "rejected",
+      "art": "41c25f2dae213552",
+      "updated_at": "2026-08-19T17:41:17.210Z"
+    },
+    "scenery/reed_beds/reed_bed_001#not_lit_3#south": {
+      "status": "rejected",
+      "art": "9ac70bc28ddec674",
+      "updated_at": "2026-08-19T17:41:18.227Z"
+    },
+    "scenery/reed_beds/reed_bed_001#not_lit_2#south": {
+      "status": "rejected",
+      "art": "543e85d40c4f4362",
+      "updated_at": "2026-08-19T17:41:19.248Z"
+    },
+    "scenery/reed_beds/reed_bed_001#not_lit_1#south": {
+      "status": "rejected",
+      "art": "8f5eafd18cc5ed19",
+      "updated_at": "2026-08-19T17:41:20.247Z"
+    },
+    "scenery/stones/stone_001#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T17:41:26.301Z",
+      "status": "approved",
+      "art": "30420173c1ee5562"
+    },
+    "scenery/stones/stone_001#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:41:30.138Z",
+      "status": "approved",
+      "art": "d40cabf9de87ca6c"
+    },
+    "scenery/stones/stone_001#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:41:46.874Z",
+      "status": "approved",
+      "art": "c6519fb5ddc56ef8"
+    },
+    "scenery/stones/stone_001#not_lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:41:49.543Z",
+      "status": "approved",
+      "art": "f31c67901781b711"
+    },
+    "scenery/stones/stone_001#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:41:55.494Z",
+      "status": "approved",
+      "art": "59bc7b209c20912d"
+    },
+    "scenery/stones/stone_001#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:41:58.624Z",
+      "status": "approved",
+      "art": "16e3a8fd6474d32a"
+    },
+    "scenery/stones/stone_003#not_lit_1#south": {
+      "status": "rejected",
+      "art": "c70b74cf40d86948",
+      "updated_at": "2026-08-19T17:42:06.925Z"
+    },
+    "scenery/stones/stone_003#not_lit_2#south": {
+      "status": "rejected",
+      "art": "d71ae2b69ff0ecf8",
+      "updated_at": "2026-08-19T17:42:11.860Z"
+    },
+    "scenery/stones/stone_003#not_lit_3#south": {
+      "status": "rejected",
+      "art": "9a9324fab3c927fb",
+      "updated_at": "2026-08-19T17:42:17.322Z"
+    },
+    "scenery/stones/stone_003#not_lit_4#south": {
+      "status": "rejected",
+      "art": "f50bfa9d1260cd11",
+      "updated_at": "2026-08-19T17:42:18.619Z"
+    },
+    "scenery/stones/stone_003#lit_1#south": {
+      "status": "rejected",
+      "art": "b8820ec8d909c4a1",
+      "updated_at": "2026-08-19T17:42:20.178Z"
+    },
+    "scenery/stones/stone_003#lit_2#south": {
+      "status": "rejected",
+      "art": "ea1e52ce6e6979fd",
+      "updated_at": "2026-08-19T17:42:21.469Z"
     }
   }
 }
