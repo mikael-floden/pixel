@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 765,
+  "scenery_count": 763,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1382,7 +1382,7 @@
       "name": "Window",
       "type": "WINDOW",
       "quota": 400,
-      "done": 60
+      "done": 58
     }
   ],
   "categories": {
@@ -1508,7 +1508,7 @@
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
-    "windows": 60,
+    "windows": 58,
     "wisteria_snags": 1,
     "witch_rings": 1,
     "woodpiles": 2
@@ -63713,69 +63713,6 @@
       "animations": []
     },
     {
-      "id": "window_078",
-      "rel": "windows/window_078",
-      "name": "A rectangular window in dark stained oak with a thick sill 078",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a rectangular window in dark stained oak with a thick sill, boarded over with nailed planks, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 80,
-      "placement": {
-        "world_height_m": 1.19,
-        "world_px_height": 45,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          15,
-          7,
-          67,
-          76
-        ],
-        "content_px_height": 69,
-        "canvas_render_px": 52
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T07:02:52+00:00",
-      "pixellab_object_id": "6e208794-c5ae-4071-bf9f-5cd147920b6e",
-      "sprite": "windows/window_078/sprite.webp",
-      "art_hash": "3c3e5627ff51e789",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_078/rotations/south-east.webp",
-        "south-west": "windows/window_078/rotations/south-west.webp",
-        "south": "windows/window_078/sprite.webp"
-      },
-      "states": {
-        "LIGHTS_OFF": {
-          "sprite": "windows/window_078/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_078/rotations/south-east.webp",
-            "south-west": "windows/window_078/rotations/south-west.webp",
-            "south": "windows/window_078/sprite.webp"
-          },
-          "pixellab_object_id": "6e208794-c5ae-4071-bf9f-5cd147920b6e",
-          "generated_at": "2026-08-14T07:03:57+00:00",
-          "art_hash": "3c3e5627ff51e789"
-        },
-        "LIGHTS_ON": {
-          "sprite": "windows/window_078/lights_on/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_078/lights_on/rotations/south-east.webp",
-            "south": "windows/window_078/lights_on/sprite.webp",
-            "south-west": "windows/window_078/lights_on/rotations/south-west.webp"
-          },
-          "pixellab_object_id": "999c3f2b-0f08-4d7d-a864-33c007ca61c2",
-          "generated_at": "2026-08-19T18:09:03+00:00",
-          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
-          "art_hash": "f0806915f4485cdf"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "window_081",
       "rel": "windows/window_081",
       "name": "A heavy rectangular stone window under a carved lintel 081",
@@ -63896,68 +63833,6 @@
           "generated_at": "2026-08-19T16:00:16+00:00",
           "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
           "art_hash": "58d30b626188b07f"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "window_084",
-      "rel": "windows/window_084",
-      "name": "A square window in rough stone masonry 084",
-      "category": "windows",
-      "lights": "LIGHTS_OFF",
-      "description": "a house WINDOW seen from outside, dark and unlit with nobody home, ONLY the window itself with its frame and sill, no wall around it, no building, no people, fantasy RPG village architecture, small clear margin at edges, transparent background, a square window in rough stone masonry, paint peeling and curling from the frame, a tall window, nearly a person's height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.22,
-        "world_px_height": 46,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
-        "content_box": [
-          14,
-          7,
-          85,
-          95
-        ],
-        "content_px_height": 88,
-        "canvas_render_px": 50
-      },
-      "status": "complete",
-      "generated_at": "2026-08-15T18:01:48+00:00",
-      "pixellab_object_id": "20647d8b-0555-4205-b34d-165dba2ebe4c",
-      "sprite": "windows/window_084/sprite.webp",
-      "art_hash": "d39299300e410053",
-      "type": "WINDOW",
-      "must_be_imbplemented_with_random_hflip": false,
-      "rotations": {
-        "south-east": "windows/window_084/rotations/south-east.webp",
-        "south-west": "windows/window_084/rotations/south-west.webp",
-        "south": "windows/window_084/sprite.webp"
-      },
-      "states": {
-        "LIGHTS_OFF": {
-          "sprite": "windows/window_084/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_084/rotations/south-east.webp",
-            "south-west": "windows/window_084/rotations/south-west.webp",
-            "south": "windows/window_084/sprite.webp"
-          },
-          "pixellab_object_id": "20647d8b-0555-4205-b34d-165dba2ebe4c",
-          "art_hash": "d39299300e410053"
-        },
-        "LIGHTS_ON": {
-          "sprite": "windows/window_084/lights_on/sprite.webp",
-          "rotations": {
-            "south-east": "windows/window_084/lights_on/rotations/south-east.webp",
-            "south": "windows/window_084/lights_on/sprite.webp",
-            "south-west": "windows/window_084/lights_on/rotations/south-west.webp"
-          },
-          "pixellab_object_id": "b760eb5b-c6cc-4a39-a01b-6d02a514b8ed",
-          "generated_at": "2026-08-19T16:01:28+00:00",
-          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
-          "art_hash": "740099bdf7b8b8b2"
         }
       },
       "animations": []
