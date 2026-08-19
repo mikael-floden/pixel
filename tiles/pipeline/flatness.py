@@ -633,6 +633,55 @@ def select_best(paths, gate=CLEAN_TOP):
         pool = seamless or [x for x in scored if x[2] >= gate] or scored
     return max(pool, key=lambda x: x[1]["score"])
 
+def clears_bar(path, top_hex=None, side_hex=None, side_wall_hex=None, same=False,
+               min_wall=1.0):
+    """THE bar. One function, so two components cannot disagree about it.
+
+    Returns (ok, reason). `reason` is the first gate that rejected, or None.
+
+    This exists because the same bug has now happened three times. chase decides which
+    cells still need generation; publish decides which tiles ship. Each grew its own
+    copy of "is this tile acceptable", and every time a gate was added to one it drifted
+    from the other:
+
+      * first the wall SCORE diverged, and publish shipped tiles at wall 0.00 from cells
+        whose chase had been told 2.0 was the minimum;
+      * then the wall MATERIAL check landed in publish only, and three cells sat
+        unattempted through an entire sweep because chase called them full;
+      * then CONTAMINATION landed in publish only, and chase reported 172 cells complete
+        against publish's 164.
+
+    Each time the fix was to copy the new check across. That is what guarantees a fourth
+    occurrence, so the decision lives here now and both callers ask it.
+
+    publish still applies these as TIERS rather than as a hard gate — a cell with
+    nothing better ships its best and is flagged — but the definition of "clears
+    everything" is shared, which is the part that kept drifting.
+    """
+    q = wall_quality(path)
+    if not q or q["score"] < min_wall:
+        return False, "wall"
+    f = faces(path)
+    if not f or not f["top"]:
+        return False, "faces"
+    if seam_px(path) > SEAM_TOL:
+        return False, "seam"
+    ind = indistinguishable(top_hex, side_hex) if (top_hex and side_hex) else False
+    if not same and not ind and overhang(path) < MIN_OVERHANG:
+        return False, "spill"
+    if fringe_clarity(path) < MIN_CLARITY:
+        return False, "clarity"
+    if not same and top_hex and side_hex:
+        if swapped_err(path, top_hex, side_hex) > MAX_SWAP:
+            return False, "swapped"
+        if top_contamination(path, top_hex, side_hex) > MAX_CONTAMINATION:
+            return False, "contamination"
+    if not same and side_wall_hex:
+        if wall_material_err(path, side_wall_hex) > MAX_WALL_ERR:
+            return False, "wall_material"
+    return True, None
+
+
 def wall_quality(path, ideal_contrast=26.0, tol=18.0):
     """Score the WALLS on the three things the maintainer actually judges them on.
 

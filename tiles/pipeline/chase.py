@@ -401,39 +401,12 @@ def passing(paths, min_wall, min_clarity=0.0, same=False,
     """
     out = []
     for p in paths:
+        ok, _why = flatness.clears_bar(p, top_hex=top_hex, side_hex=side_hex,
+                                       side_wall_hex=side_wall_hex, same=same,
+                                       min_wall=min_wall)
+        if not ok:
+            continue
         q = flatness.wall_quality(p)
-        if not q or q["score"] < min_wall:
-            continue
-        # The spill gate is waived on the same grounds as on same-over-same: overhang
-        # finds the top material in the wall BY HUE, so between two materials that share
-        # a colour it measures nothing. paving_stone over grey_stone (identical palette
-        # hex) had 126 of 144 tiles rejected here while only 2 failed on wall quality.
-        if not same and not flatness.indistinguishable(top_hex, side_hex) \
-                and flatness.overhang(p) < flatness.MIN_OVERHANG:
-            continue
-        # A backwards tile is not a worse tile, it is the wrong tile — the maintainer
-        # rejected 22 of them in one pass. Banking one ends the chase on a cell that
-        # still has nothing usable.
-        if not same and top_hex and side_hex:
-            if flatness.swapped_err(p, top_hex, side_hex) > flatness.MAX_SWAP:
-                continue
-            # ONE BAR. publish.candidates() also drops a tile whose WALL is not the
-            # material the cell asked for, and chase did not — so chase declared cells
-            # full that publish then shipped two candidates for, and the chase never ran
-            # on them. Three cells sat unattempted through a whole sweep that way.
-            # The file already warns about exactly this ("Two components disagreeing
-            # about what 'good' means is how a cell gets declared done while shipping
-            # something the generator was still being paid to replace") and it happened
-            # anyway, one tier later.
-            if side_wall_hex and flatness.wall_material_err(p, side_wall_hex) > \
-                    flatness.MAX_WALL_ERR:
-                continue
-        # A spill that cannot be told apart from the wall it lands on is not usable:
-        # postprocess has nothing to select, so it ships in the wrong palette.
-        if flatness.fringe_clarity(p) < min_clarity:
-            continue
-        if flatness.seam_px(p) > flatness.SEAM_TOL:
-            continue
         out.append((p, q["score"], flatness.overhang(p)))
     if same:
         # Least-banded first: these tiles exist to be stacked, so the tile that stacks
