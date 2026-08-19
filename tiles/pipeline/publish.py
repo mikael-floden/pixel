@@ -222,8 +222,16 @@ def main():
         if cell.replace("__over__", "_over_") in dead:
             continue
         top, side = cell.split("__over__")
+        # top_hex_c and `rejected` were BOTH being dropped here. Without top_hex_c the
+        # swapped/contamination/top_err fields are None for every tile, which makes the
+        # `fwd or out` and `clean or out` tiers unreachable — the swapped-material gate
+        # built from the maintainer's own 22 "this looks like Y over X" verdicts, and the
+        # contamination tier built from their 14 "not enough lava on the ground", had
+        # never once fired. Both were reported as working on the strength of a manifest
+        # field that was silently null.
         cands, has_spill, right_wall, all_gates = candidates(
-            d, (PALETTE.get(side) or {}).get("top"), same=(top == side))
+            d, (PALETTE.get(side) or {}).get("top"), same=(top == side),
+            rejected=rejected, top_hex_c=(PALETTE.get(top) or {}).get("top"))
         cands = cands[:args.top]
         if not cands:
             continue
