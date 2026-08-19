@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T19:01:35.428Z",
+  "updated_at": "2026-08-19T19:02:09.662Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -15400,27 +15400,23 @@
       "art": "24305f373c06bd61"
     },
     "scenery/windows/window_078": {
-      "status": "approved",
+      "status": "rejected",
       "art": "3c3e5627ff51e789",
-      "updated_at": "2026-08-14T07:08:37.056Z",
-      "rating": 5
+      "updated_at": "2026-08-19T19:01:54.107Z"
     },
     "scenery/windows/window_078#lights_off#south": {
-      "status": "approved",
+      "status": "rejected",
       "art": "3c3e5627ff51e789",
-      "updated_at": "2026-08-14T07:08:37.056Z",
-      "rating": 5
+      "updated_at": "2026-08-19T19:02:03.068Z"
     },
     "scenery/windows/window_078#lights_off#south-east": {
-      "rating": 5,
-      "updated_at": "2026-08-18T18:08:43.208Z",
-      "status": "approved",
-      "art": "172a453ec5018d8f"
+      "updated_at": "2026-08-19T19:02:07.291Z",
+      "art": "172a453ec5018d8f",
+      "status": "rejected"
     },
     "scenery/windows/window_078#lights_off#south-west": {
-      "rating": 5,
-      "updated_at": "2026-08-18T18:08:44.305Z",
-      "status": "approved",
+      "updated_at": "2026-08-19T19:02:08.642Z",
+      "status": "rejected",
       "art": "1465acce7c04f61c"
     },
     "scenery/windows/window_081": {
@@ -20693,6 +20689,21 @@
       "updated_at": "2026-08-19T19:01:35.691Z",
       "status": "approved",
       "art": "6359f656f07192f3"
+    },
+    "scenery/windows/window_078#lights_on#south-west": {
+      "status": "rejected",
+      "art": "36d7a41d0c4dad48",
+      "updated_at": "2026-08-19T19:01:57.173Z"
+    },
+    "scenery/windows/window_078#lights_on#south-east": {
+      "status": "rejected",
+      "art": "5b185d2687b8dea3",
+      "updated_at": "2026-08-19T19:01:59.690Z"
+    },
+    "scenery/windows/window_078#lights_on#south": {
+      "status": "rejected",
+      "art": "c50a4359668d1c95",
+      "updated_at": "2026-08-19T19:02:00.671Z"
     }
   }
 }
