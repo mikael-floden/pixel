@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T18:55:11.835Z",
+  "updated_at": "2026-08-19T18:56:12.948Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -20155,6 +20155,78 @@
       "status": "rejected",
       "art": "56d8a13879288569",
       "note": "This state has to be regenerated becouse it's a window and they need all states"
+    },
+    "scenery/windows/window_098#lights_off#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:28.281Z",
+      "status": "approved",
+      "art": "4c6dd9fbcc749b51"
+    },
+    "scenery/windows/window_098#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:29.459Z",
+      "status": "approved",
+      "art": "0a7035b753b56fd2"
+    },
+    "scenery/windows/window_098#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:30.603Z",
+      "status": "approved",
+      "art": "09d6cf586a864532"
+    },
+    "scenery/windows/window_098#lights_on#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:31.997Z",
+      "status": "approved",
+      "art": "046bd2b7e7ad427e"
+    },
+    "scenery/windows/window_098#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:33.413Z",
+      "status": "approved",
+      "art": "24464105be229c9e"
+    },
+    "scenery/windows/window_098#lights_on#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:55:34.638Z",
+      "status": "approved",
+      "art": "eb45e8d7d32e3495"
+    },
+    "scenery/windows/window_094#lights_on#south-west": {
+      "status": "rejected",
+      "art": "a7354c9fb9d5cbc5",
+      "updated_at": "2026-08-19T18:56:05.436Z",
+      "note": "Regenerate! It's a window that need all states!"
+    },
+    "scenery/windows/window_094#lights_on#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:56:06.800Z",
+      "status": "approved",
+      "art": "1a50b0e89c9e8566"
+    },
+    "scenery/windows/window_094#lights_on#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:56:08.420Z",
+      "status": "approved",
+      "art": "0dd66abacf0c30b6"
+    },
+    "scenery/windows/window_094#lights_off#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:56:10.286Z",
+      "status": "approved",
+      "art": "92c28234ff3ecf3e"
+    },
+    "scenery/windows/window_094#lights_off#south-east": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:56:11.933Z",
+      "status": "approved",
+      "art": "12292e6f9e313ef4"
+    },
+    "scenery/windows/window_094#lights_off#south-west": {
+      "rating": 5,
+      "updated_at": "2026-08-19T18:56:13.047Z",
+      "status": "approved",
+      "art": "91249b2b7f2f14e5"
     }
   }
 }
