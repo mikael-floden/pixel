@@ -130,6 +130,38 @@ tiles/
   interrupted run never has to pay twice. This is also the whole disaster-recovery
   story — see below.
 
+## Two tile types, and why a rejection is not a deletion
+
+The wall-visible set is the DEFAULT, not the whole library. The maintainer:
+
+> "It's not like I only want clean single color ground in this game. I just want that to
+>  be the default. Next is to find nice tiles that doesn't have to care about the wall.
+>  It's just a goal to get a nice looking top."
+
+| set | wall | what it must satisfy |
+|---|---|---|
+| **wall-visible** (all of `tiles/` today) | seen — it becomes every cliff face | the whole bar: seam, wall quality, the transition, materials |
+| **top-only** (next) | never seen; the tile is surrounded | the top surface alone |
+
+So a rejection during the wall-visible review means *"the wall is not good enough to be
+SEEN"*, which says nothing about the top. Those tiles are **deferred**, not deleted —
+`tombstones.json` holds them under `deferred` with `from_set: "wall_visible"`, and the
+top-only review will draw from exactly that pool.
+
+> "So instead of regenerating, we might be able to reuse tiles from this set that didn't
+>  have a wall good enough."
+
+**Nothing in this domain is deleted by a maintainer verdict.** `review.py` used to stamp
+a generation `rejected` once all its candidates were, and `pixellab_gc --apply` deletes
+what is marked rejected; that is gone. The value of not deleting is already proven — the
+maintainer went through the reject pile and overruled the filter on 40 tiles it had
+discarded, and separately a seam bug meant 46% of everything ever generated was being
+rejected for a defect that does not exist in the shipped tile. Both were recoverable
+only because the art was still there.
+
+`pixellab_gc --apply` remains the one destructive command in the domain. Treat it as
+requiring the maintainer to ask for it by name.
+
 ## If the machine dies: getting the raw tiles back
 
 **`tiles/matrix/` is gitignored and it is NOT the master copy.** It holds ~18,800 raw

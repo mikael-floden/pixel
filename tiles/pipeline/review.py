@@ -129,6 +129,21 @@ def resolve():
                     man = _manifest_at(sha) or current
                     break
         e = None
+        # A HASH KEY IS AN IDENTITY, so it resolves directly and needs none of the
+        # timestamp archaeology below. That machinery exists only for the old POSITIONAL
+        # keys (tiles/<cell>/0), where the same string named different art before and
+        # after a republish. Once keys became sha1(src) the lookup is exact — and this
+        # branch was missing, so 255 of the maintainer's verdicts silently failed to
+        # match: `idx.isdigit()` is False for "facadfce", so it fell through to nothing.
+        by_key = {x["key"]: x for c in current.values() for x in c["candidates"]}
+        if not idx.isdigit():
+            e = by_key.get(k)
+            if e:
+                e = dict(e)
+                (hits if e.get("src") else misses).append((key, v, e))
+                continue
+            misses.append((key, v, None))
+            continue
         cands = (man.get(cell) or {}).get("candidates") or []
         if idx.isdigit() and int(idx) < len(cands):
             e = dict(cands[int(idx)])
@@ -187,10 +202,19 @@ def main():
     if not args.apply:
         print("\n(dry run — pass --apply to record)")
         return 0
-    n = tombstones.reject_tiles(srcs)
-    if doomed:
-        pixellab_gc.set_status(doomed, "rejected")
-    print(f"recorded {n} new tile rejection(s); marked {len(doomed)} generation(s) rejected")
+    n = tombstones.defer_tiles(srcs)
+    # NOTHING IS MARKED FOR DELETION. This used to stamp a generation "rejected" once
+    # every candidate from it had been rejected, and pixellab_gc --apply deletes what is
+    # marked rejected. The maintainer's instruction makes that wrong in principle, not
+    # just risky: a rejection here means "the wall is not good enough to be SEEN", and a
+    # whole tile type is coming whose wall never is. "So instead of regenerating, we
+    # might be able to reuse tiles from this set that didn't have a wall good enough."
+    #
+    # They also proved the value of it by hand, recovering 40 tiles from the reject pile
+    # that a --apply run would have destroyed.
+    print(f"deferred {n} new tile(s) from the wall-visible set; deleted nothing")
+    print(f"({len(doomed)} generation(s) have no surviving candidate here — kept anyway, "
+          f"they are the top-only set's raw material)")
     print("run publish.py to rebuild the review set without them")
     return 0
 

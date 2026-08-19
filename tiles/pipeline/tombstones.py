@@ -56,7 +56,36 @@ def save(t):
         json.dump(t, f, indent=2, sort_keys=True)
 
 
+def deferred_tiles():
+    """Tiles held back from the WALL-VISIBLE set, and kept for the next one.
+
+    THIS IS NOT A DELETION, and the distinction is the maintainer's:
+
+      "I don't want you to delete the ones I rejected. Because the tiles doesn't fit the
+       'x over x' criteria, but we will work with tiles that can't face the wall/edge and
+       have to be surrounded by other tiles to only show its top/ground. It's not like I
+       only want clean single color ground in this game. I just want that to be the
+       default. So every tile I rejected now might be a candidate for that next set. I
+       just don't want them here and on the wiki right now."
+
+    So a rejection in this pass means "the WALL is not good enough to be seen", which
+    says nothing about the top. A whole tile type is coming whose wall is never visible
+    because it is surrounded — for those, only the top surface matters, and much of what
+    is deferred here is expected to qualify.
+
+    Every one of these stays on disk, stays registered, and stays re-fetchable. Nothing
+    about a deferral may ever reach pixellab_gc's delete path.
+    """
+    return set((load().get("deferred") or {}).keys())
+
+
 def rejected_tiles():
+    """Backwards-compatible alias. Deferred and rejected are the same set now, because
+    nothing in this domain is deleted on a maintainer verdict any more."""
+    return deferred_tiles()
+
+
+def _legacy_rejected():
     """Raw tiles the maintainer rejected individually, as repo-relative paths.
 
     Distinct from a cell tombstone. A tombstoned CELL is never regenerated at all; a
@@ -102,19 +131,31 @@ def approve_tiles(paths, reason="maintainer override"):
     return n
 
 
-def reject_tiles(paths, reason="wiki reject"):
-    """Record individual tiles as rejected. Returns how many were newly added."""
+def defer_tiles(paths, reason="wall not good enough for the wall-visible set",
+                from_set="wall_visible"):
+    """Hold tiles back from the current set WITHOUT deleting anything.
+
+    `from_set` records which set rejected it, so the top-only review can ask for
+    exactly the pool it wants rather than inheriting a flat list of "bad tiles".
+    """
     doc = load()
-    doc.setdefault("tiles", {})
+    doc.setdefault("deferred", {})
+    # one-time migration: the old `tiles` key meant the same thing under a worse name
+    for p, meta in (doc.pop("tiles", None) or {}).items():
+        doc["deferred"].setdefault(p, {**meta, "from_set": "wall_visible"})
     n = 0
     for p in paths:
-        if p in doc["tiles"]:
+        if p in doc["deferred"]:
             continue
-        doc["tiles"][p] = {"reason": reason, "at": _now()}
+        doc["deferred"][p] = {"reason": reason, "at": _now(), "from_set": from_set}
         n += 1
-    if n:
-        save(doc)
+    save(doc)
     return n
+
+
+def reject_tiles(paths, reason="wiki reject"):
+    """Alias kept so existing callers keep working. Defers; never deletes."""
+    return defer_tiles(paths, reason=reason)
 
 
 def is_dead(cell):
