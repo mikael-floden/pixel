@@ -333,6 +333,12 @@ def main():
                 "top_share": c["top_share"], "overhang": c["overhang"],
                 "wall_err": c["wall_err"], "clarity": c["clarity"],
                 "band": c["band"],
+                # These three were computed and used for tiering but never written out,
+                # so the manifest reported None and the gates looked dead when they were
+                # merely invisible. A metric the reviewer cannot see is a metric they
+                # cannot disagree with.
+                "swapped": c["swapped"], "contamination": c["contamination"],
+                "top_err": c["top_err"],
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1

@@ -241,13 +241,83 @@ PHRASINGS_SWAPPED = [
 ]
 
 
+
+# SHORT, and each one names ONE thing. The maintainer's instruction:
+#
+#   "When you try different prompts to solve it, don't just add more and more text to
+#    the same prompt. Sometimes the prompt is too long and the generator can't
+#    concentrate to get the single thing you try to fix right. Short clear prompts can
+#    also be tried."
+#
+# Measured over 14,592 tiles and 29 prompt templates, length itself predicts nothing —
+# within-cell r = -0.018 against the all-gates bar — but WHICH prompt is used explains
+# ~100x more of the outcome than how long it is. So brevity is not a win on its own; it
+# is a free axis, and what these actually change is the DESIGN. Every phrasing above
+# accreted a clause per failure mode until each one asks for five things at once, and
+# some of those clauses fight ("flat even top" suppresses the fringe the same prompt
+# requests). One blocker per prompt is the break from that pattern.
+#
+# Aimed at the WALL because that is what is actually failing. Replaying publish's tier
+# chain over the stuck cells, the side wall being the wrong material is the dominant
+# blocker in 13 of 18 — and no phrasing above spends more than FOUR WORDS on the wall.
+# Every one of them obsesses over the top surface and the spill, then hands the
+# generator four words for the thing that decides the tile.
+PHRASINGS_WALL = [
+    # the wall, named first and alone
+    "isometric tile. Side walls: {side_material}. Top: flat {top_colour}. No outline.",
+
+    # the wall gets the detail budget for once
+    "isometric ground tile with tall {side_material} side walls, clearly {side_word}, "
+    "textured from top to bottom. Plain {top_colour} top. No outline.",
+
+    # thickness — a taller face gives the wall room to read as itself
+    "isometric block. Thick {side_material} walls, thin {top_material} surface on top. "
+    "No outline.",
+
+    # states the wall as the subject and the top as the accessory
+    "a chunk of {side_material}, isometric, with {top_colour} on its flat upper face. "
+    "The sides are {side_word}. No outline.",
+
+    # negation aimed at the observed failure: the wall coming back as a third material
+    "isometric tile, {top_material} on {side_material}. The walls must be {side_word} "
+    "and nothing else. No outline.",
+
+    # terse, both faces, no story
+    "isometric tile. top {top_colour}. walls {side_colour}, textured. no outline.",
+]
+
+
+# One thing each, as short as the thing can be said. Used late in the ladder, when the
+# longer families have all failed on this cell and the remaining hope is that the
+# generator does one instruction well rather than five badly.
+PHRASINGS_SHORT = [
+    "isometric {top_material} over {side_material} tile. No outline.",
+    "isometric tile, flat {top_colour} top, {side_colour} sides. No outline.",
+    "{top_material} ground tile on a {side_material} block, isometric. No outline.",
+    "isometric terrain tile: {top_word} above, {side_word} below. No outline.",
+    "flat {top_colour} on top of {side_material}. isometric. no outline.",
+    "isometric cube. {top_colour} lid, {side_material} body. No outline.",
+]
+
+
+# The ladder. Each rung is a genuinely different instrument rather than a reworded
+# version of the last one, because the evidence says wording is what moves the outcome
+# and length is not. A cell that has been through all of it and still has nothing is
+# HARD, and the maintainer has asked to be handed those rather than have money spent
+# rolling the same thing again: "If you can't get them after 5 tries mark them as hard
+# and I will help you with the prompt afterwards."
+LADDER = [PHRASINGS, PHRASINGS_SWAPPED, PHRASINGS_WALL, PHRASINGS_SHORT]
+
+
 def phrasings_for(cell, swapped_streak=0):
     """Which family to ask with. Escalates to the colour-word phrasings once the
     generator has demonstrated, on this cell, that it will not draw the pair as asked."""
     top, side = cell.split("__over__")
     if top == side:
         return PHRASINGS_SAME
-    return PHRASINGS_SWAPPED if swapped_streak >= 2 else PHRASINGS
+    if swapped_streak >= 2:
+        return PHRASINGS_SWAPPED
+    return PHRASINGS
 
 
 def _stale_family(cell):
@@ -274,6 +344,27 @@ def _stale_family(cell):
     if cell.split("__over__")[0] != cell.split("__over__")[1]:
         return False        # only the same-over-same family has been superseded so far
     return len(glob.glob(os.path.join(OUT, cell, "sheet_*_same*"))) < 3
+
+
+HARD = os.path.join(ROOT, "hard_cells.json")
+
+
+def _mark_hard(cell, attempts, got, need):
+    """Record a cell the whole ladder could not fill, for the maintainer to look at.
+
+    Their instruction: "If you can't get them after 5 tries mark them as hard and I will
+    help you with the prompt afterwards." Spending more money rolling the same four
+    families at a cell that has already refused them is exactly the waste they are
+    asking to avoid, and a human who can SEE the failure will fix it in one prompt.
+    """
+    try:
+        doc = json.load(open(HARD)) if os.path.isfile(HARD) else {"cells": {}}
+    except Exception:
+        doc = {"cells": {}}
+    doc["cells"][cell] = {"attempts": attempts, "candidates": got, "wanted": need,
+                          "families_tried": [f"ladder x{attempts}"]}
+    with open(HARD, "w") as f:
+        json.dump(doc, f, indent=2, sort_keys=True)
 
 
 def cell_parts(cell, types):
@@ -371,6 +462,8 @@ def cell_passing(cell, min_wall, min_clarity=0.0):
 
 def cell_status(cell, min_wall, min_clarity=0.0):
     hits = cell_passing(cell, min_wall, min_clarity)
+    if len(hits) < need:
+        _mark_hard(cell, attempts, len(hits), need)
     return hits[0] if hits else None
 
 
@@ -410,9 +503,23 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
             print(f"    budget reached (~${spent[0]:.2f})")
             return None
         i = existing + n
-        ph = (PHRASINGS_SWAPPED if force == "swap" else
-              PHRASINGS if force == "normal" else
-              phrasings_for(cell, swapped_streak))
+        # EVERY ROLL A DIFFERENT INSTRUMENT. Rolling one family with a new seed explores
+        # the generator's variance; rolling a different family explores its
+        # interpretation, and the evidence says interpretation is what moves the outcome
+        # — across 14,592 tiles, which prompt is used explains ~100x more of the result
+        # than how long it is. A cell that has failed five times on one family has not
+        # been tried five times, it has been tried once, five ways that were all the same
+        # way.
+        if force == "swap":
+            ph = PHRASINGS_SWAPPED
+        elif force == "normal":
+            ph = PHRASINGS
+        elif top_g["id"] == side_g["id"]:
+            ph = PHRASINGS_SAME
+        elif swapped_streak >= 2:
+            ph = PHRASINGS_SWAPPED      # it has proved it will not draw this pair as asked
+        else:
+            ph = LADDER[n % len(LADDER)]
         prompt = ph[i % len(ph)].format(
             top_material=top_g["material_words"], side_material=side_g["material_words"],
             top_word=top_g["id"].replace("_", " "), side_word=side_g["id"].replace("_", " "),
@@ -424,7 +531,9 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         # same name and silently overwrite each other's tiles. Costs nothing when only
         # one run is active.
         tag = ("same" if ph is PHRASINGS_SAME
-               else "swap" if ph is PHRASINGS_SWAPPED else "chase")
+               else "swap" if ph is PHRASINGS_SWAPPED
+               else "wall" if ph is PHRASINGS_WALL
+               else "short" if ph is PHRASINGS_SHORT else "chase")
         sdir = os.path.join(d, f"sheet_{i:02d}_{tag}{i % len(ph)}_{os.getpid()}")
         if os.path.isdir(sdir) and len(os.listdir(sdir)) > 2:
             continue
@@ -507,6 +616,8 @@ def chase(client, cell, top_g, side_g, attempts, min_wall, spent, max_usd, min_c
         if len(hits) >= need:
             return hits[0]
     hits = cell_passing(cell, min_wall, min_clarity)
+    if len(hits) < need:
+        _mark_hard(cell, attempts, len(hits), need)
     return hits[0] if hits else None
 
 
