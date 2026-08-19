@@ -32,14 +32,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "toadstool_rings/toadstool_ring_015/lit_1/sprite.webp",
-      "pixellab_object_id": "87d2fe97-ec03-4ff3-acf3-9505ff4a4c17",
-      "generated_at": "2026-08-17T11:13:48+00:00",
-      "glow_concept": "every cap lit from inside like paper lanterns",
-      "difference_from_source": 0.4273,
-      "glow_score": 0.2483
-    },
     "LIT_2": {
       "sprite": "toadstool_rings/toadstool_ring_015/lit_2/sprite.webp",
       "pixellab_object_id": "a7a4c86f-8c85-4891-be93-23f46c8eaddd",
@@ -76,6 +68,15 @@
       "glow_concept": null,
       "difference_from_source": 0.5688,
       "glow_score": 0.1503
+    },
+    "NOT_LIT_5": {
+      "sprite": "toadstool_rings/toadstool_ring_015/not_lit_5/sprite.webp",
+      "pixellab_object_id": "87d2fe97-ec03-4ff3-acf3-9505ff4a4c17",
+      "generated_at": "2026-08-17T11:13:48+00:00",
+      "glow_concept": "every cap lit from inside like paper lanterns",
+      "difference_from_source": 0.4273,
+      "glow_score": 0.2483,
+      "relit_from": "LIT_1"
     }
   }
 }

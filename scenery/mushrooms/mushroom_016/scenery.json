@@ -37,22 +37,6 @@
       "pixellab_object_id": "3a8dc8fc-af80-4ab9-9c39-cb96e347c3b4",
       "generated_at": "2026-08-14T01:47:12+00:00"
     },
-    "LIT_2": {
-      "sprite": "mushrooms/mushroom_016/lit_2/sprite.webp",
-      "pixellab_object_id": "21643a1c-7bbd-464b-b749-46566479c4b8",
-      "generated_at": "2026-08-16T19:42:54+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5801,
-      "glow_score": 0.0469
-    },
-    "LIT_3": {
-      "sprite": "mushrooms/mushroom_016/lit_3/sprite.webp",
-      "pixellab_object_id": "207e2530-adfc-4162-9fbb-0bd11f552529",
-      "generated_at": "2026-08-16T19:40:02+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7709,
-      "glow_score": 0.0489
-    },
     "LIT_4": {
       "sprite": "mushrooms/mushroom_016/lit_4/sprite.webp",
       "pixellab_object_id": "cc19f423-fb7b-4bb6-be16-b8f7c2e15f94",
@@ -61,21 +45,23 @@
       "difference_from_source": 0.4178,
       "glow_score": 0.1084
     },
-    "NOT_LIT_1": {
-      "sprite": "mushrooms/mushroom_016/not_lit_1/sprite.webp",
-      "pixellab_object_id": "686db8c1-b876-4b07-8767-724caa97dee6",
-      "generated_at": "2026-08-16T19:41:37+00:00",
+    "NOT_LIT_3": {
+      "sprite": "mushrooms/mushroom_016/not_lit_3/sprite.webp",
+      "pixellab_object_id": "21643a1c-7bbd-464b-b749-46566479c4b8",
+      "generated_at": "2026-08-16T19:42:54+00:00",
       "glow_concept": null,
-      "difference_from_source": 0.8959,
-      "glow_score": 0.0
+      "difference_from_source": 0.5801,
+      "glow_score": 0.0469,
+      "relit_from": "LIT_2"
     },
-    "NOT_LIT_2": {
-      "sprite": "mushrooms/mushroom_016/not_lit_2/sprite.webp",
-      "pixellab_object_id": "0ef89462-a32a-4a87-9505-c5fb9eb2e9c6",
-      "generated_at": "2026-08-16T19:42:06+00:00",
+    "NOT_LIT_4": {
+      "sprite": "mushrooms/mushroom_016/not_lit_4/sprite.webp",
+      "pixellab_object_id": "207e2530-adfc-4162-9fbb-0bd11f552529",
+      "generated_at": "2026-08-16T19:40:02+00:00",
       "glow_concept": null,
-      "difference_from_source": 0.8377,
-      "glow_score": 0.0
+      "difference_from_source": 0.7709,
+      "glow_score": 0.0489,
+      "relit_from": "LIT_3"
     }
   }
 }

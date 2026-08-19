@@ -33,50 +33,38 @@
   "renamed_why": "crash-window re-roll squatted a judged id; fresh id so old verdicts point at nothing and this enters the review queue as the new piece it is",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
       "pixellab_object_id": "1bfa5030-0098-41f9-8f63-235ff36a39a9",
-      "generated_at": "2026-08-13T23:11:44+00:00"
+      "generated_at": "2026-08-13T23:11:44+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "cattail_clumps/cattail_clump_900/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_4/sprite.webp",
       "pixellab_object_id": "3467a606-a27b-4718-8138-fa4491c55a0e",
       "generated_at": "2026-08-16T08:56:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4887,
-      "glow_score": 0.0017
+      "glow_score": 0.0017,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "cattail_clumps/cattail_clump_900/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_5/sprite.webp",
       "pixellab_object_id": "a6ed023f-00bc-4683-858f-bfb0807a17a6",
       "generated_at": "2026-08-16T08:55:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2219,
-      "glow_score": 0.0074
+      "glow_score": 0.0074,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "cattail_clumps/cattail_clump_900/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "cattail_clumps/cattail_clump_900/not_lit_6/sprite.webp",
       "pixellab_object_id": "bd4cf00d-7b36-4ed3-b8e1-c831613dac4e",
       "generated_at": "2026-08-16T08:55:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7849,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_1": {
-      "sprite": "cattail_clumps/cattail_clump_900/not_lit_1/sprite.webp",
-      "pixellab_object_id": "b1cc9a17-42ab-4873-bfdf-e18090c7a750",
-      "generated_at": "2026-08-16T08:56:00+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7298,
-      "glow_score": 0.005
-    },
-    "NOT_LIT_2": {
-      "sprite": "cattail_clumps/cattail_clump_900/not_lit_2/sprite.webp",
-      "pixellab_object_id": "e7127796-99da-4232-84bc-75ca8c9216f8",
-      "generated_at": "2026-08-16T08:56:11+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.581,
-      "glow_score": 0.0024
+      "glow_score": 0.0,
+      "relit_from": "LIT_4"
     }
   }
 }

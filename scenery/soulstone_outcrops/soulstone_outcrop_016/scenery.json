@@ -60,21 +60,14 @@
       "difference_from_source": 0.6485,
       "glow_score": 0.0203
     },
-    "NOT_LIT_1": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_016/not_lit_1/sprite.webp",
-      "pixellab_object_id": "fd19c21e-4db6-46ad-a42c-bcf0768d41b8",
-      "generated_at": "2026-08-16T21:06:18+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8995,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_016/not_lit_2/sprite.webp",
+    "LIT_5": {
+      "sprite": "soulstone_outcrops/soulstone_outcrop_016/lit_5/sprite.webp",
       "pixellab_object_id": "38046c44-9970-4d90-8ff2-06800eb6c3ee",
       "generated_at": "2026-08-16T21:06:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7531,
-      "glow_score": 0.0291
+      "glow_score": 0.0291,
+      "relit_from": "NOT_LIT_2"
     }
   }
 }

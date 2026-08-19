@@ -32,22 +32,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "toadstool_rings/toadstool_ring_013/lit_1/sprite.webp",
-      "pixellab_object_id": "7895753d-7c13-4450-8a10-5b77fa527440",
-      "generated_at": "2026-08-17T11:06:16+00:00",
-      "glow_concept": "every cap lit from inside like paper lanterns",
-      "difference_from_source": 0.8641,
-      "glow_score": 0.1671
-    },
-    "LIT_2": {
-      "sprite": "toadstool_rings/toadstool_ring_013/lit_2/sprite.webp",
-      "pixellab_object_id": "8c6a1235-7f57-481d-a487-deb82ecfadc7",
-      "generated_at": "2026-08-17T11:09:01+00:00",
-      "glow_concept": "glowing mycelium threads linking the toadstools underground",
-      "difference_from_source": 0.7709,
-      "glow_score": 0.2116
-    },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_013/sprite.webp",
       "pixellab_object_id": "5afad5a6-3456-47c5-8a4b-d3e3f2d9e9de",

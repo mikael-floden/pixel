@@ -31,50 +31,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "grass_tufts/grass_tuft_010/sprite.webp",
       "pixellab_object_id": "75bc818a-4a4e-44e9-9c57-a66c29638c29",
-      "generated_at": "2026-08-13T23:38:23+00:00"
+      "generated_at": "2026-08-13T23:38:23+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "grass_tufts/grass_tuft_010/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "grass_tufts/grass_tuft_010/not_lit_4/sprite.webp",
       "pixellab_object_id": "183ca37f-542a-4370-a8aa-67a328903533",
       "generated_at": "2026-08-16T14:41:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.785,
-      "glow_score": 0.0613
+      "glow_score": 0.0613,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "grass_tufts/grass_tuft_010/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "grass_tufts/grass_tuft_010/not_lit_5/sprite.webp",
       "pixellab_object_id": "9fd3208b-6cb3-4991-a951-68ac887b8864",
       "generated_at": "2026-08-16T14:41:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2473,
-      "glow_score": 0.0047
+      "glow_score": 0.0047,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "grass_tufts/grass_tuft_010/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "grass_tufts/grass_tuft_010/not_lit_6/sprite.webp",
       "pixellab_object_id": "84e349fb-47f7-4fe9-bf71-a23fe1982b68",
       "generated_at": "2026-08-16T14:41:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2556,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_1": {
-      "sprite": "grass_tufts/grass_tuft_010/not_lit_1/sprite.webp",
-      "pixellab_object_id": "836ff268-0b3f-4baa-8c62-c99e761cc92b",
-      "generated_at": "2026-08-16T14:43:01+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9939,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "grass_tufts/grass_tuft_010/not_lit_2/sprite.webp",
-      "pixellab_object_id": "57ab103f-4e3f-4623-97e5-60130e3539f5",
-      "generated_at": "2026-08-16T14:43:13+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5914,
-      "glow_score": 0.0083
+      "glow_score": 0.0,
+      "relit_from": "LIT_4"
     }
   }
 }

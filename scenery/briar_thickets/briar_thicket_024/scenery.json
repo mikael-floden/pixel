@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "briar_thickets/briar_thicket_024/sprite.webp",
       "pixellab_object_id": "5d0dd9ef-0141-4bed-8e70-cbf1fd1707c6",
-      "generated_at": "2026-08-14T01:54:59+00:00"
+      "generated_at": "2026-08-14T01:54:59+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "briar_thickets/briar_thicket_024/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "briar_thickets/briar_thicket_024/not_lit_4/sprite.webp",
       "pixellab_object_id": "961d0d44-4d97-4b43-bebc-ba23489248d6",
       "generated_at": "2026-08-15T21:00:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8861,
-      "glow_score": 0.011
+      "glow_score": 0.011,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "briar_thickets/briar_thicket_024/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "briar_thickets/briar_thicket_024/not_lit_5/sprite.webp",
       "pixellab_object_id": "05814dd3-ee89-456d-99ea-9b3c92e780e6",
       "generated_at": "2026-08-15T21:00:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4846,
-      "glow_score": 0.0566
+      "glow_score": 0.0566,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "briar_thickets/briar_thicket_024/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "briar_thickets/briar_thicket_024/not_lit_6/sprite.webp",
       "pixellab_object_id": "85978802-636c-4082-ac33-8c911c80d347",
       "generated_at": "2026-08-15T21:00:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2632,
-      "glow_score": 0.0208
-    },
-    "NOT_LIT_1": {
-      "sprite": "briar_thickets/briar_thicket_024/not_lit_1/sprite.webp",
-      "pixellab_object_id": "f0442836-405f-428a-80cc-930cbe83c567",
-      "generated_at": "2026-08-15T21:00:37+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.4236,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "briar_thickets/briar_thicket_024/not_lit_2/sprite.webp",
-      "pixellab_object_id": "36c1e447-f8e7-4c65-b9ff-96030609ed6f",
-      "generated_at": "2026-08-15T21:02:17+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.679,
-      "glow_score": 0.0
+      "glow_score": 0.0208,
+      "relit_from": "LIT_4"
     }
   }
 }

@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "toadstool_rings/toadstool_ring_018/sprite.webp",
       "pixellab_object_id": "2e5af1bc-dba5-4a4b-9037-46cd881a9f28",
-      "generated_at": "2026-08-14T01:42:10+00:00"
+      "generated_at": "2026-08-14T01:42:10+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "toadstool_rings/toadstool_ring_018/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_4/sprite.webp",
       "pixellab_object_id": "048fe2bc-7ebb-4731-b150-76914d0f37a3",
       "generated_at": "2026-08-17T11:10:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7232,
-      "glow_score": 0.1751
+      "glow_score": 0.1751,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "toadstool_rings/toadstool_ring_018/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_5/sprite.webp",
       "pixellab_object_id": "0aa45c4d-e26c-45dc-880d-0e52895c8478",
       "generated_at": "2026-08-17T11:12:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.573,
-      "glow_score": 0.1967
+      "glow_score": 0.1967,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "toadstool_rings/toadstool_ring_018/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_6/sprite.webp",
       "pixellab_object_id": "7a9232c8-cf66-437b-ba9f-0ae579ca03d7",
       "generated_at": "2026-08-17T11:12:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3819,
-      "glow_score": 0.201
-    },
-    "NOT_LIT_1": {
-      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_1/sprite.webp",
-      "pixellab_object_id": "1e72e56d-f10e-4fb1-86db-d90fe744a14d",
-      "generated_at": "2026-08-17T11:15:30+00:00",
-      "glow_concept": null,
-      "difference_from_source": 1.0,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "toadstool_rings/toadstool_ring_018/not_lit_2/sprite.webp",
-      "pixellab_object_id": "e9191767-a97d-4b26-b8b6-54e44d98bca3",
-      "generated_at": "2026-08-17T11:12:43+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8894,
-      "glow_score": 0.0
+      "glow_score": 0.201,
+      "relit_from": "LIT_4"
     }
   }
 }

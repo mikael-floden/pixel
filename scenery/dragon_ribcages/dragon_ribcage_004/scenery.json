@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "dragon_ribcages/dragon_ribcage_004/sprite.webp",
       "pixellab_object_id": "bb12c523-484a-41bf-a745-152d8dfd96de",
-      "generated_at": "2026-08-14T01:27:30+00:00"
+      "generated_at": "2026-08-14T01:27:30+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "dragon_ribcages/dragon_ribcage_004/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "e714fc16-46c6-46ff-a5de-955f00c26be0",
       "generated_at": "2026-08-16T11:54:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5429,
-      "glow_score": 0.1482
+      "glow_score": 0.1482,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "dragon_ribcages/dragon_ribcage_004/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_5/sprite.webp",
       "pixellab_object_id": "316bfb5d-e3d7-4ce1-8ffa-50243630cf12",
       "generated_at": "2026-08-16T11:57:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7433,
-      "glow_score": 0.144
+      "glow_score": 0.144,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "dragon_ribcages/dragon_ribcage_004/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_6/sprite.webp",
       "pixellab_object_id": "b7b3bba8-ed0f-44d6-99f0-1d728c71af44",
       "generated_at": "2026-08-16T11:58:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4914,
-      "glow_score": 0.1642
-    },
-    "NOT_LIT_1": {
-      "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "562e7b5a-f03a-4bca-b806-a40de700a778",
-      "generated_at": "2026-08-16T11:55:43+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8915,
-      "glow_score": 0.0003
-    },
-    "NOT_LIT_2": {
-      "sprite": "dragon_ribcages/dragon_ribcage_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "6d523a2d-c50a-4b6f-9bc2-1a6c4d062e71",
-      "generated_at": "2026-08-16T11:56:41+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8142,
-      "glow_score": 0.0
+      "glow_score": 0.1642,
+      "relit_from": "LIT_4"
     }
   }
 }

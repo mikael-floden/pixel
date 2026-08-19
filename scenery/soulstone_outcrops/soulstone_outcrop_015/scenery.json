@@ -31,22 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_015/lit_1/sprite.webp",
-      "pixellab_object_id": "59d2efdc-15f7-45e6-bd29-90c6ee039daf",
-      "generated_at": "2026-08-16T21:05:40+00:00",
-      "glow_concept": "tips glowing like small candle flames",
-      "difference_from_source": 0.6241,
-      "glow_score": 0.1937
-    },
-    "LIT_2": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_015/lit_2/sprite.webp",
-      "pixellab_object_id": "7cebf473-2ee2-4a93-a890-99734460adfd",
-      "generated_at": "2026-08-16T21:06:08+00:00",
-      "glow_concept": "a single word glowing in the surface",
-      "difference_from_source": 0.8859,
-      "glow_score": 0.2308
-    },
     "NOT_LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/sprite.webp",
       "pixellab_object_id": "ad0a1960-bd29-4714-902c-5f53cce53a81",

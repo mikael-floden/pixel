@@ -31,22 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_019/lit_1/sprite.webp",
-      "pixellab_object_id": "dca8491e-cc31-41cc-8baa-2eb7d1de3cab",
-      "generated_at": "2026-08-16T21:08:40+00:00",
-      "glow_concept": "concentric glowing rings like tree rings",
-      "difference_from_source": 0.9117,
-      "glow_score": 0.1687
-    },
-    "LIT_2": {
-      "sprite": "soulstone_outcrops/soulstone_outcrop_019/lit_2/sprite.webp",
-      "pixellab_object_id": "6ee13e59-77a0-4121-aaa4-4be933c060fa",
-      "generated_at": "2026-08-16T21:09:10+00:00",
-      "glow_concept": "tips glowing like small candle flames",
-      "difference_from_source": 0.4219,
-      "glow_score": 0.087
-    },
     "NOT_LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_019/sprite.webp",
       "pixellab_object_id": "0930f8e2-999d-41ff-87ef-b6373d46999c",

@@ -31,14 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "crystals/crystal_011/lit_1/sprite.webp",
-      "pixellab_object_id": "b458fa34-3901-456c-a09d-f7cccb955ff0",
-      "generated_at": "2026-08-16T11:16:16+00:00",
-      "glow_concept": "the whole cluster radiating its own gem color",
-      "difference_from_source": 0.8213,
-      "glow_score": 0.3558
-    },
     "LIT_2": {
       "sprite": "crystals/crystal_011/lit_2/sprite.webp",
       "pixellab_object_id": "e8ae2c73-799a-40ba-ba2e-316018e0317f",
@@ -51,14 +43,6 @@
       "sprite": "crystals/crystal_011/sprite.webp",
       "pixellab_object_id": "843a7822-b976-4c6e-8957-5b26d61c5a4d",
       "generated_at": "2026-08-13T23:56:34+00:00"
-    },
-    "NOT_LIT_2": {
-      "sprite": "crystals/crystal_011/not_lit_2/sprite.webp",
-      "pixellab_object_id": "26f8725e-1f81-4899-b42b-6c2e88101bff",
-      "generated_at": "2026-08-16T11:15:44+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.1244,
-      "glow_score": 0.0
     },
     "NOT_LIT_3": {
       "sprite": "crystals/crystal_011/not_lit_3/sprite.webp",

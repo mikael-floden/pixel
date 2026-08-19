@@ -32,22 +32,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "ferns/fern_011/lit_1/sprite.webp",
-      "pixellab_object_id": "de9b04fb-9274-4b4c-9c8e-bbda2003cb21",
-      "generated_at": "2026-08-16T12:12:06+00:00",
-      "glow_concept": "cool fog of light pooling under the fronds",
-      "difference_from_source": 0.458,
-      "glow_score": 0.1051
-    },
-    "LIT_2": {
-      "sprite": "ferns/fern_011/lit_2/sprite.webp",
-      "pixellab_object_id": "ebcdf1cd-9b60-4376-994d-f245195ac29d",
-      "generated_at": "2026-08-16T12:12:56+00:00",
-      "glow_concept": "one bright glowing frond among dark ones",
-      "difference_from_source": 0.8567,
-      "glow_score": 0.0703
-    },
     "NOT_LIT_1": {
       "sprite": "ferns/fern_011/sprite.webp",
       "pixellab_object_id": "c380e269-5f2c-46df-91df-9116a4eee8b2",

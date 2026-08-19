@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
       "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
-      "generated_at": "2026-08-14T01:11:58+00:00"
+      "generated_at": "2026-08-14T01:11:58+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "frozen_springs/frozen_spring_002/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_4/sprite.webp",
       "pixellab_object_id": "1495200c-bd79-4ae8-b879-bcf6cfd5f414",
       "generated_at": "2026-08-16T14:23:03+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9592,
-      "glow_score": 0.1937
+      "glow_score": 0.1937,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "frozen_springs/frozen_spring_002/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_5/sprite.webp",
       "pixellab_object_id": "f93a5804-171c-4f14-a372-7a27dba02080",
       "generated_at": "2026-08-16T14:22:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7729,
-      "glow_score": 0.17
+      "glow_score": 0.17,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "frozen_springs/frozen_spring_002/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "frozen_springs/frozen_spring_002/not_lit_6/sprite.webp",
       "pixellab_object_id": "f891eeb2-1f19-4417-a2c3-d706f9ed3306",
       "generated_at": "2026-08-16T14:24:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9769,
-      "glow_score": 0.6597
-    },
-    "NOT_LIT_1": {
-      "sprite": "frozen_springs/frozen_spring_002/not_lit_1/sprite.webp",
-      "pixellab_object_id": "6a58e9ea-8d6e-4027-b366-bc2e6d601c55",
-      "generated_at": "2026-08-16T14:24:30+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5885,
-      "glow_score": 0.2608
-    },
-    "NOT_LIT_2": {
-      "sprite": "frozen_springs/frozen_spring_002/not_lit_2/sprite.webp",
-      "pixellab_object_id": "05687756-676f-45d1-b3e0-4e67b9b66546",
-      "generated_at": "2026-08-16T14:23:31+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9419,
-      "glow_score": 0.0
+      "glow_score": 0.6597,
+      "relit_from": "LIT_4"
     }
   }
 }
