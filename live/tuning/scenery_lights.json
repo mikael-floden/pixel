@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T20:55:34.074Z",
+  "updated_at": "2026-08-19T20:56:21.546Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/windows/window_116#lights_on": {
@@ -77,6 +77,16 @@
       "lit": false,
       "was": "lit_3",
       "updated_at": "2026-08-19T20:55:17.171Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_008#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T20:55:50.377Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_008#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-19T20:55:56.571Z"
     }
   }
 }
