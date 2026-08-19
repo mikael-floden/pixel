@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T15:39:07.176Z",
+  "updated_at": "2026-08-19T15:41:31.133Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/briar_thickets/briar_thicket_024#lit_1": {
@@ -137,6 +137,36 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-19T15:38:52.996Z"
+    },
+    "scenery/ferns/fern_012#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T15:40:51.400Z"
+    },
+    "scenery/ferns/fern_012#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T15:40:55.271Z"
+    },
+    "scenery/ferns/fern_012#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-19T15:40:57.438Z"
+    },
+    "scenery/ferns/fern_012#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-19T15:40:59.683Z"
+    },
+    "scenery/mushrooms/mushroom_009#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T15:41:21.043Z"
+    },
+    "scenery/mushrooms/mushroom_009#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T15:41:25.357Z"
     }
   }
 }
