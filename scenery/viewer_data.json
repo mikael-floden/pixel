@@ -68239,7 +68239,30 @@
         "south-west": "windows/window_090/rotations/south-west.webp",
         "south": "windows/window_090/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_090/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_090/rotations/south-east.webp",
+            "south-west": "windows/window_090/rotations/south-west.webp",
+            "south": "windows/window_090/sprite.webp"
+          },
+          "pixellab_object_id": "f7c58ee0-c04b-497c-902f-7367c5aa7fdb",
+          "art_hash": "8328bf5ae0b784fc"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_090/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_090/lights_on/rotations/south-east.webp",
+            "south": "windows/window_090/lights_on/sprite.webp",
+            "south-west": "windows/window_090/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "021e6465-f7d1-4eca-b69e-8019638c43e0",
+          "generated_at": "2026-08-19T16:32:38+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "cb6f0d94bc41ada3"
+        }
+      },
       "animations": []
     },
     {
@@ -68340,7 +68363,30 @@
         "south-west": "windows/window_092/rotations/south-west.webp",
         "south": "windows/window_092/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_092/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_092/rotations/south-east.webp",
+            "south-west": "windows/window_092/rotations/south-west.webp",
+            "south": "windows/window_092/sprite.webp"
+          },
+          "pixellab_object_id": "30177916-4231-4d74-bdf3-33a6cf783ffc",
+          "art_hash": "b76c426fbbb77cc5"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_092/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_092/lights_on/rotations/south-east.webp",
+            "south": "windows/window_092/lights_on/sprite.webp",
+            "south-west": "windows/window_092/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "c48371f4-87c4-46fc-a436-738384ad67f3",
+          "generated_at": "2026-08-19T16:30:58+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "5a86053ef18f247e"
+        }
+      },
       "animations": []
     },
     {
@@ -68379,7 +68425,30 @@
         "south-west": "windows/window_093/rotations/south-west.webp",
         "south": "windows/window_093/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_093/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_093/rotations/south-east.webp",
+            "south-west": "windows/window_093/rotations/south-west.webp",
+            "south": "windows/window_093/sprite.webp"
+          },
+          "pixellab_object_id": "17377be7-62a8-4114-bd5a-dfb930d52f29",
+          "art_hash": "01ef15e90bce90bf"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_093/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_093/lights_on/rotations/south-east.webp",
+            "south": "windows/window_093/lights_on/sprite.webp",
+            "south-west": "windows/window_093/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "c2e099c6-1cc5-4208-a78c-797834e27d88",
+          "generated_at": "2026-08-19T16:46:02+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "324b0961c9192ede"
+        }
+      },
       "animations": []
     },
     {
@@ -68418,7 +68487,30 @@
         "south-west": "windows/window_094/rotations/south-west.webp",
         "south": "windows/window_094/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_094/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_094/rotations/south-east.webp",
+            "south-west": "windows/window_094/rotations/south-west.webp",
+            "south": "windows/window_094/sprite.webp"
+          },
+          "pixellab_object_id": "b33a43c5-dd87-48de-a0fb-33d19591ba02",
+          "art_hash": "92c28234ff3ecf3e"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_094/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_094/lights_on/rotations/south-east.webp",
+            "south": "windows/window_094/lights_on/sprite.webp",
+            "south-west": "windows/window_094/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "ea421bbf-d8b1-4205-87b6-6e476d06ce18",
+          "generated_at": "2026-08-19T16:29:28+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "0dd66abacf0c30b6"
+        }
+      },
       "animations": []
     },
     {
@@ -68457,7 +68549,30 @@
         "south-west": "windows/window_095/rotations/south-west.webp",
         "south": "windows/window_095/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_095/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_095/rotations/south-east.webp",
+            "south-west": "windows/window_095/rotations/south-west.webp",
+            "south": "windows/window_095/sprite.webp"
+          },
+          "pixellab_object_id": "95726b51-96b8-4ec4-8b9f-51040755f07e",
+          "art_hash": "893fc3108f1d598d"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_095/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_095/lights_on/rotations/south-east.webp",
+            "south": "windows/window_095/lights_on/sprite.webp",
+            "south-west": "windows/window_095/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "b8c61197-9d66-4095-b5ba-0e09ba1e8793",
+          "generated_at": "2026-08-19T16:29:05+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "56d8a13879288569"
+        }
+      },
       "animations": []
     },
     {
@@ -68496,7 +68611,30 @@
         "south-west": "windows/window_096/rotations/south-west.webp",
         "south": "windows/window_096/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_096/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_096/rotations/south-east.webp",
+            "south-west": "windows/window_096/rotations/south-west.webp",
+            "south": "windows/window_096/sprite.webp"
+          },
+          "pixellab_object_id": "2185cb0b-53d0-445f-bbfc-6195e0aa8b41",
+          "art_hash": "c4e5abdf152b7ae7"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_096/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_096/lights_on/rotations/south-east.webp",
+            "south": "windows/window_096/lights_on/sprite.webp",
+            "south-west": "windows/window_096/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "bb9f260b-df8f-4b73-ae0e-45fb792328d4",
+          "generated_at": "2026-08-19T16:31:22+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "2d87249d3f57742c"
+        }
+      },
       "animations": []
     },
     {
@@ -68535,7 +68673,30 @@
         "south-west": "windows/window_097/rotations/south-west.webp",
         "south": "windows/window_097/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_097/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_097/rotations/south-east.webp",
+            "south-west": "windows/window_097/rotations/south-west.webp",
+            "south": "windows/window_097/sprite.webp"
+          },
+          "pixellab_object_id": "9d14bf00-f3be-4bb6-951b-b6bc01076978",
+          "art_hash": "762d1891336769d9"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_097/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_097/lights_on/rotations/south-east.webp",
+            "south": "windows/window_097/lights_on/sprite.webp",
+            "south-west": "windows/window_097/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "dd028905-85af-4729-a44f-7f162bddf4e3",
+          "generated_at": "2026-08-19T16:46:15+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "8f5b7b5eb5bd155b"
+        }
+      },
       "animations": []
     },
     {
@@ -68574,7 +68735,30 @@
         "south-west": "windows/window_098/rotations/south-west.webp",
         "south": "windows/window_098/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_098/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_098/rotations/south-east.webp",
+            "south-west": "windows/window_098/rotations/south-west.webp",
+            "south": "windows/window_098/sprite.webp"
+          },
+          "pixellab_object_id": "2ffeadde-5e82-4585-93e9-96db1571fb51",
+          "art_hash": "4c6dd9fbcc749b51"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_098/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_098/lights_on/rotations/south-east.webp",
+            "south": "windows/window_098/lights_on/sprite.webp",
+            "south-west": "windows/window_098/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "5c938b7f-437d-4241-b200-851231c2a712",
+          "generated_at": "2026-08-19T16:46:28+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "eb45e8d7d32e3495"
+        }
+      },
       "animations": []
     },
     {
@@ -68613,7 +68797,30 @@
         "south-west": "windows/window_099/rotations/south-west.webp",
         "south": "windows/window_099/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_099/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_099/rotations/south-east.webp",
+            "south-west": "windows/window_099/rotations/south-west.webp",
+            "south": "windows/window_099/sprite.webp"
+          },
+          "pixellab_object_id": "6d980544-ed24-413e-8395-872de70e1e55",
+          "art_hash": "6e128d5b92097901"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_099/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_099/lights_on/rotations/south-east.webp",
+            "south": "windows/window_099/lights_on/sprite.webp",
+            "south-west": "windows/window_099/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "55672060-8ae8-40d2-84a7-4781caa25df5",
+          "generated_at": "2026-08-19T16:33:35+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "26d8e502eb649742"
+        }
+      },
       "animations": []
     },
     {
@@ -68652,7 +68859,30 @@
         "south-west": "windows/window_102/rotations/south-west.webp",
         "south": "windows/window_102/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_102/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_102/rotations/south-east.webp",
+            "south-west": "windows/window_102/rotations/south-west.webp",
+            "south": "windows/window_102/sprite.webp"
+          },
+          "pixellab_object_id": "756d8591-c4b8-46a5-b8c2-adfbf8be4e19",
+          "art_hash": "cdecb45031d847d4"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_102/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_102/lights_on/rotations/south-east.webp",
+            "south": "windows/window_102/lights_on/sprite.webp",
+            "south-west": "windows/window_102/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "c9d355e8-3310-43eb-b770-0d70119e95e8",
+          "generated_at": "2026-08-19T16:33:48+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "d142a5b6c59733f6"
+        }
+      },
       "animations": []
     },
     {
@@ -68691,7 +68921,30 @@
         "south-west": "windows/window_105/rotations/south-west.webp",
         "south": "windows/window_105/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_105/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_105/rotations/south-east.webp",
+            "south-west": "windows/window_105/rotations/south-west.webp",
+            "south": "windows/window_105/sprite.webp"
+          },
+          "pixellab_object_id": "cda153ef-22c6-4b1e-ab53-995ee7560ce1",
+          "art_hash": "a2d501d85f54c5fd"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_105/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_105/lights_on/rotations/south-east.webp",
+            "south": "windows/window_105/lights_on/sprite.webp",
+            "south-west": "windows/window_105/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "0a2f2d41-06ef-4a8d-8fb1-8427a60f12bc",
+          "generated_at": "2026-08-19T16:33:50+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "2c569a84be32603e"
+        }
+      },
       "animations": []
     },
     {
@@ -68730,7 +68983,30 @@
         "south-west": "windows/window_107/rotations/south-west.webp",
         "south": "windows/window_107/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_107/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_107/rotations/south-east.webp",
+            "south-west": "windows/window_107/rotations/south-west.webp",
+            "south": "windows/window_107/sprite.webp"
+          },
+          "pixellab_object_id": "ad8f1708-c784-42ec-9369-c132246c5db2",
+          "art_hash": "217d8832f986e9d5"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_107/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_107/lights_on/rotations/south-east.webp",
+            "south": "windows/window_107/lights_on/sprite.webp",
+            "south-west": "windows/window_107/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "ce5cf388-6afa-420b-b796-8341bb632703",
+          "generated_at": "2026-08-19T16:47:04+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "965222b317f1e632"
+        }
+      },
       "animations": []
     },
     {
@@ -68769,7 +69045,30 @@
         "south-west": "windows/window_108/rotations/south-west.webp",
         "south": "windows/window_108/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_108/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_108/rotations/south-east.webp",
+            "south-west": "windows/window_108/rotations/south-west.webp",
+            "south": "windows/window_108/sprite.webp"
+          },
+          "pixellab_object_id": "64e69948-4c73-4164-b1b6-00e7091f42f4",
+          "art_hash": "334b98a95d4e6249"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_108/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_108/lights_on/rotations/south-east.webp",
+            "south": "windows/window_108/lights_on/sprite.webp",
+            "south-west": "windows/window_108/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "afe1f6ee-e59b-41e0-8cdf-1aca66a5d385",
+          "generated_at": "2026-08-19T16:46:30+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "664ac54c6ffb3324"
+        }
+      },
       "animations": []
     },
     {
@@ -68847,7 +69146,30 @@
         "south-west": "windows/window_113/rotations/south-west.webp",
         "south": "windows/window_113/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_113/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_113/rotations/south-east.webp",
+            "south-west": "windows/window_113/rotations/south-west.webp",
+            "south": "windows/window_113/sprite.webp"
+          },
+          "pixellab_object_id": "b887c5c5-4a0c-4a5f-883f-b0d19c0af747",
+          "art_hash": "440a929784ebde8d"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_113/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_113/lights_on/rotations/south-east.webp",
+            "south": "windows/window_113/lights_on/sprite.webp",
+            "south-west": "windows/window_113/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "12399097-adea-42c7-a3bb-35666ab28767",
+          "generated_at": "2026-08-19T16:49:03+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "6814358a7292041c"
+        }
+      },
       "animations": []
     },
     {
@@ -68886,7 +69208,30 @@
         "south-west": "windows/window_116/rotations/south-west.webp",
         "south": "windows/window_116/sprite.webp"
       },
-      "states": {},
+      "states": {
+        "LIGHTS_OFF": {
+          "sprite": "windows/window_116/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_116/rotations/south-east.webp",
+            "south-west": "windows/window_116/rotations/south-west.webp",
+            "south": "windows/window_116/sprite.webp"
+          },
+          "pixellab_object_id": "41cf3d74-8e1b-4835-bb3d-ea63d2bb38a7",
+          "art_hash": "b2e031813e385170"
+        },
+        "LIGHTS_ON": {
+          "sprite": "windows/window_116/lights_on/sprite.webp",
+          "rotations": {
+            "south-east": "windows/window_116/lights_on/rotations/south-east.webp",
+            "south": "windows/window_116/lights_on/sprite.webp",
+            "south-west": "windows/window_116/lights_on/rotations/south-west.webp"
+          },
+          "pixellab_object_id": "ea07e762-afe9-4fed-b609-b75e90b56cf5",
+          "generated_at": "2026-08-19T16:48:41+00:00",
+          "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME.",
+          "art_hash": "1c8b7456a1cc1811"
+        }
+      },
       "animations": []
     },
     {
