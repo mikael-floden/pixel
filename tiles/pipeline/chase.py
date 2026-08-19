@@ -374,7 +374,7 @@ def cell_parts(cell, types):
 
 
 def passing(paths, min_wall, min_clarity=0.0, same=False,
-            top_hex=None, side_hex=None):
+            top_hex=None, side_hex=None, side_wall_hex=None):
     """EVERY tile in these paths that clears the calibrated gates, best wall first.
 
     `same` inverts the target, because the maintainer's requirement for the 14
@@ -417,6 +417,17 @@ def passing(paths, min_wall, min_clarity=0.0, same=False,
         if not same and top_hex and side_hex:
             if flatness.swapped_err(p, top_hex, side_hex) > flatness.MAX_SWAP:
                 continue
+            # ONE BAR. publish.candidates() also drops a tile whose WALL is not the
+            # material the cell asked for, and chase did not — so chase declared cells
+            # full that publish then shipped two candidates for, and the chase never ran
+            # on them. Three cells sat unattempted through a whole sweep that way.
+            # The file already warns about exactly this ("Two components disagreeing
+            # about what 'good' means is how a cell gets declared done while shipping
+            # something the generator was still being paid to replace") and it happened
+            # anyway, one tier later.
+            if side_wall_hex and flatness.wall_material_err(p, side_wall_hex) > \
+                    flatness.MAX_WALL_ERR:
+                continue
         # A spill that cannot be told apart from the wall it lands on is not usable:
         # postprocess has nothing to select, so it ships in the wrong palette.
         if flatness.fringe_clarity(p) < min_clarity:
@@ -457,7 +468,9 @@ def cell_passing(cell, min_wall, min_clarity=0.0):
     return passing(sorted(glob.glob(os.path.join(d, "sheet_*", "tile_*.png"))),
                    min_wall, min_clarity, same=(top == side),
                    top_hex=(pal.get(top) or {}).get("top"),
-                   side_hex=(pal.get(side) or {}).get("top"))
+                   side_hex=(pal.get(side) or {}).get("top"),
+                   side_wall_hex=((pal.get(side) or {}).get("wall")
+                                  or (pal.get(side) or {}).get("top")))
 
 
 def cell_status(cell, min_wall, min_clarity=0.0):
