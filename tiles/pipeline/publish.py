@@ -213,7 +213,23 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--top", type=int, default=3, help="candidates published per cell")
+    # NO CAP BY DEFAULT. 3 was a leftover from when the problem was "cells have
+    # nothing", and it quietly became a ceiling on what the maintainer is allowed to
+    # see: "Feels like you are sitting on a lot of gold you prevent me from seeing
+    # becouse you think 3 or 4 is a max on each tile set. I have no max if it's already
+    # generated. I just didn't want to pay for more if we already have enough."
+    #
+    # It never saved anything either — the review folder is 664 bytes per tile, 1.9 MB
+    # for 563 candidates, so showing everything that clears the bar costs a few MB of a
+    # repo that already holds the game's art.
+    #
+    # It also protects their triage. A 1-star mark ("looked at, not a complete failure")
+    # attaches to a tile's key; if that tile later drops out of an arbitrary top-N, the
+    # mark is orphaned and the work is wasted. Publishing everything means a tile they
+    # have judged never silently disappears.
+    ap.add_argument("--top", type=int, default=0,
+                    help="max candidates published per cell; 0 = every tile that clears "
+                         "the bar (the default)")
     ap.add_argument("--clean", action="store_true", help="rebuild the review folder")
     args = ap.parse_args()
 
@@ -262,7 +278,8 @@ def main():
         # and the fourth was silently dropped.
         picks = [c for c in cands if c.get("forced")]
         rest = [c for c in cands if not c.get("forced")]
-        cands = picks + rest[:max(0, args.top - len(picks))]
+        cands = picks + (rest if args.top <= 0
+                         else rest[:max(0, args.top - len(picks))])
         if not cands:
             continue
         cd = os.path.join(REVIEW, cell)
