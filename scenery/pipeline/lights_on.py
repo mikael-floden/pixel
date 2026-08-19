@@ -146,7 +146,16 @@ def finalize(client, rel, man, oid):
         url = rot.get(d) or (client.sprite_url(detail) if d == "south" else None)
         if not url:
             raise PixelLabError(f"{rel}: state {oid} has no {d} rotation")
-        img = factory._normalize(client._download(url).convert("RGBA"), size)
+        # A CDN URL can 404 for a few seconds after a job completes; the
+        # client retries, then gives up and returns None. Letting that None
+        # reach .convert() raises AttributeError, which nothing here catches —
+        # it killed a 26-window run at window_091 and abandoned every job still
+        # in flight. I fixed exactly this in state_variants.py and did not
+        # carry it here, which is why it bit twice.
+        raw = client._download(url)
+        if raw is None:
+            raise PixelLabError(f"{rel}: {d} sprite download came back empty")
+        img = factory._normalize(raw.convert("RGBA"), size)
         if d == "south":
             delta = silhouette_delta(base_south, img)
             if delta > SILHOUETTE_MAX:

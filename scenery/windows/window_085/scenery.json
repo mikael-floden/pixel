@@ -49,5 +49,27 @@
   ],
   "status": "complete",
   "animations": {},
-  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "LIGHTS_OFF": {
+      "sprite": "windows/window_085/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_085/rotations/south-east.webp",
+        "south-west": "windows/window_085/rotations/south-west.webp",
+        "south": "windows/window_085/sprite.webp"
+      },
+      "pixellab_object_id": "d9de7d94-0643-4bbe-aa41-707115580794"
+    },
+    "LIGHTS_ON": {
+      "sprite": "windows/window_085/lights_on/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_085/lights_on/rotations/south-east.webp",
+        "south": "windows/window_085/lights_on/sprite.webp",
+        "south-west": "windows/window_085/lights_on/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "041cb616-a610-4985-9c8e-fef716ee4ab9",
+      "generated_at": "2026-08-19T16:00:18+00:00",
+      "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME."
+    }
+  }
 }
