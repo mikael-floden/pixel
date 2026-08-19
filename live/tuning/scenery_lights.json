@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T17:26:38.134Z",
+  "updated_at": "2026-08-19T17:28:09.589Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/ferns/fern_006#lit_4": {
@@ -17,6 +17,46 @@
       "lit": false,
       "was": "lit_1",
       "updated_at": "2026-08-19T17:26:08.879Z"
+    },
+    "scenery/crystals/crystal_006#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-19T17:27:07.421Z"
+    },
+    "scenery/crystals/crystal_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-19T17:27:10.260Z"
+    },
+    "scenery/crystals/crystal_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T17:27:12.465Z"
+    },
+    "scenery/crystals/crystal_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T17:27:15.962Z"
+    },
+    "scenery/mushrooms/mushroom_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T17:27:42.949Z"
+    },
+    "scenery/mushrooms/mushroom_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T17:27:45.225Z"
+    },
+    "scenery/mushrooms/mushroom_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-19T17:27:47.308Z"
+    },
+    "scenery/mushrooms/mushroom_006#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-19T17:27:50.375Z"
     }
   }
 }
