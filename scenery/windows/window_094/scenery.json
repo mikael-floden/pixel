@@ -59,6 +59,17 @@
         "south": "windows/window_094/sprite.webp"
       },
       "pixellab_object_id": "b33a43c5-dd87-48de-a0fb-33d19591ba02"
+    },
+    "LIGHTS_ON": {
+      "sprite": "windows/window_094/lights_on/sprite.webp",
+      "rotations": {
+        "south-east": "windows/window_094/lights_on/rotations/south-east.webp",
+        "south": "windows/window_094/lights_on/sprite.webp",
+        "south-west": "windows/window_094/lights_on/rotations/south-west.webp"
+      },
+      "pixellab_object_id": "25ec10b2-47f9-46e7-8514-a0772a0ded53",
+      "generated_at": "2026-08-19T19:08:37+00:00",
+      "edit_description": "Change the window to represent lights being on inside the house. DON'T CHANGE ANYTHING ELSE. THE FRAME SHOULD BE 100% IDENTICAL. DON'T CHANGE A SINGLE PIXEL OTHER THEN TURNING THE LIGHTS ON SO THE WINDOW REPRESENTS SOMEONE IS HOME."
     }
   }
 }
