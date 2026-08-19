@@ -1435,6 +1435,51 @@ the background actually steps through frames, the far end of the list is idle wh
 opens its creature, and reduced motion stops the animation without losing the
 art.
 
+## A background-image cannot report a 404 — the showcase's silent empty card
+
+**Maintainer 2026-08-19:** *"when I restart the game and click on wiki … the
+monsters in game will be displayed on the Creatures overview page and the
+monsters not in the game will show an empty card. I then click on the first
+empty card and back again and now all monsters display correctly."*
+
+Two facts had to line up. **The image ships 24 of the 57 creatures**, so
+`monsters` is a SHIPPED domain with unshipped members — `isUnshipped()` answers
+per DOMAIN and cannot see them, so every card asked the image for its art and 33
+of them 404d. And **the showcase draws with `background-image`**, which it has to
+(the animation is one strip swept by `steps()`) — and a background that 404s
+fires no event whatsoever. Every other image in the wiki is an `<img>` covered by
+the capture-phase `error` listener that asks the repo before believing anything
+is missing; the showcase quietly opted out of all of it. No art, no note, no
+retry: an empty box.
+
+His click was that missing recovery happening BY ACCIDENT. The creature's own
+page draws `<img>`s, one 404s, `onArtMissing` asks the repo, succeeds, and marks
+the whole domain repo-only — so on the way back every card resolved correctly.
+The information was always one 404 away; nothing on the overview was asking.
+
+The fix gives the background art a real failure path: the paint goes through a
+detached `Image()` that CAN report failure, and a miss follows the same three
+steps an `<img>` does — ask the repo, hold if the repo base is still coming
+(`showcaseMisses`, drained by `retryRepoMisses`), and only then judge, using the
+same "gone means gone" rule keyed on the entity's own `preview`. One card's miss
+also re-points every other card of that domain (`repointShowcase`), so the grid
+heals in one round trip rather than 33.
+
+Gate: **`check-unshipped.mjs`**, which already reproduces production with two
+origins, now also simulates a MIXED domain — the image serving 24 creatures and
+404ing the rest while the repo serves all — and asserts on the COLD LOAD, with
+no clicking, that every card on screen actually draws. It re-fetches each
+background url and asks it to DECODE, because a 404 leaves the CSS property set
+and proves nothing when read back. Its sharpest check is `mute`: an armed card
+showing neither art nor a note, which is the exact state he photographed. Then
+it kills the repo too and asserts the page SAYS "not loading" rather than going
+quiet — and never claims the agent removed a creature over a 503.
+
+**A rule worth keeping:** any new way of putting art on this page — canvas,
+background, `<picture>`, a worker — is outside the `<img>` recovery until it is
+explicitly wired in. The wiki reads two origins by design; art that cannot
+report a miss cannot participate in that.
+
 ## Creatures overview: sortable, and "will it attack me" at a glance
 
 - **Sort by name / level / aggressive first** (maintainer 2026-08-06). Its own

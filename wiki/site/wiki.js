@@ -205,6 +205,21 @@ function retryRepoMisses() {
     const twin = repoTwin(src);
     if (twin && twin !== src) img.src = twin;
   }
+  // The showcase's cards, held for exactly the same reason as the images below.
+  for (const el of [...showcaseMisses]) {
+    showcaseMisses.delete(el);
+    if (!el.isConnected) continue;
+    const src = el.dataset.strip ?? "";
+    const twin = repoTwin(src);
+    if (!twin || twin === src) continue;
+    // The domain comes from the url that MISSED, while it still points at the
+    // image — reading it back off the repo twin would be reading a CDN path.
+    if (src.startsWith(String(ROOT))) repoDomains.add(src.slice(String(ROOT).length).split("/")[0]);
+    el.dataset.triedRepo = "1";
+    el.dataset.strip = twin;
+    if (el.dataset.preview) el.dataset.preview = repoTwin(el.dataset.preview) ?? el.dataset.preview;
+    paintShowcase(el);
+  }
   for (const img of repoMisses) {
     repoMisses.delete(img);
     if (!img.isConnected) continue;
@@ -1920,6 +1935,9 @@ function showcaseArt(m) {
   art.dataset.zoom = String(z);
   art.dataset.art = `${aw}x${ah}`;
   art.dataset.drawn = `${aw * z}x${ah * z}`;
+  // The entity's own sprite, for the deleted-piece rule: a missing STRIP says
+  // this creature's art is not here, and that rule is keyed on `preview`.
+  art.dataset.preview = assetUrl(m.preview);
   stage.append(art);
   // LAZY BY OBSERVATION. 57 strips is 296 KB, but a phone should still not
   // fetch the bottom of the list to show the top of it — and an animation
@@ -1927,14 +1945,104 @@ function showcaseArt(m) {
   showcaseWatch ??= new IntersectionObserver((entries) => {
     for (const e of entries) {
       const el = e.target;
-      if (e.isIntersecting) {
-        if (!el.style.backgroundImage) el.style.backgroundImage = `url("${el.dataset.strip}")`;
-        el.classList.add("play");
-      } else el.classList.remove("play");
+      if (e.isIntersecting) armShowcase(el);
+      else el.classList.remove("play");
     }
   }, { rootMargin: "300px 0px" });
   showcaseWatch.observe(art);
   return stage;
+}
+/* ---- A BACKGROUND IMAGE CANNOT REPORT A 404, so this one asks first ----
+ *
+ * Maintainer 2026-08-19: "when I restart the game and click on wiki … the
+ * monsters not in the game will show an empty card. I then click on the first
+ * empty card and back again and now all monsters display correctly."
+ *
+ * Every other image in this wiki is an <img>, and every one of them is covered
+ * by the capture-phase `error` listener that asks the repo before believing a
+ * piece is missing (see onArtMissing). The showcase draws its art as a CSS
+ * `background-image` — it has to, the animation is one strip swept by steps()
+ * — and a background that 404s fires NO event at all. So the whole recovery
+ * path was silently bypassed and the card just stayed empty: no art, no note,
+ * nothing to click.
+ *
+ * His "click one and come back" is that missing path happening by accident:
+ * the creature's own page draws <img>s, one of them 404s, THAT handler asks the
+ * repo, succeeds, and marks the domain repo-only — after which every card on
+ * the way back resolves to the repo. The information was always one 404 away;
+ * nothing on the overview was asking.
+ *
+ * So the paint goes through a detached Image() that CAN report failure, and a
+ * miss follows the same three steps an <img> does: ask the repo, hold if the
+ * repo base is still coming, and only then judge. Detached probes dispatch on
+ * themselves and never reach the document, so this cannot re-enter the
+ * capture-phase handler. */
+const showcaseMisses = new Set();
+function armShowcase(el) {
+  el.classList.add("play");
+  if (el.dataset.armed) return;
+  el.dataset.armed = "1";
+  paintShowcase(el);
+}
+function paintShowcase(el) {
+  const url = el.dataset.strip;
+  const probe = new Image();
+  probe.onload = () => {
+    if (!el.isConnected) return;
+    el.style.backgroundImage = `url("${url}")`;
+    el.closest(".showcase")?.classList.remove("art-failed", "art-gone");
+  };
+  probe.onerror = () => showcaseMissing(el, url);
+  probe.src = url;
+}
+async function showcaseMissing(el, url) {
+  const dom = new URL(url, location.href).pathname.replace(/^.*\/assets\//, "").split("/")[0];
+  // 1. ASK THE REPO. The image holds what shipped; a domain still in
+  //    development 404s there by arrangement, and one miss teaches every other
+  //    card in the domain — which is what stops 33 creatures 404ing one by one.
+  const twin = repoTwin(url);
+  if (twin && twin !== url && !el.dataset.triedRepo) {
+    el.dataset.triedRepo = "1";
+    repoDomains.add(dom);
+    el.dataset.strip = twin;
+    repointShowcase(dom);
+    paintShowcase(el);
+    return;
+  }
+  // 2. THE BASE IS STILL COMING. Hold rather than judge — retryRepoMisses
+  //    drains this the moment the repo base is up.
+  if (!repoBaseKnown && state.admin && !el.dataset.triedRepo) { showcaseMisses.add(el); return; }
+  // 3. NOW it can be judged, by the same rule as any other missing art: gone
+  //    means the entity leaves the wiki, anything else stays visible and says
+  //    it did not load.
+  if (!el.isConnected) return;
+  const verdict = await probeArt(url);
+  if (verdict === "gone" && dropGoneEntity(el.dataset.preview || url)) return;
+  if (!el.isConnected) return;
+  const stage = el.closest(".showcase");
+  if (!stage || stage.querySelector(".art-note")) return;
+  el.remove();
+  stage.classList.add(verdict === "gone" ? "art-gone" : "art-failed");
+  stage.append(h("span", { class: "art-note" },
+    verdict === "gone" ? "removed" : "not loading",
+    h("small", {}, verdict === "gone" ? "the agent acted on this" : "the art did not load")));
+}
+/** One card's miss is the whole domain's answer: re-point every OTHER card of
+ *  that domain that is still aimed at the image. Without this the grid heals
+ *  one 404 at a time, which is 33 round trips and a visibly patchy page. */
+function repointShowcase(dom) {
+  for (const el of document.querySelectorAll(".showcase-art")) {
+    const src = el.dataset.strip ?? "";
+    if (!src.startsWith(String(ROOT))) continue;
+    if (src.slice(String(ROOT).length).split("/")[0] !== dom) continue;
+    const twin = repoTwin(src);
+    if (!twin || twin === src) continue;
+    el.dataset.strip = twin;
+    if (el.dataset.preview) el.dataset.preview = repoTwin(el.dataset.preview) ?? el.dataset.preview;
+    // Only ones already asked for: an unarmed card will read the new url when
+    // it scrolls into view.
+    if (el.dataset.armed) { el.style.backgroundImage = ""; el.dataset.triedRepo = "1"; paintShowcase(el); }
+  }
 }
 /** Give every card the number of cells its creature actually needs — from the
  *  geometry the browser really laid out, never from arithmetic over the
