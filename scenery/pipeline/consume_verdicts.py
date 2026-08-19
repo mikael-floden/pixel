@@ -53,19 +53,52 @@ def _committed(relpath):
 
 
 def sprite_for(key):
-    """The sprite a verdict key points at, or None if it no longer exists."""
+    """The sprite a verdict key points at, or None if it no longer exists.
+
+    A VERDICT KEY HAS THREE PARTS: <piece>#<state>#<DIRECTION>. Ignoring the
+    third and always returning the SOUTH sprite is not a rounding error — it
+    silently destroyed 136 of the maintainer's verdicts on 2026-08-18, 135 of
+    them five-star approvals and one a rejection carrying a written instruction
+    about windows.
+
+    The mechanism: the wiki stamps a verdict with the md5 of the CLIP he was
+    looking at, so a south-east verdict carries the hash of the south-east
+    rotation file. Hashing SOUTH instead can never match that, so every
+    non-south verdict looked stale and was cleared. Windows are the only pieces
+    with south-east and south-west facings, so this deleted his entire window
+    review and nothing else — which is exactly why it went unnoticed.
+
+    Returning None for a direction whose file cannot be found is the safe
+    failure: the caller treats an unresolvable key as untouchable."""
     if not key.startswith("scenery/"):
         return None
     body = key[len("scenery/"):]
-    if "#" in body:
-        rel, state = body.split("#")[0], body.split("#")[1].upper()
-        ent = ((factory.read_manifest(rel) or {}).get("states") or {}).get(state)
-        sp = (ent or {}).get("sprite")
+    parts = body.split("#")
+    if len(parts) == 1:
+        sp = (factory.read_manifest(parts[0]) or {}).get("sprite")
+        return sp if sp and os.path.exists(os.path.join(factory.ROOT, sp)) else None
+
+    rel, state = parts[0], parts[1].upper()
+    direction = parts[2].lower() if len(parts) > 2 else "south"
+    ent = ((factory.read_manifest(rel) or {}).get("states") or {}).get(state)
+    if not ent:
+        return None
+    if direction == "south":
+        sp = ent.get("sprite")
     else:
-        sp = (factory.read_manifest(body) or {}).get("sprite")
-    if sp and os.path.exists(os.path.join(factory.ROOT, sp)):
-        return sp
-    return None
+        # Non-south lives in the state's own rotations map when it has one, and
+        # otherwise beside the piece — windows carry rotations at both levels.
+        rots = ent.get("rotations") or {}
+        sp = rots.get(direction)
+        if not sp:
+            cand = f"{rel}/{state.lower()}/rotations/{direction}.webp"
+            if os.path.exists(os.path.join(factory.ROOT, cand)):
+                sp = cand
+        if not sp:
+            cand = f"{rel}/rotations/{direction}.webp"
+            if os.path.exists(os.path.join(factory.ROOT, cand)):
+                sp = cand
+    return sp if sp and os.path.exists(os.path.join(factory.ROOT, sp)) else None
 
 
 def _hash(relpath):

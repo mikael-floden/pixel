@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 796,
+  "scenery_count": 795,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1427,7 +1427,7 @@
     "dock_pilings": 12,
     "dragon_ribcages": 2,
     "driftwood_logs": 1,
-    "fallen_logs": 6,
+    "fallen_logs": 5,
     "fences": 3,
     "ferns": 12,
     "fish_drying_racks": 4,
@@ -21571,27 +21571,6 @@
           "art_hash": "43a504abd2dc80e2"
         }
       },
-      "animations": []
-    },
-    {
-      "id": "fallen_log_008",
-      "rel": "fallen_logs/fallen_log_008",
-      "name": "fallen_logs/fallen_log_008",
-      "category": "fallen_logs",
-      "lights": null,
-      "description": "",
-      "view": null,
-      "size": null,
-      "placement": null,
-      "status": null,
-      "generated_at": null,
-      "pixellab_object_id": null,
-      "sprite": "fallen_logs/fallen_log_008/sprite.webp",
-      "art_hash": null,
-      "type": "NATURE",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {},
       "animations": []
     },
     {
