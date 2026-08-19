@@ -15399,26 +15399,6 @@
       "status": "approved",
       "art": "24305f373c06bd61"
     },
-    "scenery/windows/window_078": {
-      "status": "rejected",
-      "art": "3c3e5627ff51e789",
-      "updated_at": "2026-08-19T19:01:54.107Z"
-    },
-    "scenery/windows/window_078#lights_off#south": {
-      "status": "rejected",
-      "art": "3c3e5627ff51e789",
-      "updated_at": "2026-08-19T19:02:03.068Z"
-    },
-    "scenery/windows/window_078#lights_off#south-east": {
-      "updated_at": "2026-08-19T19:02:07.291Z",
-      "art": "172a453ec5018d8f",
-      "status": "rejected"
-    },
-    "scenery/windows/window_078#lights_off#south-west": {
-      "updated_at": "2026-08-19T19:02:08.642Z",
-      "status": "rejected",
-      "art": "1465acce7c04f61c"
-    },
     "scenery/windows/window_081": {
       "rating": 5,
       "updated_at": "2026-08-14T07:08:21.314Z",
@@ -15484,29 +15464,6 @@
       "updated_at": "2026-08-16T12:34:40.466Z",
       "status": "approved",
       "art": "4655b4db5d56006d"
-    },
-    "scenery/windows/window_084": {
-      "updated_at": "2026-08-19T19:02:18.805Z",
-      "status": "rejected",
-      "art": "d39299300e410053"
-    },
-    "scenery/windows/window_084#static#south": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:28:47.368Z",
-      "status": "approved",
-      "art": "d39299300e410053"
-    },
-    "scenery/windows/window_084#static#south-east": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:28:44.914Z",
-      "status": "approved",
-      "art": "fd20c81ed7afa5ca"
-    },
-    "scenery/windows/window_084#static#south-west": {
-      "rating": 5,
-      "updated_at": "2026-08-16T12:28:43.591Z",
-      "status": "approved",
-      "art": "bed883803378295f"
     },
     "scenery/windows/window_085": {
       "status": "approved",
@@ -20133,24 +20090,6 @@
       "status": "approved",
       "art": "ab49fbf1a22912a3"
     },
-    "scenery/windows/window_095#lights_on#south-west": {
-      "rating": 5,
-      "updated_at": "2026-08-19T18:54:31.268Z",
-      "status": "approved",
-      "art": "a7991f80d3291270"
-    },
-    "scenery/windows/window_095#lights_on#south-east": {
-      "rating": 5,
-      "updated_at": "2026-08-19T18:54:32.712Z",
-      "status": "approved",
-      "art": "9f2a6b791695a98d"
-    },
-    "scenery/windows/window_095#lights_on#south": {
-      "updated_at": "2026-08-19T18:55:13.079Z",
-      "status": "rejected",
-      "art": "56d8a13879288569",
-      "note": "This state has to be regenerated becouse it's a window and they need all states"
-    },
     "scenery/windows/window_098#lights_off#south": {
       "rating": 5,
       "updated_at": "2026-08-19T18:55:28.281Z",
@@ -20186,24 +20125,6 @@
       "updated_at": "2026-08-19T18:55:34.638Z",
       "status": "approved",
       "art": "eb45e8d7d32e3495"
-    },
-    "scenery/windows/window_094#lights_on#south-west": {
-      "status": "rejected",
-      "art": "a7354c9fb9d5cbc5",
-      "updated_at": "2026-08-19T18:56:05.436Z",
-      "note": "Regenerate! It's a window that need all states!"
-    },
-    "scenery/windows/window_094#lights_on#south-east": {
-      "rating": 5,
-      "updated_at": "2026-08-19T18:56:06.800Z",
-      "status": "approved",
-      "art": "1a50b0e89c9e8566"
-    },
-    "scenery/windows/window_094#lights_on#south": {
-      "rating": 5,
-      "updated_at": "2026-08-19T18:56:08.420Z",
-      "status": "approved",
-      "art": "0dd66abacf0c30b6"
     },
     "scenery/windows/window_094#lights_off#south": {
       "rating": 5,
@@ -20258,36 +20179,6 @@
       "updated_at": "2026-08-19T18:56:33.405Z",
       "status": "approved",
       "art": "757286ccd8497d48"
-    },
-    "scenery/windows/window_084#lights_off#south": {
-      "updated_at": "2026-08-19T19:02:22.335Z",
-      "status": "rejected",
-      "art": "d39299300e410053"
-    },
-    "scenery/windows/window_084#lights_off#south-east": {
-      "updated_at": "2026-08-19T19:02:28.137Z",
-      "status": "rejected",
-      "art": "fd20c81ed7afa5ca"
-    },
-    "scenery/windows/window_084#lights_off#south-west": {
-      "updated_at": "2026-08-19T19:02:30.366Z",
-      "status": "rejected",
-      "art": "bed883803378295f"
-    },
-    "scenery/windows/window_084#lights_on#south": {
-      "updated_at": "2026-08-19T19:02:36.008Z",
-      "status": "rejected",
-      "art": "740099bdf7b8b8b2"
-    },
-    "scenery/windows/window_084#lights_on#south-east": {
-      "updated_at": "2026-08-19T19:02:34.387Z",
-      "status": "rejected",
-      "art": "55de6bdf64fcb03d"
-    },
-    "scenery/windows/window_084#lights_on#south-west": {
-      "updated_at": "2026-08-19T19:02:31.793Z",
-      "status": "rejected",
-      "art": "f3d7b27eba3bf0a7"
     },
     "scenery/windows/window_096#lights_off#south": {
       "rating": 5,
@@ -20682,21 +20573,6 @@
       "updated_at": "2026-08-19T19:01:35.691Z",
       "status": "approved",
       "art": "6359f656f07192f3"
-    },
-    "scenery/windows/window_078#lights_on#south-west": {
-      "status": "rejected",
-      "art": "36d7a41d0c4dad48",
-      "updated_at": "2026-08-19T19:01:57.173Z"
-    },
-    "scenery/windows/window_078#lights_on#south-east": {
-      "status": "rejected",
-      "art": "5b185d2687b8dea3",
-      "updated_at": "2026-08-19T19:01:59.690Z"
-    },
-    "scenery/windows/window_078#lights_on#south": {
-      "status": "rejected",
-      "art": "c50a4359668d1c95",
-      "updated_at": "2026-08-19T19:02:00.671Z"
     }
   }
 }
