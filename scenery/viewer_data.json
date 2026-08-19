@@ -30987,27 +30987,22 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T04:02:44+00:00",
-      "pixellab_object_id": "8c414a6a-ca82-4b5c-b38b-d098892cd7c9",
+      "pixellab_object_id": "10d86eed-00c4-4367-ac1a-28efcd5ccdfa",
       "sprite": "mushrooms/mushroom_002/sprite.webp",
-      "art_hash": "b16f2b2019e66938",
+      "art_hash": "c53ebba1538ba29c",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "mushrooms/mushroom_002/sprite.webp",
-          "pixellab_object_id": "8c414a6a-ca82-4b5c-b38b-d098892cd7c9",
-          "generated_at": "2026-08-13T04:02:44+00:00",
-          "art_hash": "b16f2b2019e66938"
-        },
         "NOT_LIT_3": {
-          "sprite": "mushrooms/mushroom_002/not_lit_3/sprite.webp",
+          "sprite": "mushrooms/mushroom_002/sprite.webp",
           "pixellab_object_id": "10d86eed-00c4-4367-ac1a-28efcd5ccdfa",
           "generated_at": "2026-08-16T19:24:22+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6367,
           "glow_score": 0.2545,
           "relit_from": "LIT_2",
+          "replaced_anchor": "LIT_1",
           "art_hash": "c53ebba1538ba29c"
         },
         "NOT_LIT_4": {
@@ -32840,19 +32835,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T05:08:41+00:00",
-      "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
+      "pixellab_object_id": "2f59d2a7-923f-4745-8fd7-c96844b44dc1",
       "sprite": "owl_snags/owl_snag_002/sprite.webp",
-      "art_hash": "c5082b96a346a560",
+      "art_hash": "1854634021f38ecf",
       "type": "TREE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "owl_snags/owl_snag_002/sprite.webp",
-          "pixellab_object_id": "04e97975-ff75-4a9a-bc2b-28d0aaf832ca",
-          "generated_at": "2026-08-13T05:08:41+00:00",
-          "art_hash": "c5082b96a346a560"
-        },
         "LIT_2": {
           "sprite": "owl_snags/owl_snag_002/lit_2/sprite.webp",
           "pixellab_object_id": "d480a762-56a5-49a0-84cd-ac65967c2a78",
@@ -32872,12 +32861,13 @@
           "art_hash": "9e90e07fea2c2a91"
         },
         "LIT_4": {
-          "sprite": "owl_snags/owl_snag_002/lit_4/sprite.webp",
+          "sprite": "owl_snags/owl_snag_002/sprite.webp",
           "pixellab_object_id": "2f59d2a7-923f-4745-8fd7-c96844b44dc1",
           "glow_concept": "hollow lit from within like a lantern window",
           "difference_from_source": 0.4923,
           "glow_score": 0.0295,
           "generated_at": "2026-08-15T15:57:53+00:00",
+          "replaced_anchor": "LIT_1",
           "art_hash": "1854634021f38ecf"
         },
         "NOT_LIT_1": {
@@ -35919,19 +35909,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T21:32:59+00:00",
-      "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
+      "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
       "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
-      "art_hash": "6b83e5dcb94c2b70",
+      "art_hash": "64c24a8df7a00ea4",
       "type": "NATURE",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
-          "pixellab_object_id": "b47acfc3-9331-4cd2-97d2-fcd5eaa831b9",
-          "generated_at": "2026-08-13T21:32:59+00:00",
-          "art_hash": "6b83e5dcb94c2b70"
-        },
         "LIT_2": {
           "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_2/sprite.webp",
           "pixellab_object_id": "30abee58-2235-4952-a13e-895df118da44",
@@ -35942,12 +35926,13 @@
           "art_hash": "d386ff3bb941806b"
         },
         "LIT_3": {
-          "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_3/sprite.webp",
+          "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
           "pixellab_object_id": "2ddd4727-230c-45e5-b0f5-04f852a37c45",
           "generated_at": "2026-08-16T21:02:45+00:00",
           "glow_concept": null,
           "difference_from_source": 0.8884,
           "glow_score": 0.0528,
+          "replaced_anchor": "LIT_1",
           "art_hash": "64c24a8df7a00ea4"
         },
         "LIT_4": {
