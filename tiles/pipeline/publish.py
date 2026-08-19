@@ -75,7 +75,8 @@ REVIEW = os.path.join(ROOT, "review")
 REPO = os.path.dirname(ROOT)
 
 
-def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None):
+def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
+               approved=()):
     """Every tile in a cell, scored on its wall, best first.
 
     WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
@@ -97,8 +98,13 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
             # A tile the maintainer has already rejected never comes back. Publishing
             # it again asks for the same verdict twice, and their review time is the
             # scarcest thing in this pipeline.
-            if os.path.relpath(p, REPO) in rejected:
+            rel = os.path.relpath(p, REPO)
+            if rel in rejected:
                 continue
+            # THE MAINTAINER OVERRULED THE FILTER ON THIS TILE. It publishes whatever the
+            # gates think, and it sorts first, because they picked it out by hand from
+            # the reject pile.
+            forced = rel in approved
             q = flatness.wall_quality(p)
             if not q:
                 continue
@@ -110,10 +116,10 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
             # regardless, so a raw-flatness gate only throws away good art — measured,
             # 182 of the 238 tiles it rejected were already seamless after postprocess,
             # several of them with the best edge spill in the whole set.
-            if flatness.seam_px(p) > flatness.SEAM_TOL:
+            if not forced and flatness.seam_px(p) > flatness.SEAM_TOL:
                 continue
             out.append({
-                "path": p, "wall": q,
+                "path": p, "wall": q, "forced": forced,
                 "top_share": round(f["top"]["share"], 4) if f and f["top"] else None,
                 "overhang": round(flatness.overhang(p), 3),
                 "wall_err": round(flatness.wall_material_err(p, side_hex), 1)
@@ -153,11 +159,20 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
     # the top material in the wall by hue, and on same-over-same there is no hue
     # difference to find: exactly 1.000 for every grass/ice/light_soil tile, 0.000 for
     # most grey_stone/black_rock, on saturation alone).
+    # OVERRIDES ARE ADDED, NOT SUBSTITUTED. Making a forced tile satisfy each tier looked
+    # equivalent and was not: the chain takes the FIRST NON-EMPTY tier, so a single
+    # override made the strictest tier non-empty and the cell shipped that one tile
+    # instead of falling through to a laxer tier holding three. Cells with three
+    # candidates fell 173 -> 166 the moment the maintainer's picks were honoured, which
+    # is the opposite of what an override is for.
+    forced = [c for c in out if c.get("forced")]
+    out = [c for c in out if not c.get("forced")]
+    keep = lambda c: False
     spill_ok = (lambda c: True) if (same or flatness.indistinguishable(top_hex_c, side_hex)) \
-        else (lambda c: c["overhang"] >= flatness.MIN_OVERHANG)
-    full = [c for c in out if spill_ok(c)
+        else (lambda c: c["overhang"] >= flatness.MIN_OVERHANG or keep(c))
+    full = [c for c in out if keep(c) or (spill_ok(c)
             and c["wall"]["score"] >= MIN_WALL
-            and c["clarity"] >= flatness.MIN_CLARITY]
+            and c["clarity"] >= flatness.MIN_CLARITY)]
     withspill = full or [c for c in out if spill_ok(c)]
     out = withspill or out
     # X-over-X is exempt: the wall IS the top's material by construction, so the only
@@ -165,21 +180,24 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
     # whole face onto the palette anyway. Left in, it called snow-over-snow's correctly
     # generated snow wall "the wrong material" because the generator shaded it bluer than
     # the palette's near-white.
-    right = [c for c in out if c["wall_err"] is not None
-             and c["wall_err"] <= flatness.MAX_WALL_ERR]
+    right = [c for c in out if keep(c) or (c["wall_err"] is not None
+             and c["wall_err"] <= flatness.MAX_WALL_ERR)]
     if not same:
         out = right or out
         # And the tile must not be BACKWARDS. Same tier discipline as the wall material:
         # a cell with a correctly-oriented candidate never ships a reversed one, and a
         # cell with nothing but reversed ones is flagged rather than quietly shipped.
-        fwd = [c for c in out if c["swapped"] is not None
-               and c["swapped"] <= flatness.MAX_SWAP]
+        fwd = [c for c in out if keep(c) or (c["swapped"] is not None
+               and c["swapped"] <= flatness.MAX_SWAP)]
         out = fwd or out
         # And the surface should actually BE the material, not mostly it. "not enough
         # lava on the ground" was 14 of the 24 verdicts in one review pass.
-        clean = [c for c in out if c["contamination"] is not None
-                 and c["contamination"] <= flatness.MAX_CONTAMINATION]
+        clean = [c for c in out if keep(c) or (c["contamination"] is not None
+                 and c["contamination"] <= flatness.MAX_CONTAMINATION)]
         out = clean or out
+    # The maintainer's own picks go back in at the front, whatever the tiers concluded.
+    seen = {id(c) for c in out}
+    out = forced + [c for c in out if id(c) not in {id(f) for f in forced}]
     # Least-banded first on X-over-X: those tiles exist to be stacked into a cliff
     # under a "top only" tile, so the one that stacks without a stripe is the best
     # one however good another tile's wall score.
@@ -187,7 +205,8 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None)
         out.sort(key=lambda c: (c["band"] if c["band"] is not None else 1e9,
                                 -c["wall"]["score"]))
     else:
-        out.sort(key=lambda c: -c["wall"]["score"])
+        out.sort(key=lambda c: (not c.get("forced", False), -c["wall"]["score"]))
+
     return out, bool(withspill), same or bool(right), bool(full)
 
 
@@ -202,6 +221,9 @@ def main():
     os.makedirs(REVIEW, exist_ok=True)
     dead = tombstones.load().get("cells", {})
     rejected = tombstones.rejected_tiles()
+    approved = tombstones.approved_tiles()
+    if approved:
+        print(f"honouring {len(approved)} maintainer override(s)")
     if rejected:
         print(f"skipping {len(rejected)} individually rejected tile(s)")
 
@@ -231,8 +253,15 @@ def main():
         # field that was silently null.
         cands, has_spill, right_wall, all_gates = candidates(
             d, (PALETTE.get(side) or {}).get("top"), same=(top == side),
-            rejected=rejected, top_hex_c=(PALETTE.get(top) or {}).get("top"))
-        cands = cands[:args.top]
+            rejected=rejected, top_hex_c=(PALETTE.get(top) or {}).get("top"),
+            approved=approved)
+        # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
+        # maintainer picked these out of the reject pile by hand and truncating their
+        # choices is not the cap's job — four approvals landed in grey_stone-over-lava
+        # and the fourth was silently dropped.
+        picks = [c for c in cands if c.get("forced")]
+        rest = [c for c in cands if not c.get("forced")]
+        cands = picks + rest[:max(0, args.top - len(picks))]
         if not cands:
             continue
         cd = os.path.join(REVIEW, cell)
@@ -338,7 +367,7 @@ def main():
                 # merely invisible. A metric the reviewer cannot see is a metric they
                 # cannot disagree with.
                 "swapped": c["swapped"], "contamination": c["contamination"],
-                "top_err": c["top_err"],
+                "top_err": c["top_err"], "maintainer_pick": c.get("forced", False),
                 "tile_id": c["tile_id"], "style": c["style"], "prompt": c["prompt"],
             })
             n_pub += 1

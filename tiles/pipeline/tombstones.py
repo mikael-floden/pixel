@@ -69,6 +69,39 @@ def rejected_tiles():
     return set((load().get("tiles") or {}).keys())
 
 
+def approved_tiles():
+    """Tiles the maintainer explicitly OVERRULED the filter on.
+
+    The counterpart to a rejection, and it exists because the feedback loop only ran one
+    way for months: every gate was added after they reacted to something that SHIPPED, so
+    the only correction they could make was "stricter". They said as much — "what you
+    discard before I can see them has been blind to me, so I have never been able to
+    relax your filter - only make it stronger."
+
+    An approved tile publishes regardless of any gate. A measurement exists to predict
+    their judgement; where it disagrees with their actual judgement, the measurement is
+    the thing that is wrong.
+    """
+    return set((load().get("approved") or {}).keys())
+
+
+def approve_tiles(paths, reason="maintainer override"):
+    """Record tiles as publish-always. Returns how many were newly added."""
+    doc = load()
+    doc.setdefault("approved", {})
+    n = 0
+    for p in paths:
+        if p in doc["approved"]:
+            continue
+        doc["approved"][p] = {"reason": reason, "at": _now()}
+        n += 1
+        # An override wins over a stale rejection of the same tile.
+        (doc.get("tiles") or {}).pop(p, None)
+    if n:
+        save(doc)
+    return n
+
+
 def reject_tiles(paths, reason="wiki reject"):
     """Record individual tiles as rejected. Returns how many were newly added."""
     doc = load()
