@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T17:30:58.367Z",
+  "updated_at": "2026-08-19T17:32:27.002Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -563,9 +563,9 @@
       "rating": 2
     },
     "scenery/bushes/bush_004": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:50:28.293Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:31:42.918Z",
+      "art": "e36ea7decb761d52"
     },
     "scenery/bushes/bush_007": {
       "status": "approved",
@@ -3107,9 +3107,9 @@
       "rating": 3
     },
     "scenery/ferns/fern_003": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:51:29.039Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:31:58.847Z",
+      "art": "e905d98c9dae24cc"
     },
     "scenery/ferns/fern_005": {
       "status": "approved",
@@ -3427,9 +3427,9 @@
       "updated_at": "2026-08-13T16:59:31.611Z"
     },
     "scenery/grass_tufts/grass_tuft_004": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:50:10.384Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:31:11.105Z",
+      "art": "c610e43100022fc6"
     },
     "scenery/grass_tufts/grass_tuft_005": {
       "status": "rejected",
@@ -4634,9 +4634,9 @@
       "rating": 2
     },
     "scenery/reed_beds/reed_bed_004": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:50:17.304Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:31:25.382Z",
+      "art": "35aa7a203d65c5d2"
     },
     "scenery/reed_beds/reed_bed_005": {
       "status": "approved",
@@ -18891,6 +18891,161 @@
       "updated_at": "2026-08-19T17:30:58.501Z",
       "status": "approved",
       "art": "53788c5fda250854"
+    },
+    "scenery/grass_tufts/grass_tuft_004#lit_1#south": {
+      "status": "rejected",
+      "art": "c610e43100022fc6",
+      "updated_at": "2026-08-19T17:31:13.363Z"
+    },
+    "scenery/grass_tufts/grass_tuft_004#not_lit_1#south": {
+      "status": "rejected",
+      "art": "8a1d8ed9c1f604ea",
+      "updated_at": "2026-08-19T17:31:14.199Z"
+    },
+    "scenery/grass_tufts/grass_tuft_004#not_lit_2#south": {
+      "status": "rejected",
+      "art": "f767a90c984f9e6c",
+      "updated_at": "2026-08-19T17:31:14.967Z"
+    },
+    "scenery/grass_tufts/grass_tuft_004#lit_2#south": {
+      "status": "rejected",
+      "art": "53b3e771b94c679d",
+      "updated_at": "2026-08-19T17:31:15.714Z"
+    },
+    "scenery/grass_tufts/grass_tuft_004#lit_3#south": {
+      "status": "rejected",
+      "art": "c3ffbe16c56f8774",
+      "updated_at": "2026-08-19T17:31:16.375Z"
+    },
+    "scenery/grass_tufts/grass_tuft_004#lit_4#south": {
+      "status": "rejected",
+      "art": "0cf4fdb67a6806c3",
+      "updated_at": "2026-08-19T17:31:17.048Z"
+    },
+    "scenery/reed_beds/reed_bed_004#lit_1#south": {
+      "status": "rejected",
+      "art": "35aa7a203d65c5d2",
+      "updated_at": "2026-08-19T17:31:27.276Z"
+    },
+    "scenery/reed_beds/reed_bed_004#not_lit_1#south": {
+      "status": "rejected",
+      "art": "a1aa24ddb2949f21",
+      "updated_at": "2026-08-19T17:31:28.095Z"
+    },
+    "scenery/reed_beds/reed_bed_004#not_lit_2#south": {
+      "status": "rejected",
+      "art": "88e8d48553f760f9",
+      "updated_at": "2026-08-19T17:31:28.866Z"
+    },
+    "scenery/reed_beds/reed_bed_004#lit_2#south": {
+      "status": "rejected",
+      "art": "f9e82beb275c0852",
+      "updated_at": "2026-08-19T17:31:29.646Z"
+    },
+    "scenery/reed_beds/reed_bed_004#lit_3#south": {
+      "status": "rejected",
+      "art": "78f62a5eebc3791a",
+      "updated_at": "2026-08-19T17:31:30.277Z"
+    },
+    "scenery/reed_beds/reed_bed_004#lit_4#south": {
+      "status": "rejected",
+      "art": "898342b10d538dc2",
+      "updated_at": "2026-08-19T17:31:31.049Z"
+    },
+    "scenery/bushes/bush_004#lit_1#south": {
+      "status": "rejected",
+      "art": "e36ea7decb761d52",
+      "updated_at": "2026-08-19T17:31:44.909Z"
+    },
+    "scenery/bushes/bush_004#not_lit_1#south": {
+      "status": "rejected",
+      "art": "bc6d06394de6d6fc",
+      "updated_at": "2026-08-19T17:31:45.754Z"
+    },
+    "scenery/bushes/bush_004#not_lit_2#south": {
+      "status": "rejected",
+      "art": "cd7e2e76016450aa",
+      "updated_at": "2026-08-19T17:31:46.463Z"
+    },
+    "scenery/bushes/bush_004#lit_2#south": {
+      "status": "rejected",
+      "art": "36f52d3619d74518",
+      "updated_at": "2026-08-19T17:31:47.206Z"
+    },
+    "scenery/bushes/bush_004#lit_3#south": {
+      "status": "rejected",
+      "art": "cebc091d72fd00cc",
+      "updated_at": "2026-08-19T17:31:47.958Z"
+    },
+    "scenery/bushes/bush_004#lit_4#south": {
+      "status": "rejected",
+      "art": "8ac8d69ae66eaf86",
+      "updated_at": "2026-08-19T17:31:49.327Z"
+    },
+    "scenery/ferns/fern_003#not_lit_1#south": {
+      "status": "rejected",
+      "art": "e905d98c9dae24cc",
+      "updated_at": "2026-08-19T17:32:00.882Z"
+    },
+    "scenery/ferns/fern_003#not_lit_2#south": {
+      "status": "rejected",
+      "art": "fc074f0517363db5",
+      "updated_at": "2026-08-19T17:32:01.770Z"
+    },
+    "scenery/ferns/fern_003#not_lit_3#south": {
+      "status": "rejected",
+      "art": "147fcafef53a24bf",
+      "updated_at": "2026-08-19T17:32:02.544Z"
+    },
+    "scenery/ferns/fern_003#not_lit_4#south": {
+      "status": "rejected",
+      "art": "0fd54e377a532b45",
+      "updated_at": "2026-08-19T17:32:03.365Z"
+    },
+    "scenery/ferns/fern_003#lit_1#south": {
+      "status": "rejected",
+      "art": "78aac26b52715bfa",
+      "updated_at": "2026-08-19T17:32:04.132Z"
+    },
+    "scenery/ferns/fern_003#lit_2#south": {
+      "status": "rejected",
+      "art": "bc46b5a18cca935d",
+      "updated_at": "2026-08-19T17:32:04.889Z"
+    },
+    "scenery/mushrooms/mushroom_003#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:32:12.558Z",
+      "status": "approved",
+      "art": "d5d02e2fde1f1690"
+    },
+    "scenery/mushrooms/mushroom_003#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:32:13.854Z",
+      "status": "approved",
+      "art": "15825a1825367b86"
+    },
+    "scenery/mushrooms/mushroom_003#not_lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:32:15.304Z",
+      "status": "approved",
+      "art": "161af5b1c41e2c2d"
+    },
+    "scenery/mushrooms/mushroom_003#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:32:17.447Z",
+      "status": "approved",
+      "art": "14e72ab917cd8eb8"
+    },
+    "scenery/mushrooms/mushroom_003#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:32:21.284Z",
+      "status": "approved",
+      "art": "0723c14ebf360ae9"
+    },
+    "scenery/mushrooms/mushroom_003#lit_2#south": {
+      "status": "approved",
+      "art": "d35b53eaa73e22af",
+      "updated_at": "2026-08-19T17:32:24.122Z"
     }
   }
 }
