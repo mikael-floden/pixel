@@ -1,5 +1,5 @@
 {
-  "_comment": "Tiles the filter discarded, shown to the maintainer so they can relax a gate rather than only tighten it. An id here is the same sha1(src)[:8] the review manifest uses, so 'id X is ok' resolves to one specific tile and can be promoted directly.",
+  "_comment": "Tiles the filter discarded, shown so the maintainer can relax a gate rather than only tighten it. id = sha1(src)[:8], the same scheme the review manifest uses, so 'id X is ok' resolves to one specific tile.",
   "schema": "tiles3/reject-gallery@1",
   "tiles": {
     "008ffd71": {
