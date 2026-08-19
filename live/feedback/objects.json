@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T16:46:46.174Z",
+  "updated_at": "2026-08-19T16:50:05.579Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -223,9 +223,9 @@
       "updated_at": "2026-08-13T20:51:17.783Z"
     },
     "scenery/ant_hills/ant_hill_006": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:42:51.445Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T16:48:41.853Z",
+      "art": "3390d1c8bc9b02b6"
     },
     "scenery/antler_thrones/antler_throne_002": {
       "status": "rejected",
@@ -1059,9 +1059,9 @@
       "rating": 3
     },
     "scenery/briar_thickets/briar_thicket_011": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:44:31.325Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-19T16:49:57.846Z",
+      "art": "7d41fac8ea141c57"
     },
     "scenery/briar_thickets/briar_thicket_012": {
       "status": "rejected",
@@ -25062,6 +25062,205 @@
       "updated_at": "2026-08-19T16:46:43.529Z",
       "status": "approved",
       "art": "4922bef5450ffa4a"
+    },
+    "scenery/bushes/bush_008#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:14.214Z",
+      "status": "approved",
+      "art": "c2923b978cb48ec2"
+    },
+    "scenery/bushes/bush_008#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:15.678Z",
+      "status": "approved",
+      "art": "6948fb5edd923f36"
+    },
+    "scenery/bushes/bush_008#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:17.466Z",
+      "status": "approved",
+      "art": "8a98da327b12192c"
+    },
+    "scenery/bushes/bush_008#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:19.117Z",
+      "status": "approved",
+      "art": "f7759091cd295e73"
+    },
+    "scenery/bushes/bush_008#lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:20.964Z",
+      "status": "approved",
+      "art": "2e149de0942d64a8"
+    },
+    "scenery/bushes/bush_008#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-19T16:47:22.754Z",
+      "status": "approved",
+      "art": "862ce965d0a4b9a6"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#lit_1#south": {
+      "updated_at": "2026-08-19T16:48:14.080Z",
+      "status": "rejected",
+      "art": "6b83e5dcb94c2b70"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:48:16.629Z",
+      "status": "approved",
+      "art": "6891ca71e6cc290a"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:48:19.161Z",
+      "status": "approved",
+      "art": "e26139d39c8efe71"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:48:22.468Z",
+      "status": "approved",
+      "art": "d386ff3bb941806b"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:48:27.725Z",
+      "status": "approved",
+      "art": "ba6c75ea0f71bd62"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:48:30.780Z",
+      "status": "approved",
+      "art": "64c24a8df7a00ea4"
+    },
+    "scenery/ant_hills/ant_hill_006#lit_1#south": {
+      "status": "rejected",
+      "art": "3390d1c8bc9b02b6",
+      "updated_at": "2026-08-19T16:48:43.244Z"
+    },
+    "scenery/ant_hills/ant_hill_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "1183082eaf81b76d",
+      "updated_at": "2026-08-19T16:48:44.322Z"
+    },
+    "scenery/ant_hills/ant_hill_006#not_lit_2#south": {
+      "status": "rejected",
+      "art": "1e10e2479d5bb58a",
+      "updated_at": "2026-08-19T16:48:45.357Z"
+    },
+    "scenery/ant_hills/ant_hill_006#lit_2#south": {
+      "status": "rejected",
+      "art": "1954486d4743547c",
+      "updated_at": "2026-08-19T16:48:46.222Z"
+    },
+    "scenery/ant_hills/ant_hill_006#lit_3#south": {
+      "status": "rejected",
+      "art": "7d4e510b2d8b76cd",
+      "updated_at": "2026-08-19T16:48:47.082Z"
+    },
+    "scenery/ant_hills/ant_hill_006#lit_4#south": {
+      "status": "rejected",
+      "art": "5731f565573120c8",
+      "updated_at": "2026-08-19T16:48:47.727Z"
+    },
+    "scenery/briar_thickets/briar_thicket_010#lit_4#south": {
+      "status": "rejected",
+      "art": "18a756722758e85d",
+      "updated_at": "2026-08-19T16:48:53.943Z"
+    },
+    "scenery/briar_thickets/briar_thicket_010#not_lit_1#south": {
+      "status": "rejected",
+      "art": "26af9540c7923813",
+      "updated_at": "2026-08-19T16:48:59.143Z"
+    },
+    "scenery/briar_thickets/briar_thicket_010#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:02.719Z",
+      "status": "approved",
+      "art": "ae6885dc858a09e1"
+    },
+    "scenery/briar_thickets/briar_thicket_010#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:06.193Z",
+      "status": "approved",
+      "art": "33cd9f2210cd259e"
+    },
+    "scenery/briar_thickets/briar_thicket_010#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:08.427Z",
+      "status": "approved",
+      "art": "2a9fe9d5a5ad4e6e"
+    },
+    "scenery/briar_thickets/briar_thicket_010#lit_3#south": {
+      "status": "rejected",
+      "art": "c07513838c552e63",
+      "updated_at": "2026-08-19T16:49:13.156Z"
+    },
+    "scenery/spring_basins/spring_basin_004#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:31.557Z",
+      "status": "approved",
+      "art": "3ae00a5b570a54ed"
+    },
+    "scenery/spring_basins/spring_basin_004#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:33.445Z",
+      "status": "approved",
+      "art": "3850b0e9f642da17"
+    },
+    "scenery/spring_basins/spring_basin_004#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:37.007Z",
+      "status": "approved",
+      "art": "842b1b61c7052ddd"
+    },
+    "scenery/spring_basins/spring_basin_004#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:41.179Z",
+      "status": "approved",
+      "art": "c50e09ed883f642e"
+    },
+    "scenery/spring_basins/spring_basin_004#lit_3#south": {
+      "status": "rejected",
+      "art": "f3643aa0c8e0c527",
+      "updated_at": "2026-08-19T16:49:46.868Z"
+    },
+    "scenery/spring_basins/spring_basin_004#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T16:49:50.968Z",
+      "status": "approved",
+      "art": "e00eccd93ead277e"
+    },
+    "scenery/briar_thickets/briar_thicket_011#lit_2#south": {
+      "status": "rejected",
+      "art": "fc75369df678ed46",
+      "updated_at": "2026-08-19T16:50:00.102Z"
+    },
+    "scenery/briar_thickets/briar_thicket_011#lit_1#south": {
+      "status": "rejected",
+      "art": "2066b8c29e37646a",
+      "updated_at": "2026-08-19T16:50:00.970Z"
+    },
+    "scenery/briar_thickets/briar_thicket_011#not_lit_4#south": {
+      "status": "rejected",
+      "art": "9ccb5b67216901ad",
+      "updated_at": "2026-08-19T16:50:02.174Z"
+    },
+    "scenery/briar_thickets/briar_thicket_011#not_lit_3#south": {
+      "status": "rejected",
+      "art": "8d7140a605ed87a2",
+      "updated_at": "2026-08-19T16:50:03.254Z"
+    },
+    "scenery/briar_thickets/briar_thicket_011#not_lit_2#south": {
+      "status": "rejected",
+      "art": "f62083cbb0d4bcc4",
+      "updated_at": "2026-08-19T16:50:04.458Z"
+    },
+    "scenery/briar_thickets/briar_thicket_011#not_lit_1#south": {
+      "status": "rejected",
+      "art": "7d41fac8ea141c57",
+      "updated_at": "2026-08-19T16:50:05.702Z"
     }
   }
 }
