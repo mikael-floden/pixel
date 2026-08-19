@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T16:34:05.724Z",
+  "updated_at": "2026-08-19T16:35:33.762Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/briar_thickets/briar_thicket_024#lit_1": {
@@ -367,6 +367,26 @@
       "lit": true,
       "was": "not_lit_2",
       "updated_at": "2026-08-19T16:33:23.999Z"
+    },
+    "scenery/reed_beds/reed_bed_010#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T16:35:22.366Z"
+    },
+    "scenery/reed_beds/reed_bed_010#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T16:35:24.406Z"
+    },
+    "scenery/reed_beds/reed_bed_010#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-19T16:35:25.932Z"
+    },
+    "scenery/reed_beds/reed_bed_010#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-19T16:35:28.291Z"
     }
   }
 }
