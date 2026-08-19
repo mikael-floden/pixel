@@ -128,21 +128,21 @@ def resolve():
                 if when <= t:
                     man = _manifest_at(sha) or current
                     break
-        e = None
-        # A HASH KEY IS AN IDENTITY, so it resolves directly and needs none of the
-        # timestamp archaeology below. That machinery exists only for the old POSITIONAL
-        # keys (tiles/<cell>/0), where the same string named different art before and
-        # after a republish. Once keys became sha1(src) the lookup is exact — and this
-        # branch was missing, so 255 of the maintainer's verdicts silently failed to
-        # match: `idx.isdigit()` is False for "facadfce", so it fell through to nothing.
+        # IDENTITY FIRST, POSITION ONLY AS A FALLBACK. Never try to tell the two kinds
+        # of key apart by inspecting them — a sha1 prefix is hex, and hex is sometimes
+        # all digits. "61453326".isdigit() is True, so six of the maintainer's
+        # rejections took the positional branch, asked for candidate number 61,453,326,
+        # and silently matched nothing. They stayed on the wiki after being rejected,
+        # which is exactly what they had asked to stop happening.
+        #
+        # An exact key hit is unambiguous whatever the key looks like, so it is tried
+        # first for every verdict; the positional archaeology below only runs when that
+        # fails, which is the case it was written for.
         by_key = {x["key"]: x for c in current.values() for x in c["candidates"]}
-        if not idx.isdigit():
-            e = by_key.get(k)
-            if e:
-                e = dict(e)
-                (hits if e.get("src") else misses).append((key, v, e))
-                continue
-            misses.append((key, v, None))
+        e = by_key.get(k)
+        if e:
+            e = dict(e)
+            (hits if e.get("src") else misses).append((key, v, e))
             continue
         cands = (man.get(cell) or {}).get("candidates") or []
         if idx.isdigit() and int(idx) < len(cands):

@@ -67,6 +67,24 @@ def _hex(px):
     return "#%02x%02x%02x" % tuple(int(round(v)) for v in px)
 
 
+def tile_by_key(key_or_src, man=None):
+    """Resolve a maintainer-nominated tile: a manifest key, an 8-char id, or a src path.
+
+    The maintainer picks the reference by eye from the wiki and names it by id — "this
+    tile is a good palette for dark rock" — so the tool has to accept that identifier
+    rather than always taking whatever happens to rank first.
+    """
+    man = man or json.load(open(REVIEW))["cells"]
+    k = key_or_src.strip().strip("/")
+    for cell in man.values():
+        for e in cell["candidates"]:
+            if k in (e.get("key"), (e.get("key") or "").rsplit("/", 1)[-1], e.get("src")):
+                return os.path.join(REPO, e["src"]) if e.get("src") else None
+    if os.path.isfile(k):
+        return k
+    return None
+
+
 def reference_tile(material, man=None):
     """The tile that DEFINES this material: the top-ranked same-over-same candidate.
 
@@ -116,6 +134,9 @@ def anchored(entry):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--material")
+    ap.add_argument("--tile", help="nominate an exact reference: manifest key, 8-char id, "
+                                   "or path. Without it the top-ranked same-over-same "
+                                   "candidate is used.")
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--force", action="store_true",
                     help="re-reference a material anchored to tiles2 (maintainer's call)")
@@ -131,7 +152,8 @@ def main():
     print(f"{'material':16s} {'palette now':>18s} {'from reference':>18s}  {'shift':>6s}")
     for m in names:
         entry = doc["types"].get(m)
-        ref = reference_tile(m, man)
+        ref = (tile_by_key(args.tile, man) if (args.tile and args.material == m)
+               else reference_tile(m, man))
         if not entry or not ref or not os.path.isfile(ref):
             print(f"{m:16s} {'(no reference tile)':>18s}")
             continue
