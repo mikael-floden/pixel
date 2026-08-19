@@ -60,6 +60,7 @@ import palette_snap
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PALETTE = os.path.join(ROOT, "config", "palette.json")
 REVIEW = os.path.join(ROOT, "review", "manifest.json")
+FEEDBACK = os.path.join(os.path.dirname(ROOT), "live", "feedback", "tiles.json")
 REPO = os.path.dirname(ROOT)
 
 
@@ -123,6 +124,57 @@ def derive(path):
     if reg["top"].sum() < 100 or wall.sum() < 100:
         return None
     return _hex(rgb[reg["top"]].mean(0)), _hex(rgb[wall].mean(0))
+
+
+def rated_tiles(material, stars, man=None, feedback=FEEDBACK):
+    """Every candidate in this material's same-over-same cell the maintainer gave N stars.
+
+    A reference does not have to be ONE tile. The maintainer defined paving_stone as "every
+    color with a 1 star in 'paving_stone over paving_stone' today" — eight tiles, not one —
+    and that is a better reference than any single tile when the material is meant to vary:
+    averaging over eight surfaces of the same stone describes the stone, where one tile
+    describes one roll of it.
+
+    The ratings are the wiki's, in live/feedback/tiles.json. That file belongs to another
+    domain and is READ ONLY here (PROTOCOL rule 1); this only ever opens it.
+    """
+    man = man or json.load(open(REVIEW))["cells"]
+    cell = man.get(f"{material}__over__{material}")
+    if not cell or not os.path.isfile(feedback):
+        return []
+    fb = json.load(open(feedback)).get("entries", {})
+    out = []
+    for e in cell.get("candidates", []):
+        v = fb.get(e.get("key") or "")
+        if v and v.get("rating") == stars and e.get("src"):
+            p = os.path.join(REPO, e["src"])
+            if os.path.isfile(p):
+                out.append(p)
+    return out
+
+
+def derive_many(paths):
+    """(top_hex, wall_hex) pooled over several reference tiles.
+
+    Pixels are pooled rather than per-tile means averaged, so a tile does not get extra
+    weight for having a bigger visible face — the answer is the average colour of the
+    material's surface across everything the maintainer pointed at.
+    """
+    tops, walls = [], []
+    for path in paths:
+        a = np.asarray(Image.open(path).convert("RGBA")).astype(float)
+        reg = palette_snap._regions(a)
+        if not reg:
+            continue
+        rgb = a[:, :, :3]
+        wall = reg["left"] | reg["right"]
+        if reg["top"].sum() < 100 or wall.sum() < 100:
+            continue
+        tops.append(rgb[reg["top"]])
+        walls.append(rgb[wall])
+    if not tops:
+        return None
+    return (_hex(np.concatenate(tops).mean(0)), _hex(np.concatenate(walls).mean(0)))
 
 
 def derive_wall(path, top_art_hex=None):
@@ -281,11 +333,18 @@ def wall_shift(path, top_hex, side_hex):
     return float(np.abs(b[:, :, :3] - a[:, :, :3])[m].mean()), fired
 
 
-def shift(path, top_hex, wall_hex, same=True):
+def shift(path, top_hex, wall_hex, same=True, flat_top=True):
     """Mean per-pixel movement the postprocess applies. Small = the palette describes
-    this art. This is the acceptance test, not a diagnostic."""
+    this art. This is the acceptance test, not a diagnostic.
+
+    flat_top has to match what publish will actually do, or the test measures a tile nobody
+    ships: on a material that KEEPS its texture (parquet_floor), flattening the top here
+    would report the grain as palette error and make every candidate colour look equally
+    bad.
+    """
     raw = Image.open(path).convert("RGBA")
-    out = palette_snap.snap(raw, top_hex, same_material=same, wall_hex=wall_hex)
+    out = palette_snap.snap(raw, top_hex, same_material=same, wall_hex=wall_hex,
+                            flat_top=flat_top)
     a = np.asarray(raw).astype(float)
     b = np.asarray(out).astype(float)
     op = a[:, :, 3] > 128
@@ -311,8 +370,14 @@ def nominated(entry):
     #162843 -> #243756, silently, with a success message.
 
     A named --material still re-references it, which is how a maintainer changes their mind.
+
+    Matches on "maintainer", not on "reference tile": a pooled multi-tile reference records
+    itself as "N tile(s) the maintainer rated 1 star in ...", which the narrower test misses
+    — and missing it is silent, so paving_stone would have been quietly re-derived off
+    generator averages by the next sweep. Every nominated source names the maintainer;
+    no measured-from-2.0 source does.
     """
-    return "reference tile" in (entry.get("source") or "").lower()
+    return "maintainer" in (entry.get("source") or "").lower()
 
 
 def main():
@@ -321,6 +386,14 @@ def main():
     ap.add_argument("--tile", help="nominate an exact reference: manifest key, 8-char id, "
                                    "or path. Without it the top-ranked same-over-same "
                                    "candidate is used.")
+    ap.add_argument("--rated", type=int, metavar="N",
+                    help="reference EVERY tile the maintainer gave N stars in this "
+                         "material's same-over-same cell, pooled")
+    ap.add_argument("--mix", type=float, metavar="F",
+                    help="blend the derived colour with the CURRENT palette entry: 0.5 is "
+                         "halfway. For when neither the reference nor what ships is right.")
+    ap.add_argument("--textured", action="store_true",
+                    help="this material keeps its top texture (sets flat_top=false)")
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--force", action="store_true",
                     help="re-reference a material anchored to tiles2 (maintainer's call)")
@@ -337,7 +410,10 @@ def main():
     for m in names:
         entry = doc["types"].get(m)
         ref = top_mat = side_mat = None
-        if args.tile and args.material == m:
+        rated = rated_tiles(m, args.rated, man) if (args.rated and args.material == m) else []
+        if rated:
+            ref = rated[0]
+        elif args.tile and args.material == m:
             ref, top_mat, side_mat = tile_by_key(args.tile, man)
         else:
             ref = reference_tile(m, man)
@@ -350,7 +426,19 @@ def main():
         # different material entirely — read it the same way and you get the other
         # material's average mixed in.
         wall_ref = bool(side_mat and side_mat == m and top_mat != m)
-        if wall_ref:
+        if rated:
+            d = derive_many(rated)
+            if not d:
+                print(f"{m:16s} (no readable {args.rated}-star reference)")
+                continue
+            new_top, new_wall = d
+            ft = entry.get("flat_top", True) and not args.textured
+            now = shift(ref, entry["top"], entry.get("wall"), flat_top=ft)
+            then = shift(ref, new_top, new_wall, flat_top=ft)
+            src_note = (f"{len(rated)} tile(s) the maintainer rated {args.rated} star in "
+                        f"{m}__over__{m}, pooled — their chosen look for this material")
+            print(f"{'':16s} {'pooled over':>18s} {len(rated)} maintainer-rated tiles")
+        elif wall_ref:
             dw = derive_wall(ref)
             new_wall, st = dw if dw else (None, None)
             sos = top_from_wall_reference(m, new_wall, man) if new_wall else None
@@ -377,10 +465,31 @@ def main():
             if not d:
                 continue
             new_top, new_wall = d
-            now = shift(ref, entry["top"], entry.get("wall"))
-            then = shift(ref, new_top, new_wall)
+            ft = entry.get("flat_top", True)
+            now = shift(ref, entry["top"], entry.get("wall"), flat_top=ft)
+            then = shift(ref, new_top, new_wall, flat_top=ft)
             src_note = (f"reference tile {os.path.relpath(ref, REPO)} — the "
                         f"maintainer's chosen look for this material")
+
+        # NEITHER END IS ALWAYS RIGHT. The maintainer on grass: "The grass color palette
+        # should be defined as an 'in between' of what we have today and what 'grass over
+        # grass' #3 gives us. I'm not happy with #3 and I'm not happy with the current color
+        # palette. Mixing them 50/50 will get to my perfect grass color/palette."
+        #
+        # Straight RGB midpoint, because that is what "50/50" means to the person asking and
+        # a perceptual blend would land somewhere they did not ask for. Reported both ways
+        # below so the move is visible.
+        if args.mix is not None:
+            f = float(args.mix)
+            new_top = _hex(palette_snap._hex(new_top) * f
+                           + palette_snap._hex(entry["top"]) * (1 - f))
+            if new_wall and entry.get("wall"):
+                new_wall = _hex(palette_snap._hex(new_wall) * f
+                                + palette_snap._hex(entry["wall"]) * (1 - f))
+            src_note = (f"{f:.0%} {src_note}  +  {1-f:.0%} the previous palette entry "
+                        f"({entry['top']}/{entry.get('wall')}) — the maintainer asked for "
+                        f"the midpoint, not either end")
+            then = shift(ref, new_top, new_wall, flat_top=entry.get("flat_top", True))
 
         lock = "" if (not anchored(entry) or args.force) else "  LOCKED (tiles2)"
         print(f"{m:16s} {entry['top']:>10s}/{str(entry.get('wall')):>7s} "
@@ -395,6 +504,8 @@ def main():
             continue
         entry["top"], entry["wall"] = new_top, new_wall
         entry["source"] = src_note
+        if args.textured:
+            entry["flat_top"] = False
         changed.append(m)
 
     if changed:

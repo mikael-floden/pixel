@@ -3,15 +3,15 @@
   "_comment": "The game's palette, taken from tiles2 rather than from the generator. tiles2 re-tints its whole tileset to the HUD's muted-forest theme via postprocess.palette (grass and dirt are colours the DESIGNER supplied); an earlier tiles 3.0 palette was measured from what PixelLab happens to produce, which is the generator's average and not an art direction at all. That is why 3.0 grass came out a bright yellow-green (#64b84d, hue 107deg) against 2.0's deep pine (hue 166deg) \u2014 90 luminance apart. Values here are tiles2's ACTUAL APPEARANCE, not its configured target: 2.0 harmonises hue/sat while keeping each pixel's own value, so its art lands well above its target, and a flat 3.0 top has to match what the eye sees.",
   "types": {
     "grass": {
-      "top": "#0c483c",
-      "source": "tiles2/saturated_grass (measured)",
-      "wall": "#116353",
+      "top": "#2a7039",
+      "source": "50% reference tile tiles/matrix/grass__over__grass/sheet_03_same3_10070/tile_01.png \u2014 the maintainer's chosen look for this material  +  50% the previous palette entry (#0c483c/#116353) \u2014 the maintainer asked for the midpoint, not either end",
+      "wall": "#1c6640",
       "wall_n": 7
     },
     "snow": {
-      "top": "#d8e4de",
-      "source": "tiles2/regular_snow (measured)",
-      "wall": "#d0dbd5",
+      "top": "#ebf4f6",
+      "source": "reference tile tiles/matrix/snow__over__snow/sheet_01_explicit/tile_05.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#c7d4d9",
       "wall_n": 7
     },
     "ice": {
@@ -51,21 +51,24 @@
       "wall_n": 6
     },
     "parquet_floor": {
-      "top": "#82523c",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
-      "wall": "#8a5740",
-      "wall_n": 6
+      "top": "#a7754b",
+      "source": "reference tile tiles/matrix/parquet_floor__over__parquet_floor/sheet_02_same2_18715/tile_15.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#684934",
+      "wall_n": 6,
+      "flat_top": false,
+      "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'"
     },
     "paving_stone": {
-      "top": "#72786c",
-      "source": "tiles2/stone_mountain (measured)",
-      "wall": "#5e6359",
-      "wall_n": 6
+      "top": "#a5a4a8",
+      "source": "8 tile(s) the maintainer rated 1 star in paving_stone__over__paving_stone, pooled \u2014 their chosen look for this material",
+      "wall": "#76757a",
+      "wall_n": 6,
+      "flat_top": false
     },
     "water": {
-      "top": "#428a90",
-      "source": "tiles2/clear_water (measured)",
-      "wall": "#39787c",
+      "top": "#7eb7c7",
+      "source": "reference tile tiles/matrix/water__over__water/sheet_01_same1_18719/tile_14.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#4c8a98",
       "wall_n": 6
     },
     "deep_water": {
@@ -81,9 +84,9 @@
       "wall_n": 6
     },
     "slime": {
-      "top": "#1fa32c",
-      "source": "generator-measured from this material's own WALL \u2014 no tiles2 equivalent AND no top surface generated yet (only grass/snow/ice tops exist so far). PLACEHOLDER: wants a designer colour, the way 2.0's grass and dirt were supplied.",
-      "wall": "#1d9829",
+      "top": "#7aee2f",
+      "source": "reference tile tiles/matrix/slime__over__slime/sheet_01_same1_18722/tile_08.png \u2014 the maintainer's chosen look for this material",
+      "wall": "#5b882d",
       "wall_n": 6
     }
   },

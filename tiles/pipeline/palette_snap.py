@@ -518,6 +518,9 @@ def _chroma(rgb):
 
 CHROMA_VALUE_WEIGHT = 0.35
 
+# A textured top keeps more relief than a wall fringe does: the grain IS the material.
+TEXTURED_TOP_SPREAD = 26.0
+
 # Below this the two clusters are one material and the boundary is noise.
 MIN_SPLIT_SEPARATION = 40.0
 
@@ -645,7 +648,7 @@ def substitute(a, mask, hex_target, spread=None):
 
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
-         align_side=False):
+         align_side=False, flat_top=True):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -693,7 +696,19 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
     # side-wall alignment below would have done. substitute() replaces it and cannot
     # fail the same way, because it reads nothing off the art.
 
-    if reg["top"].sum():
+    if reg["top"].sum() and not flat_top:
+        # THE TOP KEEPS ITS TEXTURE and only its colour is corrected — the same treatment
+        # the walls get, and for the same reason. The maintainer asked for it by material:
+        # "parquet_floor is not expected to be 'clean'. So a parquet_floor should always
+        # maintain it's unclean top texture (but the color palette should still align)."
+        #
+        # This is the one case where the argument for flattening does not apply. A flat fill
+        # exists so a large field shows no repeat, but planks ARE the material — a parquet
+        # floor with no grain is not a cleaner parquet floor, it is a brown rectangle.
+        px = substitute(a, reg["top"], top_hex, spread=TEXTURED_TOP_SPREAD)
+        if px is not None:
+            out[:, :, :3][reg["top"]] = px
+    elif reg["top"].sum():
         # Overwrite the top with the one palette colour. This looks like the bigger
         # edit next to a shift, and on the tiles we actually accept it is the SAME edit:
         # the clean-top gate only passes tiles whose top already generated flat, and

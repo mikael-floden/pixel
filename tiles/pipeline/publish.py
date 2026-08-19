@@ -41,7 +41,8 @@ from PIL import Image
 # useful evidence, never the target: taking it as one is what made 3.0 grass a bright
 # yellow-green against 2.0's deep pine.
 _CFG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
-PALETTE = {k: {"top": v["top"], "wall": v.get("wall")} for k, v in
+PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
+               "flat_top": v.get("flat_top", True)} for k, v in
            json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
 
@@ -321,9 +322,15 @@ def main():
             # over MAX_WALL_ERR is left exactly as generated and flagged instead.
             aligned = (c["wall_err"] is not None
                        and c["wall_err"] <= flatness.MAX_WALL_ERR)
+            # NOT EVERY MATERIAL WANTS A FLAT TOP. The flat fill is the default because a
+            # featureless surface shows no repeat across a large field, but the maintainer
+            # asked for parquet_floor to keep its planks: "parquet_floor is not expected to
+            # be clean ... should always maintain it's unclean top texture (but the color
+            # palette should still align)". palette.json says which.
             proc = (palette_snap.snap(raw, top_hex, same_material=(top == side),
                                       wall_hex=wall_hex,
-                                      side_hex=wall_hex, align_side=aligned)
+                                      side_hex=wall_hex, align_side=aligned,
+                                      flat_top=PALETTE.get(top, {}).get("flat_top", True))
                     if top_hex else raw)
             # THE GUARD. Every three attempts at wall alignment put a colour into the
             # art that was in neither the art nor the palette, and every one was caught

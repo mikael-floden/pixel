@@ -166,6 +166,72 @@ wanted for 3.0:
 | `lava` | `#be350e` | `#fb7f10` | too dark, AND self-inconsistent — its wall `#df3c11` was BRIGHTER than its top, so lava blocks were lit from underneath |
 | `light_beach` | `#ead2a2` | `#e4c495` | shift on the reference 21.6 -> 7.9 |
 | `light_soil` | `#c09c6c` | `#c9ab7e` | shift on the reference 15.5 -> 10.3 |
+| `parquet_floor` | `#82523c` | `#a7754b` | too dark, and inverted the same way lava was |
+| `paving_stone` | `#72786c` | `#a5a4a8` | shared `stone_mountain` with grey_stone; shift 39.7 -> 3.5 |
+| `slime` | `#1fa32c` | `#7aee2f` | shift on the reference 44.2 -> 14.2 |
+| `snow` | `#d8e4de` | `#ebf4f6` | shift on the reference 15.3 -> 5.7 |
+
+| `water` | `#428a90` | `#7eb7c7` | shift on the reference 37.9 -> 18.3 |
+| `grass` | `#0c483c` | `#2a7039` | see below — neither end was right |
+
+ALL FOURTEEN materials are now the maintainer's own picks. Nothing carries a 2.0 colour any
+more, which retires `anchored()` as a practical brake — it still guards against a sweep
+re-deriving anything, but there is no longer a tiles2 value left to protect.
+
+### When neither the reference nor what ships is right
+
+> "The grass color palette should be defined as an 'in between' of what we have today and
+> what 'grass over grass' #3 gives us. I'm not happy with #3 and I'm not happy with the
+> current color palette. Mixing them 50/50 will get to my perfect grass color/palette."
+
+`--mix F` blends the derived colour with the palette entry it would replace. Straight RGB
+midpoint, because that is what "50/50" means to the person asking; a perceptual blend would
+land somewhere they did not ask for. The stored `source` records both ends and the weight,
+so the number can be moved later without re-deriving anything.
+
+    python tiles/pipeline/reference.py --material grass --tile b421e18e --mix 0.5 --write --force
+
+Note what this costs and why it is still right: the mix scores WORSE on the acceptance test
+than the reference alone (21.8 against 14.4), because the midpoint is by construction not
+what any tile draws. The acceptance test answers "does the palette describe this art"; the
+maintainer is answering "what should this material look like", and that is the question that
+wins.
+
+### A reference can be several tiles
+
+`paving_stone` was not defined by one tile:
+
+> "The paving_stone palette is defined by every color with a 1 star in 'paving_stone over
+> paving_stone' today."
+
+Eight tiles, and for a material meant to VARY that is the better reference — averaging eight
+surfaces of the same stone describes the stone, where one tile describes one roll of it.
+`--rated N` reads those stars straight out of the wiki's own feedback (`live/feedback/
+tiles.json`, another domain's file, opened READ ONLY per PROTOCOL rule 1) and pools the
+pixels, so a tile does not get extra weight for having a bigger visible face.
+
+    python tiles/pipeline/reference.py --material paving_stone --rated 1 --textured --write --force
+
+### A material can keep its texture
+
+The flat top is the DEFAULT, not a law. It exists because a featureless surface shows no
+repeat across a large field — but that argument does not hold for every material, and the
+maintainer named the exception:
+
+> "parquet_floor is not expected to be 'clean'. So a parquet_floor should always maintain
+> it's unclean top texture (but the color palette should still align)."
+
+Planks ARE the material; a parquet floor with no grain is not a cleaner parquet floor, it is
+a brown rectangle. `paving_stone` is the same — "paving_stone is special the same way
+parquet_floor is special" — a paved surface with the paving flattened out of it is not
+paving. So `palette.json` carries `"flat_top": false` for both and `snap()` gives
+its top the same treatment the walls get — relief kept, hue and saturation taken from the
+palette. Set the flag on any other material that wants it (`reference.py --textured` sets it while
+referencing); everything else defaults to flat.
+
+The acceptance test reads the flag too. Flattening the top inside `shift()` for a material
+that ships textured would score the grain as palette error and make every candidate colour
+look equally bad.
 
 Breaking `grey_stone`'s anchor has a side effect worth knowing about: `paving_stone` was
 anchored to the SAME 2.0 colour (both were `#72786c`) and still carries it, so the two
