@@ -246,6 +246,10 @@ if __name__ == "__main__":
 
     removed = apply_rejections(PixelLabClient())
     if removed:
+        # Same reason as prune.py: a deleted PIECE leaves its own verdict and
+        # every one of its states' verdicts pointing at nothing.
+        import ghosts
+        ghosts.sweep()
         viewer_build.build()
         loop.commit_push(
             f"scenery: remove {len(removed)} rejected piece(s) (wiki verdicts)",

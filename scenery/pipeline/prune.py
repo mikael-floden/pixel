@@ -176,6 +176,14 @@ def main():
     n = prune(client, todo, dry=args.dry_run)
     if args.dry_run:
         return 0
+    # SWEEP THE GHOSTS IN THE SAME RUN. A pruned state's verdict outlives the
+    # art it judged, and the wiki still draws a chip for it — a red button that
+    # opens on an empty frame, indistinguishable from art he still has to act
+    # on. He asked for this directly: "Please process and leave no 'ghost
+    # state' behind." Doing it here rather than as a separate chore is what
+    # stops them accumulating: 1,460 had piled up before this existed.
+    import ghosts
+    ghosts.sweep()
     viewer_build.build()
     print(f"\npruned {n} state(s) — retired so nothing regenerates them")
     return 0
