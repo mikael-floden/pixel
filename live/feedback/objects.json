@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-19T17:26:35.830Z",
+  "updated_at": "2026-08-19T17:28:06.552Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -890,9 +890,9 @@
       "rating": 2
     },
     "scenery/cattail_clumps/cattail_clump_006": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:47:27.643Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:26:51.871Z",
+      "art": "2c9b0d6698a8c3b9"
     },
     "scenery/cattail_clumps/cattail_clump_007": {
       "status": "approved",
@@ -4644,9 +4644,9 @@
       "rating": 2
     },
     "scenery/reed_beds/reed_bed_006": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:48:10.093Z",
-      "rating": 4
+      "status": "rejected",
+      "updated_at": "2026-08-19T17:27:59.338Z",
+      "art": "08b3d42c60638254"
     },
     "scenery/reed_beds/reed_bed_007": {
       "status": "approved",
@@ -18524,6 +18524,136 @@
       "updated_at": "2026-08-19T17:26:34.525Z",
       "status": "approved",
       "art": "d22a3e3987fdf857"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#lit_1#south": {
+      "status": "rejected",
+      "art": "2c9b0d6698a8c3b9",
+      "updated_at": "2026-08-19T17:26:55.027Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "ea1b7764adbff672",
+      "updated_at": "2026-08-19T17:26:56.359Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#not_lit_2#south": {
+      "status": "rejected",
+      "art": "ed343c29e2831525",
+      "updated_at": "2026-08-19T17:26:57.202Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#lit_2#south": {
+      "status": "rejected",
+      "art": "cde58ea8ed4f427d",
+      "updated_at": "2026-08-19T17:26:58.014Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#lit_3#south": {
+      "status": "rejected",
+      "art": "685a47dcb5b3e052",
+      "updated_at": "2026-08-19T17:26:59.102Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_006#lit_4#south": {
+      "status": "rejected",
+      "art": "e2451a0e439f1e9a",
+      "updated_at": "2026-08-19T17:26:59.831Z"
+    },
+    "scenery/crystals/crystal_006#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:07.024Z",
+      "status": "approved",
+      "art": "e0cf0e1ba2e48fcc"
+    },
+    "scenery/crystals/crystal_006#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:09.893Z",
+      "status": "approved",
+      "art": "5ba5dc987769f418"
+    },
+    "scenery/crystals/crystal_006#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:12.109Z",
+      "status": "approved",
+      "art": "6d46bd5b6b81aab6"
+    },
+    "scenery/crystals/crystal_006#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:15.577Z",
+      "status": "approved",
+      "art": "cca35a355dfceead"
+    },
+    "scenery/crystals/crystal_006#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:19.463Z",
+      "status": "approved",
+      "art": "f928f2cf366a940a"
+    },
+    "scenery/crystals/crystal_006#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:24.254Z",
+      "status": "approved",
+      "art": "9797fc0b9a4bb824"
+    },
+    "scenery/mushrooms/mushroom_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "ba16385b8f7cd9b5",
+      "updated_at": "2026-08-19T17:27:35.197Z"
+    },
+    "scenery/mushrooms/mushroom_006#not_lit_2#south": {
+      "status": "rejected",
+      "art": "806a77b1481e3a6c",
+      "updated_at": "2026-08-19T17:27:36.433Z"
+    },
+    "scenery/mushrooms/mushroom_006#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:43.964Z",
+      "status": "approved",
+      "art": "fcef8155e1fa4ec6"
+    },
+    "scenery/mushrooms/mushroom_006#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-19T17:27:46.386Z",
+      "status": "approved",
+      "art": "3da46ce146033ce3"
+    },
+    "scenery/mushrooms/mushroom_006#lit_3#south": {
+      "status": "approved",
+      "art": "8c29763780be0ed6",
+      "updated_at": "2026-08-19T17:27:48.181Z",
+      "rating": 3
+    },
+    "scenery/mushrooms/mushroom_006#lit_4#south": {
+      "status": "approved",
+      "art": "11dffef77038dab2",
+      "updated_at": "2026-08-19T17:27:51.357Z",
+      "rating": 3
+    },
+    "scenery/reed_beds/reed_bed_006#lit_1#south": {
+      "status": "rejected",
+      "art": "08b3d42c60638254",
+      "updated_at": "2026-08-19T17:28:02.339Z"
+    },
+    "scenery/reed_beds/reed_bed_006#not_lit_1#south": {
+      "status": "rejected",
+      "art": "7478b7520334030e",
+      "updated_at": "2026-08-19T17:28:03.167Z"
+    },
+    "scenery/reed_beds/reed_bed_006#not_lit_2#south": {
+      "status": "rejected",
+      "art": "974b39059dcc679f",
+      "updated_at": "2026-08-19T17:28:04.335Z"
+    },
+    "scenery/reed_beds/reed_bed_006#lit_2#south": {
+      "status": "rejected",
+      "art": "52b2c18873b966e7",
+      "updated_at": "2026-08-19T17:28:05.209Z"
+    },
+    "scenery/reed_beds/reed_bed_006#lit_3#south": {
+      "status": "rejected",
+      "art": "1f28a7a7082397ec",
+      "updated_at": "2026-08-19T17:28:05.917Z"
+    },
+    "scenery/reed_beds/reed_bed_006#lit_4#south": {
+      "status": "rejected",
+      "art": "9484cd9bb47fb75a",
+      "updated_at": "2026-08-19T17:28:06.786Z"
     }
   }
 }
