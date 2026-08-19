@@ -56,6 +56,7 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import palette_snap
+import tombstones
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PALETTE = os.path.join(ROOT, "config", "palette.json")
@@ -507,6 +508,20 @@ def main():
         if args.textured:
             entry["flat_top"] = False
         changed.append(m)
+        # A REFERENCE TILE ALWAYS PUBLISHES. It is the definition of the material, so the
+        # one tile that must never be filtered out is this one — and five of them had been.
+        # seam_px measured a tile against the palette derived FROM it, and on a nominated
+        # tile that is a knife edge: black_rock scored 1762 against a tolerance of 8, snow
+        # 1369, ice 643, light_beach 492, parquet_floor 128. The maintainer found out by
+        # going looking for theirs — "I can't even find that tile in the wiki now. Who
+        # removed the perfect reference tile?"
+        #
+        # The gate is fixed, but the guarantee should not depend on every future gate being
+        # right about the one tile it is least able to judge. An override costs nothing and
+        # makes the failure impossible rather than unlikely.
+        if ref and os.path.isfile(ref):
+            tombstones.approve_tiles([os.path.relpath(ref, REPO)],
+                                     reason=f"{m} reference tile — defines the material")
 
     if changed:
         json.dump(doc, open(PALETTE, "w"), indent=2)
