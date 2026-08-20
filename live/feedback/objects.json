@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T05:45:41.755Z",
+  "updated_at": "2026-08-20T05:50:49.426Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -915,9 +915,9 @@
       "rating": 2
     },
     "scenery/chimney_stacks/chimney_stack_002": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:53:52.877Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-20T05:47:27.146Z",
+      "art": "f806bc8ef2314be4"
     },
     "scenery/cliff_falls/cliff_fall_001": {
       "rating": 4,
@@ -3798,9 +3798,9 @@
       "rating": 3
     },
     "scenery/ivy_posts/ivy_post_002": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:54:15.105Z",
-      "rating": 3
+      "status": "rejected",
+      "updated_at": "2026-08-20T05:49:05.204Z",
+      "art": "b5572d7a9fd4b9a3"
     },
     "scenery/ivy_posts/ivy_post_005": {
       "status": "approved",
@@ -27804,6 +27804,337 @@
       "updated_at": "2026-08-20T05:41:43.228Z",
       "status": "approved",
       "art": "c568eeb8ba7a8582"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#lit_1#south": {
+      "status": "rejected",
+      "art": "f806bc8ef2314be4",
+      "updated_at": "2026-08-20T05:47:29.988Z"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "8c2ef3b90b4bf1ac",
+      "updated_at": "2026-08-20T05:47:30.812Z"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#lit_2#south": {
+      "status": "rejected",
+      "art": "a812efeda3f42a35",
+      "updated_at": "2026-08-20T05:47:31.612Z"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "58aea52d17ccd762",
+      "updated_at": "2026-08-20T05:47:32.812Z"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#lit_3#south": {
+      "status": "rejected",
+      "art": "e68409c029970980",
+      "updated_at": "2026-08-20T05:47:33.922Z"
+    },
+    "scenery/chimney_stacks/chimney_stack_002#lit_4#south": {
+      "status": "rejected",
+      "art": "bea8109675542d78",
+      "updated_at": "2026-08-20T05:47:34.629Z"
+    },
+    "scenery/market_stalls/market_stall_002#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:47:41.064Z",
+      "status": "approved",
+      "art": "29da64b1e1dfbd10"
+    },
+    "scenery/market_stalls/market_stall_002#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:47:43.677Z",
+      "status": "approved",
+      "art": "6995eeec23baaf64"
+    },
+    "scenery/market_stalls/market_stall_002#lit_3#south": {
+      "status": "rejected",
+      "art": "1a2432419635e34d",
+      "updated_at": "2026-08-20T05:47:46.532Z"
+    },
+    "scenery/market_stalls/market_stall_002#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:47:49.468Z",
+      "status": "approved",
+      "art": "85cf8bca521be083"
+    },
+    "scenery/market_stalls/market_stall_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "e3536951aaea8259",
+      "updated_at": "2026-08-20T05:47:51.463Z"
+    },
+    "scenery/market_stalls/market_stall_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "6f90a5dc26cf98fc",
+      "updated_at": "2026-08-20T05:47:55.403Z"
+    },
+    "scenery/maypoles/maypole_002#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:01.894Z",
+      "status": "approved",
+      "art": "4bfa6f6c18fb87da"
+    },
+    "scenery/maypoles/maypole_002#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:07.071Z",
+      "status": "approved",
+      "art": "734b75d3a14c71ad"
+    },
+    "scenery/maypoles/maypole_002#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:12.219Z",
+      "status": "approved",
+      "art": "903185fa4628d09b"
+    },
+    "scenery/maypoles/maypole_002#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:14.490Z",
+      "status": "approved",
+      "art": "c9cc32b712f3c9a5"
+    },
+    "scenery/maypoles/maypole_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "24d524374893d6ea",
+      "updated_at": "2026-08-20T05:48:15.962Z"
+    },
+    "scenery/maypoles/maypole_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "edc34a22f39f42b4",
+      "updated_at": "2026-08-20T05:48:17.200Z"
+    },
+    "scenery/beacons/beacon_002#lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:22.982Z",
+      "status": "approved",
+      "art": "d1714fe8653f31f8"
+    },
+    "scenery/beacons/beacon_002#lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:25.927Z",
+      "status": "approved",
+      "art": "dc5e5f266f64d2f0"
+    },
+    "scenery/beacons/beacon_002#lit_3#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:27.724Z",
+      "status": "approved",
+      "art": "ede27f4663e0f35f"
+    },
+    "scenery/beacons/beacon_002#lit_4#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:29.439Z",
+      "status": "approved",
+      "art": "6840880707f66fbd"
+    },
+    "scenery/beacons/beacon_002#not_lit_1#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:32.387Z",
+      "status": "approved",
+      "art": "69d69aabc4917c1b"
+    },
+    "scenery/beacons/beacon_002#not_lit_2#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T05:48:34.029Z",
+      "status": "approved",
+      "art": "a3bafb5a313be507"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:43.218Z",
+      "status": "approved",
+      "art": "a335a8ebb8713d8d"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:45.235Z",
+      "status": "approved",
+      "art": "c51173ae24a82e6d"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:47.261Z",
+      "status": "approved",
+      "art": "663e17ad4aa9e861"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:50.140Z",
+      "status": "approved",
+      "art": "532749ba1a07fec5"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:48:52.979Z",
+      "status": "approved",
+      "art": "e661c6aca0338c4e"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "4a42c050cf6179db",
+      "updated_at": "2026-08-20T05:48:54.590Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#lit_1#south": {
+      "status": "rejected",
+      "art": "b5572d7a9fd4b9a3",
+      "updated_at": "2026-08-20T05:49:07.487Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "145a11c22613ce77",
+      "updated_at": "2026-08-20T05:49:08.429Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "c5bdb7e850fb474c",
+      "updated_at": "2026-08-20T05:49:09.292Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#lit_2#south": {
+      "status": "rejected",
+      "art": "e68ca3c2bba8db51",
+      "updated_at": "2026-08-20T05:49:11.753Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#lit_3#south": {
+      "status": "rejected",
+      "art": "43932d53f32478ef",
+      "updated_at": "2026-08-20T05:49:12.524Z"
+    },
+    "scenery/ivy_posts/ivy_post_002#lit_4#south": {
+      "status": "rejected",
+      "art": "0f8e14eaac9760f2",
+      "updated_at": "2026-08-20T05:49:13.245Z"
+    },
+    "scenery/washing_lines/washing_line_002#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:49:21.175Z",
+      "status": "approved",
+      "art": "0d9fdc6de80cf499"
+    },
+    "scenery/washing_lines/washing_line_002#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:49:23.853Z",
+      "status": "approved",
+      "art": "0007093f00549989"
+    },
+    "scenery/washing_lines/washing_line_002#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:49:26.317Z",
+      "status": "approved",
+      "art": "18a5fcdc5da3bec0"
+    },
+    "scenery/washing_lines/washing_line_002#lit_4#south": {
+      "status": "rejected",
+      "art": "a572804b4fffd4b8",
+      "updated_at": "2026-08-20T05:49:34.771Z"
+    },
+    "scenery/washing_lines/washing_line_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "8856b5a719eaf90d",
+      "updated_at": "2026-08-20T05:49:36.886Z"
+    },
+    "scenery/washing_lines/washing_line_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "47f9d0d613c3abf5",
+      "updated_at": "2026-08-20T05:49:39.731Z"
+    },
+    "scenery/flower_stands/flower_stand_002#lit_1#south": {
+      "status": "approved",
+      "art": "3fd18992694b5b8d",
+      "updated_at": "2026-08-20T05:49:49.953Z",
+      "rating": 2
+    },
+    "scenery/flower_stands/flower_stand_002#lit_2#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T05:49:54.537Z",
+      "status": "approved",
+      "art": "c668d76b05d3a258"
+    },
+    "scenery/flower_stands/flower_stand_002#lit_3#south": {
+      "updated_at": "2026-08-20T05:50:06.657Z",
+      "status": "rejected",
+      "art": "16802fdabedbeaea"
+    },
+    "scenery/flower_stands/flower_stand_002#lit_4#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T05:49:59.056Z"
+    },
+    "scenery/flower_stands/flower_stand_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "56a72c4f68b4969d",
+      "updated_at": "2026-08-20T05:50:11.006Z"
+    },
+    "scenery/flower_stands/flower_stand_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "2e30d0fbb9d0449a",
+      "updated_at": "2026-08-20T05:50:12.399Z"
+    },
+    "scenery/offering_tables/offering_table_002#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:18.157Z",
+      "status": "approved",
+      "art": "d54794ed8ae7e50a"
+    },
+    "scenery/offering_tables/offering_table_002#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:24.365Z",
+      "status": "approved",
+      "art": "7577aa82447ede4a"
+    },
+    "scenery/offering_tables/offering_table_002#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:26.583Z",
+      "status": "approved",
+      "art": "7aedc8c105e8bd03"
+    },
+    "scenery/offering_tables/offering_table_002#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:28.456Z",
+      "status": "approved",
+      "art": "4378113dfcfa3072"
+    },
+    "scenery/offering_tables/offering_table_002#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:31.230Z",
+      "status": "approved",
+      "art": "96244b07178a23f5"
+    },
+    "scenery/offering_tables/offering_table_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "4898eda9ab745c3c",
+      "updated_at": "2026-08-20T05:50:32.795Z"
+    },
+    "scenery/wells/well_002#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:37.731Z",
+      "status": "approved",
+      "art": "c0df2d13c0858e29"
+    },
+    "scenery/wells/well_002#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:40.015Z",
+      "status": "approved",
+      "art": "7d251720d849533b"
+    },
+    "scenery/wells/well_002#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:43.641Z",
+      "status": "approved",
+      "art": "a1382a5b36208500"
+    },
+    "scenery/wells/well_002#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T05:50:46.306Z",
+      "status": "approved",
+      "art": "6bb5e9665749b61f"
+    },
+    "scenery/wells/well_002#not_lit_2#south": {
+      "status": "rejected",
+      "art": "9d783177697086b1",
+      "updated_at": "2026-08-20T05:50:47.677Z"
+    },
+    "scenery/wells/well_002#not_lit_1#south": {
+      "status": "rejected",
+      "art": "60886f157d5dfd70",
+      "updated_at": "2026-08-20T05:50:48.968Z"
     }
   }
 }
