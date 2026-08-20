@@ -61,12 +61,16 @@ for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items
         _EXPAND.setdefault(_v["generated_as"], []).append(_m)
         GENERATED_AS[_m] = _v["generated_as"]
 
-PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
-               "force_align_wall": v.get("force_align_wall", False),
-               "ramp_abs": v.get("ramp_abs", False),
-               "ramp": v.get("ramp"),
-               "kill_highlight": v.get("kill_highlight", False),
-               "flat_top": v.get("flat_top", True)} for k, v in
+# EVERY key a type declares is carried through, not a hand-listed subset. The subset
+# version silently dropped any flag added later: ramp_top_only (added so slime's ramp
+# would stop repainting reviewed walls) and the type-level claim_lip (parquet's
+# moulding) were both dead on arrival - written in palette.json, read by nothing. The
+# code looked right, the config looked right, and the art never changed. Defaults for
+# the flags that need one are applied below so callers can read them unconditionally.
+_DEFAULTS = {"force_align_wall": False, "ramp_abs": False, "kill_highlight": False,
+             "flat_top": True, "ramp_top_only": False, "ramp": None, "claim_lip": None,
+             "wall": None}
+PALETTE = {k: {**_DEFAULTS, **v} for k, v in
            json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
 
