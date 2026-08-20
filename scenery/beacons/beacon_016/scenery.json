@@ -22,7 +22,7 @@
     "character_height_m": 1.7,
     "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
   },
-  "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
+  "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
   "pixellab_directions": 1,
   "tags": [
     "SCENERY"
@@ -32,11 +32,6 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "beacons/beacon_016/sprite.webp",
-      "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
-      "generated_at": "2026-08-14T01:44:39+00:00"
-    },
     "LIT_2": {
       "sprite": "beacons/beacon_016/lit_2/sprite.webp",
       "pixellab_object_id": "99382fb2-6d9e-4c2c-9144-57db84571122",
@@ -54,12 +49,13 @@
       "glow_score": 0.0268
     },
     "LIT_4": {
-      "sprite": "beacons/beacon_016/lit_4/sprite.webp",
+      "sprite": "beacons/beacon_016/sprite.webp",
       "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
       "generated_at": "2026-08-15T19:58:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6173,
-      "glow_score": 0.0117
+      "glow_score": 0.0117,
+      "replaced_anchor": "LIT_1"
     },
     "NOT_LIT_2": {
       "sprite": "beacons/beacon_016/not_lit_2/sprite.webp",

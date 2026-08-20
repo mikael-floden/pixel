@@ -20,7 +20,7 @@
     "character_height_m": 1.7,
     "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
   },
-  "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
+  "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
   "pixellab_directions": 8,
   "tags": [
     "SCENERY"
@@ -31,11 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:01:51+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
-      "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
-      "generated_at": "2026-08-13T21:01:51+00:00"
-    },
     "LIT_3": {
       "sprite": "cupboards_and_shelves/cupboard_004/lit_3/sprite.webp",
       "pixellab_object_id": "2328637a-3dcc-49d5-b18e-0839b347802c",
@@ -45,12 +40,13 @@
       "glow_score": 0.0974
     },
     "LIT_4": {
-      "sprite": "cupboards_and_shelves/cupboard_004/lit_4/sprite.webp",
+      "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
       "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
       "generated_at": "2026-08-16T11:30:40+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3462,
-      "glow_score": 0.0382
+      "glow_score": 0.0382,
+      "replaced_anchor": "LIT_1"
     },
     "NOT_LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_004/not_lit_1/sprite.webp",

@@ -3895,19 +3895,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-14T01:44:39+00:00",
-      "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
+      "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
       "sprite": "beacons/beacon_016/sprite.webp",
-      "art_hash": "0d0fe67b71a71060",
+      "art_hash": "cf27f3993f6bd104",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "beacons/beacon_016/sprite.webp",
-          "pixellab_object_id": "89f9bdd6-dce2-4032-b745-e23194d7b3c7",
-          "generated_at": "2026-08-14T01:44:39+00:00",
-          "art_hash": "0d0fe67b71a71060"
-        },
         "LIT_2": {
           "sprite": "beacons/beacon_016/lit_2/sprite.webp",
           "pixellab_object_id": "99382fb2-6d9e-4c2c-9144-57db84571122",
@@ -3927,12 +3921,13 @@
           "art_hash": "32854ffa7426e131"
         },
         "LIT_4": {
-          "sprite": "beacons/beacon_016/lit_4/sprite.webp",
+          "sprite": "beacons/beacon_016/sprite.webp",
           "pixellab_object_id": "3efe8959-1a96-49af-ae78-7856f4918fed",
           "generated_at": "2026-08-15T19:58:56+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6173,
           "glow_score": 0.0117,
+          "replaced_anchor": "LIT_1",
           "art_hash": "cf27f3993f6bd104"
         },
         "NOT_LIT_2": {
@@ -18282,19 +18277,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T21:01:51+00:00",
-      "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
+      "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
       "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
-      "art_hash": "e4f2cf3ec60e8e9b",
+      "art_hash": "d9ee90f4cc837220",
       "type": "INDOOR",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
-          "pixellab_object_id": "833f8af5-9a9c-4608-83ae-e15b52184247",
-          "generated_at": "2026-08-13T21:01:51+00:00",
-          "art_hash": "e4f2cf3ec60e8e9b"
-        },
         "LIT_3": {
           "sprite": "cupboards_and_shelves/cupboard_004/lit_3/sprite.webp",
           "pixellab_object_id": "2328637a-3dcc-49d5-b18e-0839b347802c",
@@ -18305,12 +18294,13 @@
           "art_hash": "abe80d53b5e53c6e"
         },
         "LIT_4": {
-          "sprite": "cupboards_and_shelves/cupboard_004/lit_4/sprite.webp",
+          "sprite": "cupboards_and_shelves/cupboard_004/sprite.webp",
           "pixellab_object_id": "2c7fac0e-9dd2-4ab7-bcf9-7996a69407ef",
           "generated_at": "2026-08-16T11:30:40+00:00",
           "glow_concept": null,
           "difference_from_source": 0.3462,
           "glow_score": 0.0382,
+          "replaced_anchor": "LIT_1",
           "art_hash": "d9ee90f4cc837220"
         },
         "NOT_LIT_1": {
@@ -56003,19 +55993,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-14T01:57:44+00:00",
-      "pixellab_object_id": "d50f140d-21aa-4394-af92-2eda0bbe1e9c",
+      "pixellab_object_id": "27dae415-521e-4f99-91ea-2d557989e42c",
       "sprite": "washing_lines/washing_line_016/sprite.webp",
-      "art_hash": "71f855d5b7e86914",
+      "art_hash": "fbca8d3217cbf64d",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "washing_lines/washing_line_016/sprite.webp",
-          "pixellab_object_id": "d50f140d-21aa-4394-af92-2eda0bbe1e9c",
-          "generated_at": "2026-08-14T01:57:44+00:00",
-          "art_hash": "71f855d5b7e86914"
-        },
         "NOT_LIT_3": {
           "sprite": "washing_lines/washing_line_016/not_lit_3/sprite.webp",
           "pixellab_object_id": "9300b910-b8d6-432a-baa6-c0d4c3f4f899",
@@ -56027,13 +56011,14 @@
           "art_hash": "c47593ebf0f3f9fe"
         },
         "NOT_LIT_4": {
-          "sprite": "washing_lines/washing_line_016/not_lit_4/sprite.webp",
+          "sprite": "washing_lines/washing_line_016/sprite.webp",
           "pixellab_object_id": "27dae415-521e-4f99-91ea-2d557989e42c",
           "generated_at": "2026-08-17T12:01:41+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6253,
           "glow_score": 0.1716,
           "relit_from": "LIT_3",
+          "replaced_anchor": "LIT_1",
           "art_hash": "fbca8d3217cbf64d"
         },
         "NOT_LIT_5": {
