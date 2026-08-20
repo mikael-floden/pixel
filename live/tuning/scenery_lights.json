@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T05:37:30.291Z",
+  "updated_at": "2026-08-20T05:45:44.228Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/signposts/signpost_004#lit_1": {
@@ -22,6 +22,86 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-20T05:35:44.108Z"
+    },
+    "scenery/charcoal_kilns/charcoal_kiln_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:40:47.761Z"
+    },
+    "scenery/sundials/sundial_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T05:41:35.474Z"
+    },
+    "scenery/sundials/sundial_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:41:37.449Z"
+    },
+    "scenery/sundials/sundial_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T05:41:39.737Z"
+    },
+    "scenery/sundials/sundial_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T05:41:42.253Z"
+    },
+    "scenery/rope_swings/rope_swing_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T05:42:34.871Z"
+    },
+    "scenery/rope_swings/rope_swing_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:42:41.514Z"
+    },
+    "scenery/rope_swings/rope_swing_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T05:42:43.500Z"
+    },
+    "scenery/rope_swings/rope_swing_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T05:42:45.373Z"
+    },
+    "scenery/overgrown_archways/overgrown_archway_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:43:30.327Z"
+    },
+    "scenery/hop_poles/hop_pole_002#not_lit_1": {
+      "lit": true,
+      "was": "not_lit_1",
+      "updated_at": "2026-08-20T05:43:58.765Z"
+    },
+    "scenery/broken_columns/broken_column_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T05:44:06.718Z"
+    },
+    "scenery/broken_columns/broken_column_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:44:11.204Z"
+    },
+    "scenery/broken_columns/broken_column_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T05:44:13.817Z"
+    },
+    "scenery/broken_columns/broken_column_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T05:44:16.915Z"
+    },
+    "scenery/ruined_arches/ruined_arch_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T05:45:30.009Z"
     }
   }
 }
