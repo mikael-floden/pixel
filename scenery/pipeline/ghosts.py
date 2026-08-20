@@ -59,6 +59,23 @@ def ghosts(entries, manifests=None):
         state = body.split("#")[1].upper()
         if state in PSEUDO:
             continue
+        # A CHIP IS NOT ALWAYS A STATE. This function used to look the name up
+        # in `states` alone and call anything else dead, which destroyed 17 of
+        # his verdicts on 2026-08-20 — every facing of campfire#burn,
+        # blood_spatter#spatter and grave_cross#appear, all five stars, all
+        # given minutes earlier. Those three LEGACY pieces are keyed on
+        # ANIMATIONS and carry no `states` map at all, so every one of their
+        # chips read as a missing state.
+        if state in {s.upper() for s in (m.get("animations") or {})}:
+            continue
+        # AND FAIL SAFE ON ANY AXIS THIS FUNCTION DOES NOT MODEL. Adding
+        # animations fixes the case that bit; refusing to judge a piece that has
+        # no `states` map closes the whole class. If a piece names its chips off
+        # something else again, the wrong answer here is silent, irreversible
+        # and lands on art he has just approved — so when the manifest gives no
+        # states to compare against, this says nothing rather than "gone".
+        if not (m.get("states") or {}):
+            continue
         if state not in {s.upper() for s in (m.get("states") or {})}:
             out.append(key)                       # the state is gone
     return out

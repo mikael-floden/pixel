@@ -31,22 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T01:48:01+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "flower_trellises/flower_trellis_001/lit_1/sprite.webp",
-      "pixellab_object_id": "d3745ae5-20a0-4721-9b93-72afb8187152",
-      "generated_at": "2026-08-16T14:15:53+00:00",
-      "glow_concept": "pollen sifting down as glowing dust",
-      "difference_from_source": 0.6318,
-      "glow_score": 0.1263
-    },
-    "LIT_2": {
-      "sprite": "flower_trellises/flower_trellis_001/lit_2/sprite.webp",
-      "pixellab_object_id": "39ad9b71-3e22-4324-97e6-e90bfa566267",
-      "generated_at": "2026-08-16T14:20:54+00:00",
-      "glow_concept": "carved runes on the frame glowing softly",
-      "difference_from_source": 0.497,
-      "glow_score": 0.1568
-    },
     "NOT_LIT_1": {
       "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
       "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
@@ -75,6 +59,15 @@
       "glow_concept": null,
       "difference_from_source": 0.7963,
       "glow_score": 0.0329
+    },
+    "NOT_LIT_5": {
+      "sprite": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp",
+      "pixellab_object_id": "d3745ae5-20a0-4721-9b93-72afb8187152",
+      "generated_at": "2026-08-16T14:15:53+00:00",
+      "glow_concept": "pollen sifting down as glowing dust",
+      "difference_from_source": 0.6318,
+      "glow_score": 0.1263,
+      "relit_from": "LIT_1"
     }
   }
 }
