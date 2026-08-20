@@ -544,7 +544,13 @@ def main():
                                       side_hex=wall_hex, align_side=aligned,
                                       flat_top=PALETTE.get(top, {}).get("flat_top", True),
                                       top_ramp=PALETTE.get(top, {}).get("ramp"),
-                                      side_ramp=PALETTE.get(side, {}).get("ramp"),
+                                      # ramp_top_only: slime's ramp was nominated for its TOP
+                                      # mid-review, but nearly every *__over__slime wall is
+                                      # painted and already reviewed — the ramp must not
+                                      # repaint what the maintainer has signed off.
+                                      side_ramp=(None
+                                                 if PALETTE.get(side, {}).get("ramp_top_only")
+                                                 else PALETTE.get(side, {}).get("ramp")),
                                       claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
                                       deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
                                       # drip_match is PER TILE, never per cell: six

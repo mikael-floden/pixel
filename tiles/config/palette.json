@@ -110,10 +110,21 @@
       "ramp_note": "the nominated top's own tones, dark red to bright bubble highlight. Lava was flat-filled with a single orange (#fb7f10) \u2014 'I feel we paint a single orange color. As if lava has no own palette. Lava is also more red than orange.' flat_top false keeps the bubbling texture; the ramp keeps the range; the base is redder."
     },
     "slime": {
-      "top": "#7aee2f",
-      "source": "reference tile tiles/matrix/slime__over__slime/sheet_01_same1_18722/tile_08.png \u2014 the maintainer's chosen look for this material",
+      "top": "#31bd75",
+      "source": "the slime WALL of tiles/matrix/grass__over__slime/sheet_04_chase4/tile_06.png \u2014 nominated mid-review: 'The bottom in that image (not the grass) is a ref slime color. Just make sure to not include the grass.'",
       "wall": "#5b882d",
-      "wall_n": 6
+      "wall_n": 6,
+      "ramp": [
+        "#0f5946",
+        "#117558",
+        "#2aa072",
+        "#31bd75",
+        "#3cd68a",
+        "#82e18e"
+      ],
+      "flat_top": false,
+      "ramp_top_only": true,
+      "ramp_note": "the nominated wall's own tones, deep shadow to pale sparkle, measured with the grass excluded (slime separates as the MINT family, b-r >= +32; grass is warm). Slime was flat-filled with one neon green (#7aee2f) \u2014 'The slime in slime over gray_stone is also very single color and pure.' flat_top false keeps the swirls, the ramp gives the claims their range, like lava before it. ramp_top_only because slime DIFFERS from lava: nearly every *__over__slime wall is painted and already reviewed \u2014 the ramp must not repaint them (proven byte-identical with the guard on ice/grass/snow over slime)."
     },
     "brown_paving_stone": {
       "top": "#7d7265",
@@ -368,6 +379,10 @@
     "slime__over__grey_paving_stone": {
       "side_ramp_abs": false,
       "note": "the wall shipped as a flat slab ('Slime over grey paving stone makes the grey paving stone texture disappear'): grey_paving's ramp_abs maps this cell's dark source walls into a single stop's basin and the in-basin relief is the texture. Relative relief instead \u2014 this pair only."
+    },
+    "slime__over__lava": {
+      "claim_lip": 3,
+      "note": "lava painted over the drawn slime drape ('Slime over lava has lava on the sline overhang on the left side') \u2014 the geometric lip, proven on ice-over-water and the paving pairs: the top 3 wall rows are the slime's, unconditionally. This pair only."
     }
   }
 }
