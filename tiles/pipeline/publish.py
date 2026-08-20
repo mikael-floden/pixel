@@ -408,7 +408,7 @@ def main():
         cands, has_spill, right_wall, all_gates = candidates(
             d, (PALETTE.get(side) or {}).get("top"), same=(top == side),
             rejected=rejected, top_hex_c=(PALETTE.get(top) or {}).get("top"),
-            approved=approved)
+            approved=approved, lock=LOCK.get(cell))
         # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
         # maintainer picked these out of the reject pile by hand and truncating their
         # choices is not the cap's job — four approvals landed in grey_stone-over-lava
