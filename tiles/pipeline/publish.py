@@ -45,6 +45,20 @@ PAIR_TWEAKS = {k: v for k, v in json.load(open(os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config",
     "palette.json"))).get("pair_tweaks", {}).items() if not k.startswith("_")}
 
+# ONE GENERATED MATERIAL, SEVERAL PUBLISHED TYPES. The maintainer, on paving:
+# "Let's generate both brown and grey paving_stone ... The same paving_stone will
+# generate both a brown and a grey version" — and the wiki and the other agents
+# (the map agent above all) must see them as two separate tile types. A type with
+# "generated_as": "<matrix name>" is published FROM that matrix material's art but
+# AS itself: its own palette, its own cells, its own review sections. The matrix
+# name itself is never published once something expands from it. The cross pairs
+# fall out for free: paving__over__paving art publishes as brown-over-grey and
+# grey-over-brown by painting the two faces with the two palettes.
+_EXPAND = {}
+for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items():
+    if _v.get("generated_as"):
+        _EXPAND.setdefault(_v["generated_as"], []).append(_m)
+
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
                "ramp": v.get("ramp"),
                "kill_highlight": v.get("kill_highlight", False),
@@ -417,16 +431,21 @@ def main():
                 "cells": {}}
     n_pub = 0
     invented = []
+    jobs = []
     for d in sorted(glob.glob(os.path.join(MATRIX, "*__over__*"))):
-        cell = os.path.basename(d)
-        if cell.replace("__over__", "_over_") in dead:
+        mcell = os.path.basename(d)
+        mtop, mside = mcell.split("__over__")
+        for _t in _EXPAND.get(mtop, [mtop]):
+            for _s in _EXPAND.get(mside, [mside]):
+                jobs.append((d, f"{_t}__over__{_s}", _t, _s))
+    for d, cell, top, side in jobs:
+        if os.path.basename(d).replace("__over__", "_over_") in dead:
             continue
         if only and not any(o in cell for o in only):
             if cell in carried:
                 manifest["cells"][cell] = carried[cell]
                 n_pub += len(carried[cell].get("candidates", []))
             continue
-        top, side = cell.split("__over__")
         # top_hex_c and `rejected` were BOTH being dropped here. Without top_hex_c the
         # swapped/contamination/top_err fields are None for every tile, which makes the
         # `fwd or out` and `clean or out` tiers unreachable — the swapped-material gate
@@ -524,6 +543,7 @@ def main():
                                                   else None),
                                       edge_dim=PAIR_TWEAKS.get(cell, {}).get("edge_dim", False),
                                       kill_highlight=PALETTE.get(top, {}).get("kill_highlight", False),
+                                      claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

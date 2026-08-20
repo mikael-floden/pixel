@@ -79,11 +79,9 @@
       "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'"
     },
     "paving_stone": {
-      "top": "#a5a4a8",
-      "source": "8 tile(s) the maintainer rated 1 star in paving_stone__over__paving_stone, pooled \u2014 their chosen look for this material",
-      "wall": "#76757a",
-      "wall_n": 6,
-      "flat_top": false
+      "top": "#7d7265",
+      "wall": "#5c544b",
+      "_comment": "GENERATION alias only. The matrix keeps generating under this name (tiles.json ground_types is unchanged); publish expands it into brown_paving_stone and grey_paving_stone via their generated_as fields and never publishes a cell under this name. Hexes mirror the brown nomination so chase.py's quality gating stays consistent."
     },
     "water": {
       "top": "#7eb7c7",
@@ -108,6 +106,37 @@
       "source": "reference tile tiles/matrix/slime__over__slime/sheet_01_same1_18722/tile_08.png \u2014 the maintainer's chosen look for this material",
       "wall": "#5b882d",
       "wall_n": 6
+    },
+    "brown_paving_stone": {
+      "top": "#7d7265",
+      "source": "reference tile tiles/matrix/black_rock__over__paving_stone/sheet_06_chase6_25758/tile_15.png \u2014 the maintainer's chosen look for this material, nominated by its WALL only: 'the ref should be #2 in Black Rock over paving stone. But only the paving stone part on that tile (not the black rock).'",
+      "wall": "#5c544b",
+      "ramp": [
+        "#443f3a",
+        "#4c463f",
+        "#62594f",
+        "#6d6356",
+        "#786e61",
+        "#8a8274"
+      ],
+      "ramp_note": "the ref wall's own tones, dark grout to lit brick, black-rock drips rejected nearest-of-two (55.7% of the wall). Chosen 'becouse the paving_stone on this image is so ugly and look so different compared to other paving_stones'; the top #7d7265 is projected from the wall by the lit/shaded ratio of 6 nominated materials.",
+      "flat_top": false,
+      "generated_as": "paving_stone"
+    },
+    "grey_paving_stone": {
+      "top": "#a3a2a6",
+      "source": "reference tile tiles/matrix/paving_stone__over__paving_stone/sheet_01_same1_18717/tile_06.png \u2014 #8, the clean-line tile the maintainer pointed at when splitting paving into two types: 'The same paving_stone will generate both a brown and a grey version.'",
+      "wall": "#636368",
+      "ramp": [
+        "#454545",
+        "#4b4e57",
+        "#5c5c5c",
+        "#68686e",
+        "#757575"
+      ],
+      "ramp_note": "the ref wall's own greys, grout to lit brick, top-contaminated caps rejected nearest-of-two",
+      "flat_top": false,
+      "generated_as": "paving_stone"
     }
   },
   "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
@@ -133,6 +162,10 @@
     "black_rock__over__dark_mud": {
       "drip_match": 1,
       "note": "the overhang, by the maintainer's definition: the top's own paint (cool \u2014 blue >= red; the mud is warm) connected to the top edge, allowed to jump the 1px drawn edge highlight; the highlight band itself is claimed with it and capped darker. Claims OVERWRITE the live wall paint, which is computed from the base classification \u2014 proven on all 31 candidates: zero pixels outside the claims differ from live ('WHAT WE HAVE IN GAME NOW HAS COLORED THE BOTTOM BROWN PERFECTLY ALREADY'). Approved: 'Your last post did it. It's Perfect now'"
+    },
+    "snow__over__brown_paving_stone": {
+      "claim_floor": 230,
+      "note": "the snow drape's drawn underside kept its dark relief through substitution and read as leftover grey paving on the new brown wall (the maintainer circled it). Claimed pixels are floored to near the snow paint's own brightness: the shadow shape survives, but it is snow-bright."
     }
   }
 }

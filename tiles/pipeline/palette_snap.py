@@ -1024,7 +1024,7 @@ def soften_rim(out, a, reg, top_hex, kill=False):
     out[:, :, :3][band] = px
 
 
-def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None):
+def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None, vfloor=None):
     """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
 
     Hue and saturation are SET from the palette, never derived from the art, and only
@@ -1075,6 +1075,13 @@ def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None):
     hsv[:, 2] = np.clip(
         np.clip(float(tgt[2]) + (v - v.mean()) * scale, float(tgt[2]) - 58.0,
                 float(tgt[2]) + 58.0), 0, 255)
+    if vfloor is not None:
+        # Mirror of vcap, for BRIGHT tops: a drape of snow cannot be halftone grey.
+        # The snow's drawn underside kept its dark relief through substitution and
+        # read as leftover grey paving on the new brown wall (the maintainer circled
+        # it). Raising claimed pixels to the paint's own brightness keeps the shadow
+        # shape but makes it snowy. Raising toward the target keeps rule 2 true.
+        hsv[:, 2] = np.maximum(hsv[:, 2], float(vfloor))
     if vcap is not None:
         # A claimed drape must BE near-black, its lit lip included. Relief-keeping
         # left the bright edge pixels bright ("Red is the one that should be
@@ -1088,7 +1095,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
-         edge_dim=False, kill_highlight=False):
+         edge_dim=False, kill_highlight=False, claim_floor=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1304,7 +1311,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                     mask[idxm[0][band], idxm[1][band]] = True
                 px = substitute(a, mask, hx, ramp=rmp,
                                 vcap=(None if (is_side or drip_match is None)
-                                      else _rgb2hsv(_hex(hx)[None, :])[0][2] + 12.0))
+                                      else _rgb2hsv(_hex(hx)[None, :])[0][2] + 12.0),
+                                vfloor=(claim_floor if not is_side else None))
                 if px is not None:
                     out[:, :, :3][mask] = px
 
