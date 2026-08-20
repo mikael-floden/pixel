@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T01:15:52.388Z",
+  "updated_at": "2026-08-20T01:16:53.464Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -247,9 +247,9 @@
       "rating": 3
     },
     "scenery/barrels/barrel_008": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:39:39.913Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-20T01:16:04.701Z",
+      "art": "c8509865f4a950ab"
     },
     "scenery/barrels/barrel_010": {
       "status": "approved",
@@ -375,9 +375,9 @@
       "rating": 1
     },
     "scenery/beehives/beehive_011": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:39:42.519Z",
-      "rating": 1
+      "status": "rejected",
+      "updated_at": "2026-08-20T01:16:22.594Z",
+      "art": "a3b371299edd130c"
     },
     "scenery/bell_posts/bell_post_004": {
       "status": "approved",
@@ -24995,6 +24995,93 @@
       "updated_at": "2026-08-20T01:15:52.770Z",
       "status": "approved",
       "art": "7783319737948cb1"
+    },
+    "scenery/barrels/barrel_008#lit_1#south": {
+      "status": "rejected",
+      "art": "c8509865f4a950ab",
+      "updated_at": "2026-08-20T01:16:07.126Z"
+    },
+    "scenery/barrels/barrel_008#not_lit_1#south": {
+      "status": "rejected",
+      "art": "47603c20eb9022e7",
+      "updated_at": "2026-08-20T01:16:08.343Z"
+    },
+    "scenery/barrels/barrel_008#not_lit_2#south": {
+      "status": "rejected",
+      "art": "bcc4846e2cbd9faf",
+      "updated_at": "2026-08-20T01:16:09.378Z"
+    },
+    "scenery/barrels/barrel_008#lit_2#south": {
+      "status": "rejected",
+      "art": "3e75b5c77e188739",
+      "updated_at": "2026-08-20T01:16:10.219Z"
+    },
+    "scenery/barrels/barrel_008#lit_3#south": {
+      "status": "rejected",
+      "art": "2a2f55fc1631f68c",
+      "updated_at": "2026-08-20T01:16:11.011Z"
+    },
+    "scenery/barrels/barrel_008#lit_4#south": {
+      "status": "rejected",
+      "art": "bd9b26b2a4909baa",
+      "updated_at": "2026-08-20T01:16:11.710Z"
+    },
+    "scenery/beehives/beehive_011#not_lit_1#south": {
+      "status": "rejected",
+      "art": "a3b371299edd130c",
+      "updated_at": "2026-08-20T01:16:24.247Z"
+    },
+    "scenery/beehives/beehive_011#not_lit_3#south": {
+      "status": "rejected",
+      "art": "fc495fa7f0be90e1",
+      "updated_at": "2026-08-20T01:16:25.801Z"
+    },
+    "scenery/beehives/beehive_011#not_lit_2#south": {
+      "status": "rejected",
+      "art": "1448acb7a4ae1226",
+      "updated_at": "2026-08-20T01:16:27.062Z"
+    },
+    "scenery/beehives/beehive_011#not_lit_4#south": {
+      "status": "rejected",
+      "art": "8d410a305a8ae177",
+      "updated_at": "2026-08-20T01:16:28.137Z"
+    },
+    "scenery/beehives/beehive_011#lit_1#south": {
+      "status": "rejected",
+      "art": "93029e68725c6cd3",
+      "updated_at": "2026-08-20T01:16:28.958Z"
+    },
+    "scenery/beehives/beehive_011#lit_2#south": {
+      "status": "rejected",
+      "art": "0c21d81556a9627b",
+      "updated_at": "2026-08-20T01:16:29.785Z"
+    },
+    "scenery/haystacks/haystack_013#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:16:36.406Z",
+      "status": "approved",
+      "art": "f2c7712ba19e5a18"
+    },
+    "scenery/haystacks/haystack_013#not_lit_3#south": {
+      "status": "approved",
+      "art": "13e5efbc559cbda6",
+      "updated_at": "2026-08-20T01:16:39.377Z"
+    },
+    "scenery/haystacks/haystack_013#not_lit_4#south": {
+      "status": "rejected",
+      "art": "de811ceb094d6ce5",
+      "updated_at": "2026-08-20T01:16:42.564Z"
+    },
+    "scenery/haystacks/haystack_013#lit_1#south": {
+      "status": "approved",
+      "art": "6492e922665c20fe",
+      "updated_at": "2026-08-20T01:16:45.787Z"
+    },
+    "scenery/haystacks/haystack_013#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:16:50.016Z",
+      "status": "approved",
+      "art": "8b83baa743ce8988"
     }
   }
 }
