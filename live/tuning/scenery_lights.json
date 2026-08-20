@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T00:19:31.848Z",
+  "updated_at": "2026-08-20T00:20:51.674Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/windows/window_116#lights_on": {
@@ -377,6 +377,66 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-20T00:19:05.807Z"
+    },
+    "scenery/harvest_altars/harvest_altar_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T00:19:42.810Z"
+    },
+    "scenery/harvest_altars/harvest_altar_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:19:45.210Z"
+    },
+    "scenery/harvest_altars/harvest_altar_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:19:47.575Z"
+    },
+    "scenery/harvest_altars/harvest_altar_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:19:49.972Z"
+    },
+    "scenery/witch_rings/witch_ring_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T00:19:59.745Z"
+    },
+    "scenery/witch_rings/witch_ring_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:20:03.824Z"
+    },
+    "scenery/witch_rings/witch_ring_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:20:06.394Z"
+    },
+    "scenery/witch_rings/witch_ring_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:20:09.863Z"
+    },
+    "scenery/giant_fallen_bells/giant_fallen_bell_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T00:20:21.384Z"
+    },
+    "scenery/giant_fallen_bells/giant_fallen_bell_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:20:25.482Z"
+    },
+    "scenery/giant_fallen_bells/giant_fallen_bell_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:20:28.864Z"
+    },
+    "scenery/giant_fallen_bells/giant_fallen_bell_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:20:31.501Z"
     }
   }
 }
