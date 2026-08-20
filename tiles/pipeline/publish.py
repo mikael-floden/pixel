@@ -46,6 +46,33 @@ PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
            json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
 
+
+
+def _rejected_still_published(manifest):
+    """Keys the maintainer rejected in the wiki that are STILL in the set being written."""
+    fb = os.path.join(REPO, "live", "feedback", "tiles.json")
+    try:
+        entries = json.load(open(fb))["entries"]
+    except Exception:
+        return []
+    inset = {e["key"] for c in manifest["cells"].values() for e in c["candidates"]}
+    return [k for k, v in entries.items()
+            if v.get("status") == "rejected" and k in inset]
+
+
+def _apply_verdicts():
+    """Record any wiki verdict the maintainer has cast since the last publish.
+
+    Returns how many tiles were newly deferred. Safe to call repeatedly: defer_tiles()
+    only counts tiles it had not already recorded.
+    """
+    import review
+    hits, _misses, _shifted = review.resolve()
+    srcs = [e["src"] for k, v, e in hits
+            if v.get("status") == "rejected" and e.get("src")]
+    return tombstones.defer_tiles(srcs) if srcs else 0
+
+
 def _save(im, path):
     """Lossless WebP. BOTH flags are non-default in Pillow and both matter: without
     `lossless` you silently get lossy VP8 and ringing on every hard pixel-art edge,
@@ -263,6 +290,9 @@ def main():
                     help="max candidates published per cell; 0 = every tile that clears "
                          "the bar (the default)")
     ap.add_argument("--clean", action="store_true", help="rebuild the review folder")
+    ap.add_argument("--no-apply", action="store_true",
+                    help="do NOT apply the maintainer's pending wiki verdicts first "
+                         "(they are applied by default — see _apply_verdicts)")
     ap.add_argument("--cells", default="",
                     help="comma-separated cells (or substrings) to republish; every other "
                          "cell is carried over from the existing manifest untouched. A "
@@ -288,6 +318,32 @@ def main():
         except Exception:
             ap.error("--cells needs an existing manifest to carry the other cells over "
                      "from; run a full publish first")
+    # ALWAYS CHECK FOR A REVIEW FIRST. A rejection in the wiki records a verdict; it does
+    # not remove the tile. That takes review.py --apply and then this. Ship a publish
+    # without the apply and the maintainer gets a fresh build that still contains work
+    # they deleted — which happened, and was baffling from their side because the build
+    # WAS new: "Why do I see something I have removed if you have just built a new
+    # version. I understand absolutely nothing now."
+    #
+    # It happened because the apply lived in whichever shell script happened to call
+    # publish, so forgetting it was always one script away. Their instruction — "never
+    # not do that again. You should always check if I have made a review. That is very
+    # important" — is a mechanism, not a promise, so it lives at the choke point every
+    # path goes through. --no-apply exists for a dry rebuild and says so in the log.
+    #
+    # BEFORE the rmtree below, deliberately: resolve() reads the existing manifest to
+    # turn a wiki key into an art path, and --clean deletes it. Running it after cost
+    # nine of the maintainer's rejections once already.
+    if not args.no_apply:
+        try:
+            n_applied = _apply_verdicts()
+            print(f"applied {n_applied} new maintainer verdict(s)" if n_applied
+                  else "no unapplied maintainer verdicts")
+        except Exception as exc:
+            raise SystemExit(f"could not read the maintainer's verdicts ({exc}). "
+                             f"Refusing to publish: a run that silently skips a review "
+                             f"republishes tiles they deleted. Pass --no-apply to "
+                             f"override deliberately.")
     if args.clean and os.path.isdir(REVIEW):
         shutil.rmtree(REVIEW)
     os.makedirs(REVIEW, exist_ok=True)
@@ -465,6 +521,19 @@ def main():
                                    # to hit. The cell ships its best available and
                                    # stays on the worklist.
                                    "below_bar": not all_gates}
+
+    # THE SELF-CHECK. Applying the verdicts up front is the fix; this is the proof it
+    # worked, and it is here rather than in a shell script for the same reason. If a tile
+    # the maintainer deleted is still in the set that just got written, say so loudly —
+    # a silent republish of deleted work is what made a new build indistinguishable from
+    # a broken one.
+    still = _rejected_still_published(manifest)
+    if still:
+        print(f"\n*** {len(still)} REJECTED TILE(S) ARE STILL IN THIS SET ***")
+        for k in still[:10]:
+            print(f"   {k}")
+        print("   the maintainer deleted these; they must not ship. Investigate before "
+              "pushing — do NOT deploy this build.")
 
     with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)
