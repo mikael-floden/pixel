@@ -263,8 +263,31 @@ def main():
                     help="max candidates published per cell; 0 = every tile that clears "
                          "the bar (the default)")
     ap.add_argument("--clean", action="store_true", help="rebuild the review folder")
+    ap.add_argument("--cells", default="",
+                    help="comma-separated cells (or substrings) to republish; every other "
+                         "cell is carried over from the existing manifest untouched. A "
+                         "full run is ~6 minutes and most fixes touch a handful of cells.")
     args = ap.parse_args()
 
+    # PARTIAL REPUBLISH. Every publish rebuilt all 196 cells, so a fix affecting fifteen
+    # of them still cost six minutes before the maintainer could look at it — and with a
+    # push and a deploy behind that, one wrong guess cost the best part of half an hour:
+    # "In this tempo it will take forever. What if I don't like your fix?"
+    #
+    # The cells not named are not re-rendered and not re-measured; their manifest entries
+    # and their webp files are carried across exactly as they were. That makes the cost of
+    # a targeted fix proportional to the fix.
+    only = [c.strip() for c in args.cells.split(",") if c.strip()]
+    carried = {}
+    if only:
+        if args.clean:
+            ap.error("--cells and --clean are contradictory: --clean deletes the very "
+                     "files a partial run carries over")
+        try:
+            carried = json.load(open(os.path.join(REVIEW, "manifest.json")))["cells"]
+        except Exception:
+            ap.error("--cells needs an existing manifest to carry the other cells over "
+                     "from; run a full publish first")
     if args.clean and os.path.isdir(REVIEW):
         shutil.rmtree(REVIEW)
     os.makedirs(REVIEW, exist_ok=True)
@@ -291,6 +314,11 @@ def main():
     for d in sorted(glob.glob(os.path.join(MATRIX, "*__over__*"))):
         cell = os.path.basename(d)
         if cell.replace("__over__", "_over_") in dead:
+            continue
+        if only and not any(o in cell for o in only):
+            if cell in carried:
+                manifest["cells"][cell] = carried[cell]
+                n_pub += len(carried[cell].get("candidates", []))
             continue
         top, side = cell.split("__over__")
         # top_hex_c and `rejected` were BOTH being dropped here. Without top_hex_c the
