@@ -336,6 +336,10 @@
     "lava__over__light_beach": {
       "claim_depth": 0.3,
       "note": "lava claims painted beach spots on the wall ('Here lava thinks light beach is lava'). Claims stop at the lip. This pair only, as instructed."
+    },
+    "light_beach__over__ice": {
+      "claim_depth": 0.3,
+      "note": "sand claims ran to the wall base through the ice ('draws the light beach all the way down to the bottom (where ice should have been first to occupy the color white)'). Claims stop at the lip. Local fix only, as instructed."
     }
   }
 }
