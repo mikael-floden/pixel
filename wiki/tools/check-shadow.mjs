@@ -110,8 +110,24 @@ const clickDir = (label) => p.evaluate((d) => [...document.querySelectorAll(".di
 const clickState = (name) => p.evaluate((n) => [...document.querySelectorAll(".player-controls .seg-states button, .seg-states button")].find((x) => x.textContent.toLowerCase().includes(n))?.click(), name);
 
 // ---- 1+2. the editor: one record, pinned anchor, monster moves opposite ----
+// Where the anchor lands IN THE VIEWPORT vs the stage's visible centre — the
+// number his eye judges. The first cut asserted "anchor at canvas centre",
+// which stayed true while an 83px overflow shoved that centre 41px out of
+// view (maintainer 2026-08-20: "the shadow doesn't feel centered at all
+// horizontally" + a scrollbar in the preview).
+const viewState = () => p.evaluate(() => {
+  const st = document.querySelector(".player-stage"), cv = st.querySelector("canvas");
+  const sr = st.getBoundingClientRect(), cr = cv.getBoundingClientRect();
+  const sh = window.__wikiShadow;
+  return { anchorViewX: sh ? cr.x + sh.ex : null, stageCenterX: sr.x + sr.width / 2,
+    overflowX: st.scrollWidth - st.clientWidth, scrollLeft: st.scrollLeft };
+});
 const first = await probe();
+const v0 = await viewState();
 ok(!!first && first.ex === first.W / 2, `the shadow centre sits at the canvas's horizontal centre (${first?.ex} of ${first?.W})`);
+ok(v0.overflowX <= 6, `viewing: no real scrollbar (${v0.overflowX}px over — the stage's own padding at most)`);
+ok(Math.abs(v0.anchorViewX - v0.stageCenterX) <= 3,
+  `and the shadow sits at the VISIBLE centre (${Math.round(v0.anchorViewX)} vs ${Math.round(v0.stageCenterX)})`);
 // Open the editor and KEEP it open: the boot's staging upgrade re-routes the
 // page once, and if that lands between the click and the read the bar is gone.
 // Loop until the pad is really on screen.
@@ -130,25 +146,37 @@ async function openEditor() {
 }
 let pad = await openEditor();
 const before = await probe();
-ok(before.ex === before.W / 2, "…and still does with the editor open");
+const vE = await viewState();
+// The editor adds EDIT_ROOM(12) of travel slack per side; anything past
+// ~64px of overflow means the slack regressed toward the 83px scrollbar he
+// photographed. Whatever the overflow, the scroll must auto-centre so the
+// anchor stays under his eye.
+ok(vE.overflowX <= 64 && Math.abs(vE.anchorViewX - vE.stageCenterX) <= 3,
+  `…and still does with the editor open — slack bounded, overflow auto-centred (${vE.overflowX}px over, anchor off by ${Math.abs(Math.round(vE.anchorViewX - vE.stageCenterX))}px)`);
 await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
 await p.waitForTimeout(200);
 pad = await (await p.$(".shadow-pad")).boundingBox();
 await p.mouse.move(pad.x + pad.width / 2, pad.y + pad.height / 2);
 await p.mouse.down();
 for (let i = 1; i <= 6; i++) await p.mouse.move(pad.x + pad.width / 2 + (90 * i) / 6, pad.y + pad.height / 2 + (90 * i) / 6);
-await p.mouse.up();
-await p.waitForTimeout(250);
+// SAMPLE MID-GESTURE, FINGER STILL DOWN: the pinned-ellipse / sliding-monster
+// contract holds WHILE he drags (the box is frozen precisely then). The
+// release that follows re-hugs the box — asserted separately below.
 const after = await probe();
 ok(after.rec.edited && after.rec.ax > before.rec.ax && after.rec.ay > before.rec.ay,
   `the pad writes the record (anchor ${before.rec.ax},${before.rec.ay} → ${after.rec.ax},${after.rec.ay})`);
 ok(after.ex === before.ex && after.ey === before.ey && after.W === before.W && after.H === before.H,
-  "the ellipse itself did not move — the canvas anchor is pinned");
+  "mid-drag the ellipse itself does not move — the canvas anchor is pinned");
 const dxMoved = before.dx - after.dx, dyMoved = before.dy - after.dy;
 ok(Math.abs(dxMoved - (after.rec.ax - before.rec.ax) * after.s) <= 1 && dxMoved > 0,
-  `dragging the shadow right moved the MONSTER left, exactly (frame slid ${dxMoved}px for ${after.rec.ax - before.rec.ax} frame px)`);
+  `dragging the shadow right moves the MONSTER left, exactly (frame slid ${dxMoved}px for ${after.rec.ax - before.rec.ax} frame px)`);
 ok(Math.abs(dyMoved - (after.rec.ay - before.rec.ay) * after.s) <= 1 && dyMoved > 0,
-  "…and dragging it down moved the monster up — he tunes the monster around its own position");
+  "…and dragging it down moves the monster up — he tunes the monster around its own position");
+await p.mouse.up();
+await p.waitForTimeout(400);
+const vRel = await viewState();
+ok(Math.abs(vRel.anchorViewX - vRel.stageCenterX) <= 3,
+  `releasing re-hugs the box and the shadow is back at the visible centre (off by ${Math.abs(Math.round(vRel.anchorViewX - vRel.stageCenterX))}px)`);
 
 // the record follows across STATE and every DIRECTION, anchor never moving
 const seen = [];
@@ -165,6 +193,28 @@ const recs = new Set(seen.map((x) => JSON.stringify(x.rec)));
 const anchors = new Set(seen.map((x) => `${x.ex},${x.ey},${x.W},${x.H}`));
 ok(recs.size === 1, `one record across 2 states × 8 directions (${recs.size} distinct)`);
 ok(anchors.size === 1, `and one pinned anchor for all 16 views (${anchors.size} distinct) — the shadow never jumps`);
+
+// THE FAST-CLICK STORM — his exact gesture ("let's now fast click between all
+// directions and see how the monster now rotates around the new shadow
+// center"). Three rounds through all 8 at ~45ms must leave the record, the
+// canvas, the anchor and the view centring exactly where they were.
+const preStorm = await probe();
+for (let round = 0; round < 3; round++) {
+  for (const d of ["S", "SE", "E", "NE", "N", "NW", "W", "SW"]) {
+    await clickDir(d);
+    await p.waitForTimeout(45);
+  }
+}
+await clickDir("S");
+await p.waitForTimeout(400);
+const postStorm = await probe();
+const vStorm = await viewState();
+ok(JSON.stringify(postStorm.rec) === JSON.stringify(preStorm.rec),
+  "24 fast direction clicks leave the record untouched");
+ok(postStorm.ex === preStorm.ex && postStorm.ey === preStorm.ey && postStorm.W === preStorm.W && postStorm.H === preStorm.H,
+  "…and the canvas and anchor exactly where they were");
+ok(Math.abs(vStorm.anchorViewX - vStorm.stageCenterX) <= 3,
+  `…still centred in view after the storm (off by ${Math.abs(Math.round(vStorm.anchorViewX - vStorm.stageCenterX))}px)`);
 const east = seen.find((x) => x.dir === "east"), south = seen.find((x) => x.dir === "south");
 const expE = myEllipse(after.rec.rx, after.rec.ry, "east"), expS = myEllipse(after.rec.rx, after.rec.ry, "south");
 ok(Math.abs(east.p - expE.p * east.s) < 0.1 && Math.abs(east.q - expE.q * east.s) < 0.1,

@@ -878,6 +878,8 @@ function makePlayer(entity, kind, opts = {}) {
     if (!shadowDrag) return;
     shadowDrag = null;
     try { canvas.releasePointerCapture(ev.pointerId); } catch { /* already gone */ }
+    editBox = null;   // gesture over — re-hug (see padEnd)
+    draw();
   };
   canvas.addEventListener("pointerup", endDrag);
   canvas.addEventListener("pointercancel", endDrag);
@@ -1104,12 +1106,23 @@ function makePlayer(entity, kind, opts = {}) {
     }
     return any ? [x0, y0, x1, y1] : [0, 0, entity.frameW ?? 64, entity.frameH ?? 64];
   };
-  // The box the editor froze when it opened — the canvas must not resize while
-  // he is dragging (measured 2026-08-15: a resizing canvas slid the art under
-  // his thumb and halved every correction). Frozen from the record at entry
-  // plus ROOM of travel on every side; cleared when the editor closes.
+  // The box the editor froze — the canvas must not resize WHILE A GESTURE IS
+  // IN FLIGHT (measured 2026-08-15: a resizing canvas slid the art under his
+  // thumb and halved every correction). Frozen when the editor opens and
+  // RE-DERIVED at the end of every gesture (pad release, slider release):
+  // between gestures nothing is under the finger, and re-hugging is what stops
+  // the slack from accumulating into a scrollbar.
+  //
+  // ROOM is deliberately small (maintainer 2026-08-20, from his phone: "I can
+  // also see a scrollbar inside the preview and the shadow doesn't feel
+  // centered at all horizontally"): the first cut reserved 30 frame px on
+  // every side, which on a 331px stage pushed the canvas to 396 — an 83px
+  // overflow whose scroll sat at the LEFT edge, so the pinned anchor rendered
+  // 41px right of the visible centre and everything he had just tuned read as
+  // misplaced. 12px covers a normal adjustment; a bigger drag clips at the rim
+  // until the release re-hugs the box.
   let editBox = null;
-  const EDIT_ROOM = 30;                              // frame px, every side
+  const EDIT_ROOM = 12;                              // frame px, every side
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
@@ -1140,24 +1153,33 @@ function makePlayer(entity, kind, opts = {}) {
       const A = { x: fw / 2 + sh.ax, y: fh / 2 + sh.ay };      // anchor, frame px
       const ext = shadowExtents(sh.rx, sh.ry);
       const pad = 6;
-      let box;
-      if (cur.editShadow) {
-        if (!editBox) {
-          const halfW = Math.max(A.x - uBB[0], uBB[2] - A.x, ext.x) + pad + EDIT_ROOM;
-          editBox = {
-            left: -halfW, right: halfW,
-            top: Math.min(uBB[1] - A.y, -ext.y) - pad - EDIT_ROOM,
-            bot: Math.max(uBB[3] - A.y, ext.y) + pad + EDIT_ROOM,
-          };
-        }
-        box = editBox;
-      } else {
+      // SYMMETRIC AROUND THE ANCHOR horizontally — "Horizontally the shadow
+      // will pick the center" is his spec, and symmetric is what makes it
+      // unconditional: anchorX ≡ canvas centre, so CSS centring (canvas fits)
+      // and the auto-centred scroll (canvas overflows, below) both put the
+      // shadow at the visible centre — before a gesture, after its re-hug,
+      // and through any storm of direction clicks. An asymmetric hug saved a
+      // few pixels of width but parked the anchor off-centre by exactly ax·s
+      // the moment a drag ended. Vertically the box hugs the monster instead
+      // — the shadow must not pick THAT centre, or a tall monster rides high.
+      const hug = () => {
         const halfW = Math.max(A.x - uBB[0], uBB[2] - A.x, ext.x) + pad;
-        box = {
-          left: -halfW, right: halfW,
+        return {
+          left: -halfW,
+          right: halfW,
           top: Math.min(uBB[1] - A.y, -ext.y) - pad,
           bot: Math.max(uBB[3] - A.y, ext.y) + pad,
         };
+      };
+      let box;
+      if (cur.editShadow) {
+        if (!editBox) {
+          const hb = hug();
+          editBox = { left: hb.left - EDIT_ROOM, right: hb.right + EDIT_ROOM, top: hb.top - EDIT_ROOM, bot: hb.bot + EDIT_ROOM };
+        }
+        box = editBox;
+      } else {
+        box = hug();
       }
       wantW = Math.ceil((box.right - box.left) * s);
       wantH = Math.ceil((box.bot - box.top) * s);
@@ -1174,6 +1196,15 @@ function makePlayer(entity, kind, opts = {}) {
     }
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
+      // A canvas that must overflow (a genuinely huge monster) starts its
+      // scroll pinned LEFT, which hides the anchored half of the picture —
+      // centre it instead. Only on a real resize, so his own swipes are
+      // never fought.
+      requestAnimationFrame(() => {
+        if (stage.scrollWidth > stage.clientWidth) {
+          stage.scrollLeft = (stage.scrollWidth - stage.clientWidth) / 2;
+        }
+      });
     }
     sizeStage();   // after the canvas is sized — the stage only grows for it
     placeHuman(s); // and the size reference tracks the same scale + baseline
@@ -1437,6 +1468,10 @@ function makePlayer(entity, kind, opts = {}) {
     padEl.classList.remove("held");
     padKnob.style.transform = "";
     try { padEl.releasePointerCapture(ev.pointerId); } catch { /* already gone */ }
+    // Gesture over, nothing under the finger: re-hug the frozen box so the
+    // slack never accumulates into an overflow.
+    editBox = null;
+    draw();
   };
   padEl.addEventListener("pointerup", padEnd);
   padEl.addEventListener("pointercancel", padEnd);
@@ -1455,6 +1490,9 @@ function makePlayer(entity, kind, opts = {}) {
       onShadowEdit?.(); refreshShadowBar(); draw();
     };
     inp.addEventListener("input", apply);
+    // "change" fires when the finger leaves the rail — the gesture-end re-hug,
+    // same as the pad's.
+    inp.addEventListener("change", () => { editBox = null; draw(); });
     return inp;
   };
   const wSlider = mkSizer("rx", "shadow width"), hSlider = mkSizer("ry", "shadow depth");

@@ -586,12 +586,20 @@ Reset, but the semantics are the game's:
   over all facings — one box for the whole monster — so switching animation or
   direction moves nothing and the shadow's canvas position never jumps
   (*"where the shadow is placed vertically has to be the same for the entire
-  monster in all directions and animations"*). Horizontally the anchor sits at
-  the canvas centre (*"the shadow will pick the center"*); vertically the box
-  hugs the monster, never the shadow (*"the monster will be rendered so far up
-  if we do that"*). While editing, the box is FROZEN from the record at entry
-  plus 30px of travel — the canvas must not resize under a drag (that bug cost
-  him a night once already).
+  monster in all directions and animations"*). Horizontally the box is
+  SYMMETRIC around the anchor, so the shadow sits at the canvas centre
+  (*"the shadow will pick the center"*) — and at the VISIBLE centre: when a
+  big monster's box must overflow the stage, the scroll auto-centres on
+  resize, because a shadow at the centre of a canvas you can only see the
+  left of is centred on nothing (his second phone report: an 83px overflow
+  parked at the left edge rendered everything 41px off-centre and read as
+  "the shadow got misplaced again"). Vertically the box hugs the monster,
+  never the shadow (*"the monster will be rendered so far up if we do
+  that"*). While editing, the box is FROZEN — but per GESTURE, not per
+  session: it re-hugs on every pad/rail release, which is what keeps the
+  12px travel slack from accumulating into a scrollbar, while the canvas
+  still never resizes under a live drag (that bug cost him a night once
+  already).
 - **Untuned monsters start from the measurement**: `rx/ry` from the manifest's
   measured shadow, `ay` from `artBottom` + `hoverPx`, shown as a dashed ghost
   while editing. The readout says `tuned — the game uses this` or `untuned`;
@@ -612,13 +620,18 @@ spacing, dodge and the player's swing range.
 The old `pixel-wiki-shadow-notes@1` doc is **frozen**, kept as the training
 data it was; the editor no longer writes it.
 
-Gate: `wiki/tools/check-shadow.mjs` — the three-implementation equality above,
-then on the live page: one record across 2 states × 8 directions, one pinned
-anchor for all 16 views, the monster sliding exactly opposite the drag (frame
-px against canvas px), east/south/diagonal ellipses matching the game's own
-numbers, Commit posting `tuning/monsters` (never `shadow_notes`) with the
-on-screen values, Reset deleting rather than storing a fake confirmation, and
-no editor for the public.
+Gate: `wiki/tools/check-shadow.mjs` — the three-implementation equality above
+(including SIGN-anchored diagonal checks: a monster walking south-east moves
+down-right, so its long axis must point down-right — the check the first ship
+lacked while all three implementations agreed about a mirror), then on the
+live page: one record across 2 states × 8 directions, one pinned anchor for
+all 16 views, no real scrollbar viewing and bounded auto-centred overflow
+editing, the monster sliding exactly opposite the drag SAMPLED MID-GESTURE
+(the release re-hugs, asserted separately), a 24-fast-click direction storm
+leaving record, canvas, anchor and centring untouched, east/south/diagonal
+ellipses matching the game's own numbers, Commit posting `tuning/monsters`
+(never `shadow_notes`) with the on-screen values, Reset deleting rather than
+storing a fake confirmation, and no editor for the public.
 
 ## The animation viewer scales by the CREATURE, not the frame
 
