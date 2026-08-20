@@ -507,7 +507,19 @@ def main():
                                       side_ramp=PALETTE.get(side, {}).get("ramp"),
                                       claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
                                       deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
-                                      drip_match=PAIR_TWEAKS.get(cell, {}).get("drip_match"),
+                                      # drip_match is PER TILE, never per cell: six
+                                      # cell-wide versions of the drape fill each
+                                      # fixed one tile and damaged another that was
+                                      # working ("You destroy other working tiles
+                                      # with your code right now!"). A tile is named
+                                      # in drip_tiles by the tail of its src path;
+                                      # every unnamed tile provably ships byte-
+                                      # identical, because with drip_match=None the
+                                      # classifier's drip code never runs.
+                                      drip_match=(PAIR_TWEAKS.get(cell, {}).get("drip_match")
+                                                  if "/".join(c["src"].split("/")[-2:])
+                                                  in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ())
+                                                  else None),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

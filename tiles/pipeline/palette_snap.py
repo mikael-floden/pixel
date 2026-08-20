@@ -904,6 +904,18 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
                         # brightness as a neutral highlight.
                         grown[wy_min[c]:bottom + 1, c] |= (
                             wall_all[wy_min[c]:bottom + 1, c])
+            # NO TAN DOTS INSIDE THE BLACK. The fill is per-column, so a lone warm
+            # pixel with claimed drape on both sides stays mud — and the mud ramp
+            # then paints it its brightest stop, a bright dot inside the drape
+            # ("The green is something you have made bugs on all images"). A pixel
+            # sandwiched between claims, horizontally or vertically, is inside the
+            # drape.
+            for _ in range(2):
+                mid_h = np.zeros_like(grown)
+                mid_h[:, 1:-1] = grown[:, :-2] & grown[:, 2:]
+                mid_v = np.zeros_like(grown)
+                mid_v[1:-1, :] = grown[:-2, :] & grown[2:, :]
+                grown |= (mid_h | mid_v) & wall_all
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
@@ -1020,7 +1032,7 @@ def soften_rim(out, a, reg, top_hex):
     out[:, :, :3][band] = px
 
 
-def substitute(a, mask, hex_target, spread=None, ramp=None):
+def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None):
     """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
 
     Hue and saturation are SET from the palette, never derived from the art, and only
@@ -1071,6 +1083,12 @@ def substitute(a, mask, hex_target, spread=None, ramp=None):
     hsv[:, 2] = np.clip(
         np.clip(float(tgt[2]) + (v - v.mean()) * scale, float(tgt[2]) - 58.0,
                 float(tgt[2]) + 58.0), 0, 255)
+    if vcap is not None:
+        # A claimed drape must BE near-black, its lit lip included. Relief-keeping
+        # left the bright edge pixels bright ("Red is the one that should be
+        # near-black") — the cap pulls everything claimed down to the paint's own
+        # darkness. Lowering toward the target keeps rule 2 trivially true.
+        hsv[:, 2] = np.minimum(hsv[:, 2], float(vcap))
     return _hsv2rgb(hsv)
 
 
@@ -1273,7 +1291,9 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                     idxm = np.where(mask)
                     mask = np.zeros(mask.shape, bool)
                     mask[idxm[0][band], idxm[1][band]] = True
-                px = substitute(a, mask, hx, ramp=rmp)
+                px = substitute(a, mask, hx, ramp=rmp,
+                                vcap=(None if (is_side or drip_match is None)
+                                      else _rgb2hsv(_hex(hx)[None, :])[0][2] + 12.0))
                 if px is not None:
                     out[:, :, :3][mask] = px
 
