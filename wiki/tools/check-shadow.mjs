@@ -52,7 +52,7 @@ const VEC = { south: [0, 1], "south-west": [-1, 1], west: [-1, 0], "north-west":
 function myEllipse(rx, ry, dir) {
   const [vx, vy] = VEC[dir];
   const a = Math.atan2(vx, vy / K), ryg = ry / K;
-  const m00 = Math.cos(a) * rx, m01 = -Math.sin(a) * ryg, m10 = K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
+  const m00 = Math.cos(a) * rx, m01 = Math.sin(a) * ryg, m10 = -K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
   const E = (m00 + m11) / 2, F = (m00 - m11) / 2, G = (m10 + m01) / 2, H = (m10 - m01) / 2;
   const Q = Math.hypot(E, H), R = Math.hypot(F, G);
   return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
@@ -72,6 +72,20 @@ ok(worst < 0.001, `the GAME's decomposition equals this gate's own math over 32 
 const thin = myEllipse(10, 30, "south-east");
 ok(Math.abs(thin.theta) > 0.5 && thin.p > 30,
   `a long-thin monster's SE shadow is genuinely diagonal and longer than its S one (tilt ${(thin.theta * 180 / Math.PI).toFixed(1)}°, ${thin.p.toFixed(1)} vs 30)`);
+// …AND TILTED THE RIGHT WAY. This is the check the first ship lacked: all
+// three implementations inherited ONE derivation, so they agreed with each
+// other while every diagonal shadow lay PERPENDICULAR to the body (maintainer
+// 2026-08-20, from his phone: "The shadow is rotating wrong … but correct
+// S, E, N, W" — the cardinals tilt 0° or 90° either way and cannot show a
+// mirrored sign). So anchor the SIGN to the screen, not to any formula: a
+// monster walking south-east moves down-RIGHT, and its long axis must point
+// down-right too — major-axis direction (cosθ, sinθ) with both components the
+// same sign. North-east must mirror it.
+const axDir = (e) => Math.cos(e.theta) * Math.sin(e.theta);
+ok(axDir(thin) > 0.01, `the SE long axis points down-right, along the body (θ ${(thin.theta * 180 / Math.PI).toFixed(1)}°)`);
+ok(axDir(myEllipse(10, 30, "north-east")) < -0.01, "and the NE long axis mirrors it, down-left/up-right");
+ok(axDir(myEllipse(10, 30, "south-west")) < -0.01, "SW mirrors SE");
+ok(axDir(myEllipse(10, 30, "north-west")) > 0.01, "and NW mirrors NE");
 
 // ---- the page --------------------------------------------------------------
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
@@ -98,13 +112,28 @@ const clickState = (name) => p.evaluate((n) => [...document.querySelectorAll(".p
 // ---- 1+2. the editor: one record, pinned anchor, monster moves opposite ----
 const first = await probe();
 ok(!!first && first.ex === first.W / 2, `the shadow centre sits at the canvas's horizontal centre (${first?.ex} of ${first?.W})`);
-await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => x.textContent.includes("Edit shadow"))?.click());
-await p.waitForTimeout(300);
+// Open the editor and KEEP it open: the boot's staging upgrade re-routes the
+// page once, and if that lands between the click and the read the bar is gone.
+// Loop until the pad is really on screen.
+async function openEditor() {
+  for (let i = 0; i < 10; i++) {
+    const padBox = await (await p.$(".shadow-pad"))?.boundingBox();
+    if (padBox) return padBox;
+    await p.evaluate(() => {
+      const btn = [...document.querySelectorAll("button")].find((x) => x.textContent.includes("Edit shadow"));
+      if (btn && !btn.classList.contains("on")) btn.click();
+      document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" });
+    });
+    await p.waitForTimeout(350);
+  }
+  throw new Error("the shadow editor never opened");
+}
+let pad = await openEditor();
 const before = await probe();
 ok(before.ex === before.W / 2, "…and still does with the editor open");
 await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
 await p.waitForTimeout(200);
-const pad = await (await p.$(".shadow-pad")).boundingBox();
+pad = await (await p.$(".shadow-pad")).boundingBox();
 await p.mouse.move(pad.x + pad.width / 2, pad.y + pad.height / 2);
 await p.mouse.down();
 for (let i = 1; i <= 6; i++) await p.mouse.move(pad.x + pad.width / 2 + (90 * i) / 6, pad.y + pad.height / 2 + (90 * i) / 6);
@@ -142,8 +171,13 @@ ok(Math.abs(east.p - expE.p * east.s) < 0.1 && Math.abs(east.q - expE.q * east.s
   `the PAGE draws east with the same ground rotation the game will (${east.p}x${east.q} vs expected ${(expE.p * east.s).toFixed(1)}x${(expE.q * east.s).toFixed(1)})`);
 ok(Math.abs(south.p - expS.p * south.s) < 0.1, "and south matches too");
 const diag = seen.find((x) => x.dir === "south-east");
-ok(Math.abs(diag.theta - myEllipse(after.rec.rx, after.rec.ry, "south-east").theta) < 0.01,
+const expD = myEllipse(after.rec.rx, after.rec.ry, "south-east");
+ok(Math.abs(diag.theta - expD.theta) < 0.01,
   `the diagonal facing is a genuinely rotated ellipse (θ ${diag.theta})`);
+// The PAGE's sign too, not just its magnitude — a mirrored page would agree
+// with a mirrored formula on everything but the picture.
+ok(Math.sign(diag.theta) === Math.sign(expD.theta) || Math.abs(expD.theta) < 0.01,
+  "and tilted to the same SIDE the game will draw");
 
 // ---- 3. the sliders edit the ONE size --------------------------------------
 await clickState("idle");

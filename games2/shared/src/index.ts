@@ -230,8 +230,15 @@ export function shadowScreenEllipse(rx: number, ry: number, dir: string): { p: n
   const ryg = ry / K;               // the tuned depth, unsquashed
   // scale(1,K) · rot(a) · diag(rx, ry/K), applied to a unit circle — then the
   // closed-form 2×2 SVD turns the affine circle back into radii + rotation.
-  const m00 = Math.cos(a) * rx, m01 = -Math.sin(a) * ryg;
-  const m10 = K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
+  // SIGN MATTERS AND ONLY THE DIAGONALS SHOW IT (maintainer 2026-08-20: "The
+  // shadow is rotating wrong so its perpendicular to the body, but correct
+  // S, E, N, W"). The rotation must carry the along axis from screen-down
+  // TOWARD the facing vector: R·(0,1) = (sin a, cos a). The textbook CCW
+  // matrix gives (−sin a, cos a) — correct in y-up maths, mirrored on a
+  // y-down screen — and every cardinal hides it because its tilt is 0° or 90°
+  // either way.
+  const m00 = Math.cos(a) * rx, m01 = Math.sin(a) * ryg;
+  const m10 = -K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
   const E = (m00 + m11) / 2, F = (m00 - m11) / 2, G = (m10 + m01) / 2, H = (m10 - m01) / 2;
   const Q = Math.hypot(E, H), R = Math.hypot(F, G);
   return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
