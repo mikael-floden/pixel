@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 746,
+  "scenery_count": 745,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -174,7 +174,7 @@
       "name": "Story Post",
       "type": "TOWN",
       "quota": 8,
-      "done": 7
+      "done": 6
     },
     {
       "rank": 22,
@@ -1487,7 +1487,7 @@
     "statues": 2,
     "stone_fountains": 2,
     "stones": 42,
-    "story_posts": 7,
+    "story_posts": 6,
     "streetlights": 6,
     "stumps": 11,
     "sundials": 2,
@@ -2157,15 +2157,6 @@
           "difference_from_source": 0.1784,
           "glow_score": 0.0,
           "art_hash": "5d70d803f1230736"
-        },
-        "NOT_LIT_2": {
-          "sprite": "anvils/anvil_004/not_lit_2/sprite.webp",
-          "pixellab_object_id": "fee6132d-2447-4161-81aa-fd4e06b93ff4",
-          "generated_at": "2026-08-15T19:35:36+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5662,
-          "glow_score": 0.0,
-          "art_hash": "1e553acd6be36bbb"
         }
       },
       "animations": []
@@ -24130,24 +24121,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "hanging_baskets/hanging_basket_005/lit_1/sprite.webp",
-          "pixellab_object_id": "7fd0e406-7ea7-4ab4-8844-3929e8d67f5b",
-          "generated_at": "2026-08-16T14:58:35+00:00",
-          "glow_concept": "moss lining glowing soft foxfire green",
-          "difference_from_source": 0.4423,
-          "glow_score": 0.0804,
-          "art_hash": "bbed65074ac076e6"
-        },
-        "LIT_2": {
-          "sprite": "hanging_baskets/hanging_basket_005/lit_2/sprite.webp",
-          "pixellab_object_id": "78972854-f67f-4920-b4b5-b1e6d478066d",
-          "generated_at": "2026-08-16T15:00:14+00:00",
-          "glow_concept": "the basket glowing from within like a lantern",
-          "difference_from_source": 0.8729,
-          "glow_score": 0.1186,
-          "art_hash": "7ea6d424a8d2aaad"
-        },
         "NOT_LIT_1": {
           "sprite": "hanging_baskets/hanging_basket_005/sprite.webp",
           "pixellab_object_id": "ea347752-bcbe-441b-9020-aa111d8a234d",
@@ -24171,15 +24144,6 @@
           "difference_from_source": 0.6816,
           "glow_score": 0.0037,
           "art_hash": "e7d2b48947c35e3f"
-        },
-        "NOT_LIT_4": {
-          "sprite": "hanging_baskets/hanging_basket_005/not_lit_4/sprite.webp",
-          "pixellab_object_id": "b2137961-36f3-424e-baec-b6704d8ee1a0",
-          "generated_at": "2026-08-16T14:58:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.913,
-          "glow_score": 0.1032,
-          "art_hash": "215b8810c6e6ad69"
         }
       },
       "animations": []
@@ -24682,15 +24646,6 @@
           "difference_from_source": 1.0,
           "glow_score": 0.0,
           "art_hash": "0eee1a1e3e2c0e8d"
-        },
-        "NOT_LIT_2": {
-          "sprite": "haystacks/haystack_008/not_lit_2/sprite.webp",
-          "pixellab_object_id": "9efca8ed-a662-47b3-8b4c-d42d9705299e",
-          "generated_at": "2026-08-16T15:02:25+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9989,
-          "glow_score": 0.0,
-          "art_hash": "0c95de179a8bb701"
         }
       },
       "animations": []
@@ -34998,24 +34953,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "statues/statue_003/lit_1/sprite.webp",
-          "pixellab_object_id": "5854336e-83c6-441d-b0be-720f381f47e3",
-          "generated_at": "2026-08-16T21:31:19+00:00",
-          "glow_concept": "a halo of pale light above the head",
-          "difference_from_source": 0.6203,
-          "glow_score": 0.3216,
-          "art_hash": "fa955446965a5a3e"
-        },
-        "LIT_2": {
-          "sprite": "statues/statue_003/lit_2/sprite.webp",
-          "pixellab_object_id": "6b815278-4cac-4013-a446-67b832f69b59",
-          "generated_at": "2026-08-16T21:31:40+00:00",
-          "glow_concept": "the held lantern or sword faintly alight",
-          "difference_from_source": 0.9729,
-          "glow_score": 0.0683,
-          "art_hash": "c3b98556e6cee932"
-        },
         "NOT_LIT_1": {
           "sprite": "statues/statue_003/sprite.webp",
           "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
@@ -35171,15 +35108,6 @@
           "glow_score": 0.0172,
           "art_hash": "e26b27794a4d6509"
         },
-        "LIT_3": {
-          "sprite": "stone_fountains/stone_fountain_004/lit_3/sprite.webp",
-          "pixellab_object_id": "14913a01-6dcd-439a-8fa7-771713e7c926",
-          "generated_at": "2026-08-16T21:34:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4694,
-          "glow_score": 0.0029,
-          "art_hash": "5b2abcefa7ce240d"
-        },
         "LIT_4": {
           "sprite": "stone_fountains/stone_fountain_004/lit_4/sprite.webp",
           "pixellab_object_id": "d3d1e21e-8e5d-4fa5-8704-da13d611387b",
@@ -35188,24 +35116,6 @@
           "difference_from_source": 0.4472,
           "glow_score": 0.0188,
           "art_hash": "eea0b86211e42c52"
-        },
-        "NOT_LIT_1": {
-          "sprite": "stone_fountains/stone_fountain_004/not_lit_1/sprite.webp",
-          "pixellab_object_id": "1ad0e295-723d-4f70-8bc7-7d82bfffd197",
-          "generated_at": "2026-08-16T21:40:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9799,
-          "glow_score": 0.0,
-          "art_hash": "8b2595d5781fbd6e"
-        },
-        "NOT_LIT_2": {
-          "sprite": "stone_fountains/stone_fountain_004/not_lit_2/sprite.webp",
-          "pixellab_object_id": "538a6e78-122b-4d6c-b490-79633b438d0d",
-          "generated_at": "2026-08-16T21:37:05+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9169,
-          "glow_score": 0.0006,
-          "art_hash": "ef2f83bd8a19a456"
         }
       },
       "animations": []
@@ -38327,85 +38237,6 @@
       "animations": []
     },
     {
-      "id": "story_post_010",
-      "rel": "story_posts/story_post_010",
-      "name": "Wave-carved sea-tale post 010",
-      "category": "story_posts",
-      "lights": null,
-      "description": "a thick carved wooden totem post, heavy rounded relief carvings of figures and animals covering its broad width, planted solidly in the ground, wave-carved sea-tale post, large, twice human height, self-emissive at night, softly radiating light: luminous ribbons streaming from the top",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.91,
-        "world_px_height": 72,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T20:48:22+00:00",
-      "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
-      "sprite": "story_posts/story_post_010/sprite.webp",
-      "art_hash": "a2681edee9e659fa",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "story_posts/story_post_010/sprite.webp",
-          "pixellab_object_id": "68ea5398-f581-4393-9396-886bb4509723",
-          "generated_at": "2026-08-13T20:48:22+00:00",
-          "art_hash": "a2681edee9e659fa"
-        },
-        "LIT_2": {
-          "sprite": "story_posts/story_post_010/lit_2/sprite.webp",
-          "pixellab_object_id": "e56fe573-a31c-46f1-bde3-e97ab3e3b615",
-          "generated_at": "2026-08-16T22:28:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7632,
-          "glow_score": 0.1949,
-          "art_hash": "fb0566a23b6e8941"
-        },
-        "LIT_3": {
-          "sprite": "story_posts/story_post_010/lit_3/sprite.webp",
-          "pixellab_object_id": "b55d1b84-1b43-4ed1-90be-50e63e5eda73",
-          "generated_at": "2026-08-16T22:28:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6529,
-          "glow_score": 0.1706,
-          "art_hash": "f60b36c9e69a4438"
-        },
-        "LIT_4": {
-          "sprite": "story_posts/story_post_010/lit_4/sprite.webp",
-          "pixellab_object_id": "3325ea14-a0fe-41a5-9ce2-97ac8a8b3f61",
-          "generated_at": "2026-08-16T22:29:14+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7204,
-          "glow_score": 0.1855,
-          "art_hash": "82e679792f8a35e5"
-        },
-        "NOT_LIT_1": {
-          "sprite": "story_posts/story_post_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "162fc640-de28-4e31-8fa6-87df60494781",
-          "generated_at": "2026-08-16T22:29:24+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7806,
-          "glow_score": 0.1091,
-          "art_hash": "2c660a9588a51b61"
-        },
-        "NOT_LIT_2": {
-          "sprite": "story_posts/story_post_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "ab19bb8b-2c61-4e72-9ebd-b09c3ac3a053",
-          "generated_at": "2026-08-16T22:29:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7805,
-          "glow_score": 0.0648,
-          "art_hash": "12678d35154e7d38"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "story_post_011",
       "rel": "story_posts/story_post_011",
       "name": "Stacked carved faces post 011",
@@ -40571,24 +40402,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "sundials/sundial_003/lit_1/sprite.webp",
-          "pixellab_object_id": "65f71128-7bb6-48ca-8c9b-b562bc1d0f73",
-          "generated_at": "2026-08-16T22:49:05+00:00",
-          "glow_concept": "a wrong-time shadow glowing where no sun stands",
-          "difference_from_source": 0.8958,
-          "glow_score": 0.0374,
-          "art_hash": "4eb0494844378781"
-        },
-        "LIT_2": {
-          "sprite": "sundials/sundial_003/lit_2/sprite.webp",
-          "pixellab_object_id": "524c279b-c07d-4e2b-bab5-0baa8bc1cbe6",
-          "generated_at": "2026-08-16T22:49:23+00:00",
-          "glow_concept": "dial numerals lit like small windows",
-          "difference_from_source": 0.9246,
-          "glow_score": 0.0796,
-          "art_hash": "811169c4a934d8f1"
-        },
         "NOT_LIT_1": {
           "sprite": "sundials/sundial_003/sprite.webp",
           "pixellab_object_id": "f972d4e5-b885-4016-89c7-48c5be6d023b",
@@ -43538,15 +43351,6 @@
           "generated_at": "2026-08-13T20:37:16+00:00",
           "art_hash": "8c4c80bf5bef4fc2"
         },
-        "LIT_2": {
-          "sprite": "trailing_planters/trailing_planter_004/lit_2/sprite.webp",
-          "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
-          "generated_at": "2026-08-17T11:35:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6803,
-          "glow_score": 0.0122,
-          "art_hash": "b93ded71587160b7"
-        },
         "LIT_3": {
           "sprite": "trailing_planters/trailing_planter_004/lit_3/sprite.webp",
           "pixellab_object_id": "a432a368-4fbc-4a4c-bd27-967543411b82",
@@ -43556,32 +43360,25 @@
           "glow_score": 0.0284,
           "art_hash": "730b7f6fc1c6523a"
         },
-        "LIT_4": {
-          "sprite": "trailing_planters/trailing_planter_004/lit_4/sprite.webp",
+        "NOT_LIT_3": {
+          "sprite": "trailing_planters/trailing_planter_004/not_lit_3/sprite.webp",
+          "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
+          "generated_at": "2026-08-17T11:35:45+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6803,
+          "glow_score": 0.0122,
+          "relit_from": "LIT_2",
+          "art_hash": "b93ded71587160b7"
+        },
+        "NOT_LIT_4": {
+          "sprite": "trailing_planters/trailing_planter_004/not_lit_4/sprite.webp",
           "pixellab_object_id": "c6a9b55f-4655-4011-8f9a-e0bccf1327a8",
           "generated_at": "2026-08-17T11:36:01+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6663,
           "glow_score": 0.0191,
+          "relit_from": "LIT_4",
           "art_hash": "1e87f3fd56a0163f"
-        },
-        "NOT_LIT_1": {
-          "sprite": "trailing_planters/trailing_planter_004/not_lit_1/sprite.webp",
-          "pixellab_object_id": "6d8441d3-042e-441d-b13c-d4da7ff49f46",
-          "generated_at": "2026-08-17T11:42:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8583,
-          "glow_score": 0.0,
-          "art_hash": "867c47d5afa7827f"
-        },
-        "NOT_LIT_2": {
-          "sprite": "trailing_planters/trailing_planter_004/not_lit_2/sprite.webp",
-          "pixellab_object_id": "7de54a94-30d3-430c-8263-ed7935956303",
-          "generated_at": "2026-08-17T11:36:12+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8544,
-          "glow_score": 0.0,
-          "art_hash": "cac7898081ef8750"
         }
       },
       "animations": []
@@ -55790,15 +55587,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "waterwheels/waterwheel_003/lit_1/sprite.webp",
-          "pixellab_object_id": "82dea96c-8a00-4b98-b5e7-b86831930399",
-          "generated_at": "2026-08-17T12:13:09+00:00",
-          "glow_concept": "fireflies drifting through the broken paddles",
-          "difference_from_source": 0.8976,
-          "glow_score": 0.0047,
-          "art_hash": "cd74224527e90b70"
-        },
         "LIT_2": {
           "sprite": "waterwheels/waterwheel_003/lit_2/sprite.webp",
           "pixellab_object_id": "30acc28c-8bb2-4da8-97d8-f5fba64a219a",
@@ -55869,30 +55657,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "waterwheels/waterwheel_006/sprite.webp",
-          "pixellab_object_id": "93157317-13e1-4be5-b515-72241cd70aa1",
-          "generated_at": "2026-08-13T20:35:11+00:00",
-          "art_hash": "775dbc775efaa899"
-        },
-        "LIT_2": {
-          "sprite": "waterwheels/waterwheel_006/lit_2/sprite.webp",
-          "pixellab_object_id": "6fb3e4ac-b05f-4f26-aaf4-520f4e86022a",
-          "generated_at": "2026-08-17T12:13:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6416,
-          "glow_score": 0.0205,
-          "art_hash": "9f291393faa46929"
-        },
-        "LIT_3": {
-          "sprite": "waterwheels/waterwheel_006/lit_3/sprite.webp",
-          "pixellab_object_id": "c49d74f0-fd99-4cb3-9423-b1cb9ae4b0ec",
-          "generated_at": "2026-08-17T12:13:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4818,
-          "glow_score": 0.0,
-          "art_hash": "df09708de9f90bf2"
-        },
         "LIT_4": {
           "sprite": "waterwheels/waterwheel_006/lit_4/sprite.webp",
           "pixellab_object_id": "adace887-fa1a-4866-9c14-27266b4dbca9",
@@ -55902,23 +55666,32 @@
           "glow_score": 0.0,
           "art_hash": "7e355e7e28f81e19"
         },
-        "NOT_LIT_1": {
-          "sprite": "waterwheels/waterwheel_006/not_lit_1/sprite.webp",
-          "pixellab_object_id": "3328520d-ae0c-43fc-bf93-d906c6bede3c",
-          "generated_at": "2026-08-17T12:16:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.97,
-          "glow_score": 0.0,
-          "art_hash": "abb2993181a14f74"
+        "NOT_LIT_3": {
+          "sprite": "waterwheels/waterwheel_006/sprite.webp",
+          "pixellab_object_id": "93157317-13e1-4be5-b515-72241cd70aa1",
+          "generated_at": "2026-08-13T20:35:11+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "775dbc775efaa899"
         },
-        "NOT_LIT_2": {
-          "sprite": "waterwheels/waterwheel_006/not_lit_2/sprite.webp",
-          "pixellab_object_id": "b3447f62-4730-45ff-9469-f94604b4d60e",
-          "generated_at": "2026-08-17T12:16:18+00:00",
+        "NOT_LIT_4": {
+          "sprite": "waterwheels/waterwheel_006/not_lit_4/sprite.webp",
+          "pixellab_object_id": "6fb3e4ac-b05f-4f26-aaf4-520f4e86022a",
+          "generated_at": "2026-08-17T12:13:41+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.8631,
-          "glow_score": 0.0964,
-          "art_hash": "e38c36a1d121b5b0"
+          "difference_from_source": 0.6416,
+          "glow_score": 0.0205,
+          "relit_from": "LIT_2",
+          "art_hash": "9f291393faa46929"
+        },
+        "NOT_LIT_5": {
+          "sprite": "waterwheels/waterwheel_006/not_lit_5/sprite.webp",
+          "pixellab_object_id": "c49d74f0-fd99-4cb3-9423-b1cb9ae4b0ec",
+          "generated_at": "2026-08-17T12:13:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4818,
+          "glow_score": 0.0,
+          "relit_from": "LIT_3",
+          "art_hash": "df09708de9f90bf2"
         }
       },
       "animations": []
@@ -56538,56 +56311,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "waystones/waystone_010/sprite.webp",
           "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
           "generated_at": "2026-08-13T20:46:10+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "b1ae10de74e6d6a1"
         },
-        "LIT_2": {
-          "sprite": "waystones/waystone_010/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "waystones/waystone_010/not_lit_4/sprite.webp",
           "pixellab_object_id": "b7a7747b-cb8a-4741-87b6-d47c2a672734",
           "generated_at": "2026-08-17T12:31:55+00:00",
           "glow_concept": null,
           "difference_from_source": 0.3383,
           "glow_score": 0.0715,
+          "relit_from": "LIT_2",
           "art_hash": "1a67cffb0779cd43"
         },
-        "LIT_3": {
-          "sprite": "waystones/waystone_010/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "waystones/waystone_010/not_lit_5/sprite.webp",
           "pixellab_object_id": "f6bd6c44-c759-413b-8da0-924f546e3b4e",
           "generated_at": "2026-08-17T12:30:57+00:00",
           "glow_concept": null,
           "difference_from_source": 0.425,
           "glow_score": 0.0714,
+          "relit_from": "LIT_3",
           "art_hash": "2b2deb7238c911ff"
         },
-        "LIT_4": {
-          "sprite": "waystones/waystone_010/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "waystones/waystone_010/not_lit_6/sprite.webp",
           "pixellab_object_id": "acff107b-52bc-4ff5-9566-8415d744584f",
           "generated_at": "2026-08-17T12:31:15+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5236,
           "glow_score": 0.0653,
+          "relit_from": "LIT_4",
           "art_hash": "8de86a6beb71a6d4"
-        },
-        "NOT_LIT_1": {
-          "sprite": "waystones/waystone_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "62b78f30-6d7f-47d5-bbae-dc0d6c70c534",
-          "generated_at": "2026-08-17T12:31:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9149,
-          "glow_score": 0.0,
-          "art_hash": "639eb3a41e912a5b"
-        },
-        "NOT_LIT_2": {
-          "sprite": "waystones/waystone_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "ec524576-1f26-4c37-8168-c01bf6e7974a",
-          "generated_at": "2026-08-17T12:31:16+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9315,
-          "glow_score": 0.0,
-          "art_hash": "f13a246354d7a9b3"
         }
       },
       "animations": []
@@ -57401,24 +57160,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "wells/well_009/lit_1/sprite.webp",
-          "pixellab_object_id": "67b68a8c-2ab5-40ab-93cc-ba5bf037dd34",
-          "generated_at": "2026-08-17T12:53:12+00:00",
-          "glow_concept": "soft blue soul-light rising from the water below",
-          "difference_from_source": 0.9266,
-          "glow_score": 0.0442,
-          "art_hash": "56667409ee27320d"
-        },
-        "LIT_2": {
-          "sprite": "wells/well_009/lit_2/sprite.webp",
-          "pixellab_object_id": "a3664fb1-28f3-4065-a3d8-c5922c29e3de",
-          "generated_at": "2026-08-17T12:53:40+00:00",
-          "glow_concept": "hanging tin lantern lit under the roof peak",
-          "difference_from_source": 0.9072,
-          "glow_score": 0.0274,
-          "art_hash": "2ffb5a140acc3348"
-        },
         "NOT_LIT_1": {
           "sprite": "wells/well_009/sprite.webp",
           "pixellab_object_id": "77f73b9c-0ba4-47fb-879e-a208cdc1e591",
@@ -57433,24 +57174,6 @@
           "difference_from_source": 0.6881,
           "glow_score": 0.2077,
           "art_hash": "a0291809dd1eb41d"
-        },
-        "NOT_LIT_3": {
-          "sprite": "wells/well_009/not_lit_3/sprite.webp",
-          "pixellab_object_id": "decec785-3908-4bb1-b939-03b75ba3287f",
-          "generated_at": "2026-08-17T12:52:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6883,
-          "glow_score": 0.0017,
-          "art_hash": "106c628442e82f4e"
-        },
-        "NOT_LIT_4": {
-          "sprite": "wells/well_009/not_lit_4/sprite.webp",
-          "pixellab_object_id": "40414257-9417-423e-b4fc-807e06f6a79e",
-          "generated_at": "2026-08-17T12:52:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7605,
-          "glow_score": 0.0036,
-          "art_hash": "9caf5d78e55c0cba"
         }
       },
       "animations": []

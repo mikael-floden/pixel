@@ -36,14 +36,6 @@
       "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
       "generated_at": "2026-08-13T20:37:16+00:00"
     },
-    "LIT_2": {
-      "sprite": "trailing_planters/trailing_planter_004/lit_2/sprite.webp",
-      "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
-      "generated_at": "2026-08-17T11:35:45+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.6803,
-      "glow_score": 0.0122
-    },
     "LIT_3": {
       "sprite": "trailing_planters/trailing_planter_004/lit_3/sprite.webp",
       "pixellab_object_id": "a432a368-4fbc-4a4c-bd27-967543411b82",
@@ -52,29 +44,23 @@
       "difference_from_source": 0.2945,
       "glow_score": 0.0284
     },
-    "LIT_4": {
-      "sprite": "trailing_planters/trailing_planter_004/lit_4/sprite.webp",
+    "NOT_LIT_3": {
+      "sprite": "trailing_planters/trailing_planter_004/not_lit_3/sprite.webp",
+      "pixellab_object_id": "99da2cb5-29ed-4cda-9c45-38f5133b7b77",
+      "generated_at": "2026-08-17T11:35:45+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6803,
+      "glow_score": 0.0122,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_4": {
+      "sprite": "trailing_planters/trailing_planter_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "c6a9b55f-4655-4011-8f9a-e0bccf1327a8",
       "generated_at": "2026-08-17T11:36:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6663,
-      "glow_score": 0.0191
-    },
-    "NOT_LIT_1": {
-      "sprite": "trailing_planters/trailing_planter_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "6d8441d3-042e-441d-b13c-d4da7ff49f46",
-      "generated_at": "2026-08-17T11:42:38+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8583,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "trailing_planters/trailing_planter_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "7de54a94-30d3-430c-8263-ed7935956303",
-      "generated_at": "2026-08-17T11:36:12+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8544,
-      "glow_score": 0.0
+      "glow_score": 0.0191,
+      "relit_from": "LIT_4"
     }
   }
 }
