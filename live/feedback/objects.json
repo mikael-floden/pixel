@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T01:05:54.215Z",
+  "updated_at": "2026-08-20T01:07:29.620Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -3132,9 +3132,9 @@
     },
     "scenery/flame_niches/flame_niche_009": {
       "note": "Broken art",
-      "updated_at": "2026-08-14T00:37:26.570Z",
-      "status": "approved",
-      "rating": 4
+      "updated_at": "2026-08-20T01:07:21.935Z",
+      "status": "rejected",
+      "art": "562ecabff0008256"
     },
     "scenery/flame_niches/flame_niche_012": {
       "status": "approved",
@@ -24629,6 +24629,131 @@
       "updated_at": "2026-08-20T01:05:53.051Z",
       "status": "approved",
       "art": "2e9c12ade2cdea64"
+    },
+    "scenery/windmills/windmill_009#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:04.098Z",
+      "status": "approved",
+      "art": "99959eaa6cc5dbac"
+    },
+    "scenery/windmills/windmill_009#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:06.574Z",
+      "status": "approved",
+      "art": "8f3416c0b2c8c1bb"
+    },
+    "scenery/windmills/windmill_009#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T01:06:08.892Z",
+      "status": "approved",
+      "art": "025e298fc3ce7029"
+    },
+    "scenery/windmills/windmill_009#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T01:06:12.457Z",
+      "status": "approved",
+      "art": "f4a4418a17ce192c"
+    },
+    "scenery/windmills/windmill_009#lit_1#south": {
+      "status": "rejected",
+      "art": "cde86e51597d1495",
+      "updated_at": "2026-08-20T01:06:14.806Z"
+    },
+    "scenery/windmills/windmill_009#lit_2#south": {
+      "status": "rejected",
+      "art": "2998160d70933076",
+      "updated_at": "2026-08-20T01:06:18.567Z"
+    },
+    "scenery/dock_pilings/dock_piling_008#lit_1#south": {
+      "updated_at": "2026-08-20T01:06:26.746Z",
+      "status": "approved",
+      "art": "62118c1b842599d6",
+      "rating": 3
+    },
+    "scenery/dock_pilings/dock_piling_008#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:29.121Z"
+    },
+    "scenery/dock_pilings/dock_piling_008#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:32.028Z"
+    },
+    "scenery/dock_pilings/dock_piling_008#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:34.719Z"
+    },
+    "scenery/dock_pilings/dock_piling_008#not_lit_1#south": {
+      "status": "rejected",
+      "art": "8d659db6e8f8f0ff",
+      "updated_at": "2026-08-20T01:06:37.048Z"
+    },
+    "scenery/dock_pilings/dock_piling_008#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:40.119Z",
+      "status": "approved",
+      "art": "510ff2d18c419c99"
+    },
+    "scenery/streetlights/streetlight_011#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:06:44.344Z",
+      "status": "approved",
+      "art": "fb2f24fce6e24bf3"
+    },
+    "scenery/streetlights/streetlight_011#not_lit_2#south": {
+      "status": "rejected",
+      "art": "6d8681cba1cf41ab",
+      "updated_at": "2026-08-20T01:06:48.256Z"
+    },
+    "scenery/streetlights/streetlight_011#not_lit_3#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T01:06:53.973Z",
+      "status": "approved",
+      "art": "29c4eb66382b3df5"
+    },
+    "scenery/streetlights/streetlight_011#not_lit_4#south": {
+      "status": "rejected",
+      "art": "47a108b8d65f696b",
+      "updated_at": "2026-08-20T01:07:02.160Z"
+    },
+    "scenery/streetlights/streetlight_011#lit_1#south": {
+      "status": "rejected",
+      "art": "a0bffc4a1d2c7327",
+      "updated_at": "2026-08-20T01:07:04.783Z"
+    },
+    "scenery/streetlights/streetlight_011#lit_2#south": {
+      "art": "7e4a4d35e5c0c567",
+      "updated_at": "2026-08-20T01:07:08.329Z",
+      "status": "rejected"
+    },
+    "scenery/flame_niches/flame_niche_009#not_lit_1#south": {
+      "updated_at": "2026-08-20T01:07:24.582Z",
+      "status": "rejected",
+      "art": "562ecabff0008256"
+    },
+    "scenery/flame_niches/flame_niche_009#not_lit_2#south": {
+      "status": "rejected",
+      "art": "ca6ed9af73675a1c",
+      "updated_at": "2026-08-20T01:07:26.362Z"
+    },
+    "scenery/flame_niches/flame_niche_009#not_lit_3#south": {
+      "status": "rejected",
+      "art": "c5628107ddffe638",
+      "updated_at": "2026-08-20T01:07:27.483Z"
+    },
+    "scenery/flame_niches/flame_niche_009#not_lit_4#south": {
+      "status": "rejected",
+      "art": "75d2bbf82b163846",
+      "updated_at": "2026-08-20T01:07:28.511Z"
+    },
+    "scenery/flame_niches/flame_niche_009#lit_1#south": {
+      "status": "rejected",
+      "art": "8abb796b18dd19c5",
+      "updated_at": "2026-08-20T01:07:29.506Z"
+    },
+    "scenery/flame_niches/flame_niche_009#lit_2#south": {
+      "status": "rejected",
+      "art": "d31e7256cfe78cc5",
+      "updated_at": "2026-08-20T01:07:30.337Z"
     }
   }
 }
