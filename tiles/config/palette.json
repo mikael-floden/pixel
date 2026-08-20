@@ -96,10 +96,18 @@
       "wall_n": 6
     },
     "lava": {
-      "top": "#fb7f10",
-      "source": "reference tile tiles/matrix/lava__over__lava/sheet_03_same3_18721/tile_11.png \u2014 the maintainer's chosen look for this material",
+      "top": "#fd5a02",
+      "source": "the TOP of tiles/matrix/lava__over__light_soil/sheet_05_chase5_32648/tile_13.png \u2014 nominated mid-review: 'The top of this tile is more like how I see the lava palette.'",
       "wall": "#a73211",
-      "wall_n": 6
+      "wall_n": 6,
+      "ramp": [
+        "#e2460f",
+        "#fd5a02",
+        "#fd6802",
+        "#fd7e08"
+      ],
+      "flat_top": false,
+      "ramp_note": "the nominated top's own tones, dark red to bright bubble highlight. Lava was flat-filled with a single orange (#fb7f10) \u2014 'I feel we paint a single orange color. As if lava has no own palette. Lava is also more red than orange.' flat_top false keeps the bubbling texture; the ramp keeps the range; the base is redder."
     },
     "slime": {
       "top": "#7aee2f",
@@ -320,6 +328,10 @@
       "claim_depth": 0.3,
       "note": "the tenth ice cell to lean \u2014 it measured mildest in the sweep (17% mean) but the right faces still iced over ('ice over water makes the water wall on the very right turn ice'). Claims stop at the lip like its nine siblings. And the inverse on the same pair \u2014 the water repaint covered the drawn icy overhang ('The water also extends over the ice overhang') \u2014 is fixed by the geometric lip: the top 3 wall rows are the ice's, unconditionally. Scoped to this pair only, as instructed: 'This is a ice over water fix only!'",
       "claim_lip": 3
+    },
+    "lava__over__ice": {
+      "claim_depth": 0.3,
+      "note": "lava claims ran down the ice wall ('Lava also paints where it should be ICE (lava on top)'). Claims stop at the lip."
     }
   }
 }
