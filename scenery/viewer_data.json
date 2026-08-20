@@ -34946,19 +34946,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T20:41:03+00:00",
-      "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
+      "pixellab_object_id": "fd3e00bc-76f5-4361-9203-27e0bbaa7a02",
       "sprite": "statues/statue_003/sprite.webp",
-      "art_hash": "2ce401dcd1495048",
+      "art_hash": "2dbe1d8a827f0106",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "NOT_LIT_1": {
-          "sprite": "statues/statue_003/sprite.webp",
-          "pixellab_object_id": "a7e2a12b-0ec4-4dd6-aa50-e4dbb73cff54",
-          "generated_at": "2026-08-13T20:41:03+00:00",
-          "art_hash": "2ce401dcd1495048"
-        },
         "NOT_LIT_2": {
           "sprite": "statues/statue_003/not_lit_2/sprite.webp",
           "pixellab_object_id": "fe9b659f-7d2d-4840-b434-097d0bdaa4e7",
@@ -34978,12 +34972,13 @@
           "art_hash": "258b5fd436032474"
         },
         "NOT_LIT_4": {
-          "sprite": "statues/statue_003/not_lit_4/sprite.webp",
+          "sprite": "statues/statue_003/sprite.webp",
           "pixellab_object_id": "fd3e00bc-76f5-4361-9203-27e0bbaa7a02",
           "generated_at": "2026-08-16T21:31:18+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5997,
           "glow_score": 0.0243,
+          "replaced_anchor": "NOT_LIT_1",
           "art_hash": "2dbe1d8a827f0106"
         }
       },
