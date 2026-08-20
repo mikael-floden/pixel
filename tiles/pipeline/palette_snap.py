@@ -940,8 +940,18 @@ def dim_edge_highlight(out, a, reg, top_hex):
             out[y, x, :3] = (p * (1.0 - mix) + t_rgb * mix).astype(out.dtype)
 
 
-def soften_rim(out, a, reg, top_hex):
-    """Compress the glowing lip where the top face meets the wall. In place, on `out`."""
+def soften_rim(out, a, reg, top_hex, kill=False):
+    """Compress the glowing lip where the top face meets the wall. In place, on `out`.
+
+    kill=True is a per-TOP-MATERIAL mode (palette.json types.<top>.kill_highlight):
+    the maintainer's set of materials whose edge should carry NO highlight at all.
+    First member: black_rock — "black-rock over black-rock #6 ... looks extremely
+    good becouse we have no highlight at all ... If the type on top is black-rock.
+    Always try to get rid of the entire highlight." Same finder, same glow
+    eligibility, same fade toward the top colour — but no margin worth seeing, no
+    kept excess, no drop cap: a hot pixel lands at the brighter surface's own level
+    and disappears into it.
+    """
     top = reg["top"]
     wall = reg["left"] | reg["right"]
     if top.sum() < 100 or wall.sum() < 100:
@@ -964,14 +974,14 @@ def soften_rim(out, a, reg, top_hex):
         return 0.299 * px[..., 0] + 0.587 * px[..., 1] + 0.114 * px[..., 2]
     t_l = float(lum(_hex(top_hex).astype(float)[None, :])[0])
     w_l = float(lum(out[:, :, :3][deep]).mean())
-    thresh = max(t_l, w_l) + RIM_MARGIN
+    thresh = max(t_l, w_l) + (4.0 if kill else RIM_MARGIN)
     px = out[:, :, :3][band]
     L = lum(px)
     hot = L > thresh
     if not hot.any():
         return
-    new_l = thresh + (L[hot] - thresh) * RIM_KEEP
-    drop = np.minimum(L[hot] - new_l, RIM_MAX_DROP)
+    new_l = thresh + (L[hot] - thresh) * (0.0 if kill else RIM_KEEP)
+    drop = np.minimum(L[hot] - new_l, 999.0 if kill else RIM_MAX_DROP)
     tgt_l = L[hot] - drop
     # FADE TOWARD THE TOP COLOUR, not down the pixel's own colour. The first version
     # darkened each rim pixel multiplicatively — same hue, lower value — and the
@@ -998,6 +1008,14 @@ def soften_rim(out, a, reg, top_hex):
     gap = np.abs(hsv_px[:, 0] - float(t_hsv[0]))
     gap = np.minimum(gap, 255.0 - gap)
     glow = (gap <= RIM_HUE_TOL) | (hsv_px[:, 1] < RIM_SAT_GREY)
+    if kill:
+        # Kill mode only eats TRULY GREY glow. The hue-tolerance arm is meaningless
+        # against a near-black target (a near-grey's hue is noise), and it let two
+        # bluish ice lips fade into murk the guard rejected — which would have
+        # shipped those tiles raw. A coloured lip on a kill material is left for the
+        # normal soften pass semantics; grey highlights — every case the maintainer
+        # pointed at — still die completely.
+        glow = hsv_px[:, 1] < RIM_SAT_GREY
     if not glow.any():
         return
     a_mix = (L[hot] - tgt_l) / np.maximum(L[hot] - t_l, 1.0)
@@ -1070,7 +1088,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
-         edge_dim=False):
+         edge_dim=False, kill_highlight=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1307,7 +1325,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                                 "value": float(side_hsv[2]), "spread": None}
         out[:, :, :3][m] = _apply_profile(px, prof, lighting=fac[k])
 
-    soften_rim(out, a, reg, top_hex)
+    soften_rim(out, a, reg, top_hex, kill=kill_highlight)
     if edge_dim:
         dim_edge_highlight(out, a, reg, top_hex)
     out[:, :, 3] = a[:, :, 3]

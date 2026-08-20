@@ -24,7 +24,9 @@
       "top": "#1e1d1e",
       "source": "reference tile tiles/matrix/black_rock__over__black_rock/sheet_02_chase2/tile_03.png \u2014 the maintainer's chosen look for this material",
       "wall": "#212122",
-      "wall_n": 7
+      "wall_n": 7,
+      "kill_highlight": true,
+      "kill_note": "the set of top materials whose edge carries NO highlight \u2014 'black-rock over black-rock #6 ... looks extremely good becouse we have no highlight at all ... If the type on top is black-rock. Always try to get rid of the entire highlight.' soften_rim runs in kill mode for every cell with this material on top: grey glow above the brighter surface fades fully into it, no margin, no kept excess."
     },
     "light_beach": {
       "top": "#e4c495",

@@ -47,6 +47,7 @@ PAIR_TWEAKS = {k: v for k, v in json.load(open(os.path.join(
 
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
                "ramp": v.get("ramp"),
+               "kill_highlight": v.get("kill_highlight", False),
                "flat_top": v.get("flat_top", True)} for k, v in
            json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
@@ -522,6 +523,7 @@ def main():
                                                       in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ()))
                                                   else None),
                                       edge_dim=PAIR_TWEAKS.get(cell, {}).get("edge_dim", False),
+                                      kill_highlight=PALETTE.get(top, {}).get("kill_highlight", False),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.
