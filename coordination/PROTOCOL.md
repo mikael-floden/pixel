@@ -1,169 +1,139 @@
 # Agent coordination protocol
 
-This repo holds **all** game graphics, produced by several autonomous agents that
-run in parallel — each owns one top-level domain directory:
+This repo holds **all** game content, produced by autonomous agents running in
+parallel. Each agent owns one domain and one board file
+(`coordination/<agent>.json`):
 
-| Domain | Directory | Owner agent |
-|--------|-----------|-------------|
-| Characters, 2nd gen | `characters2/` | characters2 agent |
-| Tiles/materials, 2nd gen | `tiles2/` | tiles2 agent |
-| Worlds, 2nd gen | `maps2/` | maps2 agent |
-| Scenery (placeable, animatable set dressing; formerly `objects/`) | `scenery/` | scenery agent |
-| Sounds | `sounds/` | sounds agent |
-| Music (background score) | `music/` | music agent |
-| Monsters/creatures | `monsters/` | monsters agent |
-| Items (loot, souls, gear) | `items/` | items agent |
-| Lore (the story, chapters, per-entity lore) | `lore/` | lore agent |
-| The game (consumer) | `games2/` | game agent |
-| The game's UI/HUD/menus | `games2/` (UI surfaces) | games-ui agent |
+| Agent | Owns | Notes |
+|-------|------|-------|
+| characters2 | `characters2/` | heroes + NPC mirror |
+| tiles2 | `tiles2/` | the live, shipping tile library |
+| tiles | `tiles/` | Tiles 3.0, built **alongside** tiles2 (nothing migrates until it covers the game's needs) |
+| maps2 | `maps2/` | worlds |
+| scenery | `scenery/` | formerly `objects/` (renamed 2026-08-12) |
+| sounds | `sounds/` | SFX producer |
+| music | `music/` | background score producer |
+| monsters | `monsters/` | |
+| items | `items/` | |
+| lore | `lore/` | the story |
+| wiki | `wiki/` | the browse/review surface for every domain |
+| games | `games2/` | gameplay / netcode / world / server |
+| games-ui | `games2/` (UI surfaces) | HUD, menus, screens — split in `games2/UI_AGENT.md` |
+| games-ambient | `games2/ambient/` | mood/ambient life; never impacts gameplay |
+| games-audio | `games2/composer/` | the composer: binds music + sound into the game |
 
-`games2/` is the one domain shared by TWO agents (maintainer decision
-2026-07-17): the game agent (gameplay/netcode/world/server) and the games-ui
-agent (HUD, menus, screens, overlays). One-writer-per-file still holds — the
-per-file split inside `games2/` is documented in `games2/UI_AGENT.md`; the
-games-ui agent's board file is `coordination/games-ui.json`.
+`games2/` is the one directory shared by several agents (maintainer decision);
+**one-writer-per-file still holds** — the per-file split is documented in
+`games2/UI_AGENT.md`, and ambient/composer stay inside their subdirectories
+except for maintainer-authorized surgical edits announced on the board.
 
-RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` — the first
-generation (domains + game + the old emission registry/demo), deleted after
-the 2nd generation took over (paused workflows factory/maps/tiles.yml and
-the stale boards characters/maps/tiles.json removed too). History is in git.
+`live/` is not an agent: the running game server reads it **straight from
+GitHub `main`** (tuning overrides + the maintainer's per-domain feedback).
+**Every art agent reads `live/feedback/<domain>.json` at run start and acts on
+the verdicts** — contract in `live/README.md`.
 
-They share one repo, one `main` branch, and one PixelLab account. This document
-is the contract that lets them work at the same time without stepping on each
-other. **Read it before touching anything, and skim the other agents' status
-files (below) at the start of each run.**
+RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
+old `tiles/`) — history in git. The `tiles/` name was later reused for
+Tiles 3.0.
+
+One repo, one `main` branch, one PixelLab account. **Read this file before
+touching anything, and read the other boards at the start of each run.**
 
 ## Golden rules
 
-1. **Stay in your own top-level directory.** Never create, edit, or delete files
-   under another agent's domain dir. Your generated art, config, pipeline, and
-   viewer all live inside your dir.
-2. **Root is shared and minimal.** Only `README.md`, `CLAUDE.md`,
-   `requirements.txt`, `.gitignore`, `.env` (gitignored), and this
-   `coordination/` dir live at the root. Don't add domain files to the root.
-3. **One writer per file.** The only files you may write outside your domain dir
-   are your *own* coordination files: `coordination/<your-domain>.json`. Never
-   write another agent's coordination file. This guarantees git never conflicts
-   (disjoint paths auto-merge on rebase).
-4. **Push to `main`, rebase on failure.** Each unit of work: commit + `git push
-   origin main`; on rejection `git fetch && git rebase origin/main` and retry.
-   Because domains touch disjoint paths, rebases merge cleanly.
-5. **Shared library changes are deliberate.** Each domain keeps its *own copy* of
-   `pixellab_client.py` (full isolation — no shared-file conflicts). If you
-   improve the client and think others want it, say so in your status `notes`;
-   don't reach into their copy.
+1. **Stay in your own directory.** Never create, edit, or delete files under
+   another agent's domain.
+2. **Root is shared and minimal** — only `README.md`, `CLAUDE.md`,
+   `requirements.txt`, `.gitignore`, `.dockerignore`, `.env` (gitignored),
+   and `coordination/`.
+3. **One writer per file.** The only file you write outside your domain is
+   your own `coordination/<you>.json`. Disjoint paths ⇒ git never conflicts.
+4. **Push to `main`; on rejection `git fetch && git rebase origin/main` and
+   retry.** One commit + push per unit of work.
+5. **Shared-library changes are deliberate.** Each domain keeps its *own copy*
+   of `pixellab_client.py`; announce improvements in your `notes`, never reach
+   into another agent's copy.
+6. **A new domain must be named in THREE deploy allowlists** — `.dockerignore`
+   (an allowlist), `games2/Dockerfile` (`COPY`), and
+   `.github/workflows/nangijala-deploy.yml` trigger paths (+ its sparse
+   checkout). Missing any one fails silently and looks identical to "the art
+   was never generated".
 
-## Status board (heartbeat + who's doing what)
+## Status board
 
-Each agent continuously writes `coordination/<domain>.json` (it owns that file;
-everyone else reads it). Read the others at the start of each run to see the
-whole fleet. Schema:
+Each agent writes only its own `coordination/<domain>.json`; everyone reads
+all. Schema:
 
 ```json
 {
-  "domain": "characters",
-  "updated_at": "2026-07-01T12:00:00+00:00",   // UTC, refreshed each unit
+  "domain": "monsters",
+  "updated_at": "2026-08-01T12:00:00+00:00",   // UTC, refreshed each unit
   "health": "running",                          // running | idle | stopped | error
-  "current": "generating char_05 walk",         // last/active unit
-  "progress": { "skeletons": 1, "characters": 6 },
-  "budget_remaining": 8900,                      // PixelLab generations left (shared pool)
-  "notes": ["free-form status for humans/agents"],
-  "requests": [                                  // cross-domain asks (see Messaging)
-    { "to": "maps", "text": "ping me when a town tileset lands; I'll size chars to match" }
-  ]
+  "current": "generating X",                    // last/active unit
+  "progress": { "monsters_complete": 57 },
+  "budget_remaining": 8900,                     // PixelLab generations left (shared pool)
+  "notes": ["free-form status"],
+  "requests": [ { "to": "maps2", "text": "...", "at": "..." } ]
 }
 ```
 
-`notes` and `requests` persist across heartbeats (the writer preserves them);
-`updated_at`/`health`/`current`/`progress`/`budget_remaining` refresh each unit.
-A stale `updated_at` (say > 2h) means that agent is down.
+`notes`/`requests` persist across heartbeats; the other fields refresh each
+unit. `updated_at` staler than ~2h ⇒ that agent is down. (Some boards carry
+extra `notes_to_*` arrays and legacy free-form string requests — `board.py
+inbox` tolerates both.)
 
-## Messaging (agents talk to each other DIRECTLY — no human relay)
+## Messaging (agents talk DIRECTLY — no human relay)
 
-The git repo IS the message bus: async and durable, so it works even though each
-agent is only awake when its Routine fires. There's no shared inbox file (that
-would be multi-writer); instead each agent writes only its **own** file and reads
-everyone's. Use the `coordination/board.py` CLI:
+The git repo is the message bus: async and durable, so it works even though
+each agent only wakes when its Routine fires (latency ≈ one cycle). CLI:
 
 ```bash
-# 1. START of EVERY run — MANDATORY: read messages addressed to you + fleet health
-python coordination/board.py inbox <you>
-
-# 2. Ask another domain for something (async; they see it on their next run)
-python coordination/board.py post <you> --to <them> --text "town tiles are 32px"
-
-# 3. After acting on an incoming request, acknowledge it so the asker knows
-python coordination/board.py note <you> --text "ack: added a 32px skeleton for maps"
+python coordination/board.py inbox <you>                      # MANDATORY at start of EVERY run
+python coordination/board.py post <you> --to <them> --text "..."
+python coordination/board.py note <you> --text "ack: ..."     # after acting, so the asker sees it
 ```
 
-Round trip, fully autonomous:
-1. `maps` → `post maps --to characters --text "town tiles are 32px"`
-2. `characters` next run → `inbox characters` sees it → acts → `note characters --text "ack: ..."`
-3. `maps` next run → `inbox maps` sees the ack in characters' notes.
-
-**Every agent MUST run `inbox <you>` at the start of each run** and handle any
-request addressed to it before generating. That's what makes the human unneeded.
-Latency is one Routine cycle (~1h) — fine for async coordination. One writer per
-file, everyone reads all → conflict-free by construction.
+Handle requests addressed to you **before** generating. When you implement a
+request, consume/ack it in the same unit — a stale request re-applied later
+overwrites newer decisions.
 
 ## Shared PixelLab budget
 
-All three domains draw from the **same** generation pool. Coordinate via floors
-so nobody starves the others — each domain's loop stops when the balance drops
-below its floor:
-
-| Domain | Suggested floor | Rationale |
-|--------|-----------------|-----------|
-| characters | 40 | bootstrapping first; small floor |
-| scenery | 2000 | reserve headroom |
-| maps | 2000 | reserve headroom |
-
-Tune these to match priorities (the human decides). Every agent publishes
-`budget_remaining` in its status file, so before a large run you can see how much
-others have been consuming and back off if the pool is low.
+All PixelLab domains draw one generation pool. Each loop stops below its own
+floor (`--min-balance`) and publishes `budget_remaining` so others can back
+off. Floors are the maintainer's to tune (historically: ~40 while a domain
+bootstraps, ~2000 reserve for established art domains).
 
 ## Durable runner — do NOT babysit an in-session loop
 
-Hard-won lesson: a loop running inside your agent's session/container **dies on
-every container restart** (nothing in-container survives, not even a watchdog).
-Do not rely on it for continuous generation. Run your loop on an **external
-scheduler** that lives outside the container.
+An in-session/container loop **dies on every container restart** (paid-for
+lesson — nothing in-container survives). Run loops on an external scheduler:
+a scheduled claude.ai Routine, or a GitHub Actions workflow
+`.github/workflows/<domain>.yml` (one file per domain — the workflows dir is
+shared but each file has one writer). Reference: `.github/workflows/characters2.yml`.
+Recipe:
 
-**GitHub Actions (proven, recommended).** Each domain adds its **own** workflow
-`.github/workflows/<domain>.yml` (one writer per file — `.github/workflows/` is
-shared, but each file is owned by one domain). GitHub runs it on its servers on a
-schedule, surviving all container restarts. **Reference template:
-`.github/workflows/factory.yml` (characters)** — copy it and change the name +
-paths to your domain. Recipe:
+- Triggers: `workflow_dispatch` + optionally `schedule` (pick an off-`:00`
+  minute so domains don't hit the API at once). Several workflows keep their
+  cron deliberately commented out — generation paused until the maintainer
+  green-lights; restore the cron line to resume.
+- `permissions: contents: write` (so `git push` works with `GITHUB_TOKEN`).
+- `concurrency: { group: <domain>-loop, cancel-in-progress: false }` —
+  distinct group per domain.
+- Shared `PIXELLAB_API_KEY` repo secret via `env`.
+- `python <domain>/pipeline/loop.py --max-minutes 50 --min-balance <floor>`.
 
-- Triggers: `schedule` (hourly cron, but pick an off-`:00` minute so all three
-  domains don't hit the API at once) + `workflow_dispatch` (manual/API trigger).
-- `permissions: contents: write` — so your loop's `git push` works with the
-  default `GITHUB_TOKEN`.
-- `concurrency: { group: <domain>-loop, cancel-in-progress: false }` — your own
-  passes never overlap. Different domains still run in parallel (disjoint paths
-  rebase cleanly), so give each a *distinct* group name.
-- Use the shared **`PIXELLAB_API_KEY`** repo secret (already set) via `env`.
-- Run `python <domain>/pipeline/loop.py --max-minutes 50 --min-balance <floor>`.
+## Viewers
 
-Then trigger once from the repo's **Actions** tab (or `workflow_dispatch`) and
-you're durable — no human, no babysitting, survives restarts.
-
-Budget note: all domain workflows draw the **same** PixelLab pool and each running
-workflow consumes GitHub Actions minutes. Keep your `--min-balance` at your
-domain's floor (see the budget table above) so concurrent runs don't starve each
-other, and coordinate cadence via the board if the pool runs low.
-
-## Unified viewer (optional)
-
-Each domain builds its own `<domain>/viewer_data.json` + viewer. A future root
-aggregator can stitch them into one gallery — until then, each viewer stands
-alone.
+Domains with per-asset rollups publish `<domain>/viewer_data.json` (today:
+items, music, scenery, sounds; lore publishes `lore/lore.json`); the **wiki**
+(`wiki/`) is the unified browse/review surface where the maintainer verdicts
+everything.
 
 ## TL;DR for a new agent
 
-1. Read this file + `CLAUDE.md`.
-2. Work only under your domain dir; keep everything inside it.
-3. Copy `characters/pipeline/pixellab_client.py` as your API-client starting point.
-4. Write `coordination/<you>.json` each unit; read the others' at startup.
+1. Read this file + `CLAUDE.md`; run `board.py inbox <you>`.
+2. Work only under your domain dir; write only your own board file.
+3. Copy `characters2/pipeline/pixellab_client.py` as your API-client start.
+4. Read `live/feedback/<you>.json` each run and act on verdicts.
 5. Push to `main` per unit, rebase on conflict, respect budget floors.
