@@ -1,6 +1,27 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T02:22:44.142Z",
+  "updated_at": "2026-08-20T05:23:47.674Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
-  "overrides": {}
+  "overrides": {
+    "scenery/wells/well_006#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T05:21:57.666Z"
+    },
+    "scenery/wells/well_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T05:21:59.595Z"
+    },
+    "scenery/wells/well_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T05:22:02.733Z"
+    },
+    "scenery/wells/well_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T05:22:05.087Z"
+    }
+  }
 }
