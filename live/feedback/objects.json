@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T00:02:15.027Z",
+  "updated_at": "2026-08-20T00:03:39.155Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -20624,7 +20624,9 @@
     },
     "scenery/windows/window_095#lights_on#south": {
       "art": "43454dca77d1283d",
-      "updated_at": "2026-08-19T20:46:12.859Z"
+      "updated_at": "2026-08-20T00:03:34.791Z",
+      "rating": 3,
+      "status": "approved"
     },
     "scenery/windows/window_094#lights_on#south": {
       "rating": 5,
@@ -22657,6 +22659,54 @@
       "status": "rejected",
       "art": "df70d8f736f929a4",
       "updated_at": "2026-08-20T00:02:13.428Z"
+    },
+    "scenery/blood_spatter#spatter#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:40.815Z",
+      "status": "approved",
+      "art": "817c72d3d18d71ea"
+    },
+    "scenery/blood_spatter#spatter#south-east": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:46.922Z",
+      "status": "approved",
+      "art": "c2476054f822c89c"
+    },
+    "scenery/blood_spatter#spatter#east": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:48.606Z",
+      "status": "approved",
+      "art": "86c69e6f0389f85b"
+    },
+    "scenery/blood_spatter#spatter#north-east": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:50.448Z",
+      "status": "approved",
+      "art": "1637ff9c1f3f4613"
+    },
+    "scenery/blood_spatter#spatter#north": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:53.129Z",
+      "status": "approved",
+      "art": "31dd04b26698be7a"
+    },
+    "scenery/blood_spatter#spatter#north-west": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:55.692Z",
+      "status": "approved",
+      "art": "1d57ba81fbae21bc"
+    },
+    "scenery/blood_spatter#spatter#west": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:02:58.575Z",
+      "status": "approved",
+      "art": "bc0fc847604f7d4f"
+    },
+    "scenery/blood_spatter#spatter#south-west": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:03:00.425Z",
+      "status": "approved",
+      "art": "b63c28360a5b500d"
     }
   }
 }
