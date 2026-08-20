@@ -24,3 +24,6 @@ scripts/_wf-*.mjs
 .DS_Store
 *.swp
 client/public/shipset.json
+
+# Boot-timing instrument output (verify-boottime.mjs), one JSON line per run
+.boottime.json
