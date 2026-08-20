@@ -127,6 +127,10 @@
       "note": "claims stop at the lip (claim_depth) EXCEPT for drawn drips: below the lip a pixel is claimed iff it is strongly the top colour and connected to the lip through such pixels (deep_claim). The maintainer, on the beheaded overhangs: 'the overhang always starts from the edge ... Isn't it clear that this is still black_rock?' It is: measured on tile 17, drip pixels sit at 0.29-0.65 of the wall distance in the whitened space, the stones the cap protects at 1.49 \u2014 0.7 splits them with margin on both sides. The wall below still takes the grey_stone ramp.",
       "claim_depth": 0.3,
       "deep_claim": 0.7
+    },
+    "black_rock__over__dark_mud": {
+      "drip_match": 1,
+      "note": "the overhang, by the maintainer's definition: the top's own paint (cool \u2014 blue >= red; the mud is warm) connected to the top edge, allowed to jump the 1px drawn edge highlight; the highlight band itself is claimed with it and capped darker. Claims OVERWRITE the live wall paint, which is computed from the base classification \u2014 proven on all 31 candidates: zero pixels outside the claims differ from live ('WHAT WE HAVE IN GAME NOW HAS COLORED THE BOTTOM BROWN PERFECTLY ALREADY'). Approved: 'Your last post did it. It's Perfect now'"
     }
   }
 }
