@@ -344,6 +344,10 @@
     "light_soil__over__parquet_floor": {
       "claim_depth": 0.3,
       "note": "soil claims painted the parquet wall, worst on the darker-lit right face ('the Light Soil is rendered on the parquet floor wall (on the right side). Lots of examples like this.'). Claims stop at the lip."
+    },
+    "light_soil__over__slime": {
+      "claim_lip": 3,
+      "note": "the slime repaint covered the soil's drawn overhang ('the slime renders on the light soils overhang to the left'). The top 3 wall rows are the soil's, geometrically."
     }
   }
 }
