@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 753,
+  "scenery_count": 750,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -230,7 +230,7 @@
       "name": "Barrel",
       "type": "TOWN",
       "quota": 8,
-      "done": 8
+      "done": 7
     },
     {
       "rank": 29,
@@ -246,7 +246,7 @@
       "name": "Beehive",
       "type": "TOWN",
       "quota": 4,
-      "done": 4
+      "done": 3
     },
     {
       "rank": 31,
@@ -358,7 +358,7 @@
       "name": "Fish Drying Rack",
       "type": "TOWN",
       "quota": 14,
-      "done": 4
+      "done": 3
     },
     {
       "rank": 45,
@@ -1391,12 +1391,12 @@
     "ant_hills": 1,
     "anvils": 2,
     "aqueduct_fragments": 2,
-    "barrels": 8,
+    "barrels": 7,
     "beached_rowboats": 2,
     "beacons": 11,
     "beast_skulls": 2,
     "beds": 4,
-    "beehives": 4,
+    "beehives": 3,
     "bell_posts": 1,
     "effect": 1,
     "braziers": 14,
@@ -1428,7 +1428,7 @@
     "fallen_logs": 5,
     "fences": 3,
     "ferns": 10,
-    "fish_drying_racks": 4,
+    "fish_drying_racks": 3,
     "flame_niches": 8,
     "flower_stands": 6,
     "flower_trellises": 2,
@@ -2734,85 +2734,6 @@
       "animations": []
     },
     {
-      "id": "barrel_008",
-      "rel": "barrels/barrel_008",
-      "name": "Stacked pair, one tapped 008",
-      "category": "barrels",
-      "lights": null,
-      "description": "a stout oak barrel with iron hoops and a wooden lid standing on bare ground, stacked pair, one tapped, roughly six feet tall, human height, self-emissive at night, softly radiating light: glowing rune brand scorched into the staves",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.3,
-        "world_px_height": 49,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T22:10:53+00:00",
-      "pixellab_object_id": "0c9c6a46-7656-474c-9453-439258b1f121",
-      "sprite": "barrels/barrel_008/sprite.webp",
-      "art_hash": "c8509865f4a950ab",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "barrels/barrel_008/sprite.webp",
-          "pixellab_object_id": "0c9c6a46-7656-474c-9453-439258b1f121",
-          "generated_at": "2026-08-13T22:10:53+00:00",
-          "art_hash": "c8509865f4a950ab"
-        },
-        "LIT_2": {
-          "sprite": "barrels/barrel_008/lit_2/sprite.webp",
-          "pixellab_object_id": "c9513a2a-4b93-46f8-939f-26202f0b943f",
-          "generated_at": "2026-08-15T19:43:13+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6098,
-          "glow_score": 0.0449,
-          "art_hash": "3e75b5c77e188739"
-        },
-        "LIT_3": {
-          "sprite": "barrels/barrel_008/lit_3/sprite.webp",
-          "pixellab_object_id": "668293aa-bb8c-49b1-aec9-5ea46644d2ee",
-          "generated_at": "2026-08-15T19:43:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8976,
-          "glow_score": 0.0371,
-          "art_hash": "2a2f55fc1631f68c"
-        },
-        "LIT_4": {
-          "sprite": "barrels/barrel_008/lit_4/sprite.webp",
-          "pixellab_object_id": "441d5cb0-553d-42fc-b01d-67ca763e977e",
-          "generated_at": "2026-08-15T19:43:14+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4864,
-          "glow_score": 0.0,
-          "art_hash": "bd9b26b2a4909baa"
-        },
-        "NOT_LIT_1": {
-          "sprite": "barrels/barrel_008/not_lit_1/sprite.webp",
-          "pixellab_object_id": "42dd9b9a-1fb7-45fc-bd99-a86fc45f0b16",
-          "generated_at": "2026-08-15T19:43:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6334,
-          "glow_score": 0.0,
-          "art_hash": "47603c20eb9022e7"
-        },
-        "NOT_LIT_2": {
-          "sprite": "barrels/barrel_008/not_lit_2/sprite.webp",
-          "pixellab_object_id": "12f6e5b7-d40a-41fa-b63f-95a4873fb1ce",
-          "generated_at": "2026-08-15T19:44:24+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7832,
-          "glow_score": 0.0,
-          "art_hash": "bcc4846e2cbd9faf"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "barrel_010",
       "rel": "barrels/barrel_010",
       "name": "Cracked-stave double-banded barrel 010",
@@ -3380,15 +3301,6 @@
           "pixellab_object_id": "3291e242-7ab1-4d98-8d33-1b0affd650fb",
           "generated_at": "2026-08-13T22:14:43+00:00",
           "art_hash": "2d9ce546b39e7d2a"
-        },
-        "NOT_LIT_2": {
-          "sprite": "beacons/beacon_007/not_lit_2/sprite.webp",
-          "pixellab_object_id": "5a2cc506-b9e3-4d2a-97f7-446bdde4461f",
-          "generated_at": "2026-08-15T19:52:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6138,
-          "glow_score": 0.0,
-          "art_hash": "09c7bdad165687f5"
         },
         "NOT_LIT_3": {
           "sprite": "beacons/beacon_007/not_lit_3/sprite.webp",
@@ -4605,85 +4517,6 @@
           "difference_from_source": 0.7031,
           "glow_score": 0.1458,
           "art_hash": "7c002badcf839671"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "beehive_011",
-      "rel": "beehives/beehive_011",
-      "name": "Moss-capped forest skep 011",
-      "category": "beehives",
-      "lights": null,
-      "description": "a domed coiled-straw bee skep on a low wooden stand with a small arched entrance hole, moss-capped forest skep, waist-high, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.03,
-        "world_px_height": 39,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T22:10:31+00:00",
-      "pixellab_object_id": "16c622ec-5dd9-4451-9680-542ee1db3cc9",
-      "sprite": "beehives/beehive_011/sprite.webp",
-      "art_hash": "a3b371299edd130c",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "beehives/beehive_011/lit_1/sprite.webp",
-          "pixellab_object_id": "0fa6bf08-98e3-4438-bbc3-2a99be1bb1b8",
-          "generated_at": "2026-08-15T20:21:41+00:00",
-          "glow_concept": "votive candle on the stand beside the hive",
-          "difference_from_source": 0.732,
-          "glow_score": 0.1189,
-          "art_hash": "93029e68725c6cd3"
-        },
-        "LIT_2": {
-          "sprite": "beehives/beehive_011/lit_2/sprite.webp",
-          "pixellab_object_id": "001f4539-ae97-4fc8-9aba-fee85fed84f2",
-          "generated_at": "2026-08-15T20:21:31+00:00",
-          "glow_concept": "moon-pale gleaming wax drippings",
-          "difference_from_source": 0.6612,
-          "glow_score": 0.1512,
-          "art_hash": "0c21d81556a9627b"
-        },
-        "NOT_LIT_1": {
-          "sprite": "beehives/beehive_011/sprite.webp",
-          "pixellab_object_id": "16c622ec-5dd9-4451-9680-542ee1db3cc9",
-          "generated_at": "2026-08-13T22:10:31+00:00",
-          "art_hash": "a3b371299edd130c"
-        },
-        "NOT_LIT_2": {
-          "sprite": "beehives/beehive_011/not_lit_2/sprite.webp",
-          "pixellab_object_id": "059fc563-e5de-4f7e-8c9e-e0f3a292eb14",
-          "generated_at": "2026-08-15T20:21:18+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9134,
-          "glow_score": 0.0,
-          "art_hash": "1448acb7a4ae1226"
-        },
-        "NOT_LIT_3": {
-          "sprite": "beehives/beehive_011/not_lit_3/sprite.webp",
-          "pixellab_object_id": "bddf03b3-9cb0-4639-8c72-1c02c753e3e4",
-          "generated_at": "2026-08-15T20:20:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6417,
-          "glow_score": 0.3467,
-          "art_hash": "fc495fa7f0be90e1"
-        },
-        "NOT_LIT_4": {
-          "sprite": "beehives/beehive_011/not_lit_4/sprite.webp",
-          "pixellab_object_id": "184f84d4-aa53-4022-bdfd-33a658af07c7",
-          "generated_at": "2026-08-15T20:21:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7086,
-          "glow_score": 0.0707,
-          "art_hash": "8d410a305a8ae177"
         }
       },
       "animations": []
@@ -19027,24 +18860,6 @@
           "generated_at": "2026-08-13T22:12:01+00:00",
           "art_hash": "b298cc254d8bda85"
         },
-        "LIT_2": {
-          "sprite": "dock_pilings/dock_piling_010/lit_2/sprite.webp",
-          "pixellab_object_id": "99184be6-3a27-4f5a-9d55-dfb19867a133",
-          "generated_at": "2026-08-16T11:46:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6612,
-          "glow_score": 0.0179,
-          "art_hash": "ccfdcd0211c3c82a"
-        },
-        "LIT_3": {
-          "sprite": "dock_pilings/dock_piling_010/lit_3/sprite.webp",
-          "pixellab_object_id": "a6ea6401-9cb7-40ed-8a81-71f2f2afa809",
-          "generated_at": "2026-08-16T11:45:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5504,
-          "glow_score": 0.009,
-          "art_hash": "28e367867c3b03f4"
-        },
         "LIT_4": {
           "sprite": "dock_pilings/dock_piling_010/lit_4/sprite.webp",
           "pixellab_object_id": "123bf03d-dac7-49a7-9753-968b95519e36",
@@ -19053,15 +18868,6 @@
           "difference_from_source": 0.7505,
           "glow_score": 0.0843,
           "art_hash": "8d4fd85bc2d42f8d"
-        },
-        "NOT_LIT_1": {
-          "sprite": "dock_pilings/dock_piling_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "a8407a7c-8fde-4002-9283-4ebb9e453ab8",
-          "generated_at": "2026-08-16T11:45:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9116,
-          "glow_score": 0.0,
-          "art_hash": "7b5427f06c8fe81b"
         },
         "NOT_LIT_2": {
           "sprite": "dock_pilings/dock_piling_010/not_lit_2/sprite.webp",
@@ -21495,85 +21301,6 @@
           "difference_from_source": 0.6625,
           "glow_score": 0.1643,
           "art_hash": "64a50674b3d1e7ee"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "fish_drying_rack_007",
-      "rel": "fish_drying_racks/fish_drying_rack_007",
-      "name": "Rack with salted white fillets 007",
-      "category": "fish_drying_racks",
-      "lights": null,
-      "description": "a wooden A-frame drying rack strung with rows of split fish hanging from cord lines, standing on trampled shore grass, rack with salted white fillets, roughly six feet tall, human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 96,
-      "placement": {
-        "world_height_m": 1.86,
-        "world_px_height": 70,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T22:14:18+00:00",
-      "pixellab_object_id": "8bcabb43-49b2-4918-b300-b456d099e144",
-      "sprite": "fish_drying_racks/fish_drying_rack_007/sprite.webp",
-      "art_hash": "0b2a3c70a28c1809",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/lit_1/sprite.webp",
-          "pixellab_object_id": "4fd95a1e-201f-4370-8e05-ee520e7244e0",
-          "generated_at": "2026-08-16T12:21:14+00:00",
-          "glow_concept": "glowing smoke curling through the hanging fish",
-          "difference_from_source": 0.6418,
-          "glow_score": 0.1132,
-          "art_hash": "203fe60397d87914"
-        },
-        "LIT_2": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/lit_2/sprite.webp",
-          "pixellab_object_id": "ea87ad8a-2239-4f68-a513-5ad8c5d29cd9",
-          "generated_at": "2026-08-16T12:23:25+00:00",
-          "glow_concept": "tiny votive candles strung along the frame",
-          "difference_from_source": 0.6982,
-          "glow_score": 0.1075,
-          "art_hash": "29b1d1735c0410a2"
-        },
-        "NOT_LIT_1": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/sprite.webp",
-          "pixellab_object_id": "8bcabb43-49b2-4918-b300-b456d099e144",
-          "generated_at": "2026-08-13T22:14:18+00:00",
-          "art_hash": "0b2a3c70a28c1809"
-        },
-        "NOT_LIT_2": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/not_lit_2/sprite.webp",
-          "pixellab_object_id": "33a93948-24f1-42d3-b459-2614f5bf7ab5",
-          "generated_at": "2026-08-16T12:21:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6153,
-          "glow_score": 0.0,
-          "art_hash": "c3d736b4fa0775dc"
-        },
-        "NOT_LIT_3": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/not_lit_3/sprite.webp",
-          "pixellab_object_id": "c4f0f24a-90f5-4ca4-ae9d-ff26e3e7f5ea",
-          "generated_at": "2026-08-16T12:21:35+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5956,
-          "glow_score": 0.055,
-          "art_hash": "e57ddd25ad537152"
-        },
-        "NOT_LIT_4": {
-          "sprite": "fish_drying_racks/fish_drying_rack_007/not_lit_4/sprite.webp",
-          "pixellab_object_id": "d15ea690-aea5-416e-86fc-2f8509bd0a4d",
-          "generated_at": "2026-08-16T12:21:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.825,
-          "glow_score": 0.0279,
-          "art_hash": "5f86ac12bdedf41b"
         }
       },
       "animations": []
@@ -25206,15 +24933,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "haystacks/haystack_013/lit_1/sprite.webp",
-          "pixellab_object_id": "9be2fdf1-b231-4312-bc70-955e8e9bc476",
-          "generated_at": "2026-08-16T15:05:22+00:00",
-          "glow_concept": "stray straws glinting like spun gold",
-          "difference_from_source": 0.4533,
-          "glow_score": 0.5749,
-          "art_hash": "6492e922665c20fe"
-        },
         "LIT_2": {
           "sprite": "haystacks/haystack_013/lit_2/sprite.webp",
           "pixellab_object_id": "b4c7b09a-a37b-4b83-abd9-2caa95eb6d44",
@@ -25248,14 +24966,15 @@
           "glow_score": 0.576,
           "art_hash": "13e5efbc559cbda6"
         },
-        "NOT_LIT_4": {
-          "sprite": "haystacks/haystack_013/not_lit_4/sprite.webp",
-          "pixellab_object_id": "5ab18824-f9b5-4f84-bf0e-ad5e563b3668",
-          "generated_at": "2026-08-16T15:05:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4879,
-          "glow_score": 0.5262,
-          "art_hash": "de811ceb094d6ce5"
+        "NOT_LIT_5": {
+          "sprite": "haystacks/haystack_013/not_lit_5/sprite.webp",
+          "pixellab_object_id": "9be2fdf1-b231-4312-bc70-955e8e9bc476",
+          "generated_at": "2026-08-16T15:05:22+00:00",
+          "glow_concept": "stray straws glinting like spun gold",
+          "difference_from_source": 0.4533,
+          "glow_score": 0.5749,
+          "relit_from": "LIT_1",
+          "art_hash": "6492e922665c20fe"
         }
       },
       "animations": []
@@ -39142,15 +38861,6 @@
           "difference_from_source": 0.8631,
           "glow_score": 0.0512,
           "art_hash": "c147679a93f89960"
-        },
-        "LIT_2": {
-          "sprite": "story_posts/story_post_011/lit_2/sprite.webp",
-          "pixellab_object_id": "84a809f8-cd5f-471f-b22e-00c2a854ff2e",
-          "generated_at": "2026-08-16T22:30:35+00:00",
-          "glow_concept": "knot-hole shining like a small hearth",
-          "difference_from_source": 0.6944,
-          "glow_score": 0.0009,
-          "art_hash": "ed227da81a23f3cf"
         },
         "NOT_LIT_1": {
           "sprite": "story_posts/story_post_011/sprite.webp",
@@ -55487,24 +55197,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "washing_lines/washing_line_009/lit_1/sprite.webp",
-          "pixellab_object_id": "0f9f7d60-c5f4-419c-9b9c-b47356119d42",
-          "generated_at": "2026-08-17T11:55:56+00:00",
-          "glow_concept": "embroidered hems stitched in shining thread",
-          "difference_from_source": 0.7223,
-          "glow_score": 0.1265,
-          "art_hash": "f2310946e315ea13"
-        },
-        "LIT_2": {
-          "sprite": "washing_lines/washing_line_009/lit_2/sprite.webp",
-          "pixellab_object_id": "b439de4a-50a2-4a59-9fbb-93a26033f1f1",
-          "generated_at": "2026-08-17T11:56:54+00:00",
-          "glow_concept": "garments filled with the warm light of wearers",
-          "difference_from_source": 0.9093,
-          "glow_score": 0.3919,
-          "art_hash": "a9bbd503127cf294"
-        },
         "NOT_LIT_1": {
           "sprite": "washing_lines/washing_line_009/sprite.webp",
           "pixellab_object_id": "9c5dd823-6c2e-4564-9e69-36c367855465",
@@ -55520,15 +55212,6 @@
           "glow_score": 0.3345,
           "art_hash": "cc626e531bf87ce5"
         },
-        "NOT_LIT_3": {
-          "sprite": "washing_lines/washing_line_009/not_lit_3/sprite.webp",
-          "pixellab_object_id": "12df20d9-feb5-4b40-a38a-67e749d7ac88",
-          "generated_at": "2026-08-17T11:56:35+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6796,
-          "glow_score": 0.2934,
-          "art_hash": "429d2aa84f2c7d2f"
-        },
         "NOT_LIT_4": {
           "sprite": "washing_lines/washing_line_009/not_lit_4/sprite.webp",
           "pixellab_object_id": "13f9d8fd-01f0-42ad-b629-07b0d55b3fed",
@@ -55537,6 +55220,16 @@
           "difference_from_source": 0.6713,
           "glow_score": 0.0893,
           "art_hash": "05a6e5c47a7baa31"
+        },
+        "NOT_LIT_5": {
+          "sprite": "washing_lines/washing_line_009/not_lit_5/sprite.webp",
+          "pixellab_object_id": "0f9f7d60-c5f4-419c-9b9c-b47356119d42",
+          "generated_at": "2026-08-17T11:55:56+00:00",
+          "glow_concept": "embroidered hems stitched in shining thread",
+          "difference_from_source": 0.7223,
+          "glow_score": 0.1265,
+          "relit_from": "LIT_1",
+          "art_hash": "f2310946e315ea13"
         }
       },
       "animations": []
@@ -57031,15 +56724,6 @@
           "difference_from_source": 0.9291,
           "glow_score": 0.1453,
           "art_hash": "40d9bff6737f68ef"
-        },
-        "LIT_2": {
-          "sprite": "wayside_shrines/wayside_shrine_015/lit_2/sprite.webp",
-          "pixellab_object_id": "91ad2706-6c78-42cb-9841-6878ed3fa6b8",
-          "generated_at": "2026-08-17T12:24:38+00:00",
-          "glow_concept": "tiny hanging lamp under the eaves",
-          "difference_from_source": 0.5772,
-          "glow_score": 0.1222,
-          "art_hash": "043edc23a7c682ad"
         },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
@@ -58655,15 +58339,6 @@
           "glow_score": 0.0302,
           "art_hash": "6c3e8ee7f44ab221"
         },
-        "LIT_2": {
-          "sprite": "wells/well_013/lit_2/sprite.webp",
-          "pixellab_object_id": "a6200adb-188a-482c-8276-4b944c8b8bcf",
-          "generated_at": "2026-08-17T13:02:28+00:00",
-          "glow_concept": "raised bucket brimming with luminous water",
-          "difference_from_source": 0.8989,
-          "glow_score": 0.0509,
-          "art_hash": "0bfb9ebdf9e64112"
-        },
         "NOT_LIT_1": {
           "sprite": "wells/well_013/sprite.webp",
           "pixellab_object_id": "ced55b48-3641-4866-b1a8-3e9a01553a74",
@@ -58678,15 +58353,6 @@
           "difference_from_source": 0.6246,
           "glow_score": 0.0,
           "art_hash": "0efd4674d8b30de4"
-        },
-        "NOT_LIT_3": {
-          "sprite": "wells/well_013/not_lit_3/sprite.webp",
-          "pixellab_object_id": "46c9817e-8836-41d4-8934-0e94ec61ed35",
-          "generated_at": "2026-08-17T13:01:06+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7098,
-          "glow_score": 0.0,
-          "art_hash": "b1f09629e4405912"
         },
         "NOT_LIT_4": {
           "sprite": "wells/well_013/not_lit_4/sprite.webp",
