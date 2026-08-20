@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T01:24:59.479Z",
+  "updated_at": "2026-08-20T01:25:43.290Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/story_posts/story_post_014#lit_3": {
@@ -12,6 +12,16 @@
       "lit": false,
       "was": "lit_2",
       "updated_at": "2026-08-20T01:24:46.059Z"
+    },
+    "scenery/cairns/cairn_014#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T01:25:28.645Z"
+    },
+    "scenery/cairns/cairn_014#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T01:25:32.064Z"
     }
   }
 }
