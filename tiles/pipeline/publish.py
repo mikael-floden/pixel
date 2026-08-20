@@ -506,6 +506,7 @@ def main():
                                       top_ramp=PALETTE.get(top, {}).get("ramp"),
                                       side_ramp=PALETTE.get(side, {}).get("ramp"),
                                       claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
+                                      deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

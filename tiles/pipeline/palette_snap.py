@@ -556,7 +556,8 @@ def _chroma_dist(px, target):
                    + (CHROMA_VALUE_WEIGHT * (c[:, 2] - t[2])) ** 2)
 
 
-def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None):
+def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None,
+                deep_claim=None):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -768,6 +769,32 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
             span = np.maximum(1, wy_max - wy_min).astype(float)
             depth = (ys3 - wy_min[None, :]) / span[None, :]
             grown &= depth <= claim_depth
+            if deep_claim is not None:
+                # THE CAP CUTS DRIPS TOO. On black_rock over grey_stone the cap that
+                # stops the flood from swallowing the shaded stones also beheads the
+                # three clearly-black drips that hang past it — and the wall repaint
+                # then turned them grey ("it feels like they didn't turn near-black").
+                # Colour separates what depth cannot: measured on that tile, the drip
+                # pixels sit at d_t/d_w 0.29-0.65 in the whitened space while the
+                # stones the cap exists to protect sit at 1.49. So below the cap a
+                # pixel is claimed iff it is STRONGLY the top colour (within deep_claim
+                # of the wall distance) AND still reachable from the capped claims
+                # through strong-or-shallow pixels — the re-flood keeps "every claim
+                # must hang" true, so an honestly-black stud deep in the wall stays
+                # the wall's own texture exactly as before.
+                strong = np.zeros(wall_all.shape, bool)
+                strong[idx0[0], idx0[1]] = d_t <= d_w * float(deep_claim)
+                reach2 = reach & ((depth <= claim_depth) | strong)
+                for _ in range(64):
+                    g2 = grown.copy()
+                    g2[1:, :] |= grown[:-1, :]
+                    g2[:-1, :] |= grown[1:, :]
+                    g2[:, 1:] |= grown[:, :-1]
+                    g2[:, :-1] |= grown[:, 1:]
+                    g2 &= reach2
+                    if g2.sum() == grown.sum():
+                        break
+                    grown = g2
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
@@ -941,7 +968,7 @@ def substitute(a, mask, hex_target, spread=None, ramp=None):
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
-         claim_depth=None, paint_side=True):
+         claim_depth=None, paint_side=True, deep_claim=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1097,7 +1124,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # worst 20.8, none over MAX_WALL_ERR.
             m_side, m_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
                                         aggressive=not align_side,
-                                        claim_depth=claim_depth)
+                                        claim_depth=claim_depth,
+                                        deep_claim=deep_claim)
             # THE OVERHANG ALWAYS ALIGNS; THE WALL ONLY WHEN CONFIRMED. align_side (the
             # wall_err gate) exists so a wall that may not BE the requested material is
             # never repainted as it. But it used to gate this whole block, overhang

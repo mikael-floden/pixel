@@ -124,8 +124,9 @@
       "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
     },
     "black_rock__over__grey_stone": {
-      "note": "claims stop at the lip (claim_depth) and the wall below takes the grey_stone ramp. The maintainer approved the raw wall, then relaxed it: 'It's ok if you touch them a bit. Don't we have a whole range of grey in our ref grey stone palette?' Measured on all 27 candidates: ramp vs raw is +14/+17 mean brightness per face (never darker) and guard-clean on every tile.",
-      "claim_depth": 0.3
+      "note": "claims stop at the lip (claim_depth) EXCEPT for drawn drips: below the lip a pixel is claimed iff it is strongly the top colour and connected to the lip through such pixels (deep_claim). The maintainer, on the beheaded overhangs: 'the overhang always starts from the edge ... Isn't it clear that this is still black_rock?' It is: measured on tile 17, drip pixels sit at 0.29-0.65 of the wall distance in the whitened space, the stones the cap protects at 1.49 \u2014 0.7 splits them with margin on both sides. The wall below still takes the grey_stone ramp.",
+      "claim_depth": 0.3,
+      "deep_claim": 0.7
     }
   }
 }
