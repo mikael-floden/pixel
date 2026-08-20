@@ -60,13 +60,14 @@
       "difference_from_source": 0.3986,
       "glow_score": 0.0549
     },
-    "NOT_LIT_1": {
-      "sprite": "hop_poles/hop_pole_002/not_lit_1/sprite.webp",
+    "LIT_5": {
+      "sprite": "hop_poles/hop_pole_002/lit_5/sprite.webp",
       "pixellab_object_id": "c9c5e58e-9bf6-4329-816d-f1e473bf204f",
       "generated_at": "2026-08-16T16:46:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7246,
-      "glow_score": 0.0221
+      "glow_score": 0.0221,
+      "relit_from": "NOT_LIT_1"
     },
     "NOT_LIT_2": {
       "sprite": "hop_poles/hop_pole_002/not_lit_2/sprite.webp",

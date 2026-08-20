@@ -27,6 +27,9 @@
  "aqueduct_fragments/aqueduct_fragment_901": [
   "LIT_1"
  ],
+ "barrels/barrel_003": [
+  "LIT_1"
+ ],
  "barrels/barrel_005": [
   "LIT_1",
   "LIT_2",
@@ -112,6 +115,10 @@
   "NOT_LIT_8",
   "NOT_LIT_9"
  ],
+ "beehives/beehive_003": [
+  "LIT_2",
+  "NOT_LIT_4"
+ ],
  "beehives/beehive_004": [
   "LIT_1",
   "LIT_2",
@@ -149,6 +156,9 @@
   "LIT_4",
   "NOT_LIT_1",
   "NOT_LIT_2"
+ ],
+ "braziers/brazier_003": [
+  "LIT_1"
  ],
  "braziers/brazier_005": [
   "LIT_1"
@@ -222,6 +232,12 @@
   "NOT_LIT_2"
  ],
  "briar_thickets/briar_thicket_024": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
+ "broken_columns/broken_column_002": [
   "LIT_1",
   "LIT_2",
   "NOT_LIT_1",
@@ -317,6 +333,13 @@
  "cairns/cairn_026": [
   "NOT_LIT_2"
  ],
+ "carts/cart_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2",
+  "NOT_LIT_3",
+  "NOT_LIT_4"
+ ],
  "carts/cart_004": [
   "LIT_1",
   "LIT_2",
@@ -410,6 +433,9 @@
   "LIT_2",
   "NOT_LIT_1",
   "NOT_LIT_2"
+ ],
+ "charcoal_kilns/charcoal_kiln_002": [
+  "LIT_2"
  ],
  "crystals/crystal_005": [
   "LIT_2",
@@ -532,6 +558,11 @@
   "LIT_1",
   "NOT_LIT_6"
  ],
+ "fences/fence_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2"
+ ],
  "fences/fence_006": [
   "LIT_4",
   "NOT_LIT_1",
@@ -595,6 +626,9 @@
   "LIT_2",
   "NOT_LIT_2"
  ],
+ "fish_drying_racks/fish_drying_rack_003": [
+  "LIT_2"
+ ],
  "fish_drying_racks/fish_drying_rack_005": [
   "LIT_1"
  ],
@@ -634,6 +668,10 @@
  ],
  "flame_niches/flame_niche_018": [
   "NOT_LIT_1"
+ ],
+ "flower_stands/flower_stand_003": [
+  "LIT_1",
+  "LIT_2"
  ],
  "flower_stands/flower_stand_004": [
   "LIT_2",
@@ -757,6 +795,11 @@
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
+ "graves/grave_004": [
+  "LIT_4",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
  "graves/grave_005": [
   "LIT_2"
  ],
@@ -869,6 +912,9 @@
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
+ "hop_poles/hop_pole_002": [
+  "NOT_LIT_1"
+ ],
  "hot_springs/hot_spring_002": [
   "LIT_2",
   "LIT_3",
@@ -904,6 +950,13 @@
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
+ "ivy_posts/ivy_post_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2",
+  "NOT_LIT_3",
+  "NOT_LIT_4"
+ ],
  "ivy_posts/ivy_post_005": [
   "LIT_1",
   "NOT_LIT_2",
@@ -917,6 +970,9 @@
  ],
  "ivy_posts/ivy_post_010": [
   "LIT_2"
+ ],
+ "lantern_posts/lantern_post_004": [
+  "NOT_LIT_1"
  ],
  "lantern_posts/lantern_post_005": [
   "LIT_1",
@@ -986,6 +1042,11 @@
  "letter_boxes/letter_box_003": [
   "LIT_1",
   "LIT_2"
+ ],
+ "market_stalls/market_stall_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2"
  ],
  "market_stalls/market_stall_004": [
   "LIT_1",
@@ -1083,6 +1144,9 @@
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
+ "offering_tables/offering_table_003": [
+  "NOT_LIT_4"
+ ],
  "offering_tables/offering_table_004": [
   "LIT_1",
   "LIT_2",
@@ -1114,6 +1178,13 @@
   "NOT_LIT_1"
  ],
  "offering_tables/offering_table_020": [
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
+ "overgrown_archways/overgrown_archway_002": [
+  "LIT_2",
+  "LIT_3",
+  "LIT_4",
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
@@ -1183,6 +1254,12 @@
  "rock_spires/rock_spire_002": [
   "NOT_LIT_2"
  ],
+ "rope_swings/rope_swing_002": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
  "rugs_and_hides/rug_009": [
   "LIT_1",
   "LIT_2"
@@ -1211,6 +1288,13 @@
   "LIT_1",
   "LIT_2"
  ],
+ "ruined_arches/ruined_arch_002": [
+  "LIT_2",
+  "LIT_3",
+  "LIT_4",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
  "rusted_machines/rusted_machine_900": [
   "LIT_1",
   "NOT_LIT_1",
@@ -1237,11 +1321,21 @@
  "scarecrows/scarecrow_901": [
   "NOT_LIT_2"
  ],
+ "sheaf_poles/sheaf_pole_002": [
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
  "sheaf_poles/sheaf_pole_005": [
   "LIT_1",
   "LIT_2"
  ],
  "shipwreck_prows/shipwreck_prow_002": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
+ "signposts/signpost_004": [
   "LIT_1",
   "LIT_2",
   "NOT_LIT_1",
@@ -1346,6 +1440,13 @@
   "NOT_LIT_2"
  ],
  "standing_stones/standing_stone_012": [
+  "LIT_2",
+  "LIT_3",
+  "LIT_4",
+  "NOT_LIT_1",
+  "NOT_LIT_2"
+ ],
+ "statues/statue_002": [
   "LIT_2",
   "LIT_3",
   "LIT_4",
@@ -1573,6 +1674,13 @@
   "NOT_LIT_1",
   "NOT_LIT_2"
  ],
+ "streetlights/streetlight_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2",
+  "NOT_LIT_3",
+  "NOT_LIT_4"
+ ],
  "streetlights/streetlight_007": [
   "NOT_LIT_3",
   "NOT_LIT_4"
@@ -1641,6 +1749,11 @@
  "stumps/stump_016": [
   "LIT_2",
   "LIT_4"
+ ],
+ "sundials/sundial_002": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2"
  ],
  "sundials/sundial_003": [
   "LIT_1",
@@ -1719,6 +1832,9 @@
   "LIT_2",
   "NOT_LIT_1",
   "NOT_LIT_2"
+ ],
+ "torch_posts/torch_post_004": [
+  "LIT_4"
  ],
  "torch_posts/torch_post_007": [
   "NOT_LIT_3",
@@ -1981,6 +2097,13 @@
  "whale_bones/whale_bone_001": [
   "LIT_1",
   "LIT_2"
+ ],
+ "windmills/windmill_003": [
+  "LIT_1",
+  "LIT_2",
+  "NOT_LIT_2",
+  "NOT_LIT_3",
+  "NOT_LIT_4"
  ],
  "windmills/windmill_009": [
   "LIT_1",

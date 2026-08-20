@@ -31,50 +31,38 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T08:45:01+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "signposts/signpost_004/sprite.webp",
       "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
-      "generated_at": "2026-08-13T08:45:01+00:00"
+      "generated_at": "2026-08-13T08:45:01+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "signposts/signpost_004/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "signposts/signpost_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "b77d255e-1870-45bc-ac12-66ca2f4c8f20",
       "generated_at": "2026-08-16T20:46:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.633,
-      "glow_score": 0.1197
+      "glow_score": 0.1197,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "signposts/signpost_004/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "signposts/signpost_004/not_lit_5/sprite.webp",
       "pixellab_object_id": "4d26f494-9d6b-48ce-adfe-f27bed79c3ee",
       "generated_at": "2026-08-16T20:47:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.1834,
-      "glow_score": 0.074
+      "glow_score": 0.074,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "signposts/signpost_004/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "signposts/signpost_004/not_lit_6/sprite.webp",
       "pixellab_object_id": "b1b03495-6c4a-464a-9856-424ab27f6bf6",
       "generated_at": "2026-08-16T20:47:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.819,
-      "glow_score": 0.0973
-    },
-    "NOT_LIT_1": {
-      "sprite": "signposts/signpost_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "36a96e53-0b90-4392-8422-fb2fab26f4ff",
-      "generated_at": "2026-08-16T20:47:29+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8986,
-      "glow_score": 0.0071
-    },
-    "NOT_LIT_2": {
-      "sprite": "signposts/signpost_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "4223c0b7-e86c-47bb-90cd-f4d452f3823e",
-      "generated_at": "2026-08-16T20:53:04+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8349,
-      "glow_score": 0.0
+      "glow_score": 0.0973,
+      "relit_from": "LIT_4"
     }
   }
 }

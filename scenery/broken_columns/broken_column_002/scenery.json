@@ -31,50 +31,38 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T04:54:47+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "broken_columns/broken_column_002/sprite.webp",
       "pixellab_object_id": "093a44c8-7422-4a1c-9e84-26d6eda69721",
-      "generated_at": "2026-08-13T04:54:47+00:00"
+      "generated_at": "2026-08-13T04:54:47+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "broken_columns/broken_column_002/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "broken_columns/broken_column_002/not_lit_4/sprite.webp",
       "pixellab_object_id": "fc2ceb6f-419e-466c-99cd-56d69f0cf042",
       "generated_at": "2026-08-15T21:03:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.703,
-      "glow_score": 0.3212
+      "glow_score": 0.3212,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "broken_columns/broken_column_002/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "broken_columns/broken_column_002/not_lit_5/sprite.webp",
       "pixellab_object_id": "235d952f-a856-4fec-951b-916b5a44e741",
       "generated_at": "2026-08-15T21:04:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.779,
-      "glow_score": 0.3033
+      "glow_score": 0.3033,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "broken_columns/broken_column_002/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "broken_columns/broken_column_002/not_lit_6/sprite.webp",
       "pixellab_object_id": "63acde23-110a-4953-9dca-4041577b3890",
       "generated_at": "2026-08-15T21:04:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4027,
-      "glow_score": 0.2415
-    },
-    "NOT_LIT_1": {
-      "sprite": "broken_columns/broken_column_002/not_lit_1/sprite.webp",
-      "pixellab_object_id": "592e08aa-175e-4f60-a531-97761dc42a17",
-      "generated_at": "2026-08-15T21:07:13+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9859,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "broken_columns/broken_column_002/not_lit_2/sprite.webp",
-      "pixellab_object_id": "f2562e02-26d6-429c-b724-89a41907095f",
-      "generated_at": "2026-08-15T21:06:19+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9979,
-      "glow_score": 0.0
+      "glow_score": 0.2415,
+      "relit_from": "LIT_4"
     }
   }
 }
