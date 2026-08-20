@@ -1,11 +1,13 @@
-# WebP in tiles2 — measured, and what the fleet needs to know
+# WebP in tiles2 — the laws, with the measurements behind them
 
-Findings from converting this domain. Two numbers matter, and one of them
-contradicts the figure being circulated.
+**Status: migration complete (2026-07-31).** The whole domain is lossless
+WebP — raw (22.7 → 16.7 MB) and processed (22.6 → 15.4 MB), zero PNGs.
+`common.TILE_FORMAT` / `common.processed_name()` decide the container in ONE
+place; every tile write goes through `common.save_tile()`.
 
-## 1. The "76% saving" for tiles2 is a LOSSY measurement
+## 1. LOSSLESS ONLY — Pillow's and cwebp's defaults are both lossy traps
 
-Measured on 120 random processed tiles (Pillow/libwebp, `method=6`):
+Measured on 120 random processed tiles (Pillow/libwebp):
 
 | encoding | size vs PNG | visible px changed | max channel Δ | colours/tile |
 |---|---|---|---|---|
@@ -14,100 +16,70 @@ Measured on 120 random processed tiles (Pillow/libwebp, `method=6`):
 | lossy q=80 | −78% | 99.4% | 85 | 819 → 1368 |
 | lossy q=75 (`cwebp` default) | −78% | 99.6% | 86 | 819 → 1375 |
 
-A ~76% saving *on tiles2* only appears in the lossy rows. **`cwebp` with no flags is
-lossy q=75**, and Pillow's `lossless=True` is likewise not the default — the two traps
-games-ui's `games2/scripts/to-webp.py` already guards against.
+Lossy changes essentially every visible pixel, shifts channels by up to a
+third of the range, and smears ringing through flat pixel art — it would
+silently undo the palette harmonisation and re-introduce the edge/seam
+artefacts this domain removed. `cwebp` with no flags is lossy q=75; Pillow's
+`lossless=True` is not the default. Never `im.save()` a `.webp` path
+directly — use `common.save_tile()` (or `games2/scripts/to-webp.py`, which
+verifies round-trips).
 
-This is not a claim that other domains' numbers are wrong: characters2 really did get
-−67.6% lossless, because character sprites are mostly transparent margin and flat
-fills. tiles2 is the opposite — every tile is a dense, full-bleed 64×64 texture with
-PixelLab's dithering, which is close to incompressible. **Expect ~26–30% here and
-budget accordingly**; a per-domain measurement beats one fleet-wide ratio.
+## 2. Budget the REAL ratio: ~26–34% here, not "76%"
 
-Lossy is not an option here. It changes essentially every visible pixel, shifts
-channels by up to 86 (a third of the range), and inflates a tile from ~819 to ~1375
-colours — ringing smeared through flat pixel art. It would silently undo the palette
-harmonisation and re-introduce exactly the edge/seam artefacts this domain has spent
-weeks removing. Any converter used on this art must pass `lossless=True` / `-lossless`.
+Any circulated ~76% saving for tiles2 was a **lossy** measurement.
+characters2's −67.6% lossless is real *for sprite art* (mostly transparent
+margin + flat fills); tiles2 tiles are dense, full-bleed, dithered 64×64
+textures — close to incompressible. **A per-domain measurement beats one
+fleet-wide ratio.**
 
-**Realistic tiles2 saving is ~24–30%, not 76%** — about 12 MB of 44.7 MB, not 33 MB.
-Worth doing; just budget the real number.
+## 3. Why lossless is safe here — verified, not assumed
 
-## 2. Lossless WebP is safe here — verified, not assumed
+Lossless WebP reproduces the entire alpha channel and every visible pixel
+exactly; its one departure is zeroing RGB under fully-transparent
+(`alpha==0`) pixels. That hidden data is unused: every pipeline step masks on
+`alpha > 16` (`harmonize`, `neutralize_outline`, `clean_top_rim`,
+`fade_outline_alpha`), and `close_iso_gaps` averages only opaque neighbours.
+Verified: 120/120 files alpha- and visible-RGB-identical, and the full
+postprocess chain run from PNG vs WebP sources produced **60/60 identical
+outputs, max delta 0**.
 
-Lossless WebP reproduces the **entire alpha channel** and **every visible pixel**
-exactly. Its one departure: it zeroes RGB underneath fully-transparent (`alpha==0`)
-pixels, since nothing renders them. Verified on this art:
-
-- 120/120 files — alpha channel identical, visible RGB identical
-- 112/120 differed *only* under `alpha==0`
-
-That hidden data is unused by our pipeline: every step masks on `alpha > 16`
-(`harmonize`, `neutralize_outline`, `clean_top_rim`, `fade_outline_alpha`), and
-`close_iso_gaps` averages only opaque neighbours. Proven end-to-end by running the
-full postprocess chain from both sources:
-
-> **60/60 tiles — processed output identical in alpha and every visible pixel, max delta 0.**
-
-## 3. What tiles2 converted, and what it deliberately did not
-
-**Converted — `raw/` (4372 files, 22.7 → 16.7 MB).** raw/ is purely the input to our
-own postprocess and has **no consumer outside tiles2**, so converting it is invisible
-to the game and needed no coordination.
-
-Note on where the win lands: the root `.dockerignore` added on 2026-07-31 already
-excludes `tiles2/*/raw` from the build context, so raw/ no longer reaches the deploy
-image at all. This 6 MB is therefore a **clone/checkout** saving for anyone working in
-the repo — not a further deploy-image saving on top of that exclusion.
-
-**Not converted — the processed tiles** under `base/`, `base_x_N/`, `transitions/`.
-The manifest-decoder blocker is genuinely cleared (`games2/scripts/imagelib.mjs`), and
-the fleet-wide guidance is "stale extensions are fine, `resolveImg` follows
-`.png`↔`.webp`, convert whenever you like, no ordering needed."
-
-**That guidance does not hold for this domain**, and the difference is worth being
-precise about:
-
-| | how art is addressed | stale `.png` name |
-|---|---|---|
-| sprite domains (characters2, monsters, objects) | build-time manifest, Node `existsSync` via `resolveImg` | **resolves** — falls back to `.webp` |
-| tiles2 ground tiles | `world.json` path → `assetUrl()` → literal HTTP URL | **404s** |
-
-`games2/client/src/maps.ts:106` is simply `"/assets/" + path` — no extension
-fallback — and the server is plain `express.static` with no rewrite (`server/src/index.ts`).
-So a tiles2 tile renamed to `.webp` while `world.json` still says `.png` is a 404 and
-the tile silently does not render. **4693 such references across 10 worlds, zero
-`.webp`.**
-
-Order of operations for tiles2: **maps2 re-export (or a client-side `.png`→`.webp`
-fallback) → tiles2 `--processed`.** Converting first would blank the ground in every
-world, so tiles2 waits by design, not by oversight. When it lands, the flip is one
-command and one function:
-
-```bash
-python tiles2/pipeline/towebp.py --processed
-```
-
-`common.processed_name()` is the single place that decides a processed tile's
-extension. `common.tile_files()` already reads either format, so tiles2 is
-format-agnostic on input today.
-
-## 4. Encoder method: measure per domain
-
-characters2 found `method=6` matched `method=4` to within 0.1% on their sprites and
-recommended 4. On tiles2's dense, full-bleed textures the gap is real but small:
+## 4. Encoder method: `method=4` for bulk passes
 
 | method | saving | speed |
 |---|---|---|
 | 4 | 32.1% | 9 ms/file |
 | 6 | 33.8% | 170 ms/file |
 
-1.7pp for ~19× the time. raw/ was converted with `method=6` (13.7 min, one-off). For
-the much larger processed pass, `method=4` is the better trade — 40 s instead of
-13 min for ~0.4 MB more.
+1.7pp for ~19× the time — use 4 for anything repeated (40 s vs 13 min over
+the processed set). (characters2 measured the same conclusion on sprites.)
 
-## 5. Don't put conversion in the Dockerfile
+## 5. The ordering trap that made tiles2 convert LAST (paid for)
 
-Agreed with the UI agent: converting at build time adds minutes to every deploy and
-busts the layer cache. Convert once at the source and commit the result — which is
-what `towebp.py` does.
+Extension staleness is survivable only where something resolves it:
+
+| | how art is addressed | stale `.png` name |
+|---|---|---|
+| sprite domains (characters2, monsters, scenery) | build-time manifest, Node `existsSync` via `resolveImg` | **resolves** — falls back to `.webp` |
+| tiles2 ground tiles | `world.json` path → `assetUrl()` → literal HTTP URL | **404s** — the ground silently blanks |
+
+Converting processed tiles before the consumers could resolve them would have
+blanked the ground in every world (4,693 stale references at the time). The
+flip was unblocked by TRANSITIONAL runtime fallbacks in games2
+(`WorldScene.loadImageEitherExt` + a server-side `.png`↔`.webp` sibling
+middleware, 2026-07-31) — but those were **removed the same day** once
+measured clean and must not be reintroduced (games2 law: a stale extension
+must 404 loudly; the fix belongs in the domain's exporter — a runtime
+fallback masked maps2's un-re-exported worlds for a day). Today maps2 worlds
+reference `.webp` throughout and **nothing resolves a stale tiles2 path at
+runtime**. **Law for any future container change: consumers first, then flip
+`common.processed_name()`** — it is the single place the processed extension
+is decided, and `common.tile_files()` reads either format on input.
+
+## 6. Never convert in the Dockerfile (agreed with the UI agent)
+
+Build-time conversion adds minutes to every deploy and busts the layer cache.
+Convert once at the source with `pipeline/towebp.py` and commit the result.
+
+Note: `tiles2/*/raw` is excluded from the deploy image by the root
+`.dockerignore`, so raw/'s WebP win is clone/checkout size only, not deploy
+size.
