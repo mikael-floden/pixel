@@ -517,8 +517,9 @@ def main():
                                       # identical, because with drip_match=None the
                                       # classifier's drip code never runs.
                                       drip_match=(PAIR_TWEAKS.get(cell, {}).get("drip_match")
-                                                  if "/".join(c["src"].split("/")[-2:])
-                                                  in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ())
+                                                  if ("drip_tiles" not in PAIR_TWEAKS.get(cell, {})
+                                                      or "/".join(c["src"].split("/")[-2:])
+                                                      in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ()))
                                                   else None),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify

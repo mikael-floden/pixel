@@ -796,126 +796,41 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
                         break
                     grown = g2
         if drip_match is not None:
-            # THE OBVIOUS OVERHANG IS THE TOP'S OWN PAINT, AND IT ENDS AT ITS BORDER.
-            # On black_rock over dark_mud the whitened space puts the drawn drape
-            # closer to MUD than to rock (d_t/d_w 1.8-3.75), so no lean ratio claims
-            # it. Two wrong fixes taught what the right one is. A darkness test
-            # claimed dark BROWN mud shading ("You make the obvious dark_mud that is
-            # brown to be black_rock ... Only the obvious overhang! Not the brown
-            # under it!"). And any 2D flood — even over the-top's-own-paint pixels —
-            # can sneak AROUND the drape's drawn outline through connected dark
-            # texture ("The overhang even has a dark-black border. Why did you go
-            # under it?"). So, as the maintainer prescribed, the claim reads the two
-            # colour spaces and extends straight DOWN each column from where the
-            # accepted claim ends: keep claiming while the pixel is the top face's
-            # own paint (raw RGB within drip_match of the top's median — measured,
-            # the drape sits 11-14 from it, the mud never nearer than 29), and stop
-            # for good at the first pixel that is not. The drawn border is darker
-            # than the paint ball, so the run terminates AT the border; under it is
-            # unreachable by construction. Hanging from the edge is inherited from
-            # the claim the run is stitched onto.
-            # One tolerance, prescribed by the maintainer: "You must expect an edge
-            # can be highlighted and still have an overhang." The generator draws a
-            # bright line to SIGNAL the edge, and the drape continues in the top's
-            # paint beneath it — measured on tile #30, ten of thirty-two run-stoppers
-            # were bright pixels with the paint resuming 1-2 px below. So a failing
-            # pixel that is BRIGHTER than the paint and has the paint resuming within
-            # two rows is a highlight: walk past it, claim nothing there. A failing
-            # pixel that is darker (the drawn border) or has no paint below (the mud)
-            # still ends the run for good.
-            # ONLY THE OVERHANG. NOT THE WALL. ("You should only target the overhang.
-            # Not the grown wall!") A drape the eye reads as obvious already has its
-            # upper body claimed — what is missing is its lower half. So the run is
-            # allowed ONLY in columns where the existing claim already hangs visibly
-            # deeper than the lip (3+ rows past the face's median claim depth): those
-            # are the drape's own columns. A lip-only column — which is every column
-            # on a tile whose wall is just mud under a straight edge — grows nothing,
-            # however rock-coloured its texture is.
-            # THE PAINT IS COOL AND THE MUD IS WARM — that is the whole separation.
-            # Traced pixel by pixel down the drape the maintainer painted out on
-            # tile #15: every shade of the rock's paint, light lip to black border,
-            # has blue at or above red ((38,37,39), (23,23,26), (9,10,13), (0,0,1)),
-            # and every shade of the mud has red over blue ((38,33,29), (56,50,49),
-            # (64,56,53)) — no overlap, independent of brightness. Every colour-
-            # DISTANCE match tried before failed exactly because distance mixes
-            # brightness in: the drape's own darks measure 24-51 from the top's
-            # median, overlapping the mud's 38-49. So the match is temperature:
-            # a wall pixel can be the rock's paint iff red minus blue is at most
-            # drip_match (the top's warmest paint is -1), and it is no brighter than
-            # the paint plus a lip's lighting (a neutral GREY stone highlight is also
-            # cool, but it is bright).
+            # THE MAINTAINER'S DEFINITION, IMPLEMENTED LITERALLY: "What is the
+            # overhang? It has the same damn color as you can find on the top/ground.
+            # AND it connects to the top (in this case we have an edge highlight so
+            # it doesn't connect unless you jump over that highlight 1 pixel)."
+            #
+            # Same colour: the rock's paint is COOL (blue >= red, traced down the
+            # drape the maintainer painted out: (38,37,39), (23,23,26), (9,10,13),
+            # (0,0,1)) and the mud is WARM ((38,33,29), (56,50,49)) — brightness-
+            # independent, so the drape's darks cannot be confused with brown.
+            # Connected: a flood from the already-attached claims through cool-paint
+            # pixels, allowed to jump ONE pixel straight down — the drawn edge
+            # highlight — when cool paint continues beneath it.
+            #
+            # This pairs with raw_wall: the claims turn near-black and EVERYTHING
+            # else on the wall ships exactly as drawn ("The brown should not change
+            # in any shape or form!"). Six versions that also repainted the wall each
+            # manufactured a new artifact out of a misclassified pixel; a raw wall
+            # has nothing to manufacture with.
             top_rgb = np.median(rgb[reg["top"]], 0)
             top_v = float(top_rgb.max())
             match = np.zeros(wall_all.shape, bool)
             match[idx0[0], idx0[1]] = ((px[:, 0] - px[:, 2] <= float(drip_match))
                                        & (px.max(axis=1) <= top_v + 25.0))
-            v_all = a[:, :, :3].max(axis=2)
-            ys_r = np.arange(h_img)[:, None]
-            last = np.where(grown, ys_r, -1).max(0)
-            # THE DRAPE IS A FILLED SHAPE, NOT ITS COOL PIXELS. The maintainer painted
-            # the drape's true extent on tile #15, and the lobes hold warm brown
-            # SHADING pixels inside them (cool 29-32, warm 33-37, cool 38-41 down one
-            # column) — claiming only the cool paint renders a black outline with
-            # brown blotches inside, which is exactly "the overhang didn't turn
-            # near-black". Above the drape's bottom edge, everything is the overhang.
-            # So per drape column: find the deepest cool-paint pixel, tolerating
-            # interior warm gaps up to 6 rows — the first longer warm stretch is the
-            # mud below the border — and claim the WHOLE span from the wall's top to
-            # it, shading included. A drape bottom in the lowest 15% of the face is
-            # no drape (the wall base is the wall's), and a column whose claim only
-            # reaches the lip has no drape to fill.
-            for face in ("left", "right"):
-                cols = np.where(reg[face].any(axis=0))[0]
-                cl = [c for c in cols if last[c] >= 0]
-                if len(cl) < 8:
-                    continue
-                # A face has drapes iff its claim depth VARIES — lobes hang at
-                # different depths, a plain lip is a flat line. (A median-depth gate
-                # was tried and ate its own purpose: on the painted tile the drape
-                # spans nearly the whole face, so the median WAS the drape.)
-                depths = np.array([last[c] for c in cl], float)
-                if float(np.percentile(depths, 90) - np.percentile(depths, 10)) < 5:
-                    continue
-                for c in cl:
-                    y = last[c] + 1
-                    bottom = last[c]
-                    gap = 0
-                    while y < h_img and wall_all[y, c]:
-                        if match[y, c]:
-                            bottom = y
-                            gap = 0
-                        else:
-                            gap += 1
-                            if gap > 5:
-                                break
-                        y += 1
-                    # The maintainer's painted drape never reaches past ~70% of the
-                    # face; a "drape" deeper than that is the wall's own shadow.
-                    limit = wy_min[c] + 0.70 * max(1, wy_max[c] - wy_min[c])
-                    if bottom <= limit:
-                        # THE LIP IS PART OF THE OVERHANG EVEN WHEN IT IS WARM. The
-                        # drape's lit edge is often drawn as a warm highlight
-                        # ((56,50,49)), the warmth test hands it to the mud, and the
-                        # mud ramp paints it its brightest tan — the bright edge line
-                        # the maintainer kept pointing at ("expect an edge can be
-                        # highlighted and still have an overhang"). A wall-top row
-                        # sitting between the top face and claimed drape IS the lip:
-                        # claim from the wall's top, and the substitution keeps its
-                        # brightness as a neutral highlight.
-                        grown[wy_min[c]:bottom + 1, c] |= (
-                            wall_all[wy_min[c]:bottom + 1, c])
-            # NO TAN DOTS INSIDE THE BLACK. The fill is per-column, so a lone warm
-            # pixel with claimed drape on both sides stays mud — and the mud ramp
-            # then paints it its brightest stop, a bright dot inside the drape
-            # ("The green is something you have made bugs on all images"). A pixel
-            # sandwiched between claims, horizontally or vertically, is inside the
-            # drape.
-            for _ in range(2):
-                mid_h = np.zeros_like(grown)
-                mid_h[:, 1:-1] = grown[:, :-2] & grown[:, 2:]
-                mid_v = np.zeros_like(grown)
-                mid_v[1:-1, :] = grown[:-2, :] & grown[2:, :]
-                grown |= (mid_h | mid_v) & wall_all
+            for _ in range(64):
+                g2 = grown.copy()
+                g2[1:, :] |= grown[:-1, :]
+                g2[:-1, :] |= grown[1:, :]
+                g2[:, 1:] |= grown[:, :-1]
+                g2[:, :-1] |= grown[:, 1:]
+                g2[2:, :] |= grown[:-2, :]  # the 1-px jump over the edge highlight
+                g2 &= match
+                g2 |= grown
+                if g2.sum() == grown.sum():
+                    break
+                grown = g2
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
