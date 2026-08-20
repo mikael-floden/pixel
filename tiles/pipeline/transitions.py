@@ -124,6 +124,39 @@ def _wang_id(t):
         return None
 
 
+def _write_set(a, b, r, tsid, tiles, usd, payload=None, recovered=False):
+    d = slug(a, b, r)
+    os.makedirs(d, exist_ok=True)
+    index = {}
+    for t in tiles:
+        img = _decode(t)
+        if img is None:
+            continue
+        tid = _wang_id(t)
+        if tid is None:
+            continue
+        # LOSSLESS WebP, the project image format. exact=True keeps the RGB under
+        # fully transparent pixels; without both flags this silently goes lossy.
+        img.save(os.path.join(d, f"tile_{tid:02d}.webp"), "WEBP", lossless=True, exact=True)
+        index[tid] = {"corners": t.get("corners"), "file": f"tile_{tid:02d}.webp",
+                      "from_base_tile": not str(t.get("id", "")).isdigit()}
+    body = {
+        "lower": a, "upper": b, "raggedness_pct": r,
+        "tileset_id": tsid, "n_tiles": len(index),
+        "complete": sorted(index) == list(range(16)),
+        "usd": round(usd, 4), "recovered": recovered,
+        "tiles": {str(k): v for k, v in sorted(index.items())},
+        "note": ("id is the corner bitmask NW NE SW SE with a set bit meaning `upper` "
+                 f"({b}); id 0 is all {a}, id 15 all {b}. Both directions live in this "
+                 "one set."),
+    }
+    if payload:
+        body["settings"] = {k: v for k, v in payload.items() if k != "seed"}
+        body["seed"] = payload["seed"]
+    json.dump(body, open(os.path.join(d, "meta.json"), "w"), indent=1)
+    return len(index)
+
+
 def generate(client, a, b, r, bases, timeout=900):
     """One pair at one raggedness -> 16 webp tiles + meta.json. Returns usd spent."""
     d = slug(a, b, r)
@@ -159,40 +192,60 @@ def generate(client, a, b, r, bases, timeout=900):
     if not tiles:
         raise RuntimeError(f"{a}->{b} r{r}: no tiles returned (tileset {tsid})")
 
-    index = {}
-    for t in tiles:
-        img = _decode(t)
-        if img is None:
-            continue
-        tid = _wang_id(t)
-        if tid is None:
-            continue
-        # LOSSLESS WebP, the project image format. exact=True keeps the RGB under
-        # fully transparent pixels; without both flags this silently goes lossy.
-        img.save(os.path.join(d, f"tile_{tid:02d}.webp"),
-                 "WEBP", lossless=True, exact=True)
-        index[tid] = {
-            "corners": t.get("corners"),
-            "file": f"tile_{tid:02d}.webp",
-            "from_base_tile": not str(t.get("id", "")).isdigit(),
-        }
-    # NOT a balance delta: with several workers in flight a delta captures other
-    # workers' spend too (the smoke test billed set 2 at $0.372, exactly double).
     u = (rec.get("usage") or resp.get("usage") or {})
     spent = float(u.get("usd") or 0.0) or RATE_USD
-    json.dump({
-        "lower": a, "upper": b, "raggedness_pct": r,
-        "tileset_id": tsid, "n_tiles": len(index),
-        "complete": sorted(index) == list(range(16)),
-        "usd": round(spent, 4),
-        "settings": {k: v for k, v in payload.items() if k != "seed"},
-        "seed": payload["seed"],
-        "tiles": {str(k): v for k, v in sorted(index.items())},
-        "note": ("id is the corner bitmask NW NE SW SE with a set bit meaning `upper` "
-                 f"({b}); id 0 is all {a}, id 15 all {b}. Both directions live in this "
-                 "one set."),
-    }, open(os.path.join(d, "meta.json"), "w"), indent=1)
+    _write_set(a, b, r, tsid, tiles, spent, payload=payload)
     return spent
+
+
+def recover(client=None, apply=True):
+    """Re-download sets that were PAID FOR but lost, without generating anything.
+
+    A job that stalls or times out still runs to completion on PixelLab's side and
+    still bills, so regenerating it would pay twice for the same art. Listing the
+    account's tilesets is free, and each carries the descriptions and raggedness it
+    was made with - enough to match it back to the (pair, raggedness) it belongs to.
+    Returns the list of sets it restored.
+    """
+    client = client or PixelLabClient()
+    want = {}
+    for a, b in pairs():
+        for r in RAGGEDNESS:
+            if not done(a, b, r):
+                want[(MATERIALS[a], MATERIALS[b], r)] = (a, b, r)
+    if not want:
+        return []
+    restored, cursor = [], None
+    seen_pages = 0
+    while seen_pages < 40:
+        q = f"/tilesets?limit=100" + (f"&offset={cursor}" if cursor else "")
+        page = client._get(q)
+        rows = page.get("tilesets") or []
+        if not rows:
+            break
+        for row in rows:
+            lo, up = row.get("lower_description"), row.get("upper_description")
+            for (wlo, wup, r), (a, b, rr) in list(want.items()):
+                if lo != wlo or up != wup:
+                    continue
+                full = client._get(f"/tilesets/{row['id']}")
+                meta = full.get("metadata") or {}
+                got = meta.get("raggedness")
+                if got is not None and abs(float(got) - r / 100.0) > 1e-6:
+                    continue
+                tiles = (full.get("tileset") or {}).get("tiles") or []
+                if len(tiles) < 16:
+                    continue
+                if apply:
+                    _write_set(a, b, rr, row["id"], tiles, usd=0.0, recovered=True)
+                restored.append((a, b, rr, row["id"]))
+                want.pop((wlo, wup, r), None)
+                break
+        seen_pages += 1
+        cursor = (cursor or 0) + len(rows)
+        if len(rows) < 100:
+            break
+    return restored
 
 
 def run(concurrency=4, limit=None, only_pair=None):
@@ -249,8 +302,14 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--pair", default=None)
     ap.add_argument("--plan", action="store_true")
+    ap.add_argument("--recover", action="store_true")
     a = ap.parse_args()
-    if a.plan:
+    if a.recover:
+        got = recover()
+        print(f"recovered {len(got)} paid-for sets without generating")
+        for x in got:
+            print("  ", x)
+    elif a.plan:
         ps = pairs()
         todo = [(x, y, r) for (x, y) in ps for r in RAGGEDNESS if not done(x, y, r)]
         print(f"materials {len(MATERIALS)}  pairs {len(ps)}  values {RAGGEDNESS}")

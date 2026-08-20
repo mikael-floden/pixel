@@ -1,0 +1,189 @@
+{
+ "lower": "black_rock",
+ "upper": "grey_stone",
+ "raggedness_pct": 5,
+ "tileset_id": "f1e1cedc-3abf-406f-8c62-84489212a9d9",
+ "n_tiles": 16,
+ "complete": true,
+ "usd": 0.186,
+ "settings": {
+  "lower_description": "dark volcanic rock",
+  "upper_description": "rugged grey mountain rock",
+  "tile_size": {
+   "width": 64,
+   "height": 64
+  },
+  "mode": "pro",
+  "view": "high top-down",
+  "raggedness": 0.05,
+  "slope_size": 0.0,
+  "spread_x": 0.5,
+  "transition_size": 0.0,
+  "lower_base_tile_id": "0c28464d-bc00-4cbf-97da-792a194c47a8",
+  "upper_base_tile_id": "6a347335-f375-4c33-8651-b33ac831b14d"
+ },
+ "seed": 1549072627,
+ "tiles": {
+  "0": {
+   "corners": {
+    "NW": "lower",
+    "NE": "lower",
+    "SW": "lower",
+    "SE": "lower"
+   },
+   "file": "tile_00.webp",
+   "from_base_tile": true
+  },
+  "1": {
+   "corners": {
+    "NW": "lower",
+    "NE": "lower",
+    "SW": "lower",
+    "SE": "upper"
+   },
+   "file": "tile_01.webp",
+   "from_base_tile": false
+  },
+  "2": {
+   "corners": {
+    "NW": "lower",
+    "NE": "lower",
+    "SW": "upper",
+    "SE": "lower"
+   },
+   "file": "tile_02.webp",
+   "from_base_tile": false
+  },
+  "3": {
+   "corners": {
+    "NW": "lower",
+    "NE": "lower",
+    "SW": "upper",
+    "SE": "upper"
+   },
+   "file": "tile_03.webp",
+   "from_base_tile": false
+  },
+  "4": {
+   "corners": {
+    "NW": "lower",
+    "NE": "upper",
+    "SW": "lower",
+    "SE": "lower"
+   },
+   "file": "tile_04.webp",
+   "from_base_tile": false
+  },
+  "5": {
+   "corners": {
+    "NW": "lower",
+    "NE": "upper",
+    "SW": "lower",
+    "SE": "upper"
+   },
+   "file": "tile_05.webp",
+   "from_base_tile": false
+  },
+  "6": {
+   "corners": {
+    "NW": "lower",
+    "NE": "upper",
+    "SW": "upper",
+    "SE": "lower"
+   },
+   "file": "tile_06.webp",
+   "from_base_tile": false
+  },
+  "7": {
+   "corners": {
+    "NW": "lower",
+    "NE": "upper",
+    "SW": "upper",
+    "SE": "upper"
+   },
+   "file": "tile_07.webp",
+   "from_base_tile": false
+  },
+  "8": {
+   "corners": {
+    "NW": "upper",
+    "NE": "lower",
+    "SW": "lower",
+    "SE": "lower"
+   },
+   "file": "tile_08.webp",
+   "from_base_tile": false
+  },
+  "9": {
+   "corners": {
+    "NW": "upper",
+    "NE": "lower",
+    "SW": "lower",
+    "SE": "upper"
+   },
+   "file": "tile_09.webp",
+   "from_base_tile": false
+  },
+  "10": {
+   "corners": {
+    "NW": "upper",
+    "NE": "lower",
+    "SW": "upper",
+    "SE": "lower"
+   },
+   "file": "tile_10.webp",
+   "from_base_tile": false
+  },
+  "11": {
+   "corners": {
+    "NW": "upper",
+    "NE": "lower",
+    "SW": "upper",
+    "SE": "upper"
+   },
+   "file": "tile_11.webp",
+   "from_base_tile": false
+  },
+  "12": {
+   "corners": {
+    "NW": "upper",
+    "NE": "upper",
+    "SW": "lower",
+    "SE": "lower"
+   },
+   "file": "tile_12.webp",
+   "from_base_tile": false
+  },
+  "13": {
+   "corners": {
+    "NW": "upper",
+    "NE": "upper",
+    "SW": "lower",
+    "SE": "upper"
+   },
+   "file": "tile_13.webp",
+   "from_base_tile": false
+  },
+  "14": {
+   "corners": {
+    "NW": "upper",
+    "NE": "upper",
+    "SW": "upper",
+    "SE": "lower"
+   },
+   "file": "tile_14.webp",
+   "from_base_tile": false
+  },
+  "15": {
+   "corners": {
+    "NW": "upper",
+    "NE": "upper",
+    "SW": "upper",
+    "SE": "upper"
+   },
+   "file": "tile_15.webp",
+   "from_base_tile": true
+  }
+ },
+ "note": "id is the corner bitmask NW NE SW SE with a set bit meaning `upper` (grey_stone); id 0 is all black_rock, id 15 all grey_stone. Both directions live in this one set."
+}
