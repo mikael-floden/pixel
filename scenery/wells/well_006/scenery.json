@@ -31,50 +31,38 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T12:04:09+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "wells/well_006/sprite.webp",
       "pixellab_object_id": "00f26a5f-e3a9-407a-a7b0-8c091be65339",
-      "generated_at": "2026-08-13T12:04:09+00:00"
+      "generated_at": "2026-08-13T12:04:09+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "wells/well_006/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "wells/well_006/not_lit_4/sprite.webp",
       "pixellab_object_id": "540b9ef3-e99b-4a04-a7e4-37c8533ebe03",
       "generated_at": "2026-08-17T12:48:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7958,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "wells/well_006/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "wells/well_006/not_lit_5/sprite.webp",
       "pixellab_object_id": "3c5d3ddf-0c02-4f3a-b08e-9c610bd93582",
       "generated_at": "2026-08-17T12:50:04+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5953,
-      "glow_score": 0.0429
+      "glow_score": 0.0429,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "wells/well_006/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "wells/well_006/not_lit_6/sprite.webp",
       "pixellab_object_id": "c73fdb4d-9176-4227-8c45-e0d86b073d2f",
       "generated_at": "2026-08-17T12:49:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4077,
-      "glow_score": 0.0037
-    },
-    "NOT_LIT_1": {
-      "sprite": "wells/well_006/not_lit_1/sprite.webp",
-      "pixellab_object_id": "8930d063-3cba-4940-bba8-b0d8419b4d86",
-      "generated_at": "2026-08-17T12:49:33+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9309,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "wells/well_006/not_lit_2/sprite.webp",
-      "pixellab_object_id": "affb6c08-78a7-4421-b372-e46ba994fa4f",
-      "generated_at": "2026-08-17T12:49:35+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8949,
-      "glow_score": 0.0
+      "glow_score": 0.0037,
+      "relit_from": "LIT_4"
     }
   }
 }
