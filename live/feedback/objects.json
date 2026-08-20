@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T00:26:57.909Z",
+  "updated_at": "2026-08-20T00:33:00.401Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -3679,10 +3679,9 @@
       "rating": 1
     },
     "scenery/haystacks/haystack_901": {
-      "status": "approved",
+      "status": "rejected",
       "art": "068be91b79ffa416",
-      "updated_at": "2026-08-14T00:33:48.499Z",
-      "rating": 1
+      "updated_at": "2026-08-20T00:29:33.394Z"
     },
     "scenery/hearths/hearth_001": {
       "status": "approved",
@@ -24763,6 +24762,629 @@
       "status": "rejected",
       "art": "9fa3daa3390b8653",
       "updated_at": "2026-08-20T00:26:56.948Z"
+    },
+    "scenery/braziers/brazier_010#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:27:33.347Z",
+      "status": "approved",
+      "art": "678e94b004525d4c"
+    },
+    "scenery/braziers/brazier_010#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:35.937Z",
+      "status": "approved",
+      "art": "0808c0334295cd94"
+    },
+    "scenery/braziers/brazier_010#lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:37.978Z",
+      "status": "approved",
+      "art": "c3eb7ff748dbbb82"
+    },
+    "scenery/braziers/brazier_010#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:40.545Z",
+      "status": "approved",
+      "art": "726ed1e26767b106"
+    },
+    "scenery/braziers/brazier_010#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:42.586Z",
+      "status": "approved",
+      "art": "3b216c8780c5019b"
+    },
+    "scenery/braziers/brazier_010#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:44.660Z",
+      "status": "approved",
+      "art": "af4273f8c63a6331"
+    },
+    "scenery/torch_posts/torch_post_012#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:27:47.886Z",
+      "status": "approved",
+      "art": "8f9b7fb0691e019e"
+    },
+    "scenery/torch_posts/torch_post_012#lit_2#south": {
+      "status": "rejected",
+      "art": "6edc5a8fa5c92f72",
+      "updated_at": "2026-08-20T00:27:50.057Z"
+    },
+    "scenery/torch_posts/torch_post_012#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:27:52.322Z",
+      "status": "approved",
+      "art": "1611f2570e42aa0d"
+    },
+    "scenery/torch_posts/torch_post_012#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:27:54.763Z",
+      "status": "approved",
+      "art": "f974df31d16942e6"
+    },
+    "scenery/torch_posts/torch_post_012#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:27:57.562Z",
+      "status": "approved",
+      "art": "bd9883cd113e0ec7"
+    },
+    "scenery/torch_posts/torch_post_012#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:00.626Z",
+      "status": "approved",
+      "art": "336e6f76850bcdeb"
+    },
+    "scenery/waystones/waystone_016#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:04.242Z",
+      "status": "approved",
+      "art": "44b856ee62a87bfa"
+    },
+    "scenery/waystones/waystone_016#lit_2#south": {
+      "status": "rejected",
+      "art": "f452187b3c53c220",
+      "updated_at": "2026-08-20T00:28:06.696Z"
+    },
+    "scenery/waystones/waystone_016#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:09.011Z",
+      "status": "approved",
+      "art": "cd190908c2eed834"
+    },
+    "scenery/waystones/waystone_016#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:11.058Z",
+      "status": "approved",
+      "art": "ecbbd53f6725d634"
+    },
+    "scenery/waystones/waystone_016#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:15.318Z",
+      "status": "approved",
+      "art": "9ca1d059e4fbcfb9"
+    },
+    "scenery/waystones/waystone_016#not_lit_2#south": {
+      "status": "rejected",
+      "art": "17e1be94886147a9",
+      "updated_at": "2026-08-20T00:28:17.366Z"
+    },
+    "scenery/lantern_posts/lantern_post_015#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:20.616Z",
+      "status": "approved",
+      "art": "c83b35fd66ed967a"
+    },
+    "scenery/lantern_posts/lantern_post_015#not_lit_2#south": {
+      "art": "5ffd39b7e51124e7",
+      "updated_at": "2026-08-20T00:28:35.126Z",
+      "rating": 3,
+      "status": "approved"
+    },
+    "scenery/lantern_posts/lantern_post_015#not_lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:30.629Z",
+      "status": "approved",
+      "art": "5da71ef37586bbc7"
+    },
+    "scenery/lantern_posts/lantern_post_015#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:38.372Z",
+      "status": "approved",
+      "art": "5c35655ac7a6d91f"
+    },
+    "scenery/lantern_posts/lantern_post_015#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:41.396Z",
+      "status": "approved",
+      "art": "07a195006a9c93bb"
+    },
+    "scenery/lantern_posts/lantern_post_015#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:43.557Z",
+      "status": "approved",
+      "art": "02baa61b2018a505"
+    },
+    "scenery/lantern_stands/lantern_stand_902#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:28:46.887Z",
+      "status": "approved",
+      "art": "e4ca6e94c5fb97cb"
+    },
+    "scenery/lantern_stands/lantern_stand_902#lit_2#south": {
+      "status": "rejected",
+      "art": "8f697c2174798287",
+      "updated_at": "2026-08-20T00:28:49.190Z"
+    },
+    "scenery/lantern_stands/lantern_stand_902#lit_3#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T00:28:52.318Z",
+      "status": "approved",
+      "art": "11d8d411bc012ed4"
+    },
+    "scenery/lantern_stands/lantern_stand_902#lit_4#south": {
+      "status": "rejected",
+      "art": "81818a8b5db888fd",
+      "updated_at": "2026-08-20T00:28:54.529Z"
+    },
+    "scenery/lantern_stands/lantern_stand_902#not_lit_1#south": {
+      "status": "rejected",
+      "art": "9d887b2d50e58021",
+      "updated_at": "2026-08-20T00:28:57.373Z"
+    },
+    "scenery/lantern_stands/lantern_stand_902#not_lit_2#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T00:29:05.373Z",
+      "status": "approved",
+      "art": "829e6e25357eaaea"
+    },
+    "scenery/haystacks/haystack_901#not_lit_1#south": {
+      "updated_at": "2026-08-20T00:29:30.989Z",
+      "status": "rejected",
+      "art": "068be91b79ffa416"
+    },
+    "scenery/haystacks/haystack_901#not_lit_2#south": {
+      "status": "rejected",
+      "art": "fbbcf4a172f08417",
+      "updated_at": "2026-08-20T00:29:14.962Z"
+    },
+    "scenery/haystacks/haystack_901#not_lit_3#south": {
+      "status": "rejected",
+      "art": "7a841043b1d2684b",
+      "updated_at": "2026-08-20T00:29:17.811Z"
+    },
+    "scenery/haystacks/haystack_901#not_lit_4#south": {
+      "status": "rejected",
+      "art": "dff83b18a77a636f",
+      "updated_at": "2026-08-20T00:29:19.410Z"
+    },
+    "scenery/haystacks/haystack_901#lit_1#south": {
+      "updated_at": "2026-08-20T00:29:25.568Z",
+      "status": "rejected",
+      "art": "88fdbe9fc8d406dc"
+    },
+    "scenery/haystacks/haystack_901#lit_2#south": {
+      "status": "rejected",
+      "art": "f7873c849d80f4e1",
+      "updated_at": "2026-08-20T00:29:28.121Z"
+    },
+    "scenery/flame_niches/flame_niche_900#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:38.771Z",
+      "status": "approved",
+      "art": "bceed9b34147b49e"
+    },
+    "scenery/flame_niches/flame_niche_900#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:41.725Z",
+      "status": "approved",
+      "art": "09c969680e8c25ec"
+    },
+    "scenery/flame_niches/flame_niche_900#lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:43.998Z",
+      "status": "approved",
+      "art": "f14ffb359285c851"
+    },
+    "scenery/flame_niches/flame_niche_900#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:46.228Z",
+      "status": "approved",
+      "art": "35d01b430a1bd155"
+    },
+    "scenery/flame_niches/flame_niche_900#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:48.750Z",
+      "status": "approved",
+      "art": "9c1f312fef4957ad"
+    },
+    "scenery/flame_niches/flame_niche_900#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:51.059Z",
+      "status": "approved",
+      "art": "25fd2f3fb962acba"
+    },
+    "scenery/carts/cart_901#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:55.094Z",
+      "status": "approved",
+      "art": "23d2bd2daaf2c8fa"
+    },
+    "scenery/carts/cart_901#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:29:57.595Z",
+      "status": "approved",
+      "art": "3bc519312c3093d1"
+    },
+    "scenery/carts/cart_901#not_lit_3#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:00.194Z",
+      "status": "approved",
+      "art": "0d107c3776cbc028"
+    },
+    "scenery/carts/cart_901#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:03.583Z",
+      "status": "approved",
+      "art": "726d6f8829acb5af"
+    },
+    "scenery/carts/cart_901#lit_1#south": {
+      "status": "rejected",
+      "art": "1caf0695437ba4c3",
+      "updated_at": "2026-08-20T00:30:05.745Z"
+    },
+    "scenery/carts/cart_901#lit_2#south": {
+      "status": "rejected",
+      "art": "09f8bbd4ead86699",
+      "updated_at": "2026-08-20T00:30:07.764Z"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:11.846Z",
+      "status": "approved",
+      "art": "b1a047ca42caf439"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:17.703Z",
+      "status": "approved",
+      "art": "926bda43af861249"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#lit_3#south": {
+      "status": "rejected",
+      "art": "604be82a98380de3",
+      "updated_at": "2026-08-20T00:30:20.226Z"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:24.702Z",
+      "status": "approved",
+      "art": "4aa166ad2b1a9e7d"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:27.271Z",
+      "status": "approved",
+      "art": "df82d9dfe39949b5"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:30.019Z",
+      "status": "approved",
+      "art": "7925a195e781a93c"
+    },
+    "scenery/washing_lines/washing_line_011#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:33.334Z",
+      "status": "approved",
+      "art": "4ec1edb2d9b4c64a"
+    },
+    "scenery/washing_lines/washing_line_011#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:36.606Z",
+      "status": "approved",
+      "art": "3a7294247a70e4ce"
+    },
+    "scenery/washing_lines/washing_line_011#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:39.430Z",
+      "status": "approved",
+      "art": "caf3b3805693b84b"
+    },
+    "scenery/washing_lines/washing_line_011#not_lit_4#south": {
+      "status": "rejected",
+      "art": "e35f4009854eb0d3",
+      "updated_at": "2026-08-20T00:30:41.832Z"
+    },
+    "scenery/washing_lines/washing_line_011#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:30:46.207Z",
+      "status": "approved",
+      "art": "69175241ec53b635"
+    },
+    "scenery/washing_lines/washing_line_011#lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:49.385Z",
+      "status": "approved",
+      "art": "1fd384120ed7c1c9"
+    },
+    "scenery/carts/cart_011#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:52.753Z",
+      "status": "approved",
+      "art": "524f9258ea5ef4e6"
+    },
+    "scenery/carts/cart_011#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:54.998Z",
+      "status": "approved",
+      "art": "abdb42fbb9a65509"
+    },
+    "scenery/carts/cart_011#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:57.145Z",
+      "status": "approved",
+      "art": "28ddb800710c6dbd"
+    },
+    "scenery/carts/cart_011#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:30:59.257Z",
+      "status": "approved",
+      "art": "53d10a5b3a731bbc"
+    },
+    "scenery/carts/cart_011#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:02.014Z",
+      "status": "approved",
+      "art": "910733ba76d7762d"
+    },
+    "scenery/carts/cart_011#lit_2#south": {
+      "status": "rejected",
+      "art": "efaaa3488e0568e7",
+      "updated_at": "2026-08-20T00:31:04.661Z"
+    },
+    "scenery/dock_pilings/dock_piling_009#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:09.114Z",
+      "status": "approved",
+      "art": "c1037dcdeb2a7fef"
+    },
+    "scenery/dock_pilings/dock_piling_009#not_lit_2#south": {
+      "status": "rejected",
+      "art": "e37e007fd2bb6dc0",
+      "updated_at": "2026-08-20T00:31:11.806Z"
+    },
+    "scenery/dock_pilings/dock_piling_009#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:14.157Z",
+      "status": "approved",
+      "art": "ab466f9791341345"
+    },
+    "scenery/dock_pilings/dock_piling_009#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:16.677Z",
+      "status": "approved",
+      "art": "a17226f9bf94db5b"
+    },
+    "scenery/dock_pilings/dock_piling_009#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:18.924Z",
+      "status": "approved",
+      "art": "d0bafe6b22eb7dcc"
+    },
+    "scenery/dock_pilings/dock_piling_009#lit_2#south": {
+      "status": "rejected",
+      "art": "a52dc2461c88b332",
+      "updated_at": "2026-08-20T00:31:20.713Z"
+    },
+    "scenery/offering_tables/offering_table_009#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:24.741Z",
+      "status": "approved",
+      "art": "3b67e44a6434d2cc"
+    },
+    "scenery/offering_tables/offering_table_009#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:26.905Z",
+      "status": "approved",
+      "art": "fc91604a544ae47f"
+    },
+    "scenery/offering_tables/offering_table_009#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:29.064Z",
+      "status": "approved",
+      "art": "b81b6a2fa059f420"
+    },
+    "scenery/offering_tables/offering_table_009#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:31.587Z",
+      "status": "approved",
+      "art": "eecc334b280fd102"
+    },
+    "scenery/offering_tables/offering_table_009#lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:34.833Z",
+      "status": "approved",
+      "art": "22270d6daf72a8f1"
+    },
+    "scenery/offering_tables/offering_table_009#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:31:37.782Z",
+      "status": "approved",
+      "art": "1734b17f73e124e8"
+    },
+    "scenery/story_posts/story_post_013#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:41.311Z",
+      "status": "approved",
+      "art": "54fbe2a789ec862a"
+    },
+    "scenery/story_posts/story_post_013#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:43.851Z",
+      "status": "approved",
+      "art": "ea3edcd9dc5c178a"
+    },
+    "scenery/story_posts/story_post_013#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:31:46.014Z",
+      "status": "approved",
+      "art": "849501b6af6ff883"
+    },
+    "scenery/story_posts/story_post_013#not_lit_4#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T00:31:50.636Z",
+      "status": "approved",
+      "art": "31167d277b9049e5"
+    },
+    "scenery/story_posts/story_post_013#lit_1#south": {
+      "status": "rejected",
+      "art": "a69747fde7b88d01",
+      "updated_at": "2026-08-20T00:31:53.235Z"
+    },
+    "scenery/story_posts/story_post_013#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:31:55.983Z",
+      "status": "approved",
+      "art": "5c3cebe858b115d2"
+    },
+    "scenery/streetlights/streetlight_013#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:00.331Z",
+      "status": "approved",
+      "art": "1f5120a092a27a91"
+    },
+    "scenery/streetlights/streetlight_013#not_lit_2#south": {
+      "status": "rejected",
+      "art": "17b30d96dc4e0f42",
+      "updated_at": "2026-08-20T00:32:04.601Z"
+    },
+    "scenery/streetlights/streetlight_013#not_lit_3#south": {
+      "status": "rejected",
+      "art": "8032b7c7a9025536",
+      "updated_at": "2026-08-20T00:32:07.013Z"
+    },
+    "scenery/streetlights/streetlight_013#not_lit_4#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:09.444Z",
+      "status": "approved",
+      "art": "c40cb716391543e9"
+    },
+    "scenery/streetlights/streetlight_013#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:11.830Z",
+      "status": "approved",
+      "art": "83243011e1d83b88"
+    },
+    "scenery/streetlights/streetlight_013#lit_2#south": {
+      "status": "rejected",
+      "art": "49e5bdb7c9a0cf28",
+      "updated_at": "2026-08-20T00:32:14.315Z"
+    },
+    "scenery/torch_posts/torch_post_013#not_lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:18.425Z",
+      "status": "approved",
+      "art": "b4456603dc7748d2"
+    },
+    "scenery/torch_posts/torch_post_013#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:20.541Z",
+      "status": "approved",
+      "art": "d3ef29d88f97418f"
+    },
+    "scenery/torch_posts/torch_post_013#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:22.573Z",
+      "status": "approved",
+      "art": "df76f35db73b4c42"
+    },
+    "scenery/torch_posts/torch_post_013#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:24.574Z",
+      "status": "approved",
+      "art": "47fa795422f406b0"
+    },
+    "scenery/torch_posts/torch_post_013#lit_1#south": {
+      "rating": 2,
+      "updated_at": "2026-08-20T00:32:27.042Z",
+      "status": "approved",
+      "art": "fe0fc0d7d450adb6"
+    },
+    "scenery/torch_posts/torch_post_013#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:29.111Z",
+      "status": "approved",
+      "art": "86210e25722abcc7"
+    },
+    "scenery/cairns/cairn_013#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:32.391Z",
+      "status": "approved",
+      "art": "a932c1ee8c44ebd1"
+    },
+    "scenery/cairns/cairn_013#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:34.517Z",
+      "status": "approved",
+      "art": "fae6884c504540ba"
+    },
+    "scenery/cairns/cairn_013#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:38.456Z",
+      "status": "approved",
+      "art": "e783119cd5db2f2f"
+    },
+    "scenery/cairns/cairn_013#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:40.637Z",
+      "status": "approved",
+      "art": "6be2a848a9bcbf94"
+    },
+    "scenery/cairns/cairn_013#lit_1#south": {
+      "status": "rejected",
+      "art": "308b54ab7f90aef1",
+      "updated_at": "2026-08-20T00:32:43.108Z"
+    },
+    "scenery/cairns/cairn_013#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:32:45.793Z",
+      "status": "approved",
+      "art": "6bea408b2d85466c"
+    },
+    "scenery/waystones/waystone_015#not_lit_1#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:49.024Z",
+      "status": "approved",
+      "art": "c483c51bfca9d41e"
+    },
+    "scenery/waystones/waystone_015#not_lit_2#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:51.135Z",
+      "status": "approved",
+      "art": "9d6e5485e55b3466"
+    },
+    "scenery/waystones/waystone_015#not_lit_3#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:53.626Z",
+      "status": "approved",
+      "art": "284b8afa16d1fb2c"
+    },
+    "scenery/waystones/waystone_015#not_lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T00:32:55.639Z",
+      "status": "approved",
+      "art": "3337d213ab683764"
+    },
+    "scenery/waystones/waystone_015#lit_1#south": {
+      "status": "rejected",
+      "art": "e69576431ec2c5b5",
+      "updated_at": "2026-08-20T00:32:57.681Z"
+    },
+    "scenery/waystones/waystone_015#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T00:33:00.106Z",
+      "status": "approved",
+      "art": "593e35a7b3e78126"
     }
   }
 }
