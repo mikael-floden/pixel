@@ -553,6 +553,7 @@ def main():
                                       no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
                                       claim_lip=PAIR_TWEAKS.get(cell, {}).get("claim_lip"),
                                       side_ramp_abs=PALETTE.get(side, {}).get("ramp_abs", False),
+                                      side_band=PAIR_TWEAKS.get(cell, {}).get("side_band"),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

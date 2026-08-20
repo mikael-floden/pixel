@@ -1120,7 +1120,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
          edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False,
-         claim_lip=None, side_ramp_abs=False):
+         claim_lip=None, side_ramp_abs=False, side_band=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1340,7 +1340,16 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                     # Alien pixels stay raw; the rest of the tile still gets processed.
                     hsv_m = _rgb2hsv(a[:, :, :3][mask])
                     med = float(np.median(hsv_m[:, 2]))
-                    band = np.abs(hsv_m[:, 2] - med) <= SIDE_VALUE_BAND
+                    # side_band: per-pair override of the alien-pixel band. The band
+                    # exists so a stray rock crumb on a beach wall is not recentred
+                    # beach-bright — but on grey_stone over parquet the "aliens" are
+                    # the parquet's own drawn varnish glints, and shipping them raw
+                    # is the bug: "shiny pixels that doesn't get converted to
+                    # parquet floor and looks ugly and 'poppy'". A wide band paints
+                    # them onto the palette with the relief clamp bounding how
+                    # bright they can come back.
+                    band = np.abs(hsv_m[:, 2] - med) <= (
+                        SIDE_VALUE_BAND if side_band is None else float(side_band))
                     if band.sum() < 8:
                         continue
                     idxm = np.where(mask)
