@@ -31,50 +31,29 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T09:08:03+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "carts/cart_004/sprite.webp",
       "pixellab_object_id": "a8c19c5d-5ddd-48a4-895e-b2b9dfbdd4a1",
-      "generated_at": "2026-08-13T09:08:03+00:00"
+      "generated_at": "2026-08-13T09:08:03+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "carts/cart_004/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "carts/cart_004/not_lit_4/sprite.webp",
       "pixellab_object_id": "3a89f1ef-90b6-412c-82e3-09b42fa448ef",
       "generated_at": "2026-08-15T21:48:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7004,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "carts/cart_004/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "carts/cart_004/not_lit_5/sprite.webp",
       "pixellab_object_id": "6cd15139-085e-4e63-b0b8-9ef242a9d51b",
       "generated_at": "2026-08-15T21:45:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.622,
-      "glow_score": 0.0203
-    },
-    "LIT_4": {
-      "sprite": "carts/cart_004/lit_4/sprite.webp",
-      "pixellab_object_id": "04700e36-53bb-46ac-965c-bb1425436e87",
-      "generated_at": "2026-08-15T21:48:56+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7892,
-      "glow_score": 0.1852
-    },
-    "NOT_LIT_1": {
-      "sprite": "carts/cart_004/not_lit_1/sprite.webp",
-      "pixellab_object_id": "ace3dbd0-67da-44a3-9b2a-2ba316e2e100",
-      "generated_at": "2026-08-15T21:46:46+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.98,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "carts/cart_004/not_lit_2/sprite.webp",
-      "pixellab_object_id": "9558e808-1f73-40e6-a768-36745e39054c",
-      "generated_at": "2026-08-15T21:47:06+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9792,
-      "glow_score": 0.0
+      "glow_score": 0.0203,
+      "relit_from": "LIT_3"
     }
   }
 }

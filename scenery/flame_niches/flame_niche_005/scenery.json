@@ -47,18 +47,29 @@
       "difference_from_source": 0.8776,
       "glow_score": 0.0549
     },
-    "NOT_LIT_1": {
+    "LIT_3": {
       "sprite": "flame_niches/flame_niche_005/sprite.webp",
       "pixellab_object_id": "206ce975-04b1-4b23-aa33-dd0392f937dc",
-      "generated_at": "2026-08-13T10:26:58+00:00"
+      "generated_at": "2026-08-13T10:26:58+00:00",
+      "relit_from": "NOT_LIT_1"
     },
-    "NOT_LIT_2": {
-      "sprite": "flame_niches/flame_niche_005/not_lit_2/sprite.webp",
+    "LIT_4": {
+      "sprite": "flame_niches/flame_niche_005/lit_4/sprite.webp",
       "pixellab_object_id": "ba2c5e79-f9b7-472b-b5dd-e72fc2c2b211",
       "generated_at": "2026-08-16T12:23:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2594,
-      "glow_score": 0.025
+      "glow_score": 0.025,
+      "relit_from": "NOT_LIT_2"
+    },
+    "LIT_5": {
+      "sprite": "flame_niches/flame_niche_005/lit_5/sprite.webp",
+      "pixellab_object_id": "0335f013-e972-4e78-bcea-68965e9cd44d",
+      "generated_at": "2026-08-16T12:24:37+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.46,
+      "glow_score": 0.007,
+      "relit_from": "NOT_LIT_4"
     },
     "NOT_LIT_3": {
       "sprite": "flame_niches/flame_niche_005/not_lit_3/sprite.webp",
@@ -67,14 +78,6 @@
       "glow_concept": null,
       "difference_from_source": 0.4396,
       "glow_score": 0.0168
-    },
-    "NOT_LIT_4": {
-      "sprite": "flame_niches/flame_niche_005/not_lit_4/sprite.webp",
-      "pixellab_object_id": "0335f013-e972-4e78-bcea-68965e9cd44d",
-      "generated_at": "2026-08-16T12:24:37+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.46,
-      "glow_score": 0.007
     }
   }
 }
