@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T01:22:06.163Z",
+  "updated_at": "2026-08-20T01:22:29.098Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -3611,9 +3611,9 @@
       "rating": 1
     },
     "scenery/haystacks/haystack_010": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:40:56.432Z",
-      "rating": 1
+      "status": "rejected",
+      "updated_at": "2026-08-20T01:22:20.300Z",
+      "art": "e9a4a87fb2d1bfde"
     },
     "scenery/haystacks/haystack_013": {
       "status": "approved",
@@ -25298,6 +25298,36 @@
       "status": "rejected",
       "art": "fc2de2a6baffdb46",
       "updated_at": "2026-08-20T01:22:06.338Z"
+    },
+    "scenery/haystacks/haystack_010#lit_1#south": {
+      "status": "rejected",
+      "art": "e9a4a87fb2d1bfde",
+      "updated_at": "2026-08-20T01:22:23.404Z"
+    },
+    "scenery/haystacks/haystack_010#not_lit_1#south": {
+      "status": "rejected",
+      "art": "3e8131cd0b51cad6",
+      "updated_at": "2026-08-20T01:22:25.424Z"
+    },
+    "scenery/haystacks/haystack_010#not_lit_2#south": {
+      "status": "rejected",
+      "art": "9a9b222a176101e2",
+      "updated_at": "2026-08-20T01:22:26.770Z"
+    },
+    "scenery/haystacks/haystack_010#lit_2#south": {
+      "status": "rejected",
+      "art": "175bd0a9af3e5875",
+      "updated_at": "2026-08-20T01:22:27.828Z"
+    },
+    "scenery/haystacks/haystack_010#lit_3#south": {
+      "status": "rejected",
+      "art": "89258fd54ef75c83",
+      "updated_at": "2026-08-20T01:22:28.615Z"
+    },
+    "scenery/haystacks/haystack_010#lit_4#south": {
+      "status": "rejected",
+      "art": "d7481dfdba0ae490",
+      "updated_at": "2026-08-20T01:22:29.356Z"
     }
   }
 }
