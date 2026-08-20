@@ -557,7 +557,7 @@ def _chroma_dist(px, target):
 
 
 def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None,
-                deep_claim=None, drip_match=None):
+                deep_claim=None, drip_match=None, claim_lip=None):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -851,6 +851,17 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
                 ci = np.where(ok_h)[0]
                 pick = wall_all[yy_h[ci], ci] & (v_all[yy_h[ci], ci] > top_v + 10)
                 grown[yy_h[ci][pick], ci[pick]] = True
+        if claim_lip is not None:
+            # A PER-PAIR GEOMETRIC CLAIM, for pairs whose colours cannot separate at
+            # all. Brown paving over deep water draws BLUISH slabs over blue water —
+            # cool against cool, bright against dark — and the colour tests claimed
+            # 124 of 1070 wall pixels, so the water painted over the slab brim ("The
+            # water got all the way up on the paving stones overhang"). The brim is
+            # the slab's own edge and it always hugs the lip: the top claim_lip rows
+            # of the wall are the overhang, unconditionally, attached by
+            # construction.
+            ys_l = np.arange(h_img)[:, None]
+            grown |= wall_all & (ys_l < (wy_min + int(claim_lip))[None, :])
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
@@ -1095,7 +1106,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
-         edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False):
+         edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False,
+         claim_lip=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1264,7 +1276,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                                             aggressive=not align_side,
                                             claim_depth=claim_depth,
                                             deep_claim=deep_claim,
-                                            drip_match=drip_match)
+                                            drip_match=drip_match,
+                                            claim_lip=claim_lip)
             if drip_match is not None:
                 # THE BROWN DOES NOT CHANGE FROM LIVE, BYTE FOR BYTE. The drip claim
                 # may only ADD black pixels; it must never alter how the mud paints.
