@@ -530,6 +530,11 @@ TEXTURED_TOP_SPREAD = 26.0
 WHITEN_STD_FLOOR = 8.0
 # Clusters closer than this many wall-noise units are one material split by noise.
 MIN_SPLIT_SIGMA = 2.5
+# A pixel connected to the top face is overhang if its top-distance is within this
+# factor of its wall-distance — lenient, because connectivity carries the rest.
+GROW_RATIO = 1.6
+# The lean when the wall repaint is disabled anyway (unconfirmed wall) — see _split_wall.
+GROW_RATIO_UNCONFIRMED = 2.6
 
 
 def _chroma_dist(px, target):
@@ -539,7 +544,7 @@ def _chroma_dist(px, target):
                    + (CHROMA_VALUE_WEIGHT * (c[:, 2] - t[2])) ** 2)
 
 
-def _split_wall(a, reg, wall_all):
+def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -641,8 +646,25 @@ def _split_wall(a, reg, wall_all):
     deep = wall_all & (ys_all >= (wy_min + wy_max)[None, :] / 2.0)
     if deep.sum() < 50:
         deep = wall_all
+    deep_px = rgb[deep]
+    # WHEN THE CURTAIN REACHES THE FLOOR, EVEN THE DEEP HALF IS SPILL. On dark_mud over
+    # paving_stone the maintainer's "redish overhang doesn't change color" tiles have
+    # drips covering 44-48% of the deep half — enough to drag even a MEDIAN anchor onto
+    # the mud, after which the drips measure close to "the wall" and ship raw. ("Do you
+    # think that redish brown is paving stone or what! Paving stone is usually grey.")
+    #
+    # The palette knows what the side material looks like, so it picks WHICH deep pixels
+    # to learn the wall from — nothing more. Classification still runs entirely on the
+    # tile's own colours; the palette never becomes the target (that inference is the
+    # classifier's original sin). If the palette matches too few pixels (a material the
+    # generator draws far from its palette, like 3.0 grass), fall back to the plain deep
+    # half — the old behaviour, not a new failure.
+    if side_hex is not None:
+        near = np.linalg.norm(deep_px - _hex(side_hex).astype(float), axis=1) < 75.0
+        if near.sum() >= 50:
+            deep_px = deep_px[near]
     F = _feat(px)
-    Fd = _feat(rgb[deep])
+    Fd = _feat(deep_px)
     Ft = _feat(rgb[reg["top"]])
     # MEDIAN AND MAD, NOT MEAN AND STD. The deep half is *usually* pure side material,
     # but a tile with long drips (mud-over-beach #12 — the very tile in the report) has
@@ -668,6 +690,50 @@ def _split_wall(a, reg, wall_all):
     keep = d_w <= d_t
     if keep.sum() < 20:
         keep = np.ones(len(px), bool)
+    else:
+        # THE OVERHANG HANGS. That is the information the colour test cannot see and the
+        # maintainer's eye uses without thinking: on dark_mud over paving_stone the
+        # shaded drips (#4f4036) and the shaded deep stones (#52504d) are near-twins in
+        # colour, and 539 of 719 drip pixels shipped raw ("Can't you see the redish
+        # overhang doesn't change color? Do you think that redish brown is paving stone
+        # or what!"). But the drips are CONNECTED to the top face and the stones are
+        # not. So a pixel that merely LEANS toward the top material (d_t within
+        # GROW_RATIO of d_w) is claimed as overhang iff it is 4-connected to the top
+        # edge through other such pixels. A bright stone fails the lean and breaks the
+        # chain; an isolated muddy patch deep in the wall has no chain to break.
+        lean = np.zeros(wall_all.shape, bool)
+        idx0 = np.where(wall_all)
+        # When the wall is UNCONFIRMED, its repaint is already disabled and the only
+        # writer on this wall is the overhang alignment — so the cost of over-claiming
+        # is bounded to pixels that would otherwise ship raw, and the lean can afford to
+        # be generous. On the confirmed pairs where generosity is dangerous (black rock
+        # over grey stone would hand 72% of the stones to the overhang at this ratio)
+        # the wall IS confirmed, so they keep the strict ratio. Measured: this takes the
+        # mud-over-paving drip recovery from 36-39% to ~65-68% without moving a single
+        # battery cell that has a confirmed wall.
+        ratio = GROW_RATIO_UNCONFIRMED if aggressive else GROW_RATIO
+        lean[idx0[0], idx0[1]] = d_t <= d_w * ratio
+        strict = np.zeros(wall_all.shape, bool)
+        strict[idx0[0], idx0[1]] = ~keep
+        ys2 = np.arange(h_img)[:, None]
+        y_top = np.where(reg["top"], ys2, -1).max(0)
+        seedrow = np.zeros(wall_all.shape, bool)
+        for dy in (1, 2):
+            yy = np.clip(y_top + dy, 0, h_img - 1)
+            cols = y_top >= 0
+            seedrow[yy[cols], np.arange(w_img)[cols]] = True
+        grown = (seedrow | strict) & lean
+        for _ in range(64):
+            g2 = grown.copy()
+            g2[1:, :] |= grown[:-1, :]
+            g2[:-1, :] |= grown[1:, :]
+            g2[:, 1:] |= grown[:, :-1]
+            g2[:, :-1] |= grown[:, 1:]
+            g2 &= lean
+            if g2.sum() == grown.sum():
+                break
+            grown = g2
+        keep = ~(grown | strict)[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
         # In the wall's own noise units: a "spill" cluster closer than this to the wall
@@ -983,7 +1049,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             #
             # Measured on the 14 tiles the gate used to block: after this, mean wall_err 5.5,
             # worst 20.8, none over MAX_WALL_ERR.
-            m_side, m_top = _split_wall(a, reg, wall_all)
+            m_side, m_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
+                                        aggressive=not align_side)
             # THE OVERHANG ALWAYS ALIGNS; THE WALL ONLY WHEN CONFIRMED. align_side (the
             # wall_err gate) exists so a wall that may not BE the requested material is
             # never repainted as it. But it used to gate this whole block, overhang
