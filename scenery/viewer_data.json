@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 750,
+  "scenery_count": 748,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -142,7 +142,7 @@
       "name": "Haystack",
       "type": "TOWN",
       "quota": 6,
-      "done": 5
+      "done": 4
     },
     {
       "rank": 18,
@@ -310,7 +310,7 @@
       "name": "Standing Stone",
       "type": "TOWN",
       "quota": 26,
-      "done": 4
+      "done": 3
     },
     {
       "rank": 39,
@@ -1446,7 +1446,7 @@
     "hanging_baskets": 2,
     "hanging_willows": 2,
     "harvest_altars": 1,
-    "haystacks": 5,
+    "haystacks": 4,
     "hearths": 7,
     "hedges": 2,
     "honey_trees": 1,
@@ -1483,7 +1483,7 @@
     "soulstone_outcrops": 9,
     "soulstone_plinths": 1,
     "spring_basins": 2,
-    "standing_stones": 4,
+    "standing_stones": 3,
     "statues": 2,
     "stone_fountains": 2,
     "stones": 42,
@@ -3432,15 +3432,6 @@
           "pixellab_object_id": "348db063-dd77-459b-9ce7-b1f6bc798358",
           "generated_at": "2026-08-13T21:58:25+00:00",
           "art_hash": "ad4b26e03213a4fe"
-        },
-        "LIT_2": {
-          "sprite": "beacons/beacon_010/lit_2/sprite.webp",
-          "pixellab_object_id": "73508287-f6a4-4cb6-b58b-12264a1d2a50",
-          "generated_at": "2026-08-15T19:54:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.569,
-          "glow_score": 0.0465,
-          "art_hash": "d4c2a8764ef0024b"
         },
         "LIT_3": {
           "sprite": "beacons/beacon_010/lit_3/sprite.webp",
@@ -7384,15 +7375,6 @@
           "difference_from_source": 0.7458,
           "glow_score": 0.2396,
           "art_hash": "7bb316c78ce9d4ec"
-        },
-        "LIT_2": {
-          "sprite": "cairns/cairn_011/lit_2/sprite.webp",
-          "pixellab_object_id": "c49c5817-0f01-4ba3-8bf2-ebf0b4133608",
-          "generated_at": "2026-08-15T21:23:34+00:00",
-          "glow_concept": "cold blue soul-light seeping from under the base",
-          "difference_from_source": 0.9635,
-          "glow_score": 0.3504,
-          "art_hash": "a373ad5d1ea4e244"
         },
         "NOT_LIT_1": {
           "sprite": "cairns/cairn_011/sprite.webp",
@@ -22226,56 +22208,32 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "flower_stands/flower_stand_008/sprite.webp",
           "pixellab_object_id": "8d06244b-0ef5-43b9-a709-95df2e7517f4",
           "generated_at": "2026-08-13T21:56:01+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "d05c6d583e047c67"
         },
-        "LIT_2": {
-          "sprite": "flower_stands/flower_stand_008/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "flower_stands/flower_stand_008/not_lit_4/sprite.webp",
           "pixellab_object_id": "bb4c35d7-3ba8-400f-a097-5e1847a02aa4",
           "generated_at": "2026-08-16T14:10:46+00:00",
           "glow_concept": null,
           "difference_from_source": 0.9256,
           "glow_score": 0.0415,
+          "relit_from": "LIT_2",
           "art_hash": "a50165e36e0b18c9"
         },
-        "LIT_3": {
-          "sprite": "flower_stands/flower_stand_008/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "flower_stands/flower_stand_008/not_lit_5/sprite.webp",
           "pixellab_object_id": "eba4f2f0-8da0-4a02-b9ce-0ebae23b9b56",
           "generated_at": "2026-08-16T14:11:08+00:00",
           "glow_concept": null,
           "difference_from_source": 0.9486,
           "glow_score": 0.0325,
+          "relit_from": "LIT_3",
           "art_hash": "f6490efca7f8aafe"
-        },
-        "LIT_4": {
-          "sprite": "flower_stands/flower_stand_008/lit_4/sprite.webp",
-          "pixellab_object_id": "9ab4d301-cc63-43e5-a4e5-41ae2ef91f94",
-          "generated_at": "2026-08-16T14:10:24+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3186,
-          "glow_score": 0.0162,
-          "art_hash": "fc2de2a6baffdb46"
-        },
-        "NOT_LIT_1": {
-          "sprite": "flower_stands/flower_stand_008/not_lit_1/sprite.webp",
-          "pixellab_object_id": "745762e2-02c3-486d-b9c7-2a8b51da4df0",
-          "generated_at": "2026-08-16T14:11:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9979,
-          "glow_score": 0.0,
-          "art_hash": "457c9e3142018499"
-        },
-        "NOT_LIT_2": {
-          "sprite": "flower_stands/flower_stand_008/not_lit_2/sprite.webp",
-          "pixellab_object_id": "50662e76-95bf-482b-84b9-f95c51e63cd6",
-          "generated_at": "2026-08-16T14:12:22+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6964,
-          "glow_score": 0.0014,
-          "art_hash": "07580f5c30929ad6"
         }
       },
       "animations": []
@@ -24830,85 +24788,6 @@
       "animations": []
     },
     {
-      "id": "haystack_010",
-      "rel": "haystacks/haystack_010",
-      "name": "Burrow-holed hollow old stack 010",
-      "category": "haystacks",
-      "lights": null,
-      "description": "a big rounded stack of loose golden straw piled high on the ground, shaggy uneven surface with wisps sticking out, no pole through it, burrow-holed hollow old stack, roughly six feet tall, human height, self-emissive at night, softly radiating light: pale foxfire crust on the rotting side",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 1.5,
-        "world_px_height": 56,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T21:55:18+00:00",
-      "pixellab_object_id": "5e18c1bc-c3d8-4f1e-990e-5f341cccaee4",
-      "sprite": "haystacks/haystack_010/sprite.webp",
-      "art_hash": "e9a4a87fb2d1bfde",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "haystacks/haystack_010/sprite.webp",
-          "pixellab_object_id": "5e18c1bc-c3d8-4f1e-990e-5f341cccaee4",
-          "generated_at": "2026-08-13T21:55:18+00:00",
-          "art_hash": "e9a4a87fb2d1bfde"
-        },
-        "LIT_2": {
-          "sprite": "haystacks/haystack_010/lit_2/sprite.webp",
-          "pixellab_object_id": "39cab7ea-e991-4494-a564-d42bb774b6ee",
-          "generated_at": "2026-08-16T15:03:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8123,
-          "glow_score": 0.5985,
-          "art_hash": "175bd0a9af3e5875"
-        },
-        "LIT_3": {
-          "sprite": "haystacks/haystack_010/lit_3/sprite.webp",
-          "pixellab_object_id": "d5edc6e5-9838-48b5-a51a-806a4c0c44a5",
-          "generated_at": "2026-08-16T15:02:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6927,
-          "glow_score": 0.5621,
-          "art_hash": "89258fd54ef75c83"
-        },
-        "LIT_4": {
-          "sprite": "haystacks/haystack_010/lit_4/sprite.webp",
-          "pixellab_object_id": "9dca8f6a-937e-43f6-a259-ebce2f674c25",
-          "generated_at": "2026-08-16T15:03:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2751,
-          "glow_score": 0.5532,
-          "art_hash": "d7481dfdba0ae490"
-        },
-        "NOT_LIT_1": {
-          "sprite": "haystacks/haystack_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "fc69aaff-0cc8-468e-a6e2-60446d5ac4f1",
-          "generated_at": "2026-08-16T15:03:49+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9934,
-          "glow_score": 0.1194,
-          "art_hash": "3e8131cd0b51cad6"
-        },
-        "NOT_LIT_2": {
-          "sprite": "haystacks/haystack_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "3e328eea-ea07-4d0f-a191-9d9ac2553338",
-          "generated_at": "2026-08-16T15:05:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 1.0,
-          "glow_score": 0.0,
-          "art_hash": "9a9b222a176101e2"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "haystack_013",
       "rel": "haystacks/haystack_013",
       "name": "Twin small hillock stacks 013",
@@ -27116,15 +26995,6 @@
           "pixellab_object_id": "486a4507-e8c9-4377-9de0-3740511971cf",
           "generated_at": "2026-08-13T22:00:01+00:00",
           "art_hash": "dba89738d4cd1e7b"
-        },
-        "LIT_2": {
-          "sprite": "ivy_posts/ivy_post_010/lit_2/sprite.webp",
-          "pixellab_object_id": "02961f00-d72b-47a3-9bbc-0b0215ef5d06",
-          "generated_at": "2026-08-16T17:10:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9537,
-          "glow_score": 0.2093,
-          "art_hash": "735a833e4575c405"
         },
         "LIT_3": {
           "sprite": "ivy_posts/ivy_post_010/lit_3/sprite.webp",
@@ -35225,85 +35095,6 @@
           "difference_from_source": 0.7684,
           "glow_score": 0.0,
           "art_hash": "e0f6302570dbf514"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "standing_stone_010",
-      "rel": "standing_stones/standing_stone_010",
-      "name": "Notch-scored slender pillar 010",
-      "category": "standing_stones",
-      "lights": null,
-      "description": "a single tall upright monolith set into the ground, ancient and weathered, with carved markings on its face, notch-scored slender pillar, large, twice human height, self-emissive at night, softly radiating light: pulsing moon-white ring symbols",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 2.58,
-        "world_px_height": 97,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T21:59:13+00:00",
-      "pixellab_object_id": "1a7a5a3a-3d2a-44f9-acf8-0e3b18129947",
-      "sprite": "standing_stones/standing_stone_010/sprite.webp",
-      "art_hash": "d162ca11cdc2b6dc",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "standing_stones/standing_stone_010/sprite.webp",
-          "pixellab_object_id": "1a7a5a3a-3d2a-44f9-acf8-0e3b18129947",
-          "generated_at": "2026-08-13T21:59:13+00:00",
-          "art_hash": "d162ca11cdc2b6dc"
-        },
-        "LIT_2": {
-          "sprite": "standing_stones/standing_stone_010/lit_2/sprite.webp",
-          "pixellab_object_id": "e73d9007-80d1-47ec-872d-eddc59ab9b95",
-          "generated_at": "2026-08-16T21:24:21+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4181,
-          "glow_score": 0.0,
-          "art_hash": "39fc8464e7a0c74c"
-        },
-        "LIT_3": {
-          "sprite": "standing_stones/standing_stone_010/lit_3/sprite.webp",
-          "pixellab_object_id": "669f44eb-e9a3-492a-b79b-4d660f762485",
-          "generated_at": "2026-08-16T21:24:01+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6176,
-          "glow_score": 0.0,
-          "art_hash": "f402c5500f436bfb"
-        },
-        "LIT_4": {
-          "sprite": "standing_stones/standing_stone_010/lit_4/sprite.webp",
-          "pixellab_object_id": "3153afca-5f65-49d7-8751-60b05733875d",
-          "generated_at": "2026-08-16T21:23:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5655,
-          "glow_score": 0.0,
-          "art_hash": "cd6fef8f3d2c6f85"
-        },
-        "NOT_LIT_1": {
-          "sprite": "standing_stones/standing_stone_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "a4030ed4-8323-4ec7-87b4-59cbd7dc600d",
-          "generated_at": "2026-08-16T21:24:49+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2744,
-          "glow_score": 0.0,
-          "art_hash": "3cfa2ce0b855c93e"
-        },
-        "NOT_LIT_2": {
-          "sprite": "standing_stones/standing_stone_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "b2f7bfb3-c51a-4adc-af9a-d3df6d421247",
-          "generated_at": "2026-08-16T21:26:06+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9158,
-          "glow_score": 0.0,
-          "art_hash": "f9a306b57a579994"
         }
       },
       "animations": []
@@ -55259,56 +55050,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "washing_lines/washing_line_010/sprite.webp",
           "pixellab_object_id": "7fc8a564-f707-443b-813b-3bfc13c5bac8",
           "generated_at": "2026-08-13T21:58:39+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "517bbda1a794235d"
         },
-        "LIT_2": {
-          "sprite": "washing_lines/washing_line_010/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "washing_lines/washing_line_010/not_lit_4/sprite.webp",
           "pixellab_object_id": "baf0c5c3-90ce-4e93-aa3d-fcd73b3a52db",
           "generated_at": "2026-08-17T11:57:16+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5812,
           "glow_score": 0.0099,
+          "relit_from": "LIT_2",
           "art_hash": "de389da260eb3017"
         },
-        "LIT_3": {
-          "sprite": "washing_lines/washing_line_010/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "washing_lines/washing_line_010/not_lit_5/sprite.webp",
           "pixellab_object_id": "0bd5577c-28e0-4617-966d-c7b7dfa2041c",
           "generated_at": "2026-08-17T11:59:09+00:00",
           "glow_concept": null,
           "difference_from_source": 0.607,
           "glow_score": 0.2183,
+          "relit_from": "LIT_3",
           "art_hash": "061974922b073afd"
         },
-        "LIT_4": {
-          "sprite": "washing_lines/washing_line_010/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "washing_lines/washing_line_010/not_lit_6/sprite.webp",
           "pixellab_object_id": "8460e2c3-1310-4fe0-8189-60c7b9608939",
           "generated_at": "2026-08-17T11:58:41+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5884,
           "glow_score": 0.2142,
+          "relit_from": "LIT_4",
           "art_hash": "bfcc5166e7096204"
-        },
-        "NOT_LIT_1": {
-          "sprite": "washing_lines/washing_line_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "6f576fa8-58b0-415c-9662-3ccc5904bd1e",
-          "generated_at": "2026-08-17T11:58:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9761,
-          "glow_score": 0.0,
-          "art_hash": "b37912257de4a522"
-        },
-        "NOT_LIT_2": {
-          "sprite": "washing_lines/washing_line_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "2f91a66e-98c1-4276-b040-728c6d46f8f9",
-          "generated_at": "2026-08-17T11:58:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9838,
-          "glow_score": 0.0,
-          "art_hash": "a3af0eda7f76f1f0"
         }
       },
       "animations": []
@@ -57303,15 +57080,6 @@
           "difference_from_source": 0.6333,
           "glow_score": 0.1735,
           "art_hash": "df90b9184332d848"
-        },
-        "LIT_2": {
-          "sprite": "waystones/waystone_013/lit_2/sprite.webp",
-          "pixellab_object_id": "a43772e9-5526-4951-b97a-aebb5eb22266",
-          "generated_at": "2026-08-17T12:34:50+00:00",
-          "glow_concept": "engraved pointing hand lit like a signpost",
-          "difference_from_source": 0.2559,
-          "glow_score": 0.0787,
-          "art_hash": "9f7ad4153df5e50c"
         },
         "NOT_LIT_1": {
           "sprite": "waystones/waystone_013/sprite.webp",
