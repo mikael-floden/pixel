@@ -61,6 +61,7 @@ for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items
 
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
                "force_align_wall": v.get("force_align_wall", False),
+               "ramp_abs": v.get("ramp_abs", False),
                "ramp": v.get("ramp"),
                "kill_highlight": v.get("kill_highlight", False),
                "flat_top": v.get("flat_top", True)} for k, v in
@@ -551,6 +552,7 @@ def main():
                                       claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
                                       no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
                                       claim_lip=PAIR_TWEAKS.get(cell, {}).get("claim_lip"),
+                                      side_ramp_abs=PALETTE.get(side, {}).get("ramp_abs", False),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

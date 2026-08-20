@@ -126,21 +126,22 @@
       "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells."
     },
     "grey_paving_stone": {
-      "top": "#a3a2a6",
+      "top": "#a8a8a8",
       "source": "reference tile tiles/matrix/paving_stone__over__paving_stone/sheet_01_same1_18717/tile_06.png \u2014 #8, the clean-line tile the maintainer pointed at when splitting paving into two types: 'The same paving_stone will generate both a brown and a grey version.'",
-      "wall": "#757575",
+      "wall": "#8a8a8a",
       "ramp": [
-        "#454545",
-        "#5c5c5c",
-        "#68686e",
-        "#757575",
-        "#86858a",
-        "#aeadb2"
+        "#4a4a4a",
+        "#636363",
+        "#7b7b7b",
+        "#8f8f8f",
+        "#a3a3a3",
+        "#b8b8b8"
       ],
-      "ramp_note": "#8's wall tones UNFILTERED, dark grout to lit cap. The first derivation ran the nearest-of-two contamination filter, and on a same-material ref the light brick caps sit nearest the TOP face \u2014 so the filter ate exactly the light greys, the ramp topped out mid-grey, and the published cell came out blue and dark ('the stones are: blue, brown, buggy (no light color grey)'). The one bluish grout tone (#4b4e57) is dropped; every stop is near-neutral.",
+      "ramp_note": "LIGHT and NEUTRAL by the maintainer's direction, not measured: the ref's own paint carries a blue undertone (#68686e, b-r +6) and its weight sits in the mid-darks, so a measured ramp read 'dark with small tint of blue'. These stops are pure greys with a lighter centre of gravity \u2014 the maintainer's 'light grey paving stone', literally.",
       "flat_top": false,
       "generated_as": "paving_stone",
-      "force_align_wall": true
+      "force_align_wall": true,
+      "ramp_abs": true
     }
   },
   "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
@@ -228,6 +229,16 @@
       "claim_lip": 3,
       "claim_depth": 0.3,
       "note": "the darker-lit lava face leans toward the paving anchor and turns brown ('The left lava wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+    },
+    "brown_paving_stone__over__slime": {
+      "claim_lip": 3,
+      "claim_depth": 0.3,
+      "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+    },
+    "grey_paving_stone__over__slime": {
+      "claim_lip": 3,
+      "claim_depth": 0.3,
+      "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
     }
   }
 }

@@ -1035,7 +1035,8 @@ def soften_rim(out, a, reg, top_hex, kill=False):
     out[:, :, :3][band] = px
 
 
-def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None, vfloor=None):
+def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None, vfloor=None,
+               ramp_abs=False):
     """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
 
     Hue and saturation are SET from the palette, never derived from the art, and only
@@ -1065,6 +1066,18 @@ def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None, vfloor=No
         # true for them.
         stops = np.stack([_hex(h) for h in ramp]).astype(float)
         v = _rgb2hsv(a[:, :, :3][mask])[:, 2]
+        if ramp_abs:
+            # ABSOLUTE mapping (per-type opt-in, ramp_abs in palette.json): each
+            # pixel takes the stop nearest its own brightness. The default relative
+            # mapping reads the tile's own 5th-95th percentile ladder, so a wall
+            # whose mask carries unclaimed dark drips maps its stones onto MID
+            # stops while a clean-lip wall maps the same stones onto the light
+            # ones — the same stone brightness painted differently per tile
+            # ('something is wrong where it sometimes produces really dark stones
+            # with wrong color'). Nearest-by-brightness makes the paint a pure
+            # function of the pixel, identical across every tile of the set.
+            stop_v = _rgb2hsv(stops)[:, 2]
+            return stops[np.abs(v[:, None] - stop_v[None, :]).argmin(1)]
         lo, hi = np.percentile(v, 5.0), np.percentile(v, 95.0)
         t = np.full(len(v), 0.5) if hi - lo < 6 else np.clip((v - lo) / (hi - lo), 0, 1)
         return stops[np.round(t * (len(stops) - 1)).astype(int)]
@@ -1107,7 +1120,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
          edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False,
-         claim_lip=None):
+         claim_lip=None, side_ramp_abs=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1336,7 +1349,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                 px = substitute(a, mask, hx, ramp=rmp,
                                 vcap=(None if (is_side or drip_match is None)
                                       else _rgb2hsv(_hex(hx)[None, :])[0][2] + 12.0),
-                                vfloor=(claim_floor if not is_side else None))
+                                vfloor=(claim_floor if not is_side else None),
+                                ramp_abs=(side_ramp_abs and is_side))
                 if px is not None:
                     out[:, :, :3][mask] = px
 
