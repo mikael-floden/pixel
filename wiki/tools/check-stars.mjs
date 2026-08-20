@@ -69,9 +69,13 @@ const fixture = await p.evaluate(() => {
 console.log(`fixture: ${fixture.tiles} tiles in ${fixture.pairs} sets across ${fixture.types} ground types — 4 left unstarred, in 2 types`);
 ok(fixture.types > 3 && fixture.tiles > 100, "the section is big enough for the filter to matter");
 
+// The tile-filter bar is the one holding a "no stars" chip — the type page also
+// carries the pair-level review bar, which has its own "all".
 const pickStars = (mode) => p.evaluate((m) => {
-  const btn = [...document.querySelectorAll(".sortbar-btn")].find((x) => (m === "unrated" ? /no stars/ : /^all /).test(x.textContent));
-  btn?.click();
+  const bar = [...document.querySelectorAll(".sortbar")].find((b) =>
+    [...b.querySelectorAll(".sortbar-btn")].some((x) => /^no stars /.test(x.textContent)));
+  const label = { all: /^all /, unrated: /^no stars /, rejected: /^rejected /, approved: /^approved /, undecided: /^undecided / }[m];
+  [...(bar?.querySelectorAll(".sortbar-btn") ?? [])].find((x) => label.test(x.textContent))?.click();
 }, mode);
 const read = () => p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent ?? "",
@@ -153,18 +157,106 @@ ok(done.tiles === 0, "starring a tile takes it out of the list on the spot");
 ok(done.h1 === nx.h1, "…without moving him off the set he is standing on");
 ok(done.hint && done.allStarred, "which says it is finished and points at › for the next one");
 
-// ---- 6. IT IS A PREFERENCE, and turning it off restores everything ----------
+// ---- 6. THE SAME MACHINE, ASKED THE VERDICT QUESTIONS ----------------------
+// Maintainer 2026-08-20: "Can you also add a filter for rejected/approved/
+// undecided? I will need this when I go over the set a second time. Should
+// work like the old filter." So every claim above is re-asserted for a verdict
+// mode, and the one distinction that matters is proved: UNDECIDED IS NOT NO
+// STARS — he starred tiles in the first pass without judging them.
+await p.goto(`${W}#/world`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+const verdicts = await p.evaluate(() => {
+  const w = window.__wiki.state.data.domains.world;
+  // Everything starred and undecided…
+  for (const c of w) for (const cand of c.candidates) window.__wiki.setFb("tiles", cand.key, { rating: 1, status: null });
+  const tops = [...new Set(w.map((c) => c.top))];
+  const R = w.find((c) => c.top === tops[1] && c.candidates.length >= 2);
+  const R2 = w.find((c) => c.top === tops[4] && c.candidates.length >= 1 && c.id !== R.id);
+  const A = w.find((c) => c.top === tops[6] && c.candidates.length >= 1);
+  // …then two sets with rejections, in two different ground types, and one
+  // with an approval somewhere else entirely.
+  R.candidates.slice(0, 2).forEach((x) => window.__wiki.setFb("tiles", x.key, { status: "rejected" }));
+  R2.candidates.slice(0, 1).forEach((x) => window.__wiki.setFb("tiles", x.key, { status: "rejected" }));
+  A.candidates.slice(0, 1).forEach((x) => window.__wiki.setFb("tiles", x.key, { status: "approved" }));
+  window.__wiki.route();
+  const undecided = w.reduce((n, c) => n + c.candidates.filter((x) => !window.__wiki.fb("tiles", x.key).status).length, 0);
+  return { rejectedTypes: 2, R: { name: R.name, top: R.top, n: R.candidates.length }, A: { name: A.name, top: A.top }, undecided,
+    tiles: w.reduce((n, c) => n + c.candidates.length, 0) };
+});
+console.log(`verdict fixture: 3 rejected in 2 types, 1 approved in another, ${verdicts.undecided} undecided`);
+
+await pickStars("rejected");
+await p.waitForTimeout(700);
+const rj = await read();
+console.log(`rejected overview: ${rj.cards.map((c) => `${c.name} [${c.pill}]`).join(", ")}`);
+ok(rj.cards.length === verdicts.rejectedTypes,
+  `"rejected" keeps only the ground types holding a rejected tile (${rj.cards.length})`);
+ok(rj.cards.every((c) => /rejected/.test(c.pill)), `each says how many (${rj.cards.map((c) => c.pill).join(", ")})`);
+ok(rj.bar.some((t) => /^rejected 2/.test(t)) && rj.bar.some((t) => /^approved 1/.test(t)),
+  `and every mode carries its own count (${rj.bar.join(" | ")})`);
+
+// UNDECIDED IS NOT NO STARS — everything is starred, so one is empty and the
+// other is nearly everything.
+await pickStars("unrated");
+await p.waitForTimeout(600);
+const noStars = await read();
+await pickStars("undecided");
+await p.waitForTimeout(600);
+const und = await read();
+ok(noStars.cards.length === 0 && und.cards.length > 2,
+  `undecided (${und.cards.length} types) is a different question from no stars (${noStars.cards.length}) — every tile is starred, most are unjudged`);
+
+// The cascade + cross-group pager, for a verdict mode.
+await pickStars("rejected");
+await p.waitForTimeout(700);
+await p.evaluate(() => document.querySelector("a.card")?.click());
+await p.waitForTimeout(700);
+const rty = await read();
+ok(rty.cards.length >= 1 && /\d+ of \d+ rejected/.test(rty.cards[0].sub),
+  `inside a type, only sets holding a rejected tile, sized (${rty.cards[0]?.sub})`);
+ok(/ over /i.test(rty.cards[0].name), `named in full (${rty.cards[0].name})`);
+await p.evaluate(() => document.querySelector("a.card")?.click());
+await p.waitForTimeout(1300);
+const rpr = await p.evaluate(() => ({
+  h1: document.querySelector("h1")?.textContent ?? "",
+  count: document.querySelector(".detail-count")?.textContent ?? "",
+  panel: document.querySelector(".panel-title")?.textContent ?? "",
+  tiles: [...document.querySelectorAll(".world-cand")].length,
+  dropped: [...document.querySelectorAll(".world-cand.dropped")].length,
+}));
+console.log(`rejected set page: ${rpr.h1} | ${rpr.count} | ${rpr.panel} | ${rpr.tiles} tiles`);
+ok(rpr.tiles > 0 && rpr.tiles === rpr.dropped, `only the rejected tiles are shown (${rpr.dropped}/${rpr.tiles} carry the rejected class)`);
+ok(/rejected/i.test(rpr.panel), `the panel says what it is showing (${rpr.panel})`);
+ok(rpr.count === "1 / 2", `and ‹ › walks the rejected sets across ground types (${rpr.count})`);
+
+// A VERDICT REMOVES ITS TILE THERE AND THEN, exactly as a star does under the
+// star mode — the mark that empties the set is the one the mode filters on.
+const un = await p.evaluate(() => {
+  // The verdict widget marks the pressed button with the verdict's own class.
+  const btn = document.querySelector(".world-cand button.rejected");
+  btn?.click();
+  return !!btn;
+});
+await p.waitForTimeout(800);
+const after = await p.evaluate(() => ({ tiles: document.querySelectorAll(".world-cand").length,
+  h1: document.querySelector("h1")?.textContent ?? "" }));
+ok(un && after.tiles === rpr.tiles - 1, `un-rejecting a tile drops it out of the list on the spot (${rpr.tiles} → ${after.tiles})`);
+ok(after.h1 === rpr.h1, "…without moving him off the set he is standing on");
+
+
+// ---- 7. IT IS A PREFERENCE, and turning it off restores everything ----------
+// (Left on "rejected" by the section above — that is the choice under test.)
 await p.goto(`${W}#/world`, { waitUntil: "load" });
 await p.waitForTimeout(2000);
 const kept = await read();
-ok(kept.cards.length === 1 || kept.cards.length === 2,
-  `the choice survives navigation (${kept.cards.length} type(s) still listed)`);
+ok(kept.cards.length > 0 && kept.cards.length < fixture.types && kept.cards.every((c) => /rejected/.test(c.pill)),
+  `the choice survives navigation (${kept.cards.length} type(s) still listed, still filtered on rejected)`);
 await pickStars("all");
 await p.waitForTimeout(600);
 const back = await read();
 ok(back.cards.length === fixture.types, `and turning it off brings every ground type back (${back.cards.length})`);
 
-// ---- 7. NOT FOR PLAYERS -----------------------------------------------------
+// ---- 8. NOT FOR PLAYERS -----------------------------------------------------
 const pub = await ctx.newPage();
 pub.on("pageerror", (e) => errs.push(String(e)));
 await pub.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));

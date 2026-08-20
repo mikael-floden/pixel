@@ -438,7 +438,7 @@ games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 
-## The tiles with no star — his review inbox
+## The tile filter — no stars, rejected, approved, undecided
 
 Maintainer 2026-08-20: *"I have now reviewed all tiles in the new /tiles and
 given 1 star to every tile that doesn't have an issue. The tiles-agent have
@@ -465,10 +465,10 @@ asked at three grains:
 | `#/world/<top>/<side>` | only the unstarred tiles themselves |
 
 **‹ › walks the whole inbox, across ground types.** That is the part that makes
-it a work queue rather than a per-type chore: `unratedRoute()` lists every set
-still holding an unstarred tile, in section order, and the pager addresses them
-as `<top>/<side>` — which is already the pair url, so no routing changes. The
-count reads `3 / 27` against the INBOX, not against the type.
+it a work queue rather than a per-type chore: `filterRoute(mode)` lists every
+set still holding a matching tile, in section order, and the pager addresses
+them as `<top>/<side>` — which is already the pair url, so no routing changes.
+The count reads `3 / 27` against the JOB, not against the type.
 
 **Which means every headline has to name itself** (his note: *"I will jump from
 one tile group to another and the tile group headline has to be improved to
@@ -479,14 +479,49 @@ in full; the set page's crumb points at **World** rather than the type it
 happens to sit in; and the pager's ›-title names the set it will land on plus
 how many tiles are waiting there.
 
-**A star removes its tile on the spot.** `starsWidget` gained an `onStars`
+### The same machine, asked the verdict questions
+
+Maintainer, immediately after the star pass: *"Can you also add a filter for
+rejected/approved/undecided? I will need this when I go over the set a second
+time. Should work like the old filter."*
+
+So it does — literally the same code. Everything above is written against a
+MODE rather than a boolean (`TILE_MATCH` holds one predicate per mode), which
+makes the control one **pick-one** row of five rather than two bars that could
+contradict each other:
+
+| mode | keeps a tile when |
+| --- | --- |
+| `all` | always |
+| `no stars` | it has no rating |
+| `rejected` | its verdict is rejected |
+| `approved` | its verdict is approved |
+| `undecided` | it has no verdict, whatever its stars |
+
+**`undecided` is not `no stars`**, and the distinction is the point of the
+second pass: he starred tiles in the first pass *without* judging them, so "not
+looked at" and "not decided" are genuinely different sets. Measured on the
+gate's fixture — every tile starred, most unjudged — `no stars` keeps 0 ground
+types and `undecided` keeps 15.
+
+The cascade, the cross-group pager, the counts on every chip, the "x over y"
+headlines and the mark-removes-its-tile behaviour are all shared; the only
+per-mode data is four small maps for the wording (`N without a star` / `N
+rejected`, the panel title, the empty state, the "none left" pill). The
+pair-level review filter (`all / not reviewed / partly / picked / redo`) is
+untouched and still sits below: it asks about the SET, this asks about the
+TILE, and the tile filter runs first.
+
+**A mark removes its tile on the spot.** `starsWidget` gained an `onStars`
 hook for it — deliberately separate from the verdict's `onchange`, and only
-wired while the filter is on, because repainting 35 canvas previews on every
-star press is a stutter for no gain when nothing is being hidden. When the last
-tile of a set is starred the page re-routes (keeping scroll), because
-"finished" is a fact the header carries — the `all starred` pill and the
-"press › for the next one" line — which a cards-only repaint cannot reach. The
-set stays open rather than vanishing under him.
+wired while a filter is on, because repainting 35 canvas previews on every star
+press is a stutter for no gain when nothing is being hidden. Under a verdict
+mode the mark that empties a set is the *verdict*, so both hooks run the same
+handler there. When the last tile of a set is marked the page re-routes
+(keeping scroll), because "finished" is a fact the header carries — the `all
+starred` / `none rejected` pill and the "press › for the next one" line —
+which a cards-only repaint cannot reach. The set stays open rather than
+vanishing under him.
 
 Gate: `wiki/tools/check-stars.mjs` builds his actual situation — star every
 tile in the section, then un-star a handful across two ground types — and holds
