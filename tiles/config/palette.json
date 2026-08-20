@@ -121,22 +121,26 @@
       ],
       "ramp_note": "the ref wall's own tones, dark grout to lit brick, black-rock drips rejected nearest-of-two (55.7% of the wall). Chosen 'becouse the paving_stone on this image is so ugly and look so different compared to other paving_stones'; the top #7d7265 is projected from the wall by the lit/shaded ratio of 6 nominated materials.",
       "flat_top": false,
-      "generated_as": "paving_stone"
+      "generated_as": "paving_stone",
+      "force_align_wall": true,
+      "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells."
     },
     "grey_paving_stone": {
       "top": "#a3a2a6",
       "source": "reference tile tiles/matrix/paving_stone__over__paving_stone/sheet_01_same1_18717/tile_06.png \u2014 #8, the clean-line tile the maintainer pointed at when splitting paving into two types: 'The same paving_stone will generate both a brown and a grey version.'",
-      "wall": "#636368",
+      "wall": "#757575",
       "ramp": [
         "#454545",
-        "#4b4e57",
         "#5c5c5c",
         "#68686e",
-        "#757575"
+        "#757575",
+        "#86858a",
+        "#aeadb2"
       ],
-      "ramp_note": "the ref wall's own greys, grout to lit brick, top-contaminated caps rejected nearest-of-two",
+      "ramp_note": "#8's wall tones UNFILTERED, dark grout to lit cap. The first derivation ran the nearest-of-two contamination filter, and on a same-material ref the light brick caps sit nearest the TOP face \u2014 so the filter ate exactly the light greys, the ramp topped out mid-grey, and the published cell came out blue and dark ('the stones are: blue, brown, buggy (no light color grey)'). The one bluish grout tone (#4b4e57) is dropped; every stop is near-neutral.",
       "flat_top": false,
-      "generated_as": "paving_stone"
+      "generated_as": "paving_stone",
+      "force_align_wall": true
     }
   },
   "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
@@ -174,6 +178,10 @@
     "grey_paving_stone__over__brown_paving_stone": {
       "no_claims": true,
       "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
+    },
+    "black_rock__over__slime": {
+      "claim_depth": 0.3,
+      "note": "the generator lights the right face darker, dark green leans toward the black anchor, and the flood claimed 57% of a wall that is pure green in the art ('made the right green wall black'). Claims stop at the lip, like ice and grey_stone before it."
     }
   }
 }

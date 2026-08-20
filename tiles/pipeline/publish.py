@@ -60,6 +60,7 @@ for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items
         _EXPAND.setdefault(_v["generated_as"], []).append(_m)
 
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
+               "force_align_wall": v.get("force_align_wall", False),
                "ramp": v.get("ramp"),
                "kill_highlight": v.get("kill_highlight", False),
                "flat_top": v.get("flat_top", True)} for k, v in
@@ -513,7 +514,11 @@ def main():
             # opt-in per pair, exactly as the maintainer sanctioned.
             aligned = ((c["wall_err"] is not None
                         and c["wall_err"] <= flatness.MAX_WALL_ERR)
-                       or PAIR_TWEAKS.get(cell, {}).get("force_align", False))
+                       or PAIR_TWEAKS.get(cell, {}).get("force_align", False)
+                       # a type published FROM generated paving art (generated_as)
+                       # cannot have the wrong wall material — only the other
+                       # colour family, which is what the type exists to convert
+                       or bool(PALETTE.get(side, {}).get("force_align_wall")))
             # NOT EVERY MATERIAL WANTS A FLAT TOP. The flat fill is the default because a
             # featureless surface shows no repeat across a large field, but the maintainer
             # asked for parquet_floor to keep its planks: "parquet_floor is not expected to
