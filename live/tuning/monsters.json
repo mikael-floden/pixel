@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-20T10:31:52.836Z",
+  "updated_at": "2026-08-20T10:44:28.846Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -281,7 +281,57 @@
           "item": "plucked_beast_eyeball",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 13.75,
+        "ry": 6,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.24,
+            "ay": 30.08
+          },
+          "idle#south-east": {
+            "ax": 0.69,
+            "ay": 29.73
+          },
+          "idle#east": {
+            "ax": -0.9,
+            "ay": 29.6
+          },
+          "idle#north-east": {
+            "ax": -2.86,
+            "ay": 28.13
+          },
+          "idle#north": {
+            "ax": 0.51,
+            "ay": 28.72
+          },
+          "idle#north-west": {
+            "ax": 1.51,
+            "ay": 26.67
+          },
+          "idle#south-west": {
+            "ax": -1.26,
+            "ay": 29.75
+          },
+          "die#south": {
+            "ax": -2.52,
+            "ay": 25.35
+          },
+          "die#south-east": {
+            "ax": 0.41,
+            "ay": 27.55
+          },
+          "die#east": {
+            "ax": -4.46,
+            "ay": 25.91
+          },
+          "die#north-east": {
+            "ax": -2.97,
+            "ay": 25.05
+          }
+        }
+      }
     },
     "diablo_2": {
       "level": 18,
