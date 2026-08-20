@@ -25,6 +25,7 @@ import {
   MonsterShadow,
   shadowScreenEllipse,
   shadowBodyRadius,
+  shadowAnchorOf,
   startTrip,
   stepAutopilot,
   bodyStandoff,
@@ -338,6 +339,24 @@ const SHADOW_TEX = "avatar:shadow";
 // the measured footprint so the visible core still matches the contact patch.
 const MONSTER_SHADOW_TEX = "monster:shadow";
 const MONSTER_SHADOW_SPREAD = 1.35;
+/** Set a sprite's origin to a tuned monster's shadow centre for one facet —
+ * the shared inheritance chain, with the art-derived default (measured foot
+ * line + hover, the untuned game's own anchor) as the final fallback. */
+function applyTunedOrigin(
+  sprite: Phaser.GameObjects.Sprite,
+  rec: MonsterShadow,
+  state: string,
+  dir: string,
+  artBottom?: number,
+  hoverPx?: number,
+): void {
+  const off = shadowAnchorOf(rec, state, dir);
+  if (off) {
+    sprite.setOrigin(0.5 + off.ax / sprite.width, 0.5 + off.ay / sprite.height);
+  } else {
+    sprite.setOrigin(0.5, (artBottom ?? 0.85) + (hoverPx ?? 0) / sprite.height);
+  }
+}
 // CAMERA GATE for the monster body pipeline. A world ships ~160 monsters
 // (the_island2) and EVERY one of them used to run the full shared body
 // pipeline each frame — stableDir + anim play, per-frame origin/shift,
@@ -3495,9 +3514,7 @@ export class WorldScene extends Phaser.Scene {
         const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
         mv.tuned = t;
         if (t) {
-          if (mv.sprite.width > 0) {
-            mv.sprite.setOrigin(0.5 + t.ax / mv.sprite.width, 0.5 + t.ay / mv.sprite.height);
-          }
+          this.applyTunedOriginFor(mv, "idle", mv.dispDir);
           mv.shadowW = Math.ceil(2 * Math.max(t.rx, t.ry / K));
           mv.shadowH = Math.ceil(2 * Math.max(t.ry, t.rx * K));
           mv.radius = shadowBodyRadius(t.rx, t.ry);
@@ -3569,6 +3586,18 @@ export class WorldScene extends Phaser.Scene {
    * project the authoritative flat (x,y) onto the iso ground (feet lifted by
    * the cell/surface elevation), a squashed drop shadow, and the south walk
    * frame as the initial texture. No label/torch/footstep machinery. */
+  /** Anchor a tuned monster's sprite on its shadow centre FOR THIS FACET.
+   * v2: the offset is per <state>#<direction> (maintainer 2026-08-20: "The
+   * shadow offset is per animation and direction" — PixelLab frames each
+   * direction's strip independently, so one offset cannot fit them all).
+   * Chain: facet → same direction's idle → v1 base → the art-derived default
+   * (the measured foot line, the same fallback an untuned monster uses). */
+  private applyTunedOriginFor(mv: MonsterAvatar, state: string, dir: string) {
+    if (!mv.tuned || mv.sprite.width <= 0) return;
+    const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
+    applyTunedOrigin(mv.sprite, mv.tuned, state, dir, def?.artBottom, def?.hoverPx);
+  }
+
   private addMonster(id: string, m: any) {
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
     // The roster's own display name ("Dewling" for forest_poring) — resolved
@@ -3602,7 +3631,7 @@ export class WorldScene extends Phaser.Scene {
     // measured pipeline below, untouched.
     const tuned = monsterShadow(m.kind) ?? undefined;
     if (tuned && sprite.width > 0) {
-      sprite.setOrigin(0.5 + tuned.ax / sprite.width, 0.5 + tuned.ay / sprite.height);
+      applyTunedOrigin(sprite, tuned, "idle", DEFAULT_DIRECTION, def?.artBottom, def?.hoverPx);
     }
     // Nadir shadow sized from the ART, not the frame (manifest-emitted:
     // ground-contact footprint blended toward body width — frame-scaled
@@ -5217,6 +5246,7 @@ export class WorldScene extends Phaser.Scene {
       const dieAnim = mv.dieKey ? monsterAnimKey(mv.kind, mv.dieKey, d) : null;
       if (dieAnim && this.anims.exists(dieAnim)) {
         mv.combatClip = true;
+        this.applyTunedOriginFor(mv, mv.dieKey ?? "die", d);
         if (mv.sprite.anims.getName() !== dieAnim) mv.sprite.play(dieAnim);
         return;
       }
@@ -5234,6 +5264,7 @@ export class WorldScene extends Phaser.Scene {
         mv.lastActionSeq = actionSeq;
         if (attackAnim && this.anims.exists(attackAnim)) {
           mv.combatClip = true;
+          this.applyTunedOriginFor(mv, mv.attackKey ?? "attack", d);
           mv.sprite.play(attackAnim); // restart even mid-clip: a new swing IS a restart
           return;
         }
@@ -5247,6 +5278,7 @@ export class WorldScene extends Phaser.Scene {
       const angryAnim = mv.angryKey ? monsterAnimKey(mv.kind, mv.angryKey, d) : null;
       if (angryAnim && this.anims.exists(angryAnim)) {
         mv.combatClip = true;
+        this.applyTunedOriginFor(mv, mv.angryKey ?? "angry", d);
         if (cur !== angryAnim || !mv.sprite.anims.isPlaying) mv.sprite.play(angryAnim, true);
         return;
       }
@@ -5265,9 +5297,7 @@ export class WorldScene extends Phaser.Scene {
     // the art rotates around that point, so a per-facing origin would undo it.
     const g = (!moving && mv.groundIdle?.[d]) || mv.ground?.[d];
     if (mv.tuned) {
-      if (mv.sprite.width > 0) {
-        mv.sprite.setOrigin(0.5 + mv.tuned.ax / mv.sprite.width, 0.5 + mv.tuned.ay / mv.sprite.height);
-      }
+      this.applyTunedOriginFor(mv, moving ? "walk" : "idle", d);
     } else if (g) {
       mv.sprite.setOrigin(g.cx, g.f);
     }

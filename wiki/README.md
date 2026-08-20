@@ -550,15 +550,25 @@ entry — game tuning exactly like `max_hp`, riding the same live channel, the
 same save bar, the same hot push to running clients:
 
 ```json
-"shadow": { "rx": 25.5, "ry": 10, "ax": 0, "ay": 33.6 }
+"shadow": { "rx": 25.5, "ry": 10,
+            "offsets": { "idle#south": { "ax": 0, "ay": 33.6 },
+                         "idle#east":  { "ax": -9, "ay": 30.1 } } }
 ```
 
 Frame pixels at scale 1 (art px ≈ wu). `rx`/`ry` are the semi-axes **as seen
-facing south**; `ax`/`ay` put the centre relative to the **frame centre**.
-Centre-relative on purpose: it survives any padding the frame has, and it IS
-the point the art rotates around. No record → the game stays on its legacy
-art-measured per-direction anchors, so the world switches monster by monster
-as he tunes.
+facing south** — ONE size for the whole monster. The **offsets are per
+animation × direction** (v2, his correction after tuning real monsters: *"The
+shadow offset is per animation and direction"* — PixelLab frames each
+direction's strip independently, so the body drifts inside the frame per facet
+and a single offset made him chase his tail: fixing E broke S, and the big
+compromise offsets it forced were also what inflated the canvas into a
+scrollbar). Each offset places the ellipse centre relative to the **frame
+centre**; the chain for a facet is: its own offset → the same direction's idle
+offset → a v1 record's base `ax`/`ay` (no migration needed) → the art-derived
+default. The centre IS the monster's position — the game anchors the sprite on
+it per facet, so the art stands corrected over a shadow that never moves. No
+record → the game stays on its legacy art-measured anchors, so the world
+switches monster by monster as he tunes.
 
 **The rotation is on the GROUND, not the screen.** The iso view squashes
 ground-vertical by `ISO_DY/ISO_DX` (15/32). A screen-space quarter-turn of the
@@ -576,11 +586,15 @@ the gate hold the two implementations equal to 5 decimals over 32 cases.
 Reset, but the semantics are the game's:
 
 - **The ellipse is PINNED and the monster moves.** Its centre is the monster's
-  world position, so dragging the pad right stores `ax+` and slides the
-  SPRITE left — *"when I move the shadow what really should happen is the
-  monster should move the opposite direction."* Turning the direction pad
-  re-rotates the ellipse in place and the art visibly rotates around it,
-  which is exactly what the game does on a facing change.
+  world position, so dragging the pad right stores `ax+` — **for the animation
+  and direction on screen** — and slides the SPRITE left — *"when I move the
+  shadow what really should happen is the monster should move the opposite
+  direction."* The readout names where the offset in force comes from (`set
+  for Walk · SE`, `inherited from Idle · SE`, `the measured default`), and
+  Reset is two-stage to match: it drops this facet's offset first, and clears
+  the whole record only when pressed with nothing facet-local (the button
+  relabels itself). Turning the direction pad re-rotates the ellipse in place
+  and the corrected art stands over it.
 - **The layout is anchor-true and constant.** The canvas box is derived from
   the UNION of every clip's content box plus the ellipse's worst-case extents
   over all facings — one box for the whole monster — so switching animation or

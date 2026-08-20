@@ -163,20 +163,64 @@ for (let i = 1; i <= 6; i++) await p.mouse.move(pad.x + pad.width / 2 + (90 * i)
 // contract holds WHILE he drags (the box is frozen precisely then). The
 // release that follows re-hugs the box — asserted separately below.
 const after = await probe();
-ok(after.rec.edited && after.rec.ax > before.rec.ax && after.rec.ay > before.rec.ay,
-  `the pad writes the record (anchor ${before.rec.ax},${before.rec.ay} → ${after.rec.ax},${after.rec.ay})`);
+ok(after.rec.edited && after.anchor.ax > before.anchor.ax && after.anchor.ay > before.anchor.ay,
+  `the pad writes THIS facet's offset (${before.anchor.ax},${before.anchor.ay} → ${after.anchor.ax},${after.anchor.ay})`);
+ok(after.anchor.source === "facet" && after.state === "idle" && after.dir === "south",
+  `and it is stored for the facet on screen (${after.state}#${after.dir}, source ${after.anchor.source})`);
 ok(after.ex === before.ex && after.ey === before.ey && after.W === before.W && after.H === before.H,
   "mid-drag the ellipse itself does not move — the canvas anchor is pinned");
 const dxMoved = before.dx - after.dx, dyMoved = before.dy - after.dy;
-ok(Math.abs(dxMoved - (after.rec.ax - before.rec.ax) * after.s) <= 1 && dxMoved > 0,
-  `dragging the shadow right moves the MONSTER left, exactly (frame slid ${dxMoved}px for ${after.rec.ax - before.rec.ax} frame px)`);
-ok(Math.abs(dyMoved - (after.rec.ay - before.rec.ay) * after.s) <= 1 && dyMoved > 0,
+ok(Math.abs(dxMoved - (after.anchor.ax - before.anchor.ax) * after.s) <= 1 && dxMoved > 0,
+  `dragging the shadow right moves the MONSTER left, exactly (frame slid ${dxMoved}px for ${after.anchor.ax - before.anchor.ax} frame px)`);
+ok(Math.abs(dyMoved - (after.anchor.ay - before.anchor.ay) * after.s) <= 1 && dyMoved > 0,
   "…and dragging it down moves the monster up — he tunes the monster around its own position");
 await p.mouse.up();
 await p.waitForTimeout(400);
 const vRel = await viewState();
 ok(Math.abs(vRel.anchorViewX - vRel.stageCenterX) <= 3,
   `releasing re-hugs the box and the shadow is back at the visible centre (off by ${Math.abs(Math.round(vRel.anchorViewX - vRel.stageCenterX))}px)`);
+// The post-release geometry is the baseline for the facet comparisons below —
+// the release re-hugged the box, so mid-drag coordinates no longer apply.
+const pS = await probe();
+
+// ---- THE INHERITANCE CHAIN (maintainer 2026-08-20: "The shadow offset is
+// per animation and direction"). Only idle#south has been tuned, so:
+await clickState("walk");
+await p.waitForTimeout(250);
+const wS = await probe();
+ok(wS.anchor.source === "idle" && Math.abs(wS.anchor.ax - after.anchor.ax) < 0.01,
+  `walk·S INHERITS the same direction's idle offset (${wS.anchor.ax},${wS.anchor.ay} via ${wS.anchor.source})`);
+await clickState("idle");
+await clickDir("E");
+await p.waitForTimeout(250);
+const iE = await probe();
+ok(iE.anchor.source === "default" && Math.abs(iE.anchor.ax - before.anchor.ax) < 0.01,
+  `idle·E is untouched — still the measured default (${iE.anchor.source})`);
+ok(iE.ex === pS.ex && iE.ey === pS.ey, "…and the canvas anchor STILL has not moved between facets");
+// The FRAME is what carries the correction: S (offset) and E (default) draw
+// the sprite at different canvas positions, art corrected over a pinned
+// shadow — exactly what one shared offset could not do.
+ok(Math.abs((pS.dx - iE.dx) + (pS.anchor.ax - iE.anchor.ax) * pS.s) <= 1 && pS.dx !== iE.dx,
+  `the sprite shifts between facets by exactly the offset difference (${pS.dx} vs ${iE.dx})`);
+// Tune E its own offset via the pad, the other way.
+await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
+await p.waitForTimeout(200);
+pad = await (await p.$(".shadow-pad")).boundingBox();
+await p.mouse.move(pad.x + pad.width / 2, pad.y + pad.height / 2);
+await p.mouse.down();
+for (let i = 1; i <= 6; i++) await p.mouse.move(pad.x + pad.width / 2 - (60 * i) / 6, pad.y + pad.height / 2);
+await p.mouse.up();
+await p.waitForTimeout(300);
+const iE2 = await probe();
+ok(iE2.anchor.source === "facet" && iE2.anchor.ax < iE.anchor.ax,
+  `idle·E takes its own offset without touching S (${iE2.anchor.ax})`);
+await clickDir("S");
+await p.waitForTimeout(200);
+const sBack = await probe();
+ok(Math.abs(sBack.anchor.ax - after.anchor.ax) < 0.01 && sBack.anchor.source === "facet",
+  "…and S still wears exactly what he gave it");
+await clickDir("E");
+await p.waitForTimeout(200);
 
 // the record follows across STATE and every DIRECTION, anchor never moving
 const seen = [];
@@ -253,18 +297,33 @@ await p.waitForTimeout(700);
 ok(saves.length === 1 && saves[0].file === "tuning/monsters",
   `Commit posted the monsters TUNING doc (${saves.map((s) => s.file).join(", ") || "nothing"})`);
 const entry = saves[0]?.set?.[MON.id];
-ok(!!entry?.shadow && ["rx", "ry", "ax", "ay"].every((k) => typeof entry.shadow[k] === "number"),
-  `and the entry carries the one shadow record (${JSON.stringify(entry?.shadow)})`);
-ok(Math.abs(entry.shadow.rx - grown.rec.rx) < 0.01 && Math.abs(entry.shadow.ay - grown.rec.ay) < 0.01,
+ok(!!entry?.shadow && typeof entry.shadow.rx === "number" && typeof entry.shadow.ry === "number",
+  `and the entry carries the one size (${JSON.stringify({ rx: entry?.shadow?.rx, ry: entry?.shadow?.ry })})`);
+const offKeys = Object.keys(entry?.shadow?.offsets ?? {});
+ok(offKeys.includes("idle#south") && offKeys.includes("idle#east"),
+  `…and the per-facet offsets he placed (${offKeys.join(", ")})`);
+ok(Math.abs(entry.shadow.rx - grown.rec.rx) < 0.01
+  && Math.abs(entry.shadow.offsets["idle#south"].ax - sBack.anchor.ax) < 0.01,
   "with exactly the numbers on screen");
 ok(!saves.some((s) => s.file === "tuning/shadow_notes"),
   "the frozen shadow_notes doc was not written — the old system stays historical");
 
-// ---- 5. Reset drops the record ---------------------------------------------
+// ---- 5. Reset is two-stage: this facet's offset first, the record second ----
+// We are on idle·E, which carries its own offset.
 await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
 await p.waitForTimeout(250);
+const facetGone = await probe();
+ok(facetGone.rec.edited && facetGone.anchor.source !== "facet",
+  `first Reset drops only this facet's offset — the record survives (source now ${facetGone.anchor.source})`);
+// Drop S's too, then the empty-handed press clears the whole record.
+await clickDir("S");
+await p.waitForTimeout(200);
+await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
+await p.waitForTimeout(250);
+await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset|Clear/.test(x.textContent))?.click());
+await p.waitForTimeout(250);
 const resetRec = await probe();
-ok(!resetRec.rec.edited, "Reset returns to untuned — the derived starting point");
+ok(!resetRec.rec.edited, "…and the empty-handed press clears the record — back to untuned");
 // A re-route (the staging upgrade) may have rebuilt the page with the editor
 // closed — the readout is only rendered while it is open, so re-open it.
 await p.evaluate(() => {

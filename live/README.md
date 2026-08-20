@@ -34,20 +34,31 @@ paths** — changing monster stats or rating a sound never restarts the game.
   stats (hp, damage, speed, aggro radius, attack cooldown, xp, scale) +
   loot tables. **Consumed by the game** (server + clients, via the live
   channel). Edited in the wiki's monster pages (admin only).
-  - A per-monster entry may also carry the monster's **one shadow**
-    (2026-08-20, replacing the per-facet shadow notes below):
-    `shadow: { rx, ry, ax, ay }` in **frame pixels at scale 1** (art px ≈ wu).
-    `rx`/`ry` are the ellipse's semi-axes AS SEEN FACING SOUTH; `ax`/`ay` put
-    the ellipse's centre relative to the FRAME CENTRE (+x right, +y down).
-    One record for every animation and every direction. The game rotates the
-    ellipse by the facing's GROUND angle (`shadowScreenEllipse` in
-    games2/shared — the same function the wiki previews with), anchors the
-    sprite on the ellipse's centre (that centre IS the monster's world
-    position, so the art rotates around it on turns), and derives the body
-    radius from the size (`shadowBodyRadius` — "the size will be the monsters
-    hit box"). **No record = the legacy art-measured anchors, untouched**, so
-    the game switches monster by monster as the Game Master tunes. Written
-    from the wiki's monster pages ("✎ Edit shadow").
+  - A per-monster entry may also carry the monster's **shadow**
+    (2026-08-20, replacing the per-facet shadow notes below; v2 the same day —
+    maintainer, after tuning real monsters: "The shadow offset is per
+    animation and direction"):
+    `shadow: { rx, ry, offsets?: { "<state>#<direction>": { ax, ay } }, ax?, ay? }`
+    in **frame pixels at scale 1** (art px ≈ wu).
+    - `rx`/`ry` — ONE size for the whole monster: the ellipse's semi-axes AS
+      SEEN FACING SOUTH. The game rotates it by the facing's GROUND angle
+      (`shadowScreenEllipse` in games2/shared — the same function the wiki
+      previews with) and derives the body radius from it (`shadowBodyRadius`
+      — "the size will be the monsters hit box").
+    - `offsets` — the ellipse centre per `<state>#<direction>` (e.g.
+      `"walk#south-east"`), relative to the FRAME CENTRE (+x right, +y down).
+      PixelLab frames every direction's strip independently, so the body's
+      position drifts per facet and one offset cannot fit them all.
+      Resolution chain for a facet: its own entry → the same direction's
+      `idle#<dir>` → the record's top-level `ax`/`ay` (v1 records keep
+      working, unmigrated) → the art-derived default (measured foot line).
+    - The centre IS the monster's world position: the game anchors the
+      sprite's origin on it per facet (`shadowAnchorOf`), so the art stands
+      corrected over a shadow that never moves.
+    **No record = the legacy art-measured anchors, untouched**, so the game
+    switches monster by monster as the Game Master tunes. Written from the
+    wiki's monster pages ("✎ Edit shadow"): the rails set the size, the pad
+    places the facet on screen.
 - `live/tuning/constants.json` — `pixel-wiki-tuning-constants@1`. Overrides
   for `games2/shared` gameplay constants, keyed by exported name.
   **Consumed by the game**. Edited in the wiki's Tuning page.

@@ -341,6 +341,16 @@
       "to": "monsters",
       "text": "Shadow notes are FROZEN: tuning/shadow_notes.json keeps its entries as training data but the wiki no longer writes it. The maintainer replaced it (2026-08-20) with ONE shadow per monster stored in live/tuning/monsters.json per-monster entries: shadow:{rx,ry,ax,ay} (frame px @1x, south-facing semi-axes + centre offset from frame centre). It rotates with facing on the GROUND plane and doubles as position anchor + hit box in game. He will re-tune every monster himself \u2014 no action needed from you, but new monsters keep shipping the measured shadow/artBottom metrics: they are the DEFAULT starting point his editor opens with.",
       "at": "2026-08-20T08:29:24+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "Shadow schema v2 (maintainer, same day): the offset is PER animation x direction; size stays single. tuning/monsters shadow field is now {rx, ry, offsets:{'<state>#<dir>':{ax,ay}}, ax?, ay?} \u2014 chain: facet -> idle of same dir -> v1 base ax/ay -> art-derived default (shared shadowAnchorOf). Your files touched again with his go-ahead: shared/index.ts (MonsterShadow type + readMonsterShadow sanitizes offsets, +shadowAnchorOf), WorldScene (applyTunedOrigin per facet \u2014 origin re-applied in the die/attack/angry branches too, not just walk/idle). radius/ellipse math unchanged. typecheck + 219 tests green.",
+      "at": "2026-08-20T10:19:14+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "Shadow schema v2 FYI: per-monster tuning/monsters shadow now carries offsets per '<state>#<direction>' with a single rx/ry size; v1 {rx,ry,ax,ay} records still resolve (base fallback in the chain). Still no action needed from you.",
+      "at": "2026-08-20T10:19:14+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

@@ -742,41 +742,91 @@ function shadowDefault(entity) {
     ay: +(((entity.artBottom ?? 0.85) * fh + (entity.hoverPx ?? 0)) - fh / 2).toFixed(2),
   };
 }
-/** The record to draw: the tuned one, else the derived default. `edited` says
- *  which — and for the GAME it is the whole switch: no record, and it stays on
- *  its legacy per-direction anchors. */
-function shadowRec(entity) {
+/** The raw tuned record ({rx, ry, ax?, ay?, offsets?}), or null. */
+function shadowRaw(entity) {
   const t = state.tuning.monsters?.monsters?.[entity.id]?.shadow;
-  if (t && [t.rx, t.ry, t.ax, t.ay].every((n) => typeof n === "number" && isFinite(n))) {
-    return { rx: t.rx, ry: t.ry, ax: t.ax, ay: t.ay, edited: true };
-  }
-  return { ...shadowDefault(entity), edited: false };
+  return t && typeof t.rx === "number" && isFinite(t.rx) && t.rx > 0
+    && typeof t.ry === "number" && isFinite(t.ry) && t.ry > 0 ? t : null;
 }
-/** Write (or with null, drop) the monster's one shadow. Unlike the old notes
- *  there is NO no-op collapse: a record equal to the default is still a
- *  DECISION — it is what flips the game from its legacy anchors to this one. */
-function setShadowRec(entity, patch) {
+/** One SIZE for the monster; `edited` = a record exists at all. */
+function shadowRec(entity) {
+  const t = shadowRaw(entity);
+  if (t) return { rx: t.rx, ry: t.ry, edited: true };
+  const d = shadowDefault(entity);
+  return { rx: d.rx, ry: d.ry, edited: false };
+}
+/** The OFFSET in force for one facet — v2 (maintainer 2026-08-20, after
+ *  tuning real monsters: "The shadow offset is per animation and direction").
+ *  PixelLab frames every direction's strip independently, so the body drifts
+ *  inside the frame per facet and ONE offset made him chase his tail — fixing
+ *  E broke S, and the big compromise offsets it forced were also what blew
+ *  the canvas into a scrollbar. Chain: the facet's own offset → the same
+ *  direction's idle offset → a v1 record's base ax/ay → the art-derived
+ *  default. Same chain as games2/shared shadowAnchorOf. */
+function shadowAnchor(entity, st, dir) {
+  const t = shadowRaw(entity);
+  const own = t?.offsets?.[`${st}#${dir}`];
+  if (own && isFinite(own.ax) && isFinite(own.ay)) return { ax: own.ax, ay: own.ay, source: "facet" };
+  const idle = t?.offsets?.[`idle#${dir}`];
+  if (idle && isFinite(idle.ax) && isFinite(idle.ay)) return { ax: idle.ax, ay: idle.ay, source: "idle" };
+  if (t && typeof t.ax === "number" && isFinite(t.ax) && typeof t.ay === "number" && isFinite(t.ay)) {
+    return { ax: t.ax, ay: t.ay, source: "base" };
+  }
+  const d = shadowDefault(entity);
+  return { ax: d.ax, ay: d.ay, source: "default" };
+}
+/** Ensure the entry + shadow object exist and return the shadow object. */
+function shadowEnsure(entity) {
+  const doc = state.tuning.monsters;
+  if (!doc) return null;
+  const monsters = (doc.monsters ??= {});
+  const e = (monsters[entity.id] ??= {});
+  if (!e.shadow || typeof e.shadow.rx !== "number") {
+    const d = shadowDefault(entity);
+    e.shadow = { rx: d.rx, ry: d.ry };
+  }
+  return e.shadow;
+}
+function shadowTouched(entity) {
   const doc = state.tuning.monsters;
   if (!doc) return;
-  const monsters = (doc.monsters ??= {});
-  if (!patch) {
-    const e = monsters[entity.id];
-    if (e) {
-      delete e.shadow;
-      // An entry that held nothing else must not survive as {} — the stats
-      // editor reads bare existence as "tuned".
-      if (!Object.keys(e).length) delete monsters[entity.id];
-    }
-  } else {
-    const e = (monsters[entity.id] ??= {});
-    e.shadow = {
-      rx: Math.max(1, +(+patch.rx).toFixed(2)), ry: Math.max(1, +(+patch.ry).toFixed(2)),
-      ax: +(+patch.ax).toFixed(2), ay: +(+patch.ay).toFixed(2),
-    };
-  }
   doc.updated_at = new Date().toISOString();
   touch(MTUNE_KEY, entity.id);
   markDirty(MTUNE_KEY);
+}
+/** The single size. */
+function setShadowSize(entity, rx, ry) {
+  const sh = shadowEnsure(entity);
+  if (!sh) return;
+  sh.rx = Math.max(1, +(+rx).toFixed(2));
+  sh.ry = Math.max(1, +(+ry).toFixed(2));
+  shadowTouched(entity);
+}
+/** This facet's offset (null drops it, falling back down the chain). */
+function setShadowOffset(entity, st, dir, off) {
+  const sh = shadowEnsure(entity);
+  if (!sh) return;
+  const key = `${st}#${dir}`;
+  if (!off) {
+    if (sh.offsets) { delete sh.offsets[key]; if (!Object.keys(sh.offsets).length) delete sh.offsets; }
+  } else {
+    (sh.offsets ??= {})[key] = { ax: +(+off.ax).toFixed(2), ay: +(+off.ay).toFixed(2) };
+  }
+  shadowTouched(entity);
+}
+/** Drop the whole record — the game returns to its legacy measured anchors. */
+function clearShadow(entity) {
+  const doc = state.tuning.monsters;
+  if (!doc) return;
+  const monsters = (doc.monsters ??= {});
+  const e = monsters[entity.id];
+  if (e) {
+    delete e.shadow;
+    // An entry that held nothing else must not survive as {} — the stats
+    // editor reads bare existence as "tuned".
+    if (!Object.keys(e).length) delete monsters[entity.id];
+  }
+  shadowTouched(entity);
 }
 
 /* --------------------------------------------------------------- player */
@@ -857,19 +907,18 @@ function makePlayer(entity, kind, opts = {}) {
     // with the canvas→frame scale captured once (a drag measured in canvas
     // pixels would read any canvas resize as pointer movement and run away).
     const r = canvas.getBoundingClientRect();
-    shadowDrag = { sx: ev.clientX, sy: ev.clientY, from: shadowRec(entity), k: (canvas.width / (r.width || 1)) / (shadowHit.s || 1) };
+    shadowDrag = { sx: ev.clientX, sy: ev.clientY, from: shadowAnchor(entity, cur.state, cur.dir), k: (canvas.width / (r.width || 1)) / (shadowHit.s || 1) };
   });
   canvas.addEventListener("pointermove", (ev) => {
     if (!shadowDrag) return;
     const dxF = (ev.clientX - shadowDrag.sx) * shadowDrag.k;   // frame px
     const dyF = (ev.clientY - shadowDrag.sy) * shadowDrag.k;
     const f = shadowDrag.from;
-    // Dragging "the shadow" right stores ax+ — and on screen the MONSTER
-    // slides left while the ellipse holds still, because the ellipse centre is
-    // the monster's world position and the sprite is what hangs off it. That
-    // is his spec verbatim: "when I move the shadow what really should happen
-    // is the monster should move the opposite direction."
-    setShadowRec(entity, { ...f, ax: f.ax + dxF, ay: f.ay + dyF });
+    // Dragging "the shadow" right stores ax+ FOR THIS ANIMATION AND DIRECTION
+    // — and on screen the MONSTER slides left while the ellipse holds still,
+    // because the ellipse centre is the monster's world position and the
+    // sprite is what hangs off it.
+    setShadowOffset(entity, cur.state, cur.dir, { ax: f.ax + dxF, ay: f.ay + dyF });
     onShadowEdit?.();
     refreshShadowBar();
     draw();
@@ -1144,13 +1193,27 @@ function makePlayer(entity, kind, opts = {}) {
      *     so far up"), and the shadow line lands wherever ay puts it — at
      *     the SAME canvas y for every clip.
      */
-    let sh = null, el = null, anchorX = 0, anchorY = 0, dx = 0, dy = 0;
+    let sh = null, el = null, anc = null, anchorX = 0, anchorY = 0, dx = 0, dy = 0;
     let wantW, wantH;
     if (showShadow) {
       const uBB = unionBB();
       sh = shadowRec(entity);
       el = shadowEllipse(sh.rx, sh.ry, cur.dir);
-      const A = { x: fw / 2 + sh.ax, y: fh / 2 + sh.ay };      // anchor, frame px
+      anc = shadowAnchor(entity, cur.state, cur.dir);
+      const A = { x: fw / 2 + anc.ax, y: fh / 2 + anc.ay };    // anchor, frame px
+      // THE BOX COVERS EVERY FACET'S ANCHOR, not just this one's: offsets are
+      // per animation × direction now, and the box must be the same
+      // anchor-relative rectangle for all of them or the shadow's canvas point
+      // would move when he switches facet — the one thing it must never do.
+      // (The FRAME is what shifts per facet: the correction, made visible.)
+      let axMin = anc.ax, axMax = anc.ax, ayMin = anc.ay, ayMax = anc.ay;
+      for (const st2 of Object.keys(entity.animations ?? {})) {
+        for (const d2 of Object.keys(entity.animations[st2]?.dirs ?? {})) {
+          const a2 = shadowAnchor(entity, st2, d2);
+          axMin = Math.min(axMin, a2.ax); axMax = Math.max(axMax, a2.ax);
+          ayMin = Math.min(ayMin, a2.ay); ayMax = Math.max(ayMax, a2.ay);
+        }
+      }
       const ext = shadowExtents(sh.rx, sh.ry);
       const pad = 6;
       // SYMMETRIC AROUND THE ANCHOR horizontally — "Horizontally the shadow
@@ -1163,12 +1226,16 @@ function makePlayer(entity, kind, opts = {}) {
       // the moment a drag ended. Vertically the box hugs the monster instead
       // — the shadow must not pick THAT centre, or a tall monster rides high.
       const hug = () => {
-        const halfW = Math.max(A.x - uBB[0], uBB[2] - A.x, ext.x) + pad;
+        // Anchor-relative extents that hold for EVERY facet: the content's
+        // reach from the anchor is largest for the extreme offsets.
+        const AxHi = fw / 2 + axMax, AxLo = fw / 2 + axMin;
+        const AyHi = fh / 2 + ayMax, AyLo = fh / 2 + ayMin;
+        const halfW = Math.max(AxHi - uBB[0], uBB[2] - AxLo, ext.x) + pad;
         return {
           left: -halfW,
           right: halfW,
-          top: Math.min(uBB[1] - A.y, -ext.y) - pad,
-          bot: Math.max(uBB[3] - A.y, ext.y) + pad,
+          top: Math.min(uBB[1] - AyHi, -ext.y) - pad,
+          bot: Math.max(uBB[3] - AyLo, ext.y) + pad,
         };
       };
       let box;
@@ -1244,7 +1311,8 @@ function makePlayer(entity, kind, opts = {}) {
       window.__wikiShadow = {
         ex: anchorX, ey: anchorY, p: +(el.p * s).toFixed(2), q: +(el.q * s).toFixed(2),
         theta: +el.theta.toFixed(4), s, dx, dy, W: canvas.width, H: canvas.height,
-        rec: { rx: sh.rx, ry: sh.ry, ax: sh.ax, ay: sh.ay, edited: sh.edited },
+        rec: { rx: sh.rx, ry: sh.ry, edited: sh.edited },
+        anchor: { ax: anc.ax, ay: anc.ay, source: anc.source },
         dir: cur.dir, state: cur.state,
       };
     } else shadowHit = null;
@@ -1374,10 +1442,18 @@ function makePlayer(entity, kind, opts = {}) {
     onchange: (e) => { cur.shadow = e.target.checked; if (!cur.shadow) setEditShadow(false); else draw(); },
   });
   const shadowRead = h("span", { class: "shadow-read" });
+  // Reset is TWO-STAGE, matching the data: a facet that carries its own offset
+  // drops just that (back down the inheritance chain); pressed with nothing
+  // facet-local it clears the monster's whole record and the game returns to
+  // its legacy measured anchors. The label says which one it will do.
   const shadowResetBtn = h("button", {
     class: "ghost-btn",
-    title: "Drop this monster's tuned shadow — the game falls back to its own measured one",
-    onclick: () => { setShadowRec(entity, null); onShadowEdit?.(); refreshShadowBar(); draw(); },
+    onclick: () => {
+      const t = shadowRaw(entity);
+      if (t?.offsets?.[`${cur.state}#${cur.dir}`]) setShadowOffset(entity, cur.state, cur.dir, null);
+      else clearShadow(entity);
+      onShadowEdit?.(); refreshShadowBar(); draw();
+    },
   }, "Reset");
 
   /* THE CONTROLS ARE A PROXY — NOTHING THAT EDITS THE SHADOW SITS ON IT.
@@ -1439,7 +1515,7 @@ function makePlayer(entity, kind, opts = {}) {
     padEl.classList.add("held");
     padDrag = {
       x: ev.clientX, y: ev.clientY,
-      from: shadowRec(entity),
+      from: shadowAnchor(entity, cur.state, cur.dir),
       // Screen pixels -> frame pixels. The canvas draws at `s`, so dividing by
       // it is what makes the shadow move exactly as far as the thumb did.
       k: 1 / (cur.zoom || (state.data.artScale || 2)),
@@ -1456,10 +1532,10 @@ function makePlayer(entity, kind, opts = {}) {
     const knob = (d) => Math.max(-lim, Math.min(lim, (d / PAD_FINE_ZONE) * lim));
     padKnob.style.transform = `translate(${knob(ev.clientX - padDrag.x)}px, ${knob(ev.clientY - padDrag.y)}px)`;
     const f = padDrag.from;
-    // Pad right = shadow right relative to the MONSTER (ax+); on screen the
-    // ellipse holds still and the monster slides left — the anchor is the
-    // world position, and the sprite is what hangs off it.
-    setShadowRec(entity, { ...f, ax: f.ax + dx * padDrag.k, ay: f.ay + dy * padDrag.k });
+    // Pad right = shadow right relative to the MONSTER (ax+), FOR THE FACET ON
+    // SCREEN; on screen the ellipse holds still and the monster slides left —
+    // the anchor is the world position, and the sprite is what hangs off it.
+    setShadowOffset(entity, cur.state, cur.dir, { ax: f.ax + dx * padDrag.k, ay: f.ay + dy * padDrag.k });
     onShadowEdit?.(); refreshShadowBar(); draw();
   });
   const padEnd = (ev) => {
@@ -1486,7 +1562,8 @@ function makePlayer(entity, kind, opts = {}) {
     const inp = h("input", { type: "range", class: "shadow-slider", min: "2", step: "0.5", "aria-label": label });
     const apply = () => {
       const sh = shadowRec(entity);
-      setShadowRec(entity, { ...sh, [axis]: +inp.value / 2 });
+      const next = { rx: sh.rx, ry: sh.ry, [axis]: +inp.value / 2 };
+      setShadowSize(entity, next.rx, next.ry);
       onShadowEdit?.(); refreshShadowBar(); draw();
     };
     inp.addEventListener("input", apply);
@@ -1505,7 +1582,7 @@ function makePlayer(entity, kind, opts = {}) {
         h("label", {}, h("span", {}, "W"), wSlider),
         h("label", {}, h("span", {}, "H"), hSlider)),
       padEl),
-    h("span", { class: "muted shadow-hint" }, "One shadow for the whole monster — every animation, every direction. The pad moves the monster around it; the rails resize it."));
+    h("span", { class: "muted shadow-hint" }, "One SIZE for the whole monster; the pad places THIS animation + direction (others inherit from this direction's Idle). The rails resize; the monster slides opposite the pad."));
   const shadowBtn = state.admin && kind === "monster"
     ? h("button", {
       class: "ghost-btn shadow-btn",
@@ -1531,26 +1608,33 @@ function makePlayer(entity, kind, opts = {}) {
     shadowBtn.classList.toggle("on", cur.editShadow);
     if (!cur.editShadow) return;
     const sh = shadowRec(entity);
+    const anc = shadowAnchor(entity, cur.state, cur.dir);
     const signed = (n) => `${n < 0 ? "\u2212" : "+"}${Math.abs(n).toFixed(1)}`;
+    // Two-stage Reset, labelled for what it will actually do right now.
+    const facetOwn = anc.source === "facet";
     shadowResetBtn.disabled = !sh.edited;
-    // The rails span what a shadow could sensibly be for THIS monster, so
-    // their travel means something on a 34px frog and a 256px mammoth alike.
-    // Max before value, or the browser clamps the value to the previous max.
+    shadowResetBtn.textContent = facetOwn ? "Reset offset" : "Clear shadow";
+    shadowResetBtn.title = facetOwn
+      ? `Drop the offset for ${stateLabel(cur.state)} \u00b7 ${DIR_LABEL[cur.dir] ?? cur.dir} \u2014 it falls back down the chain (idle of this direction, then the default)`
+      : "No offset on this animation+direction \u2014 pressing clears the monster's whole shadow record and the game returns to its measured anchors";
     const fw = entity.frameW ?? 64, fh = entity.frameH ?? 64;
     wSlider.max = String(Math.max(32, Math.round(fw * 1.2)));
     hSlider.max = String(Math.max(16, Math.round(fh / 2)));
-    // Never fight the finger that is on the rail: writing the value back mid
-    // -drag would snap the knob to the rounded number under it.
     if (document.activeElement !== wSlider) wSlider.value = String(sh.rx * 2);
     if (document.activeElement !== hSlider) hSlider.value = String(sh.ry * 2);
+    // WHERE THIS OFFSET COMES FROM is the fact he tunes by (maintainer
+    // 2026-08-20: "The shadow offset is per animation and direction"):
+    const from = anc.source === "facet" ? `set for ${stateLabel(cur.state)} \u00b7 ${DIR_LABEL[cur.dir] ?? cur.dir}`
+      : anc.source === "idle" ? `inherited from Idle \u00b7 ${DIR_LABEL[cur.dir] ?? cur.dir}`
+      : anc.source === "base" ? "the monster-wide offset (v1)"
+      : "the measured default";
     shadowRead.replaceChildren(
       h("b", {}, `${(sh.rx * 2).toFixed(1)} \u00d7 ${(sh.ry * 2).toFixed(1)} px`),
-      ` \u00b7 anchor ${signed(sh.ax)}, ${signed(sh.ay)}`,
-      sh.edited
-        ? " \u00b7 tuned \u2014 the game uses this"
-        : " \u00b7 untuned \u2014 a starting point from the measured art; commit any change to adopt it",
+      ` \u00b7 offset ${signed(anc.ax)}, ${signed(anc.ay)} \u2014 ${from}`,
+      sh.edited ? "" : " \u00b7 untuned \u2014 commit any change to adopt it",
     );
   }
+
 
 
   const controls2 = h("div", { class: "player-controls" },
@@ -1603,8 +1687,8 @@ function makePlayer(entity, kind, opts = {}) {
     editShadow(on) { setEditShadow(on); },
     isEditingShadow: () => cur.editShadow,
     set onShadowEdit(fn) { onShadowEdit = fn; },
-    resetShadow() { setShadowRec(entity, null); refreshShadowBar(); draw(); },
-    shadowInfo: () => ({ st: cur.state, dir: cur.dir, rec: shadowRec(entity), default: shadowDefault(entity) }),
+    resetShadow() { clearShadow(entity); refreshShadowBar(); draw(); },
+    shadowInfo: () => ({ st: cur.state, dir: cur.dir, rec: shadowRec(entity), anchor: shadowAnchor(entity, cur.state, cur.dir), default: shadowDefault(entity) }),
     /** Fires whenever the state OR the direction changes — i.e. whenever the
      *  thing on screen is a different piece of generated art. */
     set onFacetChange(fn) { onFacetChange = fn; },
@@ -6411,7 +6495,7 @@ function drawStamp(data) {
   const p = (n) => String(n).padStart(2, "0");
   $("#build-stamp").replaceChildren(
     h("div", { class: "stamp-date" }, `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`),
-    ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []),
+    ...(data.git_sha ? [h("div", { class: "stamp-sha", title: "The registry snapshot this page reads: repo HEAD when you are signed in as Game Master (so unreleased art is current), the deployed build's own registry otherwise. The character screen's badge names the deployed game build — the two can differ by the pushes still in flight." }, data.git_sha)] : []),
     // A STAMP THAT CANNOT LIE QUIETLY. The deploy image rebuilds this registry
     // from its own tree; if that ever fails it falls back to the committed one
     // and sets this flag (games2/Dockerfile), which used to be an invisible
@@ -6442,6 +6526,17 @@ async function upgradeToStaging() {
   try {
     const full = await useStagingRoot();
     if (!full) return;
+    // STAMP THE SHA WE FETCHED AT, not the file's self-label. build.mjs stamps
+    // `git rev-parse HEAD` at build time, which in a working tree that has not
+    // committed yet names the PARENT — so the committed registry's label runs
+    // one commit behind and the maintainer saw the wiki claim f6cb03743 while
+    // the select screen (the image's own sha) said c76d47eb8 (2026-08-20,
+    // "The wiki shows something different than the game"). The sha this page
+    // PINNED its fetch to is the truth about what it is reading.
+    try {
+      const pinned = (sessionStorage.getItem("ml-staging-sha") || "").slice(0, 9);
+      if (pinned && pinned !== "main") full.git_sha = pinned;
+    } catch { /* private mode */ }
     state.data = full;
     // The World pairs are read LIVE from the tiles agent and are newer than
     // ANY build, including this one — so the swap must not throw them away.

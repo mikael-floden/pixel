@@ -207,15 +207,46 @@ export const DIAMOND_H = 30;
 // what both Phaser (setRotation + setDisplaySize) and canvas can draw.
 // wiki/site/wiki.js carries the same function for the editor;
 // wiki/tools/check-shadow.mjs holds the two implementations equal.
-export type MonsterShadow = { rx: number; ry: number; ax: number; ay: number };
+// v2 (maintainer 2026-08-20, after tuning real monsters): "The shadow offset
+// is per animation and direction." One SIZE per monster — but PixelLab frames
+// each direction's strip independently, so the body's position inside the
+// frame drifts per facet, and a single offset made him chase his tail: fixing
+// E broke S. So `offsets` corrects the SPRITE per <state>#<direction>, while
+// the shadow itself never moves — it IS the monster's position. Resolution
+// chain for a facet: its own offset → the same direction's idle offset (state
+// strips usually share a direction's framing) → the record's base ax/ay (v1
+// records keep working unmigrated) → the caller's art-derived default.
+export type MonsterShadowOffset = { ax: number; ay: number };
+export type MonsterShadow = {
+  rx: number; ry: number;
+  ax?: number; ay?: number;                       // v1 base offset (legacy)
+  offsets?: Record<string, MonsterShadowOffset>;  // "<state>#<dir>" → offset
+};
+const numOrNull = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : null);
 export function readMonsterShadow(o: unknown): MonsterShadow | null {
   const t = (o as { shadow?: Record<string, unknown> } | undefined)?.shadow;
   if (!t) return null;
-  const n = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : null);
-  const rx = n(t.rx), ry = n(t.ry), ax = n(t.ax), ay = n(t.ay);
-  return rx !== null && ry !== null && ax !== null && ay !== null && rx > 0 && ry > 0
-    ? { rx, ry, ax, ay }
-    : null;
+  const rx = numOrNull(t.rx), ry = numOrNull(t.ry);
+  if (rx === null || ry === null || rx <= 0 || ry <= 0) return null;
+  const out: MonsterShadow = { rx, ry };
+  const ax = numOrNull(t.ax), ay = numOrNull(t.ay);
+  if (ax !== null && ay !== null) { out.ax = ax; out.ay = ay; }
+  if (t.offsets && typeof t.offsets === "object") {
+    const offs: Record<string, MonsterShadowOffset> = {};
+    for (const [k, v] of Object.entries(t.offsets as Record<string, Record<string, unknown>>)) {
+      const oax = numOrNull(v?.ax), oay = numOrNull(v?.ay);
+      if (oax !== null && oay !== null) offs[k] = { ax: oax, ay: oay };
+    }
+    if (Object.keys(offs).length) out.offsets = offs;
+  }
+  return out;
+}
+/** The offset in force for one facet, through the inheritance chain — or null,
+ *  meaning "use your art-derived default anchor". */
+export function shadowAnchorOf(rec: MonsterShadow, state: string, dir: string): MonsterShadowOffset | null {
+  return rec.offsets?.[`${state}#${dir}`]
+    ?? rec.offsets?.[`idle#${dir}`]
+    ?? (typeof rec.ax === "number" && typeof rec.ay === "number" ? { ax: rec.ax, ay: rec.ay } : null);
 }
 const SHADOW_DIR_VEC: Record<string, [number, number]> = {
   south: [0, 1], "south-west": [-1, 1], west: [-1, 0], "north-west": [-1, -1],
