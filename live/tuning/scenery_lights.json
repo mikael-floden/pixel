@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-19T23:58:02.000Z",
+  "updated_at": "2026-08-20T00:02:17.316Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/windows/window_116#lights_on": {
@@ -207,6 +207,46 @@
       "lit": false,
       "was": "lit_2",
       "updated_at": "2026-08-19T23:57:39.464Z"
+    },
+    "scenery/chairs_and_benches/chair_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-19T23:58:59.165Z"
+    },
+    "scenery/chairs_and_benches/chair_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-19T23:59:01.101Z"
+    },
+    "scenery/chairs_and_benches/chair_006#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-19T23:59:08.000Z"
+    },
+    "scenery/hearths/hearth_001#not_lit_4": {
+      "lit": true,
+      "was": "not_lit_4",
+      "updated_at": "2026-08-19T23:59:43.053Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T00:01:37.168Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:01:39.624Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:01:44.498Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:01:48.100Z"
     }
   }
 }
