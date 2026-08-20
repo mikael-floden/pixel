@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 748,
+  "scenery_count": 747,
   "target_count": 2128,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -54,7 +54,7 @@
       "name": "Waystone",
       "type": "TOWN",
       "quota": 13,
-      "done": 12
+      "done": 11
     },
     {
       "rank": 7,
@@ -1504,7 +1504,7 @@
     "water_pumps": 2,
     "waterwheels": 3,
     "wayside_shrines": 6,
-    "waystones": 12,
+    "waystones": 11,
     "wells": 12,
     "whale_bones": 1,
     "windmills": 3,
@@ -7592,24 +7592,6 @@
           "generated_at": "2026-08-13T21:53:55+00:00",
           "art_hash": "1da282a6470d84c6"
         },
-        "LIT_2": {
-          "sprite": "cairns/cairn_014/lit_2/sprite.webp",
-          "pixellab_object_id": "9f92157a-aada-4d2c-aa13-5e025d7e0ff0",
-          "generated_at": "2026-08-15T21:26:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7782,
-          "glow_score": 0.0258,
-          "art_hash": "d496106a260e45ab"
-        },
-        "LIT_3": {
-          "sprite": "cairns/cairn_014/lit_3/sprite.webp",
-          "pixellab_object_id": "ccc5e77c-2886-4b46-ba72-030b02071399",
-          "generated_at": "2026-08-15T21:26:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7882,
-          "glow_score": 0.0571,
-          "art_hash": "64ea07aebf379c6e"
-        },
         "LIT_4": {
           "sprite": "cairns/cairn_014/lit_4/sprite.webp",
           "pixellab_object_id": "b2cca2b7-430e-46bc-86cf-a49f10c0946e",
@@ -7636,6 +7618,26 @@
           "difference_from_source": 0.7401,
           "glow_score": 0.0,
           "art_hash": "2e2d870bc3c249fd"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cairns/cairn_014/not_lit_3/sprite.webp",
+          "pixellab_object_id": "9f92157a-aada-4d2c-aa13-5e025d7e0ff0",
+          "generated_at": "2026-08-15T21:26:32+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7782,
+          "glow_score": 0.0258,
+          "relit_from": "LIT_2",
+          "art_hash": "d496106a260e45ab"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cairns/cairn_014/not_lit_4/sprite.webp",
+          "pixellab_object_id": "ccc5e77c-2886-4b46-ba72-030b02071399",
+          "generated_at": "2026-08-15T21:26:42+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7882,
+          "glow_score": 0.0571,
+          "relit_from": "LIT_3",
+          "art_hash": "64ea07aebf379c6e"
         }
       },
       "animations": []
@@ -26911,12 +26913,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "ivy_posts/ivy_post_008/sprite.webp",
-          "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
-          "generated_at": "2026-08-13T21:45:39+00:00",
-          "art_hash": "732f550ca9e8956b"
-        },
         "LIT_2": {
           "sprite": "ivy_posts/ivy_post_008/lit_2/sprite.webp",
           "pixellab_object_id": "c4f04de8-fc8d-4b96-ad14-11e755834362",
@@ -26935,24 +26931,6 @@
           "glow_score": 0.0352,
           "art_hash": "318ae720d921b77a"
         },
-        "LIT_4": {
-          "sprite": "ivy_posts/ivy_post_008/lit_4/sprite.webp",
-          "pixellab_object_id": "764efb2a-cffe-41c8-a0cd-34e10baece6f",
-          "generated_at": "2026-08-16T17:09:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7851,
-          "glow_score": 0.0203,
-          "art_hash": "bfc0a9ef59af9b2e"
-        },
-        "NOT_LIT_1": {
-          "sprite": "ivy_posts/ivy_post_008/not_lit_1/sprite.webp",
-          "pixellab_object_id": "91795302-5e40-47eb-9d0a-e0cad3ac5f72",
-          "generated_at": "2026-08-16T17:09:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3274,
-          "glow_score": 0.0023,
-          "art_hash": "5dc3f7af2a5ab6fa"
-        },
         "NOT_LIT_2": {
           "sprite": "ivy_posts/ivy_post_008/not_lit_2/sprite.webp",
           "pixellab_object_id": "e4185139-895e-4b05-b849-da26d728a1f1",
@@ -26961,6 +26939,13 @@
           "difference_from_source": 0.2224,
           "glow_score": 0.0093,
           "art_hash": "c1ec18e9501ad68d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "ivy_posts/ivy_post_008/sprite.webp",
+          "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
+          "generated_at": "2026-08-13T21:45:39+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "732f550ca9e8956b"
         }
       },
       "animations": []
@@ -27376,12 +27361,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "lantern_posts/lantern_post_008/sprite.webp",
-          "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
-          "generated_at": "2026-08-13T21:50:10+00:00",
-          "art_hash": "0cc24025bf3fb4fb"
-        },
         "LIT_2": {
           "sprite": "lantern_posts/lantern_post_008/lit_2/sprite.webp",
           "pixellab_object_id": "9cc16ac8-8415-4b17-968f-6a74ccf623e5",
@@ -27426,6 +27405,13 @@
           "difference_from_source": 0.8217,
           "glow_score": 0.0,
           "art_hash": "1d1734564d71af7e"
+        },
+        "NOT_LIT_3": {
+          "sprite": "lantern_posts/lantern_post_008/sprite.webp",
+          "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
+          "generated_at": "2026-08-13T21:50:10+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "0cc24025bf3fb4fb"
         }
       },
       "animations": []
@@ -38486,15 +38472,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "story_posts/story_post_009/lit_1/sprite.webp",
-          "pixellab_object_id": "e70a6fe6-277f-48ca-98e2-ae5359b2ec58",
-          "generated_at": "2026-08-16T22:27:49+00:00",
-          "glow_concept": "luminous ribbons streaming from the top",
-          "difference_from_source": 0.7562,
-          "glow_score": 0.3767,
-          "art_hash": "82a1758805513bec"
-        },
         "LIT_2": {
           "sprite": "story_posts/story_post_009/lit_2/sprite.webp",
           "pixellab_object_id": "ab6728ee-d93e-4a2d-ae57-2b7179235f11",
@@ -38790,24 +38767,6 @@
           "generated_at": "2026-08-13T21:54:06+00:00",
           "art_hash": "36955678fd187be3"
         },
-        "LIT_2": {
-          "sprite": "story_posts/story_post_014/lit_2/sprite.webp",
-          "pixellab_object_id": "b10022b6-ec75-4283-9e31-ef127142397d",
-          "generated_at": "2026-08-16T22:31:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7419,
-          "glow_score": 0.0655,
-          "art_hash": "84dcadd5b9bcd043"
-        },
-        "LIT_3": {
-          "sprite": "story_posts/story_post_014/lit_3/sprite.webp",
-          "pixellab_object_id": "d71c8930-6af7-4a45-8ed8-c8b30226ffed",
-          "generated_at": "2026-08-16T22:32:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7953,
-          "glow_score": 0.1655,
-          "art_hash": "2ca5a03c4f25392d"
-        },
         "LIT_4": {
           "sprite": "story_posts/story_post_014/lit_4/sprite.webp",
           "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
@@ -38817,23 +38776,25 @@
           "glow_score": 0.1436,
           "art_hash": "2a644260ea567eb5"
         },
-        "NOT_LIT_1": {
-          "sprite": "story_posts/story_post_014/not_lit_1/sprite.webp",
-          "pixellab_object_id": "e40f75fe-452d-4913-9e16-5e9b7a1411d6",
-          "generated_at": "2026-08-16T22:33:14+00:00",
+        "NOT_LIT_3": {
+          "sprite": "story_posts/story_post_014/not_lit_3/sprite.webp",
+          "pixellab_object_id": "b10022b6-ec75-4283-9e31-ef127142397d",
+          "generated_at": "2026-08-16T22:31:27+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.8954,
-          "glow_score": 0.0,
-          "art_hash": "e34c0a022e6cd4d7"
+          "difference_from_source": 0.7419,
+          "glow_score": 0.0655,
+          "relit_from": "LIT_2",
+          "art_hash": "84dcadd5b9bcd043"
         },
-        "NOT_LIT_2": {
-          "sprite": "story_posts/story_post_014/not_lit_2/sprite.webp",
-          "pixellab_object_id": "c8fd177e-39c3-4686-a99a-664ff3018e17",
-          "generated_at": "2026-08-16T22:32:44+00:00",
+        "NOT_LIT_4": {
+          "sprite": "story_posts/story_post_014/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d71c8930-6af7-4a45-8ed8-c8b30226ffed",
+          "generated_at": "2026-08-16T22:32:32+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.8372,
-          "glow_score": 0.0,
-          "art_hash": "2d091e806e9813ad"
+          "difference_from_source": 0.7953,
+          "glow_score": 0.1655,
+          "relit_from": "LIT_3",
+          "art_hash": "2ca5a03c4f25392d"
         }
       },
       "animations": []
@@ -54909,15 +54870,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "washing_lines/washing_line_007/lit_1/sprite.webp",
-          "pixellab_object_id": "25e1daaf-0bc6-4286-a2a4-0aa59074581e",
-          "generated_at": "2026-08-17T11:54:52+00:00",
-          "glow_concept": "storm lantern hooked on one post",
-          "difference_from_source": 0.999,
-          "glow_score": 0.2735,
-          "art_hash": "9fcffd39f28335f3"
-        },
         "LIT_2": {
           "sprite": "washing_lines/washing_line_007/lit_2/sprite.webp",
           "pixellab_object_id": "fc0610bc-a084-434e-bef6-a7696847a75e",
@@ -56414,15 +56366,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "wayside_shrines/wayside_shrine_013/lit_1/sprite.webp",
-          "pixellab_object_id": "db240b14-307e-487b-a6bd-ceac2bf201b3",
-          "generated_at": "2026-08-17T12:22:36+00:00",
-          "glow_concept": "painted door symbols traced in light",
-          "difference_from_source": 0.7876,
-          "glow_score": 0.0539,
-          "art_hash": "1c3f5e78aede2a1c"
-        },
         "LIT_2": {
           "sprite": "wayside_shrines/wayside_shrine_013/lit_2/sprite.webp",
           "pixellab_object_id": "d477d3a5-d3aa-4427-b2d7-a00cf99d254f",
@@ -56432,20 +56375,21 @@
           "glow_score": 0.1047,
           "art_hash": "6597fb80ff20ff01"
         },
+        "LIT_3": {
+          "sprite": "wayside_shrines/wayside_shrine_013/lit_3/sprite.webp",
+          "pixellab_object_id": "303f2c6a-b057-4ab6-92c1-8e59c21ff794",
+          "generated_at": "2026-08-17T12:22:46+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5569,
+          "glow_score": 0.0039,
+          "relit_from": "NOT_LIT_4",
+          "art_hash": "32d31a42e3066de8"
+        },
         "NOT_LIT_1": {
           "sprite": "wayside_shrines/wayside_shrine_013/sprite.webp",
           "pixellab_object_id": "13e50a0b-70f9-488f-a710-6a02d5963a91",
           "generated_at": "2026-08-13T21:41:45+00:00",
           "art_hash": "8616f6b806f8d512"
-        },
-        "NOT_LIT_2": {
-          "sprite": "wayside_shrines/wayside_shrine_013/not_lit_2/sprite.webp",
-          "pixellab_object_id": "cfa10f7f-4870-4562-924c-5783cd3f7fe9",
-          "generated_at": "2026-08-17T12:21:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8962,
-          "glow_score": 0.0,
-          "art_hash": "e262df2354fe2894"
         },
         "NOT_LIT_3": {
           "sprite": "wayside_shrines/wayside_shrine_013/not_lit_3/sprite.webp",
@@ -56455,15 +56399,6 @@
           "difference_from_source": 0.4064,
           "glow_score": 0.0062,
           "art_hash": "c6f509c214770507"
-        },
-        "NOT_LIT_4": {
-          "sprite": "wayside_shrines/wayside_shrine_013/not_lit_4/sprite.webp",
-          "pixellab_object_id": "303f2c6a-b057-4ab6-92c1-8e59c21ff794",
-          "generated_at": "2026-08-17T12:22:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5569,
-          "glow_score": 0.0039,
-          "art_hash": "32d31a42e3066de8"
         }
       },
       "animations": []
@@ -56964,85 +56899,6 @@
           "difference_from_source": 0.7489,
           "glow_score": 0.0,
           "art_hash": "245b702d4ae98b7f"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "waystone_012",
-      "rel": "waystones/waystone_012",
-      "name": "White quartz-veined stone 012",
-      "category": "waystones",
-      "lights": null,
-      "description": "a rough upright standing stone planted in the ground, weathered granite, worn carved spirals and rune-like symbols, moss at its base, white quartz-veined stone, roughly six feet tall, human height, self-emissive at night, softly radiating light: cap of luminous blue moss",
-      "view": "low top-down",
-      "size": 64,
-      "placement": {
-        "world_height_m": 1.49,
-        "world_px_height": 56,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T21:49:40+00:00",
-      "pixellab_object_id": "868180a7-e9d1-4ab0-864d-56081952ffdc",
-      "sprite": "waystones/waystone_012/sprite.webp",
-      "art_hash": "9a7cb3ac078a09e0",
-      "type": "TOWN",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "waystones/waystone_012/sprite.webp",
-          "pixellab_object_id": "868180a7-e9d1-4ab0-864d-56081952ffdc",
-          "generated_at": "2026-08-13T21:49:40+00:00",
-          "art_hash": "9a7cb3ac078a09e0"
-        },
-        "LIT_2": {
-          "sprite": "waystones/waystone_012/lit_2/sprite.webp",
-          "pixellab_object_id": "234de9c2-4a48-45f9-a7f9-da118756b14a",
-          "generated_at": "2026-08-17T12:33:12+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7223,
-          "glow_score": 0.0521,
-          "art_hash": "9720b9ef79a7c30e"
-        },
-        "LIT_3": {
-          "sprite": "waystones/waystone_012/lit_3/sprite.webp",
-          "pixellab_object_id": "a0377bd8-64cd-469c-9651-d0e833e8ac53",
-          "generated_at": "2026-08-17T12:33:13+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8382,
-          "glow_score": 0.1315,
-          "art_hash": "036db33c3f3a8f01"
-        },
-        "LIT_4": {
-          "sprite": "waystones/waystone_012/lit_4/sprite.webp",
-          "pixellab_object_id": "44fb7494-d67c-411e-8823-9cf59a865d2c",
-          "generated_at": "2026-08-17T12:33:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6171,
-          "glow_score": 0.0499,
-          "art_hash": "d2bc6f7ff25b5fcd"
-        },
-        "NOT_LIT_1": {
-          "sprite": "waystones/waystone_012/not_lit_1/sprite.webp",
-          "pixellab_object_id": "fa59768c-01ab-4d63-9c3a-5a7b783b356d",
-          "generated_at": "2026-08-17T12:33:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9022,
-          "glow_score": 0.0,
-          "art_hash": "ce5e73cba079004c"
-        },
-        "NOT_LIT_2": {
-          "sprite": "waystones/waystone_012/not_lit_2/sprite.webp",
-          "pixellab_object_id": "bf152a6c-7213-41c2-a0e3-44105ef12f05",
-          "generated_at": "2026-08-17T12:34:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7071,
-          "glow_score": 0.0,
-          "art_hash": "5a3743d619738640"
         }
       },
       "animations": []
@@ -57740,15 +57596,6 @@
           "glow_score": 0.0486,
           "art_hash": "ac27d8d494a8a22a"
         },
-        "LIT_3": {
-          "sprite": "wells/well_008/lit_3/sprite.webp",
-          "pixellab_object_id": "9b9c3428-34f5-45c1-8e88-e1992dc3c3ab",
-          "generated_at": "2026-08-17T12:49:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6547,
-          "glow_score": 0.0,
-          "art_hash": "8929cb15adcee7c0"
-        },
         "LIT_4": {
           "sprite": "wells/well_008/lit_4/sprite.webp",
           "pixellab_object_id": "de2beb26-fe0d-4c19-93d9-c48dbec7c52a",
@@ -57766,15 +57613,6 @@
           "difference_from_source": 0.7956,
           "glow_score": 0.0,
           "art_hash": "6d6b357dcd740bb5"
-        },
-        "NOT_LIT_2": {
-          "sprite": "wells/well_008/not_lit_2/sprite.webp",
-          "pixellab_object_id": "7efc8131-66cd-495b-9c25-1451c6f3c619",
-          "generated_at": "2026-08-17T12:52:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8834,
-          "glow_score": 0.0,
-          "art_hash": "34f3cea00304a176"
         }
       },
       "animations": []

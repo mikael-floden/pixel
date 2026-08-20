@@ -31,11 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:50:10+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "lantern_posts/lantern_post_008/sprite.webp",
-      "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
-      "generated_at": "2026-08-13T21:50:10+00:00"
-    },
     "LIT_2": {
       "sprite": "lantern_posts/lantern_post_008/lit_2/sprite.webp",
       "pixellab_object_id": "9cc16ac8-8415-4b17-968f-6a74ccf623e5",
@@ -75,6 +70,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8217,
       "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "lantern_posts/lantern_post_008/sprite.webp",
+      "pixellab_object_id": "3758825c-8479-475c-8197-d0850582f8dd",
+      "generated_at": "2026-08-13T21:50:10+00:00",
+      "relit_from": "LIT_1"
     }
   }
 }

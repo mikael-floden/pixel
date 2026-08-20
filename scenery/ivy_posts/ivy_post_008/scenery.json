@@ -31,11 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T21:45:39+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "ivy_posts/ivy_post_008/sprite.webp",
-      "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
-      "generated_at": "2026-08-13T21:45:39+00:00"
-    },
     "LIT_2": {
       "sprite": "ivy_posts/ivy_post_008/lit_2/sprite.webp",
       "pixellab_object_id": "c4f04de8-fc8d-4b96-ad14-11e755834362",
@@ -52,22 +47,6 @@
       "difference_from_source": 0.2374,
       "glow_score": 0.0352
     },
-    "LIT_4": {
-      "sprite": "ivy_posts/ivy_post_008/lit_4/sprite.webp",
-      "pixellab_object_id": "764efb2a-cffe-41c8-a0cd-34e10baece6f",
-      "generated_at": "2026-08-16T17:09:51+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7851,
-      "glow_score": 0.0203
-    },
-    "NOT_LIT_1": {
-      "sprite": "ivy_posts/ivy_post_008/not_lit_1/sprite.webp",
-      "pixellab_object_id": "91795302-5e40-47eb-9d0a-e0cad3ac5f72",
-      "generated_at": "2026-08-16T17:09:39+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.3274,
-      "glow_score": 0.0023
-    },
     "NOT_LIT_2": {
       "sprite": "ivy_posts/ivy_post_008/not_lit_2/sprite.webp",
       "pixellab_object_id": "e4185139-895e-4b05-b849-da26d728a1f1",
@@ -75,6 +54,12 @@
       "glow_concept": null,
       "difference_from_source": 0.2224,
       "glow_score": 0.0093
+    },
+    "NOT_LIT_3": {
+      "sprite": "ivy_posts/ivy_post_008/sprite.webp",
+      "pixellab_object_id": "6a6dc51a-ae97-4015-a5c5-d1b5368f37dd",
+      "generated_at": "2026-08-13T21:45:39+00:00",
+      "relit_from": "LIT_1"
     }
   }
 }
