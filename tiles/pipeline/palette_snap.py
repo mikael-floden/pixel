@@ -525,9 +525,11 @@ TEXTURED_TOP_SPREAD = 26.0
 # (see _chroma_dist), not RGB — measured across 182 cells the genuinely-one-material pairs
 # (light_soil/light_beach, paving_stone/grey_stone, grey_stone/snow) sit at 23-27 while the
 # median cell separates by 135.
-MIN_SPLIT_SEPARATION = 25.0
-# The same floor for a split the RGB metric won, in RGB units (the old, measured value).
-MIN_SPLIT_SEPARATION_RGB = 40.0
+# Whitening: an axis may never be weighted harder than 1/WHITEN_STD_FLOOR — a perfectly
+# flat wall must not turn a 2-unit difference into a chasm.
+WHITEN_STD_FLOOR = 8.0
+# Clusters closer than this many wall-noise units are one material split by noise.
+MIN_SPLIT_SIGMA = 2.5
 
 
 def _chroma_dist(px, target):
@@ -585,71 +587,92 @@ def _split_wall(a, reg, wall_all):
         return wall_all, np.zeros(wall_all.shape, bool)
     seed_top = np.median(rgb[reg["top"]], 0)
 
-    # TWO METRICS, CHOSEN BY THE SEEDS. Neither distance is right for every pair of
-    # materials, and each has already shipped a visible bug on the pair it is wrong for:
+    # ONE METRIC, WHITENED BY THE WALL'S OWN NOISE. Three attempts preceded this and
+    # each shipped a visible bug on the pair it was wrong for:
     #
-    #   RGB is dominated by brightness, so it handed 81.7% of a light-grey rock wall to
-    #   teal water — those materials differ in HUE and RGB barely looks at it.
+    #   RGB is dominated by brightness: 81.7% of a light-grey rock wall handed to teal
+    #   water (they differ in HUE; RGB barely looks at it).
     #
-    #   CHROMA damps brightness (that is what fixed the rock), so on dark_mud over
-    #   light_beach — same hue family, separated almost purely by VALUE — it handed 172
-    #   raw-dark mud-overhang pixels to the beach cluster, and substitute() repainted
-    #   them bright: "the top of the right wall is bright as if you see it as
-    #   light_beach, but it's part of the dark_muds overhang." The trap is specific:
-    #   the mud TOP face generates desaturated (sat 22) while the mud DRIPS on the wall
-    #   are saturated (sat 65), so in chroma the drips sit nearer the beach than their
-    #   own material. Saturation betrayed the split, not hue.
+    #   CHROMA damps brightness by a fixed 0.35: on dark_mud over light_beach — same hue
+    #   family, separated almost purely by VALUE — it repainted the mud overhang bright
+    #   beach ("the top of the right wall is bright as if you see it as light_beach, but
+    #   it's part of the dark_muds overhang").
     #
-    # The choice is made from the SEEDS — the top face's own colour against the wall's
-    # median — and only from them. A first attempt let the two metrics compete on how
-    # well-separated their resulting clusters were, and RGB promptly won contests it had
-    # no business winning by splitting a single material's lit face from its shadowed
-    # face: cleanly separated clusters, one material, 65% of a mud wall repainted black.
-    # Cluster quality cannot tell a material split from a lighting split; the seeds can,
-    # because lighting cannot move the wall's median off its own material.
+    #   PICKING between them from the seeds fixed mud/beach and broke ice over
+    #   paving_stone the same day ("You improved it, but this particular one got worse"):
+    #   the seeds differ by 100 in RGB, so the rule chose brightness — but PAVING'S OWN
+    #   BRIGHTNESS SPREAD is 42, lighting and texture, so nearness-in-brightness to the
+    #   pale ice seed swept lit grey pixels into the ice cluster and painted them cyan.
     #
-    # RGB is used only when the seeds are far apart in RGB (a real value gap, >= 60) AND
-    # that gap dwarfs their chroma separation (>= 2x) — i.e. brightness is demonstrably
-    # the discriminating axis, as on mud/beach (126 vs 31). Everything else keeps
-    # chroma, so every tile the chroma metric already handles is untouched.
-    def d_rgb(q, t):
-        return np.linalg.norm(q - np.asarray(t, float), axis=1)
-
-    def chroma_only(t):
-        hsv = _rgb2hsv(np.asarray(t, float).reshape(-1, 3))
+    # The lesson of all three: no fixed weighting of [hue, saturation, value] is right,
+    # because which axis is RELIABLE depends on the wall in front of you. So weight each
+    # axis by the reciprocal of the wall cluster's own spread on it, re-estimated as the
+    # cluster converges. A wall with wild lighting discounts value automatically (rock,
+    # paving); a wall that is flat and bright keeps value sharp, which is exactly where
+    # value separates mud from beach. Nothing is inferred from the art but variances,
+    # and a variance cannot pick a wrong colour — the failure mode of everything above.
+    def _feat(q):
+        # COLOURFULNESS, NOT SATURATION. HSV saturation is a ratio, so at low value a
+        # huge sat difference is a tiny pixel difference: the mud top (#45423f, sat 22)
+        # and the mud drips (#473e35, sat 65) differ by 43 in saturation and by ELEVEN
+        # in RGB — they are the same paint. Classifying on sat kept finding the drips
+        # "far" from their own material, whatever the whitening did. Scaling the chroma
+        # vector by value/255 turns it into absolute colourfulness (opponent-colour
+        # axes), where those two are 12 apart and beach is properly distant.
+        hsv = _rgb2hsv(np.asarray(q, float).reshape(-1, 3))
         ang = hsv[:, 0] * (2 * np.pi / 256.0)
-        return np.stack([hsv[:, 1] * np.cos(ang), hsv[:, 1] * np.sin(ang)], 1)[0]
+        c = hsv[:, 1] * hsv[:, 2] / 255.0
+        return np.stack([c * np.cos(ang), c * np.sin(ang), hsv[:, 2]], 1)
 
-    wmed = np.median(px, 0)
-    rs = float(np.linalg.norm(seed_top - wmed))
-    cs = float(np.linalg.norm(chroma_only(seed_top) - chroma_only(wmed)))
-    if rs >= 60.0 and rs >= 2.0 * cs:
-        dist, floor = d_rgb, MIN_SPLIT_SEPARATION_RGB
-    else:
-        dist, floor = _chroma_dist, MIN_SPLIT_SEPARATION
-
-    w = wmed
-    keep = np.ones(len(px), bool)
-    for _ in range(8):
-        keep = dist(px, w) <= dist(px, seed_top)
-        if keep.sum() < 20:            # no recognisable wall left; treat it all as wall
-            keep = np.ones(len(px), bool)
-            break
-        nw = px[keep].mean(0)
-        if np.abs(nw - w).max() < 0.5:
-            w = nw
-            break
-        w = nw
+    # THE NOISE IS ESTIMATED WHERE THE SPILL CANNOT BE. Whitening by the wall's own
+    # spread is circular if the estimate includes the overhang: on mud-over-beach the
+    # drips inflated the wall's VALUE variance, which discounted value, which is the one
+    # axis separating mud from beach — the misclassification manufactured its own
+    # justification, and the count got WORSE than the bug (339 against 172). The
+    # overhang hangs from the top edge (measured: rows 1-6 below it), so the BOTTOM
+    # HALF of each wall column is pure side material: anchors and spreads come from
+    # there. The top face plays the same role for the top material — each anchor is
+    # whitened by its own population's noise, which is just Mahalanobis distance with
+    # a diagonal covariance and a floor.
+    h_img, w_img = wall_all.shape
+    ys_all = np.arange(h_img)[:, None]
+    wy_min = np.where(wall_all, ys_all, h_img).min(0)
+    wy_max = np.where(wall_all, ys_all, -1).max(0)
+    deep = wall_all & (ys_all >= (wy_min + wy_max)[None, :] / 2.0)
+    if deep.sum() < 50:
+        deep = wall_all
+    F = _feat(px)
+    Fd = _feat(rgb[deep])
+    Ft = _feat(rgb[reg["top"]])
+    # MEDIAN AND MAD, NOT MEAN AND STD. The deep half is *usually* pure side material,
+    # but a tile with long drips (mud-over-beach #12 — the very tile in the report) has
+    # spill all the way down, and a mean/std anchor drifts toward it: 446 mud pixels
+    # handed to beach, worse than the bug. A median ignores a 40% minority and the MAD
+    # ignores it in the spread, so the anchor stays on the material even when the spill
+    # reaches deep.
+    fw = np.median(Fd, 0)
+    ft = np.median(Ft, 0)
+    sw = 1.0 / np.maximum(1.4826 * np.median(np.abs(Fd - fw), 0), WHITEN_STD_FLOOR)
+    st = 1.0 / np.maximum(1.4826 * np.median(np.abs(Ft - ft), 0), WHITEN_STD_FLOOR)
+    # THE TOP ANCHOR'S VALUE TOLERANCE IS THE WALL'S, NOT ITS OWN. The top face is flat
+    # and evenly lit, so its own value spread is tiny — but its material arrives on the
+    # wall RE-LIT: an ice drape is shaded ice. Whitening the top-distance's value axis
+    # by the top's own tiny spread made shaded ice measure "far from ice" and the drape
+    # was painted paving grey ("The tile to the right now lost it's blue on both
+    # sides!"). Chroma noise is a property of the MATERIAL, measured on the top face;
+    # value noise is a property of the LIGHTING, measured where the pixel actually is —
+    # the wall.
+    st[2] = sw[2]
+    d_w = np.linalg.norm((F - fw) * sw, axis=1)
+    d_t = np.linalg.norm((F - ft) * st, axis=1)
+    keep = d_w <= d_t
+    if keep.sum() < 20:
+        keep = np.ones(len(px), bool)
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
-        floor_ok = float(dist(px[~keep].mean(0)[None, :], px[keep].mean(0))[0]) >= floor
-
-    # The separation floor is measured in the units of the metric that WON — measuring
-    # it in the wrong space is the mistake that once discarded a correct 445-pixel
-    # black_rock overhang because the clusters were only 38.9 apart in RGB (81.4 in
-    # chroma, the space that had actually made the call).
-    if keep.sum() >= 20 and (~keep).sum() >= 20 and not floor_ok:
-        keep = np.ones(len(px), bool)
+        # In the wall's own noise units: a "spill" cluster closer than this to the wall
+        # is the wall, split by noise.
+        floor_ok = float(np.linalg.norm((F[~keep].mean(0) - fw) * sw)) >= MIN_SPLIT_SIGMA
 
     idx = np.where(wall_all)
     m_side = np.zeros(wall_all.shape, bool)
@@ -912,7 +935,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         # passed for a cell whose wall has been confirmed to BE the material asked for.
         # Tinting a three-layer tile's grey-stone wall toward green is what produced
         # colours that were in neither the art nor the palette.
-        if align_side and side_hex:
+        if side_hex:
             # ASK EACH PIXEL WHICH MATERIAL IT IS, against the two PALETTE colours.
             #
             # The maintainer's insight, and it removes the need for detection entirely:
@@ -944,7 +967,19 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # Measured on the 14 tiles the gate used to block: after this, mean wall_err 5.5,
             # worst 20.8, none over MAX_WALL_ERR.
             m_side, m_top = _split_wall(a, reg, wall_all)
-            for mask, hx in ((m_side, side_hex), (m_top, top_hex)):
+            # THE OVERHANG ALWAYS ALIGNS; THE WALL ONLY WHEN CONFIRMED. align_side (the
+            # wall_err gate) exists so a wall that may not BE the requested material is
+            # never repainted as it. But it used to gate this whole block, overhang
+            # included, and the overhang's identity is not in question — it is the top
+            # material, named by the cell and standing on the top face. On dark_mud over
+            # paving_stone every candidate fails the wall gate (wall_err 42-67 against
+            # 30), so the mud spill shipped in whatever colour the generator drew:
+            # "the overhang is a bit redish ... It's clear to me that the overhang
+            # belongs to the dark_mud. But they don't change color."
+            pairs = [(m_top, top_hex)]
+            if align_side:
+                pairs.append((m_side, side_hex))
+            for mask, hx in pairs:
                 if mask.sum() < 8:
                     continue
                 px = substitute(a, mask, hx)
