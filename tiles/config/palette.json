@@ -124,8 +124,7 @@
       "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
     },
     "black_rock__over__grey_stone": {
-      "raw_wall": true,
-      "note": "the wall ships as drawn (raw_wall) AND overhang claims stop at the lip (claim_depth): shadowed grey stones read near-black, the black anchor claimed them down the whole left face, and they came back painted rock \u2014 'somehow you make the light grey on the wall to the left super mega dark'",
+      "note": "claims stop at the lip (claim_depth) and the wall below takes the grey_stone ramp. The maintainer approved the raw wall, then relaxed it: 'It's ok if you touch them a bit. Don't we have a whole range of grey in our ref grey stone palette?' Measured on all 27 candidates: ramp vs raw is +14/+17 mean brightness per face (never darker) and guard-clean on every tile.",
       "claim_depth": 0.3
     }
   }
