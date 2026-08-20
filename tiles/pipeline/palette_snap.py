@@ -659,6 +659,13 @@ def _split_wall(a, reg, wall_all):
 RIM_MARGIN = 18.0     # a rim may be this much brighter than the brighter surface
 RIM_KEEP = 0.175      # the fraction of the excess that survives ("soften it twice as much")
 RIM_MAX_DROP = 70.0   # never darken further than this
+RIM_HUE_TOL = 28.0    # a rim already this close to the top's hue is a highlight of it
+RIM_SAT_GREY = 45.0   # below this saturation a glow has no hue identity of its own.
+                      # MUST stay under no_invention's SAT_FLOOR (50): the first value,
+                      # 60, let a sat-57 olive lip through, and a PARTIAL fade of a
+                      # pixel that does still have a hue lands on an in-between hue —
+                      # which is the definition of an invented colour (blob 14, caught
+                      # on dark_mud over slime).
 
 
 def soften_rim(out, a, reg, top_hex):
@@ -693,10 +700,37 @@ def soften_rim(out, a, reg, top_hex):
         return
     new_l = thresh + (L[hot] - thresh) * RIM_KEEP
     drop = np.minimum(L[hot] - new_l, RIM_MAX_DROP)
-    # darken along the pixel's own colour: multiplicative, so hue and saturation are
-    # untouched and only the value moves — no_invention's rule 3.
-    scale = (L[hot] - drop) / np.maximum(L[hot], 1.0)
-    px[hot] = px[hot] * scale[:, None]
+    tgt_l = L[hot] - drop
+    # FADE TOWARD THE TOP COLOUR, not down the pixel's own colour. The first version
+    # darkened each rim pixel multiplicatively — same hue, lower value — and the
+    # maintainer saw exactly what is wrong with that: "I think you have to fade it
+    # towards the top color to dim it down, feel you changed it to another color that
+    # also got it to pop (but in a different way)." A white glow darkened along its own
+    # hue becomes a grey-cyan band: still a foreign colour sitting on the edge. Blended
+    # toward the top palette colour it becomes the ground's own colour, slightly lit —
+    # which is what a pixel-art edge highlight is.
+    #
+    # Luminance is linear in the blend, so the mix that lands each pixel on its target
+    # brightness is exact: a = (L - target) / (L - L_top). L > target > L_top always
+    # holds here (target >= top luminance + RIM_MARGIN), so a is in (0, 1).
+    # ONLY GLOW-LIKE PIXELS FADE. A highlight is near-white or already the top's own
+    # hue; fading THOSE toward the top colour stays in-family. A saturated wall-hued lip
+    # (the bright green edge slime draws under a dark_mud top) is the wall's material,
+    # not the glow — fading green toward brown manufactures olive, which is precisely an
+    # invented colour, and the guard caught it doing so (blob 14 on dark_mud over
+    # slime). Those pixels are left alone: "Some tiles are worse then others. So all
+    # tiles doesn't need this fix."
+    t_rgb = _hex(top_hex).astype(float)
+    hsv_px = _rgb2hsv(px[hot])
+    t_hsv = _rgb2hsv(t_rgb[None, :])[0]
+    gap = np.abs(hsv_px[:, 0] - float(t_hsv[0]))
+    gap = np.minimum(gap, 255.0 - gap)
+    glow = (gap <= RIM_HUE_TOL) | (hsv_px[:, 1] < RIM_SAT_GREY)
+    if not glow.any():
+        return
+    a_mix = (L[hot] - tgt_l) / np.maximum(L[hot] - t_l, 1.0)
+    a_mix = (np.clip(a_mix, 0.0, 1.0) * glow)[:, None]
+    px[hot] = px[hot] * (1.0 - a_mix) + t_rgb[None, :] * a_mix
     out[:, :, :3][band] = px
 
 
