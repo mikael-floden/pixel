@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T01:10:16.690Z",
+  "updated_at": "2026-08-20T01:10:39.126Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/scarecrows/scarecrow_022#lit_2": {
@@ -107,6 +107,16 @@
       "lit": false,
       "was": "lit_2",
       "updated_at": "2026-08-20T01:10:03.078Z"
+    },
+    "scenery/graves/grave_020#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T01:10:29.559Z"
+    },
+    "scenery/graves/grave_020#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T01:10:32.524Z"
     }
   }
 }
