@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T00:14:47.973Z",
+  "updated_at": "2026-08-20T00:19:31.848Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/windows/window_116#lights_on": {
@@ -337,6 +337,46 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-20T00:14:15.595Z"
+    },
+    "scenery/braziers/brazier_014#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:15:05.655Z"
+    },
+    "scenery/carts/cart_016#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:16:03.075Z"
+    },
+    "scenery/flame_niches/flame_niche_015#not_lit_3": {
+      "lit": true,
+      "was": "not_lit_3",
+      "updated_at": "2026-08-20T00:16:57.352Z"
+    },
+    "scenery/waystones/waystone_022#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:18:03.089Z"
+    },
+    "scenery/shipwreck_prows/shipwreck_prow_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T00:18:56.902Z"
+    },
+    "scenery/shipwreck_prows/shipwreck_prow_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T00:18:59.594Z"
+    },
+    "scenery/shipwreck_prows/shipwreck_prow_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T00:19:02.874Z"
+    },
+    "scenery/shipwreck_prows/shipwreck_prow_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T00:19:05.807Z"
     }
   }
 }
