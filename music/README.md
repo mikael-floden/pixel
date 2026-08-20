@@ -1,41 +1,32 @@
 # Pixel Music — the score
 
 > *Kondo was free to write Gerudo Valley one hour and a music-box lullaby the
-> next.* — the whole creed of this domain, in one sentence (the owner's idea;
-> the words found here, 2026-07-17)
+> next.* — the creed of this domain, in one sentence (the owner's idea).
 
-Background **music** for the game in [`games2/`](../games2). One **domain** of the
-multi-domain `pixel` repo; everything lives under `music/`, owned by the
+Background **music** for the game in [`games2/`](../games2). One **domain** of
+the multi-domain `pixel` repo; everything lives under `music/`, owned by the
 **music agent**.
 
----
+## Quality standard
 
-## ⭐ Quality standard
-
-The bar is **film-score-grade game music** — *Lord of the Rings*, *Interstellar*,
-Hisaishi. Simple, beautiful, singable melodies over clear baselines; real
-orchestral color; soft dynamics that never fatigue on loop. Not stock loops, not
-chiptune, not elevator filler. Every track must earn its feeling: home, wonder,
-preparation for battle, love, grief, mystery — the brief names the feeling and
+The bar is **film-score-grade game music** — *Lord of the Rings*,
+*Interstellar*, Hisaishi: simple singable melodies over clear baselines, real
+orchestral color, soft dynamics that never fatigue on loop. Not stock loops,
+not chiptune. The brief names the feeling (home, wonder, grief, mystery…) and
 the music delivers it.
 
-**No melody is forbidden — and no style is the house style.** The standard is
-the *freedom* a great game composer takes: one score can hold a flamenco
-gallop, a fragile music-box lullaby, a five-note ocarina motif, and a
-dissonant dread-drone, and be loved for exactly that range (Ocarina of Time's
-score is the proof). Never converge on a formula — not orchestral-cozy, not
-any one sound that happened to land well. Each brief starts from the *place
-and feeling* and picks whatever instruments, scale, and idiom serve it, even
-(especially) if nothing else in the catalog sounds like it. When a place
-deserves a theme, write a theme; when it deserves near-silence and one lonely
-instrument, write that.
+**No melody is forbidden — and no style is the house style** (maintainer
+decision). Never converge on a formula, not even one that landed well: each
+brief starts from the *place and feeling* and picks whatever instruments,
+scale, and idiom serve it — a flamenco gallop, a music-box lullaby, a
+five-note motif, a dread-drone can all live in one score (Ocarina of Time is
+the proof). When a place deserves near-silence and one lonely instrument,
+write that.
 
-Engine: **ElevenLabs Music** (`music_v1`) — the strongest promptable
-text-to-music API as of 2026 — same account/key as [`sounds/`](../sounds).
-Without `ELEVENLABS_API_KEY` the loop records a `blocked` heartbeat and ships
-**nothing** (no placeholder audio, same policy as `sounds/`).
-
----
+Engine: **ElevenLabs Music** (`music_v1`), same account/key as
+[`sounds/`](../sounds). Without `ELEVENLABS_API_KEY` the loop records a
+`blocked` heartbeat and ships **nothing** — no placeholder audio (law
+inherited from the sounds v1 rejection).
 
 ## What is a track?
 
@@ -46,23 +37,22 @@ music/nangijala_cherry_valley/
   nangijala_cherry_valley.wav   the MASTER: mastered 16-bit 44.1 kHz (analysis ground truth)
   nangijala_cherry_valley.ogg   streaming copy, Opus 96 kbps (~1.7 MB) — Chrome/Firefox/Android
   nangijala_cherry_valley.m4a   streaming copy, AAC 128 kbps (~2 MB) — iOS/Safari fallback
-  metadata.json                 the full sub-second description (see below)
+  metadata.json                 the full sub-second description (below)
 ```
 
-**Phones stream the compressed copies** (`audio.compressed` in the metadata,
-`stream` in `viewer_data.json`) — never make a player wait for the 21 MB WAV.
-The WAV stays committed as the master and the source for analysis.
+**Players stream the compressed copies** (`audio.compressed` in metadata,
+`stream` in `viewer_data.json`) — never the ~21 MB WAV. The WAV stays
+committed as master and analysis source, but `music/**/*.wav` is excluded
+from the deployed game image via the root `.dockerignore` (~61 MB saved).
 
-Reserved (non-track) entries under `music/`: `README.md`, `config/`, `pipeline/`,
-`index.html`, `viewer_data.json`.
+Reserved (non-track) entries under `music/`: `README.md`, `config/`,
+`pipeline/`, `index.html`, `viewer_data.json`.
 
-## metadata.json — the sync contract (why this domain is useful)
+## metadata.json — the sync contract
 
-**The metadata is half the deliverable.** A composer-actor, the game agent, or an
-effects system must understand a track *without listening to it* — and must be
-able to sync gameplay to it at sub-second precision: flash thunder on a musical
-peak, pitch footsteps into the track's scale, fade scenes on section boundaries,
-pulse light on downbeats.
+**The metadata is half the deliverable**: the composer / game must understand
+a track *without listening* and sync gameplay to it at sub-second precision
+(thunder on a peak, footsteps pitched into key, fades on section boundaries).
 
 Schema `music.metadata/v1` (all times in **seconds**, millisecond precision):
 
@@ -76,14 +66,14 @@ Schema `music.metadata/v1` (all times in **seconds**, millisecond precision):
 | `timing.tempo` | authored vs **measured** BPM (autocorrelation) + grid anchor |
 | `events.onsets_s` (+ strengths) | every audible attack — fire discrete FX exactly on a hit |
 | `events.peaks` | the strongest hits — thunder/flash-worthy cue points |
-| `dynamics.rms_db` | 50 ms loudness curve (dBFS) — drive continuous effects (light, fog, camera sway) from musical intensity; index = `t / hop_s` |
+| `dynamics.rms_db` | 50 ms loudness curve (dBFS) — drive continuous effects from musical intensity; index = `t / hop_s` |
 | `audio.compressed[]` | the streaming copies — file, codec, bitrate, size, mime; pick by `mime` support |
-| `layers[]` | intensity layers (see below) — sibling mixes of the same theme with their own audio + metadata |
+| `layers[]` | intensity layers (below) — sibling mixes with their own audio + metadata |
 | `loop` | whether/where to loop and the recommended crossfade |
-
-Sections may carry their own `key` block when a track modulates; when absent,
-the track-level `musical.key` applies to the whole track.
 | `engine` | full prompt + composition plan (reproducibility) |
+
+Sections may carry their own `key` block when a track modulates; absent, the
+track-level `musical.key` applies throughout.
 
 ### Using it (game side)
 
@@ -91,10 +81,10 @@ the track-level `musical.key` applies to the whole track.
 const cat  = await (await fetch('/assets/music/viewer_data.json')).json();
 const t    = cat.tracks.find(t => t.id === 'nangijala_cherry_valley');
 const meta = await (await fetch('/assets/music/' + t.metadata)).json();
-// stream a compressed copy (ogg for most, m4a for Safari) — not the WAV master:
+// stream a compressed copy (ogg for most, m4a for Safari) — never the WAV:
 const src  = t.stream.ogg && new Audio('').canPlayType(t.stream.ogg.mime)
            ? t.stream.ogg.file : (t.stream.m4a?.file ?? t.file);
-const bed  = new Audio('/assets/music/' + src); bed.loop = false; bed.play();
+const bed  = new Audio('/assets/music/' + src); bed.play();
 
 // thunder on the next strong musical hit:
 const next = meta.events.peaks.find(p => p.t_s > bed.currentTime);
@@ -108,54 +98,47 @@ step.playbackRate = 2 ** (semitoneShiftToNearest(safe, step.basePitch) / 12);
 const { loop_start_s, loop_end_s, crossfade_ms } = meta.loop.recommended;
 ```
 
-`index.html` is a viewer that renders exactly this data (sections, downbeats,
-RMS curve) over an audio player — if the viewer looks synced, the game will be.
+`index.html` renders exactly this data (sections, downbeats, RMS curve) over
+a player — if the viewer looks synced, the game will be.
 
 ## Intensity layers (adaptive music)
 
 A **layer** is a sibling mix of the same track at a different intensity —
-combat adds war drums to the *same* Cherry Valley theme instead of switching
-songs. Layers are composed from the base track's **composition plan** (same
-sections, tempo, key and structure by construction) with a per-layer
-`style_delta` appended and conflicting negative styles dropped. They live in
-`music/<track>/layers/`:
+combat adds war drums to the *same* theme instead of switching songs.
+Composed from the base track's **composition plan** (same sections, tempo,
+key, structure by construction) with a per-layer `style_delta` appended and
+conflicting negative styles dropped. Files:
+`music/<track>/layers/<id>.wav/.ogg/.m4a` + `<id>.metadata.json` (own
+timing/events/dynamics analysis).
 
-```
-music/nangijala_cherry_valley/layers/
-  combat.wav / combat.ogg / combat.m4a   full sibling mix, mastered + compressed
-  combat.metadata.json                   its own timing/events/dynamics analysis
-```
-
-**Honesty note (recorded in `alignment`):** layers are *vertical remix* mixes,
-not phase-locked summable stems — generated independently, so don't sum them
-with the base. Crossfade full mixes on a downbeat of the destination mix (its
-own `timing.downbeats_s`) over ~250–500 ms; the shared tempo/key/structure
-keeps the switch musical.
+**Layers are *vertical remix* mixes, NOT phase-locked summable stems**
+(generated independently — recorded honestly in `alignment`). Never sum a
+layer with its base: crossfade full mixes on a downbeat of the destination
+mix (its own `timing.downbeats_s`) over ~250–500 ms; shared tempo/key/
+structure keeps the switch musical.
 
 **Add a layer:** append to the track's `layers` in `config/music.json`
 (`id`, `name`, `description`, `intensity`, `style_delta`, optional
 `global_delta` / `drop_negative`). The loop composes missing layers after all
-base tracks exist; each parent `metadata.json` lists its layers with files and
-mixing guidance.
+base tracks exist; each parent `metadata.json` lists its layers with mixing
+guidance.
 
 ## Pipeline (one unit = one track)
 
-1. **Brief** (`config/music.json` → `catalog[]`): feeling, narrative, key, BPM,
-   length, a rich cinematic prompt, and the authored section arc with
-   `sync_hints`.
-2. **Plan**: `POST /v1/music/plan` turns the prompt into a **composition plan**
-   — named sections with exact `duration_ms`. The plan is the ground-truth
-   timeline; we compose *from* it, so section boundaries in the metadata are
-   exact, not estimated.
+1. **Brief** (`config/music.json` → `catalog[]`): feeling, narrative, key,
+   BPM, length, a rich cinematic prompt, section arc with `sync_hints`.
+2. **Plan**: `POST /v1/music/plan` → a **composition plan** (named sections
+   with exact `duration_ms`) — the ground-truth timeline; composing *from* it
+   makes metadata section boundaries exact, not estimated.
 3. **Compose**: `POST /v1/music` from the plan, `pcm_44100` (lossless) with a
-   one-step fallback to MP3. Bytes are sniffed (WAV/MP3/raw PCM) — the API may
+   one-step MP3 fallback. Bytes are sniffed (WAV/MP3/raw PCM) — the API may
    deliver a different container than requested.
 4. **Master**: peak-normalize to −1 dBFS + 15 ms edge fades → WAV.
-5. **Analyze** (`pipeline/analyze.py`, pure numpy): RMS envelope, spectral-flux
-   onsets, autocorrelation tempo (cross-checks the authored BPM), beat grid
-   anchored to the first strong onset.
-6. **Package**: write `metadata.json`, rebuild `viewer_data.json`, heartbeat →
-   commit → push.
+5. **Analyze** (`pipeline/analyze.py`, pure numpy): RMS envelope,
+   spectral-flux onsets, autocorrelation tempo (cross-checks the authored
+   BPM), beat grid anchored to the first strong onset.
+6. **Package**: write `metadata.json`, rebuild `viewer_data.json`, heartbeat
+   → commit → push.
 
 ## Run it
 
@@ -163,38 +146,35 @@ mixing guidance.
 pip install -r ../requirements.txt
 export ELEVENLABS_API_KEY=...                    # required for real output
 
-python music/pipeline/loop.py --max-minutes 50   # bounded pass (for CI/Routine)
+python music/pipeline/loop.py --max-minutes 50   # bounded pass (CI/Routine)
 python music/pipeline/loop.py --max-units 1      # one track
 python music/pipeline/compose.py <track_id>      # (re)compose one catalog track
 python music/pipeline/analyze.py                 # analyzer self-test (offline)
 ```
 
-The loop is **fully resumable** (next unit = first catalog track without a
-`metadata.json`) and respects an AI-credit floor
-(`budget.min_ai_credits_remaining` — shared account with `sounds/`).
+Fully resumable (next unit = first catalog track without `metadata.json`);
+respects the AI-credit floor `budget.min_ai_credits_remaining` (shared
+account with `sounds/`).
 
-**Add a track:** append a brief to `config/music.json` → `catalog`. Name the
-feeling, the narrative, the key/BPM (they go into the prompt *and* the
-metadata), the section arc with per-section `sync_hints`, and references.
+**Add a track:** append a brief to `config/music.json` → `catalog`: feeling,
+narrative, key/BPM (they go into the prompt *and* the metadata), section arc
+with per-section `sync_hints`, references.
 
-⚠️ **Prompts must not name real artists, composers, or works** — the engine's
-TOS filter rejects them with a 400 (learned the hard way: "Koji Kondo's Gerudo
-Valley" killed a composition). Describe the *style* in the prompt instead;
-keep human-readable homages in the brief's `references` field, which is
-documentation only and never sent to the API.
+⚠️ **Prompts must never name real artists, composers, or works** — the
+engine's TOS filter rejects them with a 400 ("Koji Kondo's Gerudo Valley"
+killed a composition). Describe the *style*; keep homages in the brief's
+`references` field, which is documentation only and never sent to the API.
 
-### On a schedule / on demand (durable)
+**Schedule:** [`.github/workflows/music.yml`](../.github/workflows/music.yml)
+runs via **workflow_dispatch** (schedule intentionally off, like `sounds/`)
+with the `ELEVENLABS_API_KEY` Actions secret; it generates on whatever branch
+it is dispatched on and pushes back to it.
 
-[`.github/workflows/music.yml`](../.github/workflows/music.yml) runs the loop
-via **workflow_dispatch** (schedule intentionally off, like `sounds/`) using the
-`ELEVENLABS_API_KEY` Actions secret. It generates on whatever branch it is
-dispatched on and pushes back to it.
-
-## Coordinating with the other agents
+## Coordination
 
 This domain owns `music/` and writes only `coordination/music.json` (per
-[`coordination/PROTOCOL.md`](../coordination/PROTOCOL.md)). Want a track for a
-scene, a boss, a feeling? Post a request:
+[`coordination/PROTOCOL.md`](../coordination/PROTOCOL.md)). Want a track for
+a scene, boss, or feeling? Post a request:
 
 ```bash
 python coordination/board.py post <you> --to music --text "need: tense cave-exploration bed, ~2 min, loopable"
@@ -206,7 +186,6 @@ into catalog briefs.
 ## Guardrails
 
 - **Never commit secrets** — the key lives in the environment / Actions secret.
-- **No placeholder audio.** Blocked ≠ ship junk (lesson inherited from
-  `sounds/` v1 post-mortem).
-- Metadata honesty: measured values are marked measured, authored values
-  authored, estimates `approximate` — never present a guess as ground truth.
+- **No placeholder audio.** Blocked ≠ ship junk.
+- **Metadata honesty**: measured values marked measured, authored authored,
+  estimates `approximate` — never present a guess as ground truth.
