@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-05T05:16:05.758Z",
+  "updated_at": "2026-08-20T10:31:52.836Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -97,7 +97,93 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 13
+      "level": 13,
+      "shadow": {
+        "rx": 25.5,
+        "ry": 14.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.84,
+            "ay": 24
+          },
+          "idle#south": {
+            "ax": 1.17,
+            "ay": 26.69
+          },
+          "idle#south-east": {
+            "ax": -4.87,
+            "ay": 21.77
+          },
+          "idle#north-east": {
+            "ax": -1.98,
+            "ay": 22.75
+          },
+          "idle#north": {
+            "ax": -0.16,
+            "ay": 27.2
+          },
+          "idle#north-west": {
+            "ax": 1.5,
+            "ay": 24.13
+          },
+          "idle#west": {
+            "ax": 5.24,
+            "ay": 24.13
+          },
+          "idle#south-west": {
+            "ax": 3.58,
+            "ay": 21.29
+          },
+          "walk#south-west": {
+            "ax": 1.93,
+            "ay": 22.59
+          },
+          "walk#south-east": {
+            "ax": -5.19,
+            "ay": 23.29
+          },
+          "walk#north-east": {
+            "ax": -2.26,
+            "ay": 27.61
+          },
+          "angry#east": {
+            "ax": -6.01,
+            "ay": 25.87
+          },
+          "angry#west": {
+            "ax": 3.24,
+            "ay": 26.68
+          },
+          "angry#south-west": {
+            "ax": 3.28,
+            "ay": 24.49
+          },
+          "attack#east": {
+            "ax": -6.57,
+            "ay": 24.47
+          },
+          "attack#north-east": {
+            "ax": -2.89,
+            "ay": 26.06
+          },
+          "attack#north": {
+            "ax": -0.46,
+            "ay": 30.31
+          },
+          "attack#north-west": {
+            "ax": 1.26,
+            "ay": 25.96
+          },
+          "attack#south-west": {
+            "ax": 6.03,
+            "ay": 22.99
+          },
+          "die#south-west": {
+            "ax": 2.53,
+            "ay": 22.96
+          }
+        }
+      }
     },
     "crystal_lynx": {
       "max_hp": 20,
