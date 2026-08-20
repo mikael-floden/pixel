@@ -1,6 +1,12 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T02:10:19.939Z",
+  "updated_at": "2026-08-20T02:16:57.853Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
-  "overrides": {}
+  "overrides": {
+    "scenery/rusted_machines/rusted_machine_900#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T02:14:48.115Z"
+    }
+  }
 }
