@@ -36,14 +36,6 @@
       "pixellab_object_id": "1814ebf2-0b71-47f6-98c0-82be021c2e60",
       "generated_at": "2026-08-13T22:22:23+00:00"
     },
-    "LIT_2": {
-      "sprite": "cairns/cairn_016/lit_2/sprite.webp",
-      "pixellab_object_id": "b8392b83-a210-4ad7-a99f-a202ab331d06",
-      "generated_at": "2026-08-15T21:28:50+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.4035,
-      "glow_score": 0.0
-    },
     "LIT_3": {
       "sprite": "cairns/cairn_016/lit_3/sprite.webp",
       "pixellab_object_id": "97770576-0689-4ddf-ad84-9d7476f5c6cf",
@@ -75,6 +67,15 @@
       "glow_concept": null,
       "difference_from_source": 0.8354,
       "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cairns/cairn_016/not_lit_3/sprite.webp",
+      "pixellab_object_id": "b8392b83-a210-4ad7-a99f-a202ab331d06",
+      "generated_at": "2026-08-15T21:28:50+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4035,
+      "glow_score": 0.0,
+      "relit_from": "LIT_2"
     }
   }
 }

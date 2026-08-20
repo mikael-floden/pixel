@@ -31,11 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "offering_tables/offering_table_012/sprite.webp",
-      "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
-      "generated_at": "2026-08-13T23:33:54+00:00"
-    },
     "LIT_2": {
       "sprite": "offering_tables/offering_table_012/lit_2/sprite.webp",
       "pixellab_object_id": "b9d81161-345e-4d85-9569-957714620aa2",
@@ -60,21 +55,11 @@
       "difference_from_source": 0.5352,
       "glow_score": 0.3668
     },
-    "NOT_LIT_1": {
-      "sprite": "offering_tables/offering_table_012/not_lit_1/sprite.webp",
-      "pixellab_object_id": "e66d493f-184b-4c34-b939-61b100cd848e",
-      "generated_at": "2026-08-16T19:49:39+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8484,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "offering_tables/offering_table_012/not_lit_2/sprite.webp",
-      "pixellab_object_id": "78d24b19-fb6e-43ec-8a20-64301787ff4a",
-      "generated_at": "2026-08-16T19:49:59+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8188,
-      "glow_score": 0.0
+    "NOT_LIT_3": {
+      "sprite": "offering_tables/offering_table_012/sprite.webp",
+      "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
+      "generated_at": "2026-08-13T23:33:54+00:00",
+      "relit_from": "LIT_1"
     }
   }
 }

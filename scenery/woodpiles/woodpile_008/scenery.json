@@ -31,50 +31,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "woodpiles/woodpile_008/sprite.webp",
       "pixellab_object_id": "5dd55055-68b8-4ed1-9249-3d261a8c13dc",
-      "generated_at": "2026-08-13T22:57:09+00:00"
+      "generated_at": "2026-08-13T22:57:09+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "woodpiles/woodpile_008/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "woodpiles/woodpile_008/not_lit_4/sprite.webp",
       "pixellab_object_id": "f1f859cb-7b6d-4ba8-bf6f-7f0f3971b254",
       "generated_at": "2026-08-17T13:19:44+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5857,
-      "glow_score": 0.2324
+      "glow_score": 0.2324,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "woodpiles/woodpile_008/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "woodpiles/woodpile_008/not_lit_5/sprite.webp",
       "pixellab_object_id": "acc428a6-25ca-4764-b1df-6b4a56da7dd3",
       "generated_at": "2026-08-17T13:19:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7241,
-      "glow_score": 0.1001
+      "glow_score": 0.1001,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "woodpiles/woodpile_008/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "woodpiles/woodpile_008/not_lit_6/sprite.webp",
       "pixellab_object_id": "e3a1639f-0618-4766-a65c-db68429dcb5f",
       "generated_at": "2026-08-17T13:20:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.73,
-      "glow_score": 0.1596
-    },
-    "NOT_LIT_1": {
-      "sprite": "woodpiles/woodpile_008/not_lit_1/sprite.webp",
-      "pixellab_object_id": "6cdf4493-9947-4bd1-80c2-f892ecd332d3",
-      "generated_at": "2026-08-17T13:20:48+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8804,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "woodpiles/woodpile_008/not_lit_2/sprite.webp",
-      "pixellab_object_id": "df2a9a8f-3df9-473b-abf4-9fb4b6b44874",
-      "generated_at": "2026-08-17T13:20:04+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8171,
-      "glow_score": 0.0
+      "glow_score": 0.1596,
+      "relit_from": "LIT_4"
     }
   }
 }

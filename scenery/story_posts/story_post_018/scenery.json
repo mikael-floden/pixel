@@ -36,45 +36,32 @@
       "pixellab_object_id": "e70c6f1f-feaf-4ab5-a9d7-26f4fdce1b9c",
       "generated_at": "2026-08-13T23:33:23+00:00"
     },
-    "LIT_2": {
-      "sprite": "story_posts/story_post_018/lit_2/sprite.webp",
+    "NOT_LIT_3": {
+      "sprite": "story_posts/story_post_018/not_lit_3/sprite.webp",
       "pixellab_object_id": "6cc840f0-ee5c-4cc8-84cb-5ca4fb86dede",
       "generated_at": "2026-08-16T22:33:03+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7024,
-      "glow_score": 0.0367
+      "glow_score": 0.0367,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "story_posts/story_post_018/lit_3/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "story_posts/story_post_018/not_lit_4/sprite.webp",
       "pixellab_object_id": "afe07f7d-7150-43de-9e94-059d64d4bee9",
       "generated_at": "2026-08-16T22:33:03+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5683,
-      "glow_score": 0.0103
+      "glow_score": 0.0103,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "story_posts/story_post_018/lit_4/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "story_posts/story_post_018/not_lit_5/sprite.webp",
       "pixellab_object_id": "878d5eb6-6612-4e8b-950a-64e0464dbbae",
       "generated_at": "2026-08-16T22:33:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6867,
-      "glow_score": 0.0678
-    },
-    "NOT_LIT_1": {
-      "sprite": "story_posts/story_post_018/not_lit_1/sprite.webp",
-      "pixellab_object_id": "9288ce4d-21d2-4e94-a406-0e7636d38528",
-      "generated_at": "2026-08-16T22:33:24+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.869,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "story_posts/story_post_018/not_lit_2/sprite.webp",
-      "pixellab_object_id": "eab7dcbd-1759-4a48-b2c8-c01d8d61a892",
-      "generated_at": "2026-08-16T22:34:43+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8128,
-      "glow_score": 0.0
+      "glow_score": 0.0678,
+      "relit_from": "LIT_4"
     }
   }
 }

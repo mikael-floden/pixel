@@ -31,50 +31,20 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "streetlights/streetlight_011/lit_1/sprite.webp",
-      "pixellab_object_id": "8427a00d-4a3f-4d65-813c-fa34c3893d58",
-      "generated_at": "2026-08-16T23:07:00+00:00",
-      "glow_concept": "a low guttering flame nearly out",
-      "difference_from_source": 0.7284,
-      "glow_score": 0.1442
-    },
-    "LIT_2": {
-      "sprite": "streetlights/streetlight_011/lit_2/sprite.webp",
-      "pixellab_object_id": "e5bf779b-72c9-4e11-b55c-60d3571b244b",
-      "generated_at": "2026-08-16T22:43:48+00:00",
-      "glow_concept": "flame with a curl of smoke rising",
-      "difference_from_source": 0.2731,
-      "glow_score": 0.1303
-    },
-    "NOT_LIT_1": {
+    "LIT_3": {
       "sprite": "streetlights/streetlight_011/sprite.webp",
       "pixellab_object_id": "43987415-b040-4400-85f0-65a334edfa3c",
-      "generated_at": "2026-08-13T23:17:57+00:00"
+      "generated_at": "2026-08-13T23:17:57+00:00",
+      "relit_from": "NOT_LIT_1"
     },
-    "NOT_LIT_2": {
-      "sprite": "streetlights/streetlight_011/not_lit_2/sprite.webp",
-      "pixellab_object_id": "0c2200df-3e1c-43f5-9615-91e845f7415e",
-      "generated_at": "2026-08-16T22:38:43+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8547,
-      "glow_score": 0.0833
-    },
-    "NOT_LIT_3": {
-      "sprite": "streetlights/streetlight_011/not_lit_3/sprite.webp",
+    "LIT_4": {
+      "sprite": "streetlights/streetlight_011/lit_4/sprite.webp",
       "pixellab_object_id": "6d997dad-eb57-4f36-a63f-d97fa53f7135",
       "generated_at": "2026-08-16T22:40:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3758,
-      "glow_score": 0.0871
-    },
-    "NOT_LIT_4": {
-      "sprite": "streetlights/streetlight_011/not_lit_4/sprite.webp",
-      "pixellab_object_id": "02fc6417-e868-40c6-b59d-b77e5603bc45",
-      "generated_at": "2026-08-16T22:39:55+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5279,
-      "glow_score": 0.0485
+      "glow_score": 0.0871,
+      "relit_from": "NOT_LIT_3"
     }
   }
 }
