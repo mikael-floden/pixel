@@ -193,7 +193,8 @@
     },
     "brown_paving_stone__over__grey_paving_stone": {
       "no_claims": true,
-      "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched.",
+      "side_ramp_abs": false
     },
     "grey_paving_stone__over__brown_paving_stone": {
       "no_claims": true,
@@ -391,6 +392,30 @@
     "snow__over__light_beach": {
       "claim_depth": 0.3,
       "note": "snow claims ran down the sand ('Snow over light beach has a lot of snow of the right sand beach wall'). Claims stop at the lip \u2014 the brim the art draws stays, the flood goes. This pair only."
+    },
+    "black_rock__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "dark_mud__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "deep_water__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "grass__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "parquet_floor__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "water__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
     }
   }
 }
