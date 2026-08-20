@@ -438,6 +438,64 @@ games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 
+## The tiles with no star — his review inbox
+
+Maintainer 2026-08-20: *"I have now reviewed all tiles in the new /tiles and
+given 1 star to every tile that doesn't have an issue. The tiles-agent have
+fixed everything I rejected, so I need to be able to filter on tiles that
+doesn't have any stars … Hmm that ofc makes NO-STAR a filter and not a sorting.
+Make it a filter."*
+
+**A star is the mark of having looked.** He rated the whole matrix once; the
+agent regenerated what he rejected; the replacements arrive carrying no rating
+at all. So "no star" is precisely "new since my last pass", and this is his
+inbox — not a quality signal.
+
+He talked himself out of a sort mid-message and he was right: with ~1,700 tiles
+a sort still makes him scroll past the settled ones, and ‹ › would still walk
+into them. A filter *removes* them.
+
+**It cascades through all three levels**, because the levels are one question
+asked at three grains:
+
+| level | what the filter keeps |
+| --- | --- |
+| `#/world` | ground types holding at least one unstarred tile |
+| `#/world/<top>` | that type's sets holding at least one |
+| `#/world/<top>/<side>` | only the unstarred tiles themselves |
+
+**‹ › walks the whole inbox, across ground types.** That is the part that makes
+it a work queue rather than a per-type chore: `unratedRoute()` lists every set
+still holding an unstarred tile, in section order, and the pager addresses them
+as `<top>/<side>` — which is already the pair url, so no routing changes. The
+count reads `3 / 27` against the INBOX, not against the type.
+
+**Which means every headline has to name itself** (his note: *"I will jump from
+one tile group to another and the tile group headline has to be improved to
+mention 'x over y', not only X as we have today"*). Under the filter the type
+page's cards stop saying `over black rock` — the shorthand that only works
+while you are standing inside one type — and say `Black Rock over black rock`
+in full; the set page's crumb points at **World** rather than the type it
+happens to sit in; and the pager's ›-title names the set it will land on plus
+how many tiles are waiting there.
+
+**A star removes its tile on the spot.** `starsWidget` gained an `onStars`
+hook for it — deliberately separate from the verdict's `onchange`, and only
+wired while the filter is on, because repainting 35 canvas previews on every
+star press is a stutter for no gain when nothing is being hidden. When the last
+tile of a set is starred the page re-routes (keeping scroll), because
+"finished" is a fact the header carries — the `all starred` pill and the
+"press › for the next one" line — which a cards-only repaint cannot reach. The
+set stays open rather than vanishing under him.
+
+Gate: `wiki/tools/check-stars.mjs` builds his actual situation — star every
+tile in the section, then un-star a handful across two ground types — and holds
+the contract: that it is a FILTER (a settled type is *gone*, not sorted to the
+bottom), that it cascades to all three levels, that ‹ › crosses into a
+different ground type and every headline it lands on says "x over y", that a
+star removes its tile without moving him, that finishing a set says so, that
+the choice survives navigation, and that a player never sees the control.
+
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed

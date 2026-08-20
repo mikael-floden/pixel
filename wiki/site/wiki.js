@@ -509,7 +509,12 @@ function updateSavebar() {
 
 // Every feedback widget has two faces: interactive for the signed-in admin,
 // a quiet read-only badge (or nothing) for players.
-function starsWidget(domain, id) {
+/** `onStars` fires after a rating is written — the World's inbox filter needs
+ *  it, because a tile that has just been starred must LEAVE the list it is
+ *  standing in (and nothing else on the page can know that happened). Kept
+ *  separate from the verdict's `onchange` so a star never triggers work on the
+ *  pages that only care about approve/reject. */
+function starsWidget(domain, id, onStars) {
   if (!state.admin) {
     const val = fb(domain, id).rating ?? 0;
     return val ? h("span", { class: "stars ro", "aria-label": `${val} stars` }, "★".repeat(val)) : h("span");
@@ -520,7 +525,7 @@ function starsWidget(domain, id) {
     wrap.replaceChildren(...[1, 2, 3, 4, 5].map((n) =>
       h("button", {
         class: n <= val ? "lit" : "", title: `${n} star${n > 1 ? "s" : ""}`,
-        onclick: (e) => { e.preventDefault(); e.stopPropagation(); setFb(domain, id, { rating: fb(domain, id).rating === n ? null : n }); render(); },
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); setFb(domain, id, { rating: fb(domain, id).rating === n ? null : n }); render(); onStars?.(); },
       }, n <= val ? "★" : "☆")));
   };
   render();
@@ -580,7 +585,7 @@ const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir
   `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
-    starsWidget(domain, id),
+    starsWidget(domain, id, opts.onStars),
     verdictWidget(domain, id, opts),
     opts.note === false ? null : noteWidget(domain, id));
 }
@@ -3630,6 +3635,56 @@ const WORLD_FILTERS = {
   redo: { label: "redo", title: "Every tile in the set rejected" },
 };
 const WORLD_FILTER_KEY = "wiki-world-filter";
+/* ------------------------------------------------ THE TILES WITH NO STAR
+ * Maintainer 2026-08-20: "I have now reviewed all tiles in the new /tiles and
+ * given 1 star to every tile that doesn't have an issue. The tiles-agent have
+ * fixed everything I rejected, so I need to be able to filter on tiles that
+ * doesn't have any stars ... If at least one tile inside a tiletype has null
+ * stars, that tile group is visible and not filtered out. If I click on that
+ * tile group I only see tiles with null stars. If I click on a tile 'next next
+ * next' will iterate all tiles with null stars."
+ *
+ * A STAR IS THE MARK OF HAVING LOOKED. He rated the whole matrix once, the
+ * agent regenerated what he rejected, and the replacements arrive carrying no
+ * rating at all — so "no star" is exactly "new since my last pass", and this
+ * filter is his inbox. It is deliberately a FILTER and not a sort (his own
+ * correction mid-message): with 1,700 tiles a sort still makes him scroll past
+ * the settled ones, and ‹ › would still walk into them.
+ *
+ * IT CASCADES THROUGH ALL THREE LEVELS, because the levels are one question
+ * asked at three grains:
+ *   overview   → ground types holding at least one unrated tile
+ *   type page  → that type's pairs holding at least one unrated tile
+ *   pair page  → only the unrated tiles, and ‹ › walks EVERY pair that has
+ *                any — across types, which is what makes it an inbox rather
+ *                than a per-type chore.
+ */
+const WORLD_STAR_KEY = "wiki-world-stars";
+const WORLD_STARS = {
+  all: { label: "all", title: "Every tile, rated or not" },
+  unrated: { label: "no stars", title: "Only tiles you have not starred — what the agent has regenerated since your last pass" },
+};
+const starFilter = () => {
+  try { const v = localStorage.getItem(WORLD_STAR_KEY); return WORLD_STARS[v] ? v : "all"; }
+  catch { return "all"; }
+};
+const tileUnrated = (cand) => !fb("tiles", cand.key).rating;
+/** How many of a pair's tiles carry no star. */
+const pairUnrated = (cell) => (cell.candidates ?? []).filter(tileUnrated).length;
+/** Every pair holding an unrated tile, across ALL types, in the order the
+ *  section lists them (type name, then pair name) — the ‹ › route when the
+ *  filter is on. `keep` is the pair being viewed: it stays in the list even
+ *  once he has starred its last tile, or the page he is standing on would fall
+ *  out from under the pager mid-review. */
+function unratedRoute(keep = null) {
+  const out = [];
+  for (const t of worldTypes()) {
+    for (const c of t.pairs) {
+      if (pairUnrated(c) || (keep && c.id === keep.id)) out.push(c);
+    }
+  }
+  return out;
+}
 /* SEE THE TILE BEFORE THE POSTPROCESS TOUCHED IT (maintainer 2026-08-17: "a
  * button/switch to view a tile before it was post processed. I think the
  * tiles-agent has prepared for this feature").
@@ -3770,7 +3825,12 @@ function viewWorld() {
   // the page still on every visit after the first.
   refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const all = worldCells();
-  const types = worldTypes().filter((t) => matches(state.query, t.id, t.name));
+  const stars = state.admin ? starFilter() : "all";
+  const allTypes = worldTypes().filter((t) => matches(state.query, t.id, t.name));
+  // Types holding at least one tile he has not starred.
+  const inboxTypes = allTypes.filter((t) => t.pairs.some((c) => pairUnrated(c)));
+  const types = stars === "unrated" ? inboxTypes : allTypes;
+  const unratedTiles = allTypes.reduce((n, t) => n + t.pairs.reduce((m, c) => m + pairUnrated(c), 0), 0);
   return h("div", {},
     sectionHead("world"),
     h("p", { class: "muted" }, state.admin
@@ -3787,6 +3847,17 @@ function viewWorld() {
     state.admin ? h("p", { class: "muted" },
       `${types.length} ground types · ${all.length} pairs · ${state.data.counts?.world_candidates ?? 0} candidates`) : null,
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
+    // HIS INBOX, at the top of the section that owns it. The counts are on the
+    // control itself: "no stars 137" is the size of the job, and it going to 0
+    // is what finishing looks like.
+    state.admin ? sortBar(WORLD_STAR_KEY, [
+      ["all", `all ${allTypes.length}`, WORLD_STARS.all.title],
+      ["unrated", `no stars ${inboxTypes.length}`, WORLD_STARS.unrated.title],
+    ], stars, () => route()) : null,
+    state.admin && stars === "unrated" ? h("p", { class: "muted" },
+      unratedTiles
+        ? `${unratedTiles} tile${unratedTiles === 1 ? "" : "s"} without a star, in ${inboxTypes.length} ground type${inboxTypes.length === 1 ? "" : "s"}. Open one and ‹ › walks every set that has any — across ground types.`
+        : "Every tile has a star. Nothing left to review.") : null,
     types.length ? h("div", { class: "grid" }, ...types.map((t) =>
       h("a", { class: "card", href: `#/world/${t.id}` },
         t.face ? worldArt(t.face, t.name) : h("div", { class: "thumb checker" }),
@@ -3797,9 +3868,16 @@ function viewWorld() {
           // this ground can sit on top of.
           : `over ${t.pairs.length} ground${t.pairs.length === 1 ? "" : "s"}`),
         h("div", { class: "card-badges" },
-          state.admin && t.open ? h("span", { class: "pill warn" }, `${t.open} to review`) : null,
-          state.admin && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null))))
-      : h("p", { class: "muted" }, "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
+          // Under the star filter the ONLY number that matters is how much of
+          // his inbox is in here; the review pills describe a different pass.
+          state.admin && stars === "unrated"
+            ? h("span", { class: "pill warn" }, `${t.pairs.reduce((m, c) => m + pairUnrated(c), 0)} without a star`)
+            : null,
+          state.admin && stars !== "unrated" && t.open ? h("span", { class: "pill warn" }, `${t.open} to review`) : null,
+          state.admin && stars !== "unrated" && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null))))
+      : h("p", { class: "muted" }, state.admin && stars === "unrated"
+        ? "Every tile has a star — nothing is waiting for you."
+        : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
 }
 /** One ground type: every wall it can stand on. */
 function viewWorldType(top) {
@@ -3809,11 +3887,16 @@ function viewWorldType(top) {
   if (!t) return h("p", {}, "Unknown ground type.");
   const read = (() => { try { return localStorage.getItem(WORLD_FILTER_KEY) || "all"; } catch { return "all"; } })();
   const filter = WORLD_FILTERS[read] ? read : "all";
+  const stars = state.admin ? starFilter() : "all";
   const hit = (c) => {
     const r = cellReview(c).key;
     return filter === "all" || r === filter;
   };
-  const list = state.admin ? t.pairs.filter(hit) : t.pairs;
+  // The star filter runs FIRST and outranks the review filter: it is the inbox
+  // ("only sets that still hold a tile I have not starred"), and a review-state
+  // filter on top of it answers a different question about the same sets.
+  const starred = state.admin && stars === "unrated" ? t.pairs.filter((c) => pairUnrated(c)) : t.pairs;
+  const list = state.admin ? starred.filter(hit) : t.pairs;
   return h("div", {},
     crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
     h("div", { class: "sect-head" }, h("h1", {}, t.name)),
@@ -3821,8 +3904,12 @@ function viewWorldType(top) {
       ? `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`
       : `Walking on ${t.name.toLowerCase()} — and the cliff below it where the land steps down.`),
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
+    state.admin ? sortBar(WORLD_STAR_KEY, [
+      ["all", `all ${t.pairs.length}`, WORLD_STARS.all.title],
+      ["unrated", `no stars ${t.pairs.filter((c) => pairUnrated(c)).length}`, WORLD_STARS.unrated.title],
+    ], stars, () => route()) : null,
     state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
-      const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => cellReview(c).key === id).length;
+      const n = id === "all" ? starred.length : starred.filter((c) => cellReview(c).key === id).length;
       return [id, `${f.label} ${n}`, f.title];
     }), filter, () => route()) : null,
     list.length ? h("div", { class: "grid" }, ...list.map((c) => {
@@ -3830,16 +3917,22 @@ function viewWorldType(top) {
       const v = wallVerdict(c.best);
       return h("a", { class: "card", href: `#/world/${c.top}/${c.side}` },
         worldArt(c.candidates[0], c.name),
-        // The TOP is the page you are on, so the card names the wall.
-        h("div", { class: "card-name" }, `over ${typeLabelWorld(c.side).toLowerCase()}`),
+        // The TOP is the page you are on, so the card names the wall —
+        // EXCEPT under the star filter, where ‹ › will carry him out of this
+        // type entirely and every set has to say its whole name.
+        h("div", { class: "card-name" }, stars === "unrated" ? c.name : `over ${typeLabelWorld(c.side).toLowerCase()}`),
         // How many generations exist of it is a fact about the factory, not
         // about the ground.
-        state.admin ? h("div", { class: "card-sub" }, `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"}`) : null,
+        state.admin ? h("div", { class: "card-sub" }, stars === "unrated"
+          ? `${pairUnrated(c)} of ${c.candidates.length} without a star`
+          : `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"}`) : null,
         h("div", { class: "card-badges" },
           state.admin && v ? h("span", { class: `pill ${v.cls}` }, `wall ${c.best}`) : null,
           state.admin && r.key !== "open" ? h("span", { class: `pill ${r.cls}` }, r.text) : null,
           state.admin && c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
-    })) : h("p", { class: "muted" }, "Nothing in this filter."));
+    })) : h("p", { class: "muted" }, state.admin && stars === "unrated"
+      ? "Every tile in this ground has a star."
+      : "Nothing in this filter."));
 }
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "we need to make that page where I review the
@@ -4020,6 +4113,8 @@ function viewWorldPair(top, side) {
   if (!c) return h("p", {}, "Unknown pair.");
   const r = cellReview(c);
   const t = worldMeta().tile ?? {};
+  const stars = state.admin ? starFilter() : "all";
+  const nUnrated = pairUnrated(c);
   // A peek belongs to the pair it was taken in. Keyed on the pair rather than
   // cleared on every render, because this function re-runs whenever a verdict
   // lands or the live manifest refreshes — and a peek that vanished under his
@@ -4032,13 +4127,43 @@ function viewWorldPair(top, side) {
   // one he approved, or the agent's best if he has not looked yet. Three
   // near-identical pictures with no explanation is the same confusion as the
   // numbers under them, in another form.
-  const shown = () => (state.admin ? c.candidates
-    : [c.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? c.candidates[0]].filter(Boolean));
-  const drawCards = () => cards.replaceChildren(...shown().map((cand, i) => worldCandidate(c, cand, i, drawCards)));
+  const shown = () => {
+    if (!state.admin) {
+      return [c.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? c.candidates[0]].filter(Boolean);
+    }
+    // THE STARRED ONES LEAVE AS HE STARS THEM. Recomputed inside `shown`
+    // rather than captured once, so a tile he rates drops out of the set on
+    // the same repaint that lights its star — the list shrinking IS the
+    // progress bar, and what is left is always exactly what is left to do.
+    if (stars === "unrated") return c.candidates.filter(tileUnrated);
+    return c.candidates;
+  };
+  // A star both removes its tile from the list AND can finish the whole set —
+  // and "finished" is a fact the HEADER carries (the pill, the "press ›"
+  // line), which a cards-only repaint cannot reach. So the last star in a set
+  // re-routes the page, keeping his scroll position.
+  const onStarChange = () => {
+    drawCards();
+    if (crossGroup && !pairUnrated(c)) { keepScrollY = window.scrollY; route(); }
+  };
+  const drawCards = () => cards.replaceChildren(...shown().map((cand, i) => worldCandidate(c, cand, i, drawCards, onStarChange)));
   drawCards();
+  // ‹ › WALKS THE INBOX, NOT THE TYPE, while the star filter is on: every pair
+  // that still holds an unrated tile, in section order, across ground types
+  // (maintainer: "If I click on a tile 'next next next' will iterate all tiles
+  // with null stars ... I will jump from one tile group to another").
+  const crossGroup = state.admin && stars === "unrated";
+  const route2 = crossGroup ? unratedRoute(c) : null;
   return h("div", {},
-    crumbRow(`#/world/${top}`, `← ${typeLabelWorld(top)}`, `world/${top}`,
-      siblings.map((x) => ({ id: x.side, name: x.name })), c.side),
+    crossGroup
+      ? crumbRow("#/world", `← ${label("world")}`, "world",
+        // id = "<top>/<side>": crumbRow builds `#/world/<id>`, which is exactly
+        // the pair url. Names carry the whole pair, because the next press can
+        // land in any ground type.
+        route2.map((x) => ({ id: `${x.top}/${x.side}`, name: `${x.name} — ${pairUnrated(x)} without a star` })),
+        `${c.top}/${c.side}`)
+      : crumbRow(`#/world/${top}`, `← ${typeLabelWorld(top)}`, `world/${top}`,
+        siblings.map((x) => ({ id: x.side, name: x.name })), c.side),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait-col" }, worldArt(c.candidates[0], c.name, "portrait")),
       h("div", { class: "meta" },
@@ -4046,7 +4171,11 @@ function viewWorldPair(top, side) {
         h("div", { class: "spawn-line" },
           h("span", { class: "pill" }, `walk on ${typeLabelWorld(c.top).toLowerCase()}`),
           h("span", { class: "pill" }, `wall of ${typeLabelWorld(c.side).toLowerCase()}`),
-          state.admin ? h("span", { class: `pill ${r.cls}` }, r.text) : null),
+          state.admin ? h("span", { class: `pill ${r.cls}` }, r.text) : null,
+          // Under the inbox filter, how much of THIS set is left — the number
+          // that decides whether › is the next press.
+          crossGroup ? h("span", { class: `pill ${nUnrated ? "warn" : "ok"}` },
+            nUnrated ? `${nUnrated} without a star` : "all starred") : null),
         // NO VERDICT ON THE PAIR (maintainer 2026-08-17: "you can also remove
         // the approve/reject/rate at the top of the page. The review will only
         // ever happen on the individual tiles themselves"). The pair is a
@@ -4057,16 +4186,28 @@ function viewWorldPair(top, side) {
           : `${typeLabelWorld(c.top)} you walk on, ${typeLabelWorld(c.side).toLowerCase()} in the cliff below it.`))),
     h("div", { class: "panel" },
       state.admin
-        ? h("div", { class: "panel-title" }, "Tiles in this set", h("span", { class: "pill" }, "ranked by wall score"))
+        ? h("div", { class: "panel-title" },
+          crossGroup ? "Tiles without a star" : "Tiles in this set",
+          h("span", { class: "pill" }, crossGroup ? `${nUnrated} of ${c.candidates.length}` : "ranked by wall score"))
         : h("div", { class: "panel-title" }, "How it looks"),
       state.admin ? h("div", { class: "world-viewbar" },
         h("span", { class: "muted" }, "Show"),
         sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }),
         c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
+      // The inbox switch lives here too: the page it hides tiles on is a page
+      // he must be able to un-hide them from, without walking back up.
+      state.admin ? sortBar(WORLD_STAR_KEY, [
+        ["all", `all ${c.candidates.length}`, WORLD_STARS.all.title],
+        ["unrated", `no stars ${nUnrated}`, WORLD_STARS.unrated.title],
+      ], stars, () => route()) : null,
       h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin
         ? "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."
         : "A field of it, and the corner where the land steps down."),
       cards,
+      // A set he has just finished does not vanish under him — it stays open,
+      // says so, and › is the way out.
+      crossGroup && !nUnrated ? h("p", { class: "muted" },
+        "Every tile in this set now has a star. Press › for the next set that does not.") : null,
       // How it was generated is workshop talk.
       state.admin ? h("p", { class: "muted", style: "margin:10px 0 0" },
         `Generated at ${t.size ?? 64}px, ${t.view ?? "high top-down"}${t.outline_mode ? `, outline mode “${t.outline_mode}”` : ""}.`) : null));
@@ -4087,7 +4228,7 @@ function wallModeRow(cand, onVerdict) {
   draw();
   return box;
 }
-function worldCandidate(cell, cand, i, onVerdict) {
+function worldCandidate(cell, cand, i, onVerdict, onStars) {
   const v = wallVerdict(cand.wallScore);
   const st = state.admin ? fb("tiles", cand.key).status : null;
   const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
@@ -4119,6 +4260,11 @@ function worldCandidate(cell, cand, i, onVerdict) {
     state.admin ? h("div", { class: "card-sub" },
       feedbackRow("tiles", cand.key, {
         onchange: onVerdict,
+        // Under the inbox filter this tile disappears the moment it is
+        // starred, so the whole set has to repaint; with the filter off,
+        // repainting 35 canvas previews on every star press would be a
+        // stutter for no gain — so `onStars` is only wired when it is on.
+        onStars: starFilter() === "unrated" ? (onStars ?? onVerdict) : undefined,
         reject: "✕ redo",
         rejectTitle: "Reject this generation — the agent deletes it on PixelLab and generates another",
         rejectedLabel: "to be redone",
