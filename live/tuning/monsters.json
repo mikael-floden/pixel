@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-20T10:49:58.166Z",
+  "updated_at": "2026-08-20T10:52:55.180Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -511,7 +511,65 @@
           "item": "mint_slime_globule",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 16.25,
+        "ry": 7.75,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.63,
+            "ay": 14.89
+          },
+          "attack#east": {
+            "ax": -1.98,
+            "ay": 13.89
+          },
+          "attack#south-east": {
+            "ax": 0.31,
+            "ay": 13.49
+          },
+          "attack#west": {
+            "ax": 0.9,
+            "ay": 14.32
+          },
+          "attack#south-west": {
+            "ax": -0.28,
+            "ay": 14.49
+          },
+          "die#south": {
+            "ax": 0.45,
+            "ay": 9.96
+          },
+          "die#south-east": {
+            "ax": -3.17,
+            "ay": 10.41
+          },
+          "die#east": {
+            "ax": -1.81,
+            "ay": 11.14
+          },
+          "die#north-east": {
+            "ax": -1.16,
+            "ay": 10.07
+          },
+          "die#north": {
+            "ax": 0.24,
+            "ay": 9.32
+          },
+          "die#north-west": {
+            "ax": 0.69,
+            "ay": 8.62
+          },
+          "die#west": {
+            "ax": 0.21,
+            "ay": 10.31
+          },
+          "die#south-west": {
+            "ax": 2.18,
+            "ay": 10.93
+          }
+        }
+      }
     },
     "forest_poring_2": {
       "level": 3,
