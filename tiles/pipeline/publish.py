@@ -42,6 +42,7 @@ from PIL import Image
 # yellow-green against 2.0's deep pine.
 _CFG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
+               "ramp": v.get("ramp"),
                "flat_top": v.get("flat_top", True)} for k, v in
            json.load(open(os.path.join(_CFG, "palette.json")))["types"].items()}
 
@@ -465,7 +466,9 @@ def main():
             proc = (palette_snap.snap(raw, top_hex, same_material=(top == side),
                                       wall_hex=wall_hex,
                                       side_hex=wall_hex, align_side=aligned,
-                                      flat_top=PALETTE.get(top, {}).get("flat_top", True))
+                                      flat_top=PALETTE.get(top, {}).get("flat_top", True),
+                                      top_ramp=PALETTE.get(top, {}).get("ramp"),
+                                      side_ramp=PALETTE.get(side, {}).get("ramp"))
                     if top_hex else raw)
             # THE GUARD. Every three attempts at wall alignment put a colour into the
             # art that was in neither the art nor the palette, and every one was caught
@@ -474,8 +477,10 @@ def main():
             # being right. So the invariant is enforced here instead: a tile whose
             # postprocess invented a visible patch of colour ships RAW and says so, and
             # the review never contains one. See no_invention.py.
+            _ramps = tuple((PALETTE.get(top, {}).get("ramp") or [])
+                           + (PALETTE.get(side, {}).get("ramp") or []))
             inv = (no_invention.check(raw, proc, top_hex,
-                                      extra_hex=(wall_hex,) if wall_hex else ())
+                                      extra_hex=((wall_hex,) if wall_hex else ()) + _ramps)
                    if top_hex else {})
             if inv.get("blob", 0) > no_invention.MAX_BLOB:
                 invented.append((f"tiles/{cell}/{i}", inv))

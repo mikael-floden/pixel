@@ -192,13 +192,15 @@ def sweep(review_dir, verbose=False):
     fails, n = [], 0
     for cell, c in man["cells"].items():
         side_wall = (pal.get(c.get("side")) or {}).get("wall")
+        ramps = tuple((pal.get(c.get("top")) or {}).get("ramp") or []) + \
+                tuple((pal.get(c.get("side")) or {}).get("ramp") or [])
         for e in c["candidates"]:
             top_hex = e.get("palette_top")
             if not top_hex:
                 continue
             r = check(Image.open(os.path.join(repo, e["before"])),
                       Image.open(os.path.join(repo, e["after"])), top_hex,
-                      extra_hex=(side_wall,) if side_wall else ())
+                      extra_hex=((side_wall,) if side_wall else ()) + ramps)
             n += 1
             if r.get("error") or r.get("blob", 0) > MAX_BLOB:
                 fails.append({"key": e["key"], **r})

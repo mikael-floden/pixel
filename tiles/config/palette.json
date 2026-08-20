@@ -48,7 +48,16 @@
       "top": "#514137",
       "source": "reference tile tiles/matrix/dark_mud__over__dark_mud/sheet_11_same2_11397/tile_15.png \u2014 the maintainer's chosen look for this material (recovered: the entry recorded the review SLOT 0_before.webp, which renumbers on every republish)",
       "wall": "#3b2f28",
-      "wall_n": 6
+      "wall_n": 6,
+      "ramp": [
+        "#1f1813",
+        "#302623",
+        "#44362f",
+        "#4d3b31",
+        "#5a473b",
+        "#66554b"
+      ],
+      "ramp_note": "The reference tile's own browns, dark to light \u2014 the maintainer picked it FOR the range: 'the ref has several colors of brown ... you have managed to get everything into a single brown color. I don't like that.' Substitution maps overhang and wall pixels into these stops instead of forcing one hue."
     },
     "parquet_floor": {
       "top": "#a7754b",

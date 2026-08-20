@@ -783,7 +783,7 @@ def soften_rim(out, a, reg, top_hex):
     out[:, :, :3][band] = px
 
 
-def substitute(a, mask, hex_target, spread=None):
+def substitute(a, mask, hex_target, spread=None, ramp=None):
     """Put `mask` onto a palette colour by SUBSTITUTION, keeping its relief.
 
     Hue and saturation are SET from the palette, never derived from the art, and only
@@ -799,6 +799,23 @@ def substitute(a, mask, hex_target, spread=None):
     """
     if not mask.any():
         return None
+    if ramp:
+        # A MATERIAL IS A RAMP, NOT A HEX. The maintainer nominated the dark_mud
+        # reference for its RANGE — "the ref has several colors of brown" — and single-
+        # hue substitution averaged that range away twice: once when the palette kept
+        # only the mean, once when every pixel got the mean's hue and saturation ("you
+        # have managed to get everything into a single brown color. I don't like
+        # that."). With a ramp, each pixel keeps its place in the relief and takes the
+        # reference's OWN colour for that place: shadows get the reference's shadow
+        # brown, highlights its highlight brown. Still substitution, not inference —
+        # the only thing read off the art is brightness, and every output colour is a
+        # palette colour verbatim, which also keeps no_invention's rule 1 trivially
+        # true for them.
+        stops = np.stack([_hex(h) for h in ramp]).astype(float)
+        v = _rgb2hsv(a[:, :, :3][mask])[:, 2]
+        lo, hi = np.percentile(v, 5.0), np.percentile(v, 95.0)
+        t = np.full(len(v), 0.5) if hi - lo < 6 else np.clip((v - lo) / (hi - lo), 0, 1)
+        return stops[np.round(t * (len(stops) - 1)).astype(int)]
     tgt = _rgb2hsv(_hex(hex_target)[None, :])[0]
     hsv = _rgb2hsv(a[:, :, :3][mask])
     v = hsv[:, 2]
@@ -812,7 +829,7 @@ def substitute(a, mask, hex_target, spread=None):
 
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
-         align_side=False, flat_top=True):
+         align_side=False, flat_top=True, top_ramp=None, side_ramp=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -913,7 +930,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # luminance 48.1 — within 3 of what the generator draws unaided. So the
             # wall goes to the wall colour and the top to the top colour, which is what
             # the palette was built to say.
-            px = substitute(a, m, wall_hex or top_hex)
+            px = substitute(a, m, wall_hex or top_hex, ramp=top_ramp)
             if px is not None:
                 out[:, :, :3][m] = px
     elif spill:
@@ -976,13 +993,13 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # 30), so the mud spill shipped in whatever colour the generator drew:
             # "the overhang is a bit redish ... It's clear to me that the overhang
             # belongs to the dark_mud. But they don't change color."
-            pairs = [(m_top, top_hex)]
+            pairs = [(m_top, top_hex, top_ramp)]
             if align_side:
-                pairs.append((m_side, side_hex))
-            for mask, hx in pairs:
+                pairs.append((m_side, side_hex, side_ramp))
+            for mask, hx, rmp in pairs:
                 if mask.sum() < 8:
                     continue
-                px = substitute(a, mask, hx)
+                px = substitute(a, mask, hx, ramp=rmp)
                 if px is not None:
                     out[:, :, :3][mask] = px
 
