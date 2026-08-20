@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T06:41:31.553Z",
+  "updated_at": "2026-08-20T06:45:44.927Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/cliff_vines/cliff_vine_096#lit_2": {
@@ -347,6 +347,36 @@
       "lit": false,
       "was": "lit_4",
       "updated_at": "2026-08-20T06:40:56.230Z"
+    },
+    "scenery/cliff_features/cliff_feature_010#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:42:59.130Z"
+    },
+    "scenery/cliff_features/cliff_feature_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:43:52.921Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:44:40.020Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:44:59.529Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:45:03.269Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:45:08.735Z"
     }
   }
 }
