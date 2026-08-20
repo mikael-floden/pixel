@@ -395,7 +395,8 @@
     },
     "black_rock__over__grey_paving_stone": {
       "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+      "note": "'grey paving stone looks very very wrong and dark when Black Rock is over' \u2014 the wall was not mis-shaded, it was CLAIMED: 74% of the wall band shipped near-black, where every other black_rock pair sits at 0.38-0.57 and deep water over the same paving sits at 0.15. The rock's overhang flood ran the whole face. Claims stop at the lip; the drawn overhang stays, the stones come back (74% -> 43%, in line with its siblings). This pair only.",
+      "claim_depth": 0.3
     },
     "dark_mud__over__grey_paving_stone": {
       "side_ramp_abs": false,
