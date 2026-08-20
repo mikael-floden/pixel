@@ -75,7 +75,31 @@ def _apply_verdicts():
     hits, _misses, _shifted = review.resolve()
     srcs = [e["src"] for k, v, e in hits
             if v.get("status") == "rejected" and e.get("src")]
-    return tombstones.defer_tiles(srcs) if srcs else 0
+    n = tombstones.defer_tiles(srcs) if srcs else 0
+    # A VERDICT ON A LOCKED CELL MUST ALSO SHRINK THE LOCK. The lock pins a reviewed
+    # cell's exact tile list so nothing sneaks in, and candidates() honours it over
+    # everything else — including the deferral this function just recorded. Found the
+    # hard way: the maintainer rejected 11 tiles in black_rock__over__dark_mud after
+    # that section was locked, defer_tiles() dutifully recorded them, and the next
+    # publish put all 11 straight back because the lock still named them. Removing
+    # entries is the only edit ever made here, so the locks-only-shrink invariant
+    # holds by construction. The in-memory LOCK is the copy this run publishes from,
+    # so it shrinks too, not just the file.
+    if srcs:
+        drop, shrunk = set(srcs), 0
+        for cell, allowed in LOCK.items():
+            kept = [s for s in allowed if s not in drop]
+            if len(kept) != len(allowed):
+                shrunk += len(allowed) - len(kept)
+                LOCK[cell] = kept
+        if shrunk:
+            path = os.path.join(ROOT, "review_lock.json")
+            data = json.load(open(path))
+            data["cells"] = LOCK
+            with open(path, "w") as fh:
+                json.dump(data, fh, indent=2)
+            print(f"lock shrunk by {shrunk} rejected tile(s)")
+    return n
 
 
 def _save(im, path):
