@@ -26248,9 +26248,9 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T09:59:47+00:00",
-      "pixellab_object_id": "98a78082-c211-4308-8b7b-c6dc8b5838d0",
+      "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
       "sprite": "lantern_posts/lantern_post_005/sprite.webp",
-      "art_hash": "7832cb516d2433c4",
+      "art_hash": "3db58a8420802459",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
@@ -26266,20 +26266,15 @@
           "art_hash": "6a650e8ef4cdf4e4"
         },
         "LIT_4": {
-          "sprite": "lantern_posts/lantern_post_005/lit_4/sprite.webp",
+          "sprite": "lantern_posts/lantern_post_005/sprite.webp",
           "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
           "generated_at": "2026-08-16T17:16:02+00:00",
           "glow_concept": null,
           "difference_from_source": 0.896,
           "glow_score": 0.0779,
           "relit_from": "NOT_LIT_4",
+          "replaced_anchor": "NOT_LIT_1",
           "art_hash": "3db58a8420802459"
-        },
-        "NOT_LIT_1": {
-          "sprite": "lantern_posts/lantern_post_005/sprite.webp",
-          "pixellab_object_id": "98a78082-c211-4308-8b7b-c6dc8b5838d0",
-          "generated_at": "2026-08-13T09:59:47+00:00",
-          "art_hash": "7832cb516d2433c4"
         }
       },
       "animations": []
@@ -31757,9 +31752,9 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T11:18:21+00:00",
-      "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
+      "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
-      "art_hash": "7da9997817ce728b",
+      "art_hash": "0e2bfc98082c1937",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
@@ -31773,12 +31768,6 @@
           "glow_score": 0.0691,
           "art_hash": "50f477d6c59cc3d7"
         },
-        "NOT_LIT_1": {
-          "sprite": "scarecrows/scarecrow_005/sprite.webp",
-          "pixellab_object_id": "dd6a50ab-fa4c-4a90-959f-7c7182039bac",
-          "generated_at": "2026-08-13T11:18:21+00:00",
-          "art_hash": "7da9997817ce728b"
-        },
         "NOT_LIT_3": {
           "sprite": "scarecrows/scarecrow_005/not_lit_3/sprite.webp",
           "pixellab_object_id": "91373e33-2949-49e7-bb82-3a6bde4178d6",
@@ -31789,12 +31778,13 @@
           "art_hash": "d380d8d66daf5b11"
         },
         "NOT_LIT_4": {
-          "sprite": "scarecrows/scarecrow_005/not_lit_4/sprite.webp",
+          "sprite": "scarecrows/scarecrow_005/sprite.webp",
           "pixellab_object_id": "c7ad361a-473a-4938-8415-df38179baeb6",
           "generated_at": "2026-08-16T20:35:49+00:00",
           "glow_concept": null,
           "difference_from_source": 0.7883,
           "glow_score": 0.1087,
+          "replaced_anchor": "NOT_LIT_1",
           "art_hash": "0e2bfc98082c1937"
         }
       },

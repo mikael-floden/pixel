@@ -20,7 +20,7 @@
     "character_height_m": 1.7,
     "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
   },
-  "pixellab_object_id": "98a78082-c211-4308-8b7b-c6dc8b5838d0",
+  "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
   "pixellab_directions": 8,
   "tags": [
     "SCENERY"
@@ -41,18 +41,14 @@
       "relit_from": "NOT_LIT_3"
     },
     "LIT_4": {
-      "sprite": "lantern_posts/lantern_post_005/lit_4/sprite.webp",
+      "sprite": "lantern_posts/lantern_post_005/sprite.webp",
       "pixellab_object_id": "5c90d99a-daa1-4d8f-9323-38dd860874e6",
       "generated_at": "2026-08-16T17:16:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.896,
       "glow_score": 0.0779,
-      "relit_from": "NOT_LIT_4"
-    },
-    "NOT_LIT_1": {
-      "sprite": "lantern_posts/lantern_post_005/sprite.webp",
-      "pixellab_object_id": "98a78082-c211-4308-8b7b-c6dc8b5838d0",
-      "generated_at": "2026-08-13T09:59:47+00:00"
+      "relit_from": "NOT_LIT_4",
+      "replaced_anchor": "NOT_LIT_1"
     }
   }
 }
