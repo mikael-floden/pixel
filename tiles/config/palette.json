@@ -387,8 +387,8 @@
       "note": "the wall shipped as a flat slab ('Slime over grey paving stone makes the grey paving stone texture disappear'): grey_paving's ramp_abs maps this cell's dark source walls into a single stop's basin and the in-basin relief is the texture. Relative relief instead \u2014 this pair only."
     },
     "slime__over__lava": {
-      "claim_lip": 7,
-      "note": "'lava has taken over the left slime overhang' - the lip of 3 set earlier was too shallow: the art draws a deep slime drape down both faces. Slime on the lip band 0.42-0.50 at lip 3 against 0.55 at lip 7. This pair only."
+      "claim_lip": 3,
+      "note": "lip 3, and it STAYS at 3. Raising it to 7 to chase 'lava has taken over the left slime overhang' made the tile WORSE and the maintainer named the reason exactly: 'Looks like you have destroyed the image by drawing a line and change color based on over/under. We have tried this before and of course it's not that easy. You try to simplify something that cannot be simplified.' claim_lip IS a geometric row cut - it takes the top N wall rows whatever the art draws. At 3 that reads as a thin brim following the drape; past that it reads as a horizontal line slicing the tile by row. NEVER raise this to chase drape depth: the drape needs a shape-aware claim, not a deeper cut."
     },
     "snow__over__grey_paving_stone": {
       "side_ramp_abs": false,
