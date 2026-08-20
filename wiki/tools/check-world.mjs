@@ -39,17 +39,32 @@ console.log(`manifest: ${Object.keys(MAN.cells ?? {}).length} cells | data.json:
 ok(CELLS.length > 0, `the build reads the tiles agent's review manifest (${CELLS.length} pairs)`);
 ok(CELLS.length === Object.keys(MAN.cells).length, "every cell in the manifest becomes a pair in the wiki");
 const flat = CELLS.flatMap((c) => c.candidates);
-ok(flat.every((c) => /^tiles\/[a-z0-9_]+__over__[a-z0-9_]+\/\d+$/.test(c.key)),
-  `every candidate keeps the MANIFEST's own key, so a verdict names what the agent named (${flat[0]?.key})`);
+// COMPARED AGAINST THE MANIFEST, not against a guess at its shape: this used
+// to test the key with a regex ending in `\d+`, and went red the day the
+// agent switched candidate ids from indices to hex hashes — a gate failing on
+// the AGENT's freedom to name its own things, which is exactly what "keeps the
+// manifest's own key" is supposed to protect.
+const manKeys = new Set(Object.values(MAN.cells).flatMap((c) => (c.candidates ?? []).map((x) => x.key)));
+const strayKeys = flat.filter((c) => !manKeys.has(c.key));
+ok(strayKeys.length === 0,
+  `every candidate keeps the MANIFEST's own key, so a verdict names what the agent named (${strayKeys.length ? strayKeys[0].key : flat[0]?.key})`);
 ok(flat.every((c) => c.art?.startsWith("tiles/review/")), "and points at the art the agent published");
 ok(flat.every((c) => typeof c.wallScore === "number"), "carrying the agent's measured wall score");
+// BEST FIRST — and it is the WIKI that guarantees it now. The manifest arrived
+// ranked once and stopped (2026-08-20), while the set page still numbers its
+// tiles "#1, #2, …" under a "ranked by wall score" pill, so build.mjs and the
+// live refresh both sort. This asserts the promise the PAGE makes.
 ok(CELLS.every((c) => c.candidates.every((x, i, a) => i === 0 || a[i - 1].wallScore >= x.wallScore)),
-  "in the agent's own ranked order — best first");
+  "and the wiki ranks them best first, whatever order the manifest arrives in");
 ok(!!DATA.worldMeta?.accept?.min_wall_score, `and the acceptance bar it ranks against (${DATA.worldMeta?.accept?.min_wall_score})`);
-// The score on the page must be the score in the manifest, to the decimal.
+// The score on the page must be the score in the manifest, to the decimal —
+// matched BY KEY, because the wiki reorders (best first) and an index-wise
+// comparison would only be testing that nobody sorts anything.
 const one = CELLS[0], manOne = MAN.cells[one.id];
-ok(one.candidates.every((c, i) => c.wallScore === manOne.candidates[i].wall_score),
-  `scores match the manifest exactly (${one.id}: ${one.candidates.map((c) => c.wallScore).join(", ")})`);
+const manScore = new Map((manOne.candidates ?? []).map((c) => [c.key, c.wall_score]));
+const offScore = one.candidates.filter((c) => c.wallScore !== manScore.get(c.key));
+ok(offScore.length === 0,
+  `scores match the manifest exactly, per key (${one.id}: ${one.candidates.length} tiles${offScore.length ? `, first off: ${offScore[0].key}` : ""})`);
 
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
@@ -141,7 +156,15 @@ const list = await p.evaluate(() => ({
 }));
 console.log("pairs of one type:", JSON.stringify(list));
 ok(list.art === list.cards && list.cards > 0, `every pair draws its tile (${list.art}/${list.cards})`);
-ok(list.filters.some((f) => /not reviewed/.test(f)), `with a review filter to find the work (${list.filters.join(" | ")})`);
+// ONE filter bar, and it is the one that cascades (2026-08-20): the pair-level
+// "not reviewed / partly / picked / redo" strip was removed after he filtered
+// on it, opened a set and found an unfiltered page with a pager that ignored
+// his choice. Its vocabulary lives on in the tile filter, which carries the
+// navigation with it.
+ok(list.filters.some((f) => /undecided/.test(f)) && list.filters.some((f) => /no stars/.test(f)),
+  `with the tile filter to find the work (${list.filters.join(" | ")})`);
+ok(!list.filters.some((f) => /not reviewed|partly/.test(f)),
+  "and no second lookalike bar that filters without navigating");
 
 // ------------------------------------------------------------- 3. the review
 const cell = CELLS.find((c) => c.candidates.length > 1) ?? CELLS[0];

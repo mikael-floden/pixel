@@ -2095,7 +2095,17 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
   }, label)));
   // The strip pans instead of wrapping, so the chosen chip can start off
   // screen — 8 types do not fit a phone. Bring it into view once laid out.
-  requestAnimationFrame(() => {
+  //
+  // ATTACHED FIRST, MEASURED SECOND. The row is built here and appended by the
+  // caller afterwards, so on the next frame it can still be detached — where
+  // every rect is 0 and `scrollWidth <= clientWidth` is trivially true, which
+  // returned early and left the strip wherever it happened to sit. That is
+  // what put a half-cut "all 35" at the left edge of the tile filter on his
+  // phone (2026-08-20). Retry across a few frames until it is really in the
+  // document and has a width.
+  let tries = 0;
+  const bringIntoView = () => {
+    if ((!row.isConnected || !row.clientWidth) && tries++ < 8) { requestAnimationFrame(bringIntoView); return; }
     const on = row.querySelector(".sel");
     if (!on || row.scrollWidth <= row.clientWidth) return;
     // Measured with rects, not offsetLeft: the strip is not a positioned
@@ -2105,7 +2115,8 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
     const rr = row.getBoundingClientRect(), br = on.getBoundingClientRect();
     if (br.left < rr.left + pad) row.scrollLeft -= (rr.left + pad) - br.left;
     else if (br.right > rr.right - pad) row.scrollLeft += br.right - (rr.right - pad);
-  });
+  };
+  requestAnimationFrame(bringIntoView);
   return row;
 }
 const MONSTER_SORT_KEY = "wiki-monster-sort";
@@ -3584,7 +3595,15 @@ async function refreshWorldPairs() {
       wallScore: c.wall_score ?? null, wall: c.wall ?? null, topShare: c.top_share ?? null,
       overhang: c.overhang ?? null, paletteTop: c.palette_top ?? null,
       tileId: c.tile_id ?? null, style: c.style ?? null, prompt: c.prompt ?? null,
-    })).filter((c) => c.art && c.key);
+    }))
+      .filter((c) => c.art && c.key)
+      // BEST FIRST — the wiki's own promise, kept here because the manifest
+      // stopped keeping it. Measured 2026-08-20 on black_rock over black_rock:
+      // wall scores arrived 3.21, 4.33, 1.18, 3.78, … so "#1" named an
+      // arbitrary tile and the panel's "ranked by wall score" pill was simply
+      // false. The order is presentation, the KEY is identity, and verdicts
+      // ride the key — so sorting here cannot disturb a single review.
+      .sort((a, b) => (b.wallScore ?? -Infinity) - (a.wallScore ?? -Infinity));
     const top = cell.top ?? id.split("__over__")[0], side = cell.side ?? id.split("__over__")[1];
     return {
       id, name: `${nice(top)} over ${nice(side).toLowerCase()}`, top, side,
@@ -3627,14 +3646,11 @@ function cellReview(cell) {
   if (rejected) return { key: "partly", cls: "warn", text: `${rejected} of ${cell.candidates.length} rejected` };
   return { key: "open", cls: "", text: "not reviewed" };
 }
-const WORLD_FILTERS = {
-  all: { label: "all", title: "Every pair the agent has generated" },
-  open: { label: "not reviewed", title: "No candidate judged yet — the work to do" },
-  partly: { label: "partly", title: "Some candidates judged, none picked yet" },
-  picked: { label: "picked", title: "A candidate approved — this pair is settled" },
-  redo: { label: "redo", title: "Every tile in the set rejected" },
-};
-const WORLD_FILTER_KEY = "wiki-world-filter";
+// `cellReview` above survives as the SET's aggregate state — the pill on each
+// card. The pair-level filter BAR it used to feed is gone (see viewWorldType):
+// it duplicated the tile filter's vocabulary without its navigation, and the
+// maintainer walked straight into the dead end. `wiki-world-filter` may still
+// sit in a browser's localStorage; nothing reads it.
 /* ------------------------------------------------ THE TILES WITH NO STAR
  * Maintainer 2026-08-20: "I have now reviewed all tiles in the new /tiles and
  * given 1 star to every tile that doesn't have an issue. The tiles-agent have
@@ -3936,20 +3952,27 @@ function viewWorldType(top) {
   const types = worldTypes();
   const t = types.find((x) => x.id === top);
   if (!t) return h("p", {}, "Unknown ground type.");
-  const read = (() => { try { return localStorage.getItem(WORLD_FILTER_KEY) || "all"; } catch { return "all"; } })();
-  const filter = WORLD_FILTERS[read] ? read : "all";
+  /* ONE FILTER BAR, NOT TWO (maintainer 2026-08-20, with a screenshot of this
+   * page: "I use your code to filter on NOT reviewed. I then click on that
+   * tile set, but can't navigate further to find the review. How was this
+   * supposed to work?").
+   *
+   * It was not. This page carried the tile filter — which cascades into the
+   * set page and drives ‹ › across ground types — directly above a PAIR-level
+   * review filter that looked identical and did neither: picking "not
+   * reviewed 15" narrowed this grid and then dropped him into an unfiltered
+   * set page whose pager walked all 15 siblings. Two lookalike controls, one
+   * of them a dead end, and he reached for the one whose words matched what he
+   * wanted ("not reviewed").
+   *
+   * The tile filter answers every question the pair filter did, at the grain
+   * he actually reviews at and with the navigation attached: "not reviewed" is
+   * `undecided`, "redo" is `rejected`, "picked" is `approved`. So the pair bar
+   * is gone. What it genuinely added — the SET's aggregate state — was never
+   * the filter, it is the pill on each card, and that stays. */
   const mode = state.admin ? starFilter() : "all";
   const on = mode !== "all";
-  const hit = (c) => {
-    const r = cellReview(c).key;
-    return filter === "all" || r === filter;
-  };
-  // The TILE filter runs FIRST and outranks the pair-level review filter: it
-  // is the job he is doing ("only sets that still hold a tile in this state"),
-  // and the review filter on top of it answers a different question — about
-  // the pair — over the same sets.
-  const kept = state.admin && on ? t.pairs.filter((c) => pairHits(c, mode)) : t.pairs;
-  const list = state.admin ? kept.filter(hit) : t.pairs;
+  const list = state.admin && on ? t.pairs.filter((c) => pairHits(c, mode)) : t.pairs;
   return h("div", {},
     crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
     h("div", { class: "sect-head" }, h("h1", {}, t.name)),
@@ -3961,10 +3984,6 @@ function viewWorldType(top) {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => pairHits(c, id)).length;
       return [id, `${f.label} ${n}`, f.title];
     }), mode, () => route()) : null,
-    state.admin ? sortBar(WORLD_FILTER_KEY, Object.entries(WORLD_FILTERS).map(([id, f]) => {
-      const n = id === "all" ? kept.length : kept.filter((c) => cellReview(c).key === id).length;
-      return [id, `${f.label} ${n}`, f.title];
-    }), filter, () => route()) : null,
     list.length ? h("div", { class: "grid" }, ...list.map((c) => {
       const r = cellReview(c);
       const v = wallVerdict(c.best);

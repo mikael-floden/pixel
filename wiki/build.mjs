@@ -563,7 +563,14 @@ function buildWorld() {
       // The BEFORE is optional: a candidate generated before @2 has none, and
       // its card simply offers no comparison rather than a broken toggle.
       .map((c) => ({ ...c, raw: c.raw && existsSync(join(ROOT, c.raw)) ? c.raw : null }))
-      .filter((c) => c.art && existsSync(join(ROOT, c.art)));
+      .filter((c) => c.art && existsSync(join(ROOT, c.art)))
+      // BEST FIRST. The manifest stopped arriving ranked (measured 2026-08-20:
+      // black_rock over black_rock came 3.21, 4.33, 1.18, 3.78, …), and the
+      // wiki's set page numbers its tiles "#1, #2, …" under a "ranked by wall
+      // score" pill — so the ranking is done here rather than claimed. Order is
+      // presentation; the KEY is identity and verdicts ride the key, so this
+      // cannot disturb a review. Mirrored in wiki.js for the live refresh.
+      .sort((a, b2) => (b2.wallScore ?? -Infinity) - (a.wallScore ?? -Infinity));
     if (!cands.length) continue;
     cells.push({
       id,
@@ -572,7 +579,7 @@ function buildWorld() {
       name: `${label(cell.top ?? id.split("__over__")[0])} over ${label(cell.side ?? id.split("__over__")[1]).toLowerCase()}`,
       top: cell.top ?? null, side: cell.side ?? null,
       path: `tiles/${id}`,               // the CELL's own feedback id
-      preview: cands[0].art,             // the agent's own top-ranked candidate
+      preview: cands[0].art,             // the best-scoring candidate (sorted above)
       candidates: cands,
       best: cands[0].wallScore ?? null,
       tombstoned: dead.has(id),
