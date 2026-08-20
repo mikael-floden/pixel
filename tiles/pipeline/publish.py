@@ -544,6 +544,7 @@ def main():
                                       edge_dim=PAIR_TWEAKS.get(cell, {}).get("edge_dim", False),
                                       kill_highlight=PALETTE.get(top, {}).get("kill_highlight", False),
                                       claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
+                                      no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.

@@ -166,6 +166,14 @@
     "snow__over__brown_paving_stone": {
       "claim_floor": 230,
       "note": "the snow drape's drawn underside kept its dark relief through substitution and read as leftover grey paving on the new brown wall (the maintainer circled it). Claimed pixels are floored to near the snow paint's own brightness: the shadow shape survives, but it is snow-bright."
+    },
+    "brown_paving_stone__over__grey_paving_stone": {
+      "no_claims": true,
+      "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
+    },
+    "grey_paving_stone__over__brown_paving_stone": {
+      "no_claims": true,
+      "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
     }
   }
 }

@@ -1095,7 +1095,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
-         edge_dim=False, kill_highlight=False, claim_floor=None):
+         edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1249,11 +1249,22 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             #
             # Measured on the 14 tiles the gate used to block: after this, mean wall_err 5.5,
             # worst 20.8, none over MAX_WALL_ERR.
-            m_side, m_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
-                                        aggressive=not align_side,
-                                        claim_depth=claim_depth,
-                                        deep_claim=deep_claim,
-                                        drip_match=drip_match)
+            # no_claims: the pair is a MANUFACTURED cross — two published types
+            # painted onto one generated material's art (brown paving over grey
+            # paving, from the clean-line same-material tile). The classifier
+            # correctly sees the top's own paint rolling over the lip and claims it
+            # as overhang, which paints the wall's first rows the TOP'S colour —
+            # the exact band the maintainer marked red. There is no spill on a
+            # cross tile; the drawn line IS the boundary, so nothing is claimed and
+            # the whole wall paints as the wall's type.
+            if no_claims:
+                m_side, m_top = wall_all.copy(), np.zeros(wall_all.shape, bool)
+            else:
+                m_side, m_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
+                                            aggressive=not align_side,
+                                            claim_depth=claim_depth,
+                                            deep_claim=deep_claim,
+                                            drip_match=drip_match)
             if drip_match is not None:
                 # THE BROWN DOES NOT CHANGE FROM LIVE, BYTE FOR BYTE. The drip claim
                 # may only ADD black pixels; it must never alter how the mud paints.
