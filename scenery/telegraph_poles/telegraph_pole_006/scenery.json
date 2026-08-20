@@ -31,50 +31,29 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T13:18:31+00:00",
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "telegraph_poles/telegraph_pole_006/sprite.webp",
       "pixellab_object_id": "e851b351-c526-46b1-8dae-7aab8996f8b3",
-      "generated_at": "2026-08-13T13:18:31+00:00"
+      "generated_at": "2026-08-13T13:18:31+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "telegraph_poles/telegraph_pole_006/lit_2/sprite.webp",
-      "pixellab_object_id": "6247d60e-dc36-49ed-a66a-5b82319fa5df",
-      "generated_at": "2026-08-16T23:06:03+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5117,
-      "glow_score": 0.0132
-    },
-    "LIT_3": {
-      "sprite": "telegraph_poles/telegraph_pole_006/lit_3/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_4/sprite.webp",
       "pixellab_object_id": "8f872cab-5c00-403f-8a13-1982be82f824",
       "generated_at": "2026-08-16T23:06:04+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4666,
-      "glow_score": 0.0139
+      "glow_score": 0.0139,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "telegraph_poles/telegraph_pole_006/lit_4/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_5/sprite.webp",
       "pixellab_object_id": "a26c97b1-f39f-4de9-88e7-833ae989974c",
       "generated_at": "2026-08-16T23:06:04+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5791,
-      "glow_score": 0.0204
-    },
-    "NOT_LIT_1": {
-      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_1/sprite.webp",
-      "pixellab_object_id": "028cfced-b11e-4183-ab22-99115f563866",
-      "generated_at": "2026-08-16T23:06:42+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8375,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "telegraph_poles/telegraph_pole_006/not_lit_2/sprite.webp",
-      "pixellab_object_id": "e42d671d-a349-4f38-bf7d-5469448891e9",
-      "generated_at": "2026-08-16T23:06:16+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.823,
-      "glow_score": 0.0
+      "glow_score": 0.0204,
+      "relit_from": "LIT_4"
     }
   }
 }

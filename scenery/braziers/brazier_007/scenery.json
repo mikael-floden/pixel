@@ -39,14 +39,6 @@
       "difference_from_source": 0.3277,
       "glow_score": 0.0373
     },
-    "LIT_2": {
-      "sprite": "braziers/brazier_007/lit_2/sprite.webp",
-      "pixellab_object_id": "2ed71946-31e1-4df9-9fdb-f7c25b266723",
-      "generated_at": "2026-08-15T20:37:35+00:00",
-      "glow_concept": "column of drifting gold sparks",
-      "difference_from_source": 0.917,
-      "glow_score": 0.0057
-    },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_007/sprite.webp",
       "pixellab_object_id": "067fb3cc-bd07-4730-8edc-a2d9e2e057cd",
@@ -75,6 +67,15 @@
       "glow_concept": null,
       "difference_from_source": 0.2173,
       "glow_score": 0.0
+    },
+    "NOT_LIT_5": {
+      "sprite": "braziers/brazier_007/not_lit_5/sprite.webp",
+      "pixellab_object_id": "2ed71946-31e1-4df9-9fdb-f7c25b266723",
+      "generated_at": "2026-08-15T20:37:35+00:00",
+      "glow_concept": "column of drifting gold sparks",
+      "difference_from_source": 0.917,
+      "glow_score": 0.0057,
+      "relit_from": "LIT_2"
     }
   }
 }

@@ -33,11 +33,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T19:46:47+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "rusted_machines/rusted_machine_900/sprite.webp",
-      "pixellab_object_id": "74048d51-d7b6-4b8d-a696-f14515db43b4",
-      "generated_at": "2026-08-13T19:46:47+00:00"
-    },
     "LIT_2": {
       "sprite": "rusted_machines/rusted_machine_900/lit_2/sprite.webp",
       "pixellab_object_id": "696df45a-5514-46e2-9e05-9995bffb01ac",
@@ -62,21 +57,11 @@
       "difference_from_source": 0.7858,
       "glow_score": 0.0
     },
-    "NOT_LIT_1": {
-      "sprite": "rusted_machines/rusted_machine_900/not_lit_1/sprite.webp",
-      "pixellab_object_id": "be5ea5e3-a46a-4cf0-82fb-3507d80140c2",
-      "generated_at": "2026-08-16T20:36:29+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.892,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "rusted_machines/rusted_machine_900/not_lit_2/sprite.webp",
-      "pixellab_object_id": "380ea4aa-f006-4f0b-a000-0d9ec825c6b5",
-      "generated_at": "2026-08-16T20:34:37+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9646,
-      "glow_score": 0.0
+    "NOT_LIT_3": {
+      "sprite": "rusted_machines/rusted_machine_900/sprite.webp",
+      "pixellab_object_id": "74048d51-d7b6-4b8d-a696-f14515db43b4",
+      "generated_at": "2026-08-13T19:46:47+00:00",
+      "relit_from": "LIT_1"
     }
   }
 }
