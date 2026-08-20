@@ -1,6 +1,32 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T05:50:51.908Z",
+  "updated_at": "2026-08-20T06:13:39.866Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
-  "overrides": {}
+  "overrides": {
+    "scenery/braziers/brazier_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:03:38.668Z"
+    },
+    "scenery/braziers/brazier_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:03:41.347Z"
+    },
+    "scenery/braziers/brazier_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:03:43.500Z"
+    },
+    "scenery/braziers/brazier_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:03:45.677Z"
+    },
+    "scenery/flower_trellises/flower_trellis_001#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:07:31.106Z"
+    }
+  }
 }
