@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T06:34:17.618Z",
+  "updated_at": "2026-08-20T06:41:31.553Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
   "overrides": {
     "scenery/cliff_vines/cliff_vine_096#lit_2": {
@@ -222,6 +222,131 @@
       "lit": true,
       "was": "not_lit_1",
       "updated_at": "2026-08-20T06:34:06.091Z"
+    },
+    "scenery/cliff_vines/cliff_vine_028#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:35:03.358Z"
+    },
+    "scenery/cliff_vines/cliff_vine_028#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:35:05.706Z"
+    },
+    "scenery/cliff_vines/cliff_vine_028#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:35:07.356Z"
+    },
+    "scenery/cliff_vines/cliff_vine_028#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:35:09.647Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_011#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:36:26.594Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_010#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:36:54.758Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_010#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:36:57.750Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_010#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:36:59.443Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_010#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:37:02.056Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_009#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:37:46.245Z"
+    },
+    "scenery/cliff_vines/cliff_vine_022#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:38:03.292Z"
+    },
+    "scenery/cliff_vines/cliff_vine_022#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:38:05.565Z"
+    },
+    "scenery/cliff_vines/cliff_vine_022#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:38:08.856Z"
+    },
+    "scenery/cliff_vines/cliff_vine_022#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:38:11.869Z"
+    },
+    "scenery/cliff_vines/cliff_vine_024#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:38:59.241Z"
+    },
+    "scenery/cliff_vines/cliff_vine_024#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:39:04.193Z"
+    },
+    "scenery/cliff_vines/cliff_vine_024#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:39:06.349Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:40:00.821Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:40:03.694Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:40:05.926Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_006#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:40:08.602Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_002#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T06:40:44.984Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_002#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T06:40:50.865Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_002#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T06:40:53.614Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_002#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T06:40:56.230Z"
     }
   }
 }
