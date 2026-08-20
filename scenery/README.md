@@ -98,6 +98,35 @@ shared 2000 floor, coordination/PROTOCOL.md) AND credits below `min_usd` —
 and simply resumes the next day. Manual pass: Actions → "Scenery factory
 loop" → Run workflow.
 
+### THE REVIEW IS CLOSED (maintainer, 2026-08-20)
+
+> "That was the last review! The remaining scenery must be kept unreviewed. I
+> don't know if we will add them to the game or not. They will need custom code
+> to look good."
+
+Read the two halves separately, because the second is the one an eager agent
+gets wrong.
+
+**Generation is over.** Every piece in the catalog has been through his hands:
+0 pieces and 0 rejections are outstanding. Do not start a generation pass, do
+not refill a pruned slot, do not "top up" a group that looks thin — 474 state
+slots are retired on purpose, and a thin group is his decision, not a gap.
+`scenery-states.yml`'s schedule is off for exactly this reason.
+
+**The 405 unreviewed states are not a backlog.** They are deliberately
+unjudged and must stay that way. 390 of them are the CLIFF families —
+cliff_vines (174), cliff_shrubs (66), cliff_mosses (42), cliff_features (36),
+cliff_roots (30), cliff_falls (30), cliff_fragments (12) — which only read
+correctly mounted against a mountain wall, and the game has no placement code
+for that yet. His own notes say it: "We might be able to put this against a
+mountain wall", and on a vine, "would be even better if it wasn't so thick.
+Want more sparse scenery like this (so you can see the mountain wall between
+the leaves)." Whether they ship at all is undecided.
+
+So: never auto-approve them, never surface them as a review queue to be
+drained, never delete them for being unjudged, and never regenerate them to
+"improve" them. Leave them exactly as they are until he says otherwise.
+
 ### Wiki verdicts are standing orders (maintainer, 2026-08-13)
 
 The maintainer's approve/reject clicks in the wiki land in

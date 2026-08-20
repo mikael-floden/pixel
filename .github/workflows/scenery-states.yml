@@ -23,12 +23,27 @@ name: Scenery state variants
 # again after the maintainer tops up.
 
 on:
-  schedule:
-    # Every 4 hours. The pass is finite: once every piece has its six states,
-    # in_scope() returns empty and each firing exits in seconds having spent
-    # nothing. Turn it off then, or leave it as the backstop that gives new
-    # pieces their states automatically.
-    - cron: "20 */4 * * *"
+  # SCHEDULE DISABLED 2026-08-20 (maintainer): "That was the last review! The
+  # remaining scenery must be kept unreviewed."
+  #
+  # The comment below always said to turn this off once the pass was finite,
+  # and it now is: in_scope() returns 0 pieces, so every firing already exits
+  # having spent nothing. Disabling rather than leaving it armed, because the
+  # one thing that could wake it is a piece losing a state — and the pruning
+  # phase removes states constantly. A misfire would spend his credits on art
+  # nobody asked for and add it to a catalog he has just declared finished,
+  # unreviewed, hours after he stopped reviewing. Nobody keeps a clone, so
+  # there is no one to notice but the agent.
+  #
+  # Re-enable by restoring the cron line if new pieces ever need their states
+  # generated again.
+  #
+  # Every 4 hours. The pass is finite: once every piece has its six states,
+  # in_scope() returns empty and each firing exits in seconds having spent
+  # nothing. Turn it off then, or leave it as the backstop that gives new
+  # pieces their states automatically.
+  #  schedule:
+  #    - cron: "20 */4 * * *"
   workflow_dispatch:
     inputs:
       max_minutes:
