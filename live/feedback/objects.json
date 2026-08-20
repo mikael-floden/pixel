@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-08-20T01:15:04.591Z",
+  "updated_at": "2026-08-20T01:15:52.388Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -3111,9 +3111,9 @@
       "rating": 2
     },
     "scenery/fish_drying_racks/fish_drying_rack_007": {
-      "status": "approved",
-      "updated_at": "2026-08-14T00:39:25.490Z",
-      "rating": 2
+      "status": "rejected",
+      "updated_at": "2026-08-20T01:15:28.396Z",
+      "art": "0b2a3c70a28c1809"
     },
     "scenery/flame_niches/flame_niche_005": {
       "status": "approved",
@@ -24925,6 +24925,76 @@
       "status": "rejected",
       "art": "a9bbd503127cf294",
       "updated_at": "2026-08-20T01:15:04.844Z"
+    },
+    "scenery/grave_cross#appear#south": {
+      "rating": 5,
+      "updated_at": "2026-08-20T01:15:18.165Z",
+      "status": "approved",
+      "art": "e21fa21794f090f7"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#not_lit_1#south": {
+      "status": "rejected",
+      "art": "0b2a3c70a28c1809",
+      "updated_at": "2026-08-20T01:15:30.018Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#not_lit_2#south": {
+      "status": "rejected",
+      "art": "c3d736b4fa0775dc",
+      "updated_at": "2026-08-20T01:15:31.140Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#not_lit_3#south": {
+      "status": "rejected",
+      "art": "e57ddd25ad537152",
+      "updated_at": "2026-08-20T01:15:32.163Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#not_lit_4#south": {
+      "status": "rejected",
+      "art": "5f86ac12bdedf41b",
+      "updated_at": "2026-08-20T01:15:33.236Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#lit_1#south": {
+      "status": "rejected",
+      "art": "203fe60397d87914",
+      "updated_at": "2026-08-20T01:15:34.065Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_007#lit_2#south": {
+      "status": "rejected",
+      "art": "29b1d1735c0410a2",
+      "updated_at": "2026-08-20T01:15:34.860Z"
+    },
+    "scenery/dock_pilings/dock_piling_010#lit_1#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:15:39.214Z",
+      "status": "approved",
+      "art": "b298cc254d8bda85"
+    },
+    "scenery/dock_pilings/dock_piling_010#lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:15:45.712Z",
+      "status": "rejected",
+      "art": "ccfdcd0211c3c82a"
+    },
+    "scenery/dock_pilings/dock_piling_010#lit_3#south": {
+      "status": "rejected",
+      "art": "28e367867c3b03f4",
+      "updated_at": "2026-08-20T01:15:44.237Z"
+    },
+    "scenery/dock_pilings/dock_piling_010#lit_4#south": {
+      "rating": 4,
+      "updated_at": "2026-08-20T01:15:47.879Z",
+      "status": "approved",
+      "art": "8d4fd85bc2d42f8d"
+    },
+    "scenery/dock_pilings/dock_piling_010#not_lit_1#south": {
+      "status": "rejected",
+      "art": "7b5427f06c8fe81b",
+      "updated_at": "2026-08-20T01:15:49.788Z"
+    },
+    "scenery/dock_pilings/dock_piling_010#not_lit_2#south": {
+      "rating": 3,
+      "updated_at": "2026-08-20T01:15:52.770Z",
+      "status": "approved",
+      "art": "7783319737948cb1"
     }
   }
 }
