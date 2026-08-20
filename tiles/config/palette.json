@@ -201,11 +201,13 @@
     },
     "brown_paving_stone__over__grey_stone": {
       "claim_lip": 3,
-      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang."
+      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
+      "claim_depth": 0.3
     },
     "grey_paving_stone__over__grey_stone": {
       "claim_lip": 3,
-      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang."
+      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
+      "claim_depth": 0.3
     }
   }
 }
