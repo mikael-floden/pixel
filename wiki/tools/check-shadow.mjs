@@ -1,409 +1,212 @@
-// EDIT THE NADIR SHADOW — the Game Master shows the games agent where it belonged.
+// ONE SHADOW PER MONSTER — its centre is the position, its size the hit box.
 //
-// Maintainer, 2026-08-15: "It has been really hard to get the nadir shadow
-// correct in the game. I know we show the nadir on monsters in the wiki as
-// well. Can you create an 'Edit nadir shadow' button, when pressed makes it
-// easy to drag and resize the nadir shadow on a monster direction/animation,
-// and after doing a lot of them committing them all the same way an
-// approve/reject commit works. To be clear, this is just data that the game
-// agent can pick up to understand where I think the shadow should have been …
-// So it's not a 'fix this shadow only' feature. It's a way to learn how the
-// shadows should be placed. But all you need to do is make it editable and a
-// way to commit it the same way approve/reject reviews are committed."
+// Maintainer, 2026-08-20, replacing the per-facet shadow notes: "Lets say you
+// have something long and thin. I can create this shadow in S, N, E and W. But
+// not the other monster directions. So what I want is just a single shadow
+// size for the entire monster … if I change the size in S animation it will
+// change for all directions in all animations. The trick is to rotate the
+// shadow around the center using the current monster direction. The goal is to
+// get the game to use this shadow and the center of the shadow will be the
+// monsters position. The size will be the monsters hit box. This also means
+// that in the wiki when I move the shadow what really should happen is the
+// monster should move the opposite direction … where the shadow is placed
+// vertically has to be the same for the entire monster in all directions and
+// animations. We don't want the shadow center to jump around."
 //
-// Three things follow from that, and they are what this gate holds:
-//   1. It is EDITABLE — a drag on the canvas moves the ellipse, a drag on a
-//      handle resizes it, and the picture actually changes.
-//   2. It is PER DIRECTION AND ANIMATION — the unit that gets regenerated, the
-//      same unit the facet verdicts already use.
-//   3. It COMMITS LIKE A VERDICT — the save bar counts it and Commit posts it
-//      to the live channel as one entry per facet, carrying the correction AND
-//      what it corrects (that second half is what makes it training data
-//      rather than an override).
+// Every sentence of that is a check below:
+//   1. ONE RECORD — an edit made on idle/south is what walk/east shows.
+//   2. THE ANCHOR IS PINNED — the ellipse centre sits at the same canvas point
+//      for every direction and every animation; edits move the MONSTER.
+//   3. IT ROTATES — by the facing's GROUND angle, and the wiki's JS, this
+//      gate's own math and the GAME's shared TS function all agree on the
+//      numbers (three implementations, one table).
+//   4. IT COMMITS INTO tuning/monsters — the entry the game reads its stats
+//      from — and never into the frozen shadow_notes doc.
+//   5. Reset drops the record; the readout says tuned/untuned honestly.
 //
-// This gate NEVER presses anything that reaches the real server: /api/wiki/me
-// is faked to admin and /api/wiki/save is captured at the network boundary, so
-// the maintainer's own review data is never written.
+// Network boundary is faked: /api/wiki/me answers admin, /api/wiki/save is
+// captured — nothing here reaches the real live store.
 import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
+const ROOT = new URL("../../", import.meta.url).pathname;
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 
+const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+const MON = D.domains.monsters.find((m) =>
+  m.animations?.idle?.dirs?.south && m.animations?.walk?.dirs?.east
+  && Object.keys(m.animations.idle.dirs).length === 8);
+console.log(`monster: ${MON.id} (frame ${MON.frameW}x${MON.frameH}, measured shadow ${MON.shadow?.w}x${MON.shadow?.h})`);
+
+// ---- 0. THREE IMPLEMENTATIONS, ONE TABLE -----------------------------------
+// The gate's own math, written independently of the page's:
+const shared = readFileSync(`${ROOT}games2/shared/src/index.ts`, "utf8");
+const ISO_DX = +shared.match(/export const ISO_DX = (\d+)/)[1];
+const ISO_DY = +shared.match(/export const ISO_DY = (\d+)/)[1];
+ok(D.iso?.dx === ISO_DX && D.iso?.dy === ISO_DY,
+  `data.iso carries the game's own projection (${D.iso?.dx}/${D.iso?.dy} vs shared ${ISO_DX}/${ISO_DY})`);
+const K = ISO_DY / ISO_DX;
+const VEC = { south: [0, 1], "south-west": [-1, 1], west: [-1, 0], "north-west": [-1, -1], north: [0, -1], "north-east": [1, -1], east: [1, 0], "south-east": [1, 1] };
+function myEllipse(rx, ry, dir) {
+  const [vx, vy] = VEC[dir];
+  const a = Math.atan2(vx, vy / K), ryg = ry / K;
+  const m00 = Math.cos(a) * rx, m01 = -Math.sin(a) * ryg, m10 = K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
+  const E = (m00 + m11) / 2, F = (m00 - m11) / 2, G = (m10 + m01) / 2, H = (m10 - m01) / 2;
+  const Q = Math.hypot(E, H), R = Math.hypot(F, G);
+  return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
+}
+// The game's shared TS function, through the game's own toolchain:
+const game = JSON.parse(execSync("npx tsx ../wiki/tools/shadow-mirror.mts", { cwd: `${ROOT}games2`, encoding: "utf8" }).trim());
+ok(game.iso.dx === ISO_DX && game.iso.dy === ISO_DY, "the mirror ran against the same constants");
+let worst = 0;
+for (const [rx, ry] of [[25.5, 10], [10, 30], [40, 40], [8, 5]]) {
+  for (const dir of Object.keys(VEC)) {
+    const a = myEllipse(rx, ry, dir), b = game[`${rx}x${ry}:${dir}`];
+    worst = Math.max(worst, Math.abs(a.p - b.p), Math.abs(a.q - b.q), Math.abs(a.theta - b.theta));
+  }
+}
+ok(worst < 0.001, `the GAME's decomposition equals this gate's own math over 32 cases (worst delta ${worst.toFixed(5)})`);
+// The one case his request was made of: long and thin, facing a diagonal.
+const thin = myEllipse(10, 30, "south-east");
+ok(Math.abs(thin.theta) > 0.5 && thin.p > 30,
+  `a long-thin monster's SE shadow is genuinely diagonal and longer than its S one (tilt ${(thin.theta * 180 / Math.PI).toFixed(1)}°, ${thin.p.toFixed(1)} vs 30)`);
+
+// ---- the page --------------------------------------------------------------
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
-const ctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+const ctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
 const p = await ctx.newPage();
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
-const posted = [];
+const saves = [];
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
-await p.route("**/api/wiki/save", async (r) => {
-  posted.push(JSON.parse(r.request().postData() || "{}"));
-  await r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' });
-});
+await p.route("**/api/wiki/save", (r) => { saves.push(r.request().postDataJSON()); return r.fulfill({ status: 200, contentType: "application/json", body: "{}" }); });
+// Pin the admin's staging root to THIS origin: the upgrade otherwise races off
+// to GitHub mid-test and its re-route rebuilds the page under the editor.
 await p.addInitScript(() => {
   localStorage.setItem("wiki-admin-token", "gate");
   localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
 });
-
-const DATA = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
-const MON = DATA.domains.monsters.find((m) => m.shadow?.w > 0 && Object.keys(m.animations ?? {}).length > 1);
-if (!MON) { console.log("no monster ships a shadow — nothing to gate"); process.exit(1); }
-
-// Everything the editor is: the button, the readout, and the ellipse the
-// canvas actually paints. The ellipse is read from the PIXELS, not from the
-// note — a note the drawing ignores is exactly the bug worth catching.
-const look = () => p.evaluate(() => {
-  const btn = [...document.querySelectorAll(".player-controls button")].find((x) => /Edit nadir shadow/i.test(x.textContent));
-  const cv = document.querySelector(".player-stage canvas");
-  const g = cv?.getContext("2d");
-  let ell = null;
-  if (g && cv.width && cv.height) {
-    // The shadow is the only thing drawn BELOW the sprite's content box, and
-    // it is the dark translucent fill — scan for its extent.
-    const d = g.getImageData(0, 0, cv.width, cv.height).data;
-    let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1, n = 0;
-    for (let y = 0; y < cv.height; y++) for (let x = 0; x < cv.width; x++) {
-      const i = (y * cv.width + x) * 4;
-      const a = d[i + 3];
-      // rgba(20,16,8,0.38) over nothing = a dark, near-opaque-free pixel.
-      if (a > 40 && a < 170 && d[i] < 90 && d[i + 1] < 90 && d[i + 2] < 90) {
-        n++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
-      }
-    }
-    if (n > 20) ell = { x0, x1, y0, y1, w: x1 - x0 + 1, h: y1 - y0 + 1, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, n };
-  }
-  const bar = document.querySelector(".shadow-bar");
-  const pad = document.querySelector(".shadow-pad");
-  const cv2 = document.querySelector(".player-stage canvas");
-  return {
-    pad: pad ? { box: pad.getBoundingClientRect().toJSON(), held: pad.classList.contains("held"),
-                 knob: getComputedStyle(pad.querySelector(".pad-knob")).transform } : null,
-    sliders: [...document.querySelectorAll(".shadow-slider")].map((i) => ({ v: +i.value, max: +i.max })),
-    // A canvas that swallows every touch traps the whole page in edit mode.
-    canvasTouch: cv2 ? getComputedStyle(cv2).touchAction : null,
-    // Client rects are viewport-relative and this gate scrolls between
-    // samples, so every position is compared in PAGE space.
-    scrollY: window.scrollY,
-    hasBtn: !!btn,
-    btnOn: !!btn?.classList.contains("on"),
-    barShown: !!bar && !bar.classList.contains("hidden"),
-    read: document.querySelector(".shadow-read")?.textContent ?? null,
-    resetDisabled: [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.disabled ?? null,
-    editingClass: !!document.querySelector(".player-stage.editing-shadow"),
-    canvas: cv ? { w: cv.width, h: cv.height, box: cv.getBoundingClientRect().toJSON() } : null,
-    ell,
-    state: document.querySelector(".seg-states button.on")?.title ?? null,
-    dir: document.querySelector(".dirpad button.on")?.textContent ?? null,
-    pending: document.querySelector("#savebar")?.classList.contains("hidden") ? 0 : Number(document.querySelector("#savebar b")?.textContent ?? 0),
-  };
-});
-const press = () => p.evaluate(() => [...document.querySelectorAll(".player-controls button")].find((x) => /Edit nadir shadow/i.test(x.textContent)).click());
-// The stage sits well below the fold on a phone — a pointer aimed at a
-// coordinate outside the viewport is simply never delivered.
-const showStage = async () => {
-  await p.evaluate(() => document.querySelector(".player-stage")?.scrollIntoView({ block: "center" }));
-  await p.waitForTimeout(200);
-};
-// A drag in CLIENT coordinates, exactly as a finger delivers it. The canvas
-// grows as the ellipse does, so its rect is re-read for every gesture.
-async function drag(canvasPt, dx, dy) {
-  await showStage();
-  const now = await look();
-  const from = {
-    x: now.canvas.box.x + (canvasPt.cx / now.canvas.w) * now.canvas.box.width,
-    y: now.canvas.box.y + (canvasPt.cy / now.canvas.h) * now.canvas.box.height,
-  };
-  await p.mouse.move(from.x, from.y);
-  await p.mouse.down();
-  for (let i = 1; i <= 6; i++) await p.mouse.move(from.x + (dx * i) / 6, from.y + (dy * i) / 6);
-  await p.mouse.up();
-  await p.waitForTimeout(200);
-}
-
-console.log(`monster: ${MON.id} (shadow ${MON.shadow.w}x${MON.shadow.h})`);
 await p.goto(`${W}#/monsters/${MON.id}`, { waitUntil: "load" });
-await p.waitForTimeout(2200);
-// Freeze the clip: a playing animation repaints under the mouse and a moving
-// sprite would make the pixel read of the ellipse a coin toss.
+await p.waitForTimeout(2400);
 await p.evaluate(() => [...document.querySelectorAll(".player-controls button")].find((x) => x.textContent === "⏸")?.click());
+
+const probe = () => p.evaluate(() => window.__wikiShadow ?? null);
+const clickDir = (label) => p.evaluate((d) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === d)?.click(), label);
+const clickState = (name) => p.evaluate((n) => [...document.querySelectorAll(".player-controls .seg-states button, .seg-states button")].find((x) => x.textContent.toLowerCase().includes(n))?.click(), name);
+
+// ---- 1+2. the editor: one record, pinned anchor, monster moves opposite ----
+const first = await probe();
+ok(!!first && first.ex === first.W / 2, `the shadow centre sits at the canvas's horizontal centre (${first?.ex} of ${first?.W})`);
+await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => x.textContent.includes("Edit shadow"))?.click());
+await p.waitForTimeout(300);
+const before = await probe();
+ok(before.ex === before.W / 2, "…and still does with the editor open");
+await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
 await p.waitForTimeout(200);
-
-// ---------------------------------------------------------------- 1. the button
-const off = await look();
-console.log("before:", JSON.stringify({ hasBtn: off.hasBtn, barShown: off.barShown, ell: off.ell && { w: off.ell.w, h: off.ell.h, cx: off.ell.cx, cy: off.ell.cy } }));
-ok(off.hasBtn, "the monster page offers an “Edit nadir shadow” button to the admin");
-ok(!off.barShown && !off.editingClass, "and it starts OFF — the page reads exactly as it did before");
-ok(!!off.ell, "the game's own shadow ellipse is on the canvas to begin with");
-
-await press();
-await p.waitForTimeout(300);
-const on = await look();
-console.log("editing:", JSON.stringify({ btnOn: on.btnOn, barShown: on.barShown, read: on.read, resetDisabled: on.resetDisabled }));
-ok(on.btnOn && on.editingClass, "pressing it latches the button and puts the stage in edit mode");
-ok(on.barShown && /\d+\.\d × \d+\.\d px/.test(on.read ?? ""), `with the live numbers on screen (“${on.read}”)`);
-ok(/measurement/.test(on.read ?? ""), "saying up front that nothing has been changed yet");
-ok(on.resetDisabled === true, "and Reset disabled, because there is nothing to reset");
-ok(on.pending === 0, "and NOTHING pending — opening the editor is not an edit");
-
-// ------------------------------------------------------- 2. the PROXY moves it
-// Maintainer 2026-08-15, after placing 25 real notes from his phone: "I can't
-// see where I place the shadow or how big I resize it at the same time ...
-// render the controller at the bottom right, but when moving the controller
-// the shadow under the monster will move / be resized. Like a proxy, so I can
-// see what I edit without my thumb being in the way."
-//
-// So the gate drives the PAD and the RAILS and reads the answer off the
-// ellipse's own pixels. TWO measurement traps, both paid for once:
-//   - the canvas RESIZES around the centred sprite as the ellipse grows or
-//     moves, so a canvas-local x is not a position that can be compared —
-//     everything is measured in PAGE space through the canvas's own rect;
-//   - the sprite is drawn OVER the shadow, so once the ellipse is moved up
-//     under the body the visible dark pixels are clipped by it and a width
-//     read under-reports. The rails are therefore exercised FIRST, on an
-//     unmoved shadow, and the pad afterwards.
-const padCentre = async () => {
-  // Centre the PAD, not the stage: it lives under the art, and a pointer aimed
-  // below the fold is never delivered (the same trap the canvas drags hit).
-  await p.evaluate(() => document.querySelector(".shadow-pad")?.scrollIntoView({ block: "center" }));
-  await p.waitForTimeout(200);
-  const now = await look();
-  return { now, pt: { x: now.pad.box.x + now.pad.box.width / 2, y: now.pad.box.y + now.pad.box.height / 2 } };
-};
-async function padPush(dx, dy) {
-  const { pt } = await padCentre();
-  await p.mouse.move(pt.x, pt.y);
-  await p.mouse.down();
-  for (let i = 1; i <= 6; i++) await p.mouse.move(pt.x + (dx * i) / 6, pt.y + (dy * i) / 6);
-  const mid = await look();                     // sampled WHILE held
-  await p.mouse.up();
-  await p.waitForTimeout(200);
-  return mid;
-}
-// The ellipse in PAGE coordinates — immune to the canvas resizing and to this
-// gate's own scrolling.
-const ellBox = (l) => ({
-  x0: l.canvas.box.x + (l.ell.x0 / l.canvas.w) * l.canvas.box.width,
-  x1: l.canvas.box.x + (l.ell.x1 / l.canvas.w) * l.canvas.box.width,
-  y0: l.canvas.box.y + l.scrollY + (l.ell.y0 / l.canvas.h) * l.canvas.box.height,
-  y1: l.canvas.box.y + l.scrollY + (l.ell.y1 / l.canvas.h) * l.canvas.box.height,
-});
-const cxOf = (l) => (ellBox(l).x0 + ellBox(l).x1) / 2;
-const cyOf = (l) => (ellBox(l).y0 + ellBox(l).y1) / 2;
-
-// -- the geometry: the control is nowhere near the thing it controls
-ok(!!on.pad, "the editor puts a control PAD on the page, not just handles on the art");
-const eb = ellBox(on), pb = on.pad.box, pbTop = pb.y + on.scrollY;
-const overlaps = pb.x < eb.x1 && pb.x + pb.width > eb.x0 && pbTop < eb.y1 && pbTop + pb.height > eb.y0;
-console.log("pad vs shadow:", JSON.stringify({ pad: { x: Math.round(pb.x), y: Math.round(pbTop), w: Math.round(pb.width) }, shadow: { x0: Math.round(eb.x0), x1: Math.round(eb.x1), y0: Math.round(eb.y0), y1: Math.round(eb.y1) } }));
-ok(!overlaps, "and the pad does not sit on the shadow — the thumb cannot cover what it is placing");
-ok(pbTop >= eb.y1, `it is BELOW the art (pad top ${Math.round(pbTop)} vs shadow bottom ${Math.round(eb.y1)})`);
-ok(pb.x + pb.width / 2 > on.canvas.box.x + on.canvas.box.width / 2, "and to the RIGHT, where the thumb is");
-ok(pb.width >= 90 && pb.height >= 90, `with a thumb-sized target (${Math.round(pb.width)}x${Math.round(pb.height)}px)`);
-// Both have to be on screen AT ONCE, or the proxy solves nothing.
-ok(pbTop + pb.height - eb.y0 <= 851, `and both fit on his phone together (${Math.round(pbTop + pb.height - eb.y0)}px from the shadow's top to the pad's bottom)`);
-ok(on.canvasTouch !== "none", `while the stage no longer traps the page's scroll (touch-action: ${on.canvasTouch})`);
-
-// -- the PAD moves it. Measured FIRST, on the ellipse at its measured size:
-// pushed up under the body, a bigger one is clipped by the sprite drawn over
-// it and the visible extent stops being the ellipse.
-const before = await look();
-const [wasX, wasY] = [cxOf(before), cyOf(before)];
-const held = await padPush(24, -16);
-const moved = await look();
-const [nowX, nowY] = [cxOf(moved), cyOf(moved)];
-console.log("after pad:", JSON.stringify({ read: moved.read, from: [Math.round(wasX), Math.round(wasY)], to: [Math.round(nowX), Math.round(nowY)], pending: moved.pending }));
-// Thresholds are the GEARED distances, not the thumb's: 24px of thumb inside
-// the fine zone is 7px of shadow, and that is the feature.
-ok(nowX > wasX + 4 && nowY < wasY - 2,
-  `dragging the PAD moves the shadow under the monster (${Math.round(wasX)},${Math.round(wasY)} → ${Math.round(nowX)},${Math.round(nowY)})`);
-// FINE NEAR THE ORIGIN, 1:1 FAR FROM IT (maintainer 2026-08-16: "I just like
-// it to be able to move the shadow slower ... small movements should change
-// placement slower to make it easier to do small adjustments"). A flat
-// slowdown would make a badly-placed shadow take several drags, so the first
-// 60px of thumb per axis is geared to 0.3 and everything past it runs 1:1.
-// Vertically the BOTTOM RIM is the honest tracker — the sprite is drawn over
-// the shadow, so an ellipse pushed up loses its top rows to the body and its
-// visible centre lags the real one. The rim below the feet is never covered.
-const dxGot = nowX - wasX, dyGot = ellBox(moved).y1 - ellBox(before).y1;
-console.log("gain:", JSON.stringify({ pushed: [24, -16], got: [+dxGot.toFixed(1), +dyGot.toFixed(1)] }));
-ok(Math.abs(dxGot - 24 * 0.3) <= 2 && Math.abs(dyGot + 16 * 0.3) <= 2,
-  `a small push moves it SLOWLY — 24,−16px of thumb gives ${dxGot.toFixed(1)},${dyGot.toFixed(1)}px of shadow, not 24,−16`);
-ok(held.pad?.held === true && /matrix/.test(held.pad?.knob ?? ""), "the knob follows the finger while held");
-ok(moved.pad?.held === false, "and lets go when the finger does");
-ok(/moved [+−]/.test(moved.read ?? ""), `the readout says how far, in frame pixels (“${moved.read}”)`);
-ok(/was /.test(moved.read ?? ""), "next to what the game measured, so the correction is readable against it");
-ok(moved.resetDisabled === false, "Reset becomes available");
-ok(moved.pending === 1, `and the whole session on one facet is still ONE entry (${moved.pending})`);
-
-// Back to the measurement before the rails are judged — see the note above.
-await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
-await p.waitForTimeout(300);
-
-// -- the RAILS resize it. Absolute values, so the eye can stay on the ellipse.
-const railSet = async (i, v) => {
-  await p.evaluate(([n, val]) => {
-    const s = document.querySelectorAll(".shadow-slider")[n];
-    s.value = String(val);
-    s.dispatchEvent(new Event("input", { bubbles: true }));
-  }, [i, v]);
-  await p.waitForTimeout(240);
-};
-const base = await look();
-console.log("rails:", JSON.stringify(base.sliders));
-ok(base.sliders.length === 2, `there are two rails — width and depth (${base.sliders.length})`);
-ok(base.sliders[0].v > 0 && base.sliders[0].max >= 32, `carrying the live numbers (w ${base.sliders[0].v} of ${base.sliders[0].max})`);
-await railSet(0, base.sliders[0].v + 18);
-const wider = await look();
-console.log("after W rail:", JSON.stringify({ read: wider.read, w: [base.ell.w, wider.ell?.w] }));
-ok(!!wider.ell && wider.ell.w >= base.ell.w + 28, `the W rail widens the drawn shadow (${base.ell.w} → ${wider.ell?.w}px on a 2x canvas)`);
-await railSet(1, wider.sliders[1].v + 12);
-const taller = await look();
-console.log("after H rail:", JSON.stringify({ read: taller.read, h: [wider.ell.h, taller.ell?.h] }));
-ok(!!taller.ell && taller.ell.h >= wider.ell.h + 18, `the H rail deepens it (${wider.ell.h} → ${taller.ell?.h}px)`);
-ok(/69\.0 × 32\.0 px/.test(taller.read ?? ""), `and the readout follows both (“${taller.read}”)`);
-// A widened ellipse must stay VISIBLE — clipped at the canvas rim he cannot
-// judge the shape he is dialling in.
-ok(taller.ell.x1 <= taller.canvas.w - 2 && taller.ell.x0 >= 1 && taller.ell.y1 <= taller.canvas.h - 2,
-  `the enlarged ellipse still fits inside the canvas (x ${taller.ell.x0}-${taller.ell.x1} of ${taller.canvas.w}, bottom ${taller.ell.y1} of ${taller.canvas.h})`);
-ok(taller.pending === 1, `and the two rails are still ONE entry (${taller.pending})`);
-
-// …BUT A LONG DRAG STILL TRAVELS. Past the fine zone the gain returns to 1:1,
-// so a badly-placed shadow is still one gesture, not five.
-await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
-await p.waitForTimeout(300);
-await padPush(180, 0);
-const far = await look();
-// Read the app's own FRAME-pixel report here, not the pixels: past ~28 frame
-// px the ellipse leaves the pinned canvas (which is sized for the corrections
-// he actually makes), so a pixel read saturates while the note keeps moving.
-const farGot = Number(/moved \+([\d.]+)/.exec(far.read ?? "")?.[1] ?? NaN);
-const expected = (60 * 0.3 + (180 - 60)) / 2;        // fine zone, then 1:1, at 2x
-console.log("long drag:", JSON.stringify({ pushedPx: 180, gotFramePx: farGot, expected }));
-ok(Math.abs(farGot - expected) <= 2, `180px of thumb still carries it ${farGot} frame px (fine zone then 1:1, expected ${expected})`);
-ok(farGot > 40, "so one gesture is enough to move a badly-placed shadow right across the creature");
-
-// AND IT IS REVERSIBLE. The gain is a function of DISTANCE from where the
-// finger went down, never of speed, so going out and coming back lands exactly
-// where it started — a velocity curve drifts, and that is unusable for placing
-// something by eye.
-await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
-await p.waitForTimeout(300);
-const preBack = await look();
-const { pt } = await padCentre();
-await p.mouse.move(pt.x, pt.y);
+const pad = await (await p.$(".shadow-pad")).boundingBox();
+await p.mouse.move(pad.x + pad.width / 2, pad.y + pad.height / 2);
 await p.mouse.down();
-for (const d of [30, 90, 150, 90, 30, 0]) await p.mouse.move(pt.x + d, pt.y);
+for (let i = 1; i <= 6; i++) await p.mouse.move(pad.x + pad.width / 2 + (90 * i) / 6, pad.y + pad.height / 2 + (90 * i) / 6);
 await p.mouse.up();
 await p.waitForTimeout(250);
-const back = await look();
-const drift = Math.abs(cxOf(back) - cxOf(preBack));
-console.log("out and back:", JSON.stringify({ drift: +drift.toFixed(2), read: back.read }));
-ok(drift <= 1, `bringing the thumb back to where it started puts the shadow back (${drift.toFixed(2)}px of drift)`);
-// …and leaves NO note. "dx 0, dy 0" would read to the games agent as "he
-// confirmed this one", a claim the gesture never made.
-console.log("no-op note:", JSON.stringify({ read: back.read }));
-ok(/measurement/.test(back.read ?? ""), `it reads as untouched again, with no zero-delta note left behind (“${back.read}”)`);
+const after = await probe();
+ok(after.rec.edited && after.rec.ax > before.rec.ax && after.rec.ay > before.rec.ay,
+  `the pad writes the record (anchor ${before.rec.ax},${before.rec.ay} → ${after.rec.ax},${after.rec.ay})`);
+ok(after.ex === before.ex && after.ey === before.ey && after.W === before.W && after.H === before.H,
+  "the ellipse itself did not move — the canvas anchor is pinned");
+const dxMoved = before.dx - after.dx, dyMoved = before.dy - after.dy;
+ok(Math.abs(dxMoved - (after.rec.ax - before.rec.ax) * after.s) <= 1 && dxMoved > 0,
+  `dragging the shadow right moved the MONSTER left, exactly (frame slid ${dxMoved}px for ${after.rec.ax - before.rec.ax} frame px)`);
+ok(Math.abs(dyMoved - (after.rec.ay - before.rec.ay) * after.s) <= 1 && dyMoved > 0,
+  "…and dragging it down moved the monster up — he tunes the monster around its own position");
 
-// DIRECT DRAG STILL WORKS (mouse/desktop) — the proxy is an addition, not a
-// replacement, and the gate would otherwise stop covering it.
-const preDrag = await look();
-await drag({ cx: preDrag.ell.cx, cy: preDrag.ell.cy }, -14, 0);
-const dragged = await look();
-ok(cxOf(dragged) < cxOf(preDrag) - 8,
-  `dragging the ellipse itself still moves it (${Math.round(cxOf(preDrag))} → ${Math.round(cxOf(dragged))})`);
-
-// ---------------------------------------------------------------- 3. per facet
-const dirs = await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].map((x) => x.textContent));
-const other = dirs.find((d) => d !== taller.dir);
-await p.evaluate((d) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === d).click(), other);
-await p.waitForTimeout(500);
-const otherDir = await look();
-console.log(`other direction (${other}):`, JSON.stringify({ read: otherDir.read, btnOn: otherDir.btnOn, ell: otherDir.ell && { w: otherDir.ell.w, cx: otherDir.ell.cx } }));
-ok(otherDir.btnOn && otherDir.barShown, "turning to another direction keeps the editor open");
-ok(/measurement/.test(otherDir.read ?? ""), `but shows ITS own shadow, unedited (“${otherDir.read}”)`);
-ok(otherDir.pending === 1, "and the note stayed on the direction it was made for");
-await drag({ cx: otherDir.ell.cx, cy: otherDir.ell.cy }, -12, 0);
-const two = await look();
-ok(two.pending === 2, `editing a second direction adds a second entry (${two.pending})`);
-
-const states = await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].map((x) => x.title));
-const otherState = states.find((s) => s !== two.state);
-if (otherState) {
-  await p.evaluate((t) => [...document.querySelectorAll(".seg-states button")].find((x) => x.title === t).click(), otherState);
-  await p.waitForTimeout(500);
-  const st2 = await look();
-  console.log(`other animation (${otherState}):`, JSON.stringify({ read: st2.read, dir: st2.dir }));
-  ok(/measurement/.test(st2.read ?? ""), "and another ANIMATION is unedited too — the unit is animation × direction");
+// the record follows across STATE and every DIRECTION, anchor never moving
+const seen = [];
+for (const st of ["idle", "walk"]) {
+  await clickState(st);
+  await p.waitForTimeout(250);
+  for (const d of ["S", "SW", "W", "NW", "N", "NE", "E", "SE"]) {
+    await clickDir(d);
+    await p.waitForTimeout(120);
+    seen.push(await probe());
+  }
 }
+const recs = new Set(seen.map((x) => JSON.stringify(x.rec)));
+const anchors = new Set(seen.map((x) => `${x.ex},${x.ey},${x.W},${x.H}`));
+ok(recs.size === 1, `one record across 2 states × 8 directions (${recs.size} distinct)`);
+ok(anchors.size === 1, `and one pinned anchor for all 16 views (${anchors.size} distinct) — the shadow never jumps`);
+const east = seen.find((x) => x.dir === "east"), south = seen.find((x) => x.dir === "south");
+const expE = myEllipse(after.rec.rx, after.rec.ry, "east"), expS = myEllipse(after.rec.rx, after.rec.ry, "south");
+ok(Math.abs(east.p - expE.p * east.s) < 0.1 && Math.abs(east.q - expE.q * east.s) < 0.1,
+  `the PAGE draws east with the same ground rotation the game will (${east.p}x${east.q} vs expected ${(expE.p * east.s).toFixed(1)}x${(expE.q * east.s).toFixed(1)})`);
+ok(Math.abs(south.p - expS.p * south.s) < 0.1, "and south matches too");
+const diag = seen.find((x) => x.dir === "south-east");
+ok(Math.abs(diag.theta - myEllipse(after.rec.rx, after.rec.ry, "south-east").theta) < 0.01,
+  `the diagonal facing is a genuinely rotated ellipse (θ ${diag.theta})`);
 
-// ---------------------------------------------------------------- 4. it commits
-await p.evaluate(() => [...document.querySelectorAll("#savebar button")].find((x) => /Commit/.test(x.textContent))?.click());
-await p.waitForTimeout(1200);
-const shadowPosts = posted.filter((x) => x.file === "tuning/shadow_notes");
-const set = shadowPosts[0]?.set ?? {};
-const keys = Object.keys(set);
-console.log("posted:", JSON.stringify(shadowPosts[0] ?? null).slice(0, 460));
-ok(shadowPosts.length === 1, `Commit posts the notes, on the live channel every other review rides (${posted.map((x) => x.file).join(", ") || "nothing"})`);
-ok(shadowPosts[0]?.file === "tuning/shadow_notes", "into its own document, so no verdict file is disturbed");
-ok(keys.length === 2, `one entry per edited facet (${keys.length})`);
-ok(keys.every((k) => new RegExp(`^${MON.path}#[a-z_0-9]+#[a-z-]+$`).test(k)),
-  `each keyed <monster>#<animation>#<direction> — the same unit the verdicts use (${keys.join(", ")})`);
-const e0 = set[keys[0]] ?? {};
-ok(Number.isFinite(e0.dx) && Number.isFinite(e0.dy), `carrying the correction as a delta (dx ${e0.dx}, dy ${e0.dy})`);
-ok(Number.isFinite(e0.w) && Number.isFinite(e0.h), `and the size he settled on (${e0.w} × ${e0.h})`);
-ok(e0.was && Number.isFinite(e0.was.cx) && Number.isFinite(e0.was.w),
-  `beside what the game drew before he touched it (was ${e0.was?.w} × ${e0.was?.h} at ${e0.was?.cx},${e0.was?.cy})`);
-ok(e0.frame && e0.frame.w > 0 && e0.frame.h > 0, `and the frame those pixels are measured in (${e0.frame?.w}×${e0.frame?.h})`);
-ok(typeof e0.updated_at === "string" && e0.updated_at.length > 10, "stamped with when it was made");
-// TRAINING DATA, NOT AN OVERRIDE. A note that only said "put it here" would
-// describe this one creature; the pair (was → now) is what generalises.
-const movedFar = Math.hypot(e0.dx, e0.dy);
-ok(movedFar > 0.5 || Math.abs(e0.w - e0.was.w) > 0.5 || Math.abs(e0.h - e0.was.h) > 0.5,
-  `the entry actually differs from the measurement it corrects (moved ${movedFar.toFixed(1)}px)`);
+// ---- 3. the sliders edit the ONE size --------------------------------------
+await clickState("idle");
+await clickDir("S");
+await p.waitForTimeout(200);
+await p.evaluate(() => {
+  const s = document.querySelectorAll(".shadow-slider")[0];
+  s.value = String(+s.value + 12);
+  s.dispatchEvent(new Event("input", { bubbles: true }));
+});
+await p.waitForTimeout(200);
+const grown = await probe();
+ok(Math.abs(grown.rec.rx - (after.rec.rx + 6)) < 0.3, `the W rail resizes the record (rx ${after.rec.rx} → ${grown.rec.rx})`);
+await clickDir("E");
+await p.waitForTimeout(150);
+const grownE = await probe();
+ok(Math.abs(grownE.rec.rx - grown.rec.rx) < 0.01, "…and east wears the same new size");
+await clickDir("S");
 
-// ---------------------------------------------------------------- 5. reset + off
-// Committing re-renders the page, so nothing about the editor is assumed from
-// here on — it is re-opened and re-aimed at the facet that carries the note.
-console.log("after commit:", JSON.stringify(await look().then((x) => ({ btnOn: x.btnOn, pending: x.pending, state: x.state, dir: x.dir }))));
-await p.evaluate((t) => [...document.querySelectorAll(".seg-states button")].find((x) => x.title === t)?.click(), on.state);
-await p.waitForTimeout(400);
-await p.evaluate((d) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent === d)?.click(), on.dir);
-await p.waitForTimeout(400);
-if (!(await look()).btnOn) { await press(); await p.waitForTimeout(300); }
-const kept = await look();
-console.log("back on the edited facet:", JSON.stringify({ state: kept.state, dir: kept.dir, read: kept.read, pending: kept.pending }));
-ok(/moved [+\u2212]/.test(kept.read ?? ""), `a committed note is still shown on its own facet (\u201c${kept.read}\u201d)`);
-ok(kept.pending === 0, "and it is no longer pending — the commit took it");
+// ---- 4. it COMMITS into tuning/monsters, never shadow_notes ---------------
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(700);
+ok(saves.length === 1 && saves[0].file === "tuning/monsters",
+  `Commit posted the monsters TUNING doc (${saves.map((s) => s.file).join(", ") || "nothing"})`);
+const entry = saves[0]?.set?.[MON.id];
+ok(!!entry?.shadow && ["rx", "ry", "ax", "ay"].every((k) => typeof entry.shadow[k] === "number"),
+  `and the entry carries the one shadow record (${JSON.stringify(entry?.shadow)})`);
+ok(Math.abs(entry.shadow.rx - grown.rec.rx) < 0.01 && Math.abs(entry.shadow.ay - grown.rec.ay) < 0.01,
+  "with exactly the numbers on screen");
+ok(!saves.some((s) => s.file === "tuning/shadow_notes"),
+  "the frozen shadow_notes doc was not written — the old system stays historical");
+
+// ---- 5. Reset drops the record ---------------------------------------------
 await p.evaluate(() => [...document.querySelectorAll(".shadow-bar button")].find((x) => /Reset/.test(x.textContent))?.click());
-await p.waitForTimeout(300);
-const cleared = await look();
-console.log("after Reset:", JSON.stringify({ read: cleared.read, pending: cleared.pending, resetDisabled: cleared.resetDisabled }));
-ok(/measurement/.test(cleared.read ?? ""), "Reset puts that facet back on the game's own measurement");
-ok(cleared.pending === 1, `and the removal is itself a change to commit, not a silent local undo (${cleared.pending})`);
-await press();
-await p.waitForTimeout(300);
-const done = await look();
-console.log("after switching off:", JSON.stringify({ btnOn: done.btnOn, barShown: done.barShown, editingClass: done.editingClass }));
-ok(!done.btnOn && !done.barShown && !done.editingClass, "pressing the button again puts the page back to a plain preview");
-ok(!!done.ell, "with the shadow still drawn \u2014 only the editing is gone");
+await p.waitForTimeout(250);
+const resetRec = await probe();
+ok(!resetRec.rec.edited, "Reset returns to untuned — the derived starting point");
+// A re-route (the staging upgrade) may have rebuilt the page with the editor
+// closed — the readout is only rendered while it is open, so re-open it.
+await p.evaluate(() => {
+  const btn = [...document.querySelectorAll("button")].find((x) => x.textContent.includes("Edit shadow"));
+  if (btn && !btn.classList.contains("on")) btn.click();
+});
+await p.waitForTimeout(250);
+const read = await p.evaluate(() => document.querySelector(".shadow-read")?.textContent ?? "");
+ok(/untuned/.test(read), `and the readout says so (${read.slice(0, 60)}…)`);
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(700);
+const second = saves[saves.length - 1];
+ok(saves.length === 2 && (second.set[MON.id] === null || !second.set[MON.id]?.shadow),
+  "committing the reset removes the record rather than storing a fake confirmation");
 
-// ---------------------------------------------------------------- 6. players only
-await ctx.clearCookies();
-const p2 = await ctx.newPage();
-await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
-await p2.addInitScript(() => { localStorage.removeItem("wiki-admin-token"); });
-await p2.goto(`${W}#/monsters/${MON.id}`, { waitUntil: "load" });
-await p2.waitForTimeout(1800);
-const pub = await p2.evaluate(() => ({
-  btn: [...document.querySelectorAll("button")].some((x) => /Edit nadir shadow/i.test(x.textContent)),
-  bar: !!document.querySelector(".shadow-bar:not(.hidden)"),
-  shadowChk: [...document.querySelectorAll("label.chk")].some((x) => /Show shadow/.test(x.textContent)),
-}));
-console.log("as a player:", JSON.stringify(pub));
-ok(!pub.btn && !pub.bar, "a signed-out visitor is offered none of it");
-ok(pub.shadowChk, "while the ordinary “Show shadow” view stays exactly as it was");
+// ---- 6. the public page has no editor ---------------------------------------
+const pub = await ctx.newPage();
+pub.on("pageerror", (e) => errs.push(String(e)));
+await pub.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
+await pub.addInitScript(() => localStorage.removeItem("wiki-admin-token"));
+await pub.goto(`${W}#/monsters/${MON.id}`, { waitUntil: "load" });
+await pub.waitForTimeout(1800);
+ok(await pub.evaluate(() => ![...document.querySelectorAll("button")].some((x) => x.textContent.includes("Edit shadow"))),
+  "a player sees the shadow but gets no editor");
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 await b.close();
-console.log(fails.length ? `\nFAILED ${fails.length}` : "\nAll good.");
+console.log(fails.length ? `\nSHADOW CHECKS FAILED (${fails.length})` : "\nALL SHADOW CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

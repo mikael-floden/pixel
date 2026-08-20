@@ -22,6 +22,9 @@ import {
   monsterDodge,
   type MonsterDodgeState,
   DEFAULT_MONSTER_RADIUS,
+  MonsterShadow,
+  shadowScreenEllipse,
+  shadowBodyRadius,
   startTrip,
   stepAutopilot,
   bodyStandoff,
@@ -94,7 +97,7 @@ import {
 } from "../nightlight";
 import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
 import { joinWorld } from "../net";
-import { bindLiveTuning, liveTuningSnapshot } from "../live";
+import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
 import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
@@ -851,6 +854,13 @@ interface MonsterAvatar {
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
   shadowH: number; // (footprint blended toward body width; see addMonster)
+  // THE GAME MASTER'S ONE TUNED SHADOW (wiki shadow editor, live/tuning/
+  // monsters `shadow` field). When set it replaces the whole legacy ground
+  // contract for this monster: the sprite anchors on the shadow's centre (one
+  // origin for every direction and animation, so the art rotates around it),
+  // the ellipse rotates with the facing, and the body radius derives from its
+  // size. undefined = legacy per-direction measured anchors, unchanged.
+  tuned?: MonsterShadow;
   radius: number; // physical body radius (wu) — the player's input-dodge clearance
   hoverPx: number; // intentional levitation (winged flyers) above the ground anchor
   pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
@@ -1010,6 +1020,7 @@ export class WorldScene extends Phaser.Scene {
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
+  private liveShadowUnsub?: () => void;
   // Rolling one-second window for the monster-SFX budget (see monsterSfx).
   private monSfxWindowAt = 0;
   private monSfxInWindow = 0;
@@ -3472,6 +3483,35 @@ export class WorldScene extends Phaser.Scene {
     // Live tuning pushes (monster stats + constant overrides edited in the
     // wiki) — sent on join and broadcast on every admin save / live/** push.
     bindLiveTuning(room);
+    // …and the SHADOW half of that tuning re-applies to monsters already on
+    // screen: committing a shadow in the wiki re-anchors the live world the
+    // same second, no rejoin. (Registered per room bind; the previous room's
+    // listener is dropped with it.)
+    this.liveShadowUnsub?.();
+    this.liveShadowUnsub = onLiveTuning(() => {
+      this.monsters.forEach((mv) => {
+        const t = monsterShadow(mv.kind) ?? undefined;
+        const K = MAP_GEOMETRY.dy / MAP_GEOMETRY.dx;
+        const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
+        mv.tuned = t;
+        if (t) {
+          if (mv.sprite.width > 0) {
+            mv.sprite.setOrigin(0.5 + t.ax / mv.sprite.width, 0.5 + t.ay / mv.sprite.height);
+          }
+          mv.shadowW = Math.ceil(2 * Math.max(t.rx, t.ry / K));
+          mv.shadowH = Math.ceil(2 * Math.max(t.ry, t.rx * K));
+          mv.radius = shadowBodyRadius(t.rx, t.ry);
+        } else {
+          // Tuning dropped: back to the legacy measured contract, rotation off.
+          const g = mv.ground?.[mv.dispDir];
+          if (g) mv.sprite.setOrigin(g.cx, g.f);
+          mv.shadow.setRotation(0);
+          mv.shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
+          mv.shadowH = def?.shadowH ?? Math.max(6, Math.round(mv.shadowW * 0.385));
+          mv.radius = def?.radius ?? DEFAULT_MONSTER_RADIUS;
+        }
+      });
+    });
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
@@ -3554,15 +3594,37 @@ export class WorldScene extends Phaser.Scene {
     const g0 = def?.ground?.[DEFAULT_DIRECTION];
     if (hasArt) sprite.setFrame(g0?.contact ?? 0);
     sprite.setOrigin(g0?.cx ?? 0.5, g0?.f ?? def?.artBottom ?? 0.85).setScale(1);
+    // THE TUNED SHADOW WINS. When the Game Master has placed this monster's
+    // one shadow in the wiki, its centre IS the monster's position: the sprite
+    // anchors there (one origin for every facing — the art rotates around the
+    // shadow, exactly as the wiki previewed it), the ellipse turns with the
+    // facing, and the body radius comes from its size. No record → the legacy
+    // measured pipeline below, untouched.
+    const tuned = monsterShadow(m.kind) ?? undefined;
+    if (tuned && sprite.width > 0) {
+      sprite.setOrigin(0.5 + tuned.ax / sprite.width, 0.5 + tuned.ay / sprite.height);
+    }
     // Nadir shadow sized from the ART, not the frame (manifest-emitted:
     // ground-contact footprint blended toward body width — frame-scaled
     // shadows ran huge on padded frames and tiny on slim bodies, RED/GREEN).
-    const shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
-    const shadowH = def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385));
+    // For a TUNED monster shadowW/H hold the ellipse's worst-case extents over
+    // all facings — they feed the off-screen cull margin, which must not
+    // shrink when the monster turns its long side on.
+    const shadowW = tuned
+      ? Math.ceil(2 * Math.max(tuned.rx, tuned.ry / (MAP_GEOMETRY.dy / MAP_GEOMETRY.dx)))
+      : (def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54));
+    const shadowH = tuned
+      ? Math.ceil(2 * Math.max(tuned.ry, tuned.rx * (MAP_GEOMETRY.dy / MAP_GEOMETRY.dx)))
+      : (def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385)));
+    const e0 = tuned ? shadowScreenEllipse(tuned.rx, tuned.ry, DEFAULT_DIRECTION) : null;
     const shadow = this.add
       .image(p0.x, p0.y, MONSTER_SHADOW_TEX)
       .setOrigin(0.5, 0.5)
-      .setDisplaySize(shadowW * MONSTER_SHADOW_SPREAD, shadowH * MONSTER_SHADOW_SPREAD);
+      .setDisplaySize(
+        (e0 ? e0.p * 2 : shadowW) * MONSTER_SHADOW_SPREAD,
+        (e0 ? e0.q * 2 : shadowH) * MONSTER_SHADOW_SPREAD,
+      );
+    if (e0) shadow.setRotation(e0.theta);
     const mv: MonsterAvatar = {
       sprite,
       shadow,
@@ -3579,7 +3641,11 @@ export class WorldScene extends Phaser.Scene {
       fy: m.y,
       shadowW,
       shadowH,
-      radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
+      tuned,
+      // "The size will be the monsters hit box" — the tuned ellipse decides
+      // the body radius the input-dodge slips around, same formula the server
+      // fights with (shared shadowBodyRadius).
+      radius: tuned ? shadowBodyRadius(tuned.rx, tuned.ry) : (def?.radius ?? DEFAULT_MONSTER_RADIUS),
       hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
       attackKey: def ? resolveMonsterAnim(def, "attack") : undefined,
@@ -3603,7 +3669,10 @@ export class WorldScene extends Phaser.Scene {
           })()
         : undefined,
     };
-    sprite.y = p0.y - mv.hoverPx;
+    // A tuned anchor already contains the hover gap — ay is tuned against the
+    // art with the creature floating where it floats — so only legacy monsters
+    // get the extra lift here.
+    sprite.y = p0.y - (mv.tuned ? 0 : mv.hoverPx);
     // Joining mid-fight must not replay a stale swing: start from the synced seq.
     mv.lastActionSeq = m.actionSeq ?? 0;
     mv.lastHp = m.hp;
@@ -5190,8 +5259,18 @@ export class WorldScene extends Phaser.Scene {
     // direction: idle strips are framed independently of walk (their own
     // stripDims + anchors), and per-direction margins differ after art
     // repairs. The feet stay planted through turns AND state changes.
+    //
+    // A TUNED monster keeps ONE origin instead — the shadow's centre — for
+    // every direction and state: the whole point of the tuned model is that
+    // the art rotates around that point, so a per-facing origin would undo it.
     const g = (!moving && mv.groundIdle?.[d]) || mv.ground?.[d];
-    if (g) mv.sprite.setOrigin(g.cx, g.f);
+    if (mv.tuned) {
+      if (mv.sprite.width > 0) {
+        mv.sprite.setOrigin(0.5 + mv.tuned.ax / mv.sprite.width, 0.5 + mv.tuned.ay / mv.sprite.height);
+      }
+    } else if (g) {
+      mv.sprite.setOrigin(g.cx, g.f);
+    }
     const idleKey = !moving && mv.idleKey ? monsterAnimKey(mv.kind, mv.idleKey, d) : null;
     if (moving || (idleKey && this.anims.exists(idleKey))) {
       // Walking → walk clip; stopped with idle art → the IDLE clip
@@ -6649,8 +6728,9 @@ export class WorldScene extends Phaser.Scene {
         mv.sprite.x = mv.lx + hx;
         // Winged flyers levitate hoverPx above the ground anchor; the nadir
         // shadow stays ON the ground (placeBodyShadow gets the hover as air
-        // height, so it shrinks/fades slightly — the bird pattern).
-        mv.sprite.y = mv.ly - mv.hoverPx + hy;
+        // height, so it shrinks/fades slightly — the bird pattern). A tuned
+        // anchor already contains the hover gap (see addMonster).
+        mv.sprite.y = mv.ly - (mv.tuned ? 0 : mv.hoverPx) + hy;
         // PER-FRAME drift compensation (the safe equivalent of the player
         // art's nadir postprocess — measured in the manifest, art untouched):
         // pin THIS frame's own body-mass origin-x so baked horizontal
@@ -6663,7 +6743,10 @@ export class WorldScene extends Phaser.Scene {
           ? undefined
           : (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
         const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
-        const ox = gd?.shift?.[fi];
+        // Per-frame body-mass re-pinning belongs to the LEGACY contract: a
+        // tuned monster's art moves inside its frame as the animation animates
+        // — that is real motion around the anchor, not drift to compensate.
+        const ox = mv.tuned ? undefined : gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
         const airPx = gd?.air?.[fi] ?? 0;
         // Damage float + blood + hp bar (RO: you SEE the number and the wound).
@@ -6674,23 +6757,36 @@ export class WorldScene extends Phaser.Scene {
         mv.lastHp = m.hp;
         this.updateMonsterHpBar(mv, m, id);
         this.resolveBodyDepth(mv, sLvl);
-        // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
-        // ~140px, its south one ~90 — one size can't fit both facings).
-        // ONE constant ellipse per monster (maintainer: no size changes on
-        // turns or walk<->idle) — soft smear comes from texture + spread.
-        const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
-        const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
-        this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
-        // The anchor is the CONTACT CENTROID (between the foot undersides);
-        // the front toes plant `sink` px below it. Lift the ellipse so its
-        // south rim kisses the toe line — but NEVER above the contact band
-        // (`up` + 3): a monolith's compact base keeps its ellipse centred on
-        // the base instead of floating half-a-height up the rock ("the big
-        // demon stone is flying", round 5).
-        mv.shadow.y -= Math.max(
-          0,
-          Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
-        );
+        if (mv.tuned) {
+          // THE TUNED ELLIPSE, TURNED WITH THE FACING. Rotated on the GROUND
+          // (shared shadowScreenEllipse — same math the wiki previewed), and
+          // centred exactly on the monster's position: no toe-kiss, no contact
+          // heuristics. Where it sits IS what the Game Master placed.
+          const e = shadowScreenEllipse(mv.tuned.rx, mv.tuned.ry, mv.dispDir);
+          this.placeBodyShadow(
+            mv, targetElev, mv.hoverPx + airPx,
+            e.p * 2 * MONSTER_SHADOW_SPREAD, e.q * 2 * MONSTER_SHADOW_SPREAD,
+          );
+          mv.shadow.setRotation(e.theta);
+        } else {
+          // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
+          // ~140px, its south one ~90 — one size can't fit both facings).
+          // ONE constant ellipse per monster (maintainer: no size changes on
+          // turns or walk<->idle) — soft smear comes from texture + spread.
+          const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
+          const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
+          this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
+          // The anchor is the CONTACT CENTROID (between the foot undersides);
+          // the front toes plant `sink` px below it. Lift the ellipse so its
+          // south rim kisses the toe line — but NEVER above the contact band
+          // (`up` + 3): a monolith's compact base keeps its ellipse centred on
+          // the base instead of floating half-a-height up the rock ("the big
+          // demon stone is flying", round 5).
+          mv.shadow.y -= Math.max(
+            0,
+            Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
+          );
+        }
         // A hopping body's shadow travels WITH it — placeBodyShadow anchors on
         // the ease state (mv.lx), which is deliberately free of the surge.
         if (hx || hy) mv.shadow.setPosition(mv.shadow.x + hx, mv.shadow.y + hy);

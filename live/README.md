@@ -34,6 +34,20 @@ paths** — changing monster stats or rating a sound never restarts the game.
   stats (hp, damage, speed, aggro radius, attack cooldown, xp, scale) +
   loot tables. **Consumed by the game** (server + clients, via the live
   channel). Edited in the wiki's monster pages (admin only).
+  - A per-monster entry may also carry the monster's **one shadow**
+    (2026-08-20, replacing the per-facet shadow notes below):
+    `shadow: { rx, ry, ax, ay }` in **frame pixels at scale 1** (art px ≈ wu).
+    `rx`/`ry` are the ellipse's semi-axes AS SEEN FACING SOUTH; `ax`/`ay` put
+    the ellipse's centre relative to the FRAME CENTRE (+x right, +y down).
+    One record for every animation and every direction. The game rotates the
+    ellipse by the facing's GROUND angle (`shadowScreenEllipse` in
+    games2/shared — the same function the wiki previews with), anchors the
+    sprite on the ellipse's centre (that centre IS the monster's world
+    position, so the art rotates around it on turns), and derives the body
+    radius from the size (`shadowBodyRadius` — "the size will be the monsters
+    hit box"). **No record = the legacy art-measured anchors, untouched**, so
+    the game switches monster by monster as the Game Master tunes. Written
+    from the wiki's monster pages ("✎ Edit shadow").
 - `live/tuning/constants.json` — `pixel-wiki-tuning-constants@1`. Overrides
   for `games2/shared` gameplay constants, keyed by exported name.
   **Consumed by the game**. Edited in the wiki's Tuning page.
@@ -42,8 +56,13 @@ paths** — changing monster stats or rating a sound never restarts the game.
   **Consumed by the composer (games-audio) agent**, which wires the assignment
   and deletes the acted-on entry in the same commit — a request is a message,
   not a record. Written from the wiki's Sound Effects page.
-- `live/tuning/shadow_notes.json` — `pixel-wiki-shadow-notes@1`. Where the
-  Game Master says a monster's **nadir shadow** belonged, one entry per
+- `live/tuning/shadow_notes.json` — `pixel-wiki-shadow-notes@1`. **FROZEN
+  2026-08-20** — the wiki no longer writes it; the per-monster `shadow` field
+  in `tuning/monsters.json` above replaced it ("just a single shadow size for
+  the entire monster … rotate the shadow around the center using the current
+  monster direction"). The entries below remain as the training data they
+  were. Historically: where the Game Master said a monster's **nadir shadow**
+  belonged, one entry per
   `<monster path>#<animation>#<direction>` — the same unit the facet verdicts
   and the regeneration loop use. **Consumed by the games agent, as TRAINING
   DATA** (maintainer 2026-08-15: "it's not a 'fix this shadow only' feature.

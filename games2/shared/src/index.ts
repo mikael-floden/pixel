@@ -184,6 +184,67 @@ export const LEVEL_PX = 16;
 // Top-diamond height in px (apex→bottom); tiles2 top is 30px on a 64px tile.
 export const DIAMOND_H = 30;
 
+// --- The monster's ONE tuned shadow -------------------------------------------
+// Maintainer 2026-08-20: "just a single shadow size for the entire monster …
+// The trick is to rotate the shadow around the center using the current
+// monster direction. The center of the shadow will be the monsters position.
+// The size will be the monsters hit box."
+//
+// The record lives INSIDE the monster's entry in live/tuning/monsters.json
+// (the wiki's shadow editor writes it):
+//   shadow: { rx, ry, ax, ay }        — frame px at scale 1 (art px ≈ wu)
+//   rx, ry  semi-axes of the ellipse AS SEEN FACING SOUTH.
+//   ax, ay  the shadow centre — the monster's world position — relative to the
+//           FRAME CENTRE, +x right +y down. One record for every direction and
+//           every animation; a monster with no record stays on the legacy
+//           per-direction measured anchors.
+//
+// THE ROTATION IS ON THE GROUND, NOT THE SCREEN. The iso view squashes
+// ground-vertical by ISO_DY/ISO_DX; rotating the drawn ellipse in screen space
+// would put that squash on the wrong axis the moment the monster turns. So:
+// unsquash the tuned depth, rotate by the facing's ground angle, re-squash —
+// and hand back the resulting ellipse as radii + a screen rotation, which is
+// what both Phaser (setRotation + setDisplaySize) and canvas can draw.
+// wiki/site/wiki.js carries the same function for the editor;
+// wiki/tools/check-shadow.mjs holds the two implementations equal.
+export type MonsterShadow = { rx: number; ry: number; ax: number; ay: number };
+export function readMonsterShadow(o: unknown): MonsterShadow | null {
+  const t = (o as { shadow?: Record<string, unknown> } | undefined)?.shadow;
+  if (!t) return null;
+  const n = (v: unknown) => (typeof v === "number" && isFinite(v) ? v : null);
+  const rx = n(t.rx), ry = n(t.ry), ax = n(t.ax), ay = n(t.ay);
+  return rx !== null && ry !== null && ax !== null && ay !== null && rx > 0 && ry > 0
+    ? { rx, ry, ax, ay }
+    : null;
+}
+const SHADOW_DIR_VEC: Record<string, [number, number]> = {
+  south: [0, 1], "south-west": [-1, 1], west: [-1, 0], "north-west": [-1, -1],
+  north: [0, -1], "north-east": [1, -1], east: [1, 0], "south-east": [1, 1],
+};
+/** The screen ellipse for a facing — radii p ≥ q and a rotation — from the
+ *  south-tuned (rx, ry). Pure; safe to call per frame. */
+export function shadowScreenEllipse(rx: number, ry: number, dir: string): { p: number; q: number; theta: number } {
+  const K = ISO_DY / ISO_DX;
+  const [vx, vy] = SHADOW_DIR_VEC[dir] ?? [0, 1];
+  const a = Math.atan2(vx, vy / K); // the facing's angle on the GROUND
+  const ryg = ry / K;               // the tuned depth, unsquashed
+  // scale(1,K) · rot(a) · diag(rx, ry/K), applied to a unit circle — then the
+  // closed-form 2×2 SVD turns the affine circle back into radii + rotation.
+  const m00 = Math.cos(a) * rx, m01 = -Math.sin(a) * ryg;
+  const m10 = K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
+  const E = (m00 + m11) / 2, F = (m00 - m11) / 2, G = (m10 + m01) / 2, H = (m10 - m01) / 2;
+  const Q = Math.hypot(E, H), R = Math.hypot(F, G);
+  return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
+}
+/** "The size will be the monsters hit box": the body radius (wu) the server
+ *  fights/separates/targets with, from the tuned ellipse — the mean of the
+ *  GROUND semi-axes (rx across, ry/K along), because the sim works in circles.
+ *  Clamped to the range the art-measured radii live in. */
+export function shadowBodyRadius(rx: number, ry: number): number {
+  const K = ISO_DY / ISO_DX;
+  return Math.min(80, Math.max(3, (rx + ry / K) / 2));
+}
+
 // Screen-speed calibration: the returned world vector is scaled so the
 // PROJECTED on-screen speed is identical in every direction (the projection
 // compresses vertical by ISO_DY/ISO_DX ≈ 2.5×, so equal world speeds would

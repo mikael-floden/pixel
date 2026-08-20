@@ -660,73 +660,116 @@ async function discardAll() {
   toast("Cancelled — your uncommitted changes are back to what the game has.");
 }
 
-/* ------------------------------------------------- nadir shadow notes (admin)
- * "It has been really hard to get the nadir shadow correct in the game ... a
- * button that makes it easy to drag and resize the nadir shadow on a monster
- * direction/animation, and commit them all the same way approve/reject
- * commits" (maintainer 2026-08-15). Explicitly NOT a per-monster override:
- * "the game agent will use this data to improve the shadow placement on all
- * further monsters ... it's a way to learn how the shadows should be placed."
+/* ---------------------------------------------- the monster's ONE shadow (admin)
+ * Maintainer 2026-08-20, replacing the per-facet shadow notes: "Lets say you
+ * have something long and thin. I can create this shadow in S, N, E and W. But
+ * not the other monster directions. So what I want is just a single shadow
+ * size for the entire monster ... if I change the size in S animation it will
+ * change for all directions in all animations. The trick is to rotate the
+ * shadow around the center using the current monster direction. The goal is to
+ * get the game to use this shadow and the center of the shadow will be the
+ * monsters position. The size will be the monsters hit box."
  *
- * So an entry records BOTH sides of the correction — what the wiki drew from
- * the art-measured metrics, and where he put it — in FRAME PIXELS at scale 1,
- * the same units monsters.json speaks. Anyone learning from this needs the
- * before as much as the after, and a note that only carried the after would be
- * unreadable the moment the measurement changes.
- */
-const SHADOW_KEY = "tuning/shadow_notes";
-const shadowNotes = () => state.tuning.shadow_notes ?? (state.tuning.shadow_notes = { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} });
-const shadowNoteId = (entity, st, dir) => `${entity.path}#${st}#${dir}`;
-const shadowNote = (entity, st, dir) => shadowNotes().overrides?.[shadowNoteId(entity, st, dir)] ?? null;
-/** The ellipse the wiki draws with no note: the game's own numbers. */
-function shadowBase(entity, clip) {
-  const fh = clip?.fh ?? entity.frameH ?? 64;
-  const bb = clip?.bb ?? [0, 0, clip?.fw ?? 64, fh];
+ * So the record is ONE ellipse per monster — not per state, not per direction
+ * — and it lives INSIDE the monster's entry in live/tuning/monsters.json,
+ * because it is game tuning exactly like max_hp: the game draws its shadow
+ * from it, anchors the sprite on its centre, and derives the body radius from
+ * its size. The old pixel-wiki-shadow-notes@1 doc is FROZEN as the training
+ * data it always was; the wiki no longer writes it.
+ *
+ *   shadow: { rx, ry, ax, ay }     — frame px at scale 1 (art px ≈ wu)
+ *
+ *   rx, ry  semi-axes of the ellipse AS SEEN FACING SOUTH.
+ *   ax, ay  the shadow centre — which IS the monster's world position —
+ *           relative to the FRAME CENTRE, +x right, +y down. Centre-relative
+ *           on purpose: it stays meaningful whatever padding the frame has,
+ *           and it is the point the art rotates around when the facing turns.
+ *
+ * THE ROTATION IS ON THE GROUND, NOT ON THE SCREEN. The iso view squashes
+ * ground-vertical by K = ISO_DY/ISO_DX (15/32 — data.iso, the game's own
+ * projection). Rotating the drawn ellipse in screen space would put the squash
+ * on the wrong axis the moment the monster turns: a long-thin body tuned at
+ * S as (rx 10, ry 30) must show E as (ry/K, rx·K) ≈ (64, 4.7) — longer AND
+ * flatter — not the naive quarter-turn (30, 10). So: unsquash the tuned depth,
+ * rotate by the facing's GROUND angle, re-squash. The affine of a circle is an
+ * ellipse again; the closed-form decomposition below turns it into radii + a
+ * screen rotation that canvas and Phaser can both draw directly.
+ * games2/shared/src/monsters.ts carries the same function for the game —
+ * check-shadow.mjs holds the two implementations equal. */
+const MTUNE_KEY = "tuning/monsters";
+const isoK = () => (state.data.iso?.dy ?? 15) / (state.data.iso?.dx ?? 32);
+const DIR_VEC = {
+  south: [0, 1], "south-west": [-1, 1], west: [-1, 0], "north-west": [-1, -1],
+  north: [0, -1], "north-east": [1, -1], east: [1, 0], "south-east": [1, 1],
+};
+/** The screen ellipse for a facing: radii p ≥ q and a rotation, from the
+ *  south-tuned (rx, ry). Pure function of the record and the direction. */
+function shadowEllipse(rx, ry, dir) {
+  const K = isoK();
+  const [vx, vy] = DIR_VEC[dir] ?? [0, 1];
+  const a = Math.atan2(vx, vy / K);      // the facing's angle on the GROUND
+  const ryg = ry / K;                    // the tuned depth, unsquashed
+  // scale(1,K) · rot(a) · diag(rx, ry/K), applied to a unit circle:
+  const m00 = Math.cos(a) * rx, m01 = -Math.sin(a) * ryg;
+  const m10 = K * Math.sin(a) * rx, m11 = K * Math.cos(a) * ryg;
+  const E = (m00 + m11) / 2, F = (m00 - m11) / 2, G = (m10 + m01) / 2, H = (m10 - m01) / 2;
+  const Q = Math.hypot(E, H), R = Math.hypot(F, G);
+  return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
+}
+/** The widest/deepest the ellipse gets over ALL facings — the canvas box uses
+ *  these so turning the monster never resizes anything. */
+const shadowExtents = (rx, ry) => {
+  const K = isoK();
+  return { x: Math.max(rx, ry / K), y: Math.max(ry, rx * K) };
+};
+/** Starting point for an untuned monster, from the measured art metrics — the
+ *  same numbers the game's legacy shadow uses, mapped into the new record so
+ *  his tuning starts from what he already sees in game. */
+function shadowDefault(entity) {
+  const fw = entity.frameW ?? 64, fh = entity.frameH ?? 64;
+  const w = entity.shadow?.w ?? Math.round(fw * 0.54);
+  const hh = entity.shadow?.h ?? Math.max(6, Math.round(w * 0.385));
   return {
-    w: entity.shadow?.w ?? 0, h: entity.shadow?.h ?? 0,
-    // Where the ellipse sits, in the SAME frame pixels: x is the content
-    // box's centre, y the art-measured foot line.
-    cx: (bb[0] + bb[2]) / 2,
-    cy: (entity.artBottom ?? 1) * fh + (entity.hoverPx ?? 0),
+    rx: +(w / 2).toFixed(2), ry: +(hh / 2).toFixed(2),
+    ax: 0,
+    ay: +(((entity.artBottom ?? 0.85) * fh + (entity.hoverPx ?? 0)) - fh / 2).toFixed(2),
   };
 }
-/** Base plus his correction — what to draw. */
-function shadowNow(entity, clip, st, dir) {
-  const base = shadowBase(entity, clip);
-  const n = shadowNote(entity, st, dir);
-  if (!n) return { ...base, edited: false };
-  return { w: n.w ?? base.w, h: n.h ?? base.h, cx: base.cx + (n.dx ?? 0), cy: base.cy + (n.dy ?? 0), edited: true };
+/** The record to draw: the tuned one, else the derived default. `edited` says
+ *  which — and for the GAME it is the whole switch: no record, and it stays on
+ *  its legacy per-direction anchors. */
+function shadowRec(entity) {
+  const t = state.tuning.monsters?.monsters?.[entity.id]?.shadow;
+  if (t && [t.rx, t.ry, t.ax, t.ay].every((n) => typeof n === "number" && isFinite(n))) {
+    return { rx: t.rx, ry: t.ry, ax: t.ax, ay: t.ay, edited: true };
+  }
+  return { ...shadowDefault(entity), edited: false };
 }
-function setShadowNote(entity, clip, st, dir, patch) {
-  const doc = shadowNotes();
-  const id = shadowNoteId(entity, st, dir);
-  const base = shadowBase(entity, clip);
-  // A NOTE THAT CORRECTS NOTHING IS NOT A NOTE. Dragging out and coming back —
-  // which the pad's fine zone invites, since a nudge is now a real gesture —
-  // otherwise stored `dx 0, dy 0, w = was.w, h = was.h`, and the games agent
-  // would read that as "he confirmed this one", a claim he never made. There
-  // is no gesture for confirming a shadow, so a no-op can only be an accident:
-  // it drops the entry instead, which also un-does a committed note when he
-  // decides the measurement was right after all.
-  const noop = patch && Math.abs(patch.cx - base.cx) < 0.05 && Math.abs(patch.cy - base.cy) < 0.05
-    && Math.abs(patch.w - base.w) < 0.05 && Math.abs(patch.h - base.h) < 0.05;
-  if (!patch || noop) delete (doc.overrides ??= {})[id];
-  else {
-    (doc.overrides ??= {})[id] = {
-      // What he moved it to, as a delta from the measurement — a delta is what
-      // generalises; an absolute position only describes this one creature.
-      dx: +(patch.cx - base.cx).toFixed(2), dy: +(patch.cy - base.cy).toFixed(2),
-      w: +patch.w.toFixed(2), h: +patch.h.toFixed(2),
-      // …and what the game drew before he touched it, so the correction can be
-      // read without re-deriving the metrics of the day.
-      was: { w: +base.w.toFixed(2), h: +base.h.toFixed(2), cx: +base.cx.toFixed(2), cy: +base.cy.toFixed(2) },
-      frame: { w: clip?.fw ?? entity.frameW ?? null, h: clip?.fh ?? entity.frameH ?? null },
-      updated_at: new Date().toISOString(),
+/** Write (or with null, drop) the monster's one shadow. Unlike the old notes
+ *  there is NO no-op collapse: a record equal to the default is still a
+ *  DECISION — it is what flips the game from its legacy anchors to this one. */
+function setShadowRec(entity, patch) {
+  const doc = state.tuning.monsters;
+  if (!doc) return;
+  const monsters = (doc.monsters ??= {});
+  if (!patch) {
+    const e = monsters[entity.id];
+    if (e) {
+      delete e.shadow;
+      // An entry that held nothing else must not survive as {} — the stats
+      // editor reads bare existence as "tuned".
+      if (!Object.keys(e).length) delete monsters[entity.id];
+    }
+  } else {
+    const e = (monsters[entity.id] ??= {});
+    e.shadow = {
+      rx: Math.max(1, +(+patch.rx).toFixed(2)), ry: Math.max(1, +(+patch.ry).toFixed(2)),
+      ax: +(+patch.ax).toFixed(2), ay: +(+patch.ay).toFixed(2),
     };
   }
   doc.updated_at = new Date().toISOString();
-  touch(SHADOW_KEY, id);
-  markDirty(SHADOW_KEY);
+  touch(MTUNE_KEY, entity.id);
+  markDirty(MTUNE_KEY);
 }
 
 /* --------------------------------------------------------------- player */
@@ -792,34 +835,34 @@ function makePlayer(entity, kind, opts = {}) {
   canvas.addEventListener("pointerdown", (ev) => {
     if (!cur.editShadow || !shadowHit) return;
     const p2 = toCanvas(ev);
-    const { ex, ey, rx, ry } = shadowHit;
-    const near = (hx, hy) => Math.abs(p2.x - hx) <= GRIP && Math.abs(p2.y - hy) <= GRIP;
-    const sh = shadowNow(entity, clip, cur.state, cur.dir);
-    let mode = null;
-    if (near(ex + rx, ey)) mode = "w";
-    else if (near(ex, ey + ry)) mode = "h";
-    else if (((p2.x - ex) / Math.max(1, rx)) ** 2 + ((p2.y - ey) / Math.max(1, ry)) ** 2 <= 1.6) mode = "move";
-    if (!mode) return;
+    // Inside-the-ellipse test, in the ellipse's own rotated frame — the shadow
+    // turns with the facing now, so the hit region has to turn with it.
+    const { ex, ey, p: sp, q: sq, theta } = shadowHit;
+    const c = Math.cos(theta), si = Math.sin(theta);
+    const lx = (p2.x - ex) * c + (p2.y - ey) * si;
+    const ly = -(p2.x - ex) * si + (p2.y - ey) * c;
+    if ((lx / Math.max(1, sp)) ** 2 + (ly / Math.max(1, sq)) ** 2 > 1.6) return;
     ev.preventDefault();
     canvas.setPointerCapture(ev.pointerId);
-    // The origin is kept in CLIENT coordinates, with the canvas→frame scale
-    // captured once: growing the ellipse grows the CANVAS (so the grip stays
-    // reachable), which moves the element under the finger. A drag measured in
-    // canvas pixels would read that resize as pointer movement and run away.
+    // MOVE only — resizing lives on the rails, where an absolute value can be
+    // read; a resize grip on a rotated ellipse pulls in a direction that is
+    // neither of the record's axes. The origin is kept in CLIENT coordinates
+    // with the canvas→frame scale captured once (a drag measured in canvas
+    // pixels would read any canvas resize as pointer movement and run away).
     const r = canvas.getBoundingClientRect();
-    shadowDrag = { mode, sx: ev.clientX, sy: ev.clientY, from: { ...sh }, k: (canvas.width / (r.width || 1)) / (shadowHit.s || 1) };
+    shadowDrag = { sx: ev.clientX, sy: ev.clientY, from: shadowRec(entity), k: (canvas.width / (r.width || 1)) / (shadowHit.s || 1) };
   });
   canvas.addEventListener("pointermove", (ev) => {
     if (!shadowDrag) return;
     const dxF = (ev.clientX - shadowDrag.sx) * shadowDrag.k;   // frame px
     const dyF = (ev.clientY - shadowDrag.sy) * shadowDrag.k;
     const f = shadowDrag.from;
-    const next = shadowDrag.mode === "move"
-      ? { ...f, cx: f.cx + dxF, cy: f.cy + dyF }
-      : shadowDrag.mode === "w"
-        ? { ...f, w: Math.max(2, f.w + dxF * 2) }
-        : { ...f, h: Math.max(2, f.h + dyF * 2) };
-    setShadowNote(entity, clip, cur.state, cur.dir, next);
+    // Dragging "the shadow" right stores ax+ — and on screen the MONSTER
+    // slides left while the ellipse holds still, because the ellipse centre is
+    // the monster's world position and the sprite is what hangs off it. That
+    // is his spec verbatim: "when I move the shadow what really should happen
+    // is the monster should move the opposite direction."
+    setShadowRec(entity, { ...f, ax: f.ax + dxF, ay: f.ay + dyF });
     onShadowEdit?.();
     refreshShadowBar();
     draw();
@@ -925,6 +968,30 @@ function makePlayer(entity, kind, opts = {}) {
       if (x1 >= x0 && y1 >= y0) target.bb = [x0, y0, x1 + 1, y1 + 1];
     } catch { /* tainted canvas — fall back to whole-frame, as before */ }
   }
+  // THE ANCHOR LAYOUT NEEDS THE WHOLE UNION, so when this monster reaches the
+  // page unmeasured, healing only the clip on screen is not enough: the other
+  // animations would still count as padded frames. The look-ahead has already
+  // warmed (decoded) this creature's every strip, so measure whichever of them
+  // are ready — and try again shortly for the stragglers the warm pump is
+  // still fetching. Runs only while something is actually unmeasured.
+  let healTimer = null;
+  function healSiblings() {
+    if (kind !== "monster") return;
+    let healed = 0, missing = 0;
+    for (const a of Object.values(entity.animations ?? {})) {
+      for (const c of Object.values(a.dirs ?? {})) {
+        if (!c || c.bb || !c.strip) continue;
+        const im = warmHit(assetUrl(c.strip));
+        if (!im) { missing++; continue; }
+        const cfw = c.fw ?? entity.frameW ?? 64, cfh = c.fh ?? entity.frameH ?? 64;
+        const n = Math.max(1, Math.min(c.frames ?? 1, Math.floor(im.naturalWidth / cfw) || 1));
+        selfMeasure(c, Array.from({ length: n }, (_, i) => [im, i * cfw]), cfw, cfh);
+        if (c.bb) healed++; else missing++;
+      }
+    }
+    if (healed) draw();
+    if (missing && !healTimer) healTimer = setTimeout(() => { healTimer = null; healSiblings(); }, 700);
+  }
   function loadClip() {
     clip = clipFor();
     img = null; frameImgs = [];
@@ -936,7 +1003,11 @@ function makePlayer(entity, kind, opts = {}) {
       const url = assetUrl(target.strip);
       const ready = (im) => {
         const n = Math.max(1, Math.min(target.frames ?? 1, Math.floor(im.naturalWidth / fw) || 1));
+        const had = !!target.bb;
         selfMeasure(target, Array.from({ length: n }, (_, i) => [im, i * fw]), fw, fh);
+        // A heal on the visible clip means the whole entity is unmeasured —
+        // pull the rest of its clips up to measured too (see healSiblings).
+        if (!had && target.bb) healSiblings();
         draw();
       };
       const hit = warmHit(url);
@@ -1004,44 +1075,96 @@ function makePlayer(entity, kind, opts = {}) {
     if (on) overflowNote.textContent =
       `Wider than the screen at 2× — swipe the picture sideways to see it all, or tap 1× to fit ${Math.round(over)}px.`;
   }
+  // The union of every clip's content box — ONE box for the whole monster, so
+  // the anchor-true layout below cannot move between animations or directions.
+  // (Per-clip bb varies with the pose; a canvas derived from it would make the
+  // shadow line jump exactly the way he said it must not.)
+  //
+  // A FUNCTION, not a constant: art that landed after the last bounds build
+  // reaches this player with no bb and SELF-MEASURES as its strips decode
+  // (selfMeasure below, plus healSiblings for the rest of the entity), and the
+  // union has to grow with those heals or an unmeasured monster would lay out
+  // by its padded frame — the scrollbar bug this crop exists to kill.
+  const unionBB = () => {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, any = false;
+    for (const a of Object.values(entity.animations ?? {})) {
+      for (const c of Object.values(a.dirs ?? {})) {
+        if (!c?.bb) continue;
+        any = true;
+        x0 = Math.min(x0, c.bb[0]); y0 = Math.min(y0, c.bb[1]);
+        x1 = Math.max(x1, c.bb[2]); y1 = Math.max(y1, c.bb[3]);
+      }
+    }
+    return any ? [x0, y0, x1, y1] : [0, 0, entity.frameW ?? 64, entity.frameH ?? 64];
+  };
+  // The box the editor froze when it opened — the canvas must not resize while
+  // he is dragging (measured 2026-08-15: a resizing canvas slid the art under
+  // his thumb and halved every correction). Frozen from the record at entry
+  // plus ROOM of travel on every side; cleared when the editor closes.
+  let editBox = null;
+  const EDIT_ROOM = 30;                              // frame px, every side
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
     const s = cur.zoom || (state.data.artScale || 2);
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
-    // A hovering creature (butterfly_dragon) floats hoverPx above the ground,
-    // so its shadow sits that much BELOW its foot line.
-    const hover = (entity.hoverPx ?? 0) * s;
-    const foot = (entity.artBottom ?? 1) * fh;          // ground line, frame px
-    const showShadow = cur.shadow && entity.shadow;
-    const shadowY = (foot - bb[1]) * s + hover;
-    const shNow = showShadow ? shadowNow(entity, clip, cur.state, cur.dir) : null;
-    const shBase = showShadow ? shadowBase(entity, clip) : null;
-    const offX = shNow ? (shNow.cx - shBase.cx) * s : 0, offY = shNow ? (shNow.cy - shBase.cy) * s : 0;
-    // THE CANVAS MUST NOT RESIZE WHILE HE IS EDITING. The stage centres the
-    // canvas, so a canvas that grows or shrinks with the ellipse drags the
-    // MONSTER along with it: measured, a 16px push up moved the shadow only 8px
-    // on screen (the canvas shed 16px of height, the re-centring gave 8 back)
-    // and the art slid under his thumb the whole time. So in edit mode the box
-    // is derived from the CLIP ALONE — the frame's width, and depth enough for
-    // the deepest shadow the rails can dial — which is constant for as long as
-    // he stays on this animation and direction. Out of edit mode it still hugs
-    // the drawn ellipse, so an ordinary preview is unchanged.
-    // The reserved box is the measured ellipse plus SLACK — not the whole
-    // frame, which is mostly padding (cropping it away is why this viewer
-    // exists) and which left the creature marooned in a screen-wide
-    // checkerboard. The slack is sized off his own corrections: the first 25
-    // notes moved the ellipse by up to 12.5px and at most doubled its depth.
-    const ROOM = 28;                                  // frame px, every side
-    const boxW = shBase ? Math.max(shBase.w + 2 * ROOM, shBase.w * 1.6) : 0;
-    const boxH = shBase ? Math.max(shBase.h + 2 * ROOM, shBase.h * 2.2) : 0;
-    const shPad = cur.editShadow ? GRIP : 2;
-    const wantW = Math.ceil(cur.editShadow
-      ? Math.max(cw * s, boxW * s) + 2 * shPad
-      : Math.max(cw * s, shNow ? 2 * (Math.abs(offX) + (shNow.w * s) / 2 + shPad) : 0));
-    const wantH = Math.ceil(cur.editShadow
-      ? Math.max(ch * s, shadowY + (boxH / 2) * s + shPad)
-      : Math.max(ch * s, shNow ? shadowY + offY + (shNow.h * s) / 2 + shPad : 0));
+    const showShadow = cur.shadow && kind === "monster";
+    /* ---- THE ANCHOR-TRUE LAYOUT (shadow shown) --------------------------
+     * Everything is placed at a fixed offset from the ANCHOR — the shadow's
+     * centre, the point the game will stand this monster on. The box is
+     * derived from the union content box and the ellipse's worst-case
+     * extents over ALL facings, so:
+     *   - turning the monster re-rotates the ellipse IN PLACE and the art
+     *     appears to rotate around it, exactly as it will in game;
+     *   - switching animations moves nothing;
+     *   - horizontally the anchor sits at the canvas centre (his spec:
+     *     "the shadow will pick the center"), so an ax drag slides the
+     *     MONSTER the other way;
+     *   - vertically the box hugs the monster (never "the monster rendered
+     *     so far up"), and the shadow line lands wherever ay puts it — at
+     *     the SAME canvas y for every clip.
+     */
+    let sh = null, el = null, anchorX = 0, anchorY = 0, dx = 0, dy = 0;
+    let wantW, wantH;
+    if (showShadow) {
+      const uBB = unionBB();
+      sh = shadowRec(entity);
+      el = shadowEllipse(sh.rx, sh.ry, cur.dir);
+      const A = { x: fw / 2 + sh.ax, y: fh / 2 + sh.ay };      // anchor, frame px
+      const ext = shadowExtents(sh.rx, sh.ry);
+      const pad = 6;
+      let box;
+      if (cur.editShadow) {
+        if (!editBox) {
+          const halfW = Math.max(A.x - uBB[0], uBB[2] - A.x, ext.x) + pad + EDIT_ROOM;
+          editBox = {
+            left: -halfW, right: halfW,
+            top: Math.min(uBB[1] - A.y, -ext.y) - pad - EDIT_ROOM,
+            bot: Math.max(uBB[3] - A.y, ext.y) + pad + EDIT_ROOM,
+          };
+        }
+        box = editBox;
+      } else {
+        const halfW = Math.max(A.x - uBB[0], uBB[2] - A.x, ext.x) + pad;
+        box = {
+          left: -halfW, right: halfW,
+          top: Math.min(uBB[1] - A.y, -ext.y) - pad,
+          bot: Math.max(uBB[3] - A.y, ext.y) + pad,
+        };
+      }
+      wantW = Math.ceil((box.right - box.left) * s);
+      wantH = Math.ceil((box.bot - box.top) * s);
+      anchorX = -box.left * s;
+      anchorY = -box.top * s;
+      dx = Math.round(anchorX - A.x * s);
+      dy = Math.round(anchorY - A.y * s);
+    } else {
+      // Legacy content-crop layout — the padding falls outside the canvas.
+      wantW = Math.ceil(cw * s);
+      wantH = Math.ceil(ch * s);
+      dx = Math.round(wantW / 2 - ((bb[0] + bb[2]) / 2) * s);
+      dy = Math.round(-bb[1] * s);
+    }
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
@@ -1051,43 +1174,41 @@ function makePlayer(entity, kind, opts = {}) {
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }
-    // The frame is drawn shifted so its content box lands centred at y=0 —
-    // the padding simply falls outside the canvas.
-    const dx = Math.round(canvas.width / 2 - ((bb[0] + bb[2]) / 2) * s);
-    const dy = Math.round(-bb[1] * s);
     if (showShadow) {
-      // The game's ground ellipse — or where the Game Master says it belonged.
-      const sh = shNow, base = shBase;
-      // Frame pixels -> canvas pixels: the frame is drawn with its content box
-      // centred, so the ellipse follows the same mapping the sprite does.
-      const ex = canvas.width / 2 + offX;
-      const ey = shadowY + offY;
       ctx.fillStyle = "rgba(20,16,8,0.38)";
       ctx.beginPath();
-      ctx.ellipse(ex, ey, (sh.w * s) / 2, (sh.h * s) / 2, 0, 0, Math.PI * 2);
+      ctx.ellipse(anchorX, anchorY, el.p * s, el.q * s, el.theta, 0, Math.PI * 2);
       ctx.fill();
-      shadowHit = { ex, ey, rx: (sh.w * s) / 2, ry: (sh.h * s) / 2, s };
+      shadowHit = { ex: anchorX, ey: anchorY, p: el.p * s, q: el.q * s, theta: el.theta, s };
       if (cur.editShadow) {
-        // The measurement's own ellipse stays visible as a dashed ghost: a
-        // correction is only readable against what it corrects.
+        // The untuned default stays visible as a dashed ghost, riding the
+        // FRAME (it marks where the measurement put the anchor on the body) —
+        // a correction is only readable against what it corrects.
+        const d0 = shadowDefault(entity);
+        const g = shadowEllipse(d0.rx, d0.ry, cur.dir);
         ctx.save();
         ctx.setLineDash([4, 3]);
         ctx.strokeStyle = "rgba(217,119,87,0.75)"; ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.ellipse(canvas.width / 2, shadowY, (base.w * s) / 2, (base.h * s) / 2, 0, 0, Math.PI * 2);
+        ctx.ellipse(dx + (fw / 2 + d0.ax) * s, dy + (fh / 2 + d0.ay) * s, g.p * s, g.q * s, g.theta, 0, Math.PI * 2);
         ctx.stroke();
         ctx.setLineDash([]);
         ctx.strokeStyle = "rgba(217,119,87,1)"; ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.ellipse(ex, ey, (sh.w * s) / 2, (sh.h * s) / 2, 0, 0, Math.PI * 2);
+        ctx.ellipse(anchorX, anchorY, el.p * s, el.q * s, el.theta, 0, Math.PI * 2);
         ctx.stroke();
-        // Two grips: the right rim widens, the bottom rim flattens.
+        // The anchor itself — the point the game will stand this monster on.
         ctx.fillStyle = "rgba(217,119,87,1)";
-        for (const [hx, hy] of [[ex + (sh.w * s) / 2, ey], [ex, ey + (sh.h * s) / 2]]) {
-          ctx.fillRect(hx - GRIP / 2, hy - GRIP / 2, GRIP, GRIP);
-        }
+        ctx.fillRect(anchorX - 1.5, anchorY - 1.5, 3, 3);
         ctx.restore();
       }
+      // QA probe: what the page believes about the shadow, for the gate.
+      window.__wikiShadow = {
+        ex: anchorX, ey: anchorY, p: +(el.p * s).toFixed(2), q: +(el.q * s).toFixed(2),
+        theta: +el.theta.toFixed(4), s, dx, dy, W: canvas.width, H: canvas.height,
+        rec: { rx: sh.rx, ry: sh.ry, ax: sh.ax, ay: sh.ay, edited: sh.edited },
+        dir: cur.dir, state: cur.state,
+      };
     } else shadowHit = null;
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
@@ -1217,8 +1338,8 @@ function makePlayer(entity, kind, opts = {}) {
   const shadowRead = h("span", { class: "shadow-read" });
   const shadowResetBtn = h("button", {
     class: "ghost-btn",
-    title: "Drop your note for this animation and direction — back to the shadow the game measures itself",
-    onclick: () => { setShadowNote(entity, clip, cur.state, cur.dir, null); onShadowEdit?.(); refreshShadowBar(); draw(); },
+    title: "Drop this monster's tuned shadow — the game falls back to its own measured one",
+    onclick: () => { setShadowRec(entity, null); onShadowEdit?.(); refreshShadowBar(); draw(); },
   }, "Reset");
 
   /* THE CONTROLS ARE A PROXY — NOTHING THAT EDITS THE SHADOW SITS ON IT.
@@ -1280,7 +1401,7 @@ function makePlayer(entity, kind, opts = {}) {
     padEl.classList.add("held");
     padDrag = {
       x: ev.clientX, y: ev.clientY,
-      from: { ...shadowNow(entity, clip, cur.state, cur.dir) },
+      from: shadowRec(entity),
       // Screen pixels -> frame pixels. The canvas draws at `s`, so dividing by
       // it is what makes the shadow move exactly as far as the thumb did.
       k: 1 / (cur.zoom || (state.data.artScale || 2)),
@@ -1297,7 +1418,10 @@ function makePlayer(entity, kind, opts = {}) {
     const knob = (d) => Math.max(-lim, Math.min(lim, (d / PAD_FINE_ZONE) * lim));
     padKnob.style.transform = `translate(${knob(ev.clientX - padDrag.x)}px, ${knob(ev.clientY - padDrag.y)}px)`;
     const f = padDrag.from;
-    setShadowNote(entity, clip, cur.state, cur.dir, { ...f, cx: f.cx + dx * padDrag.k, cy: f.cy + dy * padDrag.k });
+    // Pad right = shadow right relative to the MONSTER (ax+); on screen the
+    // ellipse holds still and the monster slides left — the anchor is the
+    // world position, and the sprite is what hangs off it.
+    setShadowRec(entity, { ...f, ax: f.ax + dx * padDrag.k, ay: f.ay + dy * padDrag.k });
     onShadowEdit?.(); refreshShadowBar(); draw();
   });
   const padEnd = (ev) => {
@@ -1314,17 +1438,19 @@ function makePlayer(entity, kind, opts = {}) {
   // value, so the thumb can be anywhere along a rail he is not looking at
   // while his eye stays on the ellipse — and it shows how much range is left
   // in each direction, which a relative gesture cannot.
-  const mkSizer = (kind, label) => {
+  // The rails read/write the SOUTH-facing width and depth as full diameters
+  // (the numbers he sees in the readout); the record stores semi-axes.
+  const mkSizer = (axis, label) => {
     const inp = h("input", { type: "range", class: "shadow-slider", min: "2", step: "0.5", "aria-label": label });
     const apply = () => {
-      const sh = shadowNow(entity, clip, cur.state, cur.dir);
-      setShadowNote(entity, clip, cur.state, cur.dir, { ...sh, [kind]: +inp.value });
+      const sh = shadowRec(entity);
+      setShadowRec(entity, { ...sh, [axis]: +inp.value / 2 });
       onShadowEdit?.(); refreshShadowBar(); draw();
     };
     inp.addEventListener("input", apply);
     return inp;
   };
-  const wSlider = mkSizer("w", "shadow width"), hSlider = mkSizer("h", "shadow depth");
+  const wSlider = mkSizer("rx", "shadow width"), hSlider = mkSizer("ry", "shadow depth");
   // The numbers lead, because they are what is being read; the instruction
   // trails, because it is only needed once.
   const shadowBar = h("div", { class: "shadow-bar hidden" },
@@ -1334,16 +1460,17 @@ function makePlayer(entity, kind, opts = {}) {
         h("label", {}, h("span", {}, "W"), wSlider),
         h("label", {}, h("span", {}, "H"), hSlider)),
       padEl),
-    h("span", { class: "muted shadow-hint" }, "Drag the pad to move it, the rails to resize."));
-  const shadowBtn = state.admin && entity.shadow
+    h("span", { class: "muted shadow-hint" }, "One shadow for the whole monster — every animation, every direction. The pad moves the monster around it; the rails resize it."));
+  const shadowBtn = state.admin && kind === "monster"
     ? h("button", {
       class: "ghost-btn shadow-btn",
-      title: "Show where this shadow belonged — one note per animation and direction, committed with everything else",
+      title: "Tune this monster's ONE shadow — its centre is the monster's position in game, its size the hit box; it turns with the facing. Committed with everything else.",
       onclick: () => setEditShadow(!cur.editShadow),
-    }, "✎ Edit nadir shadow")
+    }, "✎ Edit shadow")
     : null;
   function setEditShadow(on) {
     cur.editShadow = !!on && !!shadowBtn;
+    editBox = null;   // re-freeze the box from the CURRENT record on entry
     // You cannot place what you cannot see, so the editor brings the shadow
     // with it — and the checkbox follows, or it would be lying.
     if (cur.editShadow && !cur.shadow) { cur.shadow = true; shadowChk.checked = true; }
@@ -1358,28 +1485,28 @@ function makePlayer(entity, kind, opts = {}) {
     shadowBar.classList.toggle("hidden", !cur.editShadow);
     shadowBtn.classList.toggle("on", cur.editShadow);
     if (!cur.editShadow) return;
-    const sh = shadowNow(entity, clip, cur.state, cur.dir), base = shadowBase(entity, clip);
-    const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
+    const sh = shadowRec(entity);
+    const signed = (n) => `${n < 0 ? "\u2212" : "+"}${Math.abs(n).toFixed(1)}`;
     shadowResetBtn.disabled = !sh.edited;
-    // The rails span what a shadow could sensibly be for THIS frame, so their
-    // travel means something on a 34px frog and a 256px mammoth alike. Max
-    // before value, or the browser clamps the value to the previous max.
-    const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
-    wSlider.max = String(Math.max(32, Math.round(fw)));
+    // The rails span what a shadow could sensibly be for THIS monster, so
+    // their travel means something on a 34px frog and a 256px mammoth alike.
+    // Max before value, or the browser clamps the value to the previous max.
+    const fw = entity.frameW ?? 64, fh = entity.frameH ?? 64;
+    wSlider.max = String(Math.max(32, Math.round(fw * 1.2)));
     hSlider.max = String(Math.max(16, Math.round(fh / 2)));
     // Never fight the finger that is on the rail: writing the value back mid
     // -drag would snap the knob to the rounded number under it.
-    if (document.activeElement !== wSlider) wSlider.value = String(sh.w);
-    if (document.activeElement !== hSlider) hSlider.value = String(sh.h);
+    if (document.activeElement !== wSlider) wSlider.value = String(sh.rx * 2);
+    if (document.activeElement !== hSlider) hSlider.value = String(sh.ry * 2);
     shadowRead.replaceChildren(
-      h("b", {}, `${sh.w.toFixed(1)} × ${sh.h.toFixed(1)} px`),
+      h("b", {}, `${(sh.rx * 2).toFixed(1)} \u00d7 ${(sh.ry * 2).toFixed(1)} px`),
+      ` \u00b7 anchor ${signed(sh.ax)}, ${signed(sh.ay)}`,
       sh.edited
-        // Both halves of the correction, because both are what the games agent
-        // has to learn from: where it went, and what it was moved off.
-        ? ` · moved ${signed(sh.cx - base.cx)}, ${signed(sh.cy - base.cy)} — was ${base.w.toFixed(1)} × ${base.h.toFixed(1)}`
-        : " · the game's own measurement, untouched",
+        ? " \u00b7 tuned \u2014 the game uses this"
+        : " \u00b7 untuned \u2014 a starting point from the measured art; commit any change to adopt it",
     );
   }
+
 
   const controls2 = h("div", { class: "player-controls" },
     noTransport ? null : playBtn,
@@ -1388,7 +1515,7 @@ function makePlayer(entity, kind, opts = {}) {
     noTransport ? null : frameNo,
     noTransport ? null : speedSeg,
     zoomSeg,
-    entity.shadow ? h("label", { class: "chk" }, shadowChk, "Show shadow") : null,
+    kind === "monster" ? h("label", { class: "chk" }, shadowChk, "Show shadow") : null,
     shadowBtn,
   );
 
@@ -1427,12 +1554,12 @@ function makePlayer(entity, kind, opts = {}) {
     getDir: () => cur.dir,
     /** Repaint the approved/rejected marks — call after a verdict changes. */
     refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
-    /** Nadir-shadow editing: drag/resize on the canvas, one note per facet. */
+    /** Shadow editing: one record per monster (see shadowRec). */
     editShadow(on) { setEditShadow(on); },
     isEditingShadow: () => cur.editShadow,
     set onShadowEdit(fn) { onShadowEdit = fn; },
-    resetShadow() { setShadowNote(entity, clip, cur.state, cur.dir, null); refreshShadowBar(); draw(); },
-    shadowFacet: () => ({ st: cur.state, dir: cur.dir, note: shadowNote(entity, cur.state, cur.dir), now: shadowNow(entity, clip, cur.state, cur.dir), base: shadowBase(entity, clip) }),
+    resetShadow() { setShadowRec(entity, null); refreshShadowBar(); draw(); },
+    shadowInfo: () => ({ st: cur.state, dir: cur.dir, rec: shadowRec(entity), default: shadowDefault(entity) }),
     /** Fires whenever the state OR the direction changes — i.e. whenever the
      *  thing on screen is a different piece of generated art. */
     set onFacetChange(fn) { onFacetChange = fn; },

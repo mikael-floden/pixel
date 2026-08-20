@@ -16,6 +16,7 @@ type LiveTuning = {
   monsters?: { defaults?: MonsterStats; monsters?: Record<string, MonsterStats> };
   constants?: { overrides?: Record<string, number> };
 };
+import { readMonsterShadow, MonsterShadow as MonsterShadowRec } from "@nangijala/shared";
 
 let tuning: LiveTuning = {};
 const listeners = new Set<(t: LiveTuning) => void>();
@@ -37,6 +38,12 @@ export function onLiveTuning(cb: (t: LiveTuning) => void): () => void {
 }
 
 /** Stats for one monster kind, admin overrides merged over the defaults. */
+/** The monster's ONE tuned shadow (wiki shadow editor → per-monster `shadow`
+ *  in tuning/monsters), or null = stay on the legacy measured anchors. */
+export function monsterShadow(kind: string): MonsterShadowRec | null {
+  return readMonsterShadow(tuning.monsters?.monsters?.[kind]);
+}
+
 export function monsterStats(kind: string): MonsterStats {
   const m = tuning.monsters ?? {};
   return { ...(m.defaults ?? {}), ...(m.monsters?.[kind] ?? {}) };

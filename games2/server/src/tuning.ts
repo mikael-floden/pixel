@@ -7,6 +7,7 @@
 // push-refreshes — so a wiki admin edit re-tunes running rooms without a
 // deploy. This resolver is the ONLY reader; keep the merge rules here.
 import { liveTuning } from "./live";
+import { readMonsterShadow, shadowBodyRadius, MonsterShadow } from "@nangijala/shared";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -87,4 +88,25 @@ export function monsterStatsFor(kind: string): MonsterStats {
       .filter((l) => typeof l?.item === "string" && typeof l?.chance === "number")
       .map((l) => ({ item: l.item as string, chance: Math.min(1, Math.max(0, l.chance as number)) })),
   };
+}
+
+/** The monster's ONE tuned shadow (wiki shadow editor → live/tuning/monsters
+ * per-monster `shadow` field), or null — null means the game stays on its
+ * legacy art-measured anchors for this kind. Same live-then-baked fallback as
+ * the stats. */
+export function monsterShadowFor(kind: string): MonsterShadow | null {
+  type Doc = { monsters?: Record<string, unknown> };
+  const live = liveTuning().monsters as Doc | undefined;
+  const liveHasContent = !!live && Object.keys(live.monsters ?? {}).length > 0;
+  const doc: Doc | undefined = liveHasContent ? live : ((bakedDoc() as Doc | null) ?? undefined);
+  return readMonsterShadow(doc?.monsters?.[kind]);
+}
+
+/** The body radius (wu) the sim uses for this kind: the tuned shadow when the
+ * Game Master has placed one ("the size will be the monsters hit box"), else
+ * the art-measured manifest radius the caller passes, else the default. */
+export function monsterRadiusFor(kind: string, manifestRadius: number | undefined, fallback: number): number {
+  const sh = monsterShadowFor(kind);
+  if (sh) return shadowBodyRadius(sh.rx, sh.ry);
+  return manifestRadius ?? fallback;
 }

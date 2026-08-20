@@ -93,7 +93,7 @@ import {
   INV_MAX_SLOTS,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
-import { monsterStatsFor, MonsterStats } from "../tuning.js";
+import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning } from "../live.js";
 import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
@@ -614,7 +614,7 @@ export class WorldRoom extends Room<WorldState> {
     const radii = monsterRadii();
     for (const z of this.zones) {
       const count = Math.min(this.monsterCount ?? z.zone.num, z.cells.length);
-      const r = radii.get(z.zone.monster) ?? DEFAULT_MONSTER_RADIUS;
+      const r = monsterRadiusFor(z.zone.monster, radii.get(z.zone.monster), DEFAULT_MONSTER_RADIUS);
       const placed: Array<{ x: number; y: number }> = [];
       for (let n = 0; n < count; n++) {
         const m = new Monster();
@@ -943,7 +943,9 @@ export class WorldRoom extends Room<WorldState> {
     const mons: Array<{ id: string; m: Monster }> = [];
     this.state.monsters.forEach((m: Monster, id: string) => mons.push({ id, m }));
     const bodies: Array<{ id: string; x: number; y: number; r: number }> = mons.map(
-      ({ id, m }) => ({ id, x: m.x, y: m.y, r: radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS }),
+      // The tuned shadow IS the hit box when the Game Master has placed one
+      // (wiki shadow editor); the art-measured manifest radius otherwise.
+      ({ id, m }) => ({ id, x: m.x, y: m.y, r: monsterRadiusFor(m.kind, radii.get(m.kind), DEFAULT_MONSTER_RADIUS) }),
     );
     this.state.players.forEach((p: Player, sid: string) =>
       bodies.push({ id: `p:${sid}`, x: p.x, y: p.y, r: PLAYER_BODY_RADIUS }),
@@ -1658,7 +1660,7 @@ export class WorldRoom extends Room<WorldState> {
       // No fighting FROM the water either — sanctuary cuts both ways, or a
       // swimmer could snipe shore monsters that can never reach back.
       if (player.swimming) return;
-      const rm = radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS;
+      const rm = monsterRadiusFor(m.kind, radii.get(m.kind), DEFAULT_MONSTER_RADIUS);
       const range = attackRange(PLAYER_BODY_RADIUS, rm);
       // A grace band past swing range: the circling must not flicker the
       // engagement off every time the pair drifts a few wu apart.
@@ -1737,7 +1739,7 @@ export class WorldRoom extends Room<WorldState> {
     const avoid: Array<{ x: number; y: number; r: number }> = [];
     this.state.monsters.forEach((o: Monster, oid: string) => {
       if (oid === selfId || o.areaId !== zone.zone.id) return;
-      const r = radii.get(o.kind) ?? DEFAULT_MONSTER_RADIUS;
+      const r = monsterRadiusFor(o.kind, radii.get(o.kind), DEFAULT_MONSTER_RADIUS);
       avoid.push({ x: o.x, y: o.y, r });
       if (o.tripActive) avoid.push({ x: o.targetX, y: o.targetY, r });
     });

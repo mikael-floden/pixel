@@ -534,100 +534,91 @@ Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state
 commits, and asserts the file, the key, the `was`, that nothing lands in the
 feedback file, that agreeing again DELETES, that the switch follows the state
 chip (unlit → 💡lit) and that a reader never sees the control at all.
+## One shadow per monster — its centre is the position, its size the hit box
 
-## Where the nadir shadow belonged — training data, not an override
+Maintainer 2026-08-20, replacing the per-facet shadow notes: *"Lets say you
+have something long and thin. I can create this shadow in S, N, E and W. But
+not the other monster directions. So what I want is just a single shadow size
+for the entire monster … if I change the size in S animation it will change
+for all directions in all animations. The trick is to rotate the shadow around
+the center using the current monster direction. The goal is to get the game to
+use this shadow and the center of the shadow will be the monsters position.
+The size will be the monsters hit box."*
 
-The wiki already drew each monster's ground ellipse from the games agent's own
-art-measured metrics (`shadow.w/h` + `artBottom` + `hoverPx`), which makes the
-monster page the one place in the project where the Game Master can SEE the
-shadow the game will draw, next to the art it belongs to. Since 2026-08-15 he
-can also **move it**: `✎ Edit nadir shadow` (admin, monster pages) turns the
-preview canvas into an editor — drag the ellipse to reposition it, drag either
-handle to widen or flatten it — and each correction is one entry in
-`live/tuning/shadow_notes.json` (`pixel-wiki-shadow-notes@1`, schema in
-`live/README.md`), committed by the same save bar as every verdict.
+**The record** is one ellipse per monster, inside its `live/tuning/monsters.json`
+entry — game tuning exactly like `max_hp`, riding the same live channel, the
+same save bar, the same hot push to running clients:
 
-What it is FOR, in his words: *"It's not a 'fix this shadow only' feature. It's
-a way to learn how the shadows should be placed"* — the games agent reads these
-to improve the placement rules it derives from the art, for every monster it
-has not generated yet. Three consequences that are the whole design:
+```json
+"shadow": { "rx": 25.5, "ry": 10, "ax": 0, "ay": 33.6 }
+```
 
-- **One entry per `<monster>#<animation>#<direction>`** — the unit that gets
-  regenerated, and the same key the facet verdicts use. A shadow that is right
-  facing south and wrong facing north-east is sayable.
-- **The correction is a DELTA plus the original** (`dx`/`dy`/`w`/`h` beside
-  `was: {w,h,cx,cy}`), in frame pixels at scale 1. An absolute position only
-  describes the one creature it was measured on; the pair "the metrics said
-  here, he put it there" is what generalises — and it stays readable after the
-  measurement itself changes.
-- **Nothing consumes it as an override.** The game keeps deriving shadows from
-  the art. If these notes ever start driving placement directly they stop being
-  a training signal and become 400 hand-tuned exceptions, which is the state
-  the maintainer was trying to get out of.
+Frame pixels at scale 1 (art px ≈ wu). `rx`/`ry` are the semi-axes **as seen
+facing south**; `ax`/`ay` put the centre relative to the **frame centre**.
+Centre-relative on purpose: it survives any padding the frame has, and it IS
+the point the art rotates around. No record → the game stays on its legacy
+art-measured per-direction anchors, so the world switches monster by monster
+as he tunes.
 
-**THE CONTROLS ARE A PROXY — nothing that edits the shadow sits on it.** He
-reviews from a phone, and after the first 25 notes: *"for me to drag or resize
-the shadow with the thumb I can't see where I place the shadow or how big I
-resize it at the same time ... render the controller at the bottom right, but
-when moving the controller the shadow under the monster will move / be resized.
-Like a proxy, so I can see what I edit without my thumb being in the way."* So:
+**The rotation is on the GROUND, not the screen.** The iso view squashes
+ground-vertical by `ISO_DY/ISO_DX` (15/32). A screen-space quarter-turn of the
+drawn ellipse would put that squash on the wrong axis: a long-thin body tuned
+at S as 10×30 must show E as **64×4.7** — longer AND flatter — and SE as a
+**43°-tilted 38.8×7.7**, not the naive (30, 10). So: unsquash the tuned depth,
+rotate by the facing's ground angle, re-squash, and hand back radii + a screen
+rotation via the closed-form 2×2 SVD — which Phaser (`setRotation` +
+`setDisplaySize`) and canvas (`ctx.ellipse`) can both draw directly.
+`shadowScreenEllipse` lives in `games2/shared/src/index.ts` for the game and
+is mirrored in `wiki.js` for the editor; `wiki/tools/shadow-mirror.mts` +
+the gate hold the two implementations equal to 5 decimals over 32 cases.
 
-- A **pad** under the stage, right-aligned. A TRACKPAD, not a joystick: one
-  finger-pixel moves the ellipse one screen pixel, which at the default 2x zoom
-  is half a frame pixel — ordinary thumb movement lands sub-pixel corrections
-  with no fine mode. Only the knob stops at the rim; the shadow keeps going.
-- The pad is **geared down near the origin**: the first 60px of thumb travel
-  per axis moves the ellipse at 0.3, everything past it at 1:1 (maintainer
-  2026-08-16: *"I just like it to be able to move the shadow slower. To make
-  small adjustments now it means moving my thumb a mm. Small movements should
-  change placement slower"*). He asked for SMALL movements specifically, so
-  this is pointer acceleration and not a flat slowdown — flat, a badly-placed
-  shadow would take five drags. Measured on his phone (~5.6 css px/mm) at 2x
-  zoom: 1mm of thumb was 2.8 frame px and is now 0.84, while 180px of thumb
-  still carries it 69 frame px in one gesture. The gain is a function of
-  DISTANCE from where the finger went down, never of speed, so returning the
-  thumb to the start returns the shadow exactly (measured: 0.00px of drift) —
-  a velocity curve drifts, and phone frame rates make velocity noisy. The knob
-  measures the fine zone rather than the raw finger, so it reaching the rim is
-  the visible tell that you are now travelling rather than adjusting.
-- **A note that corrects nothing is deleted, not stored.** The fine zone
-  invites nudging out and back, which used to leave `dx 0, dy 0, w = was.w` —
-  and the games agent would read that as "he confirmed this one", a claim the
-  gesture never made. There is no gesture for confirming a shadow, so a no-op
-  can only be an accident.
-- Two **rails** for size. Absolute values, unlike the pad's relative gesture:
-  the thumb can be anywhere along a rail he is not looking at while his eye
-  stays on the ellipse, and the travel shows how much range is left.
-- They sit DIRECTLY under the art, above the transport and zoom rows —
-  measured, 372px from the shadow's top to the pad's bottom, so both are on a
-  phone screen at once. Every row between them is a row that can push one off.
+**The editor** (monster pages, "✎ Edit shadow") keeps the pad + W/H rails +
+Reset, but the semantics are the game's:
 
-**THE CANVAS IS PINNED WHILE EDITING, or the art moves under his thumb.** It
-normally hugs the drawn ellipse, and the stage centres it — so a 16px push up
-moved the shadow only 8px on screen (the canvas shed 16px of height, the
-re-centring gave 8 back) and the monster slid the whole time. In edit mode the
-box comes from the clip alone: the measured ellipse plus slack sized off his
-own corrections (up to 12.5px of movement, at most double the depth), constant
-for as long as he stays on one animation and direction. Pinning it to the whole
-FRAME was tried first and marooned the creature in a screen-wide checkerboard —
-the frame is mostly padding, which is why this viewer crops it.
+- **The ellipse is PINNED and the monster moves.** Its centre is the monster's
+  world position, so dragging the pad right stores `ax+` and slides the
+  SPRITE left — *"when I move the shadow what really should happen is the
+  monster should move the opposite direction."* Turning the direction pad
+  re-rotates the ellipse in place and the art visibly rotates around it,
+  which is exactly what the game does on a facing change.
+- **The layout is anchor-true and constant.** The canvas box is derived from
+  the UNION of every clip's content box plus the ellipse's worst-case extents
+  over all facings — one box for the whole monster — so switching animation or
+  direction moves nothing and the shadow's canvas position never jumps
+  (*"where the shadow is placed vertically has to be the same for the entire
+  monster in all directions and animations"*). Horizontally the anchor sits at
+  the canvas centre (*"the shadow will pick the center"*); vertically the box
+  hugs the monster, never the shadow (*"the monster will be rendered so far up
+  if we do that"*). While editing, the box is FROZEN from the record at entry
+  plus 30px of travel — the canvas must not resize under a drag (that bug cost
+  him a night once already).
+- **Untuned monsters start from the measurement**: `rx/ry` from the manifest's
+  measured shadow, `ay` from `artBottom` + `hoverPx`, shown as a dashed ghost
+  while editing. The readout says `tuned — the game uses this` or `untuned`;
+  Reset deletes the record (there is no no-op collapse here — a record equal
+  to the default is still the decision that switches the game over).
 
-`touch-action` on the canvas is **`pan-y`, never `none`**: the stage is most of
-a phone's screen, so a canvas that swallows every touch traps the page's scroll
-in edit mode. Direct dragging on the ellipse still works with a mouse.
+**What the game does with it** (games2, maintainer-directed 2026-08-20):
+`WorldScene.addMonster`/`playMonsterAnim` anchor the sprite's origin on the
+shadow centre — ONE origin for every direction and state, replacing the
+per-direction ground contract, per-frame drift pinning, hover lift and
+toe-kiss for tuned monsters — and the per-frame loop draws the rotated
+ellipse at the monster's position. Committing from the wiki re-anchors
+monsters already on screen (the live push handler re-applies origins).
+Server-side, `monsterRadiusFor` derives the body radius from the tuned size
+(mean of the GROUND semi-axes — the sim works in circles) for separation,
+spacing, dodge and the player's swing range.
 
-Gate: `wiki/tools/check-shadow.mjs` — real drags on the pad, the rails, and
-the canvas,
-asserting that the pad never overlaps the shadow, that both fit on his phone
-together, that the ellipse tracks the finger 1:1 in both axes, that the monster
-does not move while he places it, that the rails resize the drawn shape, that
-the note follows the facet, and that Commit posts one entry per facet with both
-halves of the correction. Two measurement traps are documented in it: the
-canvas resizes around the centred sprite, so positions are compared in PAGE
-space, and the sprite is drawn OVER the shadow, so an ellipse pushed under the
-body loses its top rows to it and a naive pixel read under-reports.
-It fakes admin and captures `/api/wiki/save` at the network boundary, so it
-never writes the maintainer's real review data.
+The old `pixel-wiki-shadow-notes@1` doc is **frozen**, kept as the training
+data it was; the editor no longer writes it.
+
+Gate: `wiki/tools/check-shadow.mjs` — the three-implementation equality above,
+then on the live page: one record across 2 states × 8 directions, one pinned
+anchor for all 16 views, the monster sliding exactly opposite the drag (frame
+px against canvas px), east/south/diagonal ellipses matching the game's own
+numbers, Commit posting `tuning/monsters` (never `shadow_notes`) with the
+on-screen values, Reset deleting rather than storing a fake confirmation, and
+no editor for the public.
 
 ## The animation viewer scales by the CREATURE, not the frame
 
