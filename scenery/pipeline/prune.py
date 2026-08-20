@@ -55,15 +55,48 @@ def _ts(s):
 
 
 def _committed(relpath):
-    """When this sprite last landed in git. Time, not hash: the wiki stamps a
-    STATE verdict with the PIECE's art hash, so a hash comparison here says
-    'stale' for every state verdict ever written (measured 2026-08-15, 0 of 225
-    matched)."""
+    """When this sprite last landed in git. Kept as the FALLBACK test only —
+    see _describes_current_art for why it is no longer the first one."""
     if not relpath:
         return None
     r = subprocess.run(["git", "log", "-1", "--format=%cI", "--", relpath],
                        cwd=factory.ROOT, capture_output=True, text=True)
     return _ts(r.stdout.strip()) if r.returncode == 0 and r.stdout.strip() else None
+
+
+def _hash(relpath):
+    import hashlib
+    try:
+        with open(os.path.join(factory.ROOT, relpath), "rb") as f:
+            return hashlib.md5(f.read()).hexdigest()[:16]
+    except OSError:
+        return None
+
+
+def _describes_current_art(verdict, sprite):
+    """Does this verdict judge the art that is on disk right now?
+
+    ASK THE HASH FIRST. The commit-time test alone silently dropped live
+    rejections, and did it in the exact situation this pass creates: relight.py
+    MOVES a re-filed state's directory (LIT_3 -> NOT_LIT_5), so `git log` on the
+    new path reports the move commit — minutes AFTER his verdict — and the
+    time test concluded "art is newer than the verdict, not his" about art he
+    had just rejected. The verdict then lingered forever, re-reported as spent
+    on every later pass and never actioned. Two were caught on 2026-08-20
+    (anchor_006 NOT_LIT_5, hanging_basket_006 NOT_LIT_4), both with stamped
+    hashes matching their file byte for byte.
+
+    The wiki now stamps each verdict with its own clip's hash, so a match is
+    proof the art is unchanged no matter how the file moved. Only a POSITIVE
+    match short-circuits; anything else falls through to the original
+    timestamp test, so the old behaviour is preserved wherever the hash cannot
+    settle it (verdicts predating per-clip stamps, anchors sharing the piece
+    hash)."""
+    stamp = (verdict or {}).get("art")
+    if stamp and sprite and _hash(sprite) == stamp:
+        return True
+    vt, ct = _ts((verdict or {}).get("updated_at")), _committed(sprite)
+    return bool(vt and ct and ct < vt)
 
 
 def rejected_states():
@@ -115,8 +148,7 @@ def rejected_states():
         if REDO_RE.search(v.get("note") or ""):
             redo += 1
             continue
-        vt, ct = _ts(v.get("updated_at")), _committed(ent.get("sprite"))
-        if not (vt and ct and ct < vt):
+        if not _describes_current_art(v, ent.get("sprite")):
             spent += 1
             continue                # art is newer than the verdict — not his
         out.append((rel, state))

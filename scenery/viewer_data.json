@@ -1652,16 +1652,6 @@
           "glow_score": 0.0,
           "relit_from": "LIT_2",
           "art_hash": "cfb998c5e54b52cc"
-        },
-        "NOT_LIT_5": {
-          "sprite": "anchors/anchor_006/not_lit_5/sprite.webp",
-          "pixellab_object_id": "df795912-e960-40cd-9c20-0361109193ce",
-          "generated_at": "2026-08-15T19:28:43+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7904,
-          "glow_score": 0.0,
-          "relit_from": "LIT_3",
-          "art_hash": "53f37d0aef5d0e21"
         }
       },
       "animations": []
@@ -22362,26 +22352,21 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T21:24:45+00:00",
-      "pixellab_object_id": "281d9446-194a-4ea8-8363-9e4234d700f8",
+      "pixellab_object_id": "bcaf48bc-c862-4a92-b35c-c8e38ac3da8b",
       "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
-      "art_hash": "f773e6403e2bba6b",
+      "art_hash": "f6382dfb3261844c",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
-          "pixellab_object_id": "281d9446-194a-4ea8-8363-9e4234d700f8",
-          "generated_at": "2026-08-13T21:24:45+00:00",
-          "art_hash": "f773e6403e2bba6b"
-        },
         "LIT_2": {
-          "sprite": "flower_trellises/flower_trellis_004/lit_2/sprite.webp",
+          "sprite": "flower_trellises/flower_trellis_004/sprite.webp",
           "pixellab_object_id": "bcaf48bc-c862-4a92-b35c-c8e38ac3da8b",
           "generated_at": "2026-08-16T14:18:43+00:00",
           "glow_concept": null,
           "difference_from_source": 0.9429,
           "glow_score": 0.0076,
+          "replaced_anchor": "LIT_1",
           "art_hash": "f6382dfb3261844c"
         },
         "NOT_LIT_2": {
@@ -24248,16 +24233,6 @@
           "generated_at": "2026-08-13T21:23:42+00:00",
           "relit_from": "LIT_1",
           "art_hash": "125797bed6d1dd2b"
-        },
-        "NOT_LIT_4": {
-          "sprite": "hanging_baskets/hanging_basket_006/not_lit_4/sprite.webp",
-          "pixellab_object_id": "100b135f-27ac-4a19-b14a-c0833359151c",
-          "generated_at": "2026-08-16T14:59:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7138,
-          "glow_score": 0.1096,
-          "relit_from": "LIT_2",
-          "art_hash": "c26dbc9c28dac83b"
         },
         "NOT_LIT_5": {
           "sprite": "hanging_baskets/hanging_basket_006/not_lit_5/sprite.webp",
