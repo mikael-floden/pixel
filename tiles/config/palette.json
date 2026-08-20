@@ -3,9 +3,9 @@
   "_comment": "The game's palette, taken from tiles2 rather than from the generator. tiles2 re-tints its whole tileset to the HUD's muted-forest theme via postprocess.palette (grass and dirt are colours the DESIGNER supplied); an earlier tiles 3.0 palette was measured from what PixelLab happens to produce, which is the generator's average and not an art direction at all. That is why 3.0 grass came out a bright yellow-green (#64b84d, hue 107deg) against 2.0's deep pine (hue 166deg) \u2014 90 luminance apart. Values here are tiles2's ACTUAL APPEARANCE, not its configured target: 2.0 harmonises hue/sat while keeping each pixel's own value, so its art lands well above its target, and a flat 3.0 top has to match what the eye sees.",
   "types": {
     "grass": {
-      "top": "#2a7039",
-      "source": "50% reference tile tiles/matrix/grass__over__grass/sheet_03_same3_10070/tile_01.png \u2014 the maintainer's chosen look for this material  +  50% the previous palette entry (#0c483c/#116353) \u2014 the maintainer asked for the midpoint, not either end",
-      "wall": "#1c6640",
+      "top": "#14523b",
+      "source": "the maintainer's ladder pick, 2026-08-20: 75% from the 50%-blend toward tiles2/saturated_grass \u2014 they circled the column on a five-step preview ('The grass color is important becouse we will have a lot of grass in the game')",
+      "wall": "#14644e",
       "wall_n": 7
     },
     "snow": {
