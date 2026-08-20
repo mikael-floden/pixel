@@ -526,6 +526,8 @@ TEXTURED_TOP_SPREAD = 26.0
 # (light_soil/light_beach, paving_stone/grey_stone, grey_stone/snow) sit at 23-27 while the
 # median cell separates by 135.
 MIN_SPLIT_SEPARATION = 25.0
+# The same floor for a split the RGB metric won, in RGB units (the old, measured value).
+MIN_SPLIT_SEPARATION_RGB = 40.0
 
 
 def _chroma_dist(px, target):
@@ -582,10 +584,54 @@ def _split_wall(a, reg, wall_all):
     if len(px) < 40 or reg["top"].sum() < 40:
         return wall_all, np.zeros(wall_all.shape, bool)
     seed_top = np.median(rgb[reg["top"]], 0)
-    w = np.median(px, 0)
+
+    # TWO METRICS, CHOSEN BY THE SEEDS. Neither distance is right for every pair of
+    # materials, and each has already shipped a visible bug on the pair it is wrong for:
+    #
+    #   RGB is dominated by brightness, so it handed 81.7% of a light-grey rock wall to
+    #   teal water — those materials differ in HUE and RGB barely looks at it.
+    #
+    #   CHROMA damps brightness (that is what fixed the rock), so on dark_mud over
+    #   light_beach — same hue family, separated almost purely by VALUE — it handed 172
+    #   raw-dark mud-overhang pixels to the beach cluster, and substitute() repainted
+    #   them bright: "the top of the right wall is bright as if you see it as
+    #   light_beach, but it's part of the dark_muds overhang." The trap is specific:
+    #   the mud TOP face generates desaturated (sat 22) while the mud DRIPS on the wall
+    #   are saturated (sat 65), so in chroma the drips sit nearer the beach than their
+    #   own material. Saturation betrayed the split, not hue.
+    #
+    # The choice is made from the SEEDS — the top face's own colour against the wall's
+    # median — and only from them. A first attempt let the two metrics compete on how
+    # well-separated their resulting clusters were, and RGB promptly won contests it had
+    # no business winning by splitting a single material's lit face from its shadowed
+    # face: cleanly separated clusters, one material, 65% of a mud wall repainted black.
+    # Cluster quality cannot tell a material split from a lighting split; the seeds can,
+    # because lighting cannot move the wall's median off its own material.
+    #
+    # RGB is used only when the seeds are far apart in RGB (a real value gap, >= 60) AND
+    # that gap dwarfs their chroma separation (>= 2x) — i.e. brightness is demonstrably
+    # the discriminating axis, as on mud/beach (126 vs 31). Everything else keeps
+    # chroma, so every tile the chroma metric already handles is untouched.
+    def d_rgb(q, t):
+        return np.linalg.norm(q - np.asarray(t, float), axis=1)
+
+    def chroma_only(t):
+        hsv = _rgb2hsv(np.asarray(t, float).reshape(-1, 3))
+        ang = hsv[:, 0] * (2 * np.pi / 256.0)
+        return np.stack([hsv[:, 1] * np.cos(ang), hsv[:, 1] * np.sin(ang)], 1)[0]
+
+    wmed = np.median(px, 0)
+    rs = float(np.linalg.norm(seed_top - wmed))
+    cs = float(np.linalg.norm(chroma_only(seed_top) - chroma_only(wmed)))
+    if rs >= 60.0 and rs >= 2.0 * cs:
+        dist, floor = d_rgb, MIN_SPLIT_SEPARATION_RGB
+    else:
+        dist, floor = _chroma_dist, MIN_SPLIT_SEPARATION
+
+    w = wmed
     keep = np.ones(len(px), bool)
     for _ in range(8):
-        keep = _chroma_dist(px, w) <= _chroma_dist(px, seed_top)
+        keep = dist(px, w) <= dist(px, seed_top)
         if keep.sum() < 20:            # no recognisable wall left; treat it all as wall
             keep = np.ones(len(px), bool)
             break
@@ -594,36 +640,16 @@ def _split_wall(a, reg, wall_all):
             w = nw
             break
         w = nw
-
-    # DID IT ACTUALLY FIND TWO MATERIALS? A two-means split always returns two groups, even
-    # when handed one uniform surface, and then the boundary is wherever the noise happened
-    # to fall. That is not harmless: the two groups get painted DIFFERENT palette colours,
-    # so an invented boundary becomes a visible mottle on a wall that was all one material.
-    #
-    # Measured on grey_stone over dark_mud, which the old palette-distance gate let through:
-    # the two clusters differ by 17 RGB units — one material — yet the split handed 64% of a
-    # dark_mud wall to grey_stone. Same failure the maintainer caught on water over rock,
-    # one step further down.
-    #
-    # When the split does not separate, the answer is already known and does not need
-    # guessing: publish only passes align_side for a wall whose material has been CONFIRMED
-    # (wall_err <= MAX_WALL_ERR), so an unseparated wall is all of the side material. 5 of
-    # 182 cells land here.
+    floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
-        # MEASURED IN THE SAME SPACE THE SPLIT WAS DECIDED IN. This floor was first written
-        # as an RGB distance while the classification above is chroma, and that mismatch is
-        # the very trap this file exists to avoid: dark colours are all near each other in
-        # RGB whatever their hue.
-        #
-        # It cost a real overhang immediately. On black_rock over dark_mud the split found
-        # 445 pixels of near-black rock (#171719) spilling over a brown mud wall (#342a29) —
-        # correct, and obvious to the eye — but the two are only 38.9 apart in RGB, under a
-        # floor of 40, so the whole answer was discarded and all 445 were painted mud brown.
-        # In chroma, where the classifier actually works, they are 81.4 apart. The
-        # maintainer: "it's clear the overhang is black_rock, but you did it dark_mud."
-        sep = float(_chroma_dist(px[~keep].mean(0)[None, :], px[keep].mean(0))[0])
-        if sep < MIN_SPLIT_SEPARATION:
-            keep = np.ones(len(px), bool)
+        floor_ok = float(dist(px[~keep].mean(0)[None, :], px[keep].mean(0))[0]) >= floor
+
+    # The separation floor is measured in the units of the metric that WON — measuring
+    # it in the wrong space is the mistake that once discarded a correct 445-pixel
+    # black_rock overhang because the clusters were only 38.9 apart in RGB (81.4 in
+    # chroma, the space that had actually made the call).
+    if keep.sum() >= 20 and (~keep).sum() >= 20 and not floor_ok:
+        keep = np.ones(len(px), bool)
 
     idx = np.where(wall_all)
     m_side = np.zeros(wall_all.shape, bool)
