@@ -76,8 +76,20 @@ REVIEW = os.path.join(ROOT, "review")
 REPO = os.path.dirname(ROOT)
 
 
+def _load_lock():
+    """Cells the maintainer has FINISHED reviewing — see candidates(). Missing file, or a
+    cell absent from it, means no lock: the default is the old behaviour."""
+    try:
+        return json.load(open(os.path.join(ROOT, "review_lock.json")))["cells"]
+    except Exception:
+        return {}
+
+
+LOCK = _load_lock()
+
+
 def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
-               approved=()):
+               approved=(), lock=None):
     """Every tile in a cell, scored on its wall, best first.
 
     WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
@@ -208,6 +220,25 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
                                 -c["wall"]["score"]))
     else:
         out.sort(key=lambda c: (not c.get("forced", False), -c["wall"]["score"]))
+
+    # A FINISHED CELL MAY ONLY SHRINK. See review_lock.json — once the maintainer has
+    # rated every tile in a cell, publish is not allowed to put anything new in front of
+    # them, whatever a later gate fix decides is now acceptable.
+    #
+    # This is not caution, it is arithmetic. A recovered tile costs one rating; a
+    # recovered tile in a cell they have FINISHED costs a re-scan of the whole cell,
+    # because they have no way to tell which one is new. That happened four times in one
+    # evening — black_rock, dark_mud, light_beach, light_soil — for a total of 37 tiles
+    # against roughly 200 re-examined: "Had to remove things you sneaked in. Will take a
+    # long time until x over x is done when I need to go back on tiles I have already
+    # finished."
+    #
+    # Anything the gates recover for a locked cell is still on disk and still in
+    # generated.json; it waits for the maintainer to unlock the cell, which is a decision
+    # they make when they have the time, not one a republish makes for them.
+    if lock is not None:
+        allowed = set(lock)
+        out = [c for c in out if os.path.relpath(c["path"], REPO) in allowed]
 
     return out, bool(withspill), same or bool(right), bool(full)
 

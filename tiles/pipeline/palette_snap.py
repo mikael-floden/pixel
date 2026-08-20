@@ -521,8 +521,11 @@ CHROMA_VALUE_WEIGHT = 0.35
 # A textured top keeps more relief than a wall fringe does: the grain IS the material.
 TEXTURED_TOP_SPREAD = 26.0
 
-# Below this the two clusters are one material and the boundary is noise.
-MIN_SPLIT_SEPARATION = 40.0
+# Below this the two clusters are one material and the boundary is noise. In CHROMA units
+# (see _chroma_dist), not RGB — measured across 182 cells the genuinely-one-material pairs
+# (light_soil/light_beach, paving_stone/grey_stone, grey_stone/snow) sit at 23-27 while the
+# median cell separates by 135.
+MIN_SPLIT_SEPARATION = 25.0
 
 
 def _chroma_dist(px, target):
@@ -607,7 +610,18 @@ def _split_wall(a, reg, wall_all):
     # (wall_err <= MAX_WALL_ERR), so an unseparated wall is all of the side material. 5 of
     # 182 cells land here.
     if keep.sum() >= 20 and (~keep).sum() >= 20:
-        sep = float(np.linalg.norm(px[keep].mean(0) - px[~keep].mean(0)))
+        # MEASURED IN THE SAME SPACE THE SPLIT WAS DECIDED IN. This floor was first written
+        # as an RGB distance while the classification above is chroma, and that mismatch is
+        # the very trap this file exists to avoid: dark colours are all near each other in
+        # RGB whatever their hue.
+        #
+        # It cost a real overhang immediately. On black_rock over dark_mud the split found
+        # 445 pixels of near-black rock (#171719) spilling over a brown mud wall (#342a29) —
+        # correct, and obvious to the eye — but the two are only 38.9 apart in RGB, under a
+        # floor of 40, so the whole answer was discarded and all 445 were painted mud brown.
+        # In chroma, where the classifier actually works, they are 81.4 apart. The
+        # maintainer: "it's clear the overhang is black_rock, but you did it dark_mud."
+        sep = float(_chroma_dist(px[~keep].mean(0)[None, :], px[keep].mean(0))[0])
         if sep < MIN_SPLIT_SEPARATION:
             keep = np.ones(len(px), bool)
 
