@@ -571,7 +571,13 @@ def main():
                                       kill_highlight=PALETTE.get(top, {}).get("kill_highlight", False),
                                       claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
                                       no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
-                                      claim_lip=PAIR_TWEAKS.get(cell, {}).get("claim_lip"),
+                                      # a TYPE may demand a lip everywhere it is the top:
+                                      # "Parquet Floor should have a overhang looking like a
+                                      # list/border." A floor ends in a moulding, whatever it
+                                      # is laid over, so this belongs to the material and not
+                                      # to one pair. A pair_tweak still overrides it.
+                                      claim_lip=PAIR_TWEAKS.get(cell, {}).get(
+                                          "claim_lip", PALETTE.get(top, {}).get("claim_lip")),
                                       # a pair may opt out of the side material's ramp_abs:
                                       # absolute stops stabilise light walls, but a DARK source
                                       # wall lands inside one stop's basin and ships flat

@@ -76,7 +76,9 @@
       "wall": "#684934",
       "wall_n": 6,
       "flat_top": false,
-      "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'"
+      "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'",
+      "claim_lip": 4,
+      "claim_lip_note": "'Parquet Floor should have a overhang looking like a list/border' / 'Parquet Floor lacks overhang border' - reported on lava, light beach and light soil, and 1-starred across the group. A laid floor ends in a moulding: the top 4 wall rows are the wood's wherever parquet is the top material. Type-level, so it cannot be forgotten on a new pair."
     },
     "paving_stone": {
       "top": "#7d7265",
@@ -355,7 +357,8 @@
     },
     "light_soil__over__parquet_floor": {
       "claim_depth": 0.3,
-      "note": "soil claims painted the parquet wall, worst on the darker-lit right face ('the Light Soil is rendered on the parquet floor wall (on the right side). Lots of examples like this.'). Claims stop at the lip."
+      "note": "'Lots of light soil overhang to the left that is deep brown wood' / 'The brown overhang to the left is missing'. The claim_depth 0.3 cap added here earlier - for the opposite complaint, soil bleeding down the RIGHT wall - also removed the legitimate brim on the left. The lip restores the brim without re-flooding the wall: cap and lip do different jobs and both apply.",
+      "claim_lip": 3
     },
     "light_soil__over__slime": {
       "claim_lip": 3,
@@ -417,6 +420,23 @@
     "water__over__grey_paving_stone": {
       "side_ramp_abs": false,
       "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+    },
+    "light_soil__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "claim_lip": 3,
+      "note": "two reports on this cell: 'Should be light beach at the left overhang! It's grey now!' and 'Some grey paving stones are also very dark'. The lip gives the soil its brim back (top 3 wall rows are the top material's, unconditionally); dropping absolute side mapping lifts the wall out of the dark stops (median 99 -> 123). This cell was one of five deliberately left on absolute mapping because it carried stars - the maintainer has now reported it, so it joins the rest."
+    },
+    "lava__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 99 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
+    },
+    "grey_stone__over__grey_paving_stone": {
+      "side_ramp_abs": false,
+      "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 114 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
+    },
+    "slime__over__grass": {
+      "force_align": true,
+      "note": "'The grass is not colored to our grass in this image' - every tile in the set measures wall_err 39-46 against the gate of 30, so the grass wall shipped RAW in the generator's olive-yellow instead of our deep green. Same override the maintainer sanctioned for deep water: the wall material is not in question here, only its drawn colour. Olive share 0.21 -> 0.00."
     }
   }
 }
