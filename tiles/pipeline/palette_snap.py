@@ -924,14 +924,24 @@ def substitute(a, mask, hex_target, spread=None, ramp=None):
     scale = min(1.0, sp / float(v.std() or sp))
     hsv[:, 0] = tgt[0]
     hsv[:, 1] = tgt[1]
-    hsv[:, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
+    # CLAMPED TO WHAT THE GUARD CAN PROVE. no_invention's rule 2 accepts a pixel that
+    # landed on the palette colour within VAL_SLACK (60) of its value. A substituted
+    # pixel has the palette's exact hue and saturation, so the ONLY way it can fail the
+    # guard is value relief poking past that slack — which happened: a bright streak on
+    # a deep_water wall recentred to 66 over the target, blob 6, and the guard punished
+    # the whole tile by shipping it raw. Clamping the relief to 58 makes every
+    # substituted pixel provably legal, so a substitution can never again be the reason
+    # a tile ships unprocessed.
+    hsv[:, 2] = np.clip(
+        np.clip(float(tgt[2]) + (v - v.mean()) * scale, float(tgt[2]) - 58.0,
+                float(tgt[2]) + 58.0), 0, 255)
     return _hsv2rgb(hsv)
 
 
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
-         claim_depth=None):
+         claim_depth=None, paint_side=True):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1098,7 +1108,13 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # "the overhang is a bit redish ... It's clear to me that the overhang
             # belongs to the dark_mud. But they don't change color."
             pairs = [(m_top, top_hex, top_ramp, False)]
-            if align_side:
+            # paint_side=False is the raw_wall tweak: the wall's CLASSIFICATION stays
+            # strict (align_side still says the material is confirmed, so the claims do
+            # not go aggressive), but the wall itself ships as drawn. Suppressing
+            # alignment entirely was tried and flipped the pair into aggressive
+            # claiming — the black overhang swallowed the shadowed stones it was
+            # supposed to leave alone.
+            if align_side and paint_side:
                 pairs.append((m_side, side_hex, side_ramp, True))
             for mask, hx, rmp, is_side in pairs:
                 if mask.sum() < 8:

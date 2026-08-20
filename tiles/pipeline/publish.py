@@ -460,8 +460,16 @@ def main():
             # wall that was NOT the requested material — a three-layer tile's grey
             # stone toward green — so the transform had to manufacture colour. A cell
             # over MAX_WALL_ERR is left exactly as generated and flagged instead.
-            aligned = (c["wall_err"] is not None
-                       and c["wall_err"] <= flatness.MAX_WALL_ERR)
+            # force_align: a per-pair override for cells whose wall the maintainer has
+            # CONFIRMED by review but whose drawn material sits far from the palette,
+            # so wall_err fails every tile and the wall ships raw looking like the
+            # wrong material ("the water here is different and doesn't look like deep
+            # water"). A blanket rule — align every reviewed cell — was tried first and
+            # flattened mud-over-paving's good raw stones into bright grey, so it is
+            # opt-in per pair, exactly as the maintainer sanctioned.
+            aligned = ((c["wall_err"] is not None
+                        and c["wall_err"] <= flatness.MAX_WALL_ERR)
+                       or PAIR_TWEAKS.get(cell, {}).get("force_align", False))
             # NOT EVERY MATERIAL WANTS A FLAT TOP. The flat fill is the default because a
             # featureless surface shows no repeat across a large field, but the maintainer
             # asked for parquet_floor to keep its planks: "parquet_floor is not expected to
@@ -473,7 +481,11 @@ def main():
                                       flat_top=PALETTE.get(top, {}).get("flat_top", True),
                                       top_ramp=PALETTE.get(top, {}).get("ramp"),
                                       side_ramp=PALETTE.get(side, {}).get("ramp"),
-                                      claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"))
+                                      claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
+                                      # raw_wall: the wall is the material at its best as
+                                      # drawn and every recolour made it worse — classify
+                                      # strictly, paint nothing on the wall itself.
+                                      paint_side=not PAIR_TWEAKS.get(cell, {}).get("raw_wall", False))
                     if top_hex else raw)
             # THE GUARD. Every three attempts at wall alignment put a colour into the
             # art that was in neither the art nor the palette, and every one was caught

@@ -36,7 +36,16 @@
       "top": "#808082",
       "source": "reference tile tiles/matrix/grey_stone__over__grey_stone/sheet_00_chase0/tile_09.png \u2014 the maintainer's chosen look for this material",
       "wall": "#45474b",
-      "wall_n": 6
+      "wall_n": 6,
+      "ramp": [
+        "#22252c",
+        "#33373d",
+        "#585a5f",
+        "#727272",
+        "#8c8c8c",
+        "#949599"
+      ],
+      "ramp_note": "the maintainer's #71 reference's own greys, dark grout to lit stone \u2014 added when single-hex wall substitution sank a light drawn wall onto the dark wall hex: 'Why did you turn the grey stone so dark? The grey stone looks really bad like that.'"
     },
     "light_soil": {
       "top": "#c9ab7e",
@@ -105,6 +114,19 @@
     "black_rock__over__ice": {
       "claim_depth": 0.35,
       "note": "the rock overhang on this pair hugs the top edge; claims deeper than a third of the face were shaded ice painted black \u2014 'black rock on the left wall that should have been ice (not the overhang, but under the overhang)'"
+    },
+    "black_rock__over__deep_water": {
+      "force_align": true,
+      "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
+    },
+    "dark_mud__over__deep_water": {
+      "force_align": true,
+      "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
+    },
+    "black_rock__over__grey_stone": {
+      "raw_wall": true,
+      "note": "the wall ships as drawn (raw_wall) AND overhang claims stop at the lip (claim_depth): shadowed grey stones read near-black, the black anchor claimed them down the whole left face, and they came back painted rock \u2014 'somehow you make the light grey on the wall to the left super mega dark'",
+      "claim_depth": 0.3
     }
   }
 }
