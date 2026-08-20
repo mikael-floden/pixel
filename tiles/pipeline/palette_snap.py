@@ -468,7 +468,16 @@ def retint_spill(a, reg, top_hex, hue_tol=22, sat_floor=30, guard=12,
     # left to the wall rather than guessed at.
     dt = np.abs(hsv[:, 0] - tref[0]); dt = np.minimum(dt, 255.0 - dt)
     dw = np.abs(hsv[:, 0] - wmat[0]); dw = np.minimum(dw, 255.0 - dw)
-    sel = (dt < dw) & (hsv[:, 1] > sat_floor)
+    # COLOURFULNESS, NOT SATURATION. The saturation floor is a ratio, so near-black
+    # pixels sail over it: a bottom-edge outline pixel at value 50 and saturation 35 has
+    # colourfulness 7 — no colour a person can see — but its noise-hue can land nearer
+    # green than the rock's, and the retint then painted it FULL grass. The maintainer
+    # circled the result on grass over black_rock: "At the very bottom edge it looks
+    # like you have invented green pixels. The before image had a black border at the
+    # bottom." 14 of 47 tiles in that cell carried them. A real blade in shadow keeps
+    # colourfulness ~47+ (#2f6b33 measures 60), so the floor costs nothing it protects.
+    cf = hsv[:, 1] * hsv[:, 2] / 255.0
+    sel = (dt < dw) & (cf > 14.0)
     # max_frac is only a backstop against a pathological selection. DEPTH is the real
     # test — a large fringe is still a fringe, and capping on size skipped snow at 31%
     # and water at 34% whose depths were 0.19 and 0.16, i.e. hugging the top exactly as
