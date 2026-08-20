@@ -275,6 +275,46 @@
     "ice__over__grass": {
       "claim_depth": 0.3,
       "note": "shaded grass leans toward the pale ice anchor and the flood iced the wall ('The ice over grass makes the grass wall into ice'). Claims stop at the lip."
+    },
+    "ice__over__lava": {
+      "claim_depth": 0.3,
+      "note": "two failures at once: the generator draws a THICK ice slab whose side is most of the wall, and the flood then ran on through it into the genuinely hot red below ('It's ICE over LAVA and the bottom is HOT RED. Your code turned that into..... ICE!!!'). The cell means wall-of-lava, so everything below the lip paints as lava."
+    },
+    "ice__over__brown_paving_stone": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__dark_mud": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__deep_water": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__grey_paving_stone": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__light_beach": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__light_soil": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__parquet_floor": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__slime": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+    },
+    "ice__over__snow": {
+      "claim_depth": 0.3,
+      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
     }
   }
 }
