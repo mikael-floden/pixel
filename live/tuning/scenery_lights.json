@@ -1,6 +1,67 @@
 {
   "format": "pixel-wiki-scenery-lights@1",
-  "updated_at": "2026-08-20T01:28:44.674Z",
+  "updated_at": "2026-08-20T01:58:01.878Z",
   "_comment": "Scenery states whose LIT_/NOT_LIT_ name does not match the art the generator produced. Keyed <piece path>#<state>, value {lit, was, updated_at}. Absent means the state's own name is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the state and deletes the entry. See live/README.md.",
-  "overrides": {}
+  "overrides": {
+    "scenery/cairns/cairn_012#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T01:54:53.972Z"
+    },
+    "scenery/cairns/cairn_012#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T01:55:00.045Z"
+    },
+    "scenery/cairns/cairn_010#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T01:55:55.141Z"
+    },
+    "scenery/cairns/cairn_010#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T01:55:57.881Z"
+    },
+    "scenery/cairns/cairn_010#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T01:56:00.138Z"
+    },
+    "scenery/cairns/cairn_010#lit_4": {
+      "lit": false,
+      "was": "lit_4",
+      "updated_at": "2026-08-20T01:56:03.931Z"
+    },
+    "scenery/anchors/anchor_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T01:56:29.567Z"
+    },
+    "scenery/anchors/anchor_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T01:56:31.183Z"
+    },
+    "scenery/anchors/anchor_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T01:56:33.564Z"
+    },
+    "scenery/hanging_baskets/hanging_basket_006#lit_1": {
+      "lit": false,
+      "was": "lit_1",
+      "updated_at": "2026-08-20T01:57:19.198Z"
+    },
+    "scenery/hanging_baskets/hanging_basket_006#lit_2": {
+      "lit": false,
+      "was": "lit_2",
+      "updated_at": "2026-08-20T01:57:20.792Z"
+    },
+    "scenery/hanging_baskets/hanging_basket_006#lit_3": {
+      "lit": false,
+      "was": "lit_3",
+      "updated_at": "2026-08-20T01:57:26.200Z"
+    }
+  }
 }
