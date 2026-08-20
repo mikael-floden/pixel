@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time setup for the nightly repo backup bucket (.github/workflows/backup-gcs.yml).
+# One-time setup for the weekly repo backup bucket (.github/workflows/backup-gcs.yml).
 #
 # HOW TO RUN — from a PHONE, deliberately (the maintainer has no laptop, and
 # this script's original "run it on your machine" instruction is exactly why it
@@ -67,7 +67,7 @@ echo "▶ lifecycle: delete objects older than ${KEEP_DAYS} days"
 # Age-based, not keep-newest-N, because CI has no delete rights by design.
 # Worth knowing the failure mode: if backups stopped uploading for ${KEEP_DAYS}
 # days straight, the last one would age out and the bucket would empty. GitHub
-# emails on workflow failure, and 30 days of ignored daily failures is the real
+# emails on workflow failure, and a month of ignored failure emails is the real
 # precondition — accepted in exchange for backups CI cannot destroy.
 LIFECYCLE="$(mktemp)"
 cat > "$LIFECYCLE" <<JSON
@@ -97,7 +97,7 @@ variable is now only an override for a bucket somewhere else.
 No secrets. The workflow authenticates through the same keyless Workload
 Identity Federation the deploy already uses.
 
-Verify now: Actions → "backup to gcs" → Run workflow. It runs nightly anyway.
+Verify now: Actions → "backup to gcs" → Run workflow. It runs weekly (Mondays) anyway.
 
 Restore later with:
    gcloud storage ls gs://${BUCKET}

@@ -1,81 +1,77 @@
 # Off-GitHub backup → Google Cloud Storage
 
-Nobody on this project keeps a local clone — the agents are the only ones who
-touch git. That makes GitHub a single point of failure: an account lockout, a
-bad force-push, or a repo deletion takes everything.
+No human keeps a clone — agents are the only ones who touch git — so GitHub is
+a single point of failure (account lockout, bad force-push, repo deletion).
+These zips are the safety net for when GitHub *isn't* there.
 
-**Workflow:** `.github/workflows/backup-gcs.yml` — daily 08:17 UTC, or run it
-by hand from the Actions tab.
-**Setup:** `.github/gcs-backup-bootstrap.sh`, once.
+**Workflow:** `.github/workflows/backup-gcs.yml` — **weekly, Mondays 08:17
+UTC** (after the art loops' ~02:30 pass so the snapshot catches fresh art;
+off-round minute on purpose), or run by hand from the Actions tab. Retention:
+the bucket's own 30-day lifecycle rule ≈ 4 snapshots spanning a month.
+
+**Weekly is a law, not a default.** The bucket is **Nearline**, which bills a
+**30-day minimum storage duration per object** — so daily-with-a-14-day-purge
+was REJECTED (deleting at 14 days still bills 30: fewer restore points, zero
+savings), and Standard dodges the minimum at ~2× per GB. Measured on the real
+archive in europe-north1: daily/30d ~8.7 GB-months (~0.95 kr/mo); weekly/30d
+~1.25 GB-months (~0.14 kr/mo). **Frequency is the only lever on this bill.**
+(Archive class also rejected: 365-day minimum → early-deletion charges when
+the lifecycle deletes at 30.)
 
 ## What's in the zip
 
 `git archive HEAD` — the current state of every **tracked** file, no history.
-Measured 2026-08-14: **42,920 entries, ~325 MB uncompressed, 274 MB zipped.**
-
-Deliberately absent, and each for a reason:
+Measured 2026-08-20: **42,175 tracked files → 53,449 zip entries, ~324 MB
+uncompressed, 292 MB zipped.** Deliberately absent:
 
 | Not included | Why |
 |---|---|
-| `.git/` | 2.3 GB of history. GitHub is the history; this is the *current state* snapshot that was asked for. |
+| `.git/` | ~2.3 GB of history. GitHub is the history; this is the current-state snapshot. |
 | `node_modules/` | Gitignored. `npm ci` rebuilds it. |
-| **`.env`** | Gitignored — so `PIXELLAB_API_KEY` **cannot** ride along into cloud storage. A plain `tar` of the working tree *would* have leaked it. |
+| **`.env`** | Gitignored — so `PIXELLAB_API_KEY` **cannot** ride along into cloud storage. A plain `tar` of the working tree *would* leak it. |
 
-## Setup
+## Setup (once, from a phone)
+
+Paste ONE line into <https://shell.cloud.google.com>:
 
 ```
-PROJECT_ID=your-gcp-project ./.github/gcs-backup-bootstrap.sh
+curl -sS https://raw.githubusercontent.com/mikael-floden/pixel/main/.github/gcs-backup-bootstrap.sh | bash
 ```
 
-Then set the one repo variable it prints (Settings → Secrets and variables →
-Actions → **Variables**):
-
-| Kind | Name | Value |
-|---|---|---|
-| Variable | `GCS_BACKUP_BUCKET` | `<project-id>-nangijala-backups` |
+Nothing to set afterwards: **the workflow DERIVES the bucket name**
+(`<project-id>-nangijala-backups`, the same name the bootstrap creates). The
+`GCS_BACKUP_BUCKET` repo variable is only an override for a bucket somewhere
+else; a missing bucket fails the run with that exact paste-this line. (Trap
+paid for: the name used to be a hand-set repo variable and the setup said "run
+this on your machine" — the maintainer has no machine, so for three nights,
+2026-08-15..17, every run expanded to `gs:///`, died on a URL-parse error, and
+backed up nothing while looking healthy. Ops steps here must be phone-paste
+one-liners, and workflows derive values instead of asking for them.)
 
 **There are no secrets.** The workflow authenticates with the same keyless
-Workload Identity Federation the deploy already uses, so there is nothing to
-store, rotate, or leak. That is the whole reason this is a bucket and not
-personal Drive: Drive sits outside that trust boundary and would have needed a
-long-lived OAuth refresh token in repo secrets, plus a browser consent screen
-to mint it. (A service account can't own consumer-Drive files either — service
-accounts have no Drive storage quota — so impersonation isn't a way around it.)
+Workload Identity Federation the deploy uses — nothing to store, rotate, or
+leak. That is why this is a bucket and not personal Drive (REJECTED): Drive
+sits outside that trust boundary and needs a long-lived OAuth refresh token in
+repo secrets plus a browser consent screen; a service account can't own
+consumer-Drive files either (no Drive storage quota), so impersonation is no
+way around it.
 
-## The append-only design
+## Append-only by construction
 
-The obvious objection to a bucket is that it lives in the **same GCP project as
-production**, so one compromised pipeline could take both. That is answered
-directly by the permissions:
+The bucket lives in the **same GCP project as production**; the permissions
+are what stop one compromised pipeline from losing both:
 
-- the deploy SA gets **`objectCreator` + `objectViewer`**, scoped to this
-  bucket — write a new snapshot, read one back to verify;
-- it does **not** get `objectAdmin`. CI cannot delete or overwrite an existing
-  backup. Not "shouldn't" — *cannot*;
-- retention is the bucket's own **lifecycle rule** (30 days), which nothing in
-  CI can reach.
+- the deploy SA holds **`objectCreator` + `objectViewer`**, scoped to this
+  bucket — write a snapshot, read it back to verify;
+- it does **not** hold `objectAdmin`: CI cannot delete or overwrite a backup.
+  Not "shouldn't" — *cannot*;
+- deletion is the bucket's own **lifecycle rule** (30 days), unreachable from
+  CI. Public access prevention on; uniform bucket-level access.
 
-So a compromised deploy pipeline can add junk to the bucket. It cannot destroy
-the history. Public access prevention is on, and access is uniform
-bucket-level.
-
-The honest cost of append-only: since CI can't prune, deletion is age-based
-rather than keep-newest-N. If backups stopped uploading for 30 straight days,
-the last one would age out and the bucket would empty. GitHub emails on
-workflow failure, so that needs a month of ignored failures — accepted in
-exchange for backups CI can't wipe.
-
-## Cost
-
-30 daily snapshots × 274 MB ≈ **8.2 GB**, Nearline, one region:
-
-**≈ 0.8 kr/month.** Against the ~350 kr/month the project already spends, this
-is free in practice.
-
-Nearline (not Archive) is deliberate: Archive is cheaper per GB but has a
-**365-day minimum storage duration**, so deleting at 30 days would bill an
-early-deletion charge for the other 335. Nearline's 30-day minimum exactly
-matches the lifecycle, so nothing is ever deleted early.
+Honest scope of append-only: a compromised pipeline can still *add* junk
+snapshots — it cannot destroy one. And retention is age-based, not
+keep-newest-N, so 30 straight days without an upload empties the bucket. GitHub emails on every
+workflow failure — that failure mode needs a month of ignored emails.
 
 ## Restoring
 
@@ -85,24 +81,22 @@ gcloud storage cp gs://<bucket>/nangijala-....zip .
 unzip nangijala-....zip -d restored && cd restored/games2 && npm ci
 ```
 
-That's a complete working tree — the game builds and every art domain is
-there. You get no git history this way; if that's what you need, clone from
-GitHub. These zips are the safety net for when GitHub *isn't* there.
+A complete working tree — the game builds, every art domain is there. No git
+history this way; for history, clone from GitHub.
 
-## Verification, because a silent bad backup is worse than none
+## Verification (a silent bad backup is worse than none)
 
 The workflow refuses to trust its own output at three points:
 
 1. `unzip -t` on the real archive, plus entry (>20,000) and byte (>50 MB)
    floors — a broken checkout or empty tree fails loudly instead of uploading.
-2. `gcloud storage cp` validates a CRC32C checksum end to end, so a corrupted
+2. `gcloud storage cp` validates a CRC32C checksum end to end — a corrupted
    transfer fails the step rather than landing quietly.
 3. The object is read back from GCS and size-compared against the local file —
-   `cp` exiting 0 is not proof the object is readable at the far end.
+   `cp` exiting 0 is not proof the far end is readable.
 
-## A second copy, if you want one
+## A second copy, if ever wanted
 
-This covers "GitHub is gone". It does not cover "the Google account is gone".
-If that matters, the cheapest addition is a copy into a **different** cloud
-account — not a second bucket in the same project, which shares the failure it
-is meant to protect against.
+This covers "GitHub is gone", not "the Google account is gone". The cheapest
+addition is a copy into a **different** cloud account — never a second bucket
+in the same project, which shares the failure it should protect against.
