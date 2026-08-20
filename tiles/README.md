@@ -109,12 +109,15 @@ tiles/
     tombstones.py        permanent rejections AND overrides
     restore.py           rebuild the matrix from PixelLab, free
     reference.py         derive a material's palette from a reference tile
+    notes.py             the maintainer's written notes — surfaced, never acted on
     pixellab_gc.py       delete generations we never kept (--apply is destructive)
     probe.py             generate ONE sheet for ONE prompt and score it (bake-offs)
   matrix/                RAW generations. Gitignored, recoverable — see recovery above.
   review/                published candidates + manifest.json (what the wiki renders)
   generated.json         every tile_id we ever paid for. THE master copy.
   tombstones.json        maintainer verdicts: never-publish and always-publish
+  notes_seen.json        which of their written notes the agent has actually read
+  review_lock.json       cells they have finished reviewing; publish may only shrink these
   reject_gallery.json    id -> discarded tile, so an override survives regeneration
   hard_cells.json        cells the whole prompt ladder could not fill
 ```
@@ -129,6 +132,48 @@ tiles/
 - A finished generation is fetchable by id (`fetch_tiles`) and costs nothing, so an
   interrupted run never has to pay twice. This is also the whole disaster-recovery
   story — see below.
+
+## A review is two things, and only one of them is automatable
+
+**THE VERDICT is mechanical.** Reject / approve / stars is a fact about a file: "do not
+publish this tile again". `publish.py` applies any pending verdict before it touches the
+review folder, and re-checks afterwards that nothing the maintainer deleted is still in
+the set it just wrote. That automation earned itself — the apply used to live in whichever
+shell script happened to call publish, it got skipped, and they were handed a brand-new
+build still containing nine tiles they had removed: *"Why do I see something I have
+removed if you have just built a new version. I understand absolutely nothing now."*
+
+**THE NOTE IS NOT.** A note is a person telling the agent how to fix the generator, and no
+script can act on one:
+
+> "It's meant that you read them. I might have a comment to you. It should be in your
+> readme and not a script to automate it. How do you automate reading my comments?"
+
+You don't. And the hazard is specific: automating the verdict means the tile quietly
+disappears — correctly — while the sentence attached to it is never read. So `notes.py`
+does the only honest thing a script can do here, which is make an unread note impossible
+to miss. `publish` prints every unread note in a block before it runs. Acknowledging is a
+separate deliberate act (`--ack`) and is a lie if run without reading, which is the
+property that keeps it worth anything.
+
+    python tiles/pipeline/notes.py          # notes not yet read
+    python tiles/pipeline/notes.py --all    # every note ever left
+    python tiles/pipeline/notes.py --ack    # after actually reading them
+
+**READING THE NOTES IS THE AGENT'S JOB.** Not a step in a pipeline — a thing to do, with
+the same seriousness as looking at the art. Every note in the first pass changed this
+repo, which is the argument for it:
+
+| what they wrote | what it became |
+|---|---|
+| "looks like Y over X" (22 notes) | `swapped_err()` — the swapped-material gate |
+| "not enough lava on the ground" (14) | `top_contamination()` and the contamination tier |
+| "You might have to call water something else like *blue*" | the colour-word trick: deep_water-over-grass went 100% backwards to 12% |
+| "Paving stones are not supposed to be clean" | `flat_top: false` |
+| "the word *floor* will get the AI to think the wood should be at the top" | still open — a prompt change for parquet_floor |
+
+Not one of those was derivable from the pixels. They came from a person looking at the
+art and saying what was wrong with it.
 
 ## The palette is nominated, not measured
 

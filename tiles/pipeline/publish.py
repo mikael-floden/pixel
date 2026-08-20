@@ -334,6 +334,26 @@ def main():
     # BEFORE the rmtree below, deliberately: resolve() reads the existing manifest to
     # turn a wiki key into an art path, and --clean deletes it. Running it after cost
     # nine of the maintainer's rejections once already.
+    # THE NOTES ARE NOT AUTOMATABLE, so this only makes them impossible to miss. A
+    # verdict is a fact about a file and applying it is mechanical; a note is a person
+    # telling me how to fix the generator, and the hazard of automating the first is that
+    # the tile quietly disappears and the sentence attached to it is never read.
+    # "It's meant that you read them. I might have a comment to you." See notes.py.
+    try:
+        import notes as _notes
+        _unread = _notes.unread()
+    except Exception:
+        _unread = []
+    if _unread:
+        print(f"\n*** {len(_unread)} UNREAD NOTE(S) FROM THE MAINTAINER ***")
+        for k, note, v in _unread[:10]:
+            print(f"   {k}: {note}")
+        if len(_unread) > 10:
+            print(f"   ... and {len(_unread) - 10} more")
+        print("   READ THEM — they are instructions, not data. This publish still runs;\n"
+              "   the tiles are handled, the sentences are not.\n"
+              "   python tiles/pipeline/notes.py   then   --ack\n")
+
     if not args.no_apply:
         try:
             n_applied = _apply_verdicts()
