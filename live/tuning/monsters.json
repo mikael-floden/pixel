@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-20T10:44:28.846Z",
+  "updated_at": "2026-08-20T10:49:58.166Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -359,7 +359,109 @@
           "item": "plucked_beast_eyeball",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 27.25,
+        "ry": 12.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.52,
+            "ay": 51.65
+          },
+          "idle#south-east": {
+            "ax": 4.19,
+            "ay": 58.97
+          },
+          "idle#east": {
+            "ax": -2.46,
+            "ay": 57.2
+          },
+          "idle#north-east": {
+            "ax": -2.5,
+            "ay": 53.69
+          },
+          "idle#north": {
+            "ax": -0.02,
+            "ay": 55.05
+          },
+          "idle#north-west": {
+            "ax": 0.11,
+            "ay": 52.84
+          },
+          "idle#west": {
+            "ax": -1.54,
+            "ay": 57.99
+          },
+          "idle#south-west": {
+            "ax": -2.9,
+            "ay": 54.16
+          },
+          "attack#south": {
+            "ax": -0.22,
+            "ay": 52.38
+          },
+          "attack#south-east": {
+            "ax": 1.39,
+            "ay": 51.78
+          },
+          "attack#east": {
+            "ax": -0.65,
+            "ay": 51.06
+          },
+          "attack#north-east": {
+            "ax": -3,
+            "ay": 47.45
+          },
+          "attack#north-west": {
+            "ax": -0.5,
+            "ay": 50.17
+          },
+          "attack#west": {
+            "ax": -0.86,
+            "ay": 49.32
+          },
+          "attack#south-west": {
+            "ax": -2.91,
+            "ay": 50.5
+          },
+          "attack#north": {
+            "ax": -0.93,
+            "ay": 51.16
+          },
+          "die#south": {
+            "ax": -0.61,
+            "ay": 49.33
+          },
+          "die#south-east": {
+            "ax": 1.21,
+            "ay": 49.37
+          },
+          "die#east": {
+            "ax": -0.8,
+            "ay": 52.29
+          },
+          "die#north-east": {
+            "ax": -2.26,
+            "ay": 48.81
+          },
+          "die#north": {
+            "ax": -0.61,
+            "ay": 49.82
+          },
+          "die#north-west": {
+            "ax": -0.44,
+            "ay": 48.03
+          },
+          "die#west": {
+            "ax": -2.19,
+            "ay": 49.64
+          },
+          "die#south-west": {
+            "ax": -2.28,
+            "ay": 49.91
+          }
+        }
+      }
     },
     "dune_digger": {
       "max_hp": 20,
