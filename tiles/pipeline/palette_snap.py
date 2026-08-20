@@ -831,6 +831,26 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
                 if g2.sum() == grown.sum():
                     break
                 grown = g2
+            # THE EDGE HIGHLIGHT BELONGS TO THE ROCK, DARKER. The generator draws a
+            # bright line where the top rolls into the wall. soften_rim never fires
+            # here — it only fades pixels brighter than BOTH surfaces, and this
+            # highlight is dim next to the mud. But it is the BLACK ROCK's edge:
+            # "The edge highlight must ofc be blended towards the 'clean top color'
+            # and in this case the top is black so we need to find the edge highlight
+            # and fade it darker, not brighter... it's ok if the highlight is
+            # present, we must just make it darker becouse this is black_rock." So
+            # the two rows under the top face's edge, where brighter than the paint,
+            # are claimed with the overhang: substitution puts them in the rock's
+            # hue and the vcap pulls them down to a still-visible, darker highlight.
+            ys_r = np.arange(h_img)[:, None]
+            v_all = a[:, :, :3].max(axis=2)
+            y0_t = np.where(reg["top"], ys_r, -1).max(0)
+            for dy_h in (1, 2):
+                yy_h = y0_t + dy_h
+                ok_h = (y0_t >= 0) & (yy_h < h_img)
+                ci = np.where(ok_h)[0]
+                pick = wall_all[yy_h[ci], ci] & (v_all[yy_h[ci], ci] > top_v + 10)
+                grown[yy_h[ci][pick], ci[pick]] = True
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
@@ -1169,6 +1189,19 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                                         claim_depth=claim_depth,
                                         deep_claim=deep_claim,
                                         drip_match=drip_match)
+            if drip_match is not None:
+                # THE BROWN DOES NOT CHANGE FROM LIVE, BYTE FOR BYTE. The drip claim
+                # may only ADD black pixels; it must never alter how the mud paints.
+                # The wall repaint maps value percentiles WITHIN its mask, so merely
+                # removing the claimed drape from the side mask re-ladders every mud
+                # pixel — which the maintainer caught instantly ("NOOOOOOOO! YOU
+                # CHANGED THE BROWN AGAIN!"). So the side is painted from the BASE
+                # classification, exactly as a drip-less run paints it, and the
+                # extended top claims overwrite on top of it afterwards.
+                m_side, _base_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
+                                                aggressive=not align_side,
+                                                claim_depth=claim_depth,
+                                                deep_claim=deep_claim)
             # THE OVERHANG ALWAYS ALIGNS; THE WALL ONLY WHEN CONFIRMED. align_side (the
             # wall_err gate) exists so a wall that may not BE the requested material is
             # never repainted as it. But it used to gate this whole block, overhang
@@ -1179,6 +1212,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # "the overhang is a bit redish ... It's clear to me that the overhang
             # belongs to the dark_mud. But they don't change color."
             pairs = [(m_top, top_hex, top_ramp, False)]
+            paint_last = drip_match is not None
             # paint_side=False is the raw_wall tweak: the wall's CLASSIFICATION stays
             # strict (align_side still says the material is confirmed, so the claims do
             # not go aggressive), but the wall itself ships as drawn. Suppressing
@@ -1187,6 +1221,10 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # supposed to leave alone.
             if align_side and paint_side:
                 pairs.append((m_side, side_hex, side_ramp, True))
+            if paint_last:
+                # side first, extended top last, so the claims overwrite the mud
+                # paint on the pixels they take — and only on those pixels
+                pairs = pairs[::-1]
             for mask, hx, rmp, is_side in pairs:
                 if mask.sum() < 8:
                     continue
