@@ -32,22 +32,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "torch_posts/torch_post_015/lit_1/sprite.webp",
-      "pixellab_object_id": "1266f897-ae6e-494a-8265-c6198bc17f0c",
-      "generated_at": "2026-08-17T11:27:56+00:00",
-      "glow_concept": "ember-crusted head glowing without open flame",
-      "difference_from_source": 0.6165,
-      "glow_score": 0.1356
-    },
-    "LIT_2": {
-      "sprite": "torch_posts/torch_post_015/lit_2/sprite.webp",
-      "pixellab_object_id": "64cf2240-89cc-445c-bdb0-92956f2b8f87",
-      "generated_at": "2026-08-17T11:29:02+00:00",
-      "glow_concept": "halo of glow-moths circling the head",
-      "difference_from_source": 0.5206,
-      "glow_score": 0.0385
-    },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_015/sprite.webp",
       "pixellab_object_id": "774a83f8-0de1-4340-bae8-a739b09bfd99",

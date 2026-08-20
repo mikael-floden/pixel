@@ -31,43 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:02:24+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "house_clutter/clutter_006/sprite.webp",
-      "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
-      "generated_at": "2026-08-13T22:02:24+00:00"
-    },
-    "LIT_2": {
-      "sprite": "house_clutter/clutter_006/lit_2/sprite.webp",
-      "pixellab_object_id": "c2a51064-a8fe-4ffe-a32a-61ee9b0ed5d0",
-      "generated_at": "2026-08-16T16:52:34+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.5409,
-      "glow_score": 0.0131
-    },
-    "LIT_3": {
-      "sprite": "house_clutter/clutter_006/lit_3/sprite.webp",
-      "pixellab_object_id": "adc45155-65ec-4f91-bb97-f85bc0dbc731",
-      "generated_at": "2026-08-16T16:52:35+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8031,
-      "glow_score": 0.0287
-    },
-    "LIT_4": {
-      "sprite": "house_clutter/clutter_006/lit_4/sprite.webp",
-      "pixellab_object_id": "1936c5ce-85e2-42da-bc76-d319bf1b4329",
-      "generated_at": "2026-08-16T16:53:43+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.6353,
-      "glow_score": 0.0187
-    },
-    "NOT_LIT_1": {
-      "sprite": "house_clutter/clutter_006/not_lit_1/sprite.webp",
-      "pixellab_object_id": "9bc7f45b-b6a4-442e-86e9-d013720269af",
-      "generated_at": "2026-08-16T17:05:11+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9779,
-      "glow_score": 0.0042
-    },
     "NOT_LIT_2": {
       "sprite": "house_clutter/clutter_006/not_lit_2/sprite.webp",
       "pixellab_object_id": "20ca2c77-0e81-42c4-8653-b9d277620863",
@@ -75,6 +38,39 @@
       "glow_concept": null,
       "difference_from_source": 0.3232,
       "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "house_clutter/clutter_006/sprite.webp",
+      "pixellab_object_id": "0dd70961-df0f-4114-a4bb-85e79c6e7203",
+      "generated_at": "2026-08-13T22:02:24+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "house_clutter/clutter_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "c2a51064-a8fe-4ffe-a32a-61ee9b0ed5d0",
+      "generated_at": "2026-08-16T16:52:34+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5409,
+      "glow_score": 0.0131,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "house_clutter/clutter_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "adc45155-65ec-4f91-bb97-f85bc0dbc731",
+      "generated_at": "2026-08-16T16:52:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8031,
+      "glow_score": 0.0287,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "house_clutter/clutter_006/not_lit_6/sprite.webp",
+      "pixellab_object_id": "1936c5ce-85e2-42da-bc76-d319bf1b4329",
+      "generated_at": "2026-08-16T16:53:43+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.6353,
+      "glow_score": 0.0187,
+      "relit_from": "LIT_4"
     }
   }
 }

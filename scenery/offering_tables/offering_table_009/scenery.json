@@ -31,14 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "offering_tables/offering_table_009/lit_1/sprite.webp",
-      "pixellab_object_id": "d5ff13c4-bc24-4aa7-86a6-81fb52f8e55a",
-      "generated_at": "2026-08-16T19:48:15+00:00",
-      "glow_concept": "the offerings themselves glowing faintly gold",
-      "difference_from_source": 0.4207,
-      "glow_score": 0.0692
-    },
     "LIT_2": {
       "sprite": "offering_tables/offering_table_009/lit_2/sprite.webp",
       "pixellab_object_id": "b0d70bba-bd96-4276-8ef7-9d029a15a584",
@@ -75,6 +67,15 @@
       "glow_concept": null,
       "difference_from_source": 0.5081,
       "glow_score": 0.0207
+    },
+    "NOT_LIT_5": {
+      "sprite": "offering_tables/offering_table_009/not_lit_5/sprite.webp",
+      "pixellab_object_id": "d5ff13c4-bc24-4aa7-86a6-81fb52f8e55a",
+      "generated_at": "2026-08-16T19:48:15+00:00",
+      "glow_concept": "the offerings themselves glowing faintly gold",
+      "difference_from_source": 0.4207,
+      "glow_score": 0.0692,
+      "relit_from": "LIT_1"
     }
   }
 }

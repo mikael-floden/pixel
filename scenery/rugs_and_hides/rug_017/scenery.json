@@ -32,22 +32,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "rugs_and_hides/rug_017/lit_1/sprite.webp",
-      "pixellab_object_id": "95782256-dde8-4c08-ad5b-ec5948a5ca52",
-      "generated_at": "2026-08-16T20:25:48+00:00",
-      "glow_concept": "pattern threads shimmering with woven memory-light",
-      "difference_from_source": 0.5715,
-      "glow_score": 0.1713
-    },
-    "LIT_2": {
-      "sprite": "rugs_and_hides/rug_017/lit_2/sprite.webp",
-      "pixellab_object_id": "2cb1c5d0-3961-4c96-8dfb-e1e7830ceba5",
-      "generated_at": "2026-08-16T20:26:08+00:00",
-      "glow_concept": "warm hearthlight reflected across the pile",
-      "difference_from_source": 0.8535,
-      "glow_score": 0.2988
-    },
     "NOT_LIT_1": {
       "sprite": "rugs_and_hides/rug_017/sprite.webp",
       "pixellab_object_id": "2b16acb5-c377-4791-b84b-ac9ca77f00aa",
@@ -76,6 +60,24 @@
       "glow_concept": null,
       "difference_from_source": 0.6314,
       "glow_score": 0.2005
+    },
+    "NOT_LIT_5": {
+      "sprite": "rugs_and_hides/rug_017/not_lit_5/sprite.webp",
+      "pixellab_object_id": "95782256-dde8-4c08-ad5b-ec5948a5ca52",
+      "generated_at": "2026-08-16T20:25:48+00:00",
+      "glow_concept": "pattern threads shimmering with woven memory-light",
+      "difference_from_source": 0.5715,
+      "glow_score": 0.1713,
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_6": {
+      "sprite": "rugs_and_hides/rug_017/not_lit_6/sprite.webp",
+      "pixellab_object_id": "2cb1c5d0-3961-4c96-8dfb-e1e7830ceba5",
+      "generated_at": "2026-08-16T20:26:08+00:00",
+      "glow_concept": "warm hearthlight reflected across the pile",
+      "difference_from_source": 0.8535,
+      "glow_score": 0.2988,
+      "relit_from": "LIT_2"
     }
   }
 }

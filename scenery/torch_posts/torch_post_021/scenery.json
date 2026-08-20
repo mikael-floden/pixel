@@ -40,14 +40,6 @@
       "difference_from_source": 0.6218,
       "glow_score": 0.1454
     },
-    "LIT_2": {
-      "sprite": "torch_posts/torch_post_021/lit_2/sprite.webp",
-      "pixellab_object_id": "5a2f9fd4-c150-4eb2-ac1d-082858142d94",
-      "generated_at": "2026-08-17T11:31:26+00:00",
-      "glow_concept": "unreadable charms glowing faintly up the post",
-      "difference_from_source": 0.5464,
-      "glow_score": 0.0087
-    },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_021/sprite.webp",
       "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
@@ -76,6 +68,15 @@
       "glow_concept": null,
       "difference_from_source": 0.7789,
       "glow_score": 0.034
+    },
+    "NOT_LIT_5": {
+      "sprite": "torch_posts/torch_post_021/not_lit_5/sprite.webp",
+      "pixellab_object_id": "5a2f9fd4-c150-4eb2-ac1d-082858142d94",
+      "generated_at": "2026-08-17T11:31:26+00:00",
+      "glow_concept": "unreadable charms glowing faintly up the post",
+      "difference_from_source": 0.5464,
+      "glow_score": 0.0087,
+      "relit_from": "LIT_2"
     }
   }
 }

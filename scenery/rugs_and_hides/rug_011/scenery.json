@@ -31,22 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "rugs_and_hides/rug_011/lit_1/sprite.webp",
-      "pixellab_object_id": "c469f4b4-89ba-45ce-b5d9-299d4310bf77",
-      "generated_at": "2026-08-16T20:21:21+00:00",
-      "glow_concept": "pattern threads shimmering with woven memory-light",
-      "difference_from_source": 0.6996,
-      "glow_score": 0.3259
-    },
-    "LIT_2": {
-      "sprite": "rugs_and_hides/rug_011/lit_2/sprite.webp",
-      "pixellab_object_id": "1aec3707-eeae-4c09-b47f-6fbfcf2438b6",
-      "generated_at": "2026-08-16T20:21:31+00:00",
-      "glow_concept": "warm hearthlight reflected across the pile",
-      "difference_from_source": 0.8466,
-      "glow_score": 0.1141
-    },
     "NOT_LIT_1": {
       "sprite": "rugs_and_hides/rug_011/sprite.webp",
       "pixellab_object_id": "3e6be4d6-4711-4910-9d02-94ffe33e52a7",
@@ -59,14 +43,6 @@
       "glow_concept": null,
       "difference_from_source": 0.3047,
       "glow_score": 0.1768
-    },
-    "NOT_LIT_3": {
-      "sprite": "rugs_and_hides/rug_011/not_lit_3/sprite.webp",
-      "pixellab_object_id": "65574310-0df2-4bc5-93fe-f6355f6275ef",
-      "generated_at": "2026-08-16T20:21:02+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8908,
-      "glow_score": 0.0
     },
     "NOT_LIT_4": {
       "sprite": "rugs_and_hides/rug_011/not_lit_4/sprite.webp",

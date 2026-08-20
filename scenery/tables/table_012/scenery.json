@@ -31,11 +31,6 @@
   "must_be_imbplemented_with_random_hflip": true,
   "generated_at": "2026-08-13T22:00:39+00:00",
   "states": {
-    "LIT_1": {
-      "sprite": "tables/table_012/sprite.webp",
-      "pixellab_object_id": "4eee9876-7013-4f6d-981a-789ac8142365",
-      "generated_at": "2026-08-13T22:00:39+00:00"
-    },
     "LIT_2": {
       "sprite": "tables/table_012/lit_2/sprite.webp",
       "pixellab_object_id": "8aaea3e9-02cd-4fd1-b774-df479f8ac6b4",
@@ -44,37 +39,29 @@
       "difference_from_source": 0.4012,
       "glow_score": 0.1522
     },
-    "LIT_3": {
-      "sprite": "tables/table_012/lit_3/sprite.webp",
+    "NOT_LIT_3": {
+      "sprite": "tables/table_012/sprite.webp",
+      "pixellab_object_id": "4eee9876-7013-4f6d-981a-789ac8142365",
+      "generated_at": "2026-08-13T22:00:39+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "tables/table_012/not_lit_4/sprite.webp",
       "pixellab_object_id": "147ef5da-16da-4792-8fd4-2975fff4b939",
       "generated_at": "2026-08-16T23:00:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3062,
-      "glow_score": 0.0859
+      "glow_score": 0.0859,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "tables/table_012/lit_4/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "tables/table_012/not_lit_5/sprite.webp",
       "pixellab_object_id": "a6335263-cff7-4a26-8a7f-2811373856d9",
       "generated_at": "2026-08-16T23:00:31+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5869,
-      "glow_score": 0.0241
-    },
-    "NOT_LIT_1": {
-      "sprite": "tables/table_012/not_lit_1/sprite.webp",
-      "pixellab_object_id": "08878c69-7c86-48cd-838b-2b3671683589",
-      "generated_at": "2026-08-16T23:00:31+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7959,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "tables/table_012/not_lit_2/sprite.webp",
-      "pixellab_object_id": "c3de4e07-68f9-45f2-ae87-3c42a4d9c16d",
-      "generated_at": "2026-08-16T23:00:45+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7952,
-      "glow_score": 0.0
+      "glow_score": 0.0241,
+      "relit_from": "LIT_4"
     }
   }
 }

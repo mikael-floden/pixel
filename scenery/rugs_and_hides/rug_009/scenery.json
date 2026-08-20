@@ -31,22 +31,6 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "rugs_and_hides/rug_009/lit_1/sprite.webp",
-      "pixellab_object_id": "862ee1ad-8855-4882-98cb-f2e5f21e689e",
-      "generated_at": "2026-08-16T20:20:17+00:00",
-      "glow_concept": "warm hearthlight reflected across the pile",
-      "difference_from_source": 0.5817,
-      "glow_score": 0.2802
-    },
-    "LIT_2": {
-      "sprite": "rugs_and_hides/rug_009/lit_2/sprite.webp",
-      "pixellab_object_id": "b3fa38cd-37fc-4bfb-980b-96fb37b33e71",
-      "generated_at": "2026-08-16T20:19:48+00:00",
-      "glow_concept": "pattern threads shimmering with woven memory-light",
-      "difference_from_source": 0.6289,
-      "glow_score": 0.2156
-    },
     "NOT_LIT_1": {
       "sprite": "rugs_and_hides/rug_009/sprite.webp",
       "pixellab_object_id": "d2c5e5b0-b4f8-4a2f-a2ce-5ba9b25782ba",
@@ -75,6 +59,15 @@
       "glow_concept": null,
       "difference_from_source": 0.7613,
       "glow_score": 0.1374
+    },
+    "NOT_LIT_5": {
+      "sprite": "rugs_and_hides/rug_009/not_lit_5/sprite.webp",
+      "pixellab_object_id": "862ee1ad-8855-4882-98cb-f2e5f21e689e",
+      "generated_at": "2026-08-16T20:20:17+00:00",
+      "glow_concept": "warm hearthlight reflected across the pile",
+      "difference_from_source": 0.5817,
+      "glow_score": 0.2802,
+      "relit_from": "LIT_1"
     }
   }
 }

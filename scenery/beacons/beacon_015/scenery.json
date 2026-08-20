@@ -40,26 +40,19 @@
       "difference_from_source": 0.8001,
       "glow_score": 0.1222
     },
-    "LIT_2": {
-      "sprite": "beacons/beacon_015/lit_2/sprite.webp",
-      "pixellab_object_id": "d74a22a1-fd7a-4a72-8d7b-6bf0357f17b4",
-      "generated_at": "2026-08-15T19:58:24+00:00",
-      "glow_concept": "pillar of pale soul-light rising skyward",
-      "difference_from_source": 0.7311,
-      "glow_score": 0.1462
+    "LIT_3": {
+      "sprite": "beacons/beacon_015/lit_3/sprite.webp",
+      "pixellab_object_id": "b90331ec-aa8c-4735-8062-7a579b3492da",
+      "generated_at": "2026-08-15T19:57:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3378,
+      "glow_score": 0.0364,
+      "relit_from": "NOT_LIT_2"
     },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_015/sprite.webp",
       "pixellab_object_id": "23a64dcc-92a1-47fd-9095-8f384b67ef44",
       "generated_at": "2026-08-14T01:48:20+00:00"
-    },
-    "NOT_LIT_2": {
-      "sprite": "beacons/beacon_015/not_lit_2/sprite.webp",
-      "pixellab_object_id": "b90331ec-aa8c-4735-8062-7a579b3492da",
-      "generated_at": "2026-08-15T19:57:52+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.3378,
-      "glow_score": 0.0364
     },
     "NOT_LIT_3": {
       "sprite": "beacons/beacon_015/not_lit_3/sprite.webp",

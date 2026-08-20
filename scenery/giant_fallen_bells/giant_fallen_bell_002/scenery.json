@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp",
       "pixellab_object_id": "714c2112-1200-40bc-86d9-cea7d00824af",
-      "generated_at": "2026-08-14T01:10:35+00:00"
+      "generated_at": "2026-08-14T01:10:35+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "giant_fallen_bells/giant_fallen_bell_002/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_4/sprite.webp",
       "pixellab_object_id": "c19e7722-0505-4e7b-8c9e-1880f6b065cb",
       "generated_at": "2026-08-16T14:25:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8883,
-      "glow_score": 0.0128
+      "glow_score": 0.0128,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "giant_fallen_bells/giant_fallen_bell_002/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_5/sprite.webp",
       "pixellab_object_id": "ff278beb-5d80-40fd-9657-43b0912e9fd4",
       "generated_at": "2026-08-16T14:25:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8262,
-      "glow_score": 0.0212
+      "glow_score": 0.0212,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "giant_fallen_bells/giant_fallen_bell_002/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_6/sprite.webp",
       "pixellab_object_id": "1aff8050-e57b-4385-9d57-f550c6ad57ba",
       "generated_at": "2026-08-16T14:25:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8803,
-      "glow_score": 0.0366
-    },
-    "NOT_LIT_1": {
-      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_1/sprite.webp",
-      "pixellab_object_id": "3ff9d159-2c60-4e7b-ae8b-c35c090f8c03",
-      "generated_at": "2026-08-16T14:26:09+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8571,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "giant_fallen_bells/giant_fallen_bell_002/not_lit_2/sprite.webp",
-      "pixellab_object_id": "6ca5d387-8b98-4270-b317-ec18f8e1d1fb",
-      "generated_at": "2026-08-16T14:26:30+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.9138,
-      "glow_score": 0.0
+      "glow_score": 0.0366,
+      "relit_from": "LIT_4"
     }
   }
 }
