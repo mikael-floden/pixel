@@ -731,18 +731,30 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False):
             yy = np.clip(y_top + dy, 0, h_img - 1)
             cols = y_top >= 0
             seedrow[yy[cols], np.arange(w_img)[cols]] = True
-        grown = (seedrow | strict) & lean
+        # EVERY CLAIM MUST HANG. The first version used connectivity only to EXPAND the
+        # colour-based claims, never to test them — so a grey stone stud deep in a mud
+        # wall, honestly stone-coloured, was claimed as "overhang" on colour alone and
+        # repainted as a flat grey slab ("The top right image on that photo is still
+        # not 100% fixed": 118 of 431 claimed pixels sat below half-depth in stud
+        # clusters). A depth cap was tried instead and immediately broke the mud
+        # curtains over beach, whose genuine overhang passes half-depth. Depth is the
+        # wrong test; ATTACHMENT is the thing itself: the flood starts at the top edge
+        # and runs through claim-worthy pixels, and whatever it cannot reach — however
+        # stone-coloured — is the wall's own texture. Studs are islands; curtains are
+        # attached; both facts survive any palette.
+        grown = seedrow & (strict | lean)
+        reach = strict | lean
         for _ in range(64):
             g2 = grown.copy()
             g2[1:, :] |= grown[:-1, :]
             g2[:-1, :] |= grown[1:, :]
             g2[:, 1:] |= grown[:, :-1]
             g2[:, :-1] |= grown[:, 1:]
-            g2 &= lean
+            g2 &= reach
             if g2.sum() == grown.sum():
                 break
             grown = g2
-        keep = ~(grown | strict)[idx0[0], idx0[1]]
+        keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
         # In the wall's own noise units: a "spill" cluster closer than this to the wall
