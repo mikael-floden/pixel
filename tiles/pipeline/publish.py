@@ -566,7 +566,13 @@ def main():
                                       claim_floor=PAIR_TWEAKS.get(cell, {}).get("claim_floor"),
                                       no_claims=PAIR_TWEAKS.get(cell, {}).get("no_claims", False),
                                       claim_lip=PAIR_TWEAKS.get(cell, {}).get("claim_lip"),
-                                      side_ramp_abs=PALETTE.get(side, {}).get("ramp_abs", False),
+                                      # a pair may opt out of the side material's ramp_abs:
+                                      # absolute stops stabilise light walls, but a DARK source
+                                      # wall lands inside one stop's basin and ships flat
+                                      # ("makes the grey paving stone texture disappear").
+                                      side_ramp_abs=PAIR_TWEAKS.get(cell, {}).get(
+                                          "side_ramp_abs",
+                                          PALETTE.get(side, {}).get("ramp_abs", False)),
                                       side_band=PAIR_TWEAKS.get(cell, {}).get("side_band"),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
