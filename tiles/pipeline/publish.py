@@ -55,9 +55,11 @@ PAIR_TWEAKS = {k: v for k, v in json.load(open(os.path.join(
 # fall out for free: paving__over__paving art publishes as brown-over-grey and
 # grey-over-brown by painting the two faces with the two palettes.
 _EXPAND = {}
+GENERATED_AS = {}
 for _m, _v in json.load(open(os.path.join(_CFG, "palette.json")))["types"].items():
     if _v.get("generated_as"):
         _EXPAND.setdefault(_v["generated_as"], []).append(_m)
+        GENERATED_AS[_m] = _v["generated_as"]
 
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
                "force_align_wall": v.get("force_align_wall", False),
@@ -455,9 +457,21 @@ def main():
         # contamination tier built from their 14 "not enough lava on the ground", had
         # never once fired. Both were reported as working on the strength of a manifest
         # field that was silently null.
+        # A VIRTUAL TYPE GATES AGAINST ITS SOURCE MATERIAL, NOT ITS RECOLOUR. The
+        # material gates ask "is the drawn wall really this material" — and for a
+        # type published FROM paving art the answer is always paving, whatever
+        # colour family the sheet happened to draw. Gating each twin against its
+        # own palette dropped warm-drawn art from the grey cells and grey-drawn
+        # art from the brown ones (parquet over grey paving fell to ONE tile of
+        # 45; water over brown to 4 of 26), splitting what the maintainer asked
+        # to be duplicated: 'Can't we replicate so Parquet Floor over brown
+        # paving stone also can build on top of grey paving?' Painting still uses
+        # the type's own palette.
+        gate_top = GENERATED_AS.get(top, top)
+        gate_side = GENERATED_AS.get(side, side)
         cands, has_spill, right_wall, all_gates = candidates(
-            d, (PALETTE.get(side) or {}).get("top"), same=(top == side),
-            rejected=rejected, top_hex_c=(PALETTE.get(top) or {}).get("top"),
+            d, (PALETTE.get(gate_side) or {}).get("top"), same=(gate_top == gate_side),
+            rejected=rejected, top_hex_c=(PALETTE.get(gate_top) or {}).get("top"),
             approved=approved, lock=LOCK.get(cell))
         # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
         # maintainer picked these out of the reject pile by hand and truncating their
