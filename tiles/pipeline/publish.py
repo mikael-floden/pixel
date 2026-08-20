@@ -41,6 +41,10 @@ from PIL import Image
 # useful evidence, never the target: taking it as one is what made 3.0 grass a bright
 # yellow-green against 2.0's deep pine.
 _CFG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config")
+PAIR_TWEAKS = {k: v for k, v in json.load(open(os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config",
+    "palette.json"))).get("pair_tweaks", {}).items() if not k.startswith("_")}
+
 PALETTE = {k: {"top": v["top"], "wall": v.get("wall"),
                "ramp": v.get("ramp"),
                "flat_top": v.get("flat_top", True)} for k, v in
@@ -468,7 +472,8 @@ def main():
                                       side_hex=wall_hex, align_side=aligned,
                                       flat_top=PALETTE.get(top, {}).get("flat_top", True),
                                       top_ramp=PALETTE.get(top, {}).get("ramp"),
-                                      side_ramp=PALETTE.get(side, {}).get("ramp"))
+                                      side_ramp=PALETTE.get(side, {}).get("ramp"),
+                                      claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"))
                     if top_hex else raw)
             # THE GUARD. Every three attempts at wall alignment put a colour into the
             # art that was in neither the art nor the palette, and every one was caught

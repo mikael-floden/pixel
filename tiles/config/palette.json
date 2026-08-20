@@ -99,5 +99,12 @@
       "wall_n": 6
     }
   },
-  "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall."
+  "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
+  "pair_tweaks": {
+    "_comment": "Per-cell overrides for pairs the global classifier cannot decide. The maintainer, on black_rock over ice: 'It's almost as if it's time to do special tweaks for each different tile vs tile. That's a safe way to tweak when the postprocessing is already very good.' Used only where colour genuinely cannot separate the materials \u2014 black rock draws as dark navy (#03101c) and shaded ice as dark blue (#17212f).",
+    "black_rock__over__ice": {
+      "claim_depth": 0.35,
+      "note": "the rock overhang on this pair hugs the top edge; claims deeper than a third of the face were shaded ice painted black \u2014 'black rock on the left wall that should have been ice (not the overhang, but under the overhang)'"
+    }
+  }
 }

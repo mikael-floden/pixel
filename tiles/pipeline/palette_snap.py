@@ -544,6 +544,9 @@ MIN_SPLIT_SIGMA = 2.5
 GROW_RATIO = 1.6
 # The lean when the wall repaint is disabled anyway (unconfirmed wall) — see _split_wall.
 GROW_RATIO_UNCONFIRMED = 2.6
+# A wall-classified pixel further than this from the wall's own median value is an alien
+# (a rock crumb on a beach wall) and ships raw rather than being recentred to the wall.
+SIDE_VALUE_BAND = 75.0
 
 
 def _chroma_dist(px, target):
@@ -553,7 +556,7 @@ def _chroma_dist(px, target):
                    + (CHROMA_VALUE_WEIGHT * (c[:, 2] - t[2])) ** 2)
 
 
-def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False):
+def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -754,6 +757,17 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False):
             if g2.sum() == grown.sum():
                 break
             grown = g2
+        if claim_depth is not None:
+            # A PER-PAIR DEPTH CAP, for the pairs colour cannot decide. black_rock over
+            # ice is the proving case: the generator draws the rock as dark navy and the
+            # shaded ice as dark blue, and no metric separates #03101c from #17212f
+            # honestly. On such a pair the maintainer sanctioned per-cell tweaks, and
+            # the tweak is geometric: this pair's overhang hugs the top edge, so claims
+            # below claim_depth of the face are shaded wall, whatever their colour.
+            ys3 = np.arange(h_img)[:, None]
+            span = np.maximum(1, wy_max - wy_min).astype(float)
+            depth = (ys3 - wy_min[None, :]) / span[None, :]
+            grown &= depth <= claim_depth
         keep = ~grown[idx0[0], idx0[1]]
     floor_ok = True
     if keep.sum() >= 20 and (~keep).sum() >= 20:
@@ -916,7 +930,8 @@ def substitute(a, mask, hex_target, spread=None, ramp=None):
 
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
-         align_side=False, flat_top=True, top_ramp=None, side_ramp=None):
+         align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
+         claim_depth=None):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1071,7 +1086,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # Measured on the 14 tiles the gate used to block: after this, mean wall_err 5.5,
             # worst 20.8, none over MAX_WALL_ERR.
             m_side, m_top = _split_wall(a, reg, wall_all, side_hex=side_hex,
-                                        aggressive=not align_side)
+                                        aggressive=not align_side,
+                                        claim_depth=claim_depth)
             # THE OVERHANG ALWAYS ALIGNS; THE WALL ONLY WHEN CONFIRMED. align_side (the
             # wall_err gate) exists so a wall that may not BE the requested material is
             # never repainted as it. But it used to gate this whole block, overhang
@@ -1081,12 +1097,28 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
             # 30), so the mud spill shipped in whatever colour the generator drew:
             # "the overhang is a bit redish ... It's clear to me that the overhang
             # belongs to the dark_mud. But they don't change color."
-            pairs = [(m_top, top_hex, top_ramp)]
+            pairs = [(m_top, top_hex, top_ramp, False)]
             if align_side:
-                pairs.append((m_side, side_hex, side_ramp))
-            for mask, hx, rmp in pairs:
+                pairs.append((m_side, side_hex, side_ramp, True))
+            for mask, hx, rmp, is_side in pairs:
                 if mask.sum() < 8:
                     continue
+                if is_side:
+                    # A PIXEL FAR OUTSIDE THE WALL'S OWN BRIGHTNESS IS NOT THE WALL.
+                    # substitute() recentres value on the target, so a stray near-black
+                    # rock crumb classified into a bright beach wall came out beach-
+                    # bright ([4,4,7] -> [92,78,62]) — an invented colour the guard then
+                    # punished by shipping the WHOLE tile raw: "Black Rock over light
+                    # beach also has a tile that didn't get any postprocessing at all."
+                    # Alien pixels stay raw; the rest of the tile still gets processed.
+                    hsv_m = _rgb2hsv(a[:, :, :3][mask])
+                    med = float(np.median(hsv_m[:, 2]))
+                    band = np.abs(hsv_m[:, 2] - med) <= SIDE_VALUE_BAND
+                    if band.sum() < 8:
+                        continue
+                    idxm = np.where(mask)
+                    mask = np.zeros(mask.shape, bool)
+                    mask[idxm[0][band], idxm[1][band]] = True
                 px = substitute(a, mask, hx, ramp=rmp)
                 if px is not None:
                     out[:, :, :3][mask] = px
