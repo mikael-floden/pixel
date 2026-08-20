@@ -901,6 +901,45 @@ RIM_SAT_GREY = 45.0   # below this saturation a glow has no hue identity of its 
                       # on dark_mud over slime).
 
 
+def dim_edge_highlight(out, a, reg, top_hex):
+    """Fade the drawn highlight line at the top edge toward the TOP colour. In place.
+
+    Per-pair opt-in (edge_dim). The maintainer, on black_rock over dark_mud, X-ing
+    out a version that repainted the drape: "WHAT WE HAVE IN GAME NOW HAS COLORED THE
+    BOTTOM BROWN PERFECTLY ALREADY ... YOU NEED TO ONLY CHANGE THE HIGHLIGHT AT THE
+    VERY TOP/EDGE!! THAT IS THE OVERHANG. THAT IS THE PART THAT CONNECTS WITH THE
+    TOP/GROUND." So: the two rows of wall directly under the top face's edge, where
+    brighter than the top's paint, blend toward the top colour until they sit just
+    above it — a highlight that is still present, but dark, because this is black
+    rock. soften_rim cannot do this: it only fades pixels brighter than BOTH
+    surfaces, and this line is dim next to the mud. Nothing outside those rows is
+    touched, which is the entire point.
+    """
+    top = reg["top"]
+    wall = reg["left"] | reg["right"]
+    if top.sum() < 100 or wall.sum() < 100:
+        return
+    h, w = top.shape
+    ys = np.arange(h)[:, None]
+    y0 = np.where(top, ys, -1).max(0)
+    t_rgb = _hex(top_hex).astype(float)
+    t_l = 0.299 * t_rgb[0] + 0.587 * t_rgb[1] + 0.114 * t_rgb[2]
+    for x in range(w):
+        if y0[x] < 0:
+            continue
+        for dy in (1, 2):
+            y = y0[x] + dy
+            if y >= h or not wall[y, x]:
+                continue
+            p = out[y, x, :3].astype(float)
+            L = 0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]
+            if L <= t_l + 10.0:
+                continue
+            tgt = t_l + 10.0
+            mix = min(1.0, max(0.0, (L - tgt) / max(L - t_l, 1.0)))
+            out[y, x, :3] = (p * (1.0 - mix) + t_rgb * mix).astype(out.dtype)
+
+
 def soften_rim(out, a, reg, top_hex):
     """Compress the glowing lip where the top face meets the wall. In place, on `out`."""
     top = reg["top"]
@@ -1030,7 +1069,8 @@ def substitute(a, mask, hex_target, spread=None, ramp=None, vcap=None):
 def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_walls=False, spill=True, same_material=False, wall_hex=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
-         claim_depth=None, paint_side=True, deep_claim=None, drip_match=None):
+         claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
+         edge_dim=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1268,6 +1308,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         out[:, :, :3][m] = _apply_profile(px, prof, lighting=fac[k])
 
     soften_rim(out, a, reg, top_hex)
+    if edge_dim:
+        dim_edge_highlight(out, a, reg, top_hex)
     out[:, :, 3] = a[:, :, 3]
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 

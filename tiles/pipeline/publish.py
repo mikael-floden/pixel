@@ -521,6 +521,7 @@ def main():
                                                       or "/".join(c["src"].split("/")[-2:])
                                                       in PAIR_TWEAKS.get(cell, {}).get("drip_tiles", ()))
                                                   else None),
+                                      edge_dim=PAIR_TWEAKS.get(cell, {}).get("edge_dim", False),
                                       # raw_wall: the wall is the material at its best as
                                       # drawn and every recolour made it worse — classify
                                       # strictly, paint nothing on the wall itself.
