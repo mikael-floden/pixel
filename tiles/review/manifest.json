@@ -5866,37 +5866,6 @@
           "tile_id": "feae5c97-d397-4e25-8d50-a579fa3a8b33",
           "style": "chase0",
           "prompt": "isometric ground tile. dark volcanic rock on top of pale sandy beach. The black rock grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline."
-        },
-        {
-          "wall_aligned": true,
-          "postprocess": "palette",
-          "key": "tiles/black_rock__over__light_beach/174885d2",
-          "rank": 42,
-          "src": "tiles/matrix/black_rock__over__light_beach/sheet_11_chase1_21038/tile_15.png",
-          "before": "tiles/review/black_rock__over__light_beach/42_before.webp",
-          "after": "tiles/review/black_rock__over__light_beach/42_after.webp",
-          "file": "tiles/review/black_rock__over__light_beach/42_after.webp",
-          "palette_top": "#1e1d1e",
-          "wall_score": 1.03,
-          "wall": {
-            "tiling": 0.187,
-            "discretion": 0.0,
-            "structure": 1.0,
-            "contrast": 91.38,
-            "edges": 20.785
-          },
-          "top_share": 0.7281,
-          "overhang": 1.0,
-          "wall_err": 6.3,
-          "clarity": 0.326,
-          "band": 195.53,
-          "swapped": -70.7,
-          "contamination": 0.0,
-          "top_err": 0.3,
-          "maintainer_pick": false,
-          "tile_id": "55c2410a-fb80-4def-bf55-f8c4f1c4e856",
-          "style": "chase1",
-          "prompt": "isometric terrain block of pale sandy beach with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the light beach face in an uneven fringe. Flat even black rock seen from above. No outline."
         }
       ],
       "needs_regeneration": false,
