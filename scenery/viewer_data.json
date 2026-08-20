@@ -38754,26 +38754,21 @@
       },
       "status": "complete",
       "generated_at": "2026-08-13T21:54:06+00:00",
-      "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
+      "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
       "sprite": "story_posts/story_post_014/sprite.webp",
-      "art_hash": "36955678fd187be3",
+      "art_hash": "2a644260ea567eb5",
       "type": "TOWN",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "story_posts/story_post_014/sprite.webp",
-          "pixellab_object_id": "0a8f1430-f3f2-4a5d-849c-f2e6ca4d5c4d",
-          "generated_at": "2026-08-13T21:54:06+00:00",
-          "art_hash": "36955678fd187be3"
-        },
         "LIT_4": {
-          "sprite": "story_posts/story_post_014/lit_4/sprite.webp",
+          "sprite": "story_posts/story_post_014/sprite.webp",
           "pixellab_object_id": "0fb01acb-a77e-41f3-928c-6ecd8d3ca4bb",
           "generated_at": "2026-08-16T22:32:33+00:00",
           "glow_concept": null,
           "difference_from_source": 0.7521,
           "glow_score": 0.1436,
+          "replaced_anchor": "LIT_1",
           "art_hash": "2a644260ea567eb5"
         },
         "NOT_LIT_3": {
