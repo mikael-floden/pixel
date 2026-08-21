@@ -3675,7 +3675,19 @@ const topKey = (key) => `${key}#top`;
 const topFb = (key) => fb("tiles", topKey(key));
 const topReviewed = (key) => { const e = topFb(key); return !!(e.rating || e.status); };
 /** The art the top review judges: the unflattened raw when it exists. */
-const topArt = (cand) => cand.raw ?? cand.art;
+/** THE ART EVERY COMPOSITION DRAWS WITH. After by default — what the game
+ *  actually ships is what a tile has to look good as (maintainer 2026-08-21:
+ *  "AFTER postprocessing should be default and the switch can take you to
+ *  BEFORE. That switch will then change on all 3x3 tiles"). My first cut
+ *  hardcoded the raw top on the theory that he had never seen it: the theory
+ *  was right, the default was wrong.
+ *
+ *  ONE RULE FOR EVERY TILE IN THE PICTURE — the centre AND the ground around
+ *  it. A 3×3 with a raw centre on postprocessed neighbours is a comparison of
+ *  two different passes pretending to be one field, which is exactly the lie
+ *  the before/after switch exists to prevent. A tile with no raw generation
+ *  keeps showing its shipped art rather than a hole. */
+const viewArt = (cand) => (worldView() === "before" && cand?.raw) ? cand.raw : cand?.art;
 /** Every candidate whose TOP belongs to this ground — every pair of the type,
  *  the wall deliberately ignored. */
 const typeTops = (typeId) => worldCells()
@@ -3722,7 +3734,7 @@ function baseGroupField(members, n, seed, scale = 1) {
   const cells = [];
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     const m = pickBaseMember(members, rnd);
-    cells.push({ c, r, img: m.hit?.cand?.art });
+    cells.push({ c, r, img: viewArt(m.hit?.cand) });
   }
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
   if (!paths.length) { box.append(h("p", { class: "muted" }, "the art for this group is not loadable")); return box; }
@@ -3741,7 +3753,7 @@ function centeredField(centerArt, members, seed, scale = 1) {
   const others = members.length ? members : [{ weight: 1, hit: { cand: { art: centerArt } } }];
   const cells = [];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
-    const img = (c === 1 && r === 1) ? centerArt : pickBaseMember(others, rnd).hit?.cand?.art;
+    const img = (c === 1 && r === 1) ? centerArt : viewArt(pickBaseMember(others, rnd).hit?.cand);
     cells.push({ c, r, img });
   }
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
@@ -4223,7 +4235,7 @@ function viewWorldType(top) {
         // tile to the left and a 3x3 tile to the right with this tile in the
         // center surrounted by group members."
         ...g.members.map((m) => {
-          const art = m.hit?.cand?.art;
+          const art = viewArt(m.hit?.cand);
           const others = g.members.filter((x) => x.key !== m.key);
           return h("div", { class: "base-member" },
             h("div", { class: "base-member-previews" },
@@ -4325,11 +4337,34 @@ function viewWorldType(top) {
     const shownQueue = detailShown.get(t.id) ?? 12;
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
       surround.length
-        ? centeredField(topArt(cand), surround, dSeed, 1)
-        : h("div", { class: "iso-stage checker group-stage" }, h("img", { class: "member-tile", src: assetUrl(topArt(cand)), alt: "the top" })),
+        ? centeredField(viewArt(cand), surround, dSeed, 1)
+        : h("div", { class: "iso-stage checker group-stage" }, h("img", { class: "member-tile", src: assetUrl(viewArt(cand)), alt: "the top" })),
       h("div", { class: "card-sub" },
         h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
-        cand.raw ? null : h("span", { class: "pill warn", title: "No raw art — this is the flattened top" }, "postprocessed top")),
+        // Only ever says something when the picture is NOT what the switch
+        // asked for: a tile with no raw generation cannot show a "before".
+        worldView() === "before" && !cand.raw
+          ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
+          : null),
+      // PROMOTE FROM HERE TOO (maintainer 2026-08-21: "On this page it should
+      // also be possible to promote to base tile (same popup)") — a top that
+      // is good enough to sprinkle may well be good enough to pave with, and
+      // it is the same modal, so the decision is made in the same picture.
+      state.admin ? h("div", { class: "card-sub base-row" },
+        isBaseTile(cand.key)
+          ? h("span", { class: "pill ok", title: `A base tile of ${typeLabelWorld(cell.top)}` }, `base tile · ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`)
+          : null,
+        h("button", {
+          class: `ghost-btn base-btn${isBaseTile(cand.key) ? " on" : ""}`,
+          title: isBaseTile(cand.key)
+            ? `Revoke — this tile leaves group ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`
+            : `Promote — see how this tile sits in each base-tile group of ${typeLabelWorld(cell.top)}, then add it to one`,
+          onclick: (e) => {
+            e.stopPropagation();
+            if (isBaseTile(cand.key)) { setBaseTile(cand.key, cell.top, null, false); keepScrollY = window.scrollY; route(); }
+            else openPromoteModal(cell, cand, () => { keepScrollY = window.scrollY; route(); });
+          },
+        }, isBaseTile(cand.key) ? "☗ revoke base title" : "☖ promote to base tile…")) : null,
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
           onchange: () => { keepScrollY = window.scrollY; route(); },
@@ -4341,8 +4376,11 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged, raw (the pair postprocess flattens tops, which is why you have never seen most of them). Each sits in the ground it would decorate."
+        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. Each sits in the ground it would decorate, as the game will ship it; flip to Before to see what the generator drew under the postprocess."
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
+      // ONE SWITCH FOR EVERY COMPOSITION ON THE PAGE — the section's own
+      // After/Before preference, so it also matches what On top of is showing.
+      state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }) : null,
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
           h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
@@ -4455,7 +4493,7 @@ function openPromoteModal(cell, cand, onDone) {
       ...groups.map((g) => h("div", { class: "promote-group" },
         h("div", { class: "panel-title" }, `In group ${g.id}`,
           h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`)),
-        centeredField(cand.art, g.members, seed, 1),
+        centeredField(viewArt(cand), g.members, seed, 1),
         h("button", {
           class: "ghost-btn promote-into",
           onclick: () => { setBaseTile(cand.key, typeId, g.id, true); dlg.close(); dlg.remove(); onDone?.(); toast(`Promoted into group ${g.id} — commit when you are done.`); },
@@ -4463,7 +4501,7 @@ function openPromoteModal(cell, cand, onDone) {
       h("div", { class: "promote-group" },
         h("div", { class: "panel-title" }, groups.length ? "Or start a new group" : "Start the first group",
           h("span", { class: "pill" }, "just this tile")),
-        centeredField(cand.art, [], seed, 1),
+        centeredField(viewArt(cand), [], seed, 1),
         h("button", {
           class: "ghost-btn promote-into",
           onclick: () => {
@@ -4882,11 +4920,13 @@ function topReviewBlock(cell, cand, onChange) {
     box.replaceChildren(
       btn,
       h("p", { class: "muted top-hint" },
-        cand.raw
-          ? "The top as GENERATED, before the flattening — sitting in the ground it would decorate."
-          : "No raw art for this tile (pre-@2 generation) — judging the postprocessed top."),
+        worldView() === "before"
+          ? (cand.raw
+            ? "The top as GENERATED, under the postprocess — sitting in the ground it would decorate."
+            : "No raw art for this tile (pre-@2 generation) — showing the postprocessed top.")
+          : "The top as the game SHIPS it, sitting in the ground it would decorate. Flip the section to Before to see the generator's own."),
       surround.length
-        ? centeredField(topArt(cand), surround, 3, 1)
+        ? centeredField(viewArt(cand), surround, 3, 1)
         : h("p", { class: "muted" }, "No base tile or pure tile to surround it with yet — the composition needs one."),
       h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {

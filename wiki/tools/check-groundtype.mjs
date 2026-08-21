@@ -237,6 +237,65 @@ const leak2 = await p.evaluate(() => {
 void leak;
 ok(leak2.some((x) => x === "approved 0"),
   `a top approval never leaks into the pair-tile review (${leak2.filter((x) => /approved/.test(x)).join(", ")})`);
+// AFTER IS THE DEFAULT, AND THE SWITCH FLIPS EVERY TILE IN EVERY 3x3
+// (maintainer 2026-08-21: "the tile is rendered in the middle, but is
+// displayed before postprocessing always. AFTER postprocessing should be
+// default and the switch can take you to BEFORE. That switch will then change
+// on all 3x3 tiles"). Asserted on the WIRE — which pass the page actually
+// fetches — because a composition is a canvas and its pixels cannot be read
+// back cross-origin.
+const passes = { after: 0, before: 0 };
+const countPass = (r) => {
+  const u = r.url();
+  if (/_after\.webp$/.test(u)) passes.after++;
+  else if (/_before\.webp$/.test(u)) passes.before++;
+};
+p.on("request", countPass);
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+await p.waitForTimeout(2200);
+const dSwitch = await p.evaluate(() => ({
+  sel: document.querySelector(".sortbar-btn.sel")?.textContent.trim(),
+  chips: [...document.querySelectorAll(".sortbar-btn")].slice(0, 2).map((x) => x.textContent.trim()),
+  promote: document.querySelectorAll(".detail-card .base-btn").length,
+  cards: document.querySelectorAll(".detail-card").length,
+}));
+ok(dSwitch.chips.join("/") === "After/Before" && dSwitch.sel === "After",
+  `the Details tab carries the After/Before switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
+ok(passes.after > 0 && passes.before === 0,
+  `and every composed tile is fetched POSTPROCESSED by default (${passes.after} after, ${passes.before} before)`);
+passes.after = 0; passes.before = 0;
+await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.waitForTimeout(2200);
+ok(passes.before > 0 && passes.before >= passes.after,
+  `flipping to Before re-composes from the raw art — every tile in the 3x3, not just the centre (${passes.before} before, ${passes.after} after)`);
+p.off("request", countPass);
+await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.waitForTimeout(1200);
+// PROMOTE FROM THE DETAILS PAGE, same modal ("On this page it should also be
+// possible to promote to base tile (same popup)").
+ok(dSwitch.promote === dSwitch.cards && dSwitch.cards > 0,
+  `every detail card carries the promote control (${dSwitch.promote}/${dSwitch.cards})`);
+await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.waitForTimeout(900);
+const dModal = await p.evaluate(() => ({
+  open: !!document.querySelector(".promote-modal[open]"),
+  blocks: [...document.querySelectorAll(".promote-group .panel-title")].map((x) => x.textContent.trim()),
+}));
+ok(dModal.open && dModal.blocks.length >= 1,
+  `and it opens the SAME promotion modal (${dModal.blocks.join(" | ")})`);
+await p.evaluate(() => [...document.querySelectorAll(".promote-into")].at(-1)?.click());
+await p.waitForTimeout(800);
+const dPromoted = await p.evaluate(() => ({
+  btn: document.querySelector(".detail-card .base-btn")?.textContent ?? "",
+  pill: document.querySelector(".detail-card .base-row .pill")?.textContent ?? "",
+}));
+ok(/revoke/.test(dPromoted.btn) && /base tile/.test(dPromoted.pill),
+  `promoting from a detail card takes effect on it (${dPromoted.pill})`);
+await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.click(); });
+await p.waitForTimeout(600);
+
 // the pair-page toggle: collapsed, opens, carries its state
 await p.goto(`${W}#/world/grass/grass`, { waitUntil: "load" });
 await p.waitForTimeout(1800);
