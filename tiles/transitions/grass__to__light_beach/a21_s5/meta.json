@@ -1,0 +1,12 @@
+{
+ "lower": "light_beach",
+ "upper": "grass",
+ "boundary_amplitude": 0.21,
+ "boundary_seed": 5,
+ "n_tiles": 16,
+ "size": [
+  64,
+  46
+ ],
+ "note": "Wang corner set: index = 8*NW + 4*NE + 2*SW + 1*SE, a set bit meaning grass. INDEX 0 IS light_beach - the endpoint's convention is that index 0 holds the material named SECOND in the generation description, index 15 the first."
+}

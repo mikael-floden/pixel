@@ -1,0 +1,12 @@
+{
+ "lower": "grass",
+ "upper": "dark_mud",
+ "boundary_amplitude": 0.24,
+ "boundary_seed": 6,
+ "n_tiles": 16,
+ "size": [
+  64,
+  46
+ ],
+ "note": "Wang corner set: index = 8*NW + 4*NE + 2*SW + 1*SE, a set bit meaning dark_mud. INDEX 0 IS grass - the endpoint's convention is that index 0 holds the material named SECOND in the generation description, index 15 the first."
+}

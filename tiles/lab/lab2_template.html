@@ -1,0 +1,497 @@
+<title>Pair Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  /* Single-theme on purpose: this composes pixel art that lives on a dark ground.
+     Every colour is painted explicitly. Palette taken from the tileset itself. */
+  :root{ --ground:#14161a; --panel:#1b1e23; --sunk:#101317; --hair:#2b3038;
+         --ink:#dde1e7; --muted:#8b949f; --sand:#c9ab7e;
+         --x:#d98b6a; --vert:#7aa7d9; --horiz:#8fc98a; }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--ground); color:var(--ink); overflow:hidden;
+       font-family:"IBM Plex Mono",ui-monospace,monospace;
+       -webkit-user-select:none; user-select:none; touch-action:none}
+  input{-webkit-user-select:text; user-select:text; touch-action:auto}
+  #stage{position:absolute; left:0; right:0; top:0; bottom:0}
+  canvas{display:block; width:100%; height:100%; image-rendering:pixelated; cursor:grab}
+  canvas.drag{cursor:grabbing}
+  #bar{position:fixed; left:0; right:0; bottom:0; background:var(--panel);
+       border-top:1px solid var(--hair); display:flex; flex-direction:column; gap:8px;
+       padding:9px 9px calc(9px + env(safe-area-inset-bottom,0)); max-height:78vh}
+  .row{display:flex; gap:7px; align-items:center; flex-shrink:0}
+  button{font:600 14px "IBM Plex Mono",monospace; color:var(--ink); background:#242830;
+    border:1px solid var(--hair); border-radius:8px; min-height:44px; padding:0 12px;
+    cursor:pointer; white-space:nowrap}
+  button:focus-visible{outline:2px solid var(--sand); outline-offset:2px}
+  button[aria-pressed="true"]{background:var(--sand); color:#17130c; border-color:var(--sand)}
+  #roll{flex:1; background:var(--sand); color:#17130c; border-color:var(--sand); font-size:16px}
+  #zoom{color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums;
+        min-width:40px; text-align:center}
+  #pairrow{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  #pairrow button{min-height:38px; font-size:12px; padding:0 10px}
+  #editor{display:none; flex-direction:column; gap:9px; overflow-y:auto; padding-top:2px}
+  #editor.open{display:flex}
+  .pool{background:var(--sunk); border:1px solid var(--hair); border-radius:10px; padding:8px}
+  .pool > header{display:flex; align-items:center; gap:7px; margin-bottom:7px}
+  .dot{width:10px; height:10px; border-radius:3px; flex-shrink:0}
+  .pname{font-weight:600; font-size:13px; flex:1; white-space:nowrap;
+         overflow:hidden; text-overflow:ellipsis}
+  .pool header button{min-height:34px; padding:0 9px; font-size:12px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{display:inline-flex; align-items:center; gap:0; border:1px solid var(--hair);
+        border-radius:7px; overflow:hidden; background:#242830}
+  .chip .name{padding:8px 9px; font:600 13px "IBM Plex Mono",monospace; color:var(--ink);
+              background:none; border:0; min-height:38px; cursor:pointer}
+  .chip.off{opacity:.38}
+  .chip.off .name{text-decoration:line-through}
+  .chip .kill{padding:0 9px; min-height:38px; border:0; border-left:1px solid var(--hair);
+              background:none; color:var(--muted); font-size:15px; cursor:pointer}
+  .chip .kill:hover{color:#e08b7a}
+  .empty{color:var(--muted); font-size:12px; padding:4px 2px}
+  .addrow{display:flex; gap:6px; margin-top:7px; align-items:center}
+  .addrow input{flex:1; min-width:0; min-height:38px; padding:0 9px; border-radius:7px;
+    border:1px solid var(--hair); background:#242830; color:var(--ink);
+    font:600 13px "IBM Plex Mono",monospace}
+  .addrow input:focus-visible{outline:2px solid var(--sand); outline-offset:1px}
+  .addrow input::placeholder{color:var(--muted); font-weight:400}
+  .addrow button{min-height:38px; padding:0 11px; font-size:13px}
+  .note{font-size:11px; color:var(--muted); margin-top:5px; min-height:14px}
+  .note.bad{color:#e08b7a}
+</style>
+<div id="stage"><canvas id="c"></canvas></div>
+<div id="bar">
+  <div class="row">
+    <button id="roll">&#127922; roll</button>
+    <button id="map">star</button>
+    <button id="raw" aria-pressed="false">raw</button>
+    <button id="swap" aria-pressed="false">swap</button>
+    <button id="mode" aria-pressed="false">sheets</button>
+    <button id="edit" aria-pressed="false">pools &#9650;</button>
+  </div>
+  <div class="row">
+    <button id="out" aria-label="Zoom out">&minus;</button>
+    <span id="zoom">3&times;</span>
+    <button id="in" aria-label="Zoom in">+</button>
+    <button id="fit">fit</button>
+    <button id="tint" aria-pressed="false">tint</button>
+    <button id="reset">reset</button>
+  </div>
+  <div class="row" id="pairrow"></div>
+  <div id="editor"></div>
+<datalist id="allsets"></datalist>
+</div>
+<script>
+const D = __DATA__;
+let pi = 0;                                   // which material pair is on screen
+let raw = false;                              // PixelLab's tiles, or ours
+const pair = () => D.pairs[pi];
+const SETS = Object.keys(pair().sets).map(id => {
+  const [a, s] = id.split("-");
+  return { id, amp: +a, seed: +s, label: a + "% seed " + s };
+});
+const BY_ID = {}; SETS.forEach(s => BY_ID[s.id] = s);
+
+// Which pool a cell uses, from the direction its boundary runs ON SCREEN:
+//   0 deg -> the horizontal spoke;  24 deg -> the four diagonal spokes (the X);
+//  88 deg -> the vertical spoke.  6 and 9 are saddles, two curves crossing in one
+// tile, which is the crossing case and goes with the X.
+const POOL_OF = {1:"horiz",7:"horiz",8:"horiz",14:"horiz",
+                 2:"vert",4:"vert",11:"vert",13:"vert",
+                 3:"x",5:"x",10:"x",12:"x",6:"x",9:"x"};
+const poolOf = i => POOL_OF[i] || "horiz";
+const POOL_META = {x:{name:"X — diagonal spokes", col:"var(--x)"},
+                   vert:{name:"vertical spoke", col:"var(--vert)"},
+                   horiz:{name:"horizontal spoke", col:"var(--horiz)"}};
+const TINT = {x:"#d98b6a", vert:"#7aa7d9", horiz:"#8fc98a"};
+const HW = 32, HH = 14, TW = 64, TH = 46;
+
+// The maintainer's own pools, arrived at by playing with this page.
+const DEFAULTS = {x:["0-3","0-5","3-5","21-5","30-1"],
+                  vert:["12-4","18-4","21-4","23-4"],
+                  horiz:["14-5","15-2","15-6","18-6","21-2","24-6"]};
+let pools = JSON.parse(JSON.stringify(DEFAULTS));
+let off_ = {};                                   // pool:id -> hidden
+let salt = 1, mapKey = "network", showTint = false, sheetMode = false, swap = false;
+// Which material plays the ROAD. A set's index 0 is whichever material the description
+// named second, so for "dark_mud to grass" the road comes out grass and the field mud -
+// backwards for that pair, right for grass-to-soil. It is a map decision, not a
+// property of the tiles, so it is a switch.
+// NO FLIPPING. Mirroring a tile doubled the shape pool for free, but the maintainer
+// traced the chevrons of stray dots running through open ground to it: a flipped tile
+// meets its unflipped neighbour along a seam neither was drawn for. Removed rather
+// than tuned - a free variation that costs a visible artefact is not free.
+let si = 2, ox = 0, oy = 0, fit = false, fitScale = 1;
+const LADDER = [1,2,3,4,6,8,12,16,24];
+const imgs = {};                                  // id -> [base, vflip]
+const off = document.createElement("canvas"), octx = off.getContext("2d");
+const c = document.getElementById("c"), ctx = c.getContext("2d");
+
+const visible = p => pools[p].filter(id => !off_[p + ":" + id]);
+function hash(r, cc, k){
+  let h = (r*73856093) ^ (cc*19349663) ^ (k*83492791) ^ (salt*2654435761);
+  h = Math.imul(h ^ (h >>> 15), 2246822507);
+  h = Math.imul(h ^ (h >>> 13), 3266489909);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+/** Every pool set's 16 tiles, raw above and postprocessed below, so the two can be
+ *  read against each other tile by tile. The map answers "does this look right"; this
+ *  answers "and is that the generation or the filter". */
+function composeSheets(){
+  const ids = [];
+  for(const p of ["x","vert","horiz"]) for(const id of pools[p]) if(!ids.includes(id)) ids.push(id);
+  const LBL = 15, GAP = 7, ROW = TH * 2 + LBL + GAP;
+  off.width  = 16 * TW + GAP * 2;
+  off.height = ids.length * ROW + GAP;
+  octx.imageSmoothingEnabled = false;
+  octx.fillStyle = "#14161a"; octx.fillRect(0, 0, off.width, off.height);
+  ids.forEach((id, n) => {
+    const y = GAP + n * ROW;
+    octx.fillStyle = "#c9ab7e"; octx.font = "bold 10px monospace";
+    const pool = ["x","vert","horiz"].find(p => pools[p].includes(id));
+    octx.fillText(BY_ID[id] ? BY_ID[id].label + "   " + pool : id, GAP, y + 10);
+    ["raw", "clean"].forEach((which, r) => {
+      const key = pi + "/" + which + "/" + id, im = imgs[key];
+      octx.fillStyle = "#8b949f"; octx.font = "9px monospace";
+      octx.fillText(which, 1, y + LBL + r * TH + 12);
+      if(im && im[0]) octx.drawImage(im[0], GAP, y + LBL + r * TH);
+    });
+  });
+  draw();
+}
+function compose(){
+  if(sheetMode) return composeSheets();
+  const m = D.maps[mapKey], R = m.R, C = m.C, g = m.g;
+  off.width = (R + C) * HW + TW; off.height = (R + C) * HH + TH;
+  octx.imageSmoothingEnabled = false;
+  octx.clearRect(0, 0, off.width, off.height);
+  const originX = R * HW, vis = {};
+  for(const p of ["x","vert","horiz"]) vis[p] = visible(p);
+  const any = vis.horiz[0] || vis.vert[0] || vis.x[0] || SETS[0].id;
+  const cells = [];
+  for(let r = 0; r < R; r++) for(let cc = 0; cc < C; cc++) cells.push([r, cc]);
+  cells.sort((a, b) => (a[0]+a[1]) - (b[0]+b[1]) || a[0]-b[0]);
+  for(const [r, cc] of cells){
+    let i = 8*g[r][cc] + 4*g[r][cc+1] + 2*g[r+1][cc] + 1*g[r+1][cc+1];
+    if(swap) i = 15 - i;                       // invert the corners, same tileset
+    const x = originX + (cc - r) * HW, y = (r + cc) * HH;
+    const pool = poolOf(i);
+    let id, idx = i;
+    if(i === 0 || i === 15){ id = any; }
+    else {
+      const ids = vis[pool].length ? vis[pool] : [any];
+      id = ids[Math.floor(hash(r, cc, 1) * ids.length)];
+
+    }
+    const got = imgFor(id); if(!got) continue;
+    const sheet = got[0]; if(!sheet) continue;
+    octx.drawImage(sheet, idx * TW, 0, TW, TH, x, y, TW, TH);
+    if(showTint && i !== 0 && i !== 15){
+      octx.globalAlpha = .42; octx.fillStyle = TINT[pool];
+      octx.beginPath(); octx.moveTo(x + HW, y); octx.lineTo(x + TW, y + HH);
+      octx.lineTo(x + HW, y + 2*HH); octx.lineTo(x, y + HH);
+      octx.closePath(); octx.fill(); octx.globalAlpha = 1;
+    }
+  }
+  draw();
+}
+// Each view keeps its own camera. Switching used to re-fit, so a spot you had found
+// at 16x in the sheets was gone the moment you glanced at the map and came back.
+const views = { map: null, sheets: null };
+function saveView(){
+  views[sheetMode ? "sheets" : "map"] = {ox, oy, si, fit, fitScale};
+}
+function restoreView(){
+  const v = views[sheetMode ? "sheets" : "map"];
+  if(!v) return false;
+  ox = v.ox; oy = v.oy; si = v.si; fit = v.fit; fitScale = v.fitScale; live = 0;
+  return true;
+}
+let live = 0;                    // non-zero while a pinch is in flight
+function scale(){ return live || (fit ? fitScale : LADDER[si]); }
+function setLive(v){ live = Math.max(0.15, Math.min(40, v)); }
+function settle(){                // land on a whole number so pixels stay square
+  if(!live) return;
+  let best = 0, bd = 1e9;
+  LADDER.forEach((v, i) => { const d = Math.abs(v - live); if(d < bd){ bd = d; best = i; } });
+  si = best; fit = false; live = 0; clampPan(); draw();
+}
+function draw(){
+  const r = c.getBoundingClientRect(), s = scale();
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = "#14161a"; ctx.fillRect(0, 0, r.width, r.height);
+  ctx.drawImage(off, Math.round(ox), Math.round(oy),
+                Math.round(off.width*s), Math.round(off.height*s));
+  document.getElementById("zoom").innerHTML =
+    (Number.isInteger(s) ? s : s.toFixed(1)) + "×";
+}
+function resize(){
+  const bar = document.getElementById("bar").getBoundingClientRect().height;
+  document.getElementById("stage").style.bottom = bar + "px";
+  const dpr = Math.min(window.devicePixelRatio || 1, 3), r = c.getBoundingClientRect();
+  c.width = Math.round(r.width*dpr); c.height = Math.round(r.height*dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); draw();
+}
+function clampPan(){
+  // Keep a margin of the content on screen rather than a fraction of it: on the sheet
+  // view the content is far taller than the viewport, and a fractional rule made the
+  // top and bottom unreachable.
+  const r = c.getBoundingClientRect(), s = scale();
+  const w = off.width*s, h = off.height*s, M = 60;
+  if(w <= r.width) ox = (r.width - w)/2;
+  else ox = Math.min(M, Math.max(r.width - w - M, ox));
+  if(h <= r.height) oy = (r.height - h)/2;
+  else oy = Math.min(M, Math.max(r.height - h - M, oy));
+}
+function zoomAt(d, cx, cy){
+  const before = scale();
+  live = 0;
+  if(fit || before !== LADDER[si]){
+    fit = false; si = 0;
+    while(si < LADDER.length-1 && LADDER[si] < before) si++;
+  }
+  si = Math.max(0, Math.min(LADDER.length-1, si + d));
+  const k = scale()/before; ox = cx-(cx-ox)*k; oy = cy-(cy-oy)*k; clampPan(); draw();
+}
+addEventListener("dblclick", e => e.preventDefault());
+function doFit(){
+  const r = c.getBoundingClientRect();
+  live = 0;
+  // sheets are tall: fitting both dimensions makes every tile unreadable, so fit the
+  // width and let the rest scroll
+  fitScale = sheetMode ? r.width/off.width
+                       : Math.min(r.width/off.width, r.height/off.height);
+  fit = true;
+  ox = (r.width - off.width*fitScale)/2;
+  oy = sheetMode ? 0 : (r.height - off.height*fitScale)/2;
+  draw();
+}
+// ---- the pool editor -------------------------------------------------------
+function ensure(id, then){
+  const key = pi + "/" + (raw ? "raw" : "clean") + "/" + id;
+  if(imgs[key]) return then && then();
+  const rec = pair().sets[id]; if(!rec){ then && then(); return; }
+  const im = new Image();
+  im.onload = () => { imgs[key] = [im]; if(then) then(); };
+  im.src = "data:image/png;base64," + rec[raw ? "raw" : "clean"];
+}
+function imgFor(id){ return imgs[pi + "/" + (raw ? "raw" : "clean") + "/" + id]; }
+function ensureBoth(id, then){
+  const rec = pair().sets[id]; if(!rec){ then && then(); return; }
+  let left = 2;
+  ["raw","clean"].forEach(which => {
+    const key = pi + "/" + which + "/" + id;
+    if(imgs[key]){ if(--left === 0 && then) then(); return; }
+    const im = new Image();
+    im.onload = () => { imgs[key] = [im]; if(--left === 0 && then) then(); };
+    im.src = "data:image/png;base64," + rec[which];
+  });
+}
+function loadPool(then){
+  const ids = [];
+  for(const p in pools) for(const id of pools[p]) if(!ids.includes(id)) ids.push(id);
+  let left = ids.length;
+  if(!left) return then && then();
+  ids.forEach(id => ensureBoth(id, () => { if(--left === 0 && then) then(); }));
+}
+/** "21 4", "21-4", "21% s4", "21/4" and "exact" all resolve to a set id. The maintainer
+ *  reads these numbers off the bench, so the parser takes them in whatever shape they
+ *  were written down. */
+function resolveId(txt){
+  const t = (txt || "").trim().toLowerCase();
+  if(!t) return null;
+  if(/^(exact|0\s*exact|geometric)$/.test(t)) return "0-0";
+  const nums = t.match(/\d+/g);
+  if(!nums || !nums.length) return null;
+  if(nums.length === 1){
+    const hits = SETS.filter(s => s.amp === +nums[0]);
+    return hits.length === 1 ? hits[0].id : null;
+  }
+  const id = +nums[0] + "-" + +nums[1];
+  return BY_ID[id] ? id : null;
+}
+function addById(pool, txt, note){
+  const id = resolveId(txt);
+  if(!id){ note.textContent = "no set called \u201c" + txt + "\u201d";
+           note.className = "note bad"; return; }
+  if(pools[pool].includes(id)){ note.textContent = BY_ID[id].label + " is already in this pool";
+                                note.className = "note bad"; return; }
+  pools[pool].push(id);
+  ensure(id, () => { renderEditor(); compose(); });
+  note.textContent = ""; note.className = "note";
+}
+function addRandom(pool){
+  const free = SETS.filter(s => !pools[pool].includes(s.id));
+  if(!free.length) return;
+  const s = free[Math.floor(Math.random()*free.length)];
+  pools[pool].push(s.id); ensure(s.id, () => { renderEditor(); compose(); });
+}
+function shufflePool(pool){
+  const n = Math.max(1, pools[pool].length);
+  const bag = SETS.slice();
+  for(let i = bag.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1));
+    [bag[i], bag[j]] = [bag[j], bag[i]]; }
+  pools[pool] = bag.slice(0, n).map(s => s.id);
+  pools[pool].forEach(id => delete off_[pool + ":" + id]);
+  loadPool(() => { renderEditor(); compose(); });
+}
+function renderEditor(){
+  const e = document.getElementById("editor");
+  e.replaceChildren();
+  for(const p of ["x","vert","horiz"]){
+    const box = document.createElement("div"); box.className = "pool";
+    const h = document.createElement("header");
+    const dot = document.createElement("span"); dot.className = "dot";
+    dot.style.background = POOL_META[p].col;
+    const nm = document.createElement("span"); nm.className = "pname";
+    nm.textContent = POOL_META[p].name + "  (" + visible(p).length + "/" + pools[p].length + ")";
+    const sh = document.createElement("button"); sh.textContent = "shuffle";
+    sh.onclick = () => shufflePool(p);
+    const ad = document.createElement("button"); ad.textContent = "+ add";
+    ad.onclick = () => addRandom(p);
+    h.append(dot, nm, sh, ad); box.append(h);
+    const chips = document.createElement("div"); chips.className = "chips";
+    if(!pools[p].length){
+      const em = document.createElement("div"); em.className = "empty";
+      em.textContent = "empty — add one"; chips.append(em);
+    }
+    for(const id of pools[p]){
+      const key = p + ":" + id, hidden = !!off_[key];
+      const chip = document.createElement("span");
+      chip.className = "chip" + (hidden ? " off" : "");
+      const nb = document.createElement("button"); nb.className = "name";
+      nb.textContent = (BY_ID[id] ? BY_ID[id].label : id);
+      nb.title = hidden ? "show" : "hide";
+      nb.onclick = () => { if(off_[key]) delete off_[key]; else off_[key] = 1;
+                           renderEditor(); compose(); };
+      const kb = document.createElement("button"); kb.className = "kill";
+      kb.textContent = "×"; kb.title = "remove from pool";
+      kb.onclick = () => { pools[p] = pools[p].filter(v => v !== id);
+                           delete off_[key]; renderEditor(); compose(); };
+      chip.append(nb, kb); chips.append(chip);
+    }
+    box.append(chips);
+    const ar = document.createElement("div"); ar.className = "addrow";
+    const inp = document.createElement("input");
+    inp.type = "text"; inp.placeholder = "add by number, e.g. 21 4";
+    inp.setAttribute("aria-label", "add a set to " + POOL_META[p].name + " by number");
+    inp.setAttribute("list", "allsets");
+    inp.autocapitalize = "off"; inp.autocomplete = "off"; inp.spellcheck = false;
+    const go = document.createElement("button"); go.textContent = "add";
+    const note = document.createElement("div"); note.className = "note";
+    const submit = () => { addById(p, inp.value, note); inp.value = ""; };
+    go.onclick = submit;
+    inp.onkeydown = ev => { if(ev.key === "Enter"){ ev.preventDefault(); submit(); } };
+    // the canvas swallows pointer gestures; let the field keep its own
+    ["pointerdown","pointermove","pointerup","wheel"].forEach(t =>
+      inp.addEventListener(t, ev => ev.stopPropagation()));
+    ar.append(inp, go); box.append(ar, note); e.append(box);
+  }
+}
+document.getElementById("roll").onclick = () => { salt = (salt*1103515245 + 12345) >>> 0; compose(); };
+document.getElementById("map").onclick = e => {
+  mapKey = mapKey === "network" ? "star" : "network";
+  e.currentTarget.textContent = mapKey === "network" ? "star" : "network";
+  compose(); doFit(); };
+document.getElementById("tint").onclick = e => { showTint = !showTint;
+  e.currentTarget.setAttribute("aria-pressed", showTint); compose(); };
+document.getElementById("edit").onclick = e => {
+  const ed = document.getElementById("editor"), open = ed.classList.toggle("open");
+  e.currentTarget.setAttribute("aria-pressed", open);
+  e.currentTarget.innerHTML = open ? "pools ▼" : "pools ▲";
+  requestAnimationFrame(resize); };
+function defaultSwap(){
+  // grass is the ground a world is made of; it should be the field, not the path
+  const p = pair();
+  return p.index0 === "grass" || (p.index0 !== "light_soil" && p.a === "light_soil");
+}
+function buildPairRow(){
+  const row = document.getElementById("pairrow"); row.replaceChildren();
+  D.pairs.forEach((p, i) => {
+    const b = document.createElement("button");
+    b.textContent = p.label; b.setAttribute("aria-pressed", i === pi);
+    b.onclick = () => { pi = i; swap = defaultSwap();
+      document.getElementById("swap").setAttribute("aria-pressed", swap);
+      buildPairRow(); loadPool(() => { renderEditor(); compose(); }); };
+    row.append(b);
+  });
+}
+document.getElementById("mode").onclick = e => {
+  saveView();
+  sheetMode = !sheetMode; e.currentTarget.setAttribute("aria-pressed", sheetMode);
+  e.currentTarget.textContent = sheetMode ? "map" : "sheets";
+  loadPool(() => { compose(); if(!restoreView()) doFit(); else draw(); });
+};
+document.getElementById("swap").onclick = e => {
+  swap = !swap; e.currentTarget.setAttribute("aria-pressed", swap); compose();
+};
+document.getElementById("raw").onclick = e => {
+  raw = !raw; e.currentTarget.setAttribute("aria-pressed", raw);
+  e.currentTarget.textContent = raw ? "raw" : "clean";
+  loadPool(compose);                       // view does not move, so it is a true A/B
+};
+document.getElementById("reset").onclick = () => {
+  pools = JSON.parse(JSON.stringify(DEFAULTS)); off_ = {};
+  loadPool(() => { renderEditor(); compose(); }); };
+document.getElementById("in").onclick = () => { const r = c.getBoundingClientRect(); zoomAt(1, r.width/2, r.height/2); };
+document.getElementById("out").onclick = () => { const r = c.getBoundingClientRect(); zoomAt(-1, r.width/2, r.height/2); };
+document.getElementById("fit").onclick = doFit;
+const pts = new Map();
+let pinch0 = null, tapT = 0, tapX = 0, tapY = 0, moved = 0;
+c.addEventListener("pointerdown", e => {
+  c.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  c.classList.add("drag");
+  if(pts.size === 1) moved = 0;
+  if(pts.size === 2){
+    const s = spread(), k = scale();
+    pinch0 = {dist:s.dist, scale:k, wx:(s.cx-ox)/k, wy:(s.cy-oy)/k};
+  }
+});
+c.addEventListener("pointermove", e => {
+  const p = pts.get(e.pointerId); if(!p) return;
+  const dx = e.clientX-p.x, dy = e.clientY-p.y;
+  p.x = e.clientX; p.y = e.clientY;
+  if(pts.size === 1){
+    moved += Math.abs(dx) + Math.abs(dy);
+    ox += dx; oy += dy; clampPan(); draw();
+  } else if(pts.size === 2 && pinch0){
+    const s = spread();
+    setLive(pinch0.scale * (s.dist / pinch0.dist));   // continuous, not stepped
+    ox = s.cx - pinch0.wx * scale();                  // hold the point under the fingers
+    oy = s.cy - pinch0.wy * scale();
+    clampPan(); draw();
+  }
+});
+["pointerup","pointercancel"].forEach(k => c.addEventListener(k, e => {
+  const wasTwo = pts.size === 2;
+  pts.delete(e.pointerId);
+  if(pts.size < 2){ pinch0 = null; if(wasTwo) settle(); }
+  if(!pts.size){
+    c.classList.remove("drag");
+    const now = Date.now(), r = c.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if(moved < 12){                                   // a tap, not a drag
+      if(now - tapT < 320 && Math.hypot(x-tapX, y-tapY) < 40){ zoomAt(+1, x, y); tapT = 0; }
+      else { tapT = now; tapX = x; tapY = y; }
+    }
+  }
+}));
+function spread(){ const a = [...pts.values()], r = c.getBoundingClientRect();
+  return { dist: Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y),
+           cx:(a[0].x+a[1].x)/2 - r.left, cy:(a[0].y+a[1].y)/2 - r.top }; }
+c.addEventListener("wheel", e => { e.preventDefault(); const r = c.getBoundingClientRect();
+  zoomAt(e.deltaY < 0 ? 1 : -1, e.clientX - r.left, e.clientY - r.top); }, {passive:false});
+addEventListener("keydown", e => { if(e.key === " "){ e.preventDefault();
+  document.getElementById("roll").click(); } });
+addEventListener("resize", resize);
+const dl = document.getElementById("allsets");
+SETS.forEach(s => { const o = document.createElement("option");
+  o.value = s.amp + " " + s.seed; o.label = s.label; dl.append(o); });
+swap = defaultSwap();
+document.getElementById("swap").setAttribute("aria-pressed", swap);
+buildPairRow();
+loadPool(() => { renderEditor(); compose(); doFit(); });
+resize();
+</script>
