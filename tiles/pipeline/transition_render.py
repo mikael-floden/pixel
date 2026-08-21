@@ -282,7 +282,7 @@ def _base_of(src, hexv, shape):
     return np.repeat(np.repeat(_ps._hex(hexv)[None, None, :], shape[0], 0), shape[1], 1)
 
 
-def _bleed_to_base(rgb, base, alpha, tol=1):
+def _bleed_to_base(rgb, base, alpha, tol=1, max_depth=1):
     """Flatten only the detail that REACHES the tile edge, and only as far as it runs.
 
     The blanket edge fade this replaces flattened everything within n px of the
@@ -308,7 +308,18 @@ def _bleed_to_base(rgb, base, alpha, tol=1):
     dist = np.full(alpha.shape, 1 << 15, np.int32)
     dist[reach] = 0
     d = 0
-    while reach.any() and d < 64:
+    # DEPTH 1 IS ENOUGH, measured: the rim carries zero off-base pixels at every depth
+    # from 1 upward, so travelling further cleans nothing extra and only destroys
+    # surface. Depth 1 flattens 9% of the differing pixels, depth 6 flattens 40%, and
+    # unbounded flattens 97%.
+    #
+    # BOUNDED. Stopping at base colour alone is not enough: the collar is a connected
+    # band running edge to edge, every pixel of it differs from base, so a flood that
+    # only stops at base travels the whole band and eats it - measured at 97% of the
+    # differing pixels on dark_mud/light_soil, which is more than the blanket fade it
+    # replaced. The seam itself is only the outermost pixel or two, so the flood may
+    # not travel further than that. Islands are still spared, which was the point.
+    while reach.any() and d < max_depth:
         g = reach.copy()
         g[1:] |= reach[:-1]; g[:-1] |= reach[1:]
         g[:, 1:] |= reach[:, :-1]; g[:, :-1] |= reach[:, 1:]
