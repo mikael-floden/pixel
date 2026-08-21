@@ -467,3 +467,49 @@ def corners_from(field, sub):
     """The corner lattice implied by a pixel-resolution boundary field."""
     R, C = field.shape[0] // sub, field.shape[1] // sub
     return [[int(field[r * sub, c * sub]) for c in range(C + 1)] for r in range(R + 1)]
+
+
+def retexture_palette(tiles, hex_a, hex_b, spread=None, ramp_a=None, ramp_b=None,
+                      despeckle=2):
+    """Keep PixelLab's art. Correct only its colour.
+
+    This is the whole job, and everything more elaborate was a mistake. A generated
+    Wang set ALREADY tiles seamlessly - that is what it was generated to be - and its
+    surface is the texture the game wants. The only thing wrong with it is that each
+    set invents its own green, its own sand, so two sets side by side disagree.
+
+    So classify each pixel into one of the two materials and run the WALL's own
+    substitute() over each region: hue and saturation come from the palette, the
+    pixel's own relief carries through untouched. Every set then lands on the same
+    colours while keeping its own surface, and the seams stay exactly as the generator
+    drew them, because nothing has moved.
+
+    What this replaces (retexture + compose_collar) discarded the art and repainted
+    from our published ground tiles, then tried to rebuild the lost seamlessness with
+    a blended collar. It cost the texture, it kept the seams, and none of it was asked
+    for: "We can do that nobody told us to do but we can't maintain the texture and
+    make sure we have no edges. If you think we want a single clean color in this game
+    you are wrong. We use the base color to transition without a seam."
+    """
+    import palette_snap as _ps
+    ra = np.array(tiles[0].convert("RGBA"), int)
+    rb = np.array(tiles[15].convert("RGBA"), int)
+    out_tiles = []
+    for t in tiles:
+        a = np.array(t.convert("RGBA"), int).astype(float)
+        alpha = a[..., 3] > 0
+        isb = (np.abs(a[..., :3] - rb[..., :3]).sum(2)
+               < np.abs(a[..., :3] - ra[..., :3]).sum(2))
+        if despeckle:
+            isb = _despeckle(isb, passes=despeckle)
+        out = a.copy()
+        for owned, hexv, rmp in ((alpha & ~isb, hex_a, ramp_a),
+                                 (alpha & isb, hex_b, ramp_b)):
+            if not owned.any():
+                continue
+            px = _ps.substitute(a, owned, hexv, spread=spread, ramp=rmp)
+            if px is not None:
+                out[..., :3][owned] = px
+        out[..., 3] = np.where(alpha, 255, 0)
+        out_tiles.append(Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"))
+    return out_tiles
