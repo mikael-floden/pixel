@@ -219,7 +219,7 @@ function restoreView(){
 }
 let live = 0;                    // non-zero while a pinch is in flight
 function scale(){ return live || (fit ? fitScale : LADDER[si]); }
-function setLive(v){ live = Math.max(0.15, Math.min(40, v)); }
+function setLive(v){ live = Math.max(0.02, Math.min(64, v)); }
 function settle(){                // land on a whole number so pixels stay square
   if(!live) return;
   // ANCHOR ON THE VIEWPORT CENTRE. Snapping the scale without re-deriving the offset
@@ -228,6 +228,11 @@ function settle(){                // land on a whole number so pixels stay squar
   const r = c.getBoundingClientRect();
   const before = scale();
   const wx = (r.width / 2 - ox) / before, wy = (r.height / 2 - oy) / before;
+  if(live < 1){
+    // below 1x there is nothing to keep square, and snapping up to 1x was the jump
+    // that yanked the view back in. Leave it exactly where it was let go.
+    fit = true; fitScale = live; live = 0; draw(); return;
+  }
   let best = 0, bd = 1e9;
   LADDER.forEach((v, i) => { const d = Math.abs(v - live); if(d < bd){ bd = d; best = i; } });
   si = best; fit = false; live = 0;
@@ -253,16 +258,12 @@ function resize(){
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); draw();
 }
 function clampPan(){
-  // Keep a margin of the content on screen rather than a fraction of it: on the sheet
-  // view the content is far taller than the viewport, and a fractional rule made the
-  // top and bottom unreachable.
-  // Clamp to a RANGE, never snap to a fixed point. Forcing the content to the exact
-  // centre whenever it fits made every pan end with a jump back.
-  const r = c.getBoundingClientRect(), s = scale();
-  const w = off.width*s, h = off.height*s, M = 60;
-  ox = Math.min(Math.max(ox, Math.min(M, r.width - w - M)), Math.max(M, r.width - w - M));
-  oy = Math.min(Math.max(oy, Math.min(M, r.height - h - M)), Math.max(M, r.height - h - M));
+  // DELIBERATELY EMPTY. Every bound here was me deciding the user had gone too far
+  // and hauling them back: "I didn't zoom out too much, I didn't even see the entire
+  // map, and you see it as saving the user. I HATE FUNCTIONALITY LIKE THAT." Pan and
+  // zoom are the user's, without exception.
 }
+
 function zoomAt(d, cx, cy){
   const before = scale();
   live = 0;
@@ -270,6 +271,7 @@ function zoomAt(d, cx, cy){
     fit = false; si = 0;
     while(si < LADDER.length-1 && LADDER[si] < before) si++;
   }
+  if(d < 0 && si === 0){ fit = true; fitScale = before / 1.5; draw(); return; }
   si = Math.max(0, Math.min(LADDER.length-1, si + d));
   const k = scale()/before; ox = cx-(cx-ox)*k; oy = cy-(cy-oy)*k; clampPan(); draw();
 }
