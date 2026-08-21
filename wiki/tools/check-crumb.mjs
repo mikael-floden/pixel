@@ -205,6 +205,43 @@ const listed = await p.evaluate(() => ({ y: Math.round(window.scrollY), hash: lo
 console.log("crumb to the section:", JSON.stringify(listed));
 ok(listed.hash === "#/objects" && listed.y === 0, `the crumb still lands at the top of the section (y=${listed.y})`);
 
+// ---- THE STICKY ROW MUST NOT SIT ON THE CONTENT (maintainer 2026-08-21,
+// circling the clipped top of a tile thumbnail: "This page have the thimbnail
+// preview cut/clipped and I can't scroll up do show it").
+//
+// The crumb row pins under the topbar and cancels #content's top padding so it
+// RESTS exactly where it PINS. When that cancellation goes stale — a -24px
+// written against the desktop padding while the phone breakpoint sets 16 — the
+// row rests ABOVE its pin, sticky shoves it back down, and it paints over the
+// first 8.7px of whatever follows AT SCROLL ZERO, where no amount of scrolling
+// can move it. It hid under a monster's transparent sprite padding for weeks
+// and only showed when a tile's checkerboard made the cut visible.
+//
+// So: at the top of the page, at BOTH breakpoints, on a page of each shape.
+for (const [w, hgt, label] of [[346, 800, "phone (the in-game panel's layout width)"], [1100, 900, "desktop"]]) {
+  const q = await (await b.newContext({ viewport: { width: w, height: hgt } })).newPage();
+  q.on("pageerror", (e) => errs.push(String(e)));
+  await q.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await q.addInitScript(() => { localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", `${location.origin}/assets/`); });
+  for (const hash of ["#/world/grass/grass", "#/monsters/armor_tusker", "#/world/grass", "#/objects"]) {
+    await q.goto(`${W}${hash}`, { waitUntil: "load" });
+    await q.waitForTimeout(1800);
+    const over = await q.evaluate(() => {
+      window.scrollTo(0, 0);
+      const crumb = document.querySelector(".crumb-row");
+      if (!crumb) return { skip: true };
+      const next = crumb.nextElementSibling;
+      if (!next) return { skip: true };
+      const c = crumb.getBoundingClientRect(), n = next.getBoundingClientRect();
+      return { overlap: +(c.bottom - n.top).toFixed(2), cls: next.className, y: window.scrollY };
+    });
+    if (over.skip) continue;
+    ok(over.overlap <= 1,
+      `${label} ${hash}: the sticky row rests where it pins — it covers ${over.overlap}px of .${over.cls.split(" ")[0]} at scroll 0`);
+  }
+  await q.context().close();
+}
+
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

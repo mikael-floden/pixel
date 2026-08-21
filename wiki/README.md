@@ -438,6 +438,32 @@ games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 
+## The sticky crumb sat on the content — at scroll zero, for weeks
+
+Maintainer 2026-08-21, with a circle drawn round the clipped top of a tile
+thumbnail: *"This page have the thimbnail preview cut/clipped and I can't
+scroll up do show it."* He could not scroll up because the page was already at
+the top: the opaque sticky crumb row was **resting on top of the content**.
+
+The crumb row pins under the topbar and cancels `#content`'s top padding with a
+negative margin, so that it RESTS exactly where it PINS — otherwise the first
+few pixels of any scroll slide it and it visibly jumps (the 2026-08-15 fix). It
+cancelled a hardcoded **-24px**, the desktop padding. The phone breakpoint sets
+**16px**. So on every phone the row rested 8px ABOVE its pin, sticky pushed it
+back down, and it painted over **the first 8.7px of whatever followed, at
+scroll 0**, unreachable by scrolling. Every detail page in the wiki had it —
+monsters included, where a sprite's transparent top padding hid it; a tile
+thumbnail's checkerboard is what finally made the cut visible.
+
+The padding is a variable now (`--content-pad-top`) and the row cancels exactly
+it, so rest == pin at every breakpoint. What remains is 0.75px, the deliberate
+CEIL of the measured topbar height, which is a sub-pixel and invisible.
+
+Gate: `check-crumb.mjs` measures, at scroll 0, on the phone AND desktop
+breakpoints, across a pair page / a monster / a section / a list, that the
+sticky row covers no more than 1px of the element after it. A stale
+compensation cannot come back quietly.
+
 ## The inbox means "waiting for YOU", and dead reviews get pruned
 
 Maintainer 2026-08-21, seeing seven tiles he had rejected sitting in his
