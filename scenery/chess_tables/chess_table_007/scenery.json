@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-21T22:14:54+00:00",
+  "id": "chess_table_007",
+  "group": "chess_tables",
+  "type": "INDOOR",
+  "rank": 172,
+  "index": 7,
+  "name": "Carved dark-and-pale stone chess set, formal and heavy 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "carved dark-and-pale stone chess set, formal and heavy",
+  "modifier": "a little dusty, long unused",
+  "glow_concept": null,
+  "prompt": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, carved dark-and-pale stone chess set, formal and heavy, a little dusty, long unused, table-height, waist-high, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "chess_tables/chess_table_007/sprite.webp",
+  "placement": {
+    "world_height_m": 0.94,
+    "world_px_height": 35,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      2,
+      8,
+      62,
+      58
+    ],
+    "content_px_height": 50,
+    "canvas_render_px": 45
+  },
+  "pixellab_object_id": "9470048f-c8c1-4b24-a702-d65f5ed646cc",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
