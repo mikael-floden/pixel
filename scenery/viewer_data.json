@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 736,
+  "scenery_count": 737,
   "target_count": 2149,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1398,7 +1398,7 @@
       "name": "Chess Board",
       "type": "INDOOR",
       "quota": 15,
-      "done": 11
+      "done": 12
     }
   ],
   "categories": {
@@ -1426,7 +1426,7 @@
     "cauldron_camps": 2,
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
-    "chess_boards": 11,
+    "chess_boards": 12,
     "chess_tables": 12,
     "cliff_falls": 5,
     "cliff_features": 5,
@@ -9533,6 +9533,41 @@
       "pixellab_object_id": "8fb057cb-9067-432b-a826-1473e6aebc2e",
       "sprite": "chess_boards/chess_board_014/sprite.webp",
       "art_hash": "42c1d7a83277ebca",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "chess_board_016",
+      "rel": "chess_boards/chess_board_016",
+      "name": "Soulstone chess set with translucent pale pieces 016 \u00b7 lit",
+      "category": "chess_boards",
+      "lights": "LIGHTS_ON",
+      "description": "a chess board resting flat on the ground on its own with no table and no furniture beneath it, seen from above, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, soulstone chess set with translucent pale pieces, a little dusty, long unused, as broad across as a table top, self-emissive at night, softly radiating light: a small oil lamp set at the board's edge, its glow pooling over the squares",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.81,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          0,
+          6,
+          64,
+          60
+        ],
+        "content_px_height": 54,
+        "canvas_render_px": 36
+      },
+      "status": "complete",
+      "generated_at": "2026-08-21T22:17:36+00:00",
+      "pixellab_object_id": "7b4414c6-662b-4fa1-b72a-c1586dfb3fba",
+      "sprite": "chess_boards/chess_board_016/sprite.webp",
+      "art_hash": "bfbdddbd77482cdd",
       "type": "INDOOR",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
