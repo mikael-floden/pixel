@@ -6735,6 +6735,84 @@
         ]
       ],
       "type": "WINDOW"
+    },
+    {
+      "rank": 172,
+      "id": "chess_tables",
+      "prefix": "chess_table",
+      "name": "Chess Table",
+      "quota": 4,
+      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another",
+      "world_height_m": [
+        0.75,
+        0.95
+      ],
+      "art_size": 64,
+      "variety": [
+        "tavern chess set mid-game with a few captured pieces set aside",
+        "carved dark-and-pale stone chess set, formal and heavy",
+        "travelling chess set of simple turned wooden pieces",
+        "soulstone chess set with translucent pale pieces"
+      ],
+      "glow_concepts": [
+        "a candle stub burning beside the board, warm light raking across the squares",
+        "the pale pieces glowing softly from within with kept memory-light",
+        "a small oil lamp set at the board's edge, its glow pooling over the squares"
+      ],
+      "animation_idea": "the candleflame swaying while the pieces stand still",
+      "lore_fit": "A game left standing mid-move is a promise that both players are coming back.",
+      "modifier_pool": "chess",
+      "type": "INDOOR",
+      "state_plan": [
+        4,
+        1
+      ],
+      "_state_plan_note": "maintainer 2026-08-20: 'each chess board should have 4 versions and one lit/light version'",
+      "scale_phrases": [
+        [
+          9.9,
+          "table-height, waist-high"
+        ]
+      ]
+    },
+    {
+      "rank": 173,
+      "id": "chess_boards",
+      "prefix": "chess_board",
+      "name": "Chess Board",
+      "quota": 4,
+      "description": "a chess board resting flat on the ground on its own with no table and no furniture beneath it, seen from above, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another",
+      "world_height_m": [
+        0.7,
+        0.9
+      ],
+      "art_size": 64,
+      "variety": [
+        "tavern chess set mid-game with a few captured pieces set aside",
+        "carved dark-and-pale stone chess set, formal and heavy",
+        "travelling chess set of simple turned wooden pieces",
+        "soulstone chess set with translucent pale pieces"
+      ],
+      "glow_concepts": [
+        "a candle stub burning beside the board, warm light raking across the squares",
+        "the pale pieces glowing softly from within with kept memory-light",
+        "a small oil lamp set at the board's edge, its glow pooling over the squares"
+      ],
+      "animation_idea": "the glow in the pale pieces breathing slowly",
+      "lore_fit": "Someone carried the board here and never carried it home.",
+      "modifier_pool": "chess",
+      "type": "INDOOR",
+      "state_plan": [
+        4,
+        1
+      ],
+      "_state_plan_note": "maintainer 2026-08-20: 'each chess board should have 4 versions and one lit/light version'",
+      "scale_phrases": [
+        [
+          9.9,
+          "as broad across as a table top"
+        ]
+      ]
     }
   ],
   "modifier_pools": {
@@ -6797,6 +6875,12 @@
       "weathered silver-grey",
       "with climbing flowers at one corner",
       "snow-dusted"
+    ],
+    "chess": [
+      "well-worn from years of use",
+      "polished smooth at the edges",
+      "a little dusty, long unused",
+      "one corner chipped"
     ]
   },
   "goal": {

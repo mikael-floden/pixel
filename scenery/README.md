@@ -106,11 +106,26 @@ regress the live site). Several PixelLab jobs stay in flight at once
 Read the two halves separately, because the second is the one an eager agent
 gets wrong.
 
-**Generation is over.** Every piece in the catalog has been through his hands:
-0 pieces and 0 rejections are outstanding. Do not start a generation pass, do
-not refill a pruned slot, do not "top up" a group that looks thin — 474 state
-slots are retired on purpose, and a thin group is his decision, not a gap.
-`scenery-states.yml`'s schedule is off for exactly this reason.
+**Quota generation is over.** Every piece in the catalog has been through his
+hands: 0 pieces and 0 rejections outstanding. Do not refill a pruned slot, do
+not "top up" a group that looks thin — 474 state slots are retired on purpose,
+and a thin group is his decision, not a gap. `scenery-states.yml`'s schedule is
+off for exactly this reason.
+
+**NEVER RUN THE UNRESTRICTED LOOP AGAIN. `--plan` OR NOTHING.** The catalog is
+at 725 of a 2,133 target, and quota fairness has no idea that the gap is his
+pruning rather than unfinished work. `loop.py` with no `--plan` queues stones,
+windows, bushes, hedges, cairns, fallen_logs — group after group he spent a
+night rejecting — and bills him to resurrect them. He commissions new work by
+name now, so name it:
+
+    python3 pipeline/loop.py --plan chess_tables:4,chess_boards:4
+
+Check it with `--dry-run` first; that branch honours `--plan` as of 2026-08-20.
+Before that it returned before `--plan` was even parsed, so the dry run printed
+the full quota-fair flood while the real run would have made only the four
+tables — a safety check describing a different run than the one about to
+happen, which is worse than no safety check at all.
 
 **The 405 unreviewed states are not a backlog.** They are deliberately
 unjudged and must stay that way. 390 of them are the CLIFF families —

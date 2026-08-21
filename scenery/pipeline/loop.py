@@ -363,6 +363,43 @@ def main():
         print("progress:", catalog.progress(cfg, done))
         shown = 0
         retired = factory.load_retired()
+        # HONOUR --plan HERE TOO. This branch used to return before --plan was
+        # even parsed, so `--dry-run --plan chess_tables:4` printed the ordinary
+        # quota-fair plan — stones, windows, bushes, everything — while the real
+        # run would have generated only the four chess tables. The dry run is
+        # the safety check before spending his money, and a safety check that
+        # describes a different run than the one you are about to make is worse
+        # than none: on 2026-08-20 it showed a flood of groups the pruning phase
+        # had taken below quota, which is exactly the mistake --plan exists to
+        # prevent. Same selection rule as the live path below.
+        if args.plan:
+            alloc = {}
+            for part in args.plan.split(","):
+                gid, n = part.split(":")
+                alloc[gid.strip()] = int(n)
+            print(f"star plan: {sum(alloc.values())} pieces across "
+                  f"{len(alloc)} groups")
+            while True:
+                live = [(n, gid) for gid, n in alloc.items() if n > 0]
+                if not live:
+                    print("(plan complete)")
+                    break
+                _, gid = max(live, key=lambda t: (t[0], t[1]))
+                group = next((x for x in cfg["groups"] if x["id"] == gid), None)
+                if group is None:
+                    print(f"  ! no such group: {gid}")
+                    alloc[gid] = 0
+                    continue
+                idxs = catalog.next_indices(group, done.get(gid, set()),
+                                            retired.get(gid, set()), 1)
+                if not idxs:
+                    alloc[gid] = 0
+                    continue
+                spec = catalog.piece_spec(cfg, group, idxs[0])
+                print(f"  next: {gid} -> {spec['id']}")
+                done.setdefault(gid, set()).add(spec["id"])
+                alloc[gid] -= 1
+            return
         while shown < max_pieces:
             nxt = catalog.next_batch(cfg, done, retired)
             if nxt is None:

@@ -47,6 +47,7 @@ If a second pass is ever genuinely wanted, BOTH sides must carry disjoint
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -141,6 +142,26 @@ def in_scope(cfg):
     return out
 
 
+_STATE_PLANS = None
+
+
+def _group_state_plan(rel):
+    """[own, opposite] for the piece's group, or None for the default 4/2."""
+    global _STATE_PLANS
+    if _STATE_PLANS is None:
+        try:
+            with open(os.path.join(factory.ROOT, "config", "factory.json"),
+                      encoding="utf-8") as f:
+                cfg = json.load(f)
+            _STATE_PLANS = {g["id"]: g["state_plan"] for g in cfg.get("groups", [])
+                            if g.get("state_plan")}
+        except (OSError, ValueError, KeyError):
+            _STATE_PLANS = {}
+    if not rel or "/" not in rel:
+        return None
+    return _STATE_PLANS.get(rel.split("/")[0])
+
+
 def plan_for(man, rel=None):
     """(anchor state, [states still missing]) for one piece.
 
@@ -156,7 +177,17 @@ def plan_for(man, rel=None):
         anchor = "LIT_1" if (man.get("lights") or "").upper() == "LIGHTS_ON" else "NOT_LIT_1"
     own_lit = anchor.startswith("LIT_")
     # His rule: four in your own condition, two in the opposite.
-    targets = (LIT + NOT_LIT[:2]) if own_lit else (NOT_LIT + LIT[:2])
+    own, opposite = 4, 2
+    # ...unless the GROUP asks for a different shape. Chess, 2026-08-20: "each
+    # chess board should have 4 versions and one lit/light version" — four and
+    # ONE, not four and two. Kept as config (`state_plan: [own, opposite]`)
+    # rather than a branch on group id, so the next group he specs differently
+    # is a data change and this planner stays the single rule for everyone.
+    plan = _group_state_plan(rel)
+    if plan:
+        own, opposite = plan
+    targets = (LIT[:own] + NOT_LIT[:opposite]) if own_lit \
+        else (NOT_LIT[:own] + LIT[:opposite])
     have = {s.upper() for s in states}
     # A STATE HE REJECTED IS NOT A GAP TO FILL. From 2026-08-17 a rejection
     # means delete-and-stop, not delete-and-retry, so a deleted state must stay
