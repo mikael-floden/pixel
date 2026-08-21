@@ -1,5 +1,12 @@
 # Transition sets: what they are, what they can't do, how to pick them
 
+**FIRST WORKING VERSION: `bd54bfca4b3b`** (2026-08-21). 17 material pairs generated and
+composed, judged in `tiles/lab/` and found good — *"THIS IS THE START OF SOMETHING
+GREAT!"* 255 sets, 4080 lossless WebP tiles, 15 boundary settings per pair; grass
+against every other material, soil against eight. Not in the game yet: this is the art
+and the tooling. (An annotated tag exists locally as `tiles3-transitions-v1` but the
+remote refuses tag refs, so the SHA is recorded here instead.)
+
 A transition set is 16 Wang **corner** tiles from PixelLab's tileset endpoint, indexed
 `8*NW + 4*NE + 2*SW + 1*SE` with a set bit meaning the second material. One set covers
 BOTH directions — index 0 is all of material A, 15 all of B — so 105 unordered pairs
