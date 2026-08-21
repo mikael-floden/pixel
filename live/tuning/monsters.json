@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:47:55.837Z",
+  "updated_at": "2026-08-21T18:51:37.632Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1031,7 +1031,61 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 6
+      "level": 6,
+      "shadow": {
+        "rx": 16.25,
+        "ry": 8,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.11,
+            "ay": 17.46
+          },
+          "idle#south": {
+            "ax": -0.42,
+            "ay": 15.83
+          },
+          "idle#south-east": {
+            "ax": -0.28,
+            "ay": 16.06
+          },
+          "idle#north-east": {
+            "ax": -0.8,
+            "ay": 16.63
+          },
+          "idle#north": {
+            "ax": 0.19,
+            "ay": 16.91
+          },
+          "idle#north-west": {
+            "ax": 0.07,
+            "ay": 16.45
+          },
+          "idle#west": {
+            "ax": 1.88,
+            "ay": 17.51
+          },
+          "idle#south-west": {
+            "ax": 1.11,
+            "ay": 15.12
+          },
+          "walk#south-west": {
+            "ax": 0.29,
+            "ay": 16.46
+          },
+          "walk#south": {
+            "ax": -0.3,
+            "ay": 14.23
+          },
+          "walk#east": {
+            "ax": -2.89,
+            "ay": 17.18
+          },
+          "angry#south": {
+            "ax": -0.2,
+            "ay": 16.24
+          }
+        }
+      }
     },
     "polar_bear": {
       "max_hp": 20,
