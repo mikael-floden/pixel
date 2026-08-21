@@ -1149,9 +1149,16 @@ clip, no tint.
 
 ## Chess at the board (2026-08-21)
 
-Physical chess boards stand in the world; STANDING at a free seat is the whole
-matchmaking UI. First player at a seat -> `board.waitingSid`, and every client
-draws the challenge bubble over them (drawn "♞ Chess?" today; swaps to the
+Physical chess boards stand in the world; STANDING at a free seat makes the
+JUMP BUTTON the offer — its label reads START CHESS GAME (free board) / JOIN
+CHESS GAME (someone or the resident NPC waits), and the press seats you
+(`chess.sit`, proximity-validated server-side; walking past a board NEVER
+seats anyone — pinned by the room test). WorldScene intercepts the
+synthesized SPACE; auto-jump bypasses it on purpose (a ledge beside a board
+must still hop). The label hook is the one chess line in games-ui's
+gamepad.ts (maintainer: "the UI agent owns the JUMP button, but he sleeps so
+please implement it"). First seated player -> `board.waitingSid`, and every
+client draws the challenge bubble over them (drawn "♞ Chess?" today; swaps to the
 maintainer's PixelLab challenge icon by one texture change in
 `syncChessWait`). Second player at the other seat — or a resident NPC
 (`npc` on the board config; Wendell at the_island2 202,122) — starts a
@@ -1185,7 +1192,11 @@ theme, drop-dialog family: uiLock freezes movement while open).
   state copies per node and moving it out took a reply from 29ms to ~3ms.
   Replies are scheduled once per opponent move on a 1.2-2.6s humanizing
   delay; zero cost between moves.
-- BOARDS ARE CONFIG: `config/chess_boards.json` baked;
+- BOARDS ARE CONFIG, AND THE CURRENT TWO ARE INTERIM (maintainer 2026-08-22:
+  real placements are coming from the fleet — "wait for the real data"; the
+  scenery agent is generating chess_boards/chess_tables now). When a
+  placement sidecar lands, derive positions from it instead of hand-picked
+  cells. `config/chess_boards.json` baked;
   `live/tuning/chess.json` overrides per world with the same shape — the
   maintainer adds/moves boards from his phone, no deploy. Board decor is a
   generated checker texture until real scenery board art is placed. The
