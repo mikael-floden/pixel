@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:58:48.057Z",
+  "updated_at": "2026-08-21T18:59:40.931Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1389,7 +1389,17 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 12
+      "level": 12,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 10.5,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.53,
+            "ay": 16.93
+          }
+        }
+      }
     },
     "snow_demon": {
       "level": 17,
