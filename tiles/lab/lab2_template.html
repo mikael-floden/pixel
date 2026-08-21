@@ -179,14 +179,14 @@ function compose(){
     const pool = poolOf(i);
     let id, idx = i;
     if(i === 0 || i === 15){
-      // Pure cells roll across every pool set too. Each set carries its own pure
-      // surface (corrected to the same palette), so an "own"-material field - grass
-      // above all - varies subtly per cell instead of repeating one tile. This is the
-      // base-tiles idea in miniature: "the small repetition we get can be solved with
-      // alternative tiles looking the same." Copy-mode materials are identical in
-      // every set, so their fields stay uniform automatically.
-      const all = vis.x.concat(vis.vert, vis.horiz);
-      id = all.length ? all[Math.floor(hash(r, cc, 4) * all.length)] : any;
+      // ONE pure tile per field, always the same set. Rolling pure cells across all
+      // pool sets was tried and rejected within the hour: each set's grass is
+      // individually excellent but visibly DIFFERENT, and a field mixing them reads
+      // as patchwork - "individually this is insanely good tiles. Adding them all
+      // together looks like horse shit." Variation must come from base_tiles that
+      // look the SAME ("alternative tiles looking the same"), never from mixing
+      // different looks.
+      id = any;
     }
     else {
       const ids = vis[pool].length ? vis[pool] : [any];
