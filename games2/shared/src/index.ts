@@ -2899,3 +2899,4 @@ export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRu
   }
   return out;
 }
+export * from "./chess";

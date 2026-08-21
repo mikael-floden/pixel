@@ -77,6 +77,7 @@ import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV } from "../assetver";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
+import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
@@ -1126,6 +1127,10 @@ export class WorldScene extends Phaser.Scene {
    * scene and armed a walk-to trip THROUGH the dialog (maintainer 2026-08-05:
    * cancelling a drop ran the player to where he tapped). */
   private uiLocked = false;
+  // ---- chess at the board (chessui.ts; server chess.ts) ----
+  private chessDialog: ChessDialog | null = null;
+  private chessDecor = new Map<string, Phaser.GameObjects.Image>();
+  private chessWaitB = new Map<string, Phaser.GameObjects.Text>();
   /** …and the tap that CLOSES a modal must not become a trip either: the
    * close handler runs on the element, Phaser's window listener runs after it
    * in the same dispatch, so the lock is lifted a beat later than it is
@@ -2113,6 +2118,14 @@ export class WorldScene extends Phaser.Scene {
       // How this world's tile art arrived: sheets sliced from the committed
       // atlas vs individual fallback requests (verify-atlas's instrument).
       atlasInfo: () => this.tileAtlas?.stats() ?? null,
+      chess: () => ({
+        boards: this.room ? [...this.room.state.chessBoards.entries()].map(([id, b]: [string, any]) => ({
+          id, col: b.col, row: b.row, npc: b.npc, waiting: b.waitingSid, matchId: b.matchId,
+        })) : [],
+        dialog: this.chessDialog?.probe() ?? null,
+        waitBubbles: this.chessWaitB.size,
+      }),
+      chessTap: (sq: number) => this.chessDialog?.tapSquare(sq),
       // The debris pieces standing on ONE cell, as (level, textureKey) pairs —
       // the instrument behind the lap-rule gate: a cell must never carry two
       // pieces at the same level (the deck stamped over its own equal-height
@@ -3534,6 +3547,46 @@ export class WorldScene extends Phaser.Scene {
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
     $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
     $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
+
+    // ---------------- CHESS: boards in the world + my matches -------------
+    $(room.state).chessBoards.onAdd((b: any, id: string) => {
+      this.placeChessBoard(id, b);
+      $(b).onChange(() => this.syncChessWait(id, b));
+      this.syncChessWait(id, b);
+    });
+    $(room.state).chessBoards.onRemove((_b: any, id: string) => {
+      this.chessDecor.get(id)?.destroy(); this.chessDecor.delete(id);
+      this.chessWaitB.get(id)?.destroy(); this.chessWaitB.delete(id);
+    });
+    $(room.state).chessMatches.onAdd((m: any, id: string) => {
+      const mine = m.aSid === room.sessionId || m.bSid === room.sessionId;
+      if (!mine) return;
+      const open = () => {
+        if (this.chessDialog) return;
+        const board = room.state.chessBoards.get(m.boardId);
+        const oppSid = m.aSid === room.sessionId ? m.bSid : m.aSid;
+        const oppName = oppSid === "npc"
+          ? board?.npc || "Opponent"
+          : room.state.players.get(oppSid)?.name || "Opponent";
+        this.setChessLock(true);
+        this.chessDialog = new ChessDialog(m as ChessMatchView, {
+          mySid: room.sessionId,
+          oppName,
+          send: (t, msg) => this.room?.send(t, msg),
+          onClosed: () => { this.chessDialog = null; this.setChessLock(false); },
+        });
+        $(m).onChange(() => this.chessDialog?.update());
+        $(m).moves.onAdd(() => this.chessDialog?.update());
+      };
+      open();
+    });
+    $(room.state).chessMatches.onRemove((m: any) => {
+      // Swept server-side (both closed, or the 60s broom). If my dialog is
+      // still up past "over", let it be — it closes itself; but a live match
+      // vanishing (opponent left before dice) must not strand a locked UI.
+      if (this.chessDialog && m.phase !== "over" &&
+          (m.aSid === room.sessionId || m.bSid === room.sessionId)) this.chessDialog.close();
+    });
     $(room.state).drops.onRemove((_g: any, id: string) => this.removeDrop(id));
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
@@ -6109,6 +6162,67 @@ export class WorldScene extends Phaser.Scene {
     });
     clockStar();
     if (name) this.chat.addLog("⭐", `${name} has arrived in Nangijala — a star crosses the sky.`);
+  }
+
+
+  /** The in-world chess board: a generated iso-checker decor image (replaced
+   * by real scenery art once the scenery agent's boards are placed — the
+   * texture is one swap away). Depth = painter y like any flat decor. */
+  private placeChessBoard(id: string, b: { col: number; row: number }) {
+    if (this.chessDecor.has(id)) return;
+    const key = "chess-board-decor";
+    if (!this.textures.exists(key)) {
+      const W = 44, H = 22, cnv = document.createElement("canvas");
+      cnv.width = W; cnv.height = H;
+      const g = cnv.getContext("2d")!;
+      for (let r = 0; r < 8; r++) for (let f = 0; f < 8; f++) {
+        const cx = W / 2 + (f - r) * (W / 16), cy = 3 + (f + r) * (H - 6) / 16;
+        g.fillStyle = (f + r) % 2 ? "#e9dcc3" : "#7a5a3a";
+        g.beginPath();
+        g.moveTo(cx, cy); g.lineTo(cx + W / 16, cy + (H - 6) / 16);
+        g.lineTo(cx, cy + (H - 6) / 8); g.lineTo(cx - W / 16, cy + (H - 6) / 16);
+        g.closePath(); g.fill();
+      }
+      this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+    const p = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
+    const img = this.add.image(p.x, p.y - p.lvl * MAP_GEOMETRY.lh, key).setDepth(p.y + 0.4);
+    this.chessDecor.set(id, img);
+  }
+
+  /** The waiting-for-an-opponent indicator over the seated player. A drawn
+   * bubble today; the maintainer's PixelLab "chess challenge" icon replaces
+   * the TEXT with an image the moment it syncs into scenery/ (one texture
+   * swap here, nothing else moves). Waiting players are standing still by
+   * definition, so a static position is honest. */
+  private syncChessWait(id: string, b: { waitingSid: string }) {
+    const old = this.chessWaitB.get(id);
+    if (old) { old.destroy(); this.chessWaitB.delete(id); }
+    if (!b.waitingSid) return;
+    const av = this.avatars.get(b.waitingSid);
+    if (!av) return;
+    const t = this.add
+      .text(av.sprite.x, av.sprite.y - av.sprite.displayHeight * av.sprite.originY - 6, "♞ Chess?", {
+        fontFamily: "system-ui, sans-serif", fontSize: "13px",
+        color: "#1f1e1a", backgroundColor: "#f6e3db",
+        padding: { x: 8, y: 4 },
+      })
+      .setOrigin(0.5, 1)
+      .setDepth(900_100); // the chat-bubble band: above darkness, below floats
+    this.chessWaitB.set(id, t);
+  }
+
+  /** Freeze movement while the chess dialog is up — the same ops as the HUD's
+   * onUiLock (drop dialog): a DOM overlay does NOT keep pointerdowns from
+   * Phaser's window-level listeners, so the flag + keyboard disable are what
+   * actually stop the player being walked out of their seat mid-game. */
+  private setChessLock(locked: boolean) {
+    this.input.keyboard!.enabled = !locked && !this.chat?.open;
+    this.uiLocked = locked;
+    if (!locked) { this.uiLockLiftAt = performance.now() + 150; return; }
+    this.input.keyboard!.resetKeys();
+    this.dropHold();
+    this.clearMoveTarget();
   }
 
   private showBubble(id: string, text: string) {

@@ -93,6 +93,7 @@ import {
   INV_MAX_SLOTS,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
+import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning } from "../live.js";
 import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
@@ -252,6 +253,8 @@ export class WorldRoom extends Room<WorldState> {
     monsterCount?: number; // per-area monster cap override (default: each area's own `max`)
     monsterSeed?: number; // seed a deterministic PRNG for spawns/roam (tests)
     lootChance?: number; // TEST override: force every loot entry to this chance (1 = always drop)
+    chessBoards?: ChessBoardCfg[]; // TEST override: boards for this room
+    chessClockMs?: number; // TEST override: per-player bank (default 10 min)
   }) {
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     if (typeof options?.monsterCount === "number")
@@ -601,6 +604,28 @@ export class WorldRoom extends Room<WorldState> {
 
     const dtMs = 1000 / TICK_RATE;
     this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
+
+    // CHESS boards for this world (config, live-overridable; tests inject).
+    this.chess = new ChessManager(
+      this.state,
+      options?.chessClockMs ?? 10 * 60 * 1000,
+      () => Date.now(),
+      (fn, ms) => this.clock.setTimeout(fn, ms),
+    );
+    this.chess.addBoards(chessBoardsFor(this.worldName, options?.chessBoards));
+    this.onMessage("chess.dice", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.throwDice(msg.m, client.sessionId);
+    });
+    this.onMessage("chess.move", (client, msg: { m?: string; mv?: string }) => {
+      if (typeof msg?.m === "string" && typeof msg?.mv === "string")
+        this.chess.move(msg.m, client.sessionId, msg.mv);
+    });
+    this.onMessage("chess.resign", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.resign(msg.m, client.sessionId);
+    });
+    this.onMessage("chess.close", (client, msg: { m?: string }) => {
+      if (typeof msg?.m === "string") this.chess.dismiss(msg.m, client.sessionId);
+    });
   }
 
   /** Populate this.state.monsters from the maps2 zones: `num` monsters per
@@ -747,6 +772,7 @@ export class WorldRoom extends Room<WorldState> {
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.
     this.noAggro.delete(client.sessionId);
+    this.chess?.onPlayerLeave(client.sessionId);
   }
 
   /** Persist one player: position to the per-world store, progression to the
@@ -771,6 +797,9 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   private update(dt: number) {
+    // Chess seating scan at ~4Hz (20Hz sim / 5) — distance math over a
+    // handful of boards; the manager is quiet when nothing is happening.
+    if (this.chess && ++this.chessTick >= 5) { this.chessTick = 0; this.chess.tick(); }
     // World clock: phase deadline checked here (see nextPhaseAt note); the
     // synced phaseT sweeps continuously between rollovers.
     if (this.nextPhaseAt !== null) {
@@ -1339,6 +1368,8 @@ export class WorldRoom extends Room<WorldState> {
   // --- COMBAT -----------------------------------------------------------
 
   private lootChance: number | null = null; // test knob — see onCreate
+  private chess!: ChessManager; // the boards + matches for this world (chess.ts)
+  private chessTick = 0;
   private respawnQueue: Array<{ areaId: string; at: number }> = [];
   private respawnCounter = 0;
   private dropCounter = 0;

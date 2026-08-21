@@ -266,11 +266,69 @@ defineTypes(MonsterArea, {
 });
 
 /** The whole shared world. Everyone connected is in this one state. */
+
+// ---------------------------------------------------------------- chess ----
+/** A chess board placed in the world (config/chess_boards.json, overridable
+ * live via tuning/chess.json). `waitingSid` is the whole "challenge" UX: set
+ * = that player stands at a seat with no opponent, and every client draws the
+ * waiting bubble over them. */
+export class ChessBoard extends Schema {
+  declare id: string;
+  declare col: number;
+  declare row: number;
+  declare seatAc: number;
+  declare seatAr: number;
+  declare seatBc: number;
+  declare seatBr: number;
+  declare npc: string; // "" = PvP board; else the resident opponent's display name
+  declare waitingSid: string;
+  declare matchId: string;
+}
+defineTypes(ChessBoard, {
+  id: "string", col: "number", row: "number",
+  seatAc: "number", seatAr: "number", seatBc: "number", seatBr: "number",
+  npc: "string", waitingSid: "string", matchId: "string",
+});
+
+/** One running (or just-finished) game. Moves are coordinate strings
+ * ("e2e4", "e7e8q"); clients rebuild the position from the shared rules, so
+ * the schema never carries a board. Clocks: `wMs`/`bMs` are the remaining
+ * banks AT `turnStart`; the side to move burns time client-display-side and
+ * authoritatively on the server at move receipt / the 1s sweep. turnStart 0 =
+ * white has not moved yet, nobody burns (maintainer: the clock starts ticking
+ * when white makes the first move). */
+export class ChessMatch extends Schema {
+  declare id: string;
+  declare boardId: string;
+  declare aSid: string; // seat A occupant (session id)
+  declare bSid: string; // seat B occupant, or "npc" on an NPC board
+  declare phase: string; // dice | play | over
+  declare diceA: number; // 0 = not thrown yet
+  declare diceB: number;
+  declare whiteSid: string; // set when both dice are in
+  declare moves: ArraySchema<string>;
+  declare turn: string; // "w" | "b"
+  declare wMs: number;
+  declare bMs: number;
+  declare turnStart: number; // epoch ms; 0 = clock not running
+  declare result: string; // "" | "w" | "b" | "draw"
+  declare reason: string; // checkmate | stalemate | resign | time | ...
+}
+defineTypes(ChessMatch, {
+  id: "string", boardId: "string", aSid: "string", bSid: "string",
+  phase: "string", diceA: "number", diceB: "number", whiteSid: "string",
+  moves: { array: "string" }, turn: "string",
+  wMs: "number", bMs: "number", turnStart: "number",
+  result: "string", reason: "string",
+});
+
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare monsters: MapSchema<Monster>;
   declare spawnAreas: ArraySchema<MonsterArea>; // monster areas for this world (synced for the client overlay)
   declare drops: MapSchema<GroundItem>; // items on the ground (monster loot + player discards)
+  declare chessBoards: MapSchema<ChessBoard>;
+  declare chessMatches: MapSchema<ChessMatch>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -284,6 +342,8 @@ export class WorldState extends Schema {
     this.monsters = new MapSchema<Monster>();
     this.spawnAreas = new ArraySchema<MonsterArea>();
     this.drops = new MapSchema<GroundItem>();
+    this.chessBoards = new MapSchema<ChessBoard>();
+    this.chessMatches = new MapSchema<ChessMatch>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -305,6 +365,8 @@ defineTypes(WorldState, {
   monsters: { map: Monster },
   spawnAreas: { array: MonsterArea },
   drops: { map: GroundItem },
+  chessBoards: { map: ChessBoard },
+  chessMatches: { map: ChessMatch },
   timeIdx: "number",
   phaseT: "number",
   weather: "number",

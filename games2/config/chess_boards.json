@@ -1,0 +1,10 @@
+{
+  "format": "nangijala-chess-boards@1",
+  "_doc": "Physical chess boards per world. seatA/seatB are the two stand cells; standing on a free seat offers/joins a game (server chess.ts). `npc` names a resident opponent whose placed NPC stands on seatB — the board then plays you itself. Overridable per-world without a deploy via live/tuning/chess.json {worlds:{<world>:[...]}} — same shape, live wins.",
+  "worlds": {
+    "the_island2": [
+      { "id": "spawn_pvp", "col": 194, "row": 113, "seatA": [193, 113], "seatB": [195, 113] },
+      { "id": "wendell", "col": 202, "row": 122, "seatA": [201, 122], "seatB": [203, 122], "npc": "Wendell" }
+    ]
+  }
+}

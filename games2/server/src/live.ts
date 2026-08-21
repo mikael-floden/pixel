@@ -63,6 +63,7 @@ const LIVE_FILES: Record<string, string> = {
   // by the tiles agent and, when 3.0 ships, by whatever paints the ground.
   // See live/README.md.
   "tuning/tile_walls.json": "tuning/tile_walls",
+  "tuning/chess.json": "tuning/chess",
   // WHETHER A SCENERY STATE IS REALLY LIT. The generator names a state LIT_* or
   // NOT_LIT_*, but the AI that draws it sometimes fails to put the light in —
   // and the art is otherwise good (maintainer 2026-08-17: "I want a way to
@@ -89,6 +90,7 @@ type Doc = Record<string, unknown> & {
 };
 
 const emptyDoc = (key: string): Doc => {
+  if (key === "tuning/chess") return { format: "nangijala-chess-boards@1", updated_at: "", worlds: {} };
   if (key === "tuning/monsters") return { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   if (key === "tuning/constants") return { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   if (key === "tuning/sfx_requests") return { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
@@ -374,7 +376,7 @@ export function registerLiveRoutes(app: express.Application): void {
       fetched_at: fetchedAt,
       tuning: {
         monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
-        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"),
+        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"), chess: docs.get("tuning/chess"),
         scenery_lights: docs.get("tuning/scenery_lights"),
         base_tiles: docs.get("tuning/base_tiles"),
       },

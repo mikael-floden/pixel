@@ -1147,6 +1147,66 @@ clip, no tint.
   20/20 EP, 0/50 XP) after the join race; verify-gamepad expects
   Jump+Pick up+Walk.
 
+## Chess at the board (2026-08-21)
+
+Physical chess boards stand in the world; STANDING at a free seat is the whole
+matchmaking UI. First player at a seat -> `board.waitingSid`, and every client
+draws the challenge bubble over them (drawn "♞ Chess?" today; swaps to the
+maintainer's PixelLab challenge icon by one texture change in
+`syncChessWait`). Second player at the other seat — or a resident NPC
+(`npc` on the board config; Wendell at the_island2 202,122) — starts a
+ChessMatch both clients open as a DOM dialog (`client/src/chessui.ts`, wiki
+theme, drop-dialog family: uiLock freezes movement while open).
+
+- RULES ARE SHARED AND SINGULAR: `shared/src/chess.ts` — full legality
+  (castling through-check, en passant, promotion, mate/stalemate, threefold,
+  fifty-move, insufficient material). The server validates every move with it,
+  the client highlights with it, the NPC thinks with it. Its ground truth is
+  PERFT in `server/test/chess.test.ts` (startpos + Kiwipete published node
+  counts) — never "fix" those numbers. TRAP paid for: knights wrap up to TWO
+  files per step, sliders/kings one — a shared step-guard silently dropped
+  every 2-file knight move and only perft(3) caught it (startpos knight moves
+  are all 1-file, so perft(1)/(2) pass with the bug).
+- FLOW: pre-rolled unequal dice at match creation (the throw is theater that
+  lands on the server's number; it cannot draw) -> higher die is White -> 10
+  min/player, the clock starts at WHITE'S FIRST MOVE (`turnStart` 0 until
+  then; banks settle at move receipt; a 1s sweep flags timeouts and exists
+  only while matches live). Resign = two-step confirm; walking >3 cells away
+  mid-match resigns; leaving the room resigns; ends report
+  won/lost/draw + reason. After a match, the seat has a COOLDOWN until you
+  step off it — otherwise closing the dialog instantly re-matches you.
+- NPC BUDGET (maintainer: "almost 0 server CPU"): `chessAiMove` is a
+  node-capped negamax (2,500 nodes ≈ depth 3) whose INTERIOR searches
+  pseudo-legal moves with a king-capture cutoff — the legality filter is 30
+  state copies per node and moving it out took a reply from 29ms to ~3ms.
+  Replies are scheduled once per opponent move on a 1.2-2.6s humanizing
+  delay; zero cost between moves.
+- BOARDS ARE CONFIG: `config/chess_boards.json` baked;
+  `live/tuning/chess.json` overrides per world with the same shape — the
+  maintainer adds/moves boards from his phone, no deploy. Board decor is a
+  generated checker texture until real scenery board art is placed. The
+  PIECES are the maintainer's own pixel set (`client/public/chess/*.webp`,
+  lossless-verified from his 2026-08-21 upload); glyph alt-text is the
+  fallback.
+- DIALOG STABILITY LAW (paid for in a 6-round ghost hunt): the card skeleton
+  is built ONCE and controls NEVER move or get replaced — a full re-render on
+  the opponent's move used to shift the Resign button sideways (hint width)
+  and a tap aimed a beat earlier landed on empty footer. Squares update
+  content in place. The card carries `touch-action:manipulation` (double-tap
+  zoom would eat the confirm's second tap) and the backdrop preventDefaults
+  ONLY its own events (hud.ts's drop-dialog law — a card-event preventDefault
+  eats button clicks on touch). The confirm window is 5s because a STARVED
+  frame loop delays taps: on the headless harness a synthetic click's
+  stability check alone took ~5s at ~3fps (measured with raw timestamps), so
+  the gate drives the confirm via DOM dispatch — see verify-chess.mjs.
+- Gates: `server/test/chess.test.ts` (rules + AI budget),
+  `server/test/chessroom.test.ts` (live rooms: seat/bubble/dice/authority/
+  resign/NPC/timeout; ONE PORT PER TEST — gracefullyShutdown resolves before
+  the OS frees the socket, so a reused port races EADDRINUSE),
+  `scripts/verify-chess.mjs` (dev stack, the whole player journey incl. the
+  waiting bubble appearing AND clearing). Probes: `__ml.chess()`,
+  `__ml.chessTap(sq)`.
+
 ## Death (WorldScene: startDeath / stepDeath / endDeath)
 
 Dying is a slow push into the dark that ENDS IN A PRESS. One eased 10s curve
