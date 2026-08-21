@@ -182,11 +182,19 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
     # while the pure tile beside it is flat, and the eye reads the tile's own diamond
     # outline a cell in from the road. Weight 1 at the material boundary falling to 0
     # at `band`, so the shading dissolves into the flat fill instead of ending.
+    # SMOOTHSTEP TO ZERO AT THE BAND EDGE. A linear ramp of 1-(k+1)/(band+1) ends its
+    # last ring at 0.143 and the next ring is 0 - a 14% step in relief at a fixed
+    # distance from the boundary, which repeats along the whole road as a line parallel
+    # to it. That line is what the maintainer kept marking inside the ground, and it is
+    # not a seam between tiles at all; it is the collar's own inner edge. Smoothstep
+    # reaches exactly 0 at the band edge and flattens its slope at both ends, so
+    # neither the start nor the end of the band has a visible boundary.
     w = np.zeros(alpha.shape, float)
     reach = edge.copy()
     for k in range(band):
         nxt = _grow(reach, 1) & alpha
-        w[nxt & ~reach] = 1.0 - (k + 1) / float(band + 1)
+        t = (k + 1) / float(band)
+        w[nxt & ~reach] = 1.0 - (3.0 * t * t - 2.0 * t * t * t)
         reach = nxt
     w[edge] = 1.0
     # THE TILE'S OWN OUTLINE IS NEVER SHADED. A pixel on the silhouette is shared with
