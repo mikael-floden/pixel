@@ -1,0 +1,47 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-08-21T20:37:15+00:00",
+  "id": "chess_board_004",
+  "group": "chess_boards",
+  "type": "INDOOR",
+  "rank": 173,
+  "index": 4,
+  "name": "Soulstone chess set with translucent pale pieces 004 \u00b7 lit",
+  "lights": "LIGHTS_ON",
+  "variety": "soulstone chess set with translucent pale pieces",
+  "modifier": "a little dusty, long unused",
+  "glow_concept": "a small oil lamp set at the board's edge, its glow pooling over the squares",
+  "prompt": "a chess board resting flat on the ground on its own with no table and no furniture beneath it, seen from above, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, soulstone chess set with translucent pale pieces, a little dusty, long unused, as broad across as a table top, self-emissive at night, softly radiating light: a small oil lamp set at the board's edge, its glow pooling over the squares",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 64,
+  "sprite": "chess_boards/chess_board_004/sprite.webp",
+  "placement": {
+    "world_height_m": 0.73,
+    "world_px_height": 27,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "content_box": [
+      0,
+      8,
+      64,
+      59
+    ],
+    "content_px_height": 51,
+    "canvas_render_px": 34
+  },
+  "pixellab_object_id": "d83ae586-84d5-42a1-b799-42c23d6f5a96",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)"
+}
