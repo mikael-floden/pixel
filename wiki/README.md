@@ -538,10 +538,19 @@ invented**:
   of tiles that look AMAZING if you not show them to often!"* A ground detail
   is a top judged on its OWN axis: the wall never shows, so the wall is
   irrelevant, and the picture is the game's — the tile centred in a 3×3 of the
-  ground's base group, appearing once in a while. It judges the RAW top
-  (`before`): the pair postprocess flattens every top to the clean colour,
-  which is exactly why *"we have lots of tiles that at least I have never seen
-  how the top even looks like"*. The verdict rides the tile's own key with a
+  ground's base group, appearing once in a while — composed **as the game ships
+  it**. After is the default, and the section's After/Before switch (on the
+  Details tab too) flips *every tile in every composition*, the surrounding
+  ground as well as the centre. The first cut hardcoded the raw top, reasoning
+  that the postprocess is why he had never seen these tops; the reasoning was
+  right and the default was wrong (2026-08-21: *"AFTER postprocessing should be
+  default and the switch can take you to BEFORE. That switch will then change
+  on all 3x3 tiles"*). A 3×3 with a raw centre on postprocessed neighbours is
+  two passes pretending to be one field — the lie the switch exists to prevent
+  — so one rule (`viewArt`) feeds every tile on the page, and a tile with no
+  raw generation keeps its shipped art rather than a hole. Every detail card
+  also carries **promote to base tile**, opening the same modal as a tile card.
+  The verdict rides the tile's own key with a
   `#top` suffix in the tiles feedback doc — the same convention as a monster's
   per-facet verdicts — so it is INDEPENDENT of the pair review: a tile
   rejected for its wall can still be a top-approved detail ("every nice tile
