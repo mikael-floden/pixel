@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:59:40.931Z",
+  "updated_at": "2026-08-21T19:00:57.459Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1546,7 +1546,45 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 8
+      "level": 8,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 11.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.59,
+            "ay": 23.15
+          },
+          "idle#south": {
+            "ax": -0.38,
+            "ay": 20.99
+          },
+          "idle#south-east": {
+            "ax": 0.51,
+            "ay": 19.49
+          },
+          "idle#north-east": {
+            "ax": -0.82,
+            "ay": 21.64
+          },
+          "idle#north": {
+            "ax": 0.28,
+            "ay": 20.73
+          },
+          "idle#north-west": {
+            "ax": 0.4,
+            "ay": 20.66
+          },
+          "idle#west": {
+            "ax": 1.09,
+            "ay": 20.97
+          },
+          "idle#south-west": {
+            "ax": -0.86,
+            "ay": 19.26
+          }
+        }
+      }
     },
     "swamp_cat_2": {
       "max_hp": 20,
