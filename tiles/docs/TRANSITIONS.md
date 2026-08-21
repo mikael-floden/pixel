@@ -49,22 +49,47 @@ Three things move it, in order of effect:
 * **Smaller tiles.** `tile_size: 32` halves the zigzag to 16 px. Untested against our
   64px ground — one generation to find out.
 
-## Picking sets: bumpiness is measurable
+## Picking sets: bumpiness is measurable, and it is per DIRECTION
 
-`transition_score.py` assembles a half-plane along the map diagonal (the case the
-format handles worst, and which lands as a vertical line in screen space so the edge
-reads row by row) and reports:
+A set can be clean along one screen diagonal and ragged along another (maintainer, on
+23%/seed 4: *"looks good with no bumps in one direction, but then we have bumps in
+another direction instead"*), so a single-direction score overrates it.
+`transition_score.score_all()` assembles a half-plane along each of the four straight
+boundaries the lattice can carry — `screen-vertical` (lattice `r-c`), `screen-horizontal`
+(`r+c`) and the two 2:1 iso diagonals (`r`, `c`) — and ranks on the WORST.
 
 | | |
 |---|---|
-| `bump` | mean \|second difference\| of the edge's x, in px. Direction *changes* — what reads as a tooth. A straight edge and a smooth diagonal both score 0. |
-| `wander` | std of that x. How far the edge drifts off the true line. |
-| `clean` | share of scanlines where the boundary is a single flip. Islands of the other material are bumps too. |
+| `bump` | mean \|second difference\| of the edge, measured on a 9px-smoothed profile sampled every 16px. Direction *changes* at CELL scale — the tooth. |
+| `grain` | what the smoothing removed: pixel-level raggedness. This is the organic hand-drawn quality, so it is reported and NOT penalised. |
+| `wander` | how far the edge drifts off the true line. |
+| `clean` | share of 1px slices where the boundary is a single crossing. Islands of the other material are bumps too. |
 
-Rank by `bump`, tie-break on `clean`. Over the eleven grass/soil sets this reproduces
-the maintainer's own pick — 14%/seed 4 scores 1.37, the set he chose by eye as the one
-with "no bumps", against 45.8 for the worst. That agreement is what licenses running
-the scorer unattended: **generate several seeds per pair, score, keep the best.**
+**The two scales must be separated or the metric inverts.** Measuring second differences
+at 1px ranks the best-looking set WORST, because a good set has lots of fine grain.
+**The map's own diamond silhouette must be excluded** — it is a material boundary that
+runs straight through the middle of the picture, and it inverted the ranking too until
+`half_plane_dir` started marking interior cells.
 
-Amplitude alone does not predict it (14%/seed 4 and 14%/seed 5 are the same amplitude
-and score 1.37 and 16.5). The seed is the lever; buy seeds, not amplitudes.
+Ranked this way over the eleven grass/soil sets, the top two are the two the maintainer
+picked out by eye. Worst-direction bump: 8.4 (23%/seed 4), 13.0 (14%/seed 4), up to 40.2
+for the worst. **Amplitude does not predict it** — 14%/seed 4 and 14%/seed 5 share an
+amplitude and score 13.0 and 36.0. The seed is the lever: buy seeds, not amplitudes.
+
+`screen-vertical` is the weak axis for 9 of the 11 sets, by 3-5x. That is the boundary
+running down the map diagonal, and it is where every tooth the maintainer crossed out
+was.
+
+## Mixing: two sets, not eleven
+
+Fitting variants to the curve helps only from a SMALL pool. Measured on the worst
+direction: best single set 8.4, fitted over the best two 8.4 (and screen-vertical
+improves 7.5 -> 4.6), fitted over the best three 15.0, over all eleven 16.5.
+
+Every set crosses each tile edge at its midpoint, so any two join — but with different
+slopes, which puts a kink at every edge. Mixing therefore buys irregularity at the cost
+of smoothness: right for a coastline, wrong for a road. **Default to one set per pair,
+with a second blended in only where ragged is wanted.**
+
+So the buying rule is: generate several seeds per pair, score all four directions, keep
+the best two. At $0.079 a set, 8 seeds across 105 pairs is $66 to choose from.

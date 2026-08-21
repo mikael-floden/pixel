@@ -109,3 +109,118 @@ def masks_of(tiles):
                      < _np.abs(a[..., :3] - a0[..., :3]).sum(2))
         alphas.append(a[..., 3] > 0)
     return masks, alphas
+
+
+# ---------------------------------------------------------------- all directions
+# A set can be clean along one screen diagonal and ragged along the other
+# (maintainer, on 23%/seed 4: "looks good with no bumps in one direction, but then we
+# have bumps in another direction instead"), so a single-direction score overrates it.
+# Rank on the WORST of the four straight boundaries the lattice can carry.
+#
+#   (nr, nc) is the lattice line nr*r + nc*c = k. Under x = (c-r)*32, y = (r+c)*14 it
+#   maps to A*x + B*y = k with A = (nc-nr)/64, B = (nr+nc)/28, so:
+#     (1,-1) vertical on screen   (1,1) horizontal   (1,0) and (0,1) the two 2:1 iso
+#   diagonals. Those four are every direction a straight boundary can actually take.
+DIRECTIONS = {"screen-vertical": (1, -1), "screen-horizontal": (1, 1),
+              "iso-down-right": (1, 0), "iso-down-left": (0, 1)}
+
+
+def half_plane_dir(masks, alphas, nr, nc, R=26, C=26, k=None, margin=4):
+    """`inner` marks pixels painted by cells with `margin` cells of map on every side.
+    Without it the map's own diamond silhouette is a material boundary too, and it runs
+    straight through the middle of the picture - it polluted the profile badly enough
+    to invert the ranking."""
+    W = (R + C) * HALF_W + 64
+    H = (R + C) * HALF_H + 46
+    field = np.zeros((H, W), np.int8)
+    seen = np.zeros((H, W), bool)
+    inner = np.zeros((H, W), bool)
+    if k is None:
+        k = (nr * R + nc * C) / 2.0
+    G = np.array([[1 if (nr * r + nc * c) > k else 0 for c in range(C + 1)]
+                  for r in range(R + 1)])
+    ox = R * HALF_W
+    for r, c in sorted(((r, c) for r in range(R) for c in range(C)),
+                       key=lambda t: (t[0] + t[1], t[0])):
+        i = 8 * G[r, c] + 4 * G[r, c + 1] + 2 * G[r + 1, c] + 1 * G[r + 1, c + 1]
+        x, y = ox + (c - r) * HALF_W, (r + c) * HALF_H
+        sub = field[y:y + 46, x:x + 64]
+        al = alphas[i][:sub.shape[0], :sub.shape[1]]
+        sub[...] = np.where(al, masks[i][:sub.shape[0], :sub.shape[1]], sub)
+        sv = seen[y:y + 46, x:x + 64]
+        sv[...] = sv | al
+        if margin <= r < R - margin and margin <= c < C - margin:
+            iv = inner[y:y + 46, x:x + 64]
+            iv[...] = iv | al
+    return field, seen, inner, k, ox
+
+
+def profile(field, inner, nr, nc, k, ox):
+    """The boundary's offset from the ideal straight line, sampled along it."""
+    core = inner.copy()
+    for _ in range(2):
+        core[1:] &= core[:-1]; core[:-1] &= core[1:]
+        core[:, 1:] &= core[:, :-1]; core[:, :-1] &= core[:, 1:]
+    b = np.zeros(field.shape, bool)
+    b[:, :-1] |= field[:, :-1] != field[:, 1:]
+    b[:-1] |= field[:-1] != field[1:]
+    b &= core
+    by, bx = np.nonzero(b)
+    if len(bx) < 200:
+        return None, None
+    A = (nc - nr) / (2.0 * HALF_W)
+    B = (nr + nc) / (2.0 * HALF_H)
+    n = np.hypot(A, B)
+    d = (A * (bx - ox) + B * by - k) / n           # perpendicular offset, px
+    t = (-B * (bx - ox) + A * by) / n              # position along the line, px
+    return t, d
+
+
+def score_dir(masks, alphas, nr, nc, R=26, C=26):
+    f, s, inner, k, ox = half_plane_dir(masks, alphas, nr, nc, R=R, C=C)
+    t, d = profile(f, inner, nr, nc, k, ox)
+    if t is None:
+        return {"bump": float("inf"), "wander": float("inf"), "clean": 0.0,
+                "grain": 0.0}
+    lo, hi = int(np.floor(t.min())), int(np.ceil(t.max()))
+    idx = np.clip((t - lo).astype(int), 0, hi - lo)
+    n = np.bincount(idx, minlength=hi - lo + 1)
+    tot = np.bincount(idx, weights=d, minlength=hi - lo + 1)
+    ok = n > 0
+    if ok.sum() < 60:
+        return {"bump": float("inf"), "wander": float("inf"), "clean": 0.0,
+                "grain": 0.0}
+    prof = tot[ok] / n[ok]
+    # a single clean crossing leaves 1-3 boundary pixels in a 1px slice; more than
+    # that means the edge frayed or the set strewed islands
+    clean = float((n[ok] <= 3).mean())
+
+    # TWO SCALES, AND ONLY ONE OF THEM IS A FAULT. Pixel-level raggedness is the
+    # organic grain that makes an edge look hand-drawn; the tooth the maintainer
+    # crossed out is a cell-scale feature, wavelength 32-64px. Measuring second
+    # differences at 1px therefore ranks the best-looking set worst - it did, and it
+    # disagreed with his pick until this split went in. So smooth to kill the grain,
+    # then look for direction changes over a HALF-CELL stride.
+    w = 9
+    ker = np.ones(w) / w
+    sm = np.convolve(prof, ker, mode="valid")
+    step = HALF_W // 2                                  # 16px: half a half-cell
+    if len(sm) < step * 3 + 1:
+        return {"bump": float("inf"), "wander": float("inf"), "clean": clean,
+                "grain": 0.0}
+    coarse = sm[::step]
+    return {"bump": float(np.abs(np.diff(coarse, 2)).mean()),
+            "wander": float(sm.std()),
+            "grain": float((prof[w // 2:w // 2 + len(sm)] - sm).std()),
+            "clean": clean}
+
+
+def score_all(masks, alphas, R=26, C=26):
+    per = {name: score_dir(masks, alphas, nr, nc, R=R, C=C)
+           for name, (nr, nc) in DIRECTIONS.items()}
+    worst = max(per.values(), key=lambda s: s["bump"])
+    return {"per_direction": per, "bump": worst["bump"],
+            "wander": max(s["wander"] for s in per.values()),
+            "grain": float(np.mean([s.get("grain", 0.0) for s in per.values()])),
+            "clean": min(s["clean"] for s in per.values()),
+            "worst_direction": max(per, key=lambda n: per[n]["bump"])}
