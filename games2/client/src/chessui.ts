@@ -98,11 +98,13 @@ function ensureStyle() {
     {opacity:1}
   .ml-chess .die.blank i{opacity:0}
   .ml-chess .die-q{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--muted,#706b5f)}
-  .ml-chess .die-hand{width:97px;height:97px;background:url(/chess/dice_throw.webp) 0 0 no-repeat;
-    background-size:873px 97px;image-rendering:pixelated;
-    animation:mlDiceHand 1.35s steps(9) infinite;animation-play-state:paused}
-  .ml-chess .die-hand.shaking{animation-play-state:running}
-  @keyframes mlDiceHand{to{background-position-x:-873px}}
+  .ml-chess .die-hand{width:97px;height:97px;background:url(/chess/dice_throw_6.webp) 0 0 no-repeat;
+    background-size:873px 97px;image-rendering:pixelated;transform-origin:50% 60%}
+  .ml-chess .die-hand.one{background-image:url(/chess/dice_throw_1.webp)}
+  .ml-chess .die-hand.shaking{animation:mlDiceShake 1.2s steps(8) infinite}
+  @keyframes mlDiceShake{to{background-position-x:-776px}}
+  .ml-chess .die-hand.landed{background-position-x:-776px;animation:none;
+    transform:scale(1.22);transition:transform .18s cubic-bezier(.2,2.2,.4,1)}
   .ml-chess .verdict{text-align:center;padding:8px 0 2px}
   .ml-chess .verdict b{font-size:20px}
   .ml-chess .verdict .why{color:var(--muted,#706b5f);font-size:13px;margin-top:2px}
@@ -213,7 +215,6 @@ export class ChessDialog {
           <div class="dice-row">
             <div>
               <div class="die-hand" id="ml-die-hand"></div>
-              <div class="die blank" data-v="0" id="ml-die-me" style="display:none">${"<i></i>".repeat(9)}</div>
               <div style="text-align:center;font-size:12px;margin-top:4px">You</div>
             </div>
             <div>
@@ -233,18 +234,24 @@ export class ChessDialog {
         const btn = e.currentTarget as HTMLButtonElement;
         btn.disabled = true;
         (c.querySelector("#ml-die-hand") as HTMLElement).classList.add("shaking");
+        (c.querySelector("#ml-die-hand") as HTMLElement).classList.remove("landed");
         this.throwRevealAt = Date.now() + 1900;
         this.api.send("chess.dice", { m: this.m.id });
         setTimeout(() => this.render(), 1950);
       });
     }
-    const meEl = c.querySelector("#ml-die-me") as HTMLElement;
+    const hand = c.querySelector("#ml-die-hand") as HTMLElement;
     const opEl = c.querySelector("#ml-die-opp") as HTMLElement;
-    if (mine > 0 && Date.now() >= this.throwRevealAt && meEl.dataset.v !== String(mine)) {
-      (c.querySelector("#ml-die-hand") as HTMLElement).style.display = "none";
-      meEl.style.display = "";
-      meEl.classList.remove("blank");
-      meEl.dataset.v = String(mine);
+    // The strip is chosen by the pre-rolled value the moment it syncs in —
+    // winner's hand throws the 6, loser's the 1 (server canon). Both strips
+    // share the same fist frames, so this swap mid-shake is invisible.
+    if (mine > 0) hand.classList.toggle("one", mine === 1);
+    if (mine > 0 && Date.now() >= this.throwRevealAt && !hand.classList.contains("landed")) {
+      // PAUSE ON THE LAST FRAME AND AMPLIFY (maintainer: the player must
+      // believe they threw this — the 6/1 IS the reason they got their
+      // colour). The landed die stays on screen through the linger.
+      hand.classList.remove("shaking");
+      hand.classList.add("landed");
       (c.querySelector("#ml-die-throw") as HTMLElement).style.visibility = "hidden";
       (c.querySelector("#ml-die-hint") as HTMLElement).textContent = `Waiting for ${this.api.oppName}…`;
     }

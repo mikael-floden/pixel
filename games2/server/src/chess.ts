@@ -147,14 +147,14 @@ export class ChessManager {
     m.result = ""; m.reason = "";
     const seed = (this.now() ^ (this.nextId * 2654435761)) >>> 0;
     const l: Live = { match: m, st: chessInitial(), reps: new Map(), seed };
-    // Pre-rolled, never equal: reroll the pair until they differ, so the dice
-    // phase cannot draw and white is decided the moment the match exists.
-    let a = 0, bb = 0;
-    let x = seed || 1;
-    const rnd = () => ((x = (x * 48271) % 2147483647) % 6) + 1;
-    do { a = rnd(); bb = rnd(); } while (a === bb);
-    (l as Live & { rolledA: number; rolledB: number }).rolledA = a;
-    (l as Live & { rolledA: number; rolledB: number }).rolledB = bb;
+    // Pre-rolled and CANON: the winner always throws a 6, the loser a 1
+    // (maintainer 2026-08-22) — the two hand-throw animations END on exactly
+    // those faces, so the player watches "their" throw land on the number
+    // that decided their colour. A seeded coin picks the winner; it can
+    // never draw by construction.
+    const winnerA = ((seed >>> 8) & 1) === 0;
+    (l as Live & { rolledA: number; rolledB: number }).rolledA = winnerA ? 6 : 1;
+    (l as Live & { rolledA: number; rolledB: number }).rolledB = winnerA ? 1 : 6;
     this.live.set(m.id, l);
     this.state.chessMatches.set(m.id, m);
     b.matchId = m.id; b.waitingSid = "";

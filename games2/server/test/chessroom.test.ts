@@ -74,7 +74,9 @@ test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async () =>
   a.send("chess.dice", { m: mid });
   b.send("chess.dice", { m: mid });
   await waitFor(() => m().phase === "play");
-  assert.ok(m().diceA >= 1 && m().diceB >= 1 && m().diceA !== m().diceB, "pre-rolled, never equal");
+  // Canon (maintainer 2026-08-22): winner throws 6, loser 1 — the two hand
+  // animations end on exactly those faces.
+  assert.ok([m().diceA, m().diceB].sort().join(",") === "1,6", "dice are always {6,1}");
   const whiteRoom: AnyRoom = m().whiteSid === a.sessionId ? a : b;
   const blackRoom: AnyRoom = whiteRoom === a ? b : a;
   assert.equal(m().turnStart, 0, "clock not running before white's first move");

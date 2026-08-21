@@ -1167,8 +1167,12 @@ theme, drop-dialog family: uiLock freezes movement while open).
   files per step, sliders/kings one — a shared step-guard silently dropped
   every 2-file knight move and only perft(3) caught it (startpos knight moves
   are all 1-file, so perft(1)/(2) pass with the bug).
-- FLOW: pre-rolled unequal dice at match creation (the throw is theater that
-  lands on the server's number; it cannot draw) -> higher die is White -> 10
+- FLOW: pre-rolled dice at match creation, CANON {6,1}: the winner always
+  throws 6, the loser 1 (maintainer) — the two hand-throw strips
+  (client/public/chess/dice_throw_6/1.webp, his art) END on those faces, pause
+  there and amplify, so the player believes their own throw decided the
+  colour. Frame 0 is the pre-throw idle; the shake loops the 8 hand frames
+  only. It cannot draw -> higher die is White -> 10
   min/player, the clock starts at WHITE'S FIRST MOVE (`turnStart` 0 until
   then; banks settle at move receipt; a 1s sweep flags timeouts and exists
   only while matches live). Resign = two-step confirm; walking >3 cells away
