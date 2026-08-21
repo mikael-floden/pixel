@@ -122,6 +122,18 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
     edge[:-1] |= (isb[:-1] != isb[1:])
     edge &= alpha
     collar = _grow(edge, band) & alpha
+    # FEATHER, DON'T STOP. A hard collar edge is itself a visible line: where a mostly
+    # sand tile has its whole surface inside the collar, it is shaded edge to edge
+    # while the pure tile beside it is flat, and the eye reads the tile's own diamond
+    # outline a cell in from the road. Weight 1 at the material boundary falling to 0
+    # at `band`, so the shading dissolves into the flat fill instead of ending.
+    w = np.zeros(alpha.shape, float)
+    reach = edge.copy()
+    for k in range(band):
+        nxt = _grow(reach, 1) & alpha
+        w[nxt & ~reach] = 1.0 - (k + 1) / float(band + 1)
+        reach = nxt
+    w[edge] = 1.0
     out = a.copy()
     for owned, hexv in ((alpha & ~isb, hex_a), (alpha & isb, hex_b)):
         flat = owned & ~collar
@@ -129,9 +141,17 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
             out[..., :3][flat] = _ps._hex(hexv)
         near = owned & collar
         if near.any():
-            px = _ps.substitute(a, near, hexv, spread=spread, ramp=ramp)
+            # RECENTRE AGAINST THE WHOLE MATERIAL, WRITE ONLY THE COLLAR. substitute()
+            # lands the region's MEAN on the palette colour, so running it on the
+            # collar alone centres a different population than the flat fill outside
+            # it - and where the collar covered most of a cell's sand, the mismatch
+            # drew a faint diamond outline one tile in from the edge. Computed over
+            # `owned` the two agree by construction.
+            px = _ps.substitute(a, owned, hexv, spread=spread, ramp=ramp)
             if px is not None:
-                out[..., :3][near] = px
+                sel = collar[owned]
+                ww = w[near][:, None]
+                out[..., :3][near] = px[sel] * ww + _ps._hex(hexv)[None, :] * (1 - ww)
     out[..., 3] = np.where(alpha, 255, 0)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
