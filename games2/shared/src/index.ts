@@ -274,13 +274,49 @@ export function shadowScreenEllipse(rx: number, ry: number, dir: string): { p: n
   const Q = Math.hypot(E, H), R = Math.hypot(F, G);
   return { p: Q + R, q: Math.abs(Q - R), theta: (Math.atan2(G, F) + Math.atan2(H, E)) / 2 };
 }
+// THE ELLIPSE→CIRCLE REDUCTION, STATED HONESTLY. The drawn shadow is an
+// ellipse that turns with the facing; the sim is circles only (separationPush,
+// monsterDodge, attackRange, roam spacing and seeding all take one scalar r,
+// and nothing in WorldRoom is direction-aware). So "the size will be the
+// monsters hit box" is served by ONE circle: the mean of the two GROUND
+// semi-axes — rx across, ry/K along (K unsquashes the iso view, so both terms
+// are in the same px≈wu space the art-measured manifest radius already uses:
+// tuned vs manifest measures 16.4/17 forest_poring, 27.0/27 diablo_2,
+// 13.3/10 diablo, 28.2/23 crystal_horn).
+// The mean, not max/min/√(area), for two reasons. It is ROTATION-INVARIANT —
+// the mean of the principal semi-axes does not change when the ellipse turns,
+// so a monster cannot grow a hit box by facing east (max or min of the SCREEN
+// radii would). And it keeps the shipped balance: attackRange(rA,rB)=rA+rB+16
+// feeds both the monster's reach and the player's swing, so every wu here is
+// combat reach. Measured drift vs the art radii for the four tuned kinds:
+// diablo_2 −0.1%, forest_poring −1.4%, diablo +9.4%, crystal_horn +10.9%.
+// That is the maintainer's own instruction ("the size will be the hit box"),
+// not a regression — but it IS real, it is unbounded going forward, and the
+// clamp below tops out at 80 where the art path capped at 60 (measured art
+// range 7…59). Chase/escape/aggro are untouched: aggro_radius_wu,
+// PROVOKE_RADIUS_WU, ESCAPE_RADIUS_WU, MAX_CHASE_WU and the leash are all
+// centre-to-centre and radius-independent by design.
+// REJECTED: the equal-area circle √(rx·ry/K) — indistinguishable on all four
+// tuned records (all are near-circles on the ground: rx vs ry/K is 25.5/30.9,
+// 13.8/12.8, 27.3/26.7, 16.3/16.5) and it would only diverge for a long-thin
+// shadow nobody has tuned yet, so it buys nothing and moves a live number.
+// REJECTED: an ellipse hit box in the sim — every consumer would need the
+// facing, and separation/dodge/reach would all stop commuting.
+// CROSS-DOMAIN: wiki/tools/shadow-mirror.mts imports this function BY PATH and
+// wiki/tools/check-shadow.mjs gates on its output — a signature or formula
+// change here breaks a wiki gate. Tell the wiki agent first.
+export const SHADOW_BODY_R_MIN = 3;
+export const SHADOW_BODY_R_MAX = 80;
 /** "The size will be the monsters hit box": the body radius (wu) the server
- *  fights/separates/targets with, from the tuned ellipse — the mean of the
- *  GROUND semi-axes (rx across, ry/K along), because the sim works in circles.
- *  Clamped to the range the art-measured radii live in. */
+ *  fights/separates/targets with, reduced from the tuned ellipse as above.
+ *  Never NaN — junk collapses to the floor, so a malformed record can only
+ *  ever make a monster small, never a map-wide one (readMonsterShadow already
+ *  rejects non-finite radii; this is the second lock on the same door). */
 export function shadowBodyRadius(rx: number, ry: number): number {
   const K = ISO_DY / ISO_DX;
-  return Math.min(80, Math.max(3, (rx + ry / K) / 2));
+  const r = (rx + ry / K) / 2;
+  if (!isFinite(r)) return SHADOW_BODY_R_MIN;
+  return Math.min(SHADOW_BODY_R_MAX, Math.max(SHADOW_BODY_R_MIN, r));
 }
 
 // Screen-speed calibration: the returned world vector is scaled so the

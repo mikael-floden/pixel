@@ -349,13 +349,18 @@ function applyTunedOrigin(
   dir: string,
   artBottom?: number,
   hoverPx?: number,
-): void {
+): "facet" | "idle" | "base" | "default" {
   const off = shadowAnchorOf(rec, state, dir);
   if (off) {
     sprite.setOrigin(0.5 + off.ax / sprite.width, 0.5 + off.ay / sprite.height);
-  } else {
-    sprite.setOrigin(0.5, (artBottom ?? 0.85) + (hoverPx ?? 0) / sprite.height);
+    return rec.offsets?.[`${state}#${dir}`]
+      ? "facet"
+      : rec.offsets?.[`idle#${dir}`]
+        ? "idle"
+        : "base";
   }
+  sprite.setOrigin(0.5, (artBottom ?? 0.85) + (hoverPx ?? 0) / sprite.height);
+  return "default";
 }
 // CAMERA GATE for the monster body pipeline. A world ships ~160 monsters
 // (the_island2) and EVERY one of them used to run the full shared body
@@ -880,6 +885,20 @@ interface MonsterAvatar {
   // the ellipse rotates with the facing, and the body radius derives from its
   // size. undefined = legacy per-direction measured anchors, unchanged.
   tuned?: MonsterShadow;
+  // The CANONICAL facet state the tuned anchor is resolved against — one of
+  // idle/walk/attack/angry/die, the names the wiki's editor writes as
+  // `offsets["<state>#<dir>"]`. NEVER the manifest-resolved clip alias
+  // (monsterWalkKey can answer "jump"): the wiki keys by the canonical state,
+  // so looking up by the alias would silently fall through to idle#<dir>.
+  // playMonsterAnim records it; the per-frame re-anchor and the live-tuning
+  // handler read it back so both re-resolve the SAME facet.
+  shState?: string;
+  // Which link of the chain supplied the anchor in force: the facet's own
+  // offset, the direction's idle offset, the v1 base ax/ay, or the art
+  // default. QA only (__ml.monsterInfo) — a gate that cannot see WHY an
+  // anchor was chosen cannot tell "tuned" from "fell back".
+  shSrc?: "facet" | "idle" | "base" | "default";
+  artBottom?: number; // manifest foot line — the untuned default anchor fraction
   radius: number; // physical body radius (wu) — the player's input-dodge clearance
   hoverPx: number; // intentional levitation (winged flyers) above the ground anchor
   pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
@@ -2980,9 +2999,29 @@ export class WorldScene extends Phaser.Scene {
             x: Math.round(mv.shadow.x),
             y: Math.round(mv.shadow.y),
             depth: +mv.shadow.depth.toFixed(1),
+            // w/h are the CULL extents (for a tuned monster, the worst case
+            // over all 8 facings) — NOT what is drawn. dw/dh/rot below are.
             w: mv.shadowW,
             h: mv.shadowH,
+            dw: +mv.shadow.displayWidth.toFixed(3),
+            dh: +mv.shadow.displayHeight.toFixed(3),
+            rot: +mv.shadow.rotation.toFixed(6),
+            alpha: +mv.shadow.alpha.toFixed(3),
           },
+          // THE TUNED SHADOW IN FORCE (wiki editor → live/tuning/monsters).
+          // null = this kind is on the legacy art-measured contract. `state`
+          // is the canonical facet the anchor was resolved for and `src` which
+          // link of the chain supplied it — without these a gate can only see
+          // THAT an origin moved, never whether the tuned record governed it.
+          tuned: mv.tuned
+            ? {
+                rx: mv.tuned.rx,
+                ry: mv.tuned.ry,
+                state: mv.shState ?? null,
+                src: mv.shSrc ?? null,
+                offsets: mv.tuned.offsets ? Object.keys(mv.tuned.offsets).length : 0,
+              }
+            : null,
           originX: +mv.sprite.originX.toFixed(3),
           originY: +mv.sprite.originY.toFixed(3),
           // The measured ground contract for the CURRENT facing (per-dir feet
@@ -3514,18 +3553,37 @@ export class WorldScene extends Phaser.Scene {
         const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
         mv.tuned = t;
         if (t) {
-          this.applyTunedOriginFor(mv, "idle", mv.dispDir);
+          // Re-anchor the facet the monster is ACTUALLY playing, not a
+          // hardcoded "idle" — a monster mid-swing would otherwise sit on the
+          // wrong offset until its next clip change (and a CULLED one until
+          // it re-enters the view).
+          this.applyTunedOriginFor(mv, mv.shState ?? "idle", mv.dispDir);
           mv.shadowW = Math.ceil(2 * Math.max(t.rx, t.ry / K));
           mv.shadowH = Math.ceil(2 * Math.max(t.ry, t.rx * K));
           mv.radius = shadowBodyRadius(t.rx, t.ry);
+          // …and the DRAWN ellipse right now. The per-frame draw only runs for
+          // ACTIVE monsters, so without this a culled body keeps its old
+          // ellipse — invisible, but every probe and gate reads it as truth.
+          const e = shadowScreenEllipse(t.rx, t.ry, mv.dispDir);
+          mv.shadow.setDisplaySize(
+            e.p * 2 * MONSTER_SHADOW_SPREAD,
+            e.q * 2 * MONSTER_SHADOW_SPREAD,
+          );
+          mv.shadow.setRotation(e.theta);
         } else {
           // Tuning dropped: back to the legacy measured contract, rotation off.
+          mv.shState = undefined;
+          mv.shSrc = undefined;
           const g = mv.ground?.[mv.dispDir];
           if (g) mv.sprite.setOrigin(g.cx, g.f);
           mv.shadow.setRotation(0);
           mv.shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
           mv.shadowH = def?.shadowH ?? Math.max(6, Math.round(mv.shadowW * 0.385));
           mv.radius = def?.radius ?? DEFAULT_MONSTER_RADIUS;
+          mv.shadow.setDisplaySize(
+            mv.shadowW * MONSTER_SHADOW_SPREAD,
+            mv.shadowH * MONSTER_SHADOW_SPREAD,
+          );
         }
       });
     });
@@ -3593,9 +3651,26 @@ export class WorldScene extends Phaser.Scene {
    * Chain: facet → same direction's idle → v1 base → the art-derived default
    * (the measured foot line, the same fallback an untuned monster uses). */
   private applyTunedOriginFor(mv: MonsterAvatar, state: string, dir: string) {
+    mv.shState = state;
     if (!mv.tuned || mv.sprite.width <= 0) return;
-    const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
-    applyTunedOrigin(mv.sprite, mv.tuned, state, dir, def?.artBottom, def?.hoverPx);
+    // No manifest scan here: this runs per monster PER FRAME (the re-anchor
+    // after playMonsterAnim), and a 57-entry find × 160 monsters × 60fps is
+    // real cost. The two fields it needs are mirrored onto the avatar.
+    mv.shSrc = applyTunedOrigin(mv.sprite, mv.tuned, state, dir, mv.artBottom, mv.hoverPx);
+  }
+
+  /** The tuned ellipse for a facing, drawn: ONE size for the whole monster,
+   *  turned on the GROUND with the facing, centred on the monster's position.
+   *  (Maintainer 2026-08-20: one shadow size, rotated by direction. So it must
+   *  NOT breathe with the animation's `air[]` the way a legacy nadir shadow
+   *  does — a tuned ellipse is a decision, not a measurement.) */
+  private placeTunedShadow(mv: MonsterAvatar, targetElev: number) {
+    const e = shadowScreenEllipse(mv.tuned!.rx, mv.tuned!.ry, mv.dispDir);
+    this.placeBodyShadow(
+      mv, targetElev, 0,
+      e.p * 2 * MONSTER_SHADOW_SPREAD, e.q * 2 * MONSTER_SHADOW_SPREAD,
+    );
+    mv.shadow.setRotation(e.theta);
   }
 
   private addMonster(id: string, m: any) {
@@ -3676,6 +3751,10 @@ export class WorldScene extends Phaser.Scene {
       // fights with (shared shadowBodyRadius).
       radius: tuned ? shadowBodyRadius(tuned.rx, tuned.ry) : (def?.radius ?? DEFAULT_MONSTER_RADIUS),
       hoverPx: def?.hoverPx ?? 0,
+      // Mirrored off the manifest so applyTunedOriginFor can run per frame
+      // without a 57-entry scan (see MonsterAvatar.shState).
+      artBottom: def?.artBottom,
+      shState: tuned ? "idle" : undefined,
       walkKey: walk,
       attackKey: def ? resolveMonsterAnim(def, "attack") : undefined,
       angryKey: def ? resolveMonsterAnim(def, "angry") : undefined,
@@ -3833,9 +3912,34 @@ export class WorldScene extends Phaser.Scene {
     for (const [id, mv] of this.monsters) {
       if (mv.culled || mv.mstate === "die") continue;
       const sp = mv.sprite;
-      const halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
+      let halfW = Math.max(MONSTER_TAP_MIN_HALF_W, sp.displayWidth * 0.5 + 6);
       let top = sp.y - sp.displayHeight * sp.originY - 8;
-      const bottom = sp.y + 10;
+      let bottom = sp.y + 10;
+      if (mv.tuned) {
+        // THE TAP BOX FOLLOWS THE TUNED SHADOW. Two things change under a
+        // tuned anchor: the shadow he sized IS the hit box, and the art now
+        // hangs BELOW the anchor (the legacy +10 assumed feet). Both are
+        // UNIONED into the box — never subtracted: the finger-sized pads
+        // (MONSTER_TAP_MIN_*) still win wherever they are bigger, because
+        // missing small monsters is the complaint this box exists for.
+        const p = mv.shadow.displayWidth * 0.5;
+        const q = mv.shadow.displayHeight * 0.5;
+        const cosT = Math.cos(mv.shadow.rotation), sinT = Math.sin(mv.shadow.rotation);
+        // Axis-aligned half-extents of the ROTATED ellipse (exact, not a
+        // bounding rect of the unrotated one — a turned mammoth is wider).
+        const ex = Math.hypot(p * cosT, q * sinT);
+        const ey = Math.hypot(p * sinT, q * cosT);
+        halfW = Math.max(halfW, Math.abs(mv.shadow.x - mv.lx) + ex);
+        top = Math.min(top, mv.shadow.y - ey);
+        // THE ART'S BOTTOM, NOT THE FRAME'S. The frame is mostly transparent
+        // padding on the big kinds, and reaching to it turns empty ground into
+        // a monster tap: measured, mammoth gained 56px of pad (~3.7 cells of
+        // ground south of it engaging instead of walking), diablo_2 11px.
+        // artBounds is already cached by the scene for exactly this reason.
+        const ab = this.artBounds(sp);
+        const artLow = sp.y + (ab.y1 - sp.height * sp.originY) * (sp.displayHeight / sp.height);
+        bottom = Math.max(bottom, mv.shadow.y + ey, artLow);
+      }
       // A sprigling-sized body still gets a full fingertip of height.
       if (bottom - top < MONSTER_TAP_MIN_H) top = bottom - MONSTER_TAP_MIN_H;
       if (wx < mv.lx - halfW || wx > mv.lx + halfW || wy < top || wy > bottom) continue;
@@ -5246,8 +5350,11 @@ export class WorldScene extends Phaser.Scene {
       const dieAnim = mv.dieKey ? monsterAnimKey(mv.kind, mv.dieKey, d) : null;
       if (dieAnim && this.anims.exists(dieAnim)) {
         mv.combatClip = true;
-        this.applyTunedOriginFor(mv, mv.dieKey ?? "die", d);
         if (mv.sprite.anims.getName() !== dieAnim) mv.sprite.play(dieAnim);
+        // AFTER play(): the origin is a fraction of the CURRENT frame's size,
+        // and a state's strip may be framed at other dimensions. Canonical
+        // state name ("die", never mv.dieKey) — see MonsterAvatar.shState.
+        this.applyTunedOriginFor(mv, "die", d);
         return;
       }
       // No die art: freeze on the parked contact frame (better than looping).
@@ -5264,8 +5371,8 @@ export class WorldScene extends Phaser.Scene {
         mv.lastActionSeq = actionSeq;
         if (attackAnim && this.anims.exists(attackAnim)) {
           mv.combatClip = true;
-          this.applyTunedOriginFor(mv, mv.attackKey ?? "attack", d);
           mv.sprite.play(attackAnim); // restart even mid-clip: a new swing IS a restart
+          this.applyTunedOriginFor(mv, "attack", d);
           return;
         }
       }
@@ -5278,8 +5385,8 @@ export class WorldScene extends Phaser.Scene {
       const angryAnim = mv.angryKey ? monsterAnimKey(mv.kind, mv.angryKey, d) : null;
       if (angryAnim && this.anims.exists(angryAnim)) {
         mv.combatClip = true;
-        this.applyTunedOriginFor(mv, mv.angryKey ?? "angry", d);
         if (cur !== angryAnim || !mv.sprite.anims.isPlaying) mv.sprite.play(angryAnim, true);
+        this.applyTunedOriginFor(mv, "angry", d);
         return;
       }
       // No angry art (6 kinds): fall through to the stopped walk-park below.
@@ -6634,12 +6741,22 @@ export class WorldScene extends Phaser.Scene {
         const sp = mv.sprite;
         const halfW =
           Math.max(sp.displayWidth, mv.shadowW * MONSTER_SHADOW_SPREAD) * 0.5;
-        const ay = g.y - targetElev - mv.hoverPx; // where it WILL be drawn
+        // A TUNED anchor is not the feet: it is the shadow centre, so the art
+        // hangs BELOW it too (crystal_horn: 61px of a 97px frame) and the
+        // sprite is NOT lifted by hoverPx (the tuned ay contains it). Untuned
+        // bodies keep the exact legacy box — `up` stays the whole frame and
+        // `down` stays shadowH, which for every shipped kind already exceeds
+        // the art below a feet anchor, so this is byte-identical for them.
+        const ay = g.y - targetElev - (mv.tuned ? 0 : mv.hoverPx); // where it WILL be drawn
+        const up = mv.tuned ? sp.displayHeight * sp.originY : sp.displayHeight;
+        const down = mv.tuned
+          ? Math.max(mv.shadowH, sp.displayHeight * (1 - sp.originY))
+          : mv.shadowH;
         const onScreen =
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
-          ay + mv.shadowH >= vT &&
-          ay - sp.displayHeight <= vB &&
+          ay + down >= vT &&
+          ay - up <= vB &&
           !this.aboveCut(m.elev ?? g.lvl, m.x, m.y);
         // The indoor test is ONLY about height. A monster outside my room but
         // at my level is drawn and lit like the ground under it — that is the
@@ -6741,6 +6858,14 @@ export class WorldScene extends Phaser.Scene {
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.playMonsterAnim(mv, !!m.moving, m.dir, m.mstate ?? "roam", m.actionSeq ?? 0);
+        // RE-ANCHOR AFTER the clip is resolved. The tuned origin is a fraction
+        // of the CURRENT frame's dimensions, and playMonsterAnim's combat
+        // branches can return having played a strip framed at other dims (and
+        // an attack re-anchors only on a new actionSeq, so a stale origin
+        // would ride the whole swing). Cheap: one lookup + setOrigin, no
+        // manifest scan. Untuned monsters keep their per-direction measured
+        // anchor + per-frame shift[] re-pin below, untouched.
+        if (mv.tuned) this.applyTunedOriginFor(mv, mv.shState ?? "idle", mv.dispDir);
         // …and the per-state semantic events the wiki's sound card assigns to
         // (silent until it does). AFTER playMonsterAnim, so the walk cadence
         // reads the clip that is actually running this frame.
@@ -6782,7 +6907,19 @@ export class WorldScene extends Phaser.Scene {
         // Damage float + blood + hp bar (RO: you SEE the number and the wound).
         if (mv.lastHp !== undefined && m.hp < mv.lastHp) {
           this.spawnDamageFloat(mv.lx, mv.sprite.y - mv.sprite.displayHeight * mv.sprite.originY, `${mv.lastHp - m.hp}`, 0xffe08a);
-          this.spawnBloodFx(mv.lx, mv.sprite.y - mv.sprite.displayHeight * 0.45);
+          // Origin-relative ONLY for a tuned monster, whose anchor moved to the
+          // shadow centre. An untuned monster keeps the shipped fixed −0.45·h
+          // EXACTLY: the origin-relative form is identical only at the 0.85
+          // anchor this once assumed, and real measured anchors are
+          // ground[dir].f — it moved blood by −8.7 px on saber_toothed_tiger
+          // and −16.1 px on dark_donkey, which is a visible change to shipped
+          // monsters that has nothing to do with tuned shadows.
+          this.spawnBloodFx(
+            mv.lx,
+            mv.tuned
+              ? mv.sprite.y - mv.sprite.displayHeight * (mv.sprite.originY - 0.4)
+              : mv.sprite.y - mv.sprite.displayHeight * 0.45,
+          );
         }
         mv.lastHp = m.hp;
         this.updateMonsterHpBar(mv, m, id);
@@ -6792,12 +6929,14 @@ export class WorldScene extends Phaser.Scene {
           // (shared shadowScreenEllipse — same math the wiki previewed), and
           // centred exactly on the monster's position: no toe-kiss, no contact
           // heuristics. Where it sits IS what the Game Master placed.
-          const e = shadowScreenEllipse(mv.tuned.rx, mv.tuned.ry, mv.dispDir);
-          this.placeBodyShadow(
-            mv, targetElev, mv.hoverPx + airPx,
-            e.p * 2 * MONSTER_SHADOW_SPREAD, e.q * 2 * MONSTER_SHADOW_SPREAD,
-          );
-          mv.shadow.setRotation(e.theta);
+          // ONE SIZE: the animation's own `air[]` and the flyer's `hoverPx` are
+          // NOT fed to the hop shrink here. Both are baked into the tuned
+          // anchor, and a shadow that breathes with the idle cycle is not the
+          // one size he placed (measured on diablo_2: −4.6% width every idle
+          // loop, −13% on walk south; a tuned butterfly_dragon would have sat
+          // permanently 11% small and 15% faint). A real FALL still shrinks it
+          // — placeBodyShadow derives that from the drawn height itself.
+          this.placeTunedShadow(mv, targetElev);
         } else {
           // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
           // ~140px, its south one ~90 — one size can't fit both facings).

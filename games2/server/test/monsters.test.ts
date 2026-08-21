@@ -17,6 +17,7 @@ import {
   type ZoneRuntime,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
+import { monsterRadiusFor } from "../src/tuning.js";
 
 async function waitFor(cond: () => boolean, timeout = 5000): Promise<void> {
   const start = Date.now();
@@ -197,8 +198,10 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
       monsterCount: 2,
     });
     await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000);
-    // Comfort distances are RADIUS-derived (v2): read the same art-measured
-    // radii the server loads, and require each same-pad pair to keep at least
+    // Comfort distances are RADIUS-derived (v2): resolve each kind through the
+    // SAME seam the sim uses — monsterRadiusFor, i.e. the Game Master's tuned
+    // shadow where he has placed one and the art-measured manifest radius
+    // otherwise — and require each same-pad pair to keep at least
     // HALF its own comfort target (rA+rB+margin) — mid-roam crossings dip
     // below the full target briefly, but a stacked pair (the old fixed-18
     // threshold never even activated for 42wu mammoths) can't pass this.
@@ -208,14 +211,15 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
         "utf8",
       ),
     ) as { monsters: Array<{ id: string; radius?: number }> };
-    const radius = new Map(manifest.monsters.map((m) => [m.id, m.radius ?? 13]));
+    const art = new Map(manifest.monsters.map((m) => [m.id, m.radius]));
+    const radius = (kind: string) => monsterRadiusFor(kind, art.get(kind), 13);
     /** Min of (distance / pair comfort target) across every same-pad pair. */
     const worstPair = () => {
       const byZone = new Map<string, Array<{ x: number; y: number; r: number }>>();
       r1.state.monsters.forEach((m: any, id: string) => {
         const z = id.split("#")[0];
         if (!byZone.has(z)) byZone.set(z, []);
-        byZone.get(z)!.push({ x: m.x, y: m.y, r: radius.get(m.kind) ?? 13 });
+        byZone.get(z)!.push({ x: m.x, y: m.y, r: radius(m.kind) });
       });
       let worst = Infinity;
       for (const list of byZone.values())

@@ -950,6 +950,16 @@ export class WorldRoom extends Room<WorldState> {
     this.state.players.forEach((p: Player, sid: string) =>
       bodies.push({ id: `p:${sid}`, x: p.x, y: p.y, r: PLAYER_BODY_RADIUS }),
     );
+    // ONE POSITION DEFINITION. (m.x, m.y) is the monster's position, and where
+    // the Game Master has tuned a shadow that point IS the shadow centre — the
+    // client draws the ellipse there and hangs the sprite off it by the facet
+    // offset. Zone membership, the snap-back target, elevation, surface speed,
+    // the loot drop and every distance in this file read that same point;
+    // nothing in the sim uses an art-derived feet anchor. Membership stays
+    // CENTRE-only: making it radius-aware would shrink every zone polygon by
+    // each monster's body radius (edge cells would stop being spawnable/
+    // walkable), which is a world-wide change nobody asked for — a wide body's
+    // shadow may overhang the rim.
     // A push/dodge must never shove a monster off its zone polygon into the
     // snap-back teleport — validate zone membership alongside terrain.
     const inZone = (zone: ZoneRuntime, x: number, y: number) =>
@@ -1298,7 +1308,9 @@ export class WorldRoom extends Room<WorldState> {
 
       // Safety net: never let a monster leave its zone polygon. Cheap O(1)
       // membership check; the nearest-cell scan only runs for the rare
-      // offender (a body-radius slide past an edge cell).
+      // offender (a body-radius slide past an edge cell). Same position
+      // definition as everything else (see ONE POSITION DEFINITION above): the
+      // cell tested and the cell centre snapped to are both the shadow centre.
       const mc = Math.floor(m.x / CELL_WU);
       const mr = Math.floor(m.y / CELL_WU);
       if (!m.returning && !zone.cellSet.has(mc + mr * grid.width)) {

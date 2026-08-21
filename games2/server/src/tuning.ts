@@ -6,7 +6,7 @@
 // by live.ts from GitHub main with the baked copy as boot fallback, and
 // push-refreshes — so a wiki admin edit re-tunes running rooms without a
 // deploy. This resolver is the ONLY reader; keep the merge rules here.
-import { liveTuning } from "./live";
+import { liveTuning, onLiveChange } from "./live";
 import { readMonsterShadow, shadowBodyRadius, MonsterShadow } from "@nangijala/shared";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -90,23 +90,52 @@ export function monsterStatsFor(kind: string): MonsterStats {
   };
 }
 
+// Resolved shadows are memoised per kind: monsterRadiusFor runs for every
+// monster on every tick (separation snapshot, dodge, attack reach, roam
+// spacing) and readMonsterShadow allocates one object per stored offset — a
+// 20-offset record cost ~20k throwaway objects/s at 48 monsters. EVERY writer
+// of the live docs calls notifyTuning (initLive, refreshLive, /api/wiki/save),
+// so onLiveChange is a complete invalidation signal; the baked layer never
+// changes at runtime. The returned record is SHARED — treat it as read-only.
+const shadowCache = new Map<string, MonsterShadow | null>();
+onLiveChange(() => shadowCache.clear());
+
 /** The monster's ONE tuned shadow (wiki shadow editor → live/tuning/monsters
  * per-monster `shadow` field), or null — null means the game stays on its
  * legacy art-measured anchors for this kind. Same live-then-baked fallback as
  * the stats. */
 export function monsterShadowFor(kind: string): MonsterShadow | null {
+  const hit = shadowCache.get(kind);
+  if (hit !== undefined) return hit;
   type Doc = { monsters?: Record<string, unknown> };
   const live = liveTuning().monsters as Doc | undefined;
   const liveHasContent = !!live && Object.keys(live.monsters ?? {}).length > 0;
   const doc: Doc | undefined = liveHasContent ? live : ((bakedDoc() as Doc | null) ?? undefined);
-  return readMonsterShadow(doc?.monsters?.[kind]);
+  const rec = readMonsterShadow(doc?.monsters?.[kind]);
+  shadowCache.set(kind, rec);
+  return rec;
 }
 
-/** The body radius (wu) the sim uses for this kind: the tuned shadow when the
- * Game Master has placed one ("the size will be the monsters hit box"), else
- * the art-measured manifest radius the caller passes, else the default. */
+/** THE ONE SEAM between the tuned shadow and the simulation: the body radius
+ * (wu) for this kind — the tuned shadow when the Game Master has placed one
+ * ("the size will be the monsters hit box"), else the art-measured manifest
+ * radius the caller passes, else the default. Every sim consumer goes through
+ * here and none of them caches the result across a live update: seeding
+ * (WorldRoom.seedMonsters), the per-tick body snapshot that feeds
+ * separationPush AND monsterDodge, the monster's attack reach, the player's
+ * swing reach, and roam-destination spacing. A junk record cannot leak: it is
+ * rejected by readMonsterShadow (→ manifest radius) and shadowBodyRadius is
+ * NaN-proof besides.
+ * NOT radius-derived, deliberately: aggro_radius_wu, PROVOKE_RADIUS_WU,
+ * ESCAPE_RADIUS_WU, MAX_CHASE_WU and the leash box are centre-to-centre, so a
+ * shadow edit cannot move the chase/escape balance — only melee reach. */
 export function monsterRadiusFor(kind: string, manifestRadius: number | undefined, fallback: number): number {
   const sh = monsterShadowFor(kind);
   if (sh) return shadowBodyRadius(sh.rx, sh.ry);
-  return manifestRadius ?? fallback;
+  // Finite AND positive, not just `?? fallback`: a monster whose radius is NaN
+  // poisons every distance it touches (separation, dodge, reach) into silent
+  // no-ops instead of failing where you can see it.
+  return typeof manifestRadius === "number" && isFinite(manifestRadius) && manifestRadius > 0
+    ? manifestRadius
+    : fallback;
 }

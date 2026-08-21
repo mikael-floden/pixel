@@ -503,6 +503,84 @@ clip, no tint.
   0 decision changes, worst delta 8.9e-16). Isolated 1.483 → 0.0915 ms/tick.
   **Keep any new distance here squared**; if it ever hurts again the answer is
   a broad-phase, not micro-tuning.
+- **THE TUNED SHADOW OVERRIDES EVERYTHING ART-MEASURED BELOW** (maintainer
+  2026-08-20, from inside the wiki's shadow editor: "the center of the shadow
+  will be the monsters position. The size will be the monsters hit box").
+  Where the Game Master has saved one it wins; a kind without one stays on the
+  measured pipeline. It lives INSIDE the monster's entry in
+  `live/tuning/monsters.json` — `shadow: {rx, ry, offsets: {"<state>#<dir>":
+  {ax, ay}}}`, frame px at scale 1, offsets from the FRAME CENTRE — same doc
+  as `max_hp`, same live push: a wiki save re-anchors and re-radiuses running
+  rooms with no redeploy and no rejoin. `live/tuning/shadow_notes.json` is the
+  FROZEN predecessor (training data for better art defaults); the game must
+  never read it as an override table.
+  - ONE size for all 8 facings: `shadowScreenEllipse` unsquashes the tuned
+    depth, rotates on the GROUND, re-squashes. Only the diagonals show the
+    rotation SIGN — cardinals hide a mirrored matrix.
+  - The CENTRE is the position: the shadow is drawn at the authoritative
+    (x, y) and the sprite hangs off it by the facet offset
+    (`shadowAnchorOf`: `<state>#<dir>` → `idle#<dir>` → v1 base → the art
+    default). The art moves; the shadow never does.
+  - The SIZE is the hit box, through ONE seam: `monsterRadiusFor` in
+    `server/src/tuning.ts` (`shadowBodyRadius` → else the manifest radius →
+    else the default). Its consumers are seeding, the per-tick body snapshot
+    that feeds BOTH `separationPush` and `monsterDodge`, melee reach in both
+    directions, and roam-destination spacing. Never read `radii.get(kind)`
+    into a distance directly.
+  - The honest ellipse→circle reduction: the sim is circles only, so the
+    ellipse collapses to the MEAN of its GROUND semi-axes — rotation-invariant,
+    so a monster cannot grow a hit box by facing east. Measured melee-reach
+    drift vs the art radius: diablo_2 −0.1%, forest_poring −1.4%, diablo
+    +9.4%, crystal_horn +10.9% — real, and unbounded as more get tuned
+    (the clamp tops out at 80 where the art path capped at 60).
+    Chase/escape/aggro (`aggro_radius_wu`, `PROVOKE_RADIUS_WU`,
+    `ESCAPE_RADIUS_WU`, `MAX_CHASE_WU`, the leash) are centre-to-centre and
+    deliberately untouched. REJECTED: the equal-area circle (identical on
+    every tuned record so far — they are all near-circles on the ground — so
+    it only moves live numbers); an ellipse hit box in the sim (every
+    consumer would need the facing).
+  - ONE POSITION DEFINITION: zone membership, the snap-back target, elevation,
+    surface speed, loot origin and every distance read (m.x, m.y) — which IS
+    the shadow centre. Membership stays centre-only; making it radius-aware
+    would shrink every zone polygon by each monster's body.
+  - RENDER SIDE (`WorldScene`), the laws that keep the drawn shadow the one he
+    placed:
+    * ONE SIZE MEANS ONE SIZE — a tuned ellipse is fed **no** hop height
+      (`placeTunedShadow`): neither the animation's `air[]` nor a flyer's
+      `hoverPx` (already inside the tuned `ay`). Feeding them shrank and faded
+      the ellipse every idle cycle (measured diablo_2: 73.575 → 64.010 px,
+      −13%, alpha → 0.825 on walk south). A real FALL still shrinks it —
+      `placeBodyShadow` derives that from the drawn height itself.
+    * Offsets are keyed by the CANONICAL state (`idle/walk/attack/angry/die` —
+      what the wiki writes), never the manifest-resolved clip alias
+      (`monsterWalkKey` can answer "jump"); an alias would fall silently
+      through to `idle#<dir>`.
+    * The origin is applied AFTER `play()` and re-applied every frame
+      (`applyTunedOriginFor` off `mv.shState`) — it is a fraction of the
+      CURRENT frame's size, an attack only re-anchors on a new `actionSeq`,
+      and a live save must reach a monster mid-swing. Cheap because
+      `artBottom`/`hoverPx` are mirrored onto the avatar (no manifest scan).
+    * The CULL BOX and the TAP BOX must stop assuming feet: a tuned anchor is
+      mid-body (crystal_horn hangs 61 px of a 176 px frame below it) and the
+      sprite is NOT lifted by `hoverPx`. The tap box UNIONS the drawn ellipse
+      in (rotated-ellipse AABB) and never shrinks below the finger pads.
+    * `onLiveTuning` also sets the drawn `setDisplaySize`/`setRotation`: the
+      per-frame draw runs for ACTIVE monsters only, so a culled body would
+      otherwise report and re-enter on its old ellipse.
+    * KNOWN, needs the wiki/maintainer (in `coordination/games.json`): an
+      INHERITED offset ignores strip framing — diablo_2 has no `walk#*`, and
+      its walk strip is framed 16 px lower than idle on south, so it sinks
+      through its own shadow. And the editor previews a hard rim at exactly
+      p×q while the game draws the diffuse texture at
+      `MONSTER_SHADOW_SPREAD` 1.35 — measured half-max contour at 0.88 of the
+      placed rim, so what he tunes reads ~12% smaller in game.
+  - Pinned by `server/test/monstershadow.test.ts` (junk rejection, the
+    inheritance chain, the diagonal mirror sign, the clamp, the art fallback,
+    and a source check that no consumer bypasses the seam). CROSS-DOMAIN:
+    `wiki/tools/shadow-mirror.mts` imports `shadowScreenEllipse` /
+    `shadowBodyRadius` from `shared/src/index.ts` BY PATH and
+    `wiki/tools/check-shadow.mjs` gates on them — tell the wiki agent before
+    touching either signature.
 - **Art-measured shadows + anchors, PER DIRECTION** (`measureWalkArt` fully
   decodes every WALK strip). The manifest emits per (state, direction) a
   `ground` contract `{f, cx, contact, sink}` plus per-frame `shift[]`/`air[]`.
@@ -563,7 +641,8 @@ clip, no tint.
   monsters roam between captures.
 - footW = the contact-run extent; shadow `w = clamp(max(footW, bodyW·0.55)
   ·1.05, 12, 150)`, `h = max(6, 0.385·w)` → `shadowW/shadowH`, NEVER
-  frameW-scaled. Collision `radius = min(60, 0.45·shadowW)`. `stripDims`
+  frameW-scaled. Collision `radius = min(60, 0.45·shadowW)` — the FALLBACK only;
+  a tuned shadow replaces it (above). `stripDims`
   (true per-strip size from IHDR) slices every sheet — monster.json `size`
   goes stale on in-place repairs and frames bleed. `hoverPx` marks
   INTENTIONAL winged flyers (butterfly_dragon 12): sprite lifts, shadow stays
