@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # Usage in Cloud Shell:
 #   export RAW='<paste the whole cookie line from the bookmarklet>'
-#   bash run_in_cloudshell.sh
+#   nohup bash run_in_cloudshell.sh > run.log 2>&1 &
+#   tail -f run.log        # ctrl-C stops watching, NOT the run
 # RAW may be the entire document.cookie dump or a bare eyJ... token.
+# nohup matters: a phone switching apps drops the Cloud Shell session, and without
+# it the run dies with it. Detached, it keeps going and you reattach with tail.
 
-TOK=$(python3 -c "
+TOK=$(RAW="$RAW" python3 -c "
 import json,os,re,urllib.parse
 raw=os.environ.get('RAW','').strip()
 t=raw if raw.startswith('eyJ') else None
@@ -16,129 +19,57 @@ if not t:
 if not t:
     m=re.search(r'(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)',raw)
     t=m.group(1) if m else ''
-print(t)" RAW="$RAW")
-[ -z "$TOK" ] && { echo 'no token found'; return 2>/dev/null || exit 1; }
+print(t)")
+[ -z "$TOK" ] && { echo 'no token found in $RAW'; exit 1; }
 echo "token ok (${#TOK} chars)"
 
 run() {  # a b amp seed description
-  R=$(curl -s -w '\n%{http_code}' -X POST https://api.pixellab.ai/tiles/create \
-    -H "Authorization: Bearer $TOK" -H 'Content-Type: application/json' \
-    -d "{\"description\":\"$5\",\"tile_type\":\"isometric\",\"tile_feature\":\"tileset\",\"tile_size\":64,\"tile_view\":\"high top-down\",\"tile_view_angle\":28,\"tile_depth_ratio\":0.5,\"tile_flat_top_px\":2,\"outline_mode\":\"segmentation\",\"boundary_amplitude\":$3,\"boundary_seed\":$4,\"elevation\":0,\"step_slope\":0}")
-  CODE=$(echo "$R" | tail -1)
-  if [ "$CODE" = 401 ] || [ "$CODE" = 403 ]; then echo 'TOKEN EXPIRED - stopping'; exit 1; fi
-  ID=$(echo "$R" | head -1 | grep -o '"tile_id":"[^"]*' | cut -d'"' -f4)
-  echo "$1 $2 $3 $4 ${ID:-FAILED_$CODE}"
-  sleep 2
+  for TRY in 1 2 3 4 5; do
+    R=$(curl -s -w '\n%{http_code}' -X POST https://api.pixellab.ai/tiles/create \
+      -H "Authorization: Bearer $TOK" -H 'Content-Type: application/json' \
+      -d "{\"description\":\"$5\",\"tile_type\":\"isometric\",\"tile_feature\":\"tileset\",\"tile_size\":64,\"tile_view\":\"high top-down\",\"tile_view_angle\":28,\"tile_depth_ratio\":0.5,\"tile_flat_top_px\":2,\"outline_mode\":\"segmentation\",\"boundary_amplitude\":$3,\"boundary_seed\":$4,\"elevation\":0,\"step_slope\":0}")
+    CODE=$(echo "$R" | tail -1)
+    if [ "$CODE" = 401 ] || [ "$CODE" = 403 ]; then
+      echo 'TOKEN EXPIRED - stopping'; exit 1
+    fi
+    # 429 is the API pacing us, not a failure: wait and retry the SAME job
+    if [ "$CODE" = 429 ]; then
+      echo "  rate limited, waiting $((TRY*15))s"; sleep $((TRY*15)); continue
+    fi
+    ID=$(echo "$R" | head -1 | grep -o '"tile_id":"[^"]*' | cut -d'"' -f4)
+    echo "$1 $2 $3 $4 ${ID:-FAILED_$CODE}"
+    sleep 4
+    return
+  done
+  echo "$1 $2 $3 $4 FAILED_RATELIMIT"
 }
 
-echo 'generating 315 tilesets, est $58.59'
-echo '--- copy everything below this line back to Claude ---'
-run black_rock brown_paving_stone 0.05 1 "dark volcanic rock to brown cut paving stone slabs"
-run black_rock brown_paving_stone 0.14 1 "dark volcanic rock to brown cut paving stone slabs"
-run black_rock brown_paving_stone 0.23 1 "dark volcanic rock to brown cut paving stone slabs"
-run black_rock dark_mud 0.05 1 "dark volcanic rock to wet dark mud"
-run black_rock dark_mud 0.14 1 "dark volcanic rock to wet dark mud"
-run black_rock dark_mud 0.23 1 "dark volcanic rock to wet dark mud"
-run black_rock deep_water 0.05 1 "dark volcanic rock to deep dark ocean water"
-run black_rock deep_water 0.14 1 "dark volcanic rock to deep dark ocean water"
-run black_rock deep_water 0.23 1 "dark volcanic rock to deep dark ocean water"
-run black_rock grass 0.05 1 "dark volcanic rock to lush green grass"
-run black_rock grass 0.14 1 "dark volcanic rock to lush green grass"
-run black_rock grass 0.23 1 "dark volcanic rock to lush green grass"
-run black_rock grey_paving_stone 0.05 1 "dark volcanic rock to grey cut paving stone slabs"
-run black_rock grey_paving_stone 0.14 1 "dark volcanic rock to grey cut paving stone slabs"
-run black_rock grey_paving_stone 0.23 1 "dark volcanic rock to grey cut paving stone slabs"
-run black_rock grey_stone 0.05 1 "dark volcanic rock to rugged grey mountain rock"
-run black_rock grey_stone 0.14 1 "dark volcanic rock to rugged grey mountain rock"
-run black_rock grey_stone 0.23 1 "dark volcanic rock to rugged grey mountain rock"
-run black_rock ice 0.05 1 "dark volcanic rock to translucent crystal ice"
-run black_rock ice 0.14 1 "dark volcanic rock to translucent crystal ice"
-run black_rock ice 0.23 1 "dark volcanic rock to translucent crystal ice"
-run black_rock lava 0.05 1 "dark volcanic rock to molten glowing lava"
-run black_rock lava 0.14 1 "dark volcanic rock to molten glowing lava"
-run black_rock lava 0.23 1 "dark volcanic rock to molten glowing lava"
-run black_rock light_beach 0.05 1 "dark volcanic rock to pale sandy beach"
-run black_rock light_beach 0.14 1 "dark volcanic rock to pale sandy beach"
+echo 'generating 234 tilesets, est $43.52'
 run black_rock light_beach 0.23 1 "dark volcanic rock to pale sandy beach"
-run black_rock light_soil 0.05 1 "dark volcanic rock to dry light soil"
 run black_rock light_soil 0.14 1 "dark volcanic rock to dry light soil"
 run black_rock light_soil 0.23 1 "dark volcanic rock to dry light soil"
-run black_rock parquet_floor 0.05 1 "dark volcanic rock to wooden parquet floor"
 run black_rock parquet_floor 0.14 1 "dark volcanic rock to wooden parquet floor"
 run black_rock parquet_floor 0.23 1 "dark volcanic rock to wooden parquet floor"
-run black_rock slime 0.05 1 "dark volcanic rock to thick bubbling slime"
-run black_rock slime 0.14 1 "dark volcanic rock to thick bubbling slime"
 run black_rock slime 0.23 1 "dark volcanic rock to thick bubbling slime"
-run black_rock snow 0.05 1 "dark volcanic rock to fresh white snow"
-run black_rock snow 0.14 1 "dark volcanic rock to fresh white snow"
 run black_rock snow 0.23 1 "dark volcanic rock to fresh white snow"
-run black_rock water 0.05 1 "dark volcanic rock to clear calm water"
-run black_rock water 0.14 1 "dark volcanic rock to clear calm water"
 run black_rock water 0.23 1 "dark volcanic rock to clear calm water"
-run brown_paving_stone dark_mud 0.05 1 "brown cut paving stone slabs to wet dark mud"
-run brown_paving_stone dark_mud 0.14 1 "brown cut paving stone slabs to wet dark mud"
-run brown_paving_stone dark_mud 0.23 1 "brown cut paving stone slabs to wet dark mud"
-run brown_paving_stone deep_water 0.05 1 "brown cut paving stone slabs to deep dark ocean water"
-run brown_paving_stone deep_water 0.14 1 "brown cut paving stone slabs to deep dark ocean water"
-run brown_paving_stone deep_water 0.23 1 "brown cut paving stone slabs to deep dark ocean water"
-run brown_paving_stone grass 0.05 1 "brown cut paving stone slabs to lush green grass"
-run brown_paving_stone grass 0.14 1 "brown cut paving stone slabs to lush green grass"
-run brown_paving_stone grass 0.23 1 "brown cut paving stone slabs to lush green grass"
-run brown_paving_stone grey_paving_stone 0.05 1 "brown cut paving stone slabs to grey cut paving stone slabs"
-run brown_paving_stone grey_paving_stone 0.14 1 "brown cut paving stone slabs to grey cut paving stone slabs"
-run brown_paving_stone grey_paving_stone 0.23 1 "brown cut paving stone slabs to grey cut paving stone slabs"
-run brown_paving_stone grey_stone 0.05 1 "brown cut paving stone slabs to rugged grey mountain rock"
-run brown_paving_stone grey_stone 0.14 1 "brown cut paving stone slabs to rugged grey mountain rock"
-run brown_paving_stone grey_stone 0.23 1 "brown cut paving stone slabs to rugged grey mountain rock"
-run brown_paving_stone ice 0.05 1 "brown cut paving stone slabs to translucent crystal ice"
-run brown_paving_stone ice 0.14 1 "brown cut paving stone slabs to translucent crystal ice"
 run brown_paving_stone ice 0.23 1 "brown cut paving stone slabs to translucent crystal ice"
-run brown_paving_stone lava 0.05 1 "brown cut paving stone slabs to molten glowing lava"
-run brown_paving_stone lava 0.14 1 "brown cut paving stone slabs to molten glowing lava"
 run brown_paving_stone lava 0.23 1 "brown cut paving stone slabs to molten glowing lava"
-run brown_paving_stone light_beach 0.05 1 "brown cut paving stone slabs to pale sandy beach"
 run brown_paving_stone light_beach 0.14 1 "brown cut paving stone slabs to pale sandy beach"
 run brown_paving_stone light_beach 0.23 1 "brown cut paving stone slabs to pale sandy beach"
-run brown_paving_stone light_soil 0.05 1 "brown cut paving stone slabs to dry light soil"
-run brown_paving_stone light_soil 0.14 1 "brown cut paving stone slabs to dry light soil"
 run brown_paving_stone light_soil 0.23 1 "brown cut paving stone slabs to dry light soil"
-run brown_paving_stone parquet_floor 0.05 1 "brown cut paving stone slabs to wooden parquet floor"
-run brown_paving_stone parquet_floor 0.14 1 "brown cut paving stone slabs to wooden parquet floor"
-run brown_paving_stone parquet_floor 0.23 1 "brown cut paving stone slabs to wooden parquet floor"
-run brown_paving_stone slime 0.05 1 "brown cut paving stone slabs to thick bubbling slime"
-run brown_paving_stone slime 0.14 1 "brown cut paving stone slabs to thick bubbling slime"
-run brown_paving_stone slime 0.23 1 "brown cut paving stone slabs to thick bubbling slime"
-run brown_paving_stone snow 0.05 1 "brown cut paving stone slabs to fresh white snow"
 run brown_paving_stone snow 0.14 1 "brown cut paving stone slabs to fresh white snow"
 run brown_paving_stone snow 0.23 1 "brown cut paving stone slabs to fresh white snow"
-run brown_paving_stone water 0.05 1 "brown cut paving stone slabs to clear calm water"
-run brown_paving_stone water 0.14 1 "brown cut paving stone slabs to clear calm water"
 run brown_paving_stone water 0.23 1 "brown cut paving stone slabs to clear calm water"
-run dark_mud deep_water 0.05 1 "wet dark mud to deep dark ocean water"
 run dark_mud deep_water 0.14 1 "wet dark mud to deep dark ocean water"
 run dark_mud deep_water 0.23 1 "wet dark mud to deep dark ocean water"
-run dark_mud grass 0.05 1 "wet dark mud to lush green grass"
 run dark_mud grass 0.14 1 "wet dark mud to lush green grass"
 run dark_mud grass 0.23 1 "wet dark mud to lush green grass"
-run dark_mud grey_paving_stone 0.05 1 "wet dark mud to grey cut paving stone slabs"
-run dark_mud grey_paving_stone 0.14 1 "wet dark mud to grey cut paving stone slabs"
 run dark_mud grey_paving_stone 0.23 1 "wet dark mud to grey cut paving stone slabs"
-run dark_mud grey_stone 0.05 1 "wet dark mud to rugged grey mountain rock"
-run dark_mud grey_stone 0.14 1 "wet dark mud to rugged grey mountain rock"
 run dark_mud grey_stone 0.23 1 "wet dark mud to rugged grey mountain rock"
-run dark_mud ice 0.05 1 "wet dark mud to translucent crystal ice"
-run dark_mud ice 0.14 1 "wet dark mud to translucent crystal ice"
-run dark_mud ice 0.23 1 "wet dark mud to translucent crystal ice"
-run dark_mud lava 0.05 1 "wet dark mud to molten glowing lava"
-run dark_mud lava 0.14 1 "wet dark mud to molten glowing lava"
 run dark_mud lava 0.23 1 "wet dark mud to molten glowing lava"
-run dark_mud light_beach 0.05 1 "wet dark mud to pale sandy beach"
-run dark_mud light_beach 0.14 1 "wet dark mud to pale sandy beach"
-run dark_mud light_beach 0.23 1 "wet dark mud to pale sandy beach"
-run dark_mud light_soil 0.05 1 "wet dark mud to dry light soil"
 run dark_mud light_soil 0.14 1 "wet dark mud to dry light soil"
 run dark_mud light_soil 0.23 1 "wet dark mud to dry light soil"
-run dark_mud parquet_floor 0.05 1 "wet dark mud to wooden parquet floor"
 run dark_mud parquet_floor 0.14 1 "wet dark mud to wooden parquet floor"
 run dark_mud parquet_floor 0.23 1 "wet dark mud to wooden parquet floor"
 run dark_mud slime 0.05 1 "wet dark mud to thick bubbling slime"

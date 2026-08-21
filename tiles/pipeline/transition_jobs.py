@@ -69,6 +69,26 @@ def pairs():
     return [(a, b) for i, a in enumerate(names) for b in names[i + 1:]]
 
 
+def done_from_account():
+    """(pair, amplitude) already generated, read from the PixelLab account.
+
+    The Cloud Shell run can die mid-way — a phone switching apps drops the session —
+    so resuming has to work from what actually exists rather than from a local file
+    that the interrupted run never wrote. Every generation carries its pair in the
+    description and a pair's amplitudes are always run in order, so a pair holding n
+    tilesets has the FIRST n amplitudes done.
+    """
+    import sys as _s
+    _s.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from pixellab_client import PixelLabClient
+    import transition_import as TI
+    c = PixelLabClient()
+    rows = TI.listing(c, limit=1000)
+    from collections import Counter
+    cnt = Counter((r.get("description") or "").strip() for r in rows)
+    return cnt
+
+
 def done_ids():
     """(pair, amp, seed) already generated, from the ids the workflow committed."""
     p = os.path.join(OUT, "tile_ids.json")
@@ -78,15 +98,20 @@ def done_ids():
             for r in json.load(open(p)).get("tiles", [])}
 
 
-def build(amplitudes, seeds, only=None, skip_done=True):
+def build(amplitudes, seeds, only=None, skip_done=True, account=None):
     have = done_ids() if skip_done else set()
     jobs = []
     for a, b in pairs():
         if only and f"{a}__to__{b}" not in only:
             continue
-        for amp in amplitudes:
+        n_done = 0
+        if account is not None:
+            n_done = account.get(f"{MATERIALS[a]} to {MATERIALS[b]}", 0)
+        for ai, amp in enumerate(amplitudes):
             if amp > AMP_CAP:
                 raise SystemExit(f"amplitude {amp} exceeds the API cap of {AMP_CAP}")
+            if ai < n_done:          # already generated in an earlier run
+                continue
             for seed in seeds:
                 if (a, b, amp, seed) in have:
                     continue
@@ -106,43 +131,53 @@ def shell_script(jobs):
     straight back, and stops on the first auth failure instead of hammering a lapsed
     token through the rest of the list.
     """
-    lines = [
-        "#!/usr/bin/env bash",
-        "# Usage in Cloud Shell:",
-        "#   export RAW='<paste the whole cookie line from the bookmarklet>'",
-        "#   bash run_in_cloudshell.sh",
-        "# RAW may be the entire document.cookie dump or a bare eyJ... token.",
-        "",
-        "TOK=$(python3 -c \"",
-        "import json,os,re,urllib.parse",
-        "raw=os.environ.get('RAW','').strip()",
-        "t=raw if raw.startswith('eyJ') else None",
-        "if not t:",
-        "    m=re.search(r'supabase-auth-token=([^;]+)',raw)",
-        "    if m:",
-        "        try: t=json.loads(urllib.parse.unquote(m.group(1)))[0]",
-        "        except Exception: pass",
-        "if not t:",
-        "    m=re.search(r'(eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+)',raw)",
-        "    t=m.group(1) if m else ''",
-        "print(t)\" RAW=\"$RAW\")",
-        "[ -z \"$TOK\" ] && { echo 'no token found'; return 2>/dev/null || exit 1; }",
-        "echo \"token ok (${#TOK} chars)\"",
-        "",
-        "run() {  # a b amp seed description",
-        "  R=$(curl -s -w '\\n%{http_code}' -X POST https://api.pixellab.ai/tiles/create \\",
-        "    -H \"Authorization: Bearer $TOK\" -H 'Content-Type: application/json' \\",
-        "    -d \"{\\\"description\\\":\\\"$5\\\",\\\"tile_type\\\":\\\"isometric\\\",\\\"tile_feature\\\":\\\"tileset\\\",\\\"tile_size\\\":64,\\\"tile_view\\\":\\\"high top-down\\\",\\\"tile_view_angle\\\":28,\\\"tile_depth_ratio\\\":0.5,\\\"tile_flat_top_px\\\":2,\\\"outline_mode\\\":\\\"segmentation\\\",\\\"boundary_amplitude\\\":$3,\\\"boundary_seed\\\":$4,\\\"elevation\\\":0,\\\"step_slope\\\":0}\")",
-        "  CODE=$(echo \"$R\" | tail -1)",
-        "  if [ \"$CODE\" = 401 ] || [ \"$CODE\" = 403 ]; then echo 'TOKEN EXPIRED - stopping'; exit 1; fi",
-        "  ID=$(echo \"$R\" | head -1 | grep -o '\"tile_id\":\"[^\"]*' | cut -d'\"' -f4)",
-        "  echo \"$1 $2 $3 $4 ${ID:-FAILED_$CODE}\"",
-        "  sleep 2",
-        "}",
-        "",
-        f"echo 'generating {len(jobs)} tilesets, est ${len(jobs)*0.186:.2f}'",
-        "echo '--- copy everything below this line back to Claude ---'",
-    ]
+    header = r"""#!/usr/bin/env bash
+# Usage in Cloud Shell:
+#   export RAW='<paste the whole cookie line from the bookmarklet>'
+#   nohup bash run_in_cloudshell.sh > run.log 2>&1 &
+#   tail -f run.log        # ctrl-C stops watching, NOT the run
+# RAW may be the entire document.cookie dump or a bare eyJ... token.
+# nohup matters: a phone switching apps drops the Cloud Shell session, and without
+# it the run dies with it. Detached, it keeps going and you reattach with tail.
+
+TOK=$(RAW="$RAW" python3 -c "
+import json,os,re,urllib.parse
+raw=os.environ.get('RAW','').strip()
+t=raw if raw.startswith('eyJ') else None
+if not t:
+    m=re.search(r'supabase-auth-token=([^;]+)',raw)
+    if m:
+        try: t=json.loads(urllib.parse.unquote(m.group(1)))[0]
+        except Exception: pass
+if not t:
+    m=re.search(r'(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)',raw)
+    t=m.group(1) if m else ''
+print(t)")
+[ -z "$TOK" ] && { echo 'no token found in $RAW'; exit 1; }
+echo "token ok (${#TOK} chars)"
+
+run() {  # a b amp seed description
+  for TRY in 1 2 3 4 5; do
+    R=$(curl -s -w '\n%{http_code}' -X POST https://api.pixellab.ai/tiles/create \
+      -H "Authorization: Bearer $TOK" -H 'Content-Type: application/json' \
+      -d "{\"description\":\"$5\",\"tile_type\":\"isometric\",\"tile_feature\":\"tileset\",\"tile_size\":64,\"tile_view\":\"high top-down\",\"tile_view_angle\":28,\"tile_depth_ratio\":0.5,\"tile_flat_top_px\":2,\"outline_mode\":\"segmentation\",\"boundary_amplitude\":$3,\"boundary_seed\":$4,\"elevation\":0,\"step_slope\":0}")
+    CODE=$(echo "$R" | tail -1)
+    if [ "$CODE" = 401 ] || [ "$CODE" = 403 ]; then
+      echo 'TOKEN EXPIRED - stopping'; exit 1
+    fi
+    # 429 is the API pacing us, not a failure: wait and retry the SAME job
+    if [ "$CODE" = 429 ]; then
+      echo "  rate limited, waiting $((TRY*15))s"; sleep $((TRY*15)); continue
+    fi
+    ID=$(echo "$R" | head -1 | grep -o '"tile_id":"[^"]*' | cut -d'"' -f4)
+    echo "$1 $2 $3 $4 ${ID:-FAILED_$CODE}"
+    sleep 4
+    return
+  done
+  echo "$1 $2 $3 $4 FAILED_RATELIMIT"
+}
+"""
+    lines = [header, f"echo 'generating {len(jobs)} tilesets, est ${len(jobs)*0.186:.2f}'"]
     for j in jobs:
         lines.append(f"run {j['a']} {j['b']} {j['amplitude']} {j['seed']} "
                      f"\"{j['description']}\"")
@@ -156,11 +191,14 @@ if __name__ == "__main__":
     ap.add_argument("--only", default="", help="comma-separated a__to__b, for a test run")
     ap.add_argument("--all", action="store_true", help="ignore what is already generated")
     ap.add_argument("--shell", action="store_true", help="print the Cloud Shell script")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip what the PixelLab account already has")
     a = ap.parse_args()
     amps = [float(x) for x in a.amplitudes.split(",") if x.strip()]
     seeds = [int(x) for x in a.seeds.split(",") if x.strip()]
     only = {x.strip() for x in a.only.split(",") if x.strip()} or None
-    jobs = build(amps, seeds, only, skip_done=not a.all)
+    acct = done_from_account() if a.resume else None
+    jobs = build(amps, seeds, only, skip_done=not a.all, account=acct)
     os.makedirs(OUT, exist_ok=True)
     json.dump({"jobs": jobs}, open(os.path.join(OUT, "jobs.json"), "w"), indent=1)
     if a.shell:
