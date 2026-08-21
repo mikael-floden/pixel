@@ -61,10 +61,17 @@ function ensureStyle() {
   .ml-chess .clk.hot{background:var(--accent-soft,#f6e3db);border-color:var(--accent,#d97757)}
   .ml-chess .clk.low{background:var(--bad-soft,#f6e1de);border-color:var(--bad,#b3453a);color:var(--bad,#b3453a)}
   .ml-chess-back{overflow:auto}
-  .ml-chess-board{display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1/1;
+  .ml-chess-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1/1;
     width:min(100%, calc(100dvh - 178px));align-self:center;
     border:1px solid var(--border-strong,#d5d0c2);border-radius:8px;overflow:hidden;user-select:none;touch-action:manipulation}
-  .ml-chess-sq{display:flex;align-items:center;justify-content:center;font-size:min(9.2vw,38px);line-height:1;cursor:pointer;position:relative}
+  .ml-chess-sq{display:flex;align-items:center;justify-content:center;font-size:min(9.2vw,38px);line-height:1;cursor:pointer;position:relative;
+    /* EVERY square is exactly 1/8 x 1/8 of the board, whatever it holds. Both
+       template axes are 1fr AND min sizes are zeroed: a grid item's implicit
+       min-content size otherwise lets a piece img inflate its row — which is
+       how the board shipped with UNEQUAL squares that resized on every move
+       (maintainer: "unplayable... the board changed size when we moved").
+       overflow:hidden makes the cell a hard box, never a suggestion. */
+    min-width:0;min-height:0;overflow:hidden}
   .ml-chess-sq.lt{background:#e9dcc3}.ml-chess-sq.dk{background:#b08b62}
   html[data-theme="dark"] .ml-chess-sq.lt{background:#8a7a5f}html[data-theme="dark"] .ml-chess-sq.dk{background:#5c4a38}
   .ml-chess-sq.last{box-shadow:inset 0 0 0 3px var(--star,#d9a13b)}

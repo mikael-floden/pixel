@@ -63,6 +63,22 @@ try {
     return dd.turn === s || dd.result;
   }, side, { timeout: 15000 }).catch(() => fail("never became my turn"));
 
+  // THE BOARD IS A REGULAR CHESSBOARD: all 64 squares identical, and they
+  // stay identical after moves (shipped once with auto-sized rows — squares
+  // grew around their pieces and the board resized on every move).
+  const squareSpread = () => page.evaluate(() => {
+    const r = [...document.querySelectorAll(".ml-chess-sq")].map((el) => el.getBoundingClientRect());
+    const ws = r.map((b2) => b2.width), hs = r.map((b2) => b2.height);
+    return { n: r.length, dw: Math.max(...ws) - Math.min(...ws), dh: Math.max(...hs) - Math.min(...hs) };
+  });
+  // The dice panel LINGERS ~3s past the schema's phase flip (the throw gets
+  // its moment) — wait for the actual 64 cells, not the phase.
+  await page.waitForFunction(() => document.querySelectorAll(".ml-chess-sq").length === 64, { timeout: 15000 })
+    .catch(() => fail("the 8x8 board never built after the dice"));
+  const sq0 = await squareSpread();
+  if (sq0.dw > 1 || sq0.dh > 1)
+    fail(`unequal squares before any move: ${JSON.stringify(sq0)}`);
+
   // One real move via the tap pipeline: e2->e4 as white, e7->e5 as black.
   const [from, to] = side === "w" ? [12, 28] : [52, 36];
   await page.evaluate((q) => window.__ml.chessTap(q), from);
@@ -74,6 +90,10 @@ try {
   await page.waitForFunction((n) => window.__ml.chess().dialog?.moves > n, before, { timeout: 12000 })
     .catch(() => fail("the NPC never replied"));
   console.log("verify-chess: moves flowing —", await page.evaluate(() => window.__ml.chess().dialog.moves), "plies");
+  const sq1 = await squareSpread();
+  if (sq1.dw > 1 || sq1.dh > 1 || Math.abs(sq1.dw - sq0.dw) > 1)
+    fail(`squares changed after moves: before ${JSON.stringify(sq0)} after ${JSON.stringify(sq1)}`);
+  console.log("verify-chess: 64 equal squares, stable through moves");
 
   // Resign (two-step confirm), read the verdict, close.
   // DOM-dispatched, NOT page.click: the two-step confirm has a 5s window, and
