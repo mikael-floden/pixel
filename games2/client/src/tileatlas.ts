@@ -50,7 +50,21 @@ export interface TileAtlasLoad {
  * files added from a loader callback join the same load barrier, so create()
  * still starts with every texture source present.
  */
-export function queueTileLoads(scene: Phaser.Scene, world: World, worldName: string): TileAtlasLoad {
+/** Fetch a world's atlas index at BOOT (main.ts), crash-proof: any failure is
+ * null, and null means per-file tiles. Never let a loader parse this. */
+export async function fetchAtlasIndex(worldName: string): Promise<AtlasIndex | null> {
+  try {
+    const r = await fetch(withV(gameUrl(`/atlases/${worldName}.json`)));
+    if (!r.ok) return null;
+    const ct = r.headers.get("content-type") ?? "";
+    if (!ct.includes("json")) return null; // the SPA fallback is text/html
+    return (await r.json()) as AtlasIndex;
+  } catch {
+    return null;
+  }
+}
+
+export function queueTileLoads(scene: Phaser.Scene, world: World, worldName: string, prefetched: AtlasIndex | null): TileAtlasLoad {
   const needed = [...new Set([...distinctTilePaths(world), ...distinctPropPaths(world)])];
   const idxKey = `atlas:${worldName}`;
   const sheetKey = (i: number) => `atlas:${worldName}:${i}`;
@@ -69,27 +83,31 @@ export function queueTileLoads(scene: Phaser.Scene, world: World, worldName: str
     }
   };
 
-  scene.load.json(idxKey, withV(gameUrl(`/atlases/${worldName}.json`)));
-  scene.load.once(`filecomplete-json-${idxKey}`, (_k: string, _t: string, data: AtlasIndex) => {
-    // A wrong or half-formed index means "no atlas", never a crash mid-boot.
-    if (!data || data.schema !== "nangijala/tile-atlas@1" || data.world !== worldName || !data.frames) {
-      loadIndividually(needed);
-      return;
-    }
-    index = data;
-    for (let i = 0; i < (data.sheets?.length ?? 0); i++) {
+  // THE INDEX ARRIVES FROM BOOT, ALREADY FETCHED — learned in production
+  // 2026-08-22, with the whole world black. A PRUNED atlas (maps2 regenerated
+  // the world; the deploy correctly dropped the stale index) does not 404:
+  // the SPA fallback answers 200 WITH index.html, Phaser's JSON loader threw
+  // on "<!doctype" inside onProcess, and NEITHER filecomplete nor loaderror
+  // fired — so the documented per-file fallback never ran and ZERO tiles
+  // loaded. The index is now fetched with fetch()+try/catch at boot
+  // (fetchAtlasIndex, awaited in main.ts beside world.json) and handed in
+  // here synchronously: every possible failure — missing file, HTML
+  // masquerading as JSON, network error, wrong schema — is the same answer,
+  // load the tiles individually, decided before the loader ever runs.
+  if (!prefetched || prefetched.schema !== "nangijala/tile-atlas@1" || prefetched.world !== worldName || !prefetched.frames) {
+    loadIndividually(needed);
+  } else {
+    index = prefetched;
+    for (let i = 0; i < (index.sheets?.length ?? 0); i++) {
       sheetsQueued++;
-      scene.load.image(sheetKey(i), withV(gameUrl(`/atlases/${data.sheets[i]}`)));
+      scene.load.image(sheetKey(i), withV(gameUrl(`/atlases/${index.sheets[i]}`)));
     }
     // Tiles the atlas does not carry (should be none — the packer uses the
     // same paths[] the world does — but a partial index must not 404 art).
-    loadIndividually(needed.filter((p) => !data.frames[p]));
-  });
+    loadIndividually(needed.filter((p) => !index!.frames[p]));
+  }
   scene.load.on("loaderror", (file: Phaser.Loader.File) => {
-    if (file.key === idxKey) {
-      // No committed atlas (or pruned as stale) — the pre-atlas behaviour.
-      loadIndividually(needed);
-    } else if (file.key.startsWith(`atlas:${worldName}:`)) {
+    if (file.key.startsWith(`atlas:${worldName}:`)) {
       // A sheet died mid-download: every tile it carried loads individually.
       const i = Number(file.key.slice(`atlas:${worldName}:`.length));
       if (index) loadIndividually(needed.filter((p) => index!.frames[p]?.[0] === i));

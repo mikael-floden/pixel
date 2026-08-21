@@ -7,6 +7,7 @@ import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld, loadWorldsList } from "./maps";
+import { fetchAtlasIndex } from "./tileatlas";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
@@ -268,7 +269,7 @@ async function boot() {
   setLoadingProgress(0.05, "Fetching world…");
   // The chosen isometric world (null if its world.json is missing; the world
   // scene then falls back to a plain ground).
-  const world = await loadWorld(worldName);
+  const [world, atlasIndex] = await Promise.all([loadWorld(worldName), fetchAtlasIndex(worldName)]);
   // WHO stands where, fetched at BOOT alongside the world (maintainer
   // 2026-08-06: "the loading restarts just before the game loads and once
   // loaded it takes ~0.5s before the NPC is drawn"). Both symptoms were one
@@ -387,6 +388,7 @@ async function boot() {
   game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("npcManifest", npcManifest);
   game.registry.set("npcPlacement", npcPlacement);
+  game.registry.set("atlasIndex", atlasIndex);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

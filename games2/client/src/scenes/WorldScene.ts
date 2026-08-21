@@ -1627,7 +1627,7 @@ export class WorldScene extends Phaser.Scene {
         // the_island2) and falls back to per-file loads for anything the
         // atlas cannot provide — see tileatlas.ts. Same `t2:` texture keys
         // either way; the renderer cannot tell which path ran.
-        this.tileAtlas = queueTileLoads(this, this.world, this.worldName);
+        this.tileAtlas = queueTileLoads(this, this.world, this.worldName, this.game.registry.get("atlasIndex") ?? null);
       } else {
         for (const { t, v } of distinctTiles(this.world)) {
           this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
