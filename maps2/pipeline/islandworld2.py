@@ -318,9 +318,12 @@ BONFIRE_AB_TILE = "tiles2/saturated_grass/base_x_3/base_x_3_1054990476/tile_12.w
 # A/B bonfire fixture's screen column. Table 2 is the chess master's pitch on
 # the plaza west of the door — npcs.PINNED stands Rannulf directly behind it
 # (one cell up-screen, facing south), so the table covers his legs and it reads
-# as a man at his board. Provenance: PixelLab objects
-# baeb741f-8f49-4b6d-90d1-a4837e868535 (table 1) and
-# 780aefab-3dc0-4586-9982-e770186cd58c (table 2).
+# as a man at his board. Provenance: the maintainer's PixelLab objects, already
+# mirrored by the scenery domain as scenery/chess_tables/chess_table_006
+# (baeb741f-…, table 1, LIGHTS_ON) and chess_table_009 (780aefab-…, table 2) —
+# the baked tiles' opaque art is pixel-identical to those mirrors (verified),
+# so the scenery pieces ARE what is on the map; the bake only re-frames them
+# into the 64-wide prop-tile box both renderers anchor.
 CHESS_TABLES = (
     ((206, 120), "maps2/props/chess_table_1.webp"),
     ((197, 119), "maps2/props/chess_table_2.webp"),
