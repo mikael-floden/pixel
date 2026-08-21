@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:57:02.336Z",
+  "updated_at": "2026-08-21T18:58:48.057Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1316,7 +1316,69 @@
           "item": "raw_red_meat_slab",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.5,
+        "ry": 9,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.97,
+            "ay": 16.76
+          },
+          "idle#south": {
+            "ax": -0.43,
+            "ay": 15.93
+          },
+          "idle#south-east": {
+            "ax": -2.04,
+            "ay": 15.28
+          },
+          "idle#north-east": {
+            "ax": -1.57,
+            "ay": 17.32
+          },
+          "attack#north": {
+            "ax": -0.69,
+            "ay": 15.58
+          },
+          "attack#north-west": {
+            "ax": 1.2,
+            "ay": 15.93
+          },
+          "attack#west": {
+            "ax": -1.9,
+            "ay": 17.4
+          },
+          "attack#south-west": {
+            "ax": 2.6,
+            "ay": 16.88
+          },
+          "die#south": {
+            "ax": -1,
+            "ay": 13.93
+          },
+          "die#south-east": {
+            "ax": -2.87,
+            "ay": 13.17
+          },
+          "die#north": {
+            "ax": 0.69,
+            "ay": 18.58
+          },
+          "die#north-west": {
+            "ax": 0.3,
+            "ay": 19.59
+          },
+          "die#west": {
+            "ax": 0.58,
+            "ay": 15.75
+          },
+          "die#south-west": {
+            "ax": 1.57,
+            "ay": 16.22
+          }
+        }
+      }
     },
     "shadow_panther": {
       "max_hp": 20,
