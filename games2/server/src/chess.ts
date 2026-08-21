@@ -55,7 +55,12 @@ export function chessBoardsFor(world: string, override?: ChessBoardCfg[]): Chess
   return [];
 }
 
-const SEAT_RADIUS_WU = CELL_WU * 0.95; // stand ON the seat cell (centre within ~a cell)
+// Stand ANYWHERE beside the table (maintainer 2026-08-22, with a screenshot
+// of two players 1.6 cells out and a dead board: "can't press anything!").
+// The first cut demanded the exact seat cell within 0.95 — pixel-parking no
+// real human does. 1.75 cells from the TABLE CENTRE covers every touching
+// cell including diagonals with margin for standing half-off one.
+const TABLE_RADIUS_WU = CELL_WU * 1.75;
 const CLOCK_MS_DEFAULT = 10 * 60 * 1000;
 const NPC_MIN_DELAY = 1200, NPC_DELAY_SPREAD = 1400;
 
@@ -100,12 +105,11 @@ export class ChessManager {
   sit(sid: string) {
     const p = this.state.players.get(sid);
     if (!p || p.dead || this.inMatch(sid)) return;
-    // Nearest board with a free seat the player is standing at.
     let best: { b: ChessBoard; d: number } | null = null;
     this.state.chessBoards.forEach((b) => {
       if (b.matchId || b.waitingSid === sid) return;
-      const d = this.seatDistFor(p.x, p.y, b);
-      if (d <= SEAT_RADIUS_WU && (!best || d < best.d)) best = { b, d };
+      const d = this.tableDist(p.x, p.y, b);
+      if (d <= TABLE_RADIUS_WU && (!best || d < best.d)) best = { b, d };
     });
     if (!best) return;
     const b = (best as { b: ChessBoard }).b;
@@ -114,12 +118,10 @@ export class ChessManager {
     b.waitingSid = sid;
   }
 
-  /** Distance to the nearest JOINABLE seat of this board for this player: the
-   * NPC's own seat never counts, and a waiting player's seat is theirs. */
-  private seatDistFor(x: number, y: number, b: ChessBoard): number {
-    const dA = Math.hypot(x - (b.seatAc + 0.5) * CELL_WU, y - (b.seatAr + 0.5) * CELL_WU);
-    const dB = b.npc ? Infinity : Math.hypot(x - (b.seatBc + 0.5) * CELL_WU, y - (b.seatBr + 0.5) * CELL_WU);
-    return Math.min(dA, dB);
+  /** Distance to the TABLE itself — the join zone is the whole ring of cells
+   * around it, not two blessed seats. */
+  private tableDist(x: number, y: number, b: ChessBoard): number {
+    return Math.hypot(x - (b.col + 0.5) * CELL_WU, y - (b.row + 0.5) * CELL_WU);
   }
 
   /** Housekeeping at ~4Hz: a waiting player who walked away stops waiting; a
@@ -129,17 +131,12 @@ export class ChessManager {
       if (b.matchId) { this.checkDeserted(b); return; }
       if (b.waitingSid) {
         const p = this.state.players.get(b.waitingSid);
-        if (!p || p.dead || this.seatDistFor(p.x, p.y, b) > SEAT_RADIUS_WU * 1.5) b.waitingSid = "";
+        if (!p || p.dead || this.tableDist(p.x, p.y, b) > TABLE_RADIUS_WU * 1.4) b.waitingSid = "";
       }
     });
     if (this.live.size) this.sweep();
   }
 
-  private distToSeat(x: number, y: number, b: ChessBoard): number {
-    const dA = Math.hypot(x - (b.seatAc + 0.5) * CELL_WU, y - (b.seatAr + 0.5) * CELL_WU);
-    const dB = b.npc ? Infinity : Math.hypot(x - (b.seatBc + 0.5) * CELL_WU, y - (b.seatBr + 0.5) * CELL_WU);
-    return Math.min(dA, dB);
-  }
 
   private inMatch(sid: string): boolean {
     for (const l of this.live.values()) if (l.match.aSid === sid || l.match.bSid === sid) return true;
@@ -309,7 +306,7 @@ export class ChessManager {
     for (const sid of [l.match.aSid, l.match.bSid]) {
       if (sid === "npc") continue;
       const p = this.state.players.get(sid);
-      if (!p || this.distToSeat(p.x, p.y, b) > CELL_WU * 3) this.resign(l.match.id, sid);
+      if (!p || this.tableDist(p.x, p.y, b) > CELL_WU * 3.5) this.resign(l.match.id, sid);
     }
   }
 }

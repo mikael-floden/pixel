@@ -6188,12 +6188,14 @@ export class WorldScene extends Phaser.Scene {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     let next: { mode: "start" | "join" } | null = null;
     if (me && this.room && !this.chessDialog) {
-      const R = CELL_WU * 0.95;
+      // The join zone is the whole ring around the TABLE (server tableDist,
+      // 1.75 cells) — the exact-seat version demanded pixel parking and two
+      // real players stood beside a dead board (maintainer screenshot).
+      const R = CELL_WU * 1.75;
       this.room.state.chessBoards?.forEach((b: any) => {
         if (next || b.matchId || b.waitingSid === this.room!.sessionId) return;
-        const dA = Math.hypot(me.fx - (b.seatAc + 0.5) * CELL_WU, me.fy - (b.seatAr + 0.5) * CELL_WU);
-        const dB = b.npc ? Infinity : Math.hypot(me.fx - (b.seatBc + 0.5) * CELL_WU, me.fy - (b.seatBr + 0.5) * CELL_WU);
-        if (Math.min(dA, dB) <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
+        const d = Math.hypot(me.fx - (b.col + 0.5) * CELL_WU, me.fy - (b.row + 0.5) * CELL_WU);
+        if (d <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
       });
     }
     const label = next ? ((next as { mode: string }).mode === "join" ? "JOIN CHESS GAME" : "START CHESS GAME") : null;
