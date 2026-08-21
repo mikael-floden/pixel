@@ -60,7 +60,35 @@ def _grow(m, n):
     return o
 
 
-def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None):
+def _despeckle(m, passes=2):
+    """Majority-vote the classification so single pixels cannot flip material.
+
+    "SAME AS THE WALL." A wall face reads smooth because nothing ever classifies it -
+    it is one material and only its colour is corrected. A transition top IS two
+    materials, so it has to be classified, and a per-pixel decision leaves isolated
+    dots of one material stranded in the other. They are not in the source: PixelLab
+    draws a blade or a grain of sand with shading, and the classifier sees only that
+    one pixel's colour. Voting with the 8 neighbours removes the strays and leaves the
+    boundary itself untouched, because a real boundary pixel has neighbours agreeing
+    with it.
+    """
+    m = m.copy()
+    for _ in range(passes):
+        n = np.zeros(m.shape, np.int8)
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy == 0 and dx == 0:
+                    continue
+                n[max(0, dy):m.shape[0] + min(0, dy),
+                  max(0, dx):m.shape[1] + min(0, dx)] += \
+                    m[max(0, -dy):m.shape[0] + min(0, -dy),
+                      max(0, -dx):m.shape[1] + min(0, -dx)]
+        m = np.where(n >= 6, True, np.where(n <= 2, False, m))
+    return m
+
+
+def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
+                   despeckle=2):
     """Flat ground, detail only in the transition.
 
     Two maintainer rules that look contradictory and are not. "The tiles should be
@@ -84,6 +112,8 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None):
     alpha = a[..., 3] > 0
     isb = (np.abs(a[..., :3] - rb[..., :3]).sum(2)
            < np.abs(a[..., :3] - ra[..., :3]).sum(2))
+    if despeckle:
+        isb = _despeckle(isb, passes=despeckle)
     edge = np.zeros_like(alpha)
     edge[:, :-1] |= (isb[:, :-1] != isb[:, 1:])
     edge[:-1] |= (isb[:-1] != isb[1:])
