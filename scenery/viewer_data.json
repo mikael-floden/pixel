@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 738,
+  "scenery_count": 739,
   "target_count": 2149,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1398,7 +1398,7 @@
       "name": "Chess Board",
       "type": "INDOOR",
       "quota": 15,
-      "done": 12
+      "done": 13
     }
   ],
   "categories": {
@@ -1426,7 +1426,7 @@
     "cauldron_camps": 2,
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
-    "chess_boards": 12,
+    "chess_boards": 13,
     "chess_tables": 13,
     "cliff_falls": 5,
     "cliff_features": 5,
@@ -9498,6 +9498,41 @@
       "pixellab_object_id": "bf376e71-644c-451f-8896-04486ad91460",
       "sprite": "chess_boards/chess_board_010/sprite.webp",
       "art_hash": "6931f7efbcdf9d7a",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "chess_board_013",
+      "rel": "chess_boards/chess_board_013",
+      "name": "Travelling chess set of simple turned wooden pieces 013",
+      "category": "chess_boards",
+      "lights": "LIGHTS_OFF",
+      "description": "a chess board resting flat on the ground on its own with no table and no furniture beneath it, seen from above, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, travelling chess set of simple turned wooden pieces, polished smooth at the edges, as broad across as a table top, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.79,
+        "world_px_height": 30,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          2,
+          5,
+          63,
+          61
+        ],
+        "content_px_height": 56,
+        "canvas_render_px": 34
+      },
+      "status": "complete",
+      "generated_at": "2026-08-21T22:20:42+00:00",
+      "pixellab_object_id": "aee8b0e6-4971-4c5e-98e8-c8335e345378",
+      "sprite": "chess_boards/chess_board_013/sprite.webp",
+      "art_hash": "a3b8439a748e1fef",
       "type": "INDOOR",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
