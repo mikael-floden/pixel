@@ -141,6 +141,12 @@ RUN npm ci --omit=dev && npm cache clean --force
 # server/ ship as SOURCE — no build output to copy.
 COPY games2/shared/ shared/
 COPY games2/server/ server/
+# The server reads runtime CONFIG (chess boards today) from ../config relative
+# to its source. This line was missing once and the whole chess feature
+# shipped dead: every path existed locally and in the build stage, and only
+# the runtime image lacked it — a slim COPY list is an allowlist, and an
+# allowlist fails silently (2026-08-22, two players at a dead table).
+COPY games2/config/ config/
 # The built client bundle only — not client/src, not node_modules.
 COPY --from=build /app/client/dist client/dist
 # Curated art. composer/ is deliberately ABSENT: 94 MB that only the wiki's

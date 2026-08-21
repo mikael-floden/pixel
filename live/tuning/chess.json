@@ -1,0 +1,37 @@
+{
+  "format": "nangijala-chess-boards@1",
+  "updated_at": "2026-08-21T23:22:19.000Z",
+  "worlds": {
+    "the_island2": [
+      {
+        "id": "fireside",
+        "col": 206,
+        "row": 120,
+        "seatA": [
+          205,
+          120
+        ],
+        "seatB": [
+          207,
+          120
+        ],
+        "sprite": "world"
+      },
+      {
+        "id": "rannulf",
+        "col": 197,
+        "row": 119,
+        "seatA": [
+          198,
+          120
+        ],
+        "seatB": [
+          196,
+          118
+        ],
+        "npc": "Rannulf",
+        "sprite": "world"
+      }
+    ]
+  }
+}
