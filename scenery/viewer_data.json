@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 728,
-  "target_count": 2128,
+  "scenery_count": 713,
+  "target_count": 2127,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -53,7 +53,7 @@
       "id": "waystones",
       "name": "Waystone",
       "type": "TOWN",
-      "quota": 13,
+      "quota": 11,
       "done": 11
     },
     {
@@ -133,7 +133,7 @@
       "id": "flame_niches",
       "name": "Flame Niche",
       "type": "TOWN",
-      "quota": 9,
+      "quota": 8,
       "done": 8
     },
     {
@@ -221,7 +221,7 @@
       "id": "carts",
       "name": "Cart",
       "type": "TOWN",
-      "quota": 7,
+      "quota": 6,
       "done": 6
     },
     {
@@ -229,7 +229,7 @@
       "id": "barrels",
       "name": "Barrel",
       "type": "TOWN",
-      "quota": 8,
+      "quota": 5,
       "done": 5
     },
     {
@@ -277,7 +277,7 @@
       "id": "flower_stands",
       "name": "Flower Stand",
       "type": "TOWN",
-      "quota": 7,
+      "quota": 5,
       "done": 5
     },
     {
@@ -814,7 +814,7 @@
       "name": "Cliff Vine",
       "type": "MOUNTAIN_WALL",
       "quota": 52,
-      "done": 50
+      "done": 43
     },
     {
       "rank": 102,
@@ -822,7 +822,7 @@
       "name": "Cliff Feature",
       "type": "MOUNTAIN_WALL",
       "quota": 6,
-      "done": 6
+      "done": 5
     },
     {
       "rank": 103,
@@ -1262,7 +1262,7 @@
       "name": "Cliff Shrub",
       "type": "MOUNTAIN_WALL",
       "quota": 12,
-      "done": 12
+      "done": 11
     },
     {
       "rank": 158,
@@ -1270,7 +1270,7 @@
       "name": "Cliff Moss",
       "type": "MOUNTAIN_WALL",
       "quota": 9,
-      "done": 9
+      "done": 3
     },
     {
       "rank": 159,
@@ -1383,6 +1383,22 @@
       "type": "WINDOW",
       "quota": 400,
       "done": 58
+    },
+    {
+      "rank": 172,
+      "id": "chess_tables",
+      "name": "Chess Table",
+      "type": "INDOOR",
+      "quota": 4,
+      "done": 0
+    },
+    {
+      "rank": 173,
+      "id": "chess_boards",
+      "name": "Chess Board",
+      "type": "INDOOR",
+      "quota": 4,
+      "done": 0
     }
   ],
   "categories": {
@@ -1411,12 +1427,12 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "cliff_falls": 5,
-    "cliff_features": 6,
+    "cliff_features": 5,
     "cliff_fragments": 2,
-    "cliff_mosses": 9,
+    "cliff_mosses": 3,
     "cliff_roots": 7,
-    "cliff_shrubs": 12,
-    "cliff_vines": 50,
+    "cliff_shrubs": 11,
+    "cliff_vines": 43,
     "crystal_trees": 1,
     "crystals": 8,
     "cup_fungi": 2,
@@ -9848,85 +9864,6 @@
       "animations": []
     },
     {
-      "id": "cliff_feature_902",
-      "rel": "cliff_features/cliff_feature_902",
-      "name": "Clay swallow nests under an overhang 902",
-      "category": "cliff_features",
-      "lights": null,
-      "description": "a chunky rock-face feature made to sit over a cliff wall: a jutting mossy ledge, a thick protruding root knot, or a deep cracked seam in the stone, heavy and solid, clay swallow nests under an overhang, large, twice human height, self-emissive at night, softly radiating light: warm light spilling from a deep crevice",
-      "view": "low top-down",
-      "size": 128,
-      "placement": {
-        "world_height_m": 2.9,
-        "world_px_height": 109,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T23:15:04+00:00",
-      "pixellab_object_id": "9e4cb1c8-be6a-4a96-a2d4-f1d9ebc35351",
-      "sprite": "cliff_features/cliff_feature_902/sprite.webp",
-      "art_hash": "9a71fb4d56440ea0",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_features/cliff_feature_902/sprite.webp",
-          "pixellab_object_id": "9e4cb1c8-be6a-4a96-a2d4-f1d9ebc35351",
-          "generated_at": "2026-08-13T23:15:04+00:00",
-          "art_hash": "9a71fb4d56440ea0"
-        },
-        "LIT_2": {
-          "sprite": "cliff_features/cliff_feature_902/lit_2/sprite.webp",
-          "pixellab_object_id": "6fd2b280-d2bf-42e9-be57-7039f2425ef0",
-          "generated_at": "2026-08-16T09:25:01+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3597,
-          "glow_score": 0.0247,
-          "art_hash": "13af82f4ffce5630"
-        },
-        "LIT_3": {
-          "sprite": "cliff_features/cliff_feature_902/lit_3/sprite.webp",
-          "pixellab_object_id": "ec04d8b6-ef59-48f0-aebc-f72d848f9046",
-          "generated_at": "2026-08-16T09:25:02+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5123,
-          "glow_score": 0.0313,
-          "art_hash": "ce5168eb995b776b"
-        },
-        "LIT_4": {
-          "sprite": "cliff_features/cliff_feature_902/lit_4/sprite.webp",
-          "pixellab_object_id": "2358786d-ae70-42e3-b821-265c5c317de8",
-          "generated_at": "2026-08-16T09:24:40+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8411,
-          "glow_score": 0.0781,
-          "art_hash": "98030610bc91b4fe"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_features/cliff_feature_902/not_lit_1/sprite.webp",
-          "pixellab_object_id": "6e02e412-9038-482a-9b65-1f76212c2cb1",
-          "generated_at": "2026-08-16T09:25:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2949,
-          "glow_score": 0.0,
-          "art_hash": "5989db711114ebdb"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_features/cliff_feature_902/not_lit_2/sprite.webp",
-          "pixellab_object_id": "11bb5d0d-d91b-4723-baf5-9a2c2f388aa6",
-          "generated_at": "2026-08-16T09:26:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7156,
-          "glow_score": 0.0,
-          "art_hash": "d6c39069edbb1aa7"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "cliff_feature_903",
       "rel": "cliff_features/cliff_feature_903",
       "name": "Ice-glazed winter ledge 903",
@@ -10164,322 +10101,6 @@
       "animations": []
     },
     {
-      "id": "cliff_moss_001",
-      "rel": "cliff_mosses/cliff_moss_001",
-      "name": "Grey-green lichen crust 001",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, grey-green lichen crust, peeling away at one edge, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.2,
-        "world_px_height": 120,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:07:05+00:00",
-      "pixellab_object_id": "58a85adf-b1df-4282-944f-9d6c60a6470d",
-      "sprite": "cliff_mosses/cliff_moss_001/sprite.webp",
-      "art_hash": "64941c82718c3e50",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_001/lit_1/sprite.webp",
-          "pixellab_object_id": "e4e18b6c-ee77-43e0-bf1d-72d51cee8515",
-          "generated_at": "2026-08-16T09:37:16+00:00",
-          "glow_concept": "light seeping from beneath the cushions",
-          "difference_from_source": 0.1985,
-          "glow_score": 0.0784,
-          "art_hash": "715395a1aa50b4d8"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_001/lit_2/sprite.webp",
-          "pixellab_object_id": "207f268d-52ae-4d3c-a00e-1449d3698072",
-          "generated_at": "2026-08-16T09:33:03+00:00",
-          "glow_concept": "glow-lichen in bright rings",
-          "difference_from_source": 0.5377,
-          "glow_score": 0.1083,
-          "art_hash": "206444b3e4d4c244"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_001/sprite.webp",
-          "pixellab_object_id": "58a85adf-b1df-4282-944f-9d6c60a6470d",
-          "generated_at": "2026-08-14T03:07:05+00:00",
-          "art_hash": "64941c82718c3e50"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_001/not_lit_2/sprite.webp",
-          "pixellab_object_id": "4841c453-4669-47fa-8e99-d263e93bf928",
-          "generated_at": "2026-08-16T09:30:37+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.412,
-          "glow_score": 0.0103,
-          "art_hash": "ecb940b11a2e2582"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_001/not_lit_3/sprite.webp",
-          "pixellab_object_id": "896c93b5-392f-4c41-8c32-2dc41b92e790",
-          "generated_at": "2026-08-16T09:30:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4013,
-          "glow_score": 0.0087,
-          "art_hash": "c4f284c28c9fa2d1"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_001/not_lit_4/sprite.webp",
-          "pixellab_object_id": "46e0793a-529d-41c4-8bff-cd5b2fa61594",
-          "generated_at": "2026-08-16T09:30:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5633,
-          "glow_score": 0.0091,
-          "art_hash": "5192a0699771c510"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_005",
-      "rel": "cliff_mosses/cliff_moss_005",
-      "name": "Black wet moss 005",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, black wet moss, spreading in wide blotches, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.15,
-        "world_px_height": 119,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:34:03+00:00",
-      "pixellab_object_id": "1ba88abd-4ce9-4e4c-86c3-d8abc61d105b",
-      "sprite": "cliff_mosses/cliff_moss_005/sprite.webp",
-      "art_hash": "0538a35d3d0a34fa",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_005/lit_1/sprite.webp",
-          "pixellab_object_id": "4d52e889-25ff-4edd-9d08-c7050fe7c0f2",
-          "generated_at": "2026-08-16T09:32:43+00:00",
-          "glow_concept": "glow-lichen in bright rings",
-          "difference_from_source": 0.4322,
-          "glow_score": 0.1017,
-          "art_hash": "e1b21834ae64d9fe"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_005/lit_2/sprite.webp",
-          "pixellab_object_id": "97922658-849c-4471-9105-50d9e3a9eb96",
-          "generated_at": "2026-08-16T09:36:10+00:00",
-          "glow_concept": "the moss glowing soft green",
-          "difference_from_source": 0.8346,
-          "glow_score": 0.1287,
-          "art_hash": "60a9a702ffc4633e"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_005/sprite.webp",
-          "pixellab_object_id": "1ba88abd-4ce9-4e4c-86c3-d8abc61d105b",
-          "generated_at": "2026-08-14T03:34:03+00:00",
-          "art_hash": "0538a35d3d0a34fa"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_005/not_lit_2/sprite.webp",
-          "pixellab_object_id": "48884127-f1d3-471d-aabb-4a19a55ad76d",
-          "generated_at": "2026-08-16T09:32:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4932,
-          "glow_score": 0.0528,
-          "art_hash": "4e4beb9af2cac878"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_005/not_lit_3/sprite.webp",
-          "pixellab_object_id": "139b53b5-6a76-44c2-9106-989163b1ec70",
-          "generated_at": "2026-08-16T09:32:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.333,
-          "glow_score": 0.0679,
-          "art_hash": "14d82d2ccd9205bb"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_005/not_lit_4/sprite.webp",
-          "pixellab_object_id": "4717a845-3a84-4230-964f-d124443c4a21",
-          "generated_at": "2026-08-16T09:32:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5996,
-          "glow_score": 0.0611,
-          "art_hash": "e0fbb79fce523d57"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_006",
-      "rel": "cliff_mosses/cliff_moss_006",
-      "name": "Rust-orange lichen patches 006",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "a huge sheet of thick moss and lichen covering a vertical rock face, deep green cushions and pale crusts in overlapping patches, wet and dense, rust-orange lichen patches, thickest where water seeps, tall, about three times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 4.22,
-        "world_px_height": 159,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:16:25+00:00",
-      "pixellab_object_id": "bdc75a15-3ab4-4902-8c6c-c0cd6ac12187",
-      "sprite": "cliff_mosses/cliff_moss_006/sprite.webp",
-      "art_hash": "f2c857f5c1be0bab",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_006/sprite.webp",
-          "pixellab_object_id": "bdc75a15-3ab4-4902-8c6c-c0cd6ac12187",
-          "generated_at": "2026-08-14T03:16:25+00:00",
-          "art_hash": "f2c857f5c1be0bab"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_006/lit_2/sprite.webp",
-          "pixellab_object_id": "377a969e-5124-4872-b777-439f5112e1d9",
-          "generated_at": "2026-08-16T09:33:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.384,
-          "glow_score": 0.0,
-          "art_hash": "bb346bf8c1f5618f"
-        },
-        "LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_006/lit_3/sprite.webp",
-          "pixellab_object_id": "cebcea8a-2682-4446-97ab-3714f9ed535a",
-          "generated_at": "2026-08-16T09:33:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3897,
-          "glow_score": 0.0431,
-          "art_hash": "aa690b318ae341ca"
-        },
-        "LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_006/lit_4/sprite.webp",
-          "pixellab_object_id": "0cf60d4d-4d8b-40d3-9703-1f2210e45892",
-          "generated_at": "2026-08-16T09:33:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5655,
-          "glow_score": 0.0396,
-          "art_hash": "4a2000a5661d82bb"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_006/not_lit_1/sprite.webp",
-          "pixellab_object_id": "6193a5b6-b786-4b84-9414-d6f1a6b3cd93",
-          "generated_at": "2026-08-16T09:35:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8015,
-          "glow_score": 0.0,
-          "art_hash": "d4bce9a9367bd769"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_006/not_lit_2/sprite.webp",
-          "pixellab_object_id": "ea0ad4ff-19cf-4ca3-9dae-d3a7c2c45bca",
-          "generated_at": "2026-08-16T09:34:29+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7428,
-          "glow_score": 0.0,
-          "art_hash": "27306160e0f79c7f"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_007",
-      "rel": "cliff_mosses/cliff_moss_007",
-      "name": "Grey-green lichen crust 007",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, grey-green lichen crust, peeling away at one edge, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 8.12,
-        "world_px_height": 306,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:35:32+00:00",
-      "pixellab_object_id": "86c02868-3d74-4dca-8e4c-177609a88914",
-      "sprite": "cliff_mosses/cliff_moss_007/sprite.webp",
-      "art_hash": "e98c6815493ffd97",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_007/lit_1/sprite.webp",
-          "pixellab_object_id": "8f6caca3-c80a-427d-a016-b788b6df74c8",
-          "generated_at": "2026-08-16T09:35:29+00:00",
-          "glow_concept": "glow-lichen in bright rings",
-          "difference_from_source": 0.4284,
-          "glow_score": 0.0695,
-          "art_hash": "58a176d689cdef25"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_007/lit_2/sprite.webp",
-          "pixellab_object_id": "80a15166-07c5-4797-ac4a-340476d5cf8f",
-          "generated_at": "2026-08-16T09:36:00+00:00",
-          "glow_concept": "the moss glowing soft green",
-          "difference_from_source": 0.3739,
-          "glow_score": 0.0556,
-          "art_hash": "503a5b30a4c51907"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_007/sprite.webp",
-          "pixellab_object_id": "86c02868-3d74-4dca-8e4c-177609a88914",
-          "generated_at": "2026-08-14T03:35:32+00:00",
-          "art_hash": "e98c6815493ffd97"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_007/not_lit_2/sprite.webp",
-          "pixellab_object_id": "96586bd4-1562-4921-99ee-ca716baa9ed4",
-          "generated_at": "2026-08-16T09:34:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4972,
-          "glow_score": 0.0,
-          "art_hash": "dbd6b7cfca4d632d"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_007/not_lit_3/sprite.webp",
-          "pixellab_object_id": "3850763b-9156-45b9-a805-028b684c2aff",
-          "generated_at": "2026-08-16T09:35:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3134,
-          "glow_score": 0.0086,
-          "art_hash": "89c2f6aaee3b7a85"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_007/not_lit_4/sprite.webp",
-          "pixellab_object_id": "94233c1b-d785-4618-8ce7-d4ca29fdc95f",
-          "generated_at": "2026-08-16T09:34:57+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4256,
-          "glow_score": 0.0074,
-          "art_hash": "f542d7945445e3d2"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "cliff_moss_011",
       "rel": "cliff_mosses/cliff_moss_011",
       "name": "Black wet moss 011",
@@ -10554,164 +10175,6 @@
           "difference_from_source": 0.4728,
           "glow_score": 0.006,
           "art_hash": "2141648a6f73948f"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_012",
-      "rel": "cliff_mosses/cliff_moss_012",
-      "name": "Rust-orange lichen patches 012",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "a hanging sheet of thick moss and lichen, deep green cushions and pale crusts in overlapping patches, a tall soft mat hanging free in the air, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, rust-orange lichen patches, thickest where water seeps, tall, about three times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.99,
-        "world_px_height": 150,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:36:30+00:00",
-      "pixellab_object_id": "4380d25f-c944-42e9-957e-7fd1a5e4cbbb",
-      "sprite": "cliff_mosses/cliff_moss_012/sprite.webp",
-      "art_hash": "b8b262c2aedc86fa",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_012/sprite.webp",
-          "pixellab_object_id": "4380d25f-c944-42e9-957e-7fd1a5e4cbbb",
-          "generated_at": "2026-08-14T03:36:30+00:00",
-          "art_hash": "b8b262c2aedc86fa"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_012/lit_2/sprite.webp",
-          "pixellab_object_id": "9fde779d-f6a5-49db-92bf-38c5de2d8489",
-          "generated_at": "2026-08-16T09:37:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7031,
-          "glow_score": 0.0,
-          "art_hash": "5e0ab20d6d2ca1df"
-        },
-        "LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_012/lit_3/sprite.webp",
-          "pixellab_object_id": "8fe2780d-5f24-444e-8723-5a31598b7369",
-          "generated_at": "2026-08-16T09:37:06+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6054,
-          "glow_score": 0.0,
-          "art_hash": "cf8928c90ca2abef"
-        },
-        "LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_012/lit_4/sprite.webp",
-          "pixellab_object_id": "6a2088d5-ed79-4228-92e6-65174c8fd2a4",
-          "generated_at": "2026-08-16T09:37:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8659,
-          "glow_score": 0.1142,
-          "art_hash": "28414e5d27eb42f3"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_012/not_lit_1/sprite.webp",
-          "pixellab_object_id": "9c69acbf-70db-4e38-9fdd-e32171a576ed",
-          "generated_at": "2026-08-16T09:37:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4562,
-          "glow_score": 0.0,
-          "art_hash": "e98cdd478acc9849"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_012/not_lit_2/sprite.webp",
-          "pixellab_object_id": "92e5f503-4095-4bc4-80fb-768c07b6dafd",
-          "generated_at": "2026-08-16T09:37:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8574,
-          "glow_score": 0.0,
-          "art_hash": "24d430ea41b18d95"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_moss_018",
-      "rel": "cliff_mosses/cliff_moss_018",
-      "name": "Rust-orange lichen patches 018",
-      "category": "cliff_mosses",
-      "lights": null,
-      "description": "SCATTERED IRREGULAR PATCHES of moss and lichen joined by thin creeping runners, like islands linked by threads, wide bare gaps, MOSTLY EMPTY SPACE \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, rust-orange lichen patches, two loose clusters joined by a single runner, towering, many times human height, self-emissive at night, softly radiating light: light seeping from beneath the cushions",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 11.45,
-        "world_px_height": 431,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T04:08:43+00:00",
-      "pixellab_object_id": "ce7f9c1c-4adc-4481-ad7f-20b69c413a8e",
-      "sprite": "cliff_mosses/cliff_moss_018/sprite.webp",
-      "art_hash": "eabf26a65e5f23b4",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_018/sprite.webp",
-          "pixellab_object_id": "ce7f9c1c-4adc-4481-ad7f-20b69c413a8e",
-          "generated_at": "2026-08-14T04:08:43+00:00",
-          "art_hash": "eabf26a65e5f23b4"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_018/lit_2/sprite.webp",
-          "pixellab_object_id": "25b58db9-5446-45d8-bfa7-ba17a96e8dd6",
-          "generated_at": "2026-08-16T09:37:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.939,
-          "glow_score": 0.0,
-          "art_hash": "2bf69130edb80452"
-        },
-        "LIT_3": {
-          "sprite": "cliff_mosses/cliff_moss_018/lit_3/sprite.webp",
-          "pixellab_object_id": "cb8f2179-6c62-4a8b-ad65-133fd06ae29b",
-          "generated_at": "2026-08-16T09:38:21+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.694,
-          "glow_score": 0.0,
-          "art_hash": "a948de0e2cb23950"
-        },
-        "LIT_4": {
-          "sprite": "cliff_mosses/cliff_moss_018/lit_4/sprite.webp",
-          "pixellab_object_id": "ab06b1fe-ea15-4195-84a4-94bc6b1ae9a4",
-          "generated_at": "2026-08-16T09:38:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4198,
-          "glow_score": 0.0,
-          "art_hash": "e0d668570ecb1066"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_018/not_lit_1/sprite.webp",
-          "pixellab_object_id": "e97d6332-9d71-4b6c-8950-0dede9b13843",
-          "generated_at": "2026-08-16T09:38:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9073,
-          "glow_score": 0.0,
-          "art_hash": "5bad363f529d0ded"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_018/not_lit_2/sprite.webp",
-          "pixellab_object_id": "2eb610a9-f6b5-4399-a89e-8bd212ea09ad",
-          "generated_at": "2026-08-16T09:38:43+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8638,
-          "glow_score": 0.0,
-          "art_hash": "f9915e8aaf548132"
         }
       },
       "animations": []
@@ -12139,85 +11602,6 @@
       "animations": []
     },
     {
-      "id": "cliff_shrub_015",
-      "rel": "cliff_shrubs/cliff_shrub_015",
-      "name": "Stunted twisted pine 015",
-      "category": "cliff_shrubs",
-      "lights": null,
-      "description": "a tough windbent shrub whose trunk kinks hard sideways then turns up, its bare gripping roots clenched around a single small stone at its base, an organic RAGGED IRREGULAR silhouette with leaves and strands trailing off unevenly at the edges and a torn uneven bottom \u2014 never a rectangle, never a straight edge, never a filled panel or square sheet, no hard border of any kind \u2014 ONLY the plant itself, isolated on a fully transparent background, NO rock, NO cliff, NO stone wall, NO mountain, NO ground, nothing behind it, stunted twisted pine, growing from a narrow crack, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 192,
-      "placement": {
-        "world_height_m": 3.79,
-        "world_px_height": 143,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T03:59:28+00:00",
-      "pixellab_object_id": "34d86554-8682-419b-ac94-6a82ba191515",
-      "sprite": "cliff_shrubs/cliff_shrub_015/sprite.webp",
-      "art_hash": "ff9a3b3fdbf53fb4",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/lit_1/sprite.webp",
-          "pixellab_object_id": "d61f76d1-0c73-4565-b212-e6d34b91ef45",
-          "generated_at": "2026-08-16T09:59:51+00:00",
-          "glow_concept": "blossoms glowing along the branches",
-          "difference_from_source": 0.4772,
-          "glow_score": 0.0891,
-          "art_hash": "8ba44c2d60f2c248"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/lit_2/sprite.webp",
-          "pixellab_object_id": "55d42397-2162-4de6-baac-374f9af6d3b0",
-          "generated_at": "2026-08-16T10:00:03+00:00",
-          "glow_concept": "light in the crack at its root",
-          "difference_from_source": 0.4176,
-          "glow_score": 0.0277,
-          "art_hash": "99f398c373e44b95"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/sprite.webp",
-          "pixellab_object_id": "34d86554-8682-419b-ac94-6a82ba191515",
-          "generated_at": "2026-08-14T03:59:28+00:00",
-          "art_hash": "ff9a3b3fdbf53fb4"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_2/sprite.webp",
-          "pixellab_object_id": "98a26cda-4150-45ff-9ac9-e37b2ebbed04",
-          "generated_at": "2026-08-16T09:58:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8699,
-          "glow_score": 0.0014,
-          "art_hash": "77d566f886fed2a3"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_3/sprite.webp",
-          "pixellab_object_id": "64d731a9-a759-4764-82c0-b0ce088bcca4",
-          "generated_at": "2026-08-16T09:59:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9113,
-          "glow_score": 0.0026,
-          "art_hash": "224a2e55d6563489"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_015/not_lit_4/sprite.webp",
-          "pixellab_object_id": "65bf6b9b-c7b1-400f-b1e0-50c95954048d",
-          "generated_at": "2026-08-16T09:59:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8097,
-          "glow_score": 0.0008,
-          "art_hash": "01375e9516856f5b"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "cliff_shrub_016",
       "rel": "cliff_shrubs/cliff_shrub_016",
       "name": "Grey-leaved sea buckthorn 016",
@@ -12371,243 +11755,6 @@
           "difference_from_source": 0.6718,
           "glow_score": 0.0,
           "art_hash": "2276fa0a31cdf243"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_002",
-      "rel": "cliff_vines/cliff_vine_002",
-      "name": "Berry-dotted bramble fall 002",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, berry-dotted bramble fall, towering, many times human height, self-emissive at night, softly radiating light: luminous sap veins glowing through the leaves",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 4.73,
-        "world_px_height": 178,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T19:54:37+00:00",
-      "pixellab_object_id": "f1bfc479-0e74-4697-b366-0f8f1eebf97b",
-      "sprite": "cliff_vines/cliff_vine_002/sprite.webp",
-      "art_hash": "6dbec5f9baaa626e",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_002/sprite.webp",
-          "pixellab_object_id": "f1bfc479-0e74-4697-b366-0f8f1eebf97b",
-          "generated_at": "2026-08-13T19:54:37+00:00",
-          "art_hash": "6dbec5f9baaa626e"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_002/lit_2/sprite.webp",
-          "pixellab_object_id": "87ff5059-c405-448c-bac6-e74f25eecf22",
-          "generated_at": "2026-08-16T10:03:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4112,
-          "glow_score": 0.0424,
-          "art_hash": "609f7cafb15d091f"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_002/lit_3/sprite.webp",
-          "pixellab_object_id": "d48a14bc-7c04-4c9b-8c49-0419d50fc5f2",
-          "generated_at": "2026-08-16T10:03:31+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7414,
-          "glow_score": 0.0,
-          "art_hash": "d1b5c5870cd3922a"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_002/lit_4/sprite.webp",
-          "pixellab_object_id": "d5dc49c3-f6c8-46fb-b796-6023bcddb38d",
-          "generated_at": "2026-08-16T10:03:42+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6239,
-          "glow_score": 0.0,
-          "art_hash": "64b261b095de86f5"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "69dbbddb-4a53-47a1-92a1-86b76a1a7fd9",
-          "generated_at": "2026-08-16T10:04:16+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2964,
-          "glow_score": 0.0,
-          "art_hash": "e3a136e37c2ee3e3"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "63b1c16e-5191-4d66-a8da-af018df36005",
-          "generated_at": "2026-08-16T10:03:53+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6896,
-          "glow_score": 0.0,
-          "art_hash": "a190af2bd6745c90"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_007",
-      "rel": "cliff_vines/cliff_vine_007",
-      "name": "Wisteria fall in purple bloom 007",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, wisteria fall in purple bloom, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 5.1,
-        "world_px_height": 192,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T22:16:43+00:00",
-      "pixellab_object_id": "24c1ea44-a0ed-4d92-ae47-2c2bf90793b7",
-      "sprite": "cliff_vines/cliff_vine_007/sprite.webp",
-      "art_hash": "96554bb9d0fe2037",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_007/lit_1/sprite.webp",
-          "pixellab_object_id": "46b480a7-9c12-43d1-b202-21cbe786e2c9",
-          "generated_at": "2026-08-16T10:06:17+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.8882,
-          "glow_score": 0.1827,
-          "art_hash": "e215885253c5b1e8"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_007/lit_2/sprite.webp",
-          "pixellab_object_id": "e065b05c-0fc8-4d65-bceb-e73f3750aabb",
-          "generated_at": "2026-08-16T10:12:42+00:00",
-          "glow_concept": "luminous sap veins glowing through the leaves",
-          "difference_from_source": 0.9126,
-          "glow_score": 0.1662,
-          "art_hash": "d43cd033d3c306f1"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_007/sprite.webp",
-          "pixellab_object_id": "24c1ea44-a0ed-4d92-ae47-2c2bf90793b7",
-          "generated_at": "2026-08-13T22:16:43+00:00",
-          "art_hash": "96554bb9d0fe2037"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_007/not_lit_2/sprite.webp",
-          "pixellab_object_id": "390e2965-3ca2-4edc-8119-04bcd743b8e3",
-          "generated_at": "2026-08-16T10:03:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7743,
-          "glow_score": 0.0774,
-          "art_hash": "36c6a13ff60e5be8"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_007/not_lit_3/sprite.webp",
-          "pixellab_object_id": "8ef74d2d-5d31-4838-967b-e8f1aa40e795",
-          "generated_at": "2026-08-16T10:04:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3357,
-          "glow_score": 0.1117,
-          "art_hash": "975355e10f078931"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_007/not_lit_4/sprite.webp",
-          "pixellab_object_id": "f7cdcd45-4861-4436-8e79-2200c1730612",
-          "generated_at": "2026-08-16T10:05:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6541,
-          "glow_score": 0.1448,
-          "art_hash": "99596b044988e9eb"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_011",
-      "rel": "cliff_vines/cliff_vine_011",
-      "name": "Moss-heavy dripping vine curtain 011",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, moss-heavy dripping vine curtain, asymmetric, wind-shaped, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 6.07,
-        "world_px_height": 229,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T00:44:49+00:00",
-      "pixellab_object_id": "9cf7568d-0747-494a-9ab6-e81b7ec16fd2",
-      "sprite": "cliff_vines/cliff_vine_011/sprite.webp",
-      "art_hash": "ac14603db8cee614",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_011/lit_1/sprite.webp",
-          "pixellab_object_id": "90678a65-9177-4df9-9b2d-733b9296b96d",
-          "generated_at": "2026-08-16T10:06:54+00:00",
-          "glow_concept": "amber memory-light dripping from the tips",
-          "difference_from_source": 0.6983,
-          "glow_score": 0.0327,
-          "art_hash": "dcc75829249e091f"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_011/lit_2/sprite.webp",
-          "pixellab_object_id": "ee0045ad-5a60-4f4b-b645-3ba6ff307e5c",
-          "generated_at": "2026-08-16T10:07:24+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.6347,
-          "glow_score": 0.076,
-          "art_hash": "f32605777358a2c7"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_011/sprite.webp",
-          "pixellab_object_id": "9cf7568d-0747-494a-9ab6-e81b7ec16fd2",
-          "generated_at": "2026-08-14T00:44:49+00:00",
-          "art_hash": "ac14603db8cee614"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_011/not_lit_2/sprite.webp",
-          "pixellab_object_id": "d415a25f-618e-4771-84f7-634b116791ee",
-          "generated_at": "2026-08-16T10:06:43+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.742,
-          "glow_score": 0.0,
-          "art_hash": "383c5cd3be958d0e"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_011/not_lit_3/sprite.webp",
-          "pixellab_object_id": "067cdb03-50ac-4e14-9474-6c5e05194e6d",
-          "generated_at": "2026-08-16T10:06:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6793,
-          "glow_score": 0.0,
-          "art_hash": "f9d9c7c042ef8c4b"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_011/not_lit_4/sprite.webp",
-          "pixellab_object_id": "37b55dad-ae4e-40cf-bcc3-943bdc4a8620",
-          "generated_at": "2026-08-16T10:06:31+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3953,
-          "glow_score": 0.0,
-          "art_hash": "88adf334550f98cd"
         }
       },
       "animations": []
@@ -13087,164 +12234,6 @@
       "animations": []
     },
     {
-      "id": "cliff_vine_039",
-      "rel": "cliff_vines/cliff_vine_039",
-      "name": "Dry brown wilted fall 039",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, dry brown wilted fall, a ring-shaped spread with an empty middle, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.46,
-        "world_px_height": 356,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T04:31:43+00:00",
-      "pixellab_object_id": "71ab63ed-59de-4033-825e-b019ea919703",
-      "sprite": "cliff_vines/cliff_vine_039/sprite.webp",
-      "art_hash": "ef9b4a72a9a69931",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_039/lit_1/sprite.webp",
-          "pixellab_object_id": "b1eb8561-c041-4ec7-8742-47c86a0cfd74",
-          "generated_at": "2026-08-16T10:15:51+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.6596,
-          "glow_score": 0.0723,
-          "art_hash": "8808279d8cc0382e"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_039/lit_2/sprite.webp",
-          "pixellab_object_id": "8a7ab35a-0454-4dff-93e3-0f3040796b78",
-          "generated_at": "2026-08-16T10:16:44+00:00",
-          "glow_concept": "luminous sap veins glowing through the leaves",
-          "difference_from_source": 0.6072,
-          "glow_score": 0.16,
-          "art_hash": "0510cf049132fe94"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_039/sprite.webp",
-          "pixellab_object_id": "71ab63ed-59de-4033-825e-b019ea919703",
-          "generated_at": "2026-08-14T04:31:43+00:00",
-          "art_hash": "ef9b4a72a9a69931"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_039/not_lit_2/sprite.webp",
-          "pixellab_object_id": "f51dced4-d5f5-40a0-a409-ceb55deaace1",
-          "generated_at": "2026-08-16T10:15:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4367,
-          "glow_score": 0.0071,
-          "art_hash": "ed4115b88965050d"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_039/not_lit_3/sprite.webp",
-          "pixellab_object_id": "908f82ce-b79d-4696-84ae-e06f8336c274",
-          "generated_at": "2026-08-16T10:15:40+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4674,
-          "glow_score": 0.0022,
-          "art_hash": "785ead399e5be3f8"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_039/not_lit_4/sprite.webp",
-          "pixellab_object_id": "39b8375d-e0e0-407b-805d-5382b0582d39",
-          "generated_at": "2026-08-16T10:16:14+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6425,
-          "glow_score": 0.0077,
-          "art_hash": "2e92e07057e5b1d6"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_041",
-      "rel": "cliff_vines/cliff_vine_041",
-      "name": "Blue-flowered creeper fall 041",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, blue-flowered creeper fall, scattered evenly and thinly, towering, many times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 5.88,
-        "world_px_height": 221,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T04:33:03+00:00",
-      "pixellab_object_id": "4e0e8083-92fe-4b12-97af-712d0bd094b8",
-      "sprite": "cliff_vines/cliff_vine_041/sprite.webp",
-      "art_hash": "21b9d68c58afa9e1",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_041/lit_1/sprite.webp",
-          "pixellab_object_id": "76d80bff-b0d8-41ae-a219-661b9a2caa14",
-          "generated_at": "2026-08-16T10:17:37+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.582,
-          "glow_score": 0.1071,
-          "art_hash": "de92783e785cb134"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_041/lit_2/sprite.webp",
-          "pixellab_object_id": "323af1cc-498f-4622-84e0-cdd0ead28274",
-          "generated_at": "2026-08-16T10:17:05+00:00",
-          "glow_concept": "luminous sap veins glowing through the leaves",
-          "difference_from_source": 0.6582,
-          "glow_score": 0.1316,
-          "art_hash": "88c37cc609812fc4"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_041/sprite.webp",
-          "pixellab_object_id": "4e0e8083-92fe-4b12-97af-712d0bd094b8",
-          "generated_at": "2026-08-14T04:33:03+00:00",
-          "art_hash": "21b9d68c58afa9e1"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_041/not_lit_2/sprite.webp",
-          "pixellab_object_id": "8e70258b-12b5-427e-8745-70926657891e",
-          "generated_at": "2026-08-16T10:16:15+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6145,
-          "glow_score": 0.0019,
-          "art_hash": "884b778ff3e617da"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_041/not_lit_3/sprite.webp",
-          "pixellab_object_id": "ed0aabca-5783-4a6b-84a3-8c9386a366f6",
-          "generated_at": "2026-08-16T10:16:47+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4935,
-          "glow_score": 0.002,
-          "art_hash": "3dc230013428075e"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_041/not_lit_4/sprite.webp",
-          "pixellab_object_id": "cac6ceec-446b-41ca-9ed3-533015fbeb8b",
-          "generated_at": "2026-08-16T10:17:03+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.655,
-          "glow_score": 0.0013,
-          "art_hash": "a815aa3a781e3f46"
-        }
-      },
-      "animations": []
-    },
-    {
       "id": "cliff_vine_044",
       "rel": "cliff_vines/cliff_vine_044",
       "name": "Dark green ivy fall 044",
@@ -13477,85 +12466,6 @@
           "difference_from_source": 0.2805,
           "glow_score": 0.0007,
           "art_hash": "3761d6599b61a2c0"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_048",
-      "rel": "cliff_vines/cliff_vine_048",
-      "name": "Yellow honeysuckle fall 048",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a SPARSE OPEN NETWORK of thin vine runners spreading every way, branching and rejoining like a loose graph, small leaf clusters at irregular intervals, MOSTLY EMPTY SPACE, OFF-CENTRE and LOPSIDED, entering from one corner and wandering across, denser at one end and empty at the other, never centred, never radial, never symmetric, never a neat tree diagram, clearly visible mid-tone greens and warm browns that read against dark grey stone \u2014 no main stem, no trunk, no origin, no line across the top, nothing it hangs from; thins out into a few isolated tendrils toward every edge so copies overlap freely; no rock, no cliff, no wall, nothing behind it, yellow honeysuckle fall, fine and lacy throughout, towering, many times human height, self-emissive at night, softly radiating light: moonlit silver shimmer across the leaves",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 10.79,
-        "world_px_height": 406,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T04:33:00+00:00",
-      "pixellab_object_id": "a2ada813-ef20-49dc-85f1-e9e1e4dca647",
-      "sprite": "cliff_vines/cliff_vine_048/sprite.webp",
-      "art_hash": "9971a5381db8df01",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_048/sprite.webp",
-          "pixellab_object_id": "a2ada813-ef20-49dc-85f1-e9e1e4dca647",
-          "generated_at": "2026-08-14T04:33:00+00:00",
-          "art_hash": "9971a5381db8df01"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_048/lit_2/sprite.webp",
-          "pixellab_object_id": "dd69dc04-494e-4129-bb18-ac920c0407e6",
-          "generated_at": "2026-08-16T10:20:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6722,
-          "glow_score": 0.0035,
-          "art_hash": "199b3b62935fbdd6"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_048/lit_3/sprite.webp",
-          "pixellab_object_id": "d2b460a7-e57e-4960-addf-25dd464f0afb",
-          "generated_at": "2026-08-16T10:22:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.429,
-          "glow_score": 0.0038,
-          "art_hash": "7d33e8cc449114ea"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_048/lit_4/sprite.webp",
-          "pixellab_object_id": "7d91e975-15f2-4e08-a119-fb40804db084",
-          "generated_at": "2026-08-16T10:24:33+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.51,
-          "glow_score": 0.0034,
-          "art_hash": "8f2dee449dda059f"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_048/not_lit_1/sprite.webp",
-          "pixellab_object_id": "b8da861f-878e-4d29-a2a2-dd2cc3168f05",
-          "generated_at": "2026-08-16T10:21:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9998,
-          "glow_score": 0.0,
-          "art_hash": "4962e8393191fdd9"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_048/not_lit_2/sprite.webp",
-          "pixellab_object_id": "77000209-e14b-49ea-84a6-6b6de1c08962",
-          "generated_at": "2026-08-16T10:23:23+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9993,
-          "glow_score": 0.0,
-          "art_hash": "bcea49a59e3cf98a"
         }
       },
       "animations": []
@@ -16242,85 +15152,6 @@
           "difference_from_source": 0.7632,
           "glow_score": 0.0,
           "art_hash": "07daa8e2f485ec52"
-        }
-      },
-      "animations": []
-    },
-    {
-      "id": "cliff_vine_903",
-      "rel": "cliff_vines/cliff_vine_903",
-      "name": "Wilted dry brown vine fall 903",
-      "category": "cliff_vines",
-      "lights": null,
-      "description": "a long thick curtain of climbing vine cascading straight down a rock face, dense overlapping leaves forming a heavy vertical mass, made to hang over a cliff wall, wilted dry brown vine fall, tall, about three times human height, completely unlit, no glow, no light sources, no self-emission",
-      "view": "low top-down",
-      "size": 160,
-      "placement": {
-        "world_height_m": 4.49,
-        "world_px_height": 169,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-13T23:26:50+00:00",
-      "pixellab_object_id": "6875c9dc-134a-4c8e-93a2-8f4212d8d5d5",
-      "sprite": "cliff_vines/cliff_vine_903/sprite.webp",
-      "art_hash": "1a859eb506527456",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_903/lit_1/sprite.webp",
-          "pixellab_object_id": "b8b628bb-e7ec-4b9a-b3e5-2b3cc0bd0d96",
-          "generated_at": "2026-08-16T11:10:09+00:00",
-          "glow_concept": "amber memory-light dripping from the tips",
-          "difference_from_source": 0.8452,
-          "glow_score": 0.0189,
-          "art_hash": "ec2aee337c57c19f"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_903/lit_2/sprite.webp",
-          "pixellab_object_id": "9340914c-dd07-453d-bcdc-1cc590f3d613",
-          "generated_at": "2026-08-16T11:10:10+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.518,
-          "glow_score": 0.0169,
-          "art_hash": "02d8afcfc1487b20"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_903/sprite.webp",
-          "pixellab_object_id": "6875c9dc-134a-4c8e-93a2-8f4212d8d5d5",
-          "generated_at": "2026-08-13T23:26:50+00:00",
-          "art_hash": "1a859eb506527456"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_903/not_lit_2/sprite.webp",
-          "pixellab_object_id": "badb2f2a-805f-4bda-9222-c17e7eec4c55",
-          "generated_at": "2026-08-16T11:09:16+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8933,
-          "glow_score": 0.0,
-          "art_hash": "abcf38adecc841ed"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_903/not_lit_3/sprite.webp",
-          "pixellab_object_id": "9f8050be-e3b2-4003-bba4-8f6a8880d9a2",
-          "generated_at": "2026-08-16T11:09:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.779,
-          "glow_score": 0.0,
-          "art_hash": "64d79d22cb211961"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_903/not_lit_4/sprite.webp",
-          "pixellab_object_id": "b53dd1b8-36fd-4c3a-b249-5a7892ca22c2",
-          "generated_at": "2026-08-16T11:11:20+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.836,
-          "glow_score": 0.0,
-          "art_hash": "c61d32be61e72486"
         }
       },
       "animations": []
