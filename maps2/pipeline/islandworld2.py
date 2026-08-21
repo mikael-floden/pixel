@@ -310,6 +310,22 @@ HOUSE_WATER_GAP = 6                 # keep this many cells of land between the w
 BONFIRE_AB_CELL = (205, 118)
 BONFIRE_AB_TILE = "tiles2/saturated_grass/base_x_3/base_x_3_1054990476/tile_12.webp"
 
+# THE CHESS TABLES (maintainer 2026-08-09): two of his own PixelLab objects
+# ("a stout wooden games table with a chess board", south rotations), baked into
+# maps2/props/ as standard 64-wide prop tiles (opaque bottom on the grid
+# diamond's front vertex, so the game's bbox anchor and render2's box anchor
+# agree). Table 1 sits fireside, east of the spawn campfire, clear of the
+# A/B bonfire fixture's screen column. Table 2 is the chess master's pitch on
+# the plaza west of the door — npcs.PINNED stands Rannulf directly behind it
+# (one cell up-screen, facing south), so the table covers his legs and it reads
+# as a man at his board. Provenance: PixelLab objects
+# baeb741f-8f49-4b6d-90d1-a4837e868535 (table 1) and
+# 780aefab-3dc0-4586-9982-e770186cd58c (table 2).
+CHESS_TABLES = (
+    ((206, 120), "maps2/props/chess_table_1.webp"),
+    ((197, 119), "maps2/props/chess_table_2.webp"),
+)
+
 
 class Island2(Island):
     def __init__(self, seed=21, M=24):
@@ -406,7 +422,12 @@ class Island2(Island):
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
-        self._reconnect_after_props()
+        for (cx, cy), tile in CHESS_TABLES:   # the maintainer's chess tables —
+            assert self.mat[cy, cx] == "saturated_grass" and int(self.level[cy, cx]) == 0 \
+                and (cx, cy) not in self.props, \
+                f"chess table cell ({cx},{cy}) is no longer open grass — re-site it"
+            self.props[(cx, cy)] = os.path.join(os.path.dirname(MAPS2), tile)
+        self._reconnect_after_props()         # ...placed BEFORE the reachability battery
         if getattr(self, '_ref_fire', None):
             self.props[self._ref_fire] = os.path.join(os.path.dirname(MAPS2), BONFIRE_AB_TILE)
         self._carve_cave()                # LAST: hollow the east massif into the Diablo
