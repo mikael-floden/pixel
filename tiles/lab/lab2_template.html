@@ -222,9 +222,19 @@ function scale(){ return live || (fit ? fitScale : LADDER[si]); }
 function setLive(v){ live = Math.max(0.15, Math.min(40, v)); }
 function settle(){                // land on a whole number so pixels stay square
   if(!live) return;
+  // ANCHOR ON THE VIEWPORT CENTRE. Snapping the scale without re-deriving the offset
+  // moves every pixel under the finger, which reads as the page jumping the instant
+  // you let go of a pinch.
+  const r = c.getBoundingClientRect();
+  const before = scale();
+  const wx = (r.width / 2 - ox) / before, wy = (r.height / 2 - oy) / before;
   let best = 0, bd = 1e9;
   LADDER.forEach((v, i) => { const d = Math.abs(v - live); if(d < bd){ bd = d; best = i; } });
-  si = best; fit = false; live = 0; clampPan(); draw();
+  si = best; fit = false; live = 0;
+  const after = scale();
+  ox = r.width / 2 - wx * after;
+  oy = r.height / 2 - wy * after;
+  clampPan(); draw();
 }
 function draw(){
   const r = c.getBoundingClientRect(), s = scale();
@@ -246,12 +256,12 @@ function clampPan(){
   // Keep a margin of the content on screen rather than a fraction of it: on the sheet
   // view the content is far taller than the viewport, and a fractional rule made the
   // top and bottom unreachable.
+  // Clamp to a RANGE, never snap to a fixed point. Forcing the content to the exact
+  // centre whenever it fits made every pan end with a jump back.
   const r = c.getBoundingClientRect(), s = scale();
   const w = off.width*s, h = off.height*s, M = 60;
-  if(w <= r.width) ox = (r.width - w)/2;
-  else ox = Math.min(M, Math.max(r.width - w - M, ox));
-  if(h <= r.height) oy = (r.height - h)/2;
-  else oy = Math.min(M, Math.max(r.height - h - M, oy));
+  ox = Math.min(Math.max(ox, Math.min(M, r.width - w - M)), Math.max(M, r.width - w - M));
+  oy = Math.min(Math.max(oy, Math.min(M, r.height - h - M)), Math.max(M, r.height - h - M));
 }
 function zoomAt(d, cx, cy){
   const before = scale();
@@ -476,7 +486,16 @@ c.addEventListener("pointermove", e => {
 ["pointerup","pointercancel"].forEach(k => c.addEventListener(k, e => {
   const wasTwo = pts.size === 2;
   pts.delete(e.pointerId);
-  if(pts.size < 2){ pinch0 = null; if(wasTwo) settle(); }
+  if(pts.size < 2){
+    pinch0 = null;
+    if(wasTwo){
+      settle();
+      // the surviving finger keeps panning; reset its origin so the first move after
+      // the lift is a delta of zero rather than the gap between two fingers
+      for(const [id, p] of pts){ const ev = e; p.x = ev.clientX; p.y = ev.clientY; }
+      moved = 999;                       // and it is a drag, never a double tap
+    }
+  }
   if(!pts.size){
     c.classList.remove("drag");
     const now = Date.now(), r = c.getBoundingClientRect();
