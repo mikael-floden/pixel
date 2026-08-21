@@ -1129,6 +1129,10 @@ export class WorldScene extends Phaser.Scene {
   private uiLocked = false;
   // ---- chess at the board (chessui.ts; server chess.ts) ----
   private chessDialog: ChessDialog | null = null;
+  /** Non-null while standing at a joinable seat: what the jump button offers.
+   * "start" = free board, "join" = someone (or the resident NPC) waits. */
+  private chessPrompt: { mode: "start" | "join" } | null = null;
+  private chessPromptAt = 0;
   private chessDecor = new Map<string, Phaser.GameObjects.Image>();
   private chessWaitB = new Map<string, Phaser.GameObjects.Text>();
   /** …and the tap that CLOSES a modal must not become a trip either: the
@@ -1841,7 +1845,14 @@ export class WorldScene extends Phaser.Scene {
       }
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
-    this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
+    this.input.keyboard!.on("keydown-SPACE", () => {
+      // Standing at a chess seat, the jump affordance IS the chess offer
+      // (maintainer: the button reads "START/JOIN CHESS GAME"). Auto-jump
+      // (maybeAutoJump) bypasses this on purpose — walking into a ledge
+      // beside a board must still hop.
+      if (this.chessPrompt) return void this.room?.send("chess.sit", {});
+      this.tryJump();
+    });
     // Feature/debug toggles: TOP-ROW digits on keyboard AND buttons in the
     // HUD's Settings tab (mobile has no keys; maintainer moved them there —
     // the old chat welcome overlay listing the keys is gone).
@@ -2124,6 +2135,7 @@ export class WorldScene extends Phaser.Scene {
         })) : [],
         dialog: this.chessDialog?.probe() ?? null,
         waitBubbles: this.chessWaitB.size,
+        prompt: this.chessPrompt?.mode ?? null,
       }),
       chessTap: (sq: number) => this.chessDialog?.tapSquare(sq),
       // The debris pieces standing on ONE cell, as (level, textureKey) pairs —
@@ -2293,7 +2305,7 @@ export class WorldScene extends Phaser.Scene {
         };
       },
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
-      jump: () => this.tryJump(),
+      jump: () => (this.chessPrompt ? this.room?.send("chess.sit", {}) : this.tryJump()),
       // Tap-to-move probes: set/inspect the autopilot target directly, and
       // run the same screen-point picking a real tap uses. A tap on a world cell
       // that carries a deck (bridge/roof) targets the DECK — same as a real
@@ -4802,6 +4814,7 @@ export class WorldScene extends Phaser.Scene {
     for (const av of this.avatars.values()) this.syncCoverOutline(av);
     for (const mv2 of this.monsters.values()) this.syncCoverOutline(mv2);
     for (const nv of this.npcs.values()) this.syncCoverOutline(nv);
+    this.updateChessPrompt();
 
     // Rings for monsters that left the room entirely.
     for (const [id, ring] of this.monsterRings) {
@@ -6165,10 +6178,61 @@ export class WorldScene extends Phaser.Scene {
   }
 
 
+  /** Recompute the jump-button chess offer, ~7Hz. Cheap: a handful of
+   * boards, pure distance math. Fires a window event ONLY on change — the
+   * gamepad label (games-ui's file) listens for it. */
+  private updateChessPrompt() {
+    const now = this.time.now;
+    if (now - this.chessPromptAt < 150) return;
+    this.chessPromptAt = now;
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    let next: { mode: "start" | "join" } | null = null;
+    if (me && this.room && !this.chessDialog) {
+      const R = CELL_WU * 0.95;
+      this.room.state.chessBoards?.forEach((b: any) => {
+        if (next || b.matchId || b.waitingSid === this.room!.sessionId) return;
+        const dA = Math.hypot(me.fx - (b.seatAc + 0.5) * CELL_WU, me.fy - (b.seatAr + 0.5) * CELL_WU);
+        const dB = b.npc ? Infinity : Math.hypot(me.fx - (b.seatBc + 0.5) * CELL_WU, me.fy - (b.seatBr + 0.5) * CELL_WU);
+        if (Math.min(dA, dB) <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
+      });
+    }
+    const label = next ? ((next as { mode: string }).mode === "join" ? "JOIN CHESS GAME" : "START CHESS GAME") : null;
+    const prev = this.chessPrompt ? (this.chessPrompt.mode === "join" ? "JOIN CHESS GAME" : "START CHESS GAME") : null;
+    this.chessPrompt = next;
+    if (label !== prev) window.dispatchEvent(new CustomEvent("ml-chess-prompt", { detail: { label } }));
+  }
+
   /** The in-world chess board: a generated iso-checker decor image (replaced
    * by real scenery art once the scenery agent's boards are placed — the
    * texture is one swap away). Depth = painter y like any flat decor. */
-  private placeChessBoard(id: string, b: { col: number; row: number }) {
+  private placeChessBoard(id: string, b: { col: number; row: number; sprite?: string }) {
+    if (this.chessDecor.has(id)) return;
+    if (b.sprite) {
+      // The scenery agent's synced board (the maintainer's PixelLab piece,
+      // world_px_height 27 -> display height 27, bottom-anchored). Campfire
+      // pattern: queue the image; a 404 falls through to the placeholder.
+      const key = `chess-board:${b.sprite}`;
+      const place = () => {
+        const p2 = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
+        const img = this.add.image(p2.x, p2.y - p2.lvl * MAP_GEOMETRY.lh + MAP_GEOMETRY.dy / 2, key)
+          .setOrigin(0.5, 1);
+        img.setScale(27 / img.height);
+        img.setDepth(p2.y + 0.4);
+        this.chessDecor.set(id, img);
+      };
+      if (this.textures.exists(key)) { place(); return; }
+      this.load.image(key, withV(b.sprite));
+      this.load.once(`filecomplete-image-${key}`, place);
+      this.load.once("loaderror", (f: Phaser.Loader.File) => {
+        if (f.key === key && !this.chessDecor.has(id)) this.placeChessBoardFallback(id, b);
+      });
+      this.load.start();
+      return;
+    }
+    this.placeChessBoardFallback(id, b);
+  }
+
+  private placeChessBoardFallback(id: string, b: { col: number; row: number }) {
     if (this.chessDecor.has(id)) return;
     const key = "chess-board-decor";
     if (!this.textures.exists(key)) {
@@ -6195,12 +6259,33 @@ export class WorldScene extends Phaser.Scene {
    * the TEXT with an image the moment it syncs into scenery/ (one texture
    * swap here, nothing else moves). Waiting players are standing still by
    * definition, so a static position is honest. */
-  private syncChessWait(id: string, b: { waitingSid: string }) {
+  private syncChessWait(id: string, b: { waitingSid: string; bubble?: string }) {
     const old = this.chessWaitB.get(id);
     if (old) { old.destroy(); this.chessWaitB.delete(id); }
     if (!b.waitingSid) return;
     const av = this.avatars.get(b.waitingSid);
     if (!av) return;
+    if (b.bubble) {
+      // The maintainer's challenge-bubble art (dots point at the head): set
+      // `bubble` in the board config the moment the piece syncs into
+      // scenery/ — no code change. Campfire pattern; drawn text below is the
+      // fallback while it loads or if it 404s.
+      const key = `chess-bubble:${b.bubble}`;
+      const placeImg = () => {
+        if (!this.room?.state.chessBoards?.get(id)?.waitingSid) return;
+        const av2 = this.avatars.get(b.waitingSid);
+        if (!av2) return;
+        this.chessWaitB.get(id)?.destroy();
+        const img = this.add.image(av2.sprite.x, av2.sprite.y - av2.sprite.displayHeight * av2.sprite.originY - 2, key)
+          .setOrigin(0.5, 1).setDepth(900_100) as unknown as Phaser.GameObjects.Text;
+        this.chessWaitB.set(id, img);
+      };
+      if (this.textures.exists(key)) { placeImg(); return; }
+      this.load.image(key, withV(b.bubble));
+      this.load.once(`filecomplete-image-${key}`, placeImg);
+      this.load.start();
+      // fall through: drawn bubble shows until the art lands
+    }
     const t = this.add
       .text(av.sprite.x, av.sprite.y - av.sprite.displayHeight * av.sprite.originY - 6, "♞ Chess?", {
         fontFamily: "system-ui, sans-serif", fontSize: "13px",

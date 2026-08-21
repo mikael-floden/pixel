@@ -283,11 +283,14 @@ export class ChessBoard extends Schema {
   declare npc: string; // "" = PvP board; else the resident opponent's display name
   declare waitingSid: string;
   declare matchId: string;
+  declare sprite: string; // /assets path of the board's in-world art ("" = placeholder)
+  declare bubble: string; // /assets path of the challenge bubble art ("" = drawn fallback)
 }
 defineTypes(ChessBoard, {
   id: "string", col: "number", row: "number",
   seatAc: "number", seatAr: "number", seatBc: "number", seatBr: "number",
   npc: "string", waitingSid: "string", matchId: "string",
+  sprite: "string", bubble: "string",
 });
 
 /** One running (or just-finished) game. Moves are coordinate strings

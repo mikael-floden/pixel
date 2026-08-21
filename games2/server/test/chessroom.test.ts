@@ -45,8 +45,14 @@ async function withServer(fn: () => Promise<void>): Promise<void> {
   try { await fn(); } finally { await gameServer.gracefullyShutdown(false); }
 }
 
-const sit = (r: AnyRoom, c: number, row: number) =>
+// Explicit seating since 2026-08-22 (maintainer: the jump button reads
+// START/JOIN CHESS GAME): stand at the seat, then SEND chess.sit — walking
+// past a board must never seat anyone, which the PvP test asserts.
+const sit = async (r: AnyRoom, c: number, row: number) => {
   r.send("teleport", { x: (c + 0.5) * CELL_WU, y: (row + 0.5) * CELL_WU });
+  await new Promise((res) => setTimeout(res, 350)); // teleport lands, tick sees it
+  r.send("chess.sit", {});
+};
 
 async function join(world: string, opts: Record<string, unknown> = {}): Promise<AnyRoom> {
   const c = new Client(`ws://localhost:${PORT}`);
@@ -61,10 +67,14 @@ test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async () =>
   const b = await join("monster_demo", opts);
   await waitFor(() => a.state.chessBoards?.size === 2);
 
-  sit(a, 9, 7);
+  // Standing there alone does NOT seat you — the press does.
+  a.send("teleport", { x: 9.5 * CELL_WU, y: 7.5 * CELL_WU });
+  await new Promise((res) => setTimeout(res, 700));
+  assert.equal(a.state.chessBoards.get("pvp")?.waitingSid ?? "", "", "no auto-seat from proximity");
+  a.send("chess.sit", {});
   await waitFor(() => a.state.chessBoards.get("pvp")?.waitingSid === a.sessionId);
 
-  sit(b, 11, 7);
+  await sit(b, 11, 7);
   await waitFor(() => a.state.chessMatches?.size === 1);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;
@@ -101,7 +111,7 @@ test("PvP: seat -> wait bubble -> match -> dice -> moves -> resign", async () =>
 test("NPC board: instant match, NPC throws its die and answers moves", async () => { await withServer(async () => {
   const a = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0 });
   await waitFor(() => a.state.chessBoards?.size === 2);
-  sit(a, 9, 11);
+  await sit(a, 9, 11);
   await waitFor(() => a.state.chessMatches?.size === 1, 4000);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;
@@ -125,7 +135,7 @@ test("timeout: the bank empties and the flag falls", async () => { await withSer
   const a = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
   const b = await join("monster_demo", { chessBoards: BOARDS, monsterCount: 0, chessClockMs: 1200 });
   await waitFor(() => a.state.chessBoards?.size === 2);
-  sit(a, 9, 7); sit(b, 11, 7);
+  await sit(a, 9, 7); await sit(b, 11, 7);
   await waitFor(() => a.state.chessMatches?.size >= 1);
   const mid: string = [...a.state.chessMatches.keys()][0];
   const m = () => a.state.chessMatches.get(mid)!;

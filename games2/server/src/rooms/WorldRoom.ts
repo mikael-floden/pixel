@@ -613,6 +613,7 @@ export class WorldRoom extends Room<WorldState> {
       (fn, ms) => this.clock.setTimeout(fn, ms),
     );
     this.chess.addBoards(chessBoardsFor(this.worldName, options?.chessBoards));
+    this.onMessage("chess.sit", (client) => this.chess.sit(client.sessionId));
     this.onMessage("chess.dice", (client, msg: { m?: string }) => {
       if (typeof msg?.m === "string") this.chess.throwDice(msg.m, client.sessionId);
     });

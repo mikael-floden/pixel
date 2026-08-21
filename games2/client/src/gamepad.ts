@@ -141,6 +141,14 @@ export function mountGamepadStick(page: HTMLElement) {
   // Settings "Ambient effects" header.
   const jumpLabel = mk("div", "ml-pad-label");
   jumpLabel.textContent = "Jump";
+  // CHESS OFFER (games agent, 2026-08-22, maintainer spec): standing at a
+  // free chess seat the jump button IS the offer — the label reads
+  // START/JOIN CHESS GAME and the press seats you (WorldScene intercepts the
+  // synthesized SPACE). One additive listener; "Jump" returns when you step
+  // away. games-ui: this is the only chess touch in your file.
+  window.addEventListener("ml-chess-prompt", (e) => {
+    jumpLabel.textContent = (e as CustomEvent).detail?.label ?? "Jump";
+  });
   const pickupLabel = mk("div", "ml-pad-label");
   pickupLabel.textContent = "Pick up";
   const walkLabel = mk("div", "ml-pad-label");

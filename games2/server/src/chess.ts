@@ -34,6 +34,8 @@ export interface ChessBoardCfg {
   id: string; col: number; row: number;
   seatA: [number, number]; seatB: [number, number];
   npc?: string; // display name of the resident opponent; presence makes it an NPC board
+  sprite?: string; // /assets path of the in-world board art (scenery piece)
+  bubble?: string; // /assets path of the challenge speech-bubble art
 }
 
 const CFG_PATH = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "config", "chess_boards.json");
@@ -67,9 +69,6 @@ type Live = {
 
 export class ChessManager {
   private live = new Map<string, Live>();
-  /** After a match ends at a board, its players must LEAVE the seat before
-   * they can re-seat — otherwise closing the dialog instantly re-matches. */
-  private cooldown = new Map<string, string>(); // sid -> boardId
   private nextId = 1;
 
   constructor(
@@ -87,32 +86,52 @@ export class ChessManager {
       b.seatAc = c.seatA[0]; b.seatAr = c.seatA[1];
       b.seatBc = c.seatB[0]; b.seatBr = c.seatB[1];
       b.npc = c.npc ?? ""; b.waitingSid = ""; b.matchId = "";
+      b.sprite = c.sprite ?? ""; b.bubble = c.bubble ?? "";
       this.state.chessBoards.set(c.id, b);
     }
   }
 
-  /** Proximity seating, called at ~4Hz from the sim loop. Cheap by
-   * construction: boards are few and this is distance math, no allocation on
-   * the quiet path. */
+  /**
+   * SEATING IS A BUTTON PRESS, NOT PROXIMITY (maintainer 2026-08-22: stand
+   * close to a side and the jump button reads "START CHESS GAME"/"JOIN CHESS
+   * GAME"). The client sends chess.sit; the server validates you really stand
+   * at a free seat. Nobody is ever seated by merely walking past a board.
+   */
+  sit(sid: string) {
+    const p = this.state.players.get(sid);
+    if (!p || p.dead || this.inMatch(sid)) return;
+    // Nearest board with a free seat the player is standing at.
+    let best: { b: ChessBoard; d: number } | null = null;
+    this.state.chessBoards.forEach((b) => {
+      if (b.matchId || b.waitingSid === sid) return;
+      const d = this.seatDistFor(p.x, p.y, b);
+      if (d <= SEAT_RADIUS_WU && (!best || d < best.d)) best = { b, d };
+    });
+    if (!best) return;
+    const b = (best as { b: ChessBoard }).b;
+    if (b.npc) return this.startMatch(b, sid, "npc");
+    if (b.waitingSid && b.waitingSid !== sid) return this.startMatch(b, b.waitingSid, sid);
+    b.waitingSid = sid;
+  }
+
+  /** Distance to the nearest JOINABLE seat of this board for this player: the
+   * NPC's own seat never counts, and a waiting player's seat is theirs. */
+  private seatDistFor(x: number, y: number, b: ChessBoard): number {
+    const dA = Math.hypot(x - (b.seatAc + 0.5) * CELL_WU, y - (b.seatAr + 0.5) * CELL_WU);
+    const dB = b.npc ? Infinity : Math.hypot(x - (b.seatBc + 0.5) * CELL_WU, y - (b.seatBr + 0.5) * CELL_WU);
+    return Math.min(dA, dB);
+  }
+
+  /** Housekeeping at ~4Hz: a waiting player who walked away stops waiting; a
+   * deserted match resigns; the clock sweeps while matches live. */
   tick() {
     this.state.chessBoards.forEach((b) => {
       if (b.matchId) { this.checkDeserted(b); return; }
-      const atA = this.sidAtSeat(b.seatAc, b.seatAr);
-      const atB = b.npc ? "npc" : this.sidAtSeat(b.seatBc, b.seatBr);
-      // cooldown: a just-finished player standing on the seat does not count
-      const okA = atA && this.cooldown.get(atA) !== b.id ? atA : "";
-      const okB = atB === "npc" ? "npc" : atB && this.cooldown.get(atB) !== b.id ? atB : "";
-      // release cooldowns for anyone who stepped away
-      for (const [sid, bid] of this.cooldown) {
-        if (bid !== b.id) continue;
-        const p = this.state.players.get(sid);
-        if (!p || this.distToSeat(p.x, p.y, b) > SEAT_RADIUS_WU * 1.6) this.cooldown.delete(sid);
+      if (b.waitingSid) {
+        const p = this.state.players.get(b.waitingSid);
+        if (!p || p.dead || this.seatDistFor(p.x, p.y, b) > SEAT_RADIUS_WU * 1.5) b.waitingSid = "";
       }
-      if (okA && okB) return this.startMatch(b, okA, okB);
-      const waiting = okA || (okB !== "npc" ? okB : "");
-      if (b.waitingSid !== waiting) b.waitingSid = waiting;
     });
-    // clock sweep only while something is live
     if (this.live.size) this.sweep();
   }
 
@@ -120,16 +139,6 @@ export class ChessManager {
     const dA = Math.hypot(x - (b.seatAc + 0.5) * CELL_WU, y - (b.seatAr + 0.5) * CELL_WU);
     const dB = b.npc ? Infinity : Math.hypot(x - (b.seatBc + 0.5) * CELL_WU, y - (b.seatBr + 0.5) * CELL_WU);
     return Math.min(dA, dB);
-  }
-
-  private sidAtSeat(c: number, r: number): string {
-    let found = "";
-    this.state.players.forEach((p, sid) => {
-      if (found || p.dead) return;
-      if (this.inMatch(sid)) return;
-      if (Math.hypot(p.x - (c + 0.5) * CELL_WU, p.y - (r + 0.5) * CELL_WU) <= SEAT_RADIUS_WU) found = sid;
-    });
-    return found;
   }
 
   private inMatch(sid: string): boolean {
@@ -261,14 +270,12 @@ export class ChessManager {
       else if (m.phase === "over" && (m.aSid === sid || m.bSid === sid)) this.dismiss(m.id, sid);
     }
     this.state.chessBoards.forEach((b) => { if (b.waitingSid === sid) b.waitingSid = ""; });
-    this.cooldown.delete(sid);
   }
 
   private finish(l: Live, result: string, reason: string) {
     const m = l.match;
     m.phase = "over"; m.result = result; m.reason = reason; m.turnStart = 0;
     l.npcTimer?.clear();
-    for (const sid of [m.aSid, m.bSid]) if (sid !== "npc") this.cooldown.set(sid, m.boardId);
     const b = this.state.chessBoards.get(m.boardId);
     if (b) b.matchId = "";
     // Sweep the schema after a minute even if a client never closes.
