@@ -1161,7 +1161,7 @@ please implement it"). First seated player -> `board.waitingSid`, and every
 client draws the challenge bubble over them (drawn "♞ Chess?" today; swaps to the
 maintainer's PixelLab challenge icon by one texture change in
 `syncChessWait`). Second player at the other seat — or a resident NPC
-(`npc` on the board config; Wendell at the_island2 202,122) — starts a
+(`npc` on the board config; Rannulf, the elder behind his table) — starts a
 ChessMatch both clients open as a DOM dialog (`client/src/chessui.ts`, wiki
 theme, drop-dialog family: uiLock freezes movement while open).
 
@@ -1192,11 +1192,12 @@ theme, drop-dialog family: uiLock freezes movement while open).
   state copies per node and moving it out took a reply from 29ms to ~3ms.
   Replies are scheduled once per opponent move on a 1.2-2.6s humanizing
   delay; zero cost between moves.
-- BOARDS ARE CONFIG, AND THE CURRENT TWO ARE INTERIM (maintainer 2026-08-22:
-  real placements are coming from the fleet — "wait for the real data"; the
-  scenery agent is generating chess_boards/chess_tables now). When a
-  placement sidecar lands, derive positions from it instead of hand-picked
-  cells. `config/chess_boards.json` baked;
+- BOARDS ARE THE MAPS AGENT'S PLACEMENTS (5d7b39dfe3): the tables are world
+  PROPS — "fireside" at (206,120) by the spawn campfire (PvP, seats flank it)
+  and "rannulf" at (197,119) with the elder Rannulf PINNED behind it at
+  (196,118) so the table covers his legs (player seat 198,120, the front).
+  Config sprite "world" = the prop renders the table, the game draws no
+  decor. `config/chess_boards.json` baked;
   `live/tuning/chess.json` overrides per world with the same shape — the
   maintainer adds/moves boards from his phone, no deploy. Board decor is a
   generated checker texture until real scenery board art is placed. The

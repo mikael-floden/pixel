@@ -22,7 +22,7 @@ try {
 
   // FIRST: the waiting contract at the PvP board — stand at a free seat and
   // every client must see the challenge bubble; walk away and it clears.
-  await page.evaluate(() => window.__ml.teleport(193, 113));
+  await page.evaluate(() => window.__ml.teleport(205, 120));
   // The jump button must OFFER the game first (prompt "start"), and pressing
   // SPACE — the exact key the button synthesizes — seats you.
   await page.waitForFunction(() => window.__ml.chess().prompt === "start", { timeout: 12000 })
@@ -30,23 +30,23 @@ try {
   await page.keyboard.press("Space");
   await page.waitForFunction(() => {
     const c = window.__ml.chess();
-    return c.boards.some((b2) => b2.id === "spawn_pvp" && b2.waiting) && c.waitBubbles === 1;
+    return c.boards.some((b2) => b2.id === "fireside" && b2.waiting) && c.waitBubbles === 1;
   }, { timeout: 12000 }).catch(() => fail("waiting bubble never appeared after pressing the offer"));
-  await page.evaluate(() => window.__ml.teleport(180, 113));
+  await page.evaluate(() => window.__ml.teleport(210, 113));
   await page.waitForFunction(() => {
     const c = window.__ml.chess();
     return c.boards.every((b2) => !b2.waiting) && c.waitBubbles === 0;
   }, { timeout: 12000 }).catch(() => fail("waiting bubble did not clear after walking away"));
   console.log("verify-chess: waiting bubble appears and clears");
 
-  // Sit at Wendell's player seat (201,122): prompt says JOIN (he waits), and
+  // Sit at Rannulf's player seat (198,120): prompt says JOIN (he waits), and
   // SPACE starts the game.
-  await page.evaluate(() => window.__ml.teleport(201, 122));
+  await page.evaluate(() => window.__ml.teleport(198, 120));
   await page.waitForFunction(() => window.__ml.chess().prompt === "join", { timeout: 12000 })
-    .catch(() => fail("jump button never offered JOIN CHESS GAME at Wendell's board"));
+    .catch(() => fail("jump button never offered JOIN CHESS GAME at Rannulf's board"));
   await page.keyboard.press("Space");
   await page.waitForFunction(() => window.__ml.chess().dialog?.open === true, { timeout: 12000 })
-    .catch(() => fail("dialog never opened after joining Wendell's board"));
+    .catch(() => fail("dialog never opened after joining Rannulf's board"));
   const d0 = await page.evaluate(() => window.__ml.chess().dialog);
   if (d0.phase !== "dice") fail(`expected dice phase, got ${d0.phase}`);
 

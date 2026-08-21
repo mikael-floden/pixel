@@ -6207,6 +6207,7 @@ export class WorldScene extends Phaser.Scene {
    * texture is one swap away). Depth = painter y like any flat decor. */
   private placeChessBoard(id: string, b: { col: number; row: number; sprite?: string }) {
     if (this.chessDecor.has(id)) return;
+    if (b.sprite === "world") return; // the world's own PROP renders the table
     if (b.sprite) {
       // The scenery agent's synced board (the maintainer's PixelLab piece,
       // world_px_height 27 -> display height 27, bottom-anchored). Campfire
