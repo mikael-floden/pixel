@@ -271,7 +271,12 @@ function zoomAt(d, cx, cy){
     fit = false; si = 0;
     while(si < LADDER.length-1 && LADDER[si] < before) si++;
   }
-  if(d < 0 && si === 0){ fit = true; fitScale = before / 1.5; draw(); return; }
+  if(d < 0 && si === 0){
+    // below 1x keep going, but anchor it like any other zoom or the view jumps
+    fit = true; fitScale = before / 1.5;
+    const k2 = scale() / before; ox = cx - (cx - ox) * k2; oy = cy - (cy - oy) * k2;
+    draw(); return;
+  }
   si = Math.max(0, Math.min(LADDER.length-1, si + d));
   const k = scale()/before; ox = cx-(cx-ox)*k; oy = cy-(cy-oy)*k; clampPan(); draw();
 }
@@ -492,10 +497,11 @@ c.addEventListener("pointermove", e => {
     pinch0 = null;
     if(wasTwo){
       settle();
-      // the surviving finger keeps panning; reset its origin so the first move after
-      // the lift is a delta of zero rather than the gap between two fingers
-      for(const [id, p] of pts){ const ev = e; p.x = ev.clientX; p.y = ev.clientY; }
-      moved = 999;                       // and it is a drag, never a double tap
+      // Do NOT touch the surviving pointer's stored position. It is already current
+      // from its own last pointermove; writing the LIFTED finger's coordinates into it
+      // made the next move a delta the width of the pinch, which threw the view off
+      // screen the moment a pinch ended.
+      moved = 999;                       // it was a gesture, never a double tap
     }
   }
   if(!pts.size){
