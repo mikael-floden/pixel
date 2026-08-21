@@ -47,6 +47,61 @@ def compose(tile, ref_a, ref_b, pub_a, pub_b):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 
+def clean_top(img, hex_flat=None, whole=True):
+    """Force the top face to one colour.
+
+    A ground tile's top face is meant to be a single tone so an arbitrarily large field
+    shows no repeat. The published grass tile is 96.4% (20,82,59) with 32 pixels of a
+    lighter green at FIXED positions - a +10 bevel on the outer ring plus a few
+    scattered highlights. On one tile those read as lighting. Tiled, every copy repeats
+    them in the same spot, they line up across the lattice, and the field grows chevrons
+    of pale dots through open ground. light_soil has none of this: its top is one tone
+    and its fields are clean, which is the control that proves the cause.
+
+    ("So the grass ofc knows its clean color. So the grass part is responsible to
+    remove any visible edge/seam. It's usually bright lines. The grass default color
+    should be used instead.")
+
+    whole=False cleans only the outer ring, leaving interior detail alone.
+
+    The published grass tile carries a +10 green bevel on the last ring of its top face
+    (measured: rim (21,92,67) against inner (20,82,59), 124 px); light_soil carries
+    none. On a single tile that bevel reads as a lit edge, which is why it was put
+    there. Butted against the neighbour that shares the seam it becomes a bright line
+    running across open ground - every seam the maintainer marked was on the grass
+    side, and none on the soil side, which is the bevel and nothing else.
+
+    ("So the grass ofc knows its clean color. So the grass part is responsible to
+    remove any visible edge/seam. It's usually bright lines. The grass default color
+    should be used instead.")
+    """
+    import palette_snap as _ps
+    a = np.array(img.convert("RGBA"), int)
+    top = _diamond() & (a[..., 3] > 0)
+    inner = top.copy()
+    e = inner.copy()
+    e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
+    e[:, 1:] &= inner[:, :-1]; e[:, :-1] &= inner[:, 1:]
+    rim = top & ~e
+    target = top if whole else rim
+    if not target.any() or not e.any():
+        return img
+    if hex_flat:
+        flat = _ps._hex(hex_flat)
+    else:                                  # the tone the surface already mostly is
+        px = a[e][:, :3]
+        cols, cnt = np.unique(px, axis=0, return_counts=True)
+        flat = cols[int(np.argmax(cnt))].astype(float)
+    out = a.copy()
+    out[..., :3][target] = np.round(flat)
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
+
+
+def clean_rim(img, hex_flat=None):
+    """Backwards-compatible alias: clean only the outer ring."""
+    return clean_top(img, hex_flat, whole=False)
+
+
 def _grow(m, n):
     """n-step 4-neighbour dilation."""
     o = m.copy()
@@ -88,7 +143,7 @@ def _despeckle(m, passes=2):
 
 
 def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
-                   ramp=None, despeckle=2):
+                   ramp=None, despeckle=2, rim_guard=1):
     """Flat ground, detail only in the transition.
 
     Two maintainer rules that look contradictory and are not. "The tiles should be
@@ -134,6 +189,43 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
         w[nxt & ~reach] = 1.0 - (k + 1) / float(band + 1)
         reach = nxt
     w[edge] = 1.0
+    # THE TILE'S OWN OUTLINE IS NEVER SHADED. A pixel on the silhouette is shared with
+    # the neighbour that abuts it, so any relief there stops being texture and becomes
+    # a seam - a thin bright line along the tile edge, running across open ground where
+    # nothing should be visible at all ("the grass part is responsible to remove any
+    # visible edge/seam. It's usually bright lines"). Inside `rim_guard` px of the
+    # silhouette every pixel takes the flat palette colour instead.
+    if rim_guard:
+        inner = alpha.copy()
+        for _ in range(rim_guard):
+            e = inner.copy()
+            e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
+            e[:, 1:] &= inner[:, :-1]; e[:, :-1] &= inner[:, 1:]
+            inner = e
+        rim = alpha & ~inner
+        collar &= ~rim
+        w[rim] = 0.0
+        # AND THE RIM TAKES ITS MATERIAL FROM THE INTERIOR, not from its own pixel.
+        # A single stray sand pixel sitting on the outline is invisible on one tile,
+        # but the outline is shared, so those strays line up across the lattice into
+        # chevrons of pale dots running through open grass. Copying the classification
+        # from just inside means the silhouette can never introduce a material the
+        # interior does not already have there.
+        vote = np.zeros(isb.shape, np.int16)
+        cnt = np.zeros(isb.shape, np.int16)
+        src = isb & inner
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy == 0 and dx == 0:
+                    continue
+                ys0, ys1 = max(0, dy), isb.shape[0] + min(0, dy)
+                xs0, xs1 = max(0, dx), isb.shape[1] + min(0, dx)
+                yd0, yd1 = max(0, -dy), isb.shape[0] + min(0, -dy)
+                xd0, xd1 = max(0, -dx), isb.shape[1] + min(0, -dx)
+                vote[ys0:ys1, xs0:xs1] += src[yd0:yd1, xd0:xd1]
+                cnt[ys0:ys1, xs0:xs1] += inner[yd0:yd1, xd0:xd1]
+        take = rim & (cnt > 0)
+        isb = np.where(take, vote * 2 > cnt, isb)
     out = a.copy()
     for owned, hexv in ((alpha & ~isb, hex_a), (alpha & isb, hex_b)):
         flat = owned & ~collar
