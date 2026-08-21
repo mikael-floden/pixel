@@ -143,7 +143,7 @@ def _despeckle(m, passes=2):
 
 
 def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
-                   ramp=None, despeckle=2, rim_guard=1):
+                   ramp=None, despeckle=2, rim_guard=1, src_a=None, src_b=None):
     """Flat ground, detail only in the transition.
 
     Two maintainer rules that look contradictory and are not. "The tiles should be
@@ -241,10 +241,23 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
         take = rim & (cnt > 0)
         isb = np.where(take, vote * 2 > cnt, isb)
     out = a.copy()
+    srcs = {hex_a: src_a, hex_b: src_b}
     for owned, hexv in ((alpha & ~isb, hex_a), (alpha & isb, hex_b)):
         flat = owned & ~collar
         if flat.any():
-            out[..., :3][flat] = _ps._hex(hexv)
+            # AWAY FROM THE BOUNDARY, COPY THE MATERIAL'S OWN PUBLISHED SURFACE rather
+            # than painting one colour. For a flat material the two agree - its top
+            # face is already a single tone. For a textured one they do not: paving
+            # stone and parquet are marked flat_top false precisely because their
+            # surface IS the material, and flat-filling them threw the bricks away and
+            # left a blank slab. ("this is paving stone and has texture. So you should
+            # not fade to pure color if they have texture as their standard.")
+            src = srcs.get(hexv)
+            if src is not None:
+                sa = np.array(src.convert("RGBA"), int)
+                out[..., :3][flat] = sa[..., :3][flat]
+            else:
+                out[..., :3][flat] = _ps._hex(hexv)
         near = owned & collar
         if near.any():
             # RECENTRE AGAINST THE WHOLE MATERIAL, WRITE ONLY THE COLLAR. substitute()
@@ -257,13 +270,18 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
             if px is not None:
                 sel = collar[owned]
                 ww = w[near][:, None]
-                out[..., :3][near] = px[sel] * ww + _ps._hex(hexv)[None, :] * (1 - ww)
+                src = srcs.get(hexv)
+                if src is not None:
+                    base = np.array(src.convert("RGBA"), int)[..., :3][near].astype(float)
+                else:
+                    base = np.repeat(_ps._hex(hexv)[None, :], int(near.sum()), axis=0)
+                out[..., :3][near] = px[sel] * ww + base * (1 - ww)
     out[..., 3] = np.where(alpha, 255, 0)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 
 def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6, spread=None,
-              ramp=None):
+              ramp=None, keep_surface=True):
     """A whole set, ready to draw. Pure corners pass through untouched.
 
     With hex_a/hex_b the boundary tiles go through compose_collar (flat ground, relief
@@ -271,9 +289,10 @@ def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6, spread=None,
     speckles the boundary - kept only so existing callers do not change behaviour
     silently."""
     if hex_a and hex_b:
+        sa, sb = (pub_a, pub_b) if keep_surface else (None, None)
         return [pub_a if i == 0 else pub_b if i == 15
                 else compose_collar(t, tiles[0], tiles[15], hex_a, hex_b, band=band,
-                                    spread=spread, ramp=ramp)
+                                    spread=spread, ramp=ramp, src_a=sa, src_b=sb)
                 for i, t in enumerate(tiles)]
     return [pub_a if i == 0 else pub_b if i == 15
             else compose(t, tiles[0], tiles[15], pub_a, pub_b)
