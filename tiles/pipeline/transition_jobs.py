@@ -61,6 +61,12 @@ GEOMETRY = {
 # x-to-x task the maintainer parked for later.
 AMP_CAP = 0.3
 
+# MEASURED, not quoted: the isometric tileset endpoint bills ~$0.079 per 16-tile set
+# (103 sets cost $8.17). The $0.186 figure used earlier came from /create-tileset, the
+# SQUARE top-down model, and overstated this run by 2.4x. A 429 costs nothing at all —
+# it is refused before any generation happens.
+RATE_USD = 0.079
+
 
 def pairs():
     """Every unordered pair, alphabetical. No self-pairs — a set between a material
@@ -177,7 +183,7 @@ run() {  # a b amp seed description
   echo "$1 $2 $3 $4 FAILED_RATELIMIT"
 }
 """
-    lines = [header, f"echo 'generating {len(jobs)} tilesets, est ${len(jobs)*0.186:.2f}'"]
+    lines = [header, f"echo 'generating {len(jobs)} tilesets, est ${len(jobs)*RATE_USD:.2f}'"]
     for j in jobs:
         lines.append(f"run {j['a']} {j['b']} {j['amplitude']} {j['seed']} "
                      f"\"{j['description']}\"")
@@ -204,7 +210,7 @@ if __name__ == "__main__":
     if a.shell:
         path = os.path.join(OUT, "run_in_cloudshell.sh")
         open(path, "w").write(shell_script(jobs) + "\n")
-        print(f"wrote {path}  ({len(jobs)} jobs, est ${len(jobs)*0.186:.2f})")
+        print(f"wrote {path}  ({len(jobs)} jobs, est ${len(jobs)*RATE_USD:.2f})")
     else:
         print(f"pairs {len(pairs())}  amplitudes {amps}  seeds {seeds}")
-        print(f"jobs written: {len(jobs)}   est cost ${len(jobs)*0.186:.2f}")
+        print(f"jobs written: {len(jobs)}   est cost ${len(jobs)*RATE_USD:.2f}")
