@@ -1,5 +1,25 @@
 # The transition lab
 
+## THE LAW: never introduce repetition
+
+**No agent decides that a surface should carry texture.** A flat top stays flat.
+Ground texture arrives one way only: the maintainer promotes a base tile. A great
+tile repeated is still repetition, and repetition is the single thing he cannot
+stand — *"YOU CAN NEVER TAKE DECISION TO BRING IN A TOP TEXTURE. DONT EVER BRING IN
+REPETITION AGAIN."*
+
+Three violations in one day, all mine, all rejected on sight:
+
+1. Mixing 15 different grass sets per cell — *"individually this is insanely good
+   tiles. Adding them all together looks like horse shit."*
+2. Rolling pure cells across the pool sets — same fault, smaller.
+3. Prototyping a textured top for the x-over-x matrix — a patterned grass tiled 25
+   times, shown to him unprompted.
+
+`transition_surface: own` is **not** an exception. It keeps texture the generator
+already drew *inside a transition tile*, where every tile is unique and nothing
+repeats. It never applies to a field.
+
 The pages the maintainer judges transitions in. They are built here and published as
 Artifacts; the published page is a snapshot, so rebuilding and republishing is how a
 change reaches him.

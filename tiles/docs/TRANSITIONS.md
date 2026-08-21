@@ -101,6 +101,21 @@ with a second blended in only where ragged is wanted.**
 So the buying rule is: generate several seeds per pair, score all four directions, keep
 the best two. At $0.079 a set, 8 seeds across 105 pairs is $66 to choose from.
 
+## THE LAW: never introduce repetition
+
+**No agent decides that a surface should carry texture.** A flat top stays flat.
+Ground texture arrives one way only: the maintainer promotes a base tile.
+
+A great tile repeated is still repetition, and repetition is the one thing he cannot
+stand: *"YOU CAN NEVER TAKE DECISION TO BRING IN A TOP TEXTURE. DONT EVER BRING IN
+REPETITION AGAIN."* Learned three times in a single day — mixing different grass sets
+per cell, rolling pure cells across pool sets, and prototyping a textured matrix top —
+so it is written down rather than remembered.
+
+`own` below is **not** an exception. It keeps texture the generator already drew
+*inside a transition tile*, where every tile is unique and nothing repeats. It never
+applies to a field.
+
 ## Surfaces: the taxonomy
 
 Every material declares `transition_surface` in `palette.json` (maintainer taxonomy,
