@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:53:56.961Z",
+  "updated_at": "2026-08-21T18:57:02.336Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1226,7 +1226,61 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 17
+      "level": 17,
+      "shadow": {
+        "rx": 28.5,
+        "ry": 16.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.71,
+            "ay": 26.47
+          },
+          "idle#south-east": {
+            "ax": -3.35,
+            "ay": 24.92
+          },
+          "idle#north-east": {
+            "ax": 0.68,
+            "ay": 23.69
+          },
+          "idle#north": {
+            "ax": 0.06,
+            "ay": 23.59
+          },
+          "idle#north-west": {
+            "ax": 0.32,
+            "ay": 23.91
+          },
+          "idle#west": {
+            "ax": 0.88,
+            "ay": 24.3
+          },
+          "idle#south-west": {
+            "ax": 2.49,
+            "ay": 23.19
+          },
+          "walk#south": {
+            "ax": 0.52,
+            "ay": 19.95
+          },
+          "idle#south": {
+            "ax": 0.26,
+            "ay": 22.41
+          },
+          "attack#north": {
+            "ax": 0.35,
+            "ay": 26.26
+          },
+          "attack#north-west": {
+            "ax": 1.89,
+            "ay": 25.35
+          },
+          "attack#west": {
+            "ax": 8.54,
+            "ay": 28.83
+          }
+        }
+      }
     },
     "saber_toothed_tiger": {
       "level": 8,
