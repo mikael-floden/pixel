@@ -93,3 +93,27 @@ with a second blended in only where ragged is wanted.**
 
 So the buying rule is: generate several seeds per pair, score all four directions, keep
 the best two. At $0.079 a set, 8 seeds across 105 pairs is $66 to choose from.
+
+## Texture: only the transition, and always the wall's way
+
+Two rules from the maintainer that read as a contradiction and are not:
+
+* **"Clean, no ground texture!" / "The tiles should be flat!"** — away from the
+  boundary each material is its single palette colour, exactly as the matrix ships.
+  A textured ground was built and shown and rejected twice (see `palette.json`,
+  `light_soil.flat_top_note`).
+* **"This is not how we preserve the texture on walls!"** — classifying every pixel
+  and then painting it a FLAT colour turns PixelLab's grass blades lying on the sand
+  into scattered dots. The wall treatment never does that: it keeps the pixel's relief
+  and forces only hue and saturation.
+
+`compose_collar()` satisfies both. The wall's own `substitute()` runs in a `band` px
+collar around where the two materials actually meet, and nowhere else. Measured on
+23%/seed 4 at band 6: a pure tile's top face is **1 colour covering 100%**, a boundary
+tile's is **20**. Blades stay blades, the ground stays one tone.
+
+**"Texture is always like the walls."** There is no second texturing technique in this
+repo — anything that needs relief goes through `substitute()`, which sets hue and
+saturation from the palette and never reads them off the art. Every invented colour
+this pipeline has ever shipped (a magenta grass edge, 1413 vivid pixels, a red
+light_soil) came from code that read a hue off the art and shifted by it.

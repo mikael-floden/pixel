@@ -47,8 +47,73 @@ def compose(tile, ref_a, ref_b, pub_a, pub_b):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 
-def retexture(tiles, pub_a, pub_b):
-    """A whole set, ready to draw. Pure corners pass through untouched."""
+def _grow(m, n):
+    """n-step 4-neighbour dilation."""
+    o = m.copy()
+    for _ in range(n):
+        g = o.copy()
+        g[1:] |= o[:-1]
+        g[:-1] |= o[1:]
+        g[:, 1:] |= o[:, :-1]
+        g[:, :-1] |= o[:, 1:]
+        o = g
+    return o
+
+
+def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None):
+    """Flat ground, detail only in the transition.
+
+    Two maintainer rules that look contradictory and are not. "The tiles should be
+    flat!" / "Clean, no ground texture!" - so away from the boundary each material is
+    its single palette colour, exactly as the matrix ships. And "This is not how we
+    preserve the texture on walls!" - because classifying every pixel and then painting
+    it a FLAT colour turns PixelLab's grass blades lying on the sand into scattered
+    dots, which is the one thing the wall treatment never does.
+
+    So the wall's own substitute() - hue and saturation from the palette, the pixel's
+    relief carried through - is applied in a `band` px collar around where the two
+    materials actually meet, and nowhere else. Blades stay blades, the ground stays one
+    tone. "Only the transition!"
+    """
+    import palette_snap as _ps
+    if spread is None:
+        spread = _ps.TEXTURED_TOP_SPREAD
+    a = np.array(tile.convert("RGBA"), int).astype(float)
+    ra = np.array(ref_a.convert("RGBA"), int)
+    rb = np.array(ref_b.convert("RGBA"), int)
+    alpha = a[..., 3] > 0
+    isb = (np.abs(a[..., :3] - rb[..., :3]).sum(2)
+           < np.abs(a[..., :3] - ra[..., :3]).sum(2))
+    edge = np.zeros_like(alpha)
+    edge[:, :-1] |= (isb[:, :-1] != isb[:, 1:])
+    edge[:-1] |= (isb[:-1] != isb[1:])
+    edge &= alpha
+    collar = _grow(edge, band) & alpha
+    out = a.copy()
+    for owned, hexv in ((alpha & ~isb, hex_a), (alpha & isb, hex_b)):
+        flat = owned & ~collar
+        if flat.any():
+            out[..., :3][flat] = _ps._hex(hexv)
+        near = owned & collar
+        if near.any():
+            px = _ps.substitute(a, near, hexv, spread=spread)
+            if px is not None:
+                out[..., :3][near] = px
+    out[..., 3] = np.where(alpha, 255, 0)
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
+
+
+def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6):
+    """A whole set, ready to draw. Pure corners pass through untouched.
+
+    With hex_a/hex_b the boundary tiles go through compose_collar (flat ground, relief
+    only in the transition). Without them the older flat substitution is used, which
+    speckles the boundary - kept only so existing callers do not change behaviour
+    silently."""
+    if hex_a and hex_b:
+        return [pub_a if i == 0 else pub_b if i == 15
+                else compose_collar(t, tiles[0], tiles[15], hex_a, hex_b, band=band)
+                for i, t in enumerate(tiles)]
     return [pub_a if i == 0 else pub_b if i == 15
             else compose(t, tiles[0], tiles[15], pub_a, pub_b)
             for i, t in enumerate(tiles)]
