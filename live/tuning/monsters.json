@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T18:51:37.632Z",
+  "updated_at": "2026-08-21T18:53:56.961Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1149,7 +1149,73 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 15
+      "level": 15,
+      "shadow": {
+        "rx": 26.5,
+        "ry": 14,
+        "offsets": {
+          "idle#east": {
+            "ax": -7.96,
+            "ay": 25.53
+          },
+          "idle#south-east": {
+            "ax": -2.78,
+            "ay": 21.37
+          },
+          "idle#north-east": {
+            "ax": -2.02,
+            "ay": 24.46
+          },
+          "attack#north-east": {
+            "ax": -10.15,
+            "ay": 25.77
+          },
+          "attack#north": {
+            "ax": -0.6,
+            "ay": 26.63
+          },
+          "attack#north-west": {
+            "ax": 7.63,
+            "ay": 25.97
+          },
+          "attack#west": {
+            "ax": 6.14,
+            "ay": 28.94
+          },
+          "attack#south-west": {
+            "ax": 3.74,
+            "ay": 32.69
+          },
+          "die#south": {
+            "ax": 4.13,
+            "ay": 29.23
+          },
+          "die#south-east": {
+            "ax": -1.42,
+            "ay": 23.18
+          },
+          "die#east": {
+            "ax": -4.95,
+            "ay": 26.79
+          },
+          "die#north-east": {
+            "ax": -5.36,
+            "ay": 27.17
+          },
+          "die#north": {
+            "ax": 0.53,
+            "ay": 27.12
+          },
+          "die#west": {
+            "ax": -3.15,
+            "ay": 33.58
+          },
+          "die#south-west": {
+            "ax": -3.46,
+            "ay": 28.74
+          }
+        }
+      }
     },
     "rune_lion": {
       "max_hp": 20,
