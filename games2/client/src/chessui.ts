@@ -98,6 +98,11 @@ function ensureStyle() {
     {opacity:1}
   .ml-chess .die.blank i{opacity:0}
   .ml-chess .die-q{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--muted,#706b5f)}
+  .ml-chess .die-hand{width:97px;height:97px;background:url(/chess/dice_throw.webp) 0 0 no-repeat;
+    background-size:873px 97px;image-rendering:pixelated;
+    animation:mlDiceHand 1.35s steps(9) infinite;animation-play-state:paused}
+  .ml-chess .die-hand.shaking{animation-play-state:running}
+  @keyframes mlDiceHand{to{background-position-x:-873px}}
   .ml-chess .verdict{text-align:center;padding:8px 0 2px}
   .ml-chess .verdict b{font-size:20px}
   .ml-chess .verdict .why{color:var(--muted,#706b5f);font-size:13px;margin-top:2px}
@@ -119,6 +124,7 @@ export class ChessDialog {
   private tick?: number;
   private promoPending: { from: number; to: number } | null = null;
   private resignArmed = 0;
+  private throwRevealAt = 0; // the hand shakes until here, then the face shows
 
   constructor(m: ChessMatchView, api: ChessApi) {
     this.m = m; this.api = api;
@@ -180,6 +186,15 @@ export class ChessDialog {
     if (!this.root) return;
     this.replay();
     if (this.m.phase === "dice") return this.renderDice();
+    // LET THE THROW LAND. Both dice can be in within a second (the NPC throws
+    // at ~0.9s), which would swap the panel mid-shake. Hold the dice panel
+    // until the reveal plus a beat to read both faces, then build the board.
+    if (this.diceBuilt && !this.gameBuilt && Date.now() < this.throwRevealAt + 1400) {
+      this.renderDice();
+      const wait = this.throwRevealAt + 1450 - Date.now();
+      setTimeout(() => this.render(), Math.max(50, wait));
+      return;
+    }
     this.renderGame();
   }
 
@@ -197,7 +212,8 @@ export class ChessDialog {
           <div class="hint">Highest die plays White</div>
           <div class="dice-row">
             <div>
-              <div class="die blank" data-v="0" id="ml-die-me">${"<i></i>".repeat(9)}</div>
+              <div class="die-hand" id="ml-die-hand"></div>
+              <div class="die blank" data-v="0" id="ml-die-me" style="display:none">${"<i></i>".repeat(9)}</div>
               <div style="text-align:center;font-size:12px;margin-top:4px">You</div>
             </div>
             <div>
@@ -209,22 +225,32 @@ export class ChessDialog {
           <div class="hint" id="ml-die-hint"></div>
         </div>`;
       c.querySelector("#ml-die-throw")!.addEventListener("click", (e) => {
-        // Pre-rolled server-side; the tumble is honest theater that lands on
-        // the server's number when it syncs in.
+        // Pre-rolled server-side; the maintainer's hand-shake animation (his
+        // 2026-08-21 GIF, 9 frames) is honest theater — the value it "lands
+        // on" is whatever the server already decided. The reveal is
+        // time-gated to ~2 shakes so the animation gets its moment even
+        // though the value syncs back within a frame.
         const btn = e.currentTarget as HTMLButtonElement;
         btn.disabled = true;
-        (c.querySelector("#ml-die-me") as HTMLElement).classList.add("rolling");
+        (c.querySelector("#ml-die-hand") as HTMLElement).classList.add("shaking");
+        this.throwRevealAt = Date.now() + 1900;
         this.api.send("chess.dice", { m: this.m.id });
+        setTimeout(() => this.render(), 1950);
       });
     }
     const meEl = c.querySelector("#ml-die-me") as HTMLElement;
     const opEl = c.querySelector("#ml-die-opp") as HTMLElement;
-    if (mine > 0 && meEl.dataset.v !== String(mine)) {
+    if (mine > 0 && Date.now() >= this.throwRevealAt && meEl.dataset.v !== String(mine)) {
+      (c.querySelector("#ml-die-hand") as HTMLElement).style.display = "none";
+      meEl.style.display = "";
       meEl.classList.remove("blank");
       meEl.dataset.v = String(mine);
       (c.querySelector("#ml-die-throw") as HTMLElement).style.visibility = "hidden";
       (c.querySelector("#ml-die-hint") as HTMLElement).textContent = `Waiting for ${this.api.oppName}…`;
     }
+    if (this.m.phase !== "dice" && this.mySide)
+      (c.querySelector("#ml-die-hint") as HTMLElement).textContent =
+        this.mySide === "w" ? "You play White!" : "You play Black!";
     if (theirs > 0 && opEl.dataset.v !== String(theirs)) {
       opEl.classList.remove("die-q");
       opEl.textContent = "";
