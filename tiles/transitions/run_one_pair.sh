@@ -44,4 +44,15 @@ run() {  # a b amp seed description
   echo "$1 $2 $3 $4 FAILED_RATELIMIT"
 }
 
-echo 'generating 0 tilesets, est $0.00'
+echo 'generating 11 tilesets, est $0.87'
+run grass light_soil 0.05 5 "lush green grass to dry light soil"
+run grass light_soil 0.14 1 "lush green grass to dry light soil"
+run grass light_soil 0.14 2 "lush green grass to dry light soil"
+run grass light_soil 0.14 3 "lush green grass to dry light soil"
+run grass light_soil 0.14 4 "lush green grass to dry light soil"
+run grass light_soil 0.14 5 "lush green grass to dry light soil"
+run grass light_soil 0.23 1 "lush green grass to dry light soil"
+run grass light_soil 0.23 2 "lush green grass to dry light soil"
+run grass light_soil 0.23 3 "lush green grass to dry light soil"
+run grass light_soil 0.23 4 "lush green grass to dry light soil"
+run grass light_soil 0.23 5 "lush green grass to dry light soil"
