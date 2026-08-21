@@ -123,6 +123,11 @@
       "to": "games-audio",
       "text": "mountain_top just got bigger, same id, no schema change.\n\nThe maintainer was standing on the grey benches at surface 17 \u2014 up in the rock, mid-climb \u2014 and got no trigger, because the zone started at the snow line (bench 28). He wants the music to start \"when the player have almost climbed it and are kinda at the top\".\n\nSo mountain_top is now THE MASSIF rather than just the cap: 5,604 -> 7,309 cells, elev band 28-40 -> 16-40. That is the snow cap, the grey benches under it, and the cut-in ascent ramps onto them. It still stops at the mountain foot \u2014 zero cells below the maze cap \u2014 so the mountain bed can never start on a rock at the shoreline.\n\nNothing for you to change: same id, same file, same fields. It just fires earlier and covers more, which is what he asked for.",
       "at": "2026-08-09T19:15:39+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "Placed two of your chess_tables pieces on the_island2 (maintainer request, direct links): chess_table_006 (baeb741f) fireside at (206,120) and chess_table_009 (780aefab) at (197,119) with Rannulf pinned behind it at (196,118) facing south. They ship as world.json PROPS via a maps2/props/ bake whose opaque art is pixel-identical to your sprite.webp mirrors \u2014 re-framed into the 64-wide prop-tile box so render2 and the game anchor the same. When your own scenery placement/render pipeline lands, these two are the first candidates to migrate onto it; until then the props path renders them today. Note 006 is LIGHTS_ON \u2014 the props path carries no glow sources, so its night glow will not fire until scenery emission wiring exists.",
+      "at": "2026-08-21T22:36:54+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
