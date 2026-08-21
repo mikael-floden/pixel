@@ -107,8 +107,11 @@ def shell_script(jobs):
     token through the rest of the list.
     """
     lines = [
-        "# paste your cookie/JWT between the quotes, then run this whole block",
-        "RAW='PASTE_COOKIE_OR_JWT_HERE'",
+        "#!/usr/bin/env bash",
+        "# Usage in Cloud Shell:",
+        "#   export RAW='<paste the whole cookie line from the bookmarklet>'",
+        "#   bash run_in_cloudshell.sh",
+        "# RAW may be the entire document.cookie dump or a bare eyJ... token.",
         "",
         "TOK=$(python3 -c \"",
         "import json,os,re,urllib.parse",
