@@ -515,6 +515,66 @@ def retexture_palette(tiles, hex_a, hex_b, spread=None, ramp_a=None, ramp_b=None
     return out_tiles
 
 
+def ideal_mask(i):
+    """What index i must look like: bilinear over the four corner values, thresholded.
+    8=NW=apex, 4=NE=right, 2=SW=left, 1=SE=bottom - measured off a clean set, not
+    assumed."""
+    dr, dc = pixel_lattice()
+    NW, NE, SW, SE = (i >> 3) & 1, (i >> 2) & 1, (i >> 1) & 1, i & 1
+    f = (NW * (1 - dr) * (1 - dc) + NE * (1 - dr) * dc
+         + SW * dr * (1 - dc) + SE * dr * dc)
+    return f > 0.5
+
+
+def orient(isb, i, alpha):
+    """Keep the colour classification, or its complement - whichever agrees with the
+    geometry.
+
+    Nearest-to-tile-0-or-15 is the only signal for which material a pixel is, and on a
+    low-contrast pair it can inv1ert a WHOLE tile: on dark_mud/grass, index 2 came out
+    97-100% one material across the entire face while 8/4/1 came out ~10%. Placed in a
+    map that reads as the fade running backwards - "It wants to fade from grass - grass
+    to brown - brown. We get grass - brown to grass - brown."
+
+    The index already says what the tile must be, so the geometry decides the polarity
+    and colour only decides where the boundary falls.
+    """
+    if i in (0, 15):
+        return np.full(isb.shape, bool(i == 15))
+    want = ideal_mask(i) & alpha
+    m = alpha
+    agree = float((isb[m] == want[m]).mean()) if m.any() else 1.0
+    return isb if agree >= 0.5 else ~isb
+
+
+def _extend_base(base):
+    """A base tile with its surface carried out past its own silhouette.
+
+    Generated transition tiles are not pixel-identical in outline to our published
+    ground tiles - measured 2012 px against 1998 on dark_mud, a 14 px difference. Copy
+    the base in pixel-for-pixel and those 14 land on nothing, and come through as
+    isolated strays: "leaving a few edge pixels like this looks like shit. If the goal
+    is to make this tile clean - make it clean."
+
+    So extend each column: rows above the base's top face repeat its first top pixel,
+    rows below its wall repeat the last. Every pixel any transition tile can ask for
+    then has a real answer.
+    """
+    a = np.array(base.convert("RGBA"), int)
+    alpha = a[..., 3] > 0
+    top = top_face(alpha)
+    out = a.copy()
+    for x in range(a.shape[1]):
+        ts = np.nonzero(top[:, x])[0]
+        col = np.nonzero(alpha[:, x])[0]
+        if not len(ts) or not len(col):
+            continue
+        out[:ts.min(), x, :3] = a[ts.min(), x, :3]      # above the top face
+        out[col.max() + 1:, x, :3] = a[col.max(), x, :3]  # below the wall
+    out[..., 3] = 255
+    return out
+
+
 def compose_transition(tiles, side0, side15, despeckle=2):
     """One transition set through the maintainer's surface taxonomy.
 
@@ -546,15 +606,16 @@ def compose_transition(tiles, side0, side15, despeckle=2):
     prepared = []
     for side in (side0, side15):
         base = side.get("base")
-        prepared.append(np.array(base.convert("RGBA"), int) if base is not None else None)
+        prepared.append(_extend_base(base) if base is not None else None)
     out_tiles = []
-    for t in tiles:
+    for idx, t in enumerate(tiles):
         a = np.array(t.convert("RGBA"), int).astype(float)
         alpha = a[..., 3] > 0
         isb = (np.abs(a[..., :3] - rb[..., :3]).sum(2)
                < np.abs(a[..., :3] - ra[..., :3]).sum(2))
         if despeckle:
             isb = _despeckle(isb, passes=despeckle)
+        isb = orient(isb, idx, alpha)
         out = a.copy()
         for owned, side, basearr in ((alpha & ~isb, side0, prepared[0]),
                                      (alpha & isb, side15, prepared[1])):
