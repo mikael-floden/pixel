@@ -77,7 +77,7 @@ def clean_top(img, hex_flat=None, whole=True):
     """
     import palette_snap as _ps
     a = np.array(img.convert("RGBA"), int)
-    top = _diamond() & (a[..., 3] > 0)
+    top = top_face(a[..., 3] > 0)
     inner = top.copy()
     e = inner.copy()
     e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
@@ -296,15 +296,40 @@ def pixel_lattice(h=TILE_H, w=TILE_W):
     return (t - s) / 2, (t + s) / 2
 
 
+WALL_D = 17          # measured: a 64x46 tile's wall is 17 rows under every column
+
+
+def top_face(alpha):
+    """The top face, taken from the tile's OWN silhouette rather than a formula.
+
+    The wall is a vertical extrusion of constant depth, so for each column the top face
+    is everything above the last WALL_D rows. The rhombus formula this replaces was a
+    pixel short at every extreme: it called the centre column rows 1-27 when the art
+    runs 0-28, and column 0 a single row when the art has two. That one-pixel ring of
+    genuine top face was being counted as wall by every measurement built on it, which
+    made a lattice that closes look like it was leaking at every pitch - including 12
+    and 13, where it certainly does not.
+    """
+    m = np.zeros(alpha.shape, bool)
+    for x in range(alpha.shape[1]):
+        ys = np.nonzero(alpha[:, x])[0]
+        if len(ys):
+            m[ys.min():ys.max() - WALL_D + 1, x] = True
+    return m & alpha
+
+
 DIAMOND = None
 
 
 def _diamond():
+    """The nominal diamond for a full-size tile. Prefer top_face(alpha) where the
+    tile's own silhouette is to hand - this is only a fallback for callers that have
+    no alpha."""
     global DIAMOND
     if DIAMOND is None:
         yy, xx = np.mgrid[0:TILE_H, 0:TILE_W]
         DIAMOND = (np.abs(xx - (TILE_W - 1) / 2) / HALF_W
-                   + np.abs(yy - HALF_H) / HALF_H) <= 1.0
+                   + np.abs(yy - HALF_H) / (HALF_H + 0.6)) <= 1.0
     return DIAMOND
 
 
