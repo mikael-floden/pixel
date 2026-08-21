@@ -196,30 +196,19 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
     # visible edge/seam. It's usually bright lines"). Inside `rim_guard` px of the
     # silhouette every pixel takes the flat palette colour instead.
     if rim_guard:
-        # FADE TOWARD THE TILE EDGE, not just guard the last pixel. The collar fades to
-        # nothing at `band` px from the material BOUNDARY, but nothing made it fade
-        # toward the tile's own edge - so where a boundary runs close to an edge, relief
-        # arrived there at almost full strength while the neighbour across that edge was
-        # flat. The eye reads the difference as the tile's outline. Ramping the weight
-        # over `edge_fade` px means both sides of every shared edge reach the flat
-        # palette colour together. ("grass should be fully faded to the base color or
-        # else we will see the tiles")
-        edge_fade = max(rim_guard, band // 2 + 2)
-        depth = np.zeros(alpha.shape, np.int16)
-        peel = alpha.copy()
-        for k in range(edge_fade):
-            e = peel.copy()
-            e[1:] &= peel[:-1]; e[:-1] &= peel[1:]
-            e[:, 1:] &= peel[:, :-1]; e[:, :-1] &= peel[:, 1:]
-            depth[peel & ~e] = k
-            peel = e
-        depth[peel] = edge_fade
-        w *= np.clip(depth / float(edge_fade), 0.0, 1.0)
-        inner = peel
+        # The rim is still needed for the material vote below. What is GONE is the
+        # blanket distance fade that used to sit here: flattening everything within n
+        # px of the silhouette destroyed detail that was never going to reach the edge.
+        # _bleed_to_base() does that job afterwards, on the finished pixels, and only
+        # follows detail that actually touches the edge.
+        inner = alpha.copy()
+        e = inner.copy()
+        e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
+        e[:, 1:] &= inner[:, :-1]; e[:, :-1] &= inner[:, 1:]
+        inner = e
         rim = alpha & ~inner
-        collar &= ~rim
-        w[rim] = 0.0
-        # AND THE RIM TAKES ITS MATERIAL FROM THE INTERIOR, not from its own pixel.
+
+        # THE RIM TAKES ITS MATERIAL FROM THE INTERIOR, not from its own pixel.
         # A single stray sand pixel sitting on the outline is invisible on one tile,
         # but the outline is shared, so those strays line up across the lattice into
         # chevrons of pale dots running through open grass. Copying the classification
@@ -276,8 +265,67 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
                 else:
                     base = np.repeat(_ps._hex(hexv)[None, :], int(near.sum()), axis=0)
                 out[..., :3][near] = px[sel] * ww + base * (1 - ww)
+    if rim_guard:
+        flat_ref = np.where(isb[..., None], _base_of(src_b, hex_b, a.shape),
+                            _base_of(src_a, hex_a, a.shape))
+        out[..., :3] = _bleed_to_base(out[..., :3], flat_ref, alpha, tol=rim_guard)
     out[..., 3] = np.where(alpha, 255, 0)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
+
+
+def _base_of(src, hexv, shape):
+    """The material's own clean surface, per pixel: its published tile where we have
+    one, otherwise the flat palette colour."""
+    import palette_snap as _ps
+    if src is not None:
+        return np.array(src.convert("RGBA"), int)[..., :3]
+    return np.repeat(np.repeat(_ps._hex(hexv)[None, None, :], shape[0], 0), shape[1], 1)
+
+
+def _bleed_to_base(rgb, base, alpha, tol=1):
+    """Flatten only the detail that REACHES the tile edge, and only as far as it runs.
+
+    The blanket edge fade this replaces flattened everything within n px of the
+    silhouette, whether or not it would ever have shown as a seam - "the fade is very
+    dumb and often destroys texture and graphics that it didn't need to touch at all.
+    Some detail is just an island that never even touches the edge."
+
+    So flood inward from the edge through pixels that differ from the material's clean
+    surface, and stop the moment the surface IS clean: "if you hit/meet base color you
+    don't have to continue towards the center any more." A detail island enclosed by
+    base colour is never reached and is left exactly as it was. What the flood does
+    reach is faded to base over its own length, so the edge lands clean without a hard
+    step.
+    """
+    off = (np.abs(rgb - base).sum(2) > 12 * max(tol, 1)) & alpha
+    if not off.any():
+        return rgb
+    inner = alpha.copy()
+    e = inner.copy()
+    e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
+    e[:, 1:] &= inner[:, :-1]; e[:, :-1] &= inner[:, 1:]
+    reach = off & (alpha & ~e)            # seeds: differing pixels ON the silhouette
+    dist = np.full(alpha.shape, 1 << 15, np.int32)
+    dist[reach] = 0
+    d = 0
+    while reach.any() and d < 64:
+        g = reach.copy()
+        g[1:] |= reach[:-1]; g[:-1] |= reach[1:]
+        g[:, 1:] |= reach[:, :-1]; g[:, :-1] |= reach[:, 1:]
+        nxt = g & off & (dist > d)        # only travel through non-base pixels
+        d += 1
+        dist[nxt & (dist == (1 << 15))] = d
+        if not (nxt & ~reach).any():
+            break
+        reach = reach | nxt
+    touched = dist < (1 << 15)
+    if not touched.any():
+        return rgb
+    span = float(max(dist[touched].max(), 1))
+    w = np.clip(dist / span, 0.0, 1.0)[..., None]      # 0 at the edge, 1 where it ends
+    out = rgb.copy()
+    out[touched] = (rgb * w + base * (1 - w))[touched]
+    return out
 
 
 def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6, spread=None,
