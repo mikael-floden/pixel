@@ -196,12 +196,26 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
     # visible edge/seam. It's usually bright lines"). Inside `rim_guard` px of the
     # silhouette every pixel takes the flat palette colour instead.
     if rim_guard:
-        inner = alpha.copy()
-        for _ in range(rim_guard):
-            e = inner.copy()
-            e[1:] &= inner[:-1]; e[:-1] &= inner[1:]
-            e[:, 1:] &= inner[:, :-1]; e[:, :-1] &= inner[:, 1:]
-            inner = e
+        # FADE TOWARD THE TILE EDGE, not just guard the last pixel. The collar fades to
+        # nothing at `band` px from the material BOUNDARY, but nothing made it fade
+        # toward the tile's own edge - so where a boundary runs close to an edge, relief
+        # arrived there at almost full strength while the neighbour across that edge was
+        # flat. The eye reads the difference as the tile's outline. Ramping the weight
+        # over `edge_fade` px means both sides of every shared edge reach the flat
+        # palette colour together. ("grass should be fully faded to the base color or
+        # else we will see the tiles")
+        edge_fade = max(rim_guard, band // 2 + 2)
+        depth = np.zeros(alpha.shape, np.int16)
+        peel = alpha.copy()
+        for k in range(edge_fade):
+            e = peel.copy()
+            e[1:] &= peel[:-1]; e[:-1] &= peel[1:]
+            e[:, 1:] &= peel[:, :-1]; e[:, :-1] &= peel[:, 1:]
+            depth[peel & ~e] = k
+            peel = e
+        depth[peel] = edge_fade
+        w *= np.clip(depth / float(edge_fade), 0.0, 1.0)
+        inner = peel
         rim = alpha & ~inner
         collar &= ~rim
         w[rim] = 0.0
