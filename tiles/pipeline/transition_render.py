@@ -88,7 +88,7 @@ def _despeckle(m, passes=2):
 
 
 def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
-                   despeckle=2):
+                   ramp=None, despeckle=2):
     """Flat ground, detail only in the transition.
 
     Two maintainer rules that look contradictory and are not. "The tiles should be
@@ -104,8 +104,11 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
     tone. "Only the transition!"
     """
     import palette_snap as _ps
-    if spread is None:
-        spread = _ps.TEXTURED_TOP_SPREAD
+    # THE WALL'S CALL VERBATIM: substitute() with no spread compression and the
+    # material's ramp if it has one. "The top should get the exact same treatment as
+    # the walls currently have." TEXTURED_TOP_SPREAD (26) was compressing the relief
+    # out again, which is the opposite of what the walls get and why the top read flat
+    # beside them. spread stays a parameter but defaults to the wall's None.
     a = np.array(tile.convert("RGBA"), int).astype(float)
     ra = np.array(ref_a.convert("RGBA"), int)
     rb = np.array(ref_b.convert("RGBA"), int)
@@ -126,14 +129,15 @@ def compose_collar(tile, ref_a, ref_b, hex_a, hex_b, band=6, spread=None,
             out[..., :3][flat] = _ps._hex(hexv)
         near = owned & collar
         if near.any():
-            px = _ps.substitute(a, near, hexv, spread=spread)
+            px = _ps.substitute(a, near, hexv, spread=spread, ramp=ramp)
             if px is not None:
                 out[..., :3][near] = px
     out[..., 3] = np.where(alpha, 255, 0)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 
-def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6):
+def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6, spread=None,
+              ramp=None):
     """A whole set, ready to draw. Pure corners pass through untouched.
 
     With hex_a/hex_b the boundary tiles go through compose_collar (flat ground, relief
@@ -142,7 +146,8 @@ def retexture(tiles, pub_a, pub_b, hex_a=None, hex_b=None, band=6):
     silently."""
     if hex_a and hex_b:
         return [pub_a if i == 0 else pub_b if i == 15
-                else compose_collar(t, tiles[0], tiles[15], hex_a, hex_b, band=band)
+                else compose_collar(t, tiles[0], tiles[15], hex_a, hex_b, band=band,
+                                    spread=spread, ramp=ramp)
                 for i, t in enumerate(tiles)]
     return [pub_a if i == 0 else pub_b if i == 15
             else compose(t, tiles[0], tiles[15], pub_a, pub_b)
