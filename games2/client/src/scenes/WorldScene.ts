@@ -1847,7 +1847,7 @@ export class WorldScene extends Phaser.Scene {
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => {
       // Standing at a chess seat, the jump affordance IS the chess offer
-      // (maintainer: the button reads "START/JOIN CHESS GAME"). Auto-jump
+      // (maintainer: the button reads "START/JOIN CHESSGAME"). Auto-jump
       // (maybeAutoJump) bypasses this on purpose — walking into a ledge
       // beside a board must still hop.
       if (this.chessPrompt) return void this.room?.send("chess.sit", {});
@@ -6198,8 +6198,8 @@ export class WorldScene extends Phaser.Scene {
         if (d <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
       });
     }
-    const label = next ? ((next as { mode: string }).mode === "join" ? "JOIN CHESS GAME" : "START CHESS GAME") : null;
-    const prev = this.chessPrompt ? (this.chessPrompt.mode === "join" ? "JOIN CHESS GAME" : "START CHESS GAME") : null;
+    const label = next ? ((next as { mode: string }).mode === "join" ? "JOIN CHESSGAME" : "START CHESSGAME") : null;
+    const prev = this.chessPrompt ? (this.chessPrompt.mode === "join" ? "JOIN CHESSGAME" : "START CHESSGAME") : null;
     this.chessPrompt = next;
     if (label !== prev) window.dispatchEvent(new CustomEvent("ml-chess-prompt", { detail: { label } }));
   }

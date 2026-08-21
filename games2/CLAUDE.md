@@ -1150,8 +1150,8 @@ clip, no tint.
 ## Chess at the board (2026-08-21)
 
 Physical chess boards stand in the world; STANDING at a free seat makes the
-JUMP BUTTON the offer — its label reads START CHESS GAME (free board) / JOIN
-CHESS GAME (someone or the resident NPC waits), and the press seats you
+JUMP BUTTON the offer — its label reads START CHESSGAME (free board) / JOIN
+CHESSGAME (someone or the resident NPC waits), and the press seats you
 (`chess.sit`, proximity-validated server-side; walking past a board NEVER
 seats anyone — pinned by the room test). WorldScene intercepts the
 synthesized SPACE; auto-jump bypasses it on purpose (a ledge beside a board

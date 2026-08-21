@@ -143,7 +143,7 @@ export function mountGamepadStick(page: HTMLElement) {
   jumpLabel.textContent = "Jump";
   // CHESS OFFER (games agent, 2026-08-22, maintainer spec): standing at a
   // free chess seat the jump button IS the offer — the label reads
-  // START/JOIN CHESS GAME and the press seats you (WorldScene intercepts the
+  // START/JOIN CHESSGAME and the press seats you (WorldScene intercepts the
   // synthesized SPACE). One additive listener; "Jump" returns when you step
   // away. games-ui: this is the only chess touch in your file.
   window.addEventListener("ml-chess-prompt", (e) => {

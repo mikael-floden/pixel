@@ -332,12 +332,13 @@ export class ChessDialog {
     this.buildGame();
     const m = this.m;
     const c = this.card();
+    // Only the DESTINATION gets the last-move mark (maintainer: highlighting
+    // the walked-from square too read as noise).
     const last = (() => {
       let str = "";
       m.moves.forEach((x) => (str = x));
-      if (!str) return [-1, -1];
-      const sq = (t: string) => "abcdefgh".indexOf(t[0]) + (Number(t[1]) - 1) * 8;
-      return [sq(str.slice(0, 2)), sq(str.slice(2, 4))];
+      if (!str) return -1;
+      return "abcdefgh".indexOf(str[2]) + (Number(str[3]) - 1) * 8;
     })();
     const myTurn = m.phase === "play" && this.mySide === m.turn;
     const kingSq = (() => {
@@ -351,7 +352,7 @@ export class ChessDialog {
       const tgt = this.legal.find((mv) => mv.from === this.sel && mv.to === sq);
       const html = (p ? pieceImg(p) : "") + (tgt ? (p ? `<span class="cap"></span>` : `<span class="dot"></span>`) : "");
       if (cell.dataset.html !== html) { cell.innerHTML = html; cell.dataset.html = html; }
-      cell.classList.toggle("last", sq === last[0] || sq === last[1]);
+      cell.classList.toggle("last", sq === last);
       cell.classList.toggle("sel", sq === this.sel);
       cell.classList.toggle("chk", sq === kingSq);
     }

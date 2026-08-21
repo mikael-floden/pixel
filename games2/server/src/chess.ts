@@ -98,8 +98,8 @@ export class ChessManager {
 
   /**
    * SEATING IS A BUTTON PRESS, NOT PROXIMITY (maintainer 2026-08-22: stand
-   * close to a side and the jump button reads "START CHESS GAME"/"JOIN CHESS
-   * GAME"). The client sends chess.sit; the server validates you really stand
+   * close to a side and the jump button reads "START
+   * CHESSGAME"/"JOIN CHESSGAME"). The client sends chess.sit; the server validates you really stand
    * at a free seat. Nobody is ever seated by merely walking past a board.
    */
   sit(sid: string) {

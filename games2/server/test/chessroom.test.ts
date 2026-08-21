@@ -46,7 +46,7 @@ async function withServer(fn: () => Promise<void>): Promise<void> {
 }
 
 // Explicit seating since 2026-08-22 (maintainer: the jump button reads
-// START/JOIN CHESS GAME): stand at the seat, then SEND chess.sit — walking
+// START/JOIN CHESSGAME): stand at the seat, then SEND chess.sit — walking
 // past a board must never seat anyone, which the PvP test asserts.
 const sit = async (r: AnyRoom, c: number, row: number) => {
   r.send("teleport", { x: (c + 0.5) * CELL_WU, y: (row + 0.5) * CELL_WU });
