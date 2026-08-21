@@ -486,6 +486,42 @@ old reviews I have already rejected?"* Two fixes, one per half of the sentence:
   that art on the same rule. The wiki agent runs this after the tiles agent's
   regeneration waves.
 
+## The clean-colour top, and the switch that has to be everywhere
+
+Maintainer 2026-08-21, after hunting for it: *"I have browsed around on the
+entire wiki and can still not find a way to render tiles without the 'clean
+color top'. This makes it impossible to promote anything at all becouse
+promoted tiles will show the real top."*
+
+**Measured, so the size of it is on record.** The pair postprocess snaps a top
+to the ground's colour: on grass, black rock and light soil the top face comes
+out **96.2% a single colour**, against 28–69% in the generator's own art.
+Parquet and the pavings (`flat_top: false`) keep their texture, before and
+after alike.
+
+That makes the clean-colour pass **useless for the judgement it was blocking**.
+A base-tile group exists to make seams disappear; a field of flat-colour tops
+has no seams to find, so every group looks perfect and the review says nothing.
+The raw pass is where the repeat is visible — and it is what a promoted tile
+will actually ship as.
+
+The switch existed. It was in two places out of five: On top of and Details —
+**not** on Base tiles, where a group is judged, and **not** in the promote
+modal, where the promotion is decided. So it now lives **above the tabs**, on
+screen whatever tab is open, and **inside the modal**, repainting its previews
+in place; flipping in the dialog leaves the page set the same way when it
+closes. Both chips say what they mean rather than just naming a pass — After is
+"the postprocess snaps the top to the ground's clean colour", Before is "THE
+REAL TOP … a field of clean-colour tops hides seams no matter what".
+
+Gate: the pass switch on all four tabs and in the modal; flipping on Base tiles
+re-composes the group's 5×5 from the raw tops; flipping inside the modal
+re-composes without closing it and the page behind adopts the setting. The
+default-is-After check is asserted BEFORE the tab tour, because the pair cards
+deliberately carry both passes at once (CSS decides which is visible, so the
+A/B flip cannot blink) and would otherwise count as fetches no composition
+asked for.
+
 ## The ground type is a page — base tiles, base colour, palette, transitions
 
 Maintainer 2026-08-21, setting the World section's information architecture:

@@ -320,6 +320,16 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 a.trans-row { color: inherit; }
 a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--ink) 4%, transparent); }
 
+/* The pass switch: one control for the whole ground page, and one in the
+   promote dialog where the decision is actually made. */
+.ground-pass, .promote-pass {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 10px 0 0; font-size: 12.5px;
+}
+.promote-pass { margin: 8px 0 0; }
+.ground-pass .sortbar, .promote-pass .sortbar { margin-bottom: 0; }
+.pass-hint { flex: 1; min-width: 120px; }
+
 /* ---- ground details ---- */
 .detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
 .detail-card { gap: 6px; }

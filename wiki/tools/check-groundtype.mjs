@@ -153,6 +153,23 @@ ok(baseTab.randomize, "with a Randomize button beside it");
 ok(baseTab.members === 2 && baseTab.solos === 2 && baseTab.memberCanvases === 2,
   `then each member 1-by-1 with the double preview — alone, and centred among its group (${baseTab.members})`);
 ok(baseTab.weights.length === 2, "each carrying its spawn weight");
+// THE GROUP FIELD MUST BE JUDGEABLE — the tab where seams are decided needs
+// the raw top, or the flattened colour hides every seam there is.
+const basePass = await p.evaluate(() => ({
+  pass: !!document.querySelector(".ground-pass"),
+  sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
+}));
+ok(basePass.pass && basePass.sel === "After", `Base tiles carries the pass switch too (sel ${basePass.sel})`);
+let fAfter = 0, fBefore = 0;
+const countF = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) fAfter++; else if (/_before\.webp$/.test(u)) fBefore++; };
+p.on("request", countF);
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.waitForTimeout(2000);
+p.off("request", countF);
+ok(fBefore > 0 && fAfter === 0,
+  `and flipping it re-composes the group's field from the real tops (${fBefore} before, ${fAfter} after)`);
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.waitForTimeout(900);
 // the randomize really re-rolls the field
 const fieldBefore = await p.evaluate(() => document.querySelector(".base-group .group-stage canvas")?.toDataURL().length);
 await p.evaluate(() => [...document.querySelectorAll(".base-group button")].find((x) => /Randomize/.test(x.textContent))?.click());
@@ -250,9 +267,17 @@ const countPass = (r) => {
   if (/_after\.webp$/.test(u)) passes.after++;
   else if (/_before\.webp$/.test(u)) passes.before++;
 };
-p.on("request", countPass);
+// The default is a claim about a FRESH reader, so start from no stored
+// preference — earlier sections in this gate deliberately leave one behind.
+await p.evaluate(() => localStorage.removeItem("wiki-world-view"));
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await p.waitForTimeout(1600);
+// COUNT ONLY THE COMPOSITION. The pair CARDS deliberately carry both images
+// at once — CSS decides which is visible, so the A/B flip cannot blink — so a
+// page load legitimately fetches 30 _before files in After mode. Counting from
+// here scopes the claim to the tiles the Details tab composes.
+p.on("request", countPass);
+passes.after = 0; passes.before = 0;
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(2200);
 const dSwitch = await p.evaluate(() => ({
@@ -263,8 +288,31 @@ const dSwitch = await p.evaluate(() => ({
 }));
 ok(dSwitch.chips.join("/") === "After/Before" && dSwitch.sel === "After",
   `the Details tab carries the After/Before switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
+// Asserted BEFORE the tab tour below: visiting On top of renders the pair
+// cards, which carry both passes at once by design and would count as
+// "before" fetches that no composition asked for.
 ok(passes.after > 0 && passes.before === 0,
   `and every composed tile is fetched POSTPROCESSED by default (${passes.after} after, ${passes.before} before)`);
+// ON EVERY TAB, NOT TWO OF FOUR (maintainer 2026-08-21: "I have browsed around
+// on the entire wiki and can still not find a way to render tiles without the
+// 'clean color top'. This makes it impossible to promote anything at all").
+// The switch used to live on On top of and Details; Base tiles — where a group
+// is judged — and the promote modal — where the promotion is decided — had
+// none, and in After every field looks seamless because the postprocess
+// flattens the top to one colour.
+for (const tabName of ["Details", "On top of", "Transitions"]) {
+  await p.evaluate((t2) => [...document.querySelectorAll(".groundtab")].find((x) => x.textContent.includes(t2))?.click(), tabName);
+  await p.waitForTimeout(700);
+  const hasPass = await p.evaluate(() => ({
+    pass: !!document.querySelector(".ground-pass"),
+    sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
+    hint: document.querySelector(".pass-hint")?.textContent ?? "",
+  }));
+  ok(hasPass.pass && hasPass.sel === "After" && /Before/.test(hasPass.hint),
+    `the pass switch is on the ${tabName} tab, and says what After means (${hasPass.hint.slice(0, 46)}…)`);
+}
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+await p.waitForTimeout(700);
 passes.after = 0; passes.before = 0;
 await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
 await p.waitForTimeout(2200);
@@ -285,6 +333,32 @@ const dModal = await p.evaluate(() => ({
 }));
 ok(dModal.open && dModal.blocks.length >= 1,
   `and it opens the SAME promotion modal (${dModal.blocks.join(" | ")})`);
+const modalPass = await p.evaluate(() => ({
+  pass: !!document.querySelector(".promote-pass"),
+  sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
+}));
+ok(modalPass.pass && modalPass.sel === "After",
+  `the modal carries the pass switch — the promotion is decided in here (sel ${modalPass.sel})`);
+let mAfter = 0, mBefore = 0;
+const countM = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) mAfter++; else if (/_before\.webp$/.test(u)) mBefore++; };
+p.on("request", countM);
+await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.waitForTimeout(1800);
+p.off("request", countM);
+const stillOpen = await p.evaluate(() => ({
+  open: !!document.querySelector(".promote-modal[open]"),
+  sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
+}));
+ok(stillOpen.open && stillOpen.sel === "Before" && mBefore > 0,
+  `flipping inside it re-composes the previews without closing it (${mBefore} before fetched)`);
+await p.evaluate(() => [...document.querySelectorAll(".promote-modal button")].find((x) => /Close/.test(x.textContent))?.click());
+await p.waitForTimeout(1000);
+const synced = await p.evaluate(() => document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim());
+ok(synced === "Before", `and the page behind adopts the pass the modal was left on (${synced})`);
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.waitForTimeout(900);
+await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2?.scrollIntoView({ block: "center" }); b2?.click(); });
+await p.waitForTimeout(900);
 await p.evaluate(() => [...document.querySelectorAll(".promote-into")].at(-1)?.click());
 await p.waitForTimeout(800);
 const dPromoted = await p.evaluate(() => ({

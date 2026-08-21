@@ -3988,8 +3988,8 @@ function filterRoute(mode, keep = null) {
  * blink is exactly what a comparison must not have. They are ~2 KB each. */
 const WORLD_VIEW_KEY = "wiki-world-view";
 const WORLD_VIEWS = {
-  after: { label: "After", title: "What the game gets — the postprocessed tile" },
-  before: { label: "Before", title: "The generator's raw output, before any postprocess" },
+  after: { label: "After", title: "What the game gets today — the postprocess snaps the top to the ground's clean colour (measured: 96% of the top face becomes ONE colour on grass, black rock and light soil; parquet and the pavings keep their texture)" },
+  before: { label: "Before", title: "THE REAL TOP — the texture the generator actually drew, under the flattening. Judge base tiles and details on this: a field of clean-colour tops hides seams no matter what, so it cannot tell you whether a group works" },
 };
 const worldView = () => {
   try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
@@ -4261,7 +4261,6 @@ function viewWorldType(top) {
 
   /* ---------------- TAB: on top of (the x-over-y matrix, as before) ------- */
   const onTopTab = () => h("div", {},
-    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     state.admin ? sortBar(WORLD_STAR_KEY, Object.entries(WORLD_STARS).map(([id, f]) => {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => pairHits(c, id)).length;
       return [id, `${f.label} ${n}`, f.title];
@@ -4314,6 +4313,24 @@ function viewWorldType(top) {
       meta.category ? h("span", { class: "pill", title: meta.category === "liquid" ? "A liquid ground — bodies swim rather than walk" : "A solid ground — bodies walk on it" }, meta.category) : null),
     (meta.palette ?? []).length ? h("div", { class: "ground-palette", title: "The measured palette of this ground's own tiles — every colour its art actually uses, largest share first" },
       ...meta.palette.map((x) => swatch(x.c, `${x.c} — ${(x.share * 100).toFixed(1)}% of the painted pixels`))) : null,
+    /* THE PASS SWITCH LIVES ABOVE THE TABS (maintainer 2026-08-21, after a
+     * hunt: "I have browsed around on the entire wiki and can still not find a
+     * way to render tiles without the 'clean color top'. This makes it
+     * impossible to promote anything at all because promoted tiles will show
+     * the real top").
+     *
+     * It WAS on two tabs of four — not on Base tiles, which is exactly where a
+     * group is judged, and not inside the promote modal, which is exactly
+     * where the promotion is decided. And the judgement is worthless in After:
+     * the postprocess flattens a top to 96% one colour, so EVERY group hides
+     * its seams and every field looks perfect. One switch, always on screen,
+     * whatever tab is open. */
+    state.admin ? h("div", { class: "ground-pass" },
+      h("span", { class: "muted" }, "Tile art"),
+      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }),
+      h("span", { class: "muted pass-hint" }, worldView() === "before"
+        ? "the real top, under the flattening"
+        : "clean-colour tops — flip to Before to judge texture")) : null,
     h("div", { class: "groundtabs", role: "tablist" },
       tabBtn("base", "Base tiles", groups.length || null, !groups.length,
         groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
@@ -4378,9 +4395,6 @@ function viewWorldType(top) {
       h("p", { class: "muted" }, state.admin
         ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. Each sits in the ground it would decorate, as the game will ship it; flip to Before to see what the generator drew under the postprocess."
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
-      // ONE SWITCH FOR EVERY COMPOSITION ON THE PAGE — the section's own
-      // After/Before preference, so it also matches what On top of is showing.
-      state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }) : null,
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
           h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
@@ -4489,6 +4503,16 @@ function openPromoteModal(cell, cand, onDone) {
   let seed = 1;
   const body = h("div", { class: "promote-body" });
   const paint = () => {
+    // The head carries the pass switch, whose label depends on the pass — so
+    // it is rebuilt with the previews rather than left showing the old state.
+    const head = dlg.querySelector(".promote-pass");
+    if (head) {
+      head.replaceChildren(
+        h("span", { class: "muted" }, "Tile art"),
+        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+          () => { tileViews.clear(); paint(); }),
+        h("span", { class: "muted" }, worldView() === "before" ? "the real top" : "clean colour"));
+    }
     body.replaceChildren(
       ...groups.map((g) => h("div", { class: "promote-group" },
         h("div", { class: "panel-title" }, `In group ${g.id}`,
@@ -4518,11 +4542,28 @@ function openPromoteModal(cell, cand, onDone) {
       h("b", {}, `${typeLabelWorld(typeId)} — where does this tile belong?`),
       h("button", { class: "ghost-btn", title: "Re-roll every preview", onclick: () => { seed = (seed * 16807 + 7) % 2147483647; paint(); } }, "🎲 Randomize"),
       h("button", { class: "ghost-btn", onclick: () => { dlg.close(); dlg.remove(); } }, "✕ Close")),
+    // THE PASS SWITCH IS IN THE DIALOG TOO. This is where the promotion is
+    // actually decided, and in After every field looks seamless — the
+    // postprocess flattens the top to one colour, so the picture cannot answer
+    // the only question the dialog asks. Flipping here repaints the previews
+    // in place and leaves the page set the same way.
+    h("div", { class: "promote-pass" },
+      h("span", { class: "muted" }, "Tile art"),
+      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+        () => { tileViews.clear(); paint(); }),
+      h("span", { class: "muted" }, worldView() === "before" ? "the real top" : "clean colour")),
     h("p", { class: "muted promote-hint" }, "The candidate sits in the centre of every field. It belongs in a group when you cannot find it."),
     body);
   document.body.append(dlg);
   dlg.showModal();
-  dlg.addEventListener("close", () => dlg.remove());
+  // The dialog's pass switch writes the SECTION's preference, so a flip made
+  // in here has to be on the page when the dialog goes away — otherwise the
+  // page keeps claiming "After" over compositions the reader just changed.
+  const passAtOpen = worldView();
+  dlg.addEventListener("close", () => {
+    dlg.remove();
+    if (worldView() !== passAtOpen) { keepScrollY = window.scrollY; route(); }
+  });
 }
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "we need to make that page where I review the
