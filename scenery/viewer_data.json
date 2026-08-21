@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 735,
+  "scenery_count": 736,
   "target_count": 2149,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1390,7 +1390,7 @@
       "name": "Chess Table",
       "type": "INDOOR",
       "quota": 15,
-      "done": 11
+      "done": 12
     },
     {
       "rank": 173,
@@ -1427,7 +1427,7 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chess_boards": 11,
-    "chess_tables": 11,
+    "chess_tables": 12,
     "cliff_falls": 5,
     "cliff_features": 5,
     "cliff_fragments": 2,
@@ -9918,6 +9918,41 @@
       "pixellab_object_id": "1c5c5916-8bc9-4f96-8ffc-0f20299bfc9f",
       "sprite": "chess_tables/chess_table_012/sprite.webp",
       "art_hash": "066f6c4d16857f38",
+      "type": "INDOOR",
+      "must_be_imbplemented_with_random_hflip": true,
+      "rotations": {},
+      "states": {},
+      "animations": []
+    },
+    {
+      "id": "chess_table_013",
+      "rel": "chess_tables/chess_table_013",
+      "name": "Soulstone chess set with translucent pale pieces 013",
+      "category": "chess_tables",
+      "lights": "LIGHTS_OFF",
+      "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another, soulstone chess set with translucent pale pieces, well-worn from years of use, table-height, waist-high, completely unlit, no glow, no light sources, no self-emission",
+      "view": "low top-down",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.86,
+        "world_px_height": 32,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+        "content_box": [
+          9,
+          9,
+          56,
+          55
+        ],
+        "content_px_height": 46,
+        "canvas_render_px": 45
+      },
+      "status": "complete",
+      "generated_at": "2026-08-21T22:17:17+00:00",
+      "pixellab_object_id": "dcf21af1-fedf-4955-bed3-5a93a7d4410e",
+      "sprite": "chess_tables/chess_table_013/sprite.webp",
+      "art_hash": "0d7562e898bab3a1",
       "type": "INDOOR",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
