@@ -53,7 +53,8 @@
       "top": "#c9ab7e",
       "source": "reference tile tiles/matrix/light_soil__over__light_soil/sheet_02_same2_10066/tile_14.png \u2014 the maintainer's chosen look for this material",
       "wall": "#9d784b",
-      "wall_n": 6
+      "wall_n": 6,
+      "flat_top_note": "Shown a road drawn with light_soil flat and with light_soil given the WALL's own treatment (flat_top false -> substitute with a value spread, 3 colours on the top face becoming 13), the maintainer chose FLAT: 'First is what I want.' The ask that prompted the test - 'when you postprocess the tile you should let the tile have texture' and 'I don't want any palette to only have 2 colors' - was answered by looking at it. Do not re-open: a clean top is the default AND the verdict for ground, and the textured route stays reserved for parquet_floor and the paving twins. (Also settled there: the walls he likes are 21 tones because postprocess never flattens them; the top face is 96% one colour by design, not by omission.)"
     },
     "dark_mud": {
       "top": "#514137",
