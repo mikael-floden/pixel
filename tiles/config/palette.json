@@ -6,19 +6,22 @@
       "top": "#14523b",
       "source": "the maintainer's ladder pick, 2026-08-20: 75% from the 50%-blend toward tiles2/saturated_grass \u2014 they circled the column on a five-step preview ('The grass color is important becouse we will have a lot of grass in the game')",
       "wall": "#14644e",
-      "wall_n": 7
+      "wall_n": 7,
+      "transition_surface": "own"
     },
     "snow": {
       "top": "#ebf4f6",
       "source": "reference tile tiles/matrix/snow__over__snow/sheet_01_explicit/tile_05.png \u2014 the maintainer's chosen look for this material",
       "wall": "#c7d4d9",
-      "wall_n": 7
+      "wall_n": 7,
+      "transition_surface": "own"
     },
     "ice": {
       "top": "#99ced1",
       "source": "reference tile tiles/matrix/ice__over__ice/sheet_00_maintainer/tile_00.png \u2014 the maintainer's chosen look for this material",
       "wall": "#6eacb2",
-      "wall_n": 7
+      "wall_n": 7,
+      "transition_surface": "own"
     },
     "black_rock": {
       "top": "#1e1d1e",
@@ -26,13 +29,15 @@
       "wall": "#212122",
       "wall_n": 7,
       "kill_highlight": true,
-      "kill_note": "the set of top materials whose edge carries NO highlight \u2014 'black-rock over black-rock #6 ... looks extremely good becouse we have no highlight at all ... If the type on top is black-rock. Always try to get rid of the entire highlight.' soften_rim runs in kill mode for every cell with this material on top: grey glow above the brighter surface fades fully into it, no margin, no kept excess."
+      "kill_note": "the set of top materials whose edge carries NO highlight \u2014 'black-rock over black-rock #6 ... looks extremely good becouse we have no highlight at all ... If the type on top is black-rock. Always try to get rid of the entire highlight.' soften_rim runs in kill mode for every cell with this material on top: grey glow above the brighter surface fades fully into it, no margin, no kept excess.",
+      "transition_surface": "flat"
     },
     "light_beach": {
       "top": "#e4c495",
       "source": "reference tile tiles/matrix/light_beach__over__light_beach/sheet_02_same2_18712/tile_05.png \u2014 the maintainer's chosen look for this material",
       "wall": "#ab9274",
-      "wall_n": 7
+      "wall_n": 7,
+      "transition_surface": "own"
     },
     "grey_stone": {
       "top": "#808082",
@@ -47,14 +52,16 @@
         "#8c8c8c",
         "#949599"
       ],
-      "ramp_note": "the maintainer's #71 reference's own greys, dark grout to lit stone \u2014 added when single-hex wall substitution sank a light drawn wall onto the dark wall hex: 'Why did you turn the grey stone so dark? The grey stone looks really bad like that.'"
+      "ramp_note": "the maintainer's #71 reference's own greys, dark grout to lit stone \u2014 added when single-hex wall substitution sank a light drawn wall onto the dark wall hex: 'Why did you turn the grey stone so dark? The grey stone looks really bad like that.'",
+      "transition_surface": "flat"
     },
     "light_soil": {
       "top": "#c9ab7e",
       "source": "reference tile tiles/matrix/light_soil__over__light_soil/sheet_02_same2_10066/tile_14.png \u2014 the maintainer's chosen look for this material",
       "wall": "#9d784b",
       "wall_n": 6,
-      "flat_top_note": "Shown a road drawn with light_soil flat and with light_soil given the WALL's own treatment (flat_top false -> substitute with a value spread, 3 colours on the top face becoming 13), the maintainer chose FLAT: 'First is what I want.' The ask that prompted the test - 'when you postprocess the tile you should let the tile have texture' and 'I don't want any palette to only have 2 colors' - was answered by looking at it. Do not re-open: a clean top is the default AND the verdict for ground, and the textured route stays reserved for parquet_floor and the paving twins. (Also settled there: the walls he likes are 21 tones because postprocess never flattens them; the top face is 96% one colour by design, not by omission.)"
+      "flat_top_note": "Shown a road drawn with light_soil flat and with light_soil given the WALL's own treatment (flat_top false -> substitute with a value spread, 3 colours on the top face becoming 13), the maintainer chose FLAT: 'First is what I want.' The ask that prompted the test - 'when you postprocess the tile you should let the tile have texture' and 'I don't want any palette to only have 2 colors' - was answered by looking at it. Do not re-open: a clean top is the default AND the verdict for ground, and the textured route stays reserved for parquet_floor and the paving twins. (Also settled there: the walls he likes are 21 tones because postprocess never flattens them; the top face is 96% one colour by design, not by omission.)",
+      "transition_surface": "own"
     },
     "dark_mud": {
       "top": "#514137",
@@ -69,7 +76,8 @@
         "#5a473b",
         "#66554b"
       ],
-      "ramp_note": "The reference tile's own browns, dark to light \u2014 the maintainer picked it FOR the range: 'the ref has several colors of brown ... you have managed to get everything into a single brown color. I don't like that.' Substitution maps overhang and wall pixels into these stops instead of forcing one hue."
+      "ramp_note": "The reference tile's own browns, dark to light \u2014 the maintainer picked it FOR the range: 'the ref has several colors of brown ... you have managed to get everything into a single brown color. I don't like that.' Substitution maps overhang and wall pixels into these stops instead of forcing one hue.",
+      "transition_surface": "flat"
     },
     "parquet_floor": {
       "top": "#a7754b",
@@ -79,24 +87,34 @@
       "flat_top": false,
       "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'",
       "claim_lip": 4,
-      "claim_lip_note": "'Parquet Floor should have a overhang looking like a list/border' / 'Parquet Floor lacks overhang border' - reported on lava, light beach and light soil, and 1-starred across the group. A laid floor ends in a moulding: the top 4 wall rows are the wood's wherever parquet is the top material. Type-level, so it cannot be forgotten on a new pair."
+      "claim_lip_note": "'Parquet Floor should have a overhang looking like a list/border' / 'Parquet Floor lacks overhang border' - reported on lava, light beach and light soil, and 1-starred across the group. A laid floor ends in a moulding: the top 4 wall rows are the wood's wherever parquet is the top material. Type-level, so it cannot be forgotten on a new pair.",
+      "transition_surface": "base",
+      "base_tiles": [
+        "tiles/review/parquet_floor__over__parquet_floor/0_after.webp"
+      ]
     },
     "paving_stone": {
       "top": "#7d7265",
       "wall": "#5c544b",
-      "_comment": "GENERATION alias only. The matrix keeps generating under this name (tiles.json ground_types is unchanged); publish expands it into brown_paving_stone and grey_paving_stone via their generated_as fields and never publishes a cell under this name. Hexes mirror the brown nomination so chase.py's quality gating stays consistent."
+      "_comment": "GENERATION alias only. The matrix keeps generating under this name (tiles.json ground_types is unchanged); publish expands it into brown_paving_stone and grey_paving_stone via their generated_as fields and never publishes a cell under this name. Hexes mirror the brown nomination so chase.py's quality gating stays consistent.",
+      "transition_surface": "base",
+      "base_tiles": [
+        "tiles/review/paving_stone__over__paving_stone/0_after.webp"
+      ]
     },
     "water": {
       "top": "#7eb7c7",
       "source": "reference tile tiles/matrix/water__over__water/sheet_01_same1_18719/tile_14.png \u2014 the maintainer's chosen look for this material",
       "wall": "#4c8a98",
-      "wall_n": 6
+      "wall_n": 6,
+      "transition_surface": "flat"
     },
     "deep_water": {
       "top": "#162843",
       "source": "wall of reference tile tiles/matrix/grass__over__deep_water/sheet_02_chase2/tile_04.png (grass over deep_water) \u2014 the maintainer's chosen look for this material; top reconstructed from deep_water same-over-same lit/shaded ratio (n=6)",
       "wall": "#102235",
-      "wall_n": 6
+      "wall_n": 6,
+      "transition_surface": "flat"
     },
     "lava": {
       "top": "#fd5a02",
@@ -111,7 +129,8 @@
       ],
       "flat_top": true,
       "ramp_note": "the nominated top's own tones, dark red to bright bubble highlight. Lava was flat-filled with a single orange (#fb7f10) \u2014 'I feel we paint a single orange color. As if lava has no own palette. Lava is also more red than orange.' flat_top false keeps the bubbling texture; the ramp keeps the range; the base is redder.",
-      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs."
+      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
+      "transition_surface": "flat"
     },
     "slime": {
       "top": "#31bd75",
@@ -129,7 +148,8 @@
       "flat_top": true,
       "ramp_top_only": true,
       "ramp_note": "the nominated wall's own tones, deep shadow to pale sparkle, measured with the grass excluded (slime separates as the MINT family, b-r >= +32; grass is warm). Slime was flat-filled with one neon green (#7aee2f) \u2014 'The slime in slime over gray_stone is also very single color and pure.' flat_top false keeps the swirls, the ramp gives the claims their range, like lava before it. ramp_top_only because slime DIFFERS from lava: nearly every *__over__slime wall is painted and already reviewed \u2014 the ramp must not repaint them (proven byte-identical with the guard on ice/grass/snow over slime).",
-      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs."
+      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
+      "transition_surface": "flat"
     },
     "brown_paving_stone": {
       "top": "#7d7265",
@@ -147,7 +167,11 @@
       "flat_top": false,
       "generated_as": "paving_stone",
       "force_align_wall": true,
-      "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells."
+      "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells.",
+      "transition_surface": "base",
+      "base_tiles": [
+        "tiles/review/brown_paving_stone__over__brown_paving_stone/0_after.webp"
+      ]
     },
     "grey_paving_stone": {
       "top": "#a8a8a8",
@@ -165,7 +189,11 @@
       "flat_top": false,
       "generated_as": "paving_stone",
       "force_align_wall": true,
-      "ramp_abs": true
+      "ramp_abs": true,
+      "transition_surface": "base",
+      "base_tiles": [
+        "tiles/review/grey_paving_stone__over__grey_paving_stone/0_after.webp"
+      ]
     }
   },
   "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
@@ -441,5 +469,6 @@
       "force_align": true,
       "note": "'The grass is not colored to our grass in this image' - every tile in the set measures wall_err 39-46 against the gate of 30, so the grass wall shipped RAW in the generator's olive-yellow instead of our deep green. Same override the maintainer sanctioned for deep water: the wall material is not in question here, only its drawn colour. Olive share 0.21 -> 0.00."
     }
-  }
+  },
+  "_transition_comment": "transition_surface is the maintainer's taxonomy (2026-08-21), set after reviewing all 17 composed pairs. 'own' keeps the generated transition art with hue/sat corrected to the palette and the pixel's relief carried through - his verdict on the grass pages: 'A calm base texture is better than a clean color, but they have to be very very subtile'. And near a boundary it SHOULD differ from the field: 'grass near a road usually is different'. 'base' copies the material's base tile into its region so the transition mimics its neighbour - paving and parquet, where the generator's freehand stones read wrong beside the laid field. 'flat' fills the top with the single palette colour, wall texture kept - the declared fallback 'when we have still not found that perfect texture', and probably permanent for lava/water/deep_water, which the game animates instead. A material may later carry several base_tiles; a field then draws them interchangeably to kill repetition."
 }

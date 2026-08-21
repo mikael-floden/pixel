@@ -7,6 +7,17 @@ from PIL import Image
 import transition_render as TR
 PAL=json.load(open("/home/user/pixel/tiles/config/palette.json"))["types"]
 R_="/home/user/pixel/tiles/review"
+def side_for(mat):
+    """The material's side of a transition, per palette.json's transition_surface."""
+    mode = PAL[mat].get("transition_surface", "own")
+    if mode == "own":
+        return {"mode": "own", "hex": PAL[mat]["top"], "base": None}
+    refs = PAL[mat].get("base_tiles") or [f"tiles/review/{mat}__over__{mat}/0_after.webp"]
+    im = Image.open("/home/user/pixel/" + refs[0].lstrip("/")).convert("RGBA").crop((0,9,64,55))
+    if mode == "flat":
+        im = TR.clean_top(im, PAL[mat]["top"])
+    return {"mode": "copy", "hex": PAL[mat]["top"], "base": im}
+
 def ground(mat):
     """Our published, reviewed tile for a material.
 
@@ -71,10 +82,9 @@ for (a,b),sets in sorted(full.items()):
     m15= b if m0==a else a
     pa,pb=ground(m0),ground(m15)
     entry={"a":a,"b":b,"label":f"{a} ↔ {b}","index0":m0,"sets":{}}
+    s0, s15 = side_for(m0), side_for(m15)
     for (amp,seed),raw in sorted(sets.items()):
-        # Keep the generator's art; correct only its colour. See retexture_palette.
-        proc=TR.retexture_palette(raw, PAL[m0]["top"], PAL[m15]["top"],
-                                  ramp_a=PAL[m0].get("ramp"), ramp_b=PAL[m15].get("ramp"))
+        proc=TR.compose_transition(raw, s0, s15)
         entry["sets"][f"{amp}-{seed}"]={"clean":pack(proc),"raw":pack(raw)}
     out.append(entry); print(f"  built {a} -> {b}   (index 0 = {m0})", flush=True)
 old=json.load(open("roadgen.json"))

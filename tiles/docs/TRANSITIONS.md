@@ -101,26 +101,37 @@ with a second blended in only where ragged is wanted.**
 So the buying rule is: generate several seeds per pair, score all four directions, keep
 the best two. At $0.079 a set, 8 seeds across 105 pairs is $66 to choose from.
 
-## Texture: only the transition, and always the wall's way
+## Surfaces: the taxonomy
 
-Two rules from the maintainer that read as a contradiction and are not:
+Every material declares `transition_surface` in `palette.json` (maintainer taxonomy,
+2026-08-21, set after reviewing all 17 composed pairs):
 
-* **"Clean, no ground texture!" / "The tiles should be flat!"** — away from the
-  boundary each material is its single palette colour, exactly as the matrix ships.
-  A textured ground was built and shown and rejected twice (see `palette.json`,
-  `light_soil.flat_top_note`).
-* **"This is not how we preserve the texture on walls!"** — classifying every pixel
-  and then painting it a FLAT colour turns PixelLab's grass blades lying on the sand
-  into scattered dots. The wall treatment never does that: it keeps the pixel's relief
-  and forces only hue and saturation.
+| mode | what happens | who |
+|---|---|---|
+| `own` | The generated art stays; `substitute()` corrects hue and saturation to the palette and the pixel's relief carries through. | grass, light_soil, light_beach, snow, ice |
+| `base` | The material's **base tile** is copied into its region, wall included, so the transition mimics the neighbouring field. | the paving twins, parquet_floor |
+| `flat` | `base` with a clean-topped base tile: single palette colour on top, published wall below. | dark_mud, grey_stone, black_rock, lava, water, deep_water, slime |
 
-`compose_collar()` satisfies both. The wall's own `substitute()` runs in a `band` px
-collar around where the two materials actually meet, and nowhere else. Measured on
-23%/seed 4 at band 6: a pure tile's top face is **1 colour covering 100%**, a boundary
-tile's is **20**. Blades stay blades, the ground stays one tone.
+The verdicts that shaped it:
 
-**"Texture is always like the walls."** There is no second texturing technique in this
-repo — anything that needs relief goes through `substitute()`, which sets hue and
-saturation from the palette and never reads them off the art. Every invented colour
-this pipeline has ever shipped (a magenta grass edge, 1413 vivid pixels, a red
-light_soil) came from code that read a hue off the art and shifted by it.
+- *"A calm base texture is better than a clean color, but they have to be very very
+  subtile."* The corrected generated grass is the reference standard — and near a
+  boundary it SHOULD differ from the field: *"grass near a road usually is
+  different."* So `own` materials are never overwritten with their base tile.
+- Laid surfaces are the opposite: the generator's freehand stones read wrong beside
+  the repeating field, so paving and parquet mimic their neighbour. (Copying the base
+  tile into EVERY material was tried and was the day's big mistake — right for laid
+  surfaces, destructive for organic ones.)
+- `flat` is explicitly the fallback: *"the trick we use when we have still not found
+  that perfect texture that beats the single base color."* For lava/water/deep_water
+  it is probably permanent — the game animates those instead.
+
+**Base tiles** are the coming counterpart: a material may carry several `base_tiles`,
+each excellent in repetition, and a field draws them interchangeably to kill the
+repeat (*"the small repetition we get can be solved with alternative tiles looking
+the same"*). A material with no good base texture yet uses `flat`. Candidate grass
+base tiles need no generation: every grass-pair set already carries its own pure
+grass tile — hundreds on the account, free to harvest.
+
+Composition is `transition_render.compose_transition()`; the lab builds with it via
+`tiles/lab/build_pairs.py`.

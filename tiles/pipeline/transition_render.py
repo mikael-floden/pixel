@@ -513,3 +513,59 @@ def retexture_palette(tiles, hex_a, hex_b, spread=None, ramp_a=None, ramp_b=None
         out[..., 3] = np.where(alpha, 255, 0)
         out_tiles.append(Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"))
     return out_tiles
+
+
+def compose_transition(tiles, side0, side15, despeckle=2):
+    """One transition set through the maintainer's surface taxonomy.
+
+    side0 / side15 are {"mode", "hex", "base"} for the material at index 0 (the one
+    named SECOND in the generation description) and index 15. Three modes, decided
+    per material in palette.json (transition_surface):
+
+    own   Keep the generated art; substitute() corrects hue and saturation to the
+          palette and the pixel's own relief carries through. The verdict that set
+          this: the corrected grass "is also killing me! So good!" - and near a
+          boundary its texture SHOULD differ from the field, because "grass near a
+          road usually is different".
+
+    base  Copy the material's base tile into its region, wall included, so the
+          transition mimics the neighbouring field. For paving and parquet the
+          generator's freehand stones read wrong beside the laid pattern - the same
+          copy this pipeline once applied to everything, which was the mistake:
+          right for laid surfaces, destructive for organic ones.
+
+    flat  base with a clean-topped base tile: single palette colour on top, the
+          published wall texture below. The declared fallback "when we have still
+          not found that perfect texture that beats the single base color".
+
+    The copy modes share one code path - what differs is only the image handed in.
+    """
+    import palette_snap as _ps
+    ra = np.array(tiles[0].convert("RGBA"), int)
+    rb = np.array(tiles[15].convert("RGBA"), int)
+    prepared = []
+    for side in (side0, side15):
+        base = side.get("base")
+        prepared.append(np.array(base.convert("RGBA"), int) if base is not None else None)
+    out_tiles = []
+    for t in tiles:
+        a = np.array(t.convert("RGBA"), int).astype(float)
+        alpha = a[..., 3] > 0
+        isb = (np.abs(a[..., :3] - rb[..., :3]).sum(2)
+               < np.abs(a[..., :3] - ra[..., :3]).sum(2))
+        if despeckle:
+            isb = _despeckle(isb, passes=despeckle)
+        out = a.copy()
+        for owned, side, basearr in ((alpha & ~isb, side0, prepared[0]),
+                                     (alpha & isb, side15, prepared[1])):
+            if not owned.any():
+                continue
+            if side["mode"] == "own":
+                px = _ps.substitute(a, owned, side["hex"])
+                if px is not None:
+                    out[..., :3][owned] = px
+            else:
+                out[..., :3][owned] = basearr[..., :3][owned]
+        out[..., 3] = np.where(alpha, 255, 0)
+        out_tiles.append(Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA"))
+    return out_tiles
