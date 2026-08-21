@@ -3648,6 +3648,54 @@ const SURFACE_LABEL = {
   flat: { text: "clean colour for now", cls: "warn", title: "Painted as a clean flat colour until a texture beats it — the maintainer's declared stopgap, not the goal." },
 };
 const transitionsOf = (typeId) => (worldMeta().transitions ?? []).filter((t) => t.a === typeId || t.b === typeId);
+/* ---- GROUND DETAILS — the fourth tab, and the second review axis ----
+ * Maintainer 2026-08-21: "There are a LOT of tiles that look AMAZING if you
+ * not show them to often! ... Tiles here will NEVER EVER show the wall side.
+ * So the WALL is irrelevant ... This can be a flower or a small stone.
+ * Something you cant repeat, but every nice tile that didn't make it into the
+ * other categories can still have a chance to once in a while be in the game!
+ * ... We have lots of tiles that at leat I have never seen how the top even
+ * looks like! So you should be able to toggle a button to 'review the top' on
+ * other tile pages ... and if the top looks great you can give it a top star
+ * and approval."
+ *
+ * THE TOP IS ITS OWN REVIEW, stored in the same feedback doc under the same
+ * key with a `#top` suffix — exactly how a monster's per-facet verdicts ride
+ * `path#state#dir`. Independent by design: a tile rejected AS A PAIR (bad
+ * wall) can still be a top-approved detail — "didn't make it into the other
+ * categories" is the point — and the tiles agent is told to keep the art of
+ * any top-approved tile even when the pair-tile itself is rejected.
+ *
+ * THE PICTURE IS THE GAME'S: the tile centred in a 3×3 of the ground's base
+ * group — how a detail actually appears, once in a while, in a field. And it
+ * shows the RAW top (`before`): the pair postprocess flattens every top to
+ * the clean colour, which is WHY he has never seen most of them.
+ */
+const topKey = (key) => `${key}#top`;
+const topFb = (key) => fb("tiles", topKey(key));
+const topReviewed = (key) => { const e = topFb(key); return !!(e.rating || e.status); };
+/** The art the top review judges: the unflattened raw when it exists. */
+const topArt = (cand) => cand.raw ?? cand.art;
+/** Every candidate whose TOP belongs to this ground — every pair of the type,
+ *  the wall deliberately ignored. */
+const typeTops = (typeId) => worldCells()
+  .filter((c) => c.top === typeId)
+  .flatMap((c) => c.candidates.map((cand) => ({ cell: c, cand })));
+/** The ground's detail collection: tops he approved. */
+const detailsOf = (typeId) => typeTops(typeId).filter(({ cand }) => topFb(cand.key).status === "approved");
+/** The boredom queue: tops nobody has judged yet. */
+const detailQueue = (typeId) => typeTops(typeId).filter(({ cand }) => !topReviewed(cand.key));
+/** What surrounds a detail in its composition: the base group's members —
+ *  or, before any exist, the ground's own best pure tile, so the review is
+ *  possible in either order. */
+function detailSurround(typeId) {
+  const g = baseGroupsOf(typeId)[0];
+  if (g?.members.length) return g.members;
+  const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
+  const cand = own?.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own?.candidates[0];
+  return cand ? [{ weight: 1, hit: { cand } }] : [];
+}
+
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
  *  metadata only). `post` picks the retextured pass once the tiles agent
  *  publishes it. */
@@ -4113,6 +4161,7 @@ function viewWorld() {
  *  IS, whatever you are looking at. */
 const groundTab = new Map();          // typeId -> the tab chosen this session
 const baseFieldSeeds = new Map();     // "type/group" -> composite seed (Randomize)
+const detailShown = new Map();        // typeId -> how much of the queue is unrolled
 function viewWorldType(top) {
   refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const types = worldTypes();
@@ -4126,13 +4175,16 @@ function viewWorldType(top) {
   const surface = SURFACE_LABEL[meta.surface] ?? null;
   const groups = baseGroupsOf(t.id);
   const trans = transitionsOf(t.id);
+  const details = detailsOf(t.id);
+  const queue = state.admin ? detailQueue(t.id) : [];
   const swatch = (c, title) => h("span", {
     class: "swatch ground-swatch", title,
     style: `background:${/^#[0-9a-f]{3,8}$/i.test(c) ? c : "transparent"}`,
   });
   // The tab: his rule verbatim — Base tiles first, disabled when empty.
   const wanted = groundTab.get(t.id);
-  const tab = (wanted === "base" && !groups.length) ? "ontop"
+  const detailsDead = !details.length && !state.admin;   // a player with nothing to see
+  const tab = (wanted === "base" && !groups.length) || (wanted === "details" && detailsDead) ? "ontop"
     : wanted ?? (groups.length ? "base" : "ontop");
   const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
   const tabBtn = (id, label2, count, disabled, title) => h("button", {
@@ -4247,11 +4299,66 @@ function viewWorldType(top) {
     h("div", { class: "groundtabs", role: "tablist" },
       tabBtn("base", "Base tiles", groups.length || null, !groups.length,
         groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
+      tabBtn("details", "Details", details.length || null, detailsDead,
+        details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
       tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
       tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours")),
     state.admin && !groups.length && tab === "ontop" ? h("p", { class: "muted" },
       `No base tiles yet — open a set below and press "☖ promote to base tile" on the tiles that can repeat forever.`) : null,
-    tab === "base" ? baseTab() : tab === "trans" ? transTab() : onTopTab());
+    tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : onTopTab());
+
+  /* ---------------- TAB: ground details — "where the fun begins" ----------
+   * The collection first (the tops he approved, each composed the way the
+   * game will show it: alone in a field of the base ground), then the QUEUE —
+   * every top nobody has judged, reviewable in place: "Then I will have
+   * something TODO when I get bored :)" */
+  function detailsTab() {
+    const surround = detailSurround(t.id);
+    const seedKey = `${t.id}/details`;
+    const dSeed = baseFieldSeeds.get(seedKey) ?? 5;
+    const shownQueue = detailShown.get(t.id) ?? 12;
+    const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
+      surround.length
+        ? centeredField(topArt(cand), surround, dSeed, 1)
+        : h("div", { class: "iso-stage checker group-stage" }, h("img", { class: "member-tile", src: assetUrl(topArt(cand)), alt: "the top" })),
+      h("div", { class: "card-sub" },
+        h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
+        cand.raw ? null : h("span", { class: "pill warn", title: "No raw art — this is the flattened top" }, "postprocessed top")),
+      state.admin ? h("div", { class: "card-sub" },
+        feedbackRow("tiles", topKey(cand.key), {
+          onchange: () => { keepScrollY = window.scrollY; route(); },
+          onStars: reviewing ? () => { keepScrollY = window.scrollY; route(); } : undefined,
+          reject: "✕ not a detail",
+          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
+          rejectedLabel: "not a detail",
+          note: false,
+        })) : null);
+    return h("div", {},
+      h("p", { class: "muted" }, state.admin
+        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged, raw (the pair postprocess flattens tops, which is why you have never seen most of them). Each sits in the ground it would decorate."
+        : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
+      h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "This ground's details",
+          h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
+          h("button", { class: "ghost-btn", title: "Re-roll every composition", onclick: () => { baseFieldSeeds.set(seedKey, (dSeed * 16807 + 7) % 2147483647); keepScrollY = window.scrollY; route(); } }, "🎲 Randomize")),
+        details.length
+          ? h("div", { class: "grid detail-grid" }, ...details.map((d) => detailCard(d, false)))
+          : h("p", { class: "muted" }, state.admin
+            ? "Nothing approved yet — the queue below is where they come from."
+            : "None yet — they are being picked right now.")),
+      state.admin ? h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "Tops nobody has judged",
+          h("span", { class: "pill" }, String(queue.length)),
+          h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
+        queue.length
+          ? h("div", {},
+            h("div", { class: "grid detail-grid" }, ...queue.slice(0, shownQueue).map((d) => detailCard(d, true))),
+            queue.length > shownQueue ? h("button", {
+              class: "ghost-btn", style: "margin-top:10px",
+              onclick: () => { detailShown.set(t.id, shownQueue + 12); keepScrollY = window.scrollY; route(); },
+            }, `Show 12 more (${queue.length - shownQueue} left)`) : null)
+          : h("p", { class: "muted" }, "Every top of this ground has been judged. Boredom will have to find something else.")) : null);
+  }
 }
 /* ---- THE TRANSITION PAGE — a demo, not a list (maintainer 2026-08-21:
  * "Clicking on a transition will get you to that transition page. Here we can
@@ -4739,7 +4846,53 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     state.admin && cand.prompt
       ? h("details", { class: "world-prompt" }, h("summary", {}, "prompt"), h("p", {}, cand.prompt),
         cand.tileId ? h("p", { class: "muted mono" }, cand.tileId) : null)
-      : null);
+      : null,
+    // ---- REVIEW THE TOP (the second axis; see the GROUND DETAILS block).
+    // Collapsed by default — the pair review is about the wall, and a second
+    // full review row on every card would bury it. The button carries the
+    // top's state so a judged top is visible without opening anything.
+    state.admin ? topReviewBlock(cell, cand, onVerdict) : null);
+}
+/** The expandable top review: the tile's RAW top centred in the ground's base
+ *  group — how it would actually appear as a once-in-a-while detail — with
+ *  its own stars and verdict under the `#top` key. */
+function topReviewBlock(cell, cand, onChange) {
+  const box = h("div", { class: "top-review" });
+  let open = false;
+  const btnLabel = () => {
+    const e = topFb(cand.key);
+    const mark = e.status === "approved" ? " · ✓ detail" : e.status === "rejected" ? " · ✕" : e.rating ? ` · ${"★".repeat(e.rating)}` : "";
+    return `☘ review the top${mark}`;
+  };
+  const btn = h("button", {
+    class: "ghost-btn top-btn",
+    title: "Judge the TOP alone, as a once-in-a-while ground detail — the wall is irrelevant here. Shows the RAW top: the pair postprocess flattens tops to the clean colour, which is why you have never seen most of them.",
+    onclick: (e) => { e.stopPropagation(); open = !open; paint(); },
+  }, btnLabel());
+  const paint = () => {
+    btn.textContent = btnLabel();
+    if (!open) { box.replaceChildren(btn); return; }
+    const surround = detailSurround(cell.top);
+    box.replaceChildren(
+      btn,
+      h("p", { class: "muted top-hint" },
+        cand.raw
+          ? "The top as GENERATED, before the flattening — sitting in the ground it would decorate."
+          : "No raw art for this tile (pre-@2 generation) — judging the postprocessed top."),
+      surround.length
+        ? centeredField(topArt(cand), surround, 3, 1)
+        : h("p", { class: "muted" }, "No base tile or pure tile to surround it with yet — the composition needs one."),
+      h("div", { class: "card-sub" },
+        feedbackRow("tiles", topKey(cand.key), {
+          onchange: () => { paint(); onChange?.(); },
+          onStars: () => { paint(); },
+          reject: "✕ not a detail",
+          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
+          rejectedLabel: "not a detail",
+        })));
+  };
+  paint();
+  return box;
 }
 
 function viewTiles() {

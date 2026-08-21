@@ -316,6 +316,14 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 a.trans-row { color: inherit; }
 a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--ink) 4%, transparent); }
 
+/* ---- ground details ---- */
+.detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.detail-card { gap: 6px; }
+.detail-card .group-stage { padding: 6px; }
+.top-review { margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
+.top-btn.on, .top-btn:hover { color: var(--ink); }
+.top-hint { margin: 4px 0 6px; font-size: 12px; }
+
 /* ---- ground type page: identity card, base tiles, transitions ---- */
 .ground-swatch {
   display: inline-block; width: 14px; height: 14px; border-radius: 4px;

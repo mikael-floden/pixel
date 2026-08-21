@@ -486,6 +486,26 @@ invented**:
   group where you cannot find it.
 - **On top of** is his name for the x-over-y matrix — the existing pair grid
   with its filters, as the second tab.
+- **Details is the fourth tab** — *"the most fun section ... There are a LOT
+  of tiles that look AMAZING if you not show them to often!"* A ground detail
+  is a top judged on its OWN axis: the wall never shows, so the wall is
+  irrelevant, and the picture is the game's — the tile centred in a 3×3 of the
+  ground's base group, appearing once in a while. It judges the RAW top
+  (`before`): the pair postprocess flattens every top to the clean colour,
+  which is exactly why *"we have lots of tiles that at least I have never seen
+  how the top even looks like"*. The verdict rides the tile's own key with a
+  `#top` suffix in the tiles feedback doc — the same convention as a monster's
+  per-facet verdicts — so it is INDEPENDENT of the pair review: a tile
+  rejected for its wall can still be a top-approved detail ("every nice tile
+  that didn't make it into the other categories can still have a chance"),
+  and the gate asserts a top approval never leaks into the pair filters. The
+  tab holds the approved collection first, then **"Tops nobody has judged"** —
+  the when-bored queue, twelve composed cards at a time, reviewable in place.
+  Every tile card on the pair pages carries a collapsed **"☘ review the top"**
+  toggle that opens the same composition with its own stars and a "not a
+  detail" verdict, and wears the top's state on the button. Ground details are
+  not in the game yet — this is the pick list the tiles agent's
+  detailed-variant pass and the world agent will consume.
 - **Transitions** mirror `tiles/transitions/` on disk, and each pair now has
   its own DEMO PAGE (`#/world/transition/<a>__to__<b>`): the same Wang corner
   set composed across every direction a boundary can run — west|east,

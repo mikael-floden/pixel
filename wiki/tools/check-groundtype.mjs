@@ -94,7 +94,10 @@ ok(page.palette.length === GRASS.palette.length && page.palette[0] === rgb(GRASS
 const tabs0 = await readTabs();
 ok(tabs0[0]?.t.startsWith("Base tiles") && tabs0[0].disabled && !tabs0[0].sel,
   `with no base tiles the first tab is DISABLED (${JSON.stringify(tabs0.map((x) => x.t))})`);
-ok(tabs0[1]?.sel && /On top of/.test(tabs0[1].t), "…and the visitor lands on On top of instead");
+// Index 1 is Details now; the landing rule sends an untended ground to the
+// workhorse tab wherever it sits in the row.
+const landed = tabs0.find((x) => x.sel);
+ok(/On top of/.test(landed?.t ?? ""), `…and the visitor lands on On top of instead (${landed?.t})`);
 ok(page.onTop === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
   `where the whole x-over-y grid still lives (${page.onTop} cards)`);
 
@@ -171,14 +174,91 @@ ok(saved?.file === "tuning/base_tiles" && savedEntries.some((e) => e?.weight ===
 await p.evaluate(() => { [...document.querySelectorAll(".base-member button")].filter((x) => /Remove/.test(x.textContent)).forEach((x) => x.click()); });
 await p.waitForTimeout(700);
 const tabs2 = await readTabs();
-ok(tabs2[0]?.disabled && tabs2[1]?.sel,
+ok(tabs2[0]?.disabled && tabs2.find((x) => /On top of/.test(x.t))?.sel,
   "removing the last member disables the tab and lands back on On top of");
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(700);
 ok(Object.values(saves.at(-1)?.set ?? {}).every((v) => v === null),
   "and committing the removals deletes the entries");
 
+// ---- 2e. GROUND DETAILS: the fourth tab, the second review axis ------------
+// (maintainer 2026-08-21: "There are a LOT of tiles that look AMAZING if you
+// not show them to often! ... the WALL is irrelevant ... you must be able to
+// see how the tile looks like without the clean-single-color-top
+// postprocessing ... give it a top star and approval ... we could here list
+// tiles not yet reviewed. Then I will have something TODO when I get bored")
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.waitForTimeout(2200);
+const tabsD = await readTabs();
+ok(tabsD.length === 4 && /Details/.test(tabsD[1].t) && !tabsD[1].disabled,
+  `four tabs, Details second — enabled for the admin even when empty, the queue is his TODO (${tabsD.map((x) => x.t).join(" | ")})`);
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+await p.waitForTimeout(1800);
+const expQueue = (D.domains.world ?? []).filter((c) => c.top === "grass").reduce((n, c) => n + c.candidates.length, 0);
+const dq = await p.evaluate(() => ({
+  queuePill: [...document.querySelectorAll(".panel-title .pill")].map((x) => x.textContent),
+  cards: document.querySelectorAll(".detail-card").length,
+  canvases: document.querySelectorAll(".detail-card canvas").length,
+  stars: document.querySelectorAll(".detail-card .stars").length,
+  more: [...document.querySelectorAll("button")].some((x) => /Show 12 more/.test(x.textContent)),
+}));
+ok(dq.queuePill.some((t) => t === String(expQueue)),
+  `the queue counts every top of the ground — walls ignored, all pairs (${expQueue})`);
+ok(dq.cards === 12 && dq.canvases === 12 && dq.stars === 12 && dq.more,
+  `twelve at a time, each COMPOSED in the ground with its own stars, and more on demand (${dq.cards})`);
+// approve one from the queue → the collection, the tab count, the #top save
+await p.evaluate(() => { const b2 = [...document.querySelectorAll(".detail-card button")].find((x) => /approve/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.waitForTimeout(900);
+const dApproved = await p.evaluate(() => ({
+  tab: [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.textContent.trim(),
+  keys: Object.keys(window.__wiki.state.feedback.tiles.entries ?? {}).filter((k) => k.endsWith("#top")),
+}));
+ok(/Details1/.test(dApproved.tab.replace(/\s+/g, "")), `approving a top moves it into the collection and the tab count (${dApproved.tab})`);
+ok(dApproved.keys.length === 1 && /#top$/.test(dApproved.keys[0]),
+  `the verdict rides the tile's own key with the #top suffix (${dApproved.keys[0]})`);
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(700);
+const topSave = saves.at(-1);
+ok(topSave?.file === "feedback/tiles" && Object.keys(topSave.set).every((k) => k.endsWith("#top")),
+  "Commit posts it into the tiles feedback doc — the same channel, a second axis");
+// INDEPENDENCE: the top approval must not leak into the pair-tile filters.
+const leak = await p.evaluate(() => {
+  const bar = [...document.querySelectorAll(".sortbar")].find((b2) =>
+    [...b2.querySelectorAll(".sortbar-btn")].some((x) => /^no stars /.test(x.textContent)));
+  return [...(bar?.querySelectorAll(".sortbar-btn") ?? [])].map((x) => x.textContent.trim());
+});
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(700);
+const leak2 = await p.evaluate(() => {
+  const bar = [...document.querySelectorAll(".sortbar")].find((b2) =>
+    [...b2.querySelectorAll(".sortbar-btn")].some((x) => /^no stars /.test(x.textContent)));
+  return [...(bar?.querySelectorAll(".sortbar-btn") ?? [])].map((x) => x.textContent.trim());
+});
+void leak;
+ok(leak2.some((x) => x === "approved 0"),
+  `a top approval never leaks into the pair-tile review (${leak2.filter((x) => /approved/.test(x)).join(", ")})`);
+// the pair-page toggle: collapsed, opens, carries its state
+await p.goto(`${W}#/world/grass/grass`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const tBtn = await p.evaluate(() => ({
+  buttons: document.querySelectorAll(".top-btn").length,
+  openCanvases: document.querySelectorAll(".top-review canvas").length,
+}));
+ok(tBtn.buttons > 0 && tBtn.openCanvases === 0,
+  `every tile card carries "review the top", collapsed until asked (${tBtn.buttons} buttons, 0 open)`);
+await p.evaluate(() => { const b2 = document.querySelector(".top-btn"); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.waitForTimeout(1400);
+const tOpen = await p.evaluate(() => ({
+  canvas: !!document.querySelector(".top-review canvas"),
+  stars: !!document.querySelector(".top-review .stars"),
+  reject: [...document.querySelectorAll(".top-review button")].some((x) => /not a detail/.test(x.textContent)),
+}));
+ok(tOpen.canvas && tOpen.stars && tOpen.reject,
+  "…and opens into the composed top with its own stars and a 'not a detail' verdict");
+
 // ---- 3. TRANSITIONS: the tab and the demo page -----------------------------
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.waitForTimeout(1600);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
 await p.waitForTimeout(900);
 const expTrans = (META.transitions ?? []).filter((t) => t.a === "grass" || t.b === "grass");
@@ -249,9 +329,15 @@ const pubView = await pub.evaluate(() => ({
   promote: document.querySelectorAll(".base-btn").length,
   weights: document.querySelectorAll(".weight-input").length,
 }));
-ok(pubView.palette > 0 && pubView.tabs.length === 3 && pubView.trans > 0,
+ok(pubView.palette > 0 && pubView.tabs.length === 4 && pubView.trans > 0,
   `a player gets the palette, the tabs and the transitions (${pubView.trans} pairs)`);
 ok(pubView.promote === 0 && pubView.weights === 0, "and none of the promotion or weight machinery");
+const pubDetails = await pub.evaluate(() => {
+  const t2 = [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent));
+  return { disabled: t2?.disabled ?? null, topBtns: document.querySelectorAll(".top-btn").length };
+});
+ok(pubDetails.disabled === true && pubDetails.topBtns === 0,
+  "the empty Details tab is disabled for a player, and there is no top-review machinery");
 await pub.goto(`${W}#/world/transition/dark_mud__to__grass`, { waitUntil: "load" });
 await pub.waitForTimeout(2200);
 const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene canvas").length);

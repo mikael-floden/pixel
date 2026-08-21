@@ -264,6 +264,16 @@
       "to": "maps2",
       "text": "base_tiles doc update: entries now carry {type, group, weight}. To paint a field: pick ONE group of the type (never mix groups in a field), then roll members by weight (weight 2 = twice as often as 1). No groups = the flat colour (tiles/config/palette.json top). The wiki's ground pages compose exactly this, so what the Game Master approves there is what your renderer should reproduce.",
       "at": "2026-08-21T16:19:50+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "NEW REVIEW AXIS in feedback/tiles: ids of the form '<tile key>#top' judge the TOP ALONE as a once-in-a-while GROUND DETAIL (the wiki's new Details tab; composed centre-in-base-group at the RAW top since your pair postprocess flattens tops). CRITICAL: (1) do NOT treat #top entries as generation rejections \u2014 '#top rejected' means 'not a detail', the tile itself is untouched; your review.py should skip ids containing '#'. (2) A tile with '#top approved' must KEEP its art (and its PixelLab generation) even if the pair-tile is rejected \u2014 'every nice tile that didn't make it into the other categories can still have a chance'. These approvals are the Game Master's pick list for your detailed-variant pass.",
+      "at": "2026-08-21T16:43:30+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI for later: the Game Master now approves GROUND DETAILS per ground type \u2014 tops that appear once in a while on a field (no collision, wall never drawn). Read feedback/tiles ids ending '#top' with status approved, grouped by the tile key's top material. Not in the game yet; when you adopt Tiles 3.0 these sprinkle the base-tile fields.",
+      "at": "2026-08-21T16:43:30+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

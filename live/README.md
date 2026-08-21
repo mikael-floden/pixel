@@ -68,6 +68,16 @@ The laws around the flow:
     be scaled if the art is ever re-exported at another size.
   - `updated_at`. An entry with no `dx`/`dy`/size change cannot occur:
     clearing a note deletes the entry.
+- **`feedback/tiles` `#top` entries** (2026-08-21): an id of the form
+  `<tile key>#top` judges the tile's TOP ALONE, as a once-in-a-while ground
+  detail — a second review axis, independent of the pair verdict on the bare
+  key. `status: approved` = this top is in the ground's Details collection;
+  `rejected` = "not a detail" — **it does not reject the tile**, and the tiles
+  agent must NOT treat `#top` entries as generation rejections. A top-approved
+  tile's art must be kept even if the pair-tile itself is rejected: "every
+  nice tile that didn't make it into the other categories can still have a
+  chance". These are the Game Master's picks for the future detailed-variant
+  pass.
 - `live/tuning/base_tiles.json` — `pixel-wiki-base-tiles@1`. **Which tiles are
   a ground type's BASE tiles, in GROUPS** (maintainer 2026-08-21: "A base tile
   is a tile that can be repeated over and over again without being annoying ...
