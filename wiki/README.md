@@ -438,6 +438,60 @@ games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 
+## The ground type is a page — base tiles, base colour, palette, transitions
+
+Maintainer 2026-08-21, setting the World section's information architecture:
+*"World has Ground types. A Ground type has: Base tiles (can be 1, several or a
+single color), On top of, Transitions ... I should be able to promote a tile to
+be the base tile and also revoke that title. The page should show the ground
+types base color (often the bg on the base tile or alone if no base tile
+exist). The page should also show the ground tiles color palette."*
+
+The ground-type page now has that shape, and **everything on it is read, never
+invented**:
+
+- **The identity card** mirrors the tiles agent's `config/palette.json`: the
+  base colour (`top` — the maintainer's own ladder pick), the category
+  (solid/liquid), and the **surface taxonomy** in words — `own` ("always its
+  own texture"), `base` ("repeats the base tile" — paving, parquet, where
+  transitions must mimic the pattern), `flat` ("clean colour for now", shown
+  as a warning because the maintainer declared it a stopgap, not a goal).
+- **The palette is MEASURED**: build.mjs decodes the type's own-wall tiles
+  (`t over t`) with the same VP8L decoder that measures art bounds, counts
+  exact colours, and ships the top 10 by share. The dominant colour matching
+  palette.json's declared `top` on 13 of 14 types is the measurement
+  confirming the config — and parquet_floor NOT matching is the page honestly
+  showing review tiles that predate the palette re-snap.
+- **Base tiles are a LIVE DESIGNATION** — `tuning/base_tiles`
+  (pixel-wiki-base-tiles@1), one entry per manifest tile key carrying the type
+  it is the base OF. Promote from any tile card ("☖ make base tile"), revoke
+  from the card or the panel; the save bar commits it like every verdict. The
+  page's base colour follows the promoted tile's measured flat top
+  (`palette_top`), falling back to the game palette when none is promoted —
+  *"often the bg on the base tile or alone if no base tile exist"*, verbatim.
+  A designation whose tile is later regenerated away shows as orphaned rather
+  than silently vanishing.
+- **On top of** is his name for the x-over-y matrix — the existing pair grid,
+  now under that heading.
+- **Transitions** mirror `tiles/transitions/` on disk: per neighbour pair, the
+  set count and four sample tiles from the straightest set (Wang indices 1, 3,
+  12, 14 — the ones that show the boundary itself). The section exists while
+  he and the tiles agent are mid-build, reporting what exists instead of
+  waiting to be complete.
+
+Found while wiring the loader: `tuning/scenery_lights` was served by
+`/api/live/state` but never READ into state — his committed lit-corrections
+vanished from the wiki on every reload while the file was fine. Fixed in the
+same change; the lazy accessor that papered over it stays as the fallback.
+
+Gate: `wiki/tools/check-groundtype.mjs` re-derives the identity card from
+palette.json, the palette from the decoder, and the transitions from a
+readdir — then drives the whole promote/revoke round trip (title on the card,
+panel entry, base colour, the tuning/base_tiles save carrying `{type}`, the
+revoke deleting rather than tombstoning), checks the taxonomy reads
+differently on parquet (base) and black rock (flat), and that a player gets
+the palette and the transitions with none of the machinery.
+
 ## The tile filter — no stars, rejected, approved, undecided
 
 Maintainer 2026-08-20: *"I have now reviewed all tiles in the new /tiles and

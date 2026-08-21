@@ -71,6 +71,13 @@ const LIVE_FILES: Record<string, string> = {
   // <piece path>#<state>, correcting the name. Consumed by the scenery agent.
   // See live/README.md.
   "tuning/scenery_lights.json": "tuning/scenery_lights",
+  // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
+  // world agent paints first and repeats forever — "does everything but noone
+  // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's
+  // ground-type pages, one entry per tile key carrying the ground type it is
+  // the base OF. Consumed by the tiles agent (variant generation budget) and
+  // the maps/world agent (what to paint a field with). See live/README.md.
+  "tuning/base_tiles.json": "tuning/base_tiles",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -88,6 +95,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
+  if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -368,6 +376,7 @@ export function registerLiveRoutes(app: express.Application): void {
         monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
         sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"),
         scenery_lights: docs.get("tuning/scenery_lights"),
+        base_tiles: docs.get("tuning/base_tiles"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });

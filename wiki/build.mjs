@@ -26,7 +26,7 @@ import { execSync } from "node:child_process";
 // ERR_MODULE_NOT_FOUND at import, the Dockerfile's `|| echo` swallowed it, and
 // the image shipped the last COMMITTED data.json instead of one built from its
 // own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
-import { contentBounds } from "./lib/webp-pixels.mjs";
+import { contentBounds, decodeWebP } from "./lib/webp-pixels.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -586,12 +586,90 @@ function buildWorld() {
     });
   }
   cells.sort((a, b) => a.name.localeCompare(b.name));
+  /* THE GROUND TYPE IS A PAGE NOW, not just a grouping (maintainer 2026-08-21:
+   * "World has Ground types. A Ground type has: Base tiles, On top of,
+   * Transitions ... The page should show the ground types base color ... and
+   * the ground tiles color palette"). Three enrichments, all READ from the
+   * tiles agent's own files — the wiki measures and mirrors, it never invents:
+   *
+   * 1. palette.json (tiles3/palette@1): the maintainer-picked top/wall colours
+   *    and the SURFACE TAXONOMY — transition_surface: "own" (always draws its
+   *    own texture), "base" (transitions mimic the base tile's texture),
+   *    "flat" (a clean colour stands in until a texture beats it).
+   * 2. A MEASURED palette per type: the exact colours of its own-wall tiles
+   *    (t over t — top and wall both this material), counted pixel by pixel
+   *    with the same VP8L decoder that measures art bounds. Top 10 by share.
+   * 3. tiles/transitions/: the Wang corner sets the transitions system is
+   *    generating (docs/TRANSITIONS.md) — per material pair, how many sets
+   *    exist and one representative set to draw samples from.
+   */
+  const palCfg = readJson(join(base, "config", "palette.json"));
+  const measurePalette = (typeId) => {
+    const own = cells.find((c) => c.id === `${typeId}__over__${typeId}`);
+    if (!own) return [];
+    const counts = new Map();
+    let total = 0;
+    // A handful of the best tiles is the material; all 35 is just more of it.
+    for (const cand of own.candidates.slice(0, 5)) {
+      try {
+        // decodeWebP returns { w, h, pix } — a Uint32Array of packed
+        // 0xAARRGGBB pixels (see contentBounds, which reads alpha as
+        // `pix[i] >>> 24`). Reading it as byte-RGBA counted one pixel as four
+        // and produced negative "hex" colours on the first run.
+        const { w, h, pix } = decodeWebP(readFileSync(join(ROOT, cand.art)));
+        for (let i = 0; i < w * h; i++) {
+          if (pix[i] >>> 24 <= 8) continue;
+          const c = pix[i] & 0xffffff;
+          counts.set(c, (counts.get(c) ?? 0) + 1);
+          total++;
+        }
+      } catch { /* one unreadable tile must not cost the type its palette */ }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1]).slice(0, 10)
+      .map(([c, n]) => ({ c: `#${c.toString(16).padStart(6, "0")}`, share: +(n / total).toFixed(4) }));
+  };
+  const groundTypes = [...types.values()].map((t) => {
+    const pal = palCfg?.types?.[t.id] ?? {};
+    return {
+      ...t,
+      // The game's own colour for this ground (palette.json top — the
+      // maintainer's pick), with the generator's intent hex as fallback.
+      top: pal.top ?? t.hex ?? null,
+      wallColor: pal.wall ?? null,
+      surface: pal.transition_surface ?? null,
+      palette: measurePalette(t.id),
+    };
+  });
+  // ---- transitions: what exists on disk, per unordered material pair ----
+  const transitions = [];
+  const tDir = join(base, "transitions");
+  if (isDir(tDir)) {
+    for (const pair of readdirSync(tDir).filter((d) => d.includes("__to__")).sort()) {
+      const [a, bSide] = pair.split("__to__");
+      const sets = [];
+      for (const setId of readdirSync(join(tDir, pair)).sort()) {
+        const meta = readJson(join(tDir, pair, setId, "meta.json"));
+        if (!meta) continue;
+        const tiles = Array.from({ length: meta.n_tiles ?? 16 },
+          (_, i) => `tiles/transitions/${pair}/${setId}/tile_${String(i).padStart(2, "0")}.webp`)
+          .filter((f) => existsSync(join(ROOT, f)));
+        if (tiles.length) sets.push({ id: setId, amplitude: meta.boundary_amplitude ?? null, seed: meta.boundary_seed ?? null, tiles });
+      }
+      if (!sets.length) continue;
+      // The straightest boundary is the representative — amplitude 0 is the
+      // canonical look; wilder seeds are variants of it.
+      sets.sort((x, y) => (x.amplitude ?? 9) - (y.amplitude ?? 9) || (x.seed ?? 9) - (y.seed ?? 9));
+      transitions.push({ a, b: bSide, sets: sets.length, sample: sets[0] });
+    }
+  }
   worldMeta = {
     // What the agent measures a candidate against, published so the page can
     // say WHY something ranks where it does instead of showing bare numbers.
     accept: cfg.accept ?? null,
     tile: cfg.tile ?? null,
-    groundTypes: [...types.values()],
+    groundTypes,
+    transitions,
     tombstoned: [...dead],
     schema: review?.schema ?? null,
   };

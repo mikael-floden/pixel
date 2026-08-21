@@ -270,6 +270,28 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   color: var(--err, #b3453a);
 }
 
+/* ---- ground type page: identity card, base tiles, transitions ---- */
+.ground-swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 4px;
+  border: 1px solid var(--border-strong); vertical-align: -2px;
+}
+.ground-base .ground-swatch { margin-right: 2px; }
+.ground-palette { display: flex; gap: 5px; flex-wrap: wrap; margin: 2px 0 10px; }
+.ground-palette .ground-swatch { width: 22px; height: 22px; border-radius: 5px; }
+.ground-idcard { margin-bottom: 6px; }
+.ground-bases { margin: 10px 0 14px; }
+.base-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.base-card { gap: 6px; }
+.base-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.base-btn.on { color: var(--ink); }
+.ground-section { margin: 4px 0 8px; }
+.ground-trans { margin-top: 16px; }
+.trans-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--border); }
+.trans-row:first-of-type { border-top: none; }
+.trans-name { font-weight: 600; }
+.trans-strip { display: inline-flex; gap: 4px; padding: 4px; border-radius: 8px; }
+.trans-strip img { width: 64px; height: auto; image-rendering: pixelated; }
+
 .checker {
   background: repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
 }

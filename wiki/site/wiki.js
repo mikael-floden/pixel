@@ -3556,6 +3556,64 @@ function viewCharacter(id) {
  */
 const worldCells = () => state.data.domains.world ?? [];
 const worldMeta = () => state.data.worldMeta ?? {};
+/* ---- THE GROUND TYPE IS A PAGE (maintainer 2026-08-21) ----
+ * "World has Ground types. A Ground type has: Base tiles (can be 1, several or
+ * a single color), On top of, Transitions ... I should be able to promote a
+ * tile to be the base tile and also revoke that title. The page should show
+ * the ground types base color ... and the ground tiles color palette."
+ *
+ * BASE TILES ARE A LIVE DESIGNATION, not manifest data: the Game Master
+ * promotes and revokes; the tiles agent and the world agent consume. One entry
+ * per tile key in tuning/base_tiles (pixel-wiki-base-tiles@1), carrying the
+ * ground type it is the base OF — the key alone names a PAIR, and it is the
+ * pair's TOP that the base tile paints.
+ */
+const BASE_KEY = "tuning/base_tiles";
+const baseTilesDoc = () => state.tuning.base_tiles
+  ?? (state.tuning.base_tiles = { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} });
+const isBaseTile = (key) => !!baseTilesDoc().overrides?.[key];
+/** Every promoted tile of one ground type, resolved to its live candidate —
+ *  a designation whose tile has been regenerated away resolves to null art and
+ *  is shown as such rather than silently dropped. */
+function baseTilesOf(typeId) {
+  const keys = Object.entries(baseTilesDoc().overrides ?? {})
+    .filter(([, v]) => v?.type === typeId).map(([k]) => k);
+  if (!keys.length) return [];
+  const byKey = new Map();
+  for (const c of worldCells()) for (const cand of c.candidates) byKey.set(cand.key, { cell: c, cand });
+  return keys.map((k) => ({ key: k, hit: byKey.get(k) ?? null }));
+}
+function setBaseTile(key, typeId, on) {
+  const doc = baseTilesDoc();
+  doc.overrides ??= {};
+  if (on) doc.overrides[key] = { type: typeId, promoted_at: new Date().toISOString() };
+  else delete doc.overrides[key];
+  doc.updated_at = new Date().toISOString();
+  touch(BASE_KEY, key);
+  markDirty(BASE_KEY);
+}
+const groundTypeMeta = (id) => (worldMeta().groundTypes ?? []).find((g) => g.id === id) ?? { id };
+/** The ground's base colour: the promoted base tile's measured flat top when
+ *  one exists, else the game palette's own colour for the type ("often the bg
+ *  on the base tile or alone if no base tile exist"). */
+function groundBaseColor(typeId) {
+  for (const b of baseTilesOf(typeId)) {
+    const c = b.hit?.cand?.paletteTop;
+    if (c && /^#[0-9a-f]{3,8}$/i.test(c)) return { c, from: "the base tile's measured top" };
+  }
+  const t = groundTypeMeta(typeId);
+  if (t.top) return { c: t.top, from: "the game palette (no base tile promoted yet)" };
+  return t.hex ? { c: t.hex, from: "the generator's intended colour" } : null;
+}
+/** What the surface taxonomy means, in his words (tiles/config/palette.json
+ *  transition_surface, published through worldMeta.groundTypes). */
+const SURFACE_LABEL = {
+  own: { text: "always its own texture", cls: "", title: "This ground always draws its own texture — transitions keep the material's look right up to the boundary." },
+  base: { text: "repeats the base tile", cls: "", title: "A patterned surface (paving, parquet): transitions mimic the base tile's texture so the pattern reads as continuous." },
+  flat: { text: "clean colour for now", cls: "warn", title: "Painted as a clean flat colour until a texture beats it — the maintainer's declared stopgap, not the goal." },
+};
+const transitionsOf = (typeId) => (worldMeta().transitions ?? []).filter((t) => t.a === typeId || t.b === typeId);
+
 /* THE PAIRS ARE READ LIVE FROM THE AGENT, NOT FROM THE BUILD.
  * Every other domain is settled art: a build a few hours old describes it
  * perfectly. Tiles 3.0 is a factory running right now — the matrix is 14
@@ -3973,12 +4031,56 @@ function viewWorldType(top) {
   const mode = state.admin ? starFilter() : "all";
   const on = mode !== "all";
   const list = state.admin && on ? t.pairs.filter((c) => pairHits(c, mode)) : t.pairs;
+  const meta = groundTypeMeta(t.id);
+  const baseCol = groundBaseColor(t.id);
+  const surface = SURFACE_LABEL[meta.surface] ?? null;
+  const bases = baseTilesOf(t.id);
+  const trans = transitionsOf(t.id);
+  const swatch = (c, title) => h("span", {
+    class: "swatch ground-swatch", title,
+    style: `background:${/^#[0-9a-f]{3,8}$/i.test(c) ? c : "transparent"}`,
+  });
   return h("div", {},
     crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
     h("div", { class: "sect-head" }, h("h1", {}, t.name)),
+    // THE GROUND'S IDENTITY CARD: its base colour, its measured palette, and
+    // what its surface promises. All read data — the wiki mirrors the tiles
+    // agent's files and the Game Master's designations, it invents nothing.
+    h("div", { class: "spawn-line ground-idcard" },
+      baseCol ? h("span", { class: "pill ground-base", title: `Base colour ${baseCol.c} — ${baseCol.from}` },
+        swatch(baseCol.c), ` base ${baseCol.c}`) : null,
+      surface ? h("span", { class: `pill ${surface.cls}`, title: surface.title }, surface.text) : null,
+      meta.category ? h("span", { class: "pill", title: meta.category === "liquid" ? "A liquid ground — bodies swim rather than walk" : "A solid ground — bodies walk on it" }, meta.category) : null),
+    (meta.palette ?? []).length ? h("div", { class: "ground-palette", title: "The measured palette of this ground's own tiles — every colour its art actually uses, largest share first" },
+      ...meta.palette.map((x) => swatch(x.c, `${x.c} — ${(x.share * 100).toFixed(1)}% of the painted pixels`))) : null,
     h("p", { class: "muted" }, state.admin
       ? `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`
       : `Walking on ${t.name.toLowerCase()} — and the cliff below it where the land steps down.`),
+    /* ---- BASE TILES (maintainer 2026-08-21: "A base tile is a tile that can
+     * be repeated over and over again without being annoying ... The world-
+     * agent will always start to draw with a base tile ... The base tile is in
+     * the background and does everything but noone notice.") ---- */
+    h("div", { class: "panel ground-bases" },
+      h("div", { class: "panel-title" }, "Base tiles",
+        h("span", { class: "pill" }, bases.length ? `${bases.length} promoted` : "none yet")),
+      bases.length
+        ? h("div", { class: "base-grid" }, ...bases.map(({ key, hit }) =>
+          h("div", { class: "card base-card" },
+            hit ? worldArt(hit.cand, `base tile of ${t.name}`) : h("div", { class: "thumb checker" }),
+            h("div", { class: "card-sub" },
+              hit ? `from ${hit.cell.name.toLowerCase()}` : "this tile has been regenerated away — revoke and promote a current one",
+              hit?.cand?.paletteTop ? h("span", { class: "swatch-wrap", title: `its measured flat top — the ground's base colour` }, " ", swatch(hit.cand.paletteTop), ` ${hit.cand.paletteTop}`) : null),
+            state.admin ? h("button", {
+              class: "ghost-btn",
+              title: "Revoke — this tile stops being the ground's base tile",
+              onclick: () => { setBaseTile(key, t.id, false); keepScrollY = window.scrollY; route(); },
+            }, "Revoke base title") : null)))
+        : h("p", { class: "muted" }, state.admin
+          ? `No base tile promoted yet — the ground paints as its flat colour${baseCol ? ` (${baseCol.c})` : ""}. Open a set below and press "☖ make base tile" on the tile that can repeat forever without being noticed.`
+          : `This ground paints as a single colour${baseCol ? ` (${baseCol.c})` : ""} for now.`)),
+    /* ---- ON TOP OF — his name for the x-over-y matrix ---- */
+    h("div", { class: "panel-title ground-section" }, "On top of",
+      h("span", { class: "pill" }, `${t.pairs.length} wall${t.pairs.length === 1 ? "" : "s"}`)),
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     state.admin ? sortBar(WORLD_STAR_KEY, Object.entries(WORLD_STARS).map(([id, f]) => {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => pairHits(c, id)).length;
@@ -4004,7 +4106,29 @@ function viewWorldType(top) {
           state.admin && c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
     })) : h("p", { class: "muted" }, state.admin && on
       ? TILE_MATCH_EMPTY[mode]
-      : "Nothing in this filter."));
+      : "Nothing in this filter."),
+    /* ---- TRANSITIONS — the Wang corner sets blending this ground into its
+     * neighbours (tiles/docs/TRANSITIONS.md). He and the tiles agent are mid-
+     * build ("working like crazy"), so the section reports what exists and is
+     * honest about what does not, instead of waiting to be complete. ---- */
+    h("div", { class: "panel ground-trans" },
+      h("div", { class: "panel-title" }, "Transitions",
+        h("span", { class: "pill" }, trans.length ? `${trans.reduce((n, x) => n + x.sets, 0)} sets across ${trans.length} neighbour${trans.length === 1 ? "" : "s"}` : "none yet")),
+      trans.length
+        ? h("div", {}, ...trans.map((x) => {
+          const other = x.a === t.id ? x.b : x.a;
+          // Four tiles that show the boundary itself: one odd corner, two
+          // half-splits, the opposite odd corner (Wang indices 1, 3, 12, 14).
+          const picks = [1, 3, 12, 14].map((i) => x.sample.tiles[i]).filter(Boolean);
+          return h("div", { class: "trans-row" },
+            h("a", { class: "trans-name", href: `#/world/${other}` }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
+            h("span", { class: "muted" }, ` ${x.sets} set${x.sets === 1 ? "" : "s"}`),
+            h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
+              h("img", { src: assetUrl(f), alt: `${t.name} to ${other} transition tile`, loading: "lazy" }))));
+        }))
+        : h("p", { class: "muted" }, state.admin
+          ? "Being generated — no transition sets published for this ground yet (tiles/transitions/)."
+          : "The edges where this ground meets its neighbours are still being painted.")));
 }
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "we need to make that page where I review the
@@ -4335,6 +4459,23 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.
     state.admin ? wallModeRow(cand, onVerdict) : null,
+    // IS IT THE GROUND'S BASE TILE? (maintainer 2026-08-21: "I should be able
+    // to promote a tile to be the base tile and also revoke that title.")
+    // A designation, not a verdict — it names what the world agent paints
+    // FIRST and repeats forever, and it rides the tile's own key so a
+    // regeneration visibly orphans it instead of silently moving it.
+    state.admin ? (() => {
+      const onBase = isBaseTile(cand.key);
+      return h("div", { class: "card-sub base-row" },
+        onBase ? h("span", { class: "pill ok", title: `The base tile of ${typeLabelWorld(cell.top)} — the world agent starts every field with it` }, "base tile") : null,
+        h("button", {
+          class: `ghost-btn base-btn${onBase ? " on" : ""}`,
+          title: onBase
+            ? `Revoke — ${typeLabelWorld(cell.top)} stops painting its fields from this tile`
+            : `Promote — make this THE tile ${typeLabelWorld(cell.top)} fields repeat (several can hold the title; the ground's flat colour stands in when none does)`,
+          onclick: (e) => { e.stopPropagation(); setBaseTile(cand.key, cell.top, !onBase); onVerdict?.(); },
+        }, onBase ? "☗ revoke base title" : "☖ make base tile"));
+    })() : null,
     state.admin ? h("div", { class: "card-sub" },
       feedbackRow("tiles", cand.key, {
         onchange: onVerdict,
@@ -6446,9 +6587,10 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
+       fromApi((s) => s.tuning.scenery_lights), fromApi((s) => s.tuning.base_tiles),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
@@ -6456,6 +6598,8 @@ async function loadLiveFiles() {
         fetchJson(new URL("live/tuning/sfx_requests.json", ROOT)),
         fetchJson(new URL("live/tuning/shadow_notes.json", ROOT)),
         fetchJson(new URL("live/tuning/tile_walls.json", ROOT)),
+        fetchJson(new URL("live/tuning/scenery_lights.json", ROOT)),
+        fetchJson(new URL("live/tuning/base_tiles.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
@@ -6463,6 +6607,12 @@ async function loadLiveFiles() {
   state.tuning.sfx_requests = sfxReq ?? { format: "pixel-wiki-sfx-requests@1", updated_at: "", requests: {} };
   state.tuning.shadow_notes = shadowNotes ?? { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   state.tuning.tile_walls = tileWalls ?? { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
+  // FOUND MISSING 2026-08-21: the lights doc was served by /api/live/state and
+  // never read into state — his committed lit-corrections vanished from the
+  // wiki on every reload while the file was perfectly fine. The lazy accessor
+  // (sceneryLights) papered over it with an empty doc.
+  state.tuning.scenery_lights = sceneryLightsDoc ?? { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
+  state.tuning.base_tiles = baseTiles ?? { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

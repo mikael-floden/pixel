@@ -68,6 +68,19 @@ The laws around the flow:
     be scaled if the art is ever re-exported at another size.
   - `updated_at`. An entry with no `dx`/`dy`/size change cannot occur:
     clearing a note deletes the entry.
+- `live/tuning/base_tiles.json` — `pixel-wiki-base-tiles@1`. **Which tiles are
+  a ground type's BASE tiles** (maintainer 2026-08-21: "A base tile is a tile
+  that can be repeated over and over again without being annoying ... The
+  world-agent will always start to draw with a base tile ... The base tile is
+  in the background and does everything but noone notice"). One entry per tile
+  key (the review manifest's own key): `{ type: <ground type id>,
+  promoted_at }` — the type it is the base OF, because a key names a PAIR and
+  the base title is about the pair's walkable TOP. Deleting the entry revokes
+  the title. A type may hold one, several, or none — with none, the ground
+  paints as its flat colour (`tiles/config/palette.json` `top`). Written from
+  the wiki's ground-type pages ("☖ make base tile" / "Revoke base title");
+  **consumed by the tiles agent** (which tiles earn variant generation) **and
+  the maps/world agent** (what a field is painted with).
 - `live/tuning/tile_walls.json` — `pixel-wiki-tile-walls@1`. **Which Tiles
   3.0 tiles may build their own wall.** A tile is generated as "A over B"
   (top A, side walls B); the default is that a tile stacks into a cliff of

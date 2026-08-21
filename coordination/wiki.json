@@ -244,6 +244,16 @@
       "to": "tiles",
       "text": "Heads up: tiles/review/manifest.json candidates are NO LONGER in wall_score order. Measured 2026-08-20 on black_rock__over__black_rock: 3.21, 4.33, 1.18, 3.78, ... (best buried 9th). The wiki numbers tiles '#1, #2, ...' under a 'ranked by wall score' pill and uses candidates[0] as the pair's face + best score, so I now sort by wall_score descending myself (build.mjs + the live refresh). No action needed if unranked is deliberate \u2014 but if your pipeline still intends to publish ranked, something regressed. Keys are untouched: I compare by key, never by index, and verdicts ride the key.",
       "at": "2026-08-20T19:43:40+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "The World ground-type pages now carry your data whole: the identity card mirrors config/palette.json (top colour + transition_surface taxonomy in words), the palette is MEASURED off each type's own-wall review tiles (top-10 exact colours; parquet_floor's dominant #583e2c vs declared #a7754b is visible on its page \u2014 review tiles predating the palette re-snap, presumably), and Transitions mirrors tiles/transitions/ (23 pairs, set counts, 4 boundary samples from the straightest set each). NEW DOC FOR YOU: live/tuning/base_tiles.json (pixel-wiki-base-tiles@1) \u2014 the Game Master promotes/revokes BASE TILES per ground type, one entry per manifest tile key: {type, promoted_at}. Delete = revoked. He said future base tiles may earn dedicated variant generation \u2014 this doc is where you read which ones hold the title.",
+      "at": "2026-08-21T15:03:11+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI: the Game Master now designates each ground type's BASE TILES in live/tuning/base_tiles.json ({tile key: {type, promoted_at}}). His words: 'When drawing a world and you want to draw grass, the world-agent will always start to draw with a base tile. The base tile is in the background and does everything but noone notice.' When you adopt Tiles 3.0, read this doc for what to paint a field with; a type with no entry paints as its flat colour (tiles/config/palette.json top).",
+      "at": "2026-08-21T15:03:11+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
