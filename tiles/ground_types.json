@@ -1,0 +1,213 @@
+{
+ "schema": "tiles3/ground-types@1",
+ "_comment": "The Ground-type model, per the maintainer (2026-08-21): a Ground type has base tiles (one, several, or a single colour), 'on top of' (the x-over-y matrix in tiles/review), and transitions (tiles/transitions). base_color is what a field reads as; base_tiles is the maintainer's promoted list - EMPTY until he promotes (candidates wait in tiles/base_candidates/<ground>/, colour-corrected exactly as the game draws them). always_own_texture mirrors transition_surface=='base': such a ground looks deliberately repeated (paving, parquet) and its transition tiles mimic the neighbouring field. surface=='flat' grounds have no base tile yet and draw the single colour - 'the trick we use when we have still not found that perfect texture' - probably permanent for lava/water/deep_water, which the game animates. A field repeats ONE base tile; variation only ever comes from base tiles that look the same.",
+ "grounds": {
+  "black_rock": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#1e1d1e",
+   "palette": {
+    "top": "#1e1d1e",
+    "wall": "#212122"
+   },
+   "base_tiles": []
+  },
+  "brown_paving_stone": {
+   "surface": "base",
+   "always_own_texture": true,
+   "base_color": "#7d7265",
+   "palette": {
+    "top": "#7d7265",
+    "wall": "#5c544b",
+    "ramp": [
+     "#443f3a",
+     "#4c463f",
+     "#62594f",
+     "#6d6356",
+     "#786e61",
+     "#8a8274"
+    ]
+   },
+   "base_tiles": [
+    "tiles/review/brown_paving_stone__over__brown_paving_stone/0_after.webp"
+   ]
+  },
+  "dark_mud": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#514137",
+   "palette": {
+    "top": "#514137",
+    "wall": "#3b2f28",
+    "ramp": [
+     "#1f1813",
+     "#302623",
+     "#44362f",
+     "#4d3b31",
+     "#5a473b",
+     "#66554b"
+    ]
+   },
+   "base_tiles": []
+  },
+  "deep_water": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#162843",
+   "palette": {
+    "top": "#162843",
+    "wall": "#102235"
+   },
+   "base_tiles": []
+  },
+  "grass": {
+   "surface": "own",
+   "always_own_texture": false,
+   "base_color": "#14523b",
+   "palette": {
+    "top": "#14523b",
+    "wall": "#14644e"
+   },
+   "base_tiles": [],
+   "candidates": "tiles/base_candidates/grass/index.json"
+  },
+  "grey_paving_stone": {
+   "surface": "base",
+   "always_own_texture": true,
+   "base_color": "#a8a8a8",
+   "palette": {
+    "top": "#a8a8a8",
+    "wall": "#8a8a8a",
+    "ramp": [
+     "#4a4a4a",
+     "#636363",
+     "#7b7b7b",
+     "#8f8f8f",
+     "#a3a3a3",
+     "#b8b8b8"
+    ]
+   },
+   "base_tiles": [
+    "tiles/review/grey_paving_stone__over__grey_paving_stone/0_after.webp"
+   ]
+  },
+  "grey_stone": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#808082",
+   "palette": {
+    "top": "#808082",
+    "wall": "#45474b",
+    "ramp": [
+     "#22252c",
+     "#33373d",
+     "#585a5f",
+     "#727272",
+     "#8c8c8c",
+     "#949599"
+    ]
+   },
+   "base_tiles": []
+  },
+  "ice": {
+   "surface": "own",
+   "always_own_texture": false,
+   "base_color": "#99ced1",
+   "palette": {
+    "top": "#99ced1",
+    "wall": "#6eacb2"
+   },
+   "base_tiles": [],
+   "candidates": "tiles/base_candidates/ice/index.json"
+  },
+  "lava": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#fd5a02",
+   "palette": {
+    "top": "#fd5a02",
+    "wall": "#a73211",
+    "ramp": [
+     "#e2460f",
+     "#fd5a02",
+     "#fd6802",
+     "#fd7e08"
+    ]
+   },
+   "base_tiles": []
+  },
+  "light_beach": {
+   "surface": "own",
+   "always_own_texture": false,
+   "base_color": "#e4c495",
+   "palette": {
+    "top": "#e4c495",
+    "wall": "#ab9274"
+   },
+   "base_tiles": [],
+   "candidates": "tiles/base_candidates/light_beach/index.json"
+  },
+  "light_soil": {
+   "surface": "own",
+   "always_own_texture": false,
+   "base_color": "#c9ab7e",
+   "palette": {
+    "top": "#c9ab7e",
+    "wall": "#9d784b"
+   },
+   "base_tiles": [],
+   "candidates": "tiles/base_candidates/light_soil/index.json"
+  },
+  "parquet_floor": {
+   "surface": "base",
+   "always_own_texture": true,
+   "base_color": "#a7754b",
+   "palette": {
+    "top": "#a7754b",
+    "wall": "#684934"
+   },
+   "base_tiles": [
+    "tiles/review/parquet_floor__over__parquet_floor/0_after.webp"
+   ]
+  },
+  "slime": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#31bd75",
+   "palette": {
+    "top": "#31bd75",
+    "wall": "#5b882d",
+    "ramp": [
+     "#0f5946",
+     "#117558",
+     "#2aa072",
+     "#31bd75",
+     "#3cd68a",
+     "#82e18e"
+    ]
+   },
+   "base_tiles": []
+  },
+  "snow": {
+   "surface": "own",
+   "always_own_texture": false,
+   "base_color": "#ebf4f6",
+   "palette": {
+    "top": "#ebf4f6",
+    "wall": "#c7d4d9"
+   },
+   "base_tiles": [],
+   "candidates": "tiles/base_candidates/snow/index.json"
+  },
+  "water": {
+   "surface": "flat",
+   "always_own_texture": false,
+   "base_color": "#7eb7c7",
+   "palette": {
+    "top": "#7eb7c7",
+    "wall": "#4c8a98"
+   },
+   "base_tiles": []
+  }
+ }
+}

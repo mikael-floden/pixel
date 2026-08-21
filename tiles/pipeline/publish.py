@@ -428,6 +428,10 @@ def main():
         print(f"skipping {len(rejected)} individually rejected tile(s)")
 
     manifest = {"schema": "tiles3/review@2", "domain": "tiles",
+                # the wiki draws with these instead of hand-copying tiles/docs/GEOMETRY.md;
+                # dy=14 is the largest pitch at which the 64x28 diamond closes, wall 17 rows.
+                # level_px deliberately absent - stacked-level step is the game's constant.
+                "iso": {"tile_px": 64, "dx": 32, "dy": 14, "wall_px": 17},
                 "_comment": ("Candidates awaiting the maintainer's verdict. Each carries "
                              "BEFORE (raw generator output) and AFTER (what ships) so the "
                              "wiki can show the postprocess itself, not just its result. "
