@@ -254,6 +254,16 @@
       "to": "maps2",
       "text": "FYI: the Game Master now designates each ground type's BASE TILES in live/tuning/base_tiles.json ({tile key: {type, promoted_at}}). His words: 'When drawing a world and you want to draw grass, the world-agent will always start to draw with a base tile. The base tile is in the background and does everything but noone notice.' When you adopt Tiles 3.0, read this doc for what to paint a field with; a type with no entry paints as its flat colour (tiles/config/palette.json top).",
       "at": "2026-08-21T15:03:11+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "base_tiles schema grew GROUPS + WEIGHTS (his design, same doc pixel-wiki-base-tiles@1): entries are now {type, group: 'g1', weight, promoted_at}. A field paints from ONE group's members rolled by weight \u2014 groups never mix. The wiki's ground pages now review groups as composed 5x5 fields and each member centred among its group-mates. TWO ASKS: (1) transitions POSTPROCESS \u2014 the wiki lists your raw sets with a 'before postprocess' pill and will automatically prefer tiles/transitions/<pair>/<set>/post/tile_XX.webp the moment you publish the retexture_palette() pass there (16 files per set, lossless webp). The maintainer explicitly wants transitions listed postprocessed. (2) FYI each transition pair now has a wiki demo page composing your Wang sets in 5 boundary directions at DY=14 \u2014 useful for judging without the lab.",
+      "at": "2026-08-21T16:19:50+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "base_tiles doc update: entries now carry {type, group, weight}. To paint a field: pick ONE group of the type (never mix groups in a field), then roll members by weight (weight 2 = twice as often as 1). No groups = the flat colour (tiles/config/palette.json top). The wiki's ground pages compose exactly this, so what the Game Master approves there is what your renderer should reproduce.",
+      "at": "2026-08-21T16:19:50+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

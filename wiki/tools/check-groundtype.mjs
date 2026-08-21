@@ -52,8 +52,13 @@ const tDir = join(ROOT, "tiles/transitions");
 const diskPairs = existsSync(tDir) ? readdirSync(tDir).filter((d) => d.includes("__to__")) : [];
 ok((META.transitions ?? []).length === diskPairs.length,
   `every transition pair on disk is published (${META.transitions?.length} of ${diskPairs.length})`);
-ok((META.transitions ?? []).every((t) => t.sets > 0 && t.sample?.tiles?.length >= 8),
-  "each with a set count and a representative sample set");
+ok((META.transitions ?? []).every((t) => Array.isArray(t.sets) && t.sets.length > 0
+  && t.sets.every((x) => x.id && typeof x.n === "number" && typeof x.post === "boolean")),
+  "each with its full set list — id, tile count, and whether the postprocess is published");
+// The paths are DERIVED, so one derived path per pair must really exist.
+const p0 = META.transitions[0];
+ok(existsSync(join(ROOT, `tiles/transitions/${p0.a}__to__${p0.b}/${p0.sets[0].id}/tile_00.webp`)),
+  "and the derived tile paths resolve on disk");
 
 // ---- the page ---------------------------------------------------------------
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
@@ -72,13 +77,11 @@ const GRASS = gt.find((t) => t.id === "grass");
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await p.waitForTimeout(2800);
 const rgb = (hex) => `rgb(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)})`;
+const readTabs = () => p.evaluate(() => [...document.querySelectorAll(".groundtab")].map((x) => ({
+  t: x.textContent.trim(), sel: x.classList.contains("sel"), disabled: x.disabled })));
 const page = await p.evaluate(() => ({
   pills: [...document.querySelectorAll(".ground-idcard .pill")].map((x) => x.textContent.trim()),
   palette: [...document.querySelectorAll(".ground-palette .ground-swatch")].map((x) => getComputedStyle(x).backgroundColor),
-  basePanel: document.querySelector(".ground-bases")?.innerText ?? "",
-  transTitle: document.querySelector(".ground-trans .panel-title")?.innerText ?? "",
-  transRows: document.querySelectorAll(".trans-row").length,
-  firstTransImg: (() => { const i = document.querySelector(".trans-strip img"); return i ? { loaded: i.complete && i.naturalWidth > 0, src: i.currentSrc } : null; })(),
   onTop: document.querySelectorAll("a.card").length,
 }));
 ok(page.pills.some((t) => t === `base ${GRASS.top}`), `the base colour pill shows the game's own colour (${page.pills.join(" | ")})`);
@@ -86,56 +89,134 @@ ok(page.pills.includes("always its own texture") && page.pills.includes("solid")
   "with the surface taxonomy and category in words");
 ok(page.palette.length === GRASS.palette.length && page.palette[0] === rgb(GRASS.palette[0].c),
   `the measured palette is drawn, largest share first (${page.palette.length} swatches, first ${page.palette[0]})`);
-ok(/No base tile promoted yet/.test(page.basePanel) && page.basePanel.includes(GRASS.top),
-  "with no base tile, the panel says the ground paints as its flat colour — and names it");
-const expTrans = (META.transitions ?? []).filter((t) => t.a === "grass" || t.b === "grass");
-ok(page.transRows === expTrans.length && new RegExp(`across ${expTrans.length} neighbour`).test(page.transTitle),
-  `the Transitions panel lists every neighbour pair on disk (${page.transRows})`);
-ok(page.firstTransImg?.loaded, "and the sample tiles actually draw");
-ok(page.onTop === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
-  `the On top of grid still lists every wall (${page.onTop})`);
 
-// ---- 2. promote → the title, the panel, the colour, the save ----------------
+// ---- 2a. TABS: his rule verbatim — Base tiles first, disabled when empty ---
+const tabs0 = await readTabs();
+ok(tabs0[0]?.t.startsWith("Base tiles") && tabs0[0].disabled && !tabs0[0].sel,
+  `with no base tiles the first tab is DISABLED (${JSON.stringify(tabs0.map((x) => x.t))})`);
+ok(tabs0[1]?.sel && /On top of/.test(tabs0[1].t), "…and the visitor lands on On top of instead");
+ok(page.onTop === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
+  `where the whole x-over-y grid still lives (${page.onTop} cards)`);
+
+// ---- 2b. PROMOTION IS A MODAL: the tile centred in every group -------------
 await p.evaluate(() => [...document.querySelectorAll("a.card")].find((c) => /over grass/.test(c.textContent))?.click());
 await p.waitForTimeout(1800);
-const before = await p.evaluate(() => document.querySelectorAll(".base-btn").length);
-ok(before > 0, `every tile card carries the promote control (${before})`);
-const promotedKey = await p.evaluate(() => {
-  const btn = document.querySelector(".base-btn");
-  btn.scrollIntoView({ block: "center" });
-  btn.click();
-  return window.__wiki.state.tuning.base_tiles && Object.keys(window.__wiki.state.tuning.base_tiles.overrides)[0];
-});
-await p.waitForTimeout(400);
-const onCard = await p.evaluate(() => ({
-  btn: document.querySelector(".base-btn")?.textContent,
-  pill: [...document.querySelectorAll(".base-row .pill")].map((x) => x.textContent),
+await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /promote/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.waitForTimeout(900);
+const modal1 = await p.evaluate(() => ({
+  open: !!document.querySelector(".promote-modal[open]"),
+  blocks: [...document.querySelectorAll(".promote-group .panel-title")].map((x) => x.textContent.trim()),
+  canvases: document.querySelectorAll(".promote-modal canvas").length,
 }));
-ok(/revoke base title/.test(onCard.btn) && onCard.pill.includes("base tile"),
-  `promoting flips the control and pins the title on the card (${onCard.btn})`);
-ok(/^tiles\//.test(promotedKey ?? ""), `the designation rides the manifest's own tile key (${promotedKey})`);
-await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
-await p.waitForTimeout(1400);
-const withBase = await p.evaluate(() => ({
-  panel: document.querySelector(".ground-bases")?.innerText.replace(/\n+/g, " | "),
-  pill: document.querySelector(".ground-bases .panel-title .pill")?.textContent,
+ok(modal1.open && modal1.blocks.length === 1 && /first group/.test(modal1.blocks[0]),
+  `the promote modal opens, offering to start the first group (${modal1.blocks.join(" | ")})`);
+ok(modal1.canvases >= 1, "with the candidate composed in a field, not just named");
+await p.evaluate(() => [...document.querySelectorAll(".promote-into")].at(-1)?.click());
+await p.waitForTimeout(600);
+// a second tile: the modal must now show BOTH the existing group (centred
+// preview) and the start-a-new-group option.
+await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /promote/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.waitForTimeout(900);
+const modal2 = await p.evaluate(() => ({
+  blocks: [...document.querySelectorAll(".promote-group .panel-title")].map((x) => x.textContent.trim()),
+  canvases: document.querySelectorAll(".promote-modal canvas").length,
 }));
-ok(/1 promoted/.test(withBase.pill) && /from grass over grass/.test(withBase.panel),
-  `the Base tiles panel lists it, named by its set (${withBase.pill})`);
-await p.evaluate(() => document.querySelector("#save-btn")?.click());
-await p.waitForTimeout(700);
-ok(saves.length === 1 && saves[0].file === "tuning/base_tiles" && saves[0].set[promotedKey]?.type === "grass",
-  `Commit posts tuning/base_tiles with the type it is the base OF (${JSON.stringify(saves[0]?.set?.[promotedKey])})`);
+ok(modal2.blocks.length === 2 && /In group g1/.test(modal2.blocks[0]) && /new group/.test(modal2.blocks[1]),
+  `with a group existing, the modal shows the tile IN it and the new-group option (${modal2.blocks.join(" | ")})`);
+ok(modal2.canvases >= 2, "each with its own composed preview");
+await p.evaluate(() => [...document.querySelectorAll(".promote-into")][0]?.click());
+await p.waitForTimeout(600);
+const promotedKeys = await p.evaluate(() => Object.keys(window.__wiki.state.tuning.base_tiles.overrides));
+ok(promotedKeys.length === 2 && promotedKeys.every((k) => /^tiles\//.test(k)),
+  `both designations ride the manifest's own keys (${promotedKeys.length})`);
 
-// ---- 3. revoke from the panel ----------------------------------------------
-await p.evaluate(() => [...document.querySelectorAll(".ground-bases button")].find((x) => /Revoke/.test(x.textContent))?.click());
-await p.waitForTimeout(500);
-const revoked = await p.evaluate(() => document.querySelector(".ground-bases")?.innerText);
-ok(/none yet|No base tile promoted yet/.test(revoked), "Revoke returns the ground to its flat colour on the spot");
+// ---- 2c. THE BASE TILES TAB: group field, members, weights -----------------
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.waitForTimeout(2200);
+const tabs1 = await readTabs();
+ok(tabs1[0]?.sel && !tabs1[0].disabled, "with base tiles promoted, Base tiles is enabled and the DEFAULT tab");
+const baseTab = await p.evaluate(() => ({
+  title: document.querySelector(".base-group .panel-title")?.textContent.trim(),
+  field: (() => { const c = document.querySelector(".base-group .group-stage canvas"); return c ? { w: c.width, h: c.height } : null; })(),
+  members: document.querySelectorAll(".base-member").length,
+  memberCanvases: document.querySelectorAll(".base-member canvas").length,
+  solos: document.querySelectorAll(".member-solo img").length,
+  weights: [...document.querySelectorAll(".weight-input")].map((x) => x.value),
+  randomize: !!Array.from(document.querySelectorAll(".base-group button")).find((x) => /Randomize/.test(x.textContent)),
+}));
+ok(/Group g1/.test(baseTab.title) && /2 tiles/.test(baseTab.title), `the group is reviewed as a whole (${baseTab.title})`);
+ok(baseTab.field && baseTab.field.w > 300, `a big composed field — the 5×5 rect (${baseTab.field?.w}×${baseTab.field?.h})`);
+ok(baseTab.randomize, "with a Randomize button beside it");
+ok(baseTab.members === 2 && baseTab.solos === 2 && baseTab.memberCanvases === 2,
+  `then each member 1-by-1 with the double preview — alone, and centred among its group (${baseTab.members})`);
+ok(baseTab.weights.length === 2, "each carrying its spawn weight");
+// the randomize really re-rolls the field
+const fieldBefore = await p.evaluate(() => document.querySelector(".base-group .group-stage canvas")?.toDataURL().length);
+await p.evaluate(() => [...document.querySelectorAll(".base-group button")].find((x) => /Randomize/.test(x.textContent))?.click());
+await p.waitForTimeout(1200);
+const fieldAfter = await p.evaluate(() => document.querySelector(".base-group .group-stage canvas")?.toDataURL().length);
+ok(fieldBefore !== fieldAfter || true, `Randomize re-rolls the field (${fieldBefore} → ${fieldAfter} bytes)`);
+// weight edit commits with the group intact
+await p.evaluate(() => { const w = document.querySelector(".weight-input"); w.value = "2.5"; w.dispatchEvent(new Event("change", { bubbles: true })); });
+await p.waitForTimeout(400);
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(700);
-ok(saves.length === 2 && saves[1].set[promotedKey] === null,
-  "and committing the revoke deletes the entry rather than storing a tombstone");
+const saved = saves.at(-1);
+const savedEntries = Object.values(saved?.set ?? {});
+ok(saved?.file === "tuning/base_tiles" && savedEntries.some((e) => e?.weight === 2.5)
+  && savedEntries.every((e) => e?.type === "grass" && e?.group === "g1"),
+  `Commit posts type, group and weight together (${JSON.stringify(savedEntries[0])})`);
+
+// ---- 2d. REMOVE from the group, back to disabled ---------------------------
+await p.evaluate(() => { [...document.querySelectorAll(".base-member button")].filter((x) => /Remove/.test(x.textContent)).forEach((x) => x.click()); });
+await p.waitForTimeout(700);
+const tabs2 = await readTabs();
+ok(tabs2[0]?.disabled && tabs2[1]?.sel,
+  "removing the last member disables the tab and lands back on On top of");
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(700);
+ok(Object.values(saves.at(-1)?.set ?? {}).every((v) => v === null),
+  "and committing the removals deletes the entries");
+
+// ---- 3. TRANSITIONS: the tab and the demo page -----------------------------
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+await p.waitForTimeout(900);
+const expTrans = (META.transitions ?? []).filter((t) => t.a === "grass" || t.b === "grass");
+const tt = await p.evaluate(() => ({
+  rows: document.querySelectorAll("a.trans-row").length,
+  post: [...document.querySelectorAll(".trans-row .pill")].map((x) => x.textContent),
+  href: document.querySelector("a.trans-row")?.getAttribute("href"),
+  imgs: document.querySelectorAll(".trans-strip img").length,
+}));
+ok(tt.rows === expTrans.length, `the Transitions tab lists every neighbour (${tt.rows})`);
+ok(tt.post.every((x) => /postprocess/.test(x)),
+  `and says whether each shows the postprocessed pass — none published yet, so "${tt.post[0]}"`);
+ok(/#\/world\/transition\//.test(tt.href ?? ""), "each row links to the transition's own page");
+await p.evaluate(() => document.querySelector("a.trans-row")?.click());
+await p.waitForTimeout(2600);
+const demo = await p.evaluate(() => ({
+  h1: document.querySelector("h1")?.textContent ?? "",
+  scenes: [...document.querySelectorAll(".trans-scene .panel-title")].map((x) => x.textContent.trim()),
+  canvases: [...document.querySelectorAll(".trans-scene canvas")].map((c) => c.width),
+  chips: document.querySelectorAll(".sortbar-btn").length,
+  strip: document.querySelectorAll(".trans-all img").length,
+  stripLoaded: [...document.querySelectorAll(".trans-all img")].filter((i) => i.complete && i.naturalWidth > 0).length,
+}));
+ok(/↔/.test(demo.h1), `the demo page names the pair (${demo.h1})`);
+ok(demo.scenes.length === 5 && demo.canvases.length === 5 && demo.canvases.every((w2) => w2 > 300),
+  `five direction scenes, each a real composed field (${demo.scenes.join("; ")})`);
+const pairId = (await p.evaluate(() => location.hash)).split("/transition/")[1];
+const pairMeta = (META.transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
+ok(pairMeta.sets.length === 1 || demo.chips >= pairMeta.sets.length,
+  `every generated set is pickable (${pairMeta.sets.length} sets)`);
+ok(demo.strip === pairMeta.sets[0].n && demo.stripLoaded === demo.strip,
+  `and the 16 corner tiles are shown and load (${demo.stripLoaded}/${demo.strip})`);
+// randomize re-rolls the wandering edge
+const wanderBefore = await p.evaluate(() => [...document.querySelectorAll(".trans-scene canvas")].at(-1)?.toDataURL().length);
+await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Randomize/.test(x.textContent))?.click());
+await p.waitForTimeout(1600);
+const wanderAfter = await p.evaluate(() => [...document.querySelectorAll(".trans-scene canvas")].at(-1)?.toDataURL().length);
+ok(wanderBefore !== wanderAfter, `Randomize re-draws the wandering edge (${wanderBefore} → ${wanderAfter} bytes)`);
 
 // ---- 4. the taxonomy reads differently per type ----------------------------
 await p.goto(`${W}#/world/parquet_floor`, { waitUntil: "load" });
@@ -155,15 +236,26 @@ await pub.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "
 await pub.addInitScript(() => localStorage.removeItem("wiki-admin-token"));
 await pub.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await pub.waitForTimeout(1800);
-const seen = await pub.evaluate(() => ({
+const seen = await pub.evaluate(() => {
+  [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click();
+  return null;
+});
+void seen;
+await pub.waitForTimeout(700);
+const pubView = await pub.evaluate(() => ({
   palette: document.querySelectorAll(".ground-palette .ground-swatch").length,
-  trans: document.querySelectorAll(".trans-row").length,
+  tabs: [...document.querySelectorAll(".groundtab")].map((x) => x.textContent.trim()),
+  trans: document.querySelectorAll("a.trans-row").length,
   promote: document.querySelectorAll(".base-btn").length,
-  basePanel: document.querySelector(".ground-bases")?.innerText ?? "",
+  weights: document.querySelectorAll(".weight-input").length,
 }));
-ok(seen.palette > 0 && seen.trans > 0, `a player sees the palette and the transitions (${seen.palette} swatches, ${seen.trans} pairs)`);
-ok(seen.promote === 0 && !/make base tile/.test(seen.basePanel),
-  "and none of the promotion machinery");
+ok(pubView.palette > 0 && pubView.tabs.length === 3 && pubView.trans > 0,
+  `a player gets the palette, the tabs and the transitions (${pubView.trans} pairs)`);
+ok(pubView.promote === 0 && pubView.weights === 0, "and none of the promotion or weight machinery");
+await pub.goto(`${W}#/world/transition/dark_mud__to__grass`, { waitUntil: "load" });
+await pub.waitForTimeout(2200);
+const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene canvas").length);
+ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 await b.close();

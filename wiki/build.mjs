@@ -642,25 +642,41 @@ function buildWorld() {
     };
   });
   // ---- transitions: what exists on disk, per unordered material pair ----
+  // Tile paths are NOT shipped — they are fully derivable
+  // (tiles/transitions/<pair>/<set>/tile_XX.webp, or post/tile_XX.webp once
+  // the tiles agent publishes the retextured pass), and 255 sets × 16 paths
+  // would fatten data.json by a quarter megabyte for strings the client can
+  // spell itself. The build verifies existence and ships metadata only.
   const transitions = [];
   const tDir = join(base, "transitions");
   if (isDir(tDir)) {
     for (const pair of readdirSync(tDir).filter((d) => d.includes("__to__")).sort()) {
       const [a, bSide] = pair.split("__to__");
       const sets = [];
+      let size = null;
       for (const setId of readdirSync(join(tDir, pair)).sort()) {
         const meta = readJson(join(tDir, pair, setId, "meta.json"));
         if (!meta) continue;
-        const tiles = Array.from({ length: meta.n_tiles ?? 16 },
-          (_, i) => `tiles/transitions/${pair}/${setId}/tile_${String(i).padStart(2, "0")}.webp`)
-          .filter((f) => existsSync(join(ROOT, f)));
-        if (tiles.length) sets.push({ id: setId, amplitude: meta.boundary_amplitude ?? null, seed: meta.boundary_seed ?? null, tiles });
+        const n = meta.n_tiles ?? 16;
+        let have = 0;
+        for (let i = 0; i < n; i++) {
+          if (existsSync(join(tDir, pair, setId, `tile_${String(i).padStart(2, "0")}.webp`))) have++;
+        }
+        if (!have) continue;
+        // The POSTPROCESSED pass (retexture_palette — the set's own colours
+        // corrected to the game palette in place, relief kept): published as
+        // <set>/post/tile_XX.webp when the tiles agent runs it. The flag is
+        // what lets the wiki prefer it the moment it lands, with no wiki
+        // change — the same trick review@2's before/after uses.
+        const post = existsSync(join(tDir, pair, setId, "post", "tile_00.webp"));
+        size = meta.size ?? size;
+        sets.push({ id: setId, amplitude: meta.boundary_amplitude ?? null, seed: meta.boundary_seed ?? null, n: have, post });
       }
       if (!sets.length) continue;
-      // The straightest boundary is the representative — amplitude 0 is the
-      // canonical look; wilder seeds are variants of it.
+      // The straightest boundary first — amplitude 0 is the canonical look;
+      // wilder seeds are variants of it.
       sets.sort((x, y) => (x.amplitude ?? 9) - (y.amplitude ?? 9) || (x.seed ?? 9) - (y.seed ?? 9));
-      transitions.push({ a, b: bSide, sets: sets.length, sample: sets[0] });
+      transitions.push({ a, b: bSide, size, sets });
     }
   }
   worldMeta = {

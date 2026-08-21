@@ -270,6 +270,52 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   color: var(--err, #b3453a);
 }
 
+/* ---- ground type page: identity card, tabs, base groups, transitions ---- */
+.groundtabs {
+  display: flex; gap: 0; margin: 10px 0 14px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+  overflow: hidden; width: fit-content; max-width: 100%;
+}
+.groundtab {
+  padding: 10px 16px; font-size: 14px; border: none; background: transparent;
+  color: var(--muted); border-right: 1px solid var(--border); white-space: nowrap;
+}
+.groundtab:last-child { border-right: none; }
+.groundtab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }
+.groundtab.off { opacity: 0.45; }
+.groundtab .tab-n {
+  margin-left: 7px; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.base-group { margin-bottom: 14px; }
+.group-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
+.base-member {
+  display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;
+  padding: 10px 0; border-top: 1px solid var(--border); margin-top: 10px;
+}
+.base-member-previews { display: flex; gap: 10px; align-items: center; }
+.member-solo { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; min-width: 80px; min-height: 80px; }
+.member-tile { width: 64px; height: auto; image-rendering: pixelated; }
+.base-member-meta { display: flex; flex-direction: column; gap: 8px; min-width: 130px; }
+.weight-label { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.weight-input { width: 64px; padding: 6px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--ink); }
+/* the modal */
+.promote-modal {
+  border: 1px solid var(--border-strong); border-radius: 14px; background: var(--surface);
+  color: var(--ink); padding: 14px; width: min(430px, 92vw); max-height: 84vh; overflow-y: auto;
+}
+.promote-modal::backdrop { background: rgba(10, 8, 6, 0.55); }
+.promote-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.promote-head b { flex: 1; min-width: 140px; }
+.promote-hint { margin: 6px 0 10px; }
+.promote-group { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+.promote-into { margin-top: 8px; }
+/* the transition demo */
+.trans-scene .iso-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
+.trans-all { flex-wrap: wrap; max-width: 100%; }
+a.trans-row { color: inherit; }
+a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--ink) 4%, transparent); }
+
 /* ---- ground type page: identity card, base tiles, transitions ---- */
 .ground-swatch {
   display: inline-block; width: 14px; height: 14px; border-radius: 4px;

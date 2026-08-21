@@ -69,18 +69,26 @@ The laws around the flow:
   - `updated_at`. An entry with no `dx`/`dy`/size change cannot occur:
     clearing a note deletes the entry.
 - `live/tuning/base_tiles.json` — `pixel-wiki-base-tiles@1`. **Which tiles are
-  a ground type's BASE tiles** (maintainer 2026-08-21: "A base tile is a tile
-  that can be repeated over and over again without being annoying ... The
-  world-agent will always start to draw with a base tile ... The base tile is
-  in the background and does everything but noone notice"). One entry per tile
-  key (the review manifest's own key): `{ type: <ground type id>,
-  promoted_at }` — the type it is the base OF, because a key names a PAIR and
-  the base title is about the pair's walkable TOP. Deleting the entry revokes
-  the title. A type may hold one, several, or none — with none, the ground
-  paints as its flat colour (`tiles/config/palette.json` `top`). Written from
-  the wiki's ground-type pages ("☖ make base tile" / "Revoke base title");
-  **consumed by the tiles agent** (which tiles earn variant generation) **and
-  the maps/world agent** (what a field is painted with).
+  a ground type's BASE tiles, in GROUPS** (maintainer 2026-08-21: "A base tile
+  is a tile that can be repeated over and over again without being annoying ...
+  A base tile group is a set of tiles that togather make tileing/seems
+  dissapears. They are often very very close to eachother ... The world-agent
+  will always start to draw with a base tile"). One entry per tile key (the
+  review manifest's own key):
+  `{ type: <ground type id>, group: "g1", weight: 1, promoted_at }`
+  - `type` — the ground the tile is a base OF (a key names a PAIR; the base
+    title is about the pair's walkable TOP).
+  - `group` — the base-tile group, scoped to the type (`g1`, `g2`, …). A field
+    is painted from ONE group's members, never mixed across groups.
+  - `weight` — how often this tile spawns vs its group-mates (2 appears twice
+    as often as 1). The wiki's composites roll with the same weights.
+  Deleting the entry revokes the title; a group with no members is gone. A
+  type may hold several groups or none — with none, the ground paints as its
+  flat colour (`tiles/config/palette.json` `top`). Written from the wiki's
+  ground-type pages (the promote modal + the Base tiles tab); **consumed by
+  the tiles agent** (which tiles earn variant generation) **and the maps/world
+  agent** (what a field is painted with — pick a group, then roll members by
+  weight).
 - `live/tuning/tile_walls.json` — `pixel-wiki-tile-walls@1`. **Which Tiles
   3.0 tiles may build their own wall.** A tile is generated as "A over B"
   (top A, side walls B); the default is that a tile stacks into a cliff of

@@ -3572,25 +3572,60 @@ const BASE_KEY = "tuning/base_tiles";
 const baseTilesDoc = () => state.tuning.base_tiles
   ?? (state.tuning.base_tiles = { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} });
 const isBaseTile = (key) => !!baseTilesDoc().overrides?.[key];
-/** Every promoted tile of one ground type, resolved to its live candidate —
- *  a designation whose tile has been regenerated away resolves to null art and
- *  is shown as such rather than silently dropped. */
-function baseTilesOf(typeId) {
-  const keys = Object.entries(baseTilesDoc().overrides ?? {})
-    .filter(([, v]) => v?.type === typeId).map(([k]) => k);
-  if (!keys.length) return [];
+/* BASE TILES COME IN GROUPS (maintainer 2026-08-21, second pass: "A base tile
+ * group is a set of tiles that togather make tileing/seems dissapears. They
+ * are often very very close to eachother. And what's important here is to
+ * review and look at this group as a whole (and after that individually).")
+ * Each entry: { type, group, weight, promoted_at } — the group id scopes to
+ * the type, the weight is how often this tile spawns vs its group-mates
+ * ("I as an admin can also control how often 'the weight'/likelieness this
+ * tile spawns vs another"). */
+function baseGroupsOf(typeId) {
   const byKey = new Map();
   for (const c of worldCells()) for (const cand of c.candidates) byKey.set(cand.key, { cell: c, cand });
-  return keys.map((k) => ({ key: k, hit: byKey.get(k) ?? null }));
+  const groups = new Map();
+  for (const [k, v] of Object.entries(baseTilesDoc().overrides ?? {})) {
+    if (v?.type !== typeId) continue;
+    const gid = v.group ?? "g1";
+    if (!groups.has(gid)) groups.set(gid, []);
+    groups.get(gid).push({ key: k, weight: typeof v.weight === "number" && v.weight > 0 ? v.weight : 1, hit: byKey.get(k) ?? null });
+  }
+  return [...groups.entries()]
+    .map(([id, members]) => ({ id, members: members.sort((a, b) => a.key.localeCompare(b.key)) }))
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 }
-function setBaseTile(key, typeId, on) {
+/** Flattened, for the base colour and the counts. */
+const baseTilesOf = (typeId) => baseGroupsOf(typeId).flatMap((g) => g.members);
+const nextGroupId = (typeId) => {
+  const used = new Set(baseGroupsOf(typeId).map((g) => g.id));
+  for (let i = 1; ; i++) if (!used.has(`g${i}`)) return `g${i}`;
+};
+function setBaseTile(key, typeId, groupId, on) {
   const doc = baseTilesDoc();
   doc.overrides ??= {};
-  if (on) doc.overrides[key] = { type: typeId, promoted_at: new Date().toISOString() };
-  else delete doc.overrides[key];
+  if (on) {
+    const was = doc.overrides[key];
+    doc.overrides[key] = { type: typeId, group: groupId, weight: was?.weight ?? 1, promoted_at: was?.promoted_at ?? new Date().toISOString() };
+  } else delete doc.overrides[key];
   doc.updated_at = new Date().toISOString();
   touch(BASE_KEY, key);
   markDirty(BASE_KEY);
+}
+function setBaseWeight(key, w) {
+  const e = baseTilesDoc().overrides?.[key];
+  if (!e) return;
+  e.weight = Math.max(0.1, Math.min(10, +(+w).toFixed(2) || 1));
+  baseTilesDoc().updated_at = new Date().toISOString();
+  touch(BASE_KEY, key);
+  markDirty(BASE_KEY);
+}
+/** Weighted pick of a member's art path — the composites and the game agree
+ *  that weight means "how often this one appears". */
+function pickBaseMember(members, rnd) {
+  const total = members.reduce((n, m) => n + m.weight, 0);
+  let roll = rnd() * total;
+  for (const m of members) { roll -= m.weight; if (roll <= 0) return m; }
+  return members[members.length - 1];
 }
 const groundTypeMeta = (id) => (worldMeta().groundTypes ?? []).find((g) => g.id === id) ?? { id };
 /** The ground's base colour: the promoted base tile's measured flat top when
@@ -3613,6 +3648,73 @@ const SURFACE_LABEL = {
   flat: { text: "clean colour for now", cls: "warn", title: "Painted as a clean flat colour until a texture beats it — the maintainer's declared stopgap, not the goal." },
 };
 const transitionsOf = (typeId) => (worldMeta().transitions ?? []).filter((t) => t.a === typeId || t.b === typeId);
+/** A transition set's tile path — derivable, never shipped (build.mjs ships
+ *  metadata only). `post` picks the retextured pass once the tiles agent
+ *  publishes it. */
+const transTile = (a, b, setId, i, post) =>
+  `tiles/transitions/${a}__to__${b}/${setId}/${post ? "post/" : ""}tile_${String(i).padStart(2, "0")}.webp`;
+/** Seeded RNG for the composites — a Randomize press swaps the seed, and the
+ *  same seed always paints the same field (mulberry32; deterministic keeps the
+ *  gates honest). */
+function seededRnd(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** An N×N flat field of one base-tile GROUP, weighted — "here we can see how
+ *  they look togather". Returns a box the canvas lands in when the art has
+ *  loaded. */
+function baseGroupField(members, n, seed, scale = 1) {
+  const box = h("div", { class: "iso-stage checker group-stage" });
+  const rnd = seededRnd(seed);
+  const cells = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    const m = pickBaseMember(members, rnd);
+    cells.push({ c, r, img: m.hit?.cand?.art });
+  }
+  const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
+  if (!paths.length) { box.append(h("p", { class: "muted" }, "the art for this group is not loadable")); return box; }
+  loadImages(paths, (images) => {
+    if (!box.isConnected && !box.parentNode) { /* still attachable — modal builds detached */ }
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()));
+  });
+  return box;
+}
+/** A 3×3 with ONE tile pinned centre and the group around it — the member
+ *  review's right half, and the promotion modal's whole point ("the model
+ *  should show this tile in the center with members around it"). */
+function centeredField(centerArt, members, seed, scale = 1) {
+  const box = h("div", { class: "iso-stage checker group-stage" });
+  const rnd = seededRnd(seed);
+  const others = members.length ? members : [{ weight: 1, hit: { cand: { art: centerArt } } }];
+  const cells = [];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+    const img = (c === 1 && r === 1) ? centerArt : pickBaseMember(others, rnd).hit?.cand?.art;
+    cells.push({ c, r, img });
+  }
+  const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
+  loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
+  return box;
+}
+/** A Wang-corner scene: `corner(x, y)` returns 1 where material A (the pair's
+ *  first name — the set-bit material) owns the lattice point. Index per cell =
+ *  8·NW + 4·NE + 2·SW + 1·SE, exactly the sets' own convention. */
+function wangScene(a, b, setId, post, n, corner, scale = 1) {
+  const box = h("div", { class: "iso-stage checker trans-stage" });
+  const cells = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
+    cells.push({ c, r, img: transTile(a, b, setId, idx, post) });
+  }
+  loadImages([...new Set(cells.map((x) => x.img))], (images) =>
+    box.replaceChildren(isoScene(cells, images, scale, 4, worldIso())));
+  return box;
+}
+
 
 /* THE PAIRS ARE READ LIVE FROM THE AGENT, NOT FROM THE BUILD.
  * Every other domain is settled art: a build a few hours old describes it
@@ -4004,83 +4106,91 @@ function viewWorld() {
         ? `${TILE_MATCH_EMPTY[mode]} Nothing is waiting for you.`
         : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
 }
-/** One ground type: every wall it can stand on. */
+/** One ground type — TABS (maintainer 2026-08-21, third pass: "we have so
+ *  much stuff here so it should be tabs. Base tiles is the first tab, but if
+ *  we have none this tab is disabled and a user ends up on the second tab
+ *  instead"). The identity card stays above the tabs — it is what the ground
+ *  IS, whatever you are looking at. */
+const groundTab = new Map();          // typeId -> the tab chosen this session
+const baseFieldSeeds = new Map();     // "type/group" -> composite seed (Randomize)
 function viewWorldType(top) {
   refreshWorldPairs().then((changed) => { if (changed && location.hash.startsWith("#/world")) route(); });
   const types = worldTypes();
   const t = types.find((x) => x.id === top);
   if (!t) return h("p", {}, "Unknown ground type.");
-  /* ONE FILTER BAR, NOT TWO (maintainer 2026-08-20, with a screenshot of this
-   * page: "I use your code to filter on NOT reviewed. I then click on that
-   * tile set, but can't navigate further to find the review. How was this
-   * supposed to work?").
-   *
-   * It was not. This page carried the tile filter — which cascades into the
-   * set page and drives ‹ › across ground types — directly above a PAIR-level
-   * review filter that looked identical and did neither: picking "not
-   * reviewed 15" narrowed this grid and then dropped him into an unfiltered
-   * set page whose pager walked all 15 siblings. Two lookalike controls, one
-   * of them a dead end, and he reached for the one whose words matched what he
-   * wanted ("not reviewed").
-   *
-   * The tile filter answers every question the pair filter did, at the grain
-   * he actually reviews at and with the navigation attached: "not reviewed" is
-   * `undecided`, "redo" is `rejected`, "picked" is `approved`. So the pair bar
-   * is gone. What it genuinely added — the SET's aggregate state — was never
-   * the filter, it is the pill on each card, and that stays. */
   const mode = state.admin ? starFilter() : "all";
   const on = mode !== "all";
   const list = state.admin && on ? t.pairs.filter((c) => pairHits(c, mode)) : t.pairs;
   const meta = groundTypeMeta(t.id);
   const baseCol = groundBaseColor(t.id);
   const surface = SURFACE_LABEL[meta.surface] ?? null;
-  const bases = baseTilesOf(t.id);
+  const groups = baseGroupsOf(t.id);
   const trans = transitionsOf(t.id);
   const swatch = (c, title) => h("span", {
     class: "swatch ground-swatch", title,
     style: `background:${/^#[0-9a-f]{3,8}$/i.test(c) ? c : "transparent"}`,
   });
-  return h("div", {},
-    crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
-    h("div", { class: "sect-head" }, h("h1", {}, t.name)),
-    // THE GROUND'S IDENTITY CARD: its base colour, its measured palette, and
-    // what its surface promises. All read data — the wiki mirrors the tiles
-    // agent's files and the Game Master's designations, it invents nothing.
-    h("div", { class: "spawn-line ground-idcard" },
-      baseCol ? h("span", { class: "pill ground-base", title: `Base colour ${baseCol.c} — ${baseCol.from}` },
-        swatch(baseCol.c), ` base ${baseCol.c}`) : null,
-      surface ? h("span", { class: `pill ${surface.cls}`, title: surface.title }, surface.text) : null,
-      meta.category ? h("span", { class: "pill", title: meta.category === "liquid" ? "A liquid ground — bodies swim rather than walk" : "A solid ground — bodies walk on it" }, meta.category) : null),
-    (meta.palette ?? []).length ? h("div", { class: "ground-palette", title: "The measured palette of this ground's own tiles — every colour its art actually uses, largest share first" },
-      ...meta.palette.map((x) => swatch(x.c, `${x.c} — ${(x.share * 100).toFixed(1)}% of the painted pixels`))) : null,
-    h("p", { class: "muted" }, state.admin
-      ? `Walking on ${t.name.toLowerCase()} — every wall it can stand on.`
-      : `Walking on ${t.name.toLowerCase()} — and the cliff below it where the land steps down.`),
-    /* ---- BASE TILES (maintainer 2026-08-21: "A base tile is a tile that can
-     * be repeated over and over again without being annoying ... The world-
-     * agent will always start to draw with a base tile ... The base tile is in
-     * the background and does everything but noone notice.") ---- */
-    h("div", { class: "panel ground-bases" },
-      h("div", { class: "panel-title" }, "Base tiles",
-        h("span", { class: "pill" }, bases.length ? `${bases.length} promoted` : "none yet")),
-      bases.length
-        ? h("div", { class: "base-grid" }, ...bases.map(({ key, hit }) =>
-          h("div", { class: "card base-card" },
-            hit ? worldArt(hit.cand, `base tile of ${t.name}`) : h("div", { class: "thumb checker" }),
-            h("div", { class: "card-sub" },
-              hit ? `from ${hit.cell.name.toLowerCase()}` : "this tile has been regenerated away — revoke and promote a current one",
-              hit?.cand?.paletteTop ? h("span", { class: "swatch-wrap", title: `its measured flat top — the ground's base colour` }, " ", swatch(hit.cand.paletteTop), ` ${hit.cand.paletteTop}`) : null),
-            state.admin ? h("button", {
-              class: "ghost-btn",
-              title: "Revoke — this tile stops being the ground's base tile",
-              onclick: () => { setBaseTile(key, t.id, false); keepScrollY = window.scrollY; route(); },
-            }, "Revoke base title") : null)))
-        : h("p", { class: "muted" }, state.admin
-          ? `No base tile promoted yet — the ground paints as its flat colour${baseCol ? ` (${baseCol.c})` : ""}. Open a set below and press "☖ make base tile" on the tile that can repeat forever without being noticed.`
-          : `This ground paints as a single colour${baseCol ? ` (${baseCol.c})` : ""} for now.`)),
-    /* ---- ON TOP OF — his name for the x-over-y matrix ---- */
-    h("div", { class: "panel-title ground-section" }, "On top of",
-      h("span", { class: "pill" }, `${t.pairs.length} wall${t.pairs.length === 1 ? "" : "s"}`)),
+  // The tab: his rule verbatim — Base tiles first, disabled when empty.
+  const wanted = groundTab.get(t.id);
+  const tab = (wanted === "base" && !groups.length) ? "ontop"
+    : wanted ?? (groups.length ? "base" : "ontop");
+  const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
+  const tabBtn = (id, label2, count, disabled, title) => h("button", {
+    class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
+    type: "button", title,
+    ...(disabled ? { disabled: "disabled" } : {}),
+    onclick: disabled ? null : () => pickTab(id),
+  }, label2, count == null ? null : h("span", { class: "tab-n" }, String(count)));
+
+  /* ---------------- TAB: base tiles ---------------- */
+  const baseTab = () => {
+    const seeds = baseFieldSeeds;    // module map: group id -> seed
+    return h("div", {}, ...groups.map((g) => {
+      const gSeed = seeds.get(`${t.id}/${g.id}`) ?? 1;
+      // "The group review should create the biggest possible rect (3x3? 4x4?
+      // 5x5?) with a Randomize button next to it. Here we can see how they
+      // look togather." 5×5 is the biggest that fits his phone at 1:1.
+      const field = baseGroupField(g.members, 5, gSeed, 1);
+      return h("div", { class: "panel base-group" },
+        h("div", { class: "panel-title" }, `Group ${g.id}`,
+          h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`),
+          h("button", {
+            class: "ghost-btn", title: "Re-roll the field — a group is good when every roll looks like the same ground",
+            onclick: () => { seeds.set(`${t.id}/${g.id}`, (gSeed * 16807 + 7) % 2147483647); keepScrollY = window.scrollY; route(); },
+          }, "🎲 Randomize")),
+        h("p", { class: "muted" }, "The whole group tiled together — seams disappearing is its job."),
+        field,
+        // "After this we will see/list each member 1 by 1 with option to
+        // remove them from this group/set ... a double preview with this 1
+        // tile to the left and a 3x3 tile to the right with this tile in the
+        // center surrounted by group members."
+        ...g.members.map((m) => {
+          const art = m.hit?.cand?.art;
+          const others = g.members.filter((x) => x.key !== m.key);
+          return h("div", { class: "base-member" },
+            h("div", { class: "base-member-previews" },
+              h("div", { class: "iso-stage checker member-solo" },
+                art ? h("img", { src: assetUrl(art), alt: "the tile alone", class: "member-tile" })
+                  : h("span", { class: "muted" }, "art gone — this tile was regenerated away")),
+              art ? centeredField(art, others.length ? others : g.members, seeds.get(`${t.id}/${g.id}`) ?? 1, 1) : null),
+            h("div", { class: "base-member-meta" },
+              m.hit ? h("a", { href: `#/world/${m.hit.cell.top}/${m.hit.cell.side}` }, `from ${m.hit.cell.name.toLowerCase()}`)
+                : h("span", { class: "muted" }, m.key),
+              state.admin ? h("label", { class: "weight-label", title: "How often this tile spawns vs its group-mates — 2 appears twice as often as 1" },
+                "weight ",
+                Object.assign(h("input", { type: "number", class: "weight-input", min: "0.1", max: "10", step: "0.1", value: String(m.weight) }),
+                  { onchange: (e) => { setBaseWeight(m.key, e.target.value); keepScrollY = window.scrollY; route(); } })) : null,
+              state.admin ? h("button", {
+                class: "ghost-btn",
+                title: "Remove from this group — the tile keeps its reviews, it just stops being a base tile",
+                onclick: () => { setBaseTile(m.key, t.id, g.id, false); keepScrollY = window.scrollY; route(); },
+              }, "Remove from group") : null));
+        }));
+    }));
+  };
+
+  /* ---------------- TAB: on top of (the x-over-y matrix, as before) ------- */
+  const onTopTab = () => h("div", {},
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     state.admin ? sortBar(WORLD_STAR_KEY, Object.entries(WORLD_STARS).map(([id, f]) => {
       const n = id === "all" ? t.pairs.length : t.pairs.filter((c) => pairHits(c, id)).length;
@@ -4091,12 +4201,7 @@ function viewWorldType(top) {
       const v = wallVerdict(c.best);
       return h("a", { class: "card", href: `#/world/${c.top}/${c.side}` },
         worldArt(c.candidates[0], c.name),
-        // The TOP is the page you are on, so the card names the wall —
-        // EXCEPT under the star filter, where ‹ › will carry him out of this
-        // type entirely and every set has to say its whole name.
         h("div", { class: "card-name" }, on ? c.name : `over ${typeLabelWorld(c.side).toLowerCase()}`),
-        // How many generations exist of it is a fact about the factory, not
-        // about the ground.
         state.admin ? h("div", { class: "card-sub" }, on
           ? `${pairHits(c, mode)} of ${c.candidates.length} ${TILE_MATCH_NOUN[mode]}`
           : `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"}`) : null,
@@ -4106,29 +4211,167 @@ function viewWorldType(top) {
           state.admin && c.tombstoned ? h("span", { class: "pill err" }, "tombstoned") : null));
     })) : h("p", { class: "muted" }, state.admin && on
       ? TILE_MATCH_EMPTY[mode]
-      : "Nothing in this filter."),
-    /* ---- TRANSITIONS — the Wang corner sets blending this ground into its
-     * neighbours (tiles/docs/TRANSITIONS.md). He and the tiles agent are mid-
-     * build ("working like crazy"), so the section reports what exists and is
-     * honest about what does not, instead of waiting to be complete. ---- */
-    h("div", { class: "panel ground-trans" },
-      h("div", { class: "panel-title" }, "Transitions",
-        h("span", { class: "pill" }, trans.length ? `${trans.reduce((n, x) => n + x.sets, 0)} sets across ${trans.length} neighbour${trans.length === 1 ? "" : "s"}` : "none yet")),
-      trans.length
-        ? h("div", {}, ...trans.map((x) => {
-          const other = x.a === t.id ? x.b : x.a;
-          // Four tiles that show the boundary itself: one odd corner, two
-          // half-splits, the opposite odd corner (Wang indices 1, 3, 12, 14).
-          const picks = [1, 3, 12, 14].map((i) => x.sample.tiles[i]).filter(Boolean);
-          return h("div", { class: "trans-row" },
-            h("a", { class: "trans-name", href: `#/world/${other}` }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
-            h("span", { class: "muted" }, ` ${x.sets} set${x.sets === 1 ? "" : "s"}`),
-            h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
-              h("img", { src: assetUrl(f), alt: `${t.name} to ${other} transition tile`, loading: "lazy" }))));
-        }))
-        : h("p", { class: "muted" }, state.admin
-          ? "Being generated — no transition sets published for this ground yet (tiles/transitions/)."
-          : "The edges where this ground meets its neighbours are still being painted.")));
+      : "Nothing in this filter."));
+
+  /* ---------------- TAB: transitions ---------------- */
+  const transTab = () => h("div", {},
+    trans.length
+      ? h("div", {}, ...trans.map((x) => {
+        const other = x.a === t.id ? x.b : x.a;
+        const s0 = x.sets[0];
+        const picks = [1, 3, 12, 14].map((i) => transTile(x.a, x.b, s0.id, i, s0.post));
+        return h("a", { class: "trans-row", href: `#/world/transition/${x.a}__to__${x.b}` },
+          h("span", { class: "trans-name" }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
+          h("span", { class: "muted" }, ` ${x.sets.length} set${x.sets.length === 1 ? "" : "s"}`),
+          // "you forgot to list them in postproccesed state" — the moment the
+          // tiles agent publishes post/, this flips with no wiki change.
+          s0.post ? h("span", { class: "pill ok" }, "postprocessed")
+            : h("span", { class: "pill warn", title: "The raw generator tiles — the retexture pass (the set's colours corrected to the game palette) has not been published yet" }, "before postprocess"),
+          h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
+            h("img", { src: assetUrl(f), alt: `${t.name} to ${other} transition tile`, loading: "lazy" }))));
+      }))
+      : h("p", { class: "muted" }, state.admin
+        ? "Being generated — no transition sets published for this ground yet (tiles/transitions/)."
+        : "The edges where this ground meets its neighbours are still being painted."));
+
+  return h("div", {},
+    crumbRow("#/world", `← ${label("world")}`, "world", types, t.id),
+    h("div", { class: "sect-head" }, h("h1", {}, t.name)),
+    h("div", { class: "spawn-line ground-idcard" },
+      baseCol ? h("span", { class: "pill ground-base", title: `Base colour ${baseCol.c} — ${baseCol.from}` },
+        swatch(baseCol.c), ` base ${baseCol.c}`) : null,
+      surface ? h("span", { class: `pill ${surface.cls}`, title: surface.title }, surface.text) : null,
+      meta.category ? h("span", { class: "pill", title: meta.category === "liquid" ? "A liquid ground — bodies swim rather than walk" : "A solid ground — bodies walk on it" }, meta.category) : null),
+    (meta.palette ?? []).length ? h("div", { class: "ground-palette", title: "The measured palette of this ground's own tiles — every colour its art actually uses, largest share first" },
+      ...meta.palette.map((x) => swatch(x.c, `${x.c} — ${(x.share * 100).toFixed(1)}% of the painted pixels`))) : null,
+    h("div", { class: "groundtabs", role: "tablist" },
+      tabBtn("base", "Base tiles", groups.length || null, !groups.length,
+        groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
+      tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
+      tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours")),
+    state.admin && !groups.length && tab === "ontop" ? h("p", { class: "muted" },
+      `No base tiles yet — open a set below and press "☖ promote to base tile" on the tiles that can repeat forever.`) : null,
+    tab === "base" ? baseTab() : tab === "trans" ? transTab() : onTopTab());
+}
+/* ---- THE TRANSITION PAGE — a demo, not a list (maintainer 2026-08-21:
+ * "Clicking on a transition will get you to that transition page. Here we can
+ * show in preview how the transition looks like in different directions. See
+ * it as a 'demo page' and a way for me to see all content without running
+ * around in the game. Make the page look good and ambitious.") ---- */
+const transState = new Map();   // pair -> { set, seed }
+function viewWorldTransition(pairId) {
+  const tr = (worldMeta().transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
+  if (!tr) return h("p", {}, "Unknown transition.");
+  const st = transState.get(pairId) ?? { set: tr.sets[0].id, seed: 2 };
+  transState.set(pairId, st);
+  const set = tr.sets.find((x) => x.id === st.set) ?? tr.sets[0];
+  const nameA = typeLabelWorld(tr.a), nameB = typeLabelWorld(tr.b);
+  const rerender = () => { keepScrollY = window.scrollY; route(); };
+  // The scenes: the same boundary crossing the field in every direction —
+  // corner(x,y) = 1 where material A owns the lattice point (the sets' own
+  // bit convention; see each set's meta.json).
+  const N = 6;
+  const rnd = seededRnd(st.seed);
+  // A wandering edge: a random-walk boundary column per row of lattice.
+  const walk = [];
+  let wx = Math.floor(N / 2) + 1;
+  for (let y = 0; y <= N; y++) { walk.push(wx); wx = Math.max(1, Math.min(N, wx + Math.floor(rnd() * 3) - 1)); }
+  // An island: a rounded blob of A in a sea of B.
+  const cx = N / 2 + (rnd() - 0.5), cy = N / 2 + (rnd() - 0.5), rad = N / 3 + rnd() * 0.8;
+  const SCENES = [
+    { name: `${nameA} west, ${nameB.toLowerCase()} east`, sub: "a straight north–south boundary",
+      corner: (x) => (x <= N / 2 ? 1 : 0) },
+    { name: `${nameA} north, ${nameB.toLowerCase()} south`, sub: "a straight east–west boundary",
+      corner: (x, y) => (y <= N / 2 ? 1 : 0) },
+    { name: "Diagonal", sub: "the corner-set's honest 32px stair — geometry, not a bad tile (docs/TRANSITIONS.md)",
+      corner: (x, y) => (x + y <= N ? 1 : 0) },
+    { name: `An island of ${nameA.toLowerCase()}`, sub: `${nameA.toLowerCase()} surrounded by ${nameB.toLowerCase()}`,
+      corner: (x, y) => ((x - cx) ** 2 + (y - cy) ** 2 <= rad * rad ? 1 : 0) },
+    { name: "A wandering edge", sub: "a random boundary — press Randomize and it wanders differently",
+      corner: (x, y) => (x < walk[Math.min(y, N)] ? 1 : 0) },
+  ];
+  return h("div", {},
+    crumbRow("#/world", `← ${label("world")}`, "world/transitions",
+      (worldMeta().transitions ?? []).map((x) => ({ id: `transition/${x.a}__to__${x.b}`, name: `${typeLabelWorld(x.a)} ↔ ${typeLabelWorld(x.b).toLowerCase()}` })),
+      `transition/${pairId}`),
+    h("div", { class: "sect-head" }, h("h1", {}, `${nameA} ↔ ${nameB.toLowerCase()}`)),
+    h("div", { class: "spawn-line" },
+      h("a", { class: "pill", href: `#/world/${tr.a}` }, nameA.toLowerCase()),
+      h("a", { class: "pill", href: `#/world/${tr.b}` }, nameB.toLowerCase()),
+      h("span", { class: "pill" }, `${tr.sets.length} set${tr.sets.length === 1 ? "" : "s"}`),
+      set.post ? h("span", { class: "pill ok" }, "postprocessed")
+        : h("span", { class: "pill warn", title: "Raw generator output — the retexture pass (each set's own colours corrected to the game palette, relief kept) is not published yet. The boundary SHAPE is what these previews judge." }, "before postprocess")),
+    h("p", { class: "muted" },
+      `Where ${nameA.toLowerCase()} meets ${nameB.toLowerCase()} — the same Wang corner set drawn across every direction a boundary can run. `,
+      "The whole world's edges will look like this page."),
+    // The set picker: a00 is the straightest boundary; higher amplitudes are
+    // rougher. One chip per generated set.
+    tr.sets.length > 1 ? sortBar(`trans-set-${pairId}`, tr.sets.map((x) => [x.id,
+      `${x.amplitude === 0 ? "straight" : `rough ${x.amplitude}`} · s${x.seed}`,
+      `boundary_amplitude ${x.amplitude}, seed ${x.seed} — ${x.n} tiles`]),
+    set.id, (id) => { st.set = id; rerender(); }, { persist: false }) : null,
+    h("div", { class: "player-controls" },
+      h("button", { class: "ghost-btn", title: "Re-roll the island and the wandering edge", onclick: () => { st.seed = (st.seed * 16807 + 11) % 2147483647; rerender(); } }, "🎲 Randomize")),
+    ...SCENES.map((sc) => h("div", { class: "panel trans-scene" },
+      h("div", { class: "panel-title" }, sc.name),
+      h("p", { class: "muted" }, sc.sub),
+      wangScene(tr.a, tr.b, set.id, set.post, N, sc.corner, 1))),
+    h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "The 16 corner tiles",
+        h("span", { class: "pill" }, `set ${set.id}`)),
+      h("p", { class: "muted" }, `Index = 8·NW + 4·NE + 2·SW + 1·SE, a set bit meaning ${nameA.toLowerCase()}. 0 is pure ${nameB.toLowerCase()}, 15 pure ${nameA.toLowerCase()}.`),
+      h("div", { class: "trans-strip checker trans-all" }, ...Array.from({ length: set.n }, (_, i) =>
+        h("img", { src: assetUrl(transTile(tr.a, tr.b, set.id, i, set.post)), alt: `tile ${i}`, title: `index ${i}`, loading: "lazy" })))));
+}
+
+/* ---- THE PROMOTION MODAL (maintainer 2026-08-21: "That will open a
+ * pop-up/model so we can see how this tile looks in the different 'base tile
+ * groups'. The model should show this tile in the center with members around
+ * it. And a randomize button ... if you have several you might have to scroll
+ * inside the model. You can from here promote this tile to the base tile
+ * set.") ---- */
+function openPromoteModal(cell, cand, onDone) {
+  document.querySelector(".promote-modal")?.remove();
+  const typeId = cell.top;
+  const groups = baseGroupsOf(typeId);
+  const dlg = h("dialog", { class: "promote-modal" });
+  let seed = 1;
+  const body = h("div", { class: "promote-body" });
+  const paint = () => {
+    body.replaceChildren(
+      ...groups.map((g) => h("div", { class: "promote-group" },
+        h("div", { class: "panel-title" }, `In group ${g.id}`,
+          h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`)),
+        centeredField(cand.art, g.members, seed, 1),
+        h("button", {
+          class: "ghost-btn promote-into",
+          onclick: () => { setBaseTile(cand.key, typeId, g.id, true); dlg.close(); dlg.remove(); onDone?.(); toast(`Promoted into group ${g.id} — commit when you are done.`); },
+        }, `Promote into ${g.id}`))),
+      h("div", { class: "promote-group" },
+        h("div", { class: "panel-title" }, groups.length ? "Or start a new group" : "Start the first group",
+          h("span", { class: "pill" }, "just this tile")),
+        centeredField(cand.art, [], seed, 1),
+        h("button", {
+          class: "ghost-btn promote-into",
+          onclick: () => {
+            const gid = nextGroupId(typeId);
+            setBaseTile(cand.key, typeId, gid, true);
+            dlg.close(); dlg.remove(); onDone?.();
+            toast(`Started group ${gid} — commit when you are done.`);
+          },
+        }, groups.length ? `Start group ${nextGroupId(typeId)} with this tile` : "Make it the first base tile")));
+  };
+  paint();
+  dlg.append(
+    h("div", { class: "promote-head" },
+      h("b", {}, `${typeLabelWorld(typeId)} — where does this tile belong?`),
+      h("button", { class: "ghost-btn", title: "Re-roll every preview", onclick: () => { seed = (seed * 16807 + 7) % 2147483647; paint(); } }, "🎲 Randomize"),
+      h("button", { class: "ghost-btn", onclick: () => { dlg.close(); dlg.remove(); } }, "✕ Close")),
+    h("p", { class: "muted promote-hint" }, "The candidate sits in the centre of every field. It belongs in a group when you cannot find it."),
+    body);
+  document.body.append(dlg);
+  dlg.showModal();
+  dlg.addEventListener("close", () => dlg.remove());
 }
 /* ---- HOW THE SET LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "we need to make that page where I review the
@@ -4459,22 +4702,27 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.
     state.admin ? wallModeRow(cand, onVerdict) : null,
-    // IS IT THE GROUND'S BASE TILE? (maintainer 2026-08-21: "I should be able
-    // to promote a tile to be the base tile and also revoke that title.")
-    // A designation, not a verdict — it names what the world agent paints
-    // FIRST and repeats forever, and it rides the tile's own key so a
-    // regeneration visibly orphans it instead of silently moving it.
+    // IS IT THE GROUND'S BASE TILE? Promotion goes through a MODAL that shows
+    // this tile sitting centred in EVERY existing group ("so we can see how
+    // this tile looks in the different base tile groups ... with members
+    // around it. And a randomize button"), then promotes into a chosen group
+    // or starts a new one. Revoking is direct — you can see what you are
+    // undoing.
     state.admin ? (() => {
       const onBase = isBaseTile(cand.key);
       return h("div", { class: "card-sub base-row" },
-        onBase ? h("span", { class: "pill ok", title: `The base tile of ${typeLabelWorld(cell.top)} — the world agent starts every field with it` }, "base tile") : null,
+        onBase ? h("span", { class: "pill ok", title: `A base tile of ${typeLabelWorld(cell.top)} — the world agent paints fields from its group` }, `base tile · ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`) : null,
         h("button", {
           class: `ghost-btn base-btn${onBase ? " on" : ""}`,
           title: onBase
-            ? `Revoke — ${typeLabelWorld(cell.top)} stops painting its fields from this tile`
-            : `Promote — make this THE tile ${typeLabelWorld(cell.top)} fields repeat (several can hold the title; the ground's flat colour stands in when none does)`,
-          onclick: (e) => { e.stopPropagation(); setBaseTile(cand.key, cell.top, !onBase); onVerdict?.(); },
-        }, onBase ? "☗ revoke base title" : "☖ make base tile"));
+            ? `Revoke — this tile leaves group ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`
+            : `Promote — see how this tile sits in each base-tile group of ${typeLabelWorld(cell.top)}, then add it to one`,
+          onclick: (e) => {
+            e.stopPropagation();
+            if (onBase) { setBaseTile(cand.key, cell.top, null, false); onVerdict?.(); }
+            else openPromoteModal(cell, cand, onVerdict);
+          },
+        }, onBase ? "☗ revoke base title" : "☖ promote to base tile…"));
     })() : null,
     state.admin ? h("div", { class: "card-sub" },
       feedbackRow("tiles", cand.key, {
@@ -4625,7 +4873,12 @@ function isoScene(cells, images, scale = 1, pad = 4, isoIn = null) {
   for (const d of draws) {
     const im = images[d.img];
     if (!im) continue;
-    ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) - minY + pad) * scale, iso.tilePx * scale, iso.tilePx * scale);
+    // NATIVE ASPECT, not a square: a review tile is 64×64 but a transition
+    // tile is 64×46 (top diamond + a 17-row wall extrusion), and stretching
+    // it to 64×64 bends every boundary it exists to show. Width is the iso
+    // contract; height follows the art.
+    const dh = iso.tilePx * (im.naturalHeight / (im.naturalWidth || iso.tilePx));
+    ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) - minY + pad) * scale, iso.tilePx * scale, dh * scale);
   }
   return canvas;
 }
@@ -6502,7 +6755,8 @@ function route() {
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
   else if (page === "characters") view = id ? viewCharacter(id) : viewCharacters();
   else if (page === "tiles") view = id ? (sub ? viewTileInstance(id, sub) : viewTileType(id)) : viewTiles();
-  else if (page === "world") view = id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
+  else if (page === "world") view = id === "transition" && sub ? viewWorldTransition(sub)
+    : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();

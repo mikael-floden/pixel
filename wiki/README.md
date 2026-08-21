@@ -471,13 +471,35 @@ invented**:
   *"often the bg on the base tile or alone if no base tile exist"*, verbatim.
   A designation whose tile is later regenerated away shows as orphaned rather
   than silently vanishing.
-- **On top of** is his name for the x-over-y matrix — the existing pair grid,
-  now under that heading.
-- **Transitions** mirror `tiles/transitions/` on disk: per neighbour pair, the
-  set count and four sample tiles from the straightest set (Wang indices 1, 3,
-  12, 14 — the ones that show the boundary itself). The section exists while
-  he and the tiles agent are mid-build, reporting what exists instead of
-  waiting to be complete.
+- **The page is TABS** (his third pass: *"we have so much stuff here so it
+  should be tabs"*): Base tiles / On top of / Transitions. Base tiles is
+  first — and DISABLED when the type has none, landing the visitor on On top
+  of, exactly as specified.
+- **Base tiles come in GROUPS** — *"a set of tiles that togather make
+  tileing/seems dissapears"*. Each group is reviewed AS A WHOLE first: a 5×5
+  weighted-random field with a Randomize button (*"here we can see how they
+  look togather"*), then member by member — the double preview (the tile
+  alone, and centred in a 3×3 of its group-mates), a spawn **weight** input,
+  and Remove from group. Promotion is a MODAL from any tile card: the
+  candidate composed in the centre of EVERY existing group plus a
+  start-a-new-group option, with its own Randomize — you promote it into the
+  group where you cannot find it.
+- **On top of** is his name for the x-over-y matrix — the existing pair grid
+  with its filters, as the second tab.
+- **Transitions** mirror `tiles/transitions/` on disk, and each pair now has
+  its own DEMO PAGE (`#/world/transition/<a>__to__<b>`): the same Wang corner
+  set composed across every direction a boundary can run — west|east,
+  north|south, the diagonal (with its honest 32px stair named as geometry),
+  an island, and a wandering random edge with a Randomize button — plus a set
+  picker (straight/rough × seed) and the 16 corner tiles laid out with their
+  index convention. Composed by `wangScene` through the SAME `isoScene` at
+  DY=14 the review previews use, so the page is the game's own projection.
+  Every listing carries a **before postprocess / postprocessed** pill: the
+  build probes `<set>/post/tile_XX.webp`, so the moment the tiles agent
+  publishes the retexture pass the wiki prefers it with no wiki change (the
+  board asks them for exactly that path). `isoScene` also learned to draw
+  non-square tiles at native aspect — a transition tile is 64×46, and
+  stretching it to 64×64 bent every boundary it exists to show.
 
 Found while wiring the loader: `tuning/scenery_lights` was served by
 `/api/live/state` but never READ into state — his committed lit-corrections
