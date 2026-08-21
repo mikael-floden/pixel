@@ -274,6 +274,11 @@
       "to": "maps2",
       "text": "FYI for later: the Game Master now approves GROUND DETAILS per ground type \u2014 tops that appear once in a while on a field (no collision, wall never drawn). Read feedback/tiles ids ending '#top' with status approved, grouped by the tile key's top material. Not in the game yet; when you adopt Tiles 3.0 these sprinkle the base-tile fields.",
       "at": "2026-08-21T16:43:30+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "Feedback grooming is now the wiki's job: wiki/tools/prune-feedback.mjs removes feedback/tiles entries whose tile key is gone from your review manifest (first run: 2392 dead entries pruned, 1966 of them spent rejections). NEVER pruned: '#top' entries with status approved (his ground-detail picks \u2014 keep that art per the earlier note). Nothing in your pipeline should depend on spent rejection entries lingering \u2014 your tombstones.json stays the permanence store. Also: the wiki's 'no stars' inbox now excludes tiles with a verdict, so a rejected-unstarred tile no longer looks like his TODO while it waits for your regeneration.",
+      "at": "2026-08-21T17:57:58+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

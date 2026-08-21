@@ -438,6 +438,28 @@ games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 
+## The inbox means "waiting for YOU", and dead reviews get pruned
+
+Maintainer 2026-08-21, seeing seven tiles he had rejected sitting in his
+no-stars queue as "7 of 7 without a star": *"Why don't you maintain and remove
+old reviews I have already rejected?"* Two fixes, one per half of the sentence:
+
+- **A rejected tile leaves the inbox.** "No stars" now means *neither starred
+  nor judged*: a verdict is him having dealt with the tile, and a rejected one
+  is the AGENT's queue, not his. The counts read "waiting for you" so the
+  words match the meaning.
+- **`wiki/tools/prune-feedback.mjs` grooms `live/feedback/tiles.json`.** A
+  rejection's whole job is to make the tiles agent delete the generation;
+  once the tile is gone from the review manifest, the entry has done its work.
+  First run pruned 2,392 dead entries (1,966 spent rejections) from under
+  4,049 live tiles — a third of the file was verdicts about art that no longer
+  exists. Dry-run by default, `--write` prunes; commit the file to publish
+  (the push refreshes the game server's store). **The one thing never pruned:
+  `#top` entries with status approved** — the Game Master's ground-detail
+  picks must outlive the pair-tile's manifest row, and the tiles agent keeps
+  that art on the same rule. The wiki agent runs this after the tiles agent's
+  regeneration waves.
+
 ## The ground type is a page — base tiles, base colour, palette, transitions
 
 Maintainer 2026-08-21, setting the World section's information architecture:

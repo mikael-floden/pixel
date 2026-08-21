@@ -52,12 +52,20 @@ await p.waitForTimeout(3000);
 // replacements landing with no rating at all.
 const fixture = await p.evaluate(() => {
   const w = window.__wiki.state.data.domains.world;
-  for (const c of w) for (const cand of c.candidates) window.__wiki.setFb("tiles", cand.key, { rating: 1 });
+  for (const c of w) for (const cand of c.candidates) window.__wiki.setFb("tiles", cand.key, { rating: 1, status: null });
   const tops = [...new Set(w.map((c) => c.top))];
   const A = w.find((c) => c.top === tops[0]);
   const B = w.find((c) => c.top === tops[2]);
-  A.candidates.slice(0, 3).forEach((cand) => window.__wiki.setFb("tiles", cand.key, { rating: null }));
-  B.candidates.slice(0, 1).forEach((cand) => window.__wiki.setFb("tiles", cand.key, { rating: null }));
+  // rating AND status cleared: the inbox means "neither starred nor judged"
+  // now, and his real verdicts ride along in the live doc under these keys.
+  A.candidates.slice(0, 3).forEach((cand) => window.__wiki.setFb("tiles", cand.key, { rating: null, status: null }));
+  B.candidates.slice(0, 1).forEach((cand) => window.__wiki.setFb("tiles", cand.key, { rating: null, status: null }));
+  // …and one tile he REJECTED without starring — dealt with, so it must NOT
+  // appear in the inbox (2026-08-21: "Why don't you maintain and remove old
+  // reviews I have already rejected?"). It sits in a THIRD type: if the inbox
+  // wrongly counted it, a third ground type would appear under the filter.
+  const C = w.find((c) => c.top === tops[5]);
+  C.candidates.slice(0, 2).forEach((cand) => window.__wiki.setFb("tiles", cand.key, { rating: null, status: "rejected" }));
   window.__wiki.route();
   return {
     types: tops.length, pairs: w.length,
@@ -102,11 +110,11 @@ await pickStars("unrated");
 await p.waitForTimeout(600);
 const ov = await read();
 console.log(`overview: ${ov.cards.map((c) => `${c.name} [${c.pill}]`).join(", ")}`);
-ok(ov.cards.length === 2, `the filter keeps ONLY the ground types holding an unstarred tile (${ov.cards.length} of ${fixture.types})`);
+ok(ov.cards.length === 2, `the filter keeps ONLY the ground types holding a tile that waits for HIM (${ov.cards.length} of ${fixture.types}) — the type with only rejected-unstarred tiles is absent`);
 ok(ov.bar.some((t) => /no stars 2/.test(t)), `and the control counts them (${ov.bar.filter((t) => /stars|^all /.test(t)).join(" | ")})`);
-ok(ov.cards.every((c) => /without a star/.test(c.pill)), `each card says how many it holds (${ov.cards.map((c) => c.pill).join(", ")})`);
+ok(ov.cards.every((c) => /waiting for you/.test(c.pill)), `each card says how many it holds (${ov.cards.map((c) => c.pill).join(", ")})`);
 // It is a FILTER, not a sort: the settled types are not merely further down.
-ok(!ov.cards.some((c) => c.name === "Grass" && !/without a star/.test(c.pill)),
+ok(!ov.cards.some((c) => c.name === "Grass" && !/waiting for you/.test(c.pill)),
   "a fully starred ground type is GONE from the list, not sorted to the bottom");
 
 // ---- 2. THE TYPE PAGE cascades ---------------------------------------------
@@ -118,7 +126,7 @@ ok(ty.cards.length === 1, `inside a type, only the sets holding an unstarred til
 // His headline note: a card here can send him anywhere, so it names both halves.
 ok(/ over /i.test(ty.cards[0].name),
   `and the set is named in full — "x over y", not just the wall (${ty.cards[0].name})`);
-ok(/3 of \d+ without a star/.test(ty.cards[0].sub), `with the size of the job on it (${ty.cards[0].sub})`);
+ok(/3 of \d+ waiting for you/.test(ty.cards[0].sub), `with the size of the job on it (${ty.cards[0].sub})`);
 
 // ---- 3. THE SET PAGE shows only unstarred tiles -----------------------------
 await p.evaluate(() => document.querySelector("a.card")?.click());
@@ -128,11 +136,11 @@ console.log(`set page: ${pr.h1} | ${pr.count} | ${pr.panel}`);
 ok(pr.tiles.length === 3, `only the unstarred tiles are shown (${pr.tiles.length} of ${fixture.A.n})`);
 ok(pr.tiles.every((t) => t.stars === 0), "and every one of them really has no star");
 ok(/ over /i.test(pr.h1), `the headline names the whole set (${pr.h1})`);
-ok(/without a star/.test(pr.panel), `and the panel says what it is showing (${pr.panel})`);
+ok(/waiting for you/.test(pr.panel), `and the panel says what it is showing (${pr.panel})`);
 
 // ---- 4. ‹ › WALKS THE INBOX, ACROSS GROUND TYPES ----------------------------
 ok(pr.count === "1 / 2", `the pager counts the INBOX, not this type's sets (${pr.count})`);
-ok(/ over /i.test(pr.nextTitle) && /without a star/.test(pr.nextTitle),
+ok(/ over /i.test(pr.nextTitle) && /waiting for you/.test(pr.nextTitle),
   `and names where › goes (${pr.nextTitle})`);
 await p.evaluate(() => document.querySelectorAll(".nav-btn")[1]?.click());
 await p.waitForTimeout(1300);
@@ -150,12 +158,12 @@ const done = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent ?? "",
   tiles: document.querySelectorAll(".world-cand").length,
   hint: /Press ›/.test(document.querySelector("#content")?.innerText ?? ""),
-  allStarred: /all starred/.test(document.querySelector("#content")?.innerText ?? ""),
+  finished: /nothing waiting/.test(document.querySelector("#content")?.innerText ?? ""),
 }));
 console.log(`after starring the last one: ${JSON.stringify(done)}`);
 ok(done.tiles === 0, "starring a tile takes it out of the list on the spot");
 ok(done.h1 === nx.h1, "…without moving him off the set he is standing on");
-ok(done.hint && done.allStarred, "which says it is finished and points at › for the next one");
+ok(done.hint && done.finished, "which says it is finished and points at › for the next one");
 
 // ---- 6. THE SAME MACHINE, ASKED THE VERDICT QUESTIONS ----------------------
 // Maintainer 2026-08-20: "Can you also add a filter for rejected/approved/

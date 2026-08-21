@@ -3901,7 +3901,7 @@ function cellReview(cell) {
 const WORLD_STAR_KEY = "wiki-world-stars";       // the key predates the modes
 const WORLD_STARS = {
   all: { label: "all", title: "Every tile, however you have marked it" },
-  unrated: { label: "no stars", title: "Only tiles you have not starred — what the agent has regenerated since your last pass" },
+  unrated: { label: "no stars", title: "Only tiles you have neither starred nor judged — your actual inbox. A rejected tile is the AGENT's queue, not yours, so it does not show here" },
   rejected: { label: "rejected", title: "Only tiles you rejected — the ones the agent owes you a replacement for" },
   approved: { label: "approved", title: "Only tiles you approved — the set as it will ship" },
   undecided: { label: "undecided", title: "Only tiles with no verdict yet — neither approved nor rejected, whatever their stars" },
@@ -3909,7 +3909,13 @@ const WORLD_STARS = {
 /** What each mode asks of ONE tile's feedback entry. */
 const TILE_MATCH = {
   all: () => true,
-  unrated: (e) => !e.rating,
+  // NOT just "no star" (maintainer 2026-08-21, seeing a set of 7 tiles he had
+  // rejected sitting in his no-stars inbox as "7 of 7 without a star": "Why
+  // don't you maintain and remove old reviews I have already rejected?").
+  // A star OR a verdict is him having dealt with the tile — a rejected tile
+  // is the agent's TODO, not his — so the inbox is the tiles carrying
+  // NEITHER.
+  unrated: (e) => !e.rating && !e.status,
   rejected: (e) => e.status === "rejected",
   approved: (e) => e.status === "approved",
   undecided: (e) => !e.status,
@@ -3917,15 +3923,15 @@ const TILE_MATCH = {
 /** How a count of them reads, and how "none of them" reads — the same phrase
  *  is needed on the overview pill, the set card, the pair pill and the ‹ ›
  *  crumb, and they must not drift apart. */
-const TILE_MATCH_NOUN = { unrated: "without a star", rejected: "rejected", approved: "approved", undecided: "undecided" };
-const TILE_MATCH_NONE = { unrated: "all starred", rejected: "none rejected", approved: "none approved", undecided: "all decided" };
+const TILE_MATCH_NOUN = { unrated: "waiting for you", rejected: "rejected", approved: "approved", undecided: "undecided" };
+const TILE_MATCH_NONE = { unrated: "nothing waiting", rejected: "none rejected", approved: "none approved", undecided: "all decided" };
 /** What the set page calls the panel it is filtering. */
 const TILE_MATCH_PANEL = {
-  unrated: "Tiles without a star", rejected: "Rejected tiles",
+  unrated: "Tiles waiting for you", rejected: "Rejected tiles",
   approved: "Approved tiles", undecided: "Undecided tiles",
 };
 const TILE_MATCH_EMPTY = {
-  unrated: "Every tile here has a star.",
+  unrated: "Every tile here is starred or judged — nothing waiting for you.",
   rejected: "Nothing here is rejected.",
   approved: "Nothing here is approved yet.",
   undecided: "Every tile here has a verdict.",
