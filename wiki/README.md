@@ -1042,6 +1042,36 @@ Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state
 commits, and asserts the file, the key, the `was`, that nothing lands in the
 feedback file, that agreeing again DELETES, that the switch follows the state
 chip (unlit → 💡lit) and that a reader never sees the control at all.
+## "Which ones have I already done?" — the shadow queue
+
+Maintainer 2026-08-22: *"If I login with admin the monster page should make it
+possible to filter by 'no shadow set'. This is to be able to know what I have
+already fixed."*
+
+A shadow is **set** when the monster carries its own `{rx, ry}` in
+`live/tuning/monsters.json` (`shadowRaw`), rather than falling back to the
+art-derived default. Every one of the tuned monsters also has per-facet
+offsets, so "half done" is not a real state and there is no chip for it.
+
+`all 57 | no shadow 46 | shadow set 11` — admin only, counts on the chips, the
+same vocabulary as the tile inbox. The count reaching zero is what finishing
+looks like.
+
+**The filter follows him onto the creature page.** With "no shadow" on, ‹ ›
+walks only the untuned ones (`25 / 46`), and `prefetchAround` warms that queue
+rather than the full roster. This is not a flourish: a filter you cannot
+navigate is exactly the dead end he hit on tiles — *"I use your code to filter
+on NOT reviewed. I then click on that tile set, but can't navigate further to
+find the review. How was this supposed to work?"* If a filter empties, the
+pager falls back to the whole roster rather than stranding him on nothing.
+
+Gate (`check-creatures.mjs`): the expectation is derived from the live tuning
+doc, so the counts move as he works and the gate never needs editing. It runs
+in its OWN admin context — everything else in that file deliberately runs as a
+player — and it checks that a player gets no filter and all 57 creatures **even
+with a stale `wiki-monster-shadow` preference left in their browser** by an
+admin session.
+
 ## One shadow per monster — its centre is the position, its size the hit box
 
 Maintainer 2026-08-20, replacing the per-facet shadow notes: *"Lets say you

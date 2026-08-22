@@ -2124,6 +2124,49 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
   return row;
 }
 const MONSTER_SORT_KEY = "wiki-monster-sort";
+/* WHICH ONES HAVE I ALREADY DONE? (maintainer 2026-08-22: "If I login with
+ * admin the monster page should make it possible to filter by 'no shadow set'.
+ * This is to be able to know what I have already fixed.")
+ *
+ * A shadow is SET when the monster carries its own {rx, ry} in
+ * live/tuning/monsters.json — `shadowRaw` — rather than falling back to the
+ * art-derived default. Every one of the 11 that has a size also has per-facet
+ * offsets, so "half done" is not a real state and there is no chip for it.
+ *
+ * Counts ride on the chips, like the tile inbox: "no shadow 46" is the size of
+ * the job, and it reaching 0 is what finishing looks like. And the filter
+ * follows him ONTO the creature page — ‹ › then walks only the ones still
+ * missing a shadow, because a filter you cannot navigate is the dead end he
+ * hit on tiles ("I use your code to filter on NOT reviewed. I then click on
+ * that tile set, but can't navigate further"). */
+const MONSTER_SHADOW_KEY = "wiki-monster-shadow";
+const MONSTER_SHADOWS = {
+  all: { label: "all", title: "Every creature", hit: () => true },
+  none: {
+    label: "no shadow",
+    title: "Creatures still drawing the art-derived default — these are the ones left to do",
+    hit: (m) => !shadowRaw(m),
+  },
+  set: {
+    label: "shadow set",
+    title: "Creatures whose shadow you have already tuned — size and per-facet offsets",
+    hit: (m) => !!shadowRaw(m),
+  },
+};
+const shadowFilter = () => {
+  if (!state.admin) return "all";
+  try { return MONSTER_SHADOWS[localStorage.getItem(MONSTER_SHADOW_KEY)] ? localStorage.getItem(MONSTER_SHADOW_KEY) : "all"; }
+  catch { return "all"; }
+};
+/** The creatures the current filter keeps, in the page's own order — the list
+ *  ‹ › walks on a creature page. */
+function monsterNav() {
+  const mode = shadowFilter();
+  const all = state.data.domains.monsters;
+  if (mode === "all") return all;
+  const kept = all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
+  return kept.length ? kept : all;   // never strand him on an empty pager
+}
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
  * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
  * zoom and some smaller monsters are displayed with 1x zoom … the monsters are
@@ -2419,8 +2462,11 @@ function viewMonsters() {
     // for me, worst first" is the question this sort answers.
     threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
   };
-  const sorted = [...list].sort(CMP[sort] ?? byName);
+  const mode = shadowFilter();
+  const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
+  const sorted = [...shown].sort(CMP[sort] ?? byName);
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
+  const nNone = list.filter((m) => !shadowRaw(m)).length;
   return h("div", {},
     sectionHead("monsters"),
     h("p", { class: "muted" }, state.admin
@@ -2431,6 +2477,20 @@ function viewMonsters() {
       ["level", "by level", "Hardest first"],
       ["threat", "aggressive first", "The ones that attack on sight, hardest first"],
     ], sort, () => route()),
+    // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
+    // answered before a single card is read.
+    state.admin ? sortBar(MONSTER_SHADOW_KEY,
+      Object.entries(MONSTER_SHADOWS).map(([id, f]) => [id,
+        `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
+      mode, () => route()) : null,
+    state.admin && mode !== "all" ? h("p", { class: "muted" },
+      shown.length
+        ? `${shown.length} of ${list.length} creature${list.length === 1 ? "" : "s"}. Open one and ‹ › walks only these.`
+        : mode === "none"
+          ? "Every creature has a tuned shadow. Nothing left to do."
+          : "No creature has a tuned shadow yet.") : null,
+    state.admin && mode === "all" && nNone ? h("p", { class: "muted" },
+      `${nNone} of ${list.length} still draw the default shadow.`) : null,
     showcaseGrid(...sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
@@ -3258,9 +3318,10 @@ function viewMonster(id) {
   renderFacet();
   // Warm every animation of this creature and of the two either side of it,
   // so clicking Walk, turning to NE or pressing › does not start a download.
-  prefetchAround(m, state.data.domains.monsters, m.id);
+  prefetchAround(m, monsterNav(), m.id);
   return h("div", {},
-    crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", state.data.domains.monsters, m.id),
+    // The pager follows the FILTER, so a shadow queue can be walked with ›.
+    crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", monsterNav(), m.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait-col" },
         h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),

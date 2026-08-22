@@ -158,6 +158,86 @@ await p.waitForTimeout(2200);
 v = await read();
 ok(v.buttons.find((x) => x.id === "threat")?.sel, "the chosen sort survives a reload");
 
+// ---- THE SHADOW QUEUE (maintainer 2026-08-22: "If I login with admin the
+// monster page should make it possible to filter by 'no shadow set'. This is
+// to be able to know what I have already fixed.")
+//
+// ITS OWN ADMIN CONTEXT. Everything above this line runs as a PLAYER — that is
+// what makes those checks meaningful — and the shadow filter is admin-only, so
+// borrowing that page would only ever prove the bar is absent.
+//
+// The expectation is DERIVED from live/tuning/monsters.json, not typed here: a
+// shadow is set when the monster carries its own rx/ry, so the counts move on
+// their own as he works and this gate never needs editing.
+const setIds = (D.domains.monsters ?? []).filter((m) => {
+  const sh = T.monsters?.[m.id]?.shadow;
+  return sh && sh.rx > 0 && sh.ry > 0;
+}).map((m) => m.id);
+const total = (D.domains.monsters ?? []).length;
+const expNone = total - setIds.length;
+ok(setIds.length > 0 && expNone > 0,
+  `the roster has both kinds, so the filter is actually distinguishable (${setIds.length} tuned, ${expNone} not)`);
+const actx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
+const pa = await actx.newPage();
+const aerrs = []; pa.on("pageerror", (e) => aerrs.push(String(e)));
+await pa.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+await pa.addInitScript(() => {
+  localStorage.setItem("wiki-admin-token", "gate");
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  localStorage.removeItem("wiki-monster-shadow");
+});
+await pa.goto(`${W}#/monsters`, { waitUntil: "load" });
+await pa.waitForSelector('[data-bar="wiki-monster-shadow"] button', { timeout: 15000 }).catch(() => {});
+await pa.waitForTimeout(1200);
+const shadowBar = () => pa.evaluate(() => {
+  const btns = [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')];
+  return {
+    chips: btns.map((x) => x.textContent.trim()),
+    sel: btns.find((x) => x.classList.contains("sel"))?.textContent.trim() ?? "",
+    cards: document.querySelectorAll(".showcase-card").length,
+  };
+});
+let sv = await shadowBar();
+ok(sv.chips.length === 3 && /^all /.test(sv.chips[0]) && /^no shadow /.test(sv.chips[1]) && /^shadow set /.test(sv.chips[2]),
+  `the admin gets a shadow filter — all / no shadow / shadow set (${sv.chips.join(" | ") || "no bar"})`);
+ok(sv.chips[1] === `no shadow ${expNone}` && sv.chips[2] === `shadow set ${setIds.length}`,
+  `and the counts come from the LIVE tuning doc, not a snapshot (${expNone} unset, ${setIds.length} set)`);
+ok(sv.sel.startsWith("all") && sv.cards === total, `it opens unfiltered (${sv.cards} of ${total}, on "${sv.sel}")`);
+await pa.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-monster-shadow"] button')].find((x) => /no shadow/.test(x.textContent))?.click());
+await pa.waitForTimeout(1600);
+sv = await shadowBar();
+ok(sv.cards === expNone, `"no shadow" keeps exactly the ones still on the default (${sv.cards} of ${total})`);
+const shownIds = await pa.evaluate(() => [...document.querySelectorAll(".showcase-card")].map((a) => a.getAttribute("href").split("/").pop()));
+ok(shownIds.length > 0 && !shownIds.some((id) => setIds.includes(id)),
+  `and no creature he has already tuned is among them (${shownIds.filter((id) => setIds.includes(id)).join(", ") || "none"})`);
+// THE FILTER HAS TO SURVIVE THE CLICK-THROUGH, or it is the dead end he hit on
+// tiles: "I use your code to filter on NOT reviewed. I then click on that tile
+// set, but can't navigate further to find the review."
+await pa.goto(`${W}#/monsters/${shownIds[0]}`, { waitUntil: "load" });
+await pa.waitForTimeout(2200);
+const pager = await pa.evaluate(() => document.querySelector(".detail-count")?.textContent ?? "");
+ok(pager.endsWith(`/ ${expNone}`), `and ‹ › on a creature page walks only the queue (${pager})`);
+ok(aerrs.length === 0, `no page errors in the admin pass${aerrs.length ? `: ${aerrs[0]}` : ""}`);
+await actx.close();
+// A PLAYER IS NEVER FILTERED BY A CONTROL THEY CANNOT SEE — including one left
+// behind in their storage by an admin session in the same browser.
+const ctx2 = await b.newContext({ viewport: { width: 393, height: 851 } });
+const p2 = await ctx2.newPage();
+await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":false}' }));
+await p2.addInitScript(() => {
+  localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  localStorage.setItem("wiki-monster-shadow", "set");
+});
+await p2.goto(`${W}#/monsters`, { waitUntil: "load" });
+await p2.waitForTimeout(2400);
+const pv = await p2.evaluate(() => ({
+  bar: document.querySelectorAll('[data-bar="wiki-monster-shadow"]').length,
+  cards: document.querySelectorAll(".showcase-card").length,
+}));
+ok(pv.bar === 0 && pv.cards === total,
+  `a player gets no filter and every creature, even with a stale admin preference stored (${pv.cards} of ${total}, ${pv.bar} bars)`);
+await ctx2.close();
+
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);
 await b.close();
 console.log(fails.length ? `\nCREATURE CHECKS FAILED (${fails.length})` : "\nALL CREATURE CHECKS PASSED");
