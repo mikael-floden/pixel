@@ -88,10 +88,25 @@ def _edge(x, p, q):
 
 
 def top_mask(op):
-    """The rhombus A-L-B-R as a boolean mask, plus what sits ABOVE its upper edges.
+    """The top face as an exact 2:1 diamond anchored on the tile's own side corners.
 
-    Returns (inside, above, edge): the fill, what to alpha away above it, and the
-    lower boundary row that is drawn at half strength.
+    STRAIGHT BY CONSTRUCTION, NOT BY FITTING. Interpolating between a measured corner
+    and a measured apex and rounding each column is what put the kinks in: the run is 31
+    columns and a true iso rise is 15.5, so the leftover half-pixel gets scattered along
+    the edge wherever the rounding happens to fall. Aiming a pixel higher moved the
+    remainder around (12% of steps uneven -> 3%) but could never remove it, and aiming
+    two pixels higher made it worse (14%).
+
+    An isometric edge is not a line to be approximated, it is a rule: EVERY ROW IS TWO
+    COLUMNS WIDE. Stepping that rule out from the corner gives a perfectly regular
+    staircase every time, and the apex stops being an input - it is wherever the two
+    staircases meet, which is the centre by symmetry.
+
+    THIS IS ALSO WHERE HIS MISSING PIXEL WENT. The near corner is now the meeting point
+    of the two lower staircases rather than a solved vertex, and it lands one row lower
+    than the fitted diamond put it - "the real center is 1 or 2 pixels down from your
+    current center". Measured, not asserted: the fitted version and the art agreed on
+    the same y, and only the exact staircase moves it.
     """
     c = corners(op)
     if c is None:
@@ -101,29 +116,17 @@ def top_mask(op):
     inside = np.zeros((h, w), bool)
     above = np.zeros((h, w), bool)
     edge = np.zeros((h, w), bool)
-    # THE UPPER EDGES AIM ONE PIXEL ABOVE THE APEX, which is what makes them read as
-    # straight: "fix the top left and top right line so it looks 100 straight. You can do
-    # this by drawing to a px 1 pixel up when you draw towards the top center pixel."
-    #
-    # It is the 2:1 isometric slope asserting itself. From the left corner at x=0 to the
-    # apex pair the run is 32 columns, so a true iso edge drops exactly 16 rows and every
-    # step is 2 columns wide. Aiming at the apex ITSELF drops only 15 over that run, and
-    # 15 does not divide 32 - the staircase has to hide the remainder in odd steps, which
-    # is the raggedness he can see. One pixel up makes the rise exactly half the run.
-    A = (A[0], A[1] - APEX_LIFT)
-    A2 = (A[0] + 1, A[1])             # the right half of the apex pair
-    # THE SIDE CORNERS ARE TWO PIXELS TALL, NOT ONE. The lower edges start a pixel below
-    # where the upper ones do: "When you draw a line from the left-most and right-most
-    # top pixel to the center. Start from 1px down vs you current start. This will give
-    # us 2px wide corner (looks better)." With both edges leaving the same pixel the
-    # corner comes to a single-pixel point, which reads as a nick rather than a corner.
-    L2 = (L[0], L[1] + CORNER_DROP)
-    R2 = (R[0], R[1] + CORNER_DROP)
-    for x in range(L[0], R[0] + 1):
-        # upper edge: L->A on the left of the apex, A2->R on its right
-        ty = _edge(x, L, A) if x <= A[0] else _edge(x, A2, R)
-        # lower edge: L2->B, then B->R2
-        by = _edge(x, L2, B) if x <= B[0] else _edge(x, B, R2)
+    x0, x1 = L[0], R[0]
+    for x in range(x0, x1 + 1):
+        # Each side corner throws a staircase inward; the face's top edge at a column is
+        # whichever of the two is LOWER on screen (max y), its bottom edge whichever is
+        # higher (min y). Taking them the other way round reaches past the diamond and
+        # empties both corners - measured, 0px tall instead of 2.
+        # upper edges climb 1 row every 2 columns, in from each side corner
+        ty = max(L[1] - (x - x0) // 2, R[1] - (x1 - x) // 2)
+        # lower edges do the same going down, starting CORNER_DROP below the upper ones
+        by = min(L[1] + CORNER_DROP + (x - x0) // 2,
+                 R[1] + CORNER_DROP + (x1 - x) // 2)
         if by < ty:
             continue
         inside[ty:by + 1, x] = True
@@ -131,8 +134,7 @@ def top_mask(op):
         # the line towards the bottom beter corner as 50% alpha (this will look like a
         # highlight defined by the texture under it)". A hard edge stamps the same shape
         # on every tile; a half-strength one lets whatever the generator drew underneath
-        # decide where the highlight is bright and where it is not, so the boundary
-        # belongs to the art instead of to the mask.
+        # decide where the highlight is bright and where it is not.
         edge[by, x] = True
         above[:ty, x] = True
     return inside & op, above & op, edge & op
