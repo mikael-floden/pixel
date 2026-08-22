@@ -427,6 +427,178 @@ TRACKS: dict[str, dict] = {
             "key, bright and unfatiguing, seamless loop. Instrumental."
         ),
     },
+    # ---- SEQUENCEABLE REMAKES of every bed the game actually plays
+    # (maintainer 2026-08-08, after the Hyrule Field conversation): same music,
+    # same quality bar, but written as interchangeable phrases so the score can
+    # be RE-ORDERED at run time instead of looping. Generated ALONGSIDE the
+    # originals — title and night are approved and cave4 is his own pick, and a
+    # roll of the dice must not be able to lose any of them.
+    "title_seq": {
+        "out": "title_seq",
+        "seconds": 96,
+        "bpm": 92,
+        # 8 bars of 4/4 at 92 BPM. Equal, bar-aligned phrases are what
+        # make a boundary always a musical boundary.
+        "phrase_ms": 20870,
+        "harmony": "the same warm four-chord cycle in a major key under every phrase",
+        "foregrounds": [
+            "solo tin whistle carries the melody",
+            "warm strings carry the melody",
+            "noble French horn carries the melody",
+            "harp and piano carry it lightly",
+            "fiddle carries the melody",
+            "strings and horn together, fuller",
+        ],
+        "prompt": (
+                        "A sweeping, nostalgic orchestral fantasy title theme — a grand adventure"
+            " about to begin and the warmth of coming home at once. Proud, hopeful, m"
+            "emorable folk melodies on tin whistle, flute and fiddle over warm string"
+            "s and a noble horn, with harp and light bells underneath. Pastoral warmt"
+            "h with a light walking pulse. Around 92 BPM, major key, rich but airy or"
+            "chestration, no heavy percussion. Instrumental. STRUCTURE MATTERS AS MUC"
+            "H AS THE TUNE HERE. Write it as a set of INTERCHANGEABLE 8-BAR PHRASES t"
+            "hat can be played in ANY ORDER: one key and one tempo from first bar to "
+            "last with no modulation and no tempo change, the SAME repeating chord cy"
+            "cle under every phrase, and each phrase starting cleanly on the downbeat"
+            " and resolving by its final bar so any phrase can follow any other. The "
+            "variety is in the FOREGROUND — which instrument carries the line and how"
+            " busy it is — never in the harmony. No intro, no build, no climax, no en"
+            "ding, no fade in or out: every phrase is equally at home first or last. "
+        ),
+    },
+    "night_seq": {
+        "out": "night_seq",
+        "seconds": 93,
+        "bpm": 62,
+        # FOUR bars at 62 BPM, not eight: an 8-bar phrase here is 31 s and only
+        # fits three times into the piece, which is too few to shuffle
+        # interestingly. Slow beds get shorter phrases for the same reason fast
+        # ones can afford longer ones.
+        "phrase_ms": 15484,
+        "harmony": "the same slow minor-tinged chord cycle under every phrase",
+        "foregrounds": [
+            "lone soft flute breathes the melody",
+            "ocarina breathes the melody",
+            "ethereal wordless choir pad carries it",
+            "celesta and glass bells carry it",
+            "distant harp carries it",
+            "warm low strings alone, very sparse",
+        ],
+        "prompt": (
+                        "A mysterious, enchanted nocturnal theme for a moonlit magical forest — g"
+            "lowing wisps drifting between vast ancient trees, hushed and dreamlike. "
+            "Soft ethereal choir pads, celesta and glass-bell shimmers, slow distant "
+            "harp, a lone flute or ocarina over warm low strings. Wonder tinged with "
+            "mystery, calm and never frightening. Around 62 BPM, very soft dynamics. "
+            "Instrumental. STRUCTURE MATTERS AS MUCH AS THE TUNE HERE. Write it as a "
+            "set of INTERCHANGEABLE 8-BAR PHRASES that can be played in ANY ORDER: on"
+            "e key and one tempo from first bar to last with no modulation and no tem"
+            "po change, the SAME repeating chord cycle under every phrase, and each p"
+            "hrase starting cleanly on the downbeat and resolving by its final bar so"
+            " any phrase can follow any other. The variety is in the FOREGROUND — whi"
+            "ch instrument carries the line and how busy it is — never in the harmony"
+            ". No intro, no build, no climax, no ending, no fade in or out: every phr"
+            "ase is equally at home first or last. "
+        ),
+    },
+    "battle_seq": {
+        "out": "battle_seq",
+        "seconds": 96,
+        "bpm": 144,
+        # 8 bars of 4/4 at 144 BPM. Equal, bar-aligned phrases are what
+        # make a boundary always a musical boundary.
+        "phrase_ms": 13333,
+        "harmony": "the same driving minor chord cycle under every phrase",
+        "foregrounds": [
+            "low strings drive the ostinato",
+            "brass stabs carry the line",
+            "taiko and low toms carry it, strings holding",
+            "high strings carry the line",
+            "full ensemble together",
+            "percussion and bass alone, tense",
+        ],
+        "prompt": (
+                        "An urgent, driving orchestral combat theme — monsters closing in, a figh"
+            "t you can win. Relentless low string ostinato, brass stabs, taiko and lo"
+            "w toms, taut high strings. Heroic and thrilling rather than horrifying, "
+            "never harsh or screeching. Around 144 BPM, minor key. Instrumental. STRU"
+            "CTURE MATTERS AS MUCH AS THE TUNE HERE. Write it as a set of INTERCHANGE"
+            "ABLE 8-BAR PHRASES that can be played in ANY ORDER: one key and one temp"
+            "o from first bar to last with no modulation and no tempo change, the SAM"
+            "E repeating chord cycle under every phrase, and each phrase starting cle"
+            "anly on the downbeat and resolving by its final bar so any phrase can fo"
+            "llow any other. The variety is in the FOREGROUND — which instrument carr"
+            "ies the line and how busy it is — never in the harmony. No intro, no bui"
+            "ld, no climax, no ending, no fade in or out: every phrase is equally at "
+            "home first or last. "
+        ),
+    },
+    "cave_seq": {
+        "out": "cave_seq",
+        "seconds": 96,
+        "bpm": 68,
+        # FOUR bars at 68 BPM — same reason as night_seq.
+        "phrase_ms": 14118,
+        "harmony": "the same slow modal chord cycle under every phrase",
+        "foregrounds": [
+            "marimba ostinato carries it, prepared piano answering",
+            "breathy bass flute carries the line",
+            "low cello swells carry it",
+            "prepared piano alone over the drone",
+            "soft bowed metal shimmer above the ostinato",
+            "marimba and flute together",
+        ],
+        "prompt": (
+                        "A vast, hushed underground theme for enormous echoing caverns — cathedra"
+            "l spaces of wet stone, still black pools, faint glimmering crystal, over"
+            " a deep sustained low drone with a soft repeating marimba ostinato that "
+            "never stops moving. Enormous, ancient and solemn, full of awe and quiet "
+            "wonder — consonant and safe rather than frightening. Around 68 BPM, mino"
+            "r-tinged modal, deep warm low end. Instrumental. STRUCTURE MATTERS AS MU"
+            "CH AS THE TUNE HERE. Write it as a set of INTERCHANGEABLE 8-BAR PHRASES "
+            "that can be played in ANY ORDER: one key and one tempo from first bar to"
+            " last with no modulation and no tempo change, the SAME repeating chord c"
+            "ycle under every phrase, and each phrase starting cleanly on the downbea"
+            "t and resolving by its final bar so any phrase can follow any other. The"
+            " variety is in the FOREGROUND — which instrument carries the line and ho"
+            "w busy it is — never in the harmony. No intro, no build, no climax, no e"
+            "nding, no fade in or out: every phrase is equally at home first or last."
+            " "
+        ),
+    },
+    "summit_seq": {
+        "out": "summit_seq",
+        "seconds": 96,
+        "bpm": 100,
+        # 8 bars of 4/4 at 100 BPM. Equal, bar-aligned phrases are what
+        # make a boundary always a musical boundary.
+        "phrase_ms": 19200,
+        "harmony": "the same bright major chord cycle under every phrase",
+        "foregrounds": [
+            "French horn carries the melody",
+            "tin whistle carries the melody",
+            "fiddle carries the melody",
+            "warm strings carry it, wide",
+            "strummed lute and plucked bass carry it lightly",
+            "horn and strings together",
+        ],
+        "prompt": (
+                        "A warm, noble folk-orchestral theme for standing on a mountain top after"
+            " a long climb — earned joy and open sky. A proud, hummable melody on Fre"
+            "nch horn and tin whistle answered by fiddle and warm strings, over strum"
+            "med lute, plucked bass and light frame drum keeping a confident stride. "
+            "Heroic and generous but human and pastoral. Around 100 BPM, major key, b"
+            "right and unfatiguing. Instrumental. STRUCTURE MATTERS AS MUCH AS THE TU"
+            "NE HERE. Write it as a set of INTERCHANGEABLE 8-BAR PHRASES that can be "
+            "played in ANY ORDER: one key and one tempo from first bar to last with n"
+            "o modulation and no tempo change, the SAME repeating chord cycle under e"
+            "very phrase, and each phrase starting cleanly on the downbeat and resolv"
+            "ing by its final bar so any phrase can follow any other. The variety is "
+            "in the FOREGROUND — which instrument carries the line and how busy it is"
+            " — never in the harmony. No intro, no build, no climax, no ending, no fa"
+            "de in or out: every phrase is equally at home first or last. "
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
@@ -493,6 +665,59 @@ def plan_sections(plan: dict) -> list[dict]:
                                default=[]) or []),
         })
     return out
+
+
+# ---- INTERCHANGEABLE PHRASES (maintainer 2026-08-08) -----------------------
+# The Hyrule Field trick: Kondo did not write a loop, he wrote short phrases the
+# game re-orders at run time, so the theme almost never unfolds the same way
+# twice. That is what keeps a bed the player hears for hours from wearing out.
+#
+# A through-composed piece CANNOT be shuffled — its sections are in that order
+# for a reason, and reordering them sounds wrong. Three things have to be true
+# for phrases to be interchangeable, and none of them happen by accident:
+#
+#   1. ONE key and ONE tempo for the whole piece. A modulation or a tempo change
+#      makes two phrases un-joinable, full stop.
+#   2. EVERY PHRASE THE SAME LENGTH, and that length a whole number of bars, so
+#      a boundary is always a musical boundary.
+#   3. THE SAME HARMONIC CYCLE UNDER EVERY PHRASE. This is the one that actually
+#      does the work: if all phrases sit on the same chord loop, any phrase can
+#      follow any other and still resolve. The variety then lives in the
+#      FOREGROUND — which instrument carries it, how busy it is — not in the
+#      harmony.
+#
+# The prose brief asks for all three, but prose is a wish. The composition plan
+# is where it can be ENFORCED, so `phrase_plan` rewrites whatever the planner
+# returns into equal blocks that share one harmony line and differ only in
+# foreground. The API still supplies the plan OBJECT (so the schema is always
+# valid); we only impose the shape.
+def phrase_plan(plan: dict | None, length_ms: int, phrase_ms: int,
+                harmony: str, foregrounds: list[str]) -> dict | None:
+    """Equal, bar-aligned phrases over one shared chord cycle."""
+    if not plan or not isinstance(plan, dict):
+        return plan
+    secs = plan.get("sections") or plan.get("sectionS") or []
+    if not secs or not isinstance(secs[0], dict):
+        return plan
+    template = dict(secs[0])
+    key_name = "section_name" if "section_name" in template else "sectionName"
+    key_dur = "duration_ms" if "duration_ms" in template else "durationMs"
+    key_pos = ("positive_local_styles" if "positive_local_styles" in template
+               else "positiveLocalStyles")
+    n = max(2, round(length_ms / phrase_ms))
+    out = []
+    for i in range(n):
+        sec = dict(template)
+        sec[key_name] = f"Phrase {i + 1}"
+        sec[key_dur] = phrase_ms
+        # Harmony first and identical everywhere; foreground rotates.
+        sec[key_pos] = [harmony, foregrounds[i % len(foregrounds)],
+                        "same key throughout", "same tempo throughout",
+                        "starts on the downbeat", "self-contained phrase"]
+        out.append(sec)
+    plan = dict(plan)
+    plan["sections"] = out
+    return plan
 
 
 def credits_remaining(session: requests.Session) -> int | None:
@@ -652,6 +877,12 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
     print(f"\n=== {name} (~{secs}s, {candidates} candidate(s)) ===")
 
     plan = make_plan(session, spec["prompt"], length_ms)
+    # A SEQUENCEABLE bed gets its plan rewritten into equal phrases over one
+    # shared chord cycle — see phrase_plan. Without this the planner writes an
+    # intro/build/outro shape, which is exactly what cannot be shuffled.
+    if spec.get("phrase_ms"):
+        plan = phrase_plan(plan, length_ms, spec["phrase_ms"],
+                           spec["harmony"], spec["foregrounds"])
     sections = plan_sections(plan) if plan else []
     if sections:
         print("  plan:", ", ".join(f"{s['name']}:{s['duration_ms'] / 1000:.0f}s" for s in sections))
