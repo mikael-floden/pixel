@@ -46,6 +46,10 @@ CORNER_DROP = 1
 # How far above the apex the upper edges aim, so their slope is exactly 2 columns per row.
 APEX_LIFT = 1
 
+# The lower boundary is drawn at this much of the flat colour, so the art beneath still
+# reads through it as a highlight.
+EDGE_ALPHA = 0.5
+
 
 def corners(op):
     """(A, L, R, B) for the top face: apex, left, right, and the implied near corner.
@@ -86,8 +90,8 @@ def _edge(x, p, q):
 def top_mask(op):
     """The rhombus A-L-B-R as a boolean mask, plus what sits ABOVE its upper edges.
 
-    Returns (inside, above). `above` is what the maintainer wants alpha'd away:
-    "Everything perpendicular upwards should be deleted".
+    Returns (inside, above, edge): the fill, what to alpha away above it, and the
+    lower boundary row that is drawn at half strength.
     """
     c = corners(op)
     if c is None:
@@ -96,6 +100,7 @@ def top_mask(op):
     h, w = op.shape
     inside = np.zeros((h, w), bool)
     above = np.zeros((h, w), bool)
+    edge = np.zeros((h, w), bool)
     # THE UPPER EDGES AIM ONE PIXEL ABOVE THE APEX, which is what makes them read as
     # straight: "fix the top left and top right line so it looks 100 straight. You can do
     # this by drawing to a px 1 pixel up when you draw towards the top center pixel."
@@ -122,8 +127,15 @@ def top_mask(op):
         if by < ty:
             continue
         inside[ty:by + 1, x] = True
+        # THE LAST ROW OF THE FILL IS THE BOUNDARY, and it is not painted solid: "drawing
+        # the line towards the bottom beter corner as 50% alpha (this will look like a
+        # highlight defined by the texture under it)". A hard edge stamps the same shape
+        # on every tile; a half-strength one lets whatever the generator drew underneath
+        # decide where the highlight is bright and where it is not, so the boundary
+        # belongs to the art instead of to the mask.
+        edge[by, x] = True
         above[:ty, x] = True
-    return inside & op, above & op
+    return inside & op, above & op, edge & op
 
 
 def apply(img, colour):
@@ -133,10 +145,17 @@ def apply(img, colour):
     r = top_mask(op)
     if r is None:
         return img, 0, 0
-    inside, above = r
+    inside, above, edge = r
     out = a.copy()
     out[above] = [0, 0, 0, 0]
-    out[inside, 0], out[inside, 1], out[inside, 2] = colour
-    out[inside, 3] = 255
+    solid = inside & ~edge
+    out[solid, 0], out[solid, 1], out[solid, 2] = colour
+    out[solid, 3] = 255
+    # blend, not transparency: the result stays opaque, it just carries the art through
+    if edge.any():
+        src = a[edge][:, :3].astype(float)
+        out[edge, 0:3] = np.round(EDGE_ALPHA * np.array(colour, float)
+                                  + (1.0 - EDGE_ALPHA) * src).astype(int)
+        out[edge, 3] = 255
     from PIL import Image
     return Image.fromarray(out.astype(np.uint8), "RGBA"), int(inside.sum()), int(above.sum())
