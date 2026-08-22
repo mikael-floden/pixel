@@ -51,6 +51,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import shutil
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -67,6 +68,8 @@ SUB_URL = f"{API_ROOT}/user/subscription"
 MODEL_ID = "music_v1"
 MUSIC_DIR = Path(__file__).resolve().parents[1]
 TRACKS_JSON = MUSIC_DIR / "tracks.json"
+# Every generation ever made, never overwritten — his swap-it-back library.
+POOL_DIR = MUSIC_DIR / "pool"
 
 # Leave this many credits for the sound/music agents (shared account).
 CREDIT_FLOOR = 20_000
@@ -1182,10 +1185,25 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
         if not variants:
             print(f"  !! {name}: no delivery copies encoded — nothing written")
             return None
+        # KEEP EVERY GENERATION (maintainer 2026-08-22: "don't delete the
+        # generations! Maybe I want to swap something out and something
+        # different in"). The live name is what the game/wiki play; a numbered
+        # copy goes to music/pool/ and is NEVER overwritten, so re-rolling a
+        # brief adds an option instead of destroying the previous one. Same
+        # convention the foley library already uses.
+        POOL_DIR.mkdir(parents=True, exist_ok=True)
+        ver = 1
+        while any((POOL_DIR / f"{spec['out']}__v{ver:02d}{e}").exists()
+                  for e in (".ogg", ".m4a", ".mp3")):
+            ver += 1
         for v in variants:
             dst = MUSIC_DIR / v["file"]
-            os.replace(os.path.join(tmp, v["file"]), dst)
-            print(f"  wrote {dst.name} ({v['size_bytes'] / 1024:.0f} KB)")
+            src_tmp = os.path.join(tmp, v["file"])
+            ext = os.path.splitext(v["file"])[1]
+            shutil.copyfile(src_tmp, POOL_DIR / f"{spec['out']}__v{ver:02d}{ext}")
+            os.replace(src_tmp, dst)
+            print(f"  wrote {dst.name} ({v['size_bytes'] / 1024:.0f} KB)"
+                  f"  + archived as {spec['out']}__v{ver:02d}{ext}")
 
     musical = M.musical_analysis(y, best["sr"], prior_bpm=spec.get("bpm"))
     print(f"  key:    {musical['key']['root']} {musical['key']['mode']} "
@@ -1325,6 +1343,18 @@ def main() -> int:
     if not key:
         print("ELEVENLABS_API_KEY not set — refusing to run (no placeholder audio).")
         return 1
+    # `credits` asks the balance and stops. Free, and the only way to plan a
+    # campaign: measured 2026-08-22, a take costs ~14 credits per second of
+    # music, so the balance says how many minutes are affordable before a run
+    # walks into a wall halfway through a suite.
+    if which == "credits":
+        s2 = requests.Session(); s2.headers.update({"xi-api-key": key})
+        rem = credits_remaining(s2)
+        print(f"credits remaining: {rem if rem is not None else 'unknown'}")
+        if rem:
+            print(f"  ~= {rem / 14:.0f} s of music  ({rem / 14 / 60:.1f} min), "
+                  f"or ~{rem / 14 // 100:.0f} takes of 100 s")
+        return 0
     # ARGS ARE POSITION-INDEPENDENT: the numeric one is `seconds`, every other
     # one is a track name. This used to be `int(sys.argv[2])`, which assumed the
     # caller passed at most one name — and composer-theme.yml interpolates its
