@@ -667,12 +667,16 @@ ok(swMeasured.length >= 4 && swMeasured.every((m) => m.body && m.body.left.after
 const perfectBrim = swMeasured.find((m) => m.left.kept >= 0.99 && m.left.drawn >= 0.99);
 ok(perfectBrim && perfectBrim.body.left.after >= 0.9,
   `and the tile whose brim measures a perfect 100/100 is one of them (body ${Math.round((perfectBrim?.body.left.after ?? 0) * 100)}% water)`);
-// fix_left_wall.py describes this failure and quotes 98.3% — it shipped as code
-// only, never applied, so its own cell still measures it.
+// AND THE CONTROL, which caught a bug in this very measurement. Judged by RGB
+// distance, dark mud over slime read 97% mud on its left face and I reported it
+// to the tiles agent as broken. It is not: that wall is green in both passes,
+// by eye and by hue. A wall face is lit DARKER than the top, and in raw RGB a
+// dark slime sits nearer dark mud than it does to slime's own bright green —
+// the exact trap fix_left_wall.py's docstring describes. Hue does not have it.
 const mud = cellOf("dark_mud__over__slime");
 const mudM = mud && measureOverhang(ROOT, mud.candidates[0].art, mud.candidates[0].raw, { top: pOf("dark_mud"), side: pOf("slime") });
-ok(mudM?.body && mudM.body.left.after >= 0.9,
-  `dark mud over slime still measures it too — fix_left_wall.py landed as code only (${Math.round(mudM.body.left.after * 100)}% against its docstring's 98.3%)`);
+ok(mudM?.body && mudM.body.left.after <= 0.3,
+  `dark mud over slime keeps its slime wall, and the measurement no longer says otherwise (${Math.round(mudM.body.left.after * 100)}%, was a false 97% under RGB distance)`);
 const swallow = (D.worldMeta ?? {}).swallow ?? {};
 const swBad = Object.values(swallow).filter(([raw, after]) => after >= 70 && after - raw >= 40);
 ok(Object.keys(swallow).length > 500 && swBad.length > 0 && swBad.length < Object.keys(swallow).length * 0.1,

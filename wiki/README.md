@@ -566,11 +566,35 @@ as the share reading as the **top** material:
 | deep water over slime (all five tiles) | 4→95, 0→95, 15→100, 5→99, 17→99 |
 | dark mud over slime | 29 → **97** |
 
-That second row is the point: `fix_left_wall.py` was written for exactly this
-failure and says so — *"the darker-lit LEFT face sits closer to the mud anchor
-than to slime's own wall, so `_split_wall` gives it away wholesale — measured
-98.3% of that face reading as mud"* — and it landed as **code only, never
-applied**, so its own cell still measures 97%.
+### Judged by HUE, and the first cut was judged by RGB distance — wrongly
+
+That table's second row was **a false accusation, and it was mine.** Judged by
+RGB distance, dark mud over slime read 97% mud on its left face and I reported
+it to the tiles agent as broken. That wall is green in both passes, by eye and
+by hue.
+
+The reason is the exact trap `fix_left_wall.py`'s docstring describes: *"the
+darker-lit LEFT face sits closer to the mud anchor than to slime's own wall."*
+A wall is lit darker than the top, and in raw RGB a **dark slime** `(17,55,40)`
+sits nearer deep water's dark blue than it does to slime's own bright green.
+Measured on the same pixels:
+
+| | hue | verdict |
+| --- | --- | --- |
+| shipped left face (broken) | 205° | water — deep water's palette is 211–216° |
+| the same face repaired | 156° | slime |
+| the healthy right face | 151° | slime |
+| brightness of all three | 0.22–0.25 | says nothing |
+
+So the body check compares **hue arcs** against the two materials' palette
+entries, ignoring pixels too grey to have a hue at all. The tiles agent's own
+`fringe_clarity` uses hue for the same reason, which I should have taken as the
+hint it was.
+
+It also cost a round in the other direction: with RGB distance, running their
+repair on the broken cell changed nothing measurable (95% → 95%) even though
+the face had visibly gone from blue to green. A metric that cannot see a repair
+is worse than no metric.
 
 **Anchors differ by pass, deliberately.** The AFTER pass is judged against the
 tiles agent's own `palette.json`, because the postprocess snaps to it and it is

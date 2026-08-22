@@ -140,10 +140,33 @@ export function measureOverhang(root, artRel, rawRel, palette) {
   // ---- the swallowed-face measurement, when the caller supplies the palette
   let body = null;
   if (palette && palette.top?.length && palette.side?.length && bodyL.length >= 20 && bodyR.length >= 20) {
-    const nearest = (c, set) => Math.min(...set.map((a) => dist2(c, a)));
+    // BY HUE, NOT BY RGB DISTANCE — this cost a round. A wall face is lit
+    // darker than the top, and in raw RGB a dark SLIME (17,55,40) sits closer
+    // to deep water's dark blue than to slime's own bright green, so a
+    // correctly repaired face still measured as "water" and the fix looked
+    // like it had done nothing. Measured on the repaired tile: hue 156°
+    // against the healthy right face's 151° and the water top's 216°. Hue
+    // separates the materials; brightness is the lighting and must not count.
+    // (The tiles agent's own fringe_clarity uses hue for the same reason.)
+    const hueOf = (c) => {
+      const mx = Math.max(c[0], c[1], c[2]), mn = Math.min(c[0], c[1], c[2]), d = mx - mn;
+      if (!d) return null;                     // grey — no hue to compare
+      let h;
+      if (mx === c[0]) h = ((c[1] - c[2]) / d) % 6;
+      else if (mx === c[1]) h = (c[2] - c[0]) / d + 2;
+      else h = (c[0] - c[1]) / d + 4;
+      h *= 60; if (h < 0) h += 360;
+      return { h, sat: d / mx };
+    };
+    const arc = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+    const hueSet = (set) => set.map(hueOf).filter(Boolean).map((x) => x.h);
+    const topHues = hueSet(palette.top), sideHues = hueSet(palette.side);
     const aftIsTop = ([x, y]) => {
       const c = rgbOf(A.pix[y * A.w + x]);
-      return nearest(c, palette.top) < nearest(c, palette.side);
+      const hs = hueOf(c);
+      // A near-grey pixel has no material to read; count it for neither.
+      if (!hs || hs.sat < 0.15 || !topHues.length || !sideHues.length) return false;
+      return Math.min(...topHues.map((t) => arc(hs.h, t))) < Math.min(...sideHues.map((t) => arc(hs.h, t)));
     };
     const rWallBody = meanOf([...bodyL, ...bodyR], R);
     const rawIsTop = ([x, y]) => {
