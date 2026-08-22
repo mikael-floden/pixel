@@ -563,6 +563,8 @@ def main():
                                                  else PALETTE.get(side, {}).get("ramp")),
                                       claim_depth=PAIR_TWEAKS.get(cell, {}).get("claim_depth"),
                                       deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
+                                      relight_faces=bool(PAIR_TWEAKS.get(cell, {})
+                                                         .get("relight_faces")),
                                       # drip_match is PER TILE, never per cell: six
                                       # cell-wide versions of the drape fill each
                                       # fixed one tile and damaged another that was

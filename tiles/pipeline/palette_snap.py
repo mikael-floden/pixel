@@ -557,7 +557,7 @@ def _chroma_dist(px, target):
 
 
 def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None,
-                deep_claim=None, drip_match=None, claim_lip=None):
+                deep_claim=None, drip_match=None, claim_lip=None, relight_faces=False):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -698,8 +698,76 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
     # value noise is a property of the LIGHTING, measured where the pixel actually is —
     # the wall.
     st[2] = sw[2]
+    # ...AND SO IS THE TOP ANCHOR'S OWN VALUE. The line above relights the top
+    # distance's TOLERANCE to the wall but leaves its CENTRE at the top face's
+    # brightness, and the two faces are not equally lit: the left face is the shaded
+    # one. A drape is the top material re-lit by the face it hangs on, so on the left
+    # face it measures far from an anchor that never left the lit top — the side
+    # material wins by default and the overhang is painted away. Measured on
+    # deep_water over grass, where the generator draws the droop on both faces: the
+    # right face kept 90% of its drawn water and the left face kept 5% ("I have
+    # painted RED on the overhang that should be deep_water, but currently is
+    # green/grass").
+    #
+    # The relighting factor is read off the SIDE material, which is the one thing
+    # present on both faces: how much darker that face's own deep half is than the
+    # pooled deep half is how much darker anything on that face is. So this is a
+    # ratio of one material against itself across two faces — no colour is inferred
+    # and no anchor can move onto the wrong hue, which is the invariant every
+    # classifier in this file is built to keep. Chroma is untouched: only value moves.
+    # THE WHOLE ANCHOR SCALES, NOT JUST ITS VALUE. _feat is
+    # (chroma*cos, chroma*sin, value) and chroma is saturation*value/255, so every axis
+    # is proportional to how brightly the pixel is lit: the same material at lighting k
+    # lands at k times its feature vector, hue and saturation unchanged. Relighting the
+    # value axis alone left the drape just as far away on the two chroma axes — and
+    # those are whitened by the TOP FACE's spread, which is tiny because the top face is
+    # flat, so they carry most of the distance. Measured on this cell: no pixel changed
+    # hands until the chroma axes moved too.
+    #
+    # k is read off the SIDE material, the one thing drawn on both faces, and only where
+    # the palette says it really is the side material - the same filter the deep anchor
+    # already uses, and it is needed here: this cell's left drape covers 74% of its
+    # face, so an unfiltered median would measure the WATER and call the face bright.
+    #
+    # It is normalised to the BRIGHTER face, not to the average. The lit face is where
+    # the existing anchor already works (90% of the drawn water kept there), so
+    # anchoring to it means a tile with evenly lit faces relights by exactly 1.0 and
+    # cannot change at all. Only the shaded face moves, and only toward the lighting it
+    # visibly has.
+    # PER PAIR, NOT LIBRARY-WIDE - measured, not assumed. Refereed on the 122 changed
+    # tiles where HUE can judge (hue is lighting-invariant, so it is independent of the
+    # value/chroma scaling this does): agreement with the raw art went 82.4% -> 82.2% on
+    # the left face and 85.2% -> 86.7% on the right, 42 tiles improved and 29 regressed,
+    # and left/right asymmetry - the very defect this targets - got WORSE, 7.8% -> 9.8%.
+    # A wash library-wide and a transformation on the pair it was built for, so it is
+    # opt-in like claim_depth and claim_lip above. The rest of the library keeps the
+    # anchor that measurably suits it.
+    faces = {}
+    for _side in ("left", "right") if relight_faces else ():
+        face = reg.get(_side)
+        if face is None:
+            continue
+        dm = deep & face
+        if dm.sum() < 30:
+            continue
+        dv = rgb[dm]
+        if side_hex is not None:
+            near_f = np.linalg.norm(dv - _hex(side_hex).astype(float), axis=1) < 75.0
+            if near_f.sum() >= 20:
+                dv = dv[near_f]
+        faces[_side] = (face, float(np.median(dv.max(axis=1))))
+    Ft_px = np.repeat(ft[None, :], len(px), 0)
+    if len(faces) == 2:
+        v_lit = max(v for _f, v in faces.values())
+        if v_lit > 1.0:
+            wcols = np.where(wall_all)
+            for face, v_f in faces.values():
+                k = v_f / v_lit
+                if not (0.4 <= k <= 1.0):   # a nonsense ratio relights nothing
+                    continue
+                Ft_px[face[wcols[0], wcols[1]]] = ft * k
     d_w = np.linalg.norm((F - fw) * sw, axis=1)
-    d_t = np.linalg.norm((F - ft) * st, axis=1)
+    d_t = np.linalg.norm((F - Ft_px) * st, axis=1)
     keep = d_w <= d_t
     if keep.sum() < 20:
         keep = np.ones(len(px), bool)
@@ -1120,7 +1188,7 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
          edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False,
-         claim_lip=None, side_ramp_abs=False, side_band=None):
+         claim_lip=None, side_ramp_abs=False, side_band=None, relight_faces=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1290,7 +1358,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                                             claim_depth=claim_depth,
                                             deep_claim=deep_claim,
                                             drip_match=drip_match,
-                                            claim_lip=claim_lip)
+                                            claim_lip=claim_lip,
+                                            relight_faces=relight_faces)
             if drip_match is not None:
                 # THE BROWN DOES NOT CHANGE FROM LIVE, BYTE FOR BYTE. The drip claim
                 # may only ADD black pixels; it must never alter how the mud paints.
