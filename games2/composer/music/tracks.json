@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-22T18:17:38+00:00",
+  "generated_at": "2026-08-22T18:30:29+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -4487,21 +4487,21 @@
         {
           "file": "nangijala_explore_day_stroll.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 2167343
+          "size_bytes": 2365547
         },
         {
           "file": "nangijala_explore_day_stroll.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 2688918
+          "size_bytes": 2705969
         }
       ],
       "duration_s": 164.397,
-      "bpm": 141.59,
+      "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
         "root": "A",
         "mode": "major",
-        "confidence": 0.863,
+        "confidence": 0.927,
         "midi_pitch_classes": [
           1,
           2,
@@ -4520,55 +4520,57 @@
         ]
       },
       "timing": {
-        "bpm": 141.59,
-        "beat_anchor_s": 0.325,
-        "confidence": 0.524,
-        "raw_bpm": 70.79
+        "bpm": 139.67,
+        "beat_anchor_s": 0.302,
+        "confidence": 0.405,
+        "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 36.076,
-        "loop_end_s": 159.116,
+        "loop_start_s": 55.826,
+        "loop_end_s": 124.366,
         "crossfade_ms": 900,
-        "score": 0.9209,
+        "score": 0.9376,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "lufs_in": -11.38,
-        "gain_db": -6.62,
+        "lufs_in": -11.79,
+        "gain_db": -6.21,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -6.56
+        "true_peak_dbtp": -6.12
       },
       "measured": {
         "duration_s": 164.4,
-        "lufs": -11.38,
-        "true_peak_dbtp": 0.06,
+        "lufs": -11.79,
+        "true_peak_dbtp": 0.09,
         "lead_in_s": 0.0,
-        "tail_rms_ratio": 0.72,
-        "crest_db": 14.99,
-        "centroid_hz": 8723.0,
-        "stereo_corr": 0.994,
+        "tail_rms_ratio": 0.045,
+        "crest_db": 15.88,
+        "centroid_hz": 8105.9,
+        "stereo_corr": 0.937,
         "silence_frac": 0.001
       },
       "faults": [
-        "harsh/bright (8723 Hz)"
+        "harsh/bright (8106 Hz)",
+        "fades out at the end, loop avoids it (tail 0.04)"
       ],
       "candidates_tried": [
         {
-          "score": 81.61,
+          "score": 87.49,
           "faults": [
-            "harsh/bright (8723 Hz)"
+            "harsh/bright (8106 Hz)",
+            "fades out at the end, loop avoids it (tail 0.04)"
           ],
           "duration_s": 164.4,
-          "lufs": -11.38,
-          "true_peak_dbtp": 0.06,
+          "lufs": -11.79,
+          "true_peak_dbtp": 0.09,
           "lead_in_s": 0.0,
-          "tail_rms_ratio": 0.72,
-          "crest_db": 14.99,
-          "centroid_hz": 8723.0,
-          "stereo_corr": 0.994,
+          "tail_rms_ratio": 0.045,
+          "crest_db": 15.88,
+          "centroid_hz": 8105.9,
+          "stereo_corr": 0.937,
           "silence_frac": 0.001,
-          "loop_score": 0.9335
+          "loop_score": 0.9452
         }
       ],
       "sections": [
@@ -4731,12 +4733,12 @@
       ],
       "source_format": "pcm_44100",
       "phrase": {
-        "phrase_ms": 13560,
+        "phrase_ms": 13746,
         "phrase_ms_asked": 13714,
-        "bpm_measured": 141.59,
+        "bpm_measured": 139.67,
         "bars": 8,
-        "phrases": 12,
-        "beat_anchor_s": 0.325,
+        "phrases": 11,
+        "beat_anchor_s": 0.302,
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
@@ -7245,21 +7247,21 @@
         {
           "file": "nangijala_combat_reel.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1190756
+          "size_bytes": 1153652
         },
         {
           "file": "nangijala_combat_reel.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 1344013
+          "size_bytes": 1371670
         }
       ],
-      "duration_s": 82.009,
+      "duration_s": 82.199,
       "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
         "root": "D",
         "mode": "major",
-        "confidence": 0.863,
+        "confidence": 0.898,
         "midi_pitch_classes": [
           1,
           2,
@@ -7279,57 +7281,54 @@
       },
       "timing": {
         "bpm": 139.67,
-        "beat_anchor_s": 0.151,
-        "confidence": 0.722,
-        "raw_bpm": 69.84
+        "beat_anchor_s": 0.395,
+        "confidence": 0.795,
+        "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 27.78,
-        "loop_end_s": 62.046,
+        "loop_start_s": 15.288,
+        "loop_end_s": 74.433,
         "crossfade_ms": 900,
-        "score": 0.9362,
+        "score": 0.8963,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 0.25,
-        "lufs_in": -9.09,
-        "gain_db": -8.91,
+        "lufs_in": -11.12,
+        "gain_db": -6.88,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -8.69
+        "true_peak_dbtp": -7.14
       },
       "measured": {
         "duration_s": 82.2,
-        "lufs": -9.1,
-        "true_peak_dbtp": 0.21,
-        "lead_in_s": 0.25,
-        "tail_rms_ratio": 0.0,
-        "crest_db": 12.83,
-        "centroid_hz": 7637.0,
-        "stereo_corr": 0.973,
-        "silence_frac": 0.029
+        "lufs": -11.12,
+        "true_peak_dbtp": -0.26,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 1.121,
+        "crest_db": 13.86,
+        "centroid_hz": 7689.5,
+        "stereo_corr": 0.983,
+        "silence_frac": 0.0
       },
       "faults": [
-        "harsh/bright (7637 Hz)",
-        "fades out at the end, loop avoids it (tail 0.00)"
+        "harsh/bright (7690 Hz)"
       ],
       "candidates_tried": [
         {
-          "score": 78.65,
+          "score": 80.53,
           "faults": [
-            "harsh/bright (7637 Hz)",
-            "fades out at the end, loop avoids it (tail 0.00)"
+            "harsh/bright (7690 Hz)"
           ],
           "duration_s": 82.2,
-          "lufs": -9.1,
-          "true_peak_dbtp": 0.21,
-          "lead_in_s": 0.25,
-          "tail_rms_ratio": 0.0,
-          "crest_db": 12.83,
-          "centroid_hz": 7637.0,
-          "stereo_corr": 0.973,
-          "silence_frac": 0.029,
-          "loop_score": 0.9561
+          "lufs": -11.12,
+          "true_peak_dbtp": -0.26,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.121,
+          "crest_db": 13.86,
+          "centroid_hz": 7689.5,
+          "stereo_corr": 0.983,
+          "silence_frac": 0.0,
+          "loop_score": 0.9171
         }
       ],
       "sections": [
@@ -7419,7 +7418,7 @@
         "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 5,
-        "beat_anchor_s": 0.151,
+        "beat_anchor_s": 0.395,
         "suite": "nangijala",
         "pool": "combat",
         "key_asked": "stays in D major for the entire piece"
@@ -7615,21 +7614,21 @@
         {
           "file": "nangijala_boss_cathedral.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1009890
+          "size_bytes": 915728
         },
         {
           "file": "nangijala_boss_cathedral.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 1328934
+          "size_bytes": 1309280
         }
       ],
-      "duration_s": 81.809,
-      "bpm": 139.67,
+      "duration_s": 80.559,
+      "bpm": 143.55,
       "asked_bpm": 140,
       "musical": {
-        "root": "A",
+        "root": "D",
         "mode": "minor",
-        "confidence": 0.817,
+        "confidence": 0.791,
         "midi_pitch_classes": [
           0,
           2,
@@ -7637,67 +7636,73 @@
           5,
           7,
           9,
-          11
+          10
         ],
         "sfx_safe_pitch_classes": [
-          0,
+          2,
           4,
           5,
           9,
-          11
+          10
         ]
       },
       "timing": {
-        "bpm": 139.67,
-        "beat_anchor_s": 0.093,
-        "confidence": 0.664,
-        "raw_bpm": 69.84
+        "bpm": 143.55,
+        "beat_anchor_s": 0.337,
+        "confidence": 0.825,
+        "raw_bpm": 143.55
       },
       "loop": {
-        "loop_start_s": 22.272,
-        "loop_end_s": 63.402,
+        "loop_start_s": 25.722,
+        "loop_end_s": 72.002,
         "crossfade_ms": 900,
-        "score": 0.9579,
+        "score": 0.9413,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 0.45,
-        "lufs_in": -9.48,
-        "gain_db": -8.52,
+        "trimmed_lead_s": 1.7,
+        "lufs_in": -9.54,
+        "gain_db": -8.46,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -8.63
+        "true_peak_dbtp": -8.48
       },
       "measured": {
         "duration_s": 82.2,
-        "lufs": -9.49,
-        "true_peak_dbtp": -0.11,
-        "lead_in_s": 0.45,
-        "tail_rms_ratio": 0.005,
-        "crest_db": 13.36,
-        "centroid_hz": 6943.0,
-        "stereo_corr": 0.205,
-        "silence_frac": 0.011
+        "lufs": -9.53,
+        "true_peak_dbtp": -0.03,
+        "lead_in_s": 1.7,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.08,
+        "centroid_hz": 6619.2,
+        "stereo_corr": -0.021,
+        "silence_frac": 0.069
       },
       "faults": [
-        "fades out at the end, loop avoids it (tail 0.01)"
+        "slow start (1.70s)",
+        "gaps (6.9% silent)",
+        "phase problems (corr -0.02)",
+        "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 84.35,
+          "score": 53.35,
           "faults": [
-            "fades out at the end, loop avoids it (tail 0.01)"
+            "slow start (1.70s)",
+            "gaps (6.9% silent)",
+            "phase problems (corr -0.02)",
+            "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 82.2,
-          "lufs": -9.49,
-          "true_peak_dbtp": -0.11,
-          "lead_in_s": 0.45,
-          "tail_rms_ratio": 0.005,
-          "crest_db": 13.36,
-          "centroid_hz": 6943.0,
-          "stereo_corr": 0.205,
-          "silence_frac": 0.011,
-          "loop_score": 0.9696
+          "lufs": -9.53,
+          "true_peak_dbtp": -0.03,
+          "lead_in_s": 1.7,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.08,
+          "centroid_hz": 6619.2,
+          "stereo_corr": -0.021,
+          "silence_frac": 0.069,
+          "loop_score": 0.946
         }
       ],
       "sections": [
@@ -7782,12 +7787,12 @@
       ],
       "source_format": "pcm_44100",
       "phrase": {
-        "phrase_ms": 13746,
+        "phrase_ms": 13375,
         "phrase_ms_asked": 13714,
-        "bpm_measured": 139.67,
+        "bpm_measured": 143.55,
         "bars": 8,
-        "phrases": 5,
-        "beat_anchor_s": 0.093,
+        "phrases": 6,
+        "beat_anchor_s": 0.337,
         "suite": "nangijala",
         "pool": "boss",
         "key_asked": "stays in D minor for the entire piece"
@@ -7985,95 +7990,92 @@
         {
           "file": "nangijala_boss_elegy.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1014421
+          "size_bytes": 1158173
         },
         {
           "file": "nangijala_boss_elegy.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 1170491
+          "size_bytes": 1337829
         }
       ],
-      "duration_s": 72.009,
-      "bpm": 123.05,
+      "duration_s": 82.199,
+      "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
-        "root": "D",
-        "mode": "minor",
-        "confidence": 0.867,
+        "root": "A",
+        "mode": "major",
+        "confidence": 0.675,
         "midi_pitch_classes": [
-          0,
+          1,
           2,
           4,
-          5,
-          7,
+          6,
+          8,
           9,
-          10
+          11
         ],
         "sfx_safe_pitch_classes": [
-          2,
+          1,
           4,
-          5,
+          6,
           9,
-          10
+          11
         ]
       },
       "timing": {
-        "bpm": 123.05,
-        "beat_anchor_s": 0.36,
-        "confidence": 0.8,
-        "raw_bpm": 184.57
+        "bpm": 139.67,
+        "beat_anchor_s": 0.395,
+        "confidence": 0.762,
+        "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 18.88,
-        "loop_end_s": 60.846,
+        "loop_start_s": 25.788,
+        "loop_end_s": 63.933,
         "crossfade_ms": 900,
-        "score": 0.8979,
+        "score": 0.9092,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 10.25,
-        "lufs_in": -12.64,
-        "gain_db": -5.36,
+        "lufs_in": -11.58,
+        "gain_db": -6.42,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -5.58
+        "true_peak_dbtp": -7.4
       },
       "measured": {
         "duration_s": 82.2,
-        "lufs": -12.66,
-        "true_peak_dbtp": -0.23,
-        "lead_in_s": 10.25,
+        "lufs": -11.58,
+        "true_peak_dbtp": -0.99,
+        "lead_in_s": 0.0,
         "tail_rms_ratio": 0.0,
-        "crest_db": 17.22,
-        "centroid_hz": 8057.2,
-        "stereo_corr": 0.701,
-        "silence_frac": 0.235
+        "crest_db": 13.75,
+        "centroid_hz": 7351.6,
+        "stereo_corr": 0.619,
+        "silence_frac": 0.063
       },
       "faults": [
-        "slow start (10.25s)",
-        "gaps (23.5% silent)",
-        "harsh/bright (8057 Hz)",
+        "gaps (6.3% silent)",
+        "harsh/bright (7352 Hz)",
         "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 46.08,
+          "score": 76.88,
           "faults": [
-            "slow start (10.25s)",
-            "gaps (23.5% silent)",
-            "harsh/bright (8057 Hz)",
+            "gaps (6.3% silent)",
+            "harsh/bright (7352 Hz)",
             "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 82.2,
-          "lufs": -12.66,
-          "true_peak_dbtp": -0.23,
-          "lead_in_s": 10.25,
+          "lufs": -11.58,
+          "true_peak_dbtp": -0.99,
+          "lead_in_s": 0.0,
           "tail_rms_ratio": 0.0,
-          "crest_db": 17.22,
-          "centroid_hz": 8057.2,
-          "stereo_corr": 0.701,
-          "silence_frac": 0.235,
-          "loop_score": 0.911
+          "crest_db": 13.75,
+          "centroid_hz": 7351.6,
+          "stereo_corr": 0.619,
+          "silence_frac": 0.063,
+          "loop_score": 0.9278
         }
       ],
       "sections": [
@@ -8158,15 +8160,827 @@
       ],
       "source_format": "pcm_44100",
       "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 5,
+        "beat_anchor_s": 0.395,
+        "suite": "nangijala",
+        "pool": "boss",
+        "key_asked": "stays in D minor for the entire piece"
+      }
+    },
+    "nangijala_idle_hearth": {
+      "id": "nangijala_idle_hearth",
+      "files": [
+        {
+          "file": "nangijala_idle_hearth.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 796053
+        },
+        {
+          "file": "nangijala_idle_hearth.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 858593
+        }
+      ],
+      "duration_s": 54.009,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.906,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.023,
+        "confidence": 0.759,
+        "raw_bpm": 139.67
+      },
+      "loop": {
+        "loop_start_s": 16.16,
+        "loop_end_s": 46.137,
+        "crossfade_ms": 900,
+        "score": 0.8829,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.85,
+        "lufs_in": -11.36,
+        "gain_db": -6.64,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.68
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -11.36,
+        "true_peak_dbtp": -1.04,
+        "lead_in_s": 0.85,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 12.83,
+        "centroid_hz": 5534.1,
+        "stereo_corr": 0.817,
+        "silence_frac": 0.093
+      },
+      "faults": [
+        "slow start (0.85s)",
+        "gaps (9.3% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 60.56,
+          "faults": [
+            "slow start (0.85s)",
+            "gaps (9.3% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -11.36,
+          "true_peak_dbtp": -1.04,
+          "lead_in_s": 0.85,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 12.83,
+          "centroid_hz": 5534.1,
+          "stereo_corr": 0.817,
+          "silence_frac": 0.093,
+          "loop_score": 0.9042
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "low wooden flute alone, one long breath per bar, dulcimer rippling quietly beneath it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "hammered dulcimer takes the line in soft rolling figures while the flute holds one sustained note",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "solo fiddle carries the tune warm and slow with almost no ornament, harp answering at the bar ends",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "gut-strung harp carries it in sparse plucked notes, everything else reduced to a held cello tone",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 3,
+        "beat_anchor_s": 0.023,
+        "suite": "nangijala",
+        "pool": "idle",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_idle_choir": {
+      "id": "nangijala_idle_choir",
+      "files": [
+        {
+          "file": "nangijala_idle_choir.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 716948
+        },
+        {
+          "file": "nangijala_idle_choir.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 837462
+        }
+      ],
+      "duration_s": 51.459,
+      "bpm": 123.05,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.861,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 123.05,
+        "beat_anchor_s": 0.093,
+        "confidence": 0.836,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 13.558,
+        "loop_end_s": 41.801,
+        "crossfade_ms": 900,
+        "score": 0.9036,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 3.4,
+        "lufs_in": -12.39,
+        "gain_db": -5.61,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.57
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -12.37,
+        "true_peak_dbtp": 0.04,
+        "lead_in_s": 3.4,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 16.91,
+        "centroid_hz": 7782.6,
+        "stereo_corr": 0.723,
+        "silence_frac": 0.231
+      },
+      "faults": [
+        "slow start (3.40s)",
+        "gaps (23.1% silent)",
+        "harsh/bright (7783 Hz)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 52.0,
+          "faults": [
+            "slow start (3.40s)",
+            "gaps (23.1% silent)",
+            "harsh/bright (7783 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -12.37,
+          "true_peak_dbtp": 0.04,
+          "lead_in_s": 3.4,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 16.91,
+          "centroid_hz": 7782.6,
+          "stereo_corr": 0.723,
+          "silence_frac": 0.231,
+          "loop_score": 0.9234
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "wordless choir alone on open vowels, one enormous held note per bar",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "distant horn carries a wide open-interval line while the choir hums far behind it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "high strings take the melody in one slow rising swell, voices reduced to a soft floor beneath",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "low flute traces a bare unornamented line above still choir and motionless strings",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
         "phrase_ms": 13714,
         "phrase_ms_asked": 13714,
         "bpm_measured": 123.05,
         "bars": 8,
-        "phrases": 5,
-        "beat_anchor_s": 0.36,
+        "phrases": 3,
+        "beat_anchor_s": 0.093,
         "suite": "nangijala",
-        "pool": "boss",
-        "key_asked": "stays in D minor for the entire piece"
+        "pool": "idle",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_idle_meadow": {
+      "id": "nangijala_idle_meadow",
+      "files": [
+        {
+          "file": "nangijala_idle_meadow.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 710475
+        },
+        {
+          "file": "nangijala_idle_meadow.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 776246
+        }
+      ],
+      "duration_s": 47.609,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.897,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.0,
+        "confidence": 0.849,
+        "raw_bpm": 69.84
+      },
+      "loop": {
+        "loop_start_s": 10.154,
+        "loop_end_s": 41.029,
+        "crossfade_ms": 900,
+        "score": 0.7209,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 7.25,
+        "lufs_in": -15.68,
+        "gain_db": -2.32,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -2.82
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -15.7,
+        "true_peak_dbtp": -0.49,
+        "lead_in_s": 7.25,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 16.37,
+        "centroid_hz": 7200.0,
+        "stereo_corr": 0.702,
+        "silence_frac": 0.203
+      },
+      "faults": [
+        "slow start (7.25s)",
+        "gaps (20.3% silent)",
+        "harsh/bright (7200 Hz)",
+        "fades out with no usable loop (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 19.16,
+          "faults": [
+            "slow start (7.25s)",
+            "gaps (20.3% silent)",
+            "harsh/bright (7200 Hz)",
+            "fades out with no usable loop (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -15.7,
+          "true_peak_dbtp": -0.49,
+          "lead_in_s": 7.25,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 16.37,
+          "centroid_hz": 7200.0,
+          "stereo_corr": 0.702,
+          "silence_frac": 0.203,
+          "loop_score": 0.741
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "tin whistle carries the tune plainly, fiddle only shadowing it at the phrase ends",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "fiddle leads with a light lilt and small grace notes, whistle resting, percussion at its softest",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "plucked cittern and harp carry the melody in simple picked notes over held warm strings",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "warm strings take the line legato while whistle and fiddle rest and the percussion thins to a shaker",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 3,
+        "beat_anchor_s": 0.0,
+        "suite": "nangijala",
+        "pool": "idle",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_arrive_horns": {
+      "id": "nangijala_arrive_horns",
+      "files": [
+        {
+          "file": "nangijala_arrive_horns.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 791017
+        },
+        {
+          "file": "nangijala_arrive_horns.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 879461
+        }
+      ],
+      "duration_s": 54.459,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.886,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.418,
+        "confidence": 0.727,
+        "raw_bpm": 69.84
+      },
+      "loop": {
+        "loop_start_s": 13.928,
+        "loop_end_s": 48.211,
+        "crossfade_ms": 900,
+        "score": 0.9608,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.4,
+        "lufs_in": -11.7,
+        "gain_db": -6.3,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.22
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -11.72,
+        "true_peak_dbtp": -0.92,
+        "lead_in_s": 0.4,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.15,
+        "centroid_hz": 2402.6,
+        "stereo_corr": 0.329,
+        "silence_frac": 0.059
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 83.15,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -11.72,
+          "true_peak_dbtp": -0.92,
+          "lead_in_s": 0.4,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.15,
+          "centroid_hz": 2402.6,
+          "stereo_corr": 0.329,
+          "silence_frac": 0.059,
+          "loop_score": 0.9616
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "the horn section states the open heraldic theme in unison, broad and golden",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "one solo horn carries it alone and far away, strings sustaining a bed beneath",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "high violins lift the same theme an octave up, shimmering and wide",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "trumpets add a bright harmonised answer above the horns, harp glinting between the calls",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 3,
+        "beat_anchor_s": 0.418,
+        "suite": "nangijala",
+        "pool": "arrive",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_arrive_choir": {
+      "id": "nangijala_arrive_choir",
+      "files": [
+        {
+          "file": "nangijala_arrive_choir.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 636836
+        },
+        {
+          "file": "nangijala_arrive_choir.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 783199
+        }
+      ],
+      "duration_s": 48.109,
+      "bpm": 143.55,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.91,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 143.55,
+        "beat_anchor_s": 0.163,
+        "confidence": 0.657,
+        "raw_bpm": 143.55
+      },
+      "loop": {
+        "loop_start_s": 7.674,
+        "loop_end_s": 34.639,
+        "crossfade_ms": 900,
+        "score": 0.9155,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 6.75,
+        "lufs_in": -11.57,
+        "gain_db": -6.43,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.13
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -11.58,
+        "true_peak_dbtp": -0.69,
+        "lead_in_s": 6.75,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.0,
+        "centroid_hz": 7655.0,
+        "stereo_corr": 0.832,
+        "silence_frac": 0.241
+      },
+      "faults": [
+        "slow start (6.75s)",
+        "gaps (24.1% silent)",
+        "harsh/bright (7655 Hz)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 53.44,
+          "faults": [
+            "slow start (6.75s)",
+            "gaps (24.1% silent)",
+            "harsh/bright (7655 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -11.58,
+          "true_peak_dbtp": -0.69,
+          "lead_in_s": 6.75,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.0,
+          "centroid_hz": 7655.0,
+          "stereo_corr": 0.832,
+          "silence_frac": 0.241,
+          "loop_score": 0.9426
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "wordless women's voices carry the arching hymn line on open ah vowels",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "men's voices take the same line low and warm in octaves under a lyre pattern",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "the full mixed choir hums the tune closed-mouth, soft and near",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "alto flute sings the melody while the choir holds one long chord beneath it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13375,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 143.55,
+        "bars": 8,
+        "phrases": 3,
+        "beat_anchor_s": 0.163,
+        "suite": "nangijala",
+        "pool": "arrive",
+        "key_asked": "stays in D major for the entire piece"
       }
     }
   }
