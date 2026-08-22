@@ -435,10 +435,11 @@ TRACKS: dict[str, dict] = {
     # roll of the dice must not be able to lose any of them.
     "title_seq": {
         "out": "title_seq",
-        "seconds": 96,
+        "seconds": 209,
         "bpm": 92,
-        # 8 bars of 4/4 at 92 BPM. Equal, bar-aligned phrases are what
-        # make a boundary always a musical boundary.
+        # 8 bars at 92 BPM = 20.9 s. TEN phrases: the select screen is a shorter
+        # exposure than a bed you live in, but it is the first thing anyone
+        # hears, so it still gets real material.
         "phrase_ms": 20870,
         "harmony": "the same warm four-chord cycle in a major key under every phrase",
         "foregrounds": [
@@ -468,12 +469,11 @@ TRACKS: dict[str, dict] = {
     },
     "night_seq": {
         "out": "night_seq",
-        "seconds": 93,
+        "seconds": 248,
         "bpm": 62,
-        # FOUR bars at 62 BPM, not eight: an 8-bar phrase here is 31 s and only
-        # fits three times into the piece, which is too few to shuffle
-        # interestingly. Slow beds get shorter phrases for the same reason fast
-        # ones can afford longer ones.
+        # 4 bars at 62 BPM = 15.5 s. SIXTEEN phrases = 4.1 min before any phrase
+        # can return, and with a shuffled bag the order differs every cycle.
+        # This is a bed the player lives in for hours.
         "phrase_ms": 15484,
         "harmony": "the same slow minor-tinged chord cycle under every phrase",
         "foregrounds": [
@@ -483,6 +483,8 @@ TRACKS: dict[str, dict] = {
             "celesta and glass bells carry it",
             "distant harp carries it",
             "warm low strings alone, very sparse",
+            "solo cello sings the line over the pad",
+            "celesta and harp trade the line",
         ],
         "prompt": (
                         "A mysterious, enchanted nocturnal theme for a moonlit magical forest — g"
@@ -503,10 +505,11 @@ TRACKS: dict[str, dict] = {
     },
     "battle_seq": {
         "out": "battle_seq",
-        "seconds": 96,
+        "seconds": 106,
         "bpm": 144,
-        # 8 bars of 4/4 at 144 BPM. Equal, bar-aligned phrases are what
-        # make a boundary always a musical boundary.
+        # 8 bars at 144 BPM = 13.3 s. EIGHT phrases, deliberately fewer: fights
+        # are short and bursty, and hearing a phrase again mid-fight reads as
+        # intensity rather than fatigue.
         "phrase_ms": 13333,
         "harmony": "the same driving minor chord cycle under every phrase",
         "foregrounds": [
@@ -535,9 +538,10 @@ TRACKS: dict[str, dict] = {
     },
     "cave_seq": {
         "out": "cave_seq",
-        "seconds": 96,
+        "seconds": 226,
         "bpm": 68,
-        # FOUR bars at 68 BPM — same reason as night_seq.
+        # 4 bars at 68 BPM = 14.1 s. SIXTEEN phrases — the cave is somewhere he
+        # stands still and listens.
         "phrase_ms": 14118,
         "harmony": "the same slow modal chord cycle under every phrase",
         "foregrounds": [
@@ -547,6 +551,8 @@ TRACKS: dict[str, dict] = {
             "prepared piano alone over the drone",
             "soft bowed metal shimmer above the ostinato",
             "marimba and flute together",
+            "prepared piano and marimba interlock",
+            "bass flute and cello together, low",
         ],
         "prompt": (
                         "A vast, hushed underground theme for enormous echoing caverns — cathedra"
@@ -568,11 +574,12 @@ TRACKS: dict[str, dict] = {
     },
     "summit_seq": {
         "out": "summit_seq",
-        "seconds": 96,
+        "seconds": 230,
         "bpm": 100,
-        # 8 bars of 4/4 at 100 BPM. Equal, bar-aligned phrases are what
-        # make a boundary always a musical boundary.
-        "phrase_ms": 19200,
+        # SIX bars at 100 BPM = 14.4 s, not eight: 16 x 19.2 s would be 307 s
+        # and the API caps one generation at 300 s. Shorter bars buy the
+        # sixteenth phrase.
+        "phrase_ms": 14400,
         "harmony": "the same bright major chord cycle under every phrase",
         "foregrounds": [
             "French horn carries the melody",
@@ -581,6 +588,8 @@ TRACKS: dict[str, dict] = {
             "warm strings carry it, wide",
             "strummed lute and plucked bass carry it lightly",
             "horn and strings together",
+            "whistle and fiddle trade the phrase",
+            "horn alone, distant and wide",
         ],
         "prompt": (
                         "A warm, noble folk-orchestral theme for standing on a mountain top after"
