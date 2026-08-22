@@ -94,7 +94,9 @@ check("sniff wav", M.sniff_container(b"RIFF....WAVEfmt "), "wav", "wav")
 check("sniff ogg", M.sniff_container(b"OggS\x00\x02\x00\x00"), "ogg", "ogg")
 check("sniff m4a", M.sniff_container(b"\x00\x00\x00\x20ftypM4A "), "m4a", "m4a")
 check("sniff mp3 (ID3)", M.sniff_container(b"ID3\x04\x00\x00\x00"), "mp3", "mp3")
-check("sniff mp3 (sync)", M.sniff_container(b"\xff\xfb\x90\x00"), "mp3", "mp3")
+# A bare sync word is what the old sniffer accepted, and it is exactly how raw
+# PCM got read as mp3. It must NOT be enough on its own — see _is_mp3.
+check("sniff mp3 (bare sync word)", M.sniff_container(b"\xff\xfb\x90\x00"), "pcm", "pcm")
 check("sniff raw pcm", M.sniff_container(b"\x01\x00\x02\x00\x03\x00"), "pcm", "pcm")
 
 # --- candidate scoring: a degenerate take must never win --------------------
@@ -123,6 +125,46 @@ check("mostly-silent take is disqualified",
 faded_loopable = G.score_candidate(REAL, {"score": 0.95}, 90, True)[0]
 faded_unloopable = G.score_candidate(REAL, {"score": 0.5}, 90, True)[0]
 check("fade-out is forgiven when the loop avoids it", faded_loopable > faded_unloopable, True, True)
+
+print()
+
+
+# --- container sniffing: PCM must never be mistaken for mp3 -----------------
+# The regression that cost three paid generations. s16le -1 is 0xFF 0xFF, a
+# textbook mp3 frame sync, and a bed that opens from silence starts there.
+rng = np.random.default_rng(7)
+for first in (0, -1, -2, -257, -513, -32768):
+    pcm = np.concatenate([np.array([first, first], dtype="<i2"),
+                          (rng.standard_normal(44100) * 3000).astype("<i2")]).tobytes()
+    check(f"raw PCM starting at {first} sniffs as pcm", M.sniff_container(pcm), "pcm", "pcm")
+
+# ...while a REAL mp3 still must be recognised, by ID3 tag and by chained
+# frames (128 kbps 44.1 kHz stereo layer III = 417-byte frames, +1 when padded).
+hdr = bytes([0xFF, 0xFB, 0x90, 0x00])
+check("chained mp3 frames sniff as mp3",
+      M.sniff_container(hdr + b"\x00" * 413 + hdr + b"\x00" * 413), "mp3", "mp3")
+check("ID3-tagged mp3 sniffs as mp3", M.sniff_container(b"ID3\x04\x00" + b"\x00" * 400), "mp3", "mp3")
+check("frame length of 128k/44.1k layer III", M._mp3_frame_len(hdr, 0), 417, 417)
+# A lone sync word with nothing behind it is a coincidence, not a container.
+check("one unchained sync word is not mp3",
+      M.sniff_container(hdr + b"\x00" * 40), "pcm", "pcm")
+# Reserved fields are not audio: version 01 and layer 00 are both illegal.
+check("reserved mpeg version is not a frame", M._mp3_frame_len(b"\xff\xeb\x90\x00", 0), 0, 0)
+check("reserved layer is not a frame", M._mp3_frame_len(b"\xff\xf9\x90\x00", 0), 0, 0)
+
+
+check("free-format bitrate is not a frame", M._mp3_frame_len(b"\xff\xfb\x00\x00", 0), 0, 0)
+
+# End to end: the delivery that was thrown away three times must now decode in
+# full. 55 s of stereo s16le opening on -1 — silence with dither, the way every
+# soft-entry bed starts.
+n = int(44100 * 55)
+pcm = np.zeros((n, 2), dtype="<i2")
+pcm[0] = -1
+pcm[1000:] = (rng.standard_normal((n - 1000, 2)) * 2000).astype("<i2")
+y_d, sr_d = M.decode(pcm.tobytes(), expected_s=55)
+check("soft-entry PCM delivery decodes in full", round(len(y_d) / sr_d, 1), 54.9, 55.1)
+check("...and keeps both channels", y_d.shape[1], 2, 2)
 
 print()
 print("FAILURES:", fails if fails else "none")

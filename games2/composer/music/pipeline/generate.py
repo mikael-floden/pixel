@@ -746,8 +746,15 @@ def load_suites() -> dict[str, dict]:
                     "seconds": int(round(n * pm / 1000)),
                     "bpm": doc.get("bpm"),
                     "phrase_ms": pm,
-                    "key_line": pd.get("key_line") or doc.get("key_line", ""),
-                    "harmony": pd.get("harmony") or doc.get("harmony", ""),
+                    # COLOUR overrides POOL overrides SUITE. A colour needs
+                    # its own spine when its TEXTURE fights the shared one:
+                    # explore_day_stroll (ringing fiddle drone) and boss_elegy
+                    # (vast reverb over sustained chords) both measured A major
+                    # while their dry siblings measured D, because a resonant
+                    # texture lets the phrase's LAST chord hang over the seam —
+                    # and the shared cycle ends on the dominant.
+                    "key_line": c.get("key_line") or pd.get("key_line") or doc.get("key_line", ""),
+                    "harmony": c.get("harmony") or pd.get("harmony") or doc.get("harmony", ""),
                     "foregrounds": c.get("foregrounds") or [],
                     "prompt": prompt,
                     "suite": suite,

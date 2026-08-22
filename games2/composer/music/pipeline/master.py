@@ -42,6 +42,45 @@ import numpy as np
 
 # ---------------------------------------------------------------- decoding
 
+# --- mp3 frame header, so a coincidence cannot masquerade as a container ---
+# THREE PAID GENERATIONS WERE THROWN AWAY BY A TWO-BYTE COINCIDENCE (measured
+# 2026-08-22). The API delivers pcm_44100, and a two-byte "is the sync word
+# there" test read raw PCM as mp3 whenever the FIRST SAMPLE was -1 — because
+# s16le -1 is 0xFF 0xFF, which is a textbook frame sync. A bed that opens from
+# silence has a first sample of 0 or -1 almost every time, so the coin came up
+# mp3 for nangijala_explore_day_choir (twice) and nangijala_arrive_whistle:
+# ffmpeg found one accidental frame, flooded "Header missing", and returned
+# 0.07-0.35 s of a 55-165 s take, which the disqualifier then correctly binned.
+# A real frame PREDICTS WHERE THE NEXT ONE STARTS, so requiring two chained
+# headers is the cheap test that noise cannot pass.
+_MP3_RATES = (0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0)
+_MP3_RATES_V2 = (0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0)
+_MP3_SR = ((44100, 48000, 32000), (22050, 24000, 16000), (11025, 12000, 8000))
+
+
+def _mp3_frame_len(b: bytes, i: int) -> int:
+    """Length of the mpeg-audio frame starting at i, or 0 if that is not one."""
+    if i + 4 > len(b) or b[i] != 0xFF or (b[i + 1] & 0xE0) != 0xE0:
+        return 0
+    ver, layer = (b[i + 1] >> 3) & 3, (b[i + 1] >> 1) & 3
+    rate_i, sr_i, pad = b[i + 2] >> 4, (b[i + 2] >> 2) & 3, (b[i + 2] >> 1) & 1
+    if ver == 1 or layer == 0 or rate_i in (0, 15) or sr_i == 3:
+        return 0                                   # reserved = not audio
+    sr = _MP3_SR[{3: 0, 2: 1, 0: 2}[ver]][sr_i]
+    kbps = (_MP3_RATES if ver == 3 else _MP3_RATES_V2)[rate_i]
+    if not kbps:
+        return 0
+    if layer == 3:                                 # layer I: 384 samples/frame
+        return (12 * kbps * 1000 // sr + pad) * 4
+    spf = 1152 if (layer == 1 and ver == 3) else (576 if layer == 1 else 1152)
+    return spf // 8 * kbps * 1000 // sr + pad
+
+
+def _is_mp3(b: bytes) -> bool:
+    n = _mp3_frame_len(b, 0)
+    return bool(n) and _mp3_frame_len(b, n) > 0
+
+
 def sniff_container(b: bytes) -> str:
     """The API may DELIVER a container it wasn't asked for with a 200 OK, so
     never trust the requested format — sniff the bytes (music domain lesson).
@@ -50,14 +89,17 @@ def sniff_container(b: bytes) -> str:
     copy fell through to the raw-PCM branch and got read as s16le, which does
     not fail — it silently reports a 1.7 MB opus file as 9.8 seconds of
     clipping noise. Anything that reads our own output (`adopt`, QA) would have
-    believed it."""
+    believed it.
+
+    MP3 is the one format with no magic number of its own, so it is claimed
+    LAST and only on two chained frame headers — see _is_mp3."""
     if b[:4] == b"RIFF":
         return "wav"
     if b[:4] == b"OggS":
         return "ogg"
     if len(b) > 8 and b[4:8] == b"ftyp":
         return "m4a"
-    if b[:3] == b"ID3" or (len(b) > 1 and b[0] == 0xFF and (b[1] & 0xE0) == 0xE0):
+    if b[:3] == b"ID3" or _is_mp3(b):
         return "mp3"
     return "pcm"
 
@@ -110,8 +152,22 @@ def decode(audio: bytes, sr_hint: int = 44100,
     if kind == "wav":
         y, sr = _decode_wav_bytes(audio)
     elif kind in ("mp3", "ogg", "m4a"):
-        y, sr = _decode_via_ffmpeg(audio, f".{kind}")
-    else:
+        try:
+            y, sr = _decode_via_ffmpeg(audio, f".{kind}")
+        except Exception:
+            y, sr = np.zeros((0, 2), dtype="<i2"), sr_hint
+        # BELT AND BRACES for the coincidence above: if the container decoded
+        # to a fraction of what these bytes could hold, we sniffed wrong, and
+        # raw PCM is the only other thing the API sends. Cheaper to check than
+        # to re-generate — the mis-sniff cost three paid takes before it was
+        # found, and reading a real short file as PCM is not possible here
+        # because a real container decodes to its own honest length.
+        if expected_s and len(y) / max(1, sr) < 0.25 * expected_s \
+                and len(audio) > sr_hint * 2 * 2 * 0.5 * expected_s:
+            print(f"  ! {kind} decoded {len(y) / max(1, sr):.2f}s from "
+                  f"{len(audio)} bytes — re-reading the delivery as raw PCM")
+            kind = "pcm"
+    if kind == "pcm":
         # Raw s16le. Channel count is inferred from the length we asked for
         # (music_v1 delivers stereo natively).
         flat = np.frombuffer(audio[: len(audio) // 2 * 2], dtype="<i2")
