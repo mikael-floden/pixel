@@ -3736,28 +3736,36 @@ function texSynth(afterImg, rawImg) {
     counts.set(k, (counts.get(k) ?? 0) + 1);
   }
   if (!opaque) return null;
-  const flats = [...counts.entries()].filter(([, n2]) => n2 / opaque >= 0.15)
+  const flats = [...counts.entries()].filter(([, n]) => n / opaque >= 0.15)
     .sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => k);
   if (!flats.length) return null;   // nothing was flattened — After is honest
-  const reg = new Map(flats.map((k) => [k, { n: 0, r: 0, g: 0, b: 0 }]));
-  const flatOf = (i) => {
-    if (d[i + 3] < 200) return -1;
-    const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2];
-    return reg.has(k) ? k : -1;
-  };
+  // Group the flattened pixels BEFORE touching any of them.
+  const regions = new Map(flats.map((k) => [k, []]));
   for (let i = 0; i < d.length; i += 4) {
-    const k = flatOf(i); if (k < 0 || R[i + 3] < 200) continue;
-    const t2 = reg.get(k); t2.n++; t2.r += R[i]; t2.g += R[i + 1]; t2.b += R[i + 2];
+    if (d[i + 3] < 200 || R[i + 3] < 200) continue;
+    const list = regions.get((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+    if (list) list.push(i);
   }
   const cl = (x) => Math.max(0, Math.min(255, Math.round(x)));
   let changed = 0;
-  for (let i = 0; i < d.length; i += 4) {
-    const k = flatOf(i); if (k < 0) continue;
-    const t2 = reg.get(k); if (!t2.n || R[i + 3] < 200) continue;
-    d[i] = cl(R[i] + (k >> 16) - t2.r / t2.n);
-    d[i + 1] = cl(R[i + 1] + ((k >> 8) & 255) - t2.g / t2.n);
-    d[i + 2] = cl(R[i + 2] + (k & 255) - t2.b / t2.n);
-    changed++;
+  for (const [clean, list] of regions) {
+    if (list.length < 12) continue;
+    const tgt = [(clean >> 16) & 255, (clean >> 8) & 255, clean & 255];
+    for (let c = 0; c < 3; c++) {
+      let sum = 0;
+      for (const i of list) sum += R[i + c];
+      const mean = sum / list.length;
+      // HOW FAR THE TEXTURE ACTUALLY SWINGS, ignoring the top 2% so one stray
+      // pixel cannot squash the whole surface.
+      const devs = list.map((i) => Math.abs(R[i + c] - mean)).sort((a, b) => a - b);
+      const p98 = devs[Math.min(devs.length - 1, Math.floor(devs.length * 0.98))] || 0;
+      // THE ROOM THIS PALETTE COLOUR HAS, either side of itself. A dark green
+      // (82) can swing ±82 before it hits black; a near-black (20) cannot.
+      const head = Math.min(tgt[c], 255 - tgt[c]);
+      const k = (p98 > head && p98 > 0) ? head / p98 : 1;
+      for (const i of list) d[i + c] = cl(tgt[c] + (R[i + c] - mean) * k);
+    }
+    changed += list.length;
   }
   if (!changed) return null;        // raw is transparent under the whole top
   cx.putImageData(A, 0, 0);
@@ -4121,7 +4129,7 @@ function filterRoute(mode, keep = null) {
 const WORLD_VIEW_KEY = "wiki-world-view";
 const WORLD_VIEWS = {
   after: { label: "After", title: "What the game gets today — the postprocess snaps the top to the ground's clean colour (measured: 96% of the top face becomes ONE colour on grass, black rock and light soil; parquet and the pavings keep their texture)" },
-  texture: { label: "Textured", title: "WHAT THE TOP COULD SHIP AS — the same tile, but instead of flattening, the generator's top texture is KEPT and recoloured so its average IS the ground's clean colour. Judge promotions and details here: the real texture, in the right palette" },
+  texture: { label: "Textured", title: "WHAT THE TOP COULD SHIP AS — the generator's own top texture, every pixel of it, displaced onto the ground's palette: its average IS the clean colour, and its swing is kept as wide as that colour has room for. Judge promotions and details here" },
   before: { label: "Before", title: "The generator's raw output, untouched — original colours, original top, no postprocess at all" },
 };
 const worldView = () => {
@@ -7741,6 +7749,11 @@ async function upgradeToStaging() {
     state, route,
     counts: () => state.data.counts,
     fb, setFb,
+    // The synthesized third pass, exposed so QA can render it at 6x and LOOK
+    // at it — a colour-count metric said "textured" about a top the maintainer
+    // could see was flat (2026-08-22), so the gate now measures the surviving
+    // spread and a human checks the picture.
+    texSynth,
     dirty: () => [...state.dirty],
     // Static-file QA only: flips the UI to admin (the server still rejects
     // every save without a real session token).

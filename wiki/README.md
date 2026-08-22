@@ -509,11 +509,50 @@ synthesizes it per tile, in the browser (`texSynth` / `texFor`):
 3. On exactly those pixels, take the **raw** pixel and shift it per channel so
    the region's **mean lands on the clean colour**.
 
-The texture survives 1:1 and the field still reads as the right ground from a
-distance, because its average *is* the ground's colour. Measured by the gate on
-real tile pairs: the flattened region comes back with **11–14 distinct colours
-where the shipped tile has exactly 1**, and the region's mean sits within
-**0.27/255** of the clean colour it replaced.
+### The first cut shipped flat, and the metric said it was fine
+
+Maintainer, the same day: *"How can you call this top 'textured'? Yes I can
+clearly see the original tile had a lot of texture, but if you remove it all
+it's not 'textured'."* He was right.
+
+Step 3 was a plain additive shift with a clamp. Moving a **bright** top onto a
+**dark** palette colour (grass: raw mean `[107,162,74]` → target `#14523b` =
+`[20,82,59]`, a shift of `[-87,-80,-15]`) pushed **29% of that tile's top
+pixels through the 0 floor**, and a clamped pixel is a flat pixel: red's spread
+collapsed from 27 to 18.8 and the eye read the surface as blank.
+
+**The metric never caught it because the metric was worthless.** "Distinct
+colours in the region" scored his tile **12 before the fix and 12 after** —
+identical number, completely different picture. Colour count cannot see
+crushing; only the *spread* can.
+
+So step 3 fits the swing to the room the palette colour actually has:
+
+```
+dev  = raw − mean(raw over the region)
+p98  = 98th percentile of |dev|          ← ignore outliers, not the surface
+head = min(target, 255 − target)         ← the colour's own headroom
+k    = p98 > head ? head / p98 : 1
+out  = target + dev × k
+```
+
+A colour with room (grass green, target 82) keeps **100%** of its swing; a
+near-black one (target 20) compresses rather than crushes. Measured across six
+real tile pairs: the dominant channel keeps **≥94%** of its spread, and
+**0.34%** of channel samples touch an end — the deliberate 2% outlier tail,
+against 29% before.
+
+I also checked whether the pipeline had a transform worth copying — least
+squares on raw→after over each tile's *wall*, which the postprocess recolours
+without flattening. The gains scatter from **0.01 to 1.12** across tiles, so
+there is no consistent behaviour to borrow, and headroom-fitting stands on its
+own.
+
+**The lesson, recorded because it cost him a round:** a number that goes up is
+not evidence the picture is right. The gate now measures surviving standard
+deviation and crushing, `texSynth` is exposed on `window.__wiki` so it can be
+rendered at 6× beside the raw and the shipped tile, and *looking at it* is part
+of the check.
 
 Virtual paths carry it: `tex:<after>::<raw>` resolves through `loadImages` and
 `viewArtIn` to a synthesized canvas, so every existing composition — the 3×3

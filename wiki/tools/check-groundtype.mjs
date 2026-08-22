@@ -552,16 +552,21 @@ const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene
 ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
-// ---- THE RECOLOURING IS REAL, MEASURED OFF THE FILES ----------------------
-// The browser checks the wiring; this checks the PROMISE — "an alternative
-// postprocessing where the top texture is maintained, but still colored in the
-// correct tile palette". Same algorithm as wiki.js texSynth, run here on the
-// actual webp pairs: the flattened region must come back textured, and its
-// MEAN must land on the clean colour it replaced.
+// ---- THE TEXTURE HAS TO SURVIVE, AND THAT IS A SPREAD, NOT A COLOUR COUNT --
+// Maintainer 2026-08-22, looking at a top this gate had called textured: "How
+// can you call this top 'textured'? Yes I can clearly see the original tile
+// had a lot of texture, but if you remove it all it's not 'textured'."
+//
+// He was right and the metric was worthless: his tile scored 12 distinct
+// colours BOTH before and after the fix. What had happened is that shifting a
+// bright top onto a dark palette colour pushed 29% of its pixels through the
+// 0 floor, and a clamped pixel is a flat pixel. So the check is now the
+// STANDARD DEVIATION that survives, per channel, plus a hard zero on crushing.
 const { decodeWebP } = await import("../lib/webp-pixels.mjs");
-const withRaw = (D.domains.world ?? []).flatMap((c) => c.candidates ?? []).filter((c) => c.raw && c.art).slice(0, 4);
+const withRaw = (D.domains.world ?? []).flatMap((c) => c.candidates ?? []).filter((c) => c.raw && c.art).slice(0, 6);
 ok(withRaw.length >= 3, `there are tiles with both passes published to measure (${withRaw.length})`);
-let proofs = 0, kept = [], drift = [];
+const sd = (v) => { const m = v.reduce((a, x) => a + x, 0) / v.length; return Math.sqrt(v.reduce((a, x) => a + (x - m) ** 2, 0) / v.length); };
+let measured = 0, worstKeep = 1, crushed = 0, textured = 0, totalPx = 0;
 for (const cand of withRaw) {
   const A = decodeWebP(readFileSync(join(ROOT, cand.art)));
   const R = decodeWebP(readFileSync(join(ROOT, cand.raw)));
@@ -574,29 +579,43 @@ for (const cand of withRaw) {
   const flat = [...counts.entries()].filter(([, n]) => n / opaque >= 0.15).sort((a, b) => b[1] - a[1])[0];
   if (!flat) continue;                       // never flattened (parquet, pavings)
   const [clean] = flat;
-  let n = 0, sr = 0, sg = 0, sb = 0;
+  const list = [];
   for (let i = 0; i < A.pix.length; i++) {
     if ((A.pix[i] >>> 24) < 200 || (A.pix[i] & 0xffffff) !== clean || (R.pix[i] >>> 24) < 200) continue;
-    n++; sr += (R.pix[i] >> 16) & 255; sg += (R.pix[i] >> 8) & 255; sb += R.pix[i] & 255;
+    list.push(i);
   }
-  if (!n) continue;
-  const out = new Set(); let mr = 0, mg = 0, mb = 0;
-  const cl = (x) => Math.max(0, Math.min(255, Math.round(x)));
-  for (let i = 0; i < A.pix.length; i++) {
-    if ((A.pix[i] >>> 24) < 200 || (A.pix[i] & 0xffffff) !== clean || (R.pix[i] >>> 24) < 200) continue;
-    const r = cl(((R.pix[i] >> 16) & 255) + ((clean >> 16) & 255) - sr / n);
-    const g = cl(((R.pix[i] >> 8) & 255) + ((clean >> 8) & 255) - sg / n);
-    const bl = cl((R.pix[i] & 255) + (clean & 255) - sb / n);
-    out.add((r << 16) | (g << 8) | bl); mr += r; mg += g; mb += bl;
+  if (list.length < 12) continue;
+  measured++; totalPx += list.length * 3;
+  let bestKeep = 0, bestOut = 0;
+  for (let c = 0; c < 3; c++) {
+    const sh = [16, 8, 0][c], tgt = (clean >> sh) & 255;
+    const raw = list.map((i) => (R.pix[i] >> sh) & 255);
+    const mean = raw.reduce((a, x) => a + x, 0) / raw.length;
+    const devs = raw.map((x) => Math.abs(x - mean)).sort((a, b) => a - b);
+    const p98 = devs[Math.min(devs.length - 1, Math.floor(devs.length * 0.98))] || 0;
+    const head = Math.min(tgt, 255 - tgt);
+    const k = (p98 > head && p98 > 0) ? head / p98 : 1;
+    const out = raw.map((x) => tgt + (x - mean) * k);
+    crushed += out.filter((v) => v < -0.5 || v > 255.5).length;
+    const sIn = sd(raw), sOut = sd(out.map((v) => Math.max(0, Math.min(255, Math.round(v)))));
+    if (sIn > 2 && sOut / sIn > bestKeep) bestKeep = sOut / sIn;
+    if (sOut > bestOut) bestOut = sOut;
   }
-  proofs++;
-  kept.push(out.size);
-  drift.push(Math.max(Math.abs(mr / n - ((clean >> 16) & 255)), Math.abs(mg / n - ((clean >> 8) & 255)), Math.abs(mb / n - (clean & 255))));
+  if (bestKeep) worstKeep = Math.min(worstKeep, bestKeep);
+  if (bestOut >= 3) textured++;
 }
-ok(proofs >= 2 && kept.every((k) => k >= 6),
-  `the flattened region comes back TEXTURED — ${kept.join(", ")} distinct colours where the shipped tile has exactly 1`);
-ok(drift.length > 0 && drift.every((d) => d <= 1.5),
-  `and its mean lands ON the ground's clean colour, so a field still reads right from a distance (max drift ${Math.max(...drift).toFixed(2)}/255)`);
+ok(measured >= 3, `flattened tops to measure (${measured} tiles)`);
+// The fit is to the 98th percentile of the swing, so the last 2% of outliers
+// may still touch the ends — that is the point of fitting to p98 rather than
+// to the single most extreme pixel, which one stray dot could flatten
+// everything for. What must never come back is the 29% wipeout that made his
+// tile flat.
+const crushPct = totalPx ? (crushed / totalPx) * 100 : 0;
+ok(crushPct <= 2, `almost nothing is crushed against black or white — the fit is to the palette colour's own headroom, not the clamp (${crushPct.toFixed(2)}% of channel samples, was 29% on his tile)`);
+ok(worstKeep >= 0.9,
+  `and the top's dominant swing survives the move onto the palette (worst tile keeps ${(worstKeep * 100).toFixed(0)}% of its spread)`);
+ok(textured === measured,
+  `so every flattened top comes back with visible relief, not a colour count that only looks like one (${textured}/${measured})`);
 
 await b.close();
 console.log(fails.length ? `\nGROUND-TYPE CHECKS FAILED (${fails.length})` : "\nALL GROUND-TYPE CHECKS PASSED");
