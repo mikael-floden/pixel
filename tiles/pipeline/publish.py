@@ -77,6 +77,66 @@ PALETTE = {k: {**_DEFAULTS, **v} for k, v in
 
 
 
+def _rejected_keys():
+    """The keys the maintainer rejected, from their own file.
+
+    THE ONLY RECORD THAT CANNOT BE LOST. Deferral is written against the MATRIX PATH,
+    which is not an identity: brown and grey paving publish from ONE matrix tile, so
+    rejecting the brown deferred the shared source and deleted the approved grey with
+    it - 18 tiles carry an approval in one cell and a rejection in the other, and every
+    single collision is a paving pair. The bookkeeping is also derived state: it can be
+    reverted, rebuilt, or lost, and when it was, 51 rejected tiles came back
+    ("It feel like I once again see a lot of crap I have already removed").
+
+    live/feedback/tiles.json is neither - it is what the maintainer actually said, and a
+    key is `tiles/<cell>/sha1(src)`, which names one piece of art in one cell forever.
+    Filtering on it makes a rejected tile structurally unable to return no matter what
+    state the tombstones are in.
+    """
+    try:
+        entries = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entries"]
+    except Exception:
+        return set()
+    return {k.strip("/") for k, v in entries.items() if v.get("status") == "rejected"}
+
+
+def _approved_sources():
+    """Cell -> matrix paths carrying a live approval, found WITHOUT the manifest.
+
+    The self-heal could not use resolve(): that maps a verdict through the CURRENT
+    review set, and the tiles this exists to rescue are the ones already missing from
+    it. Asking the manifest about art the manifest has lost answers nothing - measured,
+    it released 0 of the 11 approved tiles still disappearing every run.
+
+    A key is `tiles/<cell>/sha1(<matrix path>)[:8]`, so the mapping can be rebuilt from
+    the matrix itself by walking the cell's source directory and hashing each path.
+    That works whether or not the tile is currently published, which is the whole
+    point. Expanded types (brown/grey paving) are walked under the matrix material they
+    were generated from.
+    """
+    try:
+        entries = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entries"]
+    except Exception:
+        return set()
+    want = {}
+    for k, v in entries.items():
+        if v.get("status") != "approved":
+            continue
+        parts = k.strip("/").split("/")
+        if len(parts) != 3 or "__over__" not in parts[1]:
+            continue
+        want.setdefault(parts[1], set()).add(parts[2])
+    out = {}
+    for cell, shas in want.items():
+        top, side = cell.split("__over__", 1)
+        mcell = f"{GENERATED_AS.get(top, top)}__over__{GENERATED_AS.get(side, side)}"
+        for p in glob.glob(os.path.join(MATRIX, mcell, "sheet_*", "tile_*.png")):
+            rel = os.path.relpath(p, REPO)
+            if hashlib.sha1(rel.encode()).hexdigest()[:8] in shas:
+                out.setdefault(cell, set()).add(rel)
+    return out
+
+
 def _rejected_still_published(manifest):
     """Keys the maintainer rejected in the wiki that are STILL in the set being written."""
     fb = os.path.join(REPO, "live", "feedback", "tiles.json")
@@ -97,8 +157,30 @@ def _apply_verdicts():
     """
     import review
     hits, _misses, _shifted = review.resolve()
+    # NOTE: the release below runs on EVERY publish, not only when a verdict is new.
+    # The damage it undoes was recorded in past runs and re-applies itself each time.
     srcs = [e["src"] for k, v, e in hits
             if v.get("status") == "rejected" and e.get("src")]
+    # A DEFERRAL KILLS THE MATRIX TILE, AND TWO CELLS CAN SHARE ONE. Deferring a source
+    # that another cell's verdict APPROVED deletes work the maintainer kept: measured, 18
+    # paving tiles are approved as one colour and rejected as the other. The rejected one
+    # still disappears - _rejected_keys() drops it from its own cell by key - so nothing
+    # is lost by declining to defer the shared source here.
+    keep = {e["src"] for k, v, e in hits
+            if v.get("status") == "approved" and e.get("src")}
+    spared = sorted(set(srcs) & keep)
+    if spared:
+        print(f"not deferring {len(spared)} source(s) approved in another cell "
+              f"(shared paving art); their rejected sibling is dropped by key")
+    srcs = [p for p in srcs if p not in keep]
+    # AND RELEASE THE ONES ALREADY HELD. The guard above stops new collisions; these
+    # were recorded before it existed and delete approved work on every run until
+    # undone. Only sources with a LIVE approval are released, and their rejected
+    # sibling still goes - by key, in its own cell.
+    freed = tombstones.undefer_tiles(sorted(
+        set(keep) | {p for v in _approved_sources().values() for p in v}))
+    if freed:
+        print(f"released {freed} approved source(s) wrongly deferred by a sibling cell's rejection")
     n = tombstones.defer_tiles(srcs) if srcs else 0
     # A VERDICT ON A LOCKED CELL MUST ALSO SHRINK THE LOCK. The lock pins a reviewed
     # cell's exact tile list so nothing sneaks in, and candidates() honours it over
@@ -150,6 +232,8 @@ def _save(im, path):
 # Wall score remains the RANKING term, which is where a metric with no threshold belongs.
 MIN_WALL = 1.0
 
+REJECTED_KEYS = set()
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MATRIX = os.path.join(ROOT, "matrix")
 REVIEW = os.path.join(ROOT, "review")
@@ -169,6 +253,7 @@ LOCK = _load_lock()
 
 
 def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
+               cell=None, rejected_keys=(),
                approved=(), lock=None):
     """Every tile in a cell, scored on its wall, best first.
 
@@ -193,6 +278,13 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
             # scarcest thing in this pipeline.
             rel = os.path.relpath(p, REPO)
             if rel in rejected:
+                continue
+            # BY KEY, WHICH IS PER CELL - see _rejected_keys(). The path test above is
+            # blind to which cell asked, so on shared paving art it either spares both
+            # or kills both; this one names exactly the tile the maintainer rejected.
+            if cell and rejected_keys and (
+                    f"tiles/{cell}/"
+                    f"{hashlib.sha1(rel.encode()).hexdigest()[:8]}") in rejected_keys:
                 continue
             # THE MAINTAINER OVERRULED THE FILTER ON THIS TILE. It publishes whatever the
             # gates think, and it sorts first, because they picked it out by hand from
@@ -420,9 +512,25 @@ def main():
     if args.clean and os.path.isdir(REVIEW):
         shutil.rmtree(REVIEW)
     os.makedirs(REVIEW, exist_ok=True)
+    global REJECTED_KEYS
+    REJECTED_KEYS = _rejected_keys()
+    if REJECTED_KEYS:
+        print(f"filtering {len(REJECTED_KEYS)} rejected tile key(s) from the maintainer's verdicts")
     dead = tombstones.load().get("cells", {})
     rejected = tombstones.rejected_tiles()
     approved = tombstones.approved_tiles()
+    # AN APPROVAL PINS, IT DOES NOT FORCE. Feeding wiki approvals into the override set
+    # instead was measured and reverted: an override bypasses the cap AND the gates, so
+    # the review set went 3990 -> 4432 and the cells failing the wall-material check
+    # went 5 -> 22. The maintainer approving a tile means "keep showing me this one",
+    # not "publish it past every filter". The lock is the mechanism that already means
+    # exactly that, so a lost approval is repaired there.
+    for _cell, _srcs in _approved_sources().items():
+        if _cell in LOCK:
+            _miss = [p for p in sorted(_srcs) if p not in LOCK[_cell]]
+            if _miss:
+                LOCK[_cell] = list(LOCK[_cell]) + _miss
+                print(f"re-pinned {len(_miss)} approved tile(s) into the {_cell} lock")
     if approved:
         print(f"honouring {len(approved)} maintainer override(s)")
     if rejected:
@@ -482,7 +590,8 @@ def main():
         cands, has_spill, right_wall, all_gates = candidates(
             d, (PALETTE.get(gate_side) or {}).get("top"), same=(gate_top == gate_side),
             rejected=rejected, top_hex_c=(PALETTE.get(gate_top) or {}).get("top"),
-            approved=approved, lock=LOCK.get(cell))
+            approved=approved, lock=LOCK.get(cell),
+            cell=cell, rejected_keys=REJECTED_KEYS)
         # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
         # maintainer picked these out of the reject pile by hand and truncating their
         # choices is not the cap's job — four approvals landed in grey_stone-over-lava

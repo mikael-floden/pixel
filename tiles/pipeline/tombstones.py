@@ -153,6 +153,30 @@ def defer_tiles(paths, reason="wall not good enough for the wall-visible set",
     return n
 
 
+def undefer_tiles(paths):
+    """Release sources from the deferred list. Returns how many were actually held.
+
+    SELF-HEALING, because the damage predates the guard. A deferral is written against
+    the MATRIX PATH and two published cells can share one, so rejecting brown paving
+    deferred art the maintainer had APPROVED as grey paving and it silently left the
+    review set. publish refuses to defer such a source now, but the ones already
+    recorded stay recorded and keep deleting approved work on every run - 11 of them
+    were still disappearing after the guard went in. Called with the live approvals on
+    each publish, this un-holds exactly those and nothing else.
+    """
+    doc = load()
+    d = doc.get("deferred") or {}
+    n = 0
+    for p in paths:
+        if p in d:
+            del d[p]
+            n += 1
+    if n:
+        doc["deferred"] = d
+        save(doc)
+    return n
+
+
 def reject_tiles(paths, reason="wiki reject"):
     """Alias kept so existing callers keep working. Defers; never deletes."""
     return defer_tiles(paths, reason=reason)
