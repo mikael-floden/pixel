@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-22T21:04:53+00:00",
+  "generated_at": "2026-08-22T21:18:39+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -4569,32 +4569,32 @@
         {
           "file": "nangijala_explore_day_stroll.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 2365547
+          "size_bytes": 2354542
         },
         {
           "file": "nangijala_explore_day_stroll.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 2705969
+          "size_bytes": 2686610
         }
       ],
-      "duration_s": 164.397,
+      "duration_s": 164.057,
       "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
-        "root": "A",
+        "root": "D",
         "mode": "major",
-        "confidence": 0.927,
+        "confidence": 0.885,
         "midi_pitch_classes": [
           1,
           2,
           4,
           6,
-          8,
+          7,
           9,
           11
         ],
         "sfx_safe_pitch_classes": [
-          1,
+          2,
           4,
           6,
           9,
@@ -4603,56 +4603,59 @@
       },
       "timing": {
         "bpm": 139.67,
-        "beat_anchor_s": 0.302,
-        "confidence": 0.405,
+        "beat_anchor_s": 0.418,
+        "confidence": 0.501,
         "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 55.826,
-        "loop_end_s": 124.366,
+        "loop_start_s": 53.812,
+        "loop_end_s": 149.371,
         "crossfade_ms": 900,
-        "score": 0.9376,
+        "score": 0.9224,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "lufs_in": -11.79,
-        "gain_db": -6.21,
-        "lufs_out": -18.0,
-        "true_peak_dbtp": -6.12
+        "trimmed_lead_s": 0.4,
+        "lufs_in": -12.81,
+        "gain_db": -5.19,
+        "lufs_out": -17.99,
+        "true_peak_dbtp": -4.44
       },
       "measured": {
         "duration_s": 164.4,
-        "lufs": -11.79,
-        "true_peak_dbtp": 0.09,
-        "lead_in_s": 0.0,
-        "tail_rms_ratio": 0.045,
-        "crest_db": 15.88,
-        "centroid_hz": 8105.9,
-        "stereo_corr": 0.937,
-        "silence_frac": 0.001
+        "lufs": -12.82,
+        "true_peak_dbtp": 0.74,
+        "lead_in_s": 0.4,
+        "tail_rms_ratio": 0.055,
+        "crest_db": 17.57,
+        "centroid_hz": 8121.7,
+        "stereo_corr": 0.811,
+        "silence_frac": 0.212
       },
       "faults": [
-        "harsh/bright (8106 Hz)",
-        "fades out at the end, loop avoids it (tail 0.04)"
+        "gaps (21.2% silent)",
+        "harsh/bright (8122 Hz)",
+        "fades out at the end, loop avoids it (tail 0.06)"
       ],
       "candidates_tried": [
         {
-          "score": 87.49,
+          "score": 61.73,
           "faults": [
-            "harsh/bright (8106 Hz)",
-            "fades out at the end, loop avoids it (tail 0.04)"
+            "gaps (21.2% silent)",
+            "harsh/bright (8122 Hz)",
+            "fades out at the end, loop avoids it (tail 0.06)"
           ],
           "duration_s": 164.4,
-          "lufs": -11.79,
-          "true_peak_dbtp": 0.09,
-          "lead_in_s": 0.0,
-          "tail_rms_ratio": 0.045,
-          "crest_db": 15.88,
-          "centroid_hz": 8105.9,
-          "stereo_corr": 0.937,
-          "silence_frac": 0.001,
-          "loop_score": 0.9452
+          "lufs": -12.82,
+          "true_peak_dbtp": 0.74,
+          "lead_in_s": 0.4,
+          "tail_rms_ratio": 0.055,
+          "crest_db": 17.57,
+          "centroid_hz": 8121.7,
+          "stereo_corr": 0.811,
+          "silence_frac": 0.212,
+          "loop_score": 0.9331
         }
       ],
       "sections": [
@@ -4660,8 +4663,8 @@
           "name": "Phrase 1",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "fiddle leads the dancing tune with a lilting bow",
             "same key throughout",
             "same tempo throughout",
@@ -4673,8 +4676,8 @@
           "name": "Phrase 2",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "button accordion takes the melody, fiddle holding a drone under it",
             "same key throughout",
             "same tempo throughout",
@@ -4686,8 +4689,8 @@
           "name": "Phrase 3",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "hammered dulcimer plays the tune in bright hammered runs",
             "same key throughout",
             "same tempo throughout",
@@ -4699,8 +4702,8 @@
           "name": "Phrase 4",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "fiddle and accordion in cheerful harmony a third apart",
             "same key throughout",
             "same tempo throughout",
@@ -4712,8 +4715,8 @@
           "name": "Phrase 5",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "accordion holds long chords while the fiddle plays around the tune",
             "same key throughout",
             "same tempo throughout",
@@ -4725,8 +4728,8 @@
           "name": "Phrase 6",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "melody thins to plucked strings and dulcimer, drum keeping the easy two",
             "same key throughout",
             "same tempo throughout",
@@ -4738,8 +4741,8 @@
           "name": "Phrase 7",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "whole band together on the tune, tambourine brightening the offbeats",
             "same key throughout",
             "same tempo throughout",
@@ -4751,8 +4754,8 @@
           "name": "Phrase 8",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "solo dulcimer with just the frame drum, sparse and twinkling",
             "same key throughout",
             "same tempo throughout",
@@ -4764,8 +4767,8 @@
           "name": "Phrase 9",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "fiddle leads the dancing tune with a lilting bow",
             "same key throughout",
             "same tempo throughout",
@@ -4777,8 +4780,8 @@
           "name": "Phrase 10",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "button accordion takes the melody, fiddle holding a drone under it",
             "same key throughout",
             "same tempo throughout",
@@ -4790,8 +4793,8 @@
           "name": "Phrase 11",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "hammered dulcimer plays the tune in bright hammered runs",
             "same key throughout",
             "same tempo throughout",
@@ -4803,8 +4806,8 @@
           "name": "Phrase 12",
           "duration_ms": 13714,
           "styles": [
-            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "stays in D major for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each \u2014 except that the last two bars come home to D, so every phrase BEGINS and ENDS on the D major chord with a low D in the bass",
             "fiddle and accordion in cheerful harmony a third apart",
             "same key throughout",
             "same tempo throughout",
@@ -4820,339 +4823,11 @@
         "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 11,
-        "beat_anchor_s": 0.302,
+        "beat_anchor_s": 0.418,
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
-      },
-      "versions": [
-        {
-          "version": 1,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_stroll__v01.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 2682611
-            },
-            {
-              "file": "pool/nangijala_explore_day_stroll__v01.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2431347
-            }
-          ],
-          "duration_s": 164.31,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "A",
-            "mode": "major",
-            "confidence": 0.888,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              8,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              1,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 12,
-            "in_key": 0,
-            "want": "D major",
-            "per_phrase": [
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.0
-          },
-          "own_key": {
-            "phrases": 12,
-            "in_key": 12,
-            "want": "A major",
-            "per_phrase": [
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 1.0
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 2,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_stroll__v02.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 2651515
-            },
-            {
-              "file": "pool/nangijala_explore_day_stroll__v02.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2548243
-            }
-          ],
-          "duration_s": 162.81,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "major",
-            "confidence": 0.837,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              7,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 11,
-            "in_key": 2,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor"
-            ],
-            "fraction": 0.182
-          },
-          "own_key": {
-            "phrases": 11,
-            "in_key": 2,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor",
-              "B minor"
-            ],
-            "fraction": 0.182
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 3,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_stroll__v03.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 2688918
-            },
-            {
-              "file": "pool/nangijala_explore_day_stroll__v03.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2167343
-            }
-          ],
-          "duration_s": 164.4,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "A",
-            "mode": "major",
-            "confidence": 0.857,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              8,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              1,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 12,
-            "in_key": 1,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.083
-          },
-          "own_key": {
-            "phrases": 12,
-            "in_key": 11,
-            "want": "A major",
-            "per_phrase": [
-              "D major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.917
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 4,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_stroll__v04.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 2705969
-            },
-            {
-              "file": "pool/nangijala_explore_day_stroll__v04.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2365547
-            }
-          ],
-          "duration_s": 164.4,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "A",
-            "mode": "major",
-            "confidence": 0.934,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              8,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              1,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 12,
-            "in_key": 1,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "F# minor",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.083
-          },
-          "own_key": {
-            "phrases": 12,
-            "in_key": 10,
-            "want": "A major",
-            "per_phrase": [
-              "D major",
-              "F# minor",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.833
-          },
-          "usable": false,
-          "live": true
-        }
-      ]
+      }
     },
     "nangijala_explore_night_lantern": {
       "id": "nangijala_explore_night_lantern",
@@ -8053,21 +7728,21 @@
         {
           "file": "nangijala_explore_day_choir.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 2124938
+          "size_bytes": 2032783
         },
         {
           "file": "nangijala_explore_day_choir.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 2532550
+          "size_bytes": 2620709
         }
       ],
-      "duration_s": 157.607,
-      "bpm": 123.05,
+      "duration_s": 161.307,
+      "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
         "root": "D",
         "mode": "major",
-        "confidence": 0.85,
+        "confidence": 0.879,
         "midi_pitch_classes": [
           1,
           2,
@@ -8086,60 +7761,58 @@
         ]
       },
       "timing": {
-        "bpm": 123.05,
-        "beat_anchor_s": 0.476,
-        "confidence": 0.626,
-        "raw_bpm": 184.57
+        "bpm": 139.67,
+        "beat_anchor_s": 0.267,
+        "confidence": 0.65,
+        "raw_bpm": 69.84
       },
       "loop": {
-        "loop_start_s": 43.054,
-        "loop_end_s": 139.477,
+        "loop_start_s": 40.702,
+        "loop_end_s": 150.391,
         "crossfade_ms": 900,
-        "score": 0.9491,
+        "score": 0.952,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 6.85,
-        "lufs_in": -10.06,
-        "gain_db": -7.94,
+        "trimmed_lead_s": 3.15,
+        "lufs_in": -9.62,
+        "gain_db": -8.38,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -8.0
+        "true_peak_dbtp": -8.35
       },
       "measured": {
         "duration_s": 164.4,
-        "lufs": -10.06,
-        "true_peak_dbtp": -0.06,
-        "lead_in_s": 6.85,
-        "tail_rms_ratio": 0.0,
-        "crest_db": 14.54,
-        "centroid_hz": 5884.7,
-        "stereo_corr": 0.116,
-        "silence_frac": 0.075
+        "lufs": -9.62,
+        "true_peak_dbtp": 0.03,
+        "lead_in_s": 3.15,
+        "tail_rms_ratio": 0.169,
+        "crest_db": 14.42,
+        "centroid_hz": 6303.0,
+        "stereo_corr": 0.18,
+        "silence_frac": 0.019
       },
       "faults": [
-        "slow start (6.85s)",
-        "gaps (7.5% silent)",
-        "fades out at the end, loop avoids it (tail 0.00)"
+        "slow start (3.15s)",
+        "fades out at the end, loop avoids it (tail 0.17)"
       ],
       "candidates_tried": [
         {
-          "score": 55.75,
+          "score": 69.15,
           "faults": [
-            "slow start (6.85s)",
-            "gaps (7.5% silent)",
-            "fades out at the end, loop avoids it (tail 0.00)"
+            "slow start (3.15s)",
+            "fades out at the end, loop avoids it (tail 0.17)"
           ],
           "duration_s": 164.4,
-          "lufs": -10.06,
-          "true_peak_dbtp": -0.06,
-          "lead_in_s": 6.85,
-          "tail_rms_ratio": 0.0,
-          "crest_db": 14.54,
-          "centroid_hz": 5884.7,
-          "stereo_corr": 0.116,
-          "silence_frac": 0.075,
-          "loop_score": 0.9637
+          "lufs": -9.62,
+          "true_peak_dbtp": 0.03,
+          "lead_in_s": 3.15,
+          "tail_rms_ratio": 0.169,
+          "crest_db": 14.42,
+          "centroid_hz": 6303.0,
+          "stereo_corr": 0.18,
+          "silence_frac": 0.019,
+          "loop_score": 0.967
         }
       ],
       "sections": [
@@ -8302,140 +7975,16 @@
       ],
       "source_format": "pcm_44100",
       "phrase": {
-        "phrase_ms": 13714,
+        "phrase_ms": 13746,
         "phrase_ms_asked": 13714,
-        "bpm_measured": 123.05,
+        "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 11,
-        "beat_anchor_s": 0.476,
+        "beat_anchor_s": 0.267,
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
-      },
-      "versions": [
-        {
-          "version": 1,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_choir__v01.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 3202
-            },
-            {
-              "file": "pool/nangijala_explore_day_choir__v01.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2931
-            }
-          ],
-          "duration_s": 0.12,
-          "bpm": null,
-          "asked_bpm": 140,
-          "musical": {
-            "root": null,
-            "mode": null,
-            "confidence": 0.0,
-            "midi_pitch_classes": null,
-            "sfx_safe_pitch_classes": null
-          },
-          "bars": 0.0,
-          "phrase_key": {
-            "phrases": 0,
-            "in_key": 0,
-            "want": "D major",
-            "per_phrase": [],
-            "fraction": 0.0
-          },
-          "own_key": {
-            "phrases": 0,
-            "in_key": 0,
-            "want": "None None",
-            "per_phrase": [],
-            "fraction": 0.0
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 2,
-          "files": [
-            {
-              "file": "pool/nangijala_explore_day_choir__v02.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 2532550
-            },
-            {
-              "file": "pool/nangijala_explore_day_choir__v02.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 2124938
-            }
-          ],
-          "duration_s": 157.61,
-          "bpm": 125.0,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "major",
-            "confidence": 0.854,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              7,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 7.14,
-          "phrase_key": {
-            "phrases": 11,
-            "in_key": 10,
-            "want": "D major",
-            "per_phrase": [
-              "E minor",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major"
-            ],
-            "fraction": 0.909
-          },
-          "own_key": {
-            "phrases": 11,
-            "in_key": 10,
-            "want": "D major",
-            "per_phrase": [
-              "E minor",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major",
-              "D major"
-            ],
-            "fraction": 0.909
-          },
-          "usable": false,
-          "live": true
-        }
-      ]
+      }
     },
     "nangijala_combat_fanfare": {
       "id": "nangijala_combat_fanfare",
@@ -8699,32 +8248,32 @@
         {
           "file": "nangijala_combat_reel.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1153652
+          "size_bytes": 1183671
         },
         {
           "file": "nangijala_combat_reel.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 1371670
+          "size_bytes": 1350687
         }
       ],
       "duration_s": 82.199,
       "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
-        "root": "D",
+        "root": "A",
         "mode": "major",
-        "confidence": 0.898,
+        "confidence": 0.807,
         "midi_pitch_classes": [
           1,
           2,
           4,
           6,
-          7,
+          8,
           9,
           11
         ],
         "sfx_safe_pitch_classes": [
-          2,
+          1,
           4,
           6,
           9,
@@ -8733,54 +8282,56 @@
       },
       "timing": {
         "bpm": 139.67,
-        "beat_anchor_s": 0.395,
-        "confidence": 0.795,
+        "beat_anchor_s": 0.29,
+        "confidence": 0.59,
         "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 15.288,
-        "loop_end_s": 74.433,
+        "loop_start_s": 26.788,
+        "loop_end_s": 67.933,
         "crossfade_ms": 900,
-        "score": 0.8963,
+        "score": 0.9401,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "lufs_in": -11.12,
-        "gain_db": -6.88,
+        "lufs_in": -9.95,
+        "gain_db": -8.05,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -7.14
+        "true_peak_dbtp": -8.39
       },
       "measured": {
         "duration_s": 82.2,
-        "lufs": -11.12,
-        "true_peak_dbtp": -0.26,
+        "lufs": -9.95,
+        "true_peak_dbtp": -0.34,
         "lead_in_s": 0.0,
-        "tail_rms_ratio": 1.121,
-        "crest_db": 13.86,
-        "centroid_hz": 7689.5,
-        "stereo_corr": 0.983,
-        "silence_frac": 0.0
+        "tail_rms_ratio": 0.0,
+        "crest_db": 13.08,
+        "centroid_hz": 8357.1,
+        "stereo_corr": 0.987,
+        "silence_frac": 0.019
       },
       "faults": [
-        "harsh/bright (7690 Hz)"
+        "harsh/bright (8357 Hz)",
+        "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 80.53,
+          "score": 80.15,
           "faults": [
-            "harsh/bright (7690 Hz)"
+            "harsh/bright (8357 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 82.2,
-          "lufs": -11.12,
-          "true_peak_dbtp": -0.26,
+          "lufs": -9.95,
+          "true_peak_dbtp": -0.34,
           "lead_in_s": 0.0,
-          "tail_rms_ratio": 1.121,
-          "crest_db": 13.86,
-          "centroid_hz": 7689.5,
-          "stereo_corr": 0.983,
-          "silence_frac": 0.0,
-          "loop_score": 0.9171
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.08,
+          "centroid_hz": 8357.1,
+          "stereo_corr": 0.987,
+          "silence_frac": 0.019,
+          "loop_score": 0.9512
         }
       ],
       "sections": [
@@ -8870,153 +8421,11 @@
         "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 5,
-        "beat_anchor_s": 0.395,
+        "beat_anchor_s": 0.29,
         "suite": "nangijala",
         "pool": "combat",
         "key_asked": "stays in D major for the entire piece"
-      },
-      "versions": [
-        {
-          "version": 1,
-          "files": [
-            {
-              "file": "pool/nangijala_combat_reel__v01.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 1344013
-            },
-            {
-              "file": "pool/nangijala_combat_reel__v01.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 1190756
-            }
-          ],
-          "duration_s": 82.01,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "major",
-            "confidence": 0.852,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              7,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 6,
-            "in_key": 4,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "B minor",
-              "D major",
-              "B minor",
-              "D major"
-            ],
-            "fraction": 0.667
-          },
-          "own_key": {
-            "phrases": 6,
-            "in_key": 4,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "B minor",
-              "D major",
-              "B minor",
-              "D major"
-            ],
-            "fraction": 0.667
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 2,
-          "files": [
-            {
-              "file": "pool/nangijala_combat_reel__v02.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 1371670
-            },
-            {
-              "file": "pool/nangijala_combat_reel__v02.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 1153652
-            }
-          ],
-          "duration_s": 82.2,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "major",
-            "confidence": 0.852,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              7,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 6,
-            "in_key": 4,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "A major",
-              "D major",
-              "A major",
-              "D major"
-            ],
-            "fraction": 0.667
-          },
-          "own_key": {
-            "phrases": 6,
-            "in_key": 4,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "A major",
-              "D major",
-              "A major",
-              "D major"
-            ],
-            "fraction": 0.667
-          },
-          "usable": false,
-          "live": true
-        }
-      ]
+      }
     },
     "nangijala_combat_choir": {
       "id": "nangijala_combat_choir",
@@ -9862,92 +9271,91 @@
         {
           "file": "nangijala_boss_elegy.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 1158173
+          "size_bytes": 1183012
         },
         {
           "file": "nangijala_boss_elegy.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 1337829
+          "size_bytes": 1305758
         }
       ],
-      "duration_s": 82.199,
+      "duration_s": 80.559,
       "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
         "root": "A",
-        "mode": "major",
-        "confidence": 0.675,
+        "mode": "minor",
+        "confidence": 0.745,
         "midi_pitch_classes": [
-          1,
+          0,
           2,
           4,
-          6,
-          8,
+          5,
+          7,
           9,
           11
         ],
         "sfx_safe_pitch_classes": [
-          1,
+          0,
           4,
-          6,
+          5,
           9,
           11
         ]
       },
       "timing": {
         "bpm": 139.67,
-        "beat_anchor_s": 0.395,
-        "confidence": 0.762,
+        "beat_anchor_s": 0.383,
+        "confidence": 0.844,
         "raw_bpm": 139.67
       },
       "loop": {
-        "loop_start_s": 25.788,
-        "loop_end_s": 63.933,
+        "loop_start_s": 17.222,
+        "loop_end_s": 77.252,
         "crossfade_ms": 900,
-        "score": 0.9092,
+        "score": 0.9588,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "lufs_in": -11.58,
-        "gain_db": -6.42,
+        "trimmed_lead_s": 1.7,
+        "lufs_in": -11.7,
+        "gain_db": -6.3,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -7.4
+        "true_peak_dbtp": -7.19
       },
       "measured": {
         "duration_s": 82.2,
-        "lufs": -11.58,
-        "true_peak_dbtp": -0.99,
-        "lead_in_s": 0.0,
+        "lufs": -11.71,
+        "true_peak_dbtp": -0.9,
+        "lead_in_s": 1.7,
         "tail_rms_ratio": 0.0,
-        "crest_db": 13.75,
-        "centroid_hz": 7351.6,
-        "stereo_corr": 0.619,
-        "silence_frac": 0.063
+        "crest_db": 14.67,
+        "centroid_hz": 4684.7,
+        "stereo_corr": 0.461,
+        "silence_frac": 0.048
       },
       "faults": [
-        "gaps (6.3% silent)",
-        "harsh/bright (7352 Hz)",
+        "slow start (1.70s)",
         "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 76.88,
+          "score": 70.8,
           "faults": [
-            "gaps (6.3% silent)",
-            "harsh/bright (7352 Hz)",
+            "slow start (1.70s)",
             "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 82.2,
-          "lufs": -11.58,
-          "true_peak_dbtp": -0.99,
-          "lead_in_s": 0.0,
+          "lufs": -11.71,
+          "true_peak_dbtp": -0.9,
+          "lead_in_s": 1.7,
           "tail_rms_ratio": 0.0,
-          "crest_db": 13.75,
-          "centroid_hz": 7351.6,
-          "stereo_corr": 0.619,
-          "silence_frac": 0.063,
-          "loop_score": 0.9278
+          "crest_db": 14.67,
+          "centroid_hz": 4684.7,
+          "stereo_corr": 0.461,
+          "silence_frac": 0.048,
+          "loop_score": 0.9657
         }
       ],
       "sections": [
@@ -9955,8 +9363,8 @@
           "name": "Phrase 1",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "the low folk fiddle sings the lament alone over held strings",
             "same key throughout",
             "same tempo throughout",
@@ -9968,8 +9376,8 @@
           "name": "Phrase 2",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "a low wooden flute takes the lament while the fiddle rests",
             "same key throughout",
             "same tempo throughout",
@@ -9981,8 +9389,8 @@
           "name": "Phrase 3",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "noble horns carry the melody in slow, broad unison",
             "same key throughout",
             "same tempo throughout",
@@ -9994,8 +9402,8 @@
           "name": "Phrase 4",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "the far-off wordless female voice sings the lament over the string bed",
             "same key throughout",
             "same tempo throughout",
@@ -10007,8 +9415,8 @@
           "name": "Phrase 5",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "cellos in octaves sing the lament with the heartbeat drum beneath",
             "same key throughout",
             "same tempo throughout",
@@ -10020,8 +9428,8 @@
           "name": "Phrase 6",
           "duration_ms": 13714,
           "styles": [
-            "stays in D minor for the entire piece, home note D, one constant tempo of 140 BPM",
-            "the same D minor cycle under every phrase: Dm, Bb, Gm, A \u2014 two bars each, starting on Dm, ending on the dominant A",
+            "stays in D minor for the entire piece, home note D, every phrase ends on the note D, one constant tempo of 140 BPM",
+            "the same D minor cycle under every phrase: Dm, B-flat, Gm, A \u2014 two bars each \u2014 except that the last two bars come home to Dm, so every phrase BEGINS and ENDS on the D minor chord with a low D in the bass",
             "the full string orchestra swells the melody in long bowed lines",
             "same key throughout",
             "same tempo throughout",
@@ -10037,151 +9445,11 @@
         "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 5,
-        "beat_anchor_s": 0.395,
+        "beat_anchor_s": 0.383,
         "suite": "nangijala",
         "pool": "boss",
         "key_asked": "stays in D minor for the entire piece"
-      },
-      "versions": [
-        {
-          "version": 1,
-          "files": [
-            {
-              "file": "pool/nangijala_boss_elegy__v01.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 1170491
-            },
-            {
-              "file": "pool/nangijala_boss_elegy__v01.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 1014421
-            }
-          ],
-          "duration_s": 72.01,
-          "bpm": 125.0,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "minor",
-            "confidence": 0.88,
-            "midi_pitch_classes": [
-              0,
-              2,
-              4,
-              5,
-              7,
-              9,
-              10
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              5,
-              9,
-              10
-            ]
-          },
-          "bars": 7.14,
-          "phrase_key": {
-            "phrases": 5,
-            "in_key": 4,
-            "want": "D minor",
-            "per_phrase": [
-              "D minor",
-              "D major",
-              "D minor",
-              "D minor",
-              "D minor"
-            ],
-            "fraction": 0.8
-          },
-          "own_key": {
-            "phrases": 5,
-            "in_key": 4,
-            "want": "D minor",
-            "per_phrase": [
-              "D minor",
-              "D major",
-              "D minor",
-              "D minor",
-              "D minor"
-            ],
-            "fraction": 0.8
-          },
-          "usable": false,
-          "live": false
-        },
-        {
-          "version": 2,
-          "files": [
-            {
-              "file": "pool/nangijala_boss_elegy__v02.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 1337829
-            },
-            {
-              "file": "pool/nangijala_boss_elegy__v02.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 1158173
-            }
-          ],
-          "duration_s": 82.2,
-          "bpm": 140.62,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "A",
-            "mode": "major",
-            "confidence": 0.666,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              8,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              1,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 8.0,
-          "phrase_key": {
-            "phrases": 6,
-            "in_key": 1,
-            "want": "D minor",
-            "per_phrase": [
-              "D minor",
-              "D major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.167
-          },
-          "own_key": {
-            "phrases": 6,
-            "in_key": 4,
-            "want": "A major",
-            "per_phrase": [
-              "D minor",
-              "D major",
-              "A major",
-              "A major",
-              "A major",
-              "A major"
-            ],
-            "fraction": 0.667
-          },
-          "usable": false,
-          "live": true
-        }
-      ]
+      }
     },
     "nangijala_idle_hearth": {
       "id": "nangijala_idle_hearth",
@@ -10417,21 +9685,21 @@
         {
           "file": "nangijala_idle_choir.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 716948
+          "size_bytes": 782748
         },
         {
           "file": "nangijala_idle_choir.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 837462
+          "size_bytes": 866157
         }
       ],
-      "duration_s": 51.459,
+      "duration_s": 53.959,
       "bpm": 123.05,
       "asked_bpm": 140,
       "musical": {
         "root": "D",
         "mode": "major",
-        "confidence": 0.861,
+        "confidence": 0.816,
         "midi_pitch_classes": [
           1,
           2,
@@ -10451,61 +9719,61 @@
       },
       "timing": {
         "bpm": 123.05,
-        "beat_anchor_s": 0.093,
-        "confidence": 0.836,
+        "beat_anchor_s": 0.255,
+        "confidence": 0.751,
         "raw_bpm": 184.57
       },
       "loop": {
-        "loop_start_s": 13.558,
-        "loop_end_s": 41.801,
+        "loop_start_s": 11.408,
+        "loop_end_s": 38.851,
         "crossfade_ms": 900,
-        "score": 0.9036,
+        "score": 0.9414,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 3.4,
-        "lufs_in": -12.39,
-        "gain_db": -5.61,
+        "trimmed_lead_s": 0.9,
+        "lufs_in": -10.09,
+        "gain_db": -7.91,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -5.57
+        "true_peak_dbtp": -8.12
       },
       "measured": {
         "duration_s": 54.8,
-        "lufs": -12.37,
-        "true_peak_dbtp": 0.04,
-        "lead_in_s": 3.4,
+        "lufs": -10.08,
+        "true_peak_dbtp": -0.21,
+        "lead_in_s": 0.9,
         "tail_rms_ratio": 0.0,
-        "crest_db": 16.91,
-        "centroid_hz": 7782.6,
-        "stereo_corr": 0.723,
-        "silence_frac": 0.231
+        "crest_db": 13.16,
+        "centroid_hz": 7759.5,
+        "stereo_corr": 0.658,
+        "silence_frac": 0.094
       },
       "faults": [
-        "slow start (3.40s)",
-        "gaps (23.1% silent)",
-        "harsh/bright (7783 Hz)",
+        "slow start (0.90s)",
+        "gaps (9.4% silent)",
+        "harsh/bright (7760 Hz)",
         "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 52.0,
+          "score": 56.81,
           "faults": [
-            "slow start (3.40s)",
-            "gaps (23.1% silent)",
-            "harsh/bright (7783 Hz)",
+            "slow start (0.90s)",
+            "gaps (9.4% silent)",
+            "harsh/bright (7760 Hz)",
             "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 54.8,
-          "lufs": -12.37,
-          "true_peak_dbtp": 0.04,
-          "lead_in_s": 3.4,
+          "lufs": -10.08,
+          "true_peak_dbtp": -0.21,
+          "lead_in_s": 0.9,
           "tail_rms_ratio": 0.0,
-          "crest_db": 16.91,
-          "centroid_hz": 7782.6,
-          "stereo_corr": 0.723,
-          "silence_frac": 0.231,
-          "loop_score": 0.9234
+          "crest_db": 13.16,
+          "centroid_hz": 7759.5,
+          "stereo_corr": 0.658,
+          "silence_frac": 0.094,
+          "loop_score": 0.9341
         }
       ],
       "sections": [
@@ -10569,77 +9837,11 @@
         "bpm_measured": 123.05,
         "bars": 8,
         "phrases": 3,
-        "beat_anchor_s": 0.093,
+        "beat_anchor_s": 0.255,
         "suite": "nangijala",
         "pool": "idle",
         "key_asked": "stays in D major for the entire piece"
-      },
-      "versions": [
-        {
-          "version": 1,
-          "files": [
-            {
-              "file": "pool/nangijala_idle_choir__v01.m4a",
-              "mime": "audio/mp4",
-              "size_bytes": 837462
-            },
-            {
-              "file": "pool/nangijala_idle_choir__v01.ogg",
-              "mime": "audio/ogg; codecs=\"opus\"",
-              "size_bytes": 716948
-            }
-          ],
-          "duration_s": 51.46,
-          "bpm": 125.0,
-          "asked_bpm": 140,
-          "musical": {
-            "root": "D",
-            "mode": "major",
-            "confidence": 0.868,
-            "midi_pitch_classes": [
-              1,
-              2,
-              4,
-              6,
-              7,
-              9,
-              11
-            ],
-            "sfx_safe_pitch_classes": [
-              2,
-              4,
-              6,
-              9,
-              11
-            ]
-          },
-          "bars": 7.14,
-          "phrase_key": {
-            "phrases": 3,
-            "in_key": 3,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "D major"
-            ],
-            "fraction": 1.0
-          },
-          "own_key": {
-            "phrases": 3,
-            "in_key": 3,
-            "want": "D major",
-            "per_phrase": [
-              "D major",
-              "D major",
-              "D major"
-            ],
-            "fraction": 1.0
-          },
-          "usable": false,
-          "live": true
-        }
-      ]
+      }
     },
     "nangijala_idle_meadow": {
       "id": "nangijala_idle_meadow",
@@ -11324,6 +10526,1493 @@
           "live": true
         }
       ]
+    },
+    "nangijala_arrive_whistle": {
+      "id": "nangijala_arrive_whistle",
+      "files": [
+        {
+          "file": "nangijala_arrive_whistle.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 821028
+        },
+        {
+          "file": "nangijala_arrive_whistle.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 890665
+        }
+      ],
+      "duration_s": 54.799,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.89,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.372,
+        "confidence": 0.637,
+        "raw_bpm": 139.67
+      },
+      "loop": {
+        "loop_start_s": 3.692,
+        "loop_end_s": 44.955,
+        "crossfade_ms": 900,
+        "score": 0.9108,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -13.29,
+        "gain_db": -4.71,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.85
+      },
+      "measured": {
+        "duration_s": 54.8,
+        "lufs": -13.29,
+        "true_peak_dbtp": -1.14,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.65,
+        "centroid_hz": 6151.1,
+        "stereo_corr": 0.936,
+        "silence_frac": 0.038
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 85.51,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 54.8,
+          "lufs": -13.29,
+          "true_peak_dbtp": -1.14,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.65,
+          "centroid_hz": 6151.1,
+          "stereo_corr": 0.936,
+          "silence_frac": 0.038,
+          "loop_score": 0.9128
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "solo tin whistle carries the melody alone over fingerpicked guitar and a held string pad",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "low wooden flute takes the same tune an octave down, breathy and close, dulcimer rolling under it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "hammered dulcimer states the melody in soft tremolo while the whistle rests and the guitar keeps the pulse",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same D major cycle under every phrase: D, Bm, G, A \u2014 two bars each, starting on D, ending on the dominant A",
+            "fiddle and tin whistle sing the line together in close warm thirds",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 3,
+        "beat_anchor_s": 0.372,
+        "suite": "nangijala",
+        "pool": "arrive",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "hole_deep_driftlight": {
+      "id": "hole_deep_driftlight",
+      "files": [
+        {
+          "file": "hole_deep_driftlight.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 2956981
+        },
+        {
+          "file": "hole_deep_driftlight.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 3570855
+        }
+      ],
+      "duration_s": 219.997,
+      "bpm": 98.44,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.889,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 98.44,
+        "beat_anchor_s": 0.221,
+        "confidence": 0.87,
+        "raw_bpm": 147.66
+      },
+      "loop": {
+        "loop_start_s": 72.05,
+        "loop_end_s": 212.648,
+        "crossfade_ms": 900,
+        "score": 0.9797,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 20.25,
+        "lufs_in": -19.99,
+        "gain_db": 1.99,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -2.33
+      },
+      "measured": {
+        "duration_s": 240.19,
+        "lufs": -19.99,
+        "true_peak_dbtp": -3.9,
+        "lead_in_s": 20.25,
+        "tail_rms_ratio": 1.743,
+        "crest_db": 18.3,
+        "centroid_hz": 6765.0,
+        "stereo_corr": 0.434,
+        "silence_frac": 0.188
+      },
+      "faults": [
+        "slow start (20.25s)",
+        "gaps (18.8% silent)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 54.26,
+          "faults": [
+            "slow start (20.25s)",
+            "gaps (18.8% silent)"
+          ],
+          "duration_s": 240.19,
+          "lufs": -19.99,
+          "true_peak_dbtp": -3.9,
+          "lead_in_s": 20.25,
+          "tail_rms_ratio": 1.743,
+          "crest_db": 18.3,
+          "centroid_hz": 6765.0,
+          "stereo_corr": 0.434,
+          "silence_frac": 0.188,
+          "loop_score": 0.9402
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "glass harmonica",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "solo cello",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "celesta",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "marimba",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass flute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless soprano",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "glass harmonica",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "solo cello",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 9",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "celesta",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 10",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "marimba",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 11",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass flute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 12",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless soprano",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 19504,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 98.44,
+        "bars": 8,
+        "phrases": 11,
+        "beat_anchor_s": 0.221,
+        "suite": "hole",
+        "pool": "deep",
+        "key_asked": "stays in C minor for the entire piece"
+      }
+    },
+    "hole_deep_ropewalk": {
+      "id": "hole_deep_ropewalk",
+      "files": [
+        {
+          "file": "hole_deep_ropewalk.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 2950941
+        },
+        {
+          "file": "hole_deep_ropewalk.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 3664141
+        }
+      ],
+      "duration_s": 225.297,
+      "bpm": 95.7,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "major",
+        "confidence": 0.736,
+        "midi_pitch_classes": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          4,
+          7,
+          9
+        ]
+      },
+      "timing": {
+        "bpm": 95.7,
+        "beat_anchor_s": 0.36,
+        "confidence": 0.692,
+        "raw_bpm": 95.7
+      },
+      "loop": {
+        "loop_start_s": 28.012,
+        "loop_end_s": 201.214,
+        "crossfade_ms": 900,
+        "score": 0.9412,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 14.95,
+        "lufs_in": -15.99,
+        "gain_db": -2.01,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -2.98
+      },
+      "measured": {
+        "duration_s": 240.19,
+        "lufs": -15.98,
+        "true_peak_dbtp": -0.97,
+        "lead_in_s": 14.95,
+        "tail_rms_ratio": 0.963,
+        "crest_db": 15.67,
+        "centroid_hz": 7322.8,
+        "stereo_corr": 0.964,
+        "silence_frac": 0.091
+      },
+      "faults": [
+        "slow start (14.95s)",
+        "gaps (9.1% silent)",
+        "harsh/bright (7323 Hz)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 46.78,
+          "faults": [
+            "slow start (14.95s)",
+            "gaps (9.1% silent)",
+            "harsh/bright (7323 Hz)"
+          ],
+          "duration_s": 240.19,
+          "lufs": -15.98,
+          "true_peak_dbtp": -0.97,
+          "lead_in_s": 14.95,
+          "tail_rms_ratio": 0.963,
+          "crest_db": 15.67,
+          "centroid_hz": 7322.8,
+          "stereo_corr": 0.964,
+          "silence_frac": 0.091,
+          "loop_score": 0.9204
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass clarinet",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "pizzicato bass",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass zither",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "hand drum",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "alto flute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "muted trumpet",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass clarinet",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "pizzicato bass",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 9",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass zither",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 10",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "hand drum",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 11",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "alto flute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 12",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "muted trumpet",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 20063,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 95.7,
+        "bars": 8,
+        "phrases": 11,
+        "beat_anchor_s": 0.36,
+        "suite": "hole",
+        "pool": "deep",
+        "key_asked": "stays in C minor for the entire piece"
+      }
+    },
+    "hole_deep_thinning": {
+      "id": "hole_deep_thinning",
+      "files": [
+        {
+          "file": "hole_deep_thinning.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 2940627
+        },
+        {
+          "file": "hole_deep_thinning.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 3652102
+        }
+      ],
+      "duration_s": 237.747,
+      "bpm": 92.29,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.782,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 92.29,
+        "beat_anchor_s": 0.441,
+        "confidence": 0.795,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 74.26,
+        "loop_end_s": 174.178,
+        "crossfade_ms": 900,
+        "score": 0.9526,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 2.5,
+        "lufs_in": -11.16,
+        "gain_db": -6.84,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.22
+      },
+      "measured": {
+        "duration_s": 240.19,
+        "lufs": -11.17,
+        "true_peak_dbtp": -0.38,
+        "lead_in_s": 2.5,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 15.59,
+        "centroid_hz": 5004.5,
+        "stereo_corr": 0.344,
+        "silence_frac": 0.163
+      },
+      "faults": [
+        "slow start (2.50s)",
+        "gaps (16.3% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (2.50s)",
+            "gaps (16.3% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 240.19,
+          "lufs": -11.17,
+          "true_peak_dbtp": -0.38,
+          "lead_in_s": 2.5,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 15.59,
+          "centroid_hz": 5004.5,
+          "stereo_corr": 0.344,
+          "silence_frac": 0.163,
+          "loop_score": 0.9569
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "solo violin",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "string orchestra",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "cor anglais",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless choir",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "harp",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "french horn",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "solo violin",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "string orchestra",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 9",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "cor anglais",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 10",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless choir",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 11",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "harp",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 12",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "french horn",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 20804,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 92.29,
+        "bars": 8,
+        "phrases": 11,
+        "beat_anchor_s": 0.441,
+        "suite": "hole",
+        "pool": "deep",
+        "key_asked": "stays in C minor for the entire piece"
+      }
+    },
+    "hole_masks_elevensmiles": {
+      "id": "hole_masks_elevensmiles",
+      "files": [
+        {
+          "file": "hole_masks_elevensmiles.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1970027
+        },
+        {
+          "file": "hole_masks_elevensmiles.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 2269287
+        }
+      ],
+      "duration_s": 139.969,
+      "bpm": 101.33,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.843,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 101.33,
+        "beat_anchor_s": 0.186,
+        "confidence": 0.484,
+        "raw_bpm": 152.0
+      },
+      "loop": {
+        "loop_start_s": 44.349,
+        "loop_end_s": 115.028,
+        "crossfade_ms": 900,
+        "score": 0.9532,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.2,
+        "lufs_in": -11.69,
+        "gain_db": -6.31,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -6.78
+      },
+      "measured": {
+        "duration_s": 140.11,
+        "lufs": -11.69,
+        "true_peak_dbtp": -0.48,
+        "lead_in_s": 0.2,
+        "tail_rms_ratio": 0.001,
+        "crest_db": 15.07,
+        "centroid_hz": 5421.1,
+        "stereo_corr": 0.255,
+        "silence_frac": 0.015
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 91.75,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 140.11,
+          "lufs": -11.69,
+          "true_peak_dbtp": -0.48,
+          "lead_in_s": 0.2,
+          "tail_rms_ratio": 0.001,
+          "crest_db": 15.07,
+          "centroid_hz": 5421.1,
+          "stereo_corr": 0.255,
+          "silence_frac": 0.015,
+          "loop_score": 0.9615
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "viola da gamba",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "lute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "recorder",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "harpsichord",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "glass harmonica",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "viola da gamba",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "lute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 18948,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 101.33,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.186,
+        "suite": "hole",
+        "pool": "masks",
+        "key_asked": "stays in C minor for the entire piece"
+      }
+    },
+    "hole_hunger_politely": {
+      "id": "hole_hunger_politely",
+      "files": [
+        {
+          "file": "hole_hunger_politely.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1418885
+        },
+        {
+          "file": "hole_hunger_politely.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1909599
+        }
+      ],
+      "duration_s": 117.704,
+      "bpm": 95.7,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.882,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 95.7,
+        "beat_anchor_s": 0.464,
+        "confidence": 0.814,
+        "raw_bpm": 95.7
+      },
+      "loop": {
+        "loop_start_s": 37.458,
+        "loop_end_s": 99.997,
+        "crossfade_ms": 900,
+        "score": 0.9516,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 2.45,
+        "lufs_in": -13.49,
+        "gain_db": -4.51,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.26
+      },
+      "measured": {
+        "duration_s": 120.09,
+        "lufs": -13.49,
+        "true_peak_dbtp": -0.75,
+        "lead_in_s": 2.45,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.85,
+        "centroid_hz": 5260.0,
+        "stereo_corr": 0.41,
+        "silence_frac": 0.086
+      },
+      "faults": [
+        "slow start (2.45s)",
+        "gaps (8.6% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 60.0,
+          "faults": [
+            "slow start (2.45s)",
+            "gaps (8.6% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 120.09,
+          "lufs": -13.49,
+          "true_peak_dbtp": -0.75,
+          "lead_in_s": 2.45,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.85,
+          "centroid_hz": 5260.0,
+          "stereo_corr": 0.41,
+          "silence_frac": 0.086,
+          "loop_score": 0.9512
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "low strings",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "french horns",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless choir",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "timpani",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass trombone",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "low strings",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 20063,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 95.7,
+        "bars": 8,
+        "phrases": 5,
+        "beat_anchor_s": 0.464,
+        "suite": "hole",
+        "pool": "hunger",
+        "key_asked": "stays in C minor for the entire piece"
+      }
+    },
+    "hole_descend_threshold": {
+      "id": "hole_descend_threshold",
+      "files": [
+        {
+          "file": "hole_descend_threshold.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 621255
+        },
+        {
+          "file": "hole_descend_threshold.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 784681
+        }
+      ],
+      "duration_s": 49.957,
+      "bpm": 95.7,
+      "asked_bpm": 96,
+      "musical": {
+        "root": "C",
+        "mode": "minor",
+        "confidence": 0.783,
+        "midi_pitch_classes": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ],
+        "sfx_safe_pitch_classes": [
+          0,
+          2,
+          3,
+          7,
+          8
+        ]
+      },
+      "timing": {
+        "bpm": 95.7,
+        "beat_anchor_s": 0.464,
+        "confidence": 0.59,
+        "raw_bpm": 95.7
+      },
+      "loop": {
+        "loop_start_s": 7.748,
+        "loop_end_s": 38.969,
+        "crossfade_ms": 900,
+        "score": 0.8909,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 10.15,
+        "lufs_in": -10.63,
+        "gain_db": -7.37,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.44
+      },
+      "measured": {
+        "duration_s": 60.05,
+        "lufs": -10.64,
+        "true_peak_dbtp": -0.07,
+        "lead_in_s": 10.15,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 13.79,
+        "centroid_hz": 3549.0,
+        "stereo_corr": 0.882,
+        "silence_frac": 0.251
+      },
+      "faults": [
+        "slow start (10.15s)",
+        "gaps (25.1% silent)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 66.0,
+          "faults": [
+            "slow start (10.15s)",
+            "gaps (25.1% silent)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 60.05,
+          "lufs": -10.64,
+          "true_peak_dbtp": -0.07,
+          "lead_in_s": 10.15,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.79,
+          "centroid_hz": 3549.0,
+          "stereo_corr": 0.882,
+          "silence_frac": 0.251,
+          "loop_score": 0.9782
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "bass flute",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "wordless choir",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 20000,
+          "styles": [
+            "stays in C minor for the entire piece, home note C, every phrase begins and ends on the note C, one constant tempo of 96 BPM that never changes",
+            "the same C minor cycle under every phrase: Cm, A-flat, B-flat, Cm \u2014 two bars each \u2014 so every phrase BEGINS and ENDS on the C minor chord with a low C in the bass, and the reverb tail that carries into the next phrase is that C",
+            "solo cello",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 20063,
+        "phrase_ms_asked": 20000,
+        "bpm_measured": 95.7,
+        "bars": 8,
+        "phrases": 2,
+        "beat_anchor_s": 0.464,
+        "suite": "hole",
+        "pool": "descend",
+        "key_asked": "stays in C minor for the entire piece"
+      }
     }
   }
 }
