@@ -334,9 +334,20 @@ a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--
 .detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
 .detail-card { gap: 6px; }
 .detail-card .group-stage { padding: 6px; }
-.top-review { margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 6px; }
-.top-btn.on, .top-btn:hover { color: var(--ink); }
 .top-hint { margin: 4px 0 6px; font-size: 12px; }
+/* THE TEXTURED PASS — synthesized in the browser (no file exists for it), so
+   on the A/B/C cards it is the one layer that is a canvas. Sized like the
+   <img> beside it and pixelated like everything else here. */
+.world-art .art-tex { display: none; image-rendering: pixelated; max-width: 100%; max-height: 100%; }
+.world-art.on-texture .art-after { display: none; }
+.world-art.on-texture .art-tex { display: block; }
+.world-cand .thumb .art-tex { width: 96px; height: auto; }
+/* Roofs — the TOP review's rating glyph. ⌂ has no filled form, so lit-vs-dim
+   is colour and weight, not shape. */
+.stars.roofs button { color: var(--muted); opacity: 0.55; }
+.stars.roofs button.lit { color: var(--star); opacity: 1; }
+.stars.roofs.ro { color: var(--star); }
+.review-box .top-hint { margin: 0 0 6px; }
 
 /* ---- ground type page: identity card, base tiles, transitions ---- */
 .ground-swatch {

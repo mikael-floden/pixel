@@ -514,19 +514,23 @@ function updateSavebar() {
  *  standing in (and nothing else on the page can know that happened). Kept
  *  separate from the verdict's `onchange` so a star never triggers work on the
  *  pages that only care about approve/reject. */
-function starsWidget(domain, id, onStars) {
+function starsWidget(domain, id, onStars, glyph) {
+  // `glyph` swaps the star pair for another mark — the TOP review rates with
+  // roofs (⌂), so one glance says WHICH review this row is before any label is
+  // read. ⌂ has no filled form, so lit-vs-dim is colour, not shape.
+  const g = glyph ?? { lit: "★", dim: "☆", cls: "", name: "star" };
   if (!state.admin) {
     const val = fb(domain, id).rating ?? 0;
-    return val ? h("span", { class: "stars ro", "aria-label": `${val} stars` }, "★".repeat(val)) : h("span");
+    return val ? h("span", { class: `stars ro${g.cls ? ` ${g.cls}` : ""}`, "aria-label": `${val} ${g.name}s` }, g.lit.repeat(val)) : h("span");
   }
-  const wrap = h("span", { class: "stars", role: "radiogroup", "aria-label": "rating" });
+  const wrap = h("span", { class: `stars${g.cls ? ` ${g.cls}` : ""}`, role: "radiogroup", "aria-label": "rating" });
   const render = () => {
     const val = fb(domain, id).rating ?? 0;
     wrap.replaceChildren(...[1, 2, 3, 4, 5].map((n) =>
       h("button", {
-        class: n <= val ? "lit" : "", title: `${n} star${n > 1 ? "s" : ""}`,
+        class: n <= val ? "lit" : "", title: `${n} ${g.name}${n > 1 ? "s" : ""}`,
         onclick: (e) => { e.preventDefault(); e.stopPropagation(); setFb(domain, id, { rating: fb(domain, id).rating === n ? null : n }); render(); onStars?.(); },
-      }, n <= val ? "★" : "☆")));
+      }, n <= val ? g.lit : g.dim)));
   };
   render();
   return wrap;
@@ -585,7 +589,7 @@ const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir
   `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
-    starsWidget(domain, id, opts.onStars),
+    starsWidget(domain, id, opts.onStars, opts.glyph),
     verdictWidget(domain, id, opts),
     opts.note === false ? null : noteWidget(domain, id));
 }
@@ -3672,6 +3676,10 @@ const transitionsOf = (typeId) => (worldMeta().transitions ?? []).filter((t) => 
  * the clean colour, which is WHY he has never seen most of them.
  */
 const topKey = (key) => `${key}#top`;
+/* The top review's rating mark — "instead of stars lets use something like a
+ * roof emoji" (maintainer 2026-08-21). ⌂ IS a roof over a base, and being a
+ * text glyph it takes the stars' sizing and colours instead of fighting them. */
+const ROOF_GLYPH = { lit: "⌂", dim: "⌂", cls: "roofs", name: "roof" };
 const topFb = (key) => fb("tiles", topKey(key));
 const topReviewed = (key) => { const e = topFb(key); return !!(e.rating || e.status); };
 /** The art the top review judges: the unflattened raw when it exists. */
@@ -3687,7 +3695,125 @@ const topReviewed = (key) => { const e = topFb(key); return !!(e.rating || e.sta
  *  two different passes pretending to be one field, which is exactly the lie
  *  the before/after switch exists to prevent. A tile with no raw generation
  *  keeps showing its shipped art rather than a hole. */
-const viewArt = (cand) => (worldView() === "before" && cand?.raw) ? cand.raw : cand?.art;
+/* THE THIRD PASS IS SYNTHESIZED IN THE BROWSER (maintainer 2026-08-21: "I'm
+ * not talking about before postprocessing, I'm talking about an alternative
+ * postprocessing where the top texture is maintained, but still colored in the
+ * correct tile palette"). No such file exists anywhere in the pipeline, so the
+ * wiki composes it from the two that do:
+ *
+ *   1. Start from AFTER — the shipped tile: palette-corrected wall, clean top.
+ *   2. Find what the flattening painted: every colour covering >=15% of the
+ *      opaque pixels (a transition tile has TWO grounds, hence up to three).
+ *      A tile whose after-top is already textured (parquet, the pavings) has no
+ *      such colour, and the synthesis correctly leaves it alone.
+ *   3. On exactly those pixels, take the RAW pixel and shift it per channel so
+ *      the region's MEAN lands ON the clean colour. The texture — every
+ *      speckle, every blade — survives 1:1, and a field of it still reads as
+ *      the right ground from a distance, because its average IS the clean
+ *      colour. That is "the texture maintained, in the correct palette".
+ *
+ * Cached per art path; falls back to plain After when there is no raw art or
+ * the canvas is tainted (foreign-origin staging root). */
+const TEX_CACHE = new Map();   // "art::raw" -> HTMLCanvasElement | null
+function texSynth(afterImg, rawImg) {
+  const w = afterImg.naturalWidth, ht = afterImg.naturalHeight;
+  if (!w || !ht || !rawImg.naturalWidth) return null;
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = ht;
+  const cx = cv.getContext("2d", { willReadFrequently: true });
+  cx.imageSmoothingEnabled = false;
+  cx.drawImage(afterImg, 0, 0);
+  const A = cx.getImageData(0, 0, w, ht);
+  const rc = document.createElement("canvas"); rc.width = w; rc.height = ht;
+  const rcx = rc.getContext("2d", { willReadFrequently: true });
+  rcx.imageSmoothingEnabled = false;
+  rcx.drawImage(rawImg, 0, 0, w, ht);   // raw scaled onto after's grid
+  const R = rcx.getImageData(0, 0, w, ht).data;
+  const d = A.data;
+  const counts = new Map(); let opaque = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] < 200) continue; opaque++;
+    const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2];
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  if (!opaque) return null;
+  const flats = [...counts.entries()].filter(([, n2]) => n2 / opaque >= 0.15)
+    .sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => k);
+  if (!flats.length) return null;   // nothing was flattened — After is honest
+  const reg = new Map(flats.map((k) => [k, { n: 0, r: 0, g: 0, b: 0 }]));
+  const flatOf = (i) => {
+    if (d[i + 3] < 200) return -1;
+    const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2];
+    return reg.has(k) ? k : -1;
+  };
+  for (let i = 0; i < d.length; i += 4) {
+    const k = flatOf(i); if (k < 0 || R[i + 3] < 200) continue;
+    const t2 = reg.get(k); t2.n++; t2.r += R[i]; t2.g += R[i + 1]; t2.b += R[i + 2];
+  }
+  const cl = (x) => Math.max(0, Math.min(255, Math.round(x)));
+  let changed = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    const k = flatOf(i); if (k < 0) continue;
+    const t2 = reg.get(k); if (!t2.n || R[i + 3] < 200) continue;
+    d[i] = cl(R[i] + (k >> 16) - t2.r / t2.n);
+    d[i + 1] = cl(R[i + 1] + ((k >> 8) & 255) - t2.g / t2.n);
+    d[i + 2] = cl(R[i + 2] + (k & 255) - t2.b / t2.n);
+    changed++;
+  }
+  if (!changed) return null;        // raw is transparent under the whole top
+  cx.putImageData(A, 0, 0);
+  return cv;
+}
+/** Resolve one textured-top canvas, cached. cb(null) = cannot synthesize — the
+ *  caller shows plain After, which is always true, never wrong. */
+function texFor(art, raw, cb) {
+  const key = `${art}::${raw}`;
+  if (TEX_CACHE.has(key)) { cb(TEX_CACHE.get(key)); return; }
+  let a = null, r = null, left = 2;
+  const done = () => {
+    if (--left > 0) return;
+    let c = null;
+    try { c = (a && r) ? texSynth(a, r) : null; } catch { c = null; /* tainted canvas — foreign staging root */ }
+    TEX_CACHE.set(key, c);
+    window.__wikiTex = (window.__wikiTex ?? 0) + 1;   // gate probe
+    cb(c);
+  };
+  const mk = (path, set) => {
+    const im = new Image();
+    im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
+    im.src = assetUrl(path);
+  };
+  mk(art, (x) => { a = x; }); mk(raw, (x) => { r = x; });
+}
+/** The art one VIEW shows for one candidate. "tex:" paths are virtual —
+ *  loadImages resolves them to a synthesized canvas. */
+const viewArtIn = (view, cand) => {
+  if (!cand) return undefined;
+  if (view === "before" && cand.raw) return cand.raw;
+  if (view === "texture" && cand.raw && cand.art) return `tex:${cand.art}::${cand.raw}`;
+  return cand.art;
+};
+const viewArt = (cand) => viewArtIn(worldView(), cand);
+/** An element showing one art path — <img> for a real path, a painted canvas
+ *  for a virtual "tex:" one. For the few places that show a tile OUTSIDE an
+ *  isoScene composition. */
+function artNodeFor(path, cls, alt) {
+  if (!String(path ?? "").startsWith("tex:")) return h("img", { class: cls, src: assetUrl(path), alt });
+  const cv = h("canvas", { class: cls, width: 64, height: 46, "aria-label": alt });
+  const [a, r] = path.slice(4).split("::");
+  const paint = (src, w, ht) => {
+    cv.width = w; cv.height = ht;
+    const cx = cv.getContext("2d");
+    cx.imageSmoothingEnabled = false;
+    cx.drawImage(src, 0, 0);
+  };
+  texFor(a, r, (c) => {
+    if (c) { paint(c, c.width, c.height); return; }
+    const im = new Image();
+    im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); };
+    im.src = assetUrl(a);
+  });
+  return cv;
+}
 /** Every candidate whose TOP belongs to this ground — every pair of the type,
  *  the wall deliberately ignored. */
 const typeTops = (typeId) => worldCells()
@@ -3766,9 +3892,15 @@ function centeredField(centerArt, members, seed, scale = 1) {
 function wangScene(a, b, setId, post, n, corner, scale = 1) {
   const box = h("div", { class: "iso-stage checker trans-stage" });
   const cells = [];
+  // A postprocessed set has both passes on disk, so the Textured view can be
+  // synthesized here too — a transition tile carries TWO clean colours, and
+  // texSynth handles every flat region it finds, not just one.
+  const pathOf = (idx) => (post && worldView() === "texture")
+    ? `tex:${transTile(a, b, setId, idx, true)}::${transTile(a, b, setId, idx, false)}`
+    : transTile(a, b, setId, idx, post);
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
-    cells.push({ c, r, img: transTile(a, b, setId, idx, post) });
+    cells.push({ c, r, img: pathOf(idx) });
   }
   loadImages([...new Set(cells.map((x) => x.img))], (images) =>
     box.replaceChildren(isoScene(cells, images, scale, 4, worldIso())));
@@ -3989,7 +4121,8 @@ function filterRoute(mode, keep = null) {
 const WORLD_VIEW_KEY = "wiki-world-view";
 const WORLD_VIEWS = {
   after: { label: "After", title: "What the game gets today — the postprocess snaps the top to the ground's clean colour (measured: 96% of the top face becomes ONE colour on grass, black rock and light soil; parquet and the pavings keep their texture)" },
-  before: { label: "Before", title: "THE REAL TOP — the texture the generator actually drew, under the flattening. Judge base tiles and details on this: a field of clean-colour tops hides seams no matter what, so it cannot tell you whether a group works" },
+  texture: { label: "Textured", title: "WHAT THE TOP COULD SHIP AS — the same tile, but instead of flattening, the generator's top texture is KEPT and recoloured so its average IS the ground's clean colour. Judge promotions and details here: the real texture, in the right palette" },
+  before: { label: "Before", title: "The generator's raw output, untouched — original colours, original top, no postprocess at all" },
 };
 const worldView = () => {
   try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
@@ -4044,14 +4177,31 @@ const worldIso = () => ({ ...(state.data.iso ?? { tilePx: 64, dx: 32, levelPx: 1
  *  from before @2 has none, and then there is nothing to compare and no switch
  *  worth showing on it. */
 function worldArt(cand, alt, box = "thumb") {
-  const showRaw = worldView() === "before" && cand.raw;
-  return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}` },
+  const v = worldView();
+  const showRaw = v === "before" && cand.raw;
+  const showTex = v === "texture" && cand.raw;
+  // The textured pass has no file to point an <img> at — it is synthesized —
+  // so it is the one layer that is a canvas, painted when the cache answers.
+  const texCv = showTex ? h("canvas", { class: "art-tex", "aria-label": `${alt} — textured top` }) : null;
+  if (texCv) texFor(cand.art, cand.raw, (c) => {
+    const paint = (src, w, ht) => {
+      texCv.width = w; texCv.height = ht;
+      const cx = texCv.getContext("2d");
+      cx.imageSmoothingEnabled = false;
+      cx.drawImage(src, 0, 0);
+    };
+    if (c) paint(c, c.width, c.height);
+    else { const im = new Image(); im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); }; im.src = assetUrl(cand.art); }
+  });
+  return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}${showTex ? " on-texture" : ""}` },
     h("img", { class: "art-after", src: assetUrl(cand.art), alt, loading: "lazy" }),
     cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — before postprocess`, loading: "lazy" }) : null,
+    texCv,
     // The badge is not decoration: mid-comparison, "which one am I looking
     // at" is the one question the screen must always answer.
     showRaw ? h("span", { class: "art-tag" }, "before") : null,
-    worldView() === "before" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, "no before") : null);
+    showTex ? h("span", { class: "art-tag" }, "textured") : null,
+    v !== "after" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, v === "before" ? "no before" : "no texture") : null);
 }
 /** The ground TYPES — grass, ice, snow — grouped from the pairs that use them
  *  as their walkable top. Derived rather than baked, so the live manifest
@@ -4240,7 +4390,7 @@ function viewWorldType(top) {
           return h("div", { class: "base-member" },
             h("div", { class: "base-member-previews" },
               h("div", { class: "iso-stage checker member-solo" },
-                art ? h("img", { src: assetUrl(art), alt: "the tile alone", class: "member-tile" })
+                art ? artNodeFor(art, "member-tile", "the tile alone")
                   : h("span", { class: "muted" }, "art gone — this tile was regenerated away")),
               art ? centeredField(art, others.length ? others : g.members, seeds.get(`${t.id}/${g.id}`) ?? 1, 1) : null),
             h("div", { class: "base-member-meta" },
@@ -4329,8 +4479,10 @@ function viewWorldType(top) {
       h("span", { class: "muted" }, "Tile art"),
       sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }),
       h("span", { class: "muted pass-hint" }, worldView() === "before"
-        ? "the real top, under the flattening"
-        : "clean-colour tops — flip to Before to judge texture")) : null,
+        ? "the raw generation, untouched"
+        : worldView() === "texture"
+          ? "the real texture, recoloured to this ground — judge promotions here"
+          : "clean-colour tops — flip to Textured to judge with the real texture")) : null,
     h("div", { class: "groundtabs", role: "tablist" },
       tabBtn("base", "Base tiles", groups.length || null, !groups.length,
         groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
@@ -4355,12 +4507,12 @@ function viewWorldType(top) {
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
       surround.length
         ? centeredField(viewArt(cand), surround, dSeed, 1)
-        : h("div", { class: "iso-stage checker group-stage" }, h("img", { class: "member-tile", src: assetUrl(viewArt(cand)), alt: "the top" })),
+        : h("div", { class: "iso-stage checker group-stage" }, artNodeFor(viewArt(cand), "member-tile", "the top")),
       h("div", { class: "card-sub" },
         h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
         // Only ever says something when the picture is NOT what the switch
         // asked for: a tile with no raw generation cannot show a "before".
-        worldView() === "before" && !cand.raw
+        worldView() !== "after" && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
       // PROMOTE FROM HERE TOO (maintainer 2026-08-21: "On this page it should
@@ -4384,6 +4536,7 @@ function viewWorldType(top) {
         }, isBaseTile(cand.key) ? "☗ revoke base title" : "☖ promote to base tile…")) : null,
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
+          glyph: ROOF_GLYPH,
           onchange: () => { keepScrollY = window.scrollY; route(); },
           onStars: reviewing ? () => { keepScrollY = window.scrollY; route(); } : undefined,
           reject: "✕ not a detail",
@@ -4393,7 +4546,7 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. Each sits in the ground it would decorate, as the game will ship it; flip to Before to see what the generator drew under the postprocess."
+        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. Each sits in the ground it would decorate, as the game will ship it; flip to Textured for the real texture in this ground's palette, or Before for the raw generation."
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
@@ -4511,7 +4664,7 @@ function openPromoteModal(cell, cand, onDone) {
         h("span", { class: "muted" }, "Tile art"),
         sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
           () => { tileViews.clear(); paint(); }),
-        h("span", { class: "muted" }, worldView() === "before" ? "the real top" : "clean colour"));
+        h("span", { class: "muted" }, worldView() === "before" ? "raw" : worldView() === "texture" ? "textured, in palette" : "clean colour"));
     }
     body.replaceChildren(
       ...groups.map((g) => h("div", { class: "promote-group" },
@@ -4551,7 +4704,7 @@ function openPromoteModal(cell, cand, onDone) {
       h("span", { class: "muted" }, "Tile art"),
       sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
         () => { tileViews.clear(); paint(); }),
-      h("span", { class: "muted" }, worldView() === "before" ? "the real top" : "clean colour")),
+      h("span", { class: "muted" }, worldView() === "before" ? "raw" : worldView() === "texture" ? "textured, in palette" : "clean colour")),
     h("p", { class: "muted promote-hint" }, "The candidate sits in the centre of every field. It belongs in a group when you cannot find it."),
     body);
   document.body.append(dlg);
@@ -4637,7 +4790,7 @@ const WALL_MODES = {
  * chessboard and carry no captions of their own: the whole point of putting
  * them together is the space it saves, and two headings would spend it again.
  */
-function tileScenes(cell, cand) {
+function tileScenes(cell, cand, onView) {
   // TWO PREVIEWS, TWO BOXES (maintainer 2026-08-17, after a rule between them
   // was not enough: "I don't like it, there should be some separation between
   // the preview on top and bottom (it's not the same preview)"). They are not
@@ -4665,12 +4818,17 @@ function tileScenes(cell, cand) {
   chip?.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation();
     if (!cand.raw) return;
-    tileViews.set(cand.key, tileView(cand.key) === "before" ? "after" : "before");
+    // after → textured → before → after: the same cycle as the Show switch,
+    // for this one tile. `onView` lets the card swap its review row along —
+    // the rating must always target what the picture shows.
+    const CYCLE = ["after", "texture", "before"];
+    tileViews.set(cand.key, CYCLE[(CYCLE.indexOf(tileView(cand.key)) + 1) % CYCLE.length]);
     paint();
+    onView?.();
   });
   function paint() {
-    const mode = tileView(cand.key);
-    const art = (c) => ((mode === "before" && c.raw) ? c.raw : c.art);
+    const mode = cand.raw ? tileView(cand.key) : "after";
+    const art = (c) => viewArtIn(mode, c);
     const face = art(cand);
     // No pure tile for that material yet: stack the tile itself and say so,
     // rather than draw a cliff out of nothing.
@@ -4685,18 +4843,40 @@ function tileScenes(cell, cand) {
     // they produced can be read back.
     stage.dataset.face = face ?? "";
     stage.dataset.course = course ?? "";
-    stage.dataset.view = cand.raw ? mode : "after";
+    stage.dataset.view = mode;
     stage.dataset.dy = String(worldIso().dy);
     if (chip) {
       // The chip says WHAT YOU ARE LOOKING AT, not what pressing it does: mid
       // comparison, "which one is this" is the one question the picture must
       // always answer, and it is the same job the ⟳ badge does on the portrait.
-      chip.textContent = cand.raw ? (mode === "before" ? "⇄ before" : "⇄ after") : "no before";
-      chip.className = `stage-flip${mode === "before" && cand.raw ? " on" : ""}`;
+      chip.textContent = !cand.raw ? "no before"
+        : mode === "before" ? "⇄ before" : mode === "texture" ? "⇄ textured" : "⇄ after";
+      chip.className = `stage-flip${mode !== "after" && cand.raw ? " on" : ""}`;
       chip.disabled = !cand.raw;
       chip.title = !cand.raw ? "No raw output was published for this tile"
-        : mode === "before" ? "The generator's raw output — tap for the tile the game gets"
-          : "What the game gets — tap for the generator's raw output";
+        : mode === "after" ? "What the game gets — tap for the textured top"
+          : mode === "texture" ? "The real texture, recoloured to this ground — tap for the raw generation"
+            : "The generator's raw output — tap for the tile the game gets";
+    }
+    // TEXTURED IS THE TOP REVIEW (maintainer 2026-08-21: "to make it even more
+    // clear you only review the top/ground right now it should be the center of
+    // 3x3 tiles (base tiles)"). A wall answers nothing about a top, so the
+    // 3×3-of-itself and the cliff corner give way to the one composition that
+    // matters here: this top, textured, centred in the ground's base tiles.
+    if (mode === "texture") {
+      const surround = detailSurround(cell.top);
+      const pool = surround.length ? surround : [{ weight: 1, hit: { cand } }];
+      const rnd = seededRnd(3);
+      const cells = [];
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+        cells.push({ c, r, img: (c === 1 && r === 1) ? face : viewArtIn("texture", pickBaseMember(pool, rnd).hit?.cand) });
+      }
+      loadImages([face, ...cells.map((x) => x.img)].filter(Boolean), (images) => {
+        const iso = worldIso();
+        zoomBox.replaceChildren(...[h("div", { class: "tile-row zooms" }, zoomTile(images[face], 2)), chip].filter(Boolean));
+        sceneBox.replaceChildren(h("div", { class: "tile-row scenes" }, isoScene(cells.filter((x) => x.img), images, 1, 2, iso)));
+      });
+      return;
     }
     // pad 2, not the usual 4: the two canvases sit on one chessboard that already
     // frames them, and 8px of transparent margin is 8px the cliff does not have
@@ -4838,7 +5018,9 @@ function viewWorldPair(top, side) {
         return [id, `${f.label} ${n}`, f.title];
       }), mode, () => route()) : null,
       h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin
-        ? "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says."
+        ? (worldView() === "texture"
+          ? "Each top sits TEXTURED in the centre of this ground's base tiles — the ⌂ row rates the top, not the tile."
+          : "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says.")
         : "A field of it, and the corner where the land steps down."),
       cards,
       // A set he has just finished does not vanish under him — it stays open,
@@ -4869,8 +5051,42 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
   const v = wallVerdict(cand.wallScore);
   const st = state.admin ? fb("tiles", cand.key).status : null;
   const num = (x, d = 2) => (typeof x === "number" ? x.toFixed(d) : "—");
+  /* ONE REVIEW ROW, AND IT REVIEWS WHAT THE PICTURE SHOWS (maintainer
+   * 2026-08-21: "it's so confusing with two rating systems on the same
+   * card!"). On After/Before the stars judge the TILE. The moment the view is
+   * Textured — the top, centred in its base tiles — the same row turns into
+   * roofs (⌂) and judges the `#top` entry instead. The old "review the top"
+   * expander is gone; this row plus the view cycle replaces it. */
+  const reviewBox = state.admin ? h("div", { class: "card-sub review-box" }) : null;
+  const drawReview = () => {
+    if (!reviewBox) return;
+    const onTop = !!cand.raw && tileView(cand.key) === "texture";
+    reviewBox.replaceChildren(...[
+      onTop ? h("p", { class: "muted top-hint" },
+        "⌂ rating the TOP as a once-in-a-while ground detail — the tile keeps its own stars") : null,
+      onTop
+        ? feedbackRow("tiles", topKey(cand.key), {
+          glyph: ROOF_GLYPH,
+          reject: "✕ not a detail",
+          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
+          rejectedLabel: "not a detail",
+        })
+        : feedbackRow("tiles", cand.key, {
+          onchange: onVerdict,
+          // Under a filter this tile can disappear the moment it is marked, so
+          // the whole set has to repaint; with the filter off, repainting 35
+          // canvas previews on every star press would be a stutter for no gain
+          // — so `onStars` is only wired when a filter is on.
+          onStars: starFilter() !== "all" ? (onStars ?? onVerdict) : undefined,
+          reject: "✕ redo",
+          rejectTitle: "Reject this generation — the agent deletes it on PixelLab and generates another",
+          rejectedLabel: "to be redone",
+        }),
+    ].filter(Boolean));
+  };
+  drawReview();
   return h("div", { class: `card world-cand${st === "approved" ? " picked" : st === "rejected" ? " dropped" : ""}` },
-    tileScenes(cell, cand),
+    tileScenes(cell, cand, drawReview),
     // THE RANK AND THE MEASUREMENTS ARE THE REVIEW, not the ground. A reader
     // gets the picture; a number called "discretion 0.81" only asks them to
     // wonder what they are supposed to do about it.
@@ -4916,71 +5132,17 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
           },
         }, onBase ? "☗ revoke base title" : "☖ promote to base tile…"));
     })() : null,
-    state.admin ? h("div", { class: "card-sub" },
-      feedbackRow("tiles", cand.key, {
-        onchange: onVerdict,
-        // Under a filter this tile can disappear the moment it is marked, so
-        // the whole set has to repaint; with the filter off, repainting 35
-        // canvas previews on every star press would be a stutter for no gain
-        // — so `onStars` is only wired when a filter is on.
-        onStars: starFilter() !== "all" ? (onStars ?? onVerdict) : undefined,
-        reject: "✕ redo",
-        rejectTitle: "Reject this generation — the agent deletes it on PixelLab and generates another",
-        rejectedLabel: "to be redone",
-      })) : null,
+    reviewBox,
     state.admin && cand.prompt
       ? h("details", { class: "world-prompt" }, h("summary", {}, "prompt"), h("p", {}, cand.prompt),
         cand.tileId ? h("p", { class: "muted mono" }, cand.tileId) : null)
-      : null,
-    // ---- REVIEW THE TOP (the second axis; see the GROUND DETAILS block).
-    // Collapsed by default — the pair review is about the wall, and a second
-    // full review row on every card would bury it. The button carries the
-    // top's state so a judged top is visible without opening anything.
-    state.admin ? topReviewBlock(cell, cand, onVerdict) : null);
+      : null);
 }
-/** The expandable top review: the tile's RAW top centred in the ground's base
- *  group — how it would actually appear as a once-in-a-while detail — with
- *  its own stars and verdict under the `#top` key. */
-function topReviewBlock(cell, cand, onChange) {
-  const box = h("div", { class: "top-review" });
-  let open = false;
-  const btnLabel = () => {
-    const e = topFb(cand.key);
-    const mark = e.status === "approved" ? " · ✓ detail" : e.status === "rejected" ? " · ✕" : e.rating ? ` · ${"★".repeat(e.rating)}` : "";
-    return `☘ review the top${mark}`;
-  };
-  const btn = h("button", {
-    class: "ghost-btn top-btn",
-    title: "Judge the TOP alone, as a once-in-a-while ground detail — the wall is irrelevant here. Shows the RAW top: the pair postprocess flattens tops to the clean colour, which is why you have never seen most of them.",
-    onclick: (e) => { e.stopPropagation(); open = !open; paint(); },
-  }, btnLabel());
-  const paint = () => {
-    btn.textContent = btnLabel();
-    if (!open) { box.replaceChildren(btn); return; }
-    const surround = detailSurround(cell.top);
-    box.replaceChildren(
-      btn,
-      h("p", { class: "muted top-hint" },
-        worldView() === "before"
-          ? (cand.raw
-            ? "The top as GENERATED, under the postprocess — sitting in the ground it would decorate."
-            : "No raw art for this tile (pre-@2 generation) — showing the postprocessed top.")
-          : "The top as the game SHIPS it, sitting in the ground it would decorate. Flip the section to Before to see the generator's own."),
-      surround.length
-        ? centeredField(viewArt(cand), surround, 3, 1)
-        : h("p", { class: "muted" }, "No base tile or pure tile to surround it with yet — the composition needs one."),
-      h("div", { class: "card-sub" },
-        feedbackRow("tiles", topKey(cand.key), {
-          onchange: () => { paint(); onChange?.(); },
-          onStars: () => { paint(); },
-          reject: "✕ not a detail",
-          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
-          rejectedLabel: "not a detail",
-        })));
-  };
-  paint();
-  return box;
-}
+/* topReviewBlock is gone (maintainer 2026-08-21: "The current button and
+ * everything that expands when clicking on the 'review the top' should be
+ * removed (it's so confusing with two rating systems on the same card!)").
+ * The top review lives in the card's ONE review row, which targets `#top`
+ * whenever the view is Textured — see worldCandidate. */
 
 function viewTiles() {
   const list = state.data.domains.tiles.filter((t) => matches(state.query, t.id, t.name, t.description));
@@ -5117,7 +5279,8 @@ function isoScene(cells, images, scale = 1, pad = 4, isoIn = null) {
     // tile is 64×46 (top diamond + a 17-row wall extrusion), and stretching
     // it to 64×64 bends every boundary it exists to show. Width is the iso
     // contract; height follows the art.
-    const dh = iso.tilePx * (im.naturalHeight / (im.naturalWidth || iso.tilePx));
+    const iw = im.naturalWidth || im.width || iso.tilePx;
+    const dh = iso.tilePx * ((im.naturalHeight || im.height || iw) / iw);
     ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) - minY + pad) * scale, iso.tilePx * scale, dh * scale);
   }
   return canvas;
@@ -5129,10 +5292,23 @@ function loadImages(paths, cb) {
   const out = {};
   let left = uniq.length;
   if (!left) { cb(out); return; }
-  for (const p of uniq) {
+  const plain = (p, key) => {
     const im = new Image();
-    im.onload = im.onerror = () => { out[p] = im.naturalWidth ? im : null; if (--left <= 0) cb(out); };
+    im.onload = im.onerror = () => { out[key] = im.naturalWidth ? im : null; if (--left <= 0) cb(out); };
     im.src = assetUrl(p);
+  };
+  for (const p of uniq) {
+    // A virtual "tex:<after>::<raw>" path resolves to the synthesized
+    // textured-top canvas — or to plain After when it cannot be built.
+    if (String(p).startsWith("tex:")) {
+      const [a, r] = p.slice(4).split("::");
+      texFor(a, r, (c) => {
+        if (c) { out[p] = c; if (--left <= 0) cb(out); }
+        else plain(a, p);
+      });
+      continue;
+    }
+    plain(p, p);
   }
 }
 function viewTileInstance(typeId, rel) {
