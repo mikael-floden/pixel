@@ -5175,28 +5175,33 @@ function wallModeRow(cand, onVerdict) {
  *
  * So the build measures the two passes the tiles agent publishes and keys the
  * answer by tile: how much of the brim reads as the top material as DRAWN, and
- * how much still does as SHIPPED (wiki/lib/overhang.mjs). His tile: drawn 98%,
- * kept 52%. On dark mud over slime — the cell he got repaired once already —
- * drawn 87%, kept 96%, which is what a working brim looks like.
+ * how much still does as SHIPPED (wiki/lib/overhang.mjs).
+ *
+ * PER FACE, and that turned out to be the whole story. Averaged over the tile
+ * his came out a mild-looking 98 -> 52, which points at nothing; split by face
+ * it is RIGHT 95 -> 93 and LEFT 100 -> 11. One face is untouched and the other
+ * is gone. Across the library the left face fails 104 times to the right's 44 —
+ * the same face fix_left_wall.py was written for.
  *
  * Only a real LOSS is worth a warning. The agent's own `clarity` sits at a
  * median of 0.35 across cross-material tiles, so flagging on it would paint
  * half the library orange and mean nothing. */
 const FRINGE_LOSS = 25;                       // percentage points
 const fringeOf = (key) => (worldMeta().fringe ?? {})[key] ?? null;
-function fringeRow(cand) {
+function fringeRow(cand, topName) {
   const f = fringeOf(cand.key);
   const cl = cand.clarity;
   if (!f && cl == null) return null;
-  const lost = f ? f[0] - f[1] : 0;
-  const bad = f && f[0] >= 60 && lost >= FRINGE_LOSS;
+  const [drawn, kept, side] = f ?? [];
+  const bad = f && drawn >= 60 && drawn - kept >= FRINGE_LOSS;
+  const face = side === "right" ? "right" : "left";
   return h("div", { class: "card-sub metric-row" },
     f ? h("span", {
       class: bad ? "pill err" : "",
       title: bad
-        ? `The generator draped the top over the wall — ${f[0]}% of the brim reads as ${typeLabelWorld(cand.__top ?? "").toLowerCase() || "the top material"} in the BEFORE pass — and the postprocess repainted it: only ${f[1]}% still does in the tile the game gets. This is the overhang shipping in the wall's palette.`
-        : `Of the brim under the top's edge, ${f[0]}% reads as the top material as the generator drew it and ${f[1]}% still does after the postprocess — the overhang survives.`,
-    }, `brim ${f[1]}% kept of ${f[0]}% drawn`) : null,
+        ? `The generator draped the top over the ${face} wall — ${drawn}% of that face's brim reads as ${topName.toLowerCase()} in the BEFORE pass — and the postprocess repainted it: only ${kept}% still does in the tile the game gets. The overhang ships in the wall's palette on this face.`
+        : `Of the brim under the top's edge, ${drawn}% reads as ${topName.toLowerCase()} as the generator drew it and ${kept}% still does after the postprocess — the overhang survives. (Worst of the two faces: ${face}.)`,
+    }, `brim ${face} ${kept}% kept of ${drawn}% drawn`) : null,
     cl != null ? h("span", {
       title: "the agent's fringe_clarity — how decisively the spilled fringe can be told apart from the wall it landed on. Low on materials that are close in hue, which is a generation problem no postprocess can repair",
     }, `clarity ${cl.toFixed(2)}`) : null);
@@ -5262,7 +5267,7 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
       : null,
     // Only on a cross-material tile: "does the top drape over the wall" is not
     // a question about grass over grass.
-    state.admin && cell.top !== cell.side ? fringeRow({ ...cand, __top: cell.top }) : null,
+    state.admin && cell.top !== cell.side ? fringeRow(cand, typeLabelWorld(cell.top)) : null,
     // CAN IT BUILD A WALL? Its own row, above the verdict: this is not a
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.

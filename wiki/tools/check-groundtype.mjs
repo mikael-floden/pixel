@@ -620,10 +620,14 @@ ok(textured === measured,
 // ---- THE OVERHANG THAT SHIPPED IN THE WALL'S COLOUR ------------------------
 // Maintainer 2026-08-22, painting on a screenshot: "I have painted RED on the
 // overhang that should be deep_water, but currently is green/grass. I also
-// marked in purple what should be grass so you don't take too much."
+// marked in purple what should be grass so you don't take too much." Then,
+// when the first measurement went out: "Same as before. red = SHOULD BE dark
+// blue. purple = SHOULD BE green."
 //
-// The card told him the opposite — "overhang 1.00" — because `overhang` counts
-// how much SPILLED, and all of it did; it just ships in the wall's palette.
+// The card had told him the opposite — "overhang 1.00" — because `overhang`
+// counts how much SPILLED, and all of it did; it just ships in the wall's
+// colour. And the first fix here measured the tile as a WHOLE, which averaged
+// a healthy face with a destroyed one into a number that pointed nowhere.
 const { measureOverhang } = await import("../lib/overhang.mjs");
 const cellOf = (id) => (D.domains.world ?? []).find((c) => c.id === id);
 const his = cellOf("deep_water__over__grass");
@@ -631,24 +635,34 @@ const healthy = cellOf("dark_mud__over__slime");
 ok(!!his && !!healthy, "both the reported cell and the one already repaired are in the wiki");
 const mHis = his && measureOverhang(ROOT, his.candidates[0].art, his.candidates[0].raw);
 const mOk = healthy && measureOverhang(ROOT, healthy.candidates[0].art, healthy.candidates[0].raw);
-ok(mHis && mHis.drawn >= 0.9 && mHis.kept <= 0.7,
-  `his tile: the generator draped the water over the cliff and the postprocess took it (drawn ${(mHis.drawn * 100).toFixed(0)}%, kept ${(mHis.kept * 100).toFixed(0)}%)`);
-ok(mOk && mOk.kept >= mOk.drawn - 0.05,
-  `while dark mud over slime — repaired once already — keeps its brim (drawn ${(mOk.drawn * 100).toFixed(0)}%, kept ${(mOk.kept * 100).toFixed(0)}%)`);
-// A SAME-MATERIAL TILE MUST NOT BE MEASURED AT ALL: "does the top drape over
-// the wall" is not a question about grass over grass, and answering it would
-// paint warnings across a third of the library.
-const same = cellOf("grass__over__grass");
-ok(same && measureOverhang(ROOT, same.candidates[0].art, same.candidates[0].raw) === null,
-  "and a same-over-same tile is not asked the question at all");
+ok(mHis && mHis.left.drawn >= 0.95 && mHis.left.kept <= 0.2,
+  `his tile's LEFT face: the generator draped the water and the postprocess took it (drawn ${(mHis.left.drawn * 100).toFixed(0)}%, kept ${(mHis.left.kept * 100).toFixed(0)}%)`);
+ok(mHis && mHis.right.kept >= 0.8,
+  `while its RIGHT face is untouched — which is why a tile-wide average said nothing (kept ${(mHis.right.kept * 100).toFixed(0)}%)`);
+ok(mHis && mHis.side === "left", `so the card names the face that failed (${mHis.side})`);
+ok(mOk && mOk.left.kept >= mOk.left.drawn - 0.05 && mOk.right.kept >= mOk.right.drawn - 0.05,
+  `dark mud over slime — repaired once already — keeps BOTH faces (left ${(mOk.left.kept * 100).toFixed(0)}%, right ${(mOk.right.kept * 100).toFixed(0)}%)`);
 // Published for the browser, keyed by the agent's own tile key.
 const fringe = (D.worldMeta ?? {}).fringe ?? {};
 ok(Object.keys(fringe).length > 500, `the measurement is published per tile for the live refresh to merge (${Object.keys(fringe).length} tiles)`);
-ok(String(fringe[his.candidates[0].key]) === "98,52", `including his (${fringe[his.candidates[0].key]})`);
-// Only a real LOSS is flagged. The agent's clarity would flag half the library.
-const flagged = Object.values(fringe).filter(([dr, kp]) => dr >= 60 && dr - kp >= 25).length;
-ok(flagged > 0 && flagged < Object.keys(fringe).length * 0.12,
-  `and the warning is rare enough to mean something — ${flagged} of ${Object.keys(fringe).length} tiles (${(flagged / Object.keys(fringe).length * 100).toFixed(1)}%)`);
+ok(String(fringe[his.candidates[0].key]) === "100,11,left", `including his (${fringe[his.candidates[0].key]})`);
+// SAME-OVER-SAME IS NEVER ASKED. Its top and wall are one material, so the brim
+// differs only by lighting and the question means nothing — measuring it flagged
+// grass over grass and ice over ice until the cell's materials settled it.
+const key2cell = new Map();
+for (const c of D.domains.world) for (const x of c.candidates) key2cell.set(x.key, c.id);
+const sameFlagged = Object.keys(fringe).filter((k) => {
+  const id = key2cell.get(k) ?? "";
+  return id.split("__over__")[0] === id.split("__over__")[1];
+});
+ok(sameFlagged.length === 0, `and no same-over-same tile is measured at all (${sameFlagged.length})`);
+// Only a real LOSS is flagged, and the left face dominating is the finding.
+const bad = Object.values(fringe).filter(([dr, kp]) => dr >= 60 && dr - kp >= 25);
+const left = bad.filter((v) => v[2] === "left").length;
+ok(bad.length > 0 && bad.length < Object.keys(fringe).length * 0.12,
+  `the warning is rare enough to mean something — ${bad.length} of ${Object.keys(fringe).length} tiles (${(bad.length / Object.keys(fringe).length * 100).toFixed(1)}%)`);
+ok(left > bad.length / 2,
+  `and the LEFT face is where it concentrates, which is the lead for the tiles agent (${left} left / ${bad.length - left} right)`);
 
 await b.close();
 console.log(fails.length ? `\nGROUND-TYPE CHECKS FAILED (${fails.length})` : "\nALL GROUND-TYPE CHECKS PASSED");

@@ -66,7 +66,7 @@ export function measureOverhang(root, artRel, rawRel) {
   const clean = top[0];
   // Per column: the contiguous top-face run from the crown, then the brim just
   // under it and a wall sample well below it.
-  const band = [], deep = [], face = [];
+  const bandL = [], bandR = [], deep = [], face = [];
   for (let x = 0; x < A.w; x++) {
     let y = 0;
     while (y < A.h && !opaqueA(x, y)) y++;
@@ -74,14 +74,17 @@ export function measureOverhang(root, artRel, rawRel) {
     for (; y < A.h && opaqueA(x, y) && (A.pix[y * A.w + x] & 0xffffff) === clean; y++) run = y;
     if (run < 0) continue;
     for (let k = 1; k <= BAND && run + k < A.h; k++) {
-      if (opaqueA(x, run + k) && opaqueR(x, run + k)) band.push([x, run + k]);
+      // PER FACE. A tile-wide average hides the whole failure: on deep water
+      // over grass the RIGHT face keeps 93% of its brim and the LEFT keeps 11%,
+      // which averages to a mild-looking 52% and points at nothing.
+      if (opaqueA(x, run + k) && opaqueR(x, run + k)) (x < A.w / 2 ? bandL : bandR).push([x, run + k]);
     }
     for (let k = DEEP_FROM; k <= DEEP_TO && run + k < A.h; k++) {
       if (opaqueA(x, run + k) && opaqueR(x, run + k)) deep.push([x, run + k]);
     }
     for (let yy = 0; yy <= run; yy++) if (opaqueA(x, yy)) face.push([x, yy]);
   }
-  if (band.length < 20 || deep.length < 20 || face.length < 20) return null;
+  if (bandL.length < 12 || bandR.length < 12 || deep.length < 20 || face.length < 20) return null;
   const meanOf = (list, IMG) => {
     const s = [0, 0, 0];
     for (const [x, y] of list) {
@@ -95,12 +98,19 @@ export function measureOverhang(root, artRel, rawRel) {
   // The two halves have to be distinguishable in BOTH passes, or "reads as the
   // top material" means nothing. Same-over-same tiles land here and drop out.
   if (dist2(rTop, rWall) < 300 || dist2(aTop, aWall) < 300) return null;
-  let drawn = 0, kept = 0;
-  for (const [x, y] of band) {
-    const r = rgbOf(R.pix[y * R.w + x]);
-    const a = rgbOf(A.pix[y * A.w + x]);
-    if (dist2(r, rTop) < dist2(r, rWall)) drawn++;
-    if (dist2(a, aTop) < dist2(a, aWall)) kept++;
-  }
-  return { drawn: drawn / band.length, kept: kept / band.length, band: band.length };
+  const shareOf = (list) => {
+    let drawn = 0, kept = 0;
+    for (const [x, y] of list) {
+      const r = rgbOf(R.pix[y * R.w + x]);
+      const a = rgbOf(A.pix[y * A.w + x]);
+      if (dist2(r, rTop) < dist2(r, rWall)) drawn++;
+      if (dist2(a, aTop) < dist2(a, aWall)) kept++;
+    }
+    return { drawn: drawn / list.length, kept: kept / list.length, n: list.length };
+  };
+  const left = shareOf(bandL), right = shareOf(bandR);
+  // The tile is as broken as its worst face.
+  const worst = (left.drawn - left.kept) >= (right.drawn - right.kept) ? left : right;
+  return { left, right, worst, side: worst === left ? "left" : "right",
+    drawn: worst.drawn, kept: worst.kept, band: bandL.length + bandR.length };
 }

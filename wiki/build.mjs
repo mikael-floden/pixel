@@ -581,9 +581,20 @@ function buildWorld() {
     // DID THE BRIM SURVIVE THE POSTPROCESS? Measured here, keyed by the tile's
     // own key, so the ADMIN's live-manifest refresh can merge it in without
     // decoding anything in the browser.
-    for (const c of cands) {
-      const m = measureOverhang(`${ROOT}/`, c.art, c.raw);
-      if (m) fringeByKey[c.key] = [Math.round(m.drawn * 100), Math.round(m.kept * 100)];
+    // ONLY A CROSS-MATERIAL CELL CAN ANSWER IT. On grass over grass the top and
+    // the wall ARE the same material, so the brim differs from the wall only by
+    // the lighting the generator gave it — measuring "does the top drape" there
+    // reports on shading and flags tiles nobody can fix. The colour guard inside
+    // measureOverhang catches most of them; the cell's own materials settle it.
+    const cTop = cell.top ?? id.split("__over__")[0];
+    const cSide = cell.side ?? id.split("__over__")[1];
+    if (cTop !== cSide) {
+      for (const c of cands) {
+        const m = measureOverhang(`${ROOT}/`, c.art, c.raw);
+        if (m) {
+          fringeByKey[c.key] = [Math.round(m.worst.drawn * 100), Math.round(m.worst.kept * 100), m.side];
+        }
+      }
     }
     cells.push({
       id,

@@ -513,15 +513,34 @@ pass* (the top face for "top", the wall well below the brim for "wall"), so
 nothing depends on a palette file or on the two passes sharing colours. Same-
 over-same tiles cannot answer the question and are excluded by construction.
 
-| cell | drawn | kept |
-| --- | --- | --- |
-| deep water over grass (his) | 98% | **52%** |
-| dark mud over slime (repaired) | 87% | 96% |
+### Per FACE — the first cut averaged the answer away
 
-The card now carries `brim 52% kept of 98% drawn`, red when the generator
-clearly draped it (`drawn ≥ 60%`) and the postprocess took ≥25 points of it —
-**72 of 3,548 tiles, 2.0%**. `clarity` sits beside it, unstyled, for the cases
-where the two materials were drawn as one and no postprocess can separate them.
+He looked at the first version and said *"Same as before. red = SHOULD BE dark
+blue. purple = SHOULD BE green."* The band was right — an overlay at 8× put it
+exactly on his red line — but measuring the tile as a **whole** averaged a
+healthy face together with a destroyed one:
+
+| cell | left face | right face | tile average |
+| --- | --- | --- | --- |
+| deep water over grass (his) | 100% → **11%** | 95% → 93% | 98% → 52% |
+| dark mud over slime (repaired) | 94% → 100% | 79% → 92% | 87% → 96% |
+
+"52% kept" points at nothing. **"The left face keeps 11% of what was drawn"**
+points at a code path — and across the library the loss concentrates there:
+**104 left-face failures against 44 right**, which is the same face
+`fix_left_wall.py` was written for, its docstring already describing how the
+darker-lit left face gets handed to the wrong material wholesale.
+
+So the card names the face: `brim left 11% kept of 100% drawn`, red when the
+generator clearly draped it (`drawn ≥ 60%`) and the postprocess took ≥25 points
+— **148 of 3,218 cross-material tiles, 4.6%**. `clarity` sits beside it,
+unstyled, for the cases where the two materials were drawn as one and no
+postprocess can separate them.
+
+**Same-over-same is never asked.** Its top and wall are one material, so the
+brim differs from the wall only by lighting; measuring it flagged grass over
+grass and ice over ice on shading alone until the cell's own materials — not a
+colour-distance guess — settled it.
 
 Measured for every tile on every build (~3s for 3,690), keyed by the agent's
 own tile key so the admin's live-manifest refresh merges it in without decoding
