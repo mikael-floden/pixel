@@ -1012,6 +1012,23 @@ def score_candidate(card: dict, loop: dict, want_s: float, is_battle: bool) -> t
 
 # ------------------------------------------------------------- the pipeline
 
+def _grid_ms(spec: dict, measured_bpm: float | None) -> int:
+    """Phrase length from the MEASURED tempo when it is close to the brief.
+
+    Within 10% we believe the measurement and recompute the grid from it, so
+    cuts land on real bar lines. Outside 10% the estimator has almost certainly
+    halved or doubled the pulse, and the brief is the safer number.
+    """
+    asked_ms = int(spec["phrase_ms"])
+    asked_bpm = spec.get("bpm")
+    if not (measured_bpm and asked_bpm):
+        return asked_ms
+    if abs(measured_bpm / asked_bpm - 1) > 0.10:
+        return asked_ms
+    bars = asked_ms / 1000 * asked_bpm / 60 / 4
+    return int(round(bars * 4 * 60_000 / measured_bpm))
+
+
 def build_track(session: requests.Session, name: str, spec: dict, seconds: int | None,
                 candidates: int) -> dict | None:
     secs = seconds or spec["seconds"]
@@ -1060,6 +1077,15 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
               f"lufs {card['lufs']:+.1f}  lead {card['lead_in_s']:.2f}s  "
               f"loop {loop['score']:.3f}  centroid {card['centroid_hz']:.0f}Hz"
               + (f"   [{'; '.join(bad)}]" if bad else "   [clean]"))
+        # A DISQUALIFIED TAKE MUST NEVER WIN, not even unopposed. score 0 means
+        # truncated, silent or mostly silence — score_candidate's hard
+        # disqualify. With three candidates the good one simply outranked it,
+        # which hid this: at ONE candidate (the breadth-over-re-rolls policy)
+        # `best is None` made a 0.12-second fragment the winner and it shipped
+        # as nangijala_explore_day_choir. Better to write nothing and re-roll.
+        if sc <= 0:
+            print(f"  ! candidate {i + 1} disqualified — not eligible to win")
+            continue
         if best is None or sc > best["score"]:
             best = {"score": sc, "y": y, "sr": sr, "card": card, "loop": loop,
                     "fmt": fmt, "faults": bad}
@@ -1138,9 +1164,18 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
         # source. `phrases` is computed from the MASTERED duration, because the
         # master trims lead-in and that shifts every boundary.
         **({"phrase": {
-            "phrase_ms": spec["phrase_ms"],
+            # THE GRID FOLLOWS THE AUDIO, not the request. A brief asking 140
+            # that renders at 137.2 has a real bar of 13.99 s, so cutting on the
+            # 13.714 s the request implies drifts ~0.3 s per phrase and lands
+            # mid-bar within a dozen phrases. Recompute from the measurement —
+            # but only when it is CLOSE, because the tempo estimator halves and
+            # doubles, and trusting a 2x reading would be far worse than
+            # trusting the brief.
+            "phrase_ms": _grid_ms(spec, musical["timing"].get("bpm")),
+            "phrase_ms_asked": spec["phrase_ms"],
+            "bpm_measured": musical["timing"].get("bpm"),
             "bars": round(spec["phrase_ms"] / 1000 * (spec.get("bpm") or 0) / 60 / 4) or None,
-            "phrases": int((len(y) / best["sr"]) * 1000 // spec["phrase_ms"]),
+            "phrases": int((len(y) / best["sr"]) * 1000 // _grid_ms(spec, musical["timing"].get("bpm"))),
             # Beat one of the mastered audio: cuts are measured from HERE, not
             # from zero, or the whole grid is offset by the lead-in.
             "beat_anchor_s": musical["timing"].get("beat_anchor_s"),
