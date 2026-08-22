@@ -55,7 +55,16 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python games2/composer/music/pipeline/generate.py "${{ github.event.inputs.track || 'title' }}" "${{ github.event.inputs.seconds }}"
 
+      # ALWAYS COMMIT WHAT WAS GENERATED, even when the compose step failed.
+      # On 2026-08-22 a run produced nang_explore, nang_idle and nang_arrive,
+      # then hit the ElevenLabs quota wall on nang_combat and exited 1 — so
+      # this step was SKIPPED and three tracks that had already been paid for
+      # were thrown away. Credits are the scarcest resource in this pipeline;
+      # audio that exists must reach the repo whatever else went wrong. The
+      # deploy still gates on `pushed`, so a run that produced nothing is a
+      # no-op rather than an empty rollout.
       - name: Commit + push
+        if: always()
         id: push
         run: |
           git config user.name "pixel-composer-bot"

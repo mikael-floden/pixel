@@ -677,6 +677,8 @@ TRACKS: dict[str, dict] = {
     # the DEFAULT pool, heard more than everything else in the game combined
     "nang_explore": {
         "out": "nang_explore",
+        "suite": "nangijala",
+        "pool": "explore",
         "seconds": 165,
         "bpm": 140,
         "phrase_ms": 13714,
@@ -713,6 +715,8 @@ TRACKS: dict[str, dict] = {
     # standing still — the melody steps back, the place keeps breathing
     "nang_idle": {
         "out": "nang_idle",
+        "suite": "nangijala",
+        "pool": "idle",
         "seconds": 55,
         "bpm": 140,
         "phrase_ms": 13714,
@@ -743,6 +747,8 @@ TRACKS: dict[str, dict] = {
     # a fight — SAME key and tempo, urgency comes from density
     "nang_combat": {
         "out": "nang_combat",
+        "suite": "nangijala",
+        "pool": "combat",
         "seconds": 82,
         "bpm": 140,
         "phrase_ms": 13714,
@@ -776,6 +782,8 @@ TRACKS: dict[str, dict] = {
     # stepping ashore — the first thing heard on the island, establishes D major
     "nang_arrive": {
         "out": "nang_arrive",
+        "suite": "nangijala",
+        "pool": "arrive",
         "seconds": 27,
         "bpm": 140,
         "phrase_ms": 13714,
@@ -968,6 +976,18 @@ def make_plan(session: requests.Session, prompt: str, length_ms: int) -> dict | 
     return plan
 
 
+class QuotaExhausted(RuntimeError):
+    """The account is out of credits. Terminal for the RUN, not just this take.
+
+    Learned 2026-08-22: the first 401 quota_exceeded was treated as one bad
+    candidate, so the run kept trying — six more requests across two tracks,
+    every one refused, before it gave up. Worse, it then exited non-zero and
+    the workflow skipped its commit step, throwing away three tracks that had
+    already been generated and paid for. Credits are the scarcest thing here:
+    stop asking the moment the answer is no, and keep everything already made.
+    """
+
+
 def compose(session: requests.Session, *, prompt: str | None = None,
             plan: dict | None = None, length_ms: int | None = None,
             fmt: str = "pcm_44100") -> tuple[bytes, str] | None:
@@ -984,6 +1004,12 @@ def compose(session: requests.Session, *, prompt: str | None = None,
         print(f"  ! compose request failed: {e}")
         return None
     if r.status_code != 200:
+        # OUT OF CREDITS is terminal for the run — asking again in another
+        # format, or for the next track, cannot succeed and only wastes the
+        # wall clock. Raise past every retry so the caller can stop cleanly and
+        # still keep everything generated up to this point.
+        if "quota_exceeded" in r.text or "quota" in r.text.lower():
+            raise QuotaExhausted(r.text[:200])
         # The lossless format needs a high enough tier — degrade once.
         if fmt != "mp3_44100_128":
             print(f"  ! {fmt} rejected ({r.status_code}: {r.text[:120]}) — retrying as mp3")
@@ -1105,7 +1131,16 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
     best = None
     tried = []
     for i in range(candidates):
-        got = compose(session, prompt=spec["prompt"], plan=plan, length_ms=length_ms)
+        try:
+            got = compose(session, prompt=spec["prompt"], plan=plan, length_ms=length_ms)
+        except QuotaExhausted:
+            # Out of credits mid-track. If an earlier candidate already landed,
+            # fall through and MASTER IT — a paid-for take must not be lost
+            # because the next request was refused.
+            print(f"  ! out of credits after {i} candidate(s) for {name}")
+            if best is None:
+                raise
+            break
         if not got:
             continue
         audio, fmt = got
@@ -1177,6 +1212,25 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
         "candidates_tried": tried,
         "sections": sections,
         "source_format": best["fmt"],
+        # PHRASE METADATA — what makes a track cuttable by anyone but this
+        # script. phrase_ms and the pool name lived only in the Python spec, so
+        # the engine and the wiki could not be phrase-aware at all: they saw a
+        # 165-second file and nothing else. Publishing it here is the same fix
+        # as composer/assignments.json — the thing that knows publishes what it
+        # knows, instead of every consumer re-deriving it from someone else's
+        # source. `phrases` is computed from the MASTERED duration, because the
+        # master trims lead-in and that shifts every boundary.
+        **({"phrase": {
+            "phrase_ms": spec["phrase_ms"],
+            "bars": round(spec["phrase_ms"] / 1000 * (spec.get("bpm") or 0) / 60 / 4) or None,
+            "phrases": int((len(y) / best["sr"]) * 1000 // spec["phrase_ms"]),
+            # Beat one of the mastered audio: cuts are measured from HERE, not
+            # from zero, or the whole grid is offset by the lead-in.
+            "beat_anchor_s": musical["timing"].get("beat_anchor_s"),
+            "suite": spec.get("suite"),
+            "pool": spec.get("pool"),
+            "key_asked": spec.get("key_line", "").split(",")[0] or None,
+        }} if spec.get("phrase_ms") else {}),
     }
 
 
@@ -1316,6 +1370,18 @@ def main() -> int:
             continue
         try:
             entry = build_track(session, name, spec, seconds, candidates)
+        except QuotaExhausted as e:
+            # OUT OF CREDITS. Every remaining track would be refused, so stop
+            # asking — but fall through to write_tracks_json so that everything
+            # generated before the wall is kept. On 2026-08-22 this path did not
+            # exist: the run kept requesting, exited 1, and the workflow's
+            # commit step (which had no `if: always()`) discarded three tracks
+            # that were already paid for.
+            print(f"\n!! OUT OF CREDITS — {e}")
+            print(f"!! stopping. {len(out)} track(s) generated this run are kept; "
+                  f"{len(names) - len(out) - 1} not attempted.")
+            rc = 1
+            break
         except Exception as e:
             print(f"  !! {name} failed: {type(e).__name__}: {e}")
             rc = 1

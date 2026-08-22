@@ -74,6 +74,16 @@ export interface TrackEntry {
     midi_pitch_classes?: number[] | null;
   };
   timing?: { bpm?: number | null; beat_anchor_s?: number };
+  /** The phrase grid, written by the music pipeline for sequenceable beds.
+   * Absent on every v1 bed, which is why they keep looping linearly. */
+  phrase?: {
+    phrase_ms: number;
+    bars?: number | null;
+    phrases: number;
+    beat_anchor_s?: number | null;
+    suite?: string | null;
+    pool?: string | null;
+  };
 }
 interface TracksFile {
   tracks: Record<string, TrackEntry>;
@@ -115,6 +125,43 @@ export function hasBed(name: string): boolean {
   return bedTrack(name) !== null;
 }
 
+/** WHICH PHRASE NEXT — a shuffled BAG, not a random pick.
+ *
+ * Uniform random over N clusters: you hear the same phrase twice inside a
+ * minute far more often than feels accidental, and that is exactly what a
+ * listener catches. A bag plays all N in a random order, reshuffles, and never
+ * repeats inside a cycle — so with 12 explore phrases nothing can return for
+ * ~2.7 minutes, and the ORDER differs every cycle (12! of them). Ocarina of
+ * Time does the cheap version of this: pick at random, but never the one just
+ * played. The bag is that idea with a guaranteed floor instead of a hope.
+ *
+ * The one seam a bag cannot fix by itself is the reshuffle: the last of one
+ * cycle and the first of the next can be the same index. `last` blocks it. */
+class PhraseBag {
+  private order: number[] = [];
+  private at = 0;
+  private last = -1;
+  constructor(private n: number) {}
+
+  next(): number {
+    if (this.n <= 1) return 0;
+    if (this.at >= this.order.length) {
+      this.order = [...Array(this.n).keys()];
+      for (let i = this.order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.order[i], this.order[j]] = [this.order[j], this.order[i]];
+      }
+      // Never hand back the phrase that just played, even across a reshuffle.
+      if (this.order[0] === this.last && this.order.length > 1) {
+        [this.order[0], this.order[1]] = [this.order[1], this.order[0]];
+      }
+      this.at = 0;
+    }
+    this.last = this.order[this.at++];
+    return this.last;
+  }
+}
+
 /** One looping bed: its own gain, its own loop scheduling, its own position. */
 class Bed {
   readonly gain: GainNode;
@@ -125,6 +172,13 @@ class Bed {
   private playing = false;
   /** Song seconds where playback stopped — where a resume picks up. */
   private savedPos: number | null = null;
+  /** PHRASE MODE. Set when the track publishes a phrase grid (tracks.json
+   * `phrase`, written by the music pipeline). Without it a bed plays its loop
+   * window linearly, exactly as before — every existing bed is unaffected. */
+  private bag: PhraseBag | null = null;
+  private phraseS = 0;
+  private anchorS = 0;
+  private phraseCount = 0;
 
   constructor(
     private graph: AudioGraph,
@@ -134,6 +188,29 @@ class Bed {
     this.gain = graph.ctx.createGain();
     this.gain.gain.value = 0.0001;
     this.gain.connect(graph.bus("music"));
+    const ph = entry.phrase;
+    if (ph?.phrase_ms && (ph.phrases ?? 0) >= 2) {
+      this.phraseS = ph.phrase_ms / 1000;
+      // Cuts are measured from BEAT ONE, not from zero: the master trims the
+      // lead-in, so a grid anchored at 0 would be offset by whatever silence
+      // was removed and every boundary would land mid-bar.
+      this.anchorS = Math.max(0, ph.beat_anchor_s ?? 0);
+      // Never let the grid run past the buffer — a short master would schedule
+      // a phrase that does not exist and go silent.
+      const fit = Math.floor((buffer.duration - this.anchorS) / this.phraseS);
+      this.phraseCount = Math.max(0, Math.min(ph.phrases ?? 0, fit));
+      if (this.phraseCount >= 2) this.bag = new PhraseBag(this.phraseCount);
+    }
+  }
+
+  /** Where phrase `i` starts, in song seconds. */
+  private phraseAt(i: number): number {
+    return this.anchorS + i * this.phraseS;
+  }
+
+  /** Is this bed playing phrase-by-phrase rather than as one linear loop? */
+  phraseMode(): boolean {
+    return this.bag !== null;
   }
 
   private points(): { start: number; end: number; cf: number } {
@@ -148,7 +225,15 @@ class Bed {
     if (this.playing) return;
     this.playing = true;
     const { start } = this.points();
-    this.schedulePass(this.graph.now + 0.04, this.savedPos ?? start, true);
+    const from = this.savedPos ?? (this.bag ? this.phraseAt(this.bag.next()) : start);
+    this.schedulePass(this.graph.now + 0.04, from, true);
+  }
+
+  /** The phrase index most recently scheduled, or -1 in linear mode. QA reads
+   * this to prove the order actually varies and never repeats in a cycle. */
+  lastPhrase = -1;
+  phraseInfo(): { mode: boolean; count: number; phraseS: number; last: number } {
+    return { mode: !!this.bag, count: this.phraseCount, phraseS: this.phraseS, last: this.lastPhrase };
   }
 
   /** Fade-out is the caller's job (it owns the cross-fade); this reclaims the
@@ -176,7 +261,11 @@ class Bed {
   private schedulePass(when: number, from: number, first: boolean): void {
     if (!this.playing) return;
     const { start, end, cf } = this.points();
-    const span = Math.max(0.5, end - from);
+    // PHRASE MODE plays ONE phrase per pass and asks the bag what comes next,
+    // so the piece is re-ordered every cycle instead of looping. Linear mode
+    // plays the whole loop window, which is what every bed did before and what
+    // any bed without a phrase grid still does.
+    const span = this.bag ? this.phraseS : Math.max(0.5, end - from);
     const ctx = this.graph.ctx;
 
     const src = ctx.createBufferSource();
@@ -204,9 +293,14 @@ class Bed {
     this.segStartPos = from;
 
     const nextWhen = tEnd - cf;
+    // THE ONLY PLACE A DECISION IS MADE — which is why a state change always
+    // lands on a musical boundary without any extra beat-quantising code: the
+    // next phrase is chosen here, at the seam, and nowhere else.
+    const nextFrom = this.bag ? this.phraseAt(this.bag.next()) : start;
+    this.lastPhrase = this.bag ? Math.round((nextFrom - this.anchorS) / this.phraseS) : -1;
     const armInMs = Math.max(40, (nextWhen - 2 - this.graph.now) * 1000);
     if (this.timer) clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.schedulePass(nextWhen, start, false), armInMs);
+    this.timer = setTimeout(() => this.schedulePass(nextWhen, nextFrom, false), armInMs);
   }
 
   /** Song seconds right now (wrapped into the loop window). */
