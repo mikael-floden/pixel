@@ -43,6 +43,9 @@ APEX_SLACK = 3
 # How far below the side corner the lower edge starts, making that corner 2px tall.
 CORNER_DROP = 1
 
+# How far above the apex the upper edges aim, so their slope is exactly 2 columns per row.
+APEX_LIFT = 1
+
 
 def corners(op):
     """(A, L, R, B) for the top face: apex, left, right, and the implied near corner.
@@ -93,6 +96,16 @@ def top_mask(op):
     h, w = op.shape
     inside = np.zeros((h, w), bool)
     above = np.zeros((h, w), bool)
+    # THE UPPER EDGES AIM ONE PIXEL ABOVE THE APEX, which is what makes them read as
+    # straight: "fix the top left and top right line so it looks 100 straight. You can do
+    # this by drawing to a px 1 pixel up when you draw towards the top center pixel."
+    #
+    # It is the 2:1 isometric slope asserting itself. From the left corner at x=0 to the
+    # apex pair the run is 32 columns, so a true iso edge drops exactly 16 rows and every
+    # step is 2 columns wide. Aiming at the apex ITSELF drops only 15 over that run, and
+    # 15 does not divide 32 - the staircase has to hide the remainder in odd steps, which
+    # is the raggedness he can see. One pixel up makes the rise exactly half the run.
+    A = (A[0], A[1] - APEX_LIFT)
     A2 = (A[0] + 1, A[1])             # the right half of the apex pair
     # THE SIDE CORNERS ARE TWO PIXELS TALL, NOT ONE. The lower edges start a pixel below
     # where the upper ones do: "When you draw a line from the left-most and right-most
