@@ -5188,10 +5188,25 @@ function wallModeRow(cand, onVerdict) {
  * half the library orange and mean nothing. */
 const FRINGE_LOSS = 25;                       // percentage points
 const fringeOf = (key) => (worldMeta().fringe ?? {})[key] ?? null;
-function fringeRow(cand, topName) {
+/* AND THE OTHER HALF OF IT (maintainer 2026-08-22, on deep water over slime:
+ * "RED = SHOULD BE SLIME. PURPLE = SHOULD BE DARK WATER").
+ *
+ * He marked a thin brim of water over a body that should be slime — and the
+ * shipped tile paints that whole body water. The BRIM measurement calls those
+ * tiles perfect, correctly: the brim survived. What died is everything under
+ * it. All five tiles of that cell go from ~5% water in the generator's pass to
+ * 95-100% in the shipped one.
+ *
+ * Which is the failure fix_left_wall.py describes in its own docstring — and
+ * that routine landed as code only, never applied, so dark mud over slime
+ * still measures 97% here. */
+const swallowOf = (key) => (worldMeta().swallow ?? {})[key] ?? null;
+const SWALLOW_AFTER = 70, SWALLOW_GAIN = 40;
+function fringeRow(cand, topName, sideName) {
   const f = fringeOf(cand.key);
+  const sw = swallowOf(cand.key);
   const cl = cand.clarity;
-  if (!f && cl == null) return null;
+  if (!f && !sw && cl == null) return null;
   const [drawn, kept, side] = f ?? [];
   const bad = f && drawn >= 60 && drawn - kept >= FRINGE_LOSS;
   const face = side === "right" ? "right" : "left";
@@ -5204,7 +5219,19 @@ function fringeRow(cand, topName) {
     }, `brim ${face} ${kept}% kept of ${drawn}% drawn`) : null,
     cl != null ? h("span", {
       title: "the agent's fringe_clarity — how decisively the spilled fringe can be told apart from the wall it landed on. Low on materials that are close in hue, which is a generation problem no postprocess can repair",
-    }, `clarity ${cl.toFixed(2)}`) : null);
+    }, `clarity ${cl.toFixed(2)}`) : null,
+    // The swallowed face gets its own pill, because it is a bigger failure than
+    // a lost brim and the brim line reads GREEN while it is happening.
+    (() => {
+      if (!sw) return null;
+      const [raw, after, side] = sw;
+      const gone = after >= SWALLOW_AFTER && after - raw >= SWALLOW_GAIN;
+      if (!gone) return null;
+      return h("span", {
+        class: "pill err",
+        title: `The ${side} wall face ships as ${topName.toLowerCase()}, not ${sideName.toLowerCase()}: ${after}% of that face reads as the TOP material in the tile the game gets, against ${raw}% in the generator's own pass. The generator drew the wall correctly and the postprocess handed the whole face to the top material — only the thin brim at the very top should be ${topName.toLowerCase()}.`,
+      }, `${side} wall ships as ${topName.toLowerCase()} (${after}%, drawn ${raw}%)`);
+    })());
 }
 function worldCandidate(cell, cand, i, onVerdict, onStars) {
   const v = wallVerdict(cand.wallScore);
@@ -5267,7 +5294,7 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
       : null,
     // Only on a cross-material tile: "does the top drape over the wall" is not
     // a question about grass over grass.
-    state.admin && cell.top !== cell.side ? fringeRow(cand, typeLabelWorld(cell.top)) : null,
+    state.admin && cell.top !== cell.side ? fringeRow(cand, typeLabelWorld(cell.top), typeLabelWorld(cell.side)) : null,
     // CAN IT BUILD A WALL? Its own row, above the verdict: this is not a
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.

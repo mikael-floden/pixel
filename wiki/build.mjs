@@ -523,6 +523,12 @@ function buildCharacters() {
  */
 function buildWorld() {
   const fringeByKey = {};
+  const swallowByKey = {};
+  // The agent's palette IS the ground truth for what shipped — the postprocess
+  // snaps to it — so the swallowed-face check judges the AFTER pass against it.
+  const palHex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  const palTypes = readJson(join(ROOT, "tiles/config/palette.json"))?.types ?? {};
+  const palOf = (m) => [palTypes[m]?.top, palTypes[m]?.wall].filter(Boolean).map(palHex);
   const base = join(ROOT, "tiles");
   if (!isDir(base)) return null;
   const review = readJson(join(base, "review", "manifest.json"));
@@ -589,10 +595,14 @@ function buildWorld() {
     const cTop = cell.top ?? id.split("__over__")[0];
     const cSide = cell.side ?? id.split("__over__")[1];
     if (cTop !== cSide) {
+      const pal = { top: palOf(cTop), side: palOf(cSide) };
       for (const c of cands) {
-        const m = measureOverhang(`${ROOT}/`, c.art, c.raw);
+        const m = measureOverhang(`${ROOT}/`, c.art, c.raw, pal);
         if (m) {
           fringeByKey[c.key] = [Math.round(m.worst.drawn * 100), Math.round(m.worst.kept * 100), m.side];
+          // A WHOLE WALL FACE HANDED TO THE TOP MATERIAL — the other half of
+          // the same break, and the one the brim measurement calls perfect.
+          if (m.body) swallowByKey[c.key] = [Math.round(m.body.worst.raw * 100), Math.round(m.body.worst.after * 100), m.body.side];
         }
       }
     }
@@ -704,8 +714,11 @@ function buildWorld() {
     }
   }
   worldMeta = {
-    // key -> [drawn %, kept %] — see wiki/lib/overhang.mjs.
+    // key -> [drawn %, kept %, face] — see wiki/lib/overhang.mjs.
     fringe: fringeByKey,
+    // key -> [raw %, after %, face]: how much of that wall face reads as the
+    // TOP material. Low then high = the postprocess swallowed the face.
+    swallow: swallowByKey,
     // What the agent measures a candidate against, published so the page can
     // say WHY something ranks where it does instead of showing bare numbers.
     accept: cfg.accept ?? null,

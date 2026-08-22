@@ -635,17 +635,54 @@ const healthy = cellOf("dark_mud__over__slime");
 ok(!!his && !!healthy, "both the reported cell and the one already repaired are in the wiki");
 const mHis = his && measureOverhang(ROOT, his.candidates[0].art, his.candidates[0].raw);
 const mOk = healthy && measureOverhang(ROOT, healthy.candidates[0].art, healthy.candidates[0].raw);
-ok(mHis && mHis.left.drawn >= 0.95 && mHis.left.kept <= 0.2,
-  `his tile's LEFT face: the generator draped the water and the postprocess took it (drawn ${(mHis.left.drawn * 100).toFixed(0)}%, kept ${(mHis.left.kept * 100).toFixed(0)}%)`);
-ok(mHis && mHis.right.kept >= 0.8,
-  `while its RIGHT face is untouched — which is why a tile-wide average said nothing (kept ${(mHis.right.kept * 100).toFixed(0)}%)`);
-ok(mHis && mHis.side === "left", `so the card names the face that failed (${mHis.side})`);
+// A REGRESSION GUARD NOW, NOT A COMPLAINT. He reported this cell on 2026-08-22
+// measuring LEFT 100% drawn -> 11% kept; the tiles agent repaired it the same
+// day ("deep water over grass keeps the droop on its shaded face", f36de4c4b)
+// and it measures 100 -> 100. If it slips back, this goes red.
+ok(mHis && mHis.left.drawn >= 0.95 && mHis.left.kept >= 0.9,
+  `the cell he reported is REPAIRED and stays repaired — its left face keeps the droop (drawn ${(mHis.left.drawn * 100).toFixed(0)}%, kept ${(mHis.left.kept * 100).toFixed(0)}%, was 11%)`);
+ok(mHis && mHis.right.kept >= 0.75,
+  `and its right face, which was never broken, still is not (kept ${(mHis.right.kept * 100).toFixed(0)}%)`);
 ok(mOk && mOk.left.kept >= mOk.left.drawn - 0.05 && mOk.right.kept >= mOk.right.drawn - 0.05,
   `dark mud over slime — repaired once already — keeps BOTH faces (left ${(mOk.left.kept * 100).toFixed(0)}%, right ${(mOk.right.kept * 100).toFixed(0)}%)`);
+// ---- AND THE OPPOSITE BREAK: A WHOLE WALL FACE SWALLOWED -------------------
+// Maintainer 2026-08-22, on deep water over slime: "RED = SHOULD BE SLIME.
+// PURPLE = SHOULD BE DARK WATER." A thin brim of water over a body that should
+// be slime — and the shipped tile paints the whole body water.
+//
+// The BRIM check calls those tiles perfect and is right to: the brim survived.
+// A measurement that only looks at the brim reports green while the wall under
+// it is gone, so this asks the other question.
+const PALT = PAL.types ?? {};
+const pHex = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const pOf = (m) => [PALT[m]?.top, PALT[m]?.wall].filter(Boolean).map(pHex);
+const slimeCell = cellOf("deep_water__over__slime");
+ok(!!slimeCell, "the cell he marked is in the wiki");
+const swMeasured = (slimeCell?.candidates ?? []).map((c) =>
+  measureOverhang(ROOT, c.art, c.raw, { top: pOf("deep_water"), side: pOf("slime") })).filter(Boolean);
+ok(swMeasured.length >= 4 && swMeasured.every((m) => m.body && m.body.left.after >= 0.9 && m.body.left.raw <= 0.25),
+  `every one of its tiles ships a LEFT wall that is water, over a wall the generator drew as slime (${swMeasured.map((m) => `${Math.round(m.body.left.raw * 100)}→${Math.round(m.body.left.after * 100)}`).join(", ")})`);
+// The tile the brim check is happiest about is one of the broken ones — which
+// is the entire reason this second measurement exists.
+const perfectBrim = swMeasured.find((m) => m.left.kept >= 0.99 && m.left.drawn >= 0.99);
+ok(perfectBrim && perfectBrim.body.left.after >= 0.9,
+  `and the tile whose brim measures a perfect 100/100 is one of them (body ${Math.round((perfectBrim?.body.left.after ?? 0) * 100)}% water)`);
+// fix_left_wall.py describes this failure and quotes 98.3% — it shipped as code
+// only, never applied, so its own cell still measures it.
+const mud = cellOf("dark_mud__over__slime");
+const mudM = mud && measureOverhang(ROOT, mud.candidates[0].art, mud.candidates[0].raw, { top: pOf("dark_mud"), side: pOf("slime") });
+ok(mudM?.body && mudM.body.left.after >= 0.9,
+  `dark mud over slime still measures it too — fix_left_wall.py landed as code only (${Math.round(mudM.body.left.after * 100)}% against its docstring's 98.3%)`);
+const swallow = (D.worldMeta ?? {}).swallow ?? {};
+const swBad = Object.values(swallow).filter(([raw, after]) => after >= 70 && after - raw >= 40);
+ok(Object.keys(swallow).length > 500 && swBad.length > 0 && swBad.length < Object.keys(swallow).length * 0.1,
+  `published per tile and rare enough to mean something — ${swBad.length} of ${Object.keys(swallow).length} faces swallowed (${(swBad.length / Object.keys(swallow).length * 100).toFixed(1)}%)`);
+
 // Published for the browser, keyed by the agent's own tile key.
 const fringe = (D.worldMeta ?? {}).fringe ?? {};
 ok(Object.keys(fringe).length > 500, `the measurement is published per tile for the live refresh to merge (${Object.keys(fringe).length} tiles)`);
-ok(String(fringe[his.candidates[0].key]) === "100,11,left", `including his (${fringe[his.candidates[0].key]})`);
+ok(Array.isArray(fringe[his.candidates[0].key]) && fringe[his.candidates[0].key].length === 3,
+  `including his, as [drawn, kept, face] (${fringe[his.candidates[0].key]})`);
 // SAME-OVER-SAME IS NEVER ASKED. Its top and wall are one material, so the brim
 // differs only by lighting and the question means nothing — measuring it flagged
 // grass over grass and ice over ice until the cell's materials settled it.

@@ -546,6 +546,54 @@ Measured for every tile on every build (~3s for 3,690), keyed by the agent's
 own tile key so the admin's live-manifest refresh merges it in without decoding
 anything in the browser.
 
+## The other half of the same break — a whole wall face swallowed
+
+Maintainer 2026-08-22, on deep water over slime: *"RED = SHOULD BE SLIME.
+PURPLE = SHOULD BE DARK WATER."* He marked a thin brim of water at the top of
+the left face, over a body that should be slime — and the shipped tile paints
+that whole body water.
+
+**The brim measurement calls those tiles perfect, and it is right to.** The brim
+survived; what died is everything under it. One of them measures
+`brim left 100% kept of 100% drawn` while its entire left wall ships as water.
+A metric that only watches the brim reports green while the wall goes.
+
+So the same pass measures the **body** — everything under the brim, per face —
+as the share reading as the **top** material:
+
+| cell | left body: drawn → shipped |
+| --- | --- |
+| deep water over slime (all five tiles) | 4→95, 0→95, 15→100, 5→99, 17→99 |
+| dark mud over slime | 29 → **97** |
+
+That second row is the point: `fix_left_wall.py` was written for exactly this
+failure and says so — *"the darker-lit LEFT face sits closer to the mud anchor
+than to slime's own wall, so `_split_wall` gives it away wholesale — measured
+98.3% of that face reading as mud"* — and it landed as **code only, never
+applied**, so its own cell still measures 97%.
+
+**Anchors differ by pass, deliberately.** The AFTER pass is judged against the
+tiles agent's own `palette.json`, because the postprocess snaps to it and it is
+therefore ground truth for what shipped. The BEFORE pass has the generator's
+arbitrary colours and is judged against anchors taken from the tile itself.
+
+Flagged when a face ships ≥70% top-material having gained ≥40 points over what
+was drawn — **95 of 3,218 tiles, 3.0%**, 59 right-face and 36 left. The card
+carries it as its own red pill: `left wall ships as deep water (95%, drawn 4%)`.
+
+**The brim and the body are opposite failures of one routine.** The brim loses
+the top material to the wall; the body loses the wall to the top material. Both
+are `_split_wall` putting the boundary in the wrong place, and a tile can have
+one, the other, or both.
+
+### The loop closed once already
+
+He reported deep water over **grass** at 09:00 measuring `left 100% drawn → 11%
+kept`; the tiles agent shipped *"deep water over grass keeps the droop on its
+shaded face"* at 12:12 and it now measures **100 → 100**. That check is a
+regression guard in `check-groundtype.mjs` now rather than a complaint — if the
+repair slips, the gate goes red.
+
 ## Three passes, and the third one does not exist on disk
 
 Maintainer 2026-08-21, after the clean-colour switch still did not answer his

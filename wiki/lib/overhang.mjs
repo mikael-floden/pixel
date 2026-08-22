@@ -41,10 +41,33 @@ const DEEP_TO = 18;
 const rgbOf = (v) => [(v >> 16) & 255, (v >> 8) & 255, v & 255];
 const dist2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
 
+/* THE OTHER HALF OF THE SAME BREAK — a whole wall face swallowed.
+ *
+ * Maintainer 2026-08-22, on deep water over slime: "RED = SHOULD BE SLIME.
+ * PURPLE = SHOULD BE DARK WATER." He had marked the LEFT face: a thin brim of
+ * water at the top (purple, correct) over a body that should be slime (red) —
+ * and the shipped tile paints that whole body water.
+ *
+ * The brim measurement calls those tiles PERFECT, and it is not wrong: the brim
+ * survived. What died is everything under it. Measured on all five of that
+ * cell's tiles, the left body goes from ~5% reading as water in the generator's
+ * pass to 95-100% in the shipped one.
+ *
+ * This is the failure fix_left_wall.py was written for, in its own words: "The
+ * darker-lit LEFT face sits closer to the mud anchor than to slime's own wall,
+ * so _split_wall gives it away wholesale - measured 98.3% of that face reading
+ * as mud." That routine landed as code only, never applied — dark mud over
+ * slime still measures 97% here.
+ *
+ * ANCHORS DIFFER BY PASS, deliberately. The AFTER pass is judged against the
+ * agent's OWN palette (the postprocess snaps to it, so the palette is ground
+ * truth for what shipped); the BEFORE pass has the generator's arbitrary
+ * colours and is judged against anchors taken from the tile itself.
+ */
 /** → { drawn, kept, band } in 0..1, or null when the tile cannot answer:
  *  no before pass, mismatched sizes, no flat top, too small a brim, or a
  *  same-material tile whose halves cannot be told apart. */
-export function measureOverhang(root, artRel, rawRel) {
+export function measureOverhang(root, artRel, rawRel, palette) {
   if (!artRel || !rawRel) return null;
   if (!existsSync(root + artRel) || !existsSync(root + rawRel)) return null;
   let A, R;
@@ -66,7 +89,7 @@ export function measureOverhang(root, artRel, rawRel) {
   const clean = top[0];
   // Per column: the contiguous top-face run from the crown, then the brim just
   // under it and a wall sample well below it.
-  const bandL = [], bandR = [], deep = [], face = [];
+  const bandL = [], bandR = [], deep = [], face = [], bodyL = [], bodyR = [];
   for (let x = 0; x < A.w; x++) {
     let y = 0;
     while (y < A.h && !opaqueA(x, y)) y++;
@@ -81,6 +104,11 @@ export function measureOverhang(root, artRel, rawRel) {
     }
     for (let k = DEEP_FROM; k <= DEEP_TO && run + k < A.h; k++) {
       if (opaqueA(x, run + k) && opaqueR(x, run + k)) deep.push([x, run + k]);
+    }
+    // THE BODY: everything under the brim, all the way down. This is the wall,
+    // and it is supposed to stay the WALL's material.
+    for (let k = BAND + 1; run + k < A.h; k++) {
+      if (opaqueA(x, run + k) && opaqueR(x, run + k)) (x < A.w / 2 ? bodyL : bodyR).push([x, run + k]);
     }
     for (let yy = 0; yy <= run; yy++) if (opaqueA(x, yy)) face.push([x, yy]);
   }
@@ -109,8 +137,31 @@ export function measureOverhang(root, artRel, rawRel) {
     return { drawn: drawn / list.length, kept: kept / list.length, n: list.length };
   };
   const left = shareOf(bandL), right = shareOf(bandR);
+  // ---- the swallowed-face measurement, when the caller supplies the palette
+  let body = null;
+  if (palette && palette.top?.length && palette.side?.length && bodyL.length >= 20 && bodyR.length >= 20) {
+    const nearest = (c, set) => Math.min(...set.map((a) => dist2(c, a)));
+    const aftIsTop = ([x, y]) => {
+      const c = rgbOf(A.pix[y * A.w + x]);
+      return nearest(c, palette.top) < nearest(c, palette.side);
+    };
+    const rWallBody = meanOf([...bodyL, ...bodyR], R);
+    const rawIsTop = ([x, y]) => {
+      const c = rgbOf(R.pix[y * R.w + x]);
+      return dist2(c, rTop) < dist2(c, rWallBody);
+    };
+    const bodyStat = (list) => ({
+      raw: list.filter(rawIsTop).length / list.length,
+      after: list.filter(aftIsTop).length / list.length,
+      n: list.length,
+    });
+    const bl = bodyStat(bodyL), br = bodyStat(bodyR);
+    const gain = (b) => b.after - b.raw;
+    const worstB = gain(bl) >= gain(br) ? bl : br;
+    body = { left: bl, right: br, worst: worstB, side: worstB === bl ? "left" : "right" };
+  }
   // The tile is as broken as its worst face.
   const worst = (left.drawn - left.kept) >= (right.drawn - right.kept) ? left : right;
   return { left, right, worst, side: worst === left ? "left" : "right",
-    drawn: worst.drawn, kept: worst.kept, band: bandL.length + bandR.length };
+    drawn: worst.drawn, kept: worst.kept, band: bandL.length + bandR.length, body };
 }
