@@ -258,11 +258,3 @@ from the games agent), #18 (title/landing screen).
   the impact frame, exactly. For "did these start together", read the browser's
   own `Animation.startTime` instead of any pixel: grab the objects when their
   effect appears and read them at the end (a finished animation keeps it).
-
-## Don't
-
-- Don't edit the games agent's files (above) without a board round trip.
-- Don't touch the art domains (`characters2/`, `tiles2/`, `maps2/`,
-  `scenery/`, `sounds/`) — read-only, same as ever.
-- Don't write any `coordination/*.json` except `games-ui.json`.
-- Don't push red — `npm test` + `npm run typecheck` first.

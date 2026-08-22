@@ -20,6 +20,9 @@ dependency**. It is read-only toward the art: it never edits those directories.
 
 The server is authoritative (20 Hz tick). The client predicts locally and
 reconciles; players' flat `(x,y)` is projected onto the iso grid with elevation.
+Art is read from the sibling domains at the repo root and served at
+`/assets/<domain>/…` by Vite middleware in dev and by the Colyseus/express
+server in prod.
 
 ## Quick start (from the repo root)
 
@@ -34,21 +37,6 @@ Enter chats. It is always night: per-pixel point lights (torch on each player,
 emissive tiles) with heightmap line-of-sight shadows. Debug toggles live on the
 top-row digits: **4** collision overlay, **5** your hand torch. You can swim across
 water but your stamina drains — get out before you drown. Map preview at `/#map`.
-
-## Layout
-
-```
-shared/    constants + pure helpers shared by server & client (incl. stepMovement)
-server/    Colyseus WorldRoom + authoritative movement + persistence (store.ts)
-client/    Phaser game: iso world render (maps.ts), players, chat, roster
-scripts/   build-manifest.mjs (characters/ → client manifest), verify-*.mjs
-loop/      the self-iterating development loop runbook
-deploy/    GCP deploy guide + Caddyfile
-```
-Art is read from the sibling domains at the repo root; `scripts/build-manifest.mjs`
-turns `characters/skeletons/` into `client/public/characters.json`, and the dev
-server (Vite middleware) + prod server (Colyseus/express) serve every domain at
-`/assets/<domain>/…`.
 
 ## Verify / deploy
 

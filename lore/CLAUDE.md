@@ -72,6 +72,9 @@ true.
 - **The beats ledger replaced the open-questions list.** `revelations.json`
   is the single source for what may be told; RED_LINE.md §4 sets the pacing
   (never two identity beats in a season).
+- **Write loosely enough to survive.** If you find yourself wanting to ask
+  another agent to stop changing something, you have written it too tightly
+  (the doctrine of loss: `README.md`, `canon/CONSTRAINTS.md`).
 - **Icons are the maintainer's art — never re-encode, resize or resample.**
   Copy the file in as bytes. Assign one to a chapter only when it genuinely
   represents it better than the default `rune` — a weak match is worse than
@@ -89,16 +92,6 @@ Text reaches other domains through `lore/lore.json`, and **lore wins**: a
 files — the substitution happens at the wiki's read, so they always keep
 their own copy. Treat that as a duty of care: only replace text you have
 actually improved, and only after looking at the art.
-
-## When the story breaks
-
-It will, constantly, by design — see the doctrine of loss (`README.md`,
-`canon/CONSTRAINTS.md`). An entity that vanished went **Quiet** (delete its
-file, do not memorialise it); a renamed one **drifted** (keep the file,
-refresh the name); a regenerated map was a **Turn** (nothing to fix — never
-describe geography by coordinate in the first place). If you find yourself
-wanting to ask another agent to stop changing something, you have written it
-too tightly.
 
 ## Roadmap
 

@@ -24,6 +24,8 @@ its 16 props live in git history.)
   maintainer's accumulated taste laws live in `config/factory.json`
   (`groups` + the `_comment` changelog) — **read the `_comment` before
   touching any prompt**. Per-group quota/done: `viewer_data.json → groups`.
+  **Never raise `quota_rule` or `budget` knobs on your own — maintainer's
+  call.**
 - **THE GOAL IS 1,000 LIVE PIECES, and generation stops there**
   (`config/factory.json → goal.target_pieces`, maintainer decision). No
   open-ended catalog, no scheduler: he tops up credits, the loop runs a
@@ -276,11 +278,3 @@ lossless WebP only.
 - `index.html` + `viewer_data.json` — the domain's own gallery with a
   to-scale character comparison (`python -m http.server` in this folder).
 - `viewer_data.json → groups` — per-group quota/done progress at a glance.
-
-## Don't
-
-- **Never commit secrets** — `PIXELLAB_API_KEY` lives in a gitignored `.env`.
-- Don't regenerate the maintainer's legacy pieces.
-- Don't raise `quota_rule` or `budget` knobs on your own — maintainer's call.
-- Don't re-pose art locally — PixelLab owns drawing/animation; this domain
-  owns orchestration, packaging, QA-of-output, and the viewer.

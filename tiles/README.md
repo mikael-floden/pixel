@@ -82,8 +82,13 @@ ask for *"pure flat dark orange"* and you get the fill.
 ## Ground types
 
 **Solid** — grass, snow, ice, black_rock, light_beach, grey_stone, light_soil,
-dark_mud, parquet_floor, paving_stone
+dark_mud, parquet_floor, brown_paving_stone, grey_paving_stone
 **Liquid** — water, deep_water, lava, slime
+
+`paving_stone` is a GENERATION alias, not a ground type: `config/tiles.json` still
+generates under it, and `publish` expands each such cell into the two above via their
+`generated_as` fields, never publishing the alias name (*"The same paving_stone will
+generate both a brown and a grey version."*). 16 types in `config/palette.json`.
 
 ## Scope right now
 
@@ -177,127 +182,82 @@ art and saying what was wrong with it.
 
 ## The palette is nominated, not measured
 
-A material's colour is not an average of what the generator draws. It is a tile the
-maintainer pointed at:
-
-> "This tile is a good palette for 'dark rock'. Try to find exacy what tile it is based
-> on the ID and make this the palette that every other dark_rock tile should try to
-> mimmic. This means the postprocess script should not really modify this tile at all."
-
-That gives the mechanism its acceptance test, and it is the inverse of the obvious one:
-**running the postprocess on the reference must barely change it.** If recolouring the
-reference moves it a lot, the palette does not describe the thing the maintainer picked,
-and it is the palette that is wrong. `reference.py --check` reports that number for every
-material.
+A material's colour is not an average of what the generator draws — it is a tile the
+maintainer pointed at: *"make this the palette that every other dark_rock tile should
+try to mimmic. This means the postprocess script should not really modify this tile at
+all."* That gives the mechanism its acceptance test, and it is the inverse of the
+obvious one: **running the postprocess on the reference must barely change it.** If
+recolouring the reference moves it a lot, it is the PALETTE that is wrong.
 
     python tiles/pipeline/reference.py --check                       # what would change
     python tiles/pipeline/reference.py --material dark_rock --tile c51bfa48 --write
 
-Eight materials are defined this way so far — `dark_mud`, `black_rock`, `deep_water`,
-`grey_stone`, `ice`, `lava`, `light_beach`, `light_soil`. A blanket `--write` deliberately SKIPS them and says so; only naming
-one with `--material` re-references it. Without that guard the sweep would quietly re-derive
-each from generator averages and overwrite the pick with a success message.
+Every shipping material is now the maintainer's own pick, and **`config/palette.json`
+is the audit trail**: each type carries a `source` naming the reference tile and the
+quote that nominated it, plus a `ramp_note` where the colour is a ramp rather than one
+hex. Read the reasoning there — never copy those hexes into prose, the copy drifts and
+then lies.
 
-Materials anchored to `tiles2` (grass, snow, water…) are locked harder still and need
-`--force`: 3.0 has to read as the same world as the shipping game, and re-deriving grass
-from 3.0 output is what once made it a bright yellow-green. Five anchors have now been
-deliberately broken by a maintainer's pick, each because 2.0's colour was not the one they
-wanted for 3.0:
-
-| material | was | is | what was wrong with it |
-|---|---|---|---|
-| `grey_stone` | `#72786c` | `#808082` | 2.0's `stone_mountain` is a green-olive grey; they picked a neutral one |
-| `ice` | `#a8f0fc` | `#99ced1` | `crystal_ice` is a bright pale cyan; they picked a softer grey-blue |
-| `lava` | `#be350e` | `#fb7f10` | too dark, AND self-inconsistent — its wall `#df3c11` was BRIGHTER than its top, so lava blocks were lit from underneath |
-| `light_beach` | `#ead2a2` | `#e4c495` | shift on the reference 21.6 -> 7.9 |
-| `light_soil` | `#c09c6c` | `#c9ab7e` | shift on the reference 15.5 -> 10.3 |
-| `parquet_floor` | `#82523c` | `#a7754b` | too dark, and inverted the same way lava was |
-| `paving_stone` | `#72786c` | `#a5a4a8` | shared `stone_mountain` with grey_stone; shift 39.7 -> 3.5 |
-| `slime` | `#1fa32c` | `#7aee2f` | shift on the reference 44.2 -> 14.2 |
-| `snow` | `#d8e4de` | `#ebf4f6` | shift on the reference 15.3 -> 5.7 |
-
-| `water` | `#428a90` | `#7eb7c7` | shift on the reference 37.9 -> 18.3 |
-| `grass` | `#0c483c` | `#2a7039` | see below — neither end was right |
-
-ALL FOURTEEN materials are now the maintainer's own picks. Nothing carries a 2.0 colour any
-more, which retires `anchored()` as a practical brake — it still guards against a sweep
-re-deriving anything, but there is no longer a tiles2 value left to protect.
+A blanket `--write` deliberately SKIPS nominated materials and says so; only naming one
+with `--material` re-references it. Without that guard a sweep quietly re-derives each
+from generator averages and overwrites the pick with a success message. `anchored()`
+still guards the same way and the materials it covers need `--force`: 3.0 has to read as
+the same world as the shipping game, and **re-deriving grass from 3.0 output is what
+once made it a bright yellow-green.**
 
 ### When neither the reference nor what ships is right
 
-> "The grass color palette should be defined as an 'in between' of what we have today and
-> what 'grass over grass' #3 gives us. I'm not happy with #3 and I'm not happy with the
-> current color palette. Mixing them 50/50 will get to my perfect grass color/palette."
+> "Mixing them 50/50 will get to my perfect grass color/palette."
 
-`--mix F` blends the derived colour with the palette entry it would replace. Straight RGB
-midpoint, because that is what "50/50" means to the person asking; a perceptual blend would
-land somewhere they did not ask for. The stored `source` records both ends and the weight,
-so the number can be moved later without re-deriving anything.
+`--mix F` blends the derived colour with the palette entry it would replace. Straight
+RGB midpoint, because that is what "50/50" means to the person asking; a perceptual
+blend would land somewhere they did not ask for. The stored `source` records both ends
+and the weight, so the number can be moved later without re-deriving anything.
 
     python tiles/pipeline/reference.py --material grass --tile b421e18e --mix 0.5 --write --force
 
-Note what this costs and why it is still right: the mix scores WORSE on the acceptance test
-than the reference alone (21.8 against 14.4), because the midpoint is by construction not
-what any tile draws. The acceptance test answers "does the palette describe this art"; the
-maintainer is answering "what should this material look like", and that is the question that
-wins.
+The mix scores WORSE on the acceptance test than the reference alone (21.8 against
+14.4), because the midpoint is by construction not what any tile draws. The test answers
+"does the palette describe this art"; the maintainer is answering "what should this
+material look like", and that is the question that wins.
 
 ### A reference can be several tiles
 
-`paving_stone` was not defined by one tile:
-
-> "The paving_stone palette is defined by every color with a 1 star in 'paving_stone over
-> paving_stone' today."
-
-Eight tiles, and for a material meant to VARY that is the better reference — averaging eight
-surfaces of the same stone describes the stone, where one tile describes one roll of it.
-`--rated N` reads those stars straight out of the wiki's own feedback (`live/feedback/
-tiles.json`, another domain's file, opened READ ONLY per PROTOCOL rule 1) and pools the
-pixels, so a tile does not get extra weight for having a bigger visible face.
+`paving_stone` was defined by *"every color with a 1 star in 'paving_stone over
+paving_stone' today"* — eight tiles. For a material meant to VARY that is the better
+reference: averaging eight surfaces of the same stone describes the stone, where one
+tile describes one roll of it. `--rated N` reads those stars straight out of the wiki's
+own feedback (`live/feedback/tiles.json`, another domain's file, opened READ ONLY per
+PROTOCOL rule 1) and pools the pixels, so a tile does not get extra weight for having a
+bigger visible face.
 
     python tiles/pipeline/reference.py --material paving_stone --rated 1 --textured --write --force
 
 ### A material can keep its texture
 
-The flat top is the DEFAULT, not a law. It exists because a featureless surface shows no
-repeat across a large field — but that argument does not hold for every material, and the
-maintainer named the exception:
+The flat top is the DEFAULT, not a law: a featureless surface shows no repeat across a
+large field, but planks ARE the material. The maintainer named the exceptions —
+*"parquet_floor is not expected to be 'clean' … (but the color palette should still
+align)"* and *"paving_stone is special the same way parquet_floor is special"* — so
+`palette.json` carries `"flat_top": false` for those and `snap()` gives the top the same
+treatment the walls get: relief kept, hue and saturation taken from the palette.
+`reference.py --textured` sets the flag while referencing; everything else defaults to
+flat.
 
-> "parquet_floor is not expected to be 'clean'. So a parquet_floor should always maintain
-> it's unclean top texture (but the color palette should still align)."
-
-Planks ARE the material; a parquet floor with no grain is not a cleaner parquet floor, it is
-a brown rectangle. `paving_stone` is the same — "paving_stone is special the same way
-parquet_floor is special" — a paved surface with the paving flattened out of it is not
-paving. So `palette.json` carries `"flat_top": false` for both and `snap()` gives
-its top the same treatment the walls get — relief kept, hue and saturation taken from the
-palette. Set the flag on any other material that wants it (`reference.py --textured` sets it while
-referencing); everything else defaults to flat.
-
-The acceptance test reads the flag too. Flattening the top inside `shift()` for a material
-that ships textured would score the grain as palette error and make every candidate colour
-look equally bad.
-
-Breaking `grey_stone`'s anchor has a side effect worth knowing about: `paving_stone` was
-anchored to the SAME 2.0 colour (both were `#72786c`) and still carries it, so the two
-stones no longer match. That is now a choice someone has to make rather than an accident of
-a shared source.
+The acceptance test reads the flag too. Flattening the top inside `shift()` for a
+material that ships textured would score the grain as palette error and make every
+candidate colour look equally bad.
 
 ### The acceptance test has a floor, and it is not zero
 
-"This tile shouldn't change at all" cannot be measured as shift alone, because the top face
-is deliberately flattened to one colour — so a reference with any texture in its top can
-never reach zero. Decompose it instead: the top's irreducible spread is the mean distance of
-its own pixels from their own mean, and a correct palette lands ON that floor.
-
-On the `grey_stone` reference the top's floor is 21.4 and the new palette achieves 21.3 —
-i.e. the ONLY thing left is the flattening, and the colour is exactly right. The old palette
-scored 29.0 against the same floor, and that gap was the olive cast. Reporting the single
-number 21.9 -> 16.5 would have hidden both facts.
-
-`ice` is the same story and larger: floor 13.3, new palette 13.4, old palette 33.2. Two
-thirds of what the postprocess was doing to every ice tile in the game was moving it to a
-colour the maintainer did not want.
+"This tile shouldn't change at all" cannot be measured as shift alone: the top face is
+deliberately flattened to one colour, so a reference with any texture in its top can
+never reach zero. Decompose it instead — the top's irreducible spread is the mean
+distance of its own pixels from their own mean, and a correct palette lands ON that
+floor. `grey_stone` floor 21.4, new palette 21.3, old 29.0 (that gap was the olive cast);
+`ice` floor 13.3, new 13.4, old 33.2 — two thirds of what the postprocess did to every
+ice tile was moving it to a colour the maintainer did not want. The single number
+21.9 -> 16.5 would have hidden both facts.
 
 ## The gate that ate the reference tile
 

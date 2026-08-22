@@ -92,17 +92,11 @@ pipeline.
 
 ## What this is
 
-**Nangijala** is a browser-based **multiplayer** (MMO-style) pixel-art RPG:
-everyone joins the **same shared isometric world**. It lives in the `pixel`
-monorepo at `games2/` and renders the sibling agent domains' art
-(`characters2/`, `tiles2/`, `maps2/`, `scenery/`). **Read-only toward the
-art** — never edit those directories (`coordination/PROTOCOL.md`; this game
-owns `games2/` + `coordination/games.json`). Developed by a self-iterating
-loop — `loop/LOOP.md`. Since 2026-07-17 TWO agents work `games2/`: the
-**games agent** (gameplay/netcode/world/server) and the **games-ui agent**
-(HUD, menus, screens, overlays; board `coordination/games-ui.json`) — the
-per-file ownership split is `UI_AGENT.md`. (First-generation
-`games/`+`characters/`+`maps/`+`tiles/` retired 2026-07-14; history in git.)
+The Nangijala game client + server. Renders the sibling art domains
+(`characters2/`, `tiles2/`, `maps2/`, `scenery/`) **read-only** — never edit
+them (`coordination/PROTOCOL.md`). Boards: `coordination/games.json` (game
+agent) + `coordination/games-ui.json` (games-ui agent; the per-file ownership
+split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
 
 ## Tech stack
 
@@ -220,8 +214,8 @@ per-file ownership split is `UI_AGENT.md`. (First-generation
     like a cliff — maintainer: "runs up and down, can't get over the bridge".)
     Gate: navigation.sim.test.ts "leave the bridge onto same-level ground"
     (fails 4/40 stuck on the base-only baseline).
-  - Seeing yourself under a deck (house/cave interiors) is INDOOR MODE — see
-    that section.
+  - Seeing yourself under a deck (house/cave interiors) is INDOOR MODE —
+    see `games2/INDOOR.md`.
 - **SEE-THROUGH WALLS IS DELETED — never reintroduce a per-frame occluder
   alpha sweep.** The prototype ([7] key, "see-through walls" switch,
   `occFade`/`occFocus`/`occApply` probes) swept the whole live occluder set
@@ -581,49 +575,26 @@ clip, no tint.
     `shadowBodyRadius` from `shared/src/index.ts` BY PATH and
     `wiki/tools/check-shadow.mjs` gates on them — tell the wiki agent before
     touching either signature.
-- **Art-measured shadows + anchors, PER DIRECTION** (`measureWalkArt` fully
-  decodes every WALK strip). The manifest emits per (state, direction) a
-  `ground` contract `{f, cx, contact, sink}` plus per-frame `shift[]`/`air[]`.
-  Laws distilled from five maintainer rounds — do not re-derive:
-  - NEVER one pooled anchor: strips differ in height/margins per direction
-    (up to 9px), ~90% of frames sit above a p90 line by construction
-    (hop gaits float), and off-centre bodies leave the shadow beside the feet.
-  - `f`/`cx` are the CONTACT CENTROID, not the lowest opaque row: far feet
-    stand up to ~16px higher in-frame than the near toe. On the planted
-    contact frame (bottom-3-row contact width ≥ half the dir's widest; frame
-    nearest the p65 of ground-frame bottoms): contact columns within
-    T = clamp(11% bodyW, 6, 17) of the deepest row; runs <3px wide dropped
-    (tails); runs farther than 0.4·fw from the mass-centre column dropped
-    (flame tendrils). Anchor = kept-run extent midpoint × mean bottom row.
-  - `cx` blends 50% toward the silhouette's mass-centre column (cap 12% fw) —
-    eccentric contacts pull the shadow under the body; symmetric quadrupeds
-    stay put. `sink` = px the front toes plant BELOW the anchor.
-  - PER-FRAME drift compensation — the art is NEVER touched ("movement should
-    be handled in the game and not in the animation"; a rewrite script "can
-    easily destroy the animation"): `shift[]` (origin-x per frame from the
-    mass-centre column, bounded to the contact band ±15%, clamped ±12% fw —
-    cancels baked translation, e.g. diablo_2 east slid 14px/cycle) and `air[]`
-    (px the frame's deepest point rose vs planted, 2px deadband, cap 24 — fed
-    to placeBodyShadow's hop arg so levitation/leaps shrink+fade the shadow;
-    vertical bob is real animation, never pinned).
-  - Per-frame anchors are FEET-BASED (each frame's own contact analysis, 3px
-    deadband, mass only as airborne fallback) — mass tracking chased a
-    stretching cat's HEAD.
-  - The shadow ellipse is PER DIRECTION (`ground[dir].w/h`); the body CLASS
-    picking the blend factor is MONSTER-level (widest facing vs median figure
-    height — per-view classing shrank a south mammoth): LONG bodies 0.8×length
-    side-on / 0.9×girth front-on; TALL lean-ers (figH > bodyW) 0.4 + contact
-    extent (they ground through a compact base; 0.55 read oversized); else
-    0.55.
-  - The client applies origin(cx,f) on every facing change, `shift[frameIdx]`
-    per tick, parks a paused monster on `contact` (frame-0 parking left frogs
-    levitating), and lifts the shadow `max(0, h/2 − sink − 2)` px so its SOUTH
-    RIM kisses the toe line — capped at the contact band's height (`up`+3) so
-    a monolith's ellipse stays ON its base.
-  - **Verify with the contact sheets before shipping any shadow change**:
-    `node scripts/monster-contact-sheets.mjs [ids] [outDir]` renders every
-    (monster, direction, frame) with the exact client shadow maths + a red
-    anchor crosshair — offline, exhaustive, the maintainer's-eye view.
+- **Art-measured shadows + anchors, PER DIRECTION** (`measureWalkArt` decodes
+  every WALK strip): the manifest emits per (state, direction) a `ground`
+  contract `{f, cx, contact, sink}` plus per-frame `shift[]`/`air[]`. Five
+  maintainer rounds of derivation — contact centroid, tail/tendril drops,
+  mass-centre blend, body-class factors — are commented at their code in
+  `scripts/build-monsters-manifest.mjs`; read them there, never re-derive.
+  The laws that bind callers: NEVER one pooled anchor (strips differ per
+  direction by up to 9px, hop gaits float, off-centre bodies leave the shadow
+  beside the feet); `f`/`cx` are the CONTACT CENTROID, not the lowest opaque
+  row (far feet stand up to ~16px higher than the near toe; `sink` = px the
+  front toes plant below the anchor); the art is NEVER touched ("movement
+  should be handled in the game and not in the animation") — `shift[]` cancels
+  baked translation, `air[]` shrinks+fades the shadow on hops; the ellipse is
+  ONE CONSTANT SIZE per monster (below), so no per-direction `ground[dir].w/h`
+  fields exist to read; a paused monster parks on `contact` (frame-0 parking
+  left frogs levitating).
+  **Verify with the contact sheets before shipping any shadow change**: `node
+  scripts/monster-contact-sheets.mjs [ids] [outDir]` renders every (monster,
+  direction, frame) with the exact client shadow maths + a red anchor
+  crosshair — offline, exhaustive, the maintainer's-eye view.
 - **CONSTANT shadow size per monster** (maintainer: constant regardless of
   animation/direction, "a bit bigger, more fade"): only the MEAN of per-dir
   footprint widths survives — `shadowW = min(150, avg × 1.12)`, one ellipse
@@ -639,14 +610,14 @@ clip, no tint.
   `avatar:shadow` (its nadir is postprocessed in the art). Judging a shadow
   style: use a style-ab render (identical pose) — in-game A/B is unreliable,
   monsters roam between captures.
-- footW = the contact-run extent; shadow `w = clamp(max(footW, bodyW·0.55)
-  ·1.05, 12, 150)`, `h = max(6, 0.385·w)` → `shadowW/shadowH`, NEVER
-  frameW-scaled. Collision `radius = min(60, 0.45·shadowW)` — the FALLBACK only;
-  a tuned shadow replaces it (above). `stripDims`
-  (true per-strip size from IHDR) slices every sheet — monster.json `size`
-  goes stale on in-place repairs and frames bleed. `hoverPx` marks
-  INTENTIONAL winged flyers (butterfly_dragon 12): sprite lifts, shadow stays
-  grounded and shrinks; everyone else is pinned. Probe: `__ml.monsterInfo()`.
+- Shadow size FALLBACK (nothing tuned): derived from the contact-run extent
+  into `shadowW`/`shadowH`, NEVER frameW-scaled; collision `radius = min(60,
+  0.45·shadowW)` — the FALLBACK only, a tuned shadow replaces it (above).
+  `stripDims` (true per-strip size from IHDR) slices every sheet —
+  monster.json `size` goes stale on in-place repairs and frames bleed.
+  `hoverPx` marks INTENTIONAL winged flyers (butterfly_dragon 12): sprite
+  lifts, shadow stays grounded and shrinks; everyone else is pinned. Probe:
+  `__ml.monsterInfo()`.
 - **IDLE + stop-shake**: stopped monsters play their resolved IDLE clip
   (legacy porings have none and park on the walk contact frame). Idle strips
   are framed independently — the manifest measures `idleAnim` + `groundIdle`
@@ -946,68 +917,6 @@ clip, no tint.
     on distance) and section 9 of `verify-indoor.mjs` — which asserts you
     arrive AT THE BEACON, not at the tapped pixel (an earlier cut comparing
     (col+row) instead of screen Y passed against broken code).
-- **THE OCCLUSION OUTLINE IS NOT A WALL-HACK.** It draws at 900_001.43, above
-  the darkness overlay — only refusing to draw can hide it. Two symmetric
-  gates in `syncCoverOutline`: indoors, nobody OUTSIDE my room gets one
-  (`indoorOutside`); outdoors, nobody sealed INSIDE a room does
-  (`inHiddenRoom`) — else a monster deep in the mountain shows a crisp
-  silhouette through rock. "Room" is the indoor state machine's verdict, not
-  "has a slab overhead" — a body behind a cliff/tower/BRIDGE keeps its
-  outline (that IS the feature); a body in a cave MOUTH is not sealed.
-  **The gate is the CUT (`indoorInside && indoorMask` — the same pair
-  pickGround and aboveCut use), never the fade mask** — `roomMask` outlives
-  the verdict for the ambient ease, and reading it kept cave monsters
-  outlined through rock for a second after exit. One flood fill per space
-  (`roomCellMemo`, filled from `space.roof`, cleared on world change); fails
-  OPEN (a spare outline is cosmetic; a missing one is the feature broken).
-  Gate: section 8 of verify-indoor — samples the first frame that is already
-  outdoors with the fade still running (settle would wait it out), kept
-  non-vacuous by `coverFrac` (≥2 sealed >50%-buried monsters required; the
-  mid-fade check requires ≥1 — it once passed on "none of the 0 sealed
-  monsters is outlined") and by requiring open-air-covered bodies still
-  outline.
-- **THE CAVE SWALLOWS THE LIGHT** (maintainer: "a thickening shadow that gets
-  very dark, very fast"). Every room dims with **depth from its nearest
-  entrance** — depth, not camera distance. `buildCaveDepth` BFSes from
-  `space.entrances` across each room's cells once per world, skipping
-  anything the indoor verdict doesn't call a room (a bridge never darkens).
-  Depth rides the room mask's free GREEN channel; the shader applies ONE
-  exponential `exp(-depth * uCaveK)`. It multiplies the FINAL light, after
-  point lights, ON PURPOSE (maintainer: "no light source can punch in" — a
-  torch at the mouth buys the first cell). Your OWN room is exempt and
-  un-dims on `uIndoorMix`. 255 = "no opening reaches this cell".
-  `roomDebug()` reports `depthCells`/`depthMax` (a channel written once per
-  world fails silently).
-  - **The depth is read from the cell that is DRAWN, not the one the ray
-    stops on** (`groundCellAt`) — why five rounds of mask surgery rendered
-    nothing: the surface march stops at the first column whose top the ray
-    meets and `heightAt` is max(terrain, deck), so every opening pixel
-    resolved to the first interior column at BFS depth 0 (measured: 0 of
-    86,640 mouth pixels darkened). The GROUND field carries no decks, so an
-    identical walk over `groundAt` lands on the cell whose art is painted at
-    the pixel (92% of inward-wall pixels, 70% of floor pixels, depths 1..8).
-    It is a SECOND march on purpose — `cell`/`z` from the surface walk still
-    drive Lambert/shadows/AO/emission — and runs only for pixels already
-    under the ceiling gate.
-  - The GATE stays on the surface march (`z < caveUnderAt(cell) − 0.5`): `z`
-    separates the opening from the lintel. The ceiling underside comes from
-    `grid.deckBot` in the mask's BLUE channel — rederiving it from the deck
-    table produced 0 cells and compared against zero forever.
-  - The room mask marks the INWARD-FACING walls only — `space.wallLeft`/
-    `wallRight` (drawn faces are a cell's +col/+row sides; the near half of a
-    ring is the mountain's outside skirt — darkening it blackened houses).
-    No band, no rings (a wall face is 8 levels ≈ 128px vs a 15px cell step).
-    The rock bar (two levels of headroom above the ceiling) keeps house walls
-    out: the_island2's cave marks 146 cells, every house/arch 0.
-  - `uCaveK` = 1.2 is the single dial (mouth untouched, then 30/9/2.7/0.8%
-    over four cells; 3.6 was a cliff once the depth reached drawn cells).
-- **A CAVE MOUTH IS NOT A WALL FACE**: `Ha` is max(terrain, deck), so pixels
-  under a roof slab classified as FACE and took face Lambert + face shadow —
-  painting the open entrance like glass (maintainer: "some sort of mirror or
-  force-field"). A face now also requires solid GROUND above the pixel
-  (`groundAt(cell) − z > 0.05`); the uTest-4 calibration branch carries the
-  same condition or the gates measure a rule that doesn't ship. Real walls
-  untouched (their ground top IS their surface).
 - **WATER IS A PLAYER SANCTUARY** (maintainer: "no monster can enter/go on
   water … the player can always use the water to escape/hide"). Every layer:
   buildZoneRuntimes never returns swim cells (canSwim always false — a
@@ -1147,81 +1056,23 @@ clip, no tint.
   20/20 EP, 0/50 XP) after the join race; verify-gamepad expects
   Jump+Pick up+Walk.
 
-## Chess at the board (2026-08-21)
+## Chess at the board
 
-Physical chess boards stand in the world; STANDING at a free seat makes the
-JUMP BUTTON the offer — its label reads START CHESSGAME (free board) / JOIN
-CHESSGAME (someone or the resident NPC waits), and the press seats you
-(`chess.sit`, proximity-validated server-side; walking past a board NEVER
-seats anyone — pinned by the room test). WorldScene intercepts the
-synthesized SPACE; auto-jump bypasses it on purpose (a ledge beside a board
-must still hop). The label hook is the one chess line in games-ui's
-gamepad.ts (maintainer: "the UI agent owns the JUMP button, but he sleeps so
-please implement it"). First seated player -> `board.waitingSid`, and every
-client draws the challenge bubble over them (drawn "♞ Chess?" today; swaps to the
-maintainer's PixelLab challenge icon by one texture change in
-`syncChessWait`). Second player at the other seat — or a resident NPC
-(`npc` on the board config; Rannulf, the elder behind his table) — starts a
-ChessMatch both clients open as a DOM dialog (`client/src/chessui.ts`, wiki
-theme, drop-dialog family: uiLock freezes movement while open).
+A playable chess easter egg: stand at a free seat on a world board and the
+JUMP BUTTON becomes START / JOIN CHESSGAME; both players get a DOM dialog.
+One rules module for server, client and NPC — `shared/src/chess.ts`; room and
+match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
+`scripts/verify-chess.mjs`. Boards are placed in
+`games2/config/chess_boards.json`, overridable per world from
+`live/tuning/chess.json`.
 
-- RULES ARE SHARED AND SINGULAR: `shared/src/chess.ts` — full legality
-  (castling through-check, en passant, promotion, mate/stalemate, threefold,
-  fifty-move, insufficient material). The server validates every move with it,
-  the client highlights with it, the NPC thinks with it. Its ground truth is
-  PERFT in `server/test/chess.test.ts` (startpos + Kiwipete published node
-  counts) — never "fix" those numbers. TRAP paid for: knights wrap up to TWO
-  files per step, sliders/kings one — a shared step-guard silently dropped
-  every 2-file knight move and only perft(3) caught it (startpos knight moves
-  are all 1-file, so perft(1)/(2) pass with the bug).
-- FLOW: pre-rolled dice at match creation, CANON {6,1}: the winner always
-  throws 6, the loser 1 (maintainer) — the two hand-throw strips
-  (client/public/chess/dice_throw_6/1.webp, his art) END on those faces, pause
-  there and amplify, so the player believes their own throw decided the
-  colour. Frame 0 is the pre-throw idle; the shake loops the 8 hand frames
-  only. It cannot draw -> higher die is White -> 10
-  min/player, the clock starts at WHITE'S FIRST MOVE (`turnStart` 0 until
-  then; banks settle at move receipt; a 1s sweep flags timeouts and exists
-  only while matches live). Resign = two-step confirm; walking >3 cells away
-  mid-match resigns; leaving the room resigns; ends report
-  won/lost/draw + reason. After a match, the seat has a COOLDOWN until you
-  step off it — otherwise closing the dialog instantly re-matches you.
-- NPC BUDGET (maintainer: "almost 0 server CPU"): `chessAiMove` is a
-  node-capped negamax (2,500 nodes ≈ depth 3) whose INTERIOR searches
-  pseudo-legal moves with a king-capture cutoff — the legality filter is 30
-  state copies per node and moving it out took a reply from 29ms to ~3ms.
-  Replies are scheduled once per opponent move on a 1.2-2.6s humanizing
-  delay; zero cost between moves.
-- BOARDS ARE THE MAPS AGENT'S PLACEMENTS (5d7b39dfe3): the tables are world
-  PROPS — "fireside" at (206,120) by the spawn campfire (PvP, seats flank it)
-  and "rannulf" at (197,119) with the elder Rannulf PINNED behind it at
-  (196,118) so the table covers his legs (player seat 198,120, the front).
-  Config sprite "world" = the prop renders the table, the game draws no
-  decor. `config/chess_boards.json` baked;
-  `live/tuning/chess.json` overrides per world with the same shape — the
-  maintainer adds/moves boards from his phone, no deploy. Board decor is a
-  generated checker texture until real scenery board art is placed. The
-  PIECES are the maintainer's own pixel set (`client/public/chess/*.webp`,
-  lossless-verified from his 2026-08-21 upload); glyph alt-text is the
-  fallback.
-- DIALOG STABILITY LAW (paid for in a 6-round ghost hunt): the card skeleton
-  is built ONCE and controls NEVER move or get replaced — a full re-render on
-  the opponent's move used to shift the Resign button sideways (hint width)
-  and a tap aimed a beat earlier landed on empty footer. Squares update
-  content in place. The card carries `touch-action:manipulation` (double-tap
-  zoom would eat the confirm's second tap) and the backdrop preventDefaults
-  ONLY its own events (hud.ts's drop-dialog law — a card-event preventDefault
-  eats button clicks on touch). The confirm window is 5s because a STARVED
-  frame loop delays taps: on the headless harness a synthetic click's
-  stability check alone took ~5s at ~3fps (measured with raw timestamps), so
-  the gate drives the confirm via DOM dispatch — see verify-chess.mjs.
-- Gates: `server/test/chess.test.ts` (rules + AI budget),
-  `server/test/chessroom.test.ts` (live rooms: seat/bubble/dice/authority/
-  resign/NPC/timeout; ONE PORT PER TEST — gracefullyShutdown resolves before
-  the OS frees the socket, so a reused port races EADDRINUSE),
-  `scripts/verify-chess.mjs` (dev stack, the whole player journey incl. the
-  waiting bubble appearing AND clearing). Probes: `__ml.chess()`,
-  `__ml.chessTap(sq)`.
+- **DIALOG STABILITY LAW** (drop-dialog family, paid for in a 6-round ghost
+  hunt): the card skeleton is built ONCE and its controls NEVER move or get
+  replaced — squares update in place. A full re-render used to shift the
+  Resign button sideways under a tap aimed a beat earlier.
+  `touch-action:manipulation` on the card; the backdrop preventDefaults ONLY
+  its own events (hud.ts's drop-dialog law — a card-event preventDefault eats
+  button clicks on touch).
 
 ## Death (WorldScene: startDeath / stepDeath / endDeath)
 
@@ -1591,48 +1442,25 @@ saturated summit 0.001 — matches the terrain wash).
   face gating with penumbras at both ends of every wall band.
 - **DEPTH-FOG — cel-shaded EDGE-HIGHLIGHT fog** (`DEPTHFOG_FRAG`; job: make
   cliff EDGES readable — maintainer: "see the exact edge where the cliff
-  starts"). A third, always-on NORMAL-blend overlay. TWO channels, summed
-  then POSTERIZED into cel bands (teal FOG_NEAR → pale FOG_FAR):
-  1. **Smooth horizontal DISTANCE**: 2D distance of drape-reconstructed
-     `scol/srow` to the player; onset FOG_D0 (11 cells), +1 band per FOG_DW
-     (1.2). Reconstruction seeds `sz=uPlayerZ`, iterates ×3 through `drape()`
-     (anisotropic blur of `terrH=uHeightL.R−G` along the col+row fold axis,
-     half-width DRAPE_RS 2.5) so flat ground reads as clean concentric bands.
-     `terrH` uses R−G = occlusion height MINUS placed props (a boulder never
-     haloes flat ground; edge-clamped). FACE-SMOOTH: `faceDepth =
-     heightAt(cell) − z` grows down a near-vertical face; past ½ level the
-     band lerps from `floor(distCont)` to raw `distCont` — faces fade to the
-     smooth value (no chevron staircase) while flats keep crisp rings.
-  2. **Hard elevation EDGE**: `elevBand = ceil(|pLev − z|·ELEV_STEP −
-     ELEV_EPS)` where `z` is the MARCH'S OWN resolved fractional level — NOT
-     `heightAt(cell)` (a face pixel resolves to the high cell; heightAt only
-     steps at the FOOT; z drops the instant a pixel passes the lip, so the
-     boundary lands ON the drawn cliff-top edge). `pLev = uPlayerZ` is the
-     EASED player elevation (fog follows a jump smoothly). `abs()` =
-     symmetric both ways; ELEV_EPS keeps a flat tread clear. z is constant on
-     same-level ground → zero contour on flats; not gated by FOG_D0 (edges
-     pop at the feet).
-  - `band = clamp(distBand + elevBand, 0, BANDS−1)`; fog opacity scaled by a
-    PER-LEVEL TRANSPARENCY: SAME_LEVEL_FOG (0.10) on the player's own level,
-    rising (1−0.10)/LEVEL_FADE_SPAN ≈ 0.06/level to FULL by 15 levels (the
-    maintainer tuned the climb down from ~0.088 — too opaque partway up a
-    tall wall). ELEV_STEP = 0.5 (≈ +1 band per 2 levels); **ELEV_D0 = 7** is
-    the elevation DEAD-ZONE — no edge fog until the surface is 7 LEVELS from
-    the player, so a house/roof stays clear and only real mountains fog
-    (occlusion_test tops at exactly 7 = boundary; the coord label prints the
-    world id).
-  - REJECTED history: elevation-banded v1; then a TRUE 3D-distance SPHERE
-    with drape + `ZW` weight — killed the zigzag AND, fatally, the edge
-    contrast (its bands floated across terrain, never landing on an edge;
-    maintainer: "makes it even harder to see the real edge"). Hence:
-    horizontal-only smooth channel + the hard elevation term.
-  - Composited at depth **900_000.2** — above the multiply overlay, below the
-    tap marker (900_000.5) and lit copies (900_001): fogs the WORLD, never
-    the characters. Dims with night, floored so bands read in the dark.
-    Master strength `nightlight.fogStrength` (0 = instant rollback). Probe:
-    `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants a virtual
-    player headlessly). Regression: scripts/verify-depthfog.mjs. Tunables are
-    named GLSL consts atop DEPTHFOG_FRAG.
+  starts"). A third, always-on NORMAL-blend overlay: a smooth horizontal
+  DISTANCE channel (drape-reconstructed, so flat ground reads as clean
+  concentric bands) plus a hard ELEVATION-EDGE channel taken from the MARCH'S
+  OWN resolved fractional level — NOT `heightAt` (z drops the instant a pixel
+  passes the lip, so the boundary lands ON the drawn cliff-top edge) —
+  summed, then POSTERIZED into cel bands. Every tunable is a named, commented
+  GLSL const atop DEPTHFOG_FRAG: read the meanings there, not here.
+  **ELEV_D0 = 7** is the elevation DEAD-ZONE — no edge fog until the surface
+  is 7 LEVELS from the player, so a house/roof stays clear and only real
+  mountains fog (occlusion_test tops at exactly 7 = the boundary). REJECTED:
+  elevation-banded v1; then a TRUE 3D-distance SPHERE, which killed the zigzag
+  AND, fatally, the edge contrast (its bands floated across terrain, never
+  landing on an edge — maintainer: "makes it even harder to see the real
+  edge"). Composited at **900_000.2** —
+  above the multiply overlay, below the tap marker (900_000.5) and lit copies
+  (900_001): fogs the WORLD, never the characters. Master strength
+  `nightlight.fogStrength` (0 = instant rollback). Probe:
+  `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants a virtual
+  player headlessly); regression scripts/verify-depthfog.mjs.
 - **Bridge underside line = the ground AO seam, NOT the walk** (the
   maintainer's catch): the AO seam term read the up-screen neighbour via
   `heightAt` (deck-inflated), so a floating span read as a tall WALL and
@@ -1656,6 +1484,13 @@ saturated summit 0.001 — matches the terrain wash).
 - **Solid objects are ART, not walls**: they block light and cast a soft
   shadow but must NEVER get a wall-face band — modelling them as blocks
   painted knife-edged phantom shadows outside the drawn art.
+- **A CAVE MOUTH IS NOT A WALL FACE**: `Ha` is max(terrain, deck), so pixels
+  under a roof slab classified as FACE and took face Lambert + face shadow —
+  painting the open entrance like glass (maintainer: "some sort of mirror or
+  force-field"). A face now also requires solid GROUND above the pixel
+  (`groundAt(cell) − z > 0.05`); the uTest-4 calibration branch carries the
+  same condition or the gates measure a rule that doesn't ship. Real walls
+  untouched (their ground top IS their surface).
 - **Contract for new tile categories**: unknown categories default to plain
   walkable ground AND terrain lighting; every new solid/decor category needs
   a SURFACES entry or its block shadow returns. ENFORCED: `npm test` runs
@@ -1667,104 +1502,80 @@ saturated summit 0.001 — matches the terrain wash).
   deploys never stall on the game agent. Runbook: **`games2/SURFACES.md`**.
   If a DIFFERENT gate fails on an art push, that's a real art bug, not a
   surfaces edit.
-- **EMISSIVE TILES ARE REAL LIGHTS — THE LIGHT SLOT LEDGER** (maintainer:
-  "NO DIFFERENCE in how bright the bonfire [tile] is vs the campfire
-  [object]"). Emission used to be additive glow STAMPS only (no attenuation/
-  LOS/elevation); now `buildEmissiveSources()` resolves every emissive prop
-  once per world and `pickWorldLights()` fills the world slots (free slots
-  nearest first; tenure + `LIGHT_EXIT_PX` are the hysteresis — see below).
-  Measured parity
-  bonfire-tile/campfire 0.95. THE LEDGER (12 slots): 1 my torch + 1 ambient
-  agent + 2 future fx + **8 world** — reservations STRICT, never lent.
-  Write-side APIs: `client/src/lightslots.ts`; full spec
-  `games2/spec/LIGHT_BUDGET.md`. The laws:
+- **EMISSIVE TILES ARE REAL LIGHTS — THE LIGHT SLOT LEDGER** (maintainer: "NO
+  DIFFERENCE in how bright the bonfire [tile] is vs the campfire [object]";
+  measured parity 0.95). `buildEmissiveSources()` resolves every emissive prop
+  once per world and `pickWorldLights()` fills THE LEDGER: 12 slots = 1 my
+  torch + 1 ambient agent + 2 future fx + **8 world**, reservations STRICT,
+  never lent. Write-side APIs: `client/src/lightslots.ts`; the slot table,
+  placement rule, derived-default formula and `tiles2/emission.json` `lights`
+  fields are in `games2/spec/LIGHT_BUDGET.md` (whose `LIGHT_HYST_PX`
+  hysteresis predates tenure — this file wins). Curated params live in
+  tiles2's `pipeline/emission.py` LIGHTS; a hand-edit of the json is lost on
+  regeneration. A slotted source's ground-pool STAMP is suppressed while it
+  holds the slot (both feed `lightAt` — keeping them double-brightens ground
+  AND characters); losing the slot returns the pool = the OVERFLOW FALLBACK,
+  so an over-budget spot degrades to "stamp-only while visible" — a look,
+  never an event. The laws:
   - **Remote players' torches are NEVER lights** ("a player can only ever see
     its own torch") — 8 world slots would starve on a torch-bearing street.
-    `torchLit(id)` is gone; only `this.torchOn` matters (Player.torch stays
-    synced server-side).
-  - A slotted source's ground-pool STAMP is filtered out per frame (`srcId` +
-    `ry` tags): keeping both double-brightens ground AND characters
-    (`curLights` and `curStamps` both feed `lightAt`). High per-cluster halos
-    stay (the art's bloom). Losing the slot returns the pool = the OVERFLOW
-    FALLBACK (over-budget spots degrade to the pre-ledger look).
-  - Light params: `tiles2/emission.json` optional `lights` table (curated in
-    tiles2's `pipeline/emission.py` LIGHTS — a hand-edit of the json is lost
-    on regeneration). Tile-path stem beats material; `null` = stamp-only;
-    absent → derived default. The bonfire tile pins the campfire's numbers
-    (radius 7, [1.9,0.88,0.3] overbright, flicker 1).
-  - The indoor ROOM FILTER applies to emissive lights exactly as to the
-    torch — a fire in your room lights it, one outside fades on `indoorMix`.
+    `torchLit(id)` is gone; only `this.torchOn` matters.
+  - **Derived defaults are CAMPFIRE-ANCHORED, and RADIUS — not intensity — is
+    the lever** (maintainer on glow_test: "IT'S FILLED WITH LIGHT SOURCES —
+    HOW CAN THIS MAP STILL BE DARK?"; the autopsy: radius 3.5 was smaller than
+    the inter-source spacing, and radius moves the field 21.5× alone vs
+    intensity's 5.7×). REJECTED: full-campfire-for-everyone (99.1% of the
+    screen over field 1.0 = wall-to-wall clamp plateau).
+  - Derived defaults are **SHADOW-FREE GLOW POOLS (negative radius)**: a prop
+    OCCLUDES ITS OWN CELL, so a shadowed light was eaten by its own prop
+    before reaching the body beside it. A curated entry opting back into
+    `shadows` must put its z ABOVE the prop's +1 occluder (bonfire z 1.1).
+  - **Shadow-free pools are EXEMPT from the face Lambert gate** (`isFace &&
+    uLightPos[i].w > 0.0`): a glowing CUBE's own pool sits inside its cell
+    behind both face planes, so every glowing block's faces were pitch dark. A
+    pool is ambience, not a lamp a face can turn away from. Positive-radius
+    lights (torch, campfire, curated bonfire) keep the gate — the approved
+    wall look.
+  - **A SEALED-ROOM fire is INDOOR-ONLY** — lit to the degree I am in its room
+    (`indoorMix`), never from outside: the LOS march's 0.22 bounce floor
+    otherwise pours 22% through house walls at night and its halo stamped an
+    orange blob on the roof. `sealed` is probed per source at the 4-NEIGHBOURS
+    via `roomVerdictAt` (the prop's own cell is blocked and never in the roof
+    set); a fire under a BRIDGE stays unsealed; stamps take the same gate
+    (`sealedEmissiveCells`). The indoor ROOM FILTER applies to emissive lights
+    exactly as to the torch.
+  - **Slots are held by TENURE, not re-ranked** (per-frame closest-first
+    popped lights mid-screen) **and RETIRED under pressure, never held
+    forever**: a holder keeps its slot until its pool stops touching the view
+    (release needs `LIGHT_EXIT_PX` past the boundary, acquisition requires
+    actually touching — entry strictly tighter, so a boundary hoverer can't
+    flicker); newcomers take only FREE slots, nearest first, ramping in over
+    `LIGHT_RAMP_MS` (450) while their pool stamp crossfades out; a candidate
+    beating a fully-settled holder by `LIGHT_STEAL_MARGIN` (200px) dissolves
+    the worst holder out, at most `LIGHT_RETIRE_MAX` (2) at once — all four
+    defined with their reasoning in WorldScene.ts. Gate:
+    scripts/verify-lighttenure.mjs (pans glow_test, ~180 sources vs 8 slots).
+    ITS TRAPS: the first lookAt is a camera TELEPORT that legitimately dumps
+    spawn-side holders (settle before the baseline), and fairness numbers are
+    captured AFTER the frame's decisions.
   - `check-light-budget.mjs` (in `npm test`): no camera window may be
     reachable by >8 world pools. RATCHET: pre-existing over-budget worlds are
     pinned in `spec/light-budget-baseline.json` at their measured worst and
-    fail only when WORSE. It MIRRORS the client's radius derivation —
-    drifting from it audits a different set than the renderer lights. The
-    LIVE the_island2 is **8/8, exactly at the line** (worst window at
-    114,54) — tell maps2 before adding ANY light source near it.
-  - **Derived defaults are CAMPFIRE-ANCHORED** (maintainer on glow_test:
-    "IT'S FILLED WITH LIGHT SOURCES — HOW CAN THIS MAP STILL BE DARK?"; the
-    autopsy: radius 3.5 was smaller than the inter-source spacing — 8 held
-    lights summed to 0.002 against ambient 0.09; radius was the primary
-    killer, 21.5× alone vs intensity's 5.7×). Anchor: hue = the art's
-    glowColor normalized to peak 1, intensity = 1.9 · clamp(avgS·1.15, 0.45,
-    1), radius = clamp(4 + avgS·4, 4, 7) — a strong source IS a campfire, a
-    faint one still ~45% of one. REJECTED: full-campfire-for-everyone (99.1%
-    of the screen over field 1.0 = wall-to-wall clamp plateau; strength
-    scaling keeps contrast).
-  - Derived defaults are **SHADOW-FREE GLOW POOLS (negative radius)**, at
-    avgS·1.3: a prop OCCLUDES ITS OWN CELL in the heightmap, so a shadowed
-    light at z 0.5 was eaten by its own prop before reaching the body beside
-    it (the ground survived on the march's 0.22 bounce floor). A curated
-    entry opting back into `shadows` must put its z ABOVE the prop's +1
-    occluder (the bonfire is z 1.1).
-  - **Shadow-free pools are EXEMPT from the face Lambert gate** (the `isFace
-    && uLightPos[i].w > 0.0` condition): a glowing CUBE's own pool sits
-    inside its cell behind both face planes, so every glowing block's faces
-    were pitch dark. A pool is ambience, not a lamp a face can turn away
-    from. This also removed a shader/CPU disagreement (lightAt never had a
-    face gate). Positive-radius lights (torch, campfire, curated bonfire)
-    keep the gate — the approved wall look.
-  - **A SEALED-ROOM fire is INDOOR-ONLY** — lit to the degree I am in its
-    room (indoorMix), never from outside: the LOS march's 0.22 bounce floor
-    otherwise pours 22% through house walls at night, and its halo stamps
-    painted an orange blob on the roof. `sealed` is probed per source at the
-    4-NEIGHBOURS via `roomVerdictAt` (the prop's own cell is blocked and
-    never in the roof set — the same trap the stamp gate fell into). A fire
-    under a BRIDGE stays unsealed (a bridge is not a room). Stamps take the
-    same gate in rebuildProps (`sealedEmissiveCells`).
-  - **Slots are held by TENURE, not re-ranked** (per-frame closest-first
-    popped lights mid-screen): a HOLDER keeps its slot until its pool stops
-    touching the view (release needs LIGHT_EXIT_PX past the boundary;
-    acquisition requires actually touching — entry strictly tighter than
-    release, so a boundary hoverer can't flicker). Newcomers take only FREE
-    slots, nearest first, RAMPING in over LIGHT_RAMP_MS (450) while their
-    pool stamp crossfades out — a mid-view acquisition is a dissolve, never
-    a swap. An over-budget map degrades to "some fires are stamp-only while
-    visible" — a look, never an event.
-  - **…and RETIRED under pressure, never held forever**: when a waiting
-    candidate beats a fully-settled holder by LIGHT_STEAL_MARGIN (200px —
-    hysteresis, no ping-pong), the worst holder DISSOLVES out (the
-    acquisition crossfade reversed, 450ms), at most LIGHT_RETIRE_MAX (2) at
-    once. Gate: scripts/verify-lighttenure.mjs pans glow_test (~180 sources
-    vs 8 slots): every release past the view boundary, every deep
-    acquisition mid-ramp. ITS TRAPS: the first lookAt is a camera TELEPORT
-    that legitimately dumps spawn-side holders — settle before the baseline;
-    and the probe's fairness numbers are captured AFTER the frame's
-    decisions (before, a same-frame retirement reads as "pressure, nothing
-    retiring").
-  - The QA `probeLight` consumes a WORLD slot while set — slot-counting
-    gates must expect ≤7 world holders.
-  - Probes: `__ml.lightSlots()` (live ledger + overflow), `__ml.lightAt()`
-    (CPU twin), `__ml.torch(on?)`. Gate: `scripts/verify-lightparity.mjs`
-    (parity, indoor, budget invariants).
+    fail only when WORSE; it MIRRORS the client's radius derivation (drift
+    audits a different set than the renderer lights). The LIVE the_island2 is
+    **8/8, exactly at the line** (worst window at 114,54) — tell maps2 before
+    adding ANY light source near it.
+  - The QA `probeLight` consumes a WORLD slot while set — slot-counting gates
+    must expect ≤7 world holders. Probes: `__ml.lightSlots()` (live ledger +
+    overflow), `__ml.lightAt()` (CPU twin), `__ml.torch(on?)`. Gate:
+    `scripts/verify-lightparity.mjs` (parity, indoor, budget invariants).
 - **Self-emission** is data-driven from `tiles2/emission.json`
   (`tiles2-emission@1`, tiles2's): per-MATERIAL glow params + per-tile-path
   `sources`. In maps2 worlds every emissive tile is a PROP; `rebuildProps`
   stamps a tinted radial halo per visible source into the world-anchored
   additive glow RT the shader ADDS to the light field (a mushroom lights its
   patch, the forest stays dark). Showcase world: maps2's `glow_test` — where
-  glow/night QA happens. (The v1 emission registry/demo retired 2026-07-14
-  with `tiles/`; history in git.)
+  glow/night QA happens.
 - The light/mist/depth-fog overlay quads BLEED ~1% past every screen edge
   (spanScale = 1.02; overlays drawn at invZoom*k while uCam spans k× the
   view — the stretches cancel, world→screen mapping EXACT): without it,
@@ -2058,288 +1869,29 @@ saturated summit 0.001 — matches the terrain wash).
   WorldScene.zoomFor, probe `__ml.camZoom()`); the DOM UI is ordinary
   responsive CSS (no compensation).
 
-## Indoor mode (the cut-away)
+## Indoor mode (the cut-away) → `games2/INDOOR.md`
 
-**A CUT-AWAY, NOT AN X-RAY** (maintainer). Walk under a roof and the building
-is drawn WHOLE but TRUNCATED: every column stops at `indoorTop =
-min(roomFloor + dial, ceiling)`. Nothing hidden, nothing transparent, nothing
-half a tile. The dial is `client/src/indoorwall.ts` ("Indoor wall height",
-1…6 levels, default **1**); brightness is `indoorlight.ts`, default **40%**.
-Both defaults are the maintainer's own picks — do not "restore" either.
-Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
+**STOP: READ `games2/INDOOR.md` BEFORE YOU CHANGE ANYTHING THAT DRAWS,
+LIGHTS, PICKS OR HIDES A CELL INDOORS.** It is the most bug-prone subsystem
+in the game — floating wall slabs, black wedges, a black room on a real
+phone while the headless harness looked fine, roofs popping mid-fade — and
+every one of those shipped because indoor rendering was edited without
+opening that file first. The whole spec is there; these four are law before
+you even open it:
 
-- **Measured UP FROM THE FLOOR, not down from the roof.** `ceiling − N` is a
-  wall height only when every room has the same ceiling — the house's
-  ceiling is 6 and the caves' 8 over the same floor, so roof−4 left walls
-  twice as tall in the caves. From the floor, 2 is 2 in a cottage and a
-  cathedral. The ceiling survives as a CLAMP and as the "am I above the
-  room?" line (`indoorCeil`, still `deckBot`, never `roofLevel`).
-- **The floor is the ROOM'S MINIMUM**, not the cell underfoot (anchoring to
-  the feet made every wall jump 16px per ledge step; the minimum keeps a
-  raised shelf below the cut). The MAX is 6 = the tallest shipped room
-  (measure from the floor and the DEEPEST room bounds you — opposite of the
-  old roof−N dial). The storage key changed with the meaning
-  (`ml-indoor-cut` → `ml-indoor-wall`) so old tuned values are not misread.
-- **The cut is SCOPED TO THE COVERING CONE — the neighbour's house keeps its
-  roof** (maintainer: entering house_a must not show into house_b).
-  `indoorCut` is the complete CONSTRAINED SET: my building (per-wall raise)
-  plus every other column whose full-height art would bury one of MY
-  floors/entrances (the down-screen cone, capped per cell by the 0.9375·k
-  burial slope, never below the dial). Everything else draws WHOLE, deck
-  included — house_b renders closed and goes black under zero ambient,
-  torch-findable. Threaded consequences: absent-from-the-map = full height
-  (redrawGround falls through to the outdoor draw; occluders rebuild the
-  neighbour's deck; aboveCut's per-cell answer is `entry ?? Infinity`); the
-  shader's R channel gained the **127 "unconstrained" sentinel** (127 =
-  resolve full; 0-126 = constrained cut; 128+cut = my room; setRoom writes
-  the full grid and takes `top`). The kill switch (`__ml.indoorRaise(false)`)
-  means the LEGACY world-wide scalar cut — the gates' flat frames depend on
-  it. My space's connected chambers are ONE space, so their floors are all
-  mine (the old world-wide protectedFloor pass is gone).
-  - THE DEPTH FOG IS ROOM-GATED WITH IT (DEPTHFOG_FRAG uRoom/uRoomOn/
-    uIndoorMix): its pale far bands painted a glowing ring over the
-    zero-ambient blackness; fog outside my room fades on the same mix.
-    Outdoors byte-identical. The MIST pass still paints indoors-outside —
-    pre-existing, rare, noted.
-  - Gate: `scripts/verify-indoorscope.mjs` (house_demo, six roofed houses):
-    no constrained cell inside house_b, sentinels published, probe-light on
-    the neighbour's roof, kill-switch flat world, the transition fade.
-- **The transition is a DEBRIS CROSSFADE, not a pop**: on the indoor flip the
-  REMOVED art (roof slab, wall bands above each cut, the cone's tops) is
-  rebuilt as ordinary world-anchored images at occluder depths
-  (`buildIndoorDebris`) wearing `alpha = 1 − indoorGrade()`. ENTRY: the
-  world repaints to the cut state on the flip frame under OPAQUE debris
-  (picture unchanged), which then dissolves. EXIT: commitIndoor(false) does
-  NOT repaint; the cut world stays drawn (mask, cuts, `night.indoor`,
-  aboveCut, pickGround follow the DRAWN state) while the debris fades back
-  in; the real repaint happens when the GRADE lands — opaque debris equals
-  the real geometry, so the swap is invisible. Mid-doorway turns just
-  reverse the fade (the mix IS the state). Instant paths stay instant (kill
-  switch, world unload, QA toggle). A direct room-A→B crossing mid-fade
-  keeps ≤1s of stale fade art — accepted. Probe: `__ml.indoorFade()`.
-  - **The debris obeys the LAP RULE**: where a deck coincides with its own
-    equal-height column (`deck.level == cell.l` — a roof lapping its walls,
-    hall pillars), the real renderers draw the COLUMN's baked top and skip
-    the deck; buildIndoorDebris must too (same `dk.deck.level > cell.l`
-    guard as rebuildOccluders/redrawGround) — else the fade shows a dark
-    slab popping to the real mixed-tile roof. `__ml.debrisAt(c,r)` lists a
-    cell's pieces (lvl, key); the gate holds a lap cell to ONE piece per
-    level with the wall's own top (tone-independent — a pixel bar can't see
-    this).
-  - **TWO SPEEDS: debris at 3×, light grade at 1.5×** (`INDOOR_DEBRIS_RATE`
-    / `INDOOR_GRADE_RATE`, both maintainer-tuned separately — running
-    everything at 3× was sent back). `debrisAlpha()` keeps its 3× curves
-    (entry done by mix ⅓; exit by ⅔); `indoorGrade()` — the eased mix at
-    1.5×, clamped — is what every LIGHT half rides (`night.indoorMix`, every
-    CPU light gain: fireRoomK, torch enable, outside fade, sealed fires,
-    ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.35s easing
-    substrate (what `indoor().mix` reports and the pin targets); consumers
-    take the grade or the alpha, never the raw mix.
-  - **The exit swap lands WITH the light grade (mix ⅓), not at mix 0**: the
-    debris is built once at the flip and view-culled to THAT camera; the old
-    mix-0 landing sat ~1.9s later and a walking player dragged the camera
-    past the build-time cull box, exposing cut-state cells that popped. The
-    grade lands ~0.39s in (≤~60px drift vs OCC_CULL_PAD ~360). The swap
-    frame is pixel-identical under a locked camera — LOCK THE CAMERA before
-    trusting any screenshot diff (an unlocked run's "differences" were
-    camera glide).
-  - **The exit unclamps the RESOLVE at the flip, not at the end**
-    (`night.indoor = indoorInside && mask`): with the resolve still clamped,
-    the returning roof debris was LIT as the shadowed interior and the mix-0
-    repaint traded a dark slab for a sunlit one. The whole exit fade is lit
-    as the outdoor world; the accepted cost is the mirror image (the
-    still-visible interior briefly tinted as the surfaces above it, under
-    debris already covering it). Entry keeps the clamp from its own flip.
-  - `__ml.indoorMixPin(v?)` parks the blend anywhere in (0,1) — how the
-    starved harness photographs the crossfade deterministically (pin BEFORE
-    the teleport). An exit pin ≤ ⅓ IS the landed grade — the swap fires
-    under it; pin above ⅓ to hold the pre-swap frame.
-  - Gate: verify-indoorscope sections 4-5 (pinned mid frame distinct from
-    both endpoints >8 luma; debris gone at settle; the TWO SPEEDS are real;
-    the late-exit frame matches the settled outdoor roof within a tight
-    drift bar — the colour-snap regression).
-- **The dial is a MINIMUM — walls rise per cell until they'd cover a floor**
-  (maintainer: "as tall as they can be before they intersect with another
-  floor"). `computeIndoorCuts` gives each cell of MY building its own cut
-  (`indoorCut`: cell → drawn level): from min(realHeight, ceiling), walk the
-  cell's up-screen cone and cap at `floor(0.9375·k + floorLevel − 1)` per
-  protected floor k steps up (odd k overlaps u±1, even k the same iso
-  column; 0.9375 = dy/lh, the burial slope; the −1 margin covers ZERO pixels
-  of the floor diamond). Protected floors = roof + entrance cells of MY
-  space (built in buildCaveDepth's space pass; a bridge protects nothing).
-  What falls out free: a NEAR wall has its own room's floor 1-2 steps
-  up-screen, capping it below the dial, so `cut = max(dial, cap)` keeps near
-  walls at the dial with NO side classification (the culling lesson: nothing
-  to classify, nothing to hole). Far/side walls rise to the ceiling;
-  partitions with the next floor behind stay at the dial.
-  - ALL consumers go per-cell: redrawGround + rebuildOccluders (the exposed-
-    face start uses the front neighbours' DRAWN heights at the call site —
-    else an occluder hole at every far-run/near-run corner), rebuildProps,
-    pickGround (a raised wall drawn whole is a tappable sill; scan from the
-    ceiling), aboveCut (extra fx/fy args — a body on that sill stands on
-    painted ground), and the shader (per-cell cut in the room mask's R as
-    128+cut; roomAt STEP-tests the top half; heightAt clamps each column).
-    The cut could NOT ride the A channel: canvas uploads are premultiplied —
-    A < 255 scales RGB (the pinned-alpha note in setRoom). setRoom's `cuts`
-    param has its own change test (the dial moves every cut while the cell
-    set is identical — set comparison alone would skip).
-  - QA: `__ml.indoorRaise(on?)`, roomTex().raisedCells/maxCut; verify-indoor
-    2a/2b/2c pin the FLAT frame, 2c' pins the raise, section 7's
-    overhead-monster rule is per-cell.
-- **DO NOT GO BACK TO CULLING.** The first cut drew no roof/near walls + a
-  32px far-wall skirt and shipped HOLES — floating wall slabs, black wedges
-  (maintainer: "rendering bugs I have never seen before"). Structural, not
-  tuning: culling asks "whose inward face does the camera see", and a room's
-  own CORNER has no inward face — no wall set can hold it; same at every
-  T-junction. Truncation has nothing to classify.
-- **The outside is DRAWN AT ZERO AMBIENT — never skipped** (the maintainer's
-  original idea: the torch reveals the outdoors through the doorway before
-  you step out; point lights from outside are off). Skipping cost three bugs
-  at once (grass popping in at the door, a torch lighting nothing, missing-
-  neighbour tile sides). The renderer draws every cell; the SHADER kills the
-  light: a per-cell mask texture `uRoom` (`world-room-mask`, one texel per
-  cell, NEAREST, unit 4, published by `setRoom()` on doorway crossings/dial
-  turns — never per frame); `roomAt()` gates AMBIENT, aurora and the
-  emission floor and NOTHING ELSE. Point lights stay additive — the torch
-  spills through the doorway with the opening's own shadow (measured 5.2×
-  brighter down the doorway than at the flanks).
-  - **The cut applies to EVERY column in the world**, not just the building:
-    painter order draws down-screen columns over the room (a column buries
-    an interior cell once ~0.94·k levels taller at k steps). Around the
-    house that never fires; in the caves the surrounding rock hid 417 of 417
-    interior cells. One rule for every column; the shader's global heightAt
-    clamp already assumes it. Gate: verify-indoor section 7.
-  - `roomAt()` FAILS LIT (`uRoomOn`, same guard as uGlowOn): an unbound
-    sampler2D reads unit 0 — the heightmap — so the failure mode is a BLACK
-    ROOM on a real phone while headless SwiftShader looks fine.
-  - **Nothing stands on ground the cut removed** (`aboveCut`): above the cut
-    nothing is painted, so monsters/NPCs/remote players/drops whose surface
-    level exceeds `indoorTop` are hidden. The threshold is the CUT, not the
-    ceiling; the test is HEIGHT, not room membership (the mountain around a
-    cave is outside the room AND above the cut → hidden; grass outside the
-    door is outside the room at my level → drawn, torch-lightable). Gate:
-    section 7 (cave only — needs a populated mountain overhead; turns
-    "disable aggro" ON, else the gate gets killed mid-measurement).
-  - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
-    ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
-    predicate (NOT a visibility test; bodies are always drawn): name labels
-    + chat bubbles (900_100), monster hp/Lv bars (900_001.5-1.7), the red
-    ring (.45), the white outline (.43), the bonfire's blooms + full-bright
-    lit copy (fireRoomK). A pitch-black villager with a crisp name tag is
-    the tell.
-  - **NPCs get a lit copy like every body** — without one their light came
-    from the multiply overlay, which lights each pixel by the terrain cell
-    resolved BEHIND it (a villager one step outside the door had black legs
-    and a lit head).
-  - The eased half is `uIndoorMix` (the outside FADES to black); geometry
-    (`uIndoor`, `uIndoorTop`, the truncation) snaps. The CPU twin mirrors.
-  - **Two ambient grades, one crossing** (`uAmbient`/`uAmbientOut`): a cell
-    in my room blends outdoor→interior dial; a cell outside blends
-    black→outdoor and never touches the interior grade. One shared ambient
-    OVERSHOT on exit at night (interior 40% = 3.9× night's luma; the outside
-    took it and eased back DOWN). Measured after: monotone rise, zero
-    non-increasing steps.
-  - **The light mask outlives the verdict by one roll** (`roomMask`, dropped
-    in easeIndoorMix; `roomAt`/CPU twin gate on `uIndoorMix`, not
-    `uIndoor`): geometry snaps back the frame you step out, the light is
-    still rolling — a room that stopped existing mid-roll handed the WHOLE
-    world the interior grade for a quarter second. Everything asking "is
-    this outside MY room?" reads `roomMask`, never `indoorMask`.
-  - The ambient agent's outdoor layer fades with it:
-    `ambient/runtime/outdoor.ts` `OUTDOOR_FADE_MS` = **1050** = 3 ·
-    INDOOR_TAU · 1000 (its roll is `k = 1 − exp(−(dt/fadeMs)·3)`, making it
-    frame-identical to the game's). Its test asserts the relationship, so
-    moving INDOOR_TAU without it fails in `npm test`.
-- `shared/src/indoor.ts` publishes **`shell`** — the building, 8-connected,
-  openings excluded; the ONLY set the renderer reads (`wallLeft`/`wallRight`
-  survive as detector output). Fill and fringe stay 4-connected (a diagonal
-  is not a step); `shell` is 8-connected because a point-touch is a visible
-  seam.
-- **The SURFACE resolve is clamped to the cut; the OCCLUSION march is not**
-  (`uIndoorTop`): what the camera sees is truncated; what light travels
-  through is not — the building stays solid to the sun (else the missing
-  roof daylights the room), and skipping the surface clamp recreates the
-  roof-in-the-heightmap bug one level up (a floor behind a level-3-drawn
-  wall resolving at 6, torches attenuated across 48px of phantom gap).
-- **A tap resolves against what is DRAWN, and only the floor is a target**:
-  indoors `pickGround` starts its top-down scan at `indoorTop`, skips decks
-  (the roof slab matched every indoor tap at level 6 — 6.40 cells
-  down-screen of the finger), and skips building cells taller than the cut
-  (a parapet's drawn top is not standable; the tap means the floor beyond —
-  2.13 cells off). A wall SHORTER than the cut is untruncated and stays
-  tappable — a real sill. Gate: the tap round-trip in verify-indoor.
-- **THE WHITE OCCLUSION OUTLINE** (`syncCoverOutline`) — not indoor-only:
-  any body a parapet/cliff/tower covers gets a white silhouette ring
-  (HIDDEN_RING_COLOR) over the hidden part at 900_001.43, the exact
-  COMPLEMENT of the lit copy (`syncLitCopy` crops [0, coverY); this draws
-  [coverY, bottom)) — the two tile the figure seamlessly. The gate asserts
-  the monotone CHAIN (5-level wall hides 61%, 3 levels 41%, 1 level 4%,
-  open ground none) — something a stuck outline cannot fake.
-  - **Coverage is RASTERISED, not modelled** (maintainer: "pixel perfect …
-    now the effect is just a line"). `coverY` is ONE scalar (top of the
-    highest covering column's 64px image box) — but an iso wall top is a
-    diagonal, an arch is a hole, a prop billboard is arbitrary alpha.
-    Measured: 79.8-93.7% of outlined pixels sat over ground nothing covered
-    (a complete 268-texel outline around a 0%-covered body at a tree); tile
-    art starts ≥6px below its box top, so `min(o.y0)` over-claims by
-    construction (missed 0.0% everywhere — one-sided error). **No analytic
-    field can fix this** (billboards). The covering images RASTERISE it per
-    body into three DynamicTextures in a shared atlas: E (body minus
-    occluders in front), C (body minus E), O (dilate(C) minus body = the
-    ring). "Covered" is Phaser's own painter rule (`depth > sprite.depth`),
-    executed by the renderer. Verified GPU-vs-CPU: 0 differing texels;
-    E∪C == silhouette, E∩C == 0. Gated on WEBGL; the flat-crop path stays
-    verbatim as fallback (`coverExact`). THREE TRAPS paid for:
-    * The atlas must RECYCLE: holding slots until body-destroy froze
-      allocation at 13-25 slots and every covered body after reverted to the
-      flat line mid-session. Any big-enough free slot serves (smallest
-      first); a body uncovered for COVER_SLOT_GRACE ticks hands its back.
-    * Ask about the ART BOX, not the frame box (mirrored when `flipX`):
-      a 112×112 frame around a 29×86 figure admitted ~80 occluder candidates
-      vs a median ~6. Safe: C ⊆ silhouette ⊆ artBounds.
-    * The flat line may not VETO the exact path: `coverY` below the art does
-      NOT mean nothing is covered (a low occluder at the feet — 95 covered
-      texels with no outline because the early-out fired before the slot was
-      consulted). With a slot, O answers for itself.
-  - **Swimming: wear the body's OWN mask** — the same GeometryMask object
-    `updateWaterClip` puts on the sprite (never a second copy of BOW_FRAC,
-    never `swimming`/`swimT`): structurally unable to disagree with the
-    body's cut/bow/bob/exit-jump and all three bail-outs. Measured fully
-    submerged: 712 ring pixels above the crest, 0 below.
-- **INDOOR MODE → `scripts/verify-indoor.mjs`** (dev stack, ~3 min): frames
-  the_island2's house with ONE pinned camera outside and inside, compares
-  REAL pixels at points derived from maps2's world.json (a re-authored house
-  moves the samples). Shot with the TORCH OFF (a lit torch legitimately
-  lifts outside ground). What it pins: the mask is exactly floor + building
-  (footprint derived from world.json itself); the building is SOLID at its
-  cut top — sampled in the FACE tile's 16px SKIRT BAND (+39/+46 of the cap
-  tile's box), never the diamond centre (transparent for a truncated column;
-  it once passed only because the ground RT filled NAVY — the fill is black
-  now); the dial IS the wall height (sweep 1..4, top rises exactly one level
-  per step, inside changes strictly more each step, outside not at all — it
-  used to hunt a "wall crown", unsound once every column draws: the topmost
-  lit pixel belongs to whichever neighbour's art box overlaps). Then the
-  OUTLINE as a monotone response; then the LIGHT — the gate pins the
-  DERIVATION, not the maintainer's 40% (taste): at the dial's original 0.104
-  the grade must land on night's own luma; the default must stay brighter
-  than the tuned-dark end, well under daylight, still cool (B/R 1.21 vs
-  night's 1.87); the torch lit with the day fade at 0. The indoor ambient is
-  read at the ROOM CENTRE (the far outdoor cell is identically ZERO from
-  indoors — 2b asserts exactly that). Sections that turn on the zero-ambient
-  design: 2b; 2g the DOORWAY BEAM (torch reaches beyond the opening at 5.2×
-  the flanks — a ratio, never "the flank is black" (the 0.22 bounce floor
-  guarantees it isn't), then a probe light parked on those cells must turn
-  them from black to real — at zero ambient a drawn and a missing tile
-  composite identically and a light is the only instrument; hence probeLight
-  is exempt from the room filter); 7 the CAVE (the only shipped geometry
-  where "is the cut world-wide?" is answerable). Finally the outdoor
-  controls: standing ON the roof (walked off a wall top — teleport lands on
-  the base surface) and swimming under a bridge read outdoors, nothing
-  blacked. `SHOT_DIR=<dir>` keeps every judged frame. Tolerated by design:
-  the ambient agent's fireflies/birds/bats and footstep marks + grave
-  crosses painting over the void — every "is it black?" test is a MEDIAN
-  over a wide patch; and the avatar is never hidden indoors — sample points
-  in its art box are dropped via `myScreen()`.
+- **A CUT-AWAY, NOT AN X-RAY** (maintainer): the building is drawn WHOLE but
+  TRUNCATED at `indoorTop`. Nothing hidden, nothing transparent.
+- **DO NOT GO BACK TO CULLING** — it shipped holes; a room's own CORNER has
+  no inward face that any wall set can hold.
+- **The outside is DRAWN AT ZERO AMBIENT, never skipped**: the renderer
+  draws every cell, the shader (`uRoom`/`roomAt()`) kills the light.
+- **Both dials are the maintainer's own picks** — wall height **1**
+  (`client/src/indoorwall.ts`), brightness **40%** (`indoorlight.ts`). Never
+  "restore" either.
+
+The rest of the surface: `shared/src/indoor.ts` (`shell`) and the indoor
+halves of `client/src/scenes/WorldScene.ts` + `client/src/nightlight.ts`;
+gates `scripts/verify-indoor.mjs` and `scripts/verify-indoorscope.mjs`.
 
 ## Landscape, handedness, rotation (in-game only)
 

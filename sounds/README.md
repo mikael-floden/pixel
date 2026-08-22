@@ -110,9 +110,3 @@ This domain owns `sounds/` and writes only `coordination/sounds.json` (per
 [`coordination/PROTOCOL.md`](../coordination/PROTOCOL.md)). Requests addressed
 to `sounds` are read at the start of each run (`coordination/board.py inbox
 sounds`).
-
-## Guardrails
-
-- **Never commit secrets** — `ELEVENLABS_API_KEY` lives in the environment /
-  Actions secret.
-- **Never ship low-fi** (see Quality standard).

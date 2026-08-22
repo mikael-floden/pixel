@@ -3,10 +3,10 @@
 Every **item** in the Nangijala game — the loot monsters drop, the stones you
 merge into gear, and (later) the potions, swords, bows, wands and armor you
 carry. Art is authored on [PixelLab](https://pixellab.ai); this domain mirrors
-it into the repo and owns all the **metadata** the game needs to make an item
-mean something. One domain of the multi-domain `pixel` repo, owned by the
-**items agent**; everything lives under `items/`. Fleet contract:
-`coordination/PROTOCOL.md`.
+it in — **zero generations**, download only — and owns all the **metadata**
+the game needs to make an item mean something. One domain of the multi-domain
+`pixel` repo, owned by the **items agent**; everything lives under `items/`.
+Fleet contract: `coordination/PROTOCOL.md`.
 
 ## Ground truth: the type tag on PixelLab
 
@@ -266,12 +266,3 @@ format with no conversion step.
 - **Viewer page:** [`index.html`](index.html) — a phone-friendly gallery that
   loads `viewer_data.json`, filters by type and shows value / rarity / soul
   power. Works over GitHub Pages or `python -m http.server` from this folder.
-
-## How this agent runs
-
-- **Sync only, no generation loop.** The maintainer authors and tags items on
-  PixelLab; this agent mirrors them in, names them and maintains the
-  metadata. Mirroring costs **zero generations** (download only).
-- Commits go **directly to `main`**, touching only `items/` and
-  `coordination/items.json` (one writer per file).
-- Never commit secrets — `PIXELLAB_API_KEY` lives in a gitignored `.env`.
