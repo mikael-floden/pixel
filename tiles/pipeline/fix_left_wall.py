@@ -55,7 +55,36 @@ def reclaim_left_wall(img, top_hex, side_hex, min_source=40):
     d_side = np.abs(rgb - np.asarray(side_rgb, float)).sum(2)
     is_top = d_top < d_side
 
+    # THE OVERHANG STAYS BROWN. The top material drapes over its own wall and that brim
+    # is real on both faces: "I have drawn red on the overhang. The overhang should be
+    # brown, but the wall marked with blue should still be green (at the bottom of the
+    # wall there can also be a small 1px brown line)."
+    #
+    # The depth is not guessed. The RIGHT face already draws it correctly, so it is
+    # measured there per column and the same depth is protected on the left - measured
+    # on this cell: 6 rows of 17 on the right, against 16 of 17 wrongly brown on the
+    # left. A 1px line at the very bottom is left brown for the same reason.
+    right = wall_mask & (xx >= w / 2)
+    depths = []
+    for x in np.nonzero(right.any(0))[0]:
+        col = np.nonzero(right[:, x])[0]
+        k = 0
+        for y in col:
+            if is_top[y, x]:
+                k += 1
+            else:
+                break
+        depths.append(k)
+    brim = int(np.median(depths)) if depths else 0
+
     left = wall_mask & (xx < w / 2)
+    body = np.zeros_like(left)
+    for x in np.nonzero(left.any(0))[0]:
+        col = np.nonzero(left[:, x])[0]
+        if len(col) > brim + 1:
+            body[col[brim]:col[-1], x] = True   # skip the brim, and the last row
+    left = left & body
+
     wrong = left & is_top                      # what to fix
     source = wall_mask & ~is_top               # slime the generator already drew
     if wrong.sum() == 0 or source.sum() < min_source:
