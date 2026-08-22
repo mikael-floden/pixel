@@ -371,8 +371,9 @@
     },
     "ice__over__water": {
       "claim_depth": 0.3,
-      "note": "the tenth ice cell to lean \u2014 it measured mildest in the sweep (17% mean) but the right faces still iced over ('ice over water makes the water wall on the very right turn ice'). Claims stop at the lip like its nine siblings. And the inverse on the same pair \u2014 the water repaint covered the drawn icy overhang ('The water also extends over the ice overhang') \u2014 is fixed by the geometric lip: the top 3 wall rows are the ice's, unconditionally. Scoped to this pair only, as instructed: 'This is a ice over water fix only!'",
-      "claim_lip": 3
+      "note": "the tenth ice cell to lean \u2014 it measured mildest in the sweep (17% mean) but the right faces still iced over ('ice over water makes the water wall on the very right turn ice'). Claims stop at the lip like its nine siblings. And the inverse on the same pair \u2014 the water repaint covered the drawn icy overhang ('The water also extends over the ice overhang') \u2014 is fixed by the geometric lip: the top 3 wall rows are the ice's, unconditionally. Scoped to this pair only, as instructed: 'This is a ice over water fix only!' | 2026-08-22: 'The ice overhang in ice over water sometimes doesn't follow the ice crustals all the way.' claim_lip 3 is a straight 3-row RIBBON, and the generator draws icicles hanging well past it, so the ribbon sliced their tips off and the water repaint took them. deep_claim is the documented companion to the cap ('THE CAP CUTS DRIPS TOO'): below the lip a pixel is claimed iff it is strongly the top colour AND still reachable from the claim, so a real icicle hangs and an honestly watery pixel does not. 1.8 is where it plateaus - swept 0.8/1.3/1.8/2.3 and the wall claimed goes 23% -> 25% total (left 22->24, right 24->27) then stops moving, so it follows the crystals without reopening the over-claim this cell's claim_depth exists to stop. NOT a new bug: this cell's art was byte-identical to the morning backup.",
+      "claim_lip": 3,
+      "deep_claim": 1.8
     },
     "lava__over__ice": {
       "claim_depth": 0.3,
