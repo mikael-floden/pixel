@@ -661,158 +661,6 @@ TRACKS: dict[str, dict] = {
             "or last."
         ),
     },
-    # ---- SUITE v2: NANGIJALA, the home island -------------------------------
-    # The clean slate (maintainer 2026-08-08, "I love D-dur! Let's go!"), built
-    # to games2/composer/MUSIC_DESIGN.md. A SUITE is the compatibility group:
-    # one key, one tempo, one bar length, so every pool in it can cross-fade,
-    # layer and switch ON THE BEAT. Other islands get their own suite in their
-    # own key — you only cross between suites at a boat ride, where the music
-    # stops and the ambience carries it, so two suites never have to agree.
-    #
-    #   D major, 140 BPM, 8 bars = 13.714 s per phrase
-    #   explore 12 / idle 4 / combat 6 / arrive 2 = 24 phrases, 329 s
-    #
-    # 140 is faster than it feels: the calm pools are written HALF-TIME (long
-    # notes over a quick pulse), which is what lets combat share the tempo and
-    # therefore start on the next beat rather than cross-fading over the top.
-    # Combat's urgency is DENSITY, never speed — a tempo change is exactly what
-    # makes two phrases un-joinable.
-    # the DEFAULT pool, heard more than everything else in the game combined
-    "nang_explore": {
-        "out": "nang_explore",
-        "suite": "nangijala",
-        "pool": "explore",
-        "seconds": 165,
-        "bpm": 140,
-        "phrase_ms": 13714,
-        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-        "harmony": "the same warm four-chord cycle in D major under every phrase",
-        "foregrounds": [
-            "flute carries the melody",
-            "tin whistle carries the melody",
-            "fiddle carries the melody",
-            "warm horn carries the melody",
-            "strummed lute and harp carry it lightly",
-            "strings carry it alone, wide and calm",
-            "whistle and fiddle trade the phrase",
-            "harp and plucked bass alone, sparse",
-        ],
-        "prompt": (
-            "A warm pastoral fantasy theme for walking a green home valley — meadows,"
-            " cherry orchards, a village over the hill. HALF-TIME FEEL: the pulse run"
-            "s at 140 BPM underneath but the melody moves in long unhurried notes, so"
-            " it reads as calm and walking, never rushed. A hopeful hummable folk mel"
-            "ody on flute, tin whistle and fiddle answered by a warm horn, over strum"
-            "med lute, harp and soft plucked bass, with light brushed percussion. Gen"
-            "erous, uncomplicated and completely unfatiguing — this must still be lov"
-            "ely on the two hundredth pass. Written as INTERCHANGEABLE 8-BAR PHRASES "
-            "that can be played in ANY ORDER: D major and 140 BPM from first bar to l"
-            "ast, the same repeating chord cycle under every phrase, each phrase star"
-            "ting cleanly on the downbeat and resolving by its final bar so any phras"
-            "e can follow any other. The variety is in the FOREGROUND — which instrum"
-            "ent carries the line and how busy it is — never in the harmony. No intro"
-            ", no build, no climax, no ending, no fade in or out: every phrase is equ"
-            "ally at home first or last. Instrumental."
-        ),
-    },
-    # standing still — the melody steps back, the place keeps breathing
-    "nang_idle": {
-        "out": "nang_idle",
-        "suite": "nangijala",
-        "pool": "idle",
-        "seconds": 55,
-        "bpm": 140,
-        "phrase_ms": 13714,
-        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-        "harmony": "the same warm four-chord cycle in D major under every phrase",
-        "foregrounds": [
-            "sustained strings alone",
-            "slow harp figure over strings",
-            "distant flute holding long notes",
-            "harp and light bells, very sparse",
-        ],
-        "prompt": (
-            "The same warm pastoral valley, but STILL: the player has stopped walking"
-            ". HALF-TIME FEEL at 140 BPM with even fewer notes — the melody steps bac"
-            "k and the harmony, the air and the texture carry it. Sustained warm stri"
-            "ngs, a slow harp figure, a distant flute holding single long notes, soft"
-            " room tone. Peaceful and patient and content, the sound of standing some"
-            "where you like and looking around. Written as INTERCHANGEABLE 8-BAR PHRA"
-            "SES that can be played in ANY ORDER: D major and 140 BPM from first bar "
-            "to last, the same repeating chord cycle under every phrase, each phrase "
-            "starting cleanly on the downbeat and resolving by its final bar so any p"
-            "hrase can follow any other. The variety is in the FOREGROUND — which ins"
-            "trument carries the line and how busy it is — never in the harmony. No i"
-            "ntro, no build, no climax, no ending, no fade in or out: every phrase is"
-            " equally at home first or last. Instrumental."
-        ),
-    },
-    # a fight — SAME key and tempo, urgency comes from density
-    "nang_combat": {
-        "out": "nang_combat",
-        "suite": "nangijala",
-        "pool": "combat",
-        "seconds": 82,
-        "bpm": 140,
-        "phrase_ms": 13714,
-        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-        "harmony": "the same warm four-chord cycle in D major under every phrase",
-        "foregrounds": [
-            "low strings drive the ostinato",
-            "frame drums and toms drive it, strings holding",
-            "brass stabs carry the line",
-            "high strings carry the urgent line",
-            "full ensemble together",
-            "percussion and bass alone, tense",
-        ],
-        "prompt": (
-            "The same valley in DANGER — monsters closing in. Identical key and tempo"
-            " to the calm music, but the DENSITY doubles: frame drums and low toms en"
-            "ter and drive, the strings play an urgent running ostinato instead of lo"
-            "ng notes, brass and low strings stab on the beat, the bass moves. Heroic"
-            " and thrilling and winnable rather than horrifying, never harsh or scree"
-            "ching. The energy comes from how MUCH is happening, never from playing f"
-            "aster. Written as INTERCHANGEABLE 8-BAR PHRASES that can be played in AN"
-            "Y ORDER: D major and 140 BPM from first bar to last, the same repeating "
-            "chord cycle under every phrase, each phrase starting cleanly on the down"
-            "beat and resolving by its final bar so any phrase can follow any other. "
-            "The variety is in the FOREGROUND — which instrument carries the line and"
-            " how busy it is — never in the harmony. No intro, no build, no climax, n"
-            "o ending, no fade in or out: every phrase is equally at home first or la"
-            "st. Instrumental."
-        ),
-    },
-    # stepping ashore — the first thing heard on the island, establishes D major
-    "nang_arrive": {
-        "out": "nang_arrive",
-        "suite": "nangijala",
-        "pool": "arrive",
-        "seconds": 27,
-        "bpm": 140,
-        "phrase_ms": 13714,
-        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
-        "harmony": "the same warm four-chord cycle in D major under every phrase",
-        "foregrounds": [
-            "open horn and strings, wide and welcoming",
-            "flute answers over harp and lute",
-        ],
-        "prompt": (
-            "ARRIVING somewhere beautiful after a long crossing — stepping off a boat"
-            " onto a green island in the sun. It BEGINS IMMEDIATELY and states the ho"
-            "me chord clearly and warmly in the first bar, so the ear knows where it "
-            "is. A generous open horn and strings gesture answered by flute, over har"
-            "p and lute. Welcoming, hopeful, a little moved — the feeling of having g"
-            "ot somewhere good. It settles rather than finishes, handing over to the "
-            "calm walking music. Written as INTERCHANGEABLE 8-BAR PHRASES that can be"
-            " played in ANY ORDER: D major and 140 BPM from first bar to last, the sa"
-            "me repeating chord cycle under every phrase, each phrase starting cleanl"
-            "y on the downbeat and resolving by its final bar so any phrase can follo"
-            "w any other. The variety is in the FOREGROUND — which instrument carries"
-            " the line and how busy it is — never in the harmony. No intro, no build,"
-            " no climax, no ending, no fade in or out: every phrase is equally at hom"
-            "e first or last. Instrumental."
-        ),
-    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
@@ -861,6 +709,57 @@ NEW_BEDS = ["town", "cave", "home", "battle", "adventure"]
 
 
 # ------------------------------------------------------------- API helpers
+
+# ---- SUITES FROM DATA (briefs/*.json) --------------------------------------
+# A campaign is a diff, not a code edit. Each brief file is one SUITE — one key,
+# one tempo, one phrase length — holding every POOL and every COLOUR ever
+# written for it, so the maintainer can swap a colour back in later and nothing
+# he has seen is ever lost. Track names are <suite>_<pool>_<colour>, which means
+# a re-roll of one colour cannot overwrite another, and the wiki groups them by
+# prefix for free.
+BRIEFS_DIR = MUSIC_DIR / "briefs"
+
+
+def load_suites() -> dict[str, dict]:
+    specs: dict[str, dict] = {}
+    if not BRIEFS_DIR.is_dir():
+        return specs
+    for path in sorted(BRIEFS_DIR.glob("*.json")):
+        try:
+            doc = json.loads(path.read_text())
+        except (OSError, ValueError) as e:  # a broken brief must not kill a run
+            print(f"! skipping {path.name}: {e}")
+            continue
+        suite = doc.get("suite") or path.stem
+        pm = int(doc.get("phrase_ms") or 0)
+        for pool, pd in (doc.get("pools") or {}).items():
+            n = int(pd.get("phrases") or 0)
+            if not (pm and n):
+                continue
+            for c in pd.get("colours") or []:
+                slug = c.get("slug")
+                prompt = c.get("prompt")
+                if not (slug and prompt):
+                    continue
+                specs[f"{suite}_{pool}_{slug}"] = {
+                    "out": f"{suite}_{pool}_{slug}",
+                    "seconds": int(round(n * pm / 1000)),
+                    "bpm": doc.get("bpm"),
+                    "phrase_ms": pm,
+                    "key_line": pd.get("key_line") or doc.get("key_line", ""),
+                    "harmony": pd.get("harmony") or doc.get("harmony", ""),
+                    "foregrounds": c.get("foregrounds") or [],
+                    "prompt": prompt,
+                    "suite": suite,
+                    "pool": pool,
+                    "colour": slug,
+                    "idea": c.get("idea"),
+                }
+    return specs
+
+
+TRACKS.update(load_suites())
+
 
 def plan_sections(plan: dict) -> list[dict]:
     """Normalize a composition plan's sections (the REST API has shipped both
@@ -1391,15 +1290,25 @@ def main() -> int:
     session.headers.update({"xi-api-key": key})
 
     rem = credits_remaining(session)
-    # Roughly: one 100 s take costs ~100k characters of the shared pool. Keep a
-    # floor so the sound/music agents are never starved by a music run.
-    candidates = 3
+    # HOW THE SEARCH SPENDS ITS CREDITS. Two ways to look for a good take:
+    # roll the SAME brief several times, or write several DIFFERENT briefs and
+    # roll each once. A broad campaign should do the second — the maintainer's
+    # own instruction, "rewrite the entire prompt often to test new ideas" —
+    # because three rolls of one idea explore far less than three ideas, and
+    # cost the same. So a run asking for many tracks takes ONE candidate each
+    # and lets the breadth be the search; a run asking for one or two is
+    # re-rolling a specific brief and still gets three.
+    # CANDIDATES=<n> in the environment overrides either way.
+    candidates = 1 if len(names) >= 6 else 3
+    env_c = os.environ.get("CANDIDATES", "").strip()
+    if env_c.isdigit():
+        candidates = max(1, min(5, int(env_c)))
     if rem is not None:
         print(f"credits remaining: {rem:,}")
         budget = max(0, rem - CREDIT_FLOOR)
         per_take = 110_000
         affordable = budget // max(1, per_take * len(names))
-        candidates = int(max(1, min(3, affordable)))
+        candidates = int(max(1, min(candidates, affordable)))
         if budget <= 0:
             print(f"!! credits at/below the {CREDIT_FLOOR:,} floor — refusing to run")
             return 1
