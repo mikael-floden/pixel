@@ -33,6 +33,22 @@ look it up, which is why he keeps asking. If a generator bot's commit carries
 the actual output (`composer: regenerate foley sets`), name that SHA too — the
 one he cares about is the one holding the files.
 
+## I OWN ALL OF THE GAME'S AUDIO
+
+**`sounds/`, `music/` and `games2/composer/` are all mine** (maintainer
+2026-08-08: *"You have the entire responsibility for much music and sound right
+now."*). That includes the 44-sound catalog, both `music/` tracks — the daytime
+overworld bed `nangijala_cherry_valley` is the one players hear most — and
+`sounds/bindings.json`.
+
+Do not hedge about domain boundaries on anything that makes a sound. Deferring
+to "the music agent" once already cost him: the day bed was left out of the
+sequenceable rewrite for no reason other than which directory it lives in, and
+it is the single most-heard piece of music in the game.
+
+The root `CLAUDE.md` repo map still lists `sounds/` and `music/` as separate
+domains. Treat this file as the newer instruction until that map is updated.
+
 ## HE MAPS SOUNDS TO EVENTS, NOT YOU
 
 - A sound plays ONLY where he assigned it. An approval, a star, or a keep-list

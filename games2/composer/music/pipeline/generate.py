@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Generate the composer's OWN score (ElevenLabs Music, music_v1).
 
-The composer has the same generation rights + ELEVENLABS_API_KEY as the music
-domain (maintainer 2026-07-19: "free hands"). These tracks are committed under
-games2/composer/music/ and bundled by Vite (engine/contextMusic.ts). This does
-NOT touch the music/ domain (another agent owns that).
+ALL OF THE GAME'S AUDIO IS THIS AGENT'S (maintainer 2026-08-08: "You have the
+entire responsibility for much music and sound right now") — sounds/, music/
+and games2/composer/ alike. The line that used to sit here, "this does NOT
+touch the music/ domain (another agent owns that)", is why the DAY BED, the
+most-heard music in the game, was left out of the sequenceable rewrite. Do not
+reintroduce that hedge. Tracks here are committed under games2/composer/music/
+and bundled by Vite (engine/contextMusic.ts).
 
 THE SEVEN BEDS — one per thing the player can be doing:
 
@@ -606,6 +609,53 @@ TRACKS: dict[str, dict] = {
             "in the FOREGROUND — which instrument carries the line and how busy it is"
             " — never in the harmony. No intro, no build, no climax, no ending, no fa"
             "de in or out: every phrase is equally at home first or last. "
+        ),
+    },
+    # THE DAY BED — the most-heard music in the game, and the one I wrongly left
+    # alone as "another agent's domain" (maintainer 2026-08-08: "You have the
+    # entire responsibility for much music and sound right now"). It replaces
+    # music/nangijala_cherry_valley, so it matches that track's MEASURED key and
+    # tempo — D major, 76 BPM — rather than inventing new ones: a like-for-like
+    # swap he can A/B, not a different piece wearing the same slot.
+    "day_seq": {
+        "out": "day_seq",
+        "seconds": 303,
+        "bpm": 76,
+        # SIX bars at 76 BPM = 18.9 s. Eight would be 25.3 s, past the 12-20 s
+        # band where a phrase is an idea rather than a section.
+        "phrase_ms": 18947,
+        "harmony": "the same warm four-chord cycle in D major under every phrase",
+        "foregrounds": [
+            "flute carries the melody",
+            "tin whistle carries the melody",
+            "fiddle carries the melody",
+            "warm horn carries the melody",
+            "strummed lute and harp carry it lightly",
+            "strings carry it alone, wide and calm",
+            "whistle and fiddle trade the phrase",
+            "harp and plucked bass alone, sparse",
+        ],
+        "prompt": (
+            "A wide-open pastoral fantasy overworld theme for a beautiful green home "
+            "valley — meadows, cherry orchards, a village somewhere over the hill, th"
+            "e road ahead. It STARTS PLAYING AT ONCE with warm strings and a light wa"
+            "lking pulse already moving. A calm, hopeful, hummable melody carried by "
+            "flute, tin whistle and fiddle, answered by a warm horn, over strummed lu"
+            "te, harp and soft plucked bass. The feeling is BELONGING AND GENTLE MOTI"
+            "ON — the joy of a place you know well on a good morning. Beautiful and g"
+            "enerous and completely unfatiguing: this is the music the player hears m"
+            "ore than any other, so it must still be lovely on the two hundredth pass"
+            ". Never grand, never tense, never triumphant. Around 76 BPM, D MAJOR, li"
+            "ght brushed percussion only, spacious mix. Instrumental. STRUCTURE MATTE"
+            "RS AS MUCH AS THE TUNE HERE. Write it as a set of INTERCHANGEABLE 6-BAR "
+            "PHRASES that can be played in ANY ORDER: one key and one tempo from firs"
+            "t bar to last with no modulation and no tempo change, the SAME repeating"
+            " chord cycle under every phrase, and each phrase starting cleanly on the"
+            " downbeat and resolving by its final bar so any phrase can follow any ot"
+            "her. The variety is in the FOREGROUND — which instrument carries the lin"
+            "e and how busy it is — never in the harmony. No intro, no build, no clim"
+            "ax, no ending, no fade in or out: every phrase is equally at home first "
+            "or last."
         ),
     },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
