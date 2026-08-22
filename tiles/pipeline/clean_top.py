@@ -50,6 +50,14 @@ APEX_LIFT = 1
 # reads through it as a highlight.
 EDGE_ALPHA = 0.5
 
+# THE EDGE SLOPE IS THE GRID'S, NOT AN IDEALISED 2:1. The game lays tiles at +32 columns
+# and +14 rows (tiles/docs/GEOMETRY.md, and the manifest's own iso block), so a top edge
+# has to fall exactly 14 rows across 32 columns or it cannot stay collinear with its
+# neighbour's. A 2-columns-per-row staircase falls 16 - and that 2px error lands at
+# EVERY seam: "The line looks very straight, but putting tiles togather in a 9x9 looks
+# very zigzaggy". A single tile cannot show this; only a field can.
+ISO_DX, ISO_DY = 32, 14
+
 
 def corners(op):
     """(A, L, R, B) for the top face: apex, left, right, and the implied near corner.
@@ -118,15 +126,18 @@ def top_mask(op):
     edge = np.zeros((h, w), bool)
     x0, x1 = L[0], R[0]
     for x in range(x0, x1 + 1):
-        # Each side corner throws a staircase inward; the face's top edge at a column is
-        # whichever of the two is LOWER on screen (max y), its bottom edge whichever is
-        # higher (min y). Taking them the other way round reaches past the diamond and
-        # empties both corners - measured, 0px tall instead of 2.
-        # upper edges climb 1 row every 2 columns, in from each side corner
-        ty = max(L[1] - (x - x0) // 2, R[1] - (x1 - x) // 2)
-        # lower edges do the same going down, starting CORNER_DROP below the upper ones
-        by = min(L[1] + CORNER_DROP + (x - x0) // 2,
-                 R[1] + CORNER_DROP + (x1 - x) // 2)
+        # Each side corner throws a staircase inward at the GRID's slope; the face's top
+        # edge at a column is whichever of the two is LOWER on screen (max y), its bottom
+        # edge whichever is higher (min y). Taking them the other way round reaches past
+        # the diamond and empties both corners - measured, 0px tall instead of 2.
+        # ROUNDED, NOT FLOORED. Flooring makes both staircases agree over four columns
+        # at the centre, so the apex comes out 4px wide; rounding splits that tie and
+        # gives the 2px apex the art actually has. The slope is untouched either way -
+        # at 32 columns both land on exactly ISO_DY.
+        dl = int(round(ISO_DY * (x - x0) / ISO_DX))
+        dr = int(round(ISO_DY * (x1 - x) / ISO_DX))
+        ty = max(L[1] - dl, R[1] - dr)
+        by = min(L[1] + CORNER_DROP + dl, R[1] + CORNER_DROP + dr)
         if by < ty:
             continue
         inside[ty:by + 1, x] = True
