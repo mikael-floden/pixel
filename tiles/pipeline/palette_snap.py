@@ -557,7 +557,8 @@ def _chroma_dist(px, target):
 
 
 def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=None,
-                deep_claim=None, drip_match=None, claim_lip=None, relight_faces=False):
+                deep_claim=None, drip_match=None, claim_lip=None, relight_faces=False,
+                drape_lit=False):
     """Which wall pixels are the SIDE material and which are the TOP material spilling over.
 
     THE BUG THIS REPLACES, in the maintainer's words:
@@ -698,6 +699,34 @@ def _split_wall(a, reg, wall_all, side_hex=None, aggressive=False, claim_depth=N
     # value noise is a property of the LIGHTING, measured where the pixel actually is —
     # the wall.
     st[2] = sw[2]
+    # THE TOP ANCHOR IS MEASURED ON A SURFACE THE DRAPE NEVER LIES ON. relight_faces
+    # above corrects one face against the other; this corrects both against the TOP,
+    # which is the larger error whenever the top face is bright and the walls are not.
+    # Measured on grass over black rock, on the pixels that ship grey: the lost drape
+    # sits at value 83, its grass anchor at 159 on the lit top face, and the rock anchor
+    # at 43 - so a plainly green pixel lands nearer the rock, 6.30 against 10.08, and is
+    # painted stone ("Grass over black rock has an issue where the green overhang is
+    # grey"). Nothing is wrong with the metric; the anchor is standing in the sunshine.
+    #
+    # The drape's own lighting is read off the wall by HUE, which does not move with
+    # light: wall pixels carrying the top material's hue ARE the drape, at whatever
+    # brightness. That selection cannot pick the wall material here because black rock
+    # has no hue to confuse it with - which is also why this is opt-in per pair, exactly
+    # like the claims above. On a pair whose two materials share a hue it would select
+    # both, and it must not be enabled there.
+    if drape_lit:
+        _th = _rgb2hsv(np.asarray(rgb[reg["top"]], float).reshape(-1, 3))
+        if float(np.median(_th[:, 1])) >= 40.0:
+            _href = float(np.median(_th[:, 0]))
+            _q = np.asarray(px, float)
+            _qh = _rgb2hsv(_q)
+            _dh = np.abs(_qh[:, 0] - _href) % 256.0
+            _sel = (np.minimum(_dh, 256.0 - _dh) < 24.0) & (_qh[:, 1] >= 40.0)
+            if _sel.sum() >= 30:
+                _k = (float(np.median(_q[_sel].max(axis=1)))
+                      / max(float(np.median(np.asarray(rgb[reg["top"]], float).max(axis=1))), 1.0))
+                if 0.3 <= _k <= 1.0:
+                    ft = ft * _k
     # ...AND SO IS THE TOP ANCHOR'S OWN VALUE. The line above relights the top
     # distance's TOLERANCE to the wall but leaves its CENTRE at the top face's
     # brightness, and the two faces are not equally lit: the left face is the shaded
@@ -1188,7 +1217,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
          align_side=False, flat_top=True, top_ramp=None, side_ramp=None,
          claim_depth=None, paint_side=True, deep_claim=None, drip_match=None,
          edge_dim=False, kill_highlight=False, claim_floor=None, no_claims=False,
-         claim_lip=None, side_ramp_abs=False, side_band=None, relight_faces=False):
+         claim_lip=None, side_ramp_abs=False, side_band=None, relight_faces=False,
+         drape_lit=False):
     """Align a tile to the palette. The two surfaces are treated DIFFERENTLY on purpose.
 
     TOP — overwritten with a single flat colour. That is the whole point of the base
@@ -1359,7 +1389,8 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
                                             deep_claim=deep_claim,
                                             drip_match=drip_match,
                                             claim_lip=claim_lip,
-                                            relight_faces=relight_faces)
+                                            relight_faces=relight_faces,
+                                            drape_lit=drape_lit)
             if drip_match is not None:
                 # THE BROWN DOES NOT CHANGE FROM LIVE, BYTE FOR BYTE. The drip claim
                 # may only ADD black pixels; it must never alter how the mud paints.

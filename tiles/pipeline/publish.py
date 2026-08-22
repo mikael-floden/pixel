@@ -565,6 +565,8 @@ def main():
                                       deep_claim=PAIR_TWEAKS.get(cell, {}).get("deep_claim"),
                                       relight_faces=bool(PAIR_TWEAKS.get(cell, {})
                                                          .get("relight_faces")),
+                                      drape_lit=bool(PAIR_TWEAKS.get(cell, {})
+                                                     .get("drape_lit")),
                                       # drip_match is PER TILE, never per cell: six
                                       # cell-wide versions of the drape fill each
                                       # fixed one tile and damaged another that was
