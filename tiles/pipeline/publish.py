@@ -31,6 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import flatness
 import no_invention
 import palette_snap
+import fix_left_wall
 import tombstones
 import vertical
 
@@ -442,6 +443,7 @@ def main():
                              "regenerated, unlike a rejected one."),
                 "cells": {}}
     n_pub = 0
+    reclaimed = 0
     invented = []
     jobs = []
     for d in sorted(glob.glob(os.path.join(MATRIX, "*__over__*"))):
@@ -614,6 +616,24 @@ def main():
             if inv.get("blob", 0) > no_invention.MAX_BLOB:
                 invented.append((f"tiles/{cell}/{i}", inv))
                 proc = raw
+            # ONE CELL, ONE FIX, AND IT RUNS AFTER THE GUARD. dark_mud over slime
+            # hands its darker-lit LEFT wall face to the mud - 98.3% of it, against 26%
+            # on the healthy grey_stone over slime.
+            #
+            # Not a pair_tweak: claim_depth and claim_lip both re-run the wall split,
+            # which re-centres substitute() across the whole side region and repaints
+            # every slime pixel (measured on a sibling: vivid mint 42,160,114 -> olive
+            # 90,132,44, 751 of 776 px). Slime is PROTECTED in palette.json.
+            #
+            # After the guard, because no_invention compares against the RAW art and
+            # reads these pixels as new colour even though they are copied from this
+            # same tile - it shipped all four raw when this ran earlier. Running last is
+            # safe precisely because the fix cannot invent: every colour it writes is
+            # already present in the tile it is writing to.
+            if PAIR_TWEAKS.get(cell, {}).get("reclaim_left_wall") and top_hex:
+                proc, _n = fix_left_wall.reclaim_left_wall(
+                    proc, top_hex, wall_hex or top_hex)
+                reclaimed += _n
             _save(proc, after)
             entries.append({
                 "wall_aligned": bool(aligned),
