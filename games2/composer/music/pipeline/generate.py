@@ -49,6 +49,7 @@ CAREFUL — two ways to get a hard rejection, both learned the hard way:
 from __future__ import annotations
 
 import json
+import pathlib
 import os
 import sys
 import shutil
@@ -1267,8 +1268,124 @@ def write_tracks_json(entries: dict) -> None:
     print(f"\nwrote {TRACKS_JSON} ({len(out)} track(s))")
 
 
+def phrase_key_report(y, sr, phrase_s: float, root: str, mode: str) -> dict:
+    """How many of this take's PHRASES are in the suite's key — the shuffle test.
+
+    MEASURE PER PHRASE, NOT PER TRACK. A whole-track key reading averages over
+    everything and says "D major" about a piece that wanders; but a phrase is
+    what actually gets swapped in next to another phrase, so a phrase that has
+    drifted is the thing a listener hears as a wrong join. v1.1 read as in-key
+    at track level and measured 2/15 and 8/15 per phrase, which is why the
+    whole suite was rewritten.
+    """
+    m = M.to_mono(y)
+    n = int(len(m) / sr // phrase_s) if phrase_s > 0 else 0
+    want, hits, per = f"{root} {mode}", 0, []
+    for i in range(n):
+        seg = m[int(i * phrase_s * sr):int((i + 1) * phrase_s * sr)]
+        k = M.detect_key(seg, sr)
+        got = f"{k.get('root')} {k.get('mode')}"
+        per.append(got)
+        hits += got == want
+    return {"phrases": n, "in_key": hits, "want": want, "per_phrase": per,
+            "fraction": round(hits / n, 3) if n else 0.0}
+
+
+def index_versions() -> dict:
+    """Publish music/pool/ into tracks.json so the ARCHIVE is auditionable.
+
+    "Don't delete the generations! Maybe I want to swap something out and
+    something different in." Keeping every take on disk is only half of that
+    promise — until the wiki can list and play them he would be choosing blind,
+    and the take he might prefer is invisible. Each version carries the same
+    measurements the live one does, INCLUDING the per-phrase key count, so the
+    reason a take was or was not chosen is on the card next to the play button.
+
+    Needs no API key: everything here is measured off committed files.
+    """
+    out: dict[str, dict] = {}
+    if not POOL_DIR.is_dir():
+        return out
+    live_sizes = {p.name: p.stat().st_size for p in MUSIC_DIR.glob("*.ogg")}
+    groups: dict[str, dict[str, list[pathlib.Path]]] = {}
+    for f in sorted(POOL_DIR.iterdir()):
+        if f.suffix not in MIMES or "__v" not in f.stem:
+            continue
+        stem, _, ver = f.stem.rpartition("__v")
+        groups.setdefault(stem, {}).setdefault(ver, []).append(f)
+    for stem, vers in sorted(groups.items()):
+        spec = TRACKS.get(stem, {})
+        phrase_s = (spec.get("phrase_ms") or 0) / 1000
+        entries = []
+        for ver, files in sorted(vers.items()):
+            audio = next((f for f in files if f.suffix == ".ogg"), files[0])
+            try:
+                y, sr = M.decode(audio.read_bytes())
+            except Exception as e:  # noqa: BLE001 — one bad file must not stop the index
+                print(f"  ! {audio.name}: {e}")
+                continue
+            card = M.measure(y, sr)
+            musical = M.musical_analysis(y, sr, prior_bpm=spec.get("bpm"))
+            grid = _grid_ms(spec, musical["timing"]["bpm"]) / 1000 if phrase_s else 0
+            rep = (phrase_key_report(y, sr, grid, musical["key"]["root"], musical["key"]["mode"])
+                   if grid else {})
+            suite_key = (spec.get("key_line") or "")
+            want_mode = "minor" if " minor" in suite_key else "major"
+            want_root = next((r for r in ("C", "D", "E", "F", "G", "A", "B")
+                              if f"in {r} " in suite_key), musical["key"]["root"])
+            fit = (phrase_key_report(y, sr, grid, want_root, want_mode) if grid else {})
+            entries.append({
+                "version": int(ver), "files": [
+                    {"file": f"pool/{f.name}", "mime": MIMES[f.suffix],
+                     "size_bytes": f.stat().st_size} for f in files],
+                "duration_s": card["duration_s"],
+                "bpm": musical["timing"]["bpm"], "asked_bpm": spec.get("bpm"),
+                "musical": musical["key"],
+                # BARS is the number that says whether a cut lands on a bar
+                # line: phrase_length x measured_BPM / 240. Exactly 8.00 is a
+                # clean seam; 7.03 (a take that rendered at 123 instead of 140)
+                # drops a beat every join however good the music is.
+                "bars": round(grid * (musical["timing"]["bpm"] or 0) / 240, 2) if grid else None,
+                "phrase_key": fit, "own_key": rep,
+                "usable": bool(grid) and card["duration_s"] > 5
+                          and abs((grid * (musical["timing"]["bpm"] or 0) / 240) - 8) < 0.15
+                          and fit.get("fraction", 0) >= 0.75,
+                "live": audio.name.replace(f"__v{ver}", "") in live_sizes
+                        and live_sizes[audio.name.replace(f"__v{ver}", "")] == audio.stat().st_size,
+            })
+        if entries:
+            out[stem] = entries
+            live = next((e["version"] for e in entries if e["live"]), None)
+            best = ", ".join(f"v{e['version']}{'*' if e['live'] else ''} "
+                             f"{e['phrase_key'].get('in_key', '?')}"
+                             f"/{e['phrase_key'].get('phrases', '?')} @"
+                             f"{e['bpm']:.0f}" if e['bpm'] else
+                             f"v{e['version']}{'*' if e['live'] else ''} "
+                             f"({e['duration_s']:.2f}s, unusable)" for e in entries)
+            print(f"  {stem}: {best}" + ("" if live else "   (live take is not in the pool)"))
+    return out
+
+
+def write_versions(index: dict) -> None:
+    """Attach the archive to tracks.json without disturbing the live entries."""
+    doc = json.loads(TRACKS_JSON.read_text()) if TRACKS_JSON.exists() else {"tracks": {}}
+    tracks = doc.get("tracks", {})
+    for stem, vers in index.items():
+        tracks.setdefault(stem, {"id": stem})["versions"] = vers
+    doc["tracks"] = tracks
+    doc["generated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    TRACKS_JSON.write_text(json.dumps(doc, indent=2) + "\n")
+    n = sum(len(v) for v in index.values())
+    print(f"\nindexed {n} archived take(s) across {len(index)} track(s) into {TRACKS_JSON}")
+
+
 def main() -> int:
     which = sys.argv[1] if len(sys.argv) > 1 else "new"
+
+    # `versions` publishes the ARCHIVE — no API, no key, no generations.
+    if which == "versions":
+        write_versions(index_versions())
+        return 0
 
     # `adopt` only measures files already on disk — no API, no key.
     if which == "adopt":
@@ -1288,6 +1405,13 @@ def main() -> int:
     # campaign: measured 2026-08-22, a take costs ~14 credits per second of
     # music, so the balance says how many minutes are affordable before a run
     # walks into a wall halfway through a suite.
+    # MEASURED 2026-08-22: this key returns 401 on /user/subscription while
+    # generating music perfectly well — ElevenLabs keys are scoped, and reading
+    # the account is a different permission from using it. So the balance CANNOT
+    # be pre-checked with the key CI has, and the only honest source is the
+    # refusal itself, which states it ("you have 539 credits remaining, while
+    # 1131 are required"). Plan campaigns in PRIORITY ORDER instead of by
+    # budget, and let `if: always()` keep whatever landed before the wall.
     if which == "credits":
         s2 = requests.Session(); s2.headers.update({"xi-api-key": key})
         # Print the RAW subscription payload as well as the parsed number. The

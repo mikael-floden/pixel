@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-22T18:30:29+00:00",
+  "generated_at": "2026-08-22T21:04:53+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -4479,7 +4479,89 @@
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_whistle__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2645005
+            },
+            {
+              "file": "pool/nangijala_explore_day_whistle__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2490173
+            }
+          ],
+          "duration_s": 162.81,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.82,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_explore_day_stroll": {
       "id": "nangijala_explore_day_stroll",
@@ -4742,7 +4824,335 @@
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_stroll__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2682611
+            },
+            {
+              "file": "pool/nangijala_explore_day_stroll__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2431347
+            }
+          ],
+          "duration_s": 164.31,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "major",
+            "confidence": 0.888,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              8,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              1,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 12,
+            "in_key": 0,
+            "want": "D major",
+            "per_phrase": [
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.0
+          },
+          "own_key": {
+            "phrases": 12,
+            "in_key": 12,
+            "want": "A major",
+            "per_phrase": [
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_stroll__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2651515
+            },
+            {
+              "file": "pool/nangijala_explore_day_stroll__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2548243
+            }
+          ],
+          "duration_s": 162.81,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.837,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 11,
+            "in_key": 2,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor"
+            ],
+            "fraction": 0.182
+          },
+          "own_key": {
+            "phrases": 11,
+            "in_key": 2,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor",
+              "B minor"
+            ],
+            "fraction": 0.182
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 3,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_stroll__v03.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2688918
+            },
+            {
+              "file": "pool/nangijala_explore_day_stroll__v03.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2167343
+            }
+          ],
+          "duration_s": 164.4,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "major",
+            "confidence": 0.857,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              8,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              1,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 12,
+            "in_key": 1,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.083
+          },
+          "own_key": {
+            "phrases": 12,
+            "in_key": 11,
+            "want": "A major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.917
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 4,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_stroll__v04.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2705969
+            },
+            {
+              "file": "pool/nangijala_explore_day_stroll__v04.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2365547
+            }
+          ],
+          "duration_s": 164.4,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "major",
+            "confidence": 0.934,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              8,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              1,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 12,
+            "in_key": 1,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "F# minor",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.083
+          },
+          "own_key": {
+            "phrases": 12,
+            "in_key": 10,
+            "want": "A major",
+            "per_phrase": [
+              "D major",
+              "F# minor",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.833
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_explore_night_lantern": {
       "id": "nangijala_explore_night_lantern",
@@ -5004,7 +5414,89 @@
         "suite": "nangijala",
         "pool": "explore_night",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_night_lantern__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2625308
+            },
+            {
+              "file": "pool/nangijala_explore_night_lantern__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2445769
+            }
+          ],
+          "duration_s": 162.76,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.881,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_explore_night_choir": {
       "id": "nangijala_explore_night_choir",
@@ -5266,7 +5758,89 @@
         "suite": "nangijala",
         "pool": "explore_night",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_night_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2663835
+            },
+            {
+              "file": "pool/nangijala_explore_night_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2253870
+            }
+          ],
+          "duration_s": 164.31,
+          "bpm": 137.2,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.956,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 11,
+            "in_key": 11,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_explore_night_fireflies": {
       "id": "nangijala_explore_night_fireflies",
@@ -5525,7 +6099,91 @@
         "suite": "nangijala",
         "pool": "explore_night",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_night_fireflies__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2675632
+            },
+            {
+              "file": "pool/nangijala_explore_night_fireflies__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2705326
+            }
+          ],
+          "duration_s": 164.4,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.942,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 12,
+            "in_key": 12,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 12,
+            "in_key": 12,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_town_market": {
       "id": "nangijala_town_market",
@@ -5735,7 +6393,83 @@
         "suite": "nangijala",
         "pool": "town",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_town_market__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1784211
+            },
+            {
+              "file": "pool/nangijala_town_market__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1644478
+            }
+          ],
+          "duration_s": 109.31,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.948,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 8,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.875
+          },
+          "own_key": {
+            "phrases": 8,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.875
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_town_hearth": {
       "id": "nangijala_town_hearth",
@@ -5949,7 +6683,81 @@
         "suite": "nangijala",
         "pool": "town",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_town_hearth__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1735170
+            },
+            {
+              "file": "pool/nangijala_town_hearth__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1486957
+            }
+          ],
+          "duration_s": 108.01,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.868,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 7,
+            "in_key": 6,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.857
+          },
+          "own_key": {
+            "phrases": 7,
+            "in_key": 6,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.857
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_town_green": {
       "id": "nangijala_town_green",
@@ -6154,7 +6962,83 @@
         "suite": "nangijala",
         "pool": "town",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_town_green__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1791583
+            },
+            {
+              "file": "pool/nangijala_town_green__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1710913
+            }
+          ],
+          "duration_s": 109.6,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.905,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 8,
+            "in_key": 8,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 8,
+            "in_key": 8,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_dungeon_crystal": {
       "id": "nangijala_dungeon_crystal",
@@ -6363,7 +7247,157 @@
         "suite": "nangijala",
         "pool": "dungeon",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_dungeon_crystal__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1792169
+            },
+            {
+              "file": "pool/nangijala_dungeon_crystal__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1564585
+            }
+          ],
+          "duration_s": 109.6,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "major",
+            "confidence": 0.878,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              8,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              1,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 8,
+            "in_key": 1,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.125
+          },
+          "own_key": {
+            "phrases": 8,
+            "in_key": 7,
+            "want": "A major",
+            "per_phrase": [
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.875
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_dungeon_crystal__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1782635
+            },
+            {
+              "file": "pool/nangijala_dungeon_crystal__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1621227
+            }
+          ],
+          "duration_s": 109.6,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.832,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 8,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.875
+          },
+          "own_key": {
+            "phrases": 8,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "A major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.875
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_dungeon_choir": {
       "id": "nangijala_dungeon_choir",
@@ -6577,7 +7611,81 @@
         "suite": "nangijala",
         "pool": "dungeon",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_dungeon_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1760715
+            },
+            {
+              "file": "pool/nangijala_dungeon_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1523829
+            }
+          ],
+          "duration_s": 108.81,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.892,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 7,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 7,
+            "in_key": 7,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_dungeon_fiddle": {
       "id": "nangijala_dungeon_fiddle",
@@ -6789,7 +7897,155 @@
         "suite": "nangijala",
         "pool": "dungeon",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_dungeon_fiddle__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1784340
+            },
+            {
+              "file": "pool/nangijala_dungeon_fiddle__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1594038
+            }
+          ],
+          "duration_s": 109.21,
+          "bpm": 125.0,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.892,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 7.14,
+          "phrase_key": {
+            "phrases": 7,
+            "in_key": 5,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "B minor",
+              "D major",
+              "B minor",
+              "D major"
+            ],
+            "fraction": 0.714
+          },
+          "own_key": {
+            "phrases": 7,
+            "in_key": 5,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "B minor",
+              "D major",
+              "B minor",
+              "D major"
+            ],
+            "fraction": 0.714
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_dungeon_fiddle__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1749705
+            },
+            {
+              "file": "pool/nangijala_dungeon_fiddle__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1615654
+            }
+          ],
+          "duration_s": 109.46,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.952,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 8,
+            "in_key": 8,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 8,
+            "in_key": 8,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_explore_day_choir": {
       "id": "nangijala_explore_day_choir",
@@ -7055,7 +8311,131 @@
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 3202
+            },
+            {
+              "file": "pool/nangijala_explore_day_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2931
+            }
+          ],
+          "duration_s": 0.12,
+          "bpm": null,
+          "asked_bpm": 140,
+          "musical": {
+            "root": null,
+            "mode": null,
+            "confidence": 0.0,
+            "midi_pitch_classes": null,
+            "sfx_safe_pitch_classes": null
+          },
+          "bars": 0.0,
+          "phrase_key": {
+            "phrases": 0,
+            "in_key": 0,
+            "want": "D major",
+            "per_phrase": [],
+            "fraction": 0.0
+          },
+          "own_key": {
+            "phrases": 0,
+            "in_key": 0,
+            "want": "None None",
+            "per_phrase": [],
+            "fraction": 0.0
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_explore_day_choir__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 2532550
+            },
+            {
+              "file": "pool/nangijala_explore_day_choir__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 2124938
+            }
+          ],
+          "duration_s": 157.61,
+          "bpm": 125.0,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.854,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 7.14,
+          "phrase_key": {
+            "phrases": 11,
+            "in_key": 10,
+            "want": "D major",
+            "per_phrase": [
+              "E minor",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.909
+          },
+          "own_key": {
+            "phrases": 11,
+            "in_key": 10,
+            "want": "D major",
+            "per_phrase": [
+              "E minor",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.909
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_combat_fanfare": {
       "id": "nangijala_combat_fanfare",
@@ -7239,7 +8619,79 @@
         "suite": "nangijala",
         "pool": "combat",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_combat_fanfare__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1332811
+            },
+            {
+              "file": "pool/nangijala_combat_fanfare__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1080507
+            }
+          ],
+          "duration_s": 82.06,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.815,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 6,
+            "in_key": 5,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "A major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.833
+          },
+          "own_key": {
+            "phrases": 6,
+            "in_key": 5,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "A major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 0.833
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_combat_reel": {
       "id": "nangijala_combat_reel",
@@ -7422,7 +8874,149 @@
         "suite": "nangijala",
         "pool": "combat",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_combat_reel__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1344013
+            },
+            {
+              "file": "pool/nangijala_combat_reel__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1190756
+            }
+          ],
+          "duration_s": 82.01,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.852,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 6,
+            "in_key": 4,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "B minor",
+              "D major",
+              "B minor",
+              "D major"
+            ],
+            "fraction": 0.667
+          },
+          "own_key": {
+            "phrases": 6,
+            "in_key": 4,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "B minor",
+              "D major",
+              "B minor",
+              "D major"
+            ],
+            "fraction": 0.667
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_combat_reel__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1371670
+            },
+            {
+              "file": "pool/nangijala_combat_reel__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1153652
+            }
+          ],
+          "duration_s": 82.2,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.852,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 6,
+            "in_key": 4,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "A major",
+              "D major",
+              "A major",
+              "D major"
+            ],
+            "fraction": 0.667
+          },
+          "own_key": {
+            "phrases": 6,
+            "in_key": 4,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "A major",
+              "D major",
+              "A major",
+              "D major"
+            ],
+            "fraction": 0.667
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_combat_choir": {
       "id": "nangijala_combat_choir",
@@ -7606,7 +9200,77 @@
         "suite": "nangijala",
         "pool": "combat",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_combat_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1325067
+            },
+            {
+              "file": "pool/nangijala_combat_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 995953
+            }
+          ],
+          "duration_s": 81.81,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.877,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 5,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "F# minor",
+              "F# minor"
+            ],
+            "fraction": 0.6
+          },
+          "own_key": {
+            "phrases": 5,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major",
+              "F# minor",
+              "F# minor"
+            ],
+            "fraction": 0.6
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_boss_cathedral": {
       "id": "nangijala_boss_cathedral",
@@ -7796,7 +9460,145 @@
         "suite": "nangijala",
         "pool": "boss",
         "key_asked": "stays in D minor for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_boss_cathedral__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1328934
+            },
+            {
+              "file": "pool/nangijala_boss_cathedral__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1009890
+            }
+          ],
+          "duration_s": 81.81,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "minor",
+            "confidence": 0.793,
+            "midi_pitch_classes": [
+              0,
+              2,
+              4,
+              5,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              0,
+              4,
+              5,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 5,
+            "in_key": 1,
+            "want": "D minor",
+            "per_phrase": [
+              "F major",
+              "A minor",
+              "D minor",
+              "A minor",
+              "A minor"
+            ],
+            "fraction": 0.2
+          },
+          "own_key": {
+            "phrases": 5,
+            "in_key": 3,
+            "want": "A minor",
+            "per_phrase": [
+              "F major",
+              "A minor",
+              "D minor",
+              "A minor",
+              "A minor"
+            ],
+            "fraction": 0.6
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_boss_cathedral__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1309280
+            },
+            {
+              "file": "pool/nangijala_boss_cathedral__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 915728
+            }
+          ],
+          "duration_s": 80.56,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "minor",
+            "confidence": 0.824,
+            "midi_pitch_classes": [
+              0,
+              2,
+              4,
+              5,
+              7,
+              9,
+              10
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              5,
+              9,
+              10
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 5,
+            "in_key": 5,
+            "want": "D minor",
+            "per_phrase": [
+              "D minor",
+              "D minor",
+              "D minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 5,
+            "in_key": 5,
+            "want": "D minor",
+            "per_phrase": [
+              "D minor",
+              "D minor",
+              "D minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_boss_hammer": {
       "id": "nangijala_boss_hammer",
@@ -7982,7 +9784,77 @@
         "suite": "nangijala",
         "pool": "boss",
         "key_asked": "stays in D minor for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_boss_hammer__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1341107
+            },
+            {
+              "file": "pool/nangijala_boss_hammer__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1004012
+            }
+          ],
+          "duration_s": 81.41,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "minor",
+            "confidence": 0.642,
+            "midi_pitch_classes": [
+              0,
+              2,
+              4,
+              5,
+              7,
+              9,
+              10
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              5,
+              9,
+              10
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 5,
+            "in_key": 3,
+            "want": "D minor",
+            "per_phrase": [
+              "A major",
+              "D minor",
+              "A minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 0.6
+          },
+          "own_key": {
+            "phrases": 5,
+            "in_key": 3,
+            "want": "D minor",
+            "per_phrase": [
+              "A major",
+              "D minor",
+              "A minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 0.6
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_boss_elegy": {
       "id": "nangijala_boss_elegy",
@@ -8169,7 +10041,147 @@
         "suite": "nangijala",
         "pool": "boss",
         "key_asked": "stays in D minor for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_boss_elegy__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1170491
+            },
+            {
+              "file": "pool/nangijala_boss_elegy__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1014421
+            }
+          ],
+          "duration_s": 72.01,
+          "bpm": 125.0,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "minor",
+            "confidence": 0.88,
+            "midi_pitch_classes": [
+              0,
+              2,
+              4,
+              5,
+              7,
+              9,
+              10
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              5,
+              9,
+              10
+            ]
+          },
+          "bars": 7.14,
+          "phrase_key": {
+            "phrases": 5,
+            "in_key": 4,
+            "want": "D minor",
+            "per_phrase": [
+              "D minor",
+              "D major",
+              "D minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 0.8
+          },
+          "own_key": {
+            "phrases": 5,
+            "in_key": 4,
+            "want": "D minor",
+            "per_phrase": [
+              "D minor",
+              "D major",
+              "D minor",
+              "D minor",
+              "D minor"
+            ],
+            "fraction": 0.8
+          },
+          "usable": false,
+          "live": false
+        },
+        {
+          "version": 2,
+          "files": [
+            {
+              "file": "pool/nangijala_boss_elegy__v02.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 1337829
+            },
+            {
+              "file": "pool/nangijala_boss_elegy__v02.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 1158173
+            }
+          ],
+          "duration_s": 82.2,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "A",
+            "mode": "major",
+            "confidence": 0.666,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              8,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              1,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 6,
+            "in_key": 1,
+            "want": "D minor",
+            "per_phrase": [
+              "D minor",
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.167
+          },
+          "own_key": {
+            "phrases": 6,
+            "in_key": 4,
+            "want": "A major",
+            "per_phrase": [
+              "D minor",
+              "D major",
+              "A major",
+              "A major",
+              "A major",
+              "A major"
+            ],
+            "fraction": 0.667
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_idle_hearth": {
       "id": "nangijala_idle_hearth",
@@ -8331,7 +10343,73 @@
         "suite": "nangijala",
         "pool": "idle",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_idle_hearth__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 858593
+            },
+            {
+              "file": "pool/nangijala_idle_hearth__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 796053
+            }
+          ],
+          "duration_s": 54.01,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.914,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_idle_choir": {
       "id": "nangijala_idle_choir",
@@ -8495,7 +10573,73 @@
         "suite": "nangijala",
         "pool": "idle",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_idle_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 837462
+            },
+            {
+              "file": "pool/nangijala_idle_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 716948
+            }
+          ],
+          "duration_s": 51.46,
+          "bpm": 125.0,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.868,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 7.14,
+          "phrase_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     },
     "nangijala_idle_meadow": {
       "id": "nangijala_idle_meadow",
@@ -8659,7 +10803,73 @@
         "suite": "nangijala",
         "pool": "idle",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_idle_meadow__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 776246
+            },
+            {
+              "file": "pool/nangijala_idle_meadow__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 710475
+            }
+          ],
+          "duration_s": 47.61,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.894,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_arrive_horns": {
       "id": "nangijala_arrive_horns",
@@ -8817,7 +11027,73 @@
         "suite": "nangijala",
         "pool": "arrive",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_arrive_horns__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 879461
+            },
+            {
+              "file": "pool/nangijala_arrive_horns__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 791017
+            }
+          ],
+          "duration_s": 54.46,
+          "bpm": 140.62,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.88,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 8.0,
+          "phrase_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": true,
+          "live": true
+        }
+      ]
     },
     "nangijala_arrive_choir": {
       "id": "nangijala_arrive_choir",
@@ -8981,7 +11257,73 @@
         "suite": "nangijala",
         "pool": "arrive",
         "key_asked": "stays in D major for the entire piece"
-      }
+      },
+      "versions": [
+        {
+          "version": 1,
+          "files": [
+            {
+              "file": "pool/nangijala_arrive_choir__v01.m4a",
+              "mime": "audio/mp4",
+              "size_bytes": 783199
+            },
+            {
+              "file": "pool/nangijala_arrive_choir__v01.ogg",
+              "mime": "audio/ogg; codecs=\"opus\"",
+              "size_bytes": 636836
+            }
+          ],
+          "duration_s": 48.11,
+          "bpm": 117.19,
+          "asked_bpm": 140,
+          "musical": {
+            "root": "D",
+            "mode": "major",
+            "confidence": 0.899,
+            "midi_pitch_classes": [
+              1,
+              2,
+              4,
+              6,
+              7,
+              9,
+              11
+            ],
+            "sfx_safe_pitch_classes": [
+              2,
+              4,
+              6,
+              9,
+              11
+            ]
+          },
+          "bars": 6.7,
+          "phrase_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "own_key": {
+            "phrases": 3,
+            "in_key": 3,
+            "want": "D major",
+            "per_phrase": [
+              "D major",
+              "D major",
+              "D major"
+            ],
+            "fraction": 1.0
+          },
+          "usable": false,
+          "live": true
+        }
+      ]
     }
   }
 }

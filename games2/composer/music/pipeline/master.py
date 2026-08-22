@@ -125,6 +125,17 @@ def _decode_wav_bytes(b: bytes) -> tuple[np.ndarray, int]:
 
 
 def _decode_via_ffmpeg(b: bytes, suffix: str) -> tuple[np.ndarray, int]:
+    # libsndfile FIRST: it reads ogg/opus, flac and wav in-process, so the
+    # measurement commands (`versions`, `adopt`, QA) work anywhere python does
+    # — including a container with no ffmpeg, which is where this was found.
+    # ffmpeg stays for what libsndfile will not open, chiefly m4a and mp3.
+    try:
+        import soundfile as sf
+        y, sr = sf.read(io.BytesIO(b), always_2d=True, dtype="int16")
+        if len(y):
+            return y, sr
+    except Exception:  # noqa: BLE001 — not a format libsndfile handles
+        pass
     ff = find_ffmpeg()
     if not ff:
         raise RuntimeError(f"cannot decode {suffix} without ffmpeg")
@@ -155,6 +166,12 @@ def decode(audio: bytes, sr_hint: int = 44100,
         try:
             y, sr = _decode_via_ffmpeg(audio, f".{kind}")
         except Exception:
+            # Only a KNOWN expected length makes the PCM fallback meaningful.
+            # Without one, swallowing this would hand the caller silence and
+            # call it a decode — the exact silent failure this whole commit is
+            # about. Raise, and let the caller report it.
+            if not expected_s:
+                raise
             y, sr = np.zeros((0, 2), dtype="<i2"), sr_hint
         # BELT AND BRACES for the coincidence above: if the container decoded
         # to a fraction of what these bytes could hold, we sniffed wrong, and
