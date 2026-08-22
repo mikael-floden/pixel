@@ -1,6 +1,6 @@
 {
   "schema": "composer-music@1",
-  "generated_at": "2026-08-22T16:26:25+00:00",
+  "generated_at": "2026-08-22T17:01:04+00:00",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {
@@ -4487,32 +4487,32 @@
         {
           "file": "nangijala_explore_day_stroll.ogg",
           "mime": "audio/ogg; codecs=\"opus\"",
-          "size_bytes": 2431347
+          "size_bytes": 2548243
         },
         {
           "file": "nangijala_explore_day_stroll.m4a",
           "mime": "audio/mp4",
-          "size_bytes": 2682611
+          "size_bytes": 2651515
         }
       ],
-      "duration_s": 164.307,
+      "duration_s": 162.807,
       "bpm": 139.67,
       "asked_bpm": 140,
       "musical": {
-        "root": "A",
+        "root": "D",
         "mode": "major",
-        "confidence": 0.887,
+        "confidence": 0.874,
         "midi_pitch_classes": [
           1,
           2,
           4,
           6,
-          8,
+          7,
           9,
           11
         ],
         "sfx_safe_pitch_classes": [
-          1,
+          2,
           4,
           6,
           9,
@@ -4521,57 +4521,57 @@
       },
       "timing": {
         "bpm": 139.67,
-        "beat_anchor_s": 0.035,
-        "confidence": 0.634,
+        "beat_anchor_s": 0.244,
+        "confidence": 0.761,
         "raw_bpm": 69.84
       },
       "loop": {
-        "loop_start_s": 47.072,
-        "loop_end_s": 143.051,
+        "loop_start_s": 45.262,
+        "loop_end_s": 154.971,
         "crossfade_ms": 900,
-        "score": 0.9485,
+        "score": 0.949,
         "beat_snapped": true
       },
       "trim_db": 0.0,
       "master": {
-        "trimmed_lead_s": 0.15,
-        "lufs_in": -9.73,
-        "gain_db": -8.27,
+        "trimmed_lead_s": 1.65,
+        "lufs_in": -11.17,
+        "gain_db": -6.83,
         "lufs_out": -18.0,
-        "true_peak_dbtp": -8.21
+        "true_peak_dbtp": -7.21
       },
       "measured": {
         "duration_s": 164.4,
-        "lufs": -9.72,
-        "true_peak_dbtp": 0.06,
-        "lead_in_s": 0.15,
+        "lufs": -11.18,
+        "true_peak_dbtp": -0.39,
+        "lead_in_s": 1.65,
         "tail_rms_ratio": 0.0,
-        "crest_db": 13.31,
-        "centroid_hz": 8309.8,
-        "stereo_corr": 0.927,
-        "silence_frac": 0.015
+        "crest_db": 13.41,
+        "centroid_hz": 6956.4,
+        "stereo_corr": 0.732,
+        "silence_frac": 0.022
       },
       "faults": [
-        "harsh/bright (8310 Hz)",
+        "slow start (1.65s)",
         "fades out at the end, loop avoids it (tail 0.00)"
       ],
       "candidates_tried": [
         {
-          "score": 85.75,
+          "score": 68.7,
           "faults": [
-            "harsh/bright (8310 Hz)",
+            "slow start (1.65s)",
             "fades out at the end, loop avoids it (tail 0.00)"
           ],
           "duration_s": 164.4,
-          "lufs": -9.72,
-          "true_peak_dbtp": 0.06,
-          "lead_in_s": 0.15,
+          "lufs": -11.18,
+          "true_peak_dbtp": -0.39,
+          "lead_in_s": 1.65,
           "tail_rms_ratio": 0.0,
-          "crest_db": 13.31,
-          "centroid_hz": 8309.8,
-          "stereo_corr": 0.927,
-          "silence_frac": 0.015,
-          "loop_score": 0.9633
+          "crest_db": 13.41,
+          "centroid_hz": 6956.4,
+          "stereo_corr": 0.732,
+          "silence_frac": 0.022,
+          "loop_score": 0.953
         }
       ],
       "sections": [
@@ -4734,10 +4734,12 @@
       ],
       "source_format": "pcm_44100",
       "phrase": {
-        "phrase_ms": 13714,
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
         "bars": 8,
         "phrases": 11,
-        "beat_anchor_s": 0.035,
+        "beat_anchor_s": 0.244,
         "suite": "nangijala",
         "pool": "explore_day",
         "key_asked": "stays in D major for the entire piece"
@@ -5523,6 +5525,1270 @@
         "beat_anchor_s": 0.104,
         "suite": "nangijala",
         "pool": "explore_night",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_town_market": {
+      "id": "nangijala_town_market",
+      "files": [
+        {
+          "file": "nangijala_town_market.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1644478
+        },
+        {
+          "file": "nangijala_town_market.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1784211
+        }
+      ],
+      "duration_s": 109.308,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.951,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.023,
+        "confidence": 0.67,
+        "raw_bpm": 69.84
+      },
+      "loop": {
+        "loop_start_s": 36.622,
+        "loop_end_s": 91.452,
+        "crossfade_ms": 900,
+        "score": 0.9345,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.35,
+        "lufs_in": -12.89,
+        "gain_db": -5.11,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.7
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -12.89,
+        "true_peak_dbtp": -0.59,
+        "lead_in_s": 0.35,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.54,
+        "centroid_hz": 6792.9,
+        "stereo_corr": 0.966,
+        "silence_frac": 0.026
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 76.33,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.6,
+          "lufs": -12.89,
+          "true_peak_dbtp": -0.59,
+          "lead_in_s": 0.35,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.54,
+          "centroid_hz": 6792.9,
+          "stereo_corr": 0.966,
+          "silence_frac": 0.026,
+          "loop_score": 0.9397
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "hammered dulcimer states the tune plainly with guitar strumming under it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "mandolin takes the melody in busy tremolo, dulcimer answering in the gaps",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "nylon-string guitar carries it fingerpicked and quiet, percussion thinned to one shaker",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "warm cellos take the tune in long lines while the dulcimer runs sixteenths above",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "small harp and mandolin trade the melody bar by bar",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "whole ensemble on the tune together at its busiest, tambourine bright on top",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "solo dulcimer alone with the bass \u2014 the sparsest phrase in the set",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "violins sing the melody sweetly while every plucked instrument comps behind",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.023,
+        "suite": "nangijala",
+        "pool": "town",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_town_hearth": {
+      "id": "nangijala_town_hearth",
+      "files": [
+        {
+          "file": "nangijala_town_hearth.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1486957
+        },
+        {
+          "file": "nangijala_town_hearth.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1735170
+        }
+      ],
+      "duration_s": 108.008,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.866,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.081,
+        "confidence": 0.65,
+        "raw_bpm": 139.67
+      },
+      "loop": {
+        "loop_start_s": 36.57,
+        "loop_end_s": 77.766,
+        "crossfade_ms": 900,
+        "score": 0.9304,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 1.65,
+        "lufs_in": -11.6,
+        "gain_db": -6.4,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -7.41
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -11.61,
+        "true_peak_dbtp": -1.01,
+        "lead_in_s": 1.65,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 13.42,
+        "centroid_hz": 7674.4,
+        "stereo_corr": 0.824,
+        "silence_frac": 0.059
+      },
+      "faults": [
+        "slow start (1.65s)",
+        "harsh/bright (7674 Hz)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 57.15,
+          "faults": [
+            "slow start (1.65s)",
+            "harsh/bright (7674 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.6,
+          "lufs": -11.61,
+          "true_peak_dbtp": -1.01,
+          "lead_in_s": 1.65,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.42,
+          "centroid_hz": 7674.4,
+          "stereo_corr": 0.824,
+          "silence_frac": 0.059,
+          "loop_score": 0.9508
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "accordion carries the tune in long held notes",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "solo fiddle takes the melody with slow slides and warm grace notes",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low wooden reed states it an octave down, everything else hushed",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "the wordless hum carries the line while the instruments comp softly",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low flute and fiddle share the melody in loose, breathing unison",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "plucked bass and accordion alone, the melody reduced to a few long tones",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "fiddle and hum in gentle two-part harmony",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "accordion ornaments busily around the reed's long-held melody",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.081,
+        "suite": "nangijala",
+        "pool": "town",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_town_green": {
+      "id": "nangijala_town_green",
+      "files": [
+        {
+          "file": "nangijala_town_green.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1710913
+        },
+        {
+          "file": "nangijala_town_green.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1791583
+        }
+      ],
+      "duration_s": 109.598,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.903,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.221,
+        "confidence": 0.491,
+        "raw_bpm": 139.67
+      },
+      "loop": {
+        "loop_start_s": 20.634,
+        "loop_end_s": 102.911,
+        "crossfade_ms": 900,
+        "score": 0.9362,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -7.83,
+        "gain_db": -10.17,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -10.64
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -7.83,
+        "true_peak_dbtp": -0.33,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 1.073,
+        "crest_db": 10.51,
+        "centroid_hz": 5913.8,
+        "stereo_corr": 0.693,
+        "silence_frac": 0.0
+      },
+      "faults": [],
+      "candidates_tried": [
+        {
+          "score": 92.83,
+          "faults": [],
+          "duration_s": 109.6,
+          "lufs": -7.83,
+          "true_peak_dbtp": -0.33,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 1.073,
+          "crest_db": 10.51,
+          "centroid_hz": 5913.8,
+          "stereo_corr": 0.693,
+          "silence_frac": 0.0,
+          "loop_score": 0.9344
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "tin whistle sings the open leaping tune alone over the drones",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "fiddle answers with the same tune, rougher and more driven",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low wooden flute takes it an octave down with the whistle decorating above",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "whistle and fiddle trade the melody two bars each",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "pizzicato strings carry the line while the winds rest",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "whole band on the tune in unison, claps and stamps at their strongest",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "solo fiddle over the frame drum only \u2014 the leanest phrase",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "whistle high and free while flute and fiddle hold a drone beneath",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.221,
+        "suite": "nangijala",
+        "pool": "town",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_dungeon_crystal": {
+      "id": "nangijala_dungeon_crystal",
+      "files": [
+        {
+          "file": "nangijala_dungeon_crystal.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1564585
+        },
+        {
+          "file": "nangijala_dungeon_crystal.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1792169
+        }
+      ],
+      "duration_s": 109.598,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "A",
+        "mode": "major",
+        "confidence": 0.859,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          1,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.372,
+        "confidence": 0.814,
+        "raw_bpm": 69.84
+      },
+      "loop": {
+        "loop_start_s": 35.634,
+        "loop_end_s": 105.911,
+        "crossfade_ms": 900,
+        "score": 0.9288,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "lufs_in": -12.13,
+        "gain_db": -5.87,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -5.92
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -12.13,
+        "true_peak_dbtp": -0.05,
+        "lead_in_s": 0.0,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.62,
+        "centroid_hz": 6707.0,
+        "stereo_corr": 0.802,
+        "silence_frac": 0.015
+      },
+      "faults": [
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 91.06,
+          "faults": [
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.6,
+          "lufs": -12.13,
+          "true_peak_dbtp": -0.05,
+          "lead_in_s": 0.0,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.62,
+          "centroid_hz": 6707.0,
+          "stereo_corr": 0.802,
+          "silence_frac": 0.015,
+          "loop_score": 0.9408
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "hammered dulcimer alone carries the melody in slow struck double-stops",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "small harp takes the line while the dulcimer answers in single droplets",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "celesta states the tune high and bare over the string bed",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low wooden flute carries the melody, dulcimer down to one chord per bar",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "glass-toned bells and harp trade the line half-phrase by half-phrase",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "dulcimer and celesta double the melody in octaves, the busiest phrase",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "cello carries the melody underneath while bells sparkle above it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "harp harmonics alone, the sparsest phrase, one note every two beats",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.372,
+        "suite": "nangijala",
+        "pool": "dungeon",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_dungeon_choir": {
+      "id": "nangijala_dungeon_choir",
+      "files": [
+        {
+          "file": "nangijala_dungeon_choir.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1523829
+        },
+        {
+          "file": "nangijala_dungeon_choir.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1760715
+        }
+      ],
+      "duration_s": 108.808,
+      "bpm": 139.67,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.911,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 139.67,
+        "beat_anchor_s": 0.372,
+        "confidence": 0.821,
+        "raw_bpm": 139.67
+      },
+      "loop": {
+        "loop_start_s": 30.602,
+        "loop_end_s": 92.342,
+        "crossfade_ms": 900,
+        "score": 0.9672,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.85,
+        "lufs_in": -9.8,
+        "gain_db": -8.2,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -8.88
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -9.8,
+        "true_peak_dbtp": -0.68,
+        "lead_in_s": 0.85,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 14.35,
+        "centroid_hz": 2007.6,
+        "stereo_corr": -0.225,
+        "silence_frac": 0.029
+      },
+      "faults": [
+        "slow start (0.85s)",
+        "phase problems (corr -0.23)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 69.65,
+          "faults": [
+            "slow start (0.85s)",
+            "phase problems (corr -0.23)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.6,
+          "lufs": -9.8,
+          "true_peak_dbtp": -0.68,
+          "lead_in_s": 0.85,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 14.35,
+          "centroid_hz": 2007.6,
+          "stereo_corr": -0.225,
+          "silence_frac": 0.029,
+          "loop_score": 0.9753
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "wordless women's voices carry the hymn line in unison",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "noble horns take the melody, choir sustaining open vowels beneath",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "full mixed choir in wide chorale harmony, the broadest phrase",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "a single high solo voice alone over the organ pedal tone",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low strings carry the tune while the choir holds one long note above",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "pipe organ takes the melody on soft flute stops",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "a distant horn call, answered by the choir \u2014 the sparsest phrase",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "choir and strings moving together in slow, thick parallel motion",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13746,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 139.67,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.372,
+        "suite": "nangijala",
+        "pool": "dungeon",
+        "key_asked": "stays in D major for the entire piece"
+      }
+    },
+    "nangijala_dungeon_fiddle": {
+      "id": "nangijala_dungeon_fiddle",
+      "files": [
+        {
+          "file": "nangijala_dungeon_fiddle.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1594038
+        },
+        {
+          "file": "nangijala_dungeon_fiddle.m4a",
+          "mime": "audio/mp4",
+          "size_bytes": 1784340
+        }
+      ],
+      "duration_s": 109.208,
+      "bpm": 123.05,
+      "asked_bpm": 140,
+      "musical": {
+        "root": "D",
+        "mode": "major",
+        "confidence": 0.879,
+        "midi_pitch_classes": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          9,
+          11
+        ],
+        "sfx_safe_pitch_classes": [
+          2,
+          4,
+          6,
+          9,
+          11
+        ]
+      },
+      "timing": {
+        "bpm": 123.05,
+        "beat_anchor_s": 0.383,
+        "confidence": 0.273,
+        "raw_bpm": 184.57
+      },
+      "loop": {
+        "loop_start_s": 36.368,
+        "loop_end_s": 84.38,
+        "crossfade_ms": 900,
+        "score": 0.9522,
+        "beat_snapped": true
+      },
+      "trim_db": 0.0,
+      "master": {
+        "trimmed_lead_s": 0.45,
+        "lufs_in": -10.4,
+        "gain_db": -7.6,
+        "lufs_out": -18.0,
+        "true_peak_dbtp": -8.58
+      },
+      "measured": {
+        "duration_s": 109.6,
+        "lufs": -10.38,
+        "true_peak_dbtp": -0.98,
+        "lead_in_s": 0.45,
+        "tail_rms_ratio": 0.0,
+        "crest_db": 13.11,
+        "centroid_hz": 7213.2,
+        "stereo_corr": 0.946,
+        "silence_frac": 0.054
+      },
+      "faults": [
+        "harsh/bright (7213 Hz)",
+        "fades out at the end, loop avoids it (tail 0.00)"
+      ],
+      "candidates_tried": [
+        {
+          "score": 71.9,
+          "faults": [
+            "harsh/bright (7213 Hz)",
+            "fades out at the end, loop avoids it (tail 0.00)"
+          ],
+          "duration_s": 109.6,
+          "lufs": -10.38,
+          "true_peak_dbtp": -0.98,
+          "lead_in_s": 0.45,
+          "tail_rms_ratio": 0.0,
+          "crest_db": 13.11,
+          "centroid_hz": 7213.2,
+          "stereo_corr": 0.946,
+          "silence_frac": 0.054,
+          "loop_score": 0.9575
+        }
+      ],
+      "sections": [
+        {
+          "name": "Phrase 1",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "solo folk fiddle carries the melody, sympathetic strings ringing under it",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 2",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low wooden whistle takes the line while the fiddle sinks to a held drone",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 3",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "cello carries the melody in its warm middle register",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 4",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "fiddle and low whistle play the tune together a sixth apart",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 5",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "bass flute alone, breathy and slow, frame drum barely audible",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 6",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "fiddle plays the busiest version, gentle rocking ornaments on every step",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 7",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "plucked lute-like strings state the melody over the fiddle drone",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        },
+        {
+          "name": "Phrase 8",
+          "duration_ms": 13714,
+          "styles": [
+            "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+            "the same warm four-chord cycle in D major under every phrase",
+            "low tuned bells carry the line with everything else at its quietest",
+            "same key throughout",
+            "same tempo throughout",
+            "starts on the downbeat",
+            "self-contained phrase"
+          ]
+        }
+      ],
+      "source_format": "pcm_44100",
+      "phrase": {
+        "phrase_ms": 13714,
+        "phrase_ms_asked": 13714,
+        "bpm_measured": 123.05,
+        "bars": 8,
+        "phrases": 7,
+        "beat_anchor_s": 0.383,
+        "suite": "nangijala",
+        "pool": "dungeon",
         "key_asked": "stays in D major for the entire piece"
       }
     }
