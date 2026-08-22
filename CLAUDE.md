@@ -31,54 +31,37 @@ inside its directory. The root holds only `README.md`, `CLAUDE.md`,
 `requirements.txt`, `.gitignore`, `.dockerignore`, `.env` (gitignored), and
 `coordination/`.
 
-- `characters2/` — the game's two locked heroes + the tag-driven `NPC` mirror
-  from PixelLab. See `characters2/README.md`.
+Each domain's own `README.md` (games2: `CLAUDE.md`) is the authority on how it
+works. This map answers one question only — whose directory is that.
+
+- `characters2/` — the two locked heroes + the tag-driven `NPC` mirror.
 - `tiles2/` — Tiles 2.0, the live, shipping tile/material library.
-- `tiles/` — Tiles 3.0, next-gen isometric ground tiles, built **alongside**
-  tiles2 (nothing migrates until it covers everything the game needs). See
-  `tiles/README.md`.
-- `maps2/` — worlds the game loads: `maps2/worlds/<name>/world.json`.
-- `scenery/` — freely placeable, optionally animated set dressing (trees,
-  graves, lamps): off the tile grid and it can animate (tiles can't).
-  PixelLab objects tagged `SCENERY`; the maps2 agent places it in worlds. See
-  `scenery/README.md`.
-- `sounds/` — game SFX via ElevenLabs (needs `ELEVENLABS_API_KEY`). See
-  `sounds/README.md`.
-- `music/` — background score via ElevenLabs Music; every track ships a
-  `metadata.json` (sections, beat grid, onsets, loudness, key/scale) so the
-  game can sync SFX to the score. See `music/README.md`.
-- `items/` — mirrors everything carrying an item TYPE tag on PixelLab's
-  objects store (`MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`, `WAND`,
-  `ARMOR` — the tags are ground truth); one folder per item (`item.json` +
-  `sprite.webp`), rolled up into `items/viewer_data.json`; sync only, no
-  generation loop. See `items/README.md`.
-- `lore/` — the story (no generation, no API): the GM-facing **red line**
-  (`lore/RED_LINE.md`), player-facing chapters, and per-entity lore for every
-  other domain. Writes only `lore/**`; publishes `lore/lore.json` where the
-  owning domain's own text always wins and lore fills gaps; its build refuses
-  to run on a stale cross-reference. See `lore/README.md`.
-- `monsters/` — mirrors everything tagged `MONSTER` on PixelLab (objects AND
-  characters stores — the tag is ground truth); canonical
-  idle/walk/angry/attack/die states in `monsters/animation_map.json`; no
-  loop — runs on demand. See `monsters/README.md`.
-- `games2/` — the Nangijala game itself (consumer of all art domains;
-  read-only toward them). The ONE domain shared by TWO agents (maintainer
-  decision): the game agent (gameplay/netcode/world/server) and the games-ui
-  agent (HUD, menus, screens); the per-file split is in `games2/UI_AGENT.md`.
-  See `games2/CLAUDE.md`.
-- `wiki/` — the in-game wiki (wiki agent): browses everything the agents
-  produce; the maintainer rates, approves/rejects, and tunes from inside it.
-  See `wiki/README.md`.
-- `live/` — the game's LIVE-UPDATE channel: files here are read by the
-  running game server **straight from GitHub `main`** (no redeploy) — tuning
-  overrides and the maintainer's per-domain feedback files agents must read
-  each run. See `live/README.md`.
-- `coordination/` — `PROTOCOL.md` (the inter-agent contract) + one board
-  file per agent (`board.py` to use them).
-- RETIRED 2026-07-14: the first generation (`characters/`, `maps/`,
-  `games/`, the old tiles registry + #emission demo) — history in git. The
-  `tiles/` name was later reused for Tiles 3.0. `scenery/` was renamed from
-  `objects/` 2026-08-12.
+- `tiles/` — Tiles 3.0, built **alongside** tiles2; nothing migrates until it
+  covers everything the game needs.
+- `maps2/` — the worlds the game loads (`maps2/worlds/<name>/world.json`), and
+  **the maps2 agent is who places scenery** in them.
+- `scenery/` — freely placeable, optionally animated set dressing: off the tile
+  grid, and it can animate (tiles can't).
+- `sounds/` — game SFX; `music/` — background score, each track shipping sync
+  metadata. Both via ElevenLabs (`ELEVENLABS_API_KEY`).
+- `items/` — everything carrying an item TYPE tag on PixelLab's objects store.
+- `monsters/` — everything tagged `MONSTER` (objects AND characters stores).
+- `lore/` — the story; no generation, no API. Writes only `lore/**`, publishes
+  `lore/lore.json` where **the owning domain's own text always wins** and lore
+  only fills gaps.
+- `games2/` — the game itself: consumer of every art domain and **read-only
+  toward them**. The ONE domain shared by TWO agents (maintainer decision) —
+  the game agent and the games-ui agent; split in `games2/UI_AGENT.md`.
+- `wiki/` — browses everything the agents produce; the maintainer rates,
+  approves/rejects and tunes from inside it.
+- `live/` — the LIVE-UPDATE channel: read by the running game server **straight
+  from GitHub `main`, no redeploy**. Tuning overrides + the maintainer's
+  per-domain feedback files, which agents must read each run.
+- `coordination/` — `PROTOCOL.md` (the inter-agent contract) + one board file
+  per agent (`board.py` to use them).
+- RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
+  the old tiles registry + #emission demo) — history in git. The `tiles/` name
+  was reused for Tiles 3.0; `scenery/` was `objects/` until 2026-08-12.
 
 ## Shared laws (every agent)
 

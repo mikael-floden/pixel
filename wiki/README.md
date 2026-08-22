@@ -77,46 +77,33 @@ matches the source composited over the page background exactly (delta 0).
 Re-run that check if the icon sizes ever change — resampled pixel art is the
 one thing this project never ships.
 
-## Image format: PNG or WebP, whichever is on disk
+## Image format: the builder looks, the browser never guesses
 
-The fleet is migrating art to **lossless WebP** (2026-07-31: ~50% off 128 MB,
-~6.5 MB off a cold load, nothing got bigger). Domains convert one at a time, so
-the repo holds both formats for a while and the wiki must not care which.
+Art is lossless WebP (root `CLAUDE.md` carries the law). The wiki never assumes
+an extension, and that is what keeps the browser out of the guessing business.
 
-**The builder looks; the browser never guesses.** `art("monsters/x/sprite")` in
-`build.mjs` resolves the extension against the disk (WebP wins when both exist)
-and `data.json` carries the real path. That is why there are no `<picture>`
-fallbacks, no probing and no 404s mid-migration — and it means an art domain can
-convert with **no wiki change at all**, just a rebuild.
-
-Three things had to move, and they are the ones to remember:
-
-- **`imageSize()` reads PNG *and* all three WebP variants** (VP8X / VP8L / VP8),
-  still zero-dependency because it runs in the Docker build. The minimum byte
-  count differs per variant: a fully transparent 48×48 frame is a **28-byte**
-  VP8L file, and a blanket "≥ 30 bytes" guard silently called it "not an image".
-  Death and fade-out animations end in exactly such frames.
-  `node wiki/tools/check-imagesize.mjs` cross-checks the parser against Pillow
-  over every image in the repo — 25,044 files, zero disagreements.
-- **Feedback ids stay extension-free.** `stripExt()` removes `.png` *or*
-  `.webp`. A `.png`-only strip would rename every tile id the day tiles2
-  converts and orphan every star, note and rejection the maintainer has filed.
-- **The build WARNS loudly, by name, on art it cannot measure.** A clip the
-  VP8L decoder rejects gets no `bb`, and the viewer's fallback — scale by
-  frame size — is scaling by transparent padding, the exact bug artScale
-  exists to fix (the in-browser self-measure then papers over the display,
-  but the committed numbers stay honest). Silent wrong numbers are worse
-  than a noisy build.
-
-`wiki/tools/to-webp.py` converts and **proves each file bit-exact** (decodes the
-result back and compares every pixel, fully transparent ones included) before
-writing, skipping anything that would grow. Other agents are welcome to copy it
-into their domain. Do not make it a Dockerfile step: convert once at the source,
-commit the result, and every later deploy moves less through the image layers.
-
-Nothing in the deploy plumbing filters by extension — `.dockerignore`, the
-Dockerfile `COPY`s and the workflow paths all take whole directories — so
-converted art ships with no change to the five-place checklist below.
+- **`art("monsters/x/sprite")` in `build.mjs` resolves the extension against the
+  disk** and `data.json` carries the real path — no `<picture>` fallbacks, no
+  probing, no 404s, and a domain converts with **no wiki change at all**. Do not
+  reinvent client-side format probing.
+- **`imageSize()` reads PNG and all three WebP variants** (VP8X / VP8L / VP8),
+  zero-dependency because it runs in the Docker build, and carries **no
+  minimum-byte guard**: a fully transparent 48x48 frame is a valid **28-byte**
+  VP8L file, and every die/fade animation ends in one.
+  `node wiki/tools/check-imagesize.mjs` proves the parser against Pillow over
+  25,044 files, zero disagreements.
+- **`stripExt()` strips `.png` *or* `.webp`** so feedback ids stay
+  extension-free. A `.png`-only strip would rename every tile id the day a
+  domain converts and orphan every star, note and rejection filed against it.
+- **The build WARNS loudly, by name, on art it cannot measure.** No `bb` means
+  the viewer falls back to frame size, which scales by transparent padding —
+  the exact bug artScale exists to fix. Silent wrong numbers are worse than a
+  noisy build.
+- **Convert at the source, never as a Dockerfile step**: commit the result and
+  every later deploy moves less through the image layers.
+  `games2/scripts/to-webp.py` is the shared, verified converter (it decodes each
+  result back and compares every pixel before writing); `wiki/tools/to-webp.py`
+  is a local copy of the same idea.
 
 ## Shipping a NEW domain to prod — the five-place checklist
 
@@ -879,27 +866,19 @@ the choice survives navigation, and that a player never sees the control.
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed
-build.** That split is deliberate — `stagingSha()` pins staging reads to
-`main` because reviewing art that is not in the game yet is the entire point —
-and its consequence is that `data.json` can list a piece whose file the
-producing agent has since deleted.
+build.** That split is deliberate — `stagingSha()` pins staging reads to `main`
+because reviewing art that is not in the game yet is the entire point — and its
+consequence is that `data.json` can list a piece whose file the producing agent
+has since deleted. **The REJECTED filter hits it every time**, because a
+rejection IS the instruction to delete the piece. Nothing is broken when this
+happens; the contract is working.
 
-**The REJECTED filter is where that happens every time**, because a rejection
-IS the instruction to delete the piece. Maintainer, 2026-08-15: *"Why doesn't
-the rejected Scenery render?"* — three cards, three broken `<img>`s with their
-alt text sprawling across them. Traced exactly: the wiki was built at
-`79c1ae3e5` (16:59), the scenery agent committed *"remove 3 rejected piece(s)
-(wiki verdicts)"* at 17:33, and the sprite answered 200 at the deployed sha and
-**404 on main**. Nothing was broken — the contract had worked.
-
-The first fix drew a "removed" tombstone in the card, and he rejected it the
-next day: *"Why is the object not removed then removed? Why do I still see it
-but as removed?"* He is right — a card he cannot open, judge or look at is not
-information, it is an obstacle between him and the pieces he CAN review. So a
-404'd piece is now **dropped from the loaded manifest** (`dropGoneEntity`), and
-every count, chip, filter and ‹ › pager follows for free, because they all read
-`state.data.domains.*`. Measured on the working tree the day it shipped: 828
-listed, 26 already deleted.
+A "removed" tombstone card was tried and rejected (maintainer, 2026-08-16):
+*"Why is the object not removed then removed? Why do I still see it but as
+removed?"* A card he cannot open, judge or look at is not information, it is an
+obstacle between him and the pieces he CAN review. So a 404'd piece is **dropped
+from the loaded manifest** (`dropGoneEntity`), and every count, chip, filter and
+‹ › pager follows for free, because they all read `state.data.domains.*`.
 
 - **Keyed on the piece's own `preview`.** A missing animation FRAME means one
   state is gone, not the piece — that keeps its card and shows the note in the

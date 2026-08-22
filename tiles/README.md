@@ -259,38 +259,18 @@ floor. `grey_stone` floor 21.4, new palette 21.3, old 29.0 (that gap was the oli
 ice tile was moving it to a colour the maintainer did not want. The single number
 21.9 -> 16.5 would have hidden both facts.
 
-## The gate that ate the reference tile
+## seam_px locates the top face by SHAPE, never by colour
 
-`seam_px` is the largest filter in the pipeline, and it decided WHERE THE TOP SURFACE IS by
-looking at colour: on each row of the assembled field, take the leftmost and rightmost pixel
-that matches the palette within 2 units, and call everything between them "inside". That is
-circular — how off-colour the surface measures depended on which pixels were already the
-right colour — and it made the number violently unstable.
-
-It cost the maintainer their own reference tile, and the way it happened is worth keeping:
-
-1. They nominated `black_rock__over__black_rock/sheet_02_chase2/tile_03.png` as the
-   definition of black rock.
-2. Deriving the palette from it moved the target by **six units in one channel**,
-   `#1e1e24` -> `#1e1d1e`.
-3. That flipped 165 pixels into "matching", which widened the row spans past the cliff
-   faces, which swept **1762 wall pixels** into the count as if they were seam.
-4. Score 0 -> 1762 against a tolerance of 8. The tile that DEFINES the material was dropped
-   from the wiki for not looking enough like itself, and it was the maintainer who noticed:
-   *"I can't even find that tile in the wiki now. Who removed the perfect reference tile?"*
-
-The top surface is a fact about the SHAPE, so ask the shape. `_assembled_top_mask()` renders
-the same plateau of a probe tile whose top face is white and every other pixel black; the
-white is exactly where the tops land, with no colour comparison anywhere. `_enclosed()`
-then finds the gaps that region encloses — the seams between neighbours, which is what this
-was always trying to count. Measured over 600 tiles across the matrix:
-
-    pass rate   90.0% -> 96.3%
-    newly passing (were wrongly rejected)   38
-    newly failing (now caught)               0
-
-Nothing gets through that did not before; 38 tiles per 600 come back. And the number is now
-stable — nudging the palette by six units moves it by zero, which is the property it lacked.
+`_assembled_top_mask()` renders a probe tile whose top face is white and every other pixel
+black — the white is exactly where the tops land — and `_enclosed()` then finds the gaps
+that region encloses, which is what the seam count always meant. No colour comparison
+anywhere. (Colour matching was circular: how off-colour a surface measured depended on which
+pixels already matched. A **six-unit** nudge in one channel once widened the row spans past
+the cliff faces and swept **1762 wall pixels** into the count — score 0 -> 1762 against a
+tolerance of 8 — which dropped the maintainer's own nominated reference tile from the wiki
+for not looking enough like itself. Measured over 600 tiles: pass rate 90.0% -> 96.3%, 38
+wrongly-rejected tiles recovered, 0 newly failing. The shape answer is also stable: the same
+six-unit nudge now moves the number by zero, the property colour matching never had.)
 
 ## Which wall pixels are the wall
 
