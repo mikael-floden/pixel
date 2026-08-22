@@ -334,6 +334,14 @@ a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--
 .detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
 .detail-card { gap: 6px; }
 .detail-card .group-stage { padding: 6px; }
+/* THE REVIEW LEDGER — what is actually left, before any art. */
+.ledger.clear { border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+.ledger-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--border); }
+.ledger-line:first-of-type { border-top: 0; }
+.ledger-label { font-weight: 600; min-width: 92px; }
+.ledger-body { color: var(--muted); flex: 1 1 180px; }
+.ledger-jump { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 2px 0 8px; }
+.ledger-foot { margin: 6px 0 0; font-size: 12px; }
 .top-hint { margin: 4px 0 6px; font-size: 12px; }
 /* THE TEXTURED PASS — synthesized in the browser (no file exists for it), so
    on the A/B/C cards it is the one layer that is a canvas. Sized like the

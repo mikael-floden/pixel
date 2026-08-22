@@ -4254,6 +4254,112 @@ const typeLabelWorld = (id) => (worldMeta().groundTypes ?? []).find((g) => g.id 
  * IS "grass over snow", and a url that says so survives the agent renaming
  * their cell keys.
  */
+/* IS THE REVIEW UP TO DATE? — the question this section could never answer
+ * (maintainer 2026-08-22, refusing to go on: "The wiki is full with already
+ * reviewed stuff. I will not review until everything is up to date").
+ *
+ * He was right about what he saw and wrong about what it meant, and only
+ * because nothing here ever told him: every page was full of reviewed tiles
+ * because he had REVIEWED THEM ALL. The wiki showed him 3,990 cards and never
+ * once said "7 of these are yours to do". A queue you cannot see the end of
+ * looks identical to a queue nobody is working.
+ *
+ * So the section opens with its own ledger, counted live off the manifest and
+ * his own verdicts — never a claim, never a cached number:
+ *
+ *   TILES     rated vs total, and exactly where the rest are.
+ *   VERDICTS  his rejections that the tiles agent has already carried out —
+ *             the tile is GONE from the manifest — against any still standing.
+ *             This is the "is anyone acting on me" number.
+ *   TOPS      the second axis, judged vs total. Untouched at 0 of 3,990,
+ *             because until the Textured pass there was no way to see one.
+ */
+function reviewLedger() {
+  const cells = worldCells();
+  const tiles = cells.flatMap((c) => c.candidates.map((cand) => ({ cell: c, cand })));
+  const judged = (k) => { const e = fb("tiles", k); return !!(e.rating || e.status); };
+  const left = tiles.filter((x) => !judged(x.cand.key));
+  const approved = tiles.filter((x) => fb("tiles", x.cand.key).status === "approved").length;
+  // A rejection the agent has NOT acted on yet: the tile is still in the
+  // manifest wearing his ✕.
+  const standing = tiles.filter((x) => fb("tiles", x.cand.key).status === "rejected").length;
+  // A rejection it HAS acted on: his verdict names a tile that no longer
+  // exists. That orphan row is the receipt.
+  const liveKeys = new Set(tiles.map((x) => x.cand.key));
+  const entries = state.feedback.tiles?.entries ?? {};
+  const carried = Object.keys(entries).filter((k) =>
+    !k.endsWith("#top") && !liveKeys.has(k) && entries[k]?.status === "rejected").length;
+  const tops = tiles.filter((x) => judged(topKey(x.cand.key))).length;
+  const byPair = new Map();
+  for (const x of left) {
+    const id = `${x.cell.top}/${x.cell.side}`;
+    byPair.set(id, { n: (byPair.get(id)?.n ?? 0) + 1, name: x.cell.name });
+  }
+  // Which ground has the most unjudged tops — where the top review starts.
+  const topsBy = new Map();
+  for (const x of tiles) {
+    if (judged(topKey(x.cand.key))) continue;
+    topsBy.set(x.cell.top, (topsBy.get(x.cell.top) ?? 0) + 1);
+  }
+  const biggestTops = [...topsBy.entries()].sort((a, b) => b[1] - a[1])[0] ?? null;
+  return { total: tiles.length, left, approved, standing, carried, tops, byPair, biggestTops };
+}
+function reviewLedgerPanel() {
+  const L = reviewLedger();
+  if (!L.total) return null;
+  const done = L.total - L.left.length;
+  const pairs = [...L.byPair.entries()].sort((a, b) => b[1].n - a[1].n);
+  // FLOORED, never rounded: "100%" over seven unfinished tiles is the exact
+  // lie this panel exists to stop telling.
+  const pct = L.left.length ? Math.min(99, Math.floor((done / L.total) * 100)) : 100;
+  const clear = !L.left.length && !L.standing;
+  const line = (label, body, pill) => h("div", { class: "ledger-line" },
+    h("span", { class: "ledger-label" }, label),
+    h("span", { class: "ledger-body" }, body),
+    pill ?? null);
+  return h("div", { class: `panel ledger${clear ? " clear" : ""}` },
+    h("div", { class: "panel-title" }, "Where the review stands",
+      h("span", { class: `pill ${clear ? "ok" : "warn"}` },
+        clear ? "up to date" : `${L.left.length + L.standing} waiting for someone`)),
+    line("Tiles", `${done.toLocaleString()} of ${L.total.toLocaleString()} rated (${pct}%)`,
+      L.left.length
+        ? h("span", { class: "pill warn" }, `${L.left.length} left`)
+        : h("span", { class: "pill ok" }, "all yours are done")),
+    // WHERE the rest are, and one press to stand in front of them with the
+    // inbox filter already on — the whole point of counting them.
+    L.left.length ? h("div", { class: "ledger-jump" },
+      ...pairs.slice(0, 3).map(([id, v]) => h("button", {
+        class: "ghost-btn",
+        title: `Open ${v.name} with the "no stars" filter on — ‹ › then walks only what is left`,
+        onclick: () => {
+          try { localStorage.setItem(WORLD_STAR_KEY, "unrated"); } catch { /* private mode */ }
+          location.hash = `#/world/${id}`;
+        },
+      }, `${v.name} — ${v.n} left`)),
+      pairs.length > 3 ? h("span", { class: "muted" }, `+${pairs.length - 3} more set${pairs.length - 3 === 1 ? "" : "s"}`) : null) : null,
+    line("Your rejections", L.carried
+      ? `${L.carried} carried out — the tiles agent deleted those tiles and moved on`
+      : "none outstanding",
+    L.standing
+      ? h("span", { class: "pill warn", title: "Rejected, but the tile is still in the manifest — the agent has not run since" }, `${L.standing} not yet acted on`)
+      : h("span", { class: "pill ok" }, "nothing waiting on the agent")),
+    line("Tops", `${L.tops.toLocaleString()} of ${L.total.toLocaleString()} judged — the second axis, and the one that is open`,
+      L.tops ? null : h("span", { class: "pill warn" }, "untouched")),
+    L.biggestTops ? h("div", { class: "ledger-jump" },
+      h("button", {
+        class: "ghost-btn",
+        title: "Open that ground's Details tab — every top nobody has judged, each one textured in the ground it would decorate",
+        onclick: () => {
+          groundTab.set(L.biggestTops[0], "details");
+          try { localStorage.setItem(WORLD_VIEW_KEY, "texture"); } catch { /* private mode */ }
+          tileViews.clear();
+          location.hash = `#/world/${L.biggestTops[0]}`;
+        },
+      }, `Start on ${typeLabelWorld(L.biggestTops[0]).toLowerCase()} — ${L.biggestTops[1].toLocaleString()} tops`),
+      h("span", { class: "muted" }, "opens Textured, so you see the real top")) : null,
+    h("p", { class: "muted ledger-foot" },
+      "Counted from the tiles agent's live manifest and your own verdicts, every time this page opens."));
+}
 function viewWorld() {
   // Fire-and-forget: the baked list draws immediately, the live one replaces
   // it a moment later. Re-rendering only when the fetch actually landed keeps
@@ -4289,6 +4395,9 @@ function viewWorld() {
     // How many the filter kept is the line under the control.
     state.admin ? h("p", { class: "muted" },
       `${allTypes.length} ground type${allTypes.length === 1 ? "" : "s"} · ${all.length} pair${all.length === 1 ? "" : "s"} · ${state.data.counts?.world_candidates ?? 0} candidates`) : null,
+    // THE LEDGER FIRST — before a single card. "Is there anything for me?" is
+    // the question he arrives with, and it must not require reading a grid.
+    state.admin ? reviewLedgerPanel() : null,
     state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
     // HIS INBOX, at the top of the section that owns it. The counts are on the
     // control itself: "no stars 137" is the size of the job, and it going to 0

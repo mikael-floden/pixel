@@ -282,12 +282,12 @@ await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => 
 await p.waitForTimeout(2200);
 const dSwitch = await p.evaluate(() => ({
   sel: document.querySelector(".sortbar-btn.sel")?.textContent.trim(),
-  chips: [...document.querySelectorAll(".sortbar-btn")].slice(0, 2).map((x) => x.textContent.trim()),
+  chips: [...document.querySelectorAll(".sortbar-btn")].slice(0, 3).map((x) => x.textContent.trim()),
   promote: document.querySelectorAll(".detail-card .base-btn").length,
   cards: document.querySelectorAll(".detail-card").length,
 }));
-ok(dSwitch.chips.join("/") === "After/Before" && dSwitch.sel === "After",
-  `the Details tab carries the After/Before switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
+ok(dSwitch.chips.join("/") === "After/Textured/Before" && dSwitch.sel === "After",
+  `the Details tab carries the three-state switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
 // Asserted BEFORE the tab tour below: visiting On top of renders the pair
 // cards, which carry both passes at once by design and would count as
 // "before" fetches that no composition asked for.
@@ -305,11 +305,12 @@ for (const tabName of ["Details", "On top of", "Transitions"]) {
   await p.waitForTimeout(700);
   const hasPass = await p.evaluate(() => ({
     pass: !!document.querySelector(".ground-pass"),
+    n: document.querySelectorAll(".ground-pass .sortbar-btn").length,
     sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
     hint: document.querySelector(".pass-hint")?.textContent ?? "",
   }));
-  ok(hasPass.pass && hasPass.sel === "After" && /Before/.test(hasPass.hint),
-    `the pass switch is on the ${tabName} tab, and says what After means (${hasPass.hint.slice(0, 46)}…)`);
+  ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && /Textured/.test(hasPass.hint),
+    `all THREE passes are on the ${tabName} tab, and the hint points at Textured (${hasPass.hint.slice(0, 46)}…)`);
 }
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
@@ -351,10 +352,21 @@ const stillOpen = await p.evaluate(() => ({
 }));
 ok(stillOpen.open && stillOpen.sel === "Before" && mBefore > 0,
   `flipping inside it re-composes the previews without closing it (${mBefore} before fetched)`);
+// The pass the whole feature exists for, in the dialog where promotion is decided.
+const synthsPre = await p.evaluate(() => window.__wikiTex ?? 0);
+await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Textured")?.click());
+await p.waitForTimeout(1800);
+const mTex = await p.evaluate(() => ({
+  open: !!document.querySelector(".promote-modal[open]"),
+  sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
+  synths: window.__wikiTex ?? 0,
+}));
+ok(mTex.open && mTex.sel === "Textured" && mTex.synths > synthsPre,
+  `and Textured inside the dialog SYNTHESIZES the tops in place (${mTex.synths - synthsPre} syntheses, still open)`);
 await p.evaluate(() => [...document.querySelectorAll(".promote-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(1000);
 const synced = await p.evaluate(() => document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim());
-ok(synced === "Before", `and the page behind adopts the pass the modal was left on (${synced})`);
+ok(synced === "Textured", `and the page behind adopts the pass the modal was left on (${synced})`);
 await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
 await p.waitForTimeout(900);
 await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2?.scrollIntoView({ block: "center" }); b2?.click(); });
@@ -370,24 +382,87 @@ ok(/revoke/.test(dPromoted.btn) && /base tile/.test(dPromoted.pill),
 await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.click(); });
 await p.waitForTimeout(600);
 
-// the pair-page toggle: collapsed, opens, carries its state
+// THE VIEW IS THE REVIEW (maintainer 2026-08-21: "The current button and
+// everything that expands when clicking on the 'review the top' should be
+// removed (it's so confusing with two rating systems on the same card!) ... IF
+// the top is viewed the current rating system ... should target the
+// top/details instead ... instead of stars lets use something like a roof
+// emoji ... it should be the center of 3x3 tiles (base tiles)").
 await p.goto(`${W}#/world/grass/grass`, { waitUntil: "load" });
-await p.waitForTimeout(1800);
-const tBtn = await p.evaluate(() => ({
-  buttons: document.querySelectorAll(".top-btn").length,
-  openCanvases: document.querySelectorAll(".top-review canvas").length,
+await p.waitForTimeout(1900);
+const tGone = await p.evaluate(() => ({
+  leftovers: document.querySelectorAll(".top-btn, .top-review").length,
+  stars: !!document.querySelector(".world-cand .review-box .stars:not(.roofs)"),
+  roofs: document.querySelectorAll(".world-cand .review-box .roofs").length,
+  view: document.querySelector(".tile-preview")?.dataset.view,
+  chips: document.querySelectorAll(".world-viewbar .sortbar-btn").length,
 }));
-ok(tBtn.buttons > 0 && tBtn.openCanvases === 0,
-  `every tile card carries "review the top", collapsed until asked (${tBtn.buttons} buttons, 0 open)`);
-await p.evaluate(() => { const b2 = document.querySelector(".top-btn"); b2.scrollIntoView({ block: "center" }); b2.click(); });
-await p.waitForTimeout(1400);
-const tOpen = await p.evaluate(() => ({
-  canvas: !!document.querySelector(".top-review canvas"),
-  stars: !!document.querySelector(".top-review .stars"),
-  reject: [...document.querySelectorAll(".top-review button")].some((x) => /not a detail/.test(x.textContent)),
+ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "after" && tGone.chips === 3,
+  `the "review the top" expander is GONE; on After one row rates the TILE with stars, and Show has three states (${tGone.chips})`);
+await p.evaluate(() => { const c2 = document.querySelector(".stage-flip"); c2.scrollIntoView({ block: "center" }); c2.click(); });
+await p.waitForTimeout(2400);
+const tTex = await p.evaluate(() => ({
+  view: document.querySelector(".tile-preview")?.dataset.view,
+  chip: document.querySelector(".stage-flip")?.textContent.trim(),
+  roofs: document.querySelectorAll(".world-cand .review-box .roofs button").length,
+  glyph: document.querySelector(".world-cand .review-box .roofs button")?.textContent,
+  reject: [...document.querySelectorAll(".world-cand .review-box button")].some((x) => /not a detail/.test(x.textContent)),
+  // SCOPED TO THE FLIPPED CARD. The chip is per tile, so the other 19 keep
+  // their stars and their cliffs — that they do is the check, not a nuisance.
+  starsHere: document.querySelector(".world-cand")?.querySelectorAll(".review-box .stars:not(.roofs)").length,
+  scenesHere: document.querySelector(".world-cand")?.querySelectorAll(".scene-box canvas").length,
+  neighbourStars: [...document.querySelectorAll(".world-cand")].slice(1).filter((c) => c.querySelector(".review-box .stars:not(.roofs)")).length,
+  cards: document.querySelectorAll(".world-cand").length,
+  synths: window.__wikiTex ?? 0,
 }));
-ok(tOpen.canvas && tOpen.stars && tOpen.reject,
-  "…and opens into the composed top with its own stars and a 'not a detail' verdict");
+ok(tTex.view === "texture" && tTex.chip === "⇄ textured" && tTex.synths > 0,
+  `the per-tile chip cycles After → Textured, synthesized in the browser (${tTex.chip}, ${tTex.synths} syntheses)`);
+ok(tTex.roofs === 5 && tTex.glyph === "⌂" && tTex.reject && tTex.starsHere === 0,
+  `and that card's ONE row now rates the TOP — five roofs, "not a detail", no stars left on it (${tTex.roofs} × ${tTex.glyph})`);
+ok(tTex.scenesHere === 1,
+  `its composition is the ONE 3x3 with the top centred in the base tiles — no cliff, the wall is irrelevant here (${tTex.scenesHere} scene)`);
+ok(tTex.neighbourStars === tTex.cards - 1,
+  `and the flip is PER TILE — the other ${tTex.cards - 1} cards still rate the tile with stars (${tTex.neighbourStars})`);
+await p.evaluate(() => [...document.querySelectorAll(".world-cand .review-box .roofs button")][2].click());
+await p.waitForTimeout(300);
+const topTouch = await p.evaluate(() => [...(window.__wiki.state.touched["feedback/tiles"] ?? [])]);
+ok(topTouch.length === 1 && topTouch[0].endsWith("#top"),
+  `a roof press writes the #top entry, never the tile's own (${topTouch.join(", ") || "nothing"})`);
+await p.evaluate(() => [...document.querySelectorAll(".world-cand .review-box .roofs button")][2].click());
+await p.evaluate(() => document.querySelector(".stage-flip").click());
+await p.waitForTimeout(800);
+const tBack = await p.evaluate(() => ({
+  view: document.querySelector(".tile-preview")?.dataset.view,
+  stars: !!document.querySelector(".world-cand .review-box .stars:not(.roofs)"),
+}));
+ok(tBack.view === "before" && tBack.stars,
+  `one more press is Before — and the stars rate the tile again (${tBack.view})`);
+
+// ---- THE LEDGER: what is actually left, before any art --------------------
+// Maintainer 2026-08-22: "The wiki is full with already reviewed stuff. I will
+// not review until everything is up to date."
+await p.goto(`${W}#/world`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const L = await p.evaluate(() => ({
+  present: !!document.querySelector(".ledger"),
+  pill: document.querySelector(".ledger .panel-title .pill")?.textContent ?? "",
+  lines: [...document.querySelectorAll(".ledger-line")].map((x) => x.textContent.replace(/\s+/g, " ").trim()),
+  jumps: [...document.querySelectorAll(".ledger-jump button")].map((x) => x.textContent.trim()),
+}));
+ok(L.present && L.lines.length === 3, `the World section opens with the ledger — tiles, rejections, tops (${L.lines.length} lines)`);
+const tileLine = L.lines.find((x) => x.startsWith("Tiles")) ?? "";
+const mNums = tileLine.match(/([\d,]+) of ([\d,]+) rated \((\d+)%\)/);
+const num = (x) => Number(String(x).replace(/,/g, ""));
+ok(!!mNums && num(mNums[1]) <= num(mNums[2]), `it counts rated against total off the LIVE manifest (${tileLine.slice(0, 46)}…)`);
+// The floor, not the round: 3,983 of 3,990 must never print 100%.
+ok(!!mNums && (num(mNums[1]) === num(mNums[2]) ? mNums[3] === "100" : Number(mNums[3]) < 100),
+  `and the percentage is FLOORED, so an unfinished set never reads 100% (${mNums?.[3]}%)`);
+const rejLine = L.lines.find((x) => x.startsWith("Your rejections")) ?? "";
+ok(/carried out|none outstanding/.test(rejLine),
+  `his rejections get a receipt — carried out vs still standing (${rejLine.slice(0, 54)}…)`);
+ok(L.lines.some((x) => x.startsWith("Tops")), "and the top review is counted as its own axis");
+ok(L.jumps.length > 0 && /Start on/.test(L.jumps.at(-1) ?? ""),
+  `with a press that lands ON the work — the biggest queue, opened in Textured (${L.jumps.join(" | ").slice(0, 60)})`);
 
 // ---- 3. TRANSITIONS: the tab and the demo page -----------------------------
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
@@ -470,13 +545,59 @@ const pubDetails = await pub.evaluate(() => {
   return { disabled: t2?.disabled ?? null, topBtns: document.querySelectorAll(".top-btn").length };
 });
 ok(pubDetails.disabled === true && pubDetails.topBtns === 0,
-  "the empty Details tab is disabled for a player, and there is no top-review machinery");
+  "the empty Details tab is disabled for a player, and no review machinery leaks to them");
 await pub.goto(`${W}#/world/transition/dark_mud__to__grass`, { waitUntil: "load" });
 await pub.waitForTimeout(2200);
 const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene canvas").length);
 ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
+// ---- THE RECOLOURING IS REAL, MEASURED OFF THE FILES ----------------------
+// The browser checks the wiring; this checks the PROMISE — "an alternative
+// postprocessing where the top texture is maintained, but still colored in the
+// correct tile palette". Same algorithm as wiki.js texSynth, run here on the
+// actual webp pairs: the flattened region must come back textured, and its
+// MEAN must land on the clean colour it replaced.
+const { decodeWebP } = await import("../lib/webp-pixels.mjs");
+const withRaw = (D.domains.world ?? []).flatMap((c) => c.candidates ?? []).filter((c) => c.raw && c.art).slice(0, 4);
+ok(withRaw.length >= 3, `there are tiles with both passes published to measure (${withRaw.length})`);
+let proofs = 0, kept = [], drift = [];
+for (const cand of withRaw) {
+  const A = decodeWebP(readFileSync(join(ROOT, cand.art)));
+  const R = decodeWebP(readFileSync(join(ROOT, cand.raw)));
+  if (!A || !R || A.w !== R.w || A.h !== R.h) continue;
+  const counts = new Map(); let opaque = 0;
+  for (let i = 0; i < A.pix.length; i++) {
+    if ((A.pix[i] >>> 24) < 200) continue; opaque++;
+    const k = A.pix[i] & 0xffffff; counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  const flat = [...counts.entries()].filter(([, n]) => n / opaque >= 0.15).sort((a, b) => b[1] - a[1])[0];
+  if (!flat) continue;                       // never flattened (parquet, pavings)
+  const [clean] = flat;
+  let n = 0, sr = 0, sg = 0, sb = 0;
+  for (let i = 0; i < A.pix.length; i++) {
+    if ((A.pix[i] >>> 24) < 200 || (A.pix[i] & 0xffffff) !== clean || (R.pix[i] >>> 24) < 200) continue;
+    n++; sr += (R.pix[i] >> 16) & 255; sg += (R.pix[i] >> 8) & 255; sb += R.pix[i] & 255;
+  }
+  if (!n) continue;
+  const out = new Set(); let mr = 0, mg = 0, mb = 0;
+  const cl = (x) => Math.max(0, Math.min(255, Math.round(x)));
+  for (let i = 0; i < A.pix.length; i++) {
+    if ((A.pix[i] >>> 24) < 200 || (A.pix[i] & 0xffffff) !== clean || (R.pix[i] >>> 24) < 200) continue;
+    const r = cl(((R.pix[i] >> 16) & 255) + ((clean >> 16) & 255) - sr / n);
+    const g = cl(((R.pix[i] >> 8) & 255) + ((clean >> 8) & 255) - sg / n);
+    const bl = cl((R.pix[i] & 255) + (clean & 255) - sb / n);
+    out.add((r << 16) | (g << 8) | bl); mr += r; mg += g; mb += bl;
+  }
+  proofs++;
+  kept.push(out.size);
+  drift.push(Math.max(Math.abs(mr / n - ((clean >> 16) & 255)), Math.abs(mg / n - ((clean >> 8) & 255)), Math.abs(mb / n - (clean & 255))));
+}
+ok(proofs >= 2 && kept.every((k) => k >= 6),
+  `the flattened region comes back TEXTURED — ${kept.join(", ")} distinct colours where the shipped tile has exactly 1`);
+ok(drift.length > 0 && drift.every((d) => d <= 1.5),
+  `and its mean lands ON the ground's clean colour, so a field still reads right from a distance (max drift ${Math.max(...drift).toFixed(2)}/255)`);
+
 await b.close();
 console.log(fails.length ? `\nGROUND-TYPE CHECKS FAILED (${fails.length})` : "\nALL GROUND-TYPE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

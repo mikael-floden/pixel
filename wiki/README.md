@@ -486,6 +486,98 @@ old reviews I have already rejected?"* Two fixes, one per half of the sentence:
   that art on the same rule. The wiki agent runs this after the tiles agent's
   regeneration waves.
 
+## Three passes, and the third one does not exist on disk
+
+Maintainer 2026-08-21, after the clean-colour switch still did not answer his
+question: *"We have 3 states here: A: Original tile data (before
+postprocessing) ... B: How the tile looks in the game today ... C: We don't
+show this but I want it. A hypothetical image to see how this tile/top WOULD
+have looked like if we didn't enforce a clean color on it. I'm not talking
+about before postprocessing, I'm talking about an alternative postprocessing
+where the top texture is maintained, but still colored in the correct tile
+palette."*
+
+**A** and **B** are files the tiles agent publishes (`*_before.webp`,
+`*_after.webp`). **C is not a file anywhere in the pipeline**, so the wiki
+synthesizes it per tile, in the browser (`texSynth` / `texFor`):
+
+1. Start from **After** — the shipped tile, palette-corrected wall, clean top.
+2. Find what the flattening painted: every colour covering **≥15%** of the
+   opaque pixels. A transition tile carries two grounds, so up to three regions
+   qualify; a tile the postprocess never flattened (parquet, the pavings —
+   `flat_top: false`) has none, and the synthesis correctly leaves it alone.
+3. On exactly those pixels, take the **raw** pixel and shift it per channel so
+   the region's **mean lands on the clean colour**.
+
+The texture survives 1:1 and the field still reads as the right ground from a
+distance, because its average *is* the ground's colour. Measured by the gate on
+real tile pairs: the flattened region comes back with **11–14 distinct colours
+where the shipped tile has exactly 1**, and the region's mean sits within
+**0.27/255** of the clean colour it replaced.
+
+Virtual paths carry it: `tex:<after>::<raw>` resolves through `loadImages` and
+`viewArtIn` to a synthesized canvas, so every existing composition — the 3×3
+fields, the promote modal, the Wang transition scenes — gets the pass for free.
+`isoScene` draws canvases and `<img>`s alike; `artNodeFor` covers the few
+places that show a tile outside a composition. Cached per art pair; if the raw
+art is missing or the canvas is tainted, it falls back to plain After, which is
+always true and never wrong.
+
+## The view IS the review — one rating row per card
+
+Same message: *"The current button and everything that expands when clicking on
+the 'review the top' should be removed (it's so confusing with two rating
+systems on the same card!). So what we will do instead is that IF the top is
+viewed the current rating system ... should target the top/details instead ...
+But instead of stars lets use something like a roof emoji ... And to make it
+even more clear you only review the top/ground right now it should be the
+center of 3x3 tiles (base tiles)."*
+
+`topReviewBlock` is deleted. A tile card now has **one** review row, and what
+it rates follows what the picture shows:
+
+| view | picture | the row rates |
+| --- | --- | --- |
+| After / Before | 3×3 field + cliff corner | the **tile** — ★ stars, "✕ redo" |
+| Textured | the top centred in a 3×3 of the ground's base tiles | the **top** — ⌂ roofs, "✕ not a detail", written to `<key>#top` |
+
+The per-tile chip cycles all three (`after → texture → before`) and hands
+`tileScenes` an `onView` callback so the row swaps with the picture — the
+rating can never target something other than what is on screen. The flip stays
+**per tile**: the other cards keep their stars and their cliffs, which is what
+makes it a comparison. `starsWidget` takes a `glyph`, so ⌂ inherits the stars'
+sizing and colours instead of fighting them.
+
+## The ledger — "is there anything left for me?"
+
+Maintainer 2026-08-22, refusing to continue: *"The wiki is full with already
+reviewed stuff. I will not review until everything is up to date."*
+
+He was right about what he saw and wrong about what it meant, and only because
+nothing here ever told him. Every page was full of reviewed tiles because he
+had **reviewed them all**: 3,983 of 3,990 rated, all 66 of his rejections
+already carried out by the tiles agent (the tiles are gone from the manifest),
+7 tiles left in one set. A queue you cannot see the end of looks exactly like a
+queue nobody is working.
+
+So `#/world` opens with `reviewLedgerPanel()`, counted live off the manifest and
+his own verdicts every time the page opens — never a cached number, never a
+claim:
+
+- **Tiles** — rated vs total, floored (never `100%` over unfinished work), plus
+  a press per set that turns the "no stars" filter on and lands him on exactly
+  what is left.
+- **Your rejections** — how many the agent has **carried out** (his verdict
+  names a tile that no longer exists; that orphan row is the receipt) against
+  any **still standing** (rejected, but the tile is still in the manifest). This
+  is the "is anyone acting on me" number.
+- **Tops** — the second axis, judged vs total, with a press that opens the
+  biggest queue in **Textured**.
+
+Note for whoever runs `prune-feedback.mjs` next: the orphan rejected rows *are*
+the receipt the ledger reads. Pruning them is not wrong, but it zeroes "carried
+out" — say so when you do it.
+
 ## The clean-colour top, and the switch that has to be everywhere
 
 Maintainer 2026-08-21, after hunting for it: *"I have browsed around on the

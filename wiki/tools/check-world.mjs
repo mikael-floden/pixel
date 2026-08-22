@@ -415,7 +415,9 @@ await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view
 await p.waitForTimeout(1000);
 const asRaw = await shot();
 console.log("before:", JSON.stringify(asRaw));
-ok(asRaw.mode[1] === "*Before", "the switch flips the whole set");
+const selOf = (m) => m.find((x) => x.startsWith("*")) ?? "";
+ok(selOf(asRaw.mode) === "*Before" && asRaw.mode.length === 3,
+  `the switch flips the whole set, and carries all three passes (${asRaw.mode.join(" ")})`);
 ok(asRaw.faces.every((f) => /_before\.webp$/.test(f ?? "")), "and every preview is rebuilt from the generator's raw output");
 ok(asRaw.portrait === "before", "the pair's own portrait follows — one truth per screen, never two");
 
@@ -425,7 +427,7 @@ await p.goto(`${W}#/world/${SIDES[1].top}/${SIDES[1].side}`, { waitUntil: "load"
 await p.waitForTimeout(2000);
 const nextPair = await shot();
 console.log("next pair:", JSON.stringify({ mode: nextPair.mode }));
-ok(nextPair.mode[1] === "*Before", "paging to the next pair keeps the mode");
+ok(selOf(nextPair.mode) === "*Before", "paging to the next pair keeps the mode");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 
@@ -448,25 +450,33 @@ const rest = await chips();
 console.log("chips:", JSON.stringify(rest.map((c) => `${c.label}/${c.view}`)));
 ok(rest.length > 1 && rest.every((c) => c.label), `every tile carries the switch on its own picture (${rest.length}/${rest.length})`);
 ok(rest.every((c) => c.view === "after"), "all of them starting on what the game gets");
+// ONE PRESS IS THE TEXTURED PASS now (2026-08-21) — the chip walks the same
+// three states the Show switch does: after → textured → before → after.
 await press(1);
-await p.waitForTimeout(900);
-const peek = await chips();
-console.log("after pressing tile 2:", JSON.stringify(peek.map((c) => `${c.label}/${c.face?.split("/").pop()}`)));
-ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
-  `pressing one tile's chip rebuilds THAT preview from the raw output (${peek[1].face?.split("/").pop()})`);
-ok(peek.filter((_, i) => i !== 1).every((c) => c.view === "after" && /_after\.webp$/.test(c.face ?? "")),
+await p.waitForTimeout(1200);
+const texPeek = await chips();
+console.log("after pressing tile 2:", JSON.stringify(texPeek.map((c) => `${c.label}/${c.view}`)));
+ok(texPeek[1].view === "texture" && String(texPeek[1].face ?? "").startsWith("tex:"),
+  `one press composes THAT tile from the synthesized textured top (${String(texPeek[1].face).slice(0, 22)}…)`);
+ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "after" && /_after\.webp$/.test(c.face ?? "")),
   "while the tiles beside it hold still — the difference he sees is the postprocess, not the page");
-ok(/before/.test(peek[1].label ?? ""), `and the chip says which of the two he is looking at (“${peek[1].label}”)`);
+ok(/textured/.test(texPeek[1].label ?? ""), `and the chip says which pass he is looking at (“${texPeek[1].label}”)`);
 await press(1);
-await p.waitForTimeout(900);
+await p.waitForTimeout(1000);
+const peek = await chips();
+ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
+  `a second press reaches the generator's raw output (${peek[1].face?.split("/").pop()})`);
+ok(/before/.test(peek[1].label ?? ""), `and the chip follows it (“${peek[1].label}”)`);
+await press(1);
+await p.waitForTimeout(1000);
 const backAgain = await chips();
-ok(backAgain[1].view === "after" && /_after\.webp$/.test(backAgain[1].face ?? ""), "pressing it again puts that tile back");
+ok(backAgain[1].view === "after" && /_after\.webp$/.test(backAgain[1].face ?? ""), "and a third puts that tile back");
 // THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "After" for the
 // set has to mean all of it, or a tile left on before would be read as one the
 // postprocess did nothing to.
 await press(0);
-await p.waitForTimeout(700);
-ok((await chips())[0].view === "before", "a peek can be left open on any tile");
+await p.waitForTimeout(900);
+ok((await chips())[0].view === "texture", "a peek can be left open on any tile");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(1400);
 const cleared = await chips();
