@@ -75,6 +75,35 @@ idle brief asks for space. The cost is that four requests can drift apart in key
 — which is precisely why the key is pinned in the brief AND verified by
 measurement, with a reroll on failure.
 
+## Crossing between suites: SILENCE, not a transition
+
+Maintainer 2026-08-08: *"Just make the game silent for a while for the player to
+take in the ocean and atmosphere. When the boat arrives the player won't even
+remember what key the old suite had."*
+
+This is the whole answer to inter-suite compatibility, and it is better than any
+musical solution: there IS no musical transition, so there is nothing to get
+wrong. Two suites never have to agree about anything.
+
+It is not real silence — the AMBIENCE keeps running (waves, wind, gulls, the
+boat). That is what makes it read as a deliberate held breath rather than as
+broken audio, and it is why the moment can be long without being boring.
+
+The one constraint is DURATION. A key lingers in memory for a surprisingly
+short time once nothing is reinforcing it; the crossing needs to be long enough
+that the old tonic is gone, and roughly fifteen seconds of non-musical sound
+does it. Anything shorter and the two suites are still in the same breath and
+the clash is audible. Anything longer is free — an ocean crossing can take a
+minute and feel like arrival rather than absence.
+
+    leaving   music fades out over ~3 s, ambience stays and opens up
+    crossing  ambience only, >= 15 s
+    arriving  the new suite starts on its ARRIVE pool, which then hands to
+              explore
+
+That gives `arrive` its real job: it is the first thing heard on the new island,
+so it establishes the new key before any explore phrase needs to make sense.
+
 ## What the engine needs
 
 Three numbers per suite, and everything else is choosing integers:
