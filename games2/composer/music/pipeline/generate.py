@@ -1349,6 +1349,21 @@ def main() -> int:
     # walks into a wall halfway through a suite.
     if which == "credits":
         s2 = requests.Session(); s2.headers.update({"xi-api-key": key})
+        # Print the RAW subscription payload as well as the parsed number. The
+        # first version of this probe said "unknown" because credits_remaining
+        # reads character_limit/character_count, while the quota REFUSAL speaks
+        # in "credits" — a different unit. Guessing the field name again would
+        # be the same mistake; show what the endpoint actually returns.
+        try:
+            r = s2.get(SUB_URL, timeout=60)
+            print(f"  /user/subscription -> {r.status_code}")
+            if r.status_code == 200:
+                d = r.json()
+                for k, v in sorted(d.items()):
+                    if isinstance(v, (int, float, str, bool)) or v is None:
+                        print(f"    {k}: {v}")
+        except Exception as e:  # noqa: BLE001 — a probe must never crash a run
+            print(f"  ! subscription lookup failed: {e}")
         rem = credits_remaining(s2)
         print(f"credits remaining: {rem if rem is not None else 'unknown'}")
         if rem:
