@@ -40,6 +40,9 @@ import numpy as np
 # do for a clean tile - the apex is a 2px flat - but the outline can be a pixel ragged.
 APEX_SLACK = 3
 
+# How far below the side corner the lower edge starts, making that corner 2px tall.
+CORNER_DROP = 1
+
 
 def corners(op):
     """(A, L, R, B) for the top face: apex, left, right, and the implied near corner.
@@ -91,11 +94,18 @@ def top_mask(op):
     inside = np.zeros((h, w), bool)
     above = np.zeros((h, w), bool)
     A2 = (A[0] + 1, A[1])             # the right half of the apex pair
+    # THE SIDE CORNERS ARE TWO PIXELS TALL, NOT ONE. The lower edges start a pixel below
+    # where the upper ones do: "When you draw a line from the left-most and right-most
+    # top pixel to the center. Start from 1px down vs you current start. This will give
+    # us 2px wide corner (looks better)." With both edges leaving the same pixel the
+    # corner comes to a single-pixel point, which reads as a nick rather than a corner.
+    L2 = (L[0], L[1] + CORNER_DROP)
+    R2 = (R[0], R[1] + CORNER_DROP)
     for x in range(L[0], R[0] + 1):
         # upper edge: L->A on the left of the apex, A2->R on its right
         ty = _edge(x, L, A) if x <= A[0] else _edge(x, A2, R)
-        # lower edge: L->B, then B->R
-        by = _edge(x, L, B) if x <= B[0] else _edge(x, B, R)
+        # lower edge: L2->B, then B->R2
+        by = _edge(x, L2, B) if x <= B[0] else _edge(x, B, R2)
         if by < ty:
             continue
         inside[ty:by + 1, x] = True
