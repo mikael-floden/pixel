@@ -617,6 +617,39 @@ ok(worstKeep >= 0.9,
 ok(textured === measured,
   `so every flattened top comes back with visible relief, not a colour count that only looks like one (${textured}/${measured})`);
 
+// ---- THE OVERHANG THAT SHIPPED IN THE WALL'S COLOUR ------------------------
+// Maintainer 2026-08-22, painting on a screenshot: "I have painted RED on the
+// overhang that should be deep_water, but currently is green/grass. I also
+// marked in purple what should be grass so you don't take too much."
+//
+// The card told him the opposite — "overhang 1.00" — because `overhang` counts
+// how much SPILLED, and all of it did; it just ships in the wall's palette.
+const { measureOverhang } = await import("../lib/overhang.mjs");
+const cellOf = (id) => (D.domains.world ?? []).find((c) => c.id === id);
+const his = cellOf("deep_water__over__grass");
+const healthy = cellOf("dark_mud__over__slime");
+ok(!!his && !!healthy, "both the reported cell and the one already repaired are in the wiki");
+const mHis = his && measureOverhang(ROOT, his.candidates[0].art, his.candidates[0].raw);
+const mOk = healthy && measureOverhang(ROOT, healthy.candidates[0].art, healthy.candidates[0].raw);
+ok(mHis && mHis.drawn >= 0.9 && mHis.kept <= 0.7,
+  `his tile: the generator draped the water over the cliff and the postprocess took it (drawn ${(mHis.drawn * 100).toFixed(0)}%, kept ${(mHis.kept * 100).toFixed(0)}%)`);
+ok(mOk && mOk.kept >= mOk.drawn - 0.05,
+  `while dark mud over slime — repaired once already — keeps its brim (drawn ${(mOk.drawn * 100).toFixed(0)}%, kept ${(mOk.kept * 100).toFixed(0)}%)`);
+// A SAME-MATERIAL TILE MUST NOT BE MEASURED AT ALL: "does the top drape over
+// the wall" is not a question about grass over grass, and answering it would
+// paint warnings across a third of the library.
+const same = cellOf("grass__over__grass");
+ok(same && measureOverhang(ROOT, same.candidates[0].art, same.candidates[0].raw) === null,
+  "and a same-over-same tile is not asked the question at all");
+// Published for the browser, keyed by the agent's own tile key.
+const fringe = (D.worldMeta ?? {}).fringe ?? {};
+ok(Object.keys(fringe).length > 500, `the measurement is published per tile for the live refresh to merge (${Object.keys(fringe).length} tiles)`);
+ok(String(fringe[his.candidates[0].key]) === "98,52", `including his (${fringe[his.candidates[0].key]})`);
+// Only a real LOSS is flagged. The agent's clarity would flag half the library.
+const flagged = Object.values(fringe).filter(([dr, kp]) => dr >= 60 && dr - kp >= 25).length;
+ok(flagged > 0 && flagged < Object.keys(fringe).length * 0.12,
+  `and the warning is rare enough to mean something — ${flagged} of ${Object.keys(fringe).length} tiles (${(flagged / Object.keys(fringe).length * 100).toFixed(1)}%)`);
+
 await b.close();
 console.log(fails.length ? `\nGROUND-TYPE CHECKS FAILED (${fails.length})` : "\nALL GROUND-TYPE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

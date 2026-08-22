@@ -492,6 +492,54 @@ old reviews I have already rejected?"* Two fixes, one per half of the sentence:
   that art on the same rule. The wiki agent runs this after the tiles agent's
   regeneration waves.
 
+## "overhang 1.00" on a tile whose overhang shipped as grass
+
+Maintainer 2026-08-22, painting on a screenshot of deep water over grass: *"I
+have painted RED on the overhang that should be deep_water, but currently is
+green/grass. I also marked in purple what should be grass so you don't take too
+much."*
+
+He had made this exact report once before, on dark mud over slime, and the
+tiles agent's `fix_left_wall.py` quotes it in its own source: *"The overhang
+should be brown, but the wall marked with blue should still be green."* That
+fix protects the brim on the cell it repairs — but it repairs one cell, and
+nothing measured whether the brim survived anywhere else.
+
+**The card had told him the opposite.** It printed `overhang 1.00`, which is
+true and useless: `overhang` counts how much of the top *spilled* over the
+edge, and every one of those pixels spilled — they just ship in the **wall's**
+colour. The agent also publishes `clarity` (its `fringe_clarity`: can the
+fringe be told apart from the wall at all?), and the wiki was not showing that
+either — but clarity alone is not the signal. Its median across cross-material
+tiles is **0.35**, and the cell he already had repaired scores **0.23–0.37**
+with a perfectly good brim. Flagging on it would paint half the library orange.
+
+So `wiki/lib/overhang.mjs` asks the question his red line asks, by comparing
+the two passes the agent already publishes:
+
+- **drawn** — share of the 6-row brim under the top's edge that reads as the
+  **top** material in the BEFORE pass;
+- **kept** — share of those same pixels that still do in the AFTER pass.
+
+Both are measured against anchors taken from that tile's own pixels *in that
+pass* (the top face for "top", the wall well below the brim for "wall"), so
+nothing depends on a palette file or on the two passes sharing colours. Same-
+over-same tiles cannot answer the question and are excluded by construction.
+
+| cell | drawn | kept |
+| --- | --- | --- |
+| deep water over grass (his) | 98% | **52%** |
+| dark mud over slime (repaired) | 87% | 96% |
+
+The card now carries `brim 52% kept of 98% drawn`, red when the generator
+clearly draped it (`drawn ≥ 60%`) and the postprocess took ≥25 points of it —
+**72 of 3,548 tiles, 2.0%**. `clarity` sits beside it, unstyled, for the cases
+where the two materials were drawn as one and no postprocess can separate them.
+
+Measured for every tile on every build (~3s for 3,690), keyed by the agent's
+own tile key so the admin's live-manifest refresh merges it in without decoding
+anything in the browser.
+
 ## Three passes, and the third one does not exist on disk
 
 Maintainer 2026-08-21, after the clean-colour switch still did not answer his

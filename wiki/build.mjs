@@ -27,6 +27,7 @@ import { execSync } from "node:child_process";
 // the image shipped the last COMMITTED data.json instead of one built from its
 // own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
 import { contentBounds, decodeWebP } from "./lib/webp-pixels.mjs";
+import { measureOverhang } from "./lib/overhang.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -521,6 +522,7 @@ function buildCharacters() {
  * 2.0's `tiles2/…` cannot collide even though they share the file.
  */
 function buildWorld() {
+  const fringeByKey = {};
   const base = join(ROOT, "tiles");
   if (!isDir(base)) return null;
   const review = readJson(join(base, "review", "manifest.json"));
@@ -555,6 +557,10 @@ function buildWorld() {
         // over rock" is trying to achieve — and the flat colour the top
         // settled on.
         overhang: c.overhang ?? null,
+        // The agent's own fringe_clarity — how decisively the spilled fringe
+        // can be told apart from the wall it landed on. Published all along;
+        // the card just never showed it.
+        clarity: c.clarity ?? null,
         paletteTop: c.palette_top ?? null,
         tileId: c.tile_id ?? null,
         style: c.style ?? null,
@@ -572,6 +578,13 @@ function buildWorld() {
       // cannot disturb a review. Mirrored in wiki.js for the live refresh.
       .sort((a, b2) => (b2.wallScore ?? -Infinity) - (a.wallScore ?? -Infinity));
     if (!cands.length) continue;
+    // DID THE BRIM SURVIVE THE POSTPROCESS? Measured here, keyed by the tile's
+    // own key, so the ADMIN's live-manifest refresh can merge it in without
+    // decoding anything in the browser.
+    for (const c of cands) {
+      const m = measureOverhang(`${ROOT}/`, c.art, c.raw);
+      if (m) fringeByKey[c.key] = [Math.round(m.drawn * 100), Math.round(m.kept * 100)];
+    }
     cells.push({
       id,
       // "Grass over Black rock" — the pair, in the order the agent names it:
@@ -680,6 +693,8 @@ function buildWorld() {
     }
   }
   worldMeta = {
+    // key -> [drawn %, kept %] — see wiki/lib/overhang.mjs.
+    fringe: fringeByKey,
     // What the agent measures a candidate against, published so the page can
     // say WHY something ranks where it does instead of showing bare numbers.
     accept: cfg.accept ?? null,
