@@ -658,6 +658,150 @@ TRACKS: dict[str, dict] = {
             "or last."
         ),
     },
+    # ---- SUITE v2: NANGIJALA, the home island -------------------------------
+    # The clean slate (maintainer 2026-08-08, "I love D-dur! Let's go!"), built
+    # to games2/composer/MUSIC_DESIGN.md. A SUITE is the compatibility group:
+    # one key, one tempo, one bar length, so every pool in it can cross-fade,
+    # layer and switch ON THE BEAT. Other islands get their own suite in their
+    # own key — you only cross between suites at a boat ride, where the music
+    # stops and the ambience carries it, so two suites never have to agree.
+    #
+    #   D major, 140 BPM, 8 bars = 13.714 s per phrase
+    #   explore 12 / idle 4 / combat 6 / arrive 2 = 24 phrases, 329 s
+    #
+    # 140 is faster than it feels: the calm pools are written HALF-TIME (long
+    # notes over a quick pulse), which is what lets combat share the tempo and
+    # therefore start on the next beat rather than cross-fading over the top.
+    # Combat's urgency is DENSITY, never speed — a tempo change is exactly what
+    # makes two phrases un-joinable.
+    # the DEFAULT pool, heard more than everything else in the game combined
+    "nang_explore": {
+        "out": "nang_explore",
+        "seconds": 165,
+        "bpm": 140,
+        "phrase_ms": 13714,
+        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+        "harmony": "the same warm four-chord cycle in D major under every phrase",
+        "foregrounds": [
+            "flute carries the melody",
+            "tin whistle carries the melody",
+            "fiddle carries the melody",
+            "warm horn carries the melody",
+            "strummed lute and harp carry it lightly",
+            "strings carry it alone, wide and calm",
+            "whistle and fiddle trade the phrase",
+            "harp and plucked bass alone, sparse",
+        ],
+        "prompt": (
+            "A warm pastoral fantasy theme for walking a green home valley — meadows,"
+            " cherry orchards, a village over the hill. HALF-TIME FEEL: the pulse run"
+            "s at 140 BPM underneath but the melody moves in long unhurried notes, so"
+            " it reads as calm and walking, never rushed. A hopeful hummable folk mel"
+            "ody on flute, tin whistle and fiddle answered by a warm horn, over strum"
+            "med lute, harp and soft plucked bass, with light brushed percussion. Gen"
+            "erous, uncomplicated and completely unfatiguing — this must still be lov"
+            "ely on the two hundredth pass. Written as INTERCHANGEABLE 8-BAR PHRASES "
+            "that can be played in ANY ORDER: D major and 140 BPM from first bar to l"
+            "ast, the same repeating chord cycle under every phrase, each phrase star"
+            "ting cleanly on the downbeat and resolving by its final bar so any phras"
+            "e can follow any other. The variety is in the FOREGROUND — which instrum"
+            "ent carries the line and how busy it is — never in the harmony. No intro"
+            ", no build, no climax, no ending, no fade in or out: every phrase is equ"
+            "ally at home first or last. Instrumental."
+        ),
+    },
+    # standing still — the melody steps back, the place keeps breathing
+    "nang_idle": {
+        "out": "nang_idle",
+        "seconds": 55,
+        "bpm": 140,
+        "phrase_ms": 13714,
+        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+        "harmony": "the same warm four-chord cycle in D major under every phrase",
+        "foregrounds": [
+            "sustained strings alone",
+            "slow harp figure over strings",
+            "distant flute holding long notes",
+            "harp and light bells, very sparse",
+        ],
+        "prompt": (
+            "The same warm pastoral valley, but STILL: the player has stopped walking"
+            ". HALF-TIME FEEL at 140 BPM with even fewer notes — the melody steps bac"
+            "k and the harmony, the air and the texture carry it. Sustained warm stri"
+            "ngs, a slow harp figure, a distant flute holding single long notes, soft"
+            " room tone. Peaceful and patient and content, the sound of standing some"
+            "where you like and looking around. Written as INTERCHANGEABLE 8-BAR PHRA"
+            "SES that can be played in ANY ORDER: D major and 140 BPM from first bar "
+            "to last, the same repeating chord cycle under every phrase, each phrase "
+            "starting cleanly on the downbeat and resolving by its final bar so any p"
+            "hrase can follow any other. The variety is in the FOREGROUND — which ins"
+            "trument carries the line and how busy it is — never in the harmony. No i"
+            "ntro, no build, no climax, no ending, no fade in or out: every phrase is"
+            " equally at home first or last. Instrumental."
+        ),
+    },
+    # a fight — SAME key and tempo, urgency comes from density
+    "nang_combat": {
+        "out": "nang_combat",
+        "seconds": 82,
+        "bpm": 140,
+        "phrase_ms": 13714,
+        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+        "harmony": "the same warm four-chord cycle in D major under every phrase",
+        "foregrounds": [
+            "low strings drive the ostinato",
+            "frame drums and toms drive it, strings holding",
+            "brass stabs carry the line",
+            "high strings carry the urgent line",
+            "full ensemble together",
+            "percussion and bass alone, tense",
+        ],
+        "prompt": (
+            "The same valley in DANGER — monsters closing in. Identical key and tempo"
+            " to the calm music, but the DENSITY doubles: frame drums and low toms en"
+            "ter and drive, the strings play an urgent running ostinato instead of lo"
+            "ng notes, brass and low strings stab on the beat, the bass moves. Heroic"
+            " and thrilling and winnable rather than horrifying, never harsh or scree"
+            "ching. The energy comes from how MUCH is happening, never from playing f"
+            "aster. Written as INTERCHANGEABLE 8-BAR PHRASES that can be played in AN"
+            "Y ORDER: D major and 140 BPM from first bar to last, the same repeating "
+            "chord cycle under every phrase, each phrase starting cleanly on the down"
+            "beat and resolving by its final bar so any phrase can follow any other. "
+            "The variety is in the FOREGROUND — which instrument carries the line and"
+            " how busy it is — never in the harmony. No intro, no build, no climax, n"
+            "o ending, no fade in or out: every phrase is equally at home first or la"
+            "st. Instrumental."
+        ),
+    },
+    # stepping ashore — the first thing heard on the island, establishes D major
+    "nang_arrive": {
+        "out": "nang_arrive",
+        "seconds": 27,
+        "bpm": 140,
+        "phrase_ms": 13714,
+        "key_line": "stays in D major for the entire piece, home note D, one constant tempo of 140 BPM",
+        "harmony": "the same warm four-chord cycle in D major under every phrase",
+        "foregrounds": [
+            "open horn and strings, wide and welcoming",
+            "flute answers over harp and lute",
+        ],
+        "prompt": (
+            "ARRIVING somewhere beautiful after a long crossing — stepping off a boat"
+            " onto a green island in the sun. It BEGINS IMMEDIATELY and states the ho"
+            "me chord clearly and warmly in the first bar, so the ear knows where it "
+            "is. A generous open horn and strings gesture answered by flute, over har"
+            "p and lute. Welcoming, hopeful, a little moved — the feeling of having g"
+            "ot somewhere good. It settles rather than finishes, handing over to the "
+            "calm walking music. Written as INTERCHANGEABLE 8-BAR PHRASES that can be"
+            " played in ANY ORDER: D major and 140 BPM from first bar to last, the sa"
+            "me repeating chord cycle under every phrase, each phrase starting cleanl"
+            "y on the downbeat and resolving by its final bar so any phrase can follo"
+            "w any other. The variety is in the FOREGROUND — which instrument carries"
+            " the line and how busy it is — never in the harmony. No intro, no build,"
+            " no climax, no ending, no fade in or out: every phrase is equally at hom"
+            "e first or last. Instrumental."
+        ),
+    },
     # The emotional centre: the spawn bonfire, where the player is safe. Small
     # and intimate on purpose — the smallest music in the game.
     "home": {
@@ -751,8 +895,16 @@ def plan_sections(plan: dict) -> list[dict]:
 # foreground. The API still supplies the plan OBJECT (so the schema is always
 # valid); we only impose the shape.
 def phrase_plan(plan: dict | None, length_ms: int, phrase_ms: int,
-                harmony: str, foregrounds: list[str]) -> dict | None:
-    """Equal, bar-aligned phrases over one shared chord cycle."""
+                harmony: str, foregrounds: list[str], key_line: str = "") -> dict | None:
+    """Equal, bar-aligned phrases over one shared chord cycle, in ONE key.
+
+    `key_line` is the fix for v1.1's failure. Describing the harmony once in a
+    section style and hoping produced beds that held their key in 2 of 15
+    phrases (summit_seq) and 8 of 15 (day_seq). The key now goes in the plan's
+    GLOBAL styles AND at the head of every section, stated positively ("stays
+    in D major throughout") rather than as a prohibition — negative prompts
+    weight the very words they forbid, which this pipeline learned the hard
+    way and documents at the top of the file."""
     if not plan or not isinstance(plan, dict):
         return plan
     secs = plan.get("sections") or plan.get("sectionS") or []
@@ -770,12 +922,15 @@ def phrase_plan(plan: dict | None, length_ms: int, phrase_ms: int,
         sec[key_name] = f"Phrase {i + 1}"
         sec[key_dur] = phrase_ms
         # Harmony first and identical everywhere; foreground rotates.
-        sec[key_pos] = [harmony, foregrounds[i % len(foregrounds)],
+        sec[key_pos] = [x for x in (key_line, harmony, foregrounds[i % len(foregrounds)],
                         "same key throughout", "same tempo throughout",
-                        "starts on the downbeat", "self-contained phrase"]
+                        "starts on the downbeat", "self-contained phrase") if x]
         out.append(sec)
     plan = dict(plan)
     plan["sections"] = out
+    if key_line:
+        gk = "positive_global_styles" if "positive_global_styles" in plan else "positiveGlobalStyles"
+        plan[gk] = [key_line, *(plan.get(gk) or [])]
     return plan
 
 
@@ -941,7 +1096,8 @@ def build_track(session: requests.Session, name: str, spec: dict, seconds: int |
     # intro/build/outro shape, which is exactly what cannot be shuffled.
     if spec.get("phrase_ms"):
         plan = phrase_plan(plan, length_ms, spec["phrase_ms"],
-                           spec["harmony"], spec["foregrounds"])
+                           spec["harmony"], spec["foregrounds"],
+                           spec.get("key_line", ""))
     sections = plan_sections(plan) if plan else []
     if sections:
         print("  plan:", ", ".join(f"{s['name']}:{s['duration_ms'] / 1000:.0f}s" for s in sections))
