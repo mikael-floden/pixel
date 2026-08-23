@@ -1814,9 +1814,25 @@ const benchEngine = {
     this.buffers.set(takeId, p);
     return p;
   },
-  /** Is every take this order needs already decoded? */
+  /** Decode everything this order needs and put it in `ready`.
+   *
+   *  A SWITCH MUST NOT DECODE. Measured 2026-08-22: computing the beat
+   *  boundary and THEN awaiting a 2 MB decode inside the same handler put the
+   *  cut a whole phrase late — the scheduler kept booking the old order while
+   *  the await sat there, and "next beat" landed 62.7 beats out instead of on
+   *  the next one. So the audio is warm before the clock is ever read. */
   async warm(order) {
-    await Promise.all([...new Set(order.map((x) => x.takeId))].map((id) => this.buffer(id)));
+    this.ready ??= new Map();
+    const ids = [...new Set(order.map((x) => x.takeId))];
+    await Promise.all(ids.map(async (id) => {
+      const b = await this.buffer(id);
+      if (b) this.ready.set(id, b);
+    }));
+  },
+  /** Is this order playable RIGHT NOW, with no decode in the way? */
+  isWarm(order) {
+    this.ready ??= new Map();
+    return order.every((x) => this.ready.has(x.takeId));
   },
   slice(item) {
     const take = benchTake(item.takeId);
@@ -1869,12 +1885,9 @@ const benchEngine = {
   async start(deckKey, order, at) {
     const d = this.decks[deckKey];
     const ctx = this.ac();
-    this.ready ??= new Map();
-    await this.warm(order);
-    for (const id of new Set(order.map((x) => x.takeId))) {
-      const b = await this.buffer(id);
-      if (b) this.ready.set(id, b);
-    }
+    // Only ever awaits on a COLD start (the first press). A switch pre-warms,
+    // so this returns without yielding and `at` is met to the sample.
+    if (!this.isWarm(order)) await this.warm(order);
     d.order = order.slice();
     d.cursor = 0;
     d.nextAt = Math.max(at ?? 0, ctx.currentTime + 0.05);
@@ -1889,9 +1902,12 @@ const benchEngine = {
   cut(deckKey, when) {
     const d = this.decks[deckKey];
     for (const s of d.live) {
-      try { if (s.at >= when) s.src.stop(when); else if (s.end > when) s.src.stop(when); } catch { /* already done */ }
+      try { if (s.at >= when || s.end > when) s.src.stop(when); } catch { /* already done */ }
     }
-    d.live = d.live.filter((x) => x.at < when);
+    // A CUT SHORTENS THE RECORD TOO. Leaving `end` at its original value left
+    // the scheduler believing two phrases were still sounding, so it deferred
+    // the replacement instead of booking it at the cut.
+    d.live = d.live.filter((x) => x.at < when).map((x) => ({ ...x, end: Math.min(x.end, when) }));
   },
   stop(deckKey) {
     const d = this.decks[deckKey];
@@ -1910,14 +1926,18 @@ const benchEngine = {
     const cur = d.live.find((x) => x.at <= ctx.currentTime && x.end > ctx.currentTime);
     const from = cur ? cur.at : ctx.currentTime;
     const n = Math.ceil((ctx.currentTime + 0.06 - from) / beat);
-    return from + n * beat;
+    const at = from + n * beat;
+    this.lastSwitch = { mode: "beat", bpm, beat, from, now: ctx.currentTime, n, at };
+    return at;
   },
   /** The end of the phrase now sounding — a calm transition. */
   nextPhraseAt(deckKey) {
     const ctx = this.ac();
     const d = this.decks[deckKey];
     const cur = d.live.find((x) => x.at <= ctx.currentTime && x.end > ctx.currentTime);
-    return cur ? cur.end : ctx.currentTime + 0.05;
+    const at = cur ? cur.end : ctx.currentTime + 0.05;
+    this.lastSwitch = { mode: "phrase", from: cur?.at ?? null, now: ctx.currentTime, at };
+    return at;
   },
   setDuck(v) {
     this.duck = v;
@@ -2354,6 +2374,9 @@ function viewBench() {
           const t = benchTrack(dk.trackId);
           dk.order = t ? benchNatural(t.takes.find((k) => k.live) ?? t.takes[0]) : [];
           benchUI.pick = null;
+          // Start the decode the moment a bed is chosen, so the switch that
+          // follows is a clock decision and nothing else.
+          if (dk.order.length) { benchEngine.ac(); benchEngine.warm(dk.order); }
           paint();
         };
         return sel;
@@ -2494,6 +2517,9 @@ function viewBench() {
           if (!t2) { toast("Pick a bed on deck B first."); return; }
           const order = d2.order.length ? d2.order.slice() : benchNatural(t2.takes.find((k) => k.live) ?? t2.takes[0]);
           const mode = benchUI.mode;
+          // WARM BEFORE READING THE CLOCK — see benchEngine.warm.
+          benchEngine.ac();
+          if (!benchEngine.isWarm(order)) { toast("Decoding that bed…"); await benchEngine.warm(order); }
           if (mode === "cross") {
             // A SUITE CROSS IS SILENCE, not a transition (the brief's own rule).
             const end = benchEngine.fadeOut("a", 0.6);
@@ -2504,9 +2530,17 @@ function viewBench() {
             const at = mode === "beat" ? benchEngine.nextBeatAt("a", bpm)
               : mode === "phrase" ? benchEngine.nextPhraseAt("a")
                 : benchEngine.ac().currentTime + 0.02;
+            if (mode === "instant") benchEngine.lastSwitch = { mode: "instant", now: benchEngine.ac().currentTime, at };
             benchEngine.cut("a", at);
             benchEngine.stop("b");
+            const mark = benchPlays.length;
             await benchEngine.start("a", order, at);
+            const first = benchPlays[mark];
+            const dA = benchEngine.decks.a;
+            benchEngine.lastSwitch = { ...(benchEngine.lastSwitch ?? {}), booked: first?.at ?? null, bookedTake: first?.take ?? null,
+              dbg: { playing: dA.playing, orderN: dA.order.length, nextAt: dA.nextAt, cursor: dA.cursor,
+                inFlight: dA.live.length, ready: [...(benchEngine.ready?.keys() ?? [])].length,
+                haveAll: order.every((x) => benchEngine.ready?.has(x.takeId)) } };
           }
           benchUI.deck.a.trackId = d2.trackId;
           benchUI.deck.a.order = order;
