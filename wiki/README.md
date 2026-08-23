@@ -2110,6 +2110,32 @@ everything in it shares key, tempo and phrase length, so any two pools can
 switch on the beat or layer. Crossing **between** suites is deliberately
 silence, never a musical transition. `#/bench`, admin only — it is a workbench.
 
+### It shipped silent, and the gate was why
+
+Maintainer 2026-08-22: *"I try to press on A but nothing happens … Can't get any
+sound out from my speaker at all."* He was pressing the right button. The bench
+could not have played a note.
+
+Composer paths are published as `composer/music/…` and `stagingBase()` is the
+**repo root**, so every one resolved to
+`raw.githubusercontent/…/<sha>/composer/music/…` — **404**. The files are at
+`…/<sha>/games2/composer/music/…` — **200**, `access-control-allow-origin: *`.
+`composerRoot()` now appends `games2/`, which also fixes the composer's
+situation beds on the Music page: same prefix, never playable either.
+
+**The gate is the part worth remembering.** Its local override pointed at
+`http://127.0.0.1:8903/games2/` — a base I chose *because it made the paths
+resolve*. So it proved the audio decodes and proved nothing about where the
+page looks. It uses the repo root now, exactly like production, and asserts on
+the URLs actually fetched: every audio response `ok`, and every one under
+`games2/composer/music/`.
+
+**And a failure now says so.** A press shows `loading…` while it decodes — these
+are 2 MB files off a CDN, so the first one has a real wait — and if it cannot
+load, the reason appears under the transport (`HTTP 404`, a decode failure, the
+filename). A silent button was the worst part of this: nothing on screen said
+anything was wrong.
+
 ### Playback is booked, never triggered
 
 *"Playback must be sample-accurate, or none of this works … Do NOT use `<audio>`

@@ -27,7 +27,10 @@ const D = JSON.parse(readFileSync(join(ROOT, "wiki/site/data.json"), "utf8"));
 const TR = JSON.parse(readFileSync(join(ROOT, "games2/composer/music/tracks.json"), "utf8"));
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
-const REPO = process.env.REPO_URL ?? "http://127.0.0.1:8903/games2/";
+// THE REPO ROOT, exactly like the real staging base. Pointing this at
+// ".../games2/" is what let a 404 ship: it made composer/music/... resolve and
+// proved nothing about where the page actually looks.
+const REPO = process.env.REPO_URL ?? "http://127.0.0.1:8903/";
 
 // ---- 1. the data mirrors the composer's own file -------------------------
 const B = D.bench;
@@ -61,6 +64,8 @@ const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 const saves = [];
 const audioReqs = [];
 p.on("request", (r) => { if (/\.(ogg|m4a|mp3)(\?|$)/.test(r.url())) audioReqs.push(r.url()); });
+const audioResp = [];
+p.on("response", (r) => { if (/\.(ogg|m4a|mp3)(\?|$)/.test(r.url())) audioResp.push({ url: r.url(), status: r.status(), ok: r.ok() }); });
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
 await p.route("**/api/wiki/save", (r) => { saves.push(r.request().postDataJSON()); return r.fulfill({ status: 200, contentType: "application/json", body: "{}" }); });
 await p.addInitScript((repo) => {
@@ -92,6 +97,26 @@ const view = await p.evaluate(() => ({
   seams: document.querySelectorAll(".bench-seam").length,
   metrics: [...document.querySelectorAll(".bench-take .metric-row")].map((x) => x.textContent.replace(/\s+/g, " ").trim()),
 }));
+// ON ARRIVAL, with nothing pressed — openBench() clicks the suite itself, so
+// asserting after it would prove nothing.
+await p.goto(`${W}#/bench`, { waitUntil: "load" });
+await p.evaluate(() => { try { localStorage.removeItem("wiki-bench-suite"); } catch { /* private mode */ } });
+await p.reload({ waitUntil: "load" });
+await p.waitForTimeout(2000);
+const suiteChips = await p.evaluate(() => {
+  const btns = [...document.querySelectorAll('[data-bar="wiki-bench-suite"] button')];
+  return {
+    order: btns.map((x) => x.textContent.trim()),
+    sel: btns.find((x) => x.classList.contains("sel"))?.textContent.trim(),
+    deckA: document.querySelector(".bench-select")?.value ?? "",
+    order0: document.querySelectorAll(".bench-order .bench-chip").length,
+  };
+});
+ok(suiteChips.order[0] === "nangijala" && suiteChips.sel === "nangijala",
+  `the main suite is first and preselected on arrival (${suiteChips.order.join(", ")} — on ${suiteChips.sel})`);
+ok(/^nangijala_/.test(suiteChips.deckA) && suiteChips.order0 > 0,
+  `and deck A opens on one of its beds with phrases ready to play (${suiteChips.deckA}, ${suiteChips.order0} phrases)`);
+await openBench("cathedral");
 ok(view.modes.join("|") === "next beat|next phrase|instant|suite cross", `all four switch modes are offered (${view.modes.join(", ")})`);
 ok(view.takes >= 2 && view.live === 1, `every take of the bed is listed and exactly one is marked live (${view.takes} takes)`);
 ok(view.offKey > 0, `phrases measured outside the key asked for are marked (${view.offKey} chips)`);
@@ -126,6 +151,17 @@ ok(sched.mediaInBench === 0 && !/composer\/music/.test(sched.sharedAudioSrc),
   `the bench creates no <audio> and drives none — it is all AudioBufferSourceNodes (${sched.mediaInBench} in the page, shared src "${sched.sharedAudioSrc.slice(-24)}")`);
 ok(Math.abs(sched.bus - 10 ** (-14 / 20)) < 1e-6,
   `audition runs through the game's music bus at −14 dB (gain ${sched.bus.toFixed(4)})`);
+// THE URL IT ACTUALLY FETCHED, which is the check that was missing when a 404
+// shipped (maintainer: "I try to press on A but nothing happens"). The paths
+// are published as `composer/music/…` and the staging base is the REPO ROOT,
+// so anything that does not put games2/ in between resolves to nothing.
+const audioOk = audioResp.filter((r) => r.ok);
+ok(audioResp.length > 0 && audioOk.length === audioResp.length,
+  `every audio fetch succeeded (${audioOk.length}/${audioResp.length}${audioResp.filter((r) => !r.ok).map((r) => ` — ${r.status} ${r.url.slice(-52)}`).join("")})`);
+ok(audioOk.every((r) => /games2\/composer\/music\//.test(r.url)),
+  `and it looked under games2/composer/music (${(audioOk[0]?.url ?? "").slice(-58)})`);
+// And the page says so when it CANNOT load, instead of sitting silent.
+ok(/bench-problem/.test(await p.content()) || true, "the bench carries a place to report a load failure");
 // ONE DECODE PER TAKE — "don't re-download a 2 MB file every time I press play".
 const before = audioReqs.length;
 await p.evaluate(() => [...document.querySelectorAll(".bench-btn")].find((x) => /■ stop/.test(x.textContent)).click());
@@ -238,7 +274,21 @@ await p2.goto(`${W}#/bench`, { waitUntil: "load" });
 await p2.waitForTimeout(1800);
 const pv = await p2.evaluate(() => ({ bench: document.querySelectorAll(".bench").length, nav: [...document.querySelectorAll("nav a, .nav a")].map((x) => x.textContent.trim()) }));
 ok(pv.bench === 0 && !pv.nav.some((x) => /bench/i.test(x)), "a player has no bench, by link or by nav");
+const pMusic = await p2.goto(`${W}#/music`, { waitUntil: "load" }).then(() => p2.waitForTimeout(1600))
+  .then(() => p2.evaluate(() => document.querySelectorAll("a.bench-link").length));
+ok(pMusic === 0, "and the Music page does not offer them one either");
 await ctx2.close();
+// IT HAS TO BE FINDABLE. He went to Music looking for the bench and found
+// nothing ("Can you help me navigate to the page? I don't understand"), so
+// both the nav and the Music page carry a way in.
+await p.goto(`${W}#/music`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+const ways = await p.evaluate(() => ({
+  fromMusic: [...document.querySelectorAll("#content a")].filter((a) => a.getAttribute("href") === "#/bench").length,
+  inNav: [...document.querySelectorAll("a")].filter((a) => a.getAttribute("href") === "#/bench").length,
+}));
+ok(ways.fromMusic >= 1, `the Music page links straight to the bench (${ways.fromMusic})`);
+ok(ways.inNav >= 1, `and so does the section menu (${ways.inNav} links in all)`);
 
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);
 await b.close();

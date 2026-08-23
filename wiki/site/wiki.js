@@ -37,7 +37,24 @@ let ROOT = new URL("../../", location.href);
 let composerBase = null;
 async function composerRoot() {
   if (composerBase) return composerBase;
-  composerBase = (await stagingSha().then((sha) => stagingBase(sha))) ?? ROOT;
+  /* THE COMPOSER LIVES UNDER games2/, and this forgot to say so (maintainer
+   * 2026-08-22, on the music bench: "I try to press on A but nothing happens").
+   *
+   * Paths published for the composer are `composer/music/…`, and the staging
+   * base is the REPO ROOT — so every one of them resolved to
+   * raw.githubusercontent/…/<sha>/composer/music/… and answered 404, where the
+   * file is at …/<sha>/games2/composer/music/…. Verified against the CDN: the
+   * first is 404, the second 200 with access-control-allow-origin: *.
+   *
+   * It is not only the bench: the composer's situation beds on the Music page
+   * carry the same prefix and have never been playable in production either.
+   *
+   * MY GATE HID IT. The local override pointed at `…/8903/games2/`, which I
+   * chose because it made the paths work — so the test proved the audio decodes
+   * and proved nothing about where the page looks for it. The override is the
+   * repo root now, exactly like the real base. */
+  const base = (await stagingSha().then((sha) => stagingBase(sha))) ?? ROOT;
+  composerBase = new URL("games2/", base);
   return composerBase;
 }
 
@@ -1772,6 +1789,7 @@ function benchDeck(name) {
 const benchEngine = {
   ctx: null, bus: null, timer: null,
   buffers: new Map(),                     // takeId -> Promise<AudioBuffer|null>
+  errors: new Map(),                      // takeId -> why it could not be loaded
   decks: { a: benchDeck("a"), b: benchDeck("b") },
   duck: 0.25,                             // deck B's gain (the −75% default)
   onChange: null,                         // the page repaints from engine state
@@ -1801,14 +1819,22 @@ const benchEngine = {
     const take = benchTake(takeId);
     const cands = take ? [take.files?.ogg, take.files?.m4a, take.files?.mp3].filter(Boolean) : [];
     const p = (async () => {
+      const why = [];
       for (const rel of cands) {
+        const url = rel.startsWith("composer/") ? await composerUrl(rel) : assetUrl(rel);
         try {
-          const r = await fetch(rel.startsWith("composer/") ? await composerUrl(rel) : assetUrl(rel));
-          if (!r.ok) continue;
+          const r = await fetch(url);
+          if (!r.ok) { why.push(`${String(url).split("/").pop()} → HTTP ${r.status}`); continue; }
           const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
           if (buf) return buf;
-        } catch { /* next format */ }
+          why.push(`${String(url).split("/").pop()} → could not be decoded`);
+        } catch (e) {
+          why.push(`${String(url).split("/").pop()} → ${String(e.message ?? e).slice(0, 60)}`);
+        }
       }
+      // A SILENT FAILURE IS THE WORST OUTCOME: he pressed play and nothing
+      // happened, with nothing on screen to say why. Keep the reason.
+      this.errors.set(takeId, why.join("; ") || "no audio file published for this take");
       return null;
     })();
     this.buffers.set(takeId, p);
@@ -2332,7 +2358,13 @@ const benchFbId = (kind, trackId, takeId, idx) =>
 function viewBench() {
   const B = benchData();
   if (!B?.tracks?.length) return h("p", {}, "The composer has not published a phrase score yet.");
-  const suites = Object.values(B.suites ?? {});
+  /* THE MAIN SUITE LEADS AND OPENS SELECTED (maintainer 2026-08-22: "The
+   * nangijala suites should be first and preselected"). Ordered by how many
+   * beds each holds — nangijala 24, hole 6 — so the suite the game mostly
+   * plays is the one the bench opens on, and a third suite lands in the right
+   * place on its own without a name being hard-coded here. */
+  const suites = Object.values(B.suites ?? {})
+    .sort((a, b2) => benchTracksIn(b2.id).length - benchTracksIn(a.id).length || a.id.localeCompare(b2.id));
   benchUI.suite ??= (suites[0]?.id ?? B.tracks[0].suite);
   // READ THE SUITE EVERY PAINT, never once. Captured as consts, these went
   // stale the moment a suite chip was pressed: the picker kept offering the
@@ -2357,6 +2389,15 @@ function viewBench() {
   // The engine repaints the transport as phrases are booked, WITHOUT rebuilding
   // the page — a rebuild mid-audition would fight his thumb.
   const nowLine = h("div", { class: "bench-now muted" });
+  // Why nothing is sounding, when nothing is sounding.
+  const problemLine = h("div", { class: "bench-problem" });
+  function benchProblem(order) {
+    const bad = [...new Set(order.map((x) => x.takeId))].filter((id) => !benchEngine.ready?.has(id));
+    problemLine.replaceChildren(...(bad.length
+      ? [h("span", { class: "pill err" }, "no audio"),
+        h("span", {}, ` ${bad.map((id) => benchEngine.errors.get(id) ?? "not loaded").join(" · ")}`)]
+      : []));
+  }
   benchEngine.onChange = () => {
     const d = benchEngine.decks.a, e = benchEngine.decks.b;
     const cur = (dk) => {
@@ -2529,17 +2570,36 @@ function viewBench() {
     const dk = benchUI.deck.a;
     const t = benchTrack(dk.trackId);
     const bpm = t?.bpm ?? curSuite()?.bpm ?? 120;
-    const bigBtn = (label2, title, fn, cls = "") =>
-      h("button", { class: `bench-btn ${cls}`, title, onclick: fn }, label2);
+    // A PRESS ALWAYS SHOWS SOMETHING. These beds are ~2 MB and come from the
+    // staging CDN, so the first press has a real wait — and when a fetch fails
+    // the button used to just sit there (maintainer 2026-08-22: "I try to press
+    // on A but nothing happens"). Now it says "loading…" while it decodes and
+    // the reason underneath if it cannot.
+    const bigBtn = (label2, title, fn, cls = "") => {
+      const btn = h("button", { class: `bench-btn ${cls}`, title }, label2);
+      btn.onclick = async () => {
+        if (btn.disabled) return;
+        const was = btn.textContent;
+        btn.disabled = true; btn.textContent = "loading…";
+        try { await fn(); } finally { btn.disabled = false; btn.textContent = was; }
+      };
+      return btn;
+    };
     return h("div", { class: "bench-transport" },
       h("div", { class: "bench-row" },
-        bigBtn("▶ A", "Play deck A's order, looping", async () => { await benchEngine.start("a", dk.order); paint(); }, "go"),
+        bigBtn("▶ A", "Play deck A's order, looping", async () => {
+          await benchEngine.start("a", dk.order);
+          benchProblem(dk.order);
+          paint();
+        }, "go"),
         bigBtn("▶ B", "Play deck B under A, ducked", async () => {
           const d2 = benchUI.deck.b;
           const t2 = benchTrack(d2.trackId);
           if (!t2) return;
           if (!d2.order.length) d2.order = benchNatural(t2.takes.find((k) => k.live) ?? t2.takes[0]);
-          await benchEngine.start("b", d2.order); paint();
+          await benchEngine.start("b", d2.order);
+          benchProblem(d2.order);
+          paint();
         }, "go"),
         bigBtn("■ stop", "Stop both decks", () => { benchEngine.stopAll(); paint(); })),
       h("div", { class: "bench-row" },
@@ -2590,7 +2650,7 @@ function viewBench() {
         h("label", { class: "bench-slider" }, `duck B ${benchUI.duckPct}%`,
           Object.assign(h("input", { type: "range", min: "-100", max: "0", step: "5", value: String(benchUI.duckPct) }),
             { oninput: (e) => { benchUI.duckPct = +e.target.value; benchEngine.setDuck(10 ** (benchUI.duckPct * 0.06 / 2)); e.target.previousSibling && null; paint(); } }))),
-      nowLine);
+      nowLine, problemLine);
   }
 
   function body() {
@@ -7571,6 +7631,17 @@ function viewMusic() {
     sectionHead("music"),
     h("p", { class: "muted" }, "Everything written for the game to play — the music agent's tracks, and the composer's own situation beds."),
     muteGameBtn(),
+    // THE BENCH IS WHERE HE LOOKED FOR IT (maintainer 2026-08-22: "Can you help
+    // me navigate to the page? I don't understand" — from this page). It is a
+    // separate section because it is a workbench and not an encyclopedia page,
+    // but Music is where anyone goes looking for it, so Music says where it is.
+    state.admin && (state.data.bench?.tracks ?? []).length
+      ? h("p", { class: "bench-link-row" },
+        h("a", { class: "ghost-btn bench-link", href: "#/bench" },
+          "♫ Music bench →"),
+        h("span", { class: "muted" },
+          `audition the suite/pool/phrase score — ${state.data.bench.tracks.length} beds, phrase by phrase`))
+      : null,
     domainTracks.length ? h("h2", {}, "Tracks ", h("span", { class: "pill" }, String(domainTracks.length))) : null,
     ...domainTracks.map(musicPanel),
     // The composer's beds are a SECOND source of music and were missing from
