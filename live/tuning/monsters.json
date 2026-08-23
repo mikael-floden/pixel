@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-21T19:00:57.459Z",
+  "updated_at": "2026-08-23T18:28:22.292Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -842,7 +842,105 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 16
+      "level": 16,
+      "shadow": {
+        "rx": 17.5,
+        "ry": 12.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.34,
+            "ay": 23.56
+          },
+          "idle#south": {
+            "ax": -0.48,
+            "ay": 23.4
+          },
+          "idle#south-east": {
+            "ax": -1.04,
+            "ay": 21.08
+          },
+          "idle#north-east": {
+            "ax": -2.35,
+            "ay": 23.05
+          },
+          "idle#north": {
+            "ax": 0.63,
+            "ay": 22.2
+          },
+          "idle#north-west": {
+            "ax": 0.37,
+            "ay": 22.82
+          },
+          "idle#west": {
+            "ax": 1.98,
+            "ay": 23.09
+          },
+          "idle#south-west": {
+            "ax": -0.34,
+            "ay": 20.21
+          },
+          "walk#east": {
+            "ax": -2.07,
+            "ay": 23.69
+          },
+          "angry#south": {
+            "ax": 0.36,
+            "ay": 23.02
+          },
+          "angry#east": {
+            "ax": -2.74,
+            "ay": 23.57
+          },
+          "attack#south-west": {
+            "ax": 10.68,
+            "ay": 32.32
+          },
+          "attack#east": {
+            "ax": -9.01,
+            "ay": 28.99
+          },
+          "attack#north": {
+            "ax": -1.96,
+            "ay": 32.54
+          },
+          "attack#north-west": {
+            "ax": 3.48,
+            "ay": 28.06
+          },
+          "attack#west": {
+            "ax": 10.9,
+            "ay": 29.24
+          },
+          "attack#north-east": {
+            "ax": -6.41,
+            "ay": 31.23
+          },
+          "attack#south-east": {
+            "ax": -10.27,
+            "ay": 31.59
+          },
+          "attack#south": {
+            "ax": -3.46,
+            "ay": 28.54
+          },
+          "die#south": {
+            "ax": 1.55,
+            "ay": 26.08
+          },
+          "die#south-east": {
+            "ax": -0.04,
+            "ay": 23.63
+          },
+          "die#east": {
+            "ax": 1.14,
+            "ay": 25.49
+          },
+          "die#north": {
+            "ax": 1.48,
+            "ay": 22.19
+          }
+        }
+      }
     },
     "malformed_creature": {
       "level": 14,
