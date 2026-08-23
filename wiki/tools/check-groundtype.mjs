@@ -552,6 +552,59 @@ const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene
 ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
+// ---- IT HAS TO WORK ACROSS ORIGINS, WHICH IS THE ONLY WAY IT EVER RUNS -----
+// Maintainer 2026-08-22: "Textured doesn't work and also displays the clean
+// single color version right now."
+//
+// Tile review art is not in the deploy image (/assets/tiles/review/… is 404 in
+// production), so it is fetched from the staging CDN — a DIFFERENT ORIGIN. An
+// <img> loaded without crossOrigin taints the canvas, getImageData throws, and
+// the synthesis silently falls back to the flattened tile.
+//
+// Every check above this line loads that art SAME-ORIGIN, because the local
+// server roots /assets at the repo. So this one deliberately does what
+// production does: fetch both passes from the second origin and read the
+// pixels back. Without crossOrigin it throws SecurityError; with it, it counts.
+const crossOrigin = await p.evaluate(async (base) => {
+  const load = (src) => new Promise((res) => {
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = im.onerror = () => res(im);
+    im.src = src;
+  });
+  const a = await load(`${base}tiles/review/black_rock__over__black_rock/0_after.webp`);
+  const r = await load(`${base}tiles/review/black_rock__over__black_rock/0_before.webp`);
+  if (!a.naturalWidth || !r.naturalWidth) return { err: "images did not load cross-origin" };
+  try {
+    const c = window.__wiki.texSynth(a, r);
+    if (!c) return { err: "texSynth returned null" };
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    const set = new Set();
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) set.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+    return { colours: set.size };
+  } catch (e) { return { err: `${e.name}: ${String(e.message).slice(0, 60)}` }; }
+}, process.env.REPO_URL ?? "http://127.0.0.1:8903/");
+ok(!crossOrigin.err && crossOrigin.colours > 8,
+  `the textured pass synthesizes from art on ANOTHER ORIGIN — the only way it runs in production (${crossOrigin.err ?? `${crossOrigin.colours} colours`})`);
+// And the loader THE PAGE ITSELF uses must ask for CORS, or the check above is
+// only true of the test.
+const asksCors = await p.evaluate(() => new Promise((res) => {
+  const d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "crossOrigin");
+  let asked = 0, made = 0;
+  Object.defineProperty(HTMLImageElement.prototype, "crossOrigin", {
+    configurable: true,
+    get() { return d.get.call(this); },
+    set(v) { made++; if (v === "anonymous") asked++; return d.set.call(this, v); },
+  });
+  const cands = (window.__wiki.state.data.domains.world ?? []).flatMap((c) => c.candidates).filter((c) => c.raw && c.art);
+  const cand = cands[cands.length - 1];              // one the page has not drawn
+  if (!cand) { res({ err: "no candidate with both passes" }); return; }
+  window.__wiki.texFor(cand.art, cand.raw, () => res({ asked, made }));
+  setTimeout(() => res({ asked, made, slow: true }), 8000);
+}));
+ok(asksCors.made > 0 && asksCors.asked === asksCors.made,
+  `and the page's own image loader asks for CORS on every image it reads (${asksCors.asked}/${asksCors.made})`);
+
 // ---- THE TEXTURE HAS TO SURVIVE, AND THAT IS A SPREAD, NOT A COLOUR COUNT --
 // Maintainer 2026-08-22, looking at a top this gate had called textured: "How
 // can you call this top 'textured'? Yes I can clearly see the original tile

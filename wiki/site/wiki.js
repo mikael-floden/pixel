@@ -4537,6 +4537,23 @@ function texFor(art, raw, cb) {
   };
   const mk = (path, set) => {
     const im = new Image();
+    /* CORS, OR THE SYNTHESIS CANNOT READ ITS OWN PIXELS (maintainer 2026-08-22:
+     * "Textured doesn't work and also displays the clean single color version
+     * right now").
+     *
+     * Tile review art is NOT in the deploy image — /assets/tiles/review/… is
+     * 404 in production — so it comes from the staging CDN, a different origin.
+     * An <img> loaded without crossOrigin taints any canvas it is drawn into,
+     * getImageData throws SecurityError, texSynth returns null, and the caller
+     * falls back to the plain After image: the clean single colour, exactly
+     * what he saw. raw.githubusercontent answers
+     * access-control-allow-origin: *, so asking for CORS costs nothing.
+     *
+     * MY GATES COULD NOT SEE THIS. The local server has ASSETS_ROOT at the repo
+     * root, so /assets/tiles/… is same-origin in every test and tainting never
+     * happens — the one difference between the test and the real thing was the
+     * only thing that mattered. */
+    im.crossOrigin = "anonymous";
     im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
     im.src = assetUrl(path);
   };
@@ -4631,13 +4648,18 @@ function baseGroupField(members, n, seed, scale = 1) {
 /** A 3×3 with ONE tile pinned centre and the group around it — the member
  *  review's right half, and the promotion modal's whole point ("the model
  *  should show this tile in the center with members around it"). */
-function centeredField(centerArt, members, seed, scale = 1) {
+function centeredField(centerArt, members, seed, scale = 1, pass = null) {
   const box = h("div", { class: "iso-stage checker group-stage" });
   const rnd = seededRnd(seed);
   const others = members.length ? members : [{ weight: 1, hit: { cand: { art: centerArt } } }];
   const cells = [];
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
-    const img = (c === 1 && r === 1) ? centerArt : viewArt(pickBaseMember(others, rnd).hit?.cand);
+    // `pass` lets a caller compose in a pass other than the stored one — the
+    // Details tab draws Textured even when the section is set to After,
+    // because a clean-colour top is nothing to judge.
+    const surroundCand = pickBaseMember(others, rnd).hit?.cand;
+    const img = (c === 1 && r === 1) ? centerArt
+      : (pass ? viewArtIn(pass, surroundCand) : viewArt(surroundCand));
     cells.push({ c, r, img });
   }
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
@@ -5222,6 +5244,22 @@ function viewWorldType(top) {
   const tab = (wanted === "base" && !groups.length) || (wanted === "details" && detailsDead) ? "ontop"
     : wanted ?? (groups.length ? "base" : "ontop");
   const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
+  /* ON THE DETAILS TAB, "AFTER" IS NOTHING TO JUDGE (maintainer 2026-08-22:
+   * "When I press Details I expect the tile in the center to be the textured
+   * version … a textured version that has gone through the postprocessing in a
+   * way that still align/change it's colors, but doesn't force the top to be
+   * clean/single color").
+   *
+   * That is exactly the Textured pass. But this tab opened on After, where the
+   * flattening leaves 96% of the top face one colour — so the one thing the
+   * tab exists to judge was the one thing it hid.
+   *
+   * SCOPED TO THIS TAB, NOT WRITTEN TO HIS PREFERENCE. Flipping the stored
+   * pass on arrival would silently change every other page in the section, so
+   * the details compositions simply ask for texture when the stored pass is
+   * After; Textured and Before are respected as chosen. The hint under the
+   * switch says so rather than letting the chip disagree with the picture. */
+  const detailPass = () => (worldView() === "after" ? "texture" : worldView());
   const tabBtn = (id, label2, count, disabled, title) => h("button", {
     class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
     type: "button", title,
@@ -5371,15 +5409,16 @@ function viewWorldType(top) {
     const seedKey = `${t.id}/details`;
     const dSeed = baseFieldSeeds.get(seedKey) ?? 5;
     const shownQueue = detailShown.get(t.id) ?? 12;
+    const dPass = detailPass();
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
       surround.length
-        ? centeredField(viewArt(cand), surround, dSeed, 1)
-        : h("div", { class: "iso-stage checker group-stage" }, artNodeFor(viewArt(cand), "member-tile", "the top")),
+        ? centeredField(viewArtIn(dPass, cand), surround, dSeed, 1, dPass)
+        : h("div", { class: "iso-stage checker group-stage" }, artNodeFor(viewArtIn(dPass, cand), "member-tile", "the top")),
       h("div", { class: "card-sub" },
         h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
         // Only ever says something when the picture is NOT what the switch
         // asked for: a tile with no raw generation cannot show a "before".
-        worldView() !== "after" && !cand.raw
+        dPass !== "after" && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
       // PROMOTE FROM HERE TOO (maintainer 2026-08-21: "On this page it should
@@ -5413,7 +5452,7 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? "Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. Each sits in the ground it would decorate, as the game will ship it; flip to Textured for the real texture in this ground's palette, or Before for the raw generation."
+        ? `Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Before for the raw generation." : `Drawn ${worldView() === "before" ? "BEFORE — the raw generation" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
@@ -8592,6 +8631,11 @@ async function upgradeToStaging() {
     // could see was flat (2026-08-22), so the gate now measures the surviving
     // spread and a human checks the picture.
     texSynth,
+    // …and the LOADER too, because the bug that made Textured show the clean
+    // tile in production was not in the maths but in how the images were
+    // fetched: without CORS they taint the canvas and the synthesis dies
+    // silently. The gate drives this, not a copy of it.
+    texFor,
     dirty: () => [...state.dirty],
     // Static-file QA only: flips the UI to admin (the server still rejects
     // every save without a real session token).

@@ -641,6 +641,41 @@ synthesizes it per tile, in the browser (`texSynth` / `texFor`):
 3. On exactly those pixels, take the **raw** pixel and shift it per channel so
    the region's **mean lands on the clean colour**.
 
+### And then it shipped silently falling back to the flat tile
+
+Maintainer 2026-08-22: *"Textured doesn't work and also displays the clean
+single color version right now."*
+
+The maths was fine. The **fetch** was not. Tile review art is not in the deploy
+image — `/assets/tiles/review/…` is **404** in production — so it loads from the
+staging CDN, a **different origin**. An `<img>` fetched without `crossOrigin`
+taints any canvas it is drawn into, `getImageData` throws `SecurityError`,
+`texSynth` returns null, and the caller falls back to the plain After image:
+the clean single colour, exactly what he saw. `crossOrigin = "anonymous"` now,
+and raw.githubusercontent answers `access-control-allow-origin: *`.
+
+**No gate could have caught it, because every gate ran same-origin.** The local
+server roots `/assets` at the repo, so tile art is same-origin in every test
+and tainting simply never happens — the one difference between the harness and
+production was the only one that mattered. There is now a check that
+deliberately loads both passes from the *second* origin and reads the pixels
+back (27 colours), plus one that drives the page's own loader and asserts it
+asks for CORS on every image it reads.
+
+### Details draws Textured, whatever the switch says
+
+*"When I press Details I expect the tile in the center to be the textured
+version … a textured version that has gone through the postprocessing in a way
+that still align/change it's colors, but doesn't force the top to be
+clean/single color."*
+
+That is the Textured pass — but the tab opened on After, where the flattening
+leaves 96% of a top one colour: the tab hid the only thing it exists to judge.
+Its compositions now ask for texture when the stored pass is After, and the
+intro says so. **Scoped to the tab, never written to his preference** — flipping
+the stored pass on arrival would silently change every other page in the
+section (measured: it broke 15 unrelated gate checks in one run).
+
 ### The first cut shipped flat, and the metric said it was fine
 
 Maintainer, the same day: *"How can you call this top 'textured'? Yes I can
