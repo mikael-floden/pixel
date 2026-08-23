@@ -1736,6 +1736,211 @@ async function playTake(files, btn) {
  *  auditions (sfxEngine) and this shared <audio> element, which carries music
  *  beds and entity takes. Anything that takes over the screen — the picker,
  *  a route change — has to cut both. */
+/* ======================= THE MUSIC BENCH — the engine =====================
+ * Maintainer 2026-08-22: "Playback must be sample-accurate, or none of this
+ * works. Use Web Audio: decode each phrase to an AudioBuffer once, cache it,
+ * and schedule with source.start(when) on the AudioContext clock, always at
+ * least one phrase ahead. Do NOT use <audio> elements or call play() per
+ * phrase — that gaps and clicks at every join, and I'd be judging the player
+ * instead of the music. A phrase boundary must be inaudible."
+ *
+ * So there is ONE decode per take, cached, and every phrase is a SLICE of that
+ * buffer — `src.start(when, offsetS, durS)` — handed to the hardware clock
+ * ahead of time. Nothing is triggered by a timer at the moment it should
+ * sound; the timer only ever schedules the future.
+ *
+ * PHRASE N OF A TAKE starts at anchorS + N × phraseMs/1000, with phraseMs from
+ * that take's own measured tempo (see buildBench). The bench never uses the
+ * brief's number.
+ *
+ * TWO DECKS, because two beds in one suite are meant to sit on top of each
+ * other. Deck B runs through its own gain so it can be ducked under A.
+ *
+ * IT SURVIVES A RE-RENDER. Verdicts must not stop the music — "I need to judge
+ * in context" — and committing calls route(), so the engine lives at module
+ * scope with no DOM in it, and only a navigation AWAY from the bench stops it.
+ */
+const BENCH_BUS_DB = -14;                 // the game's music bus
+const BENCH_LOOKAHEAD = 0.7;              // schedule this far ahead, in seconds
+const BENCH_TICK_MS = 120;
+const benchTakes = new Map();             // takeId -> take record, filled by the page
+function benchTake(id) { return benchTakes.get(id) ?? null; }
+/** One scheduled phrase, so a switch can cut sources that have not sounded. */
+function benchDeck(name) {
+  return { name, gain: null, order: [], cursor: 0, nextAt: 0, live: [], plan: null, playing: false };
+}
+const benchEngine = {
+  ctx: null, bus: null, timer: null,
+  buffers: new Map(),                     // takeId -> Promise<AudioBuffer|null>
+  decks: { a: benchDeck("a"), b: benchDeck("b") },
+  duck: 0.25,                             // deck B's gain (the −75% default)
+  onChange: null,                         // the page repaints from engine state
+  ac() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.bus = this.ctx.createGain();
+      // AUDITION THROUGH THE GAME'S OWN MUSIC BUS (−14 dB), or music and sound
+      // effects cannot be compared (maintainer 2026-08-22).
+      this.bus.gain.value = 10 ** (BENCH_BUS_DB / 20);
+      this.bus.connect(this.ctx.destination);
+      for (const d of Object.values(this.decks)) {
+        d.gain = this.ctx.createGain();
+        d.gain.gain.value = d.name === "b" ? this.duck : 1;
+        d.gain.connect(this.bus);
+      }
+    }
+    if (this.ctx.state === "suspended") this.ctx.resume();
+    return this.ctx;
+  },
+  /** ONE decode per take, cached forever — "don't re-download a 2 MB file every
+   *  time I press play". Format order is ogg first, m4a second: Chromium ships
+   *  no AAC decoder and Safari no Ogg, so trying both is what makes the bench
+   *  work on his phone AND in the gate. */
+  buffer(takeId) {
+    if (this.buffers.has(takeId)) return this.buffers.get(takeId);
+    const take = benchTake(takeId);
+    const cands = take ? [take.files?.ogg, take.files?.m4a, take.files?.mp3].filter(Boolean) : [];
+    const p = (async () => {
+      for (const rel of cands) {
+        try {
+          const r = await fetch(rel.startsWith("composer/") ? await composerUrl(rel) : assetUrl(rel));
+          if (!r.ok) continue;
+          const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
+          if (buf) return buf;
+        } catch { /* next format */ }
+      }
+      return null;
+    })();
+    this.buffers.set(takeId, p);
+    return p;
+  },
+  /** Is every take this order needs already decoded? */
+  async warm(order) {
+    await Promise.all([...new Set(order.map((x) => x.takeId))].map((id) => this.buffer(id)));
+  },
+  slice(item) {
+    const take = benchTake(item.takeId);
+    if (!take || !take.phraseMs) return null;
+    const dur = item.durS ?? take.phraseMs / 1000;
+    const start = item.startS ?? (take.anchorS ?? 0) + item.idx * (take.phraseMs / 1000);
+    return { takeId: item.takeId, start, dur };
+  },
+  /** Schedule everything that falls inside the look-ahead window. Called on a
+   *  timer, but the timer never TRIGGERS audio — it only ever books it. */
+  tick() {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    for (const d of Object.values(this.decks)) {
+      if (!d.playing || !d.order.length) continue;
+      let guard = 0;
+      // ALWAYS AT LEAST ONE PHRASE AHEAD, in his words — not merely "inside a
+      // look-ahead window". A phrase here is 13-20 s, so a 0.7 s window would
+      // book the next join with 0.7 s to spare and a cross-take order would be
+      // racing a decode. Keeping TWO in flight (the one sounding and the next)
+      // means the join is already on the hardware clock long before it sounds.
+      const queued = () => d.live.filter((x) => x.end > ctx.currentTime).length;
+      while ((queued() < 2 || d.nextAt < ctx.currentTime + BENCH_LOOKAHEAD) && guard++ < 16) {
+        const item = d.order[d.cursor % d.order.length];
+        const sl = this.slice(item);
+        if (!sl) { d.cursor++; continue; }
+        const buf = this.ready?.get(sl.takeId);
+        if (!buf) { d.nextAt = ctx.currentTime + 0.05; break; }   // still decoding
+        const at = Math.max(d.nextAt, ctx.currentTime + 0.01);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(d.gain);
+        const off = Math.max(0, Math.min(sl.start, Math.max(0, buf.duration - 0.01)));
+        const dur = Math.max(0.02, Math.min(sl.dur, buf.duration - off));
+        src.start(at, off, dur);
+        d.live.push({ src, at, end: at + dur, item });
+        benchPlays.push({ deck: d.name, take: sl.takeId, idx: item.idx, at: +at.toFixed(4), dur: +dur.toFixed(4) });
+        d.nextAt = at + dur;
+        d.cursor++;
+      }
+      d.live = d.live.filter((x) => x.end > ctx.currentTime - 1);
+    }
+    this.onChange?.();
+  },
+  ensureTimer() {
+    if (this.timer) return;
+    this.timer = setInterval(() => this.tick(), BENCH_TICK_MS);
+  },
+  /** Start a deck on an order. `at` lets a switch land on a beat boundary. */
+  async start(deckKey, order, at) {
+    const d = this.decks[deckKey];
+    const ctx = this.ac();
+    this.ready ??= new Map();
+    await this.warm(order);
+    for (const id of new Set(order.map((x) => x.takeId))) {
+      const b = await this.buffer(id);
+      if (b) this.ready.set(id, b);
+    }
+    d.order = order.slice();
+    d.cursor = 0;
+    d.nextAt = Math.max(at ?? 0, ctx.currentTime + 0.05);
+    d.playing = true;
+    d.gain.gain.cancelScheduledValues(ctx.currentTime);
+    d.gain.gain.setValueAtTime(deckKey === "b" ? this.duck : 1, ctx.currentTime);
+    this.ensureTimer();
+    this.tick();
+  },
+  /** Everything booked at or after `when` is cancelled, and a phrase spanning
+   *  it is cut there. This is what makes "next beat" a cut and not an overlap. */
+  cut(deckKey, when) {
+    const d = this.decks[deckKey];
+    for (const s of d.live) {
+      try { if (s.at >= when) s.src.stop(when); else if (s.end > when) s.src.stop(when); } catch { /* already done */ }
+    }
+    d.live = d.live.filter((x) => x.at < when);
+  },
+  stop(deckKey) {
+    const d = this.decks[deckKey];
+    d.playing = false;
+    for (const s of d.live) { try { s.src.stop(); } catch { /* already done */ } }
+    d.live = []; d.order = []; d.plan = null; d.cursor = 0; d.nextAt = 0;
+    this.onChange?.();
+  },
+  stopAll() { for (const k of Object.keys(this.decks)) this.stop(k); },
+  /** Where the next beat falls, on the deck's own clock. Everything in a suite
+   *  shares a tempo, so a beat cut inside a suite is seamless by construction. */
+  nextBeatAt(deckKey, bpm) {
+    const ctx = this.ac();
+    const d = this.decks[deckKey];
+    const beat = 60 / (bpm || 120);
+    const cur = d.live.find((x) => x.at <= ctx.currentTime && x.end > ctx.currentTime);
+    const from = cur ? cur.at : ctx.currentTime;
+    const n = Math.ceil((ctx.currentTime + 0.06 - from) / beat);
+    return from + n * beat;
+  },
+  /** The end of the phrase now sounding — a calm transition. */
+  nextPhraseAt(deckKey) {
+    const ctx = this.ac();
+    const d = this.decks[deckKey];
+    const cur = d.live.find((x) => x.at <= ctx.currentTime && x.end > ctx.currentTime);
+    return cur ? cur.end : ctx.currentTime + 0.05;
+  },
+  setDuck(v) {
+    this.duck = v;
+    const d = this.decks.b;
+    if (d.gain && this.ctx) d.gain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.02);
+  },
+  /** Fade a deck out over `s` seconds and stop it there. */
+  fadeOut(deckKey, s) {
+    const ctx = this.ac();
+    const d = this.decks[deckKey];
+    if (!d.gain) return ctx.currentTime;
+    const end = ctx.currentTime + s;
+    d.gain.gain.cancelScheduledValues(ctx.currentTime);
+    d.gain.gain.setValueAtTime(d.gain.gain.value, ctx.currentTime);
+    d.gain.gain.linearRampToValueAtTime(0.0001, end);
+    this.cut(deckKey, end);
+    d.playing = false;
+    return end;
+  },
+};
+const benchPlays = [];            // what was actually BOOKED — the gate reads this
+window.__bench = { engine: benchEngine, plays: benchPlays, takes: benchTakes };
+
 function stopAllAudio() {
   sfxEngine.stop();
   const a = audioEl();
@@ -1819,6 +2024,9 @@ const SECTIONS = {
   // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
+  // A WORKBENCH, not an encyclopedia page: it exists to audition and judge the
+  // phrase score, so it is his alone (maintainer 2026-08-22).
+  bench:      { label: "Music bench",   noun: "beds",       icon: "music",      count: (d) => (d.bench?.tracks ?? []).length, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -1827,7 +2035,7 @@ const SECTIONS = {
 // monsters").
 // World (3.0) sits where the ground system has always sat; Tiles OLD follows
 // it, because the thing being replaced should not be the one you reach first.
-const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
+const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "bench", "tuning"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -2029,6 +2237,344 @@ function crumbRow(backHref, backLabel, base, list, id) {
           onclick: () => { keepScrollY = window.scrollY; } }, "›"))
     : null;
   return h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: backHref }, backLabel), nav);
+}
+
+/* ======================= THE MUSIC BENCH — the page ======================
+ * Maintainer 2026-08-22, in full: a bench for the suite/pool/phrase score,
+ * where a suite is one compatibility group (same key, same tempo, same phrase
+ * length, so anything in it can switch on the beat or layer), and crossing
+ * BETWEEN suites is silence rather than a musical transition.
+ *
+ * THE ORDER IS THE INSTRUMENT. What plays is a list of phrases, and a phrase
+ * can come from any take of the track — "phrase 3 from v2 and phrase 5 from
+ * v4, since that's how I'd actually pick the best ones". So the order is its
+ * own row at the top, and every take's phrases sit under it waiting to be
+ * added. Reordering is TAP-TO-PICK, TAP-TO-PLACE as well as drag: this is a
+ * phone-first page and HTML5 drag does not exist on touch.
+ *
+ * THE SEAM BUTTONS LIVE IN THE JOINS of that order — "for any two phrases,
+ * play the last 2 s of one straight into the first 2 s of the next, looped, so
+ * I can judge a join in five seconds". A join in the order IS the pair.
+ */
+const BENCH_MODES = {
+  beat:    { label: "next beat",  title: "Switch on the next beat (60/bpm). The combat cut-in — seamless inside a suite, because everything in one shares the tempo" },
+  phrase:  { label: "next phrase", title: "Switch at the end of the phrase now sounding. Calm transitions" },
+  instant: { label: "instant",    title: "Switch right now. Here to prove why the other two exist" },
+  cross:   { label: "suite cross", title: "Fade out, hold silence, then the other suite. Crossing suites is meant to be silence, not a transition" },
+};
+const benchUI = {
+  suite: null,
+  deck: { a: { trackId: null, order: [] }, b: { trackId: null, order: [] } },
+  mode: "phrase", crossS: 15, duckPct: -75,
+  pick: null,              // the order chip picked up, waiting to be placed
+  seam: null,              // {i} — which join is previewing
+};
+const benchData = () => state.data.bench ?? null;
+const benchTracksIn = (suite) => (benchData()?.tracks ?? []).filter((t) => t.suite === suite);
+const benchTrack = (id) => (benchData()?.tracks ?? []).find((t) => t.id === id) ?? null;
+/** The natural order of a take: every phrase of it, front to back. */
+const benchNatural = (take) => Array.from({ length: take?.phrases ?? 0 }, (_, i) => ({ takeId: take.id, idx: i }));
+const benchLabel = (item) => {
+  const t = benchTake(item.takeId);
+  const v = t?.version != null ? `v${String(t.version).padStart(2, "0")}` : "live";
+  return `${v}#${item.idx + 1}`;
+};
+/** The measured key of one phrase, and whether it is the one that was asked
+ *  for — an out-of-key phrase is marked red so a reject is informed. */
+function benchPhraseKey(takeId, idx) {
+  const t = benchTake(takeId);
+  const p = t?.perPhrase?.[idx];
+  if (!p) return { sv: null, off: false };
+  return { sv: p.sv, off: !!t.wantSv && p.sv !== t.wantSv };
+}
+const benchFbId = (kind, trackId, takeId, idx) =>
+  kind === "track" ? `composer/music/${trackId}`
+    : kind === "take" ? `composer/music/${takeId}`
+      : `composer/music/${takeId}#${idx + 1}`;
+
+function viewBench() {
+  const B = benchData();
+  if (!B?.tracks?.length) return h("p", {}, "The composer has not published a phrase score yet.");
+  const suites = Object.values(B.suites ?? {});
+  benchUI.suite ??= (suites[0]?.id ?? B.tracks[0].suite);
+  // READ THE SUITE EVERY PAINT, never once. Captured as consts, these went
+  // stale the moment a suite chip was pressed: the picker kept offering the
+  // old suite's beds and the selection silently cleared.
+  const curSuite = () => B.suites?.[benchUI.suite] ?? null;
+  const curTracks = () => benchTracksIn(benchUI.suite);
+  benchUI.deck.a.trackId ??= curTracks()[0]?.id ?? null;
+  // Every take of every track is addressable by id, for cross-take orders.
+  benchTakes.clear();
+  for (const t of B.tracks) for (const k of t.takes) benchTakes.set(k.id, { ...k, trackId: t.id });
+  // A BENCH THAT OPENS EMPTY PLAYS NOTHING. Seed deck A with the live take's
+  // own phrases, front to back, so ▶ works on arrival and every edit from
+  // there is his.
+  if (benchUI.deck.a.trackId && !benchUI.deck.a.order.length) {
+    const t0 = benchTrack(benchUI.deck.a.trackId);
+    const k0 = t0?.takes.find((k) => k.live) ?? t0?.takes[0];
+    if (k0) benchUI.deck.a.order = benchNatural(k0);
+  }
+
+  const wrap = h("div", { class: "bench" });
+  const paint = () => wrap.replaceChildren(...body());
+  // The engine repaints the transport as phrases are booked, WITHOUT rebuilding
+  // the page — a rebuild mid-audition would fight his thumb.
+  const nowLine = h("div", { class: "bench-now muted" });
+  benchEngine.onChange = () => {
+    const d = benchEngine.decks.a, e = benchEngine.decks.b;
+    const cur = (dk) => {
+      const ctx = benchEngine.ctx;
+      const s2 = ctx && dk.live.find((x) => x.at <= ctx.currentTime && x.end > ctx.currentTime);
+      return s2 ? benchLabel(s2.item) : null;
+    };
+    const a = cur(d), b2 = cur(e);
+    nowLine.textContent = a || b2
+      ? `▶ ${a ? `A ${a}` : ""}${a && b2 ? "   +   " : ""}${b2 ? `B ${b2}` : ""}`
+      : "";
+  };
+
+  function deckPicker(key) {
+    const dk = benchUI.deck[key];
+    const list = key === "b" ? (benchData()?.tracks ?? []) : curTracks();   // B may cross suites
+    return h("div", { class: "bench-deck" },
+      h("div", { class: "bench-deck-head" },
+        h("b", {}, key === "a" ? "Deck A" : "Deck B"),
+        key === "b" && dk.trackId ? h("button", { class: "ghost-btn", onclick: () => { benchEngine.stop("b"); dk.trackId = null; dk.order = []; paint(); } }, "✕ clear") : null),
+      (() => {
+        // The options are CHILDREN, not properties. They were being handed to
+        // Object.assign, which copied their fields onto the <select> and left
+        // it with nothing to pick from — the page still worked because the
+        // default track comes from state, so only the picker was dead.
+        const sel = h("select", { class: "bench-select" },
+          ...[key === "b" ? h("option", { value: "" }, "— none —") : null,
+            ...list.map((t) => h("option", { value: t.id }, `${t.pool} · ${t.name}`))].filter(Boolean));
+        sel.value = dk.trackId ?? "";
+        sel.onchange = (e) => {
+          dk.trackId = e.target.value || null;
+          const t = benchTrack(dk.trackId);
+          dk.order = t ? benchNatural(t.takes.find((k) => k.live) ?? t.takes[0]) : [];
+          benchUI.pick = null;
+          paint();
+        };
+        return sel;
+      })());
+  }
+
+  function orderRow() {
+    const dk = benchUI.deck.a;
+    const chips = [];
+    dk.order.forEach((item, i) => {
+      const k = benchPhraseKey(item.takeId, item.idx);
+      const chip = h("button", {
+        class: `bench-chip${k.off ? " off-key" : ""}${benchUI.pick === i ? " picked" : ""}`,
+        draggable: "true",
+        title: k.sv ? `${benchLabel(item)} — measured ${k.sv}${k.off ? " (not the key asked for)" : ""}` : benchLabel(item),
+        onclick: () => {
+          // TAP TO PICK, TAP TO PLACE. Works with a thumb, which drag does not.
+          if (benchUI.pick == null) benchUI.pick = i;
+          else if (benchUI.pick === i) benchUI.pick = null;
+          else {
+            const [moved] = dk.order.splice(benchUI.pick, 1);
+            dk.order.splice(benchUI.pick < i ? i - 1 : i, 0, moved);
+            benchUI.pick = null;
+          }
+          paint();
+        },
+      }, benchLabel(item), k.sv ? h("span", { class: "bench-chip-key" }, k.sv) : null);
+      chip.addEventListener("dragstart", (e) => { benchUI.pick = i; e.dataTransfer.effectAllowed = "move"; });
+      chip.addEventListener("dragover", (e) => e.preventDefault());
+      chip.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (benchUI.pick == null || benchUI.pick === i) return;
+        const [moved] = dk.order.splice(benchUI.pick, 1);
+        dk.order.splice(benchUI.pick < i ? i - 1 : i, 0, moved);
+        benchUI.pick = null; paint();
+      });
+      chips.push(chip);
+      chips.push(h("button", {
+        class: "bench-x", title: "Remove this phrase from the order",
+        onclick: () => { dk.order.splice(i, 1); benchUI.pick = null; paint(); },
+      }, "×"));
+      // THE SEAM LIVES IN THE JOIN.
+      if (i < dk.order.length - 1) {
+        chips.push(h("button", {
+          class: `bench-seam${benchUI.seam === i ? " on" : ""}`,
+          title: "Hear this join: the last 2 s of this phrase straight into the first 2 s of the next, looped",
+          onclick: () => { benchUI.seam = benchUI.seam === i ? null : i; playSeam(dk.order[i], dk.order[i + 1]); paint(); },
+        }, "⌣"));
+      }
+    });
+    return h("div", { class: "bench-order" }, ...(chips.length ? chips : [h("span", { class: "muted" }, "no phrases — add some from a take below")]));
+  }
+
+  function playSeam(a, b2) {
+    const SEAM = 2;
+    const sa = benchEngine.slice(a), sb = benchEngine.slice(b2);
+    if (!sa || !sb) return;
+    const order = [
+      { takeId: a.takeId, idx: a.idx, startS: Math.max(0, sa.start + sa.dur - SEAM), durS: SEAM },
+      { takeId: b2.takeId, idx: b2.idx, startS: sb.start, durS: SEAM },
+    ];
+    benchEngine.stop("a");
+    benchEngine.start("a", order);
+  }
+
+  function takePanel(t, k) {
+    const live = k.live;
+    const barsOff = k.bars != null && Math.abs(k.bars - Math.round(k.bars)) > 0.02;
+    return h("div", { class: `panel bench-take${live ? " is-live" : ""}` },
+      h("div", { class: "panel-title" },
+        k.version != null ? `Take v${String(k.version).padStart(2, "0")}` : "Take (live file)",
+        live ? h("span", { class: "pill ok", title: "The take the game streams today" }, "live") : null,
+        k.usable === false ? h("span", { class: "pill warn", title: "The composer marked this take unusable" }, "unusable") : null),
+      h("div", { class: "card-sub metric-row" },
+        h("span", { class: barsOff ? "pill err" : "", title: barsOff
+          ? "Not a whole number of bars: the cut does not land on a bar line, so every join drops or adds part of a beat"
+          : "A whole number of bars — the cut lands on a bar line" }, `bars ${k.bars != null ? k.bars.toFixed(2) : "—"}`),
+        h("span", { title: "the take's own measured tempo" }, `${k.bpm != null ? k.bpm.toFixed(2) : "—"} BPM`),
+        h("span", { title: "phrase length derived from this take's own bars and tempo" }, `${k.phraseMs ? (k.phraseMs / 1000).toFixed(2) : "—"} s`),
+        k.inKey != null && k.perPhrase.length
+          ? h("span", { class: k.inKey < k.perPhrase.length ? "pill err" : "pill ok",
+            title: `${k.inKey} of ${k.perPhrase.length} phrases are in ${k.wantSv ?? "the key asked for"}` },
+          `${k.inKey}/${k.perPhrase.length} i ${k.wantSv ?? "rätt tonart"}`)
+          : null),
+      // Every phrase of this take: number, measured key, red when off.
+      h("div", { class: "bench-phrases" }, ...Array.from({ length: k.phrases ?? 0 }, (_, i) => {
+        const pk = benchPhraseKey(k.id, i);
+        return h("button", {
+          class: `bench-chip add${pk.off ? " off-key" : ""}`,
+          title: `Add phrase ${i + 1} to the order${pk.sv ? ` — measured ${pk.sv}` : ""}`,
+          onclick: () => { benchUI.deck.a.order.push({ takeId: k.id, idx: i }); paint(); },
+        }, `${i + 1}`, pk.sv ? h("span", { class: "bench-chip-key" }, pk.sv) : null);
+      })),
+      state.admin ? h("div", { class: "card-sub" },
+        h("span", { class: "muted" }, "take "),
+        benchFeedback(benchFbId("take", t.id, k.id))) : null);
+  }
+
+  /** A verdict row that repaints ITSELF and never re-routes — the music has to
+   *  keep playing while he judges (maintainer: "I need to judge in context"). */
+  function benchFeedback(id) {
+    const box = h("span", { class: "bench-fb" });
+    const draw = () => box.replaceChildren(feedbackRow("composer-music", id, {
+      onchange: draw, onStars: draw,
+      reject: "✕ reject", rejectTitle: "Tell the composer this one is not good enough",
+      rejectedLabel: "rejected",
+    }));
+    draw();
+    return box;
+  }
+
+  function transport() {
+    const dk = benchUI.deck.a;
+    const t = benchTrack(dk.trackId);
+    const bpm = t?.bpm ?? curSuite()?.bpm ?? 120;
+    const bigBtn = (label2, title, fn, cls = "") =>
+      h("button", { class: `bench-btn ${cls}`, title, onclick: fn }, label2);
+    return h("div", { class: "bench-transport" },
+      h("div", { class: "bench-row" },
+        bigBtn("▶ A", "Play deck A's order, looping", async () => { await benchEngine.start("a", dk.order); paint(); }, "go"),
+        bigBtn("▶ B", "Play deck B under A, ducked", async () => {
+          const d2 = benchUI.deck.b;
+          const t2 = benchTrack(d2.trackId);
+          if (!t2) return;
+          if (!d2.order.length) d2.order = benchNatural(t2.takes.find((k) => k.live) ?? t2.takes[0]);
+          await benchEngine.start("b", d2.order); paint();
+        }, "go"),
+        bigBtn("■ stop", "Stop both decks", () => { benchEngine.stopAll(); paint(); })),
+      h("div", { class: "bench-row" },
+        h("span", { class: "muted" }, "switch"),
+        sortBar("wiki-bench-mode", Object.entries(BENCH_MODES).map(([id, m]) => [id, m.label, m.title]),
+          benchUI.mode, (v) => { benchUI.mode = v; paint(); }, { persist: false })),
+      // The switch itself: deck B's track becomes deck A's, in the chosen mode.
+      h("div", { class: "bench-row" },
+        bigBtn("⇄ switch to B", "Take deck B's bed onto deck A in the chosen mode", async () => {
+          const d2 = benchUI.deck.b;
+          const t2 = benchTrack(d2.trackId);
+          if (!t2) { toast("Pick a bed on deck B first."); return; }
+          const order = d2.order.length ? d2.order.slice() : benchNatural(t2.takes.find((k) => k.live) ?? t2.takes[0]);
+          const mode = benchUI.mode;
+          if (mode === "cross") {
+            // A SUITE CROSS IS SILENCE, not a transition (the brief's own rule).
+            const end = benchEngine.fadeOut("a", 0.6);
+            const at = end + benchUI.crossS;
+            benchEngine.stop("b");
+            await benchEngine.start("a", order, at);
+          } else {
+            const at = mode === "beat" ? benchEngine.nextBeatAt("a", bpm)
+              : mode === "phrase" ? benchEngine.nextPhraseAt("a")
+                : benchEngine.ac().currentTime + 0.02;
+            benchEngine.cut("a", at);
+            benchEngine.stop("b");
+            await benchEngine.start("a", order, at);
+          }
+          benchUI.deck.a.trackId = d2.trackId;
+          benchUI.deck.a.order = order;
+          paint();
+        }, "go"),
+        benchUI.mode === "cross" ? h("label", { class: "bench-slider" }, `silence ${benchUI.crossS}s`,
+          Object.assign(h("input", { type: "range", min: "0", max: "30", step: "1", value: String(benchUI.crossS) }),
+            { oninput: (e) => { benchUI.crossS = +e.target.value; paint(); } })) : null),
+      h("div", { class: "bench-row" },
+        h("label", { class: "bench-slider" }, `duck B ${benchUI.duckPct}%`,
+          Object.assign(h("input", { type: "range", min: "-100", max: "0", step: "5", value: String(benchUI.duckPct) }),
+            { oninput: (e) => { benchUI.duckPct = +e.target.value; benchEngine.setDuck(10 ** (benchUI.duckPct * 0.06 / 2)); e.target.previousSibling && null; paint(); } }))),
+      nowLine);
+  }
+
+  function body() {
+    const dk = benchUI.deck.a;
+    const t = benchTrack(dk.trackId);
+    return [
+      h("div", { class: "sect-head" }, h("h1", {}, "Music bench")),
+      h("p", { class: "muted" },
+        "One suite is one compatibility group — same key, same tempo, same phrase length — so anything inside it can switch on the beat or sit on top of anything else. Crossing between suites is silence, not a transition."),
+      // The suite contract, in the composer's own numbers.
+      h("div", { class: "bench-row" },
+        sortBar("wiki-bench-suite", suites.map((s2) => [s2.id, s2.id, `${s2.keySv ?? ""} · ${s2.bpm ?? "?"} BPM · ${s2.bars ?? "?"} takter`]),
+          benchUI.suite, (v) => {
+            benchUI.suite = v;
+            const first = benchTracksIn(v)[0];
+            benchUI.deck.a.trackId = first?.id ?? null;
+            benchUI.deck.a.order = first ? benchNatural(first.takes.find((k) => k.live) ?? first.takes[0]) : [];
+            paint();
+          }, { persist: false })),
+      curSuite() ? h("p", { class: "muted" },
+        `${curSuite().keySv ?? "?"} · ${curSuite().bpm ?? "?"} BPM · ${curSuite().bars ?? "?"} takter per fras · ${((curSuite().phraseMs ?? 0) / 1000).toFixed(2)} s`) : null,
+      h("div", { class: "bench-decks" }, deckPicker("a"), deckPicker("b")),
+      transport(),
+      h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "The order",
+          h("span", { class: "pill" }, `${dk.order.length} phrase${dk.order.length === 1 ? "" : "s"}`),
+          h("button", { class: "ghost-btn", title: "Random order — every phrase plays once before any repeats", onclick: () => {
+            const o = dk.order.slice();
+            for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+            dk.order = o; benchUI.pick = null; paint();
+          } }, "🎲 shuffle"),
+          h("button", { class: "ghost-btn", title: "Copy this order as text you can paste back to the composer agent", onclick: () => {
+            const txt = `${dk.trackId} | ${dk.order.map(benchLabel).join(" ")}`;
+            navigator.clipboard?.writeText(txt);
+            toast(`Copied: ${txt.slice(0, 60)}${txt.length > 60 ? "…" : ""}`);
+          } }, "⧉ copy order"),
+          h("button", { class: "ghost-btn", title: "Back to this take's own order", onclick: () => {
+            const k = t?.takes.find((x) => x.live) ?? t?.takes[0];
+            dk.order = k ? benchNatural(k) : []; benchUI.pick = null; paint();
+          } }, "↺ reset")),
+        h("p", { class: "muted" }, benchUI.pick != null
+          ? "Tap another phrase to drop the picked one in front of it."
+          : "Tap a phrase to pick it up, then tap where it should go. ⌣ between two phrases plays that join, looped."),
+        orderRow()),
+      t ? h("div", {},
+        h("div", { class: "sect-head" }, h("h2", {}, t.name),
+          h("span", { class: "pill" }, t.pool ?? ""),
+          t.key ? h("span", { class: "pill" }, t.key) : null),
+        t.keyAsked ? h("p", { class: "muted" }, t.keyAsked) : null,
+        state.admin ? h("div", { class: "card-sub" }, h("span", { class: "muted" }, "track "), benchFeedback(benchFbId("track", t.id))) : null,
+        ...t.takes.map((k) => takePanel(t, k))) : null,
+    ].filter(Boolean);
+  }
+  paint();
+  return wrap;
 }
 
 function viewHome() {
@@ -7416,6 +7962,10 @@ function route() {
   stopAllAudio();   // both players: a long audition used to survive the nav
   const hash = location.hash.replace(/^#\/?/, "");
   const [page, id, sub] = hash.split("/").map(decodeURIComponent);
+  // THE BENCH SURVIVES A RE-RENDER, and only a re-render. Committing a verdict
+  // calls route(), and the music must not stop for it — "I need to judge in
+  // context" — but walking away from the page must silence it.
+  if (page !== "bench") { benchEngine.stopAll(); benchEngine.onChange = null; }
   let view;
   if (state.query && !id) view = viewSearch();
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
@@ -7437,6 +7987,7 @@ function route() {
   }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
+  else if (page === "bench") view = state.admin ? viewBench() : viewHome();
   else view = viewHome();
   $("#content").replaceChildren(view);
   renderNav();

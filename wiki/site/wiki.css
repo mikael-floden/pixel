@@ -1473,3 +1473,54 @@ input[type="range"] { accent-color: var(--accent); }
    under it changing. */
 .stage-flip:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.94); }
 .stage-flip[disabled] { cursor: default; opacity: 0.6; font-weight: 400; }
+
+/* ---- THE MUSIC BENCH. Phone first: every target is at least 44px, the order
+   wraps rather than scrolling sideways, and nothing depends on hover. */
+.bench { display: flex; flex-direction: column; gap: 12px; }
+.bench-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.bench-decks { display: flex; gap: 12px; flex-wrap: wrap; }
+.bench-deck { flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px; }
+.bench-deck-head { display: flex; align-items: center; gap: 10px; }
+.bench-select {
+  width: 100%; min-height: 44px; padding: 8px 10px; font-size: 15px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.bench-transport { display: flex; flex-direction: column; gap: 10px; padding: 10px 0; }
+.bench-btn {
+  min-height: 48px; min-width: 92px; padding: 10px 16px; font-size: 15.5px; font-weight: 600;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 12px; cursor: pointer;
+}
+.bench-btn.go { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-btn:active { transform: translateY(1px); filter: brightness(0.95); }
+.bench-slider { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); flex: 1 1 200px; }
+.bench-slider input { flex: 1; min-height: 36px; }
+.bench-now { min-height: 20px; font-variant-numeric: tabular-nums; font-size: 13px; }
+.bench-order, .bench-phrases { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.bench-chip {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+  min-height: 44px; min-width: 44px; padding: 5px 9px; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 10px;
+  font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.bench-chip .bench-chip-key { font-size: 10.5px; font-weight: 400; color: var(--muted); }
+/* OUT OF THE KEY THAT WAS ASKED FOR — the mark that makes a reject informed. */
+.bench-chip.off-key { border-color: var(--err); color: var(--err); }
+.bench-chip.off-key .bench-chip-key { color: var(--err); }
+.bench-chip.picked { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-chip.picked .bench-chip-key { color: #fff; }
+.bench-x, .bench-seam {
+  min-height: 44px; min-width: 32px; padding: 0 6px; cursor: pointer;
+  background: transparent; color: var(--muted);
+  border: 1px solid transparent; border-radius: 8px; font-size: 15px;
+}
+.bench-seam { border-color: var(--border); }
+.bench-seam.on { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-take.is-live { border-color: color-mix(in srgb, var(--ok) 45%, var(--border)); }
+.bench-fb { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 760px) {
+  .bench-decks { flex-direction: column; }
+  .bench-btn { flex: 1 1 40%; }
+}
