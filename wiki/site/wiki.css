@@ -1507,7 +1507,12 @@ input[type="range"] { accent-color: var(--accent); }
 }
 .bench-chip .bench-chip-key { font-size: 10.5px; font-weight: 400; color: var(--muted); }
 /* OUT OF THE KEY THAT WAS ASKED FOR — the mark that makes a reject informed. */
-.bench-chip.off-key { border-color: var(--err); color: var(--err); }
+/* A BORDER ALONE READ AS "SELECTED", not as "wrong" — the tint is what makes
+   an off-key phrase legible at a glance in a row of twenty. */
+.bench-chip.off-key {
+  border-color: var(--err); color: var(--err);
+  background: color-mix(in srgb, var(--err) 10%, var(--surface));
+}
 .bench-chip.off-key .bench-chip-key { color: var(--err); }
 .bench-chip.picked { background: var(--accent); color: #fff; border-color: transparent; }
 .bench-chip.picked .bench-chip-key { color: #fff; }
@@ -1521,6 +1526,22 @@ input[type="range"] { accent-color: var(--accent); }
 .bench-take.is-live { border-color: color-mix(in srgb, var(--ok) 45%, var(--border)); }
 .bench-fb { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 760px) {
+  /* STACKED, THE BASIS IS A HEIGHT. `flex: 1 1 240px` gave each deck a 240px
+     tall box on a phone and left a screen of nothing between them. */
   .bench-decks { flex-direction: column; }
+  .bench-deck { flex: 0 0 auto; }
   .bench-btn { flex: 1 1 40%; }
 }
+
+.bench-pair { display: inline-flex; align-items: stretch; gap: 2px; }
+.bench-judge {
+  min-height: 44px; min-width: 30px; padding: 0 5px; cursor: pointer; font-size: 13px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px;
+}
+.bench-judge.on { background: var(--accent); color: #fff; border-color: transparent; }
+.bench-judge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+/* What has already been judged, so a second pass can see itself. */
+.bench-chip.judged-ok { box-shadow: inset 0 -3px 0 var(--ok); }
+.bench-chip.judged-no { box-shadow: inset 0 -3px 0 var(--err); }
+.bench-chip.judged { box-shadow: inset 0 -3px 0 var(--star); }

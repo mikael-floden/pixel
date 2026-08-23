@@ -2103,6 +2103,86 @@ report a miss cannot participate in that.
   ~21 MB rather than ~13. `.dockerignore` has no composer rule; adding one
   there would silently 404 every alternative.
 
+## The music bench — auditioning the suite/pool/phrase score
+
+Maintainer 2026-08-22, in full detail. A **suite** is one compatibility group:
+everything in it shares key, tempo and phrase length, so any two pools can
+switch on the beat or layer. Crossing **between** suites is deliberately
+silence, never a musical transition. `#/bench`, admin only — it is a workbench.
+
+### Playback is booked, never triggered
+
+*"Playback must be sample-accurate, or none of this works … Do NOT use `<audio>`
+elements or call `play()` per phrase — that gaps and clicks at every join, and
+I'd be judging the player instead of the music."*
+
+One decode per take, cached; every phrase is a **slice** of that buffer handed
+to the hardware clock as `src.start(when, offset, duration)`. The timer never
+sounds anything — it only ever books the future. Measured by the gate:
+consecutive phrases are booked with a **maximum gap of 0.000000 s**, and the
+engine keeps **two in flight** (the one sounding and the next), because a
+phrase here is 13–20 s and a 0.7 s look-ahead would race the decode of a
+cross-take join.
+
+Phrase N starts at `anchorS + N × phraseMs/1000` with **that take's own**
+measured tempo — Boss Cathedral is 13.38 s on v02 and 13.65 s on v01. Nothing
+schedules off the brief's number.
+
+### The four switch modes, measured
+
+| mode | measured |
+| --- | --- |
+| next beat | lands on a **whole** beat, booked with **0.000000 s** drift |
+| next phrase | booked exactly at the end of the phrase sounding, **0.000000 s** |
+| instant | 0.05 s from the press |
+| suite cross | slider at 4 s → **4.6 s** = 0.6 s fade + 4 s silence |
+
+**Two real bugs came out of measuring rather than reading.** Computing the beat
+boundary and *then* awaiting a 2 MB decode in the same handler put the cut a
+whole phrase late — "next beat" landed 62.7 beats out — because the scheduler
+kept booking the old order while the await sat there; audio is warmed when a
+bed is picked and again before the clock is read. And a cut left its stopped
+source's recorded `end` untouched, so the scheduler believed two phrases were
+still sounding and deferred the replacement.
+
+### The order is the instrument
+
+What plays is a list of phrases, and a phrase may come from **any take** —
+*"phrase 3 from v2 and phrase 5 from v4, since that's how I'd actually pick the
+best ones"*. Reordering is **tap-to-pick, tap-to-place** as well as drag: this
+is a phone-first page and HTML5 drag does not exist on touch. Shuffle, copy the
+order as pasteable text, and reset sit on the panel title.
+
+**The seam buttons live in the joins** of that order — 2 s of one phrase
+straight into 2 s of the next, looped, so a join is judged in five seconds. A
+join in the order *is* the pair, which is what makes "any two phrases" one tap.
+
+### The numbers next to the buttons
+
+`bars` (red when it is not a whole number — 6.70 means every join drops part of
+a beat), the take's own bpm and phrase length, how many phrases are in the key
+that was asked for, and **every phrase chip carrying its own measured key**,
+tinted red when it is not that key. The live take is marked; so is one the
+composer flagged unusable.
+
+### Verdicts at three levels, without stopping the music
+
+`live/feedback/composer-music.json`, `pixel-wiki-feedback@1`:
+
+| level | id |
+| --- | --- |
+| track | `composer/music/<track_id>` |
+| take | `composer/music/<track_id>__v03` |
+| phrase | `composer/music/<track_id>__v03#5` (1-based, matching the screen) |
+
+The verdict row repaints **itself** instead of re-routing — *"I must be able to
+hit accept/reject without the music stopping, I need to judge in context"* —
+and because the engine lives at module scope with no DOM in it, even committing
+(which re-routes) leaves the audio running. Only navigating away silences it.
+The phrase chip's "already judged" mark is re-stamped directly for the same
+reason. Audition runs through the game's music bus at **−14 dB**; keys are
+Swedish throughout, and B is H.
+
 ## Music comes from TWO places
 
 The Music page listed only `music/` — the music agent's domain — so the five

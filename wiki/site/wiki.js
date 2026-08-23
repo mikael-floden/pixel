@@ -1869,7 +1869,10 @@ const benchEngine = {
         const dur = Math.max(0.02, Math.min(sl.dur, buf.duration - off));
         src.start(at, off, dur);
         d.live.push({ src, at, end: at + dur, item });
-        benchPlays.push({ deck: d.name, take: sl.takeId, idx: item.idx, at: +at.toFixed(4), dur: +dur.toFixed(4) });
+        // FULL PRECISION, not a rounded copy: the gate asserts that a switch is
+        // booked exactly where it was computed, and rounding the log to 0.1 ms
+        // made it look like 5 µs of drift that the audio never had.
+        benchPlays.push({ deck: d.name, take: sl.takeId, idx: item.idx, at, dur });
         d.nextAt = at + dur;
         d.cursor++;
       }
@@ -2288,6 +2291,7 @@ const benchUI = {
   mode: "phrase", crossS: 15, duckPct: -75,
   pick: null,              // the order chip picked up, waiting to be placed
   seam: null,              // {i} — which join is previewing
+  judge: {},               // takeId -> which phrase's verdict row is open
 };
 const benchData = () => state.data.bench ?? null;
 const benchTracksIn = (suite) => (benchData()?.tracks ?? []).filter((t) => t.suite === suite);
@@ -2306,6 +2310,19 @@ function benchPhraseKey(takeId, idx) {
   const p = t?.perPhrase?.[idx];
   if (!p) return { sv: null, off: false };
   return { sv: p.sv, off: !!t.wantSv && p.sv !== t.wantSv };
+}
+/** Re-stamp one phrase chip's verdict mark. The verdict row repaints ITSELF
+ *  rather than the page — the music must not be interrupted to record an
+ *  opinion — so the chip that shows "already judged" has to be told directly.
+ *  Keyed by the feedback id, which is on the chip. */
+function benchMarkChip(id) {
+  const chip = document.querySelector(`.bench-chip[data-fb="${CSS.escape(id)}"]`);
+  if (!chip) return;
+  const v = fb("composer-music", id);
+  chip.classList.remove("judged-ok", "judged-no", "judged");
+  if (v.status === "approved") chip.classList.add("judged-ok");
+  else if (v.status === "rejected") chip.classList.add("judged-no");
+  else if (v.rating) chip.classList.add("judged");
 }
 const benchFbId = (kind, trackId, takeId, idx) =>
   kind === "track" ? `composer/music/${trackId}`
@@ -2461,15 +2478,35 @@ function viewBench() {
             title: `${k.inKey} of ${k.perPhrase.length} phrases are in ${k.wantSv ?? "the key asked for"}` },
           `${k.inKey}/${k.perPhrase.length} i ${k.wantSv ?? "rätt tonart"}`)
           : null),
-      // Every phrase of this take: number, measured key, red when off.
+      // Every phrase of this take: number, measured key, red when off, and its
+      // own ⚖ — the THIRD verdict level. The chip's own tap ADDS to the order
+      // (the thing he does most), so judging gets its own target rather than a
+      // mode to remember, the same shape the order row's × and ⌣ already have.
       h("div", { class: "bench-phrases" }, ...Array.from({ length: k.phrases ?? 0 }, (_, i) => {
         const pk = benchPhraseKey(k.id, i);
-        return h("button", {
-          class: `bench-chip add${pk.off ? " off-key" : ""}`,
-          title: `Add phrase ${i + 1} to the order${pk.sv ? ` — measured ${pk.sv}` : ""}`,
-          onclick: () => { benchUI.deck.a.order.push({ takeId: k.id, idx: i }); paint(); },
-        }, `${i + 1}`, pk.sv ? h("span", { class: "bench-chip-key" }, pk.sv) : null);
+        const v = fb("composer-music", benchFbId("phrase", t.id, k.id, i));
+        const mark = v.status === "approved" ? " judged-ok" : v.status === "rejected" ? " judged-no" : v.rating ? " judged" : "";
+        const fid = benchFbId("phrase", t.id, k.id, i);
+        return h("span", { class: "bench-pair" },
+          h("button", {
+            "data-fb": fid,
+            class: `bench-chip add${pk.off ? " off-key" : ""}${mark}`,
+            title: `Add phrase ${i + 1} to the order${pk.sv ? ` — measured ${pk.sv}` : ""}${v.status ? ` · ${v.status}` : ""}`,
+            onclick: () => { benchUI.deck.a.order.push({ takeId: k.id, idx: i }); paint(); },
+          }, `${i + 1}`, pk.sv ? h("span", { class: "bench-chip-key" }, pk.sv) : null),
+          state.admin ? h("button", {
+            class: `bench-judge${benchUI.judge[k.id] === i ? " on" : ""}`,
+            title: `Judge phrase ${i + 1} on its own`,
+            onclick: () => { benchUI.judge[k.id] = benchUI.judge[k.id] === i ? null : i; paint(); },
+          }, "⚖") : null);
       })),
+      state.admin && benchUI.judge[k.id] != null ? h("div", { class: "card-sub bench-judge-row" },
+        h("span", { class: "muted" }, `phrase ${benchUI.judge[k.id] + 1}`),
+        (() => {
+          const pk = benchPhraseKey(k.id, benchUI.judge[k.id]);
+          return pk.sv ? h("span", { class: pk.off ? "pill err" : "pill" }, pk.sv) : null;
+        })(),
+        benchFeedback(benchFbId("phrase", t.id, k.id, benchUI.judge[k.id]), benchMarkChip)) : null,
       state.admin ? h("div", { class: "card-sub" },
         h("span", { class: "muted" }, "take "),
         benchFeedback(benchFbId("take", t.id, k.id))) : null);
@@ -2477,10 +2514,10 @@ function viewBench() {
 
   /** A verdict row that repaints ITSELF and never re-routes — the music has to
    *  keep playing while he judges (maintainer: "I need to judge in context"). */
-  function benchFeedback(id) {
+  function benchFeedback(id, after) {
     const box = h("span", { class: "bench-fb" });
     const draw = () => box.replaceChildren(feedbackRow("composer-music", id, {
-      onchange: draw, onStars: draw,
+      onchange: () => { draw(); after?.(id); }, onStars: () => { draw(); after?.(id); },
       reject: "✕ reject", rejectTitle: "Tell the composer this one is not good enough",
       rejectedLabel: "rejected",
     }));
