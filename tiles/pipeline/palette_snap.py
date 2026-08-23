@@ -53,52 +53,54 @@ def _hex(s):
 def _regions(a):
     """Top / left-wall / right-wall masks from the tile's own geometry.
 
-    The diamond is MEASURED, never assumed. Its apex is the topmost opaque pixel and
-    its left/right corners are the topmost opaque pixel of the bounding box's outermost
-    columns, so the half-height falls out of the art (14 on a 64-wide tile — the diamond
-    is 64x28, not 64x32).
+    THE TOP FACE IS THE LATTICE'S SHAPE, NOT A FITTED DIAMOND. It used to be solved -
+    apex from the topmost pixel, half-height averaged from the outer columns, then a
+    "+1" row added by hand because "with an even tile width the centre falls between
+    columns, so the bottom vertex never quite reaches the threshold". That fudge was the
+    tell. The face is now stepped out from the two side corners at the GRID's own pitch,
+    14 rows per 32 columns, which is the maintainer's algorithm (see clean_top.py) and
+    the only slope that stays collinear from one tile to the next:
 
-    Assuming the usual 2:1 diamond instead costs 2px of half-height, which pushes the
-    top/wall boundary 1-3 rows BELOW where the top surface actually ends. That band is
-    the dark shading the generator draws where the grass overhangs the cliff, and
-    repainting it flat palette green fattens the green area by 4.4% and deletes the
-    tile's edge definition. It is the same off-by-two that made rendered plateaus come
-    out ragged.
+        "The line looks very straight, but putting tiles togather in a 9x9 looks very
+         zigzaggy" - a 2:1 staircase falls 16 rows per 32 and breaks by 2px at EVERY
+         seam. A single tile cannot show this; only a field can.
 
-    The +1 is the diamond's own boundary ROW, which a strict inequality drops: with an
-    even tile width the centre falls between columns, so the bottom vertex never quite
-    reaches the threshold. Including it makes the mask land exactly on the last pixel of
-    the top surface far more often than any other cutoff, and leaves the flat fill 2.0%
-    SMALLER than the raw art rather than larger — so the postprocess can never be what
-    enlarges a surface.
+    Three things fall out of that one rule rather than being asked for separately: the
+    near corner lands 1-2px lower than the fitted diamond ("the real center is 1 or 2
+    pixels down from your current center"), the apex comes out 2 columns wide ("our
+    tiles usually have two pixels here on the same y"), and the side corners 2 rows tall
+    ("this will give us 2px wide corner").
 
-    Both figures are measured over the 350 generated grass tiles whose wall material is
-    not itself green, comparing the mask against the raw art's own green silhouette.
+    `above` is everything poking over the upper edges - a grass blade, a spike of ice.
+    The caller alpha's it away: "You still however need to delete pixels perpendicular
+    over (in case grass or something sticking up)."
     """
+    import clean_top
+
     h, w = a.shape[:2]
     op = a[:, :, 3] > 128
     if not op.any():
         return None
-    ys, xs = np.where(op)
-    x0, x1, y0 = int(xs.min()), int(xs.max()), int(ys.min())
-    bw = x1 - x0 + 1
-    cx = (x0 + x1) / 2.0
-    hw = bw / 2.0
-    corners = [int(np.where(op[:, x])[0].min()) - y0 for x in (x0, x1)]
-    hh = float(np.mean(corners)) or hw / 2.0
-    cy = y0 + hh
+    r = clean_top.top_mask(op)
+    if r is None:
+        return None
+    top, above, edge = r
     yy, xx = np.mgrid[0:h, 0:w]
-    below = yy > cy + hh * (1.0 - np.abs(xx - cx) / hw) + 1.0
-    # Claim every opaque pixel above the line rather than only those inside the strict
-    # diamond. The strict form leaves its own outermost rim in no mask at all, so the
-    # rim keeps its raw colour while the interior is repainted — invisible on one tile,
-    # a bright grid line along every shared edge once tessellated. Those rim pixels are
-    # not a compromise: measured on a real tile they are fully opaque and green, i.e.
-    # they ARE the top surface, the equation just cuts a pixel inside the art. The wall
-    # keeps every pixel below the line, unchanged.
-    return {"top": op & ~below,
-            "left": below & op & (xx <= cx), "right": below & op & (xx > cx)}
+    ys, xs = np.where(op)
+    cx = (int(xs.min()) + int(xs.max())) / 2.0
+    # The wall is everything the face and the trim do not claim. Deriving it as the
+    # complement rather than from a second equation is what keeps the two consistent:
+    # the old pair could disagree along the boundary and leave a rim in neither mask,
+    # which shipped as a bright grid line along every shared edge once tessellated.
+    wall = op & ~top & ~above
+    return {"top": top, "above": above, "edge": edge,
+            "left": wall & (xx <= cx), "right": wall & (xx > cx)}
 
+
+# The clean top's lower boundary is drawn at this much of the flat colour: 0.75,
+# i.e. 191/255. Half strength let too much of the art through - the boundary read
+# as a smudge rather than as the edge of a clean surface.
+EDGE_ALPHA = 0.75
 
 CANON_HH, CANON_HW = 14.0, 32.0     # the house diamond: 64 wide, 28 tall
 
@@ -1290,7 +1292,18 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
         #
         # It cannot reach the border the maintainer wants kept: that border lives in the
         # WALL region, which this function no longer touches at all.
-        out[:, :, :3][reg["top"]] = np.clip(top, 0, 255)
+        #
+        # THE LAST ROW OF THE FILL IS HALF-STRENGTH, so the art decides where the
+        # boundary reads bright: "drawing the line towards the bottom beter corner as
+        # 50% alpha (this will look like a highlight defined by the texture under it)".
+        # A blend, not transparency - the pixel stays opaque, it just carries the art
+        # through at half weight.
+        _solid = reg["top"] & ~reg["edge"]
+        out[:, :, :3][_solid] = np.clip(top, 0, 255)
+        if reg["edge"].any():
+            _src = a[:, :, :3][reg["edge"]].astype(float)
+            out[:, :, :3][reg["edge"]] = np.round(
+                EDGE_ALPHA * np.clip(top, 0, 255) + (1.0 - EDGE_ALPHA) * _src)
 
     # The overhanging blades belong to the top material, so they move with it. This is
     # the ONLY thing that writes into the wall region, and it writes only pixels the
@@ -1484,6 +1497,15 @@ def snap(img, top_hex, side_hex=None, keep_wall_texture=True, side_profile=None,
     if edge_dim:
         dim_edge_highlight(out, a, reg, top_hex)
     out[:, :, 3] = a[:, :, 3]
+    # WHAT POKES OVER THE TOP EDGE IS CUT, not painted: "You still however need to
+    # delete pixels perpendicular over (in case grass or something sticking up)." A
+    # blade that stands above the face's own outline breaks the silhouette the lattice
+    # depends on, and painting it flat would only make it a brighter spike. Measured on
+    # this art it fires rarely - 1 tile in 125 grass/snow/ice tops - because the face's
+    # apex already sits a pixel above the art's on nearly every tile. It is here for the
+    # ones where it does not.
+    if reg.get("above") is not None and reg["above"].any():
+        out[:, :, 3][reg["above"]] = 0
     return Image.fromarray(out.clip(0, 255).astype(np.uint8), "RGBA")
 
 

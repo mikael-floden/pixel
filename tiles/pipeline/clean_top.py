@@ -47,8 +47,9 @@ CORNER_DROP = 1
 APEX_LIFT = 1
 
 # The lower boundary is drawn at this much of the flat colour, so the art beneath still
-# reads through it as a highlight.
-EDGE_ALPHA = 0.5
+# reads through it as a highlight: 0.75, i.e. 191/255. Measured against 0.5 by eye -
+# half strength let too much through and the edge lost its definition.
+EDGE_ALPHA = 0.75
 
 # THE EDGE SLOPE IS THE GRID'S, NOT AN IDEALISED 2:1. The game lays tiles at +32 columns
 # and +14 rows (tiles/docs/GEOMETRY.md, and the manifest's own iso block), so a top edge

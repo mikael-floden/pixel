@@ -233,6 +233,7 @@ def _save(im, path):
 MIN_WALL = 1.0
 
 REJECTED_KEYS = set()
+APPROVED_SRC = {}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MATRIX = os.path.join(ROOT, "matrix")
@@ -254,7 +255,7 @@ LOCK = _load_lock()
 
 def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
                cell=None, rejected_keys=(),
-               approved=(), lock=None):
+               approved=(), lock=None, pinned=()):
     """Every tile in a cell, scored on its wall, best first.
 
     WALL MATERIAL is a gate here, not a score. "X over Y" is a request for two materials
@@ -302,7 +303,13 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
             # 182 of the 238 tiles it rejected were already seamless after postprocess,
             # several of them with the best edge spill in the whole set.
             # Against the palette colour, not the tile's own median — see clears_bar.
-            if not forced and flatness.seam_px(p, top_hex_c) > flatness.SEAM_TOL:
+            # AND AN APPROVAL OUTRANKS THIS GATE TOO. seam_px is measured on the tile as
+            # it will ship, so changing the postprocess moves it - the clean top pushed
+            # one approved tile from passing to 240 against a tolerance of 8. A gate
+            # exists to spare the maintainer obvious crap; it has no business overruling
+            # a tile he has already looked at and kept.
+            if (not forced and os.path.relpath(p, REPO) not in pinned
+                    and flatness.seam_px(p, top_hex_c) > flatness.SEAM_TOL):
                 continue
             out.append({
                 "path": p, "wall": q, "forced": forced,
@@ -353,7 +360,19 @@ def candidates(cell_dir, side_hex=None, same=False, rejected=(), top_hex_c=None,
     # is the opposite of what an override is for.
     forced = [c for c in out if c.get("forced")]
     out = [c for c in out if not c.get("forced")]
-    keep = lambda c: False
+    # A TILE THE MAINTAINER APPROVED NEVER FALLS OUT OF A TIER. `keep` has been a no-op
+    # hook since it was written; this is what it is for. The tiers below take the first
+    # non-empty one, so a candidate that dips under a bar is dropped outright the moment
+    # any other candidate clears it - and the bars are computed from the POSTPROCESSED
+    # tile, so changing the postprocess moves them. Measured when the clean top landed:
+    # 142 approved tiles vanished this way, passing every gate, tombstone and lock, and
+    # failing only a clarity threshold that had shifted underneath them.
+    #
+    # This is narrower than the `approved` override above, deliberately. An override
+    # bypasses the gates AND the cap (measured: the set went 3990 -> 4432, and cells
+    # failing the wall-material check 5 -> 22). Pinning only exempts a tile from being
+    # ranked out of its own cell, which is the thing his verdict actually means.
+    keep = lambda c: os.path.relpath(c["path"], REPO) in pinned
     spill_ok = (lambda c: True) if (same or flatness.indistinguishable(top_hex_c, side_hex)) \
         else (lambda c: c["overhang"] >= flatness.MIN_OVERHANG or keep(c))
     full = [c for c in out if keep(c) or (spill_ok(c)
@@ -512,8 +531,12 @@ def main():
     if args.clean and os.path.isdir(REVIEW):
         shutil.rmtree(REVIEW)
     os.makedirs(REVIEW, exist_ok=True)
-    global REJECTED_KEYS
+    global REJECTED_KEYS, APPROVED_SRC
     REJECTED_KEYS = _rejected_keys()
+    APPROVED_SRC = _approved_sources()
+    if APPROVED_SRC:
+        print(f"pinning {sum(len(v) for v in APPROVED_SRC.values())} approved tile(s) "
+              f"against the ranking tiers")
     if REJECTED_KEYS:
         print(f"filtering {len(REJECTED_KEYS)} rejected tile key(s) from the maintainer's verdicts")
     dead = tombstones.load().get("cells", {})
@@ -591,7 +614,8 @@ def main():
             d, (PALETTE.get(gate_side) or {}).get("top"), same=(gate_top == gate_side),
             rejected=rejected, top_hex_c=(PALETTE.get(gate_top) or {}).get("top"),
             approved=approved, lock=LOCK.get(cell),
-            cell=cell, rejected_keys=REJECTED_KEYS)
+            cell=cell, rejected_keys=REJECTED_KEYS,
+            pinned=APPROVED_SRC.get(cell, ()))
         # EVERY OVERRIDE PUBLISHES. --top caps how many the ranking contributes, but the
         # maintainer picked these out of the reject pile by hand and truncating their
         # choices is not the cap's job — four approvals landed in grey_stone-over-lava
