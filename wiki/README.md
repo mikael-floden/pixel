@@ -662,6 +662,39 @@ deliberately loads both passes from the *second* origin and reads the pixels
 back (27 colours), plus one that drives the page's own loader and asserts it
 asks for CORS on every image it reads.
 
+### The detail picture is 5×5 — nine of the tile inside a ring of ground
+
+Maintainer 2026-08-23: *"On the details page I want to review the tile as 5x5
+with the tile I'm reviewing as the center 3x3 surrounded by the base tile … The
+idea with a base tile is a tile that looks better than a single color tile, so
+if no base tile exist that mean the base tile is used 100% as the base tile."*
+
+One tile in a 3×3 answered "how does this meet the ground". **Nine** of it
+answers the question a repeated ground detail actually raises: what happens
+when several land near each other. So `detailField` draws 5×5 with the middle
+3×3 the tile under review and the outer ring the ground.
+
+**And the ring is the ground as it is today.** `detailSurround` returns
+`{ members, clean }`: the promoted base group when one exists, and otherwise
+the **clean-colour tile** — because with nothing promoted, that flat tile *is*
+what the game paints. Falling back to a textured neighbour would show him a
+ground that does not exist yet, and let it flatter the tile under review.
+
+The same picture now backs the per-tile Textured preview on a pair card, so the
+two places a top can be judged agree with each other. The intro says which ring
+it is drawing, so the picture is never ambiguous.
+
+Gated on geometry rather than a screenshot: an N×N iso field spans
+`(2N−2)·dx + tilePx + 8`, so 5×5 is 328px where 3×3 would be 200.
+
+### Every composed scene asks for CORS
+
+The ring exposed a second face of the tainting bug: `loadImages` fetched plainly,
+so the moment a scene included staging-origin art the whole canvas became
+unreadable — display fine, but no check could ever look at the picture. It
+requests CORS now and retries plainly if an origin refuses, because a tainted
+tile still beats a missing one on a page whose job is showing tiles.
+
 ### Details draws Textured, whatever the switch says
 
 *"When I press Details I expect the tile in the center to be the textured

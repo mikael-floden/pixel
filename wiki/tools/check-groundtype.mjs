@@ -594,6 +594,45 @@ const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene
 ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
+// ---- THE DETAIL PICTURE IS 5x5, WITH NINE OF THE TILE IN THE MIDDLE -------
+// Maintainer 2026-08-23: "On the details page I want to review the tile as 5x5
+// with the tile I'm reviewing as the center 3x3 surrounded by the base tile …
+// The idea with a base tile is a tile that looks better than a single color
+// tile, so if no base tile exist that mean the base tile is used 100% as the
+// base tile."
+//
+// One tile in a 3x3 showed how it MEETS the ground; nine of it shows what it
+// does when several land near each other. The ring is the ground itself: the
+// promoted base group, or — with nothing promoted — the CLEAN-COLOUR tile,
+// because that is what the game paints today.
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+await p.waitForTimeout(3600);
+const five = await p.evaluate(() => {
+  const iso = window.__wiki.state.data.iso ?? { tilePx: 64, dx: 32 };
+  const cv = document.querySelectorAll(".detail-card canvas")[0];
+  if (!cv) return { err: "no detail canvas" };
+  let colours = -1;
+  try {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    const s2 = new Set();
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) s2.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+    colours = s2.size;
+  } catch { colours = "tainted"; }
+  // an N x N iso field spans (2N-2)*dx + tilePx, plus 4px of pad either side
+  const span = (n) => (2 * n - 2) * iso.dx + iso.tilePx + 8;
+  return { w: cv.width, want5: span(5), want3: span(3), colours,
+    promoted: Object.keys(window.__wiki.state.tuning.base_tiles?.overrides ?? {}).length,
+    says: [...document.querySelectorAll("p.muted")].map((x) => x.textContent).find((x) => /ring of the ground/.test(x)) ?? "" };
+});
+ok(five.w === five.want5,
+  `the detail picture is a 5x5 field, not a 3x3 (${five.w}px, 5x5 spans ${five.want5}, 3x3 would be ${five.want3})`);
+ok(typeof five.colours === "number" && five.colours > 8,
+  `and it is readable and textured rather than a wall of one colour (${five.colours} colours)`);
+ok(/clean-colour tile|promoted base tile/.test(five.says),
+  `the page says what the ring IS, so the picture is never ambiguous ("${five.says.slice(0, 76)}…")`);
+
 // ---- IT HAS TO WORK ACROSS ORIGINS, WHICH IS THE ONLY WAY IT EVER RUNS -----
 // Maintainer 2026-08-22: "Textured doesn't work and also displays the clean
 // single color version right now."

@@ -4601,12 +4601,53 @@ const detailQueue = (typeId) => typeTops(typeId).filter(({ cand }) => !topReview
 /** What surrounds a detail in its composition: the base group's members —
  *  or, before any exist, the ground's own best pure tile, so the review is
  *  possible in either order. */
+/* WHAT THE GROUND AROUND A DETAIL IS (maintainer 2026-08-23: "The idea with a
+ * base tile is a tile that looks better than a single color tile, so if no base
+ * tile exist that mean the base tile is used 100% as the base tile").
+ *
+ * A promoted base group is the ground. With nothing promoted the ground IS the
+ * clean-colour tile — that is what the game paints today — so the fallback is
+ * that tile in its FLATTENED pass, not its textured one. Surrounding a detail
+ * with a textured neighbour would be showing him a ground that does not exist
+ * yet and letting it flatter the tile under review.
+ *
+ * → { members, clean } — members empty means "no base tile promoted; use clean". */
 function detailSurround(typeId) {
-  const g = baseGroupsOf(typeId)[0];
-  if (g?.members.length) return g.members;
   const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
-  const cand = own?.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own?.candidates[0];
-  return cand ? [{ weight: 1, hit: { cand } }] : [];
+  const ownCand = own?.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own?.candidates[0];
+  const clean = ownCand?.art ?? null;          // the shipped, clean-top pass
+  const g = baseGroupsOf(typeId)[0];
+  return { members: g?.members ?? [], clean };
+}
+/* FIVE BY FIVE, WITH THE TILE UNDER REVIEW AS THE MIDDLE THREE BY THREE
+ * (maintainer 2026-08-23: "On the details page I want to review the tile as 5x5
+ * with the tile I'm reviewing as the center 3x3 surrounded by the base tile").
+ *
+ * A single tile in a 3×3 showed how it MEETS the ground; nine of it inside a
+ * ring shows what it does when several land near each other, which is the
+ * question a repeated ground detail actually raises. The ring is the ground
+ * itself — the promoted base group, or the clean tile when nothing is promoted. */
+function detailField(centerArt, surround, seed, scale = 1, pass = null) {
+  const box = h("div", { class: "iso-stage checker group-stage" });
+  const rnd = seededRnd(seed);
+  const members = surround?.members ?? [];
+  const cells = [];
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
+    const inner = c >= 1 && c <= 3 && r >= 1 && r <= 3;
+    let img;
+    if (inner) img = centerArt;
+    else if (members.length) {
+      const cand = pickBaseMember(members, rnd).hit?.cand;
+      img = pass ? viewArtIn(pass, cand) : viewArt(cand);
+    } else {
+      img = surround?.clean ?? null;           // no base tile promoted yet
+    }
+    cells.push({ c, r, img });
+  }
+  const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
+  if (!paths.length) { box.append(h("p", { class: "muted" }, "no ground to stand this on yet")); return box; }
+  loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
+  return box;
 }
 
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
@@ -5411,9 +5452,7 @@ function viewWorldType(top) {
     const shownQueue = detailShown.get(t.id) ?? 12;
     const dPass = detailPass();
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
-      surround.length
-        ? centeredField(viewArtIn(dPass, cand), surround, dSeed, 1, dPass)
-        : h("div", { class: "iso-stage checker group-stage" }, artNodeFor(viewArtIn(dPass, cand), "member-tile", "the top")),
+      detailField(viewArtIn(dPass, cand), surround, dSeed, 1, dPass),
       h("div", { class: "card-sub" },
         h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
         // Only ever says something when the picture is NOT what the switch
@@ -5452,7 +5491,7 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? `Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Before for the raw generation." : `Drawn ${worldView() === "before" ? "BEFORE — the raw generation" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
+        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Before for the raw generation." : `Drawn ${worldView() === "before" ? "BEFORE — the raw generation" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
@@ -5770,12 +5809,17 @@ function tileScenes(cell, cand, onView) {
     // 3×3-of-itself and the cliff corner give way to the one composition that
     // matters here: this top, textured, centred in the ground's base tiles.
     if (mode === "texture") {
+      // THE SAME PICTURE THE DETAILS TAB USES: nine of this top in a ring of the
+      // ground, so the two places he judges a top agree with each other.
       const surround = detailSurround(cell.top);
-      const pool = surround.length ? surround : [{ weight: 1, hit: { cand } }];
       const rnd = seededRnd(3);
       const cells = [];
-      for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
-        cells.push({ c, r, img: (c === 1 && r === 1) ? face : viewArtIn("texture", pickBaseMember(pool, rnd).hit?.cand) });
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
+        const inner = c >= 1 && c <= 3 && r >= 1 && r <= 3;
+        const ring = surround.members.length
+          ? viewArtIn("texture", pickBaseMember(surround.members, rnd).hit?.cand)
+          : surround.clean;
+        cells.push({ c, r, img: inner ? face : ring });
       }
       loadImages([face, ...cells.map((x) => x.img)].filter(Boolean), (images) => {
         const iso = worldIso();
@@ -6270,9 +6314,25 @@ function loadImages(paths, cb) {
   const out = {};
   let left = uniq.length;
   if (!left) { cb(out); return; }
+  /* ASK FOR CORS, THEN FALL BACK. Composed scenes draw art that lives on the
+   * staging origin (tile review art is not in the deploy image), and an <img>
+   * fetched without crossOrigin taints every canvas it lands in — which is how
+   * the textured pass came to fail silently in production. Requesting it keeps
+   * these scenes readable, which is what lets a gate check the PICTURE rather
+   * than the plumbing. If an origin ever refuses CORS the image would not load
+   * at all, so a refusal retries plainly: a tainted tile still beats a missing
+   * one on a page whose whole job is showing tiles. */
   const plain = (p, key) => {
+    const done = (im) => { out[key] = im?.naturalWidth ? im : null; if (--left <= 0) cb(out); };
+    const bare = () => {
+      const im2 = new Image();
+      im2.onload = im2.onerror = () => done(im2);
+      im2.src = assetUrl(p);
+    };
     const im = new Image();
-    im.onload = im.onerror = () => { out[key] = im.naturalWidth ? im : null; if (--left <= 0) cb(out); };
+    im.crossOrigin = "anonymous";
+    im.onload = () => done(im);
+    im.onerror = bare;
     im.src = assetUrl(p);
   };
   for (const p of uniq) {
