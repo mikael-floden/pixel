@@ -1124,6 +1124,138 @@ const BED_ROLE = {
   town: { when: "Standing on roads and farm tiles", live: false },
   adventure: { when: "Everywhere else — the default bed", live: false },
 };
+
+/* ---- THE MUSIC BENCH (maintainer 2026-08-22: "I want a music bench in the
+ * wiki for the new suite/pool/phrase system. All the data is already published
+ * by the composer agent — nothing needs generating.")
+ *
+ * A SUITE is one compatibility group: everything in it shares key, tempo and
+ * phrase length, so any two pools can switch on the beat or layer. Crossing
+ * BETWEEN suites is deliberately silence, never a musical transition — the
+ * brief's own words, and the reason the bench has a silence slider.
+ *
+ * A TAKE is one generation of a bed. The live one is the file the game
+ * streams; the rest are archived under pool/ and carry their own measurements,
+ * which is what makes an informed reject possible.
+ *
+ * PHRASE TIMING IS PER TAKE, and this is the whole reason the bench can sound
+ * seamless. Phrase N starts at beat_anchor_s + N × phrase_ms/1000. The live
+ * take publishes `phrase.phrase_ms` already corrected to its REAL measured
+ * tempo (13746 where the brief asked 13714 — a third of a beat per phrase,
+ * which is an audible slip by the fourth join). An archived take publishes its
+ * own `bars` and `bpm` instead, so its phrase length is derived from those.
+ * Nothing here uses the brief's number to schedule audio.
+ *
+ * WHAT IS NOT PUBLISHED, said plainly rather than papered over: archived takes
+ * carry no beat anchor of their own, so they borrow the track's. If the
+ * composer starts publishing one per take, this reads it without a UI change.
+ */
+const SW_NOTE = { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "H" };
+/** Swedish key names — "D-dur", "C-moll" (maintainer 2026-08-22). Note B is H
+ *  in Swedish notation and B-flat is B, so the note letter is mapped, not just
+ *  the mode word. */
+function svKey(root, mode) {
+  if (!root) return null;
+  const m = String(root).match(/^([A-G])([#b]?)/);
+  if (!m) return null;
+  const letter = SW_NOTE[m[1]] ?? m[1];
+  const acc = m[2] === "#" ? "iss" : m[2] === "b" ? (m[1] === "H" ? "" : "ess") : "";
+  const minor = /min/i.test(mode ?? "");
+  return `${letter}${acc}-${minor ? "moll" : "dur"}`;
+}
+const svKeyText = (s2) => {
+  if (!s2) return null;
+  const m = String(s2).match(/^([A-G][#b]?)\s*(major|minor|dur|moll)?/i);
+  return m ? svKey(m[1], m[2] ?? "major") : String(s2);
+};
+function buildBench() {
+  const dir = composerDir() ? join(composerDir(), "music") : null;
+  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  if (!doc?.tracks) return null;
+  // The suite contracts, read from the composer's own briefs.
+  const suites = {};
+  const bdir = dir ? join(dir, "briefs") : null;
+  if (bdir && isDir(bdir)) {
+    for (const f of readdirSync(bdir).filter((x) => x.endsWith(".json"))) {
+      const br = readJson(join(bdir, f));
+      if (!br?.suite) continue;
+      suites[br.suite] = {
+        id: br.suite, world: br.world ?? null,
+        bpm: br.bpm ?? null, bars: br.bars ?? null, phraseMs: br.phrase_ms ?? null,
+        key: br.key ?? null, keySv: svKeyText(br.key),
+        // "the idea behind each colour" — whatever shape the brief uses.
+        pools: br.pools ?? null,
+        harmony: br.harmony ?? null,
+      };
+    }
+  }
+  const fileMap = (arr) => {
+    const out = {};
+    for (const f of arr ?? []) {
+      const ext = (f.file.split(".").pop() ?? "").toLowerCase();
+      out[ext] = `composer/music/${f.file}`;
+    }
+    return out;
+  };
+  const tracks = [];
+  for (const [id, t] of Object.entries(doc.tracks)) {
+    const ph = t.phrase;
+    if (!ph) continue;                       // legacy bed, not part of this system
+    const anchor = ph.beat_anchor_s ?? t.timing?.beat_anchor_s ?? 0;
+    const takes = [];
+    for (const v of t.versions ?? []) {
+      // Per-take phrase length from the take's OWN measured tempo.
+      const bars = v.bars ?? ph.bars ?? null;
+      const bpm = v.bpm ?? null;
+      const ms = (bars && bpm) ? Math.round(bars * 4 * 60000 / bpm) : (ph.phrase_ms ?? null);
+      takes.push({
+        version: v.version,
+        id: `${id}__v${String(v.version).padStart(2, "0")}`,
+        files: fileMap(v.files), duration_s: v.duration_s ?? null,
+        bpm: bpm != null ? +bpm.toFixed(2) : null,
+        bars: bars != null ? +Number(bars).toFixed(2) : null,
+        phraseMs: ms, anchorS: anchor, anchorOwn: false,
+        key: v.musical?.root ? svKey(v.musical.root, v.musical.mode) : null,
+        // The measured key of every single phrase, and what it was supposed to
+        // be — this is what turns a reject into an informed one.
+        perPhrase: (v.phrase_key?.per_phrase ?? []).map((k) => ({ key: k, sv: svKeyText(k) })),
+        want: v.phrase_key?.want ?? null, wantSv: svKeyText(v.phrase_key?.want),
+        inKey: v.phrase_key?.in_key ?? null,
+        phrases: v.phrase_key?.phrases ?? (ms ? Math.max(1, Math.floor(((v.duration_s ?? 0) * 1000 - anchor * 1000) / ms)) : null),
+        live: !!v.live, usable: v.usable !== false,
+      });
+    }
+    // A track with no archive still has ONE take: the file the game streams.
+    const liveFiles = fileMap(t.files);
+    if (!takes.some((x) => x.live)) {
+      takes.push({
+        version: null, id, files: liveFiles, duration_s: t.duration_s ?? null,
+        bpm: t.bpm != null ? +t.bpm.toFixed(2) : (ph.bpm_measured ?? null),
+        bars: ph.bars ?? null, phraseMs: ph.phrase_ms ?? null, anchorS: anchor, anchorOwn: true,
+        key: t.musical?.root ? svKey(t.musical.root, t.musical.mode) : null,
+        perPhrase: [], want: null, wantSv: null, inKey: null,
+        phrases: ph.phrases ?? null, live: true, usable: true,
+      });
+    } else {
+      // The live archived take IS the streamed file; give it that path too, so
+      // the bench never downloads the same audio twice under two names.
+      for (const k of takes) if (k.live) { k.files = { ...k.files, ...liveFiles }; k.anchorOwn = true; k.phraseMs = ph.phrase_ms ?? k.phraseMs; }
+    }
+    tracks.push({
+      id, name: titleCase(id), suite: ph.suite ?? null, pool: ph.pool ?? null,
+      phraseMs: ph.phrase_ms ?? null, bars: ph.bars ?? null, phrases: ph.phrases ?? null,
+      anchorS: anchor, bpm: ph.bpm_measured ?? (t.bpm != null ? +t.bpm.toFixed(2) : null),
+      key: t.musical?.root ? svKey(t.musical.root, t.musical.mode) : null,
+      keyAsked: ph.key_asked ?? null,
+      duration_s: t.duration_s ?? null,
+      takes: takes.sort((a, b2) => (b2.version ?? 99) - (a.version ?? 99)),
+    });
+  }
+  tracks.sort((a, b2) => (a.suite ?? "").localeCompare(b2.suite ?? "") || (a.pool ?? "").localeCompare(b2.pool ?? "") || a.id.localeCompare(b2.id));
+  if (!tracks.length) return null;
+  return { suites, tracks, targetLufs: doc.target_lufs ?? null };
+}
+const bench = buildBench();
 function buildComposerMusic() {
   const dir = composerDir() ? join(composerDir(), "music") : null;
   const doc = dir ? readJson(join(dir, "tracks.json")) : null;
@@ -2379,6 +2511,8 @@ const data = {
   },
   // The tiles agent's own vocabulary and acceptance thresholds.
   worldMeta,
+  // The suite/pool/phrase score, for the music bench (see buildBench).
+  bench,
   constants,
 };
 

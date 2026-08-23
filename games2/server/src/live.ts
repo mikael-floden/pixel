@@ -40,7 +40,10 @@ const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 // "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs, and
 // a rejected entry means UNBIND that sound from that event — the recording
 // itself is untouched (maintainer 2026-08-06). The composer agent consumes it.
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"] as const;
+// "composer-music" is the MUSIC BENCH's channel (maintainer 2026-08-22): one
+// file carrying verdicts at three levels — a whole track, one take of it, and
+// one phrase of one take — keyed composer/music/<track>, …__v03 and …__v03#5.
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",

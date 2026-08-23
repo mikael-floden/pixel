@@ -412,7 +412,7 @@ document.addEventListener("error", (ev) => {
 // "bindings" is not an art domain: its ids are `<eventId>#<sound>` pairs and a
 // rejected entry means UNBIND that sound from that event — the recording is
 // untouched (maintainer 2026-08-06). See live/feedback/bindings.json.
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "bindings"];
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore", "composer", "composer-music", "bindings"];
 const state = {
   data: null,
   admin: false,          // signed in as the game designer? (server-verified)
