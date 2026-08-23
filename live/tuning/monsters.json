@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-23T18:47:33.078Z",
+  "updated_at": "2026-08-23T19:47:49.605Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1148,7 +1148,53 @@
           "item": "raw_red_meat_slab",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 41.75,
+        "ry": 27.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -14.51,
+            "ay": 49.72
+          },
+          "idle#south": {
+            "ax": -1.17,
+            "ay": 43.07
+          },
+          "idle#south-east": {
+            "ax": -18.47,
+            "ay": 40.51
+          },
+          "idle#north-east": {
+            "ax": -15.83,
+            "ay": 50.73
+          },
+          "idle#north": {
+            "ax": -1.35,
+            "ay": 49.18
+          },
+          "idle#north-west": {
+            "ax": 15.2,
+            "ay": 48.34
+          },
+          "idle#west": {
+            "ax": 11.4,
+            "ay": 51.19
+          },
+          "idle#south-west": {
+            "ax": 15.04,
+            "ay": 42.98
+          },
+          "walk#south-east": {
+            "ax": -12.66,
+            "ay": 41.98
+          },
+          "walk#north-west": {
+            "ax": 12.94,
+            "ay": 49.16
+          }
+        }
+      }
     },
     "masked_shadow_creature": {
       "level": 8,
