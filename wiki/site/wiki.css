@@ -1551,3 +1551,9 @@ input[type="range"] { accent-color: var(--accent); }
 
 .bench-problem { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 12.5px; color: var(--err); }
 .bench-problem:empty { display: none; }
+
+.bench-duck { flex-direction: column; align-items: stretch; gap: 4px; }
+.bench-duck .bench-slider { flex-direction: column; align-items: stretch; gap: 6px; font-size: 14px; color: var(--ink); }
+.bench-duck .bench-slider input { width: 100%; }
+.bench-duck.idle { opacity: 0.55; }
+.bench-hint { font-size: 12.5px; }

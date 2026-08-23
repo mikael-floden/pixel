@@ -2171,6 +2171,20 @@ bed is picked and again before the clock is read. And a cut left its stopped
 source's recorded `end` untouched, so the scheduler believed two phrases were
 still sounding and deferred the replacement.
 
+### The layering slider had to say what it does
+
+Maintainer 2026-08-22: *"I have no idea what the slider does."* It read
+**"duck B −50%"** — a mixing-desk word, sitting on screen even with deck B
+empty, next to nothing that explained it.
+
+It now reads **"B plays 75% quieter under A"**, carries a line saying what it is
+for (*"two beds at once — this is how far the second one sits under the first"*),
+and when no second bed is loaded it says *"pick a bed on deck B to hear two at
+once"* and steps back to 55% opacity instead of pretending to be live.
+
+Gated on the gain, not the label: at the −75% default deck A is 1.000 and deck B
+0.250; −100% silences B (0.001) and 0% matches A (1.000).
+
 ### The order is the instrument
 
 What plays is a list of phrases, and a phrase may come from **any take** —

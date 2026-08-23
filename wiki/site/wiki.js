@@ -2646,10 +2646,22 @@ function viewBench() {
         benchUI.mode === "cross" ? h("label", { class: "bench-slider" }, `silence ${benchUI.crossS}s`,
           Object.assign(h("input", { type: "range", min: "0", max: "30", step: "1", value: String(benchUI.crossS) }),
             { oninput: (e) => { benchUI.crossS = +e.target.value; paint(); } })) : null),
-      h("div", { class: "bench-row" },
-        h("label", { class: "bench-slider" }, `duck B ${benchUI.duckPct}%`,
-          Object.assign(h("input", { type: "range", min: "-100", max: "0", step: "5", value: String(benchUI.duckPct) }),
-            { oninput: (e) => { benchUI.duckPct = +e.target.value; benchEngine.setDuck(10 ** (benchUI.duckPct * 0.06 / 2)); e.target.previousSibling && null; paint(); } }))),
+      // A LABEL HAS TO SAY WHAT THE CONTROL DOES (maintainer 2026-08-22: "I
+      // have no idea what the slider does"). It was "duck B −50%" — a word
+      // from a mixing desk, sitting on screen even with deck B empty.
+      (() => {
+        const hasB = !!benchTrack(benchUI.deck.b.trackId);
+        return h("div", { class: `bench-row bench-duck${hasB ? "" : " idle"}` },
+          h("label", { class: "bench-slider" },
+            h("span", {}, `B plays ${Math.abs(benchUI.duckPct)}% quieter under A`),
+            Object.assign(h("input", {
+              type: "range", min: "-100", max: "0", step: "5", value: String(benchUI.duckPct),
+              "aria-label": "how much quieter deck B sits under deck A",
+            }), { oninput: (e) => { benchUI.duckPct = +e.target.value; benchEngine.setDuck(10 ** (benchUI.duckPct * 0.06 / 2)); paint(); } })),
+          h("span", { class: "muted bench-hint" }, hasB
+            ? "two beds at once — this is how far the second one sits under the first"
+            : "pick a bed on deck B to hear two at once"));
+      })(),
       nowLine, problemLine);
   }
 

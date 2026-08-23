@@ -169,6 +169,40 @@ await p.evaluate(() => [...document.querySelectorAll(".bench-btn")].find((x) => 
 await p.waitForTimeout(1500);
 ok(audioReqs.length === before, `pressing play again re-uses the decoded buffer — no second download (${audioReqs.length - before} new requests)`);
 
+// ---- LAYERING: the slider says what it does, and does what it says -------
+// Maintainer 2026-08-22: "I have no idea what the slider does." It read
+// "duck B −50%" — a mixing-desk word, on screen even with deck B empty.
+const duckIdle = await p.evaluate(() => ({
+  label: document.querySelector(".bench-duck .bench-slider span")?.textContent ?? "",
+  hint: document.querySelector(".bench-duck .bench-hint")?.textContent ?? "",
+  dim: !!document.querySelector(".bench-duck")?.classList.contains("idle"),
+}));
+ok(/quieter under A/.test(duckIdle.label) && duckIdle.dim && /deck B/.test(duckIdle.hint),
+  `with no second bed the layering slider says so and steps back ("${duckIdle.label}")`);
+await p.evaluate(() => { const s2 = document.querySelectorAll(".bench-select")[1]; const o = [...s2.options].find((x) => /combat/.test(x.value)); s2.value = o.value; s2.dispatchEvent(new Event("change")); });
+await p.waitForTimeout(2500);
+await p.evaluate(() => [...document.querySelectorAll(".bench-btn")].find((x) => /▶ A/.test(x.textContent)).click());
+await p.waitForTimeout(2200);
+await p.evaluate(() => [...document.querySelectorAll(".bench-btn")].find((x) => /▶ B/.test(x.textContent)).click());
+await p.waitForTimeout(2200);
+const duckOn = await p.evaluate(() => ({
+  both: window.__bench.engine.decks.a.playing && window.__bench.engine.decks.b.playing,
+  a: window.__bench.engine.decks.a.gain.gain.value,
+  b: window.__bench.engine.decks.b.gain.gain.value,
+  hint: document.querySelector(".bench-duck .bench-hint")?.textContent ?? "",
+}));
+ok(duckOn.both && Math.abs(duckOn.a - 1) < 1e-6 && Math.abs(duckOn.b - 0.25) < 1e-3,
+  `two beds play at once with B under A at the −75% default (A ${duckOn.a.toFixed(3)}, B ${duckOn.b.toFixed(3)})`);
+const duckEnds = await p.evaluate(async () => {
+  const set = (v) => { const s2 = document.querySelector(".bench-duck input"); s2.value = String(v); s2.dispatchEvent(new Event("input")); };
+  const g = () => window.__bench.engine.decks.b.gain.gain.value;
+  set(-100); await new Promise((r) => setTimeout(r, 400)); const silent = g();
+  set(0); await new Promise((r) => setTimeout(r, 400)); const level = g();
+  return { silent, level };
+});
+ok(duckEnds.silent < 0.01 && Math.abs(duckEnds.level - 1) < 1e-3,
+  `and the slider really is B's volume — −100% silences it, 0% matches A (${duckEnds.silent.toFixed(4)} → ${duckEnds.level.toFixed(3)})`);
+
 // ---- 3. THE FOUR SWITCH MODES, on the clock ------------------------------
 const switchTest = async (mode, wait) => {
   await openBench("cathedral");
