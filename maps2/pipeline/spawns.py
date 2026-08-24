@@ -169,10 +169,11 @@ BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 # the roster wildly lopsided (24 butterfly dragons on the plains vs 1 hedgehog
 # in a copse), so the budget is now allocated per MONSTER, not per zone:
 #   1. the world's budget B = land cells / WORLD_CELLS_PER_MONSTER, clamped so
-#      no type is rarer than MON_TOTAL_MIN or commoner than MON_TOTAL_MAX
-#      (the_island2: 21978 land cells -> B = 107);
+#      every type present gets at least MON_TOTAL_MIN and none more than
+#      MON_TOTAL_MAX
+#      (the_island2: 22395 land cells -> B = 124);
 #   2. B is split EVENLY across the types that live here (largest-remainder —
-#      so with 24 types and B=107, eleven get 5 and thirteen get 4); the +1s go
+#      so with 57 types and B=124, ten get 3 and forty-seven get 2); the +1s go
 #      to the types with the most habitat, the only nod left to raw area;
 #   3. each type's own total is then spread across ITS zones in proportion to
 #      zone area (min 1 per zone) — so density still decides WHERE a type is
@@ -276,16 +277,28 @@ CAVE_DENSITY_F = 0.4    # the cave's share of the open-ground cap -> 0.02/cell,
                         # one monster per 50 cells of floor. On the_island2 that
                         # is 9 in the cave where 18 stood: the maintainer's half.
 
-WORLD_CELLS_PER_MONSTER = 205       # world budget = land cells / this.
-                                    # 137 -> 205 (maintainer 2026-08-07: "reduce
-                                    # the total number of monsters on the map by
-                                    # 25%. I think we have too many now") — one
-                                    # constant, applied to every world, so the
-                                    # cut is proportional to land everywhere
+WORLD_CELLS_PER_MONSTER = 180       # world budget = land cells / this. ONE dial
+                                    # for how busy a world feels, applied to every
+                                    # map so a change lands proportional to land
                                     # instead of being trimmed off whichever map
-                                    # someone happened to be looking at.
-                                    # the_island2: 141 -> 106 monsters.
-MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
+                                    # someone was looking at. 137 -> 205 ("reduce
+                                    # the total number of monsters by 25%"),
+                                    # 205 -> 180 when the roster went 24 -> 57
+                                    # ("I can agree on increasing the total amount
+                                    # of monsters on the map by 25%"):
+                                    # the_island2 99 -> 124.
+# THE FLOOR IS "PRESENT AT ALL" (maintainer 2026-08-21: "I can agree on increasing
+# the total amount of monsters on the map by 25%... you will probably have to spawn
+# less of the monsters already on the map so everyone can be included"). It was 3,
+# and `n * 3` is a floor that GROWS with the species count — backwards, because the
+# more species share a fixed island the FEWER each can have. The roster going
+# 24 -> 57 made that floor demand 171 monsters of a world whose land asks for 124,
+# and it would climb again with every creature the monsters agent adds. At 1 the
+# floor states the only thing that is always true: a species that lives on a world
+# has at least ONE individual there, or it is not on the world at all — which is
+# exactly what MUST_HAVE_ALL promises. The LAND is then the only dial on how busy a
+# world feels, which is what WORLD_CELLS_PER_MONSTER is for.
+MON_TOTAL_MIN = 1                   # ...every species present is really present
 MON_TOTAL_MAX = 9                   # per-type ceiling
 MIN_ZONE = {"forest": ROOM_MIN}     # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
@@ -1170,6 +1183,17 @@ def zones_for(w):
     members = {}                     # habitat key -> [monster ids] in roster order
     for mid in ids:
         members.setdefault(habitat_of(mid), []).append(mid)
+    # THE EASIEST PICKS FIRST. Within a habitat the members choose their component
+    # in this order, and the first to choose gets the NEAREST ground it is allowed
+    # (the difficulty gradient decides what "allowed" means). Roster order is
+    # arbitrary, so sorting by combat level puts the gentlest creature of each
+    # habitat closest to the arrival point and pushes the dangerous ones to its far
+    # end — which is what a newcomer walking out of the spawn actually meets
+    # (maintainer 2026-08-21: "Think about not placing to hard monsters near the
+    # spawn where the player is level 1"). Ties break on roster order, so a rebuild
+    # still reproduces.
+    for hab in members:
+        members[hab].sort(key=lambda m: (threat(m)[0], threat(m)[1], ids.index(m)))
     masks = habitat_masks(w)
     field = walk_dist(w)             # THE DIFFICULTY GRADIENT: walk cells from spawn
     zones = []

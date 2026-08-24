@@ -89,8 +89,9 @@ Population is budgeted **per monster TYPE, not per zone** (maintainer: the
 roster should be "balanced… not the same, just similar" — pure per-area density
 gave 24 butterfly dragons and 1 hedgehog):
 
-1. world budget `B = land cells / WORLD_CELLS_PER_MONSTER (205)`, clamped so no
-   type is rarer than `MON_TOTAL_MIN (3)` or commoner than `MON_TOTAL_MAX (9)`;
+1. world budget `B = land cells / WORLD_CELLS_PER_MONSTER (180)`, clamped so
+   every type present gets at least `MON_TOTAL_MIN (1)` and none more than
+   `MON_TOTAL_MAX (9)`;
 2. `B` is split **evenly** across the types living on the world by largest
    remainder; the few +1s go to the types with the most habitat — the only nod
    left to raw area;
@@ -100,12 +101,24 @@ gave 24 butterfly dragons and 1 hedgehog):
 
 Density still decides *where* a type is thickest, never *how many* exist.
 
-`WORLD_CELLS_PER_MONSTER` is the ONE dial for how busy the world feels (137 →
-205 on 2026-08-07, maintainer: "reduce the total number of monsters on the map
-by 25%") — one constant applied to every world, so a cut lands proportionally
-to land area instead of being trimmed off whichever map someone was looking at.
-Small worlds don't shrink: `demo_isle` / `demo_lost` sit on the
-`MON_TOTAL_MIN = 3` floor, which is what the floor is for.
+`WORLD_CELLS_PER_MONSTER` is the ONE dial for how busy a world feels — one
+constant applied to every map, so a change lands proportional to land area
+instead of being trimmed off whichever map someone was looking at. 137 → 205
+("reduce the total number of monsters on the map by 25%"), then 205 → **180**
+when the roster grew 24 → 57 ("I can agree on increasing the total amount of
+monsters on the map by 25%… you will probably have to spawn less of the
+monsters already on the map so everyone can be included"): `the_island2`
+99 → 123, and the per-species share falls 4-7 → 2-3, which is the trade he
+asked for.
+
+**The floor is "present at all", and that is why it is 1.** It was 3, and
+`n × 3` is a floor that GROWS with the species count — backwards, since the
+more species share a fixed island the fewer each can have. The roster going
+24 → 57 made that floor demand **171** monsters of a world whose land asks for
+124, and it would climb again with every creature the monsters agent adds. At 1
+the floor states the only thing always true — a species that lives on a world
+has at least one individual there, or it is not on the world at all, which is
+exactly what `MUST_HAVE_ALL` promises — and leaves the land as the only dial.
 
 ## The crowding law
 
