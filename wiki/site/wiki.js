@@ -2073,9 +2073,6 @@ const SECTIONS = {
   // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
-  // A WORKBENCH, not an encyclopedia page: it exists to audition and judge the
-  // phrase score, so it is his alone (maintainer 2026-08-22).
-  bench:      { label: "Music bench",   noun: "beds",       icon: "music",      count: (d) => (d.bench?.tracks ?? []).length, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -2084,7 +2081,7 @@ const SECTIONS = {
 // monsters").
 // World (3.0) sits where the ground system has always sat; Tiles OLD follows
 // it, because the thing being replaced should not be the one you reach first.
-const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "bench", "tuning"];
+const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -2355,9 +2352,10 @@ const benchFbId = (kind, trackId, takeId, idx) =>
     : kind === "take" ? `composer/music/${takeId}`
       : `composer/music/${takeId}#${idx + 1}`;
 
-function viewBench() {
+function viewBench(opts = {}) {
   const B = benchData();
   if (!B?.tracks?.length) return h("p", {}, "The composer has not published a phrase score yet.");
+  const showHeading = opts.heading !== false;
   /* THE MAIN SUITE LEADS AND OPENS SELECTED (maintainer 2026-08-22: "The
    * nangijala suites should be first and preselected"). Ordered by how many
    * beds each holds — nangijala 24, hole 6 — so the suite the game mostly
@@ -2669,7 +2667,7 @@ function viewBench() {
     const dk = benchUI.deck.a;
     const t = benchTrack(dk.trackId);
     return [
-      h("div", { class: "sect-head" }, h("h1", {}, "Music bench")),
+      showHeading ? h("div", { class: "sect-head" }, h("h1", {}, "Dynamic Music")) : null,
       h("p", { class: "muted" },
         "One suite is one compatibility group — same key, same tempo, same phrase length — so anything inside it can switch on the beat or sit on top of anything else. Crossing between suites is silence, not a transition."),
       // The suite contract, in the composer's own numbers.
@@ -7734,7 +7732,35 @@ function musicPanel(t) {
       ? h("p", { class: "muted", style: "margin:0 0 8px" }, `loops ${stFmt(t.loopStart)}s → ${stFmt(t.loopEnd)}s${t.lufs != null ? ` · ${stFmt(t.lufs)} LUFS` : ""}`) : null,
     takeRow(composer ? "composer" : "music", dir, { id: takeId, chosen: true, files: t.files }));
 }
+/* TWO KINDS OF MUSIC, ONE SECTION (maintainer 2026-08-23: "I don't like Music
+ * bench being it's own top section. I feel this is more like tabs under music.
+ * This is 'Dynamic Music' and what we had before is 'Static Music'. Static
+ * Music should be preselected.")
+ *
+ * His names, and his ordering: STATIC is the finished track that plays start to
+ * end, DYNAMIC is the suite/pool/phrase score that is assembled while you play.
+ * A module variable, not a stored preference — "preselected" means the page
+ * opens on Static every time, while a tab chosen mid-session survives the
+ * re-render a verdict causes. Players never see the tab strip at all: there is
+ * nothing behind Dynamic for them. */
+let musicTab = "static";
 function viewMusic() {
+  if (!state.admin) musicTab = "static";
+  const tab = (id, label2, title) => h("button", {
+    class: `pagetab${musicTab === id ? " sel" : ""}`, type: "button", title,
+    onclick: () => { musicTab = id; keepScrollY = window.scrollY; route(); },
+  }, label2);
+  const tabs = state.admin && (state.data.bench?.tracks ?? []).length
+    ? h("div", { class: "pagetabs", role: "tablist" },
+      tab("static", "Static Music", "Finished tracks that play from start to end"),
+      tab("dynamic", "Dynamic Music", "The suite/pool/phrase score — assembled while you play, and auditioned here"))
+    : null;
+  if (state.admin && musicTab === "dynamic") {
+    return h("div", {}, sectionHead("music"), tabs, viewBench({ heading: false }));
+  }
+  return h("div", {}, tabs, viewMusicStatic());
+}
+function viewMusicStatic() {
   const list = (state.data.domains.music ?? []).filter((t) => matches(state.query, t.id, t.name, t.use));
   const domainTracks = list.filter((t) => t.source !== "composer");
   const beds = list.filter((t) => t.source === "composer");
@@ -7742,17 +7768,6 @@ function viewMusic() {
     sectionHead("music"),
     h("p", { class: "muted" }, "Everything written for the game to play — the music agent's tracks, and the composer's own situation beds."),
     muteGameBtn(),
-    // THE BENCH IS WHERE HE LOOKED FOR IT (maintainer 2026-08-22: "Can you help
-    // me navigate to the page? I don't understand" — from this page). It is a
-    // separate section because it is a workbench and not an encyclopedia page,
-    // but Music is where anyone goes looking for it, so Music says where it is.
-    state.admin && (state.data.bench?.tracks ?? []).length
-      ? h("p", { class: "bench-link-row" },
-        h("a", { class: "ghost-btn bench-link", href: "#/bench" },
-          "♫ Music bench →"),
-        h("span", { class: "muted" },
-          `audition the suite/pool/phrase score — ${state.data.bench.tracks.length} beds, phrase by phrase`))
-      : null,
     domainTracks.length ? h("h2", {}, "Tracks ", h("span", { class: "pill" }, String(domainTracks.length))) : null,
     ...domainTracks.map(musicPanel),
     // The composer's beds are a SECOND source of music and were missing from
@@ -8218,7 +8233,8 @@ function route() {
   // THE BENCH SURVIVES A RE-RENDER, and only a re-render. Committing a verdict
   // calls route(), and the music must not stop for it — "I need to judge in
   // context" — but walking away from the page must silence it.
-  if (page !== "bench") { benchEngine.stopAll(); benchEngine.onChange = null; }
+  const onBench = page === "bench" || (page === "music" && musicTab === "dynamic");
+  if (!onBench) { benchEngine.stopAll(); benchEngine.onChange = null; }
   let view;
   if (state.query && !id) view = viewSearch();
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
@@ -8228,7 +8244,7 @@ function route() {
     : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "sounds") view = viewSounds();
-  else if (page === "music") view = viewMusic();
+  else if (page === "music") { if (id === "dynamic" && state.admin) musicTab = "dynamic"; view = viewMusic(); }
   else if (page === "items") view = id ? viewItem(id) : viewItems();
   else if (page === "lore") {
     // Resolve the ENTRY first so a future entry can never be shadowed by the
@@ -8240,7 +8256,8 @@ function route() {
   }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
-  else if (page === "bench") view = state.admin ? viewBench() : viewHome();
+  // #/bench was its own section for a day; keep the link alive as the tab.
+  else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
   else view = viewHome();
   $("#content").replaceChildren(view);
   renderNav();

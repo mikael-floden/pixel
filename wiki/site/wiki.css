@@ -275,18 +275,18 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 
 /* ---- ground type page: identity card, tabs, base groups, transitions ---- */
-.groundtabs {
+.groundtabs, .pagetabs {
   display: flex; gap: 0; margin: 10px 0 14px;
   border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
   overflow: hidden; width: fit-content; max-width: 100%;
 }
-.groundtab {
+.groundtab, .pagetab {
   padding: 10px 16px; font-size: 14px; border: none; background: transparent;
   color: var(--muted); border-right: 1px solid var(--border); white-space: nowrap;
 }
 .groundtab:last-child { border-right: none; }
-.groundtab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }
-.groundtab.off { opacity: 0.45; }
+.groundtab.sel, .pagetab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }
+.groundtab.off, .pagetab.off { opacity: 0.45; }
 .groundtab .tab-n {
   margin-left: 7px; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
@@ -1546,8 +1546,6 @@ input[type="range"] { accent-color: var(--accent); }
 .bench-chip.judged-no { box-shadow: inset 0 -3px 0 var(--err); }
 .bench-chip.judged { box-shadow: inset 0 -3px 0 var(--star); }
 
-.bench-link-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 0 4px; }
-.bench-link { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; }
 
 .bench-problem { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 12.5px; color: var(--err); }
 .bench-problem:empty { display: none; }

@@ -2171,7 +2171,28 @@ report a miss cannot participate in that.
   ~21 MB rather than ~13. `.dockerignore` has no composer rule; adding one
   there would silently 404 every alternative.
 
-## The music bench — auditioning the suite/pool/phrase score
+## Static Music and Dynamic Music — two tabs, one section
+
+Maintainer 2026-08-23: *"I don't like 'Music bench' being it's own top section.
+I feel this is more like 'tabs' under music. This is 'Dynamic Music' and what we
+had before is 'Static Music'. Static Music should be preselected."*
+
+His names and his order. **Static** is a finished track that plays start to end;
+**Dynamic** is the suite/pool/phrase score, assembled while you play. They are
+two kinds of the same thing, so they are two tabs of one section rather than
+two entries in the nav.
+
+`musicTab` is a module variable, not a stored preference: *preselected* is a
+claim about **arriving**, so every fresh load opens on Static, while a tab
+chosen mid-session survives the re-render a verdict causes. A player sees no tab
+strip at all — there is nothing behind Dynamic for them — and `#/bench`, which
+was a section for a day, still lands on the tab rather than dying.
+
+The gate reloads before asserting the default. Changing the hash keeps the same
+JS context, so without a reload the check would pass on a page that never opened
+on Static.
+
+## The Dynamic Music bench — auditioning the suite/pool/phrase score
 
 Maintainer 2026-08-22, in full detail. A **suite** is one compatibility group:
 everything in it shares key, tempo and phrase length, so any two pools can

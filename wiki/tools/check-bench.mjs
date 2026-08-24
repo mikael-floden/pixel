@@ -309,20 +309,41 @@ await p2.waitForTimeout(1800);
 const pv = await p2.evaluate(() => ({ bench: document.querySelectorAll(".bench").length, nav: [...document.querySelectorAll("nav a, .nav a")].map((x) => x.textContent.trim()) }));
 ok(pv.bench === 0 && !pv.nav.some((x) => /bench/i.test(x)), "a player has no bench, by link or by nav");
 const pMusic = await p2.goto(`${W}#/music`, { waitUntil: "load" }).then(() => p2.waitForTimeout(1600))
-  .then(() => p2.evaluate(() => document.querySelectorAll("a.bench-link").length));
-ok(pMusic === 0, "and the Music page does not offer them one either");
+  .then(() => p2.evaluate(() => ({ tabs: document.querySelectorAll(".pagetab").length, bench: document.querySelectorAll(".bench").length })));
+ok(pMusic.tabs === 0 && pMusic.bench === 0,
+  `and the Music page shows them no tab strip at all — there is nothing behind Dynamic for them (${pMusic.tabs} tabs)`);
 await ctx2.close();
-// IT HAS TO BE FINDABLE. He went to Music looking for the bench and found
-// nothing ("Can you help me navigate to the page? I don't understand"), so
-// both the nav and the Music page carry a way in.
+// IT IS A TAB UNDER MUSIC, NOT A SECTION (maintainer 2026-08-23: "I don't like
+// Music bench being it's own top section. I feel this is more like tabs under
+// music. This is 'Dynamic Music' and what we had before is 'Static Music'.
+// Static Music should be preselected.")
 await p.goto(`${W}#/music`, { waitUntil: "load" });
-await p.waitForTimeout(1800);
-const ways = await p.evaluate(() => ({
-  fromMusic: [...document.querySelectorAll("#content a")].filter((a) => a.getAttribute("href") === "#/bench").length,
-  inNav: [...document.querySelectorAll("a")].filter((a) => a.getAttribute("href") === "#/bench").length,
+// A RELOAD, because "preselected" is a claim about arriving. Changing the hash
+// keeps the same JS context, so the tab chosen earlier in this run would still
+// be set and the check would pass on a page that never opened on Static.
+await p.reload({ waitUntil: "load" });
+await p.waitForTimeout(2200);
+const tabs = await p.evaluate(() => ({
+  names: [...document.querySelectorAll(".pagetab")].map((x) => x.textContent.trim()),
+  sel: document.querySelector(".pagetab.sel")?.textContent.trim() ?? "",
+  bench: document.querySelectorAll(".bench").length,
+  navBench: [...document.querySelectorAll("a")].some((a) => /music bench/i.test(a.textContent)),
 }));
-ok(ways.fromMusic >= 1, `the Music page links straight to the bench (${ways.fromMusic})`);
-ok(ways.inNav >= 1, `and so does the section menu (${ways.inNav} links in all)`);
+ok(tabs.names.join("|") === "Static Music|Dynamic Music",
+  `Music carries his two tabs, in his order (${tabs.names.join(", ") || "none"})`);
+ok(tabs.sel === "Static Music" && tabs.bench === 0,
+  `and opens PRESELECTED on Static Music (${tabs.sel})`);
+ok(!tabs.navBench, "with no Music bench section left in the nav");
+await p.evaluate(() => [...document.querySelectorAll(".pagetab")].find((x) => /Dynamic/.test(x.textContent)).click());
+await p.waitForTimeout(1800);
+const onDyn = await p.evaluate(() => ({ bench: document.querySelectorAll(".bench").length, sel: document.querySelector(".pagetab.sel")?.textContent.trim() }));
+ok(onDyn.bench === 1 && onDyn.sel === "Dynamic Music", `and Dynamic Music opens the bench in place (${onDyn.sel})`);
+// The old address kept working, since it was a section for a day.
+await p.goto(`${W}#/bench`, { waitUntil: "load" });
+await p.waitForTimeout(1800);
+ok(await p.evaluate(() => document.querySelectorAll(".bench").length === 1
+  && document.querySelector(".pagetab.sel")?.textContent.trim() === "Dynamic Music"),
+"and #/bench still lands on that tab rather than dying");
 
 ok(errs.length === 0, `no page errors${errs.length ? `: ${errs[0]}` : ""}`);
 await b.close();
