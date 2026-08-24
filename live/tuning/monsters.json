@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T10:29:10.515Z",
+  "updated_at": "2026-08-24T10:32:02.507Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -134,7 +134,45 @@
           "item": "purple_flower_petals",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18,
+        "ry": 7,
+        "offsets": {
+          "idle#east": {
+            "ax": 2.3,
+            "ay": 24.11
+          },
+          "idle#south": {
+            "ax": 1.02,
+            "ay": 20.46
+          },
+          "idle#south-east": {
+            "ax": 2.16,
+            "ay": 21.15
+          },
+          "idle#north-east": {
+            "ax": -0.61,
+            "ay": 17.81
+          },
+          "idle#north": {
+            "ax": -0.24,
+            "ay": 18.91
+          },
+          "idle#north-west": {
+            "ax": -1.15,
+            "ay": 17.58
+          },
+          "idle#south-west": {
+            "ax": -2.3,
+            "ay": 20.19
+          },
+          "idle#west": {
+            "ax": -2.34,
+            "ay": 24.04
+          }
+        }
+      }
     },
     "chestnut_horse": {
       "max_hp": 20,
