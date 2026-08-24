@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:48:21.438Z",
+  "updated_at": "2026-08-24T14:51:30.007Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -152,7 +152,69 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 15
+      "level": 15,
+      "shadow": {
+        "rx": 18.25,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.43,
+            "ay": 25.34
+          },
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 23.37
+          },
+          "idle#south-east": {
+            "ax": -1.28,
+            "ay": 22.94
+          },
+          "idle#north-east": {
+            "ax": -1.75,
+            "ay": 22.21
+          },
+          "idle#north": {
+            "ax": 2.58,
+            "ay": 23.95
+          },
+          "idle#north-west": {
+            "ax": 2.58,
+            "ay": 21.52
+          },
+          "idle#south-west": {
+            "ax": 1.84,
+            "ay": 22.45
+          },
+          "walk#south-east": {
+            "ax": -0.85,
+            "ay": 25.97
+          },
+          "walk#north-east": {
+            "ax": -3.77,
+            "ay": 22.1
+          },
+          "walk#north-west": {
+            "ax": 3.43,
+            "ay": 22.5
+          },
+          "walk#west": {
+            "ax": 2.94,
+            "ay": 26.82
+          },
+          "idle#west": {
+            "ax": 5.22,
+            "ay": 24.8
+          },
+          "walk#south-west": {
+            "ax": 0.86,
+            "ay": 25.82
+          },
+          "walk#north": {
+            "ax": 0.73,
+            "ay": 26.21
+          }
+        }
+      }
     },
     "butterfly_dragon": {
       "level": 12,
