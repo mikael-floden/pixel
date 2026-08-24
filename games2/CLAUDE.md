@@ -1073,8 +1073,18 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   px. `chessPieceCss` / `pixelArtCss` (shared) pick the integer scale and work
   back to a possibly-fractional CSS size; the dice strip scales all three of
   hand, `background-size` and the keyframe's landing offset together or the
-  frames tear. Tested at real ratios in `server/test/chesssize.test.ts` (no
+  frames tear. The dragged ghost is NOT scaled up for the same reason. The
+  opponent does not re-play the throw and is never mirrored — flipping it stood
+  his die on its head; he shows the strip's last frame, upright. Tested at real ratios in `server/test/chesssize.test.ts` (no
   headless run reproduces 2.75).
+- **DRAG AND TAP ARE ONE GESTURE, AND A DROP IS A MOVE OR NOTHING.**
+  pointerdown always selects (that IS the tap flow); a drag starts past a 6px
+  slop radius and lifts a ghost onto `<body>` (the squares are overflow:hidden
+  and would clip it). THE TARGET IS THE SQUARE UNDER THE FINGER — hit-testing
+  at the lifted ghost aimed 30px, two thirds of a square, high and read as a
+  broken hitbox. The landing square highlights live while dragging, and a drop
+  with no legal move re-selects NOTHING (`dropSquare`, not `tapSquare`, whose
+  select-fallback is right for a tap and wrong for a drag).
 - **DIALOG STABILITY LAW** (drop-dialog family, paid for in a 6-round ghost
   hunt): the card skeleton is built ONCE and its controls NEVER move or get
   replaced — squares update in place. A full re-render used to shift the

@@ -68,9 +68,11 @@ try {
     };
   });
   if (!dice) fail("the dice panel is missing a hand (mine or the opponent's)");
-  if (!dice.oppHand) fail("the opponent has no throwing hand — he must throw too");
-  if (!/matrix\(1,\s*0,\s*0,\s*-1/.test(dice.flip))
-    fail(`the opponent's hand is not flipped vertically: transform=${dice.flip}`);
+  if (!dice.oppHand) fail("the opponent has no die");
+  // NOT mirrored: flipping it stood his die on its head, and the maintainer
+  // took the whole re-played animation back — he gets the last frame, upright.
+  if (/matrix\(1,\s*0,\s*0,\s*-1/.test(dice.flip))
+    fail(`the opponent's die is flipped upside down: transform=${dice.flip}`);
   for (const [who, w] of [["mine", dice.w], ["opponent", dice.ow]]) {
     const k = (w * dice.dpr) / 97;
     if (Math.abs(k - Math.round(k)) > 0.01)
@@ -81,18 +83,18 @@ try {
   const wantStrip = (dice.w / 97) * 873;
   if (Math.abs(parseFloat(dice.strip) - wantStrip) > 0.5)
     fail(`strip ${dice.strip} does not match the hand size (want ${wantStrip.toFixed(2)}px)`);
-  console.log(`verify-chess: both hands at ${Math.round((dice.w * dice.dpr) / 97)}x device pixels, ` +
-              `opponent's mirrored`);
+  console.log(`verify-chess: both dice at ${Math.round((dice.w * dice.dpr) / 97)}x device pixels, ` +
+              `opponent's upright`);
   await page.setViewportSize({ width: 480, height: 320 });
 
   // Throw the dice through the real button.
   await page.click("#ml-die-throw");
-  // His hand must ANIMATE too, not just appear on a face.
-  const oppThrew = await page.waitForFunction(() => {
+  // He does not re-play the throw — his die simply shows its landed face.
+  const oppShown = await page.waitForFunction(() => {
     const o = document.querySelector("#ml-die-opp");
-    return !!o && (o.classList.contains("shaking") || o.classList.contains("landed"));
+    return !!o && o.classList.contains("still") && !o.classList.contains("shaking");
   }, { timeout: 12000 }).then(() => true).catch(() => false);
-  if (!oppThrew) fail("the opponent's hand never threw");
+  if (!oppShown) fail("the opponent's die never showed its face");
   await page.waitForFunction(() => window.__ml.chess().dialog?.phase === "play", { timeout: 12000 })
     .catch(() => fail("dice never resolved to play (NPC die missing?)"));
   const side = await page.evaluate(() => window.__ml.chess().dialog.mySide);

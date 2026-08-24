@@ -88,8 +88,13 @@ function ensureStyle() {
   .ml-chess-sq .pc-img{pointer-events:none;width:var(--pc,32px);height:var(--pc,32px);
     image-rendering:pixelated;position:relative;z-index:1}
   .ml-chess-sq.dragging .pc-img{opacity:.28}
+  /* THE LIFTED PIECE. No scale-up: 1.16x of an already whole device scale is
+     fractional again, which is the very thing being fixed. The lift reads
+     through the shadow and the dimmed source square instead. */
   .ml-chess-ghost{position:fixed;z-index:2147483000;pointer-events:none;image-rendering:pixelated;
-    transform:translate(-50%,-50%) scale(1.16);filter:drop-shadow(0 5px 7px rgba(0,0,0,.45))}
+    transform:translate(-50%,-50%);filter:drop-shadow(0 6px 5px rgba(0,0,0,.5))}
+  /* Where the drop will land — the ambiguity killer. */
+  .ml-chess-sq.dragover{box-shadow:inset 0 0 0 4px var(--accent,#d97757)}
   .ml-chess-sq .pc.w{color:#f6f1e6;text-shadow:0 0 2px #2c2620,0 1px 1px #2c2620,0 -1px 1px #2c2620,1px 0 1px #2c2620,-1px 0 1px #2c2620}
   .ml-chess-sq .pc.b{color:#332e28;text-shadow:0 0 2px #efe9da,0 1px 1px #efe9da}
   .ml-chess-foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -108,10 +113,10 @@ function ensureStyle() {
     image-rendering:pixelated;transform-origin:50% 60%;
     transform:scaleY(var(--dieFlip,1))}
   .ml-chess .die-hand.one{background-image:url(/chess/dice_throw_1.webp)}
-  /* THE OPPONENT SITS ACROSS THE TABLE (maintainer): his hand comes in from the
-     top, so the whole sprite flips vertically and the landed pop grows from the
-     mirrored pivot. */
-  .ml-chess .die-hand.opp{--dieFlip:-1;transform-origin:50% 40%}
+  /* The opponent does NOT re-play the throw: flipping it put his die upside
+     down (maintainer took the animation back). He gets the LAST frame, the
+     right way up, the moment his value lands. */
+  .ml-chess .die-hand.still{background-position-x:var(--dieEnd,-776px);animation:none}
   /* ONE throw, ending on the landed face. It used to loop 'infinite' against a
      1,900ms reveal = 1.58 cycles, so the hand threw, snapped back to the fist
      and threw again half-way before jumping to the result (maintainer: "plays
@@ -246,7 +251,7 @@ export class ChessDialog {
               <div style="text-align:center;font-size:12px;margin-top:4px">You</div>
             </div>
             <div>
-              <div class="die-hand opp" id="ml-die-opp"></div>
+              <div class="die-hand" id="ml-die-opp"></div>
               <div style="text-align:center;font-size:12px;margin-top:4px">${this.api.oppName}</div>
             </div>
           </div>
@@ -289,19 +294,13 @@ export class ChessDialog {
     if (this.m.phase !== "dice" && this.mySide)
       (c.querySelector("#ml-die-hint") as HTMLElement).textContent =
         this.mySide === "w" ? "You play White!" : "You play Black!";
-    // HE THROWS TOO. His value only syncs in when he actually throws, so that
-    // transition IS his throw: same 1.15s shake, same landed pop, upside down.
-    // Until then his hand rests on frame 0 — the fist, waiting.
+    // His hand rests on frame 0 (the fist) until his value syncs in, then shows
+    // the LAST frame — the die he threw. No shake and no flip: mirroring it
+    // stood his die on its head.
     if (theirs > 0 && !opEl.dataset.v) {
       opEl.dataset.v = String(theirs);
       opEl.classList.toggle("one", theirs === 1);
-      opEl.classList.add("shaking");
-      this.oppRevealAt = Date.now() + 1150;
-      setTimeout(() => this.render(), 1200);
-    }
-    if (this.oppRevealAt && Date.now() >= this.oppRevealAt && !opEl.classList.contains("landed")) {
-      opEl.classList.remove("shaking");
-      opEl.classList.add("landed");
+      opEl.classList.add("still");
     }
   }
 
@@ -343,16 +342,34 @@ export class ChessDialog {
       this.cellEls.push(cell);
     }
     // TAP-TO-MOVE AND DRAG-AND-DROP, one gesture. pointerdown always selects
-    // (that IS the tap flow); a drag only begins once the pointer leaves a 6px
-    // slop radius, and drops by hit-testing the square under the finger.
+    // (that IS the tap flow); a drag begins once the pointer clears a 6px slop
+    // radius. THE TARGET IS THE SQUARE UNDER THE FINGER — never under the
+    // lifted ghost. Hit-testing at the ghost (finger minus a 30px lift) aimed
+    // two thirds of a square high and read as a broken hitbox (maintainer:
+    // "as if the hitbox is not correct").
+    const sqUnder = (x: number, y: number): number => {
+      const cell = document.elementFromPoint(x, y)?.closest?.("[data-sq]") as HTMLElement | null;
+      if (cell) return Number(cell.dataset.sq);
+      // Just off the edge still counts: snap to the nearest square within half
+      // a square of the board, so a drop that overshoots the rim is not lost.
+      const r = boardEl.getBoundingClientRect();
+      const cw = r.width / 8, ch = r.height / 8;
+      if (x < r.left - cw / 2 || x > r.right + cw / 2 || y < r.top - ch / 2 || y > r.bottom + ch / 2) return -1;
+      const vf = Math.min(7, Math.max(0, Math.floor((x - r.left) / cw)));
+      const vr = Math.min(7, Math.max(0, Math.floor((y - r.top) / ch)));
+      const el = this.cellEls[vr * 8 + vf];
+      return el ? Number(el.dataset.sq) : -1;
+    };
+    const markTarget = (sq: number) => {
+      for (const c of this.cellEls) c.classList.toggle("dragover", Number(c.dataset.sq) === sq);
+    };
     boardEl.addEventListener("pointerdown", (e) => {
       const el = (e.target as HTMLElement).closest("[data-sq]") as HTMLElement | null;
       if (!el) return;
       const sq = Number(el.dataset.sq);
       this.tapSquare(sq);
       if (this.sel !== sq) return; // the tap did not pick up a piece of mine
-      this.drag = { sq, id: e.pointerId, x: e.clientX, y: e.clientY, on: false, cell: el,
-                    lift: e.pointerType === "touch" ? 30 : 0 };
+      this.drag = { sq, id: e.pointerId, x: e.clientX, y: e.clientY, on: false, cell: el, lift: 0 };
       try { boardEl.setPointerCapture(e.pointerId); } catch { /* mouse re-entry */ }
     });
     boardEl.addEventListener("pointermove", (e) => {
@@ -371,12 +388,16 @@ export class ChessDialog {
         // would clip the piece the moment it left its own cell.
         document.body.appendChild(g);
         d.ghost = g;
+        // A touch drag holds the piece clear ABOVE the finger so you can see
+        // what you picked up; a mouse drag centres on the cursor. Either way
+        // the DROP still goes to the square under the pointer.
+        d.lift = e.pointerType === "touch" ? r.height * 0.95 : 0;
         d.on = true;
         d.cell.classList.add("dragging");
       }
-      // A touch drag lifts the piece clear of the thumb; a mouse drag centres.
       d.ghost!.style.left = `${e.clientX}px`;
       d.ghost!.style.top = `${e.clientY - d.lift}px`;
+      markTarget(sqUnder(e.clientX, e.clientY)); // the square it will land on
       e.preventDefault();
     });
     const endDrag = (e: PointerEvent, drop: boolean) => {
@@ -384,12 +405,12 @@ export class ChessDialog {
       if (!d || d.id !== e.pointerId) return;
       this.drag = null;
       d.cell.classList.remove("dragging");
+      markTarget(-1);
       d.ghost?.remove(); // remove BEFORE hit-testing, or we would hit the ghost
       if (!d.on) return; // a plain tap — pointerdown already did the work
       if (!drop) return;
-      const under = document.elementFromPoint(e.clientX, e.clientY - d.lift);
-      const cell = under?.closest?.("[data-sq]") as HTMLElement | null;
-      if (cell && Number(cell.dataset.sq) !== d.sq) this.tapSquare(Number(cell.dataset.sq));
+      const to = sqUnder(e.clientX, e.clientY);
+      if (to >= 0 && to !== d.sq) this.dropSquare(to);
     };
     boardEl.addEventListener("pointerup", (e) => endDrag(e, true));
     boardEl.addEventListener("pointercancel", (e) => endDrag(e, false));
@@ -523,6 +544,25 @@ export class ChessDialog {
     if (mine) { this.sel = sq; this.legal = chessMoves(this.st).filter((mv) => mv.from === sq); }
     else { this.sel = -1; this.legal = []; }
     this.render();
+  }
+
+  /** A DROP IS A MOVE OR NOTHING (maintainer: "if I drag n drop a bit wrong
+   * you select another piece on my drop"). tapSquare falls through to
+   * SELECTING whatever it landed on, which is right for a tap and wrong for a
+   * drag — an imprecise drop must not silently change what you are holding.
+   * Legality decides; on a miss the dragged piece stays picked up. */
+  private dropSquare(sq: number) {
+    const m = this.m;
+    if (m.phase !== "play" || this.mySide !== m.turn) return;
+    const tgt = this.legal.filter((mv) => mv.from === this.sel && mv.to === sq);
+    if (tgt.length > 1 && tgt[0].promo !== undefined) {
+      this.promoPending = { from: this.sel, to: sq }; this.render(); return;
+    }
+    if (tgt.length === 1) {
+      this.api.send("chess.move", { m: m.id, mv: chessMoveStr(tgt[0]) });
+      this.sel = -1; this.legal = []; this.render(); return;
+    }
+    this.render(); // illegal drop: nothing moves, nothing is re-selected
   }
 
   private renderPromo() {
