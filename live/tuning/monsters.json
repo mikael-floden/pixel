@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T12:59:22.492Z",
+  "updated_at": "2026-08-24T13:02:18.191Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1561,7 +1561,41 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 12
+      "level": 12,
+      "shadow": {
+        "rx": 16,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.39,
+            "ay": 22.13
+          },
+          "idle#south-east": {
+            "ax": -1.22,
+            "ay": 19.06
+          },
+          "idle#north-east": {
+            "ax": -1.09,
+            "ay": 21.33
+          },
+          "idle#north": {
+            "ax": 0.27,
+            "ay": 20.32
+          },
+          "idle#north-west": {
+            "ax": -0.07,
+            "ay": 20.75
+          },
+          "idle#west": {
+            "ax": 2.16,
+            "ay": 21.52
+          },
+          "idle#south-west": {
+            "ax": 0.42,
+            "ay": 19.58
+          }
+        }
+      }
     },
     "mystical_frog": {
       "level": 1,
