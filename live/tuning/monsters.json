@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-23T19:47:49.605Z",
+  "updated_at": "2026-08-24T09:39:27.642Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -472,7 +472,49 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 13
+      "level": 13,
+      "shadow": {
+        "rx": 33.5,
+        "ry": 15.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.79,
+            "ay": 13.89
+          },
+          "idle#south": {
+            "ax": -0.11,
+            "ay": 17.29
+          },
+          "idle#south-east": {
+            "ax": 1.66,
+            "ay": 13.94
+          },
+          "idle#north-east": {
+            "ax": 2.16,
+            "ay": 17.2
+          },
+          "idle#north": {
+            "ax": 0.24,
+            "ay": 18.7
+          },
+          "idle#north-west": {
+            "ax": -1.78,
+            "ay": 16.3
+          },
+          "idle#west": {
+            "ax": 0.36,
+            "ay": 13.31
+          },
+          "idle#south-west": {
+            "ax": -1.45,
+            "ay": 15.2
+          },
+          "walk#south": {
+            "ax": -0.72,
+            "ay": 20.51
+          }
+        }
+      }
     },
     "eldritch_maw": {
       "max_hp": 20,
