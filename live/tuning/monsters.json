@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T12:39:20.398Z",
+  "updated_at": "2026-08-24T12:44:07.367Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1666,7 +1666,61 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 18
+      "level": 18,
+      "shadow": {
+        "rx": 42.75,
+        "ry": 23,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.4,
+            "ay": 42.04
+          },
+          "idle#south": {
+            "ax": -0.35,
+            "ay": 40
+          },
+          "idle#south-east": {
+            "ax": -1.91,
+            "ay": 36.81
+          },
+          "idle#north-east": {
+            "ax": -3.8,
+            "ay": 39.36
+          },
+          "idle#north": {
+            "ax": 1.95,
+            "ay": 40.2
+          },
+          "idle#north-west": {
+            "ax": 1.78,
+            "ay": 38.55
+          },
+          "idle#west": {
+            "ax": -0.33,
+            "ay": 38.78
+          },
+          "idle#south-west": {
+            "ax": 0.76,
+            "ay": 35.29
+          },
+          "walk#south": {
+            "ax": -0.84,
+            "ay": 35.78
+          },
+          "walk#south-east": {
+            "ax": 0.71,
+            "ay": 33.95
+          },
+          "walk#north": {
+            "ax": 1.69,
+            "ay": 36.87
+          },
+          "attack#south": {
+            "ax": -0.28,
+            "ay": 36.95
+          }
+        }
+      }
     },
     "plague_hound": {
       "max_hp": 20,
