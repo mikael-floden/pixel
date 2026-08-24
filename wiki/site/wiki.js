@@ -7930,7 +7930,19 @@ function viewItems() {
         // and `name` is "Soulstone" for every one of them — the creature is the
         // difference, and the type emblem in the corner already says what KIND
         // it is. The full "Soulstone — Frostwraith" stays on the tooltip.
-        h("span", { class: "item-cell-name" }, oneToOne(it) ? soulChip(it, true) : it.name));
+        h("span", { class: "item-cell-name" }, oneToOne(it) ? soulChip(it, true) : it.name),
+        // WHAT IT IS WORTH, because you can sort on it (maintainer 2026-08-24:
+        // "can you fit how much it's worth then to? I feel that is important
+        // since you can sort on that"). A sort you cannot read down the page is
+        // a sort you have to take on trust.
+        //
+        // The number alone, in the theme's gold: the coin is authored 32x32 and
+        // this cell has no room for it at 1x — and halving pixel art to fit is
+        // the one thing this repo does not do. The sort control above the grid
+        // carries the coin, so the colour is already spoken for.
+        Number(it.value) > 0
+          ? h("span", { class: "item-cell-value", title: `Sells for ${it.value} gold` }, String(it.value))
+          : null);
     })));
 }
 function viewItem(id) {

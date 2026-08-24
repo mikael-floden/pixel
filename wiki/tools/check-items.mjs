@@ -62,22 +62,63 @@ const grid = await p.evaluate(() => {
 ok(grid.n === items.length, `every item is on the page (${grid.n} of ${items.length})`);
 ok(grid.inView >= 20,
   `a phone screen shows a wall of them — ${grid.inView} at once, where the creature-sized cards showed 2`);
-ok(grid.cols >= 4, `at least four across a 393px phone (${grid.cols} columns, cell ${grid.cellW}x${grid.cellH})`);
-ok(grid.pageHeight < 6000,
-  `and the whole library is a short scroll rather than a marathon (${grid.pageHeight}px, was 32,984)`);
+ok(grid.cols === 4, `exactly four across a phone, whatever its width (${grid.cols} columns, cell ${grid.cellW}x${grid.cellH})`);
+// MEASURED PER ITEM, not as a total. The library went from 105 to 226 the same
+// day this shipped, and a fixed page-height ceiling would have gone red for the
+// items agent doing its job. Before: 32,984px for 105 items = 314px each.
+const pxEach = grid.pageHeight / grid.n;
+ok(pxEach < 60,
+  `and each item costs a fraction of the scroll it used to — ${pxEach.toFixed(0)}px each against 314px on the old cards (${grid.n} items in ${grid.pageHeight}px)`);
 // A CELL IS NEVER TALLER THAN IT NEEDS TO BE. "It's unreasonable the card is as
 // big as a monster" — the creature cards are ~250px; a cell must stay near its
 // 48px icon.
 ok(grid.cellH <= 110, `a cell is sized for its icon, not for a creature (${grid.cellH}px tall)`);
+// THE WORTH IS ON THE TILE, because he sorts by it (maintainer 2026-08-24: "I
+// feel that is important since you can sort on that") — a sort you cannot read
+// down the page is one you have to take on trust.
+const priced = await p.evaluate(() => {
+  const cells = [...document.querySelectorAll(".item-cell")];
+  const vals = cells.map((c) => c.querySelector(".item-cell-value")?.textContent ?? null);
+  return { shown: vals.filter(Boolean).length, first: vals.slice(0, 6).filter(Boolean).map(Number) };
+});
+const expPriced = items.filter((x) => Number(x.value) > 0).length;
+ok(priced.shown === expPriced, `every item worth something shows what it is worth (${priced.shown} of ${expPriced})`);
+ok(priced.first.length > 3 && priced.first.every((v, i, a) => i === 0 || a[i - 1] >= v),
+  `and the default sort really does run high to low down the grid (${priced.first.join(" ")})`);
+// FOUR ACROSS ON EVERY PHONE, not just this one: auto-fill gave four at 393px
+// and five on his wider device, which is how the count drifted in the first
+// place.
+for (const w of [393, 412, 430]) {
+  const ctxW = await b.newContext({ viewport: { width: w, height: 900 }, isMobile: true, hasTouch: true });
+  const pw = await ctxW.newPage();
+  await pw.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await pw.addInitScript(() => localStorage.setItem("ml-staging-base", `${location.origin}/assets/`));
+  await pw.goto(`${W}#/items`, { waitUntil: "load" });
+  await pw.waitForTimeout(1800);
+  const cols = await pw.evaluate(() => {
+    const cells = [...document.querySelectorAll(".item-cell")];
+    const top = cells[0].getBoundingClientRect().top;
+    return cells.filter((c) => Math.abs(c.getBoundingClientRect().top - top) < 2).length;
+  });
+  ok(cols === 4, `  …four at ${w}px too (${cols})`);
+  await ctxW.close();
+}
 // PIXEL ART IS NEVER RESAMPLED: the icons are authored at 48 and drawn at 48.
 ok(grid.iconNative?.[0] === 48 && grid.iconDrawn?.[0] === 48 && grid.iconDrawn?.[1] === 48,
   `the art is drawn at its authored size, not scaled (${grid.iconNative?.join("x")} drawn ${grid.iconDrawn?.join("x")})`);
 // DENSITY MUST NOT COST IDENTITY. 28 items are soulstones all named
 // "Soulstone"; the caption has to carry the creature or the grid is a wall of
 // one word.
-const dupes = grid.names.filter((x) => x === "Soulstone").length;
-ok(dupes === 0 && new Set(grid.names).size >= grid.names.length - 2,
-  `every cell says something different — the soul stones name their creature (${grid.names.slice(0, 4).join(", ")}…, ${dupes} bare "Soulstone")`);
+// A CAPTION IS NEVER THE GENERIC TYPE NAME while a specific one exists. 71 of
+// these are soulstones whose `name` is "Soulstone"; the caption carries the
+// creature instead. The ONLY caption allowed to repeat is "Unbound" — a
+// soulstone the items agent has not tied to a creature yet, which is a true
+// statement about that item and worth seeing on the grid.
+const generic = grid.names.filter((x) => x === "Soulstone").length;
+const dupes = grid.names.filter((x, i) => grid.names.indexOf(x) !== i);
+const onlyUnbound = dupes.every((x) => x === "Unbound");
+ok(generic === 0 && onlyUnbound,
+  `no cell falls back to the bare type name, and the only repeat is an unbound soul (${grid.names.slice(0, 4).join(", ")}…, ${generic} bare, ${dupes.length} repeats all "Unbound": ${onlyUnbound})`);
 
 // The tools above it still work, and filtering does not break the grid.
 await p.evaluate(() => [...document.querySelectorAll(".item-tools .seg button")].find((x) => /Soul/i.test(x.textContent))?.click());

@@ -2333,17 +2333,35 @@ creature that stands 150px. Measured on his phone viewport:
 
 | | before | after |
 | --- | --- | --- |
-| items in view | **2** | **28** |
-| page height | **32,984px** | **2,831px** |
+| items in view | **2** | **24–28** |
+| scroll per item | **314px** | **28px** |
+
+(The library doubled from 105 to 226 the same day the items agent gave all 57
+creatures a Soulstone, which is why the gate measures scroll **per item** rather
+than total page height — an absolute ceiling would go red for that agent doing
+its job.)
 
 The grid is now the art: one 48px icon per cell **at its authored size** — pixel
-art is never resampled here — with `auto-fill` columns (four across a phone,
-more on anything wider) and the name clamped to two lines under it.
+art is never resampled here — with the name clamped under it and **what it is
+worth** under that.
 
-**Density must not cost identity.** Twenty-eight of these are soulstones whose
-`name` is literally "Soulstone", so the caption carries the **creature** —
-Frostwraith, Magmashell, Balefiend — with the full `Soulstone — Frostwraith ·
-295 gold` on the tooltip, where a clamped caption cannot reach.
+**Four across a phone, fixed.** `auto-fill` gave four on a 393px viewport and
+five on his wider device, so the count drifted with the hardware; a fixed four
+holds the cell wide enough for a name *and* a price on every phone (verified at
+393, 412 and 430). Past 760px it goes back to filling the width.
+
+**The price is on the tile because he sorts by it** — a sort you cannot read
+down the page is one you have to take on trust. The number alone, in the
+theme's gold, tabular so the column reads as a column: the coin is authored
+32×32 and there is no room for it at 1×, and halving pixel art to fit is the one
+thing this repo does not do.
+
+**Density must not cost identity.** 71 of these are soulstones whose `name` is
+literally "Soulstone", so the caption carries the **creature** — Frostwraith,
+Magmashell, Balefiend — with the full `Soulstone — Frostwraith · 295 gold` on
+the tooltip, where a clamped caption cannot reach. The one caption allowed to
+repeat is **"Unbound"**: a soulstone the items agent has not tied to a creature
+yet, which is a true statement about that item and worth seeing on the grid.
 
 **No rarity colour**, deliberately: he threw the Common/Uncommon/Rare/Epic
 vocabulary off these cards in July (*"This should just say the item type"*), so
