@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T12:29:18.204Z",
+  "updated_at": "2026-08-24T12:33:40.095Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2262,7 +2262,49 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 12
+      "level": 12,
+      "shadow": {
+        "rx": 24.75,
+        "ry": 17,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.87,
+            "ay": 29.73
+          },
+          "idle#south": {
+            "ax": 0.1,
+            "ay": 30.18
+          },
+          "idle#south-east": {
+            "ax": -1.21,
+            "ay": 28
+          },
+          "idle#north-east": {
+            "ax": -3.15,
+            "ay": 25.5
+          },
+          "idle#north": {
+            "ax": 0.45,
+            "ay": 26.89
+          },
+          "idle#north-west": {
+            "ax": 3.55,
+            "ay": 25.43
+          },
+          "idle#west": {
+            "ax": 3.96,
+            "ay": 30.31
+          },
+          "idle#south-west": {
+            "ax": 3.01,
+            "ay": 26.45
+          },
+          "walk#south": {
+            "ax": 0.26,
+            "ay": 26.28
+          }
+        }
+      }
     },
     "undead_hound": {
       "max_hp": 20,
