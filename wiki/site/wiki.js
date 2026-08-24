@@ -4653,6 +4653,24 @@ function detailField(centerArt, surround, seed, scale = 1, pass = null) {
  *  publishes it. */
 const transTile = (a, b, setId, i, post) =>
   `tiles/transitions/${a}__to__${b}/${setId}/${post ? "post/" : ""}tile_${String(i).padStart(2, "0")}.webp`;
+/* WHAT ONE TRANSITION TILE SHOWS UNDER THE CURRENT PASS — one rule, so the
+ * strips and the composed scenes cannot disagree (maintainer 2026-08-24: "Its
+ * good that you fixed so the Transition page now renders After correctly. But
+ * now it looks like Before instead fails to render correctly").
+ *
+ * It did: I taught wangScene to follow the switch and left both plain STRIPS —
+ * the rows on the Transitions tab and the 16 corner tiles on the demo page —
+ * passing the set's `post` FLAG where the pass belongs. They showed the
+ * processed tiles under every setting, so Before looked identical to After.
+ *
+ * `hasPost` is whether the processed pass exists at all; the pass decides what
+ * to draw with it. */
+const transArt = (a, b, setId, i, hasPost) => {
+  const pass = worldView();
+  return (hasPost && pass === "texture")
+    ? `tex:${transTile(a, b, setId, i, true)}::${transTile(a, b, setId, i, false)}`
+    : transTile(a, b, setId, i, hasPost && pass !== "before");
+};
 /** Seeded RNG for the composites — a Randomize press swaps the seed, and the
  *  same seed always paints the same field (mulberry32; deterministic keeps the
  *  gates honest). */
@@ -5403,7 +5421,7 @@ function viewWorldType(top) {
       ? h("div", {}, ...trans.map((x) => {
         const other = x.a === t.id ? x.b : x.a;
         const s0 = x.sets[0];
-        const picks = [1, 3, 12, 14].map((i) => transTile(x.a, x.b, s0.id, i, s0.post));
+        const picks = [1, 3, 12, 14].map((i) => transArt(x.a, x.b, s0.id, i, s0.post));
         return h("a", { class: "trans-row", href: `#/world/transition/${x.a}__to__${x.b}` },
           h("span", { class: "trans-name" }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
           h("span", { class: "muted" }, ` ${x.sets.length} set${x.sets.length === 1 ? "" : "s"}`),
@@ -5411,8 +5429,10 @@ function viewWorldType(top) {
           // tiles agent publishes post/, this flips with no wiki change.
           s0.post ? h("span", { class: "pill ok" }, "postprocessed")
             : h("span", { class: "pill warn", title: "The raw generator tiles — the retexture pass (the set's colours corrected to the game palette) has not been published yet" }, "before postprocess"),
+          // artNodeFor, not a bare <img>: under Textured the path is a virtual
+          // tex: one that has to be synthesized onto a canvas.
           h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
-            h("img", { src: assetUrl(f), alt: `${t.name} to ${other} transition tile`, loading: "lazy" }))));
+            artNodeFor(f, "", `${t.name} to ${other} transition tile`))));
       }))
       : h("p", { class: "muted" }, state.admin
         ? "Being generated — no transition sets published for this ground yet (tiles/transitions/)."
@@ -5617,8 +5637,11 @@ function viewWorldTransition(pairId) {
       h("div", { class: "panel-title" }, "The 16 corner tiles",
         h("span", { class: "pill" }, `set ${set.id}`)),
       h("p", { class: "muted" }, `Index = 8·NW + 4·NE + 2·SW + 1·SE, a set bit meaning ${nameA.toLowerCase()}. 0 is pure ${nameB.toLowerCase()}, 15 pure ${nameA.toLowerCase()}.`),
-      h("div", { class: "trans-strip checker trans-all" }, ...Array.from({ length: set.n }, (_, i) =>
-        h("img", { src: assetUrl(transTile(tr.a, tr.b, set.id, i, set.post)), alt: `tile ${i}`, title: `index ${i}`, loading: "lazy" })))));
+      h("div", { class: "trans-strip checker trans-all" }, ...Array.from({ length: set.n }, (_, i) => {
+        const node = artNodeFor(transArt(tr.a, tr.b, set.id, i, set.post), "", `tile ${i}`);
+        node.title = `index ${i}`;
+        return node;
+      }))));
 }
 
 /* ---- THE PROMOTION MODAL (maintainer 2026-08-21: "That will open a

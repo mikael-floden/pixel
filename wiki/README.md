@@ -618,6 +618,31 @@ shaded face"* at 12:12 and it now measures **100 → 100**. That check is a
 regression guard in `check-groundtype.mjs` now rather than a complaint — if the
 repair slips, the gate goes red.
 
+## The transition passes, once the processed set arrived
+
+The tiles agent published `post/` on 2026-08-24 — **283 of 284 sets**
+(`grass__to__slime/a23_s1` is the one without, and its per-set flag still says
+so). Verified before trusting the pictures, because these paths are derived
+rather than read from a manifest: **0 geometry mismatches**, every processed
+tile still 64×46 like its raw twin, and the two passes genuinely differ (2,012
+of 2,944 pixels on a sample).
+
+**Then Before broke, and it was mine.** Maintainer: *"Its good that you fixed so
+the Transition page now renders After correctly. But now it looks like Before
+instead fails to render correctly."* `wangScene` had been taught to follow the
+switch, but both plain **strips** — the rows on the Transitions tab and the 16
+corner tiles on the demo page — were still passing the set's `post` **flag**
+where the pass belongs, so they drew processed tiles under every setting.
+
+One rule now, `transArt`, shared by every place that draws a transition tile,
+and gated on the **files fetched**, which cannot lie:
+
+| pass | post fetched | raw fetched |
+| --- | --- | --- |
+| After | 40 | 0 |
+| Before | 0 | 40 |
+| Textured | 45 | 40 (synthesized onto a canvas) |
+
 ## Three passes, and the third one does not exist on disk
 
 Maintainer 2026-08-21, after the clean-colour switch still did not answer his

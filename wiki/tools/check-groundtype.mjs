@@ -211,7 +211,17 @@ ok(tabsD.length === 4 && /Details/.test(tabsD[1].t) && !tabsD[1].disabled,
   `four tabs, Details second — enabled for the admin even when empty, the queue is his TODO (${tabsD.map((x) => x.t).join(" | ")})`);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(1800);
-const expQueue = (D.domains.world ?? []).filter((c) => c.top === "grass").reduce((n, c) => n + c.candidates.length, 0);
+// THE QUEUE IS WHAT IS LEFT, not the whole ground. This counted every grass
+// candidate, which was the same number only while he had judged no tops at
+// all; he has since judged 66, and a gate that reddens because the maintainer
+// worked is a broken gate. Derived from the live doc, like the counts on the
+// page itself.
+const topJudged = await p.evaluate(() => {
+  const e = window.__wiki.state.feedback.tiles?.entries ?? {};
+  return Object.keys(e).filter((k) => k.endsWith("#top") && (e[k].status || e[k].rating)).length;
+});
+const expQueue = (D.domains.world ?? []).filter((c) => c.top === "grass")
+  .reduce((n, c) => n + c.candidates.length, 0);         // the whole ground, for the message
 const dq = await p.evaluate(() => ({
   queuePill: [...document.querySelectorAll(".panel-title .pill")].map((x) => x.textContent),
   cards: document.querySelectorAll(".detail-card").length,
@@ -219,8 +229,16 @@ const dq = await p.evaluate(() => ({
   stars: document.querySelectorAll(".detail-card .stars").length,
   more: [...document.querySelectorAll("button")].some((x) => /Show 12 more/.test(x.textContent)),
 }));
-ok(dq.queuePill.some((t) => t === String(expQueue)),
-  `the queue counts every top of the ground — walls ignored, all pairs (${expQueue})`);
+// What the page should say: every top of this ground that nobody has judged.
+const expLeft = await p.evaluate(() => {
+  const w = window.__wiki;
+  const e = w.state.feedback.tiles?.entries ?? {};
+  return (w.state.data.domains.world ?? []).filter((c) => c.top === "grass")
+    .flatMap((c) => c.candidates)
+    .filter((x) => { const v = e[`${x.key}#top`]; return !v || (!v.status && !v.rating); }).length;
+});
+ok(dq.queuePill.some((x) => x === String(expLeft)),
+  `the queue counts the tops nobody has judged — ${expLeft} left of ${expQueue}, with ${topJudged} already done`);
 ok(dq.cards === 12 && dq.canvases === 12 && dq.stars === 12 && dq.more,
   `twelve at a time, each COMPOSED in the ground with its own stars, and more on demand (${dq.cards})`);
 // approve one from the queue → the collection, the tab count, the #top save
@@ -231,8 +249,10 @@ const dApproved = await p.evaluate(() => ({
   keys: Object.keys(window.__wiki.state.feedback.tiles.entries ?? {}).filter((k) => k.endsWith("#top")),
 }));
 ok(/Details1/.test(dApproved.tab.replace(/\s+/g, "")), `approving a top moves it into the collection and the tab count (${dApproved.tab})`);
-ok(dApproved.keys.length === 1 && /#top$/.test(dApproved.keys[0]),
-  `the verdict rides the tile's own key with the #top suffix (${dApproved.keys[0]})`);
+// One MORE #top key than before the click, and it is the tile's own key with
+// the suffix — asserted as a delta, since the doc already carries his.
+ok(dApproved.keys.length === topJudged + 1 && dApproved.keys.every((k) => /#top$/.test(k)),
+  `the verdict rides the tile's own key with the #top suffix (${dApproved.keys.length} keys, was ${topJudged})`);
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(700);
 const topSave = saves.at(-1);
@@ -343,6 +363,48 @@ for (const tabName of ["Details", "On top of", "Transitions"]) {
   ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && /Textured/.test(hasPass.hint),
     `all THREE passes are on the ${tabName} tab, and the hint points at Textured (${hasPass.hint.slice(0, 46)}…)`);
 }
+// ---- THE TRANSITION STRIPS OBEY THE SWITCH TOO ---------------------------
+// Maintainer 2026-08-24, after the tiles agent published the processed pass:
+// "Its good that you fixed so the Transition page now renders After correctly.
+// But now it looks like Before instead fails to render correctly."
+//
+// It did. wangScene had been taught to follow the switch and both plain STRIPS
+// — the rows on this tab and the 16 corner tiles on the demo page — were still
+// passing the set's `post` FLAG where the pass belongs, so they drew the
+// processed tiles under every setting and Before looked identical to After.
+// Asserted on the FILES FETCHED, which is the only thing that cannot lie.
+const transFetch = [];
+const countTrans = (r) => { if (/tiles\/transitions\//.test(r.url())) transFetch.push(r.url()); };
+p.on("request", countTrans);
+const passFetches = async (name) => {
+  await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+  await p.waitForTimeout(1600);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+  await p.waitForTimeout(1400);
+  transFetch.length = 0;
+  await p.evaluate((n) => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === n)?.click(), name);
+  await p.waitForTimeout(2200);
+  return {
+    post: transFetch.filter((u) => /\/post\//.test(u)).length,
+    raw: transFetch.filter((u) => !/\/post\//.test(u)).length,
+    kids: await p.evaluate(() => {
+      const s2 = document.querySelector(".trans-row .trans-strip");
+      return s2 ? [...s2.children].map((c) => c.tagName.toLowerCase()).join(",") : "";
+    }),
+  };
+};
+const trAfter = await passFetches("After");
+ok(trAfter.post > 0 && trAfter.raw === 0,
+  `on Transitions, After draws the PROCESSED tiles and only those (${trAfter.post} post, ${trAfter.raw} raw)`);
+const trBefore = await passFetches("Before");
+ok(trBefore.raw > 0 && trBefore.post === 0,
+  `and Before draws the generator's own, which is the half that was broken (${trBefore.post} post, ${trBefore.raw} raw)`);
+const trTex = await passFetches("Textured");
+ok(trTex.post > 0 && trTex.raw > 0 && /canvas/.test(trTex.kids),
+  `and Textured pulls BOTH and synthesizes onto a canvas (${trTex.post} post, ${trTex.raw} raw, strip of ${trTex.kids.split(",")[0]})`);
+p.off("request", countTrans);
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.waitForTimeout(900);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
 passes.after = 0; passes.before = 0;
