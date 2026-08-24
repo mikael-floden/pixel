@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:37:18.216Z",
+  "updated_at": "2026-08-24T13:39:39.342Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2923,7 +2923,45 @@
           "item": "smooth_river_stone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18.25,
+        "ry": 9,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.64,
+            "ay": 8.26
+          },
+          "idle#east": {
+            "ax": -0.48,
+            "ay": 11.23
+          },
+          "idle#south-east": {
+            "ax": 0.29,
+            "ay": 8.54
+          },
+          "idle#north-east": {
+            "ax": 0.2,
+            "ay": 9.62
+          },
+          "idle#north": {
+            "ax": 0.36,
+            "ay": 8.69
+          },
+          "idle#north-west": {
+            "ax": 0.68,
+            "ay": 9.83
+          },
+          "idle#west": {
+            "ax": -0.12,
+            "ay": 10.08
+          },
+          "idle#south-west": {
+            "ax": -0.05,
+            "ay": 8.73
+          }
+        }
+      }
     },
     "white_horse": {
       "max_hp": 20,
