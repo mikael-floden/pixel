@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:51:30.007Z",
+  "updated_at": "2026-08-24T14:52:58.413Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -973,7 +973,49 @@
           "item": "green_slime_glob",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18.5,
+        "ry": 8.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -1.12,
+            "ay": 11.66
+          },
+          "idle#south": {
+            "ax": 1.03,
+            "ay": 12.15
+          },
+          "idle#south-east": {
+            "ax": 0.74,
+            "ay": 12.25
+          },
+          "idle#north-east": {
+            "ax": -2.02,
+            "ay": 12.6
+          },
+          "idle#north": {
+            "ax": 0.83,
+            "ay": 12.51
+          },
+          "idle#north-west": {
+            "ax": 0.96,
+            "ay": 13.44
+          },
+          "idle#west": {
+            "ax": 1.11,
+            "ay": 12.91
+          },
+          "idle#south-west": {
+            "ax": 1.69,
+            "ay": 13.23
+          },
+          "walk#west": {
+            "ax": 0.74,
+            "ay": 11.99
+          }
+        }
+      }
     },
     "granite_bear": {
       "max_hp": 20,
