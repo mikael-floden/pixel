@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T12:44:07.367Z",
+  "updated_at": "2026-08-24T12:46:40.021Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2240,7 +2240,65 @@
           "item": "cobbled_stone_egg",
           "chance": 0.16
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 28,
+        "ry": 13,
+        "offsets": {
+          "idle#east": {
+            "ax": -4.6,
+            "ay": 14.03
+          },
+          "idle#south": {
+            "ax": 0.03,
+            "ay": 15.56
+          },
+          "idle#south-east": {
+            "ax": -1.46,
+            "ay": 15.71
+          },
+          "idle#north-east": {
+            "ax": -0.01,
+            "ay": 14.94
+          },
+          "idle#north": {
+            "ax": -0.63,
+            "ay": 15.46
+          },
+          "idle#north-west": {
+            "ax": -0.08,
+            "ay": 13.49
+          },
+          "idle#south-west": {
+            "ax": 1.41,
+            "ay": 15.31
+          },
+          "walk#south": {
+            "ax": -0.43,
+            "ay": 13.52
+          },
+          "walk#south-east": {
+            "ax": -1.78,
+            "ay": 11.73
+          },
+          "walk#west": {
+            "ax": 2.72,
+            "ay": 13.79
+          },
+          "walk#south-west": {
+            "ax": 2.1,
+            "ay": 11.06
+          },
+          "angry#west": {
+            "ax": 0.76,
+            "ay": 17.1
+          },
+          "attack#west": {
+            "ax": 2.86,
+            "ay": 16.98
+          }
+        }
+      }
     },
     "storm_shellback": {
       "max_hp": 20,
