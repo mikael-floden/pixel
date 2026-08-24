@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:39:39.342Z",
+  "updated_at": "2026-08-24T13:41:42.513Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1018,7 +1018,17 @@
           "item": "glossy_brown_seeds",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 11.75,
+        "ry": 5.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -1.51,
+            "ay": 10.74
+          }
+        }
+      }
     },
     "hellhound": {
       "max_hp": 20,
