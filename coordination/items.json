@@ -1,16 +1,16 @@
 {
   "domain": "items",
-  "updated_at": "2026-07-31T20:52:29+00:00",
+  "updated_at": "2026-08-24T17:00:49+00:00",
   "health": "idle",
-  "current": "sprites converted to lossless WebP (176 KB -> 59 KB); fixed a pagination bug that had pruned two items",
+  "current": "loot for the 33 new creatures \u2014 205 rows over 56/57 monsters; all 28 Soulstones bound 1-to-1",
   "progress": {
     "items_total": 105,
     "MISC": 77,
     "SOUL": 28,
-    "drop_rows": 108,
-    "monsters_with_loot": 24,
-    "souls_bound": 24,
-    "souls_unbound": 4,
+    "drop_rows": 205,
+    "monsters_with_loot": 56,
+    "souls_bound": 28,
+    "souls_unbound": 0,
     "types_contracted": [
       "MISC",
       "SOUL",
@@ -28,19 +28,37 @@
     "unreviewed": 105,
     "misc_rows": 84,
     "misc_bound": 59,
-    "misc_waiting": 18,
+    "misc_waiting": 15,
     "sprite_format": "webp-lossless",
-    "sprite_bytes_kb": 59
+    "sprite_bytes_kb": 59,
+    "monsters_total": 57,
+    "monsters_without_soulstone": 29
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py"
+    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py",
+    "[2026-08-24T17:00:49+00:00] LOOT FOR THE 33 NEW CREATURES. 205 drop rows across 56 of 57 monsters (was 108/24). Same rule as before \u2014 a row exists only when the item is OF that creature \u2014 so the tables read as descriptions: Gnashjaw the boulder-gnawer drops rock pile + rough stone + its own tusk; Sorrel, the farm horse that outlived its farm, drops its lead rope, its fodder and its molars; Dunedelver, which swims through sand, turns up fossil sea shells and nacre; Gravecharger drops rib cage, pale horns, war-tack chain, grave dirt; Gloompard drops the violet eye you counted, black claws and black fur; Runemane the temple guardian drops the rune locket and a gilded fang; Voidmaw, which has no face, drops nothing but teeth and a slab of jaw. I deliberately spread the same item thin: after the merge the most-shared item (Raw Meat) is on 8 of 57 creatures and the fang on 6, and per-creature tables run 0-7 rows, not a flat number. ALL 28 SOULSTONES ARE NOW BOUND 1-to-1: molten_lava -> Magmane (lava in a blackened shell), cobbled_mist -> Bogstalker (unlit fen cobbles, dodge in dim light), blue_slate_ice -> Winterfang (frost that slows), molten_gold_vein -> Amethyrn (the gem-grazer, gold-find). 7 descriptions rewritten for items that stopped waiting. GAPS LEFT VISIBLE, not padded: 29 of 57 monsters have NO Soulstone (only 28 stones exist); Nightmare has an EMPTY table on purpose \u2014 a horse of pale flame leaves nothing in this item set; no antler item, so the three stags/elk are thin; no storm item, so Stormcrown has one drop; no armour-plate item for Ironhide; no eldritch item for Voidmaw. 15 items still wait for bats, birds, insects, a moth, a spider, a crab, shellfish and a gatherer with hands."
   ],
   "requests": [
     {
       "to": "monsters",
       "text": "ITEM ART IS WAITING ON YOU \u2014 18 MISC items + 4 Soulstones have no creature and are drawn for ones the roster lacks. If you are picking what to make next, each of these already has finished art, a name and a description sitting unused: A BAT (three different bat wings), A BIRD (barred feather, rainbow tail plume, teal quill, a bundle of bright plumes), A CRAB (curved pincer), INSECTS (a plated beetle, a twig-bodied dragonfly), A SPIDER (silk skein), SHELLFISH / SHORE LIFE (great pearl, nacre shard, sea shells), and SOMEONE WITH HANDS \u2014 a gatherer/bandit type (three twine-tied bundles: herbs, roots, dried grass). Unbound Soulstones want a fire boss, a misty creature, another ice creature and a treasure/greed creature. Also: Emberwing (butterfly_dragon) has only one misc drop because no item in the set is a butterfly-dragon body part \u2014 if you keep it, I would like a wing or scale item for it. Ping me when any of these ship and I will bind them same day.",
       "at": "2026-07-30T22:14:30+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "ALL 33 NEW CREATURES HAVE LOOT \u2014 205 rows across 56 of 57, in live/tuning/monsters.json. Each table is built from what the creature IS, so it doubles as a description; if one reads wrong to you, tell me and I will re-cut it. THE BIG ASK: only 28 Soulstones exist and they are bound 1-to-1, so 29 of your creatures have NO CARD \u2014 Rotjaw (lv5), Blightcur (lv6), Gnashjaw (lv7), Sorrel (lv8), Prismclaw (lv9), Snowmane (lv9), Sunscale (lv10), Mireglare (lv10), Ironhide (lv11), Cinderhowl (lv11), Slagfang (lv11), Gravecharger (lv12), Moonpelt (lv12), Gloompard (lv12), Bergclaw (lv13), Dunedelver (lv13), Thornstag (lv14), Duskhoof (lv14), Gnarloak (lv15), Sporehorn (lv15), Basalthowl (lv16), Mireback (lv17), Runemane (lv17), Nightmare (lv17), Tuskmaul (lv18), Cragback (lv19), Stormcrown (lv19), Voidmaw (lv19), Voltshell (lv20). Every monster wants one (Ragnarok-card rule, maintainer). If SOUL-tagged stone art lands for them I will bind it same day. SMALLER ART GAPS I refused to paper over: Nightmare (spectral_horse) has an EMPTY loot table \u2014 a horse of pale flame leaves nothing in the current item set, it needs ghost/dream loot; the three antlered creatures (Thornstag, Sporehorn, Stormcrown) are thin because there is no ANTLER item; Stormcrown and Voltshell want a STORM/lightning item; Ironhide wants an ARMOUR-PLATE item; Voidmaw wants an ELDRITCH item. And still waiting on creatures that do not exist: 3 bat wings, 4 feathers, a crab pincer, a beetle, a dragonfly, a moth wing, a silk skein, a great pearl, and 3 twine-tied gatherer bundles.",
+      "at": "2026-08-24T17:00:49+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS: loot now covers the new roster \u2014 205 rows across 56 of 57 monsters, so the Drops panel is populated on nearly every creature page. All 28 Soulstones are bound, still strictly 1-to-1, so the creature<->stone chip works both ways for the 28 monsters that have one; the other 29 legitimately have none yet (28 stones, 57 monsters) \u2014 render that as 'no Soulstone yet' rather than a lookup miss. Two states worth showing on the item side: 15 items carry `waiting_for` (no creature drops them yet) and one monster, Nightmare, has an empty table on purpose.",
+      "at": "2026-08-24T17:00:49+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: drop tables extended to the new roster \u2014 live/tuning/monsters.json now has 205 loot rows across 56 of 57 monsters (was 108 across 24). No shape change: {item, chance}, chance a 0..1 fraction, rolled per row. All 28 SOUL stones are bound 1-to-1 (28 monsters have a card, 29 do not yet). One monster (spectral_horse) has an empty loot array and 15 items drop from nothing \u2014 both are intentional, so treat empty as empty, not as an error.",
+      "at": "2026-08-24T17:00:49+00:00"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T16:22:40+00:00",
+  "updated_at": "2026-08-24T16:55:11.618Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -21,7 +21,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 204,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
       "level": 11,
       "shadow": {
         "rx": 34,
@@ -70,7 +83,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 282,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        }
+      ],
       "level": 14,
       "shadow": {
         "rx": 17,
@@ -151,7 +173,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 310,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "spotted_purple_mushroom",
+          "chance": 0.128
+        },
+        {
+          "item": "grey_sage_leaves",
+          "chance": 0.256
+        }
+      ],
       "level": 15,
       "shadow": {
         "rx": 18.25,
@@ -282,7 +313,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 133,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "coiled_hemp_rope",
+          "chance": 0.256
+        },
+        {
+          "item": "dried_grass_bundle",
+          "chance": 0.32
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        }
+      ],
       "level": 8,
       "shadow": {
         "rx": 14,
@@ -331,7 +375,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 282,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "purple_flower_petals",
+          "chance": 0.128
+        }
+      ],
       "level": 14,
       "shadow": {
         "rx": 19.5,
@@ -380,7 +433,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 255,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "molten_gold_vein_stone",
+          "chance": 0.006
+        },
+        {
+          "item": "blue_veined_rift_geode",
+          "chance": 0.011
+        },
+        {
+          "item": "gold_veined_ore",
+          "chance": 0.044
+        },
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
       "level": 13,
       "shadow": {
         "rx": 25.5,
@@ -477,7 +547,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 155,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "green_crystal_shard",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
       "level": 9,
       "shadow": {
         "rx": 17.75,
@@ -554,7 +637,7 @@
         },
         {
           "item": "coiled_hemp_rope",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "heavy_iron_links",
@@ -574,7 +657,7 @@
         },
         {
           "item": "yellowed_beast_molar",
-          "chance": 0.32
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -624,7 +707,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 179,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "golden_broad_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "severed_scaled_paw",
+          "chance": 0.128
+        }
+      ],
       "level": 10,
       "shadow": {
         "rx": 17.25,
@@ -685,7 +777,7 @@
         },
         {
           "item": "purple_venom_claw",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "curved_bone_talon",
@@ -763,7 +855,7 @@
         },
         {
           "item": "flame_veined_shard",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "pale_ridged_horns",
@@ -885,7 +977,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 255,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "iridescent_nacre_shard",
+          "chance": 0.055
+        },
+        {
+          "item": "scaly_clawed_foot",
+          "chance": 0.128
+        },
+        {
+          "item": "bleached_sea_shells",
+          "chance": 0.32
+        }
+      ],
       "level": 13,
       "shadow": {
         "rx": 33.5,
@@ -938,7 +1043,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 426,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "toothed_jaw_slab",
+          "chance": 0.128
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        }
+      ],
       "level": 19,
       "shadow": {
         "rx": 31,
@@ -1007,7 +1121,7 @@
         },
         {
           "item": "grey_sage_leaves",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "mint_slime_globule",
@@ -1147,7 +1261,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 426,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "gold_veined_ore",
+          "chance": 0.044
+        },
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        }
+      ],
       "level": 19,
       "shadow": {
         "rx": 45.75,
@@ -1208,7 +1335,24 @@
       "attack_cooldown_ms": 1200,
       "xp": 111,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "pair_of_molars",
+          "chance": 0.256
+        },
+        {
+          "item": "rough_brown_boulder",
+          "chance": 0.256
+        }
+      ],
       "level": 7,
       "shadow": {
         "rx": 24.5,
@@ -1257,7 +1401,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 396,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
       "level": 18,
       "shadow": {
         "rx": 53.5,
@@ -1340,7 +1501,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 204,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "cracked_magma_stone",
+          "chance": 0.044
+        },
+        {
+          "item": "flame_veined_shard",
+          "chance": 0.044
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        }
+      ],
       "level": 11,
       "shadow": {
         "rx": 16.5,
@@ -1515,7 +1689,7 @@
         },
         {
           "item": "pale_blue_hailstones",
-          "chance": 0.16
+          "chance": 0.128
         }
       ],
       "shadow": {
@@ -1565,7 +1739,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 338,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "blue_slate_ice_egg",
+          "chance": 0.02
+        },
+        {
+          "item": "pale_blue_hailstones",
+          "chance": 0.128
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
       "level": 16,
       "shadow": {
         "rx": 24,
@@ -1650,7 +1841,7 @@
         },
         {
           "item": "black_glass_lump",
-          "chance": 0.16
+          "chance": 0.128
         }
       ],
       "shadow": {
@@ -1740,11 +1931,11 @@
         },
         {
           "item": "golden_broad_fang",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "scaly_clawed_foot",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "loose_beast_teeth",
@@ -1810,11 +2001,11 @@
         },
         {
           "item": "severed_scaled_paw",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "toothed_jaw_slab",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "curved_ivory_fang",
@@ -1876,7 +2067,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 204,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "cracked_magma_stone",
+          "chance": 0.044
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "toothed_jaw_slab",
+          "chance": 0.128
+        }
+      ],
       "level": 11,
       "shadow": {
         "rx": 18.5,
@@ -1925,7 +2129,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 338,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "black_glass_lump",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
       "level": 16,
       "shadow": {
         "rx": 17.5,
@@ -2042,7 +2259,7 @@
         },
         {
           "item": "engraved_bronze_locket",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "bleached_rib_cage",
@@ -2120,7 +2337,7 @@
         },
         {
           "item": "broken_boar_tusk",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "pair_of_molars",
@@ -2240,7 +2457,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 229,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
       "level": 12,
       "shadow": {
         "rx": 16,
@@ -2417,7 +2647,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 396,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "molten_lava_soulstone",
+          "chance": 0.006
+        },
+        {
+          "item": "flame_veined_shard",
+          "chance": 0.044
+        },
+        {
+          "item": "black_glass_slab",
+          "chance": 0.128
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        }
+      ],
       "level": 18,
       "shadow": {
         "rx": 42.75,
@@ -2482,7 +2729,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 90,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "purple_venom_claw",
+          "chance": 0.044
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
       "level": 6,
       "shadow": {
         "rx": 16.25,
@@ -2547,7 +2807,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 255,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
       "level": 13,
       "shadow": {
         "rx": 26.5,
@@ -2600,7 +2877,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 310,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "amber_glazed_root",
+          "chance": 0.128
+        },
+        {
+          "item": "gnarled_mandrake_root",
+          "chance": 0.128
+        },
+        {
+          "item": "dark_hardwood_plank",
+          "chance": 0.256
+        },
+        {
+          "item": "mossy_driftwood_bundle",
+          "chance": 0.256
+        }
+      ],
       "level": 15,
       "shadow": {
         "rx": 26.5,
@@ -2677,7 +2971,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 367,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "engraved_bronze_locket",
+          "chance": 0.044
+        },
+        {
+          "item": "gilded_curved_fang",
+          "chance": 0.044
+        },
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
       "level": 17,
       "shadow": {
         "rx": 28.5,
@@ -2750,7 +3057,7 @@
         },
         {
           "item": "gilded_curved_fang",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "paired_black_claws",
@@ -2840,7 +3147,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 229,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "paired_black_claws",
+          "chance": 0.044
+        },
+        {
+          "item": "matted_black_pelt",
+          "chance": 0.128
+        },
+        {
+          "item": "plucked_beast_eyeball",
+          "chance": 0.128
+        }
+      ],
       "level": 12,
       "shadow": {
         "rx": 19.5,
@@ -2988,7 +3308,7 @@
         },
         {
           "item": "gold_veined_ore",
-          "chance": 0.055
+          "chance": 0.044
         },
         {
           "item": "clear_quartz_cluster",
@@ -2996,15 +3316,15 @@
         },
         {
           "item": "green_crystal_shard",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "grey_rock_pile",
-          "chance": 0.32
+          "chance": 0.256
         },
         {
           "item": "rough_brown_boulder",
-          "chance": 0.32
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -3062,11 +3382,11 @@
         },
         {
           "item": "black_glass_slab",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "cobbled_stone_egg",
-          "chance": 0.16
+          "chance": 0.128
         }
       ],
       "shadow": {
@@ -3136,7 +3456,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 457,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "blue_veined_rift_geode",
+          "chance": 0.011
+        },
+        {
+          "item": "pale_blue_crystal_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "cobbled_stone_egg",
+          "chance": 0.128
+        }
+      ],
       "level": 20,
       "shadow": {
         "rx": 66.5,
@@ -3185,7 +3518,12 @@
       "attack_cooldown_ms": 1500,
       "xp": 426,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "clear_quartz_cluster",
+          "chance": 0.128
+        }
+      ],
       "level": 19,
       "shadow": {
         "rx": 40,
@@ -3250,7 +3588,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 367,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "blunt_ivory_tooth",
+          "chance": 0.128
+        },
+        {
+          "item": "spotted_purple_mushroom",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
       "level": 17,
       "shadow": {
         "rx": 34.25,
@@ -3319,7 +3670,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 133,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "cobbled_mist_stone",
+          "chance": 0.03
+        },
+        {
+          "item": "curved_ivory_fang",
+          "chance": 0.256
+        },
+        {
+          "item": "green_slime_glob",
+          "chance": 0.256
+        },
+        {
+          "item": "smooth_river_stone",
+          "chance": 0.256
+        }
+      ],
       "level": 8,
       "shadow": {
         "rx": 19.5,
@@ -3368,7 +3736,20 @@
       "attack_cooldown_ms": 1500,
       "xp": 179,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "paired_black_claws",
+          "chance": 0.044
+        },
+        {
+          "item": "plucked_beast_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "raw_red_meat_slab",
+          "chance": 0.256
+        }
+      ],
       "level": 10,
       "shadow": {
         "rx": 16,
@@ -3425,11 +3806,11 @@
         },
         {
           "item": "amber_glazed_root",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "gnarled_mandrake_root",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "papery_hornet_nest",
@@ -3437,7 +3818,7 @@
         },
         {
           "item": "spotted_purple_mushroom",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "dark_hardwood_plank",
@@ -3445,7 +3826,7 @@
         },
         {
           "item": "mossy_driftwood_bundle",
-          "chance": 0.32
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -3495,7 +3876,24 @@
       "attack_cooldown_ms": 1500,
       "xp": 229,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "bleached_rib_cage",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_ridged_horns",
+          "chance": 0.128
+        },
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "heavy_iron_links",
+          "chance": 0.256
+        }
+      ],
       "level": 12,
       "shadow": {
         "rx": 24.75,
@@ -3548,7 +3946,20 @@
       "attack_cooldown_ms": 1200,
       "xp": 70,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "bone_flecked_grave_soil",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_beast_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "stained_marrow_bone",
+          "chance": 0.256
+        }
+      ],
       "level": 5,
       "shadow": {
         "rx": 12.5,
@@ -3659,7 +4070,16 @@
       "attack_cooldown_ms": 1500,
       "xp": 155,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "spiky_white_tuft",
+          "chance": 0.128
+        },
+        {
+          "item": "yellowed_beast_molar",
+          "chance": 0.256
+        }
+      ],
       "level": 9,
       "shadow": {
         "rx": 17.5,
@@ -3732,7 +4152,7 @@
         },
         {
           "item": "spiky_white_tuft",
-          "chance": 0.16
+          "chance": 0.128
         },
         {
           "item": "glossy_brown_seeds",
