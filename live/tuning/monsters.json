@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:16:36.272Z",
+  "updated_at": "2026-08-24T13:20:23.265Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1456,7 +1456,37 @@
           "item": "tied_bone_bundle",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 16,
+        "ry": 7.25,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.17,
+            "ay": 23.87
+          },
+          "idle#north-east": {
+            "ax": -0.41,
+            "ay": 22.74
+          },
+          "idle#north": {
+            "ax": -0.08,
+            "ay": 23.88
+          },
+          "idle#north-west": {
+            "ax": 0.87,
+            "ay": 22.94
+          },
+          "idle#west": {
+            "ax": 0.29,
+            "ay": 23.67
+          },
+          "idle#south-west": {
+            "ax": -0.2,
+            "ay": 25.79
+          }
+        }
+      }
     },
     "mammoth": {
       "level": 20,
