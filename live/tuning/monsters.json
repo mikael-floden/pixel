@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T15:07:10.865Z",
+  "updated_at": "2026-08-24T15:09:18.293Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -332,7 +332,45 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 14
+      "level": 14,
+      "shadow": {
+        "rx": 19.5,
+        "ry": 13,
+        "offsets": {
+          "idle#east": {
+            "ax": -6.78,
+            "ay": 39.32
+          },
+          "idle#south": {
+            "ax": 0.16,
+            "ay": 36.57
+          },
+          "idle#south-east": {
+            "ax": -4.46,
+            "ay": 35.05
+          },
+          "idle#north-east": {
+            "ax": -5.02,
+            "ay": 36.52
+          },
+          "idle#north": {
+            "ax": 0.88,
+            "ay": 37.12
+          },
+          "idle#north-west": {
+            "ax": 5.66,
+            "ay": 36.71
+          },
+          "idle#west": {
+            "ax": 6.17,
+            "ay": 38.51
+          },
+          "idle#south-west": {
+            "ax": 5.14,
+            "ay": 36.07
+          }
+        }
+      }
     },
     "crystal_horn": {
       "max_hp": 20,
