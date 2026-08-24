@@ -32,6 +32,17 @@ fix it yourself — never wait.** The recipe:
    rolls forward with the world + the entry together.
 5. Conflict in `surfaces.ts`? Keep both sides' new entries (it's a plain map).
 
+**Resolving a conflict in a file another agent owns** (`live/tuning/*`,
+`surfaces.ts`, `coordination/*`): **`git checkout --theirs` takes YOUR side
+during a rebase**, not upstream's — the labels are inverted there, and using it
+silently reverted 46 of the maintainer's own shadow-calibration blocks in
+`live/tuning/monsters.json` (caught by diffing against `origin/main` before the
+push; commit 6e72bd9e89). Take the other side EXPLICITLY —
+`git show origin/main:<path> > <path>` — then re-apply your own change on top
+programmatically, and verify field-by-field against `origin/main` that only the
+fields you meant to touch differ. Never resolve a shared file by hand-picking
+hunks.
+
 Better still: when adopting a brand-new tiles2 material, ask tiles2 to classify
 it at creation (`python coordination/board.py post maps2 --to tiles2 --text
 "classify <cat> please"`) so the gate never goes red — but don't block on them.
