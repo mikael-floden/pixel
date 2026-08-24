@@ -267,6 +267,11 @@ const NPC_BODY_RADIUS = 9; // same personal space as a player body (fake collisi
 // and every swing resolves to kick or punch) queue behind the NPCs. Ordering
 // only, never a filter: everything still loads.
 const PLAYER_URGENT_STATES = ["hurt", "die", "kick", "punch", "pickup"];
+// The revive ask is retried on this cadence and starts admitting trouble after
+// REVIVE_QUIET_MS — the server's own backstop is PLAYER_DEATH_MAX_MS (3 min),
+// far too long to sit in front of a prompt that looks broken.
+const REVIVE_RETRY_MS = 600;
+const REVIVE_QUIET_MS = 4_000;
 const DEATH_ZOOM_MS = 10_000; // the SLOW push onto the body — the whole mood
 const DEATH_ZOOM = 3; // x the normal integer zoom, as asked
 // THE VEIL IS A VIGNETTE, NOT A FLAT WASH. A flat one crushes the torch pool
@@ -1358,6 +1363,8 @@ export class WorldScene extends Phaser.Scene {
   private death: {
     at: number;
     armed: boolean;
+    askAt?: number;   // when the player FIRST asked to come back
+    nextAsk?: number; // when to re-send the ask (0 = now)
     veil?: HTMLDivElement;
     el?: HTMLDivElement; // the "Press to continue..." card (DOM, screen space)
     /** The camera pose the push starts from — see startDeath. */
@@ -1732,17 +1739,25 @@ export class WorldScene extends Phaser.Scene {
     // stops retargeting — the trip finishes at the last touched point.
     this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
-      // A HUD modal is up (or just closed under this very gesture): the world
-      // takes no input at all — no trip, no engage, no fetch.
-      if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
       // DEAD: the only thing a press does is ask to come back, and only once
       // the push has landed and the prompt is up. Before that a press is
       // swallowed — a stray tap during the fade must not skip the sequence,
       // and the server refuses it anyway until the die clip has finished.
+      //
+      // THIS IS CHECKED BEFORE THE UI LOCK, DELIBERATELY. The lock is there so
+      // an open dialog does not also walk the player around, but it used to
+      // sit in front of this branch — so ANY stale lock (a dialog torn down
+      // without its onClosed, a drop cancelled through a racing gesture) left
+      // "Press to continue..." on screen with every tap silently dropped until
+      // the server's own PLAYER_DEATH_MAX_MS backstop three minutes later.
+      // Being dead outranks every dialog: the revive press always goes through.
       if (this.selfDead) {
-        if (this.death?.armed) this.room?.send("respawn", {});
+        if (this.death?.armed) this.askRevive();
         return;
       }
+      // A HUD modal is up (or just closed under this very gesture): the world
+      // takes no input at all — no trip, no engage, no fetch.
+      if (this.uiLocked || performance.now() < this.uiLockLiftAt) return;
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
       // TAP TARGETS outrank ground movement (RO: click a monster to fight it,
       // click an item to fetch it). Hit-tested against the drawn art boxes in
@@ -1846,6 +1861,9 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => {
+      // Dead: the jump button is the one control a thumb is already resting on
+      // (it synthesizes this key), so it asks to come back too.
+      if (this.selfDead) { if (this.death?.armed) this.askRevive(); return; }
       // Standing at a chess seat, the jump affordance IS the chess offer
       // (maintainer: the button reads "START/JOIN CHESSGAME"). Auto-jump
       // (maybeAutoJump) bypasses this on purpose — walking into a ledge
@@ -2592,6 +2610,7 @@ export class WorldScene extends Phaser.Scene {
         const t = this.time.now - d.at;
         return {
           armed: d.armed,
+          asked: !!d.askAt,
           ms: Math.round(t),
           zoomP: +Math.min(1, t / DEATH_ZOOM_MS).toFixed(3),
           ease: +(1 - Math.pow(1 - Math.min(1, t / DEATH_ZOOM_MS), 3)).toFixed(3),
@@ -3448,6 +3467,15 @@ export class WorldScene extends Phaser.Scene {
        * drop-quantity modal both freeze Phaser's keyboard — the stick
        * synthesizes into it too, so this covers every input path.) */
       canWalk: () => !!this.input.keyboard?.enabled,
+      // DEBUG ONLY, same standing as `teleport`/`dbgkill`: force the UI lock a
+      // dialog would set, so a gate can prove the revive press survives a STALE
+      // one (the class of bug that left the maintainer pressing a dead prompt
+      // until the server's 3-minute backstop).
+      uiLock: (on: boolean) => {
+        this.uiLocked = !!on;
+        if (!on) this.uiLockLiftAt = performance.now() + 150;
+        return this.uiLocked;
+      },
       myAnim: () => {
         const av = this.room ? this.avatars.get(this.room.sessionId) : null;
         return av?.sprite.anims.getName() ?? "";
@@ -10723,6 +10751,19 @@ export class WorldScene extends Phaser.Scene {
     this.camDetached = true; // updateChaseCam must not fight the push
   }
 
+  /** ASK TO COME BACK, AND KEEP ASKING. The press used to be fire-and-forget:
+   * one `room.send` with no retry and no feedback, so a refusal (the server
+   * still owes the die clip), a dropped patch or a half-dead socket left the
+   * player pressing a prompt that could never answer. Now the ask is a state
+   * that stepDeath re-sends until `selfDead` actually clears — the same shape
+   * as the pickup intent, which is retried for exactly this reason. */
+  private askRevive() {
+    const d = this.death;
+    if (!d || !d.armed) return;
+    if (!d.askAt) d.askAt = this.time.now; // first ask — starts the patience clock
+    d.nextAsk = 0; // send on this frame
+  }
+
   private stepDeath(now: number) {
     const d = this.death;
     if (!d) return;
@@ -10810,6 +10851,23 @@ export class WorldScene extends Phaser.Scene {
         document.body.appendChild(el);
         d.el = el;
         requestAnimationFrame(() => el && (el.style.opacity = "1"));
+      }
+      // THE ASK IS RE-SENT UNTIL IT IS ANSWERED. The only proof the press
+      // worked is `selfDead` going false (this whole sequence self-heals on
+      // it), so keep asking rather than trusting one packet. Survives a press
+      // the server still refuses, a dropped patch, and a socket that died
+      // without firing room.onLeave — the rejoin rewires `this.room` and the
+      // next retry simply lands.
+      if (d.askAt && now >= (d.nextAsk ?? 0)) {
+        this.room?.send("respawn", {});
+        d.nextAsk = now + REVIVE_RETRY_MS;
+        // ...and SAY SO if it still has not taken. Silence is what made this
+        // read as a dead button (maintainer: "pressed all over the place but
+        // nothing happened") — after a few unanswered seconds the prompt stops
+        // pretending it is waiting for him and admits it is waiting for the
+        // server.
+        if (d.el && now - d.askAt > REVIVE_QUIET_MS &&
+            d.el.textContent !== "Reconnecting…") d.el.textContent = "Reconnecting…";
       }
     }
   }

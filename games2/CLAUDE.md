@@ -1113,6 +1113,19 @@ drives all of it: camera zooms to 3× on the body; a screen-space veil ramps to
   (world-space text was magnified into a banner by the zoom); it ARMS the
   press — a tap during the fade is swallowed, and the server refuses one
   before the clip ends.
+- **NOTHING MAY BLOCK THE REVIVE PRESS, AND THE ASK IS RETRIED.** Being dead
+  outranks every dialog, so the dead branch in `pointerdown` is checked BEFORE
+  the `uiLocked` guard and the JUMP key asks too — behind the guard, ANY stale
+  lock (a dialog torn down without its onClosed) left "Press to continue..."
+  on screen eating every tap until the 3-minute backstop (maintainer: "pressed
+  all over the place but nothing happened"). And the ask is a STATE, re-sent
+  every `REVIVE_RETRY_MS` until `selfDead` clears, not one fire-and-forget
+  packet: it survives a refusal, a dropped patch and a socket that died
+  without firing room.onLeave (the rejoin rewires `this.room` and the next
+  retry lands). After `REVIVE_QUIET_MS` unanswered the card says
+  "Reconnecting…" — silence is what made it read as a dead button. Gate:
+  `scripts/verify-death.mjs` (revives THROUGH a forced `__ml.uiLock(true)`;
+  verified non-vacuous — the old guard order fails it).
 - THE VEIL IS A VIGNETTE, NOT A FLAT WASH: a flat wash darkens the torch pool
   equally (and at 3× zoom the body sits inside the torch radius — no falloff
   on screen), which read as "very dark only". The gradient keeps
