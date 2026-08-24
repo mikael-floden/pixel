@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T15:19:08.355Z",
+  "updated_at": "2026-08-24T15:22:04.518Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -3075,7 +3075,45 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 20
+      "level": 20,
+      "shadow": {
+        "rx": 66.5,
+        "ry": 30.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -7.07,
+            "ay": 47.57
+          },
+          "idle#south": {
+            "ax": 0.49,
+            "ay": 54.56
+          },
+          "idle#south-east": {
+            "ax": 1.66,
+            "ay": 43.06
+          },
+          "idle#north-east": {
+            "ax": 3.32,
+            "ay": 47.79
+          },
+          "idle#north": {
+            "ax": 1.42,
+            "ay": 40.56
+          },
+          "idle#north-west": {
+            "ax": 0.05,
+            "ay": 46.79
+          },
+          "idle#west": {
+            "ax": 5.7,
+            "ay": 46.61
+          },
+          "idle#south-west": {
+            "ax": -0.94,
+            "ay": 45.19
+          }
+        }
+      }
     },
     "storm_stag": {
       "max_hp": 20,
