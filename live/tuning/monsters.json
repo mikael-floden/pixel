@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:34:11.208Z",
+  "updated_at": "2026-08-24T13:37:18.216Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -340,7 +340,61 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 9
+      "level": 9,
+      "shadow": {
+        "rx": 17.75,
+        "ry": 10.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.49,
+            "ay": 22.65
+          },
+          "idle#south": {
+            "ax": -0.38,
+            "ay": 21.77
+          },
+          "idle#south-east": {
+            "ax": -1.02,
+            "ay": 19.81
+          },
+          "idle#north-east": {
+            "ax": 1.08,
+            "ay": 20.83
+          },
+          "idle#north": {
+            "ax": 0.54,
+            "ay": 21.63
+          },
+          "idle#north-west": {
+            "ax": -1.05,
+            "ay": 21.59
+          },
+          "idle#west": {
+            "ax": 1.81,
+            "ay": 22.38
+          },
+          "idle#south-west": {
+            "ax": 0.54,
+            "ay": 19.48
+          },
+          "walk#north-east": {
+            "ax": -2.43,
+            "ay": 21.22
+          },
+          "walk#north-west": {
+            "ax": 1.76,
+            "ay": 20.4
+          },
+          "angry#north-west": {
+            "ax": 0.6,
+            "ay": 20.35
+          },
+          "angry#north-east": {
+            "ax": -1.56,
+            "ay": 20.51
+          }
+        }
+      }
     },
     "dark_donkey": {
       "level": 11,
