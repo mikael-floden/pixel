@@ -194,18 +194,28 @@ guesses a home for brand-new ids until the table is extended (note: a new
 `*_water`/`*_frog` id lands on the BANK — there is no water habitat). Habitat
 keys, with the explicitly-tabled residents:
 
-| habitat | ground | tabled residents |
+| habitat | ground | the cast it holds (57 species) |
 |---------|--------|-------------------|
-| grass   | open saturated_grass | butterfly_dragon, saber_toothed_tiger |
-| forest  | grass within 6 of a tall grove prop | hedgehog, tree_stump, forest_poring(+_2) |
-| dirt    | lightdark_dirt (roads, forest floor) | dark_donkey |
-| snow    | regular_snow | white_rabbit, snow_demon, mammoth |
-| ice     | crystal_ice | ice_crystal_golem, ice_poring |
-| dark    | black_mountain rock | malformed_creature, lava_salamander(+_2), lava_poring |
-| stone   | stone_mountain | stone_turtle (also the bridge guard), stone_golem |
-| sand    | beaches | (heuristic home for future `*sand*` ids) |
-| shore   | **land** within 4 cells of water — the bank | mystical_frog, water_poring |
-| cave    | THE CAVE floor, `elev [0,1]` | masked_shadow_creature, night_beast, diablo, diablo_2 |
+| grass   | open saturated_grass | **14** — the plains: horses, armoured grazers, plains hunters |
+| forest  | grass within 6 of a tall grove prop | **6** — copse dwellers, the root bear, the porings |
+| dirt    | lightdark_dirt (roads) | **4** — road-haunters: a waiting farm dog, two horses, a night gallop |
+| sand    | beaches | **2** — the sun cat and the sand-swimmer |
+| shore   | **land** within 4 cells of water — the bank | **5** — the bog cast: two fen cats, the swamp bear, the frogs |
+| stone   | stone_mountain | **6** — grey bulks: brutes, golems, the granite bear, the maw |
+| snow    | regular_snow | **6** — the cold cast: wolves, bears, the storm stag, the mammoth |
+| ice     | crystal_ice | **3** — the ice constructs |
+| dark    | black_mountain rock | **7** — the volcanic cast: the magma pack, the obsidian lion, the salamanders |
+| cave    | THE CAVE floor, `elev [0,1]` | **4** — the dungeon, at its cap |
+
+The per-monster table is `MONSTER_HABITAT` in `spawns.py`, grouped by habitat and
+ordered by level, every line carrying the one-line reason that creature lives
+there. **A habitat holds far fewer species than its cell count suggests**, because
+the crowding law bites per COMPONENT, not per habitat: `dirt` is 872 cells but a
+thin road ribbon, `dark` is 459 cells in five small ledges, `forest` is scattered
+copses. Measured on the_island2, over-subscribing them costs monsters — nine
+species in forest and six on dirt shaved six species to a single individual each.
+Sizing a habitat's cast by its component structure rather than its area is what
+keeps every species really present.
 
 `TREE_R = 6` is the woods a grove casts, not the shade of one trunk (at 3,
 every tall prop was its own 7×7 island of "forest" and the forest species had
