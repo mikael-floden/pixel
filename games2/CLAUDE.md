@@ -1087,7 +1087,11 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   select-fallback is right for a tap and wrong for a drag).
 - **DIALOG STABILITY LAW** (drop-dialog family, paid for in a 6-round ghost
   hunt): the card skeleton is built ONCE and its controls NEVER move or get
-  replaced — squares update in place. A full re-render used to shift the
+  replaced — squares update in place. THE VERDICT OBEYS IT TOO: won/lost/draw
+  is a SCRIM over the board (absolute, inside `#ml-chess-board`), never a row
+  in the column — as a flow element it grew the card 372 -> 424 px and shoved
+  the board up the instant the game ended. verify-chess measures card, board
+  and footer across the resign and fails on >1px of movement. A full re-render used to shift the
   Resign button sideways under a tap aimed a beat earlier.
   `touch-action:manipulation` on the card; the backdrop preventDefaults ONLY
   its own events (hud.ts's drop-dialog law — a card-event preventDefault eats

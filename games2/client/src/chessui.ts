@@ -63,7 +63,7 @@ function ensureStyle() {
   .ml-chess-back{overflow:auto}
   .ml-chess-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1/1;
     width:min(100%, calc(100dvh - 178px));align-self:center;
-    border:1px solid var(--border-strong,#d5d0c2);border-radius:8px;overflow:hidden;user-select:none;touch-action:none}
+    border:1px solid var(--border-strong,#d5d0c2);border-radius:8px;overflow:hidden;user-select:none;touch-action:none;position:relative}
   .ml-chess-sq{display:flex;align-items:center;justify-content:center;font-size:min(9.2vw,38px);line-height:1;cursor:pointer;position:relative;
     /* EVERY square is exactly 1/8 x 1/8 of the board, whatever it holds. Both
        template axes are 1fr AND min sizes are zeroed: a grid item's implicit
@@ -125,9 +125,18 @@ function ensureStyle() {
   @keyframes mlDiceShake{to{background-position-x:var(--dieEnd,-776px)}}
   .ml-chess .die-hand.landed{background-position-x:var(--dieEnd,-776px);animation:none;
     transform:scaleY(var(--dieFlip,1)) scale(1.22);transition:transform .18s cubic-bezier(.2,2.2,.4,1)}
-  .ml-chess .verdict{text-align:center;padding:8px 0 2px}
-  .ml-chess .verdict b{font-size:20px}
-  .ml-chess .verdict .why{color:var(--muted,#706b5f);font-size:13px;margin-top:2px}
+  /* THE VERDICT IS A SCRIM OVER THE BOARD, NEVER A ROW IN THE COLUMN. As a flow
+     element it grew the card and shoved the whole board up the instant the game
+     ended (maintainer: "nothing should suddenly change position just because
+     you won/lost"). Absolute inside the board, so the card's height is the same
+     from the first move to the banner. Its own light palette: it always sits on
+     a dark scrim, whatever the theme is. */
+  .ml-chess #ml-chess-verdict{position:absolute;inset:0;z-index:3;pointer-events:none;
+    display:none;align-items:center;justify-content:center;background:rgba(12,10,8,.72)}
+  .ml-chess #ml-chess-verdict.on{display:flex}
+  .ml-chess .verdict{text-align:center;padding:0 14px;color:#f7f2e7;text-shadow:0 2px 8px rgba(0,0,0,.95)}
+  .ml-chess .verdict b{font-size:27px;display:block;line-height:1.15}
+  .ml-chess .verdict .why{color:#ddd5c6;font-size:14px;margin-top:5px}
   .ml-chess .promo{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
   .ml-chess .promo button{font-size:30px;padding:6px 12px}
   .ml-chess .hint{color:var(--muted,#706b5f);font-size:13px;text-align:center;min-height:17px}
@@ -322,9 +331,8 @@ export class ChessDialog {
     c.innerHTML = `
       <h3>Chess <span style="font-size:13px;color:var(--muted)">${this.mySide === "w" ? "You play White" : "You play Black"}</span></h3>
       <div class="who"><span>${this.api.oppName}</span><span class="clk" id="ml-clk-opp"></span></div>
-      <div class="ml-chess-board" id="ml-chess-board"></div>
+      <div class="ml-chess-board" id="ml-chess-board"><div id="ml-chess-verdict"></div></div>
       <div class="who"><span>You</span><span class="clk" id="ml-clk-me"></span></div>
-      <div id="ml-chess-verdict"></div>
       <div class="ml-chess-foot">
         <div class="hint" id="ml-chess-hint"></div>
         <button class="danger" id="ml-chess-resign">Resign</button>
@@ -505,6 +513,7 @@ export class ChessDialog {
       };
       verdict.innerHTML = `<div class="verdict"><b>${draw ? "Draw" : iWon ? "You won! ⚔️" : "You lost"}</b>
         <div class="why">${why[m.reason] ?? m.reason}</div></div>`;
+      verdict.classList.add("on");
       (c.querySelector("#ml-chess-resign") as HTMLElement).style.display = "none";
       (c.querySelector("#ml-chess-close") as HTMLElement).style.display = "";
     }

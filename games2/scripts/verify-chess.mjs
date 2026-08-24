@@ -187,6 +187,16 @@ try {
     fail(`squares changed after moves: before ${JSON.stringify(sq0)} after ${JSON.stringify(sq1)}`);
   console.log("verify-chess: 64 equal squares, stable through moves");
 
+  // NOTHING MOVES WHEN THE GAME ENDS (maintainer: the verdict used to grow the
+  // card and shove the whole board up). Measured across the resign below.
+  const geom = () => page.evaluate(() => {
+    const r = (sel) => { const e = document.querySelector(sel); if (!e) return null;
+      const b2 = e.getBoundingClientRect(); return { x: b2.x, y: b2.y, w: b2.width, h: b2.height }; };
+    return { card: r(".ml-chess"), board: r("#ml-chess-board"), foot: r(".ml-chess-foot") };
+  });
+  const g0 = await geom();
+  if (!g0.card || !g0.board) fail("card or board missing before the verdict");
+
   // Resign (two-step confirm), read the verdict, close.
   // DOM-dispatched, NOT page.click: the two-step confirm has a 5s window, and
   // on this starved software-GL harness a synthetic click's "stable across two
@@ -202,6 +212,26 @@ try {
       const d = await page.evaluate(() => window.__ml.chess().dialog);
       fail(`resign did not end the game — dialog: ${JSON.stringify(d)}`);
     });
+  const g1 = await geom();
+  for (const k of ["card", "board", "foot"]) {
+    const a2 = g0[k], b2 = g1[k];
+    if (!a2 || !b2) continue;
+    for (const f of ["x", "y", "w", "h"]) {
+      if (Math.abs(a2[f] - b2[f]) > 1)
+        fail(`the ${k} MOVED when the game ended: ${f} ${a2[f].toFixed(1)} -> ${b2[f].toFixed(1)} ` +
+             `(the verdict must be a scrim over the board, not a row in the card)`);
+    }
+  }
+  const scrim = await page.evaluate(() => {
+    const v2 = document.querySelector("#ml-chess-verdict");
+    if (!v2) return null;
+    const cs = getComputedStyle(v2);
+    return { inBoard: !!v2.closest("#ml-chess-board"), pos: cs.position, shown: cs.display !== "none" };
+  });
+  if (!scrim?.inBoard) fail("the verdict is not inside the board — it will grow the card");
+  if (scrim.pos !== "absolute" || !scrim.shown) fail(`verdict scrim not shown absolutely: ${JSON.stringify(scrim)}`);
+  console.log("verify-chess: card and board do not move when the game ends");
+
   const v = await page.evaluate(() => ({
     d: window.__ml.chess().dialog,
     text: document.querySelector(".ml-chess .verdict")?.textContent ?? "",
