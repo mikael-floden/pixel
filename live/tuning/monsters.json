@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T10:20:43.745Z",
+  "updated_at": "2026-08-24T10:29:10.515Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1024,7 +1024,45 @@
           "item": "loose_beast_teeth",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.75,
+        "ry": 11.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.06,
+            "ay": 7.67
+          },
+          "idle#south": {
+            "ax": 0.61,
+            "ay": 6.75
+          },
+          "idle#south-east": {
+            "ax": 0.14,
+            "ay": 8.83
+          },
+          "idle#north-east": {
+            "ax": 0.51,
+            "ay": 9.54
+          },
+          "idle#north": {
+            "ax": 0.46,
+            "ay": 6.48
+          },
+          "idle#north-west": {
+            "ax": -0.19,
+            "ay": 8.67
+          },
+          "idle#west": {
+            "ax": 1.5,
+            "ay": 8.76
+          },
+          "idle#south-west": {
+            "ax": 0.45,
+            "ay": 7.56
+          }
+        }
+      }
     },
     "lava_salamander_2": {
       "level": 6,
