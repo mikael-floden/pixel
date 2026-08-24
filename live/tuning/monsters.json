@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:41:42.513Z",
+  "updated_at": "2026-08-24T14:10:19.712Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1153,7 +1153,45 @@
           "item": "clear_quartz_cluster",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 34.75,
+        "ry": 13,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.67,
+            "ay": 48.58
+          },
+          "idle#east": {
+            "ax": 0.19,
+            "ay": 47.28
+          },
+          "idle#south-east": {
+            "ax": 0.89,
+            "ay": 45.1
+          },
+          "idle#north-east": {
+            "ax": 0.84,
+            "ay": 44.42
+          },
+          "idle#north": {
+            "ax": -0.22,
+            "ay": 47.04
+          },
+          "idle#north-west": {
+            "ax": -0.75,
+            "ay": 44.44
+          },
+          "idle#west": {
+            "ax": -0.37,
+            "ay": 46.04
+          },
+          "idle#south-west": {
+            "ax": 0.35,
+            "ay": 46.19
+          }
+        }
+      }
     },
     "ice_poring": {
       "level": 15,
