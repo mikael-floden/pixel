@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:52:58.413Z",
+  "updated_at": "2026-08-24T14:56:44.870Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2926,7 +2926,61 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 19
+      "level": 19,
+      "shadow": {
+        "rx": 40,
+        "ry": 22,
+        "offsets": {
+          "idle#east": {
+            "ax": -8.82,
+            "ay": 44.4
+          },
+          "idle#south": {
+            "ax": 1.07,
+            "ay": 43.54
+          },
+          "idle#south-east": {
+            "ax": -5.87,
+            "ay": 39.88
+          },
+          "idle#north-east": {
+            "ax": -3.88,
+            "ay": 38.31
+          },
+          "idle#north": {
+            "ax": 2.45,
+            "ay": 45.23
+          },
+          "idle#north-west": {
+            "ax": 7.07,
+            "ay": 40.27
+          },
+          "idle#west": {
+            "ax": 8.42,
+            "ay": 44.52
+          },
+          "idle#south-west": {
+            "ax": 6.32,
+            "ay": 40.69
+          },
+          "walk#south-east": {
+            "ax": -7.26,
+            "ay": 43.34
+          },
+          "walk#north-east": {
+            "ax": -5.97,
+            "ay": 42.64
+          },
+          "walk#north-west": {
+            "ax": 7.04,
+            "ay": 42.84
+          },
+          "walk#south-west": {
+            "ax": 6.28,
+            "ay": 43.29
+          }
+        }
+      }
     },
     "swamp_bear": {
       "max_hp": 20,
