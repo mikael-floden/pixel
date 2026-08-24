@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T12:33:40.095Z",
+  "updated_at": "2026-08-24T12:36:12.632Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1482,7 +1482,37 @@
           "item": "bone_flecked_grave_soil",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 12.5,
+        "ry": 5.75,
+        "offsets": {
+          "idle#east": {
+            "ax": 0.5,
+            "ay": 23.35
+          },
+          "idle#south-east": {
+            "ax": -1.04,
+            "ay": 24.47
+          },
+          "idle#north-east": {
+            "ax": -1.62,
+            "ay": 23.01
+          },
+          "idle#north-west": {
+            "ax": 1.17,
+            "ay": 22.98
+          },
+          "idle#west": {
+            "ax": -1.29,
+            "ay": 23.26
+          },
+          "idle#south-west": {
+            "ax": -0.18,
+            "ay": 24.62
+          }
+        }
+      }
     },
     "moon_wolf": {
       "max_hp": 20,
