@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "black_glass_slab",
+  "name_seen": "Black Glass",
+  "law": "III",
+  "description": "Slab of black volcanic glass, faceted and chipped. It sheds off a Magmashell's plates as the fire cools.",
+  "lore": [
+    "Ground flat and worked with wet sand for a week, a slab this size is a mirror, and a dark one — it takes about a third of the light out of whatever it shows you. The trade knows to sell them outdoors at noon. Indoors by a candle, everyone looks like the end of a long year.",
+    "The buyers are mostly old, and there is a use for a mirror in a country where [[lore/the_quiet|the stages]] are only ever learned from outside: you look, daily, and you check that the face doing the looking is one you can still put a name to. An elder on the east road bought a slab, brought it back the following morning and asked for his money. The seller said the glass was accurate. The elder said yes, that was the complaint."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ]
+}

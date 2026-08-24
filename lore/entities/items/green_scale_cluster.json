@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "green_scale_cluster",
+  "name_seen": "Green Scales",
+  "law": "V",
+  "description": "A patch of overlapping green scales, still faintly damp. Palemaw sheds them in the cave shallows.",
+  "lore": [
+    "There is a shelter at the last fire before the black rock: four stone walls roofed in green scale, a handful at a time, over years. Everybody who works that ground adds to it on the way out. Overlapped right, the scales throw rain off like slate and never crack in the heat coming off the rock, and they never dry either — the ceiling is damp all night, which is the only complaint anyone makes. Twelve gold a patch and hundreds up there: the roof is worth more than the shelter and the woodpile together, and it has never been stripped. Not sentiment. Anybody stripping it would have to carry it out past the men who put it up, and they are all coming back the same way, off [[monsters/lava_salamander_2|Palemaw]]'s ground, in a hurry."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "lava_salamander_2"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The last fire before the black rock is a real location to be named later; the roof is its landmark. Communal property held by traffic rather than by law."
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "opal_moon_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Pale opal that holds a crescent whichever way you turn it. Moonpelt's own, and the moon wants it back.",
+  "lore": [
+    "Every other stone is a fact and works in a tin. This one wants a condition. Indoors it is a pretty object — milky, lilac and mint and cyan moving under the surface, a crescent standing in the seams that stays put however you turn your wrist. Out under open sky at night it shuts a wound while you are still deciding whether to sit down, and nothing gets a clean hand on you.",
+    "Which is why the tellers dislike it, and they are not wrong to. The whole of the Keeping is people sitting still in one place with a fire and each other; a stone that pays a man to be out on a road under the moon instead is, put politely, an argument against the rota. Sellers put it the other way round — the fires are far apart now and somebody has to walk between them — and both sides have had their piece ready for years and neither has moved an inch.",
+    "[[characters/7a779de1|Wendell]] walks at night and will not have one in the house. He is pleasant about it and does not lecture, and anyone who has sat with him works out why unaided: every one of these was somebody's payment for breaking a [[monsters/moon_wolf|Moonpelt]], and one of those holds thirty paces behind him over broken ground and comes no nearer than the edge of the light. Watch the animal all night and you can still tell yourself the frost under those paws is the light playing tricks. Carry the stone one night and the argument closes. The not-touching was the last hard thing in there. It is in your pocket, and it is working on you."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "moon_wolf"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The only stone in the batch that requires a condition, and the condition is a live argument about the rota — a healing stone that rewards being away from a fire is quietly corrosive to the Keeping, and both sides are given their honest case. Wendell's escort is referred to from outside, never re-staged, and the refusal is his new beat. Evidence claim: the paws not touching the frost is disputable by observers and settled by the power, which is the same fact working on the carrier."
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "one_eyed_steel_mask",
+  "name_seen": "Watcher Mask",
+  "law": "II",
+  "description": "Grim steel with cheek guards and a third eye cut above the slits. Somebody hammered it, and that is the comfort.",
+  "lore": [
+    "A bag coming back off the ground where [[monsters/masked_shadow_creature|Grinmask]] works can have two masks in it, and telling them apart takes no expertise at all. This one is hammer work. The inside is a mess of tool marks, the strap boss has been replaced by a hand that could not match the original rivet, and the third eye above the brow was cut freehand and sits a hair off the centre line, by a man who noticed, and shrugged, and sold it anyway. It is grim on purpose. Grim was what the customer wanted.",
+    "The other kind has no marks in it anywhere, and the trade does not price that kind, and does not carry it at the top of the bag.",
+    "Ninety-five gold, and there are crackers who wear this one working the same ground it came off. Ask them why and they will tell you about the cheek guards. The cheek guards are a quarter-inch of soft steel and would not stop a dog."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "masked_shadow_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The made mask against the other kind, without naming what the other kind means. Crackers wearing steel on that ground are not armouring themselves, they are answering something, and none of them will put it that way."
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "black_lava_flow_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Black shell split by wide lava rivers running to a white-hot centre. Nothing goes down beside it on its own.",
+  "lore": [
+    "The burnt country gives up two stones and a dealer does not need a glass to sort them. The common one, [[items/lava_vein_stone|off a pack wolf]], runs its veins narrow and dark red. This one has rivers in it a thumb wide, and where they meet the colour goes past orange into white. There is one such animal to a pack, and the price says so.",
+    "[[characters/54bead23|Osric]] grades them the way only a smith would think to. He leaves the stone on the anvil overnight and puts a hand flat on the iron in the morning. A pack stone leaves the anvil cold. This kind warms two feet of it. He has never had a true one fail that, and he has been brought a good many that did.",
+    "He sets them into other people's blades all week and will not have one in his own hearth. Customers get a reason about wood bills. What he does not tell them is what the stone does at the moment something goes down beside it, which is that everything nearby catches — grass, ground, whatever else was still standing. It is not burning to be burning. It is burning so that nothing near it goes down by itself. He arrived here wanting a hearth that fed itself, and he has one on the bench, priced, and he does not sit with it in the evenings."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "magma_wolf_2"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Written off the sire's side of the pack without retelling the caldera count. The stone's fact is the pack-sire's fact — nothing goes down alone — which is exactly the shipped power. Osric's anvil test is new trade material and pairs with lava_vein_stone (Solveig's) as the cheap/dear halves of the same country."
+}

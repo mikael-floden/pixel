@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "papery_hornet_nest",
+  "name_seen": "Hornet Nest",
+  "law": "V",
+  "description": "Tan paper in banded layers, one dark doorway low on the side. Prised out of a Stumpling's moss, and empty. Mostly.",
+  "lore": [
+    "Boiled down it makes a passable paper, grey and tough, and that is the whole reason a nest is worth twenty-six gold while a handful of moss is worth nothing. The bands are worth more than the paper to the right buyer: one band a season, so a nest the size of a head has been building for eleven years, and the [[monsters/tree_stump|Stumpling]] carrying it has been standing in one spot that long. Put a stick in the doorway before it goes in your bag. Then wait. The man who taught everyone that rule is the man who did not."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "tree_stump"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "How to date a Stumpling by its lodger. The last line is the joke and the warning at once; the hornets are never described and should not be."
+}

@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "matted_black_pelt",
+  "name_seen": "Matted Pelt",
+  "law": "V",
+  "description": "Coarse black fur clumped and matted, with stray quills caught in it. Something out there is patchy now.",
+  "lore": [
+    "Nineteen gold. It was nineteen ten years ago and it is nineteen today, and [[lore/the_gold_agreement|gold]] is supposed to be the only thing in this country that holds a number like that. You cannot card the fur or tan it, and the quills caught through it come off something small that had no business bedding down that close to something that size — which is also why it cannot be faked. A dealer out west set out to break the price and brought forty in at once. He was paid nineteen gold, forty times over, by a factor who counted them out, asked nothing and wrote no name in the book. He has not tried it again, and he has stopped joking about who is at the far end of that chain."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "One of the few records that touches the standing buyer of all junk. The tell is the fixed price, not a sighting; keep the factor faceless and keep the quantity absurd."
+}

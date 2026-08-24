@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "red_scaled_hide",
+  "name_seen": "Red Scale",
+  "law": "V",
+  "description": "A palm of deep red scales, each one overlapping the next. Emberjaw sheds them where it basks.",
+  "lore": [
+    "Everybody who works the black rock walks on [[monsters/lava_salamander|Emberjaw]]. That stone cooks a boot sole in a day and a half; a palm of red scale, cut to shape and stitched on with the overlap running heel to toe, does a season. Thirty gold, never argued, because the alternative is coming back barefoot over ground that stays warm the whole way.",
+    "The cobblers read the returned soles the way other people read a road. Even wear, heel to toe: he walked in and he walked out. Worn through at the toe on both feet and nowhere else: he ran, a long way, and did not turn round to see what he was running from. There is a cobbler at the last fire who keeps the bad ones in a box under his bench. He will show you if you ask twice, and he will not give you the names, because half of them still come in for resoling."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "lava_salamander"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Wear patterns as testimony from people who will not testify. The box under the bench is a readable archive of every panic on the black rock."
+}

@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "worn_wooden_band",
+  "name_seen": "Worn Band",
+  "law": "II",
+  "description": "A plain band of dark wood with a worn strip of metal let into it, sized for a finger that has stopped needing it.",
+  "lore": [
+    "Wood, because metal was out of reach, and a band all the same. The strip let into it is a repair and not a decoration — [[characters/54bead23|Osric]] says it went on hot and shrank tight as it cooled, a smith's job properly done and properly charged for, and nobody pays a smith more than a ring is worth to save a ring. Somebody did. It came down off a [[monsters/masked_shadow_creature|Grinmask]], and how it got there is a question the trade has settled by pricing it at twenty gold and moving on. Osric will not sell his. It has hung on a nail over his anvil eleven months, and when a cracker comes through the forge with another one he asks to see it, and turns it to the light, and looks at the repair rather than the ring, and hands it back without saying what he was hoping for."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "masked_shadow_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Osric is checking whether two repairs came off the same hand — a smith reading another smith. He has not found a match and has not explained the search to anyone. Do not resolve it; he would not know how to say what finding one would mean."
+}

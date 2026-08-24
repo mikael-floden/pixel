@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "pale_armoured_beetle",
+  "name_seen": "Bone Beetle",
+  "law": "V",
+  "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one.",
+  "lore": [
+    "Twelve gold is a lot for a common thing, and the reason is that they are a nuisance to reach: they sit deep, and you have to break a [[monsters/forest_poring_2|Sprigling]] open properly to get one out. Children manage it faster than grown men and for less. So a pale beetle in a child's pocket is a confession — it says which end of the valley, on which afternoon, against what they were told. Most of that road has agreed not to notice. Twelve gold is twelve gold, and the sacks pay for boots."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "forest_poring_2"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Junk as evidence of where a child has been, and a road that looks away because the money is good. Useful lever for a scene where somebody finally does notice."
+}

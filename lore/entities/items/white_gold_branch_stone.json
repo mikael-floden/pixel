@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "white_gold_branch_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "White stone branching with gold light. It belongs to something that has not walked into the world yet.",
+  "lore": [
+    "White going to pale blue, and the gold in it does not behave the way gold behaves in other stones. It does not lie in the seams. It branches — out of a pale middle, thinning as it travels, stopping mid-run with the ends left fine as hair. Everybody who picks one up arrives at the same word inside a minute, and the word is unfinished.",
+    "That argument is over and nobody enjoyed how it ended. Two graders on the north bench set one against a careful drawing of the same stone made ninety years before and went over it line by line, and not a hair's width had moved. Which is what a hard piece does. It cannot decay, it cannot be forgotten, and it does not become anything. So it is not growing toward something. It is finished, and exact, and it is a complete record of a kind of creature that no bench in the trade has ever put a shape to.",
+    "[[lore/the_gold_agreement|Gold]] is the one substance every dead person out of every century remembers identically, and a soulstone is the one thing here that cannot be forgotten at all, and there was never any reason for those two facts to end up in the same object. They are in this one, branching. Two hundred and eighty gold, and it moves slowly, to one sort of buyer: somebody who has decided to go east and would rather not say so aloud. Near it, what has been emptied does not close itself up again, and that is worth the money to them. The sellers' line — that it belongs to something which has not walked into the world yet — is repeated on every road, costs nothing, and has never been an answer to anything."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    },
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    }
+  ],
+  "gm_notes": "Unbound, handled as an ordering problem rather than a supply problem so it does not repeat bright_green_plate_stone: the object reads as a beginning and is provably a finished record. The ninety-year drawing kills the growth reading on purpose — a stone cannot change, and the alternative is worse. The radiant power is rendered as the emptied not closing up, which points at the mountain without naming anything; buyers who go east are individuals, not crews (there has only ever been the one organised attempt). Nothing about the shape it records is settled anywhere, and it should stay unsettled."
+}

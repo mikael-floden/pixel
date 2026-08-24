@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "ember_starburst_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Dark red with an orange star bursting through the cracks. Cinderhowl is cracked open the same way.",
+  "lore": [
+    "Every hard piece comes out warm. This one comes out hot at the middle and stays there, so it travels in a tin, lashed to the outside of the pack. Every dealer says so to every new buyer, and every second one finds out the other way regardless. There are men on the west road who will show you the hole in the lining before you have asked.",
+    "Most of them go to [[lore/the_age_of_fires|the rotas]] rather than to the fights. A keeper on a wet round can shove one under sodden kindling, walk off to see to somebody, and come back to a fire. It does not want dry, or shelter, or nursing, and it will do it again tomorrow night and in four hundred years, and seventy-two gold for that is not a price, it is a gift. Half the western keepers who still hold a rota worth the name have one, and treat it exactly like a kettle.",
+    "What the people who fetch them will not do is set one in a blade. [[monsters/hellhound|The hound]] leaves its work still going on behind it, embers putting themselves out in the grass a long while after it has gone by, and a stone is the bottom of the kind, so that is what you have bought: the hit lands, and then it goes on landing, while you stand there. The trade rests on two words and both of them describe one blow. Ask a cracker why he keeps his in a tin and you get a shrug, or you get the honest answer, which is that he does not want to be given the time to change his mind."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "hellhound"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The drover, the river and Sigrun's refusal all belong to the creature's record and are not touched. The stone's own case is made on handling and on the burn-after-the-blow, which turns the item into a problem for the releasing/cracking distinction — the one stone that removes the moment of decision the whole trade is built on. Low value for a rare stone is explained as taste rather than weakness, and the rota use is the warmth that keeps it out of pure grimness."
+}

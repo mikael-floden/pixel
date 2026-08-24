@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "dark_iron_quills",
+  "name_seen": "Iron Quills",
+  "law": "II",
+  "description": "A cluster of grey spines, hard as nails and about as friendly. Tuskmaul wears a ridge of them.",
+  "lore": [
+    "Nothing about them is a quill. They are the grey spines off the ridge of a [[monsters/gray_brute_2|Tuskmaul]], a hand long, hard enough to pin oak, and the name comes from one man at one fire who split a tip, dipped it, and produced a blot the size of his thumb and a line that gave out after two letters. He has not been allowed to forget it.",
+    "He is also the reason four fires on that road can read at all. He taught it evenings, for nothing, badly, for about sixty years, and when he comes in for a drink now somebody always sets an inkpot down in front of him, and he always looks at it, and everybody laughs, himself included and loudest.",
+    "Thirty gold the cluster. Joiners buy them, not scribes. Iron weeps in that country and a quill never has."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "gray_brute_2"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "A running joke at four fires that is also a monument to the man it is about. Good colour for any fire scene needing warmth rather than dread."
+}

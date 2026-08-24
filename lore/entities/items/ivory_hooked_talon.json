@@ -1,0 +1,17 @@
+{
+  "domain": "items",
+  "id": "ivory_hooked_talon",
+  "name_seen": "Ivory Talon",
+  "law": "V",
+  "description": "Cream-white and curved to a needle point, the socket left ragged. Glowbones and Frostwraiths grow them in sets.",
+  "lore": [
+    "Bore out the ragged end, bind it into a haft, and you have the best awl in the country: a point that goes through four thicknesses of hide and does not blunt, ever, however much of it you do. Every sail-mender, harness-maker and tent-patcher on the northern rounds is sewing with one. They cost more than the tools they replace, and the people who use them do not haggle.",
+    "Where they come from is the part the trade steps around. There is a boy who walks the low edge of the high snow, picking them out of the drift where a [[monsters/snow_demon|Frostwraith]] has been working, and he brings down a dozen at a time. He will not say how far up he goes. The answer is plain enough to anyone who has been. No one at that fire asks him, and several of them are sewing while they do not ask."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "snow_demon" },
+    { "domain": "monsters", "id": "night_beast" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Funny, then not: a tool the whole northern trade loves and a supply line everybody has agreed not to examine. The boy is unnamed and unattached on purpose — hand him to a player who starts asking."
+}

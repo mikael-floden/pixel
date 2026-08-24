@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "cyan_storm_crystal_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Pale blue lit by cyan forks, grown in a Voltshell's crystals. Thunder rolls a long way behind it.",
+  "lore": [
+    "No other stone is sold with an address. [[monsters/storm_shellback|The animal]] walks one line at a known pace and does not turn aside, so a seller can hand a buyer a field and a month and still be right about it a year later. They sell the field separately from the stone, and nobody has ever called that greedy, because there is no other errand in this country you can promise a man in advance.",
+    "Two hundred and eighty-five gold, top of most sheets, and the forked cyan is not what holds the price. Plenty of stones bite back at whoever hits you. It is the second half. While that stone is on you the weather stops being an argument you are having — sleet, headwind, a sky doing whatever it likes — and the pace you finish the day at is the pace you set out at. On roads that take a week, in a country where the road may be somewhere else next month, arriving is worth a fortune.",
+    "The fetching is reckoned an easy day's work and it is, and the trade says so without listening to the shape of its own sentence. It will not turn aside for weather, or for a valley going soft, or for the crew walking out to break it open, and there is no account of one ever being surprised. What is at the bottom of that shell was never the storm; the storm was always the sky's business, borrowing the crystals. It is the line. Everything hard about the errand is the walking, and the walking is weeks."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "storm_shellback"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The creature's record owns the fire-keeper who walked out every eighth day and the sharp ground she left; none of that is restaged here and the stone is not given one word of her. Written from the trade's side instead: a predictable animal is a saleable address, and the same predictability is what makes it cheap to break. The price is scarcity and the not-being-stopped clause, not danger — which is why an easy errand can still carry an epic price."
+}

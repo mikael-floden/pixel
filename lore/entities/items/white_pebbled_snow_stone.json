@@ -1,0 +1,24 @@
+{
+  "domain": "items",
+  "id": "white_pebbled_snow_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Pale as packed snow, pebbled all over, dropped by a Snowmane. It walks beside whoever is lost.",
+  "lore": [
+    "It will not sit on a bench. The whole surface is pebbled — packed rounds, like snow squeezed in a fist, each with its own small shine — so there is no flat anywhere on it and it goes off the edge of any table it is put down on. Sorters keep them in a cup. No other stone has a habit of leaving.",
+    "Fighters do not buy it, and the price says so: it is the cheapest honest stone anybody sells. Snow stops slowing you, cold stops counting, and that sounds like nothing until you are up where the drifts are with the last tended fire a day below you. The people who own these are carriers and rota-walkers and the ones who work the high snow for other kinds of stone, and the trade knows without saying it aloud that the cheap thing has got more people home than any of the dear ones.",
+    "There is no way in it, whatever buyers keep hoping. What reached the bottom of [[monsters/white_horse|the white horse]] was keeping to somebody else's pace, for as long as it takes, in weather that ought to make that impossible.",
+    "[[characters/646b922c|Sigrun]] is a weaponsmith and will not put this one in a weapon. She sets them into boot-buckles, staff-ferrules, the tongue of a belt — evening work, and she does not charge for it — and if pressed says only that it is not blade material. She has one stone set in the head of a hammer and has had it there a long time. She is the last person in this country who needs the difference explained to her."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "white_horse"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The escort scene stays in the creature record; this is the stone in the hand and in the trade. The cheapness is the argument — the stone that saves the most walks is the one no fighter wants. Sigrun's refusal to set it in a blade is the batch's turn, and the hammer is referred to exactly as the chapter has it; the name is not printed."
+}

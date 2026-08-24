@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "molten_gold_vein_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Rough brown rock seamed with raw gold, grazed loose by an Amethyrn. Coin comes easier to whoever carries it.",
+  "lore": [
+    "It does not find gold. Any honest seller says that first and the price second and has no third thing to say. What it does is make you sure. Carry one and you will be certain about the next foot of rock, or about which of two roads has the paying end, in the flat unarguable way you are certain of your own hand — and you will be right often enough that two hundred and sixty gold starts to look like a bargain.",
+    "Often enough is not always, and the men carrying them cannot tell those two apart from the inside. A digger who has been right four times running will tell you he read the ground. He cannot say whether he found the seam or the stone walked him onto it, and by the fifth time it has stopped occurring to him to wonder. [[lore/the_hard_pieces|The trade's own line]] is that a soulstone does not make you stronger, it makes you harder to argue with. This is the one where that stops being a compliment.",
+    "The stone itself is rough brown rock with raw gold standing up in the seams of it, warm, heavy, and workable by no one, so that [[lore/the_gold_agreement|the one substance here that never drifts]] sits inside the one substance here that cannot be forgotten. Scholars enjoy that a great deal. The diggers have the better observation and it is shorter: certainty is not knowledge, it is only what knowledge feels like from the inside. [[monsters/crystal_horn|Amethyrn]] is never wrong about a hill. It is the size of a cart, and it is out east walking around made of the stuff."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "crystal_horn"
+    },
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    }
+  ],
+  "gm_notes": "The Made-leaves-a-stone argument is the sunburst record's and is not re-run here; this one is about what the power actually is. The stated effect is gold found, the honest reading is manufactured certainty, and the trap — that a man cannot audit his own sureness from inside it — is the record. The chapter's line about being harder to argue with is quoted deliberately and turned. Osric's two years of chasing the beast belong to the creature record and are left there; the digger is nameless on purpose."
+}

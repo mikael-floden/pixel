@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "bronze_temple_cog",
+  "name_seen": "Bronze Cog",
+  "law": "II",
+  "description": "A toothed bronze wheel, still greased and still turning easily. There is nothing left anywhere to fit it into.",
+  "lore": [
+    "Twenty-eight gold, and worth it as a curiosity and nothing else. The hall it turned in went. The [[monsters/rune_lion|lion at the door]] did not, and [[characters/7a779de1|Wendell]] walked that road while the roof was still on and will give you the animal in detail and not one single thing about the room behind it.",
+    "The cogs came through too, and by the hundred, and looking at one tells you why. A toothed wheel is about as little as a made thing can be. You can hold the whole of it in your head at a glance, and hand it to somebody else in one sentence, and no two people out of two different centuries would describe it any differently. A hall full of machinery is not like that. So what survives of a building nobody can name is the parts of it that fit in a hand — still greased, still turning sweetly, geared to each other and to nothing at all."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "rune_lion"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Selection pressure on objects: simple, universally describable things outlast complicated ones, same reason a face outlasts a person. Never state the rule here — the cogs are the argument."
+}

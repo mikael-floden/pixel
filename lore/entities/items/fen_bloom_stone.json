@@ -1,0 +1,24 @@
+{
+  "domain": "items",
+  "id": "fen_bloom_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Green stone cracked with pale light, off a Mireback. Mushrooms fruit on it if you leave it alone.",
+  "lore": [
+    "Shut one in a bag for a week and there are pinheads in the seams. Leave it a month and they are red-caps, small and entirely ordinary, fruiting on a mineral that has no business feeding anything. Wipe them off and they come again. Nothing else out of a broken shape does this, and most sellers polish before a viewing and say nothing about it, which is how the dyed ones got as far as they did.",
+    "For the better part of a decade a man worked the fen circuit with pale stones soaked green, priced a third under, and a story about the swamp being poor ground to collect in. He was right about the ground. Three buyers worked out what they had and told their fires, and it went on anyway, because the fakes showed better than the true ones — brighter, cleaner, nothing rotting in the seams.",
+    "It ended over a bag. A dealer asked to see the bag and not the stone, and the bag was clean, and every honest [[monsters/swamp_bear|Mireback]] stone stains its cloth. That is the grading now: you are not buying the stone, you are buying the mark it left on the lining.",
+    "What it pays out is not protection. The work comes back to you as fast as you do it, and comes back double standing in water. A wood bear whose wood went four feet under did not stop walking its round when the ground changed its mind. Neither does the piece at the bottom of it."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "swamp_bear"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The one record in this batch carried by a fraud rather than a cast member — deliberate variation. The bag test is the usable trade fact (real stones stain the lining) and is safe for other agents to reuse. The healing power is justified from the bear's round continuing, not from anything medicinal."
+}

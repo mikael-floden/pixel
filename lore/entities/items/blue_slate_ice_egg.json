@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "blue_slate_ice_egg",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Blue slate cracked around a cold white star, pulled from a Winterfang. It frosts a blade and drags at its target.",
+  "lore": [
+    "It comes out of the grass warm. They all do — you find a stone in the dark by heat and not by shape, and that is the first thing anyone learns at a bench. This one is warm for about an hour. Then it is not, and it never is again. Crackers working the frost country know the hour and spend it: one walk home with the thing warm in the glove, and after that a cold weight in a tin that stays cold in a hot room and will not take heat back off anything you set it against.",
+    "What it does to a fight is mostly not damage. It is the drag. A struck thing does not stagger and does not go down, it only arrives late for everything it meant to do next, and keeps arriving late, and a fight against something a quarter slow stops being a fight and turns into arithmetic. Setters will put one in a blade and will not put one in a haft, for reasons your hand works out inside ten minutes.",
+    "A drawing of [[monsters/ice_wolf|Winterfang]] gives you the crown of ice, the icicles off the jaw, the claws standing out white, and tells you the animal is cold. It cannot tell you what the cold cost, because the animal will not come near enough to be asked and would not answer. The stone answers. An hour of warm and then nothing, for good, whatever it is held against — that is the trade the creature made and the side of it that it lost, sitting in a tin on a bench for anyone to pick up. Keepers who have had one of those standing at the rim of their light all night do not much enjoy hearing this said out loud."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "ice_wolf"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Written entirely off the bench: the hour of warmth is the new physical fact and it is the whole record. The creature's own story (Jehanne's six-hour night, the man who wanted it driven off) is deliberately untouched — the stone's evidence is that the animal traded warmth away and cannot get it back, which watching it stand outside a fire can only suggest. The setter's rule about hafts is a working detail, free for other records to reuse."
+}

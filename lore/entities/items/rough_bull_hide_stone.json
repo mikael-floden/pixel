@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "rough_bull_hide_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Rust-brown and rough as an old hide, taken from a Tuskmaul. Warbands have broken against less.",
+  "lore": [
+    "It is the one stone in a bag you can find by touch in the dark. Everything else in there comes up smooth or seamed or glassy; this is rough the whole way over, pitted and creased like a hide left out for a century, and it sets badly — it wears through leather, and a haft has to be cut deep to hold it. It does not make a person stronger. It makes them impossible to stop: once you are moving, nothing arriving from the side gets a say, not a blow, not a shove, not the ground.",
+    "Then the part worth sitting down for. There was an age here with people enough in it, and agreement enough between them, to put a shield-wall in a field and walk it forward in step. They walked it into [[monsters/gray_brute_2|the old bull]], and the wall is the part that broke. Everyone in that line re-formed beside some fire the same night, short a little of what they had been thinking, and went home, and their age went the way ages go. The agreement is gone. The wall is gone. What is left of that field sits on a bench with a price against it, warm, rough, and entirely uninterested.",
+    "[[characters/cfe826c1|Jehanne]] was offered one at cost by a fire-keeper who owed her, and said no, and gave her reason at the fire that evening: a shield-wall is a rota, only larger and in a hurry, and she would rather have the rota. She keeps one. It has two names on it. It has had two names on it for a long time."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "gray_brute_2"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Hearn owns the shield-wall telling in the creature record, so this comes at the same field from the object's side: people leave no wreckage here, so the animal's hard piece is the only survivor of a whole age of agreement. Jehanne's two-name rota is the Thinning stated small — and it is why she turns the stone down."
+}

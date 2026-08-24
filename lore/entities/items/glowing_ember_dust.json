@@ -1,0 +1,15 @@
+{
+  "domain": "items",
+  "id": "glowing_ember_dust",
+  "name_seen": "Ember Dust",
+  "law": "II",
+  "description": "A handful of grit that still glows in the palm. Cinderhowl leaves a trail of it wherever it walks.",
+  "lore": [
+    "Twenty-four gold the twist, and there is one reason for the price: a pinch of it under wet kindling gives you a fire when nothing else in the pack will. In the rain country that is not a convenience. A night with no fire is a night with no telling in it, and the walkers up there buy by the tin. The woman who supplies most of the west road quotes all of that back at you while she weighs, and she has her own arithmetic. She works after dark, a hundred paces behind [[monsters/hellhound|the burning dog]], sweeping the grit out of the ruts before it goes out — twelve years of it, one road, both directions. Every fire between the ford and the high fields is lit off her sweepings. She has never sat at one."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "hellhound" },
+    { "domain": "lore", "id": "the_age_of_fires" }
+  ],
+  "gm_notes": "The sweeper is unnamed and reusable: a supplier every rota in the wet country depends on, who has arranged her whole living around being behind the thing rather than at the fire it feeds. Obvious hook — somebody finally asks her to stay for a telling. She is not shy; she is on a schedule, and the schedule is a hound's."
+}

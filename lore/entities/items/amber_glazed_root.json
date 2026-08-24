@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "amber_glazed_root",
+  "name_seen": "Amber Root",
+  "law": "V",
+  "description": "Hacked off a Stumpling's root-leg and glazed hard in amber sap. Warm in the hand, and it holds a fire till morning.",
+  "lore": [
+    "It is no good for burning bright. Set one in the ash under the real wood and it sulks along all night, and at fourth watch, when the rest of the hearth has gone grey, there is still a red eye in there and a keeper who has had two hours lying down. That is what thirty-four gold buys. Not warmth, not light. Two hours.",
+    "There are four in a crate under the table in [[lore/the_long_table|the hall on the meadow]]. [[characters/6bb1eb5a|Solveig]] did not buy them, will not ask who did, and has never said out loud that she needs them. They turn up, one or two at a time, at the start of the cold. Somebody on that road is spending real money to see that the woman who meets the wakings gets to lie down, and has never put a name to it or stayed for a cup."
+  ],
+  "related": [
+    {
+      "domain": "characters",
+      "id": "6bb1eb5a"
+    },
+    {
+      "domain": "lore",
+      "id": "the_long_table"
+    }
+  ],
+  "gm_notes": "A gift Solveig cannot refuse because it is never handed to her. Any NPC on the road can be the giver; better if it is more than one and they do not know about each other."
+}

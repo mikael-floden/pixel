@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "mint_slime_globule",
+  "name_seen": "Mint Slime",
+  "law": "V",
+  "description": "Mint-green, translucent, and lit by a pale core. Every pond blob in the valley leaves one behind, wobbling.",
+  "lore": [
+    "A broken [[monsters/water_poring|pond-dweller]] leaves the light behind in it, and that light is no use at all for seeing by and perfect for being seen. Set one on a stone at dusk and it is still findable at midnight and gone by the next night, so the valley walkers buy them ten at a time and mark their way in at the junctions.",
+    "One at a junction means a walker went that way. Two means come and get me. That is the entire code and it has not changed in the working memory of anyone using it. There is a man on the pond circuit who has marked his route in and out for eleven years and has never once set the second, and the fire he walks back to keeps a standing agreement about the night he does: the pot comes off, and everybody goes."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "water_poring"
+    },
+    {
+      "domain": "monsters",
+      "id": "forest_poring"
+    }
+  ],
+  "gm_notes": "A one-bit signalling system players can use or find used. Two globules at a junction is a hook that needs no further explanation, and the fire's promise to answer it is the good half of the setting."
+}

@@ -1,0 +1,15 @@
+{
+  "domain": "items",
+  "id": "pale_hooked_claw",
+  "name_seen": "Pale Claw",
+  "law": "V",
+  "description": "A cream claw hooked like a reaping tool, ragged at the socket. Bergclaw grows ten and uses all of them.",
+  "lore": [
+    "North-rounds buyers price these by where they were picked up, which is not how anything else in the trade is priced. Off open ground, twenty-four gold. Found inside a fire's ring of stones, whatever the buyer can be talked into — and there is no agreed figure, because there has never yet been an instance. That is [[monsters/polar_bear|Bergclaw]] in one price: it comes for the warmth, sits out past the edge of the light the whole night, and leaves a claw in the sand for whoever slept badly. Keepers do not sell those. They carry them about in a pocket for a season or two, and that pocket is how the trade knows which fires had a visitor last winter."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "polar_bear" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Prices provenance instead of the object. The claw found inside the stones is a legendary non-event; it is worth keeping unspent unless a GM wants the night that produces one."
+}

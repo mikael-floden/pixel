@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "tangled_cobweb",
+  "name_seen": "Cobweb",
+  "law": "III",
+  "description": "A torn sheet of web, still sticky at the anchor threads. Nothing in this valley admits to spinning it.",
+  "lore": [
+    "Six gold, the cheapest thing in the trade, and it sells steadily all year. Ask a dealer who buys web and he will tell you: people with doors. A thread pulled across a doorway at shin height, stuck down on the tacky ends, tells you in the morning whether anything came through in the night.",
+    "There is a man at a lapsed fire out on the western grass who strings one every evening. It has never been broken. He is not checking for what comes in: he has been [[lore/the_quiet|Faded]] two years, he knows the order these things go in, and what he needs to know each morning is whether he went out — whether a shape stood up in the night and walked a round of the yard wearing his hands. He has begun setting a second thread at the back door, having worked out that a man in that condition would use the door he always used, and it was never the front."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_quiet"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The cheapest junk in the game buys a man a daily verdict on his own thinning. He is right about the back door, which is the part that should land after the reader has moved on."
+}

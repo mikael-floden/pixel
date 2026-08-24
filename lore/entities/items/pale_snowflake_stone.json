@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "pale_snowflake_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Near-white, with a six-armed star standing darker in the ice, out of a Bergclaw. Cold enough to ache through a glove.",
+  "lore": [
+    "There is cold, and then there is this. It does not take the chill off a room and give it back; it is exactly as cold in a warm hand as in a snowbank, and after a while the ache comes up through the glove into the wrist and you set it down. Handlers keep them in wool under a wooden lid, grade them by eye, and do not linger over it.",
+    "In a fight it does what frost does to rock. Cold does not shove a hard thing over — it gets inside and opens it. Shields come apart against this, not smashed but opened, and the next blow goes through a guard that was perfectly sound a moment before. The reading is the plainest in the trade: what went to the bottom of [[monsters/polar_bear|Bergclaw]] had learned that ice is not the soft part of a winter.",
+    "[[characters/6bb1eb5a|Solveig]] has the other reading and has never offered it to a buyer. [[lore/the_waking|The courtesy]] is to sit with the newly woken and ask them their name and one true thing. She has met wakings she could not do that for — animals in the grass, no name to give, nothing to say — and she sits the hour out with them anyway and files it in her head under unfinished. A soulstone is one true thing, pressed down over centuries until it is very nearly mineral. This one is ninety-six gold and lives in a tin on a shelf. She has said what she thinks about that exactly once, and not to a buyer."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "polar_bear"
+    },
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    }
+  ],
+  "gm_notes": "Shipped description said 'a white star locked in the ice'; the sprite has the six-armed figure standing darker than the near-white field around it, so the colour claim was corrected and the excellent second clause kept. The bear's own history — waking in warm grass, going north, growing its own winter — stays in the creature record; this one takes the physics (frost opens hard things, which makes the shield-cracking inevitable) and then turns on Solveig. Her line is that the stone is the one true thing the courtesy could not get out of the animal, now priced and shelved. What she actually said, and to whom, is not written down."
+}

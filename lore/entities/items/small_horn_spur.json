@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "small_horn_spur",
+  "name_seen": "Horn Spur",
+  "law": "I",
+  "description": "A stub of horn broken off at the base. Gnashjaw grinds its tusks down and this is what falls off.",
+  "lore": [
+    "Six gold buys a thumb of horn with a hook on the end — what comes off a [[monsters/gray_brute|Gnashjaw]] working its tusks down on a boulder — and for one season every coat at three fires on that road was fastened at the throat with one, because a man at the middle fire wore his that way and people copy.",
+    "He did not start it on purpose. He had woken with nothing, the way everyone does, picked the spur off the path on his first walk out, and put it on the coat because a coat wants fastening. By the time the third fire had taken up the fashion he could no longer have told you the path or the season, and he had begun saying it had been his wife's, which it had not, and the people who knew that let him have it."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    },
+    {
+      "domain": "monsters",
+      "id": "gray_brute"
+    }
+  ],
+  "gm_notes": "Fashion, then the fade under it. The wife is invented by the wearer, not remembered — no connection to any GM-side waiting."
+}

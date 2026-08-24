@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "rotten_stitched_hide",
+  "name_seen": "Rotten Hide",
+  "law": "V",
+  "description": "Grey hide gone soft, with stitching still holding two ends that never matched. It smells exactly as it looks.",
+  "lore": [
+    "It is not a hide. A saddler at the fires took one look at the seam and said so, flatly, in front of the man selling it: that is a repair. Two skins that never matched, joined with a whip-stitch worked from the inside so the mend would not show — trouble nobody takes except on a garment somebody expected to be seen in. Small stitches, a poor needle, a great deal of patience. It came off one of [[monsters/malformed_creature|the walking things on the black rock]], which is where such things end up, and the crackers price it at nine gold on account of the smell. The saddler handed his back and would not take the coin for it. He made no speech about it. He simply did not want the money, and the man who brought it in has kept it since, unsold, in a sack behind the door."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Junk misidentified: a mended coat sold as leavings. Echoes the Palehusk's kept objects without claiming an identity — no name has ever been read off one, and none is read here."
+}

@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "frost_rimed_claw",
+  "name_seen": "Frost Claw",
+  "law": "V",
+  "description": "A blue-grey claw with rime still on the edge. Bergclaw leaves them in shields, mostly other people's.",
+  "lore": [
+    "Lay one flat and the curve very nearly closes on itself. That is not a claw for opening a thing — that is a hook, and a hook is for holding on. Shields that come back with one in them come back with the boards pulled rather than scored: the arm took hold and leaned, and whoever was behind it had about a second to decide whether to keep the shield. They almost all keep it. [[characters/54bead23|Osric]] has re-boarded eight in two years and keeps the claws in a jar on the sill, still cold, still rimed, sweating a ring into the wood. He offers them back and is told no every time, by people who cannot say why either. He has stopped asking. He has not thrown one out."
+  ],
+  "related": [
+    { "domain": "characters", "id": "54bead23" },
+    { "domain": "monsters", "id": "polar_bear" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Art fact first: the curl is a grip, not a swipe, so a shield with one in it records a hold rather than a blow. Osric's jar is a hook — eight shields is eight people on that circuit who would not give theirs up."
+}

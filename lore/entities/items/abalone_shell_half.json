@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "abalone_shell_half",
+  "name_seen": "Abalone",
+  "law": "II",
+  "description": "Half a shell lined in green and gold fire. Dunedelver turns them up from a sea that dried out long ago.",
+  "lore": [
+    "The inside of one does the northern sky when a fire catches it: green sheeting into gold, then gone, then back a little to the left. People notice. People have always noticed, and the dune camps have priced accordingly.",
+    "Who buys them is the part worth writing down. It is the ones left behind by [[lore/the_long_morning|the Long Morning]] — the sister, the man whose friend of four hundred years was simply not in the room one evening — and they are not fooled, and will say so before you can raise it. It is a shell. It is not that light. They buy it anyway and set it where they will catch it by accident, on a sill, beside a door, because a thing that ambushes you with that colour twice a week is as near as they can get to being reminded of somebody they cannot manage to miss."
+  ],
+  "related": [
+    { "domain": "lore", "id": "the_long_morning" },
+    { "domain": "monsters", "id": "dune_digger" }
+  ],
+  "gm_notes": "The missing grief seen from a shop counter: people bereaved by the Long Morning buying a colour on purpose, because the sorrow will not arrive by itself. Advances nothing — it only puts the phenomenon in a player's hand at seventy-five gold."
+}

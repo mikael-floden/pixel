@@ -1,0 +1,15 @@
+{
+  "domain": "items",
+  "id": "iridescent_nacre_shard",
+  "name_seen": "Nacre Shard",
+  "law": "V",
+  "description": "Turn this flake of shell and it shifts green to violet. The dune gave it up; whatever grew it is long fossil.",
+  "lore": [
+    "The broken edge is not one thing. It is about four hundred things, stacked: layer on layer on layer, each one a season of some flat, patient animal adding a little more house. That is all the colour is. Not a pigment — a count. Green going to violet is what four hundred years of doing the same small job, once a year, does to daylight coming through it. The water it worked in has been gone from that country since before anyone woke there. The sand turned its back plate up in a clean hollow behind a [[monsters/dune_digger|delver]], and somebody dropped it in a bag with eleven other flakes and walked on, and it is worth sixty gold. The patient are not paid at a better rate than anyone else."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "dune_digger" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "Nacre as a legible record of duration — a shell is proof of a specific patience, and the layers can be counted. The flat ending is the point; do not warm it up."
+}

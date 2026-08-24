@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "cracked_magma_stone",
+  "name_seen": "Magma Stone",
+  "law": "II",
+  "description": "Faceted like an egg, orange over deep red and split with glowing seams. Fire-things leak these when they crack.",
+  "lore": [
+    "A good one holds its heat nine or ten years and gives it out steadily the whole time, which is more than wood ever managed, and that single fact has ruined a road.",
+    "The west road tried it. Three stones banked in a ring at the old post, glowing all night, no rota, [[lore/the_age_of_fires|nobody sitting]] — the argument being that the stones did the part of a fire that costs money and the sitting was ceremony. Six years of that. Then the last mile went soft, then the post, and the crews sent out to relight it cannot now agree on where it stood. The stones are still warm. They are sold at the far end as hearth-stones, by a man who does not mention the road."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    },
+    {
+      "domain": "lore",
+      "id": "the_age_of_fires"
+    }
+  ]
+}

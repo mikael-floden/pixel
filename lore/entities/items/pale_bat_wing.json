@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "pale_bat_wing",
+  "name_seen": "Pale Wing",
+  "law": "V",
+  "description": "Tan membrane on pale finger bones, torn free mid-flight. The gaunt things that haunt the drifts fly on these.",
+  "lore": [
+    "Eleven hundred and six. A woman on the north road has walked the same two miles of drift at every thaw for thirty years, picking pale wings out of the melt, and that is her count. They come down whole and they come down alone — no other bone, no fur, no teeth, nothing else of whatever was carrying them, not once in eleven hundred. She sells enough to keep herself in boots and no more. Every autumn she sends the year's figure to [[lore/the_chronicle|the Chronicle]] with no letter attached, because there is nothing to say about it yet. What she wants is to be there in the year the number stops."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_chronicle"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "A thirty-year data series nobody has interpreted. If the count ever stops, that is a plot; until then it is a woman with a habit and a reason."
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "purple_gold_vein_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Deep purple veined in gold, heavy as a crown. Unclaimed, which has not stopped anyone hunting for it.",
+  "lore": [
+    "The names a bench uses for what a stone grades to are all borrowed from creatures: frost, ember, storm, grave, blood, moss. Point at the word and you can point at the animal. This one is filed royal, and royal is not a kind of anything — it is the word that got used because the tray needed a word. There is no creature anybody would file under it, which has not stopped two or three crews going out to look, with no description to go on and a price to go on instead.",
+    "It does not cut. It does not burn and it will not hold anyone up. What it does is get you paid: an offer arrives a tenth over what the same bench would have said an hour before, and the man making it cannot afterwards say why, and ground you have walked twice gives up [[lore/the_gold_agreement|gold]] on the third pass. Nearly everything else on the shelf is an appetite or an endurance. Pressed to the bottom of this one is an expectation of being owed.",
+    "Deep purple plates, thick gold in the seams, and heavy — nothing that size has any business sitting in a hand like that. Two hundred and seventy-five gold, a number arrived at by merchants, in a room, with one of these on the table. Twice a year somebody proposes a blind price: the stone in a box, in another room, valued by people who cannot see it. The proposal has never once been carried, and the men who vote it down are the men holding one."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Unbound, handled as a taxonomy problem rather than a mystery: 'royal' is the one nature on the benches with nothing under it, and the record proposes no candidate. The blind-price vote is the payload and doubles as an in-world account of the item's own 275 — the stone had a hand in its price. Items line adopted verbatim."
+}

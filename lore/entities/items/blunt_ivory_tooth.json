@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "blunt_ivory_tooth",
+  "name_seen": "Beast Tooth",
+  "law": "V",
+  "description": "Thumb-long ivory with a notched crown. A Palemaw bites once; a Diretusk never has to. Both leave these.",
+  "lore": [
+    "[[lore/the_gold_agreement|Gold]] does not divide small enough. Everybody here agrees about gold, which is precisely the trouble: the smallest coin anybody will cut is still worth more than a night's guiding, an hour of somebody's back, or a bed by a fire in weather. So below gold the road runs on teeth.",
+    "An ivory of this grade is the unit. Eighteen gold nominal; in practice one favour, and every fire on that road knows the size of a favour without anyone having to set it down. You leave one under the flat stone at a crossing when you owe and cannot stop to pay. There is a crossing on the east road with four under the stone, all of them gone grey. Whoever left them has been back past. Whoever they were for has not."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Small change below gold, and a live prop: the flat stone at the east-road crossing with four grey teeth under it. Whoever they are owed to has not come back that way."
+}

@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "fresh_green_herbs",
+  "name_seen": "Wild Herbs",
+  "law": "I",
+  "description": "A fistful of green stalks pulled up roots and all, tied at the base by somebody in a hurry.",
+  "lore": [
+    "There is a pot on at every fire worth the name, and this is most of what goes in it: whatever came up green within a short walk, pulled roots and all, tied with whatever the picker had on them. Nobody arrives hungry. That is not what the pot is for. It is for the hour after [[lore/the_waking|a waking]], when a person has been told what has happened to them, and asked their name, and cannot produce it yet, and needs something to do with their hands while they try. One man got as far as saying his mother put nettles in everything and it made the whole house smell like a wet field. That was his one true thing. His name came back three days later, and of the two it was much the smaller."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_waking"
+    },
+    {
+      "domain": "lore",
+      "id": "the_human_dead"
+    }
+  ],
+  "gm_notes": "The oldest courtesy seen from the cooking end. The true thing arriving days before the name is the beat; use for any warm meadow scene."
+}

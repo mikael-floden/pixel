@@ -1,0 +1,24 @@
+{
+  "domain": "items",
+  "id": "tan_sunlit_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Sand-gold and cracked like a dry bed, left by a Sunscale. It keeps the desert's noon inside it.",
+  "lore": [
+    "Every hard piece comes out warm and stays warm. This one keeps a clock: cool enough to forget at first light, awkward by midday, and at the top of the day it will make you shift it off your hip — the same rise and the same fall, in a pocket, in a bag, in a cellar with no window. Sixty-two gold. Handlers who work by touch have told the hour off one and been right.",
+    "The heat does nothing; the heat is only what it is. Every so often a blow arrives as light instead of force, a white flash off the sand-gold plates, and whoever was looking at you cannot for a moment. It was never meant to last. Two seconds of somebody else's eyes, priced at the bottom of the sheet with the stones sold to people on their first road.",
+    "Which is a failure of imagination about what is in it. People have followed [[monsters/desert_cat|the animal]] for years and come home with a colour. Nearly every stone on a bench is an appetite or an endurance — a thing that wanted, or a thing that would not stop. This one is neither. It is a way out. The plates were never armour; they were a trick played once, at the correct hour, by something whose whole answer to everything was to not be there afterwards.",
+    "The crews who work the sand country carry one apiece and will tell you it is for the flash, which is true. Not one of them has ever said what they were doing at the moment they were glad of it, and every one of them has been glad of it."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "desert_cat"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The creature's record owns the gold-that-is-sand and the man who followed one for eleven years; both are compressed to a single clause here. What the stone can say that watching cannot is the payload: the fact at the bottom is escape, not appetite — sad-before-evil applied to a cat. The clock is a reusable prop, a soulstone that tells the time."
+}

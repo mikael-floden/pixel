@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "spore_heart_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Dark green plates around a pale glowing core, out of a Sporehorn. The fungus is steering the stone as well.",
+  "lore": [
+    "It is the only stone sold with instructions, and the seller says them out loud whether or not you want them. Do not seal it. Do not set it flush. Leave the back of the cup open, keep it somewhere light gets at it, and if the plates lift, let them lift.",
+    "Because it is not finished. A soulstone cannot be forgotten and so cannot decay, and this one is not decaying — it is doing the other thing. Dark green plates stand slightly proud around a pale core that makes its own light, and over a season they stand a little prouder. What took [[monsters/blight_elk|the elk]] took it from the antlers down and did not stop at the bottom of it. Set it in a blade and every hit opens a small cloud that keeps working in the air behind you, which is the entire ambition of the thing steering it: arrive somewhere, and then be there.",
+    "[[characters/54bead23|Osric]] argued about the instructions. He was a smith before he woke and he still counts in living years, and a fitting that is required to stay open offends him at a level he cannot talk himself out of, so he sealed one properly, brass over the back, to prove a point. It went dark inside four days and stayed dark. It still fights, a little. He keeps that one in his apron and brings it out when a customer wants to know why his settings cost what they cost, and he does not enjoy the demonstration as much as he pretends to."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "blight_elk"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Shipped line said 'shed by' — replaced; a stone falls out of a broken shape, it is not shed. The Sporehorn record is the circuit and the woman on the slope, none of which is retold: this is the same takeover seen in the setting-cup. The sealed stone is a real, permanent consequence Osric brought on himself and is the only piece of failed work he carries; he will show it, and he will not sell it."
+}

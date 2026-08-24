@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "mint_serpent_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Mint-green with a serpent coiled across it, left by a Blightcur. Whatever it carries, it survives.",
+  "lore": [
+    "Sellers of this one demonstrate before they name a price. The cloth comes off, the stone goes into a bare palm — mint-green, cool, a serpent coiled across the face of it in low relief — and it stays there as long as the customer cares to stand and watch, because a whole class of buyer will not touch one otherwise. This is the useful thing the stone says that [[monsters/plague_hound|the animal]] never will. Sit inside twenty paces of that dog and it costs you something you do not get back. Carry its last hard piece all winter and it costs you nothing, ever, and no handler has yet taken so much as a foul week off one. The sickness was cargo. What reached the bottom was the carrying — which is why a blade with one set in it leaves a wound that goes on working long after the blade has gone elsewhere.",
+    "[[characters/7a779de1|Wendell]] owns one, and people find that funny for about as long as it takes him to explain it. He is old and does not walk far, so he is on the short list of people a fire has to be moved for when that line comes round; it has happened to him twice. The young walker who carried his things the second time came back a season later and put the stone on his sill without much of a speech. Wendell could sell it for two winters of firewood. He would rather look at it, because it is the only proof anyone has brought him that one of those rounds ended."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "plague_hound"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The Blightcur record is Gunnar's — the line, the moved fires, the furious free warning — so he stays out of this one and the fire that gets moved is seen from the far end, from the old man it is moved for. The venom power is derived from safety: the stone proves the creature was never the disease, only its carrier. Wendell's stone is a gift with a name attached that he cannot supply; the walker is unnamed on purpose."
+}

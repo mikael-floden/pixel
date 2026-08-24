@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "pitted_silver_band",
+  "name_seen": "Pitted Ring",
+  "law": "II",
+  "description": "Thick hammered silver, tarnished and pitted all over. It was measured for a finger, and not the one it came off.",
+  "lore": [
+    "A ring is the one thing in the trade that arrives with a measurement already on it. A jeweller sat down with a hand in front of him and cut this to fit it. Everything else off a broken shape has to be guessed at, but a band goes on a rod and reads off as a number, and the number was a person.",
+    "So the crackers going through what a [[monsters/malformed_creature|Palehusk]] leaves take the size before they take the price. It costs nothing and it takes a moment, and [[characters/ef25b1f0|Bettany]] pays for the figures whether or not she wants the ring. She has four pages of them now. Size, date, where. Not one name against any of them and no way left of getting one, and she keeps the pages in order anyway, because a measurement is a detail, and details are the first thing to go.",
+    "Eighteen gold. It is a small ring, and it did not fit."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "malformed_creature"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Bettany's size register: the only quantitative record of people nobody can name. If a player ever produces a name and a hand, the pages become the first proof of anything in this whole line of work."
+}

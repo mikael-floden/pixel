@@ -1,0 +1,26 @@
+{
+  "domain": "items",
+  "id": "purple_void_flesh",
+  "name_seen": "Void Flesh",
+  "law": "V",
+  "description": "A lump of violet meat that keeps twitching toward your hand. Voidmaw is mostly this, on the inside.",
+  "lore": [
+    "No use has ever been found for it. It will not cure, will not render, will not take a dye, and it twitches toward warmth for two days and then lies still. It also carries a standing price — fifty-five, [[lore/the_gold_agreement|in gold]], the same at every stall on the road — which no scrap in this trade has any business carrying. A standing price is not a fact about a lump of meat. It is a fact about somebody who wants one.",
+    "A cracker off the fen followed the collection cart once, to see. Two days out, and on the second night the road he had come up was not where he had left it, so he walked home the long way. He has not sold any since; he leaves his on the stone where he finds it. He will give you his reasons at some length, and not one of them is the reason."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    },
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "monsters",
+      "id": "eldritch_maw"
+    }
+  ],
+  "gm_notes": "The buyer who takes every scrap and never explains, seen only as an economic fact — a price that holds where no use exists. The cart is a real cart with a real driver; the Drift is what ends the pursuit, and that is genuinely what happened, which is the frightening part."
+}

@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "toothed_jaw_slab",
+  "name_seen": "Tooth Ridge",
+  "law": "V",
+  "description": "Ivory cones socketed in a slab of jawbone, unblunted. Whatever carried it never needed a second bite.",
+  "lore": [
+    "The first thing a buyer does is run a thumb down the cones, and what he is checking is wear. Every other tooth that reaches a counter has been used — chipped, rounded, polished on the inner face where it met its opposite for years. A slab off [[monsters/eldritch_maw|a Voidmaw]] comes in with the enamel still ridged from growing. Every cone a first cone. The whole ridge unopened.",
+    "Twenty-eight gold, and the price is not for the ivory. It is that a jaw which never wore is a jaw that never fed, and the crackers working that ground have turned it over more than they care to. Everything else out there is doing something you could put a reason to — hungry, cold, keeping a route, waiting at a gate that is not there any more. This one has never needed a thing in its life, and it is out there anyway."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "eldritch_maw"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Evidence angle: unworn enamel is the trade's own proof that the thing does not eat. Deliberately stops short of Hearn's line about it wanting nothing."
+}

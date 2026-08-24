@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "violet_mushroom_cluster",
+  "name_seen": "Violet Caps",
+  "law": "V",
+  "description": "Three violet caps on one root, the big one freckled pale. Turn it over before you pay for it.",
+  "lore": [
+    "Everything you are buying is on the underside. Grown in ground, the base comes up dished and full of grit. Grown on an animal — on wet moss over a shoulder that has not moved through several winters — it comes up flat, and the stems all lean one way, downhill from where the withers were. Flat is worth triple. Flat also means the picker stood near enough to a [[monsters/swamp_bear|Mireback]] to take three caps off it, which is a thing a person is entitled to be proud of, and is far more often a thing a person did at home with a board and a heavy stone. Buyers know. Sellers know they know. The haggling is two people agreeing not to say so."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "swamp_bear"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "A forger's tell and the courtesy around it. Good for teaching players that junk is graded by evidence of where it grew, not by the thing itself."
+}

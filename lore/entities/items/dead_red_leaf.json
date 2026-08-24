@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "dead_red_leaf",
+  "name_seen": "Red Leaf",
+  "law": "V",
+  "description": "One leaf gone crimson out of season. Thornstag browses a branch and the whole branch ends up like this.",
+  "lore": [
+    "A [[monsters/corrupt_stag|Thornstag]] leaves a line of them behind it, crimson in a green month, plain as chalk on a wall, and any fool can read it. Any fool does. What the line gives you is where the animal has been, which is the half of the question nobody was asking. The other half — where it is going — is sold by four or five people who get it by sitting out an autumn night near something worth robbing. The colour keeps for years, which is the second trade in them: a red leaf is the cheapest way to prove to a fire that you have been somewhere."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "corrupt_stag"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Tracking economics, cold and dry. The last line is the hook: junk as proof-of-travel, currency at a fireside."
+}

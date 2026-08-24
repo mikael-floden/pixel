@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "gilded_curved_fang",
+  "name_seen": "Gilded Fang",
+  "law": "II",
+  "description": "Someone gilded a hunter's tooth, hollow at the root and polished bright. Nobody asks whose mouth it left.",
+  "lore": [
+    "The leaf costs more than the tooth under it, and that is the exercise, not an accident of taste. [[lore/the_gold_agreement|Gold]] is the one substance every century remembers the same way, which is why a coin holds while everything around it goes soft, and there are people who reason from that fact straight to this practice: lay enough of it over a thing and the thing comes along for the ride. It has never been properly tested. It is done anyway, and it is not done to wedding rings or lucky coins. It is done to teeth. This one went over a [[monsters/saber_toothed_tiger|Duskfang]]'s, out of an age so far back it has stopped coming up at the fires at all — which is the part worth sitting with, because gilding is what a person does about a creature when they have run out of anybody willing to talk about it. Seventy-two gold, and most of that is the gold."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "saber_toothed_tiger"
+    },
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    }
+  ],
+  "gm_notes": "A folk practice built by correct reasoning from a true premise to an untested conclusion — the closest this setting comes to ritual, and it is metallurgy plus hope. Whether gilding actually holds anything is open; the maintainer may want it to fail."
+}

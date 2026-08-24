@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "iridescent_prism_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "A mosaic that changes colour every time you look away, off a Prismclaw. It lies a hand's width from where it looks.",
+  "lore": [
+    "Appraisers pick this one up with their eyes shut, and there is no trick to it beyond knowing there is one. Light comes off the mosaic bent, so the stone is never quite where the cloth says it is, and a confident hand closes on nothing. Dealers' children learn it as a party piece years before they learn prices. The offset is always to the same side, which is the whole of the item: carry one a day and you are reaching a finger's width off for your own cup without having decided to. In a fight the good hit arrives, and then arrives again, half as hard, beside itself. Hunters in [[monsters/crystal_lynx|that country]] are taught before anything else to aim beside what they can see.",
+    "Tap one and it gives a single high note, the same note off every stone of the kind, and any smith will tell you what that note means in a piece of steel: a flaw running the whole way through, an edge that is going to let go, and the only question left is which stroke. Nothing of the sort has ever happened. They do not chip and they do not part. It is a lie the stone has apparently always told, and it is also the fastest way to sort one from the leavings — out in the crystal country there are smooth boulders with snapped points scattered round the base, and people gather them up and sell them along the road as chips of the real thing, four gold, most of them honestly enough. Tapped, the points say nothing at all. They came off an animal trying to rub off something that was itself."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "crystal_lynx"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Two paragraphs on purpose, to break the rhythm of the batch. Sigrun's hearing of the tail-blade is the creature record's scene and is not restaged; the note is reached from the bench instead, and the finding is the opposite of hers — the flaw never lets go. The shipped description said 'cut from', which soulstones are not; replaced with the offset, which is the truer distinguishing look and makes the doubled strike inevitable. The grooming-rock points are junk, not chips, and are priced as the honest confusion they are rather than a con."
+}

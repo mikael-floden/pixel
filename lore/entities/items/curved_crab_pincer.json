@@ -1,0 +1,16 @@
+{
+  "domain": "items",
+  "id": "curved_crab_pincer",
+  "name_seen": "Crab Pincer",
+  "law": "V",
+  "description": "Brown, jointed and hooked at the tip. Whatever the swamp blobs swallowed to get it went down sideways.",
+  "lore": [
+    "Nothing anyone has met has a hand like this. Jointed twice, hooked at the tip, built to close sideways — and the only place they turn up is inside a fen blob, a [[monsters/water_poring|Puddling]] that has swallowed something it could not manage.",
+    "The ferryman at the second fen crossing keeps twenty-one of them in a flour box and has done for seven years, and the point of the box is the sizes. Laid in order they step up cleanly: thumb-length at one end, then a hand's, then a thing you would want both hands to work. Every one of them right-handed. He sells everything else he pulls out of a blob and he will not sell one of these. He will show you the box if you ask. What he says while you look at it is that he would like, one time, to be handed a small one again."
+  ],
+  "related": [
+    { "domain": "monsters", "id": "water_poring" },
+    { "domain": "lore", "id": "the_hard_pieces" }
+  ],
+  "gm_notes": "No creature is bound to this item — the items domain has it waiting for a crab that has not been drawn. The flour box turns that gap into evidence: something in the fen is growing and nobody has seen it. Whoever draws the animal inherits a reveal already set up."
+}

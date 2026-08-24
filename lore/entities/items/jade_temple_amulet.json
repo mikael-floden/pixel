@@ -1,0 +1,22 @@
+{
+  "domain": "items",
+  "id": "jade_temple_amulet",
+  "name_seen": "Jade Amulet",
+  "law": "II",
+  "description": "A green disc with a pale gem set dead centre. Temple work, and Runemane still guards a heap of it.",
+  "lore": [
+    "Eighty gold, and it moves faster than anything else off that field, for the plainest reason in the trade: it is the only piece of the place a person can wear. [[items/bronze_temple_cog|The cogs]] are a curiosity. [[items/carved_wood_idol|The little folded figures]] unsettle people. This is a green disc with a stone in the middle, it hangs well, it does not chip, and you can put it on.",
+    "So a lot of them are on. Count round any decent fire on the eastern road and you will find two or three, and their owners will tell you, correctly, that it is temple work, and that is the end of what any of them knows. Whatever the hall was for, whatever was said in it, whatever a person was undertaking while wearing one of these — that went with the walls. The disc came through. The trade priced it and passed it along, and there is not one person left who could tell the wearers whether they are allowed to."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "rune_lion"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "Wearable, common, and quietly loaded: if the temple's instruction ever turns out to have applied to whoever wore the disc, a good fraction of the eastern road is already inside it. Do not decide that yet."
+}

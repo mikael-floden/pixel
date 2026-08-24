@@ -1,0 +1,21 @@
+{
+  "domain": "items",
+  "id": "green_ooze_glob",
+  "name_seen": "Ooze Glob",
+  "law": "V",
+  "description": "A palmful of green ooze that keeps its shape and none of its dignity. Alchemists take it by the jar.",
+  "lore": [
+    "Sold by the jar, and the jar is the argument. [[lore/the_gold_agreement|Seven gold]] buys a jar of it, so the only thing left to haggle over is whose jar, and every buyer on the fen road keeps one that is a finger taller than everybody else's and swears it is the standard. There is a woman working the low crossings with her own on a strap, fired to a scratched line she put there herself, who will not pour into anything but that. She has been called a great deal at that counter. She has also never once been short-paid, so half the crossing brings her their globs now and lets her do the pouring, and she takes nothing for it. She is not doing it for them. She is doing it at him."
+  ],
+  "related": [
+    {
+      "domain": "lore",
+      "id": "the_gold_agreement"
+    },
+    {
+      "domain": "monsters",
+      "id": "mystical_frog"
+    }
+  ],
+  "gm_notes": "The measure war. Junk is priced by volume and volume is whatever the buyer's jar says, so the only honest instrument on the road is one a seller made and carries. Her grudge is the point; the service is a side effect."
+}

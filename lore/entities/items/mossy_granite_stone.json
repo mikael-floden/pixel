@@ -1,0 +1,23 @@
+{
+  "domain": "items",
+  "id": "mossy_granite_stone",
+  "name_seen": "Soulstone",
+  "law": "V",
+  "description": "Grey granite gone green with moss, off a Cragback. It weighs what a hillside weighs, in the hand.",
+  "lore": [
+    "You do not go hunting a [[monsters/granite_bear|Cragback]]. You buy a sighting, and a sighting comes from somebody who has stood in one doorway at one hour of the evening for eighty years and can tell you the line of the hill is not the line of the hill. Crews pay for that, by the sighting, in gold, and it is the only work in the country whose entire qualification is having looked at the same thing your whole life without once getting bored of it.",
+    "What comes out is grey, green in the seams, brown-crusted along one flank, and it weighs what it has no business weighing; handlers take it in two hands without deciding to. Set into armour it makes you hard to get through, which is what the sheet says and not what anybody buys it for. They buy the other half: bridge-holders, the two or three who still stand at the gorge crossings, anyone whose work is being exactly where they were put while something large arrives.",
+    "At the bottom of a made thing is whatever made it, and this one was made by a hundred valleys' worth of people agreeing about a hill — the same dark line against the same evening, generation on generation, not one of them ever giving an inch on it. That is the fact in your fist, and it has nothing to do with strength. It is about not being argued out of a position. Two hundred and forty-five gold, and the old man who sold the sighting is back in his doorway at the same hour, learning the new line, because a hill that has moved once is a hill you no longer know."
+  ],
+  "related": [
+    {
+      "domain": "monsters",
+      "id": "granite_bear"
+    },
+    {
+      "domain": "lore",
+      "id": "the_hard_pieces"
+    }
+  ],
+  "gm_notes": "The rota fire kept eleven winters in its lee belongs to the creature's record and is left there. This one is built on the self-eating trade the creature implies: the habit that makes a Cragback (a valley agreeing on one hill forever) is the only instrument that can find one, so hill-watchers now sell sightings to the crews who break them. The armour clause is stated and then set aside for the unbudgeable clause, which is where the made-by-agreement reading lands."
+}
