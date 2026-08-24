@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:09:41.142Z",
+  "updated_at": "2026-08-24T13:14:19.606Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2244,7 +2244,49 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 17
+      "level": 17,
+      "shadow": {
+        "rx": 20.25,
+        "ry": 11.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.03,
+            "ay": 22.76
+          },
+          "idle#south": {
+            "ax": -0.06,
+            "ay": 21.12
+          },
+          "idle#south-east": {
+            "ax": -0.78,
+            "ay": 20.42
+          },
+          "idle#north-east": {
+            "ax": -3.89,
+            "ay": 20.67
+          },
+          "idle#north": {
+            "ax": 1.93,
+            "ay": 22.38
+          },
+          "idle#north-west": {
+            "ax": 4.37,
+            "ay": 20.62
+          },
+          "idle#west": {
+            "ax": 3.56,
+            "ay": 22.07
+          },
+          "idle#south-west": {
+            "ax": 1.71,
+            "ay": 19.62
+          },
+          "walk#south": {
+            "ax": -0.74,
+            "ay": 21.88
+          }
+        }
+      }
     },
     "stone_golem": {
       "level": 18,
