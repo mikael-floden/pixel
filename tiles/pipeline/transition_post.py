@@ -50,6 +50,9 @@ import transition_render as TR
 # The transition tile's own size - every set is drawn at exactly this.
 TILE_W, TILE_H = 64, 46
 
+# Below this gap between the two orderings the endpoints are too alike to call.
+AMBIGUOUS = 40.0
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(ROOT)
 TRANS = os.path.join(ROOT, "transitions")
@@ -97,6 +100,57 @@ def _base_image(material):
     return None
 
 
+def _chroma(c):
+    """Lighting-invariant colour signature: the two opponent channels, plus a damped
+    value so two achromatic materials (grey stone against snow) still separate."""
+    r, g, b = (float(v) for v in c)
+    return np.array([r - g, g - b, 0.5 * max(r, g, b)])
+
+
+def _median_top(path):
+    a = np.array(Image.open(path).convert("RGBA"), int)
+    t = TR.top_face(a[..., 3] > 0)
+    return np.median(a[..., :3][t], 0) if t.sum() else None
+
+
+def orientation(setdir, mat_a, mat_b):
+    """Which material sits at index 0 — READ OFF THE ART, per set.
+
+    THE META CONVENTION IS NOT TRUE. Every set's meta note asserts "INDEX 0 IS <lower>",
+    and the generator does not honour it: measured across the 15 sets of
+    dark_mud__to__grass, six have mud at index 0 and eight have grass, one set per
+    orientation of the same boundary. Trusting the note painted the mud green and the
+    grass brown - "you have clearly mixed up what is grass and what is mud ... You can't
+    guess here, you need to check it."
+
+    Index 0 and index 15 are the two PURE tiles of a Wang set, so their top faces are
+    unmixed samples of the two materials. Both are compared against both palette
+    colours and the ASSIGNMENT is chosen, not each tile independently - that matters:
+    on this very pair tile_00 measures 98 from grass and 102 from mud, so classifying
+    it alone picks grass, which is backwards. Comparing the pair only needs the
+    relative order to be right.
+
+    Returns (index0_material, margin). A small margin means the two endpoints look
+    alike and the answer is not trustworthy - the caller reports those rather than
+    quietly picking one.
+    """
+    m0 = _median_top(os.path.join(setdir, "tile_00.webp"))
+    m15 = _median_top(os.path.join(setdir, "tile_15.webp"))
+    if m0 is None or m15 is None:
+        return None, 0.0
+    fa = _chroma(_hex_rgb(PALETTE[mat_a]["top"]))
+    fb = _chroma(_hex_rgb(PALETTE[mat_b]["top"]))
+    g0, g15 = _chroma(m0), _chroma(m15)
+    cost_a = np.abs(g0 - fa).sum() + np.abs(g15 - fb).sum()
+    cost_b = np.abs(g0 - fb).sum() + np.abs(g15 - fa).sum()
+    return (mat_a if cost_a < cost_b else mat_b), float(abs(cost_a - cost_b))
+
+
+def _hex_rgb(h):
+    h = h.lstrip("#")
+    return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], float)
+
+
 def side_spec(material, cache):
     if material not in cache:
         v = PALETTE.get(material) or {}
@@ -122,7 +176,8 @@ def main():
     pairs = sorted(d for d in os.listdir(TRANS) if "__to__" in d)
     if args.pair:
         pairs = [p for p in pairs if p == args.pair]
-    done = skipped = failed = 0
+    done = skipped = failed = flipped = 0
+    ambiguous = []
     for pair in pairs:
         for setdir in sorted(glob.glob(os.path.join(TRANS, pair, "*"))):
             if not os.path.isdir(setdir):
@@ -141,12 +196,22 @@ def main():
                 failed += 1
                 continue
             tiles = [Image.open(p).convert("RGBA") for p in srcs]
-            # meta names the pair; index 0 holds `lower`, index 15 `upper` - the
-            # endpoint's own convention, recorded in every set's meta note.
-            s0 = side_spec(meta["lower"], cache)
-            s15 = side_spec(meta["upper"], cache)
+            # WHICH MATERIAL IS AT INDEX 0 IS MEASURED, NOT ASSUMED - see orientation().
+            mat_a, mat_b = pair.split("__to__")
+            idx0, margin = orientation(setdir, mat_a, mat_b)
+            if idx0 is None:
+                print(f"   ! {pair}/{os.path.basename(setdir)}: no top face to read")
+                failed += 1
+                continue
+            idx15 = mat_b if idx0 == mat_a else mat_a
+            if margin < AMBIGUOUS:
+                ambiguous.append(f"{pair}/{os.path.basename(setdir)} (margin {margin:.0f})")
+            if idx0 != meta.get("lower"):
+                flipped += 1
+            s0 = side_spec(idx0, cache)
+            s15 = side_spec(idx15, cache)
             try:
-                out = TR.compose_transition(tiles, s0, s15)
+                out = TR.compose_transition(tiles, s0, s15, trust_art=True)
             except Exception as exc:
                 print(f"   ! {pair}/{os.path.basename(setdir)}: {type(exc).__name__}: {exc}")
                 failed += 1
@@ -158,6 +223,11 @@ def main():
             done += 1
         print(f"{pair:44} done")
     print(f"\nwrote post/ for {done} set(s), skipped {skipped} already done, {failed} failed")
+    print(f"sets whose real orientation differs from their meta note: {flipped}")
+    if ambiguous:
+        print(f"sets where the two endpoints look too alike to call ({len(ambiguous)}):")
+        for a in ambiguous[:12]:
+            print(f"   {a}")
 
 
 if __name__ == "__main__":

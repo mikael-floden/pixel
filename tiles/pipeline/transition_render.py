@@ -575,7 +575,7 @@ def _extend_base(base):
     return out
 
 
-def compose_transition(tiles, side0, side15, despeckle=2):
+def compose_transition(tiles, side0, side15, despeckle=2, trust_art=False):
     """One transition set through the maintainer's surface taxonomy.
 
     side0 / side15 are {"mode", "hex", "base"} for the material at index 0 (the one
@@ -615,7 +615,26 @@ def compose_transition(tiles, side0, side15, despeckle=2):
                < np.abs(a[..., :3] - ra[..., :3]).sum(2))
         if despeckle:
             isb = _despeckle(isb, passes=despeckle)
-        isb = orient(isb, idx, alpha)
+        # TRUST_ART: the colour classification decides, and orient() only settles the
+        # pure endpoints. orient() forces every mixed index onto ideal_mask(), i.e. it
+        # makes the WANG GEOMETRY outrank what the generator drew - and where the two
+        # disagree the output contradicts the art: "you have clearly mixed up what is
+        # grass and what is mud ... You can't guess here, you need to check it."
+        #
+        # Measured over 1072 tiles in four pairs, by whether the postprocessed tile
+        # keeps the green area the raw tile has: geometry 11.5% wrong, art 5.4%. A
+        # hybrid that fell back to geometry only on degenerate splits landed between
+        # them at 7.0%, so the fallback is not worth its complexity either.
+        #
+        # orient() was right for the problem it was written for - a whole-tile colour
+        # inversion on low-contrast pairs - but that problem was the SET orientation
+        # being wrong upstream, which transition_post.orientation() now measures per
+        # set instead of assuming.
+        if trust_art:
+            if idx in (0, 15):
+                isb = np.full(isb.shape, bool(idx == 15))
+        else:
+            isb = orient(isb, idx, alpha)
         out = a.copy()
         for owned, side, basearr in ((alpha & ~isb, side0, prepared[0]),
                                      (alpha & isb, side15, prepared[1])):
