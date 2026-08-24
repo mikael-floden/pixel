@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T11:01:31.918Z",
+  "updated_at": "2026-08-24T11:42:43.518Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1925,7 +1925,45 @@
           "item": "pale_ridged_horns",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 25.5,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": 1.62,
+            "ay": 26.63
+          },
+          "idle#south": {
+            "ax": -0.62,
+            "ay": 27.79
+          },
+          "idle#south-east": {
+            "ax": -1.02,
+            "ay": 26.69
+          },
+          "idle#north-east": {
+            "ax": 0.38,
+            "ay": 26.34
+          },
+          "idle#north": {
+            "ax": -1.07,
+            "ay": 26.84
+          },
+          "idle#north-west": {
+            "ax": 0.7,
+            "ay": 26.72
+          },
+          "idle#west": {
+            "ax": -1.5,
+            "ay": 26.03
+          },
+          "idle#south-west": {
+            "ax": -0.1,
+            "ay": 27.17
+          }
+        }
+      }
     },
     "spectral_horse": {
       "max_hp": 20,
