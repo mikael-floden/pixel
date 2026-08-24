@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T15:12:24.660Z",
+  "updated_at": "2026-08-24T15:19:08.355Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -939,7 +939,53 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 19
+      "level": 19,
+      "shadow": {
+        "rx": 31,
+        "ry": 20.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -6.28,
+            "ay": 40.49
+          },
+          "idle#south": {
+            "ax": 0.67,
+            "ay": 38.71
+          },
+          "idle#south-east": {
+            "ax": -2.72,
+            "ay": 33.78
+          },
+          "idle#north-east": {
+            "ax": -5.72,
+            "ay": 39.87
+          },
+          "idle#north": {
+            "ax": 1.73,
+            "ay": 42.74
+          },
+          "idle#north-west": {
+            "ax": 7.16,
+            "ay": 41.13
+          },
+          "idle#west": {
+            "ax": 6.66,
+            "ay": 39.49
+          },
+          "idle#south-west": {
+            "ax": 2.87,
+            "ay": 34.37
+          },
+          "walk#south-east": {
+            "ax": -2.92,
+            "ay": 36.44
+          },
+          "walk#south-west": {
+            "ax": 2.14,
+            "ay": 36.19
+          }
+        }
+      }
     },
     "forest_poring": {
       "level": 3,
