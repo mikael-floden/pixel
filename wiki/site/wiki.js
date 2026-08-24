@@ -7791,17 +7791,20 @@ function viewMusic() {
       tab("static", "Static Music", "Finished tracks that play from start to end"),
       tab("dynamic", "Dynamic Music", "The suite/pool/phrase score — assembled while you play, and auditioned here"))
     : null;
-  if (state.admin && musicTab === "dynamic") {
-    return h("div", {}, sectionHead("music"), tabs, viewBench({ heading: false }));
-  }
-  return h("div", {}, tabs, viewMusicStatic());
+  // ONE ORDER FOR BOTH TABS: crumb, title, then the tabs (maintainer
+  // 2026-08-24: "Static Music have the tab over the breadcrumb (wrong).
+  // Dynamic Music have the tab under the title (correct)"). Static rendered
+  // its own sectionHead as its first child, so composing `tabs` in front of it
+  // put the strip above the crumb on one tab and below the title on the other.
+  return h("div", {}, sectionHead("music"), tabs,
+    state.admin && musicTab === "dynamic" ? viewBench({ heading: false }) : viewMusicStatic({ heading: false }));
 }
-function viewMusicStatic() {
+function viewMusicStatic(opts = {}) {
   const list = (state.data.domains.music ?? []).filter((t) => matches(state.query, t.id, t.name, t.use));
   const domainTracks = list.filter((t) => t.source !== "composer");
   const beds = list.filter((t) => t.source === "composer");
   return h("div", {},
-    sectionHead("music"),
+    opts.heading === false ? null : sectionHead("music"),
     h("p", { class: "muted" }, "Everything written for the game to play — the music agent's tracks, and the composer's own situation beds."),
     muteGameBtn(),
     domainTracks.length ? h("h2", {}, "Tracks ", h("span", { class: "pill" }, String(domainTracks.length))) : null,

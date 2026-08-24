@@ -338,6 +338,29 @@ await p.evaluate(() => [...document.querySelectorAll(".pagetab")].find((x) => /D
 await p.waitForTimeout(1800);
 const onDyn = await p.evaluate(() => ({ bench: document.querySelectorAll(".bench").length, sel: document.querySelector(".pagetab.sel")?.textContent.trim() }));
 ok(onDyn.bench === 1 && onDyn.sel === "Dynamic Music", `and Dynamic Music opens the bench in place (${onDyn.sel})`);
+// SAME ORDER ON BOTH TABS (maintainer 2026-08-24: "Static Music have the tab
+// over the breadcrumb (wrong). Dynamic Music have the tab under the title
+// (correct)"). Static rendered its own sectionHead as its first child, so
+// composing the strip in front of it put the tabs above the crumb on one tab
+// and below the title on the other. Measured by position, not by markup.
+const landmarks = () => p.evaluate(() => {
+  const y = (el) => el?.getBoundingClientRect().top ?? -1;
+  return {
+    crumb: y(document.querySelector("#content .crumb, #content .crumb-row a.crumb")),
+    title: y(document.querySelector("#content h1")),
+    tabs: y(document.querySelector("#content .pagetabs")),
+    sel: document.querySelector(".pagetab.sel")?.textContent.trim() ?? "",
+  };
+});
+const dynPos = await landmarks();
+await p.evaluate(() => [...document.querySelectorAll(".pagetab")].find((x) => /Static/.test(x.textContent)).click());
+await p.waitForTimeout(1500);
+const statPos = await landmarks();
+const inOrder = (m) => m.crumb > 0 && m.crumb < m.title && m.title < m.tabs;
+ok(inOrder(statPos) && inOrder(dynPos),
+  `both tabs lay out crumb → title → tabs (static ${Math.round(statPos.crumb)}/${Math.round(statPos.title)}/${Math.round(statPos.tabs)}, dynamic ${Math.round(dynPos.crumb)}/${Math.round(dynPos.title)}/${Math.round(dynPos.tabs)})`);
+ok(Math.abs(statPos.tabs - dynPos.tabs) < 1 && Math.abs(statPos.title - dynPos.title) < 1,
+  "and the strip does not move when you switch between them");
 // The old address kept working, since it was a section for a day.
 await p.goto(`${W}#/bench`, { waitUntil: "load" });
 await p.waitForTimeout(1800);

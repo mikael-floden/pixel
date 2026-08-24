@@ -2192,6 +2192,13 @@ The gate reloads before asserting the default. Changing the hash keeps the same
 JS context, so without a reload the check would pass on a page that never opened
 on Static.
 
+**Both tabs lay out crumb → title → tabs.** Static rendered its own
+`sectionHead` as its first child, so composing the strip in front of it put the
+tabs *above the crumb* on Static and *below the title* on Dynamic (maintainer
+2026-08-24). Both paths now compose the head themselves and hand `heading:
+false` to the body. Gated by measured position rather than markup, including
+that the strip does not shift when you switch.
+
 ## The Dynamic Music bench — auditioning the suite/pool/phrase score
 
 Maintainer 2026-08-22, in full detail. A **suite** is one compatibility group:
