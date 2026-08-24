@@ -4714,9 +4714,14 @@ function wangScene(a, b, setId, post, n, corner, scale = 1) {
   // A postprocessed set has both passes on disk, so the Textured view can be
   // synthesized here too — a transition tile carries TWO clean colours, and
   // texSynth handles every flat region it finds, not just one.
-  const pathOf = (idx) => (post && worldView() === "texture")
+  // WITH A PROCESSED PASS ON DISK, THIS FOLLOWS THE SWITCH like everything
+  // else: Before is the generator's own tiles, After the retextured ones, and
+  // Textured the synthesis between them. Without one there is only raw, and the
+  // page says so rather than letting the switch look effective.
+  const pass = worldView();
+  const pathOf = (idx) => (post && pass === "texture")
     ? `tex:${transTile(a, b, setId, idx, true)}::${transTile(a, b, setId, idx, false)}`
-    : transTile(a, b, setId, idx, post);
+    : transTile(a, b, setId, idx, post && pass !== "before");
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
     cells.push({ c, r, img: pathOf(idx) });
@@ -5377,7 +5382,23 @@ function viewWorldType(top) {
       : "Nothing in this filter."));
 
   /* ---------------- TAB: transitions ---------------- */
+  /* THE PASS SWITCH DOES NOT REACH THIS TAB YET (maintainer 2026-08-24: "The
+   * Transitions tab seem to always render Before/raw even when I have After
+   * selected … Can you fix this or have the tiles-agent not committed all
+   * states yet?").
+   *
+   * The second one: measured today, 0 of 284 sets carry a `post/` pass, so
+   * there is no After for a transition to render and the switch above the tabs
+   * has nothing to switch to. That was only ever said by a small pill on each
+   * row, which is far too quiet for a control sitting right above it claiming
+   * otherwise — so the tab says it in a line of its own, and names what is
+   * missing. The moment the tiles agent publishes post/, every one of these
+   * flips with no wiki change. */
+  const transHasPost = trans.some((x) => x.sets.some((y) => y.post));
   const transTab = () => h("div", {},
+    trans.length && !transHasPost ? h("p", { class: "muted trans-nopost" },
+      h("span", { class: "pill warn" }, "raw only"),
+      " Transitions have no postprocessed pass published yet — every set here is the generator's raw output, whatever the switch above says. The boundary SHAPE is what these previews are for; the colours arrive with the retexture pass.") : null,
     trans.length
       ? h("div", {}, ...trans.map((x) => {
         const other = x.a === t.id ? x.b : x.a;
@@ -5565,6 +5586,21 @@ function viewWorldTransition(pairId) {
     h("p", { class: "muted" },
       `Where ${nameA.toLowerCase()} meets ${nameB.toLowerCase()} — the same Wang corner set drawn across every direction a boundary can run. `,
       "The whole world's edges will look like this page."),
+    /* THE PASS SWITCH BELONGS HERE TOO (maintainer 2026-08-24: "on this page I
+     * have no controller to change it. Usually we have a way to change on the
+     * entire page on top and on the individual preview up in the top-right
+     * corner"). It is the same control as every other World page — and while
+     * no set carries a postprocessed pass it is shown INERT with the reason,
+     * rather than offered as a choice that silently does nothing. */
+    state.admin ? h("div", { class: `ground-pass${set.post ? "" : " idle"}` },
+      h("span", { class: "muted" }, "Tile art"),
+      set.post
+        ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+          () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })
+        : h("span", { class: "pill warn", title: "tiles/transitions/<pair>/<set>/post/ does not exist yet — there is no processed pass to switch to" }, "raw only"),
+      h("span", { class: "muted pass-hint" }, set.post
+        ? (worldView() === "before" ? "the generator's raw tiles" : "the retextured pass, corrected to the game palette")
+        : "this set ships only the raw pass — the retexture has not been published, so there is nothing to switch to")) : null,
     // The set picker: a00 is the straightest boundary; higher amplitudes are
     // rougher. One chip per generated set.
     tr.sets.length > 1 ? sortBar(`trans-set-${pairId}`, tr.sets.map((x) => [x.id,

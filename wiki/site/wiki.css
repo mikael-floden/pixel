@@ -1555,3 +1555,6 @@ input[type="range"] { accent-color: var(--accent); }
 .bench-duck .bench-slider input { width: 100%; }
 .bench-duck.idle { opacity: 0.55; }
 .bench-hint { font-size: 12.5px; }
+
+.ground-pass.idle { opacity: 0.62; }
+.trans-nopost { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; }
