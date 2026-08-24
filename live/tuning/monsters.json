@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:14:19.606Z",
+  "updated_at": "2026-08-24T13:16:36.272Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -384,7 +384,45 @@
           "item": "yellowed_beast_molar",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 17.25,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.5,
+            "ay": 23.1
+          },
+          "idle#south": {
+            "ax": 0.1,
+            "ay": 20.06
+          },
+          "idle#south-east": {
+            "ax": -0.47,
+            "ay": 19.3
+          },
+          "idle#north-east": {
+            "ax": -3.17,
+            "ay": 22.24
+          },
+          "idle#north": {
+            "ax": 2.02,
+            "ay": 23.26
+          },
+          "idle#north-west": {
+            "ax": 3.47,
+            "ay": 21.98
+          },
+          "idle#west": {
+            "ax": 4.89,
+            "ay": 22.53
+          },
+          "idle#south-west": {
+            "ax": 1.5,
+            "ay": 20.11
+          }
+        }
+      }
     },
     "desert_cat": {
       "max_hp": 20,
