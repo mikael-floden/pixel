@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:56:44.870Z",
+  "updated_at": "2026-08-24T14:59:35.680Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -3187,7 +3187,45 @@
           "item": "mossy_driftwood_bundle",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 20.5,
+        "ry": 10,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.44,
+            "ay": 12.75
+          },
+          "idle#south": {
+            "ax": 1.62,
+            "ay": 12.32
+          },
+          "idle#south-east": {
+            "ax": 0.79,
+            "ay": 11.9
+          },
+          "idle#north-east": {
+            "ax": -0.5,
+            "ay": 13.12
+          },
+          "idle#north": {
+            "ax": 1.15,
+            "ay": 10.8
+          },
+          "idle#north-west": {
+            "ax": 0.85,
+            "ay": 13.46
+          },
+          "idle#west": {
+            "ax": 0.86,
+            "ay": 14.36
+          },
+          "idle#south-west": {
+            "ax": 0.13,
+            "ay": 12.49
+          }
+        }
+      }
     },
     "undead_charger": {
       "max_hp": 20,
