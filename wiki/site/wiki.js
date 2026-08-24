@@ -7894,19 +7894,43 @@ function viewItems() {
       ? `${all.length} items from the items agent. Click one to see what drops it, what it sells for, and to rate or remove it.`
       : "Everything you can pick up, sell or merge — and the creatures that carry it."),
     h("div", { class: "item-tools" }, typeSeg, sortSeg, dirBtn),
-    h("div", { class: "grid" }, ...list.map((it) => {
+    /* AN INVENTORY, NOT A SHELF OF POSTERS (maintainer 2026-08-24: "Items are
+     * so small and we have so many … It's unreasonable the card is as big as a
+     * monster … It also gives a more WOW feeling scrolling over a lot of
+     * different graphics and be proud of the game having so many").
+     *
+     * Every item icon is 48x48 with a content box around 38x40 — measured on
+     * all 105 — and it was sitting in a 110px-tall thumb inside a two-column
+     * card built for a creature that stands 150px. Four items on a phone
+     * screen, for art that fits in a thumbnail.
+     *
+     * So the grid is the art: one 48px icon per cell drawn at its native size
+     * (pixel art at 1x, never scaled), the name under it in two clamped lines,
+     * and auto-fill columns — five across a phone, more on anything wider.
+     * Roughly 35 items in view where four used to be.
+     *
+     * NO RARITY COLOUR, deliberately: he threw the Common/Uncommon/Rare/Epic
+     * vocabulary off these cards in July ("This should just say the item
+     * type"), so the only mark a cell carries is the type emblem it already
+     * had, plus his own review badge. */
+    h("div", { class: "item-grid" }, ...list.map((it) => {
       const src = itemSources(it);
-      return h("a", { class: `card${src.length ? "" : " dim"}`, href: `#/items/${it.id}` },
-        h("div", { class: "thumb checker" }, itemSprite(it, 96)),
-        itemChip(it),
-        h("div", { class: "card-name" }, it.name),
-        goldTag(it) ? h("div", { class: "card-sub" }, goldTag(it)) : null,
-        // Nothing at all when nothing drops it — silence reads better
-        // than "not dropped yet" (maintainer 2026-07-31).
-        src.length
-          ? h("div", { class: "card-sub" }, `Dropped by ${src.length} ${src.length === 1 ? "creature" : "creatures"}`)
-          : null,
-        h("div", { class: "card-badges" }, ...entityBadge("items", it.path)));
+      const badges = entityBadge("items", it.path);
+      return h("a", {
+        class: `item-cell${src.length ? "" : " dim"}`,
+        href: `#/items/${it.id}`,
+        // The tile is 72px wide and a name can be four words long, so the full
+        // label lives here — the caption below is the glance, this is the read.
+        title: `${itemLabel(it)}${Number(it.value) > 0 ? ` · ${it.value} gold` : ""}${src.length ? ` · dropped by ${src.length}` : ""}`,
+      },
+        h("span", { class: "item-cell-art checker" }, itemSprite(it, 48)),
+        h("span", { class: "item-cell-type", title: typeLabel(it.type) }, typeIcon(it.type)),
+        badges.length ? h("span", { class: "item-cell-mark" }, ...badges) : null,
+        // THE HALF THAT TELLS THEM APART. Twenty-eight of these are soulstones
+        // and `name` is "Soulstone" for every one of them — the creature is the
+        // difference, and the type emblem in the corner already says what KIND
+        // it is. The full "Soulstone — Frostwraith" stays on the tooltip.
+        h("span", { class: "item-cell-name" }, oneToOne(it) ? soulChip(it, true) : it.name));
     })));
 }
 function viewItem(id) {

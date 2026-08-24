@@ -2319,6 +2319,41 @@ The phrase chip's "already judged" mark is re-stamped directly for the same
 reason. Audition runs through the game's music bus at **−14 dB**; keys are
 Swedish throughout, and B is H.
 
+## The Items page is an inventory, not a shelf of posters
+
+Maintainer 2026-08-24: *"Items are so small and we have so many … Can you
+redesign the page so we can fit a lot more items on a single page? It's
+unreasonable the card is as big as a monster. It also gives a more WOW feeling
+scrolling over a lot of different graphics and be proud of the game having so
+many."*
+
+Every item icon is authored **48×48** (content box ≈38×40, measured on all 105)
+and each was sitting in a 110px thumb inside a two-column card built for a
+creature that stands 150px. Measured on his phone viewport:
+
+| | before | after |
+| --- | --- | --- |
+| items in view | **2** | **28** |
+| page height | **32,984px** | **2,831px** |
+
+The grid is now the art: one 48px icon per cell **at its authored size** — pixel
+art is never resampled here — with `auto-fill` columns (four across a phone,
+more on anything wider) and the name clamped to two lines under it.
+
+**Density must not cost identity.** Twenty-eight of these are soulstones whose
+`name` is literally "Soulstone", so the caption carries the **creature** —
+Frostwraith, Magmashell, Balefiend — with the full `Soulstone — Frostwraith ·
+295 gold` on the tooltip, where a clamped caption cannot reach.
+
+**No rarity colour**, deliberately: he threw the Common/Uncommon/Rare/Epic
+vocabulary off these cards in July (*"This should just say the item type"*), so
+the only marks a cell carries are the type emblem it already had and his own
+review badge.
+
+Gated by `check-items.mjs` in the units that decide it — cells in view, page
+height, cell height against the creature cards, the icon drawn at 48, no two
+captions the same, and a tap target of at least 44px that opens the item.
+
 ## Music comes from TWO places
 
 The Music page listed only `music/` — the music agent's domain — so the five
