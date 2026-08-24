@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:10:19.712Z",
+  "updated_at": "2026-08-24T14:12:36.042Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2947,7 +2947,45 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 5
+      "level": 5,
+      "shadow": {
+        "rx": 12.5,
+        "ry": 7.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.72,
+            "ay": 17.19
+          },
+          "idle#south": {
+            "ax": -0.96,
+            "ay": 15.2
+          },
+          "idle#south-east": {
+            "ax": -2.24,
+            "ay": 14.67
+          },
+          "idle#north-east": {
+            "ax": -1.45,
+            "ay": 15.69
+          },
+          "idle#north": {
+            "ax": 0.21,
+            "ay": 17.75
+          },
+          "idle#north-west": {
+            "ax": 2.33,
+            "ay": 16.25
+          },
+          "idle#west": {
+            "ax": 3.51,
+            "ay": 16.01
+          },
+          "idle#south-west": {
+            "ax": 2.12,
+            "ay": 15.34
+          }
+        }
+      }
     },
     "water_poring": {
       "level": 2,
