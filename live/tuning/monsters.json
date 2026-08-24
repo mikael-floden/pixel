@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:12:36.042Z",
+  "updated_at": "2026-08-24T14:18:18.552Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1443,7 +1443,45 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 11
+      "level": 11,
+      "shadow": {
+        "rx": 18.5,
+        "ry": 10.5,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.05,
+            "ay": 23.64
+          },
+          "idle#south": {
+            "ax": 0.28,
+            "ay": 21.88
+          },
+          "idle#south-east": {
+            "ax": -2.49,
+            "ay": 21.32
+          },
+          "idle#north-east": {
+            "ax": -1.46,
+            "ay": 21.55
+          },
+          "idle#north": {
+            "ax": 0.82,
+            "ay": 21.72
+          },
+          "idle#north-west": {
+            "ax": 2.25,
+            "ay": 21.01
+          },
+          "idle#west": {
+            "ax": 3.27,
+            "ay": 21.8
+          },
+          "idle#south-west": {
+            "ax": 1.67,
+            "ay": 20.33
+          }
+        }
+      }
     },
     "magma_wolf_2": {
       "max_hp": 20,
