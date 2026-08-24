@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T15:22:04.518Z",
+  "updated_at": "2026-08-24T15:26:11.365Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1566,7 +1566,69 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 16
+      "level": 16,
+      "shadow": {
+        "rx": 24,
+        "ry": 14,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.16,
+            "ay": 29.9
+          },
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 29.18
+          },
+          "idle#south-east": {
+            "ax": -2.06,
+            "ay": 27.47
+          },
+          "idle#north-east": {
+            "ax": -1.19,
+            "ay": 28.29
+          },
+          "idle#north": {
+            "ax": 0.01,
+            "ay": 28.33
+          },
+          "idle#north-west": {
+            "ax": 1.91,
+            "ay": 27.69
+          },
+          "idle#west": {
+            "ax": 3.64,
+            "ay": 28.36
+          },
+          "idle#south-west": {
+            "ax": 1.79,
+            "ay": 26.62
+          },
+          "angry#north-east": {
+            "ax": 2.84,
+            "ay": 26.67
+          },
+          "angry#north-west": {
+            "ax": -1.3,
+            "ay": 28.09
+          },
+          "attack#south-east": {
+            "ax": -1.54,
+            "ay": 30.47
+          },
+          "attack#east": {
+            "ax": -6.14,
+            "ay": 32.04
+          },
+          "attack#west": {
+            "ax": 6.12,
+            "ay": 32.61
+          },
+          "attack#south-west": {
+            "ax": 0.09,
+            "ay": 30.33
+          }
+        }
+      }
     },
     "lava_poring": {
       "level": 9,
