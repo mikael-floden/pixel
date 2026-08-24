@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T14:18:18.552Z",
+  "updated_at": "2026-08-24T14:20:36.006Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1288,7 +1288,77 @@
           "item": "black_glass_lump",
           "chance": 0.16
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 19.5,
+        "ry": 8.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.26,
+            "ay": 12.29
+          },
+          "idle#south": {
+            "ax": 1.64,
+            "ay": 13.01
+          },
+          "idle#south-east": {
+            "ax": -1.19,
+            "ay": 12.1
+          },
+          "idle#north-east": {
+            "ax": -1.61,
+            "ay": 14.16
+          },
+          "idle#north": {
+            "ax": 1.52,
+            "ay": 12.96
+          },
+          "idle#north-west": {
+            "ax": 2.41,
+            "ay": 12.79
+          },
+          "idle#west": {
+            "ax": 1.91,
+            "ay": 12.56
+          },
+          "idle#south-west": {
+            "ax": 1.81,
+            "ay": 11.61
+          },
+          "walk#west": {
+            "ax": -0.64,
+            "ay": 11.46
+          },
+          "walk#south-west": {
+            "ax": 0.44,
+            "ay": 11.34
+          },
+          "walk#north-east": {
+            "ax": -1.56,
+            "ay": 13.19
+          },
+          "walk#east": {
+            "ax": -2.09,
+            "ay": 12.97
+          },
+          "attack#west": {
+            "ax": 0.46,
+            "ay": 11.17
+          },
+          "die#west": {
+            "ax": 0.07,
+            "ay": 12.46
+          },
+          "die#south-west": {
+            "ax": 0.46,
+            "ay": 12.14
+          },
+          "die#east": {
+            "ax": -1.33,
+            "ay": 13.33
+          }
+        }
+      }
     },
     "lava_salamander": {
       "level": 7,
