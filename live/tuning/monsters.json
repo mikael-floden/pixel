@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:02:18.191Z",
+  "updated_at": "2026-08-24T13:09:41.142Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2284,7 +2284,41 @@
           "item": "rough_brown_boulder",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 37.25,
+        "ry": 15,
+        "offsets": {
+          "idle#east": {
+            "ax": 1.15,
+            "ay": 37.29
+          },
+          "idle#south-east": {
+            "ax": -0.18,
+            "ay": 41.57
+          },
+          "idle#north-east": {
+            "ax": -0.19,
+            "ay": 38.99
+          },
+          "idle#north": {
+            "ax": -0.14,
+            "ay": 40.81
+          },
+          "idle#north-west": {
+            "ax": -1.16,
+            "ay": 38.62
+          },
+          "idle#west": {
+            "ax": -0.09,
+            "ay": 39.33
+          },
+          "idle#south-west": {
+            "ax": -0.08,
+            "ay": 38.86
+          }
+        }
+      }
     },
     "stone_turtle": {
       "level": 13,
