@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T09:39:27.642Z",
+  "updated_at": "2026-08-24T09:48:39.018Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -33,7 +33,77 @@
       "xp": 5,
       "scale": 1,
       "loot": [],
-      "level": 14
+      "level": 14,
+      "shadow": {
+        "rx": 17,
+        "ry": 12.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -5.48,
+            "ay": 23.5
+          },
+          "idle#south": {
+            "ax": -0.1,
+            "ay": 19.97
+          },
+          "idle#south-east": {
+            "ax": 0.55,
+            "ay": 20.11
+          },
+          "idle#north-east": {
+            "ax": -0.56,
+            "ay": 21.19
+          },
+          "idle#north": {
+            "ax": 1.48,
+            "ay": 22.38
+          },
+          "idle#north-west": {
+            "ax": -0.2,
+            "ay": 21.17
+          },
+          "idle#west": {
+            "ax": 4.73,
+            "ay": 23.22
+          },
+          "idle#south-west": {
+            "ax": -0.04,
+            "ay": 20.04
+          },
+          "walk#north-west": {
+            "ax": 0.56,
+            "ay": 22.67
+          },
+          "attack#south": {
+            "ax": -0.32,
+            "ay": 24.2
+          },
+          "attack#south-east": {
+            "ax": -4.25,
+            "ay": 26.64
+          },
+          "attack#east": {
+            "ax": -5.7,
+            "ay": 27.81
+          },
+          "attack#north-east": {
+            "ax": -0.74,
+            "ay": 25.32
+          },
+          "attack#north-west": {
+            "ax": -1.41,
+            "ay": 23.35
+          },
+          "attack#west": {
+            "ax": 2.83,
+            "ay": 26.73
+          },
+          "attack#south-west": {
+            "ax": 0.47,
+            "ay": 25.2
+          }
+        }
+      }
     },
     "blight_elk": {
       "max_hp": 20,
