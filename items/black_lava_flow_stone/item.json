@@ -1,0 +1,38 @@
+{
+  "id": "black_lava_flow_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "magma",
+  "rarity": "epic",
+  "value": 210,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Black shell split by wide lava rivers, out of a Basalthowl. When it roars the mountain answers.",
+  "sprite": "items/black_lava_flow_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "978f50c8-8bb0-408c-8ee6-20ce17762d6b",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:24:02.484625+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:52 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:31+00:00",
+  "soul": {
+    "element": "magma",
+    "power": "+20 fire damage on hit, and a kill sets everything nearby burning",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

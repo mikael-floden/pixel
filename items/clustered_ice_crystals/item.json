@@ -1,0 +1,30 @@
+{
+  "id": "clustered_ice_crystals",
+  "name": "Ice Cluster",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "mineral",
+  "rarity": "rare",
+  "value": 70,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A crown of clear ice spires on a frozen base. It does not melt, and it does not like being held.",
+  "sprite": "items/clustered_ice_crystals/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "9ab9ff35-f936-4585-9f3d-ded2bb67f54d",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game. This is the drop from different monsters and is not weapons/geer. This is often things the monster is made of that can be sold for gold.",
+    "created_at": "2026-08-24T17:24:51.282320+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:48 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:31+00:00"
+}

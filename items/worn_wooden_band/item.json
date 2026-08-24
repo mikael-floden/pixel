@@ -1,0 +1,30 @@
+{
+  "id": "worn_wooden_band",
+  "name": "Worn Band",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "relic",
+  "rarity": "uncommon",
+  "value": 20,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A plain band of dark wood banded in copper, sized for a finger that has stopped needing it.",
+  "sprite": "items/worn_wooden_band/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "8f4d6452-3ca2-449a-99e5-b95b2214372c",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game",
+    "created_at": "2026-08-24T17:32:35.574522+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:14 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:26+00:00"
+}

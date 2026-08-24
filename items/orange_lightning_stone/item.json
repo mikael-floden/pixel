@@ -1,0 +1,38 @@
+{
+  "id": "orange_lightning_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "solar",
+  "rarity": "epic",
+  "value": 250,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Orange stone forked with white light. It hums in sunlight, and no creature yet has answered for it.",
+  "sprite": "items/orange_lightning_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "41b53568-a83f-4a1f-9cbb-24b20993eba5",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:56 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "solar",
+    "power": "+18 radiant damage on hit, and burns undead for another 10",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

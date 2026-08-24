@@ -1,0 +1,38 @@
+{
+  "id": "spore_heart_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "spore",
+  "rarity": "epic",
+  "value": 170,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Green plates around a glowing core, shed by a Sporehorn. The fungus is steering the stone as well.",
+  "sprite": "items/spore_heart_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "b1006d9d-821a-4dc2-aa52-91bce4329f4a",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:57 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "spore",
+    "power": "Hits release spores: 10 poison damage a second in a small cloud",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

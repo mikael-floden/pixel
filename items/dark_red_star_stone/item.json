@@ -1,0 +1,38 @@
+{
+  "id": "dark_red_star_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "death",
+  "rarity": "uncommon",
+  "value": 42,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Black stone with a red star burning at the core, pulled out of a Rotjaw. It refuses to stay dead too.",
+  "sprite": "items/dark_red_star_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "74fe9a05-133f-45c3-81ec-df7004c9283f",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:17:54.319182+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:09 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:34+00:00",
+  "soul": {
+    "element": "death",
+    "power": "Once per fight, a blow that would kill you leaves you standing on one hit point instead",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

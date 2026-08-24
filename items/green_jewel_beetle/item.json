@@ -1,0 +1,31 @@
+{
+  "id": "green_jewel_beetle",
+  "name": "Jewel Beetle",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "insect",
+  "rarity": "uncommon",
+  "value": 26,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A beetle in green and blue enamel, legs folded neat. Too handsome to squash, too dead to object.",
+  "sprite": "items/green_jewel_beetle/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "da1e307b-6b09-497f-91df-5b0ebd8ffc63",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game. This is the drop from different monsters and is not weapons/geer. This is often things the monster is made of that can be sold for gold.",
+    "created_at": "2026-08-24T17:29:58.625334+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:24 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:27+00:00",
+  "waiting_for": "an insect"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "stacked_silver_bars",
+  "name": "Silver Bars",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "relic",
+  "rarity": "epic",
+  "value": 180,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Three cast bars, stamped and stacked. Somebody smelted these, and somebody else never delivered them.",
+  "sprite": "items/stacked_silver_bars/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "239b5766-3ee1-4fa3-a31c-878d4df7d209",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game",
+    "created_at": "2026-08-24T17:33:34.758588+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:13 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:26+00:00",
+  "waiting_for": "someone who smelts and hauls"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "purple_gold_vein_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "royal",
+  "rarity": "epic",
+  "value": 275,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Deep purple veined in gold, heavy as a crown. Unclaimed, which has not stopped anyone hunting for it.",
+  "sprite": "items/purple_gold_vein_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "7b075bde-df1a-442e-862c-797d652a4fe3",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:17:54.319182+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:03 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:33+00:00",
+  "soul": {
+    "element": "royal",
+    "power": "+20% gold found, and merchants pay 10% more",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "bronze_temple_cog",
+  "name": "Bronze Cog",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "relic",
+  "rarity": "uncommon",
+  "value": 28,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A toothed bronze wheel, still greased. Runemane is full of these, and one of them is why it still runs.",
+  "sprite": "items/bronze_temple_cog/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "7192e2ba-5046-4a54-80ff-a3a331ad64d1",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game. This is the drop from different monsters and is not weapons/geer. This is often things the monster is made of that can be sold for gold.",
+    "created_at": "2026-08-24T17:29:10.892531+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:28 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:28+00:00"
+}

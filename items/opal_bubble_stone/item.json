@@ -1,0 +1,38 @@
+{
+  "id": "opal_bubble_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "opal",
+  "rarity": "epic",
+  "value": 265,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "An opal shell of soap-bubble colours. Beautiful, valuable, and belonging to nothing anyone has met.",
+  "sprite": "items/opal_bubble_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "52c2d2ae-5176-4c89-b3f2-8b63759c6813",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:17:54.319182+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:03 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:33+00:00",
+  "soul": {
+    "element": "opal",
+    "power": "+8% dodge, and the first hit each fight glances off",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "violet_knot_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "arcane",
+  "rarity": "epic",
+  "value": 255,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Violet stone cut with an unbroken knot. Scholars want it; nobody can say what died to leave it.",
+  "sprite": "items/violet_knot_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "3b3de668-4fd6-4900-99d4-dfe2e28714ad",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:01 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:33+00:00",
+  "soul": {
+    "element": "arcane",
+    "power": "+18 arcane damage on hit, and -12% spell cooldowns",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

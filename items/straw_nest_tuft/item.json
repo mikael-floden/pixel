@@ -1,0 +1,30 @@
+{
+  "id": "straw_nest_tuft",
+  "name": "Straw Nest",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "plant",
+  "rarity": "common",
+  "value": 8,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A knot of straw pressed into a bowl by something that slept in it. Still warm, occasionally.",
+  "sprite": "items/straw_nest_tuft/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "f0be714a-5630-4a13-a7e6-0996b91b4aff",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game. This is the drop from different monsters and is not weapons/geer. This is often things the monster is made of that can be sold for gold.",
+    "created_at": "2026-08-24T17:24:51.282320+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:42 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:30+00:00"
+}

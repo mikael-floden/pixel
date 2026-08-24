@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T16:55:11.618Z",
+  "updated_at": "2026-08-24T17:59:10.487Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -23,11 +23,27 @@
       "scale": 1,
       "loot": [
         {
+          "item": "blue_plate_stone",
+          "chance": 0.02
+        },
+        {
           "item": "blunt_ivory_tooth",
           "chance": 0.128
         },
         {
           "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "dark_iron_quills",
+          "chance": 0.128
+        },
+        {
+          "item": "great_curved_fang",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_tan_tusk",
           "chance": 0.128
         },
         {
@@ -84,6 +100,10 @@
       "xp": 282,
       "scale": 1,
       "loot": [
+        {
+          "item": "starless_night_stone",
+          "chance": 0.008
+        },
         {
           "item": "matted_black_pelt",
           "chance": 0.128
@@ -175,11 +195,27 @@
       "scale": 1,
       "loot": [
         {
+          "item": "spore_heart_stone",
+          "chance": 0.008
+        },
+        {
           "item": "spotted_purple_mushroom",
           "chance": 0.128
         },
         {
+          "item": "violet_mushroom_cluster",
+          "chance": 0.128
+        },
+        {
+          "item": "dead_red_leaf",
+          "chance": 0.256
+        },
+        {
           "item": "grey_sage_leaves",
+          "chance": 0.256
+        },
+        {
+          "item": "layered_fern_fronds",
           "chance": 0.256
         }
       ],
@@ -315,6 +351,18 @@
       "scale": 1,
       "loot": [
         {
+          "item": "cream_gold_star_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "coiled_lasso_rope",
+          "chance": 0.128
+        },
+        {
+          "item": "burlap_grain_sack",
+          "chance": 0.32
+        },
+        {
           "item": "coiled_hemp_rope",
           "chance": 0.256
         },
@@ -325,6 +373,10 @@
         {
           "item": "pair_of_molars",
           "chance": 0.256
+        },
+        {
+          "item": "wheat_sheaf",
+          "chance": 0.32
         }
       ],
       "level": 8,
@@ -377,12 +429,24 @@
       "scale": 1,
       "loot": [
         {
+          "item": "thorn_vein_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "black_tipped_horns",
+          "chance": 0.128
+        },
+        {
           "item": "gnarled_mandrake_root",
           "chance": 0.128
         },
         {
           "item": "purple_flower_petals",
           "chance": 0.128
+        },
+        {
+          "item": "dead_red_leaf",
+          "chance": 0.256
         }
       ],
       "level": 14,
@@ -443,8 +507,24 @@
           "chance": 0.011
         },
         {
+          "item": "cut_white_diamond",
+          "chance": 0.011
+        },
+        {
+          "item": "amethyst_point",
+          "chance": 0.055
+        },
+        {
           "item": "gold_veined_ore",
           "chance": 0.044
+        },
+        {
+          "item": "pink_crystal_spikes",
+          "chance": 0.055
+        },
+        {
+          "item": "violet_crystal_shard",
+          "chance": 0.055
         },
         {
           "item": "clear_quartz_cluster",
@@ -549,6 +629,10 @@
       "scale": 1,
       "loot": [
         {
+          "item": "iridescent_prism_stone",
+          "chance": 0.02
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
@@ -636,6 +720,14 @@
           "chance": 0.16
         },
         {
+          "item": "coiled_lasso_rope",
+          "chance": 0.128
+        },
+        {
+          "item": "dented_metal_flask",
+          "chance": 0.128
+        },
+        {
           "item": "coiled_hemp_rope",
           "chance": 0.256
         },
@@ -708,6 +800,10 @@
       "xp": 179,
       "scale": 1,
       "loot": [
+        {
+          "item": "tan_sunlit_stone",
+          "chance": 0.02
+        },
         {
           "item": "golden_broad_fang",
           "chance": 0.128
@@ -858,6 +954,10 @@
           "chance": 0.044
         },
         {
+          "item": "purple_void_flesh",
+          "chance": 0.044
+        },
+        {
           "item": "pale_ridged_horns",
           "chance": 0.128
         },
@@ -979,11 +1079,31 @@
       "scale": 1,
       "loot": [
         {
+          "item": "olive_buried_gold_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "abalone_shell_half",
+          "chance": 0.055
+        },
+        {
           "item": "iridescent_nacre_shard",
           "chance": 0.055
         },
         {
+          "item": "opal_shell_flake",
+          "chance": 0.055
+        },
+        {
+          "item": "fossil_oyster_shell",
+          "chance": 0.16
+        },
+        {
           "item": "scaly_clawed_foot",
+          "chance": 0.128
+        },
+        {
+          "item": "segmented_carapace",
           "chance": 0.128
         },
         {
@@ -1044,6 +1164,30 @@
       "xp": 426,
       "scale": 1,
       "loot": [
+        {
+          "item": "violet_hunger_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "purple_void_flesh",
+          "chance": 0.044
+        },
+        {
+          "item": "red_flesh_gills",
+          "chance": 0.055
+        },
+        {
+          "item": "tentacled_watcher_eye",
+          "chance": 0.055
+        },
+        {
+          "item": "coiled_purple_tentacle",
+          "chance": 0.16
+        },
+        {
+          "item": "pale_grey_brain",
+          "chance": 0.128
+        },
         {
           "item": "toothed_jaw_slab",
           "chance": 0.128
@@ -1116,6 +1260,10 @@
           "chance": 0.025
         },
         {
+          "item": "clear_dew_drop",
+          "chance": 0.128
+        },
+        {
           "item": "purple_flower_petals",
           "chance": 0.128
         },
@@ -1124,7 +1272,15 @@
           "chance": 0.256
         },
         {
+          "item": "layered_fern_fronds",
+          "chance": 0.256
+        },
+        {
           "item": "mint_slime_globule",
+          "chance": 0.256
+        },
+        {
+          "item": "moss_green_slime",
           "chance": 0.256
         }
       ],
@@ -1208,6 +1364,10 @@
         {
           "item": "green_slime_glob",
           "chance": 0.256
+        },
+        {
+          "item": "moss_green_slime",
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -1263,11 +1423,27 @@
       "scale": 1,
       "loot": [
         {
+          "item": "mossy_granite_stone",
+          "chance": 0.008
+        },
+        {
           "item": "gold_veined_ore",
           "chance": 0.044
         },
         {
+          "item": "green_emerald_cluster",
+          "chance": 0.044
+        },
+        {
+          "item": "furred_dark_claw",
+          "chance": 0.128
+        },
+        {
           "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "lichen_crusted_rock",
           "chance": 0.256
         },
         {
@@ -1337,7 +1513,15 @@
       "scale": 1,
       "loot": [
         {
+          "item": "grey_grindstone",
+          "chance": 0.03
+        },
+        {
           "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_tan_tusk",
           "chance": 0.128
         },
         {
@@ -1351,6 +1535,10 @@
         {
           "item": "rough_brown_boulder",
           "chance": 0.256
+        },
+        {
+          "item": "small_horn_spur",
+          "chance": 0.32
         }
       ],
       "level": 7,
@@ -1403,11 +1591,23 @@
       "scale": 1,
       "loot": [
         {
+          "item": "rough_bull_hide_stone",
+          "chance": 0.008
+        },
+        {
           "item": "blunt_ivory_tooth",
           "chance": 0.128
         },
         {
           "item": "broken_boar_tusk",
+          "chance": 0.128
+        },
+        {
+          "item": "dark_iron_quills",
+          "chance": 0.128
+        },
+        {
+          "item": "great_curved_fang",
           "chance": 0.128
         },
         {
@@ -1480,6 +1680,18 @@
         {
           "item": "glossy_brown_seeds",
           "chance": 0.256
+        },
+        {
+          "item": "scattered_small_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "small_milk_tooth",
+          "chance": 0.256
+        },
+        {
+          "item": "straw_nest_tuft",
+          "chance": 0.256
         }
       ],
       "shadow": {
@@ -1503,12 +1715,20 @@
       "scale": 1,
       "loot": [
         {
+          "item": "ember_starburst_stone",
+          "chance": 0.02
+        },
+        {
           "item": "cracked_magma_stone",
           "chance": 0.044
         },
         {
           "item": "flame_veined_shard",
           "chance": 0.044
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
         },
         {
           "item": "loose_beast_teeth",
@@ -1618,6 +1838,14 @@
           "chance": 0.011
         },
         {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
+          "item": "frost_star_crystal",
+          "chance": 0.044
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
@@ -1684,6 +1912,10 @@
           "chance": 0.02
         },
         {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
@@ -1743,6 +1975,14 @@
         {
           "item": "blue_slate_ice_egg",
           "chance": 0.02
+        },
+        {
+          "item": "frost_star_crystal",
+          "chance": 0.044
+        },
+        {
+          "item": "frost_rimed_claw",
+          "chance": 0.128
         },
         {
           "item": "pale_blue_hailstones",
@@ -1842,6 +2082,10 @@
         {
           "item": "black_glass_lump",
           "chance": 0.128
+        },
+        {
+          "item": "glowing_ember_dust",
+          "chance": 0.128
         }
       ],
       "shadow": {
@@ -1934,7 +2178,15 @@
           "chance": 0.128
         },
         {
+          "item": "red_scaled_hide",
+          "chance": 0.16
+        },
+        {
           "item": "scaly_clawed_foot",
+          "chance": 0.128
+        },
+        {
+          "item": "yellow_slit_eye",
           "chance": 0.128
         },
         {
@@ -2008,8 +2260,16 @@
           "chance": 0.128
         },
         {
+          "item": "yellow_slit_eye",
+          "chance": 0.128
+        },
+        {
           "item": "curved_ivory_fang",
           "chance": 0.256
+        },
+        {
+          "item": "green_scale_cluster",
+          "chance": 0.32
         },
         {
           "item": "loose_beast_teeth",
@@ -2068,6 +2328,10 @@
       "xp": 204,
       "scale": 1,
       "loot": [
+        {
+          "item": "lava_vein_stone",
+          "chance": 0.02
+        },
         {
           "item": "cracked_magma_stone",
           "chance": 0.044
@@ -2130,6 +2394,10 @@
       "xp": 338,
       "scale": 1,
       "loot": [
+        {
+          "item": "black_lava_flow_stone",
+          "chance": 0.008
+        },
         {
           "item": "black_glass_lump",
           "chance": 0.128
@@ -2258,11 +2526,19 @@
           "chance": 0.01
         },
         {
+          "item": "brass_pocket_compass",
+          "chance": 0.055
+        },
+        {
           "item": "engraved_bronze_locket",
           "chance": 0.044
         },
         {
-          "item": "bleached_rib_cage",
+          "item": "corked_glass_vial",
+          "chance": 0.16
+        },
+        {
+          "item": "pale_grey_brain",
           "chance": 0.128
         },
         {
@@ -2274,12 +2550,12 @@
           "chance": 0.256
         },
         {
-          "item": "heavy_iron_links",
-          "chance": 0.256
-        },
-        {
           "item": "linen_thread_spool",
           "chance": 0.32
+        },
+        {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
         },
         {
           "item": "tied_bone_bundle",
@@ -2414,6 +2690,14 @@
           "chance": 0.055
         },
         {
+          "item": "pale_grey_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "worn_wooden_band",
+          "chance": 0.16
+        },
+        {
           "item": "bone_flecked_grave_soil",
           "chance": 0.256
         }
@@ -2458,6 +2742,10 @@
       "xp": 229,
       "scale": 1,
       "loot": [
+        {
+          "item": "opal_moon_stone",
+          "chance": 0.02
+        },
         {
           "item": "spiky_white_tuft",
           "chance": 0.128
@@ -2520,6 +2808,22 @@
         {
           "item": "lichen_green_soulstone",
           "chance": 0.03
+        },
+        {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "bog_slime_blob",
+          "chance": 0.256
+        },
+        {
+          "item": "coiled_bog_worm",
+          "chance": 0.256
+        },
+        {
+          "item": "green_ooze_glob",
+          "chance": 0.256
         },
         {
           "item": "green_slime_glob",
@@ -2594,6 +2898,14 @@
         {
           "item": "ivory_hooked_talon",
           "chance": 0.128
+        },
+        {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
+          "chance": 0.256
         },
         {
           "item": "stained_marrow_bone",
@@ -2731,6 +3043,10 @@
       "scale": 1,
       "loot": [
         {
+          "item": "mint_serpent_stone",
+          "chance": 0.03
+        },
+        {
           "item": "purple_venom_claw",
           "chance": 0.044
         },
@@ -2739,7 +3055,15 @@
           "chance": 0.256
         },
         {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
+        },
+        {
           "item": "stained_marrow_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "yellowed_curved_fang",
           "chance": 0.256
         }
       ],
@@ -2809,12 +3133,28 @@
       "scale": 1,
       "loot": [
         {
+          "item": "pale_snowflake_stone",
+          "chance": 0.02
+        },
+        {
+          "item": "clustered_ice_crystals",
+          "chance": 0.044
+        },
+        {
           "item": "pale_blue_crystal_cluster",
           "chance": 0.044
         },
         {
           "item": "broken_boar_tusk",
           "chance": 0.128
+        },
+        {
+          "item": "frost_rimed_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "pale_hooked_claw",
+          "chance": 0.16
         },
         {
           "item": "spiky_white_tuft",
@@ -2879,12 +3219,24 @@
       "scale": 1,
       "loot": [
         {
+          "item": "root_web_stone",
+          "chance": 0.008
+        },
+        {
           "item": "amber_glazed_root",
+          "chance": 0.128
+        },
+        {
+          "item": "blue_glow_caps",
           "chance": 0.128
         },
         {
           "item": "gnarled_mandrake_root",
           "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
         },
         {
           "item": "dark_hardwood_plank",
@@ -2973,12 +3325,28 @@
       "scale": 1,
       "loot": [
         {
+          "item": "gold_sunburst_rune_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "carved_wood_idol",
+          "chance": 0.055
+        },
+        {
           "item": "engraved_bronze_locket",
           "chance": 0.044
         },
         {
           "item": "gilded_curved_fang",
           "chance": 0.044
+        },
+        {
+          "item": "jade_temple_amulet",
+          "chance": 0.055
+        },
+        {
+          "item": "bronze_temple_cog",
+          "chance": 0.16
         },
         {
           "item": "clear_quartz_cluster",
@@ -3149,6 +3517,10 @@
       "scale": 1,
       "loot": [
         {
+          "item": "violet_eye_stone",
+          "chance": 0.02
+        },
+        {
           "item": "paired_black_claws",
           "chance": 0.044
         },
@@ -3243,7 +3615,12 @@
       "attack_cooldown_ms": 1500,
       "xp": 367,
       "scale": 1,
-      "loot": [],
+      "loot": [
+        {
+          "item": "pale_mist_swirl_stone",
+          "chance": 0.008
+        }
+      ],
       "level": 17,
       "shadow": {
         "rx": 20.25,
@@ -3307,7 +3684,15 @@
           "chance": 0.011
         },
         {
+          "item": "cut_white_diamond",
+          "chance": 0.011
+        },
+        {
           "item": "gold_veined_ore",
+          "chance": 0.044
+        },
+        {
+          "item": "green_emerald_cluster",
           "chance": 0.044
         },
         {
@@ -3320,6 +3705,10 @@
         },
         {
           "item": "grey_rock_pile",
+          "chance": 0.256
+        },
+        {
+          "item": "lichen_crusted_rock",
           "chance": 0.256
         },
         {
@@ -3458,6 +3847,10 @@
       "scale": 1,
       "loot": [
         {
+          "item": "cyan_storm_crystal_stone",
+          "chance": 0.008
+        },
+        {
           "item": "blue_veined_rift_geode",
           "chance": 0.011
         },
@@ -3467,6 +3860,10 @@
         },
         {
           "item": "cobbled_stone_egg",
+          "chance": 0.128
+        },
+        {
+          "item": "segmented_carapace",
           "chance": 0.128
         }
       ],
@@ -3519,6 +3916,14 @@
       "xp": 426,
       "scale": 1,
       "loot": [
+        {
+          "item": "violet_lightning_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "black_tipped_horns",
+          "chance": 0.128
+        },
         {
           "item": "clear_quartz_cluster",
           "chance": 0.128
@@ -3590,11 +3995,31 @@
       "scale": 1,
       "loot": [
         {
+          "item": "fen_bloom_stone",
+          "chance": 0.008
+        },
+        {
+          "item": "blue_glow_caps",
+          "chance": 0.128
+        },
+        {
           "item": "blunt_ivory_tooth",
           "chance": 0.128
         },
         {
+          "item": "furred_dark_claw",
+          "chance": 0.128
+        },
+        {
+          "item": "mire_stained_claw",
+          "chance": 0.128
+        },
+        {
           "item": "spotted_purple_mushroom",
+          "chance": 0.128
+        },
+        {
+          "item": "violet_mushroom_cluster",
           "chance": 0.128
         },
         {
@@ -3676,7 +4101,19 @@
           "chance": 0.03
         },
         {
+          "item": "bog_slime_blob",
+          "chance": 0.256
+        },
+        {
+          "item": "coiled_bog_worm",
+          "chance": 0.256
+        },
+        {
           "item": "curved_ivory_fang",
+          "chance": 0.256
+        },
+        {
+          "item": "green_ooze_glob",
           "chance": 0.256
         },
         {
@@ -3738,8 +4175,20 @@
       "scale": 1,
       "loot": [
         {
+          "item": "dark_green_gaze_stone",
+          "chance": 0.02
+        },
+        {
           "item": "paired_black_claws",
           "chance": 0.044
+        },
+        {
+          "item": "green_slit_eyeball",
+          "chance": 0.128
+        },
+        {
+          "item": "mire_stained_claw",
+          "chance": 0.128
         },
         {
           "item": "plucked_beast_eyeball",
@@ -3809,6 +4258,10 @@
           "chance": 0.128
         },
         {
+          "item": "blue_glow_caps",
+          "chance": 0.128
+        },
+        {
           "item": "gnarled_mandrake_root",
           "chance": 0.128
         },
@@ -3819,6 +4272,10 @@
         {
           "item": "spotted_purple_mushroom",
           "chance": 0.128
+        },
+        {
+          "item": "crooked_twig",
+          "chance": 0.256
         },
         {
           "item": "dark_hardwood_plank",
@@ -3878,11 +4335,23 @@
       "scale": 1,
       "loot": [
         {
+          "item": "grey_violet_charge_stone",
+          "chance": 0.02
+        },
+        {
           "item": "bleached_rib_cage",
           "chance": 0.128
         },
         {
+          "item": "pale_curved_horn",
+          "chance": 0.16
+        },
+        {
           "item": "pale_ridged_horns",
+          "chance": 0.128
+        },
+        {
+          "item": "white_rib_cage",
           "chance": 0.128
         },
         {
@@ -3891,6 +4360,14 @@
         },
         {
           "item": "heavy_iron_links",
+          "chance": 0.256
+        },
+        {
+          "item": "heavy_long_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "loose_vertebrae",
           "chance": 0.256
         }
       ],
@@ -3948,6 +4425,10 @@
       "scale": 1,
       "loot": [
         {
+          "item": "dark_red_star_stone",
+          "chance": 0.03
+        },
+        {
           "item": "bone_flecked_grave_soil",
           "chance": 0.256
         },
@@ -3956,7 +4437,23 @@
           "chance": 0.256
         },
         {
+          "item": "loose_vertebrae",
+          "chance": 0.256
+        },
+        {
+          "item": "rotten_stitched_hide",
+          "chance": 0.256
+        },
+        {
+          "item": "split_bone_pile",
+          "chance": 0.256
+        },
+        {
           "item": "stained_marrow_bone",
+          "chance": 0.256
+        },
+        {
+          "item": "yellowed_curved_fang",
           "chance": 0.256
         }
       ],
@@ -4015,6 +4512,10 @@
           "chance": 0.03
         },
         {
+          "item": "clear_dew_drop",
+          "chance": 0.128
+        },
+        {
           "item": "mint_slime_globule",
           "chance": 0.256
         },
@@ -4071,6 +4572,10 @@
       "xp": 155,
       "scale": 1,
       "loot": [
+        {
+          "item": "white_pebbled_snow_stone",
+          "chance": 0.02
+        },
         {
           "item": "spiky_white_tuft",
           "chance": 0.128
@@ -4156,6 +4661,18 @@
         },
         {
           "item": "glossy_brown_seeds",
+          "chance": 0.256
+        },
+        {
+          "item": "scattered_small_teeth",
+          "chance": 0.256
+        },
+        {
+          "item": "small_milk_tooth",
+          "chance": 0.256
+        },
+        {
+          "item": "straw_nest_tuft",
           "chance": 0.256
         }
       ],

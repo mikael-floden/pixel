@@ -2,15 +2,1273 @@
   "_comment": "Roster of items, reconciled against PixelLab by pipeline/sync.py \u2014 the TYPE TAG on a PixelLab object (MISC/SOUL/CONSUMABLE/SWORD/BOW/WAND/ARMOR, see types.json) decides membership and type. This file owns everything PixelLab has no field for: the stable folder `id`, the in-game `name` (max 12 chars, describing what the sprite LOOKS like \u2014 never the generation prompt; every SOUL item is named \"Soulstone\", see types.json:shared_name), `category`, `rarity`, gold `value`, the wiki `description` (~90-125 chars, written to the monster that drops it \u2014 the drop mapping itself lives in live/tuning/monsters.json), and for SOUL items the `power` a merge grants. Hand-tune freely; sync preserves every field across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned); newly tagged objects are appended with needs_review=true and a placeholder name.",
   "items": [
     {
-      "id": "hollow_black_soulstone",
-      "pixellab_id": "98f6d2b6-9e10-42b1-8301-f0a42d9a5c99",
+      "id": "amethyst_point",
+      "pixellab_id": "bbf05772-9972-4987-8b65-593a2a6e13b5",
+      "type": "MISC",
+      "name": "Amethyst",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 95,
+      "description": "A single violet point, flat-faced and flawless. Amethyrn grazes on these and swallows the ones it likes."
+    },
+    {
+      "id": "burlap_grain_sack",
+      "pixellab_id": "14de000d-9a4a-422f-ad1f-01abdce332fb",
+      "type": "MISC",
+      "name": "Grain Sack",
+      "category": "plant",
+      "rarity": "common",
+      "value": 12,
+      "description": "A burlap sack of oats, gnawed open at one corner. Sorrel has been carrying its own feed for years."
+    },
+    {
+      "id": "corded_fang_charm",
+      "pixellab_id": "0ce3bcbd-a005-45a6-a852-34e39c016cfd",
+      "type": "MISC",
+      "name": "Fang Charm",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 34,
+      "description": "A fang hung on a leather cord, worn smooth by a thumb. Somebody believed in it right up to the end.",
+      "waiting_for": "a tribe that wears its kills"
+    },
+    {
+      "id": "fresh_green_herbs",
+      "pixellab_id": "90ad29bc-1380-4c0f-b733-9a4da5ad3f4a",
+      "type": "MISC",
+      "name": "Wild Herbs",
+      "category": "plant",
+      "rarity": "common",
+      "value": 9,
+      "description": "A fistful of green stalks pulled up roots and all, tied at the base by somebody in a hurry.",
+      "waiting_for": "a gatherer with hands"
+    },
+    {
+      "id": "crooked_twig",
+      "pixellab_id": "f71b1e55-e7e9-40e1-a0c5-55f4528afbbc",
+      "type": "MISC",
+      "name": "Crooked Twig",
+      "category": "plant",
+      "rarity": "common",
+      "value": 5,
+      "description": "One dark twig with a knob at the end. Stumpling sheds a hundred a season and misses every one."
+    },
+    {
+      "id": "wheat_sheaf",
+      "pixellab_id": "538e27cd-ee64-4704-9dc0-450b5ac64ef8",
+      "type": "MISC",
+      "name": "Wheat Sheaf",
+      "category": "plant",
+      "rarity": "common",
+      "value": 10,
+      "description": "Cut wheat bound at the waist, still smelling of a field that nobody has harvested in a long while."
+    },
+    {
+      "id": "cut_white_diamond",
+      "pixellab_id": "de9fc47a-ba6d-4af1-8770-cce2ef44454d",
+      "type": "MISC",
+      "name": "Diamond",
+      "category": "mineral",
+      "rarity": "epic",
+      "value": 210,
+      "description": "Cut, clear and cold, throwing light in every direction. Whatever swallowed it did not know what it had."
+    },
+    {
+      "id": "green_emerald_cluster",
+      "pixellab_id": "11c89f4c-d205-4bd1-b9d3-c39e064d9b0f",
+      "type": "MISC",
+      "name": "Emerald",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 110,
+      "description": "Deep green and sharply faceted, prised out of stubborn rock. Mosscairn keeps them in its shoulders."
+    },
+    {
+      "id": "pink_crystal_spikes",
+      "pixellab_id": "49bccbd4-5c51-49ad-8563-04e141746f52",
+      "type": "MISC",
+      "name": "Rose Quartz",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 90,
+      "description": "A spray of pink spires on a rough base. Pretty enough that people forget what they had to kill for it."
+    },
+    {
+      "id": "stacked_silver_bars",
+      "pixellab_id": "239b5766-3ee1-4fa3-a31c-878d4df7d209",
+      "type": "MISC",
+      "name": "Silver Bars",
+      "category": "relic",
+      "rarity": "epic",
+      "value": 180,
+      "description": "Three cast bars, stamped and stacked. Somebody smelted these, and somebody else never delivered them.",
+      "waiting_for": "someone who smelts and hauls"
+    },
+    {
+      "id": "worn_wooden_band",
+      "pixellab_id": "8f4d6452-3ca2-449a-99e5-b95b2214372c",
+      "type": "MISC",
+      "name": "Worn Band",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "A plain band of dark wood banded in copper, sized for a finger that has stopped needing it."
+    },
+    {
+      "id": "wrapped_tooth_charm",
+      "pixellab_id": "ff5d7135-3bb9-4e4f-b493-06078a50a396",
+      "type": "MISC",
+      "name": "Tooth Charm",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A tooth bound in cord and hide, meant to be worn. The wrapping is careful; the tooth is not the wearer's.",
+      "waiting_for": "a tribe that wears its kills"
+    },
+    {
+      "id": "prism_tipped_quill",
+      "pixellab_id": "d7b8fbe1-f12a-4d71-82dc-db30f882c8fc",
+      "type": "MISC",
+      "name": "Prism Quill",
+      "category": "feather",
+      "rarity": "rare",
+      "value": 60,
+      "description": "One long quill that shifts through every colour as it turns. No bird anyone has flushed grows these.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "violet_mushroom_cluster",
+      "pixellab_id": "8861b926-4cbb-4fe1-865f-f7be41f3cd54",
+      "type": "MISC",
+      "name": "Violet Caps",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "Three violet caps still on their clod of earth. Mireback grows a crop of them across its shoulders."
+    },
+    {
+      "id": "carved_wood_idol",
+      "pixellab_id": "7bb71a12-785d-4ec2-853c-4e2193f4d2a1",
+      "type": "MISC",
+      "name": "Wood Idol",
+      "category": "relic",
+      "rarity": "rare",
+      "value": 70,
+      "description": "A squat figure carved from dark wood, worn faceless by handling. Runemane's temple is full of them."
+    },
+    {
+      "id": "brass_pocket_compass",
+      "pixellab_id": "bd6b7804-9c52-4feb-83d7-b7e169225c76",
+      "type": "MISC",
+      "name": "Old Compass",
+      "category": "relic",
+      "rarity": "rare",
+      "value": 65,
+      "description": "Brass, scratched, and still pointing true. Its owner is somewhere in Palehusk's collection of skins."
+    },
+    {
+      "id": "dented_metal_flask",
+      "pixellab_id": "c695be23-c20e-4d88-9441-d7b3e769608e",
+      "type": "MISC",
+      "name": "Dented Flask",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 25,
+      "description": "A traveller's flask, dented flat on one side. Empty, but it still smells faintly of something strong."
+    },
+    {
+      "id": "red_scaled_hide",
+      "pixellab_id": "56dc5c5f-cae4-49eb-bae2-a2475e334c07",
+      "type": "MISC",
+      "name": "Red Scale",
+      "category": "hide",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A palm of deep red scales, each one overlapping the next. Emberjaw sheds them where it basks."
+    },
+    {
+      "id": "split_bone_pile",
+      "pixellab_id": "4ff13fba-8885-4369-ace4-94d02722f885",
+      "type": "MISC",
+      "name": "Split Bones",
+      "category": "bone",
+      "rarity": "common",
+      "value": 8,
+      "description": "Cracked long bones, split for marrow by something with no patience. Rotjaw leaves piles of them."
+    },
+    {
+      "id": "furred_dark_claw",
+      "pixellab_id": "fdb30e75-e265-4fc3-88e3-f22086c3e8e0",
+      "type": "MISC",
+      "name": "Beast Claw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "One dark claw with the fur still on the knuckle. It came off a paw the size of a dinner plate."
+    },
+    {
+      "id": "opal_shell_flake",
+      "pixellab_id": "d2c97a3d-ec11-4883-958c-cc2a8d4e6d22",
+      "type": "MISC",
+      "name": "Opal Shell",
+      "category": "shell",
+      "rarity": "rare",
+      "value": 85,
+      "description": "A curved flake of shell that runs green to gold as you turn it. The dune keeps giving these up."
+    },
+    {
+      "id": "frost_star_crystal",
+      "pixellab_id": "a7536404-70a7-4637-8b81-62abeb3bbc8b",
+      "type": "MISC",
+      "name": "Frost Star",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 80,
+      "description": "A six-armed crystal that never quite melts. Winterfang's mane grows them and drops them behind it."
+    },
+    {
+      "id": "three_bright_quills",
+      "pixellab_id": "39bb321f-8256-4d9e-bf12-1b443dbffb19",
+      "type": "MISC",
+      "name": "Wing Quills",
+      "category": "feather",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "Three quills in blue, orange and gold, still bound together. Whatever wore them was worth looking at.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "green_ooze_glob",
+      "pixellab_id": "8f5bd616-cb8c-49fa-afd2-29c95a5a3545",
+      "type": "MISC",
+      "name": "Ooze Glob",
+      "category": "slime",
+      "rarity": "common",
+      "value": 7,
+      "description": "A palmful of green ooze that keeps its shape and none of its dignity. Alchemists take it by the jar."
+    },
+    {
+      "id": "loose_vertebrae",
+      "pixellab_id": "077d7b84-9b4f-4b60-b785-b1a910e35ad1",
+      "type": "MISC",
+      "name": "Spine Bones",
+      "category": "bone",
+      "rarity": "common",
+      "value": 10,
+      "description": "Three vertebrae still loosely strung together. Gravecharger sheds them and does not slow down."
+    },
+    {
+      "id": "small_milk_tooth",
+      "pixellab_id": "1df74352-4d45-42d6-8fda-2a1b64227f20",
+      "type": "MISC",
+      "name": "Milk Tooth",
+      "category": "bone",
+      "rarity": "common",
+      "value": 4,
+      "description": "A tooth the size of a fingernail, root and all. Something small lost it, and something small missed it."
+    },
+    {
+      "id": "coiled_purple_tentacle",
+      "pixellab_id": "706950c4-6085-4964-9de7-ed253ba12391",
+      "type": "MISC",
+      "name": "Tentacle",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A severed coil of violet muscle, suckers still gripping at nothing. Voidmaw has more where this came from."
+    },
+    {
+      "id": "glowing_ember_dust",
+      "pixellab_id": "da4b2267-bff0-439d-80de-3ba193eab46b",
+      "type": "MISC",
+      "name": "Ember Dust",
+      "category": "misc",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A handful of grit that still glows in the palm. Cinderhowl leaves a trail of it wherever it walks."
+    },
+    {
+      "id": "great_curved_fang",
+      "pixellab_id": "f0a56f63-ad59-42a2-9d55-01930799fffc",
+      "type": "MISC",
+      "name": "Great Fang",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 32,
+      "description": "A fang as long as a hand, worn blunt at the tip. Tuskmaul has broken plenty on other people's shields."
+    },
+    {
+      "id": "green_jewel_beetle",
+      "pixellab_id": "da1e307b-6b09-497f-91df-5b0ebd8ffc63",
+      "type": "MISC",
+      "name": "Jewel Beetle",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A beetle in green and blue enamel, legs folded neat. Too handsome to squash, too dead to object.",
+      "waiting_for": "an insect"
+    },
+    {
+      "id": "green_scale_cluster",
+      "pixellab_id": "34cec21d-1245-4b21-894d-6df33dcfdaeb",
+      "type": "MISC",
+      "name": "Green Scales",
+      "category": "hide",
+      "rarity": "common",
+      "value": 12,
+      "description": "A patch of overlapping green scales, still faintly damp. Palemaw sheds them in the cave shallows."
+    },
+    {
+      "id": "tangled_cobweb",
+      "pixellab_id": "87be3056-4321-4d56-9e02-7362c82f46cf",
+      "type": "MISC",
+      "name": "Cobweb",
+      "category": "cloth",
+      "rarity": "common",
+      "value": 6,
+      "description": "A torn sheet of web, still sticky at the anchor threads. Nothing in this valley admits to spinning it.",
+      "waiting_for": "a spider"
+    },
+    {
+      "id": "tentacled_watcher_eye",
+      "pixellab_id": "0bda416b-c264-439a-801c-4b627d98421c",
+      "type": "MISC",
+      "name": "Watcher Eye",
+      "category": "organ",
+      "rarity": "rare",
+      "value": 75,
+      "description": "An eye that grew its own legs. It watched the whole fight from the floor, and it is still watching."
+    },
+    {
+      "id": "pale_grey_brain",
+      "pixellab_id": "933a9783-6bfb-4204-824b-30bb03e25500",
+      "type": "MISC",
+      "name": "Grey Matter",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 35,
+      "description": "Whole, pink and unpleasantly warm. Palehusk carries spares, which explains a great deal about Palehusk."
+    },
+    {
+      "id": "lichen_crusted_rock",
+      "pixellab_id": "e6ad73d7-4bde-4966-b709-0f56d0c082ea",
+      "type": "MISC",
+      "name": "Lichen Rock",
+      "category": "mineral",
+      "rarity": "common",
+      "value": 8,
+      "description": "A fist of rock crusted in orange lichen. Cragback is made of these, and misses each one when it goes."
+    },
+    {
+      "id": "violet_crystal_shard",
+      "pixellab_id": "c9d4baf9-d55f-43d8-87ca-10567605204d",
+      "type": "MISC",
+      "name": "Violet Shard",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 90,
+      "description": "A wedge of violet crystal with a white heart. Snapped off Amethyrn's crown, which it will regrow."
+    },
+    {
+      "id": "bronze_temple_cog",
+      "pixellab_id": "7192e2ba-5046-4a54-80ff-a3a331ad64d1",
+      "type": "MISC",
+      "name": "Bronze Cog",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A toothed bronze wheel, still greased. Runemane is full of these, and one of them is why it still runs."
+    },
+    {
+      "id": "pale_curved_horn",
+      "pixellab_id": "394d55c6-6bce-4bc8-8d26-902583a8c43a",
+      "type": "MISC",
+      "name": "Curved Horn",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A pale horn with a clean spiral, snapped at the base. Gravecharger wears a pair and notices neither."
+    },
+    {
+      "id": "red_flesh_gills",
+      "pixellab_id": "f95e2889-bc33-49a3-8664-b9d7329ce99d",
+      "type": "MISC",
+      "name": "Blood Gills",
+      "category": "organ",
+      "rarity": "rare",
+      "value": 70,
+      "description": "A fan of red frills that keeps twitching after it is cut. Voidmaw breathes through a hundred of them."
+    },
+    {
+      "id": "yellowed_curved_fang",
+      "pixellab_id": "f9bb77b3-32a1-44a6-afc1-7ca2dabb197b",
+      "type": "MISC",
+      "name": "Yellow Fang",
+      "category": "bone",
+      "rarity": "common",
+      "value": 12,
+      "description": "A long fang gone yellow at the root and brown at the tip. Blightcur's whole jaw is full of them."
+    },
+    {
+      "id": "bog_slime_blob",
+      "pixellab_id": "558730a9-9039-4bb7-8f35-cf830eaf3ed1",
+      "type": "MISC",
+      "name": "Bog Slime",
+      "category": "slime",
+      "rarity": "common",
+      "value": 7,
+      "description": "Swamp-green and faintly gritty, with things suspended in it you would rather not name."
+    },
+    {
+      "id": "layered_fern_fronds",
+      "pixellab_id": "51a885a7-6d2f-4c71-b6f9-526e313616ad",
+      "type": "MISC",
+      "name": "Fern Fronds",
+      "category": "plant",
+      "rarity": "common",
+      "value": 8,
+      "description": "A fan of thick green fronds, snapped off at the stem. Sporehorn walks through whole banks of them."
+    },
+    {
+      "id": "frost_rimed_claw",
+      "pixellab_id": "779102d6-aaa5-4fb8-a08c-dc39ca1c829f",
+      "type": "MISC",
+      "name": "Frost Claw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A blue-grey claw with rime still on the edge. Bergclaw leaves them in shields, mostly other people's."
+    },
+    {
+      "id": "tan_down_feather",
+      "pixellab_id": "978571ec-35a2-4925-843d-5f13126cab77",
+      "type": "MISC",
+      "name": "Down Feather",
+      "category": "feather",
+      "rarity": "common",
+      "value": 6,
+      "description": "One soft tan feather, barbs still perfect. It came off something that flies, which narrows it down little.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "mire_stained_claw",
+      "pixellab_id": "5b37ee0e-b77e-479e-b962-e047346b3d71",
+      "type": "MISC",
+      "name": "Mire Claw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "A green-grey claw with fen mud dried in the cracks. Mireglare keeps four sets and uses them all."
+    },
+    {
+      "id": "fossil_oyster_shell",
+      "pixellab_id": "6da1d9c2-427a-4c70-9ffb-75f2e2ba5775",
+      "type": "MISC",
+      "name": "Oyster Shell",
+      "category": "shell",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "One half of a fossil bivalve, chalk on the outside, pearly within. The dunes are full of dead seas."
+    },
+    {
+      "id": "green_slit_eyeball",
+      "pixellab_id": "89b017fd-5f95-4484-b9dd-003181e3789a",
+      "type": "MISC",
+      "name": "Green Eye",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A green eye with a black slit, still bright. Mireglare's stare goes out of it about an hour after death."
+    },
+    {
+      "id": "worn_tan_tusk",
+      "pixellab_id": "e56e42fe-ba00-4607-bd28-7964553a6974",
+      "type": "MISC",
+      "name": "Worn Tusk",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A short tusk ground flat on one side. Gnashjaw does that on purpose, to boulders, for hours."
+    },
+    {
+      "id": "jade_temple_amulet",
+      "pixellab_id": "6f8ba8eb-36ed-4d4a-b03a-d54eeba381b9",
+      "type": "MISC",
+      "name": "Jade Amulet",
+      "category": "relic",
+      "rarity": "rare",
+      "value": 80,
+      "description": "A green disc with a pale gem set dead centre. Temple work, and Runemane still guards a heap of it."
+    },
+    {
+      "id": "abalone_shell_half",
+      "pixellab_id": "f2703e5a-3dc7-462c-b7d6-c7db190ef6a2",
+      "type": "MISC",
+      "name": "Abalone",
+      "category": "shell",
+      "rarity": "rare",
+      "value": 75,
+      "description": "Half a shell lined in green and gold fire. Dunedelver turns them up from a sea that dried out long ago."
+    },
+    {
+      "id": "soft_pastel_plume",
+      "pixellab_id": "db764937-b0a4-4050-8198-0bb99a98ca40",
+      "type": "MISC",
+      "name": "Soft Plume",
+      "category": "feather",
+      "rarity": "uncommon",
+      "value": 25,
+      "description": "A long plume shading violet to gold, impossibly soft. Nothing in the roster has feathers like this.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "moss_green_slime",
+      "pixellab_id": "96124dbc-4ec6-4e50-b2e0-e7cf56ed8713",
+      "type": "MISC",
+      "name": "Moss Slime",
+      "category": "slime",
+      "rarity": "common",
+      "value": 7,
+      "description": "A green dome flecked with moss, still cool. The forest blobs leave one behind every time they lose."
+    },
+    {
+      "id": "dead_red_leaf",
+      "pixellab_id": "45c35d48-f38e-492f-b316-5ae1aaa6577d",
+      "type": "MISC",
+      "name": "Red Leaf",
+      "category": "plant",
+      "rarity": "common",
+      "value": 5,
+      "description": "One leaf gone crimson out of season. Thornstag browses and the whole branch dies looking like this."
+    },
+    {
+      "id": "scattered_small_teeth",
+      "pixellab_id": "263d09e5-1bfb-4865-9406-34be46432963",
+      "type": "MISC",
+      "name": "Small Teeth",
+      "category": "bone",
+      "rarity": "common",
+      "value": 6,
+      "description": "A scatter of little teeth, none of them matching. Small things lose them; smaller things collect them."
+    },
+    {
+      "id": "black_tipped_horns",
+      "pixellab_id": "e48c1819-2fc4-4f97-9b96-2b9e6ae3a936",
+      "type": "MISC",
+      "name": "Dark Horns",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 34,
+      "description": "A pair of black horns tipped in sickly green. Thornstag drops one every autumn and grows it back worse."
+    },
+    {
+      "id": "torn_brown_wing",
+      "pixellab_id": "2ff031d8-2f3f-4214-8700-49a792cee16c",
+      "type": "MISC",
+      "name": "Torn Wing",
+      "category": "hide",
+      "rarity": "common",
+      "value": 10,
+      "description": "A small leathery wing, torn at the trailing edge. Something flies on these; nobody has cornered it yet.",
+      "waiting_for": "a bat"
+    },
+    {
+      "id": "rotten_stitched_hide",
+      "pixellab_id": "a4c2fc42-a02d-48a9-850a-b43d7c1a1683",
+      "type": "MISC",
+      "name": "Rotten Hide",
+      "category": "hide",
+      "rarity": "common",
+      "value": 9,
+      "description": "Grey hide gone soft, with stitching still holding two ends that never matched. It smells exactly as it looks."
+    },
+    {
+      "id": "clear_dew_drop",
+      "pixellab_id": "86009ca7-d9f1-4783-a9d7-cb48364baa11",
+      "type": "MISC",
+      "name": "Dew Drop",
+      "category": "misc",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "A drop of water that will not evaporate or spill. Dewling wears one like a crown and guards it badly."
+    },
+    {
+      "id": "heavy_long_bone",
+      "pixellab_id": "a2a38aaf-a5b7-40ce-a25a-d04d2dfcc736",
+      "type": "MISC",
+      "name": "Long Bone",
+      "category": "bone",
+      "rarity": "common",
+      "value": 7,
+      "description": "One heavy leg bone, clean at both ends. Gravecharger is missing several and has not noticed."
+    },
+    {
+      "id": "white_rib_cage",
+      "pixellab_id": "7bb14388-da27-4cca-8d02-67ac5a9b8b0e",
+      "type": "MISC",
+      "name": "White Ribs",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "A full cage of ribs, bleached and oddly intact. It came out of something that stopped needing lungs."
+    },
+    {
+      "id": "pale_grey_eyeball",
+      "pixellab_id": "085a6796-3aff-4ce6-a7d0-ae1bd54556c9",
+      "type": "MISC",
+      "name": "Pale Eye",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A grey eye with the light gone out of it. Palehusk collects them, which is not a comforting thought."
+    },
+    {
+      "id": "barred_hawk_quill",
+      "pixellab_id": "5b6e1bc7-aea3-442d-9629-4c247e0c786d",
+      "type": "MISC",
+      "name": "Hawk Quill",
+      "category": "feather",
+      "rarity": "common",
+      "value": 8,
+      "description": "A stiff barred quill, blue at the base. Fletchers would pay if anyone could say what it came off.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "coiled_bog_worm",
+      "pixellab_id": "e87fb896-1f48-4c69-922a-53a163bd5140",
+      "type": "MISC",
+      "name": "Bog Worm",
+      "category": "insect",
+      "rarity": "common",
+      "value": 7,
+      "description": "A fat pink worm, still coiling slowly. Mirewart eats them by the dozen and leaves the tough ones."
+    },
+    {
+      "id": "straw_nest_tuft",
+      "pixellab_id": "f0be714a-5630-4a13-a7e6-0996b91b4aff",
+      "type": "MISC",
+      "name": "Straw Nest",
+      "category": "plant",
+      "rarity": "common",
+      "value": 8,
+      "description": "A knot of straw pressed into a bowl by something that slept in it. Still warm, occasionally."
+    },
+    {
+      "id": "crimson_red_plume",
+      "pixellab_id": "7ab0a7c5-4f3c-4359-b6d0-5b5faa2831e2",
+      "type": "MISC",
+      "name": "Red Plume",
+      "category": "feather",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "A red plume with a pale shaft, bright as a warning. Whatever wears these does not need camouflage.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "pale_hooked_claw",
+      "pixellab_id": "3e34d6d4-8bed-453a-a7dc-399570c8a7d1",
+      "type": "MISC",
+      "name": "Pale Claw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A cream claw hooked like a reaping tool, ragged at the socket. Bergclaw grows ten and uses all of them."
+    },
+    {
+      "id": "small_horn_spur",
+      "pixellab_id": "fd9e2728-6158-49b9-9338-0b02670ba55e",
+      "type": "MISC",
+      "name": "Horn Spur",
+      "category": "bone",
+      "rarity": "common",
+      "value": 6,
+      "description": "A stub of horn broken off at the base. Gnashjaw grinds its tusks down and this is what falls off."
+    },
+    {
+      "id": "dark_iron_quills",
+      "pixellab_id": "5b8a22b9-1350-407d-aa35-7053e551bdb8",
+      "type": "MISC",
+      "name": "Iron Quills",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A cluster of grey spines, hard as nails and about as friendly. Tuskmaul wears a ridge of them."
+    },
+    {
+      "id": "segmented_carapace",
+      "pixellab_id": "3d25cc8d-dc12-4fb8-abf8-507978c21f7e",
+      "type": "MISC",
+      "name": "Carapace",
+      "category": "shell",
+      "rarity": "uncommon",
+      "value": 32,
+      "description": "A plate of segmented shell, scuffed from digging. Dunedelver sheds them the way a road sheds gravel."
+    },
+    {
+      "id": "blue_scaled_hide",
+      "pixellab_id": "6d757be7-ddb2-4e6b-a599-15d4b44e3dda",
+      "type": "MISC",
+      "name": "Blue Scales",
+      "category": "hide",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A sheet of blue-green scales, cold and slick. Nothing in this valley wears a coat quite like it.",
+      "waiting_for": "a scaled swimmer"
+    },
+    {
+      "id": "yellow_slit_eye",
+      "pixellab_id": "549e0cf0-4b32-41d7-96b3-17d8c2415456",
+      "type": "MISC",
+      "name": "Slit Eye",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A gold eye with a black slit, dry now. Emberjaw and its pale cousin both look at you out of these."
+    },
+    {
+      "id": "purple_void_flesh",
+      "pixellab_id": "950012a2-9d99-4a4f-ad71-11c75a237ee4",
+      "type": "MISC",
+      "name": "Void Flesh",
+      "category": "organ",
+      "rarity": "rare",
+      "value": 55,
+      "description": "A lump of violet meat that keeps twitching toward your hand. Voidmaw is mostly this, on the inside."
+    },
+    {
+      "id": "blue_glow_caps",
+      "pixellab_id": "8182908e-999b-4257-873e-05ab2a6e9814",
+      "type": "MISC",
+      "name": "Glow Caps",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "Blue mushrooms on a knot of root, lit from inside. Gnarloak carries a whole grove in its shoulders."
+    },
+    {
+      "id": "clear_insect_wing",
+      "pixellab_id": "e7cfe435-6a49-4d32-8a6a-f699dbf125b4",
+      "type": "MISC",
+      "name": "Clear Wing",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A single glassy wing, veined like a leaf. Whatever hatched it is bigger than anything you want to meet.",
+      "waiting_for": "an insect"
+    },
+    {
+      "id": "smooth_black_egg",
+      "pixellab_id": "f3703aba-46de-48b5-9d7c-584213f231e3",
+      "type": "MISC",
+      "name": "Black Egg",
+      "category": "misc",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A smooth black egg, warm on one side. Nobody knows what is in it, and nobody is volunteering to wait.",
+      "waiting_for": "whatever laid it"
+    },
+    {
+      "id": "coiled_lasso_rope",
+      "pixellab_id": "b50b22ef-ad6f-41ef-bf67-7e1ed363e7b3",
+      "type": "MISC",
+      "name": "Rope Lasso",
+      "category": "cloth",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "A stiff coil of rope with a running loop, chewed through near the knot. Sorrel got loose years ago."
+    },
+    {
+      "id": "clustered_ice_crystals",
+      "pixellab_id": "9ab9ff35-f936-4585-9f3d-ded2bb67f54d",
+      "type": "MISC",
+      "name": "Ice Cluster",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 70,
+      "description": "A crown of clear ice spires on a frozen base. It does not melt, and it does not like being held."
+    },
+    {
+      "id": "corked_glass_vial",
+      "pixellab_id": "f2426936-4599-479c-bcb6-8cba9764f9a9",
+      "type": "MISC",
+      "name": "Corked Vial",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A corked bottle of something olive and settled. Palehusk took it off a body that had not opened it either."
+    },
+    {
+      "id": "blue_white_star_stone",
+      "pixellab_id": "2981b9b9-903d-40bd-b8f8-970e942be16c",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "frost",
+      "rarity": "rare",
+      "value": 90,
+      "description": "Blue-grey plates around a white star. Cold to hold, and nothing anyone has killed was carrying it.",
+      "power": "+10 frost damage on hit, and cold targets take 15% more"
+    },
+    {
+      "id": "ember_starburst_stone",
+      "pixellab_id": "88a3e89a-a52c-4520-aad3-9464cf3d7f69",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "ember",
+      "rarity": "rare",
+      "value": 72,
+      "description": "Dark red with an orange star bursting through the cracks. Cinderhowl is cracked open the same way.",
+      "power": "+12 fire damage on hit, and the target burns for 5 a second"
+    },
+    {
+      "id": "blue_plate_stone",
+      "pixellab_id": "65adb77b-9eca-4e1c-bde9-9ff2d8c7fb9f",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "iron",
+      "rarity": "rare",
+      "value": 70,
+      "description": "Blue-grey and plated like something forged, taken off an Ironhide. Spears skate off it exactly the same.",
+      "power": "+18 armor, and piercing weapons lose a third of their damage against you"
+    },
+    {
+      "id": "dark_green_gaze_stone",
+      "pixellab_id": "b610d41f-abe5-4202-8662-b6b01aadb41e",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "fen",
+      "rarity": "rare",
+      "value": 64,
+      "description": "Dark green with one bright eye of light at its centre. Mireglare's stare, still lit, still looking.",
+      "power": "Hits burn for 8 over 4 seconds, and burning targets cannot hide from you"
+    },
+    {
+      "id": "grey_grindstone",
+      "pixellab_id": "975b6d15-7b28-41c9-a655-dcfe17d7d663",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "stone",
+      "rarity": "uncommon",
+      "value": 45,
+      "description": "Grey-brown and split by dark seams, ground smooth. Gnashjaw wears its tusks down on rock like this.",
+      "power": "Hits grind through armor, stripping 8 armor from the target for 6 seconds"
+    },
+    {
+      "id": "white_rune_frost_stone",
+      "pixellab_id": "f76334eb-89af-4de4-9995-a31718e1e3c4",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "rime",
+      "rarity": "rare",
+      "value": 85,
+      "description": "White stone cut with a frost-rune that keeps its edge. Its creature is still out there somewhere, unmet.",
+      "power": "Attacks slow the target by 25% for 3 seconds"
+    },
+    {
+      "id": "pale_green_core_stone",
+      "pixellab_id": "b9542f28-99bd-4493-94b3-fb55b4848eac",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "verdant",
+      "rarity": "rare",
+      "value": 78,
+      "description": "Pale green plates around a white core, warm as a greenhouse. Nobody has found what grows them.",
+      "power": "Regenerate 4 health a second, and healing on you is 10% stronger"
+    },
+    {
+      "id": "black_lava_flow_stone",
+      "pixellab_id": "978f50c8-8bb0-408c-8ee6-20ce17762d6b",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "magma",
+      "rarity": "epic",
+      "value": 210,
+      "description": "Black shell split by wide lava rivers, out of a Basalthowl. When it roars the mountain answers.",
+      "power": "+20 fire damage on hit, and a kill sets everything nearby burning"
+    },
+    {
+      "id": "thorn_vein_stone",
+      "pixellab_id": "b5bf921c-daef-4b6d-b5e3-d312a334ee0f",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "thorn",
+      "rarity": "epic",
+      "value": 160,
+      "description": "Dark stone webbed in gold thorns around a green heart, off a Thornstag. Flowers die near it, indoors.",
+      "power": "Attackers take 12 thorn damage, and your hits slow them by 20%"
+    },
+    {
+      "id": "olive_buried_gold_stone",
+      "pixellab_id": "495a52d8-54e8-46f2-a85e-123ec5f4aa75",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "dust",
+      "rarity": "rare",
+      "value": 88,
+      "description": "Olive-grey with a fleck of gold buried in the middle. Dunedelver swims through sand and finds these.",
+      "power": "+12% chance a kill yields a second drop"
+    },
+    {
+      "id": "violet_hunger_stone",
+      "pixellab_id": "445acf04-e5c6-47d0-99a7-08f154daaf19",
       "type": "SOUL",
       "name": "Soulstone",
       "category": "void",
+      "rarity": "epic",
+      "value": 260,
+      "description": "Violet with a dark mouth of a core, cut out of a Voidmaw. Set it down and the light near it goes first.",
+      "power": "+18 void damage on hit, and 10% of it feeds your own health"
+    },
+    {
+      "id": "cream_gold_star_stone",
+      "pixellab_id": "c34b3cb2-3232-4bbd-8829-42f9358ae80a",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "hearth",
       "rarity": "rare",
-      "value": 118,
-      "description": "Black and webbed with hollow cracks, the dark that wore Grinmask's smile. Its cuts carry shadow straight through armor.",
-      "power": "+14 shadow damage on hit and ignores 10% of enemy armor"
+      "value": 55,
+      "description": "Cream stone with a warm gold star at its heart, left by Sorrel. It still knows the way to the gate.",
+      "power": "+12% movement speed, and you tire slower under a full pack"
+    },
+    {
+      "id": "tan_sunlit_stone",
+      "pixellab_id": "3b753af4-b1b8-498c-8c59-0588d0bea8ad",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "sun",
+      "rarity": "rare",
+      "value": 62,
+      "description": "Sand-gold and cracked like a dry bed, left by a Sunscale. It keeps the desert's noon inside it.",
+      "power": "Attacks flash bright: 15% chance to blind the target for 2 seconds"
+    },
+    {
+      "id": "deep_red_crack_stone",
+      "pixellab_id": "803bda3b-97eb-43df-805d-c81cbf36d75b",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "blood",
+      "rarity": "rare",
+      "value": 100,
+      "description": "Deep red, cracked like drying blood. Whatever it came out of has not been brought down yet.",
+      "power": "+12 damage against wounded targets, and heals 5% of it back"
+    },
+    {
+      "id": "orange_lightning_stone",
+      "pixellab_id": "41b53568-a83f-4a1f-9cbb-24b20993eba5",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "solar",
+      "rarity": "epic",
+      "value": 250,
+      "description": "Orange stone forked with white light. It hums in sunlight, and no creature yet has answered for it.",
+      "power": "+18 radiant damage on hit, and burns undead for another 10"
+    },
+    {
+      "id": "crimson_spiral_stone",
+      "pixellab_id": "659a6a05-53fd-4da4-9410-495a489aa932",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "blood",
+      "rarity": "epic",
+      "value": 220,
+      "description": "Crimson with one spiral rune cut deep. Unclaimed: nothing that bleeds has dropped it so far.",
+      "power": "Heal 10% of damage dealt while below half health"
+    },
+    {
+      "id": "rough_bull_hide_stone",
+      "pixellab_id": "aeb85f22-b3a7-439e-b517-b45282646b01",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "brawn",
+      "rarity": "epic",
+      "value": 215,
+      "description": "Rust-brown and rough as an old hide, taken from a Tuskmaul. Warbands have broken against less.",
+      "power": "+15% maximum health, and shoulder charges cannot be interrupted"
+    },
+    {
+      "id": "spore_heart_stone",
+      "pixellab_id": "b1006d9d-821a-4dc2-aa52-91bce4329f4a",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "spore",
+      "rarity": "epic",
+      "value": 170,
+      "description": "Green plates around a glowing core, shed by a Sporehorn. The fungus is steering the stone as well.",
+      "power": "Hits release spores: 10 poison damage a second in a small cloud"
+    },
+    {
+      "id": "pale_moss_plate_stone",
+      "pixellab_id": "7f00d5b6-786b-4532-824c-570036799c3d",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "moss",
+      "rarity": "uncommon",
+      "value": 40,
+      "description": "Pale green plates, cool and slightly damp. Some creature grows these; the valley has not shown it.",
+      "power": "+8 armor, and moss and mud never slow you"
+    },
+    {
+      "id": "mint_serpent_stone",
+      "pixellab_id": "83d3803a-203c-4ae6-816d-67ae869f9ccf",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "venom",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "Mint-green with a serpent coiled across it, left by a Blightcur. Whatever it carries, it survives.",
+      "power": "Attacks poison the target for 6 a second, stacking twice"
+    },
+    {
+      "id": "fen_bloom_stone",
+      "pixellab_id": "af99074e-68e7-49af-a8ed-a1546319d04b",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "bog",
+      "rarity": "epic",
+      "value": 200,
+      "description": "Green stone cracked with pale light, off a Mireback. Mushrooms fruit on it if you leave it alone.",
+      "power": "Heal 6% of the damage you deal, and twice that standing in water"
+    },
+    {
+      "id": "violet_eye_stone",
+      "pixellab_id": "1b486687-4e29-4be8-8a8c-c99a77e894a1",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "shadow",
+      "rarity": "rare",
+      "value": 100,
+      "description": "A violet stone with one open eye that follows the room. Gloompard is counted in eyes like this.",
+      "power": "+15% critical chance from behind, and a kill hides you in smoke for 3 seconds"
+    },
+    {
+      "id": "iridescent_prism_stone",
+      "pixellab_id": "f33ea596-2f9e-404c-9638-effbba0c72f2",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "prism",
+      "rarity": "rare",
+      "value": 110,
+      "description": "A mosaic that changes colour every time you look away, cut from a Prismclaw. Light bends around it.",
+      "power": "Attacks refract: +10% critical chance, and criticals strike a second time for half"
+    },
+    {
+      "id": "pale_snowflake_stone",
+      "pixellab_id": "8d604ff8-6e67-4c43-98c4-0c2e8e781fb0",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "glacier",
+      "rarity": "rare",
+      "value": 96,
+      "description": "Pale blue with a white star locked in the ice, out of a Bergclaw. Cold enough to ache through a glove.",
+      "power": "+11 frost damage on hit, and hits crack shields: -20% enemy block for 5 seconds"
+    },
+    {
+      "id": "starless_night_stone",
+      "pixellab_id": "a3f1839f-1d36-44c8-abed-d55ecbd17029",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "night",
+      "rarity": "epic",
+      "value": 150,
+      "description": "Deep violet scattered with white specks, dropped by a Duskhoof. Like it, the stone casts no shadow.",
+      "power": "+12% dodge in darkness, and standing still in shadow hides you outright"
+    },
+    {
+      "id": "violet_knot_stone",
+      "pixellab_id": "3b3de668-4fd6-4900-99d4-dfe2e28714ad",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "arcane",
+      "rarity": "epic",
+      "value": 255,
+      "description": "Violet stone cut with an unbroken knot. Scholars want it; nobody can say what died to leave it.",
+      "power": "+18 arcane damage on hit, and -12% spell cooldowns"
+    },
+    {
+      "id": "root_web_stone",
+      "pixellab_id": "0edf15c2-ca3a-46b6-b0a1-30cb0d0a32d8",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "root",
+      "rarity": "epic",
+      "value": 175,
+      "description": "Brown stone threaded with living roots, taken from a Gnarloak. Leave it on soil and it takes hold.",
+      "power": "Regenerate 5 health a second, and hits root the target in place for a moment"
+    },
+    {
+      "id": "violet_lightning_stone",
+      "pixellab_id": "5b8e7543-1b3f-495f-a2ff-05c06754d489",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "storm",
+      "rarity": "epic",
+      "value": 270,
+      "description": "Violet, forked white to the shell, dropped by a Stormcrown. The air near it tastes like a coming storm.",
+      "power": "+22 lightning damage on hit, and criticals arc to a second target"
+    },
+    {
+      "id": "dark_teal_plate_stone",
+      "pixellab_id": "f15dd2d8-7825-493a-81f1-78f583fad618",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "tide",
+      "rarity": "rare",
+      "value": 105,
+      "description": "Dark teal plates, always beaded with water. The thing that grew it has not surfaced yet.",
+      "power": "+10% swim speed, and you breathe underwater"
+    },
+    {
+      "id": "opal_bubble_stone",
+      "pixellab_id": "52c2d2ae-5176-4c89-b3f2-8b63759c6813",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "opal",
+      "rarity": "epic",
+      "value": 265,
+      "description": "An opal shell of soap-bubble colours. Beautiful, valuable, and belonging to nothing anyone has met.",
+      "power": "+8% dodge, and the first hit each fight glances off"
+    },
+    {
+      "id": "purple_gold_vein_stone",
+      "pixellab_id": "7b075bde-df1a-442e-862c-797d652a4fe3",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "royal",
+      "rarity": "epic",
+      "value": 275,
+      "description": "Deep purple veined in gold, heavy as a crown. Unclaimed, which has not stopped anyone hunting for it.",
+      "power": "+20% gold found, and merchants pay 10% more"
+    },
+    {
+      "id": "white_pebbled_snow_stone",
+      "pixellab_id": "b175fb21-c992-43c3-bca7-c27861cc54ae",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "snow",
+      "rarity": "rare",
+      "value": 58,
+      "description": "Pale as packed snow, pebbled all over, dropped by a Snowmane. It walks beside whoever is lost.",
+      "power": "+10% movement speed on snow and ice, and cold never slows you"
+    },
+    {
+      "id": "white_gold_branch_stone",
+      "pixellab_id": "dee5135e-3881-4e3d-b6c4-5a979df0192f",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "holy",
+      "rarity": "epic",
+      "value": 280,
+      "description": "White stone branching with gold light. It belongs to something that has not walked into the world yet.",
+      "power": "+16 radiant damage on hit, and undead near you cannot heal"
+    },
+    {
+      "id": "brown_woodgrain_stone",
+      "pixellab_id": "bb84e871-7df9-4514-b266-f25f9f57fa6d",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "bark",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "Brown stone with a wood grain and two dark knots. Nothing that grows has been caught carrying one.",
+      "power": "+10 armor, and fire does 15% less to you"
+    },
+    {
+      "id": "bright_green_plate_stone",
+      "pixellab_id": "7f7454c3-c216-4a3e-a41b-458e128de025",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "wild",
+      "rarity": "rare",
+      "value": 115,
+      "description": "Bright green plates with black seams, alive-looking. Its creature is still somewhere in the deep wood.",
+      "power": "+12 nature damage on hit, and poisons on you end twice as fast"
+    },
+    {
+      "id": "opal_moon_stone",
+      "pixellab_id": "4319d4ed-f49f-444d-9d42-51de7b842c56",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "moon",
+      "rarity": "rare",
+      "value": 95,
+      "description": "Pale opal that holds a crescent whichever way you turn it. Moonpelt's own, and the moon wants it back.",
+      "power": "+10% dodge at night, and moonlight closes 4 of your wounds a second"
+    },
+    {
+      "id": "mossy_granite_stone",
+      "pixellab_id": "e9b26323-e722-4de9-818a-70b2bc4e4f72",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "granite",
+      "rarity": "epic",
+      "value": 245,
+      "description": "Grey granite gone green with moss, off a Cragback. It weighs what a hillside weighs, in the hand.",
+      "power": "+22 armor, and nothing knocks you off your feet"
+    },
+    {
+      "id": "grey_violet_charge_stone",
+      "pixellab_id": "5e1959cb-7292-461c-b23b-e789c0027693",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "grave",
+      "rarity": "rare",
+      "value": 92,
+      "description": "Grey stone veined in dead violet, off a Gravecharger. It is still trying to reach a line that fell centuries ago.",
+      "power": "Charging attacks hit for +25% and knock the target back"
+    },
+    {
+      "id": "pale_mist_swirl_stone",
+      "pixellab_id": "e34fe5d8-c08f-4671-bc2c-d7f9b5b2ed7b",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "spirit",
+      "rarity": "epic",
+      "value": 230,
+      "description": "Pale grey and full of slow swirls, all a Nightmare leaves. Hold it and you will not recall your dreams.",
+      "power": "Attacks frighten: the target flees for 2 seconds, once every 12"
+    },
+    {
+      "id": "cyan_storm_crystal_stone",
+      "pixellab_id": "f97ef752-e1ef-47cc-a907-a15383355450",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "tempest",
+      "rarity": "epic",
+      "value": 285,
+      "description": "Pale blue lit by cyan forks, grown in a Voltshell's crystals. Thunder rolls a long way behind it.",
+      "power": "Lightning strikes attackers for 15, and storms never slow you"
+    },
+    {
+      "id": "lava_vein_stone",
+      "pixellab_id": "92578972-1efb-428e-895d-d36337daca47",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "magma",
+      "rarity": "rare",
+      "value": 75,
+      "description": "Black stone flooded with slow orange veins, quenched out of a Slagfang. Still too warm to pocket.",
+      "power": "+13 fire damage on hit, and your own wounds cauterize: no bleeding"
+    },
+    {
+      "id": "dark_red_star_stone",
+      "pixellab_id": "74fe9a05-133f-45c3-81ec-df7004c9283f",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "death",
+      "rarity": "uncommon",
+      "value": 42,
+      "description": "Black stone with a red star burning at the core, pulled out of a Rotjaw. It refuses to stay dead too.",
+      "power": "Once per fight, a blow that would kill you leaves you standing on one hit point instead"
+    },
+    {
+      "id": "gold_sunburst_rune_stone",
+      "pixellab_id": "7d532f41-ce0e-4255-beb3-5977bf70d43b",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "radiant",
+      "rarity": "epic",
+      "value": 240,
+      "description": "Gold-cased and cut with a sunburst rune, left by a Runemane. It is still carrying out old orders.",
+      "power": "+20 radiant damage on hit, and every fifth strike blocks the next blow against you"
     },
     {
       "id": "pale_bone_soulstone",
@@ -22,6 +1280,17 @@
       "value": 45,
       "description": "Chalk-cream and webbed with fissures, pulled from a Diretusk's ivory. It plates your armor against breaking.",
       "power": "+12 armor and immunity to fracture effects"
+    },
+    {
+      "id": "hollow_black_soulstone",
+      "pixellab_id": "98f6d2b6-9e10-42b1-8301-f0a42d9a5c99",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "void",
+      "rarity": "rare",
+      "value": 118,
+      "description": "Black and webbed with hollow cracks, the dark that wore Grinmask's smile. Its cuts carry shadow straight through armor.",
+      "power": "+14 shadow damage on hit and ignores 10% of enemy armor"
     },
     {
       "id": "gold_seamed_teal_soulstone",
@@ -57,15 +1326,15 @@
       "power": "+22 fire damage on hit and burns the target for 4 per second"
     },
     {
-      "id": "lichen_green_soulstone",
-      "pixellab_id": "c10426cf-9f50-406e-bb8d-a231798231f7",
+      "id": "dark_grain_soulstone",
+      "pixellab_id": "2ecff4be-1af0-48a4-9ead-cd59b6f56912",
       "type": "SOUL",
       "name": "Soulstone",
-      "category": "verdant",
+      "category": "bark",
       "rarity": "uncommon",
-      "value": 44,
-      "description": "Mottled swamp-green, all a Mirewart leaves behind. Keep it near and small hurts seal themselves while you walk.",
-      "power": "+3 health regeneration per second"
+      "value": 42,
+      "description": "Woodgrain runs black through it, all a felled Sprigling leaves. It hardens armor and hands blows back to the giver.",
+      "power": "+8 armor and 5% of damage taken is reflected to the attacker"
     },
     {
       "id": "amethyst_rune_soulstone",
@@ -79,6 +1348,17 @@
       "power": "+20 arcane damage on hit and -10% spell cooldowns"
     },
     {
+      "id": "lichen_green_soulstone",
+      "pixellab_id": "c10426cf-9f50-406e-bb8d-a231798231f7",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "verdant",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "Mottled swamp-green, all a Mirewart leaves behind. Keep it near and small hurts seal themselves while you walk.",
+      "power": "+3 health regeneration per second"
+    },
+    {
       "id": "rimed_blue_soulstone",
       "pixellab_id": "1efae46a-e38d-4e13-b78f-c4550981c6bd",
       "type": "SOUL",
@@ -90,15 +1370,15 @@
       "power": "+10 frost damage on hit and 20% chance to slow the target"
     },
     {
-      "id": "dark_grain_soulstone",
-      "pixellab_id": "2ecff4be-1af0-48a4-9ead-cd59b6f56912",
+      "id": "rusted_slit_stone",
+      "pixellab_id": "6e8b80c2-28b1-4a18-921c-7834b57d3015",
       "type": "SOUL",
       "name": "Soulstone",
-      "category": "bark",
-      "rarity": "uncommon",
-      "value": 42,
-      "description": "Woodgrain runs black through it, all a felled Sprigling leaves. It hardens armor and hands blows back to the giver.",
-      "power": "+8 armor and 5% of damage taken is reflected to the attacker"
+      "category": "rust",
+      "rarity": "rare",
+      "value": 50,
+      "description": "Old iron gone sour, weeping copper from every slit. Quillkin leavings, and they rot armor right off a foe.",
+      "power": "+9 damage on hit and reduces the target's armor by 6 for 8 seconds"
     },
     {
       "id": "green_venom_vein_stone",
@@ -123,48 +1403,15 @@
       "power": "+10 nature damage on hit and regenerates 3 health per second"
     },
     {
-      "id": "cobbled_mist_stone",
-      "pixellab_id": "ad7584cd-331f-413f-a179-431c0fb77728",
+      "id": "matte_black_shadow_stone",
+      "pixellab_id": "7cbc7c39-8d2f-4984-8d9b-01d25c0fa22c",
       "type": "SOUL",
       "name": "Soulstone",
-      "category": "mist",
-      "rarity": "rare",
-      "value": 70,
-      "description": "Packed grey-green cobbles, unlit as fen water. A Bogstalker's own \u2014 blows slide past you, worse in the mist.",
-      "power": "+8% dodge chance and attackers miss more often in dim light"
-    },
-    {
-      "id": "pink_seam_granite_stone",
-      "pixellab_id": "5a117809-e55a-401b-bb25-0b7ad5bd3a14",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "stone",
-      "rarity": "rare",
-      "value": 55,
-      "description": "Granite plates seamed in salmon pink, dropped by a fleeing Fluffang. Armor that shrugs off falls and crushing weight.",
-      "power": "+15 armor and 10% reduced damage from falling and crushing blows"
-    },
-    {
-      "id": "cyan_glacier_seam_stone",
-      "pixellab_id": "7419e2ac-281b-496a-9ebb-6fdc9220d331",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "frost",
+      "category": "shadow",
       "rarity": "epic",
-      "value": 240,
-      "description": "Plated grey rock split by a bright cyan seam of Rimeshard ice. In a blade it bites deep frost and leaves the target wading.",
-      "power": "+16 frost damage on hit and slows the target by 30% for 3 seconds"
-    },
-    {
-      "id": "molten_gold_vein_stone",
-      "pixellab_id": "63bef222-8d99-480e-a1bf-7e738fd8c50f",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "gilded",
-      "rarity": "epic",
-      "value": 260,
-      "description": "Rough brown rock seamed with raw gold, grazed loose by an Amethyrn. Coin comes easier to whoever carries it.",
-      "power": "+18% gold found and each critical hit drops 5 gold"
+      "value": 230,
+      "description": "Matte black and light-swallowing, an Ashfiend burnt down to this. It strikes with shadow and can hide you after a kill.",
+      "power": "+14 shadow damage and 15% chance to fade from sight after a kill"
     },
     {
       "id": "banded_solar_stone",
@@ -178,48 +1425,59 @@
       "power": "+20 radiant damage on hit and blinds undead within three tiles"
     },
     {
-      "id": "matte_black_shadow_stone",
-      "pixellab_id": "7cbc7c39-8d2f-4984-8d9b-01d25c0fa22c",
+      "id": "molten_gold_vein_stone",
+      "pixellab_id": "63bef222-8d99-480e-a1bf-7e738fd8c50f",
       "type": "SOUL",
       "name": "Soulstone",
-      "category": "shadow",
+      "category": "gilded",
       "rarity": "epic",
-      "value": 230,
-      "description": "Matte black and light-swallowing, an Ashfiend burnt down to this. It strikes with shadow and can hide you after a kill.",
-      "power": "+14 shadow damage and 15% chance to fade from sight after a kill"
+      "value": 260,
+      "description": "Rough brown rock seamed with raw gold, grazed loose by an Amethyrn. Coin comes easier to whoever carries it.",
+      "power": "+18% gold found and each critical hit drops 5 gold"
     },
     {
-      "id": "rusted_slit_stone",
-      "pixellab_id": "6e8b80c2-28b1-4a18-921c-7834b57d3015",
+      "id": "cyan_glacier_seam_stone",
+      "pixellab_id": "7419e2ac-281b-496a-9ebb-6fdc9220d331",
       "type": "SOUL",
       "name": "Soulstone",
-      "category": "rust",
-      "rarity": "rare",
-      "value": 50,
-      "description": "Old iron gone sour, weeping copper from every slit. Quillkin leavings, and they rot armor right off a foe.",
-      "power": "+9 damage on hit and reduces the target's armor by 6 for 8 seconds"
-    },
-    {
-      "id": "pale_sand_stone",
-      "pixellab_id": "f7fbf7e2-e3c5-44ae-97e6-7ad9433cce60",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "sand",
-      "rarity": "rare",
-      "value": 60,
-      "description": "Sun-bleached with a gold heart, wrung out of a Dewling. It makes blows land heavy and leaves them blinking.",
-      "power": "+8 blunt damage and attacks blind the target for 2 seconds"
-    },
-    {
-      "id": "black_egg_lava_veins",
-      "pixellab_id": "2ee79193-0914-4724-add6-f6a76a29c546",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "ember",
+      "category": "frost",
       "rarity": "epic",
-      "value": 285,
-      "description": "Charred black, cracked open by molten veins. Magmashell's banked fire, and it leaves what you hit burning.",
-      "power": "+14 fire damage on hit and sets targets burning for 3s"
+      "value": 240,
+      "description": "Plated grey rock split by a bright cyan seam of Rimeshard ice. In a blade it bites deep frost and leaves the target wading.",
+      "power": "+16 frost damage on hit and slows the target by 30% for 3 seconds"
+    },
+    {
+      "id": "pink_seam_granite_stone",
+      "pixellab_id": "5a117809-e55a-401b-bb25-0b7ad5bd3a14",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "stone",
+      "rarity": "rare",
+      "value": 55,
+      "description": "Granite plates seamed in salmon pink, dropped by a fleeing Fluffang. Armor that shrugs off falls and crushing weight.",
+      "power": "+15 armor and 10% reduced damage from falling and crushing blows"
+    },
+    {
+      "id": "cobbled_mist_stone",
+      "pixellab_id": "ad7584cd-331f-413f-a179-431c0fb77728",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "mist",
+      "rarity": "rare",
+      "value": 70,
+      "description": "Packed grey-green cobbles, unlit as fen water. A Bogstalker's own \u2014 blows slide past you, worse in the mist.",
+      "power": "+8% dodge chance and attackers miss more often in dim light"
+    },
+    {
+      "id": "smouldering_dark_egg",
+      "pixellab_id": "4c27418f-167e-4bb8-92c9-4ab701b7c601",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "cinder",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "Scorched dark red with embers sulking in the cracks, the last of a Slagling. It warms your blade and your hide.",
+      "power": "+4 fire damage on hit and 10% burn resistance"
     },
     {
       "id": "blue_slate_ice_egg",
@@ -255,17 +1513,6 @@
       "power": "+15 lightning damage with a 20% chance to chain to a second target"
     },
     {
-      "id": "smouldering_dark_egg",
-      "pixellab_id": "4c27418f-167e-4bb8-92c9-4ab701b7c601",
-      "type": "SOUL",
-      "name": "Soulstone",
-      "category": "cinder",
-      "rarity": "uncommon",
-      "value": 44,
-      "description": "Scorched dark red with embers sulking in the cracks, the last of a Slagling. It warms your blade and your hide.",
-      "power": "+4 fire damage on hit and 10% burn resistance"
-    },
-    {
       "id": "starlit_void_stone",
       "pixellab_id": "d6eae77e-5e58-4248-8ade-b4d015ae0b7a",
       "type": "SOUL",
@@ -288,6 +1535,28 @@
       "power": "+12 armor and 15% knockback resistance"
     },
     {
+      "id": "pale_sand_stone",
+      "pixellab_id": "f7fbf7e2-e3c5-44ae-97e6-7ad9433cce60",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "sand",
+      "rarity": "rare",
+      "value": 60,
+      "description": "Sun-bleached with a gold heart, wrung out of a Dewling. It makes blows land heavy and leaves them blinking.",
+      "power": "+8 blunt damage and attacks blind the target for 2 seconds"
+    },
+    {
+      "id": "black_egg_lava_veins",
+      "pixellab_id": "2ee79193-0914-4724-add6-f6a76a29c546",
+      "type": "SOUL",
+      "name": "Soulstone",
+      "category": "ember",
+      "rarity": "epic",
+      "value": 285,
+      "description": "Charred black, cracked open by molten veins. Magmashell's banked fire, and it leaves what you hit burning.",
+      "power": "+14 fire damage on hit and sets targets burning for 3s"
+    },
+    {
       "id": "mossy_green_egg",
       "pixellab_id": "8a301dd6-66c8-49bb-811b-6c9d3e934bf8",
       "type": "SOUL",
@@ -308,6 +1577,16 @@
       "value": 118,
       "description": "Grey plates shut around a clot of Duskfang red. It sharpens a weapon and feeds part of every wound back to you.",
       "power": "+6 damage and heals for 15% of damage dealt"
+    },
+    {
+      "id": "black_glass_lump",
+      "pixellab_id": "6cc13275-f528-41e2-b2d5-aa569ac277e8",
+      "type": "MISC",
+      "name": "Obsidian",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 40,
+      "description": "Fist-sized lump of glossy black glass, cooled out of some fire-thing's crust. Keen enough to shave with, so don't."
     },
     {
       "id": "spiky_white_tuft",
@@ -340,6 +1619,16 @@
       "description": "Two grinders with forked roots, one big enough for a Diretusk. Both chewed harder things than grass."
     },
     {
+      "id": "green_crystal_shard",
+      "pixellab_id": "92c7dbcc-8591-4979-819d-78fd6484a39e",
+      "type": "MISC",
+      "name": "Jade Shard",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 34,
+      "description": "Teal-green crystal with a wicked point, prised out of a Mosscairn's seams. Holds an edge and a grudge."
+    },
+    {
       "id": "pale_bat_wing",
       "pixellab_id": "40a6abf9-4e81-4f31-b8c5-b7c42be4ce76",
       "type": "MISC",
@@ -362,16 +1651,6 @@
       "waiting_for": "a crab"
     },
     {
-      "id": "linen_thread_spool",
-      "pixellab_id": "c1ea64a9-c78e-489d-8b56-43bda7bcfadf",
-      "type": "MISC",
-      "name": "Thread Spool",
-      "category": "cloth",
-      "rarity": "common",
-      "value": 12,
-      "description": "Half a spool of plain linen thread. Something stitched the Palehusk together, and it was not a tailor."
-    },
-    {
       "id": "purple_flower_petals",
       "pixellab_id": "a6c8b8f5-3e85-4989-9c8f-e06b4928b95b",
       "type": "MISC",
@@ -382,24 +1661,44 @@
       "description": "Purple petals with pale wedged stems, gathered past bloom. Meadow blobs trail them wherever they bounce."
     },
     {
-      "id": "black_glass_lump",
-      "pixellab_id": "6cc13275-f528-41e2-b2d5-aa569ac277e8",
+      "id": "linen_thread_spool",
+      "pixellab_id": "c1ea64a9-c78e-489d-8b56-43bda7bcfadf",
       "type": "MISC",
-      "name": "Obsidian",
-      "category": "mineral",
-      "rarity": "uncommon",
-      "value": 40,
-      "description": "Fist-sized lump of glossy black glass, cooled out of some fire-thing's crust. Keen enough to shave with, so don't."
+      "name": "Thread Spool",
+      "category": "cloth",
+      "rarity": "common",
+      "value": 12,
+      "description": "Half a spool of plain linen thread. Something stitched the Palehusk together, and it was not a tailor."
     },
     {
-      "id": "green_crystal_shard",
-      "pixellab_id": "92c7dbcc-8591-4979-819d-78fd6484a39e",
+      "id": "tied_bone_bundle",
+      "pixellab_id": "34c24b95-0214-4084-8cdc-dc80d79942a6",
       "type": "MISC",
-      "name": "Jade Shard",
-      "category": "mineral",
+      "name": "Bone Bundle",
+      "category": "bone",
+      "rarity": "common",
+      "value": 14,
+      "description": "Long pale bones tied off in a bundle. A Palehusk was carrying them, which raises questions about the string."
+    },
+    {
+      "id": "amber_glazed_root",
+      "pixellab_id": "7c5f8ba9-6847-441f-a7fb-30e170616442",
+      "type": "MISC",
+      "name": "Amber Root",
+      "category": "plant",
       "rarity": "uncommon",
       "value": 34,
-      "description": "Teal-green crystal with a wicked point, prised out of a Mosscairn's seams. Holds an edge and a grudge."
+      "description": "Hacked off a Stumpling's root-leg and glazed hard with amber sap. Warm to hold, and alchemists know it."
+    },
+    {
+      "id": "pale_blue_hailstones",
+      "pixellab_id": "92d3b6e7-4de9-4c5b-8fb6-66bdd49b52ee",
+      "type": "MISC",
+      "name": "Rime Stones",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "Blue-white pebbles, a good dozen, that will not melt in the palm. Whatever a Frostling is packed from, this is it."
     },
     {
       "id": "dried_grass_bundle",
@@ -410,6 +1709,17 @@
       "rarity": "common",
       "value": 6,
       "description": "Olive stalks tied off with cord \u2014 fodder for a farm that is gone. Sorrel still hauls its share to the gate."
+    },
+    {
+      "id": "pale_moth_wing",
+      "pixellab_id": "7252cfc9-91ce-4500-bffe-44fcc7f06f7a",
+      "type": "MISC",
+      "name": "Moth Wing",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "Pale tan and ribbed brown, with a blue sheen at the base. Something big and soft-winged shed it in the dark.",
+      "waiting_for": "a moth"
     },
     {
       "id": "rolled_grey_canvas",
@@ -443,37 +1753,6 @@
       "waiting_for": "shellfish"
     },
     {
-      "id": "amber_glazed_root",
-      "pixellab_id": "7c5f8ba9-6847-441f-a7fb-30e170616442",
-      "type": "MISC",
-      "name": "Amber Root",
-      "category": "plant",
-      "rarity": "uncommon",
-      "value": 34,
-      "description": "Hacked off a Stumpling's root-leg and glazed hard with amber sap. Warm to hold, and alchemists know it."
-    },
-    {
-      "id": "tied_bone_bundle",
-      "pixellab_id": "34c24b95-0214-4084-8cdc-dc80d79942a6",
-      "type": "MISC",
-      "name": "Bone Bundle",
-      "category": "bone",
-      "rarity": "common",
-      "value": 14,
-      "description": "Long pale bones tied off in a bundle. A Palehusk was carrying them, which raises questions about the string."
-    },
-    {
-      "id": "pale_moth_wing",
-      "pixellab_id": "7252cfc9-91ce-4500-bffe-44fcc7f06f7a",
-      "type": "MISC",
-      "name": "Moth Wing",
-      "category": "insect",
-      "rarity": "uncommon",
-      "value": 18,
-      "description": "Pale tan and ribbed brown, with a blue sheen at the base. Something big and soft-winged shed it in the dark.",
-      "waiting_for": "a moth"
-    },
-    {
       "id": "cracked_magma_stone",
       "pixellab_id": "d1bc9fcd-a105-41c5-bb2d-be5f5b3a7159",
       "type": "MISC",
@@ -492,16 +1771,6 @@
       "rarity": "rare",
       "value": 88,
       "description": "Rubble-grade rock studded with raw gold. It was a Mosscairn's shoulder until you argued about ownership."
-    },
-    {
-      "id": "pale_blue_hailstones",
-      "pixellab_id": "92d3b6e7-4de9-4c5b-8fb6-66bdd49b52ee",
-      "type": "MISC",
-      "name": "Rime Stones",
-      "category": "mineral",
-      "rarity": "uncommon",
-      "value": 22,
-      "description": "Blue-white pebbles, a good dozen, that will not melt in the palm. Whatever a Frostling is packed from, this is it."
     },
     {
       "id": "grey_rock_pile",
@@ -524,14 +1793,15 @@
       "description": "Scallops and spirals, sun-faded to tan. A Dunedelver turns them up where the sea has not been for an age."
     },
     {
-      "id": "dark_hardwood_plank",
-      "pixellab_id": "8f732c78-3edf-4b2a-a147-bea1ed72feb7",
+      "id": "twig_bodied_skimmer",
+      "pixellab_id": "1d348dd4-9682-4ee3-9d20-ae5052994e0d",
       "type": "MISC",
-      "name": "Oak Plank",
-      "category": "plant",
-      "rarity": "common",
-      "value": 7,
-      "description": "Planed dark oak, the grain unmistakable, knocked out of a Stumpling. It walked once, and now it holds shelves."
+      "name": "Twig Skimmer",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "Four glassy wings over a body like a snapped twig. Shaken loose from whatever swamp thing you flattened.",
+      "waiting_for": "an insect"
     },
     {
       "id": "bronze_camp_knife",
@@ -542,27 +1812,6 @@
       "rarity": "uncommon",
       "value": 32,
       "description": "Camp bronze on a ribbed wooden grip, made for rope and rations. The Nightmule that hauled it went feral first."
-    },
-    {
-      "id": "cobbled_stone_egg",
-      "pixellab_id": "bb3ab479-e34e-4122-9300-1f05359f9aa8",
-      "type": "MISC",
-      "name": "Stone Egg",
-      "category": "mineral",
-      "rarity": "uncommon",
-      "value": 30,
-      "description": "Fitted stone plates packed into an oval, shaken loose from a Magmashell. Nothing has ever hatched out of one."
-    },
-    {
-      "id": "twig_bodied_skimmer",
-      "pixellab_id": "1d348dd4-9682-4ee3-9d20-ae5052994e0d",
-      "type": "MISC",
-      "name": "Twig Skimmer",
-      "category": "insect",
-      "rarity": "uncommon",
-      "value": 22,
-      "description": "Four glassy wings over a body like a snapped twig. Shaken loose from whatever swamp thing you flattened.",
-      "waiting_for": "an insect"
     },
     {
       "id": "matted_black_pelt",
@@ -593,6 +1842,26 @@
       "rarity": "common",
       "value": 9,
       "description": "Three pitted iron links, worn smooth where a harness rubbed. The Nightmule that wore it is still out there."
+    },
+    {
+      "id": "dark_hardwood_plank",
+      "pixellab_id": "8f732c78-3edf-4b2a-a147-bea1ed72feb7",
+      "type": "MISC",
+      "name": "Oak Plank",
+      "category": "plant",
+      "rarity": "common",
+      "value": 7,
+      "description": "Planed dark oak, the grain unmistakable, knocked out of a Stumpling. It walked once, and now it holds shelves."
+    },
+    {
+      "id": "cobbled_stone_egg",
+      "pixellab_id": "bb3ab479-e34e-4122-9300-1f05359f9aa8",
+      "type": "MISC",
+      "name": "Stone Egg",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "Fitted stone plates packed into an oval, shaken loose from a Magmashell. Nothing has ever hatched out of one."
     },
     {
       "id": "dark_bat_wing",
@@ -646,16 +1915,6 @@
       "description": "Someone gilded a hunter's tooth, hollow at the root and polished bright. Nobody asks whose mouth it left."
     },
     {
-      "id": "black_volcanic_shard",
-      "pixellab_id": "8c89c277-78f5-465d-8be0-ff4c9c4499f2",
-      "type": "MISC",
-      "name": "Onyx Shard",
-      "category": "mineral",
-      "rarity": "uncommon",
-      "value": 36,
-      "description": "Wedge of near-black glass with a cold blue sheen, cracked out of Rimeshard's rock. The edge never dulls."
-    },
-    {
       "id": "raw_red_meat_slab",
       "pixellab_id": "be79d40e-dbf4-4550-b4b5-532532acf08f",
       "type": "MISC",
@@ -664,6 +1923,16 @@
       "rarity": "common",
       "value": 10,
       "description": "Thick, red, rimmed with brown fat. Which beast it came off is between you, the cook, and nobody else."
+    },
+    {
+      "id": "black_volcanic_shard",
+      "pixellab_id": "8c89c277-78f5-465d-8be0-ff4c9c4499f2",
+      "type": "MISC",
+      "name": "Onyx Shard",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 36,
+      "description": "Wedge of near-black glass with a cold blue sheen, cracked out of Rimeshard's rock. The edge never dulls."
     },
     {
       "id": "one_eyed_steel_mask",
@@ -696,6 +1965,17 @@
       "description": "Snapped off at the root, cream shading to brown. The Diretusk it belonged to never broke stride."
     },
     {
+      "id": "pale_armoured_beetle",
+      "pixellab_id": "5c26815e-4c3f-4a99-afde-ef8d1ff09a03",
+      "type": "MISC",
+      "name": "Bone Beetle",
+      "category": "insect",
+      "rarity": "common",
+      "value": 12,
+      "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one.",
+      "waiting_for": "an insect"
+    },
+    {
       "id": "curved_bone_talon",
       "pixellab_id": "972d6238-c723-40a9-a499-ce871764a2f7",
       "type": "MISC",
@@ -704,16 +1984,6 @@
       "rarity": "uncommon",
       "value": 24,
       "description": "Hooked grey bone, thick and cracked at the base. Fiends and the glowing dead shed them, and the point stays keen."
-    },
-    {
-      "id": "severed_scaled_paw",
-      "pixellab_id": "f766a0ec-246e-47c0-8bbf-d59ac2ccb5e7",
-      "type": "MISC",
-      "name": "Scaled Paw",
-      "category": "claw",
-      "rarity": "uncommon",
-      "value": 30,
-      "description": "Mottled grey-green hide and three pale curled claws. A Palemaw leaves them, and never in matching pairs."
     },
     {
       "id": "glossy_brown_seeds",
@@ -726,6 +1996,16 @@
       "description": "Hard glossy kernels streaked tan and brown, a good fistful. Small woodland things hoard them, and now so do you."
     },
     {
+      "id": "severed_scaled_paw",
+      "pixellab_id": "f766a0ec-246e-47c0-8bbf-d59ac2ccb5e7",
+      "type": "MISC",
+      "name": "Scaled Paw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "Mottled grey-green hide and three pale curled claws. A Palemaw leaves them, and never in matching pairs."
+    },
+    {
       "id": "bound_root_bundle",
       "pixellab_id": "919ad615-7358-4306-9c91-818bb32dc4e4",
       "type": "MISC",
@@ -735,17 +2015,6 @@
       "value": 7,
       "description": "Brown roots tied off with twine and dried brittle. Whatever woodland lump was hauling it does not want it back.",
       "waiting_for": "a gatherer with hands"
-    },
-    {
-      "id": "pale_armoured_beetle",
-      "pixellab_id": "5c26815e-4c3f-4a99-afde-ef8d1ff09a03",
-      "type": "MISC",
-      "name": "Bone Beetle",
-      "category": "insect",
-      "rarity": "common",
-      "value": 12,
-      "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one.",
-      "waiting_for": "an insect"
     },
     {
       "id": "gnarled_mandrake_root",
@@ -808,16 +2077,6 @@
       "description": "Slab of black volcanic glass, faceted and chipped. It sheds off a Magmashell's plates as the fire cools."
     },
     {
-      "id": "mint_slime_globule",
-      "pixellab_id": "de44c2ab-2979-48f0-b3b0-a8d20753af9e",
-      "type": "MISC",
-      "name": "Mint Slime",
-      "category": "slime",
-      "rarity": "common",
-      "value": 10,
-      "description": "Mint-green, translucent, and lit by a pale core. Every pond blob in the valley leaves one behind, wobbling."
-    },
-    {
       "id": "loose_beast_teeth",
       "pixellab_id": "9e212e63-e7b3-45c4-917b-7cf5482676bc",
       "type": "MISC",
@@ -826,6 +2085,16 @@
       "rarity": "common",
       "value": 8,
       "description": "Molars, curved fangs and small incisors, no two from the same jaw. Palemaws and Emberjaws shed them constantly."
+    },
+    {
+      "id": "mint_slime_globule",
+      "pixellab_id": "de44c2ab-2979-48f0-b3b0-a8d20753af9e",
+      "type": "MISC",
+      "name": "Mint Slime",
+      "category": "slime",
+      "rarity": "common",
+      "value": 10,
+      "description": "Mint-green, translucent, and lit by a pale core. Every pond blob in the valley leaves one behind, wobbling."
     },
     {
       "id": "plucked_beast_eyeball",
@@ -858,25 +2127,14 @@
       "description": "Four ivory horns splayed from one base, ridged like bark. Fiends and wraiths grow them for arguments they win."
     },
     {
-      "id": "teal_gold_quill",
-      "pixellab_id": "20637405-7628-41a0-a8dd-a588ec9721a9",
+      "id": "pitted_silver_band",
+      "pixellab_id": "03a1132d-02f2-46b9-80a5-83acd64328c2",
       "type": "MISC",
-      "name": "Teal Quill",
-      "category": "feather",
+      "name": "Pitted Ring",
+      "category": "relic",
       "rarity": "uncommon",
-      "value": 20,
-      "description": "Teal at the base, gold at the tip, and light as nothing. Scribes want the bird; nobody has found the bird.",
-      "waiting_for": "a bird"
-    },
-    {
-      "id": "yellowed_beast_molar",
-      "pixellab_id": "5b112e64-63db-43b2-9f5c-5a91135a84a4",
-      "type": "MISC",
-      "name": "Yellow Molar",
-      "category": "bone",
-      "rarity": "common",
-      "value": 12,
-      "description": "Thumb-sized, yellowed and worn flat. Grinding teeth like this come out of things that chew all day."
+      "value": 18,
+      "description": "Thick hammered silver, tarnished and pitted all over, off a Palehusk's borrowed finger. It fits nobody at all."
     },
     {
       "id": "ivory_hooked_talon",
@@ -887,6 +2145,16 @@
       "rarity": "uncommon",
       "value": 28,
       "description": "Cream-white and curved to a needle point, the socket left ragged. Glowbones and Frostwraiths grow them in sets."
+    },
+    {
+      "id": "yellowed_beast_molar",
+      "pixellab_id": "5b112e64-63db-43b2-9f5c-5a91135a84a4",
+      "type": "MISC",
+      "name": "Yellow Molar",
+      "category": "bone",
+      "rarity": "common",
+      "value": 12,
+      "description": "Thumb-sized, yellowed and worn flat. Grinding teeth like this come out of things that chew all day."
     },
     {
       "id": "spotted_purple_mushroom",
@@ -909,14 +2177,36 @@
       "description": "Knobbed at both ends and stained where beige should not be. A Palemaw was busy with it before you were."
     },
     {
-      "id": "pitted_silver_band",
-      "pixellab_id": "03a1132d-02f2-46b9-80a5-83acd64328c2",
+      "id": "teal_gold_quill",
+      "pixellab_id": "20637405-7628-41a0-a8dd-a588ec9721a9",
       "type": "MISC",
-      "name": "Pitted Ring",
-      "category": "relic",
+      "name": "Teal Quill",
+      "category": "feather",
       "rarity": "uncommon",
-      "value": 18,
-      "description": "Thick hammered silver, tarnished and pitted all over, off a Palehusk's borrowed finger. It fits nobody at all."
+      "value": 20,
+      "description": "Teal at the base, gold at the tip, and light as nothing. Scribes want the bird; nobody has found the bird.",
+      "waiting_for": "a bird"
+    },
+    {
+      "id": "purple_venom_claw",
+      "pixellab_id": "a29e3387-c21b-4322-9a0f-ade9af19eb1e",
+      "type": "MISC",
+      "name": "Venom Claw",
+      "category": "claw",
+      "rarity": "rare",
+      "value": 60,
+      "description": "Pulled from an Ashfiend before it crumbled. The purple hook is fine, but the green crust on the tip is not."
+    },
+    {
+      "id": "rainbow_tail_plume",
+      "pixellab_id": "d7c935c4-3726-4e96-804f-401c40933308",
+      "type": "MISC",
+      "name": "Prism Plume",
+      "category": "feather",
+      "rarity": "rare",
+      "value": 55,
+      "description": "Banded blue through green to red down a tan quill. Whatever grew a tail of these has not shown itself yet.",
+      "waiting_for": "a bird"
     },
     {
       "id": "golden_broad_fang",
@@ -940,16 +2230,6 @@
       "waiting_for": "a bat"
     },
     {
-      "id": "purple_venom_claw",
-      "pixellab_id": "a29e3387-c21b-4322-9a0f-ade9af19eb1e",
-      "type": "MISC",
-      "name": "Venom Claw",
-      "category": "claw",
-      "rarity": "rare",
-      "value": 60,
-      "description": "Pulled from an Ashfiend before it crumbled. The purple hook is fine, but the green crust on the tip is not."
-    },
-    {
       "id": "green_slime_glob",
       "pixellab_id": "6fe39c16-11a8-4075-8a8d-782499a20401",
       "type": "MISC",
@@ -960,15 +2240,34 @@
       "description": "Half a pond-dweller, domed and translucent, still faintly warm. Alchemists want it and will not say why."
     },
     {
-      "id": "rainbow_tail_plume",
-      "pixellab_id": "d7c935c4-3726-4e96-804f-401c40933308",
+      "id": "bone_flecked_grave_soil",
+      "pixellab_id": "04851845-e3c5-4d99-90f6-b9c5234b1c5a",
       "type": "MISC",
-      "name": "Prism Plume",
-      "category": "feather",
+      "name": "Grave Dirt",
+      "category": "misc",
+      "rarity": "common",
+      "value": 5,
+      "description": "Crumbly dark earth studded with bone chips. Whatever the Palehusk climbed out of, it brought some along."
+    },
+    {
+      "id": "pale_blue_crystal_cluster",
+      "pixellab_id": "5cbeaf10-c812-4f87-aaa3-c16ec0478432",
+      "type": "MISC",
+      "name": "Frost Quartz",
+      "category": "mineral",
       "rarity": "rare",
-      "value": 55,
-      "description": "Banded blue through green to red down a tan quill. Whatever grew a tail of these has not shown itself yet.",
-      "waiting_for": "a bird"
+      "value": 70,
+      "description": "Ice-blue spires on a common base, cold indoors and out. Rimeshard grows this in its rock and swings the rest."
+    },
+    {
+      "id": "flame_veined_shard",
+      "pixellab_id": "db224736-3183-4486-910e-b81098012010",
+      "type": "MISC",
+      "name": "Ember Shard",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 85,
+      "description": "Leaf-shaped crystal veined orange and red. It stays warm in the pouch, like the shell it was prised from."
     },
     {
       "id": "blue_veined_rift_geode",
@@ -979,27 +2278,6 @@
       "rarity": "epic",
       "value": 160,
       "description": "Split grey stone bleeding cold cyan light from every seam. Golems grow around them and resent the loss."
-    },
-    {
-      "id": "blunt_ivory_tooth",
-      "pixellab_id": "b12dfba1-d061-44ce-aa2a-5545b53a3034",
-      "type": "MISC",
-      "name": "Beast Tooth",
-      "category": "bone",
-      "rarity": "uncommon",
-      "value": 18,
-      "description": "Thumb-long ivory with a notched crown. A Palemaw bites once; a Diretusk never has to. Both leave these."
-    },
-    {
-      "id": "pale_silk_skein",
-      "pixellab_id": "df0fe0ac-6fc0-46a9-9dfe-ab21868b9b7c",
-      "type": "MISC",
-      "name": "Silk Skein",
-      "category": "cloth",
-      "rarity": "uncommon",
-      "value": 26,
-      "description": "Silvery cord wound tight and bound at the waist, cool to the touch. No hand in Nangijala spun this one.",
-      "waiting_for": "a spider"
     },
     {
       "id": "bright_plume_bundle",
@@ -1013,44 +2291,36 @@
       "waiting_for": "a bird"
     },
     {
-      "id": "bone_flecked_grave_soil",
-      "pixellab_id": "04851845-e3c5-4d99-90f6-b9c5234b1c5a",
+      "id": "pale_silk_skein",
+      "pixellab_id": "df0fe0ac-6fc0-46a9-9dfe-ab21868b9b7c",
       "type": "MISC",
-      "name": "Grave Dirt",
-      "category": "misc",
+      "name": "Silk Skein",
+      "category": "cloth",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "Silvery cord wound tight and bound at the waist, cool to the touch. No hand in Nangijala spun this one.",
+      "waiting_for": "a spider"
+    },
+    {
+      "id": "blunt_ivory_tooth",
+      "pixellab_id": "b12dfba1-d061-44ce-aa2a-5545b53a3034",
+      "type": "MISC",
+      "name": "Beast Tooth",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "Thumb-long ivory with a notched crown. A Palemaw bites once; a Diretusk never has to. Both leave these."
+    },
+    {
+      "id": "barred_brown_feather",
+      "pixellab_id": "bd52a82a-3da1-475f-af04-acdf4aa08743",
+      "type": "MISC",
+      "name": "Hawk Feather",
+      "category": "feather",
       "rarity": "common",
-      "value": 5,
-      "description": "Crumbly dark earth studded with bone chips. Whatever the Palehusk climbed out of, it brought some along."
-    },
-    {
-      "id": "flame_veined_shard",
-      "pixellab_id": "db224736-3183-4486-910e-b81098012010",
-      "type": "MISC",
-      "name": "Ember Shard",
-      "category": "mineral",
-      "rarity": "rare",
-      "value": 85,
-      "description": "Leaf-shaped crystal veined orange and red. It stays warm in the pouch, like the shell it was prised from."
-    },
-    {
-      "id": "pale_blue_crystal_cluster",
-      "pixellab_id": "5cbeaf10-c812-4f87-aaa3-c16ec0478432",
-      "type": "MISC",
-      "name": "Frost Quartz",
-      "category": "mineral",
-      "rarity": "rare",
-      "value": 70,
-      "description": "Ice-blue spires on a common base, cold indoors and out. Rimeshard grows this in its rock and swings the rest."
-    },
-    {
-      "id": "stretched_tan_hide",
-      "pixellab_id": "fbf9304f-4a96-4000-8047-5192bc49404c",
-      "type": "MISC",
-      "name": "Rough Hide",
-      "category": "hide",
-      "rarity": "common",
-      "value": 14,
-      "description": "Pegged square with little wooden stakes, edges left ragged. Somebody began the tanning and gave up on it."
+      "value": 7,
+      "description": "Barred brown with an olive tip, and too big for any bird anyone has flushed out of these woods yet.",
+      "waiting_for": "a bird"
     },
     {
       "id": "scaly_clawed_foot",
@@ -1063,6 +2333,16 @@
       "description": "Three cream claws on a brown scaled foot, cut clean at the joint. An Emberjaw's still holds its heat."
     },
     {
+      "id": "stretched_tan_hide",
+      "pixellab_id": "fbf9304f-4a96-4000-8047-5192bc49404c",
+      "type": "MISC",
+      "name": "Rough Hide",
+      "category": "hide",
+      "rarity": "common",
+      "value": 14,
+      "description": "Pegged square with little wooden stakes, edges left ragged. Somebody began the tanning and gave up on it."
+    },
+    {
       "id": "curved_ivory_fang",
       "pixellab_id": "2b8c7d6d-940a-4ca9-a8bf-691a5b6e7e41",
       "type": "MISC",
@@ -1071,17 +2351,6 @@
       "rarity": "common",
       "value": 12,
       "description": "White ivory going tan at the root, worn fine by use. Cave-jaws and dusk-hunters both leave these behind."
-    },
-    {
-      "id": "barred_brown_feather",
-      "pixellab_id": "bd52a82a-3da1-475f-af04-acdf4aa08743",
-      "type": "MISC",
-      "name": "Hawk Feather",
-      "category": "feather",
-      "rarity": "common",
-      "value": 7,
-      "description": "Barred brown with an olive tip, and too big for any bird anyone has flushed out of these woods yet.",
-      "waiting_for": "a bird"
     },
     {
       "id": "green_herb_bundle",

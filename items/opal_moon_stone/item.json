@@ -1,0 +1,38 @@
+{
+  "id": "opal_moon_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "moon",
+  "rarity": "rare",
+  "value": 95,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Pale opal that holds a crescent whichever way you turn it. Moonpelt's own, and the moon wants it back.",
+  "sprite": "items/opal_moon_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "4319d4ed-f49f-444d-9d42-51de7b842c56",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:17:54.319182+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:06 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:33+00:00",
+  "soul": {
+    "element": "moon",
+    "power": "+10% dodge at night, and moonlight closes 4 of your wounds a second",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

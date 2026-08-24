@@ -1,0 +1,30 @@
+{
+  "id": "wheat_sheaf",
+  "name": "Wheat Sheaf",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "plant",
+  "rarity": "common",
+  "value": 10,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Cut wheat bound at the waist, still smelling of a field that nobody has harvested in a long while.",
+  "sprite": "items/wheat_sheaf/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "538e27cd-ee64-4704-9dc0-450b5ac64ef8",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Need lots of different loot items/misc/drop for a RPG game",
+    "created_at": "2026-08-24T17:34:50.764983+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:12 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:26+00:00"
+}

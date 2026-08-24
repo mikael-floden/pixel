@@ -1,0 +1,38 @@
+{
+  "id": "rough_bull_hide_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "brawn",
+  "rarity": "epic",
+  "value": 215,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Rust-brown and rough as an old hide, taken from a Tuskmaul. Warbands have broken against less.",
+  "sprite": "items/rough_bull_hide_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "aeb85f22-b3a7-439e-b517-b45282646b01",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:57 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "brawn",
+    "power": "+15% maximum health, and shoulder charges cannot be interrupted",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

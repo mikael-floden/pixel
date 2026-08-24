@@ -1,0 +1,38 @@
+{
+  "id": "brown_woodgrain_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "bark",
+  "rarity": "uncommon",
+  "value": 44,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Brown stone with a wood grain and two dark knots. Nothing that grows has been caught carrying one.",
+  "sprite": "items/brown_woodgrain_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "bb84e871-7df9-4514-b266-f25f9f57fa6d",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it.",
+    "created_at": "2026-08-24T17:17:54.319182+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:42:05 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:33+00:00",
+  "soul": {
+    "element": "bark",
+    "power": "+10 armor, and fire does 15% less to you",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

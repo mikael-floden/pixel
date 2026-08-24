@@ -1,0 +1,38 @@
+{
+  "id": "mint_serpent_stone",
+  "name": "Soulstone",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "venom",
+  "rarity": "uncommon",
+  "value": 44,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Mint-green with a serpent coiled across it, left by a Blightcur. Whatever it carries, it survives.",
+  "sprite": "items/mint_serpent_stone/sprite.webp",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "83d3803a-203c-4ae6-816d-67ae869f9ccf",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "This is a soul stone. I need lots of different variations of it. Different stone/soul/crack variants in different colors.",
+    "created_at": "2026-08-24T17:23:29.287201+00:00",
+    "last_modified": "Mon, 24 Aug 2026 17:41:58 GMT"
+  },
+  "synced_at": "2026-08-24T17:57:32+00:00",
+  "soul": {
+    "element": "venom",
+    "power": "Attacks poison the target for 6 a second, stacking twice",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}
