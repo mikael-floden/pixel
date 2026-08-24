@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T11:42:43.518Z",
+  "updated_at": "2026-08-24T11:49:14.590Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1511,7 +1511,45 @@
           "item": "stained_marrow_bone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 24,
+        "ry": 12,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.11,
+            "ay": 23.2
+          },
+          "idle#south": {
+            "ax": 1.23,
+            "ay": 23.6
+          },
+          "idle#south-east": {
+            "ax": -0.29,
+            "ay": 19.27
+          },
+          "idle#north-east": {
+            "ax": -0.3,
+            "ay": 18.93
+          },
+          "idle#north": {
+            "ax": 1.04,
+            "ay": 20.32
+          },
+          "idle#north-west": {
+            "ax": 0.75,
+            "ay": 19.99
+          },
+          "idle#west": {
+            "ax": 0.75,
+            "ay": 23.41
+          },
+          "idle#south-west": {
+            "ax": 0.33,
+            "ay": 18.25
+          }
+        }
+      }
     },
     "obsidian_lion": {
       "max_hp": 20,
