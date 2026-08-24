@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T10:32:02.507Z",
+  "updated_at": "2026-08-24T10:35:46.438Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2180,7 +2180,45 @@
           "item": "glossy_brown_seeds",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.25,
+        "ry": 7,
+        "offsets": {
+          "idle#east": {
+            "ax": -0.69,
+            "ay": 12.77
+          },
+          "idle#south": {
+            "ax": 0.92,
+            "ay": 14.93
+          },
+          "idle#north-east": {
+            "ax": -4,
+            "ay": 12.86
+          },
+          "idle#north": {
+            "ax": 1.13,
+            "ay": 14.06
+          },
+          "idle#north-west": {
+            "ax": 2.92,
+            "ay": 12.95
+          },
+          "idle#west": {
+            "ax": 0.93,
+            "ay": 11.47
+          },
+          "idle#south-west": {
+            "ax": 1.51,
+            "ay": 13.03
+          },
+          "walk#south-east": {
+            "ax": -2.49,
+            "ay": 14.12
+          }
+        }
+      }
     }
   }
 }
