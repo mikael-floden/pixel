@@ -1066,6 +1066,15 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
 `games2/config/chess_boards.json`, overridable per world from
 `live/tuning/chess.json`.
 
+- **PIXEL ART SCALES BY A WHOLE DEVICE-PIXEL FACTOR, NOT A WHOLE CSS ONE**
+  (maintainer: "fractal scaling"). `image-rendering:pixelated` resolves in
+  DEVICE px, so what must come out whole is `css x dpr / art` — at his dpr 2.75
+  a 1:1 CSS sprite is 2.75x and neighbouring source pixels get 3 and 2 device
+  px. `chessPieceCss` / `pixelArtCss` (shared) pick the integer scale and work
+  back to a possibly-fractional CSS size; the dice strip scales all three of
+  hand, `background-size` and the keyframe's landing offset together or the
+  frames tear. Tested at real ratios in `server/test/chesssize.test.ts` (no
+  headless run reproduces 2.75).
 - **DIALOG STABILITY LAW** (drop-dialog family, paid for in a 6-round ghost
   hunt): the card skeleton is built ONCE and its controls NEVER move or get
   replaced — squares update in place. A full re-render used to shift the

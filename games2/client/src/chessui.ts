@@ -13,7 +13,7 @@
  */
 import {
   chessInitial, chessApply, chessParseMove, chessMoves, chessMoveStr, chessInCheck,
-  ChessState, ChessMove,
+  chessPieceCss, pixelArtCss, ChessState, ChessMove,
 } from "@nangijala/shared";
 
 export interface ChessMatchView {
@@ -63,7 +63,7 @@ function ensureStyle() {
   .ml-chess-back{overflow:auto}
   .ml-chess-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1/1;
     width:min(100%, calc(100dvh - 178px));align-self:center;
-    border:1px solid var(--border-strong,#d5d0c2);border-radius:8px;overflow:hidden;user-select:none;touch-action:manipulation}
+    border:1px solid var(--border-strong,#d5d0c2);border-radius:8px;overflow:hidden;user-select:none;touch-action:none}
   .ml-chess-sq{display:flex;align-items:center;justify-content:center;font-size:min(9.2vw,38px);line-height:1;cursor:pointer;position:relative;
     /* EVERY square is exactly 1/8 x 1/8 of the board, whatever it holds. Both
        template axes are 1fr AND min sizes are zeroed: a grid item's implicit
@@ -81,7 +81,15 @@ function ensureStyle() {
   html[data-theme="dark"] .ml-chess-sq .dot{background:rgba(250,247,240,.4)}
   .ml-chess-sq .cap{position:absolute;inset:6%;border-radius:50%;border:3px solid rgba(30,26,20,.4)}
   .ml-chess-sq .pc{pointer-events:none}
-  .ml-chess-sq .pc-img{pointer-events:none;width:86%;height:86%;image-rendering:pixelated;position:relative;z-index:1}
+  /* The art is 32x32. At width:86% of a fractional square it landed on a
+     ~1.21x scale, so nearest-neighbour gave some source pixels 2 screen px and
+     others 3 — the "fractal" look. --pc is set from JS to a whole multiple of
+     32 against an integer square, so every source pixel is the same size. */
+  .ml-chess-sq .pc-img{pointer-events:none;width:var(--pc,32px);height:var(--pc,32px);
+    image-rendering:pixelated;position:relative;z-index:1}
+  .ml-chess-sq.dragging .pc-img{opacity:.28}
+  .ml-chess-ghost{position:fixed;z-index:2147483000;pointer-events:none;image-rendering:pixelated;
+    transform:translate(-50%,-50%) scale(1.16);filter:drop-shadow(0 5px 7px rgba(0,0,0,.45))}
   .ml-chess-sq .pc.w{color:#f6f1e6;text-shadow:0 0 2px #2c2620,0 1px 1px #2c2620,0 -1px 1px #2c2620,1px 0 1px #2c2620,-1px 0 1px #2c2620}
   .ml-chess-sq .pc.b{color:#332e28;text-shadow:0 0 2px #efe9da,0 1px 1px #efe9da}
   .ml-chess-foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -91,27 +99,27 @@ function ensureStyle() {
   .ml-chess button.primary{background:var(--accent,#d97757);border-color:var(--accent,#d97757);color:#fff}
   .ml-chess .dicebox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0 6px}
   .ml-chess .dice-row{display:flex;gap:26px;align-items:center}
-  .ml-chess .die{width:64px;height:64px;border-radius:12px;background:var(--bg,#faf9f5);border:2px solid var(--border-strong,#d5d0c2);
-    display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:8px;box-sizing:border-box}
-  .ml-chess .die.rolling{animation:mlDiceTumble .9s cubic-bezier(.3,.7,.4,1.1)}
-  @keyframes mlDiceTumble{0%{transform:rotate(0) scale(1)}30%{transform:rotate(160deg) scale(.82)}60%{transform:rotate(300deg) scale(1.12)}100%{transform:rotate(360deg) scale(1)}}
-  .ml-chess .die i{border-radius:50%;background:var(--ink,#1f1e1a);opacity:0;margin:14%}
-  .ml-chess .die[data-v="1"] i:nth-child(5),
-  .ml-chess .die[data-v="2"] i:nth-child(1),.ml-chess .die[data-v="2"] i:nth-child(9),
-  .ml-chess .die[data-v="3"] i:nth-child(1),.ml-chess .die[data-v="3"] i:nth-child(5),.ml-chess .die[data-v="3"] i:nth-child(9),
-  .ml-chess .die[data-v="4"] i:nth-child(1),.ml-chess .die[data-v="4"] i:nth-child(3),.ml-chess .die[data-v="4"] i:nth-child(7),.ml-chess .die[data-v="4"] i:nth-child(9),
-  .ml-chess .die[data-v="5"] i:nth-child(1),.ml-chess .die[data-v="5"] i:nth-child(3),.ml-chess .die[data-v="5"] i:nth-child(5),.ml-chess .die[data-v="5"] i:nth-child(7),.ml-chess .die[data-v="5"] i:nth-child(9),
-  .ml-chess .die[data-v="6"] i:nth-child(1),.ml-chess .die[data-v="6"] i:nth-child(3),.ml-chess .die[data-v="6"] i:nth-child(4),.ml-chess .die[data-v="6"] i:nth-child(6),.ml-chess .die[data-v="6"] i:nth-child(7),.ml-chess .die[data-v="6"] i:nth-child(9)
-    {opacity:1}
-  .ml-chess .die.blank i{opacity:0}
-  .ml-chess .die-q{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--muted,#706b5f)}
-  .ml-chess .die-hand{width:97px;height:97px;background:url(/chess/dice_throw_6.webp) 0 0 no-repeat;
-    background-size:873px 97px;image-rendering:pixelated;transform-origin:50% 60%}
+  /* SIZE COMES FROM JS (--dieW/--dieStrip/--dieEnd): the 97px frames must land
+     on a WHOLE device-pixel scale, which 1:1 CSS is not at dpr 2.75. Every
+     length here scales together or the strip tears. */
+  .ml-chess .die-hand{width:var(--dieW,97px);height:var(--dieW,97px);
+    background:url(/chess/dice_throw_6.webp) 0 0 no-repeat;
+    background-size:var(--dieStrip,873px) var(--dieW,97px);
+    image-rendering:pixelated;transform-origin:50% 60%;
+    transform:scaleY(var(--dieFlip,1))}
   .ml-chess .die-hand.one{background-image:url(/chess/dice_throw_1.webp)}
-  .ml-chess .die-hand.shaking{animation:mlDiceShake 1.2s steps(8) infinite}
-  @keyframes mlDiceShake{to{background-position-x:-776px}}
-  .ml-chess .die-hand.landed{background-position-x:-776px;animation:none;
-    transform:scale(1.22);transition:transform .18s cubic-bezier(.2,2.2,.4,1)}
+  /* THE OPPONENT SITS ACROSS THE TABLE (maintainer): his hand comes in from the
+     top, so the whole sprite flips vertically and the landed pop grows from the
+     mirrored pivot. */
+  .ml-chess .die-hand.opp{--dieFlip:-1;transform-origin:50% 40%}
+  /* ONE throw, ending on the landed face. It used to loop 'infinite' against a
+     1,900ms reveal = 1.58 cycles, so the hand threw, snapped back to the fist
+     and threw again half-way before jumping to the result (maintainer: "plays
+     twice, looks ugly"). One iteration + forwards holds frame 8 by itself. */
+  .ml-chess .die-hand.shaking{animation:mlDiceShake 1.15s steps(8) 1 forwards}
+  @keyframes mlDiceShake{to{background-position-x:var(--dieEnd,-776px)}}
+  .ml-chess .die-hand.landed{background-position-x:var(--dieEnd,-776px);animation:none;
+    transform:scaleY(var(--dieFlip,1)) scale(1.22);transition:transform .18s cubic-bezier(.2,2.2,.4,1)}
   .ml-chess .verdict{text-align:center;padding:8px 0 2px}
   .ml-chess .verdict b{font-size:20px}
   .ml-chess .verdict .why{color:var(--muted,#706b5f);font-size:13px;margin-top:2px}
@@ -134,6 +142,11 @@ export class ChessDialog {
   private promoPending: { from: number; to: number } | null = null;
   private resignArmed = 0;
   private throwRevealAt = 0; // the hand shakes until here, then the face shows
+  private oppRevealAt = 0;   // the same, for the hand across the table
+  /** Live drag. `on` flips once the pointer clears the slop radius, so a plain
+   * tap never spawns a ghost and the old tap-then-tap flow still works. */
+  private drag: { sq: number; id: number; x: number; y: number; on: boolean;
+                  cell: HTMLElement; ghost?: HTMLElement; lift: number } | null = null;
 
   constructor(m: ChessMatchView, api: ChessApi) {
     this.m = m; this.api = api;
@@ -183,6 +196,12 @@ export class ChessDialog {
 
   close() {
     if (this.tick) clearInterval(this.tick);
+    window.removeEventListener("resize", this.sizeBoard);
+    window.removeEventListener("ml-layout", this.sizeBoard);
+    window.removeEventListener("resize", this.sizeDice);
+    window.removeEventListener("ml-layout", this.sizeDice);
+    this.drag?.ghost?.remove(); // a drag interrupted by resign/timeout
+    this.drag = null;
     this.root?.remove();
     this.root = undefined;
     this.api.onClosed();
@@ -198,9 +217,11 @@ export class ChessDialog {
     // LET THE THROW LAND. Both dice can be in within a second (the NPC throws
     // at ~0.9s), which would swap the panel mid-shake. Hold the dice panel
     // until the reveal plus a beat to read both faces, then build the board.
-    if (this.diceBuilt && !this.gameBuilt && Date.now() < this.throwRevealAt + 1400) {
+    // Both hands get their moment — whoever throws LAST sets the linger.
+    const lastThrow = Math.max(this.throwRevealAt, this.oppRevealAt);
+    if (this.diceBuilt && !this.gameBuilt && Date.now() < lastThrow + 1400) {
       this.renderDice();
-      const wait = this.throwRevealAt + 1450 - Date.now();
+      const wait = lastThrow + 1450 - Date.now();
       setTimeout(() => this.render(), Math.max(50, wait));
       return;
     }
@@ -225,13 +246,16 @@ export class ChessDialog {
               <div style="text-align:center;font-size:12px;margin-top:4px">You</div>
             </div>
             <div>
-              <div class="die die-q" data-v="0" id="ml-die-opp">?</div>
+              <div class="die-hand opp" id="ml-die-opp"></div>
               <div style="text-align:center;font-size:12px;margin-top:4px">${this.api.oppName}</div>
             </div>
           </div>
           <button class="primary" id="ml-die-throw">Throw the dice</button>
           <div class="hint" id="ml-die-hint"></div>
         </div>`;
+      this.sizeDice();
+      window.addEventListener("resize", this.sizeDice);
+      window.addEventListener("ml-layout", this.sizeDice);
       c.querySelector("#ml-die-throw")!.addEventListener("click", (e) => {
         // Pre-rolled server-side; the maintainer's hand-shake animation (his
         // 2026-08-21 GIF, 9 frames) is honest theater — the value it "lands
@@ -242,9 +266,9 @@ export class ChessDialog {
         btn.disabled = true;
         (c.querySelector("#ml-die-hand") as HTMLElement).classList.add("shaking");
         (c.querySelector("#ml-die-hand") as HTMLElement).classList.remove("landed");
-        this.throwRevealAt = Date.now() + 1900;
+        this.throwRevealAt = Date.now() + 1150;   // == the single shake's length
         this.api.send("chess.dice", { m: this.m.id });
-        setTimeout(() => this.render(), 1950);
+        setTimeout(() => this.render(), 1200);
       });
     }
     const hand = c.querySelector("#ml-die-hand") as HTMLElement;
@@ -265,11 +289,19 @@ export class ChessDialog {
     if (this.m.phase !== "dice" && this.mySide)
       (c.querySelector("#ml-die-hint") as HTMLElement).textContent =
         this.mySide === "w" ? "You play White!" : "You play Black!";
-    if (theirs > 0 && opEl.dataset.v !== String(theirs)) {
-      opEl.classList.remove("die-q");
-      opEl.textContent = "";
-      opEl.insertAdjacentHTML("beforeend", "<i></i>".repeat(9));
+    // HE THROWS TOO. His value only syncs in when he actually throws, so that
+    // transition IS his throw: same 1.15s shake, same landed pop, upside down.
+    // Until then his hand rests on frame 0 — the fist, waiting.
+    if (theirs > 0 && !opEl.dataset.v) {
       opEl.dataset.v = String(theirs);
+      opEl.classList.toggle("one", theirs === 1);
+      opEl.classList.add("shaking");
+      this.oppRevealAt = Date.now() + 1150;
+      setTimeout(() => this.render(), 1200);
+    }
+    if (this.oppRevealAt && Date.now() >= this.oppRevealAt && !opEl.classList.contains("landed")) {
+      opEl.classList.remove("shaking");
+      opEl.classList.add("landed");
     }
   }
 
@@ -310,10 +342,57 @@ export class ChessDialog {
       boardEl.appendChild(cell);
       this.cellEls.push(cell);
     }
+    // TAP-TO-MOVE AND DRAG-AND-DROP, one gesture. pointerdown always selects
+    // (that IS the tap flow); a drag only begins once the pointer leaves a 6px
+    // slop radius, and drops by hit-testing the square under the finger.
     boardEl.addEventListener("pointerdown", (e) => {
       const el = (e.target as HTMLElement).closest("[data-sq]") as HTMLElement | null;
-      if (el) this.tapSquare(Number(el.dataset.sq));
+      if (!el) return;
+      const sq = Number(el.dataset.sq);
+      this.tapSquare(sq);
+      if (this.sel !== sq) return; // the tap did not pick up a piece of mine
+      this.drag = { sq, id: e.pointerId, x: e.clientX, y: e.clientY, on: false, cell: el,
+                    lift: e.pointerType === "touch" ? 30 : 0 };
+      try { boardEl.setPointerCapture(e.pointerId); } catch { /* mouse re-entry */ }
     });
+    boardEl.addEventListener("pointermove", (e) => {
+      const d = this.drag;
+      if (!d || d.id !== e.pointerId) return;
+      if (!d.on) {
+        if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+        const img = d.cell.querySelector("img.pc-img") as HTMLImageElement | null;
+        if (!img) { this.drag = null; return; }
+        const r = img.getBoundingClientRect();
+        const g = img.cloneNode(true) as HTMLElement;
+        g.className = "ml-chess-ghost";
+        g.style.width = `${r.width}px`;
+        g.style.height = `${r.height}px`;
+        // On the BODY, not in the card: the squares are overflow:hidden and
+        // would clip the piece the moment it left its own cell.
+        document.body.appendChild(g);
+        d.ghost = g;
+        d.on = true;
+        d.cell.classList.add("dragging");
+      }
+      // A touch drag lifts the piece clear of the thumb; a mouse drag centres.
+      d.ghost!.style.left = `${e.clientX}px`;
+      d.ghost!.style.top = `${e.clientY - d.lift}px`;
+      e.preventDefault();
+    });
+    const endDrag = (e: PointerEvent, drop: boolean) => {
+      const d = this.drag;
+      if (!d || d.id !== e.pointerId) return;
+      this.drag = null;
+      d.cell.classList.remove("dragging");
+      d.ghost?.remove(); // remove BEFORE hit-testing, or we would hit the ghost
+      if (!d.on) return; // a plain tap — pointerdown already did the work
+      if (!drop) return;
+      const under = document.elementFromPoint(e.clientX, e.clientY - d.lift);
+      const cell = under?.closest?.("[data-sq]") as HTMLElement | null;
+      if (cell && Number(cell.dataset.sq) !== d.sq) this.tapSquare(Number(cell.dataset.sq));
+    };
+    boardEl.addEventListener("pointerup", (e) => endDrag(e, true));
+    boardEl.addEventListener("pointercancel", (e) => endDrag(e, false));
     c.querySelector("#ml-chess-close")!.addEventListener("click", () => {
       this.api.send("chess.close", { m: this.m.id });
       this.close();
@@ -326,7 +405,44 @@ export class ChessDialog {
       btn.textContent = "Really resign?";
       setTimeout(() => { if (this.resignArmed <= Date.now() && btn.isConnected) btn.textContent = "Resign"; }, 5100);
     });
+    this.sizeBoard();
+    window.addEventListener("resize", this.sizeBoard);
+    window.addEventListener("ml-layout", this.sizeBoard); // rotation / handedness
   }
+
+  /** Squares are whole CSS px so the board is exactly 8*sq and all 64 stay
+   * identical (verify-chess pins that). The PIECE size comes from shared
+   * `chessPieceCss` — whole DEVICE-pixel scaling, reasoned and tested there
+   * (server/test/chesssize.test.ts covers dpr 2.75, which no headless run
+   * reproduces). */
+  private sizeBoard = () => {
+    const board = this.root?.querySelector("#ml-chess-board") as HTMLElement | null;
+    const parent = board?.parentElement as HTMLElement | null;
+    if (!board || !parent) return;
+    const avail = Math.min(parent.clientWidth, window.innerHeight - 178);
+    const sq = Math.max(24, Math.floor(avail / 8));
+    const pc = chessPieceCss(sq, window.devicePixelRatio || 1);
+    board.style.width = `${sq * 8}px`;
+    board.style.setProperty("--pc", `${pc}px`);
+  };
+
+  /** The dice strip is 9 frames of 97x97. Every length has to scale together —
+   * the hand, the background-size and the keyframe's landing offset — or the
+   * strip tears mid-frame. Size comes from `pixelArtCss` so the frames land on
+   * a WHOLE device-pixel scale (1:1 CSS is 2.75x on the maintainer's phone,
+   * which is the uneven scaling he caught on the pieces). */
+  private sizeDice = () => {
+    const box = this.root?.querySelector(".dicebox") as HTMLElement | null;
+    if (!box) return;
+    // Two hands plus the row gap; the cap keeps it near the art's own 97px on
+    // ordinary ratios and only grows where a whole scale demands it.
+    const budget = Math.max(48, Math.min(120, Math.floor((box.clientWidth - 26) / 2)));
+    const w = pixelArtCss(budget, window.devicePixelRatio || 1, 97);
+    const k = w / 97;
+    box.style.setProperty("--dieW", `${w}px`);
+    box.style.setProperty("--dieStrip", `${873 * k}px`);
+    box.style.setProperty("--dieEnd", `${-776 * k}px`);
+  };
 
   private renderGame() {
     this.buildGame();

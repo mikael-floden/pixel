@@ -339,3 +339,34 @@ export function chessAiMove(st: ChessState, opts?: { nodes?: number; seed?: numb
   }
   return best;
 }
+
+/**
+ * Chess board sizing, kept pure so it can be tested at device ratios no
+ * headless browser will reproduce.
+ *
+ * The pieces are 32x32 pixel art and `image-rendering:pixelated` resolves in
+ * DEVICE pixels, so the number that must come out WHOLE is `css * dpr / 32`.
+ * A whole CSS size is not enough: at dpr 2.75 a 32px CSS piece is 88 device px
+ * = 2.75x, which gives some source pixels 3 device px and their neighbours 2 —
+ * the uneven "fractal" scaling. Pick the integer device scale that fits, then
+ * work back to a (possibly fractional) CSS size.
+ *
+ * `sq` is the square's whole-CSS-px size; a board too small for even 1x fills
+ * the square rather than clipping the art.
+ */
+export function chessPieceCss(sq: number, dpr: number, art = 32): number {
+  const k = Math.max(1, Math.floor((sq * 0.92 * dpr) / art));
+  return Math.min(sq, (k * art) / dpr);
+}
+
+/**
+ * The same rule for any pixel-art element given a CSS size budget: the largest
+ * size within `budget` that renders `art` source px at a WHOLE device-pixel
+ * scale (falling back to the budget when not even 1x fits). Used for the dice
+ * hand, whose 97px frames had exactly the piece bug — 1:1 in CSS is 2.75x in
+ * device pixels on the maintainer's phone.
+ */
+export function pixelArtCss(budget: number, dpr: number, art: number): number {
+  const k = Math.max(1, Math.floor((budget * dpr) / art));
+  return Math.min(budget, (k * art) / dpr);
+}
