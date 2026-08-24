@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-08-24T13:20:23.265Z",
+  "updated_at": "2026-08-24T13:34:11.208Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1292,7 +1292,45 @@
           "item": "stained_marrow_bone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 14.75,
+        "ry": 12,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.72,
+            "ay": 8.96
+          },
+          "idle#east": {
+            "ax": -1.48,
+            "ay": 9.51
+          },
+          "idle#south-east": {
+            "ax": 0.38,
+            "ay": 8.43
+          },
+          "idle#north-east": {
+            "ax": -1.85,
+            "ay": 11
+          },
+          "idle#north": {
+            "ax": 1.11,
+            "ay": 7.5
+          },
+          "idle#north-west": {
+            "ax": 1.32,
+            "ay": 10.43
+          },
+          "idle#west": {
+            "ax": 2.44,
+            "ay": 9.28
+          },
+          "idle#south-west": {
+            "ax": 0.44,
+            "ay": 9.2
+          }
+        }
+      }
     },
     "magma_wolf": {
       "max_hp": 20,
