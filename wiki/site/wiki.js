@@ -7936,12 +7936,15 @@ function viewItems() {
         // since you can sort on that"). A sort you cannot read down the page is
         // a sort you have to take on trust.
         //
-        // The number alone, in the theme's gold: the coin is authored 32x32 and
-        // this cell has no room for it at 1x — and halving pixel art to fit is
-        // the one thing this repo does not do. The sort control above the grid
-        // carries the coin, so the colour is already spoken for.
+        // WITH HIS COIN ON IT (maintainer 2026-08-24: "This gold coin icon is
+        // smaller (I like icons, feels more like a game that way)") — he drew a
+        // 24x24 single coin for exactly this, where the 32x32 pile the sort
+        // control uses had no room at 1x. Both are drawn at their authored
+        // size; nothing here is ever scaled to fit.
         Number(it.value) > 0
-          ? h("span", { class: "item-cell-value", title: `Sells for ${it.value} gold` }, String(it.value))
+          ? h("span", { class: "item-cell-value", title: `Sells for ${it.value} gold` },
+            h("img", { class: "coin-24", src: "icons/coin.webp", alt: "gold", width: "24", height: "24", loading: "lazy" }),
+            String(it.value))
           : null);
     })));
 }

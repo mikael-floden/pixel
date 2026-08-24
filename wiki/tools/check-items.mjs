@@ -72,7 +72,9 @@ ok(pxEach < 60,
 // A CELL IS NEVER TALLER THAN IT NEEDS TO BE. "It's unreasonable the card is as
 // big as a monster" — the creature cards are ~250px; a cell must stay near its
 // 48px icon.
-ok(grid.cellH <= 110, `a cell is sized for its icon, not for a creature (${grid.cellH}px tall)`);
+// A cell grew from 97 to 109px when his coin joined the price — worth it, and
+// still nowhere near the ~250px creature cards this replaced.
+ok(grid.cellH <= 125, `a cell is sized for its icon, not for a creature (${grid.cellH}px tall)`);
 // THE WORTH IS ON THE TILE, because he sorts by it (maintainer 2026-08-24: "I
 // feel that is important since you can sort on that") — a sort you cannot read
 // down the page is one you have to take on trust.
@@ -83,6 +85,18 @@ const priced = await p.evaluate(() => {
 });
 const expPriced = items.filter((x) => Number(x.value) > 0).length;
 ok(priced.shown === expPriced, `every item worth something shows what it is worth (${priced.shown} of ${expPriced})`);
+// HIS COIN, AT ITS AUTHORED SIZE (maintainer 2026-08-24: "This gold coin icon
+// is smaller (I like icons, feels more like a game that way)"). He drew a 24x24
+// single coin for this row; the 32x32 pile stays on the sort control. Neither
+// is ever scaled to fit — that is the whole reason there are two of them.
+const coin = await p.evaluate(() => {
+  const c = document.querySelector(".item-cell-value img");
+  if (!c) return null;
+  const r = c.getBoundingClientRect();
+  return { src: c.getAttribute("src"), nat: [c.naturalWidth, c.naturalHeight], drawn: [Math.round(r.width), Math.round(r.height)] };
+});
+ok(coin && coin.nat[0] === 24 && coin.drawn[0] === 24 && coin.drawn[1] === 24,
+  `the price carries his 24x24 coin, drawn at 24 (${coin?.src}, ${coin?.nat.join("x")} drawn ${coin?.drawn.join("x")})`);
 ok(priced.first.length > 3 && priced.first.every((v, i, a) => i === 0 || a[i - 1] >= v),
   `and the default sort really does run high to low down the grid (${priced.first.join(" ")})`);
 // FOUR ACROSS ON EVERY PHONE, not just this one: auto-fill gave four at 393px

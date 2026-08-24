@@ -2351,10 +2351,22 @@ holds the cell wide enough for a name *and* a price on every phone (verified at
 393, 412 and 430). Past 760px it goes back to filling the width.
 
 **The price is on the tile because he sorts by it** — a sort you cannot read
-down the page is one you have to take on trust. The number alone, in the
-theme's gold, tabular so the column reads as a column: the coin is authored
-32×32 and there is no room for it at 1×, and halving pixel art to fit is the one
-thing this repo does not do.
+down the page is one you have to take on trust. It reads 295, 285, 285, 280,
+275 down the grid on the default sort, tabular so the column reads as a column.
+
+**With his coin on it.** The first cut was the number alone, because the
+existing coin is authored 32×32 and an 85px cell has no room for it at 1× —
+and halving pixel art to fit is the one thing this repo does not do. He drew a
+**24×24 single coin** for exactly this (*"I like icons, feels more like a game
+that way"*), so `icons/coin.webp` sits beside the price at 24, and the 32×32
+pile stays on the sort control. Neither is ever scaled: that is the whole
+reason there are two of them.
+
+Converted the repo's way — lossless **and** exact — and verified by decoding the
+result with the wiki's own VP8L decoder and comparing every pixel to the source:
+24×24, 440 B, **0 mismatches**. `games2/scripts/to-webp.py` needs Pillow, which
+this container no longer has, so `wiki/tools/png-to-webp.mjs` does the same job
+with a wasm encoder and the same round-trip refusal.
 
 **Density must not cost identity.** 71 of these are soulstones whose `name` is
 literally "Soulstone", so the caption carries the **creature** — Frostwraith,

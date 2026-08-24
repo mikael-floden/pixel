@@ -1601,9 +1601,14 @@ input[type="range"] { accent-color: var(--accent); }
 /* The worth, in the theme's own gold, tabular so the column reads as a column
    when he sorts by it. */
 .item-cell-value {
+  display: inline-flex; align-items: center; gap: 2px;
   font-size: 11px; line-height: 1.1; color: var(--star);
   font-variant-numeric: tabular-nums; font-weight: 600;
 }
+/* His coin, authored 24x24 and drawn at 24 — never resampled, like every other
+   piece of pixel art on this site. */
+.coin-24 { width: 24px; height: 24px; image-rendering: pixelated; flex: none; }
+.card .thumb img.coin-24 { max-width: none; max-height: none; object-fit: none; }
 @media (min-width: 760px) {
   /* Past the phone, go back to filling the width — a desktop should not be held
      to four. */
