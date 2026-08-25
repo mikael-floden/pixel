@@ -120,6 +120,10 @@ ok(!ov.cards.some((c) => c.name === "Grass" && !/waiting for you/.test(c.pill)),
 // ---- 2. THE TYPE PAGE cascades ---------------------------------------------
 await p.evaluate(() => document.querySelector("a.card")?.click());
 await p.waitForTimeout(700);
+// The ground page lands on Base (its set editor) — the filtered pair cards
+// this gate follows live on On top of.
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(900);
 const ty = await read();
 console.log(`type page: ${ty.h1} — ${ty.cards.map((c) => c.name).join(", ")}`);
 ok(ty.cards.length === 1, `inside a type, only the sets holding an unstarred tile (${ty.cards.length})`);
@@ -219,6 +223,9 @@ await pickStars("rejected");
 await p.waitForTimeout(700);
 await p.evaluate(() => document.querySelector("a.card")?.click());
 await p.waitForTimeout(700);
+// Ground pages open on Base; the filtered pair cards are on On top of.
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(900);
 const rty = await read();
 ok(rty.cards.length >= 1 && /\d+ of \d+ rejected/.test(rty.cards[0].sub),
   `inside a type, only sets holding a rejected tile, sized (${rty.cards[0]?.sub})`);
