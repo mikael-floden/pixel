@@ -82,6 +82,18 @@ const LIVE_FILES: Record<string, string> = {
   // the base OF. Consumed by the tiles agent (variant generation budget) and
   // the maps/world agent (what to paint a field with). See live/README.md.
   "tuning/base_tiles.json": "tuning/base_tiles",
+  // THE GROUND'S LOOK, per ground type: an ordered list of BASE TILE SETS, each
+  // a group of tiles that look good together with a weight apiece, plus a
+  // "clean" member for the flat palette colour, and a set-level weight for how
+  // likely a region picks that set. Set 0 is reserved for Clean and is switched
+  // off by weight rather than deleted, so a ground can always draw.
+  //
+  // THE BUCKET HERE IS `grounds`, NOT `overrides` — one entry per ground type,
+  // so a save is a per-ground delta. Consumed by the game's renderer, the maps
+  // agent and the tiles agent; it REPLACES the per-material transition_surface
+  // / always_own_texture / flat_top flags. Reference implementation and the
+  // deterministic pick in wiki/lib/basesets.mjs. See live/README.md.
+  "tuning/base_tile_sets.json": "tuning/base_tile_sets",
   ...Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [`feedback/${d}.json`, `feedback/${d}`])),
 };
 
@@ -89,6 +101,7 @@ type Doc = Record<string, unknown> & {
   entries?: Record<string, unknown>;
   monsters?: Record<string, unknown>;
   overrides?: Record<string, unknown>;
+  grounds?: Record<string, unknown>;
   defaults?: Record<string, unknown>;
 };
 
@@ -101,6 +114,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
+  if (key === "tuning/base_tile_sets") return { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   return { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], updated_at: "", entries: {} };
 };
 
@@ -353,6 +367,10 @@ function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc 
   const bucket = key.startsWith("feedback/") ? "entries"
     : key === "tuning/monsters" ? "monsters"
     : key === "tuning/sfx_requests" ? "requests"
+    // Base tile sets are keyed by GROUND, not by tile: the whole point of the
+    // model is that a set can exist with no tiles in it (Clean #0), which a
+    // tile-keyed bucket cannot represent.
+    : key === "tuning/base_tile_sets" ? "grounds"
     : "overrides";
   const map = (next[bucket] ?? {}) as Record<string, unknown>;
   for (const [id, value] of Object.entries(delta)) {
@@ -382,6 +400,7 @@ export function registerLiveRoutes(app: express.Application): void {
         sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"), chess: docs.get("tuning/chess"),
         scenery_lights: docs.get("tuning/scenery_lights"),
         base_tiles: docs.get("tuning/base_tiles"),
+        base_tile_sets: docs.get("tuning/base_tile_sets"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });

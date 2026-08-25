@@ -663,6 +663,35 @@ function buildWorld() {
       .sort((a, b) => b[1] - a[1]).slice(0, 10)
       .map(([c, n]) => ({ c: `#${c.toString(16).padStart(6, "0")}`, share: +(n / total).toFixed(4) }));
   };
+  /* THE POOL A BASE TILE SET PICKS FROM (tiles/base_candidates/<ground>/).
+   *
+   * NOT the x-over-x review tiles, which is where promote-to-base used to look
+   * and why the maintainer could not judge it: "the tile show a clean color top
+   * so I can't see the art under". Those are WALL showcases with deliberately
+   * flat tops (palette.json flat_top) — a base tile is judged entirely on its
+   * top, so that pool asks him to approve something he is not being shown.
+   *
+   * These are the pure corner tiles of generated transition sets, texture
+   * intact, already hue/saturation-corrected exactly as the game draws them —
+   * "the grass he called insanely good". The ballot ids are stable
+   * (<pair>__<variant>) and name their own provenance.
+   *
+   * Grounds with no ballot are not an error: a ground draws its clean colour
+   * until a texture beats it, and lava/water/deep_water probably always will. */
+  const basePools = {};
+  const bcDir = join(ROOT, "tiles", "base_candidates");
+  if (isDir(bcDir)) {
+    for (const ground of readdirSync(bcDir).sort()) {
+      const idx = join(bcDir, ground, "index.json");
+      if (!existsSync(idx)) continue;
+      let ballot = null;
+      try { ballot = JSON.parse(readFileSync(idx, "utf8")); } catch { continue; }
+      const cands = (ballot?.candidates ?? [])
+        .filter((c) => c?.id && c?.file && existsSync(join(ROOT, c.file)))
+        .map((c) => ({ id: c.id, art: c.file, from: c.source_set ?? null }));
+      if (cands.length) basePools[ground] = cands;
+    }
+  }
   const groundTypes = [...types.values()].map((t) => {
     const pal = palCfg?.types?.[t.id] ?? {};
     return {
@@ -673,6 +702,9 @@ function buildWorld() {
       wallColor: pal.wall ?? null,
       surface: pal.transition_surface ?? null,
       palette: measurePalette(t.id),
+      // How many textured tiles he can choose from for this ground's sets.
+      // The art itself is in basePool; this is for counts without walking it.
+      basePool: (basePools[t.id] ?? []).length,
     };
   });
   // ---- transitions: what exists on disk, per unordered material pair ----
@@ -724,6 +756,10 @@ function buildWorld() {
     accept: cfg.accept ?? null,
     tile: cfg.tile ?? null,
     groundTypes,
+    // ground -> [{id, art, from}] — the ballot a base tile set draws members
+    // from. Shipped whole (356 entries, ~40 KB) because the set editor needs
+    // every candidate's path at once to draw the picker.
+    basePools,
     transitions,
     tombstoned: [...dead],
     schema: review?.schema ?? null,

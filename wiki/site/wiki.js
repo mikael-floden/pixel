@@ -624,6 +624,9 @@ function valueOf(key, id) {
   const bucket = key.startsWith("feedback/") ? doc.entries
     : key === "tuning/monsters" ? doc.monsters
     : key === "tuning/sfx_requests" ? doc.requests
+    // One entry per GROUND, not per tile — a set that holds no tiles (Clean #0)
+    // has to be representable, and a tile-keyed bucket cannot hold one.
+    : key === SETS_KEY ? doc.grounds
     : doc.overrides;
   const v = bucket?.[id];
   return v === undefined ? null : v;
@@ -4317,6 +4320,258 @@ const BASE_KEY = "tuning/base_tiles";
 const baseTilesDoc = () => state.tuning.base_tiles
   ?? (state.tuning.base_tiles = { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} });
 const isBaseTile = (key) => !!baseTilesDoc().overrides?.[key];
+/* ---- BASE TILE SETS — THE GROUND'S LOOK, AS HE CONFIGURES IT -------------
+ * Maintainer 2026-08-25, replacing both the old single "base tile" and the
+ * hardcoded per-material texture rules:
+ *
+ *   "Each ground type have a list of base tile sets. A base tile set is a list
+ *   of tiles that look extremely good when used togather ... should also
+ *   specify how likley (the weight/chance) tile_1 is to be used VS tile_2 ...
+ *   In every base tile set the set can add a weight for how likley the
+ *   clean/plain color should be used. Setting this to 0% will always draw with
+ *   texture. Setting this to 100% will always draw a clean tile."
+ *
+ *   "Why do each tile type have several base tile sets? Because on one side of
+ *   the world we can make the grass look different, but still look nice vs
+ *   another side of the world. And the world-agent will always stick to a
+ *   single base tile set at one location so it will always look good."
+ *
+ * SET 0 IS RESERVED. It is named Clean, holds nothing but the clean member, and
+ * is never deleted — "all tile types always have a default Set #0 that is
+ * special and can only contain 100% the clean/plain base color. How I get the
+ * map-agent to never use that default set is to set the likleyness for this set
+ * being used to 0%." Switching a set off by weight rather than deleting it also
+ * guarantees every ground has one set that can still draw.
+ *
+ * IDS ARE STABLE AND NEVER RENUMBERED. A deleted set leaves a hole on purpose:
+ * renumbering would repaint regions nobody touched, and the display name is
+ * "<name> #<id>" — the number he reads is the identity, not the position.
+ *
+ * WEIGHTS ARE RAW NUMBERS, SHOWN AS PERCENTAGES. Percent is how he stated the
+ * model; raw weights are what survives editing, because storing percentages
+ * would silently rescale every other row each time he adds a tile.
+ *
+ * THE POOL IS tiles/base_candidates/, NOT the x-over-y review tiles. Those have
+ * deliberately flat tops (palette.json flat_top) — they are wall showcases, and
+ * picking a base tile from them asks him to judge a surface he is not being
+ * shown ("the tile show a clean color top so I can't see the art under").
+ *
+ * Storage: live/tuning/base_tile_sets.json, bucket `grounds`, one entry per
+ * ground type. Schema and the deterministic pick: wiki/lib/basesets.mjs.
+ */
+const SETS_KEY = "tuning/base_tile_sets";
+const CLEAN_SET = 0;
+const setsDoc = () => state.tuning.base_tile_sets
+  ?? (state.tuning.base_tile_sets = { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} });
+/** Every candidate this ground's sets may draw from (worldMeta.basePools) —
+ *  the textured ballot, 356 tiles across five grounds. */
+const basePool = (typeId) => (worldMeta().basePools ?? {})[typeId] ?? [];
+/* A MEMBER MAY COME FROM EITHER POOL. The ballot is the right one to pick from
+ * and the one the picker offers — but he can also promote a tile straight from
+ * an x-over-y review card, and that decision predates this model and should
+ * keep working. Ballot ids (<pair>__<variant>) and review keys (tiles/<cell>/
+ * <sha1>) cannot collide, so one lookup can serve both. */
+function memberArt(typeId, id) {
+  const p = basePool(typeId).find((c) => c.id === id);
+  if (p) return p.art;
+  for (const c of worldCells()) {
+    if (c.top !== typeId) continue;
+    const cand = c.candidates.find((x) => x.key === id);
+    if (cand) return cand.art;
+  }
+  return null;
+}
+
+/* THE SETS OF ONE GROUND, normalised: Clean #0 always present, ids ascending,
+ * weights clamped non-negative, exactly one clean member per set. A ground with
+ * no entry still gets Clean — the model has no "no sets" state, which is what
+ * lets every caller render without a special case. Mirrors setsFor() in
+ * wiki/lib/basesets.mjs; check-basesets.mjs proves the two agree. */
+function groundSets(typeId) {
+  const raw = setsDoc().grounds?.[typeId]?.sets;
+  const list = Array.isArray(raw) ? raw.slice() : [];
+  if (!list.some((s) => s && s.id === CLEAN_SET)) {
+    list.unshift({ id: CLEAN_SET, name: "Clean", weight: 1, members: [{ kind: "clean", weight: 1 }] });
+  }
+  return list
+    .filter((s) => s && Number.isInteger(s.id) && s.id >= 0)
+    .sort((a, b) => a.id - b.id)
+    .map((s) => {
+      const src = Array.isArray(s.members) ? s.members : [];
+      const tiles = s.id === CLEAN_SET ? [] : src
+        .filter((m) => m?.kind === "tile" && m.id)
+        // `gone` rather than dropped: a candidate the tiles agent regenerated
+        // away must be VISIBLE as a hole he can clear, not silently vanish and
+        // leave a set whose percentages no longer add up to what he set.
+        .map((m) => ({ id: m.id, art: memberArt(typeId, m.id) ?? m.tile ?? null, gone: !memberArt(typeId, m.id), weight: Math.max(0, Number(m.weight) || 0) }));
+      const cm = src.find((m) => m?.kind === "clean");
+      return {
+        id: s.id,
+        name: typeof s.name === "string" && s.name ? s.name : s.id === CLEAN_SET ? "Clean" : "Set",
+        weight: Math.max(0, Number(s.weight) || 0),
+        clean: cm ? Math.max(0, Number(cm.weight) || 0) : (tiles.length ? 0 : 1),
+        members: tiles,
+      };
+    });
+}
+/** "Clean #0", "Set #1", "Meadow #2" — the number is the identity he reads. */
+const setLabel = (s) => `${s.name} #${s.id}`;
+/** A set can draw a picture only if something in it has weight. */
+const setDraws = (s) => s.clean > 0 || s.members.some((m) => m.weight > 0 && m.art);
+/** Percent shares for a row of weights, which is what he set them in. */
+function shareOf(weights) {
+  const total = weights.reduce((n, w) => n + (w > 0 ? w : 0), 0);
+  return total > 0 ? weights.map((w) => (w > 0 ? w : 0) / total) : weights.map(() => 0);
+}
+/* Not `pct` — that name belongs to the drop-chance formatter at the top of
+ * this file, which takes a 1-in-N chance, not a share. */
+const sharePct = (x) => `${Math.round(x * 100)}%`;
+
+/* WRITE ONE GROUND. The save is a per-ground delta, so a set edit on grass can
+ * never overwrite a set edit on snow — even from another tab. */
+function writeSets(typeId, sets) {
+  const doc = setsDoc();
+  doc.grounds ??= {};
+  doc.grounds[typeId] = {
+    sets: sets.map((s) => ({
+      id: s.id, name: s.name, weight: s.weight,
+      members: [{ kind: "clean", weight: s.clean },
+        ...s.members.map((m) => ({ kind: "tile", id: m.id, tile: m.art, weight: m.weight }))],
+    })),
+  };
+  doc.updated_at = new Date().toISOString();
+  touch(SETS_KEY, typeId);
+  markDirty(SETS_KEY);
+}
+const editSets = (typeId, fn) => { const s = groundSets(typeId); fn(s); writeSets(typeId, s); };
+/** Lowest unused id, never reusing one that is merely hidden — see the note on
+ *  stable ids. Starts at 1 because 0 belongs to Clean. */
+const nextSetId = (typeId) => {
+  const used = new Set(groundSets(typeId).map((s) => s.id));
+  for (let i = 1; ; i++) if (!used.has(i)) return i;
+};
+function addSet(typeId) {
+  const id = nextSetId(typeId);
+  editSets(typeId, (sets) => sets.push({ id, name: "Set", weight: 1, clean: 0, members: [] }));
+  return id;
+}
+function deleteSet(typeId, id) {
+  if (id === CLEAN_SET) return;                       // Clean is switched off, never deleted
+  editSets(typeId, (sets) => { const i = sets.findIndex((s) => s.id === id); if (i >= 0) sets.splice(i, 1); });
+}
+const renameSet = (typeId, id, name) =>
+  editSets(typeId, (sets) => { const s = sets.find((x) => x.id === id); if (s) s.name = String(name ?? "").trim().slice(0, 24) || "Set"; });
+const setSetWeight = (typeId, id, w) =>
+  editSets(typeId, (sets) => { const s = sets.find((x) => x.id === id); if (s) s.weight = clampWeight(w); });
+const setCleanWeight = (typeId, id, w) =>
+  editSets(typeId, (sets) => { const s = sets.find((x) => x.id === id); if (s && s.id !== CLEAN_SET) s.clean = clampWeight(w); });
+function addSetMember(typeId, id, candId) {
+  editSets(typeId, (sets) => {
+    const s = sets.find((x) => x.id === id);
+    if (!s || s.id === CLEAN_SET || s.members.some((m) => m.id === candId)) return;
+    s.members.push({ id: candId, art: memberArt(typeId, candId), gone: false, weight: 1 });
+  });
+}
+const removeSetMember = (typeId, id, candId) =>
+  editSets(typeId, (sets) => { const s = sets.find((x) => x.id === id); if (s) s.members = s.members.filter((m) => m.id !== candId); });
+const setMemberWeight = (typeId, id, candId, w) =>
+  editSets(typeId, (sets) => { const m = sets.find((x) => x.id === id)?.members.find((y) => y.id === candId); if (m) m.weight = clampWeight(w); });
+/* 0 IS A LEGAL WEIGHT AND MUST STAY ONE — it is how he says "never", both for a
+ * set ("the weight for using this set is 0") and for the clean member ("Setting
+ * this to 0% will always draw with texture"). The old base-tile weight clamped
+ * to a 0.1 floor, which quietly made "never" impossible to express. */
+const clampWeight = (w) => Math.max(0, Math.min(100, +(+w).toFixed(2) || 0));
+/* ---- THE SET EDITOR — the Base tab, rebuilt around sets ------------------
+ * "The wiki will be responsible to both rework the wiki itself so I can see and
+ * manage all base tile sets for every tile type" (maintainer 2026-08-25).
+ *
+ * A FIELD PREVIEW IS THE ONLY HONEST PICTURE of a set, and it is drawn with the
+ * REAL pick — the same FNV-1a over (set id, x, y) the game uses — so what he
+ * approves here is literally the ground he will walk on. Randomize therefore
+ * moves the ORIGIN rather than reseeding a toy RNG: every roll is a different
+ * real patch of the world, never a patch that could not occur. ("A great tile
+ * repeated is still repetition", and a group is good when every roll looks like
+ * the same ground.)
+ */
+const setOrigins = new Map();          // "type/set" -> [x0, y0] for Randomize
+/* Ported from wiki/lib/basesets.mjs, which is the spec the game and the tiles
+ * agent port too; check-basesets.mjs proves this copy still agrees with it. */
+function fnv1a(str) {
+  let x = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i) & 0xff; x = Math.imul(x, 0x01000193) >>> 0; }
+  return x >>> 0;
+}
+const unitHash = (s) => fnv1a(s) / 4294967296;
+function pickWeighted(weights, u) {
+  let total = 0;
+  for (const w of weights) total += w > 0 ? w : 0;
+  if (!(total > 0)) return -1;
+  let acc = 0;
+  const target = u * total;
+  for (let i = 0; i < weights.length; i++) { acc += weights[i] > 0 ? weights[i] : 0; if (target < acc) return i; }
+  for (let i = weights.length - 1; i >= 0; i--) if (weights[i] > 0) return i;
+  return -1;
+}
+/** What fills cell (x,y) of a set: a member's art, or null for the clean colour. */
+function setCellArt(set, x, y) {
+  const rows = [{ art: null, weight: set.clean }, ...set.members.map((m) => ({ art: m.art, weight: m.art ? m.weight : 0 }))];
+  const i = pickWeighted(rows.map((r) => r.weight), unitHash(`bts1|tile|${set.id}|${x}|${y}`));
+  return i < 0 ? null : rows[i].art;
+}
+/** A field of this set, drawn as the game would draw it from origin [x0,y0]. */
+function setField(typeId, set, n, origin, scale = 1) {
+  const box = h("div", { class: "iso-stage checker group-stage" });
+  const [x0, y0] = origin;
+  const clean = groundBaseColor(typeId)?.c ?? null;
+  const cells = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    cells.push({ c, r, img: setCellArt(set, x0 + c, y0 + r) });
+  }
+  const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
+  const paint = (images) => {
+    // A CLEAN CELL IS NOT A MISSING CELL. Cells with no art are the flat colour,
+    // and they are drawn as the ground's own colour behind the textured ones —
+    // dropping them would show a set at 50% clean as a field full of holes.
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()));
+    if (cells.some((x) => !x.img) && clean) box.style.setProperty("--clean-fill", clean);
+    box.classList.toggle("has-clean", cells.some((x) => !x.img));
+  };
+  if (!paths.length) { paint({}); return box; }
+  loadImages(paths, paint);
+  return box;
+}
+/* THE POOL PICKER. 161 grass candidates is too many to scroll past on a phone
+ * while deciding, so it opens as a dialog over the set he is filling and closes
+ * on the first pick — the decision is "does this one belong with those", which
+ * is answered by the field behind it, not by the grid. */
+function openPoolPicker(typeId, setId, onDone) {
+  document.querySelector(".pool-modal")?.remove();
+  const already = new Set(groundSets(typeId).find((s) => s.id === setId)?.members.map((m) => m.id) ?? []);
+  const pool = basePool(typeId).filter((c) => !already.has(c.id));
+  const dlg = h("dialog", { class: "promote-modal pool-modal" },
+    h("div", { class: "panel-title" }, `Add to ${setLabel(groundSets(typeId).find((s) => s.id === setId) ?? { name: "Set", id: setId })}`,
+      h("span", { class: "pill" }, `${pool.length} to choose from`)),
+    h("p", { class: "muted" },
+      pool.length
+        ? "Every one of these is a real generated surface, already corrected to this ground's palette — tap one to add it."
+        : basePool(typeId).length
+          ? "Every candidate for this ground is already in this set."
+          : "No textured candidates for this ground yet — the tiles agent publishes them to tiles/base_candidates/. Until then this ground can only draw its clean colour."),
+    pool.length ? h("div", { class: "pool-grid" }, ...pool.map((c) => h("button", {
+      class: "pool-cell", type: "button", title: c.from ? `from ${c.from.split("/").slice(-2).join(" ")}` : c.id,
+      onclick: () => { addSetMember(typeId, setId, c.id); dlg.close(); dlg.remove(); onDone?.(); },
+    }, h("img", { class: "pool-tile", src: assetUrl(c.art), alt: c.id, loading: "lazy" })))) : null,
+    h("button", { class: "ghost-btn", onclick: () => { dlg.close(); dlg.remove(); } }, "Close"));
+  document.body.append(dlg);
+  dlg.showModal();
+  dlg.addEventListener("close", () => dlg.remove());
+}
+/** One weight box: he edits the number, the percentage beside it tells him what
+ *  the number MEANS in this row. 0 is legal and is how he says "never". */
+const weightBox = (value, title, onset) => h("label", { class: "weight-label", title },
+  "weight ",
+  Object.assign(h("input", { type: "number", class: "weight-input", min: "0", max: "100", step: "0.5", value: String(value) }),
+    { onchange: (e) => onset(e.target.value) }));
 /* BASE TILES COME IN GROUPS (maintainer 2026-08-21, second pass: "A base tile
  * group is a set of tiles that togather make tileing/seems dissapears. They
  * are often very very close to eachother. And what's important here is to
@@ -4377,10 +4632,11 @@ const groundTypeMeta = (id) => (worldMeta().groundTypes ?? []).find((g) => g.id 
  *  one exists, else the game palette's own colour for the type ("often the bg
  *  on the base tile or alone if no base tile exist"). */
 function groundBaseColor(typeId) {
-  for (const b of baseTilesOf(typeId)) {
-    const c = b.hit?.cand?.paletteTop;
-    if (c && /^#[0-9a-f]{3,8}$/i.test(c)) return { c, from: "the base tile's measured top" };
-  }
+  /* THE CLEAN COLOUR IS THE PALETTE'S, not a tile's. It used to be measured off
+   * whichever tile happened to be promoted first, which made the ground's own
+   * colour move every time he changed a set — and the clean member of a set is
+   * defined as "the ground's flat palette colour", so it has to be the palette
+   * that answers. */
   const t = groundTypeMeta(typeId);
   if (t.top) return { c: t.top, from: "the game palette (no base tile promoted yet)" };
   return t.hex ? { c: t.hex, from: "the generator's intended colour" } : null;
@@ -4550,12 +4806,125 @@ function texFor(art, raw, cb) {
   };
   mk(art, (x) => { a = x; }); mk(raw, (x) => { r = x; });
 }
+/* ---- TOP SUBSTITUTION — the wall he is reviewing, under the ground he chose --
+ * Maintainer 2026-08-25: "That page as you know focuses on the walls, but you
+ * should be able to see the walls with different grounds based on what you
+ * select. Remember a base tile set is all about the ground. I pick tiles to be
+ * part of the base tile set if I like how the top looks with the knowlage this
+ * will never define a wall."
+ *
+ * So a "Set #N" view of an x-over-y tile keeps that tile's WALL — the thing
+ * under review — and replaces only its TOP FACE with a tile from the set.
+ *
+ * THE GEOMETRY, measured here rather than assumed:
+ *   Review tiles are 64x64 with the art at rows 9..54; ballot tiles are 64x46
+ *   with the same art at rows 0..45. Both are 46 rows of tile, so apex-aligning
+ *   them is a straight dy = 9 shift, and the centre column's top face is 29
+ *   rows in both.
+ *   The top face is per COLUMN, from the silhouette: rows [ymin, ymax-16].
+ *   Not a rhombus formula — the pipeline's top_face() replaced one of those
+ *   because it was a pixel short at every extreme, counting a genuine ring of
+ *   top face as wall. WALL_D = 17, the same constant the manifest publishes as
+ *   iso.wall_px.
+ *   THE TWO SILHOUETTES ARE NOT IDENTICAL: measured on grass, the review tile
+ *   starts one row higher than the ballot tile in 48 of 64 columns. Copying
+ *   pixel-for-pixel would leave that row unpainted — "leaving a few edge pixels
+ *   like this looks like shit" — so each column is extended, repeating the
+ *   ballot tile's first top pixel upward, exactly as _extend_base does.
+ */
+const SUB_CACHE = new Map();          // "cand::base" -> HTMLCanvasElement | null
+const WALL_D = 17;                    // rows of wall under every column (tiles/pipeline/transition_render.py)
+/** Per column, the first and last opaque row. -1 where the column is empty. */
+function colSpans(data, w, h) {
+  const top = new Int16Array(w).fill(-1), bot = new Int16Array(w).fill(-1);
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) if (data[(y * w + x) * 4 + 3] > 8) { if (top[x] < 0) top[x] = y; bot[x] = y; }
+  }
+  return { top, bot };
+}
+/** Review tile + ballot tile -> the review tile wearing the ballot tile's top. */
+function topSub(candImg, baseImg) {
+  const w = candImg.naturalWidth, h = candImg.naturalHeight;
+  if (!w || !baseImg.naturalWidth) return null;
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d", { willReadFrequently: true });
+  cx.imageSmoothingEnabled = false;
+  cx.drawImage(candImg, 0, 0);
+  const out = cx.getImageData(0, 0, w, h);           // throws if tainted — caller falls back
+  const bw = baseImg.naturalWidth, bh = baseImg.naturalHeight;
+  const bc = document.createElement("canvas"); bc.width = bw; bc.height = bh;
+  const bx = bc.getContext("2d", { willReadFrequently: true });
+  bx.imageSmoothingEnabled = false;
+  bx.drawImage(baseImg, 0, 0);
+  const base = bx.getImageData(0, 0, bw, bh);
+  const A = colSpans(out.data, w, h), B = colSpans(base.data, bw, bh);
+  // Apex-align the two silhouettes. Both are the same 46-row tile; the review
+  // canvas simply pads it. Taken from the tiles' own topmost opaque row rather
+  // than from (h - bh), so a differently padded tile still lands right.
+  const apex = (s) => { let m = 1e9; for (const v of s.top) if (v >= 0 && v < m) m = v; return m === 1e9 ? 0 : m; };
+  const dy = apex(A) - apex(B);
+  for (let x = 0; x < w && x < bw; x++) {
+    if (A.top[x] < 0 || B.top[x] < 0) continue;
+    const lastTop = A.bot[x] - WALL_D + 1;           // exclusive end of the top face
+    for (let y = A.top[x]; y < lastTop; y++) {
+      // Extend the ballot column past its own silhouette so every asked-for
+      // pixel has a real answer — the 1-row difference measured above.
+      const sy = Math.min(Math.max(y - dy, B.top[x]), B.bot[x]);
+      const si = (sy * bw + x) * 4, di = (y * w + x) * 4;
+      out.data[di] = base.data[si]; out.data[di + 1] = base.data[si + 1]; out.data[di + 2] = base.data[si + 2];
+      // ALPHA IS THE REVIEW TILE'S, ALWAYS. The silhouette under review must not
+      // gain or lose a pixel to the ground painted on it.
+    }
+  }
+  cx.putImageData(out, 0, 0);
+  return cv;
+}
+/** Async resolve of a virtual "sub:<cand>::<base>" path, mirroring texFor. */
+function subFor(cand, base, cb) {
+  const key = `${cand}::${base}`;
+  if (SUB_CACHE.has(key)) { cb(SUB_CACHE.get(key)); return; }
+  let a = null, b = null, left = 2;
+  const done = () => {
+    if (--left > 0) return;
+    let c = null;
+    try { c = (a && b) ? topSub(a, b) : null; } catch { c = null; /* tainted canvas — foreign staging root */ }
+    SUB_CACHE.set(key, c);
+    window.__wikiSub = (window.__wikiSub ?? 0) + 1;   // gate probe
+    cb(c);
+  };
+  const mk = (path, set) => {
+    const im = new Image();
+    im.crossOrigin = "anonymous";     // same reason as texFor — see the note there
+    im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
+    im.src = assetUrl(path);
+  };
+  mk(cand, (x) => { a = x; }); mk(base, (x) => { b = x; });
+}
 /** The art one VIEW shows for one candidate. "tex:" paths are virtual —
  *  loadImages resolves them to a synthesized canvas. */
+/* THE TOP GROUND OF A CANDIDATE, from its own key. A review key is
+ * tiles/<top>__over__<side>/<sha1>, so the ground whose surface this tile shows
+ * is already in hand — no call site has to pass it, and none can pass a wrong
+ * one. */
+function candTop(cand) {
+  const cell = cand?.key?.split("/")[1];
+  const i = cell?.indexOf("__over__") ?? -1;
+  return i > 0 ? cell.slice(0, i) : null;
+}
 const viewArtIn = (view, cand) => {
   if (!cand) return undefined;
-  if (view === "before" && cand.raw) return cand.raw;
-  if (view === "texture" && cand.raw && cand.art) return `tex:${cand.art}::${cand.raw}`;
+  if (view === PASS_RAW) return cand.raw ?? cand.art;
+  /* A SET IS NOT A PASS OF THIS TILE — it is a different ground painted on it.
+   * The wall under review is kept and only the top face is replaced, which is
+   * the whole reason he can judge a wall against a ground he configured. The
+   * cell coordinates are the tile's own position in whatever field draws it;
+   * a lone card is cell (0,0), which is a real cell, not a placeholder. */
+  const top = candTop(cand);
+  const set = top ? passSet(top, view) : null;
+  if (set && cand.art) {
+    const face = setCellArt(set, cand.subX ?? 0, cand.subY ?? 0);
+    if (face) return `sub:${cand.art}::${face}`;
+  }
   return cand.art;
 };
 const viewArt = (cand) => viewArtIn(worldView(), cand);
@@ -4563,21 +4932,27 @@ const viewArt = (cand) => viewArtIn(worldView(), cand);
  *  for a virtual "tex:" one. For the few places that show a tile OUTSIDE an
  *  isoScene composition. */
 function artNodeFor(path, cls, alt) {
-  if (!String(path ?? "").startsWith("tex:")) return h("img", { class: cls, src: assetUrl(path), alt });
+  const p = String(path ?? "");
+  const virt = p.startsWith("tex:") ? "tex" : p.startsWith("sub:") ? "sub" : null;
+  if (!virt) return h("img", { class: cls, src: assetUrl(path), alt });
   const cv = h("canvas", { class: cls, width: 64, height: 46, "aria-label": alt });
-  const [a, r] = path.slice(4).split("::");
+  const [a, b] = p.slice(4).split("::");
   const paint = (src, w, ht) => {
     cv.width = w; cv.height = ht;
     const cx = cv.getContext("2d");
     cx.imageSmoothingEnabled = false;
     cx.drawImage(src, 0, 0);
   };
-  texFor(a, r, (c) => {
-    if (c) { paint(c, c.width, c.height); return; }
+  /* BOTH VIRTUALS FALL BACK TO THE PLAIN TILE, never to nothing. A composite
+   * that cannot be computed (a tainted canvas, art that 404s) must still show
+   * the tile — an empty box would read as "this tile is gone". */
+  const fall = () => {
     const im = new Image();
     im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); };
     im.src = assetUrl(a);
-  });
+  };
+  const take = (c) => { if (c) paint(c, c.width, c.height); else fall(); };
+  if (virt === "tex") texFor(a, b, take); else subFor(a, b, take);
   return cv;
 }
 /** Every candidate whose TOP belongs to this ground — every pair of the type,
@@ -4607,8 +4982,11 @@ function detailSurround(typeId) {
   const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
   const ownCand = own?.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own?.candidates[0];
   const clean = ownCand?.art ?? null;          // the shipped, clean-top pass
-  const g = baseGroupsOf(typeId)[0];
-  return { members: g?.members ?? [], clean };
+  /* THE RING IS THE GROUND AS CONFIGURED. Its members come from the first set
+   * that can actually draw something other than the flat colour — a ring of
+   * clean tiles around a detail is the same picture as no ring at all. */
+  const s = groundSets(typeId).find((x) => x.id !== CLEAN_SET && x.members.some((m) => m.weight > 0 && m.art));
+  return { members: (s?.members ?? []).filter((m) => m.art).map((m) => ({ key: m.id, weight: m.weight, hit: { cand: { art: m.art, raw: null } } })), clean };
 }
 /* FIVE BY FIVE, WITH THE TILE UNDER REVIEW AS THE MIDDLE THREE BY THREE
  * (maintainer 2026-08-23: "On the details page I want to review the tile as 5x5
@@ -4971,20 +5349,78 @@ function filterRoute(mode, keep = null) {
  * flip is instant and A/B actually comparable — a src swap re-decodes and the
  * blink is exactly what a comparison must not have. They are ~2 KB each. */
 const WORLD_VIEW_KEY = "wiki-world-view";
-const WORLD_VIEWS = {
-  after: { label: "After", title: "What the game gets today — the postprocess snaps the top to the ground's clean colour (measured: 96% of the top face becomes ONE colour on grass, black rock and light soil; parquet and the pavings keep their texture)" },
-  texture: { label: "Textured", title: "WHAT THE TOP COULD SHIP AS — the generator's own top texture, every pixel of it, displaced onto the ground's palette: its average IS the clean colour, and its swing is kept as wide as that colour has room for. Judge promotions and details here" },
-  /* "RAW", NOT "BEFORE" (maintainer 2026-08-24: "I also feel the word Before
-   * feels wrong and like to change it to Raw (on all pages with a similar
-   * feature/toggle and not just this one)"). He is right: After and Textured
-   * name what the pass IS, and "Before" only names when it happened. The stored
-   * id stays `before`, so nobody's saved preference resets. */
-  before: { label: "Raw", title: "The generator's own output, untouched — original colours, original top, no postprocess at all" },
+/* THE PASS SWITCH IS THE GROUND'S SETS (maintainer 2026-08-25: "This also means
+ * the 'After'/'Texture'/'Raw' instead will be 'Set #1'/'Set #2'/'Set #3'/'Raw'
+ * ... So the wiki UI will with this change draw something like this: 'Clean
+ * #0'/'Set #1'/'Set #2'/'Set #3'/'Raw'. And if no set has been created yet at
+ * least draw: 'Clean #0'/'Raw'").
+ *
+ * WHAT EACH ONE MEANS NOW:
+ *   Clean #0  the flat palette colour on top — what the game ships today, and
+ *             what "After" used to be called. Renamed because it is no longer a
+ *             pass of the postprocess, it is set 0 of the ground.
+ *   Set #N    the ground as that set paints it, drawn with the SAME pick the
+ *             game uses, so this is not an impression of the set — it is it.
+ *   Raw       the generator's own output, untouched. Unchanged, and still
+ *             stored as `before` so nobody's saved preference resets.
+ *
+ * "TEXTURED" IS GONE, and its going is the point. It was a browser-side GUESS at
+ * what a kept texture might look like, because there was no data for it. A set
+ * member is that texture as real art he chose, so the guess has nothing left to
+ * do.
+ *
+ * IDS ARE THE SHARED VOCABULARY ACROSS GROUNDS. The stored value is one of
+ * "clean" | "set:<id>" | "before", so a page showing many grounds at once can
+ * offer "Set #1" and have each ground answer with its OWN set 1 — and a ground
+ * that has no set 1 falls back to clean instead of showing nothing.
+ */
+const PASS_CLEAN = "clean";
+const PASS_RAW = "before";
+const PASS_TITLE = {
+  [PASS_CLEAN]: "The ground's flat palette colour on top — what the game paints today wherever no set is used",
+  [PASS_RAW]: "The generator's own output, untouched — original colours, original top, no postprocess at all",
 };
-const worldView = () => {
-  try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
-  catch { return "after"; }
-};
+/* His stored preference, migrated. `after` and `texture` are the old passes:
+ * After IS Clean #0 under the new model, and Textured was a synthesis that sets
+ * replace, so both land on clean rather than silently resetting to nothing. */
+function storedPass() {
+  let v = null;
+  try { v = localStorage.getItem(WORLD_VIEW_KEY); } catch { /* private mode */ }
+  if (v === "after" || v === "texture" || !v) return PASS_CLEAN;
+  return v;
+}
+/** The passes a page can offer. `typeId` null = a page showing many grounds, in
+ *  which case every set id that exists anywhere is offered by number. */
+function passOptions(typeId) {
+  const ids = new Map();      // set id -> label
+  const add = (s) => { if (s.id !== CLEAN_SET && setDraws(s)) ids.set(s.id, typeId ? setLabel(s) : `Set #${s.id}`); };
+  if (typeId) groundSets(typeId).forEach(add);
+  else for (const g of worldMeta().groundTypes ?? []) groundSets(g.id).forEach(add);
+  return [
+    [PASS_CLEAN, `Clean #${CLEAN_SET}`, PASS_TITLE[PASS_CLEAN]],
+    ...[...ids.entries()].sort((a, b) => a[0] - b[0]).map(([id, label]) => [`set:${id}`,
+      label,
+      typeId ? `This ground painted with ${label}, drawn the way the game will draw it`
+        : `Every ground painted with its own set ${id}, where it has one`]),
+    [PASS_RAW, "Raw", PASS_TITLE[PASS_RAW]],
+  ];
+}
+/** The pass in force on a page, after falling back to something it can show. */
+function worldViewFor(typeId) {
+  const v = storedPass();
+  return passOptions(typeId).some(([id]) => id === v) ? v : PASS_CLEAN;
+}
+/** Back-compatible name for the many call sites that have no ground in hand. */
+const worldView = () => worldViewFor(null);
+/** The set a pass names, or null for Clean/Raw. */
+function passSet(typeId, view) {
+  const m = /^set:(\d+)$/.exec(view ?? "");
+  if (!m) return null;
+  return groundSets(typeId).find((s) => s.id === +m[1]) ?? null;
+}
+/** One switch, wherever it appears — the ground in context decides the chips. */
+const passBar = (typeId, onpick) =>
+  sortBar(WORLD_VIEW_KEY, passOptions(typeId), worldViewFor(typeId), onpick);
 /* ONE TILE CAN PEEK ON ITS OWN (maintainer 2026-08-17: "When looking at tiles
  * in Tiles in this set I sometimes want to toggle between before and after, but
  * that button might be higher up so I have to scroll. Can you place that button
@@ -5255,7 +5691,7 @@ function viewWorld() {
     // THE LEDGER FIRST — before a single card. "Is there anything for me?" is
     // the question he arrives with, and it must not require reading a grid.
     state.admin ? reviewLedgerPanel() : null,
-    state.admin ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }) : null,
+    state.admin ? passBar(null, () => { tileViews.clear(); route(); }) : null,
     // HIS INBOX, at the top of the section that owns it. The counts are on the
     // control itself: "no stars 137" is the size of the job, and it going to 0
     // is what finishing looks like.
@@ -5307,7 +5743,14 @@ function viewWorldType(top) {
   const meta = groundTypeMeta(t.id);
   const baseCol = groundBaseColor(t.id);
   const surface = SURFACE_LABEL[meta.surface] ?? null;
-  const groups = baseGroupsOf(t.id);
+  /* EVERY GROUND HAS SETS — Clean #0 is always there, so the Base tab is never
+   * empty for the admin who manages them. For a PLAYER a ground whose only set
+   * is the flat colour still has nothing to look at, and his original rule
+   * stands: "if we have none this tab is disabled and a user ends up on the
+   * second tab instead". */
+  const sets = groundSets(t.id);
+  const setsToShow = sets.filter((x) => x.id !== CLEAN_SET && setDraws(x));
+  const baseDead = !state.admin && !setsToShow.length;
   const trans = transitionsOf(t.id);
   const details = detailsOf(t.id);
   const queue = state.admin ? detailQueue(t.id) : [];
@@ -5318,8 +5761,8 @@ function viewWorldType(top) {
   // The tab: his rule verbatim — Base tiles first, disabled when empty.
   const wanted = groundTab.get(t.id);
   const detailsDead = !details.length && !state.admin;   // a player with nothing to see
-  const tab = (wanted === "base" && !groups.length) || (wanted === "details" && detailsDead) ? "ontop"
-    : wanted ?? (groups.length ? "base" : "ontop");
+  const tab = (wanted === "base" && baseDead) || (wanted === "details" && detailsDead) ? "ontop"
+    : wanted ?? (baseDead ? "ontop" : "base");
   const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
   /* ON THE DETAILS TAB, "AFTER" IS NOTHING TO JUDGE (maintainer 2026-08-22:
    * "When I press Details I expect the tile in the center to be the textured
@@ -5344,53 +5787,77 @@ function viewWorldType(top) {
     onclick: disabled ? null : () => pickTab(id),
   }, label2, count == null ? null : h("span", { class: "tab-n" }, String(count)));
 
-  /* ---------------- TAB: base tiles ---------------- */
+  /* ---------------- TAB: base (the ground's sets) ---------------- */
   const baseTab = () => {
-    const seeds = baseFieldSeeds;    // module map: group id -> seed
-    return h("div", {}, ...groups.map((g) => {
-      const gSeed = seeds.get(`${t.id}/${g.id}`) ?? 1;
-      // "The group review should create the biggest possible rect (3x3? 4x4?
-      // 5x5?) with a Randomize button next to it. Here we can see how they
-      // look togather." 5×5 is the biggest that fits his phone at 1:1.
-      const field = baseGroupField(g.members, 5, gSeed, 1);
-      return h("div", { class: "panel base-group" },
-        h("div", { class: "panel-title" }, `Group ${g.id}`,
-          h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`),
-          h("button", {
-            class: "ghost-btn", title: "Re-roll the field — a group is good when every roll looks like the same ground",
-            onclick: () => { seeds.set(`${t.id}/${g.id}`, (gSeed * 16807 + 7) % 2147483647); keepScrollY = window.scrollY; route(); },
-          }, "🎲 Randomize")),
-        h("p", { class: "muted" }, "The whole group tiled together — seams disappearing is its job."),
-        field,
-        // "After this we will see/list each member 1 by 1 with option to
-        // remove them from this group/set ... a double preview with this 1
-        // tile to the left and a 3x3 tile to the right with this tile in the
-        // center surrounted by group members."
-        ...g.members.map((m) => {
-          const art = viewArt(m.hit?.cand);
-          const others = g.members.filter((x) => x.key !== m.key);
-          return h("div", { class: "base-member" },
-            h("div", { class: "base-member-previews" },
-              h("div", { class: "iso-stage checker member-solo" },
-                art ? artNodeFor(art, "member-tile", "the tile alone")
-                  : h("span", { class: "muted" }, "art gone — this tile was regenerated away")),
-              art ? centeredField(art, others.length ? others : g.members, seeds.get(`${t.id}/${g.id}`) ?? 1, 1) : null),
-            h("div", { class: "base-member-meta" },
-              m.hit ? h("a", { href: `#/world/${m.hit.cell.top}/${m.hit.cell.side}` }, `from ${m.hit.cell.name.toLowerCase()}`)
-                : h("span", { class: "muted" }, m.key),
-              state.admin ? h("label", { class: "weight-label", title: "How often this tile spawns vs its group-mates — 2 appears twice as often as 1" },
-                "weight ",
-                Object.assign(h("input", { type: "number", class: "weight-input", min: "0.1", max: "10", step: "0.1", value: String(m.weight) }),
-                  { onchange: (e) => { setBaseWeight(m.key, e.target.value); keepScrollY = window.scrollY; route(); } })) : null,
-              state.admin ? h("button", {
-                class: "ghost-btn",
-                title: "Remove from this group — the tile keeps its reviews, it just stops being a base tile",
-                onclick: () => { setBaseTile(m.key, t.id, g.id, false); keepScrollY = window.scrollY; route(); },
-              }, "Remove from group") : null));
-        }));
-    }));
+    const sets = groundSets(t.id);
+    const setShares = shareOf(sets.map((s) => s.weight));
+    const pool = basePool(t.id);
+    const setPanel = (s, share) => {
+      const okey = `${t.id}/${s.id}`;
+      const origin = setOrigins.get(okey) ?? [0, 0];
+      const rows = [{ clean: true, weight: s.clean }, ...s.members];
+      const mShares = shareOf(rows.map((m) => m.weight));
+      const dead = !setDraws(s);
+      return h("div", { class: `panel base-set${s.weight > 0 ? "" : " off"}` },
+        h("div", { class: "panel-title" }, setLabel(s),
+          // THE SET'S OWN CHANCE, in the units he set the model in. A set at 0
+          // is not broken — it is switched off, which is how he asked to keep
+          // Clean around without the map agent ever using it.
+          h("span", { class: `pill ${s.weight > 0 ? "ok" : ""}`, title: "How often an area of this ground picks this set" },
+            s.weight > 0 ? `${sharePct(share)} of areas` : "never used"),
+          state.admin && s.id !== CLEAN_SET ? h("button", {
+            class: "ghost-btn", title: "Delete this set — its number is never reused, so nothing else repaints",
+            onclick: () => { deleteSet(t.id, s.id); keepScrollY = window.scrollY; route(); },
+          }, "Delete") : null),
+        state.admin ? h("div", { class: "set-controls" },
+          s.id === CLEAN_SET ? null : Object.assign(
+            h("input", { type: "text", class: "set-name", value: s.name, maxlength: "24", "aria-label": "Set name" }),
+            { onchange: (e) => { renameSet(t.id, s.id, e.target.value); keepScrollY = window.scrollY; route(); } }),
+          weightBox(s.weight, "How likely an area of this ground uses this set. 0 means never — the set stays, the world stops picking it.",
+            (v) => { setSetWeight(t.id, s.id, v); keepScrollY = window.scrollY; route(); })) : null,
+        dead
+          ? h("p", { class: "muted" }, "Nothing in this set can draw — give the clean colour or a tile some weight.")
+          : setField(t.id, s, 5, origin, 1),
+        !dead && state.admin ? h("button", {
+          class: "ghost-btn", title: "Show a different patch of the world — every roll here is a real patch, so a set is good when they all look like the same ground",
+          onclick: () => { setOrigins.set(okey, [origin[0] + 5, origin[1] + 3]); keepScrollY = window.scrollY; route(); },
+        }, "🎲 Another patch") : null,
+        h("div", { class: "set-rows" }, ...rows.map((m, i) => h("div", { class: `set-row${m.weight > 0 ? "" : " off"}${m.gone ? " gone" : ""}` },
+          m.clean
+            ? h("span", { class: "swatch ground-swatch", title: "The ground's flat palette colour", style: `background:${groundBaseColor(t.id)?.c ?? "transparent"}` })
+            : m.art ? h("img", { class: "set-row-tile", src: assetUrl(m.art), alt: m.id, loading: "lazy" })
+              : h("span", { class: "swatch ground-swatch" }),
+          h("span", { class: "set-row-name" }, m.clean ? "Clean colour" : m.gone ? `${m.id} — art is gone` : m.id.replace(/__/g, " ")),
+          h("span", { class: "pill", title: "How much of this set's ground this row paints" }, sharePct(mShares[i])),
+          state.admin && !(m.clean && s.id === CLEAN_SET) ? weightBox(m.weight,
+            m.clean ? "How often this set paints the plain colour instead of a tile. 0 always draws with texture; make it the only weight and the set is all clean."
+              : "How often this tile is drawn versus its set-mates",
+            (v) => { (m.clean ? setCleanWeight(t.id, s.id, v) : setMemberWeight(t.id, s.id, m.id, v)); keepScrollY = window.scrollY; route(); }) : null,
+          state.admin && !m.clean ? h("button", {
+            class: "ghost-btn", title: "Take this tile out of the set — the tile itself is untouched",
+            onclick: () => { removeSetMember(t.id, s.id, m.id); keepScrollY = window.scrollY; route(); },
+          }, "Remove") : null))),
+        // SET 0 CANNOT HOLD A TILE, by his rule — it "can only contain 100% the
+        // clean/plain base color". The button is absent rather than disabled:
+        // a control that exists but never works is a worse answer than none.
+        state.admin && s.id !== CLEAN_SET ? h("button", {
+          class: "ghost-btn add-tiles", ...(pool.length ? {} : { disabled: "disabled" }),
+          title: pool.length ? `Pick from the ${pool.length} textured candidates for this ground`
+            : "No textured candidates published for this ground yet",
+          onclick: pool.length ? () => openPoolPicker(t.id, s.id, () => { keepScrollY = window.scrollY; route(); }) : null,
+        }, "+ Add tiles…") : null);
+    };
+    return h("div", {},
+      h("p", { class: "muted" },
+        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} textured candidate${pool.length === 1 ? "" : "s"} to build them from. ` +
+        "A set is a group of tiles that look good together; the world picks ONE set for an area and stays with it, then varies inside it."),
+      ...sets.map((s, i) => setPanel(s, setShares[i])),
+      state.admin ? h("button", {
+        class: "ghost-btn new-set",
+        title: "Start another look for this ground — a different side of the world can use it",
+        onclick: () => { addSet(t.id); keepScrollY = window.scrollY; route(); },
+      }, "+ New set") : null);
   };
-
   /* ---------------- TAB: on top of (the x-over-y matrix, as before) ------- */
   const onTopTab = () => h("div", {},
     state.admin ? sortBar(WORLD_STAR_KEY, Object.entries(WORLD_STARS).map(([id, f]) => {
@@ -5485,21 +5952,22 @@ function viewWorldType(top) {
      * explanation belongs. */
     state.admin ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
-      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
+      passBar(t.id, () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },
       // "Base", not "Base tiles" (maintainer 2026-08-25: "so the entire radio
       // button group/tabs fit on the page (it's cut right now)"). Four tabs
       // with counts overflowed a phone and clipped Transitions; the tooltip
       // still says what it is, and the tab that got shorter is the one whose
       // second word was doing the least work.
-      tabBtn("base", "Base", groups.length || null, !groups.length,
-        groups.length ? "The base tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
+      tabBtn("base", "Base", sets.length, baseDead,
+        state.admin ? "The sets this ground paints its fields from — what is in each, how often, and how often each set is used"
+          : "The looks this ground comes in"),
       tabBtn("details", "Details", details.length || null, detailsDead,
         details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
       tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
       tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours")),
-    state.admin && !groups.length && tab === "ontop" ? h("p", { class: "muted" },
-      `No base tiles yet — open a set below and press "☖ promote to base tile" on the tiles that can repeat forever.`) : null,
+    state.admin && !setsToShow.length && tab === "ontop" ? h("p", { class: "muted" },
+      `This ground only draws its clean colour. Open Base to build a set from its ${basePool(t.id).length} textured candidates.`) : null,
     tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : onTopTab());
 
   /* ---------------- TAB: ground details — "where the fun begins" ----------
@@ -5637,7 +6105,7 @@ function viewWorldTransition(pairId) {
     state.admin ? h("div", { class: `ground-pass${set.post ? "" : " idle"}` },
       h("span", { class: "muted" }, "Tile art"),
       set.post
-        ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+        ? passBar(a,
           () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })
         : h("span", { class: "pill warn", title: "tiles/transitions/<pair>/<set>/post/ does not exist yet — there is no processed pass to switch to" }, "raw only"),
       ) : null,
@@ -5684,7 +6152,7 @@ function openPromoteModal(cell, cand, onDone) {
     if (head) {
       head.replaceChildren(
         h("span", { class: "muted" }, "Tile art"),
-        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+        passBar(typeId,
           () => { tileViews.clear(); paint(); }),
       );
     }
@@ -5728,7 +6196,7 @@ function openPromoteModal(cell, cand, onDone) {
       // thing on the ground page): "raw" / "textured, in palette" / "clean
       // colour" are three different widths, so the dialog's header reflowed on
       // every press and moved the very previews it exists to compare.
-      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
+      passBar(typeId,
         () => { tileViews.clear(); paint(); })),
     h("p", { class: "muted promote-hint" }, "The candidate sits in the centre of every field. It belongs in a group when you cannot find it."),
     body);
@@ -6039,7 +6507,7 @@ function viewWorldPair(top, side) {
         : h("div", { class: "panel-title" }, "How it looks"),
       state.admin ? h("div", { class: "world-viewbar" },
         h("span", { class: "muted" }, "Show"),
-        sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); route(); }),
+        passBar(c.top, () => { tileViews.clear(); route(); }),
         c.candidates.every((x) => !x.raw) ? h("span", { class: "muted" }, "— no raw output published for this pair") : null) : null,
       // The inbox switch lives here too: the page it hides tiles on is a page
       // he must be able to un-hide them from, without walking back up.
@@ -6418,12 +6886,16 @@ function loadImages(paths, cb) {
   for (const p of uniq) {
     // A virtual "tex:<after>::<raw>" path resolves to the synthesized
     // textured-top canvas — or to plain After when it cannot be built.
-    if (String(p).startsWith("tex:")) {
-      const [a, r] = p.slice(4).split("::");
-      texFor(a, r, (c) => {
+    // A "sub:<cand>::<base>" path is the same idea for the other composite:
+    // the reviewed tile wearing a set member's top face.
+    const virt = String(p).startsWith("tex:") ? "tex" : String(p).startsWith("sub:") ? "sub" : null;
+    if (virt) {
+      const [a, b] = p.slice(4).split("::");
+      const take = (c) => {
         if (c) { out[p] = c; if (--left <= 0) cb(out); }
         else plain(a, p);
-      });
+      };
+      if (virt === "tex") texFor(a, b, take); else subFor(a, b, take);
       continue;
     }
     plain(p, p);
@@ -8452,10 +8924,11 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
        fromApi((s) => s.tuning.scenery_lights), fromApi((s) => s.tuning.base_tiles),
+       fromApi((s) => s.tuning.base_tile_sets),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
@@ -8465,6 +8938,7 @@ async function loadLiveFiles() {
         fetchJson(new URL("live/tuning/tile_walls.json", ROOT)),
         fetchJson(new URL("live/tuning/scenery_lights.json", ROOT)),
         fetchJson(new URL("live/tuning/base_tiles.json", ROOT)),
+        fetchJson(new URL("live/tuning/base_tile_sets.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
@@ -8478,6 +8952,7 @@ async function loadLiveFiles() {
   // (sceneryLights) papered over it with an empty doc.
   state.tuning.scenery_lights = sceneryLightsDoc ?? { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   state.tuning.base_tiles = baseTiles ?? { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
+  state.tuning.base_tile_sets = baseSets ?? { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });
