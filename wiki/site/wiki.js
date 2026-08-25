@@ -5681,7 +5681,7 @@ function openPromoteModal(cell, cand, onDone) {
         h("span", { class: "muted" }, "Tile art"),
         sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
           () => { tileViews.clear(); paint(); }),
-        h("span", { class: "muted" }, worldView() === "before" ? "raw" : worldView() === "texture" ? "textured, in palette" : "clean colour"));
+      );
     }
     body.replaceChildren(
       ...groups.map((g) => h("div", { class: "promote-group" },
@@ -5719,9 +5719,12 @@ function openPromoteModal(cell, cand, onDone) {
     // in place and leaves the page set the same way.
     h("div", { class: "promote-pass" },
       h("span", { class: "muted" }, "Tile art"),
+      // NO PER-PASS TEXT HERE EITHER (maintainer 2026-08-25, after the same
+      // thing on the ground page): "raw" / "textured, in palette" / "clean
+      // colour" are three different widths, so the dialog's header reflowed on
+      // every press and moved the very previews it exists to compare.
       sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
-        () => { tileViews.clear(); paint(); }),
-      h("span", { class: "muted" }, worldView() === "before" ? "raw" : worldView() === "texture" ? "textured, in palette" : "clean colour")),
+        () => { tileViews.clear(); paint(); })),
     h("p", { class: "muted promote-hint" }, "The candidate sits in the centre of every field. It belongs in a group when you cannot find it."),
     body);
   document.body.append(dlg);

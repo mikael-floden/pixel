@@ -514,10 +514,30 @@ const mTex = await p.evaluate(() => {
 });
 ok(mTex.open && mTex.sel === "Textured" && typeof mTex.colours === "number" && mTex.colours > 6,
   `and Textured inside the dialog really draws a textured field, without closing it (${mTex.colours} colours)`);
+// THE DIALOG MUST NOT JUMP EITHER — it carried the same per-pass text ("raw" /
+// "textured, in palette" / "clean colour"), three different widths reflowing
+// the header above the very previews the dialog exists to compare.
+const modalGeom = [];
+for (const want of ["After", "Textured", "Raw"]) {
+  await p.evaluate((w) => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === w)?.click(), want);
+  await p.waitForTimeout(900);
+  modalGeom.push(await p.evaluate(() => {
+    const bar = document.querySelector(".promote-pass")?.getBoundingClientRect();
+    const first = document.querySelector(".promote-group")?.getBoundingClientRect();
+    return bar && first ? { h: Math.round(bar.height), gap: Math.round(first.top - bar.top) } : null;
+  }));
+}
+ok(modalGeom.every(Boolean) && new Set(modalGeom.map((x) => x.h)).size === 1 && new Set(modalGeom.map((x) => x.gap)).size === 1,
+  `and the dialog holds still across passes too (${modalGeom.map((x) => `${x?.h}/${x?.gap}`).join(", ")})`);
+// READ WHAT THE DIALOG WAS LEFT ON, do not assume it. This asserted "Textured"
+// because that was the last pass an earlier version pressed; the geometry loop
+// above now ends on Raw, and a constant here would go red for a change in the
+// test rather than in the page.
+const leftOn = await p.evaluate(() => document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim() ?? "");
 await p.evaluate(() => [...document.querySelectorAll(".promote-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(1000);
 const synced = await p.evaluate(() => document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim());
-ok(synced === "Textured", `and the page behind adopts the pass the modal was left on (${synced})`);
+ok(!!leftOn && synced === leftOn, `and the page behind adopts the pass the modal was left on (${leftOn} → ${synced})`);
 await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
 await p.waitForTimeout(900);
 await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2?.scrollIntoView({ block: "center" }); b2?.click(); });
