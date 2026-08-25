@@ -1,0 +1,289 @@
+{
+ "format": "pixel-wiki-base-tile-sets@1",
+ "_comment": "THE GROUND'S LOOK, per ground type, as the maintainer configures it (2026-08-25). Each ground owns an ordered list of SETS. A set is 'a list of tiles that look extremely good when used togather', each member carrying a weight for how often it is drawn, plus a 'clean' member for the ground's flat palette colour ('Setting this to 0% will always draw with texture. Setting this to 100% will always draw a clean tile'). The SET carries its own weight for how likely that set is chosen for a region: a world agent picks one set per area and stays with it, so an area stays coherent, and varies only within that set. SET 0 IS RESERVED: it is named Clean, may hold nothing but the clean member, and is never deleted - it is switched off by setting its weight to 0, which also guarantees there is always one set that can draw. Ids are stable and are never renumbered when a set is deleted; the display name is '<name> #<id>'. Weights are raw non-negative numbers normalised at read time, not stored percentages - adding a tile must not silently rescale the others, and 0 has to keep meaning never. THIS REPLACES the per-material transition_surface / always_own_texture / flat_top flags. Reference implementation and the deterministic pick (FNV-1a/32) in wiki/lib/basesets.mjs, with TEST_VECTORS to prove a port. Written by the wiki's ground-type pages; read by the game, the maps/world agent and the tiles agent.",
+ "pick": {
+  "hash": "fnv1a-32",
+  "set_key": "bts1|set|<ground>|<region>",
+  "tile_key": "bts1|tile|<set_id>|<x>|<y>",
+  "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
+ },
+ "updated_at": "2026-08-25T17:19:43.128Z",
+ "grounds": {
+  "black_rock": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "brown_paving_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": null,
+       "tile": "tiles/review/brown_paving_stone__over__brown_paving_stone/0_after.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "dark_mud": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "deep_water": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grass": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grey_paving_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": null,
+       "tile": "tiles/review/grey_paving_stone__over__grey_paving_stone/0_after.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grey_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "ice": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "lava": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "light_beach": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "light_soil": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "parquet_floor": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": null,
+       "tile": "tiles/review/parquet_floor__over__parquet_floor/0_after.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "slime": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "snow": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "water": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
