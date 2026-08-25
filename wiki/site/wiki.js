@@ -5019,15 +5019,18 @@ function transPassPill(hasPost) {
     return h("span", { class: "pill warn", title: "This set ships only the generator's own tiles — the retexture pass has not been published for it, so there is nothing else to show" }, "raw only");
   }
   const pass = worldView();
-  if (pass === "before") return h("span", { class: "pill", title: "Showing the generator's own tiles. This set also has a processed pass — switch to After for it" }, "raw");
-  if (pass === "texture") return h("span", { class: "pill ok", title: "Showing the real texture recoloured to the palette, synthesized from the two published passes" }, "textured");
+  if (pass === PASS_RAW) return h("span", { class: "pill", title: "Showing the generator's own tiles. This set also has a processed pass — switch to After for it" }, "raw");
+
   return h("span", { class: "pill ok", title: "Showing the retextured pass — the set's colours corrected to the game palette" }, "postprocessed");
 }
 const transArt = (a, b, setId, i, hasPost) => {
-  const pass = worldView();
-  return (hasPost && pass === "texture")
-    ? `tex:${transTile(a, b, setId, i, true)}::${transTile(a, b, setId, i, false)}`
-    : transTile(a, b, setId, i, hasPost && pass !== "before");
+  /* TRANSITIONS ARE STILL PREGENERATED ART, pending the tiles agent's masks —
+   * so a set cannot be composed into one yet and the switch means what it
+   * always did here: Raw is the generator's own tiles, anything else the
+   * processed pass. When the masks land this becomes mask + one base tile per
+   * side and the set chips light up here too. */
+  const pass = worldViewFor(a);
+  return transTile(a, b, setId, i, hasPost && pass !== PASS_RAW);
 };
 /** Seeded RNG for the composites — a Randomize press swaps the seed, and the
  *  same seed always paints the same field (mulberry32; deterministic keeps the
@@ -5075,10 +5078,8 @@ function wangScene(a, b, setId, post, n, corner, scale = 1) {
   // else: Before is the generator's own tiles, After the retextured ones, and
   // Textured the synthesis between them. Without one there is only raw, and the
   // page says so rather than letting the switch look effective.
-  const pass = worldView();
-  const pathOf = (idx) => (post && pass === "texture")
-    ? `tex:${transTile(a, b, setId, idx, true)}::${transTile(a, b, setId, idx, false)}`
-    : transTile(a, b, setId, idx, post && pass !== "before");
+  const pass = worldViewFor(a);
+  const pathOf = (idx) => transTile(a, b, setId, idx, post && pass !== PASS_RAW);
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
     cells.push({ c, r, img: pathOf(idx) });
@@ -5613,12 +5614,15 @@ function reviewLedgerPanel() {
         title: "Open that ground's Details tab — every top nobody has judged, each one textured in the ground it would decorate",
         onclick: () => {
           groundTab.set(L.biggestTops[0], "details");
-          try { localStorage.setItem(WORLD_VIEW_KEY, "texture"); } catch { /* private mode */ }
+          // Open on a set if the ground has one — that is where a top is
+          // visible at all. Clean would land him on the flat colour again.
+          const firstSet = groundSets(L.biggestTops[0]).find((x) => x.id !== CLEAN_SET && setDraws(x));
+          try { localStorage.setItem(WORLD_VIEW_KEY, firstSet ? `set:${firstSet.id}` : PASS_CLEAN); } catch { /* private mode */ }
           tileViews.clear();
           location.hash = `#/world/${L.biggestTops[0]}`;
         },
       }, `Start on ${typeLabelWorld(L.biggestTops[0]).toLowerCase()} — ${L.biggestTops[1].toLocaleString()} tops`),
-      h("span", { class: "muted" }, "opens Textured, so you see the real top")) : null,
+      h("span", { class: "muted" }, "opens on a set, so you see the real top")) : null,
     h("p", { class: "muted ledger-foot" },
       "Counted from the tiles agent's live manifest and your own verdicts, every time this page opens."));
 }
@@ -5748,7 +5752,19 @@ function viewWorldType(top) {
    * the details compositions simply ask for texture when the stored pass is
    * After; Textured and Before are respected as chosen. The hint under the
    * switch says so rather than letting the chip disagree with the picture. */
-  const detailPass = () => (worldView() === "after" ? "texture" : worldView());
+  /* ON THE DETAILS TAB, THE CLEAN COLOUR IS NOTHING TO JUDGE (maintainer
+   * 2026-08-22: "I expect the tile in the center to be the textured version").
+   * So when the page is set to Clean this tab quietly asks for the ground's
+   * first drawing set instead — SCOPED TO THIS TAB, never written to his
+   * preference, because flipping the stored pass on arrival would silently
+   * change every other page in the section. With no set built yet there is
+   * nothing better to show and Clean stands. */
+  const detailPass = () => {
+    const v = worldViewFor(t.id);
+    if (v !== PASS_CLEAN) return v;
+    const first = sets.find((x) => x.id !== CLEAN_SET && setDraws(x));
+    return first ? `set:${first.id}` : v;
+  };
   const tabBtn = (id, label2, count, disabled, title) => h("button", {
     class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
     type: "button", title,
@@ -5928,7 +5944,12 @@ function viewWorldType(top) {
       // with counts overflowed a phone and clipped Transitions; the tooltip
       // still says what it is, and the tab that got shorter is the one whose
       // second word was doing the least work.
-      tabBtn("base", "Base", sets.length, baseDead,
+      /* NO COUNT ON BASE. The other tabs' counts are inventory he cannot
+       * otherwise know (15 walls, 10 neighbours); the number of sets is his own
+       * small number, visible the moment the tab opens — and adding a chip here
+       * put the strip 3px over the edge again at 360px, which is the one thing
+       * he asked this row never to do. */
+      tabBtn("base", "Base", null, baseDead,
         state.admin ? "The sets this ground paints its fields from — what is in each, how often, and how often each set is used"
           : "The looks this ground comes in"),
       tabBtn("details", "Details", details.length || null, detailsDead,
@@ -5956,7 +5977,7 @@ function viewWorldType(top) {
         h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
         // Only ever says something when the picture is NOT what the switch
         // asked for: a tile with no raw generation cannot show a "before".
-        dPass !== "after" && !cand.raw
+        dPass === PASS_RAW && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
       // PROMOTE FROM HERE TOO (maintainer 2026-08-21: "On this page it should
@@ -5986,7 +6007,7 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Raw for the generator's own." : `Drawn ${worldView() === "before" ? "RAW — the generator's own" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
+        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
@@ -6070,7 +6091,7 @@ function viewWorldTransition(pairId) {
     state.admin ? h("div", { class: `ground-pass${set.post ? "" : " idle"}` },
       h("span", { class: "muted" }, "Tile art"),
       set.post
-        ? passBar(a,
+        ? passBar(tr.a,
           () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })
         : h("span", { class: "pill warn", title: "tiles/transitions/<pair>/<set>/post/ does not exist yet — there is no processed pass to switch to" }, "raw only"),
       ) : null,
@@ -6291,16 +6312,19 @@ function tileScenes(cell, cand, onView) {
   chip?.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation();
     if (!cand.raw) return;
-    // after → textured → before → after: the same cycle as the Show switch,
-    // for this one tile. `onView` lets the card swap its review row along —
-    // the rating must always target what the picture shows.
-    const CYCLE = ["after", "texture", "before"];
+    /* THE SAME CYCLE AS THE PAGE SWITCH, for this one tile: Clean #0, then
+     * every set this ground has, then Raw. Built from the passes actually on
+     * offer rather than from a fixed list, so a ground with three sets cycles
+     * through three and a ground with none flips clean/raw. `onView` lets the
+     * card swap its review row along — the rating must always target what the
+     * picture shows. */
+    const CYCLE = passOptions(candTop(cand)).map(([id]) => id);
     tileViews.set(cand.key, CYCLE[(CYCLE.indexOf(tileView(cand.key)) + 1) % CYCLE.length]);
     paint();
     onView?.();
   });
   function paint() {
-    const mode = cand.raw ? tileView(cand.key) : "after";
+    const mode = cand.raw ? tileView(cand.key) : PASS_CLEAN;
     const art = (c) => viewArtIn(mode, c);
     const face = art(cand);
     // No pure tile for that material yet: stack the tile itself and say so,
@@ -6322,21 +6346,25 @@ function tileScenes(cell, cand, onView) {
       // The chip says WHAT YOU ARE LOOKING AT, not what pressing it does: mid
       // comparison, "which one is this" is the one question the picture must
       // always answer, and it is the same job the ⟳ badge does on the portrait.
+      const chipSet = passSet(candTop(cand), mode);
       chip.textContent = !cand.raw ? "no raw"
-        : mode === "before" ? "⇄ raw" : mode === "texture" ? "⇄ textured" : "⇄ after";
-      chip.className = `stage-flip${mode !== "after" && cand.raw ? " on" : ""}`;
+        : mode === PASS_RAW ? "⇄ raw" : chipSet ? `⇄ ${setLabel(chipSet)}` : "⇄ clean";
+      chip.className = `stage-flip${mode !== PASS_CLEAN && cand.raw ? " on" : ""}`;
       chip.disabled = !cand.raw;
       chip.title = !cand.raw ? "No raw output was published for this tile"
-        : mode === "after" ? "What the game gets — tap for the textured top"
-          : mode === "texture" ? "The real texture, recoloured to this ground — tap for the raw generation"
-            : "The generator's raw output — tap for the tile the game gets";
+        : mode === PASS_RAW ? "The generator's raw output — tap to come back round"
+          : chipSet ? `This wall under ${setLabel(chipSet)} — tap for the next one`
+            : "The clean colour on top, what the game paints today — tap for the next set";
     }
     // TEXTURED IS THE TOP REVIEW (maintainer 2026-08-21: "to make it even more
     // clear you only review the top/ground right now it should be the center of
     // 3x3 tiles (base tiles)"). A wall answers nothing about a top, so the
     // 3×3-of-itself and the cliff corner give way to the one composition that
     // matters here: this top, textured, centred in the ground's base tiles.
-    if (mode === "texture") {
+    /* A REAL TOP IS ON SCREEN whenever a SET is chosen — that is what a set
+     * member is. Under the old model this was the synthesized "texture" pass,
+     * the only way to see a top at all; now it is any of his sets. */
+    if (passSet(cell.top, mode)) {
       // THE SAME PICTURE THE DETAILS TAB USES: nine of this top in a ring of the
       // ground, so the two places he judges a top agree with each other.
       const surround = detailSurround(cell.top);
@@ -6344,8 +6372,10 @@ function tileScenes(cell, cand, onView) {
       const cells = [];
       for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
         const inner = c >= 1 && c <= 3 && r >= 1 && r <= 3;
+        // A set member IS the real top, so there is no pass to resolve here —
+        // the old call asked for the synthesized texture of a review tile.
         const ring = surround.members.length
-          ? viewArtIn("texture", pickBaseMember(surround.members, rnd).hit?.cand)
+          ? pickBaseMember(surround.members, rnd).hit?.cand?.art
           : surround.clean;
         cells.push({ c, r, img: inner ? face : ring });
       }
@@ -6496,8 +6526,8 @@ function viewWorldPair(top, side) {
         return [id, `${f.label} ${n}`, f.title];
       }), mode, () => route()) : null,
       h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin
-        ? (worldView() === "texture"
-          ? "Each top sits TEXTURED in the centre of this ground's base tiles — the ⌂ row rates the top, not the tile."
+        ? (passSet(c.top, worldViewFor(c.top))
+          ? "Each top sits in the centre of a field of this ground's set — the ⌂ row rates the top, not the tile."
           : "Each tile is shown as a 3×3 field and as a cliff corner, built the way its wall setting says.")
         : "A field of it, and the corner where the land steps down."),
       cards,
@@ -6607,7 +6637,7 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
   const reviewBox = state.admin ? h("div", { class: "card-sub review-box" }) : null;
   const drawReview = () => {
     if (!reviewBox) return;
-    const onTop = !!cand.raw && tileView(cand.key) === "texture";
+    const onTop = !!cand.raw && !!passSet(cell.top, tileView(cand.key));
     reviewBox.replaceChildren(...[
       onTop ? h("p", { class: "muted top-hint" },
         "⌂ rating the TOP as a once-in-a-while ground detail — the tile keeps its own stars") : null,

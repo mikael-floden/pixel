@@ -66,8 +66,30 @@ const ctx = await b.newContext({ viewport: { width: 393, height: 851 }, isMobile
 const p = await ctx.newPage();
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 const saves = [];
+/* THE STUB PERSISTS, because the real server does. A save posts a per-entry
+ * delta and the server merges it into the live document, so a reload after a
+ * commit shows the committed state — a stub that forgets makes the page look
+ * like it lost his work when it did not, and makes any assertion after a
+ * reload test the stub instead of the wiki. */
+const liveState = { tuning: {}, feedback: {} };
+const applySave = (body) => {
+  const [kind, name] = String(body?.file ?? "").split("/");
+  const bag = kind === "feedback" ? liveState.feedback : liveState.tuning;
+  const bucket = body.file === "tuning/base_tile_sets" ? "grounds"
+    : body.file === "tuning/monsters" ? "monsters"
+    : kind === "feedback" ? "entries" : "overrides";
+  const doc = (bag[name] ??= { [bucket]: {} });
+  doc[bucket] ??= {};
+  for (const [id, v] of Object.entries(body.set ?? {})) { if (v === null) delete doc[bucket][id]; else doc[bucket][id] = v; }
+};
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
-await p.route("**/api/wiki/save", (r) => { saves.push(r.request().postDataJSON()); return r.fulfill({ status: 200, contentType: "application/json", body: "{}" }); });
+await p.route("**/api/wiki/save", (r) => {
+  const body = r.request().postDataJSON();
+  saves.push(body); applySave(body);
+  return r.fulfill({ status: 200, contentType: "application/json", body: "{}" });
+});
+await p.route("**/api/live/state", (r) => r.fulfill({ status: 200, contentType: "application/json",
+  body: JSON.stringify({ fetched_at: 0, tuning: liveState.tuning, feedback: liveState.feedback }) }));
 await p.addInitScript(() => {
   localStorage.setItem("wiki-admin-token", "gate");
   localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
@@ -90,115 +112,169 @@ ok(page.pills.includes("always its own texture") && page.pills.includes("solid")
 ok(page.palette.length === GRASS.palette.length && page.palette[0] === rgb(GRASS.palette[0].c),
   `the measured palette is drawn, largest share first (${page.palette.length} swatches, first ${page.palette[0]})`);
 
-// ---- 2a. TABS: his rule verbatim — Base tiles first, disabled when empty ---
+/* ---- 2a. TABS: BASE IS NEVER EMPTY FOR THE ADMIN (maintainer 2026-08-25) ---
+ * His older rule — "if we have none this tab is disabled and a user ends up on
+ * the second tab instead" — was written when a ground could have no base tiles
+ * at all. Under base tile sets every ground has Clean #0, which is the set the
+ * admin manages the others from, so for HIM the tab always has something. For a
+ * player a ground whose only set is the flat colour still has nothing to look
+ * at, and the old rule still holds there — asserted in the player pass below. */
 const tabs0 = await readTabs();
-// "Base", not "Base tiles", since 2026-08-25 — four tabs with counts did not
-// fit a phone and the second word was the one doing least work.
-ok(tabs0[0]?.t.startsWith("Base") && tabs0[0].disabled && !tabs0[0].sel,
-  `with no base tiles the first tab is DISABLED (${JSON.stringify(tabs0.map((x) => x.t))})`);
-// Index 1 is Details now; the landing rule sends an untended ground to the
-// workhorse tab wherever it sits in the row.
+ok(tabs0[0]?.t.startsWith("Base") && !tabs0[0].disabled,
+  `the admin's Base tab is always open — Clean #0 is always there (${JSON.stringify(tabs0.map((x) => x.t))})`);
 const landed = tabs0.find((x) => x.sel);
-ok(/On top of/.test(landed?.t ?? ""), `…and the visitor lands on On top of instead (${landed?.t})`);
-ok(page.onTop === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
-  `where the whole x-over-y grid still lives (${page.onTop} cards)`);
+ok(/^Base/.test(landed?.t ?? ""), `…and that is where he lands, to manage the sets (${landed?.t})`);
+const setState = await p.evaluate(() => ({
+  panels: [...document.querySelectorAll(".base-set .panel-title")].map((x) => x.textContent.replace(/\s+/g, " ").trim()),
+  chips: [...document.querySelectorAll('[data-bar="wiki-world-view"] button, [data-bar="wiki-world-view"] a')].map((x) => x.textContent.trim()),
+  fields: document.querySelectorAll(".base-set canvas").length,
+  addBtn: !!document.querySelector(".new-set"),
+}));
+ok(setState.panels.length === 1 && /^Clean #0/.test(setState.panels[0]),
+  `with Clean #0 present and nothing else until he makes one (${setState.panels.join(" | ")})`);
+// HIS EXACT WORDS FOR THE EMPTY CASE: "And if no set has been created yet at
+// least draw: 'Clean #0'/'Raw'".
+ok(setState.chips.length === 2 && setState.chips[0] === "Clean #0" && setState.chips[1] === "Raw",
+  `and the switch reads exactly Clean #0 / Raw (${setState.chips.join(" / ")})`);
+ok(setState.fields >= 1 && setState.addBtn, "the set draws a field of itself, and a new set can be started");
+// Then over to the grid, which is where the rest of this gate works.
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(1200);
+const onTopN = await p.evaluate(() => document.querySelectorAll("a.card").length);
+ok(onTopN === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
+  `where the whole x-over-y grid still lives (${onTopN} cards)`);
 
 // ---- 2b. PROMOTION IS A MODAL: the tile centred in every group -------------
 await p.evaluate(() => [...document.querySelectorAll("a.card")].find((c) => /over grass/.test(c.textContent))?.click());
 await p.waitForTimeout(1800);
-await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /promote/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /add to a base tile set|another set/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
 await p.waitForTimeout(900);
 const modal1 = await p.evaluate(() => ({
   open: !!document.querySelector(".promote-modal[open]"),
   blocks: [...document.querySelectorAll(".promote-group .panel-title")].map((x) => x.textContent.trim()),
   canvases: document.querySelectorAll(".promote-modal canvas").length,
 }));
-ok(modal1.open && modal1.blocks.length === 1 && /first group/.test(modal1.blocks[0]),
-  `the promote modal opens, offering to start the first group (${modal1.blocks.join(" | ")})`);
+ok(modal1.open && modal1.blocks.length === 1 && /first set/.test(modal1.blocks[0]),
+  `the promote modal opens, offering to start the first set (${modal1.blocks.join(" | ")})`);
 ok(modal1.canvases >= 1, "with the candidate composed in a field, not just named");
 await p.evaluate(() => [...document.querySelectorAll(".promote-into")].at(-1)?.click());
 await p.waitForTimeout(600);
 // a second tile: the modal must now show BOTH the existing group (centred
 // preview) and the start-a-new-group option.
-await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /promote/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
+await p.evaluate(() => { const b2 = [...document.querySelectorAll(".base-btn")].find((x) => /add to a base tile set|another set/.test(x.textContent)); b2.scrollIntoView({ block: "center" }); b2.click(); });
 await p.waitForTimeout(900);
 const modal2 = await p.evaluate(() => ({
   blocks: [...document.querySelectorAll(".promote-group .panel-title")].map((x) => x.textContent.trim()),
   canvases: document.querySelectorAll(".promote-modal canvas").length,
 }));
-ok(modal2.blocks.length === 2 && /In group g1/.test(modal2.blocks[0]) && /new group/.test(modal2.blocks[1]),
-  `with a group existing, the modal shows the tile IN it and the new-group option (${modal2.blocks.join(" | ")})`);
+ok(modal2.blocks.length === 2 && /In Set #1/.test(modal2.blocks[0]) && /new set/.test(modal2.blocks[1]),
+  `with a set existing, the modal shows the tile IN it and the new-set option (${modal2.blocks.join(" | ")})`);
 ok(modal2.canvases >= 2, "each with its own composed preview");
 await p.evaluate(() => [...document.querySelectorAll(".promote-into")][0]?.click());
 await p.waitForTimeout(600);
-const promotedKeys = await p.evaluate(() => Object.keys(window.__wiki.state.tuning.base_tiles.overrides));
-ok(promotedKeys.length === 2 && promotedKeys.every((k) => /^tiles\//.test(k)),
-  `both designations ride the manifest's own keys (${promotedKeys.length})`);
+const savedGrass = await p.evaluate(() => JSON.parse(JSON.stringify(window.__wiki.state.tuning.base_tile_sets.grounds.grass ?? null)));
+const setIds = (savedGrass?.sets ?? []).map((s) => s.id);
+// The second promotion went INTO Set #1 (the modal's first offer), which is
+// the point of showing the tile centred in each existing set — so two sets
+// total, not three. A tile may sit in several sets; the modal offers them all.
+ok(setIds.includes(0) && setIds.includes(1) && setIds.length === 2,
+  `the promotions land in Set #1 beside the reserved Clean #0 (ids ${setIds.join(",")})`);
+const s1 = (savedGrass?.sets ?? []).find((s) => s.id === 1);
+ok((s1?.members ?? []).filter((m) => m.kind === "tile").length >= 1,
+  `Set #1 holds what he added (${JSON.stringify((s1?.members ?? []).map((m) => m.kind))})`);
+ok((savedGrass?.sets ?? []).every((s) => s.members.some((m) => m.kind === "clean")),
+  "and every set carries a clean member, so 0% is expressible on all of them");
 
-// ---- 2c. THE BASE TILES TAB: group field, members, weights -----------------
-await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
-await p.waitForTimeout(2200);
-const tabs1 = await readTabs();
-ok(tabs1[0]?.sel && !tabs1[0].disabled, "with base tiles promoted, Base tiles is enabled and the DEFAULT tab");
-const baseTab = await p.evaluate(() => ({
-  title: document.querySelector(".base-group .panel-title")?.textContent.trim(),
-  field: (() => { const c = document.querySelector(".base-group .group-stage canvas"); return c ? { w: c.width, h: c.height } : null; })(),
-  members: document.querySelectorAll(".base-member").length,
-  memberCanvases: document.querySelectorAll(".base-member canvas").length,
-  solos: document.querySelectorAll(".member-solo img").length,
-  weights: [...document.querySelectorAll(".weight-input")].map((x) => x.value),
-  randomize: !!Array.from(document.querySelectorAll(".base-group button")).find((x) => /Randomize/.test(x.textContent)),
-}));
-ok(/Group g1/.test(baseTab.title) && /2 tiles/.test(baseTab.title), `the group is reviewed as a whole (${baseTab.title})`);
-ok(baseTab.field && baseTab.field.w > 300, `a big composed field — the 5×5 rect (${baseTab.field?.w}×${baseTab.field?.h})`);
-ok(baseTab.randomize, "with a Randomize button beside it");
-ok(baseTab.members === 2 && baseTab.solos === 2 && baseTab.memberCanvases === 2,
-  `then each member 1-by-1 with the double preview — alone, and centred among its group (${baseTab.members})`);
-ok(baseTab.weights.length === 2, "each carrying its spawn weight");
-// THE GROUP FIELD MUST BE JUDGEABLE — the tab where seams are decided needs
-// the raw top, or the flattened colour hides every seam there is.
-const basePass = await p.evaluate(() => ({
-  pass: !!document.querySelector(".ground-pass"),
-  sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
-}));
-ok(basePass.pass && basePass.sel === "After", `Base tiles carries the pass switch too (sel ${basePass.sel})`);
-let fAfter = 0, fBefore = 0;
-const countF = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) fAfter++; else if (/_before\.webp$/.test(u)) fBefore++; };
-p.on("request", countF);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Raw")?.click());
-await p.waitForTimeout(2000);
-p.off("request", countF);
-ok(fBefore > 0 && fAfter === 0,
-  `and flipping it re-composes the group's field from the real tops (${fBefore} before, ${fAfter} after)`);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+/* ---- 2c. THE BASE TAB IS THE SET EDITOR ----------------------------------
+ * "The wiki will be responsible to both rework the wiki itself so I can see and
+ * manage all base tile sets for every tile type" (maintainer 2026-08-25).
+ * Checked as the job it is: make a set, fill it, weight it, see the percentages
+ * and the field, and have the switch grow a chip for it. */
+// Commit first: the promotions live in the client until saved, and the reload
+// below deliberately goes back through the server.
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(900);
-// the randomize really re-rolls the field
-const fieldBefore = await p.evaluate(() => document.querySelector(".base-group .group-stage canvas")?.toDataURL().length);
-await p.evaluate(() => [...document.querySelectorAll(".base-group button")].find((x) => /Randomize/.test(x.textContent))?.click());
-await p.waitForTimeout(1200);
-const fieldAfter = await p.evaluate(() => document.querySelector(".base-group .group-stage canvas")?.toDataURL().length);
-ok(fieldBefore !== fieldAfter || true, `Randomize re-rolls the field (${fieldBefore} → ${fieldAfter} bytes)`);
-// weight edit commits with the group intact
-await p.evaluate(() => { const w = document.querySelector(".weight-input"); w.value = "2.5"; w.dispatchEvent(new Event("change", { bubbles: true })); });
-await p.waitForTimeout(400);
-await p.evaluate(() => document.querySelector("#save-btn")?.click());
-await p.waitForTimeout(700);
-const saved = saves.at(-1);
-const savedEntries = Object.values(saved?.set ?? {});
-ok(saved?.file === "tuning/base_tiles" && savedEntries.some((e) => e?.weight === 2.5)
-  && savedEntries.every((e) => e?.type === "grass" && e?.group === "g1"),
-  `Commit posts type, group and weight together (${JSON.stringify(savedEntries[0])})`);
+/* A FULL RELOAD, not a hash change. Navigating from #/world/grass/light_soil to
+ * #/world/grass is a same-document navigation: the SPA routes but every module
+ * Map survives, including the one remembering which tab was last opened — so
+ * the page under test was the one this gate had already put on "On top of". */
+await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+await p.reload({ waitUntil: "load" });
+await p.waitForTimeout(2400);
+const tabs1 = await readTabs();
+ok(tabs1[0]?.sel && !tabs1[0].disabled, `with sets to manage, Base is the default tab (${tabs1.map((x) => x.t + (x.sel ? "*" : "")).join(" ")})`);
+const ed = await p.evaluate(() => ({
+  panels: [...document.querySelectorAll(".base-set .panel-title")].map((x) => x.textContent.replace(/\s+/g, " ").trim()),
+  fields: [...document.querySelectorAll(".base-set .group-stage canvas")].map((c) => ({ w: c.width, h: c.height })),
+  rows: [...([...document.querySelectorAll(".base-set")][1]?.querySelectorAll(".set-row") ?? [])].map((r) => r.textContent.replace(/\s+/g, " ").trim()),
+  weights: [...document.querySelectorAll(".weight-input")].length,
+  names: [...document.querySelectorAll(".set-name")].length,
+  addTiles: [...document.querySelectorAll(".add-tiles")].length,
+  randomize: !!Array.from(document.querySelectorAll(".base-set button")).find((x) => /Another patch/.test(x.textContent)),
+  // THE PAGE'S OWN SWITCH. A promote dialog carries one with the same data-bar,
+  // and reading both concatenated them into a six-chip list that matched
+  // nothing — a gate failing for a reason that was not the page's fault.
+  chips: [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button, .ground-pass [data-bar="wiki-world-view"] a')].map((x) => x.textContent.trim()),
+}));
+ok(ed.panels.length === 2 && /^Clean #0/.test(ed.panels[0]),
+  `every set is a panel, Clean #0 first and always (${ed.panels.join(" | ")})`);
+// HIS UNITS. "how likley (the weight/chance) tile_1 is to be used VS tile_2" —
+// he set the model in percentages, so a percentage is beside every row.
+ok(ed.panels.every((x) => /\d+% of areas|never used/.test(x)),
+  "each saying how often an area of this ground picks it, as a percentage");
+ok(ed.fields.length >= 2 && ed.fields.every((f) => f.w > 300),
+  `each drawing a 5x5 field of itself (${ed.fields.map((f) => f.w + "x" + f.h).join(" ")})`);
+ok(ed.randomize, "with a way to see another patch of the world");
+ok(ed.rows.length >= 2 && /Clean colour/.test(ed.rows[0]),
+  `and a row per member, the clean colour among them (${ed.rows.join(" | ")})`);
+ok(ed.rows.every((r) => /\d+%/.test(r)), "every row carrying its share as a percentage");
+// Clean #0 has no name box and no weight box of its own for the clean member —
+// it "can only contain 100% the clean/plain base color", so there is nothing to
+// set. Two named sets => two name boxes.
+ok(ed.names === 1, `Clean #0 cannot be renamed, Set #1 can (${ed.names} name box)`);
+ok(ed.addTiles === 1, `and Clean #0 cannot take tiles, Set #1 can (${ed.addTiles} add button)`);
 
-// ---- 2d. REMOVE from the group, back to disabled ---------------------------
-await p.evaluate(() => { [...document.querySelectorAll(".base-member button")].filter((x) => /Remove/.test(x.textContent)).forEach((x) => x.click()); });
+/* THE SWITCH IS THE SETS (maintainer: "the After/Texture/Raw instead will be
+ * Set #1/Set #2/Set #3/Raw ... Clean #0/Set #1/Set #2/Set #3/Raw"). */
+ok(ed.chips[0] === "Clean #0" && ed.chips.at(-1) === "Raw" && ed.chips.length === 3,
+  `the pass switch reads Clean #0 / the sets / Raw (${ed.chips.join(" / ")})`);
+ok(!ed.chips.includes("After") && !ed.chips.includes("Textured"),
+  "and After and Textured are gone — a set member IS the texture, so the synthesis has nothing left to do");
+
+// THE POOL PICKER draws from the textured ballot, not the flat-topped x-over-y
+// tiles ("the tile show a clean color top so I can't see the art under").
+await p.evaluate(() => document.querySelector(".add-tiles")?.click());
+await p.waitForTimeout(900);
+const pool = await p.evaluate(() => ({
+  open: !!document.querySelector(".pool-modal[open]"),
+  cells: document.querySelectorAll(".pool-cell").length,
+  srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 3).map((i) => i.getAttribute("src")),
+}));
+ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ballot (${pool.cells} candidates)`);
+ok(pool.srcs.every((s) => /base_candidates/.test(s)),
+  "sourced from tiles/base_candidates, never from the x-over-y tiles whose tops are deliberately flat");
+await p.evaluate(() => document.querySelector(".pool-cell")?.click());
+await p.waitForTimeout(900);
+
+// WEIGHT 0 MUST MEAN NEVER — the old base-tile weight clamped to a 0.1 floor,
+// which made "never" impossible to say. It is how he switches a set off.
+await p.evaluate(() => { const w = [...document.querySelectorAll(".base-set")][1].querySelector(".weight-input"); w.value = "0"; w.dispatchEvent(new Event("change", { bubbles: true })); });
 await p.waitForTimeout(700);
-const tabs2 = await readTabs();
-ok(tabs2[0]?.disabled && tabs2.find((x) => /On top of/.test(x.t))?.sel,
-  "removing the last member disables the tab and lands back on On top of");
+const zeroed = await p.evaluate(() => {
+  const s = window.__wiki.state.tuning.base_tile_sets.grounds.grass.sets.find((x) => x.id === 1);
+  return { w: s?.weight, title: [...document.querySelectorAll(".base-set .panel-title")].map((x) => x.textContent.replace(/\s+/g, " ").trim()) };
+});
+ok(zeroed.w === 0, `a weight of 0 is stored as 0, not floored (${zeroed.w})`);
+ok(zeroed.title.some((x) => /never used/.test(x)), `and the panel says so in words (${zeroed.title.join(" | ")})`);
+
+// THE SAVE IS A PER-GROUND DELTA on the new file.
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
-await p.waitForTimeout(700);
-ok(Object.values(saves.at(-1)?.set ?? {}).every((v) => v === null),
-  "and committing the removals deletes the entries");
+await p.waitForTimeout(900);
+const saved = saves.at(-1);
+ok(saved?.file === "tuning/base_tile_sets" && Object.keys(saved.set ?? {})[0] === "grass",
+  `Commit posts one delta per GROUND to the new file (${saved?.file}, keys ${Object.keys(saved?.set ?? {}).join(",")})`);
+ok(Array.isArray(Object.values(saved?.set ?? {})[0]?.sets),
+  "carrying the whole set list for that ground");
 
 // ---- 2e. GROUND DETAILS: the fourth tab, the second review axis ------------
 // (maintainer 2026-08-21: "There are a LOT of tiles that look AMAZING if you
@@ -333,16 +409,17 @@ const dSwitch = await p.evaluate(() => ({
   promote: document.querySelectorAll(".detail-card .base-btn").length,
   cards: document.querySelectorAll(".detail-card").length,
 }));
-ok(dSwitch.chips.join("/") === "After/Textured/Raw" && dSwitch.sel === "After",
-  `the Details tab carries the three-state switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
+ok(dSwitch.chips.join("/") === "Clean #0/Set #1/Raw" && dSwitch.sel === "Clean #0",
+  `the Details tab carries the set switch, on Clean #0 (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
 // THE DETAILS TAB DELIBERATELY IGNORES "After" NOW (2026-08-22): a
 // clean-colour top is nothing to judge, so its compositions ask for texture —
 // which fetches the raw pass too, by design. The default-is-After claim
 // belongs on a tab that still honours the stored pass.
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Base tiles/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Base/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1400);
 passes.after = 0; passes.before = 0;
-await p.evaluate(() => document.querySelector(".base-group .ghost-btn")?.click());   // Randomize: recompose
+// "Another patch" recomposes the field from a different origin.
+await p.evaluate(() => [...document.querySelectorAll(".base-set button")].find((x) => /Another patch/.test(x.textContent))?.click());
 await p.waitForTimeout(1800);
 ok(passes.before === 0,
   `and a tile composed on a tab that honours the switch is fetched POSTPROCESSED by default (${passes.after} after, ${passes.before} before)`);
@@ -362,8 +439,13 @@ for (const tabName of ["Details", "On top of", "Transitions"]) {
     sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
     labels: [...document.querySelectorAll(".ground-pass .sortbar-btn")].map((x) => x.textContent.trim()).join("/"),
   }));
-  ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && hasPass.labels === "After/Textured/Raw",
-    `all THREE passes are on the ${tabName} tab (${hasPass.labels})`);
+  /* EVERY TAB, and the chips are now the ground's own sets (maintainer
+   * 2026-08-25). His list: "Clean #0/Set #1/Set #2/Set #3/Raw". Clean first,
+   * Raw last, his sets between — asserted by shape rather than by a fixed
+   * count, because the count is whatever he has built. */
+  ok(hasPass.pass && hasPass.n >= 2 && hasPass.sel === "Clean #0"
+    && hasPass.labels.startsWith("Clean #0/") && hasPass.labels.endsWith("/Raw"),
+    `the ground's sets are the passes on the ${tabName} tab (${hasPass.labels})`);
 }
 /* THE WHOLE TAB STRIP HAS TO FIT ON A PHONE (maintainer 2026-08-25: "Instead
  * of 'Base tiles' can you write just 'Base' so the entire radio button group /
@@ -460,9 +542,9 @@ const passFetches = async (name) => {
     }),
   };
 };
-const trAfter = await passFetches("After");
+const trAfter = await passFetches("Clean #0");
 ok(trAfter.post > 0 && trAfter.raw === 0,
-  `on Transitions, After draws the PROCESSED tiles and only those (${trAfter.post} post, ${trAfter.raw} raw)`);
+  `on Transitions, Clean #0 draws the PROCESSED tiles and only those (${trAfter.post} post, ${trAfter.raw} raw)`);
 const trBefore = await passFetches("Raw");
 ok(trBefore.raw > 0 && trBefore.post === 0,
   `and Before draws the generator's own, which is the half that was broken (${trBefore.post} post, ${trBefore.raw} raw)`);
@@ -471,21 +553,17 @@ ok(trBefore.raw > 0 && trBefore.post === 0,
 // that visited Raw has already warmed it, so counting requests here made this
 // go red for a reason that had nothing to do with the page. What matters is
 // that the strip is SYNTHESIZED: canvases, not <img>s, with real colour in them.
-const trTex = await passFetches("Textured");
-const texPix = await p.evaluate(() => {
-  const cv = document.querySelector(".trans-row .trans-strip canvas");
-  if (!cv) return { err: "no canvas in the strip" };
-  try {
-    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
-    const set = new Set();
-    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) set.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
-    return { colours: set.size };
-  } catch (e) { return { err: e.name }; }
-});
-ok(/canvas/.test(trTex.kids) && typeof texPix.colours === "number" && texPix.colours > 6,
-  `and Textured synthesizes the strip onto a canvas rather than fetching a third pass (${trTex.kids.split(",")[0]}, ${texPix.colours ?? texPix.err} colours)`);
+/* THE SET CHIPS DO NOT REACH TRANSITIONS YET, and the page must not pretend
+ * they do. A transition tile is still pregenerated art per material pair; the
+ * tiles agent is publishing the 18 boundary masks that will let it be composed
+ * from a mask plus one base tile per side, and until they land the switch here
+ * means what it always did: Raw or processed. Asserted so that the day the
+ * masks arrive, THIS is the check that fails and says to wire them up. */
+const trSet = await passFetches("Set #1");
+ok(trSet.post > 0 && trSet.raw === 0,
+  `a set chip on Transitions still draws the processed pair art, honestly (${trSet.post} post, ${trSet.raw} raw)`);
 p.off("request", countTrans);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(900);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
@@ -513,7 +591,7 @@ const modalPass = await p.evaluate(() => ({
   pass: !!document.querySelector(".promote-pass"),
   sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
 }));
-ok(modalPass.pass && modalPass.sel === "After",
+ok(modalPass.pass && /^(Clean #0|Set #\d+|Raw)$/.test(modalPass.sel ?? ""),
   `the modal carries the pass switch — the promotion is decided in here (sel ${modalPass.sel})`);
 let mAfter = 0, mBefore = 0;
 const countM = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) mAfter++; else if (/_before\.webp$/.test(u)) mBefore++; };
@@ -527,11 +605,10 @@ const stillOpen = await p.evaluate(() => ({
 }));
 ok(stillOpen.open && stillOpen.sel === "Raw" && mBefore > 0,
   `flipping inside it re-composes the previews without closing it (${mBefore} before fetched)`);
-// The pass the whole feature exists for, in the dialog where promotion is decided.
-const synthsPre = await p.evaluate(() => window.__wikiTex ?? 0);
-await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Textured")?.click());
+// The pass the whole feature exists for, in the dialog where promotion is
+// decided: the ground as one of HIS sets paints it.
+await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => /^Set #/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1800);
-void synthsPre;
 // READ THE PICTURE, not the synthesis counter: the same tiles may already be
 // in the cache from the Details tab, and a cache hit is a success, not a miss.
 const mTex = await p.evaluate(() => {
@@ -547,8 +624,11 @@ const mTex = await p.evaluate(() => {
   }
   return { open: !!document.querySelector(".promote-modal[open]"), sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(), colours };
 });
-ok(mTex.open && mTex.sel === "Textured" && typeof mTex.colours === "number" && mTex.colours > 6,
-  `and Textured inside the dialog really draws a textured field, without closing it (${mTex.colours} colours)`);
+/* READ THE PICTURE, not a counter. A field drawn from a set must carry real
+ * surface — a clean-topped field measures a handful of colours, which is the
+ * failure mode this number exists to catch. */
+ok(mTex.open && /^Set #\d+$/.test(mTex.sel ?? "") && typeof mTex.colours === "number" && mTex.colours > 6,
+  `and a set inside the dialog really draws a textured field, without closing it (${mTex.sel}, ${mTex.colours} colours)`);
 // THE DIALOG MUST NOT JUMP EITHER — it carried the same per-pass text ("raw" /
 // "textured, in palette" / "clean colour"), three different widths reflowing
 // the header above the very previews the dialog exists to compare.
@@ -573,7 +653,7 @@ await p.evaluate(() => [...document.querySelectorAll(".promote-modal button")].f
 await p.waitForTimeout(1000);
 const synced = await p.evaluate(() => document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim());
 ok(!!leftOn && synced === leftOn, `and the page behind adopts the pass the modal was left on (${leftOn} → ${synced})`);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(900);
 await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2?.scrollIntoView({ block: "center" }); b2?.click(); });
 await p.waitForTimeout(900);
@@ -583,7 +663,7 @@ const dPromoted = await p.evaluate(() => ({
   btn: document.querySelector(".detail-card .base-btn")?.textContent ?? "",
   pill: document.querySelector(".detail-card .base-row .pill")?.textContent ?? "",
 }));
-ok(/revoke/.test(dPromoted.btn) && /base tile/.test(dPromoted.pill),
+ok(/another set/.test(dPromoted.btn) && /in Set #/.test(dPromoted.pill),
   `promoting from a detail card takes effect on it (${dPromoted.pill})`);
 await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.click(); });
 await p.waitForTimeout(600);
@@ -603,8 +683,11 @@ const tGone = await p.evaluate(() => ({
   view: document.querySelector(".tile-preview")?.dataset.view,
   chips: document.querySelectorAll(".world-viewbar .sortbar-btn").length,
 }));
-ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "after" && tGone.chips === 3,
-  `the "review the top" expander is GONE; on After one row rates the TILE with stars, and Show has three states (${tGone.chips})`);
+/* Show now has as many states as he has sets, plus Clean #0 and Raw — his
+ * list, "Clean #0/Set #1/Set #2/Set #3/Raw". Asserted by shape, not by a
+ * count he controls. */
+ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "clean" && tGone.chips >= 2,
+  `the "review the top" expander is GONE; on Clean #0 one row rates the TILE with stars, and Show carries every set (${tGone.chips})`);
 await p.evaluate(() => { const c2 = document.querySelector(".stage-flip"); c2.scrollIntoView({ block: "center" }); c2.click(); });
 await p.waitForTimeout(2400);
 const tTex = await p.evaluate(() => ({
@@ -619,10 +702,14 @@ const tTex = await p.evaluate(() => ({
   scenesHere: document.querySelector(".world-cand")?.querySelectorAll(".scene-box canvas").length,
   neighbourStars: [...document.querySelectorAll(".world-cand")].slice(1).filter((c) => c.querySelector(".review-box .stars:not(.roofs)")).length,
   cards: document.querySelectorAll(".world-cand").length,
-  synths: window.__wikiTex ?? 0,
+  subs: window.__wikiSub ?? 0,
 }));
-ok(tTex.view === "texture" && tTex.chip === "⇄ textured" && tTex.synths > 0,
-  `the per-tile chip cycles After → Textured, synthesized in the browser (${tTex.chip}, ${tTex.synths} syntheses)`);
+/* THE CHIP CYCLES THE GROUND'S OWN PASSES, one tile at a time — Clean #0, then
+ * every set, then Raw. Pressing it once from Clean lands on the first set, and
+ * the composite it needs (this wall wearing that set's top) is built in the
+ * browser: __wikiSub counts those. */
+ok(/^set:/.test(tTex.view ?? "") && /^⇄ .+ #\d+$/.test(tTex.chip ?? "") && tTex.subs > 0,
+  `the per-tile chip cycles Clean #0 → the first set, composed in the browser (${tTex.chip}, view ${tTex.view}, ${tTex.subs} composites)`);
 ok(tTex.roofs === 5 && tTex.glyph === "⌂" && tTex.reject && tTex.starsHere === 0,
   `and that card's ONE row now rates the TOP — five roofs, "not a detail", no stars left on it (${tTex.roofs} × ${tTex.glyph})`);
 ok(tTex.scenesHere === 1,
@@ -635,14 +722,23 @@ const topTouch = await p.evaluate(() => [...(window.__wiki.state.touched["feedba
 ok(topTouch.length === 1 && topTouch[0].endsWith("#top"),
   `a roof press writes the #top entry, never the tile's own (${topTouch.join(", ") || "nothing"})`);
 await p.evaluate(() => [...document.querySelectorAll(".world-cand .review-box .roofs button")][2].click());
-await p.evaluate(() => document.querySelector(".stage-flip").click());
-await p.waitForTimeout(800);
+/* KEEP PRESSING UNTIL RAW. The cycle is as long as he has sets — Clean #0,
+ * every set, then Raw — so a fixed number of presses would assert on however
+ * many sets this gate happened to build. Raw is where the stars come back,
+ * because a raw generation is a tile again and not a ground. */
+for (let i = 0; i < 8; i++) {
+  const v = await p.evaluate(() => document.querySelector(".tile-preview")?.dataset.view);
+  if (v === "before") break;
+  await p.evaluate(() => document.querySelector(".stage-flip").click());
+  await p.waitForTimeout(500);
+}
 const tBack = await p.evaluate(() => ({
   view: document.querySelector(".tile-preview")?.dataset.view,
   stars: !!document.querySelector(".world-cand .review-box .stars:not(.roofs)"),
+  chip: document.querySelector(".stage-flip")?.textContent.trim(),
 }));
 ok(tBack.view === "before" && tBack.stars,
-  `one more press is Before — and the stars rate the tile again (${tBack.view})`);
+  `cycling round to Raw brings the stars back — a raw tile is a tile, not a ground (${tBack.view}, ${tBack.chip})`);
 
 // ---- THE LEDGER: what is actually left, before any art --------------------
 // Maintainer 2026-08-22: "The wiki is full with already reviewed stuff. I will
