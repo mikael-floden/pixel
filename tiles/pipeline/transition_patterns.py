@@ -106,6 +106,13 @@ REPO = os.path.dirname(ROOT)
 TRANS = os.path.join(ROOT, "transitions")
 OUT = os.path.join(ROOT, "patterns")
 REL_MASKS = "tiles/patterns/masks.webp"
+SIDE_ORDER = ["deep_water", "water", "ice", "snow", "slime", "lava", "black_rock",
+              "grey_stone", "dark_mud", "light_soil", "light_beach", "grass",
+              "parquet_floor", "grey_paving_stone", "brown_paving_stone"]
+"""Which ground is side_b when two meet: the later one. Ordered wettest-to-built so the
+BUILT surfaces (paving, parquet) are always side_b and therefore always the material whose
+edge is drawn over the natural one - a road laid on grass, not grass growing over a road."""
+
 REL_SIL = "tiles/patterns/silhouette.webp"
 
 
@@ -707,6 +714,54 @@ def index_doc(patterns, sil, generated_at):
                         "Identical on all 16 tiles of every complete set. A composed "
                         "tile whose alpha differs from this is a bug.",
         },
+        "compose": {
+            "recipe": [
+                "1. draw plate_a  (source-over onto a cleared 64x46 canvas)",
+                "2. draw mask     (destination-out is WRONG - see below; use the mask as a "
+                "   stencil: draw plate_b with globalCompositeOperation 'source-over' through "
+                "   a clipped/stencilled path, or in a worker do it per pixel)",
+                "3. the reference implementation is one line: "
+                "   out = where(mask, plate_b, plate_a); out.alpha = silhouette",
+            ],
+            "canvas_ops": [
+                {"op": "clearRect", "on": "scratch"},
+                {"op": "drawImage", "img": "mask", "gco": "source-over"},
+                {"op": "drawImage", "img": "plate_b", "gco": "source-in"},
+                {"op": "drawImage", "img": "plate_a", "gco": "destination-over"},
+            ],
+            "_comment": [
+                "THE MASK IS WHITE-ON-TRANSPARENT, so 'source-in' after drawing it keeps",
+                "exactly plate_b's mask pixels, and 'destination-over' fills the rest from",
+                "plate_a. Three drawImage calls, no per-pixel work, no geometry knowledge.",
+                "The result's alpha is the silhouette because both plates already carry it",
+                "and mask is a subset of it - which is why plates exist and why a raw review",
+                "tile MUST NOT be substituted: measured, that puts 928 of 2012 px in the",
+                "wrong alpha, silently.",
+            ],
+        },
+        "selection": {
+            "default_pattern": "a18_s4",
+            "_default_reason": "mid roughness (mean deviation 4.32px of the 0.97-4.94 range) "
+                               "and the highest vote agreement of the rough patterns. A "
+                               "consumer with no maintainer preference draws this one.",
+            "side_order": SIDE_ORDER,
+            "side_rule": "side_b is whichever of the two grounds appears LATER in "
+                         "side_order; side_a is the earlier. Deterministic, so two "
+                         "consumers never disagree about which way a boundary fades, and "
+                         "a 3-way vertex is painted by taking the pairs in this order.",
+            "_comment": "Pattern choice is a TUNING decision the maintainer owns. When "
+                        "live/tuning/ grows a transition_patterns.json, it wins over "
+                        "default_pattern; until then this field is the whole answer.",
+        },
+        "lattice": {
+            "corner_to_neighbour": {"NW": [0, 0], "NE": [1, 0], "SW": [0, 1], "SE": [1, 1]},
+            "_comment": "Which world cell each screen corner samples, as [dq, dr] from the "
+                        "tile's own cell. A tile at (q,r) reads the ground of (q,r), "
+                        "(q+1,r), (q,r+1), (q+1,r+1) and forms its index as "
+                        "8*NW + 4*NE + 2*SW + 1*SE. Corner-based, not edge-based: the "
+                        "ground lives on the LATTICE VERTICES, so four cells meet at every "
+                        "tile and no tile can ask for a transition that does not exist.",
+        },
         "wang": {
             "formula": "index = 8*NW + 4*NE + 2*SW + 1*SE",
             "corners": {"8": "NW", "4": "NE", "2": "SW", "1": "SE"},
@@ -918,6 +973,7 @@ def plate(img, root=None):
     a = a[:TILE_H, :TILE_W]
     alpha = a[..., 3] > 0
     top = TR.top_face(alpha)
+    lib_top = TR.top_face(sil)
     out = a.copy()
     empty = []
     for x in range(TILE_W):
@@ -928,6 +984,20 @@ def plate(img, root=None):
             continue
         out[:ts.min(), x, :3] = a[ts.min(), x, :3]
         out[col.max() + 1:, x, :3] = a[col.max(), x, :3]
+        # THE LIBRARY'S TOP FACE IS ONE ROW DEEPER THAN A REVIEW TILE'S, and that row
+        # must come from the source's own SURFACE, not from whatever the source drew
+        # there - which is its BRIM, the overhang belonging to the cell's side material.
+        # Left alone it ships the neighbour's colour inside the ground: measured, a blue
+        # ice rim on a black_rock plate (distance 56.6), a green grass rim on another.
+        # 234,789 px, 6.9% of all top-face pixels, 3,661 of 3,685 plates - and after
+        # tiling ~36 visible px per tile, which reads as a DIAMOND WIREFRAME over any
+        # textured field. Measured |last top row - row above|: 17.6 mean against 8.2 for
+        # the same tiles on their own geometry, 2.1x, and 4.8-7.9 on the generated
+        # transition art this library was distilled from.
+        lt = np.nonzero(lib_top[:, x])[0]
+        deeper = lt[lt > ts.max()] if len(lt) else lt
+        if len(deeper):
+            out[deeper, x, :3] = a[ts.max(), x, :3]
     for x in empty:
         src = min((c for c in range(TILE_W) if c not in empty),
                   key=lambda c: abs(c - x), default=None)

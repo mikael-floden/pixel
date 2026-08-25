@@ -30,6 +30,87 @@
   "opaque_px": 2012,
   "_comment": "THE alpha of every transition tile and every base plate. Identical on all 16 tiles of every complete set. A composed tile whose alpha differs from this is a bug."
  },
+ "compose": {
+  "recipe": [
+   "1. draw plate_a  (source-over onto a cleared 64x46 canvas)",
+   "2. draw mask     (destination-out is WRONG - see below; use the mask as a    stencil: draw plate_b with globalCompositeOperation 'source-over' through    a clipped/stencilled path, or in a worker do it per pixel)",
+   "3. the reference implementation is one line:    out = where(mask, plate_b, plate_a); out.alpha = silhouette"
+  ],
+  "canvas_ops": [
+   {
+    "op": "clearRect",
+    "on": "scratch"
+   },
+   {
+    "op": "drawImage",
+    "img": "mask",
+    "gco": "source-over"
+   },
+   {
+    "op": "drawImage",
+    "img": "plate_b",
+    "gco": "source-in"
+   },
+   {
+    "op": "drawImage",
+    "img": "plate_a",
+    "gco": "destination-over"
+   }
+  ],
+  "_comment": [
+   "THE MASK IS WHITE-ON-TRANSPARENT, so 'source-in' after drawing it keeps",
+   "exactly plate_b's mask pixels, and 'destination-over' fills the rest from",
+   "plate_a. Three drawImage calls, no per-pixel work, no geometry knowledge.",
+   "The result's alpha is the silhouette because both plates already carry it",
+   "and mask is a subset of it - which is why plates exist and why a raw review",
+   "tile MUST NOT be substituted: measured, that puts 928 of 2012 px in the",
+   "wrong alpha, silently."
+  ]
+ },
+ "selection": {
+  "default_pattern": "a18_s4",
+  "_default_reason": "mid roughness (mean deviation 4.32px of the 0.97-4.94 range) and the highest vote agreement of the rough patterns. A consumer with no maintainer preference draws this one.",
+  "side_order": [
+   "deep_water",
+   "water",
+   "ice",
+   "snow",
+   "slime",
+   "lava",
+   "black_rock",
+   "grey_stone",
+   "dark_mud",
+   "light_soil",
+   "light_beach",
+   "grass",
+   "parquet_floor",
+   "grey_paving_stone",
+   "brown_paving_stone"
+  ],
+  "side_rule": "side_b is whichever of the two grounds appears LATER in side_order; side_a is the earlier. Deterministic, so two consumers never disagree about which way a boundary fades, and a 3-way vertex is painted by taking the pairs in this order.",
+  "_comment": "Pattern choice is a TUNING decision the maintainer owns. When live/tuning/ grows a transition_patterns.json, it wins over default_pattern; until then this field is the whole answer."
+ },
+ "lattice": {
+  "corner_to_neighbour": {
+   "NW": [
+    0,
+    0
+   ],
+   "NE": [
+    1,
+    0
+   ],
+   "SW": [
+    0,
+    1
+   ],
+   "SE": [
+    1,
+    1
+   ]
+  },
+  "_comment": "Which world cell each screen corner samples, as [dq, dr] from the tile's own cell. A tile at (q,r) reads the ground of (q,r), (q+1,r), (q,r+1), (q+1,r+1) and forms its index as 8*NW + 4*NE + 2*SW + 1*SE. Corner-based, not edge-based: the ground lives on the LATTICE VERTICES, so four cells meet at every tile and no tile can ask for a transition that does not exist."
+ },
  "wang": {
   "formula": "index = 8*NW + 4*NE + 2*SW + 1*SE",
   "corners": {

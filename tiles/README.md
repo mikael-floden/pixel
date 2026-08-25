@@ -117,8 +117,12 @@ tiles/
     notes.py             the maintainer's written notes — surfaced, never acted on
     pixellab_gc.py       delete generations we never kept (--apply is destructive)
     probe.py             generate ONE sheet for ONE prompt and score it (bake-offs)
+    transition_patterns.py  distil tiles/transitions into the pattern library
+    transition_plates.py    build tiles/plates from the maintainer's approvals
   matrix/                RAW generations. Gitignored, recoverable — see recovery above.
   review/                published candidates + manifest.json (what the wiki renders)
+  patterns/              the boundary, material-independent: 18 patterns x 16 Wang masks
+  plates/                the surfaces the boundary divides: one plate per ground/tile
   generated.json         every tile_id we ever paid for. THE master copy.
   tombstones.json        maintainer verdicts: never-publish and always-publish
   notes_seen.json        which of their written notes the agent has actually read
@@ -345,6 +349,59 @@ from its own wall, which is the complaint already made twice about grass.
 This costs shift on the existing art (mean 27.6 against the old palette's 23.4) because the
 nominated reference is darker than the average deep water the generator draws. That is the
 palette doing its job, not a regression.
+
+## Plates — the two grounds a transition divides
+
+`tiles/patterns/` publishes the boundary and nothing else. `tiles/plates/`
+(`tiles3/base-plates@1`) publishes the surfaces it divides, so composing a transition is
+three drawImage calls: `out.rgb = mask ? B.rgb : A.rgb ; out.a = silhouette`.
+
+**A plate's alpha IS `tiles/patterns/silhouette.webp`** — 2012 opaque pixels, byte-
+identical on every plate and every mask, verified per file on write and again on
+`--verify`. (The recipe is load-bearing on it: one wrong pixel is a hole or opaque black
+in every transition that plate ever enters.)
+
+**Only this pipeline can make one.** Review art is 64x64 with the tile at row 9–10 and 41
+distinct silhouettes across the 225 cells; composing straight from it puts 928 of 2012
+pixels in the wrong alpha — 400 opaque outside the silhouette, 528 silhouette pixels
+transparent. Conforming needs `transition_patterns.plate()`'s column extension and
+empty-column fill, which a browser cannot reimplement from anything published.
+
+**The wall is the ground's own `palette.wall`, never the source cell's.** A review cell is
+`G__over__H` — top G, wall H — so ground G's approved pool carries up to 15 different
+walls (grass: lava, snow, ice, parquet). Filling the wall region (1088 of 2012 px, the
+bottom `WALL_D=17` rows of every column) with the ground's own colour makes the cliff a
+function of the GROUND ALONE: which member of a base tile set fills a cell can never
+change what the cliff is made of. The overhang goes with it — 25–36% of a grass tile's
+wall region reads nearer to grass than to the side material, and those blades sell a
+boundary between two *different* materials that a base tile's own cliff does not have.
+(Keeping them by nearest-of-two against (top palette, side wall) ships a maroon band
+under grass where dark lava rows misclassify — `palette_snap._split_wall`'s trap.)
+
+**The pool is every approved candidate of every `G__over__*` cell**, addressed by the
+review key `tiles/<cell>/sha1(<matrix path>)[:8]` — never by rank slot, which is
+reassigned on republish. A wall defect disqualifies nothing, because the wall is replaced:
+*"I pick tiles to be part of the base tile set if I like how the top looks with the
+knowledge this will never define a wall."*
+
+**The path is a pure function of the key**, so no lookup table can go stale:
+`tiles/<top>__over__<side>/<key8>` → `tiles/plates/<top>/<key8>.webp`. It costs the 60
+keys whose plates are byte-identical to another's — written twice rather than aliased,
+against a 1.6 MB resolve map. One key8 published into two cells is the brown/grey paving
+expansion of ONE matrix tile and collapses to one plate (226 of 3911, differing by at most
+12 of 924 top-face pixels, median 1, 95 identical); a collision over 18 px is refused.
+
+**Every ground gets `clean.webp`** — the flat palette colour in transition geometry — even
+with no approved tile. It is the Clean #0 member, and it is what makes the library usable
+before any base tile set exists.
+
+**Base tile SETS are the wiki agent's, not this domain's.** Membership, weights, the
+per-region set pick and the per-cell member pick live in `pixel-wiki-base-tile-sets@1`
+(`wiki/lib/basesets.mjs`, `live/tuning/base_tile_sets.json`); this domain reads that file
+and never writes it. `plates/index.json` `expects` states what is read from it, and its
+`resolve` states how a member's `tile` becomes a plate path.
+
+    python3 tiles/pipeline/transition_plates.py --write     # publish, then verify
 
 ## Two tile types, and why a rejection is not a deletion
 
