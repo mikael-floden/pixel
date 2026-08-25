@@ -643,6 +643,104 @@ and gated on the **files fetched**, which cannot lie:
 | Before | 0 | 40 |
 | Textured | 45 | 40 (synthesized onto a canvas) |
 
+## The pass switch IS the ground's base tile sets
+
+Maintainer 2026-08-25: *"Each ground type have a list of base tile sets. A base
+tile set is a list of tiles that look extremely good when used togather ...
+should also specify how likley (the weight/chance) tile_1 is to be used VS
+tile_2 ... In every base tile set the set can add a weight for how likley the
+clean/plain color should be used. Setting this to 0% will always draw with
+texture. Setting this to 100% will always draw a clean tile."* And: *"This also
+means the After/Texture/Raw instead will be Set #1/Set #2/Set #3/Raw ... And if
+no set has been created yet at least draw: Clean #0/Raw."*
+
+The switch is built from the ground in context: `Clean #0`, every set that can
+draw, then `Raw`. Stored values are `clean` | `set:<id>` | `before`; `after` and
+`texture` migrate to `clean`, so no saved preference resets. Set IDs are the
+shared vocabulary, so a page showing many grounds offers "Set #1" and each
+ground answers with its own — one that has no set 1 falls back to clean and says
+"no such set" rather than silently showing the same picture.
+
+**Textured is gone, and its going is the point.** It was a browser-side *guess*
+at what a kept texture might look like, because there was no data for it. A set
+member IS that texture, as real art he chose, so the synthesis has nothing left
+to do.
+
+**Two levels of choice, deliberately not the same choice.** A SET is picked per
+REGION (*"the world-agent will always stick to a single base tile set at one
+location"*), a MEMBER per CELL. Picking the set per cell would shuffle three
+different grasses into one meadow and undo the point of grouping them.
+
+**Set 0 is reserved**, is named Clean, holds nothing but the clean member, and is
+never deleted — it is switched off by weight (*"the weight for using this set is
+0"*), which also guarantees every ground has one set that can still draw. IDs
+are stable and never renumbered on delete: a deleted set leaves a hole on
+purpose, because renumbering would repaint regions nobody touched.
+
+**Weights are raw numbers, shown as percentages.** Percent is how he stated the
+model; raw weights are what survives editing, since storing percentages would
+rescale every other row each time he adds a tile. **0 is a legal weight and must
+stay one** — the old base-tile weight clamped to a 0.1 floor, which quietly made
+"never" impossible to express.
+
+Storage is `live/tuning/base_tile_sets.json` (`pixel-wiki-base-tile-sets@1`),
+bucket `grounds` — one entry per ground, because a set that holds no tiles
+(Clean #0) cannot be represented in a tile-keyed bucket. The pick is FNV-1a/32
+over `bts1|set|<ground>|<region>` and `bts1|tile|<set_id>|<x>|<y>`, specified in
+`wiki/lib/basesets.mjs` with `TEST_VECTORS` so the game and the tiles agent can
+prove a port without reading the source. This replaces `transition_surface` /
+`always_own_texture` / `flat_top`: *"It's all normalized and conteolled using the
+base tile sets."*
+
+**The pool is `tiles/base_candidates/`, never the x-over-y review tiles.** Those
+have deliberately flat tops (`palette.json flat_top`) — they are wall showcases,
+and picking a base tile from them asks him to approve a surface he is not being
+shown (*"the tile show a clean color top so I can't see the art under"*).
+
+**The preview is the game.** Fields are drawn with the real pick, so Randomize
+moves the ORIGIN rather than reseeding a toy RNG: every roll is a real patch of
+the world, never one that could not occur.
+
+### Choosing a set repaints the wall under review
+
+*"That page as you know focuses on the walls, but you should be able to see the
+walls with different grounds based on what you select ... I pick tiles to be part
+of the base tile set if I like how the top looks with the knowlage this will
+never define a wall."*
+
+So an x-over-y tile keeps its wall and only its **top face** is replaced
+(`topSub`, mirrored in `wiki/lib/topsub.mjs`). Measured on grass over dark_mud:
+silhouette byte-identical, 0 holes, 910 of 910 top pixels replaced, 0 of 1,088
+wall pixels touched, top colours 2 → 13.
+
+**Align on the WALL FOOT, never the apex.** Over all 5,838 review tiles and 356
+ballot tiles, every single tile has at least a pixel of spread between the two
+TOP edges — the outline mismatch `_extend_base` was written for — while the
+bottom is rigid (identical in 95.8% of columns, voting 9 on 97% of tiles). It
+follows from the definition too, since the top face is derived from the bottom
+(`bot - WALL_D`, WALL_D = 17). Cost of getting it wrong: bottom-aligned, all 910
+top pixels land on real top face; apex-aligned, 50 fall off it. Clamp the
+extension into the source's own **top face**, not its silhouette — one row lower
+paints the ballot tile's WALL into the new top.
+
+### A fixture that cannot show the defect reports safety
+
+`check-basesets.mjs` **passed with that alignment deliberately broken.** Three of
+its four fixtures had apex and wall-foot offsets that AGREE, so the wrong rule
+gave the right answer; the fourth's base tile has a top face with **0.0%**
+row-to-row change, so a row shift moved nothing.
+
+Only **3 cells** in the whole review set can see a one-row error at all
+(`grass__over__grass`, `grass__over__slime`, `ice__over__lava`, each against a
+candidate with 48–82% vertical structure). All three are now fixtures, and their
+apex/foot offsets and top-face structure are **re-measured every run**, so a
+republished tile that flattens one fails loudly instead of quietly blinding the
+check. Verified by reintroducing both broken alignments: 704 px and 736 px of
+disagreement, where before there were 0.
+
+This is the same lesson as the CORS one below, in a new place: **the harness
+differed from the thing under test in exactly the dimension that mattered.**
+
 ## A switch for comparing pictures must not move the pictures
 
 Maintainer 2026-08-25: *"I don't like the text to the right side of
