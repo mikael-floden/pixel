@@ -4515,32 +4515,35 @@ function pickWeighted(weights, u) {
   for (let i = weights.length - 1; i >= 0; i--) if (weights[i] > 0) return i;
   return -1;
 }
-/** What fills cell (x,y) of a set: a member's art, or null for the clean colour. */
-function setCellArt(set, x, y) {
-  const rows = [{ art: null, weight: set.clean }, ...set.members.map((m) => ({ art: m.art, weight: m.art ? m.weight : 0 }))];
+/* THE CLEAN MEMBER HAS REAL ART, and it is the ground's own x-over-x tile.
+ * That tile's top is flat by design ("a clean flat top is the default for every
+ * material", palette.json flat_top) — it IS what the game paints today wherever
+ * no set is used, so drawing the clean member with it is not an illustration of
+ * the clean colour, it is the clean colour's tile. Drawing it as a flat CSS fill
+ * instead would put a rectangle behind a field of diamonds. */
+function cleanArtOf(typeId) {
+  const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
+  if (!own) return null;
+  return (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
+}
+/** What fills cell (x,y) of a set: a member's art, or the ground's clean tile. */
+function setCellArt(set, x, y, typeId) {
+  const clean = typeId ? cleanArtOf(typeId) : null;
+  const rows = [{ art: clean, weight: set.clean }, ...set.members.map((m) => ({ art: m.art, weight: m.art ? m.weight : 0 }))];
   const i = pickWeighted(rows.map((r) => r.weight), unitHash(`bts1|tile|${set.id}|${x}|${y}`));
-  return i < 0 ? null : rows[i].art;
+  return i < 0 ? clean : rows[i].art;
 }
 /** A field of this set, drawn as the game would draw it from origin [x0,y0]. */
 function setField(typeId, set, n, origin, scale = 1) {
   const box = h("div", { class: "iso-stage checker group-stage" });
   const [x0, y0] = origin;
-  const clean = groundBaseColor(typeId)?.c ?? null;
   const cells = [];
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
-    cells.push({ c, r, img: setCellArt(set, x0 + c, y0 + r) });
+    cells.push({ c, r, img: setCellArt(set, x0 + c, y0 + r, typeId) });
   }
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
-  const paint = (images) => {
-    // A CLEAN CELL IS NOT A MISSING CELL. Cells with no art are the flat colour,
-    // and they are drawn as the ground's own colour behind the textured ones —
-    // dropping them would show a set at 50% clean as a field full of holes.
-    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()));
-    if (cells.some((x) => !x.img) && clean) box.style.setProperty("--clean-fill", clean);
-    box.classList.toggle("has-clean", cells.some((x) => !x.img));
-  };
-  if (!paths.length) { paint({}); return box; }
-  loadImages(paths, paint);
+  if (!paths.length) { box.append(h("p", { class: "muted" }, "no art to draw this ground with")); return box; }
+  loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
   return box;
 }
 /* THE POOL PICKER. 161 grass candidates is too many to scroll past on a phone
@@ -4889,7 +4892,7 @@ const viewArtIn = (view, cand) => {
   const top = candTop(cand);
   const set = top ? passSet(top, view) : null;
   if (set && cand.art) {
-    const face = setCellArt(set, cand.subX ?? 0, cand.subY ?? 0);
+    const face = setCellArt(set, cand.subX ?? 0, cand.subY ?? 0, top);
     if (face) return `sub:${cand.art}::${face}`;
   }
   return cand.art;
@@ -5417,32 +5420,50 @@ const worldIso = () => ({ ...(state.data.iso ?? { tilePx: 64, dx: 32, levelPx: 1
 /** The pair of images every World card draws. `raw` is optional — a candidate
  *  from before @2 has none, and then there is nothing to compare and no switch
  *  worth showing on it. */
+/* THE CARD THUMBNAIL FOLLOWS THE SWITCH TOO, and it is the ground in the tile's
+ * OWN key that decides which sets are on offer — a grid mixes grounds, and each
+ * card must answer with its own.
+ *
+ * Both layers stay in the DOM and CSS crossfades between them, which is what
+ * makes this a comparison rather than a reload: the picture under his thumb
+ * changes and the ones beside it hold still. A composed pass (a set's ground
+ * substituted onto this wall) has no file to point an <img> at, so it is a
+ * canvas painted when the composite answers — and falls back to the plain tile
+ * rather than to an empty box if it cannot be built. */
 function worldArt(cand, alt, box = "thumb") {
-  const v = worldView();
-  const showRaw = v === "before" && cand.raw;
-  const showTex = v === "texture" && cand.raw;
-  // The textured pass has no file to point an <img> at — it is synthesized —
-  // so it is the one layer that is a canvas, painted when the cache answers.
-  const texCv = showTex ? h("canvas", { class: "art-tex", "aria-label": `${alt} — textured top` }) : null;
-  if (texCv) texFor(cand.art, cand.raw, (c) => {
-    const paint = (src, w, ht) => {
-      texCv.width = w; texCv.height = ht;
-      const cx = texCv.getContext("2d");
+  const top = candTop(cand);
+  const v = worldViewFor(top);
+  const showRaw = v === PASS_RAW && cand.raw;
+  const set = passSet(top, v);
+  const composed = set ? viewArtIn(v, cand) : null;
+  const showSub = !!(composed && String(composed).startsWith("sub:"));
+  const cv = showSub ? h("canvas", { class: "art-tex", "aria-label": `${alt} — ${setLabel(set)}` }) : null;
+  if (cv) {
+    const [a, bArt] = composed.slice(4).split("::");
+    const paint = (src, w2, ht) => {
+      cv.width = w2; cv.height = ht;
+      const cx = cv.getContext("2d");
       cx.imageSmoothingEnabled = false;
       cx.drawImage(src, 0, 0);
     };
-    if (c) paint(c, c.width, c.height);
-    else { const im = new Image(); im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); }; im.src = assetUrl(cand.art); }
-  });
-  return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}${showTex ? " on-texture" : ""}` },
+    subFor(a, bArt, (c) => {
+      if (c) paint(c, c.width, c.height);
+      else { const im = new Image(); im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); }; im.src = assetUrl(cand.art); }
+    });
+  }
+  return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}${showSub ? " on-texture" : ""}` },
     h("img", { class: "art-after", src: assetUrl(cand.art), alt, loading: "lazy" }),
     cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — raw, before postprocess`, loading: "lazy" }) : null,
-    texCv,
+    cv,
     // The badge is not decoration: mid-comparison, "which one am I looking
     // at" is the one question the screen must always answer.
     showRaw ? h("span", { class: "art-tag" }, "raw") : null,
-    showTex ? h("span", { class: "art-tag" }, "textured") : null,
-    v !== "after" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, v === "before" ? "no raw" : "no texture") : null);
+    showSub ? h("span", { class: "art-tag" }, setLabel(set)) : null,
+    // A GROUND THAT HAS NO SUCH SET SAYS SO. On a grid of many grounds the
+    // chosen set may not exist here, and a card silently showing clean would
+    // read as "this set looks identical", which is a different claim.
+    v === PASS_RAW && !cand.raw ? h("span", { class: "art-tag muted-tag" }, "no raw") : null,
+    v.startsWith("set:") && !set ? h("span", { class: "art-tag muted-tag" }, "no such set") : null);
 }
 /** The ground TYPES — grass, ice, snow — grouped from the pairs that use them
  *  as their walkable top. Derived rather than baked, so the live manifest
@@ -9271,3 +9292,8 @@ async function upgradeToStaging() {
     }),
   };
 })();
+
+/* GATE PROBE. The set model and the compositor are pure functions of published
+ * data, so a gate can call them directly instead of inferring them from pixels
+ * on screen — which is how a pass that "worked" could ship flat. */
+window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets };

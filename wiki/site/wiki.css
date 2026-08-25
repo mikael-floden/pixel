@@ -307,6 +307,45 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   margin-left: 7px; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
 }
+/* ---- BASE TILE SETS (maintainer 2026-08-25) ----
+   A set panel is read top-down: what it is and how often it is used, then the
+   FIELD (the only honest picture of a set), then the rows that make it. The
+   field comes before the rows deliberately — he judges the ground, then adjusts
+   the numbers that produced it. */
+.base-set { margin-bottom: 14px; }
+/* A set at weight 0 is switched off, not broken. Dimmed, never hidden: it is
+   how he parks a look he is not using, and a parked set has to stay findable. */
+.base-set.off { opacity: 0.62; }
+.set-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 6px 0 10px; }
+.set-name {
+  flex: 1 1 140px; min-width: 0; padding: 7px 9px; font-size: 14px;
+  border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--ink);
+}
+.set-rows { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 8px; }
+.set-row {
+  display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+}
+/* Weight 0 means never. The row stays — it is the control he sets to say so. */
+.set-row.off { opacity: 0.55; }
+.set-row.gone { border-color: var(--err, #a33); }
+.set-row-tile { width: 44px; height: auto; image-rendering: pixelated; flex: none; }
+.set-row-name { flex: 1 1 120px; min-width: 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.set-row .weight-label { flex: none; }
+.add-tiles, .new-set { margin-top: 4px; }
+/* THE POOL PICKER: 161 candidates, so the grid is dense and the tiles are shown
+   at their authored size — a base tile is judged on its surface, and scaling a
+   pixel surface up is judging a different surface. */
+.pool-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 6px; margin: 10px 0; max-height: 56vh; overflow-y: auto;
+}
+.pool-cell {
+  padding: 3px; border: 1px solid var(--border); border-radius: 7px;
+  background: var(--surface); cursor: pointer; line-height: 0;
+}
+.pool-cell:hover, .pool-cell:focus-visible { border-color: var(--accent, #c9a227); }
+.pool-tile { width: 100%; height: auto; image-rendering: pixelated; }
 .base-group { margin-bottom: 14px; }
 .group-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
 .base-member {
