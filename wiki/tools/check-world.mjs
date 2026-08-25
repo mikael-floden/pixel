@@ -131,6 +131,10 @@ for (const f of faces) {
 
 await p.goto(`${W}#/world/${TOP}`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
+/* THE GROUND PAGE OPENS ON BASE since 2026-08-25 — Clean #0 always exists, so
+ * the admin's set editor is what he lands on. The pairs live one tab over. */
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(1400);
 const lvl2 = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
   cards: document.querySelectorAll("a.card").length,
@@ -248,6 +252,10 @@ const freshTop = await live.evaluate(() => ({
 }));
 await live.goto(`${W}#/world/sand`, { waitUntil: "load" });
 await live.waitForTimeout(2200);
+// Same as above: the ground page opens on its set editor, and the pairs a live
+// manifest refresh has to reshape are one tab over.
+await live.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await live.waitForTimeout(1200);
 const fresh = await live.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
   has: !!document.querySelector('a.card[href="#/world/sand/moonstone"]'),
@@ -408,7 +416,7 @@ const shot = () => p.evaluate(() => ({
 }));
 const asShipped = await shot();
 console.log("after :", JSON.stringify(asShipped));
-ok(asShipped.mode[0] === "*After", `it opens on what the game gets (${asShipped.mode.join(" ")})`);
+ok(asShipped.mode[0] === "*Clean #0", `it opens on what the game gets — the clean colour (${asShipped.mode.join(" ")})`);
 ok(asShipped.faces.every((f) => /_after\.webp$/.test(f ?? "")), "and every tile preview is composed from the postprocessed art");
 
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Raw/.test(b.textContent)).click());
@@ -452,39 +460,46 @@ const press = (i) => p.evaluate((n) => document.querySelectorAll(".world-cand .t
 const rest = await chips();
 console.log("chips:", JSON.stringify(rest.map((c) => `${c.label}/${c.view}`)));
 ok(rest.length > 1 && rest.every((c) => c.label), `every tile carries the switch on its own picture (${rest.length}/${rest.length})`);
-ok(rest.every((c) => c.view === "after"), "all of them starting on what the game gets");
-// ONE PRESS IS THE TEXTURED PASS now (2026-08-21) — the chip walks the same
-// three states the Show switch does: after → textured → before → after.
+ok(rest.every((c) => c.view === "clean"), "all of them starting on what the game gets");
+/* THE CHIP WALKS THE GROUND'S OWN PASSES (2026-08-25) — Clean #0, then every
+ * set, then Raw. This ground has no set built, so one press is Raw and the
+ * whole cycle is two states. The claim being tested is unchanged and is the
+ * one that matters: the tile under his thumb moves and the ones beside it do
+ * not, which is what makes it a comparison rather than a reload. */
 await press(1);
 await p.waitForTimeout(1200);
 const texPeek = await chips();
 console.log("after pressing tile 2:", JSON.stringify(texPeek.map((c) => `${c.label}/${c.view}`)));
-ok(texPeek[1].view === "texture" && String(texPeek[1].face ?? "").startsWith("tex:"),
-  `one press composes THAT tile from the synthesized textured top (${String(texPeek[1].face).slice(0, 22)}…)`);
-ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "after" && /_after\.webp$/.test(c.face ?? "")),
-  "while the tiles beside it hold still — the difference he sees is the postprocess, not the page");
-ok(/textured/.test(texPeek[1].label ?? ""), `and the chip says which pass he is looking at (“${texPeek[1].label}”)`);
-await press(1);
-await p.waitForTimeout(1000);
-const peek = await chips();
+ok(texPeek[1].view !== "clean" && texPeek[1].face,
+  `one press moves THAT tile off the clean colour (${String(texPeek[1].face).slice(0, 28)}…)`);
+ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "clean" && /_after\.webp$/.test(c.face ?? "")),
+  "while the tiles beside it hold still — the difference he sees is the pass, not the page");
+ok(/⇄/.test(texPeek[1].label ?? ""), `and the chip says which pass he is looking at (“${texPeek[1].label}”)`);
+const peek = texPeek;
 ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
   `a second press reaches the generator's raw output (${peek[1].face?.split("/").pop()})`);
 ok(/raw/.test(peek[1].label ?? ""), `and the chip follows it (“${peek[1].label}”)`);
 await press(1);
 await p.waitForTimeout(1000);
+// The cycle is as long as the ground has passes, so "back to the start" is
+// reached by pressing until it is, not by counting to three.
+for (let i = 0; i < 8; i++) {
+  if ((await chips())[1].view === "clean") break;
+  await press(1); await p.waitForTimeout(700);
+}
 const backAgain = await chips();
-ok(backAgain[1].view === "after" && /_after\.webp$/.test(backAgain[1].face ?? ""), "and a third puts that tile back");
+ok(backAgain[1].view === "clean" && /_after\.webp$/.test(backAgain[1].face ?? ""), "and cycling round puts that tile back");
 // THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "Clean #0" for the
 // set has to mean all of it, or a tile left on before would be read as one the
 // postprocess did nothing to.
 await press(0);
 await p.waitForTimeout(900);
-ok((await chips())[0].view === "texture", "a peek can be left open on any tile");
+ok((await chips())[0].view !== "clean", "a peek can be left open on any tile");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Clean #0/.test(b.textContent)).click());
 await p.waitForTimeout(1400);
 const cleared = await chips();
 console.log("after the set-wide After:", JSON.stringify(cleared.map((c) => c.view)));
-ok(cleared.every((c) => c.view === "after"), "and the set-wide switch clears every peek — “After” for the set means all of it");
+ok(cleared.every((c) => c.view === "clean"), "and the set-wide switch clears every peek — “Clean #0” for the set means all of it");
 
 // NO PLATFORM PRESS EFFECT ANYWHERE (maintainer 2026-08-17: "Why did you do the
 // button down effect blue? Is that part of our CSS style guide? … Is it a
