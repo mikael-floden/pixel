@@ -1,0 +1,1467 @@
+{
+ "schema": "tiles3/transition-patterns@1",
+ "domain": "tiles",
+ "generated_at": "2026-08-25T00:00:00Z",
+ "generator": "tiles/pipeline/transition_patterns.py",
+ "_comment": [
+  "A transition tile is TWO GROUND TILES AND A BOUNDARY. This file publishes",
+  "the boundary. 18 patterns x 16 Wang corner masks, distilled by majority",
+  "vote from the pre-generated sets in tiles/transitions/.",
+  "It is MATERIAL-INDEPENDENT: the same roughness+seed divides the tile the",
+  "same way whatever the two materials are. Give it any two base plates and",
+  "it makes the transition. It reproduces the boundary SHAPE, not the",
+  "generator's shading along the seam - see `reproduces` below."
+ ],
+ "geometry": {
+  "tile_w": 64,
+  "tile_h": 46,
+  "half_w": 32,
+  "half_h": 14,
+  "dx": 32,
+  "dy": 14,
+  "wall_d": 17,
+  "top_face_px": 924,
+  "wall_px": 1088,
+  "opaque_px": 2012,
+  "_comment": "dx/dy are the lattice step the art is authored and validated at. The game ships ISO_DY=15 today (games2/shared/src/index.ts:181); tiles 3.0 requires 14 (tiles/docs/GEOMETRY.md, maintainer verdict). Anything drawn at 15 leaks a 1px wall band per tile boundary."
+ },
+ "silhouette": {
+  "file": "tiles/patterns/silhouette.webp",
+  "opaque_px": 2012,
+  "_comment": "THE alpha of every transition tile and every base plate. Identical on all 16 tiles of every complete set. A composed tile whose alpha differs from this is a bug."
+ },
+ "wang": {
+  "formula": "index = 8*NW + 4*NE + 2*SW + 1*SE",
+  "corners": {
+   "8": "NW",
+   "4": "NE",
+   "2": "SW",
+   "1": "SE"
+  },
+  "vertices": {
+   "NW": "apex",
+   "NE": "right",
+   "SW": "left",
+   "SE": "bottom"
+  },
+  "edge_midpoints": {
+   "NW_SW": [
+    16,
+    7
+   ],
+   "NW_NE": [
+    47,
+    7
+   ],
+   "SW_SE": [
+    16,
+    21
+   ],
+   "NE_SE": [
+    47,
+    21
+   ]
+  },
+  "pure": {
+   "0": "side_a everywhere",
+   "15": "side_b everywhere"
+  },
+  "edge_crossings": {
+   "x": [
+    16,
+    48
+   ],
+   "top_rim": [
+    {
+     "x": [
+      0,
+      16
+     ],
+     "corner": 2
+    },
+    {
+     "x": [
+      16,
+      48
+     ],
+     "corner": 8
+    },
+    {
+     "x": [
+      48,
+      64
+     ],
+     "corner": 4
+    }
+   ],
+   "bottom_rim": [
+    {
+     "x": [
+      0,
+      16
+     ],
+     "corner": 2
+    },
+    {
+     "x": [
+      16,
+      48
+     ],
+     "corner": 1
+    },
+    {
+     "x": [
+      48,
+      64
+     ],
+     "corner": 4
+    }
+   ],
+   "_comment": "The outline follows the same two columns as the wall, and that is what closes the lattice: this tile's upper-right rim IS the up-right neighbour's lower-left rim shifted by +32, with NW playing that neighbour's SW. Imposed at build time, so every Wang edge crosses at t = 0.500 exactly."
+  },
+  "_comment": "Measured off clean sets, not assumed (transition_render.py:518-526). The boundary crosses every diamond EDGE at its midpoint - that is what makes the lattice close. Midpoints are keyed by the two corners the edge joins, consistent with `vertices`: apex-left is NW_SW at (16,7)."
+ },
+ "polarity": {
+  "id": "bit_set_is_side_b",
+  "mask_true": "side_b",
+  "mask_false": "side_a",
+  "side_a": "the material whose corner bits are CLEAR; fills index 0 entirely",
+  "side_b": "the material whose corner bits are SET; fills index 15 entirely",
+  "_comment": [
+   "THE LIBRARY NAMES NO MATERIALS. side_a / side_b are roles the CONSUMER",
+   "assigns when it composes. There is no per-pattern polarity and no",
+   "per-pattern material. Index 0 vs index 15 ambiguity exists only for",
+   "the PRE-GENERATED art in tiles/transitions/ - see legacy_sets.json.",
+   "It does not exist here."
+  ]
+ },
+ "masks": {
+  "file": "tiles/patterns/masks.webp",
+  "encoding": "lossless-webp-alpha",
+  "channel": "alpha",
+  "rgb": "255,255,255 at every pixel including under alpha=0",
+  "sheet_w": 1024,
+  "sheet_h": 828,
+  "frame_w": 64,
+  "frame_h": 46,
+  "cols": 16,
+  "rows": 18,
+  "frame_index": "pattern.row * 16 + wang_index",
+  "value": {
+   "255": "side_b",
+   "0": "side_a or outside the tile"
+  },
+  "binary": true,
+  "_comment": [
+   "Alpha, not luminance: canvas source-in / destination-in and every GPU",
+   "blend path operate on alpha. A luminance mask would force getImageData",
+   "or a shader. Alpha is strictly 0 or 255 - there is no anti-aliasing",
+   "anywhere in this format. Frame 0 of every row is fully transparent and",
+   "frame 15 is the full silhouette; they are present so frame arithmetic",
+   "has no special cases."
+  ]
+ },
+ "structure": {
+  "masks_are_corner_unions": true,
+  "rule": "mask(i) == union over set bits b of mask(1<<b)",
+  "complement": "mask(i) == silhouette AND NOT mask(15-i)",
+  "partition": "mask(8),mask(4),mask(2),mask(1) are disjoint and cover all 2012 px",
+  "_comment": "Exact by construction: the vote decides ONE corner per pixel and the 16 masks are unions of the four regions. A consumer MAY load only frames 1,2,4,8 of a row and OR them; the sheet is the normative artefact either way."
+ },
+ "wall": {
+  "covered_by_mask": true,
+  "bands": [
+   {
+    "x": [
+     0,
+     16
+    ],
+    "corner": 2
+   },
+   {
+    "x": [
+     16,
+     48
+    ],
+    "corner": 1
+   },
+   {
+    "x": [
+     48,
+     64
+    ],
+    "corner": 4
+   }
+  ],
+  "nw_owns_wall": false,
+  "column_constant": true,
+  "_comment": [
+   "The masks cover the WALL as well as the top face - a consumer does",
+   "nothing special. Every wall column is a single material and the two",
+   "split columns are 16 and 48 in every pattern, imposed at build time.",
+   "A cliff face therefore shows at most three vertical bands, each one",
+   "material top to bottom. A wall is never cut horizontally."
+  ]
+ },
+ "reproduces": {
+  "shape": true,
+  "seam_shading": false,
+  "_comment": [
+   "The pre-generated post/ art carries the generator's own relief along",
+   "the boundary - grass blades leaning over a road edge. Dynamic",
+   "composition cannot: it produces base tile A meeting base tile B along",
+   "this shape, with no shading invented at the seam. That is the honest",
+   "cost of the whole approach and the reason tiles/transitions/ is",
+   "retained until the maintainer rules."
+  ]
+ },
+ "agreement_fields": {
+  "agreement": "mean over the 16 indices of agreement_by_index",
+  "agreement_by_index": "per Wang index, the fraction of (kept observation, silhouette pixel) pairs that agree with the published mask",
+  "close_px_by_index": "per Wang index, silhouette pixels the vote carried by one observation or less - a weak pattern is visible here rather than silent"
+ },
+ "labels": {
+  "_comment": "How `label` is derived, so it never has to be hand-maintained.",
+  "rule": "amplitude == 0 -> 'straight'; else 'rough ' + amplitude.toFixed(2)",
+  "scale_hint": "mean_dev_px is the number to sort or slider on"
+ },
+ "patterns": [
+  {
+   "id": "a00_s3",
+   "row": 0,
+   "amplitude": 0.0,
+   "seed": 3,
+   "label": "straight",
+   "roughness": {
+    "mean_dev_px": 0.64,
+    "max_dev_px": 4,
+    "boundary_len_px": 1045,
+    "vs_ideal_pct": 10.0
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.9913,
+   "agreement_by_index": [
+    1.0,
+    0.993,
+    0.9943,
+    0.9487,
+    0.995,
+    0.9921,
+    0.989,
+    0.9935,
+    0.9963,
+    0.9902,
+    0.9928,
+    0.9941,
+    0.9945,
+    0.9935,
+    0.9942,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    4,
+    5,
+    4,
+    6,
+    8,
+    2,
+    2,
+    8,
+    4,
+    4,
+    4,
+    5,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.86,
+    "bump": 25.79,
+    "grain": 0.66
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a00_s5",
+   "row": 1,
+   "amplitude": 0.0,
+   "seed": 5,
+   "label": "straight",
+   "roughness": {
+    "mean_dev_px": 0.64,
+    "max_dev_px": 4,
+    "boundary_len_px": 1045,
+    "vs_ideal_pct": 10.0
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.9926,
+   "agreement_by_index": [
+    1.0,
+    0.9931,
+    0.9918,
+    0.9694,
+    0.9949,
+    0.9937,
+    0.9904,
+    0.9932,
+    0.9962,
+    0.991,
+    0.9941,
+    0.9923,
+    0.9952,
+    0.9936,
+    0.9932,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    4,
+    4,
+    4,
+    5,
+    8,
+    2,
+    2,
+    8,
+    4,
+    4,
+    4,
+    5,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.86,
+    "bump": 25.79,
+    "grain": 0.66
+   },
+   "duplicate_of": "a00_s3"
+  },
+  {
+   "id": "a03_s5",
+   "row": 2,
+   "amplitude": 0.03,
+   "seed": 5,
+   "label": "rough 0.03",
+   "roughness": {
+    "mean_dev_px": 0.97,
+    "max_dev_px": 6,
+    "boundary_len_px": 1045,
+    "vs_ideal_pct": 10.39
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__lava"
+    ]
+   },
+   "agreement": 0.9884,
+   "agreement_by_index": [
+    1.0,
+    0.9874,
+    0.9871,
+    0.9846,
+    0.9897,
+    0.9897,
+    0.9795,
+    0.9854,
+    0.989,
+    0.9827,
+    0.987,
+    0.9886,
+    0.9877,
+    0.9885,
+    0.9878,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    4,
+    5,
+    4,
+    5,
+    10,
+    4,
+    4,
+    10,
+    5,
+    4,
+    5,
+    4,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.79,
+    "bump": 29.72,
+    "grain": 0.72
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a05_s1",
+   "row": 3,
+   "amplitude": 0.05,
+   "seed": 1,
+   "label": "rough 0.05",
+   "roughness": {
+    "mean_dev_px": 1.24,
+    "max_dev_px": 8,
+    "boundary_len_px": 1069,
+    "vs_ideal_pct": 10.74
+   },
+   "observations": {
+    "kept": 9,
+    "rejected": 0,
+    "rejected_pairs": []
+   },
+   "agreement": 0.9966,
+   "agreement_by_index": [
+    1.0,
+    0.9953,
+    0.9964,
+    0.9965,
+    0.9961,
+    0.9968,
+    0.9932,
+    0.9977,
+    0.9973,
+    0.9935,
+    0.9964,
+    0.9969,
+    0.9966,
+    0.9971,
+    0.9956,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    5,
+    6,
+    5,
+    6,
+    12,
+    4,
+    4,
+    12,
+    6,
+    5,
+    6,
+    5,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.68,
+    "bump": 30.6,
+    "grain": 0.81
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a12_s4",
+   "row": 4,
+   "amplitude": 0.12,
+   "seed": 4,
+   "label": "rough 0.12",
+   "roughness": {
+    "mean_dev_px": 2.44,
+    "max_dev_px": 18,
+    "boundary_len_px": 953,
+    "vs_ideal_pct": 12.21
+   },
+   "observations": {
+    "kept": 11,
+    "rejected": 6,
+    "rejected_pairs": [
+     "brown_paving_stone__to__light_soil",
+     "dark_mud__to__grass",
+     "grass__to__lava",
+     "grass__to__parquet_floor",
+     "grass__to__slime",
+     "grass__to__water"
+    ]
+   },
+   "agreement": 0.9954,
+   "agreement_by_index": [
+    1.0,
+    0.9943,
+    0.996,
+    0.9954,
+    0.9963,
+    0.9956,
+    0.9924,
+    0.9949,
+    0.9956,
+    0.9923,
+    0.996,
+    0.9938,
+    0.9953,
+    0.9938,
+    0.9945,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    5,
+    4,
+    5,
+    4,
+    10,
+    2,
+    2,
+    10,
+    4,
+    5,
+    4,
+    5,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.93,
+    "bump": 13.89,
+    "grain": 0.67
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a14_s1",
+   "row": 5,
+   "amplitude": 0.14,
+   "seed": 1,
+   "label": "rough 0.14",
+   "roughness": {
+    "mean_dev_px": 2.67,
+    "max_dev_px": 22,
+    "boundary_len_px": 1121,
+    "vs_ideal_pct": 12.5
+   },
+   "observations": {
+    "kept": 9,
+    "rejected": 1,
+    "rejected_pairs": [
+     "grass__to__slime"
+    ]
+   },
+   "agreement": 0.9939,
+   "agreement_by_index": [
+    1.0,
+    0.9913,
+    0.9942,
+    0.9932,
+    0.9935,
+    0.9941,
+    0.9883,
+    0.9955,
+    0.9971,
+    0.9893,
+    0.9944,
+    0.9944,
+    0.9931,
+    0.9935,
+    0.991,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    10,
+    6,
+    6,
+    6,
+    6,
+    12,
+    2,
+    2,
+    12,
+    6,
+    6,
+    6,
+    6,
+    10,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.72,
+    "bump": 32.41,
+    "grain": 1.51
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a14_s5",
+   "row": 6,
+   "amplitude": 0.14,
+   "seed": 5,
+   "label": "rough 0.14",
+   "roughness": {
+    "mean_dev_px": 3.1,
+    "max_dev_px": 20,
+    "boundary_len_px": 1077,
+    "vs_ideal_pct": 13.04
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.9896,
+   "agreement_by_index": [
+    1.0,
+    0.9885,
+    0.9887,
+    0.987,
+    0.9899,
+    0.9876,
+    0.9828,
+    0.9865,
+    0.9938,
+    0.9838,
+    0.9901,
+    0.9865,
+    0.9906,
+    0.9891,
+    0.9883,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    5,
+    5,
+    5,
+    5,
+    10,
+    3,
+    2,
+    10,
+    5,
+    5,
+    5,
+    5,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.68,
+    "bump": 38.58,
+    "grain": 1.32
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a15_s2",
+   "row": 7,
+   "amplitude": 0.15,
+   "seed": 2,
+   "label": "rough 0.15",
+   "roughness": {
+    "mean_dev_px": 3.17,
+    "max_dev_px": 21,
+    "boundary_len_px": 1065,
+    "vs_ideal_pct": 13.12
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.991,
+   "agreement_by_index": [
+    1.0,
+    0.9942,
+    0.9915,
+    0.9662,
+    0.9929,
+    0.9915,
+    0.9875,
+    0.9916,
+    0.9943,
+    0.9893,
+    0.9926,
+    0.9925,
+    0.9902,
+    0.9919,
+    0.9895,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    7,
+    7,
+    5,
+    5,
+    6,
+    11,
+    4,
+    4,
+    11,
+    6,
+    5,
+    5,
+    6,
+    7,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.75,
+    "bump": 38.78,
+    "grain": 1.38
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a15_s6",
+   "row": 8,
+   "amplitude": 0.15,
+   "seed": 6,
+   "label": "rough 0.15",
+   "roughness": {
+    "mean_dev_px": 3.24,
+    "max_dev_px": 22,
+    "boundary_len_px": 1085,
+    "vs_ideal_pct": 13.21
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__lava"
+    ]
+   },
+   "agreement": 0.9897,
+   "agreement_by_index": [
+    1.0,
+    0.9915,
+    0.989,
+    0.9647,
+    0.9927,
+    0.9883,
+    0.9856,
+    0.9853,
+    0.9944,
+    0.9885,
+    0.991,
+    0.9916,
+    0.9923,
+    0.9882,
+    0.9928,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    7,
+    7,
+    5,
+    5,
+    10,
+    2,
+    2,
+    10,
+    5,
+    5,
+    6,
+    6,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.68,
+    "bump": 38.97,
+    "grain": 1.38
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a18_s4",
+   "row": 9,
+   "amplitude": 0.18,
+   "seed": 4,
+   "label": "rough 0.18",
+   "roughness": {
+    "mean_dev_px": 3.17,
+    "max_dev_px": 24,
+    "boundary_len_px": 949,
+    "vs_ideal_pct": 13.18
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__grey_paving_stone"
+    ]
+   },
+   "agreement": 0.9935,
+   "agreement_by_index": [
+    1.0,
+    0.9925,
+    0.9964,
+    0.9693,
+    0.9965,
+    0.9932,
+    0.9932,
+    0.9944,
+    0.9965,
+    0.9916,
+    0.9956,
+    0.994,
+    0.9952,
+    0.9939,
+    0.9935,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    4,
+    4,
+    4,
+    4,
+    8,
+    2,
+    2,
+    8,
+    4,
+    4,
+    4,
+    4,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.94,
+    "bump": 9.25,
+    "grain": 0.93
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a18_s6",
+   "row": 10,
+   "amplitude": 0.18,
+   "seed": 6,
+   "label": "rough 0.18",
+   "roughness": {
+    "mean_dev_px": 3.43,
+    "max_dev_px": 28,
+    "boundary_len_px": 1085,
+    "vs_ideal_pct": 13.43
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__slime"
+    ]
+   },
+   "agreement": 0.9914,
+   "agreement_by_index": [
+    1.0,
+    0.9904,
+    0.9928,
+    0.9889,
+    0.99,
+    0.9861,
+    0.9838,
+    0.9879,
+    0.9968,
+    0.9884,
+    0.9922,
+    0.9887,
+    0.9933,
+    0.9911,
+    0.9914,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    5,
+    6,
+    6,
+    5,
+    10,
+    2,
+    2,
+    10,
+    5,
+    6,
+    6,
+    5,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.72,
+    "bump": 39.55,
+    "grain": 1.49
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a21_s2",
+   "row": 11,
+   "amplitude": 0.21,
+   "seed": 2,
+   "label": "rough 0.21",
+   "roughness": {
+    "mean_dev_px": 3.86,
+    "max_dev_px": 26,
+    "boundary_len_px": 1065,
+    "vs_ideal_pct": 13.97
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.995,
+   "agreement_by_index": [
+    1.0,
+    0.9947,
+    0.9934,
+    0.9922,
+    0.9954,
+    0.9948,
+    0.9903,
+    0.9945,
+    0.9973,
+    0.9919,
+    0.9951,
+    0.9943,
+    0.9963,
+    0.9959,
+    0.994,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    7,
+    5,
+    5,
+    5,
+    5,
+    11,
+    4,
+    4,
+    11,
+    5,
+    5,
+    5,
+    5,
+    7,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.79,
+    "bump": 41.05,
+    "grain": 1.68
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a21_s4",
+   "row": 12,
+   "amplitude": 0.21,
+   "seed": 4,
+   "label": "rough 0.21",
+   "roughness": {
+    "mean_dev_px": 3.31,
+    "max_dev_px": 26,
+    "boundary_len_px": 981,
+    "vs_ideal_pct": 13.52
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__slime"
+    ]
+   },
+   "agreement": 0.9954,
+   "agreement_by_index": [
+    1.0,
+    0.993,
+    0.9976,
+    0.9944,
+    0.9975,
+    0.9925,
+    0.9949,
+    0.9947,
+    0.9945,
+    0.9932,
+    0.9939,
+    0.996,
+    0.9934,
+    0.9972,
+    0.993,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    3,
+    4,
+    3,
+    4,
+    6,
+    0,
+    3,
+    9,
+    6,
+    5,
+    5,
+    4,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.89,
+    "bump": 9.97,
+    "grain": 0.9
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a21_s5",
+   "row": 13,
+   "amplitude": 0.21,
+   "seed": 5,
+   "label": "rough 0.21",
+   "roughness": {
+    "mean_dev_px": 3.93,
+    "max_dev_px": 28,
+    "boundary_len_px": 1117,
+    "vs_ideal_pct": 14.06
+   },
+   "observations": {
+    "kept": 14,
+    "rejected": 3,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__slime",
+     "light_soil__to__snow"
+    ]
+   },
+   "agreement": 0.9928,
+   "agreement_by_index": [
+    1.0,
+    0.9931,
+    0.9928,
+    0.9927,
+    0.9929,
+    0.9912,
+    0.9885,
+    0.9936,
+    0.9946,
+    0.9893,
+    0.9906,
+    0.9884,
+    0.9928,
+    0.9929,
+    0.9911,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    7,
+    6,
+    5,
+    6,
+    10,
+    2,
+    2,
+    11,
+    6,
+    5,
+    6,
+    8,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.79,
+    "bump": 40.09,
+    "grain": 1.75
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a23_s1",
+   "row": 14,
+   "amplitude": 0.23,
+   "seed": 1,
+   "label": "rough 0.23",
+   "roughness": {
+    "mean_dev_px": 4.21,
+    "max_dev_px": 28,
+    "boundary_len_px": 1109,
+    "vs_ideal_pct": 14.4
+   },
+   "observations": {
+    "kept": 8,
+    "rejected": 1,
+    "rejected_pairs": [
+     "grey_paving_stone__to__slime"
+    ]
+   },
+   "agreement": 0.9965,
+   "agreement_by_index": [
+    1.0,
+    0.995,
+    0.9968,
+    0.9965,
+    0.9958,
+    0.9963,
+    0.9946,
+    0.9988,
+    0.9975,
+    0.9938,
+    0.9945,
+    0.9966,
+    0.9957,
+    0.9964,
+    0.9953,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    4,
+    4,
+    4,
+    4,
+    8,
+    0,
+    2,
+    10,
+    5,
+    5,
+    5,
+    5,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.86,
+    "bump": 39.25,
+    "grain": 1.59
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a23_s4",
+   "row": 15,
+   "amplitude": 0.23,
+   "seed": 4,
+   "label": "rough 0.23",
+   "roughness": {
+    "mean_dev_px": 3.63,
+    "max_dev_px": 28,
+    "boundary_len_px": 961,
+    "vs_ideal_pct": 13.86
+   },
+   "observations": {
+    "kept": 16,
+    "rejected": 1,
+    "rejected_pairs": [
+     "dark_mud__to__grass"
+    ]
+   },
+   "agreement": 0.9922,
+   "agreement_by_index": [
+    1.0,
+    0.9901,
+    0.9931,
+    0.9905,
+    0.9943,
+    0.9902,
+    0.9884,
+    0.9905,
+    0.9943,
+    0.9897,
+    0.9906,
+    0.9918,
+    0.9923,
+    0.9909,
+    0.9886,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    6,
+    3,
+    3,
+    3,
+    3,
+    6,
+    0,
+    2,
+    8,
+    4,
+    4,
+    4,
+    4,
+    6,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.94,
+    "bump": 9.1,
+    "grain": 0.94
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a24_s6",
+   "row": 16,
+   "amplitude": 0.24,
+   "seed": 6,
+   "label": "rough 0.24",
+   "roughness": {
+    "mean_dev_px": 4.41,
+    "max_dev_px": 28,
+    "boundary_len_px": 1125,
+    "vs_ideal_pct": 14.65
+   },
+   "observations": {
+    "kept": 14,
+    "rejected": 3,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__slime",
+     "grass__to__snow"
+    ]
+   },
+   "agreement": 0.992,
+   "agreement_by_index": [
+    1.0,
+    0.9922,
+    0.9932,
+    0.9905,
+    0.991,
+    0.9889,
+    0.9869,
+    0.9912,
+    0.9968,
+    0.9889,
+    0.9928,
+    0.9896,
+    0.9912,
+    0.9893,
+    0.9902,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    6,
+    5,
+    5,
+    6,
+    10,
+    2,
+    2,
+    10,
+    6,
+    5,
+    5,
+    6,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.79,
+    "bump": 40.19,
+    "grain": 1.82
+   },
+   "duplicate_of": null
+  },
+  {
+   "id": "a30_s1",
+   "row": 17,
+   "amplitude": 0.3,
+   "seed": 1,
+   "label": "rough 0.30",
+   "roughness": {
+    "mean_dev_px": 3.82,
+    "max_dev_px": 28,
+    "boundary_len_px": 1093,
+    "vs_ideal_pct": 13.92
+   },
+   "observations": {
+    "kept": 15,
+    "rejected": 2,
+    "rejected_pairs": [
+     "dark_mud__to__grass",
+     "grass__to__lava"
+    ]
+   },
+   "agreement": 0.9911,
+   "agreement_by_index": [
+    1.0,
+    0.9915,
+    0.9934,
+    0.9916,
+    0.9929,
+    0.9908,
+    0.9872,
+    0.9936,
+    0.9944,
+    0.9874,
+    0.9914,
+    0.99,
+    0.9704,
+    0.9929,
+    0.9895,
+    1.0
+   ],
+   "close_px_by_index": [
+    0,
+    8,
+    4,
+    4,
+    4,
+    4,
+    8,
+    0,
+    2,
+    10,
+    5,
+    5,
+    5,
+    5,
+    8,
+    0
+   ],
+   "gates": {
+    "wang_edges": "32/32",
+    "spurious": "0/24",
+    "t_mean": 0.5,
+    "t_sd": 0.0,
+    "seam_mismatch_pct": 0.0,
+    "clean": 0.79,
+    "bump": 31.93,
+    "grain": 1.43
+   },
+   "duplicate_of": null
+  }
+ ]
+}
