@@ -4416,6 +4416,9 @@ function groundSets(typeId) {
 }
 /** "Clean #0", "Set #1", "Meadow #2" — the number is the identity he reads. */
 const setLabel = (s) => `${s.name} #${s.id}`;
+/** Every set of this ground that holds this candidate. A tile may sit in more
+ *  than one — the same grass can belong to both a meadow and a lawn. */
+const setsWith = (typeId, id) => groundSets(typeId).filter((x) => x.members.some((m) => m.id === id));
 /** A set can draw a picture only if something in it has weight. */
 const setDraws = (s) => s.clean > 0 || s.members.some((m) => m.weight > 0 && m.art);
 /** Percent shares for a row of weights, which is what he set them in. */
@@ -4572,53 +4575,17 @@ const weightBox = (value, title, onset) => h("label", { class: "weight-label", t
   "weight ",
   Object.assign(h("input", { type: "number", class: "weight-input", min: "0", max: "100", step: "0.5", value: String(value) }),
     { onchange: (e) => onset(e.target.value) }));
-/* BASE TILES COME IN GROUPS (maintainer 2026-08-21, second pass: "A base tile
- * group is a set of tiles that togather make tileing/seems dissapears. They
- * are often very very close to eachother. And what's important here is to
- * review and look at this group as a whole (and after that individually).")
- * Each entry: { type, group, weight, promoted_at } — the group id scopes to
- * the type, the weight is how often this tile spawns vs its group-mates
- * ("I as an admin can also control how often 'the weight'/likelieness this
- * tile spawns vs another"). */
-function baseGroupsOf(typeId) {
-  const byKey = new Map();
-  for (const c of worldCells()) for (const cand of c.candidates) byKey.set(cand.key, { cell: c, cand });
-  const groups = new Map();
-  for (const [k, v] of Object.entries(baseTilesDoc().overrides ?? {})) {
-    if (v?.type !== typeId) continue;
-    const gid = v.group ?? "g1";
-    if (!groups.has(gid)) groups.set(gid, []);
-    groups.get(gid).push({ key: k, weight: typeof v.weight === "number" && v.weight > 0 ? v.weight : 1, hit: byKey.get(k) ?? null });
-  }
-  return [...groups.entries()]
-    .map(([id, members]) => ({ id, members: members.sort((a, b) => a.key.localeCompare(b.key)) }))
-    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
-}
-/** Flattened, for the base colour and the counts. */
-const baseTilesOf = (typeId) => baseGroupsOf(typeId).flatMap((g) => g.members);
-const nextGroupId = (typeId) => {
-  const used = new Set(baseGroupsOf(typeId).map((g) => g.id));
-  for (let i = 1; ; i++) if (!used.has(`g${i}`)) return `g${i}`;
-};
-function setBaseTile(key, typeId, groupId, on) {
-  const doc = baseTilesDoc();
-  doc.overrides ??= {};
-  if (on) {
-    const was = doc.overrides[key];
-    doc.overrides[key] = { type: typeId, group: groupId, weight: was?.weight ?? 1, promoted_at: was?.promoted_at ?? new Date().toISOString() };
-  } else delete doc.overrides[key];
-  doc.updated_at = new Date().toISOString();
-  touch(BASE_KEY, key);
-  markDirty(BASE_KEY);
-}
-function setBaseWeight(key, w) {
-  const e = baseTilesDoc().overrides?.[key];
-  if (!e) return;
-  e.weight = Math.max(0.1, Math.min(10, +(+w).toFixed(2) || 1));
-  baseTilesDoc().updated_at = new Date().toISOString();
-  touch(BASE_KEY, key);
-  markDirty(BASE_KEY);
-}
+/* THE GROUP MODEL IS GONE, superseded by base tile sets (maintainer 2026-08-25).
+ * Groups were sets without a name, without a weight of their own, and without a
+ * clean member — "a base tile group is a set of tiles that togather make
+ * tileing/seems dissapears" was the same idea one iteration earlier. What the
+ * new model adds is what he asked for: how often a set is chosen for an area,
+ * and how often that set paints the plain colour instead of a tile.
+ *
+ * tuning/base_tiles stays readable (BASE_KEY above) so nothing that consumes it
+ * breaks mid-migration, but the wiki no longer writes it — the ground's look is
+ * tuning/base_tile_sets now. It held no promotions when this landed, so there
+ * was nothing to migrate. */
 /** Weighted pick of a member's art path — the composites and the game agree
  *  that weight means "how often this one appears". */
 function pickBaseMember(members, rnd) {
@@ -5070,25 +5037,6 @@ function seededRnd(seed) {
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-}
-/** An N×N flat field of one base-tile GROUP, weighted — "here we can see how
- *  they look togather". Returns a box the canvas lands in when the art has
- *  loaded. */
-function baseGroupField(members, n, seed, scale = 1) {
-  const box = h("div", { class: "iso-stage checker group-stage" });
-  const rnd = seededRnd(seed);
-  const cells = [];
-  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
-    const m = pickBaseMember(members, rnd);
-    cells.push({ c, r, img: viewArt(m.hit?.cand) });
-  }
-  const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
-  if (!paths.length) { box.append(h("p", { class: "muted" }, "the art for this group is not loadable")); return box; }
-  loadImages(paths, (images) => {
-    if (!box.isConnected && !box.parentNode) { /* still attachable — modal builds detached */ }
-    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()));
-  });
-  return box;
 }
 /** A 3×3 with ONE tile pinned centre and the group around it — the member
  *  review's right half, and the promotion modal's whole point ("the model
@@ -5994,21 +5942,17 @@ function viewWorldType(top) {
       // also be possible to promote to base tile (same popup)") — a top that
       // is good enough to sprinkle may well be good enough to pave with, and
       // it is the same modal, so the decision is made in the same picture.
-      state.admin ? h("div", { class: "card-sub base-row" },
-        isBaseTile(cand.key)
-          ? h("span", { class: "pill ok", title: `A base tile of ${typeLabelWorld(cell.top)}` }, `base tile · ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`)
-          : null,
-        h("button", {
-          class: `ghost-btn base-btn${isBaseTile(cand.key) ? " on" : ""}`,
-          title: isBaseTile(cand.key)
-            ? `Revoke — this tile leaves group ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`
-            : `Promote — see how this tile sits in each base-tile group of ${typeLabelWorld(cell.top)}, then add it to one`,
-          onclick: (e) => {
-            e.stopPropagation();
-            if (isBaseTile(cand.key)) { setBaseTile(cand.key, cell.top, null, false); keepScrollY = window.scrollY; route(); }
-            else openPromoteModal(cell, cand, () => { keepScrollY = window.scrollY; route(); });
-          },
-        }, isBaseTile(cand.key) ? "☗ revoke base title" : "☖ promote to base tile…")) : null,
+      state.admin ? (() => {
+        const inSets = setsWith(cell.top, cand.key);
+        return h("div", { class: "card-sub base-row" },
+          inSets.length ? h("span", { class: "pill ok", title: `${typeLabelWorld(cell.top)} paints fields from this tile` },
+            `in ${inSets.map(setLabel).join(", ")}`) : null,
+          h("button", {
+            class: `ghost-btn base-btn${inSets.length ? " on" : ""}`,
+            title: `See how this tile sits in each set of ${typeLabelWorld(cell.top)}, then add it to one`,
+            onclick: (e) => { e.stopPropagation(); openPromoteModal(cell, cand, () => { keepScrollY = window.scrollY; route(); }); },
+          }, inSets.length ? "☗ in another set too…" : "☖ add to a base tile set…"));
+      })() : null,
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
           glyph: ROOF_GLYPH,
@@ -6141,10 +6085,18 @@ function viewWorldTransition(pairId) {
 function openPromoteModal(cell, cand, onDone) {
   document.querySelector(".promote-modal")?.remove();
   const typeId = cell.top;
-  const groups = baseGroupsOf(typeId);
+  /* PROMOTING IS ADDING TO A SET now, not creating a group (maintainer
+   * 2026-08-25). The question the dialog asks is unchanged — "does this tile
+   * belong with those" — and the answer is still a field with the candidate in
+   * the middle and the set around it. What changed is where the answer is
+   * written, and that a set carries the clean colour as a member, so a tile
+   * added to a mostly-clean set correctly appears only now and then. */
+  const setsHere = () => groundSets(typeId).filter((x) => x.id !== CLEAN_SET);
   const dlg = h("dialog", { class: "promote-modal" });
   let seed = 1;
   const body = h("div", { class: "promote-body" });
+  const ringOf = (set) => set.members.filter((m) => m.art)
+    .map((m) => ({ key: m.id, weight: m.weight, hit: { cand: { art: m.art, raw: null } } }));
   const paint = () => {
     // The head carries the pass switch, whose label depends on the pass — so
     // it is rebuilt with the previews rather than left showing the old state.
@@ -6152,32 +6104,39 @@ function openPromoteModal(cell, cand, onDone) {
     if (head) {
       head.replaceChildren(
         h("span", { class: "muted" }, "Tile art"),
-        passBar(typeId,
-          () => { tileViews.clear(); paint(); }),
+        passBar(typeId, () => { tileViews.clear(); paint(); }),
       );
     }
+    const sets = setsHere();
     body.replaceChildren(
-      ...groups.map((g) => h("div", { class: "promote-group" },
-        h("div", { class: "panel-title" }, `In group ${g.id}`,
-          h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`)),
-        centeredField(viewArt(cand), g.members, seed, 1),
-        h("button", {
-          class: "ghost-btn promote-into",
-          onclick: () => { setBaseTile(cand.key, typeId, g.id, true); dlg.close(); dlg.remove(); onDone?.(); toast(`Promoted into group ${g.id} — commit when you are done.`); },
-        }, `Promote into ${g.id}`))),
+      ...sets.map((g) => {
+        const has = g.members.some((m) => m.id === cand.key);
+        return h("div", { class: "promote-group" },
+          h("div", { class: "panel-title" }, `In ${setLabel(g)}`,
+            h("span", { class: "pill" }, `${g.members.length} tile${g.members.length === 1 ? "" : "s"}`)),
+          centeredField(viewArt(cand), ringOf(g), seed, 1),
+          h("button", {
+            class: "ghost-btn promote-into", ...(has ? { disabled: "disabled" } : {}),
+            onclick: has ? null : () => {
+              addSetMember(typeId, g.id, cand.key);
+              dlg.close(); dlg.remove(); onDone?.();
+              toast(`Added to ${setLabel(g)} — commit when you are done.`);
+            },
+          }, has ? `Already in ${setLabel(g)}` : `Add to ${setLabel(g)}`));
+      }),
       h("div", { class: "promote-group" },
-        h("div", { class: "panel-title" }, groups.length ? "Or start a new group" : "Start the first group",
+        h("div", { class: "panel-title" }, sets.length ? "Or start a new set" : "Start the first set",
           h("span", { class: "pill" }, "just this tile")),
         centeredField(viewArt(cand), [], seed, 1),
         h("button", {
           class: "ghost-btn promote-into",
           onclick: () => {
-            const gid = nextGroupId(typeId);
-            setBaseTile(cand.key, typeId, gid, true);
+            const id = addSet(typeId);
+            addSetMember(typeId, id, cand.key);
             dlg.close(); dlg.remove(); onDone?.();
-            toast(`Started group ${gid} — commit when you are done.`);
+            toast(`Started Set #${id} with this tile — commit when you are done.`);
           },
-        }, groups.length ? `Start group ${nextGroupId(typeId)} with this tile` : "Make it the first base tile")));
+        }, sets.length ? `Start Set #${nextSetId(typeId)} with this tile` : "Make it the first base tile")));
   };
   paint();
   dlg.append(
@@ -6687,20 +6646,19 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     // or starts a new one. Revoking is direct — you can see what you are
     // undoing.
     state.admin ? (() => {
-      const onBase = isBaseTile(cand.key);
+      /* A TILE CAN BELONG TO SEVERAL SETS — the same grass can be in both a
+       * meadow and a lawn — so the button offers the modal whether or not it is
+       * already in one, and removal happens per set on the Base tab where the
+       * consequences are visible. */
+      const inSets = setsWith(cell.top, cand.key);
       return h("div", { class: "card-sub base-row" },
-        onBase ? h("span", { class: "pill ok", title: `A base tile of ${typeLabelWorld(cell.top)} — the world agent paints fields from its group` }, `base tile · ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`) : null,
+        inSets.length ? h("span", { class: "pill ok", title: `${typeLabelWorld(cell.top)} paints fields from this tile` },
+          `in ${inSets.map(setLabel).join(", ")}`) : null,
         h("button", {
-          class: `ghost-btn base-btn${onBase ? " on" : ""}`,
-          title: onBase
-            ? `Revoke — this tile leaves group ${baseTilesDoc().overrides[cand.key]?.group ?? ""}`
-            : `Promote — see how this tile sits in each base-tile group of ${typeLabelWorld(cell.top)}, then add it to one`,
-          onclick: (e) => {
-            e.stopPropagation();
-            if (onBase) { setBaseTile(cand.key, cell.top, null, false); onVerdict?.(); }
-            else openPromoteModal(cell, cand, onVerdict);
-          },
-        }, onBase ? "☗ revoke base title" : "☖ promote to base tile…"));
+          class: `ghost-btn base-btn${inSets.length ? " on" : ""}`,
+          title: `See how this tile sits in each set of ${typeLabelWorld(cell.top)}, then add it to one`,
+          onclick: (e) => { e.stopPropagation(); openPromoteModal(cell, cand, onVerdict); },
+        }, inSets.length ? "☗ in another set too…" : "☖ add to a base tile set…"));
     })() : null,
     reviewBox,
     state.admin && cand.prompt
