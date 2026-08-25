@@ -411,12 +411,12 @@ console.log("after :", JSON.stringify(asShipped));
 ok(asShipped.mode[0] === "*After", `it opens on what the game gets (${asShipped.mode.join(" ")})`);
 ok(asShipped.faces.every((f) => /_after\.webp$/.test(f ?? "")), "and every tile preview is composed from the postprocessed art");
 
-await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Before/.test(b.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Raw/.test(b.textContent)).click());
 await p.waitForTimeout(1000);
 const asRaw = await shot();
 console.log("before:", JSON.stringify(asRaw));
 const selOf = (m) => m.find((x) => x.startsWith("*")) ?? "";
-ok(selOf(asRaw.mode) === "*Before" && asRaw.mode.length === 3,
+ok(selOf(asRaw.mode) === "*Raw" && asRaw.mode.length === 3,
   `the switch flips the whole set, and carries all three passes (${asRaw.mode.join(" ")})`);
 ok(asRaw.faces.every((f) => /_before\.webp$/.test(f ?? "")), "and every preview is rebuilt from the generator's raw output");
 ok(asRaw.portrait === "before", "the pair's own portrait follows — one truth per screen, never two");
@@ -427,7 +427,7 @@ await p.goto(`${W}#/world/${SIDES[1].top}/${SIDES[1].side}`, { waitUntil: "load"
 await p.waitForTimeout(2000);
 const nextPair = await shot();
 console.log("next pair:", JSON.stringify({ mode: nextPair.mode }));
-ok(selOf(nextPair.mode) === "*Before", "paging to the next pair keeps the mode");
+ok(selOf(nextPair.mode) === "*Raw", "paging to the next pair keeps the mode");
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 
@@ -466,7 +466,7 @@ await p.waitForTimeout(1000);
 const peek = await chips();
 ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
   `a second press reaches the generator's raw output (${peek[1].face?.split("/").pop()})`);
-ok(/before/.test(peek[1].label ?? ""), `and the chip follows it (“${peek[1].label}”)`);
+ok(/raw/.test(peek[1].label ?? ""), `and the chip follows it (“${peek[1].label}”)`);
 await press(1);
 await p.waitForTimeout(1000);
 const backAgain = await chips();

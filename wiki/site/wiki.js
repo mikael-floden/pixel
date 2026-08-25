@@ -440,7 +440,6 @@ const state = {
   // these ids as a delta — the server merges them into the current document,
   // so a stale page can never clobber entries committed earlier.
   touched: {},           // key -> Set(ids)
-  knownIds: new Set(),
   query: "",
 };
 function touch(key, id) {
@@ -2725,13 +2724,15 @@ function viewHome() {
   const tiles = SECTION_ORDER
     .filter((slug) => !SECTIONS[slug].adminOnly || state.admin)
     .map((slug) => [slug, SECTIONS[slug].count(state.data), noun(slug)]);
-  // Feedback whose asset no longer exists = the producing agent acted on it.
-  const resolved = [];
-  for (const [domain, f] of Object.entries(state.feedback)) {
-    for (const [id, entry] of Object.entries(f?.entries ?? {})) {
-      if (entry.status === "rejected" && !state.knownIds.has(id.split("#")[0])) resolved.push({ domain, id });
-    }
-  }
+  /* THE START PAGE IS THE SECTIONS AND NOTHING ELSE (maintainer 2026-08-24:
+   * "Everything under and including 'How feedback works' is not something not
+   * even the admin wants to know/see").
+   *
+   * It carried a paragraph explaining what stars and ✕ and ✓ do, and a
+   * "Resolved removals" panel listing rejected ids the agents had since
+   * deleted. Both were written for someone learning the wiki; he built it and
+   * uses it daily, and a manual on the front door is in the way of the door.
+   * The controls carry their own tooltips where they are actually used. */
   return h("div", {},
     h("h1", {}, "Nangijala Wiki"),
     h("p", { class: "muted" }, state.admin
@@ -2742,14 +2743,6 @@ function viewHome() {
         sectionIcon(slug, 96),
         h("div", { class: "n" }, label(slug)),
         h("div", { class: "l" }, `${n} ${noun}`)))),
-    ...(state.admin ? [
-      h("h2", {}, "How feedback works"),
-      h("p", {}, "★ ratings steer style (no rating is the default). ", h("code", {}, "✕ remove"), " tells the producing agent to delete or replace the asset on its next run. ", h("code", {}, "✓ approve"), " locks in a keeper. Notes travel with the entry. Press ", h("strong", {}, "Save"), " when you're done — the game server commits ", h("code", {}, "live/feedback/*.json"), " and ", h("code", {}, "live/tuning/*.json"), " to main and pushes tuning to every connected player instantly."),
-      resolved.length ? h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, "Resolved removals ", h("span", { class: "pill ok" }, String(resolved.length))),
-        h("p", { class: "muted" }, "Assets you rejected that no longer exist in the repo — the agents acted on them."),
-        ...resolved.slice(0, 30).map((r) => h("div", { class: "muted" }, h("code", {}, r.id)))) : null,
-    ] : []),
   );
 }
 
@@ -4665,6 +4658,23 @@ const transTile = (a, b, setId, i, post) =>
  *
  * `hasPost` is whether the processed pass exists at all; the pass decides what
  * to draw with it. */
+/* WHAT THE STRIP UNDER IT IS SHOWING (maintainer 2026-08-24: "If I press
+ * 'Before' the pill still reads 'postprocessed'").
+ *
+ * It did, because the pill named what the SET HAS rather than what the page is
+ * DRAWING — useful back when almost nothing had a processed pass, and merely
+ * confusing now that 283 of 284 sets do. It names the pass on screen instead,
+ * and the one set still lacking a processed pass says so, which is both what is
+ * drawn AND the fact worth knowing about it. */
+function transPassPill(hasPost) {
+  if (!hasPost) {
+    return h("span", { class: "pill warn", title: "This set ships only the generator's own tiles — the retexture pass has not been published for it, so there is nothing else to show" }, "raw only");
+  }
+  const pass = worldView();
+  if (pass === "before") return h("span", { class: "pill", title: "Showing the generator's own tiles. This set also has a processed pass — switch to After for it" }, "raw");
+  if (pass === "texture") return h("span", { class: "pill ok", title: "Showing the real texture recoloured to the palette, synthesized from the two published passes" }, "textured");
+  return h("span", { class: "pill ok", title: "Showing the retextured pass — the set's colours corrected to the game palette" }, "postprocessed");
+}
 const transArt = (a, b, setId, i, hasPost) => {
   const pass = worldView();
   return (hasPost && pass === "texture")
@@ -4964,7 +4974,12 @@ const WORLD_VIEW_KEY = "wiki-world-view";
 const WORLD_VIEWS = {
   after: { label: "After", title: "What the game gets today — the postprocess snaps the top to the ground's clean colour (measured: 96% of the top face becomes ONE colour on grass, black rock and light soil; parquet and the pavings keep their texture)" },
   texture: { label: "Textured", title: "WHAT THE TOP COULD SHIP AS — the generator's own top texture, every pixel of it, displaced onto the ground's palette: its average IS the clean colour, and its swing is kept as wide as that colour has room for. Judge promotions and details here" },
-  before: { label: "Before", title: "The generator's raw output, untouched — original colours, original top, no postprocess at all" },
+  /* "RAW", NOT "BEFORE" (maintainer 2026-08-24: "I also feel the word Before
+   * feels wrong and like to change it to Raw (on all pages with a similar
+   * feature/toggle and not just this one)"). He is right: After and Textured
+   * name what the pass IS, and "Before" only names when it happened. The stored
+   * id stays `before`, so nobody's saved preference resets. */
+  before: { label: "Raw", title: "The generator's own output, untouched — original colours, original top, no postprocess at all" },
 };
 const worldView = () => {
   try { return WORLD_VIEWS[localStorage.getItem(WORLD_VIEW_KEY)] ? localStorage.getItem(WORLD_VIEW_KEY) : "after"; }
@@ -5037,13 +5052,13 @@ function worldArt(cand, alt, box = "thumb") {
   });
   return h("div", { class: `${box} checker world-art${showRaw ? " on-before" : ""}${showTex ? " on-texture" : ""}` },
     h("img", { class: "art-after", src: assetUrl(cand.art), alt, loading: "lazy" }),
-    cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — before postprocess`, loading: "lazy" }) : null,
+    cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — raw, before postprocess`, loading: "lazy" }) : null,
     texCv,
     // The badge is not decoration: mid-comparison, "which one am I looking
     // at" is the one question the screen must always answer.
-    showRaw ? h("span", { class: "art-tag" }, "before") : null,
+    showRaw ? h("span", { class: "art-tag" }, "raw") : null,
     showTex ? h("span", { class: "art-tag" }, "textured") : null,
-    v !== "after" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, v === "before" ? "no before" : "no texture") : null);
+    v !== "after" && !cand.raw ? h("span", { class: "art-tag muted-tag" }, v === "before" ? "no raw" : "no texture") : null);
 }
 /** The ground TYPES — grass, ice, snow — grouped from the pairs that use them
  *  as their walkable top. Derived rather than baked, so the live manifest
@@ -5425,10 +5440,7 @@ function viewWorldType(top) {
         return h("a", { class: "trans-row", href: `#/world/transition/${x.a}__to__${x.b}` },
           h("span", { class: "trans-name" }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
           h("span", { class: "muted" }, ` ${x.sets.length} set${x.sets.length === 1 ? "" : "s"}`),
-          // "you forgot to list them in postproccesed state" — the moment the
-          // tiles agent publishes post/, this flips with no wiki change.
-          s0.post ? h("span", { class: "pill ok" }, "postprocessed")
-            : h("span", { class: "pill warn", title: "The raw generator tiles — the retexture pass (the set's colours corrected to the game palette) has not been published yet" }, "before postprocess"),
+          transPassPill(s0.post),
           // artNodeFor, not a bare <img>: under Textured the path is a virtual
           // tex: one that has to be synthesized onto a canvas.
           h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
@@ -5464,7 +5476,7 @@ function viewWorldType(top) {
       h("span", { class: "muted" }, "Tile art"),
       sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }),
       h("span", { class: "muted pass-hint" }, worldView() === "before"
-        ? "the raw generation, untouched"
+        ? "the generator's own, untouched"
         : worldView() === "texture"
           ? "the real texture, recoloured to this ground — judge promotions here"
           : "clean-colour tops — flip to Textured to judge with the real texture")) : null,
@@ -5530,7 +5542,7 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Before for the raw generation." : `Drawn ${worldView() === "before" ? "BEFORE — the raw generation" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
+        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${worldView() === "after" ? "Drawn TEXTURED here whatever the switch says: the clean-colour pass flattens 96% of a top to one colour, which is nothing to judge. Pick Raw for the generator's own." : `Drawn ${worldView() === "before" ? "RAW — the generator's own" : "TEXTURED — the real texture in this ground's palette"}, as the switch says.`}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
@@ -5601,8 +5613,7 @@ function viewWorldTransition(pairId) {
       h("a", { class: "pill", href: `#/world/${tr.a}` }, nameA.toLowerCase()),
       h("a", { class: "pill", href: `#/world/${tr.b}` }, nameB.toLowerCase()),
       h("span", { class: "pill" }, `${tr.sets.length} set${tr.sets.length === 1 ? "" : "s"}`),
-      set.post ? h("span", { class: "pill ok" }, "postprocessed")
-        : h("span", { class: "pill warn", title: "Raw generator output — the retexture pass (each set's own colours corrected to the game palette, relief kept) is not published yet. The boundary SHAPE is what these previews judge." }, "before postprocess")),
+      transPassPill(set.post)),
     h("p", { class: "muted" },
       `Where ${nameA.toLowerCase()} meets ${nameB.toLowerCase()} — the same Wang corner set drawn across every direction a boundary can run. `,
       "The whole world's edges will look like this page."),
@@ -5851,8 +5862,8 @@ function tileScenes(cell, cand, onView) {
       // The chip says WHAT YOU ARE LOOKING AT, not what pressing it does: mid
       // comparison, "which one is this" is the one question the picture must
       // always answer, and it is the same job the ⟳ badge does on the portrait.
-      chip.textContent = !cand.raw ? "no before"
-        : mode === "before" ? "⇄ before" : mode === "texture" ? "⇄ textured" : "⇄ after";
+      chip.textContent = !cand.raw ? "no raw"
+        : mode === "before" ? "⇄ raw" : mode === "texture" ? "⇄ textured" : "⇄ after";
       chip.className = `stage-flip${mode !== "after" && cand.raw ? " on" : ""}`;
       chip.disabled = !cand.raw;
       chip.title = !cand.raw ? "No raw output was published for this tile"
@@ -8459,23 +8470,6 @@ async function loadLiveFiles() {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });
 }
-function buildKnownIds() {
-  const d = state.data.domains;
-  const add = (id) => state.knownIds.add(id);
-  d.monsters.forEach((m) => add(m.path));
-  d.characters.forEach((c) => add(c.path));
-  d.objects.forEach((o) => add(o.path));
-  d.music.forEach((t) => { add(t.path); add(`${t.path}/${t.id}`); });
-  d.items.forEach((it) => add(it.path));
-  (d.lore ?? []).forEach((e) => add(e.path));   // else a rejected chapter reads as "resolved"
-  d.tiles.forEach((t) => { add(t.path); t.groups.forEach((g) => g.tiles.forEach((f) => add(stripExt(`${g.dir}/${f}`)))); });
-  d.sounds.forEach((s) => { add(s.path); s.takes.forEach((t) => add(`${s.path}/${t.id}`)); });
-  // Composer foley recordings (feedback domain "composer") — ids are file
-  // paths, and the generation pool is as rateable as the chosen take.
-  Object.values(state.data.sfx?.composerSets ?? {}).forEach((cs) =>
-    [...cs.takes, ...(cs.alts ?? [])].forEach((t) => add(t.file.replace(/\.\w+$/, ""))));
-}
-
 function initChrome() {
   // Theme: READ ONLY here. The wiki has no toggle of its own (maintainer
   // 2026-07-30) — light/dark is picked on the character-select screen, which
@@ -8760,7 +8754,6 @@ async function upgradeToStaging() {
     // build's ground types and lost the one the agent had just generated.)
     if (worldLive) { state.data.domains.world = worldLive; syncCounts("world"); }
     pruneKnownGone();
-    buildKnownIds();
     drawStamp(full);
     keepScrollY = window.scrollY;
     route();
@@ -8794,7 +8787,6 @@ async function upgradeToStaging() {
   state.data = data;
   pruneKnownGone();   // pieces this session already found deleted never come back
   await loadLiveFiles();
-  buildKnownIds();
   drawStamp(data);
   route();
   // …and only now, with the wiki on screen and usable, fetch the repo's copy.

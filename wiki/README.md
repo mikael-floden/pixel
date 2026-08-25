@@ -643,6 +643,31 @@ and gated on the **files fetched**, which cannot lie:
 | Before | 0 | 40 |
 | Textured | 45 | 40 (synthesized onto a canvas) |
 
+## The pass is called RAW, and the pill says what you are looking at
+
+Maintainer 2026-08-24, twice in a row on the Transitions tab:
+
+*"If I press 'Before' the pill still reads 'postprocessed'."* — It did. The pill
+named what the SET HAS rather than what the page is DRAWING. That was useful
+back when almost nothing had a processed pass and merely confusing once 283 of
+284 sets did. `transPassPill` names the pass on screen: **postprocessed** /
+**raw** / **textured**, with **raw only** reserved for a set that genuinely has
+no processed pass — which is both what is drawn and the fact worth knowing.
+
+*"I also feel the word 'Before' feels wrong and like to change it to 'Raw' (on
+all pages with a similar feature/toggle and not just this one)."* — He is right:
+**After** and **Textured** name what the pass *is*, and "Before" only named when
+it happened. The chip is **Raw** everywhere now — the section switch, the
+per-tile chip (`⇄ raw`), the badges on the A/B cards (`raw`, `no raw`) and every
+line of copy that pointed at it. **The stored id stays `before`**, so nobody's
+saved preference resets and no live document changes meaning.
+
+And the strips had the same bug the scenes had: `wangScene` learned to follow the
+switch but the two plain strips — the rows on the Transitions tab and the 16
+corner tiles on the demo page — still passed the set's `post` FLAG where the
+pass belonged, so Raw looked identical to After. One `transArt` helper now
+answers that question for every surface.
+
 ## Three passes, and the third one does not exist on disk
 
 Maintainer 2026-08-21, after the clean-colour switch still did not answer his

@@ -163,7 +163,7 @@ ok(basePass.pass && basePass.sel === "After", `Base tiles carries the pass switc
 let fAfter = 0, fBefore = 0;
 const countF = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) fAfter++; else if (/_before\.webp$/.test(u)) fBefore++; };
 p.on("request", countF);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Raw")?.click());
 await p.waitForTimeout(2000);
 p.off("request", countF);
 ok(fBefore > 0 && fAfter === 0,
@@ -331,7 +331,7 @@ const dSwitch = await p.evaluate(() => ({
   promote: document.querySelectorAll(".detail-card .base-btn").length,
   cards: document.querySelectorAll(".detail-card").length,
 }));
-ok(dSwitch.chips.join("/") === "After/Textured/Before" && dSwitch.sel === "After",
+ok(dSwitch.chips.join("/") === "After/Textured/Raw" && dSwitch.sel === "After",
   `the Details tab carries the three-state switch, on After (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
 // THE DETAILS TAB DELIBERATELY IGNORES "After" NOW (2026-08-22): a
 // clean-colour top is nothing to judge, so its compositions ask for texture —
@@ -396,7 +396,7 @@ const passFetches = async (name) => {
 const trAfter = await passFetches("After");
 ok(trAfter.post > 0 && trAfter.raw === 0,
   `on Transitions, After draws the PROCESSED tiles and only those (${trAfter.post} post, ${trAfter.raw} raw)`);
-const trBefore = await passFetches("Before");
+const trBefore = await passFetches("Raw");
 ok(trBefore.raw > 0 && trBefore.post === 0,
   `and Before draws the generator's own, which is the half that was broken (${trBefore.post} post, ${trBefore.raw} raw)`);
 const trTex = await passFetches("Textured");
@@ -408,7 +408,7 @@ await p.waitForTimeout(900);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
 passes.after = 0; passes.before = 0;
-await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "Raw")?.click());
 await p.waitForTimeout(2200);
 ok(passes.before > 0 && passes.before >= passes.after,
   `flipping to Before re-composes from the raw art — every tile in the 3x3, not just the centre (${passes.before} before, ${passes.after} after)`);
@@ -436,14 +436,14 @@ ok(modalPass.pass && modalPass.sel === "After",
 let mAfter = 0, mBefore = 0;
 const countM = (r) => { const u = r.url(); if (/_after\.webp$/.test(u)) mAfter++; else if (/_before\.webp$/.test(u)) mBefore++; };
 p.on("request", countM);
-await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Before")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Raw")?.click());
 await p.waitForTimeout(1800);
 p.off("request", countM);
 const stillOpen = await p.evaluate(() => ({
   open: !!document.querySelector(".promote-modal[open]"),
   sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
 }));
-ok(stillOpen.open && stillOpen.sel === "Before" && mBefore > 0,
+ok(stillOpen.open && stillOpen.sel === "Raw" && mBefore > 0,
   `flipping inside it re-composes the previews without closing it (${mBefore} before fetched)`);
 // The pass the whole feature exists for, in the dialog where promotion is decided.
 const synthsPre = await p.evaluate(() => window.__wikiTex ?? 0);
