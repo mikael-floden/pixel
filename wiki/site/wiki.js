@@ -4787,10 +4787,9 @@ function texFor(art, raw, cb) {
  * under review — and replaces only its TOP FACE with a tile from the set.
  *
  * THE GEOMETRY, measured here rather than assumed:
- *   Review tiles are 64x64 with the art at rows 9..54; ballot tiles are 64x46
- *   with the same art at rows 0..45. Both are 46 rows of tile, so apex-aligning
- *   them is a straight dy = 9 shift, and the centre column's top face is 29
- *   rows in both.
+ *   Review tiles are 64x64 with the art ending at wall-foot row 54; ballot
+ *   tiles are 64x46 ending at row 45. The offset is 9 — taken from the WALL
+ *   FOOT, which is rigid, never from the apex, which is not. See alignTiles.
  *   The top face is per COLUMN, from the silhouette: rows [ymin, ymax-16].
  *   Not a rhombus formula — the pipeline's top_face() replaced one of those
  *   because it was a pixel short at every extreme, counting a genuine ring of
@@ -4812,7 +4811,9 @@ function colSpans(data, w, h) {
   }
   return { top, bot };
 }
-/** Review tile + ballot tile -> the review tile wearing the ballot tile's top. */
+/** Review tile + ballot tile -> the review tile wearing the ballot tile's top.
+ *  The browser copy of wiki/lib/topsub.mjs; check-topsub.mjs runs both over the
+ *  same art and fails if they disagree by a pixel. */
 function topSub(candImg, baseImg) {
   const w = candImg.naturalWidth, h = candImg.naturalHeight;
   if (!w || !baseImg.naturalWidth) return null;
@@ -4828,19 +4829,45 @@ function topSub(candImg, baseImg) {
   bx.drawImage(baseImg, 0, 0);
   const base = bx.getImageData(0, 0, bw, bh);
   const A = colSpans(out.data, w, h), B = colSpans(base.data, bw, bh);
-  // Apex-align the two silhouettes. Both are the same 46-row tile; the review
-  // canvas simply pads it. Taken from the tiles' own topmost opaque row rather
-  // than from (h - bh), so a differently padded tile still lands right.
-  const apex = (s) => { let m = 1e9; for (const v of s.top) if (v >= 0 && v < m) m = v; return m === 1e9 ? 0 : m; };
-  const dy = apex(A) - apex(B);
-  for (let x = 0; x < w && x < bw; x++) {
-    if (A.top[x] < 0 || B.top[x] < 0) continue;
-    const lastTop = A.bot[x] - WALL_D + 1;           // exclusive end of the top face
-    for (let y = A.top[x]; y < lastTop; y++) {
-      // Extend the ballot column past its own silhouette so every asked-for
-      // pixel has a real answer — the 1-row difference measured above.
-      const sy = Math.min(Math.max(y - dy, B.top[x]), B.bot[x]);
-      const si = (sy * bw + x) * 4, di = (y * w + x) * 4;
+  /* ALIGN ON THE WALL FOOT, NOT THE APEX — measured over all 5,838 review tiles
+   * and 356 ballot tiles. The bottom edge is a rigid translate (the per-column
+   * offset is identical in 95.8% of columns and votes 9 on 97% of tiles); the
+   * TOP edge never is — every one of the 5,838 tiles has at least a pixel of
+   * spread, which is the same outline mismatch _extend_base was written for.
+   * It also follows from the definition: the top face is derived from the
+   * bottom (bot - WALL_D), so sharing a bottom is sharing the top-face
+   * boundary. Measured cost of getting it wrong on grass over dark_mud: at the
+   * bottom-aligned dy=9 all 910 top pixels land on real top face; at the dy=10
+   * apex-matching answers, 50 fall off it. Voted per column so one deformed
+   * silhouette cannot move the whole tile. */
+  const dx = (w - bw) >> 1;
+  const votes = new Map();
+  for (let x = 0; x < w; x++) {
+    const sx = x - dx;
+    if (A.bot[x] < 0 || sx < 0 || sx >= bw || B.bot[sx] < 0) continue;
+    const d = A.bot[x] - B.bot[sx];
+    votes.set(d, (votes.get(d) ?? 0) + 1);
+  }
+  if (!votes.size) return null;
+  let dy = 0, best = -1;
+  for (const [d, n] of [...votes].sort((a, b) => a[0] - b[0])) if (n > best) { dy = d; best = n; }
+  for (let x = 0; x < w; x++) {
+    if (A.top[x] < 0) continue;
+    const sx = x - dx;
+    if (sx < 0 || sx >= bw || B.top[sx] < 0) continue;
+    const sTop = B.top[sx];
+    /* CLAMP INTO THE SOURCE'S OWN TOP FACE, not its silhouette. _extend_base
+     * runs on tiles of one size and never needed the distinction; here,
+     * sampling one row lower would paint the BALLOT TILE'S WALL into the new
+     * top — the one material that must never appear there. */
+    const sBot = Math.max(sTop, B.bot[sx] - WALL_D);
+    const kBot = A.bot[x] - WALL_D;                  // keep's last top-face row
+    for (let y = A.top[x]; y <= kBot; y++) {
+      const di = (y * w + x) * 4;
+      if (!(out.data[di + 3] > 0)) continue;         // top_face() is m & alpha
+      let sy = y - dy;
+      if (sy < sTop) sy = sTop; else if (sy > sBot) sy = sBot;
+      const si = (sy * bw + sx) * 4;
       out.data[di] = base.data[si]; out.data[di + 1] = base.data[si + 1]; out.data[di + 2] = base.data[si + 2];
       // ALPHA IS THE REVIEW TILE'S, ALWAYS. The silhouette under review must not
       // gain or lose a pixel to the ground painted on it.

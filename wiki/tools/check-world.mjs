@@ -416,8 +416,11 @@ await p.waitForTimeout(1000);
 const asRaw = await shot();
 console.log("before:", JSON.stringify(asRaw));
 const selOf = (m) => m.find((x) => x.startsWith("*")) ?? "";
-ok(selOf(asRaw.mode) === "*Raw" && asRaw.mode.length === 3,
-  `the switch flips the whole set, and carries all three passes (${asRaw.mode.join(" ")})`);
+/* THE SWITCH CARRIES THE GROUND'S OWN PASSES since 2026-08-25 — Clean #0, then
+ * every set he has built, then Raw — so its LENGTH is his to decide and only
+ * the ends are fixed. */
+ok(selOf(asRaw.mode) === "*Raw" && asRaw.mode.length >= 2 && /Clean #0/.test(asRaw.mode[0]),
+  `the switch flips the whole set, Clean #0 first and Raw last (${asRaw.mode.join(" ")})`);
 ok(asRaw.faces.every((f) => /_before\.webp$/.test(f ?? "")), "and every preview is rebuilt from the generator's raw output");
 ok(asRaw.portrait === "before", "the pair's own portrait follows — one truth per screen, never two");
 
@@ -428,7 +431,7 @@ await p.waitForTimeout(2000);
 const nextPair = await shot();
 console.log("next pair:", JSON.stringify({ mode: nextPair.mode }));
 ok(selOf(nextPair.mode) === "*Raw", "paging to the next pair keeps the mode");
-await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Clean #0/.test(b.textContent)).click());
 await p.waitForTimeout(500);
 
 // -------------------------------- 5b. and the same switch ON EVERY TILE
@@ -471,13 +474,13 @@ await press(1);
 await p.waitForTimeout(1000);
 const backAgain = await chips();
 ok(backAgain[1].view === "after" && /_after\.webp$/.test(backAgain[1].face ?? ""), "and a third puts that tile back");
-// THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "After" for the
+// THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "Clean #0" for the
 // set has to mean all of it, or a tile left on before would be read as one the
 // postprocess did nothing to.
 await press(0);
 await p.waitForTimeout(900);
 ok((await chips())[0].view === "texture", "a peek can be left open on any tile");
-await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /After/.test(b.textContent)).click());
+await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Clean #0/.test(b.textContent)).click());
 await p.waitForTimeout(1400);
 const cleared = await chips();
 console.log("after the set-wide After:", JSON.stringify(cleared.map((c) => c.view)));
