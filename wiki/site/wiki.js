@@ -5487,8 +5487,13 @@ function viewWorldType(top) {
       h("span", { class: "muted" }, "Tile art"),
       sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },
-      tabBtn("base", "Base tiles", groups.length || null, !groups.length,
-        groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
+      // "Base", not "Base tiles" (maintainer 2026-08-25: "so the entire radio
+      // button group/tabs fit on the page (it's cut right now)"). Four tabs
+      // with counts overflowed a phone and clipped Transitions; the tooltip
+      // still says what it is, and the tab that got shorter is the one whose
+      // second word was doing the least work.
+      tabBtn("base", "Base", groups.length || null, !groups.length,
+        groups.length ? "The base tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
       tabBtn("details", "Details", details.length || null, detailsDead,
         details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
       tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),

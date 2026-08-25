@@ -92,7 +92,9 @@ ok(page.palette.length === GRASS.palette.length && page.palette[0] === rgb(GRASS
 
 // ---- 2a. TABS: his rule verbatim — Base tiles first, disabled when empty ---
 const tabs0 = await readTabs();
-ok(tabs0[0]?.t.startsWith("Base tiles") && tabs0[0].disabled && !tabs0[0].sel,
+// "Base", not "Base tiles", since 2026-08-25 — four tabs with counts did not
+// fit a phone and the second word was the one doing least work.
+ok(tabs0[0]?.t.startsWith("Base") && tabs0[0].disabled && !tabs0[0].sel,
   `with no base tiles the first tab is DISABLED (${JSON.stringify(tabs0.map((x) => x.t))})`);
 // Index 1 is Details now; the landing rule sends an untended ground to the
 // workhorse tab wherever it sits in the row.
@@ -363,6 +365,39 @@ for (const tabName of ["Details", "On top of", "Transitions"]) {
   ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && hasPass.labels === "After/Textured/Raw",
     `all THREE passes are on the ${tabName} tab (${hasPass.labels})`);
 }
+/* THE WHOLE TAB STRIP HAS TO FIT ON A PHONE (maintainer 2026-08-25: "Instead
+ * of 'Base tiles' can you write just 'Base' so the entire radio button group /
+ * tabs fit on the page (it's cut right now)").
+ *
+ * His rename recovered 40px and the strip was STILL 21px over at 412px — so
+ * the rest came out of the tab padding and the count chip. Asserted at every
+ * phone width rather than the one he happened to screenshot, because "fits"
+ * was true at 430 and false at 393 the whole time.
+ */
+for (const w of [360, 393, 412, 430]) {
+  const ctxW = await b.newContext({ viewport: { width: w, height: 900 }, isMobile: true, hasTouch: true });
+  const pw = await ctxW.newPage();
+  await pw.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await pw.addInitScript(() => {
+    localStorage.setItem("wiki-admin-token", "gate");
+    localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  });
+  await pw.goto(`${W}#/world/grass`, { waitUntil: "load" });
+  await pw.waitForTimeout(1800);
+  const fit = await pw.evaluate(() => {
+    const bar = document.querySelector(".groundtabs");
+    const tabs = [...bar.querySelectorAll(".groundtab")];
+    return {
+      over: Math.round(bar.scrollWidth - bar.clientWidth),
+      labels: tabs.map((x) => x.textContent.replace(/\s+/g, " ").trim()).join(" | "),
+      tall: Math.round(tabs[0].getBoundingClientRect().height),
+    };
+  });
+  ok(fit.over <= 0 && fit.tall >= 40,
+    `every tab is on screen at ${w}px, and still a 44px target (${fit.over}px over, ${fit.tall}px tall — ${fit.labels})`);
+  await ctxW.close();
+}
+
 /* THE SWITCH MUST NOT MOVE THE ART (maintainer 2026-08-25: "I don't like the
  * text to the right side of After/Textured/Raw … this makes the entire site
  * jump up and down when pressing the buttons. So it's hard to see how the

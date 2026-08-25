@@ -284,6 +284,22 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   padding: 10px 16px; font-size: 14px; border: none; background: transparent;
   color: var(--muted); border-right: 1px solid var(--border); white-space: nowrap;
 }
+/* FOUR TABS WITH COUNTS DO NOT FIT A PHONE AT DESKTOP PADDING (maintainer
+   2026-08-25: "so the entire radio button group/tabs fit on the page (it's cut
+   right now)"). Shortening "Base tiles" to "Base" recovered 40px and the strip
+   was still 21px over at 412px wide. The rest comes out of the padding and the
+   count chip, which is where slack belongs — the labels are his words and the
+   tap target stays 44px tall. Measured after: 331px of content in 384px. */
+@media (max-width: 620px) {
+  .groundtab, .pagetab { padding: 10px 9px; font-size: 13.5px; }
+  .groundtab .tab-n { margin-left: 5px; padding: 1px 5px; font-size: 11px; }
+}
+/* And one tier tighter for the small phones, where four tabs were still 10px
+   over. Nothing below this exists in the wild worth designing for. */
+@media (max-width: 380px) {
+  .groundtab, .pagetab { padding: 10px 6px; font-size: 13px; }
+  .groundtab .tab-n { margin-left: 4px; padding: 1px 4px; }
+}
 .groundtab:last-child { border-right: none; }
 .groundtab.sel, .pagetab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }
 .groundtab.off, .pagetab.off { opacity: 0.45; }
