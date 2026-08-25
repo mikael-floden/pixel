@@ -5472,14 +5472,20 @@ function viewWorldType(top) {
      * the postprocess flattens a top to 96% one colour, so EVERY group hides
      * its seams and every field looks perfect. One switch, always on screen,
      * whatever tab is open. */
+    /* NO EXPLAINING TEXT BESIDE THE SWITCH (maintainer 2026-08-25: "I don't
+     * like the text to the right side of After/Textured/Raw … this makes the
+     * entire site jump up and down when pressing the buttons. So it's hard to
+     * see how the individual pixels changed due to the jump. And I don't need
+     * this explaining text").
+     *
+     * The three hints were different lengths, so one wrapped to two lines and
+     * another to one — the row changed height on every press and took the art
+     * with it. A switch whose whole purpose is comparing two pictures must not
+     * move the pictures. The chips keep their tooltips; that is where an
+     * explanation belongs. */
     state.admin ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
-      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); }),
-      h("span", { class: "muted pass-hint" }, worldView() === "before"
-        ? "the generator's own, untouched"
-        : worldView() === "texture"
-          ? "the real texture, recoloured to this ground — judge promotions here"
-          : "clean-colour tops — flip to Textured to judge with the real texture")) : null,
+      sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(), () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },
       tabBtn("base", "Base tiles", groups.length || null, !groups.length,
         groups.length ? "The tiles this ground paints its fields from, in groups" : "No base tiles promoted yet — promote one from a set under On top of"),
@@ -5629,9 +5635,7 @@ function viewWorldTransition(pairId) {
         ? sortBar(WORLD_VIEW_KEY, Object.entries(WORLD_VIEWS).map(([id, v]) => [id, v.label, v.title]), worldView(),
           () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })
         : h("span", { class: "pill warn", title: "tiles/transitions/<pair>/<set>/post/ does not exist yet — there is no processed pass to switch to" }, "raw only"),
-      h("span", { class: "muted pass-hint" }, set.post
-        ? (worldView() === "before" ? "the generator's raw tiles" : "the retextured pass, corrected to the game palette")
-        : "this set ships only the raw pass — the retexture has not been published, so there is nothing to switch to")) : null,
+      ) : null,
     // The set picker: a00 is the straightest boundary; higher amplitudes are
     // rougher. One chip per generated set.
     tr.sets.length > 1 ? sortBar(`trans-set-${pairId}`, tr.sets.map((x) => [x.id,

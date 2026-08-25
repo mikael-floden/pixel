@@ -643,6 +643,29 @@ and gated on the **files fetched**, which cannot lie:
 | Before | 0 | 40 |
 | Textured | 45 | 40 (synthesized onto a canvas) |
 
+## A switch for comparing pictures must not move the pictures
+
+Maintainer 2026-08-25: *"I don't like the text to the right side of
+After/Textured/Raw … this makes the entire site jump up and down when pressing
+the buttons. So it's hard to see how the individual pixels changed due to the
+jump. And I don't need this explaining text."*
+
+The three hints were different lengths, so one wrapped to two lines and another
+to one: the row changed height on every press and took the art below it with it.
+The one thing that control exists for is comparing two pictures pixel by pixel,
+and it was moving them. **The hints are gone**; the chips keep their tooltips,
+which is where an explanation belongs.
+
+Gated by measurement rather than by eye: across all three passes the switch
+holds **31px** and the first tile under it stays **103px** below it.
+
+*"And when I press on Raw the radio button group has no line space until the
+next radio button group begins."* — `.ground-pass` zeroes its inner sortbar's
+margin to stay tight and had no bottom margin of its own, so nothing separated
+it from the set picker. It only showed on **Raw** because the longer hints on
+the other passes used to wrap and fake the gap. It has a real 14px margin now,
+asserted.
+
 ## The pass is called RAW, and the pill says what you are looking at
 
 Maintainer 2026-08-24, twice in a row on the Transitions tab:

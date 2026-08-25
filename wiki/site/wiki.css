@@ -324,11 +324,16 @@ a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--
    promote dialog where the decision is actually made. */
 .ground-pass, .promote-pass {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin: 10px 0 0; font-size: 12.5px;
+  /* A BOTTOM MARGIN OF ITS OWN (maintainer 2026-08-25: "when I press on Raw
+     the radio button group has no line space until the next radio button group
+     begins"). The inner sortbar's own margin is zeroed so the row stays tight,
+     which left nothing between this group and the set picker under it — and it
+     only showed on Raw, because the explaining text beside the other passes
+     used to wrap and fake the gap. */
+  margin: 10px 0 14px; font-size: 12.5px;
 }
-.promote-pass { margin: 8px 0 0; }
+.promote-pass { margin: 8px 0 12px; }
 .ground-pass .sortbar, .promote-pass .sortbar { margin-bottom: 0; }
-.pass-hint { flex: 1; min-width: 120px; }
 
 /* ---- ground details ---- */
 .detail-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }

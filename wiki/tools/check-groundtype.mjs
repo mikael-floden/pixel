@@ -358,11 +358,43 @@ for (const tabName of ["Details", "On top of", "Transitions"]) {
     pass: !!document.querySelector(".ground-pass"),
     n: document.querySelectorAll(".ground-pass .sortbar-btn").length,
     sel: document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim(),
-    hint: document.querySelector(".pass-hint")?.textContent ?? "",
+    labels: [...document.querySelectorAll(".ground-pass .sortbar-btn")].map((x) => x.textContent.trim()).join("/"),
   }));
-  ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && /Textured/.test(hasPass.hint),
-    `all THREE passes are on the ${tabName} tab, and the hint points at Textured (${hasPass.hint.slice(0, 46)}…)`);
+  ok(hasPass.pass && hasPass.n === 3 && hasPass.sel === "After" && hasPass.labels === "After/Textured/Raw",
+    `all THREE passes are on the ${tabName} tab (${hasPass.labels})`);
 }
+/* THE SWITCH MUST NOT MOVE THE ART (maintainer 2026-08-25: "I don't like the
+ * text to the right side of After/Textured/Raw … this makes the entire site
+ * jump up and down when pressing the buttons. So it's hard to see how the
+ * individual pixels changed due to the jump").
+ *
+ * The hints beside it were different lengths, so one wrapped to two lines and
+ * another to one and the row changed height on every press — taking the tiles
+ * below it with it. A control for comparing two pictures cannot move the
+ * pictures. Measured, not eyeballed: the switch keeps its height and the first
+ * tile under it keeps its position across all three passes. */
+const passGeom = [];
+for (const want of ["After", "Textured", "Raw"]) {
+  await p.evaluate((w) => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === w)?.click(), want);
+  await p.waitForTimeout(900);
+  passGeom.push(await p.evaluate(() => {
+    const bar = document.querySelector(".ground-pass").getBoundingClientRect();
+    const first = document.querySelector(".trans-row, .detail-card, .world-cand, .base-group")?.getBoundingClientRect();
+    return { h: Math.round(bar.height), art: first ? Math.round(first.top - bar.top) : null };
+  }));
+}
+ok(new Set(passGeom.map((g2) => g2.h)).size === 1,
+  `the switch is the same height on every pass, so nothing below it moves (${passGeom.map((g2) => g2.h).join(", ")}px)`);
+ok(new Set(passGeom.map((g2) => g2.art)).size === 1,
+  `and the art under it does not shift when he presses one (${passGeom.map((g2) => g2.art).join(", ")}px below the switch)`);
+// AND THE GROUP UNDER IT KEEPS ITS DISTANCE — "when I press on Raw the radio
+// button group has no line space until the next radio button group begins".
+const gap = await p.evaluate(() => {
+  const bar = document.querySelector(".ground-pass");
+  const next = bar.nextElementSibling;
+  return next ? Math.round(next.getBoundingClientRect().top - bar.getBoundingClientRect().bottom) : -1;
+});
+ok(gap >= 8, `with a real gap before whatever comes next (${gap}px)`);
 // ---- THE TRANSITION STRIPS OBEY THE SWITCH TOO ---------------------------
 // Maintainer 2026-08-24, after the tiles agent published the processed pass:
 // "Its good that you fixed so the Transition page now renders After correctly.
@@ -399,9 +431,24 @@ ok(trAfter.post > 0 && trAfter.raw === 0,
 const trBefore = await passFetches("Raw");
 ok(trBefore.raw > 0 && trBefore.post === 0,
   `and Before draws the generator's own, which is the half that was broken (${trBefore.post} post, ${trBefore.raw} raw)`);
+// TEXTURED IS ASSERTED ON THE PICTURE, NOT ON FETCHES. It needs both passes,
+// but "both were fetched" only holds on a cold cache — and any earlier check
+// that visited Raw has already warmed it, so counting requests here made this
+// go red for a reason that had nothing to do with the page. What matters is
+// that the strip is SYNTHESIZED: canvases, not <img>s, with real colour in them.
 const trTex = await passFetches("Textured");
-ok(trTex.post > 0 && trTex.raw > 0 && /canvas/.test(trTex.kids),
-  `and Textured pulls BOTH and synthesizes onto a canvas (${trTex.post} post, ${trTex.raw} raw, strip of ${trTex.kids.split(",")[0]})`);
+const texPix = await p.evaluate(() => {
+  const cv = document.querySelector(".trans-row .trans-strip canvas");
+  if (!cv) return { err: "no canvas in the strip" };
+  try {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    const set = new Set();
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) set.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+    return { colours: set.size };
+  } catch (e) { return { err: e.name }; }
+});
+ok(/canvas/.test(trTex.kids) && typeof texPix.colours === "number" && texPix.colours > 6,
+  `and Textured synthesizes the strip onto a canvas rather than fetching a third pass (${trTex.kids.split(",")[0]}, ${texPix.colours ?? texPix.err} colours)`);
 p.off("request", countTrans);
 await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
 await p.waitForTimeout(900);
