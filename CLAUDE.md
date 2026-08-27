@@ -86,6 +86,19 @@ loads ships WebP (zero PNGs). VP8L is mathematically lossless: same pixels at
 - Deliberate PNG exceptions: PWA icons, hand-drawn build-source art, the WebP
   gate's test fixtures, docs images — see `games2/CLAUDE.md`.
 
+**CACHE SAFETY IS ABSOLUTE (maintainer law, 2026-08-27).** "You must NEVER EVER EVER
+introduce a cache bug again. The next time I see a cache bug I delete the entire
+project." Cache bugs killed his last two projects; this is not hyperbole. The rule
+that makes them structurally impossible: **a published, regenerable asset is never
+rewritten under a stable name** - a regenerated file gets a NEW filename carrying its
+content hash, the index points at the current name, the stale name is deleted, and
+consumers read names from the index rather than constructing them. A stale cache may
+then show a coherent old version or a 404 - never a mix of generations.
+`tiles/pipeline/check_immutable.py` gates every tiles publish (0 mutable names, 0
+dangling references, every content hash re-verified); any domain that serves or
+caches assets follows the same rule. Write-once assets (raw generator output) may
+keep stable names - the law binds anything a pipeline can regenerate.
+
 **Never commit secrets.** `PIXELLAB_API_KEY` / `ELEVENLABS_API_KEY` live in
 the gitignored `.env` (locally) and Actions secrets (CI). Don't call the APIs
 without the key set.

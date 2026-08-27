@@ -854,6 +854,11 @@ def main():
     # their real texture"). Derived from before+after on disk, so it needs no matrix.
     import textured_pass
     textured_pass.write_textured(os.path.join(REVIEW, "manifest.json"))
+    # THE CACHE-SAFETY GATE rides every publish. "The next time I see a cache bug I
+    # delete the entire project." - a violation must never ride a green build.
+    import check_immutable
+    if check_immutable.main() != 0:
+        raise SystemExit("cache-safety gate failed - see above. Do not push this build.")
     print(f"published {n_pub} candidates across {len(manifest['cells'])} cells "
           f"-> {os.path.relpath(REVIEW, os.path.dirname(ROOT))}/")
     for cell, c in manifest["cells"].items():
