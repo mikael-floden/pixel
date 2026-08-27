@@ -97,7 +97,9 @@ const shape = await p.evaluate(() => [...document.querySelectorAll(".sortbar")].
   };
 }));
 console.log("bar shape:", JSON.stringify(shape));
-ok(shape.length === 3, `three pick-one strips: type, sort, review (${shape.length})`);
+/* FOUR strips since 2026-08-27: the hitbox queue joined type, sort and review
+ * when scenery gained a footprint editor. */
+ok(shape.length === 4, `four pick-one strips: type, hitbox, sort, review (${shape.length})`);
 ok(shape.every((s2) => s2.rows === 1), `each is ONE row — it pans, it does not wrap (${shape.map((s2) => s2.rows).join(", ")})`);
 ok(shape.every((s2) => s2.bordered && parseFloat(s2.radius) >= 6), "with one border around the whole set, not one per chip");
 ok(shape.every((s2) => s2.chipBorders.every((v) => v === "0px")), `the chips carry no borders of their own (${shape[0].chipBorders.join(", ")})`);
@@ -117,9 +119,17 @@ const picked = await p.evaluate(() => ({
 console.log("after picking Trees:", JSON.stringify({ cards: picked.cards, heads: picked.heads.slice(0, 5), sel: picked.sel }));
 ok(picked.cards === counts.TREE, `only the trees are shown (${picked.cards} of ${objs.length})`);
 ok(picked.heads.every((slug) => gType.get(slug) === "TREE"), `and only tree GROUPS have headings (${picked.heads.length})`);
-// The review chips must recount inside the chosen type, or the two bars lie.
-const reviewChip = picked.sel.find((t) => /^all /.test(t));
+/* The review chips must recount inside the chosen type, or the two bars lie.
+ * READ BY BAR, not by first match: since the hitbox queue landed there are TWO
+ * bars whose first chip reads "all N", and an unscoped find() would have been
+ * answered by whichever came first in the DOM — passing while saying nothing
+ * about the bar it names. */
+const barChip = async (bar) => p.evaluate((b) =>
+  document.querySelector(`[data-bar="${b}"] .sortbar-btn.sel`)?.textContent ?? "", bar);
+const reviewChip = await barChip("wiki-obj-filter");
 ok(reviewChip === `all ${counts.TREE}`, `the review chips recount within the type (“${reviewChip}”)`);
+const hbChip = await barChip("wiki-object-hitbox");
+ok(hbChip === `all ${counts.TREE}`, `and so do the hitbox chips — "all 739" over a page of 83 was the first cut (“${hbChip}”)`);
 
 // "IF I FILTER ON TREES AND CLICK ON A TREE — NEXT NEXT NEXT SHOULD ONLY
 // DISPLAY TREES." The whole point: the filter survives the click.

@@ -124,7 +124,8 @@ ok(injected > 0, `the injected verdicts really were served (${injected}x)`);
 const base = await overview();
 // Three rows since 2026-08-14: what KIND of thing (everyone), how it is
 // ordered, and where it stands in review (admin).
-ok(base.bars.length === 3, `admin gets the type, sort and review rows (${base.bars.join(" | ")})`);
+// Four rows since the hitbox queue landed (2026-08-27).
+ok(base.bars.length === 4, `admin gets the type, hitbox, sort and review rows (${base.bars.length})`);
 ok(base.heads > 3, `the default is still the grouped view (${base.heads} group headings)`);
 ok(base.names.length === objs.length, `showing everything by default (${base.names.length}/${objs.length})`);
 

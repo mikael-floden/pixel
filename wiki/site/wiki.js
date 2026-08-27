@@ -8707,11 +8707,13 @@ function viewObjects() {
         .filter(([, , n]) => n > 0)
         .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),
     ], q.type, () => route()),
-    state.admin ? sortBar(OBJ_HITBOX_KEY, Object.entries(OBJ_HITBOXES).map(([id, f]) => {
-      const n = id === "all" ? state.data.domains.objects.length
-        : state.data.domains.objects.filter((o) => f.hit(o)).length;
-      return [id, `${f.label} ${n}`, f.title];
-    }), q.hitbox, () => route()) : null,
+    state.admin ? sortBar(OBJ_HITBOX_KEY, Object.entries(OBJ_HITBOXES).map(([id, f]) =>
+      // COUNTED WITHIN THE CHOSEN TYPE, like the review bar right below it —
+      // with Trees selected, "no hitbox yet 61" has to mean sixty-one trees or
+      // the two bars contradict each other. Counting the whole domain here was
+      // the first cut and it made "all 739" sit above a page of 83.
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.hit(o)).length}`,
+        q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.hitbox, () => route()) : null,
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
     // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
     // legitimately empty the page: the maintainer reviewed the whole domain,

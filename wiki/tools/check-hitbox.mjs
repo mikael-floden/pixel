@@ -18,7 +18,15 @@ const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ")
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
 const PIECES = D.domains.objects ?? [];
-const PIECE = PIECES[0];
+/* A FIXTURE THE MAINTAINER'S OWN WORK CANNOT BREAK. check-shadow.mjs is red
+ * today for exactly this: it pins monster[0] and asserts the record is
+ * untouched, so the first monster he tuned turned his work into a failing
+ * gate. This gate resets its piece to undecided before it starts, and picks
+ * one with a measured content box so the default-derivation assertions have
+ * something real to check. */
+const LIVE = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8"));
+const bbOf = (o) => Object.values(o.animations ?? {})[0]?.dirs?.south?.bb;
+const PIECE = PIECES.find((o) => bbOf(o) && !LIVE.overrides?.[o.path]) ?? PIECES.find((o) => bbOf(o)) ?? PIECES[0];
 
 const b = await chromium.launch({ executablePath: process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await b.newContext({ viewport: { width: 412, height: 900 }, isMobile: true, hasTouch: true });
@@ -47,6 +55,12 @@ ok(total === PIECES.length, `over the whole domain (${total} of ${PIECES.length}
 await p.goto(`${W}#/objects/${PIECE.id}`, { waitUntil: "load" });
 await p.waitForTimeout(2600);
 ok(await p.evaluate(() => !!document.querySelector(".hit-bar.hidden")), "the editor is closed until asked for");
+// Start from undecided whatever the live file says — his real verdicts must
+// never be what this gate is measuring.
+await p.evaluate((k) => {
+  const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+  if (d?.overrides) delete d.overrides[k];
+}, PIECE.path);
 await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
 await p.waitForTimeout(1200);
 const open = await p.evaluate(() => ({
