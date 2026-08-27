@@ -4439,7 +4439,12 @@ function writeSets(typeId, sets) {
     sets: sets.map((s) => ({
       id: s.id, name: s.name, weight: s.weight,
       members: [{ kind: "clean", weight: s.clean },
-        ...s.members.map((m) => ({ kind: "tile", id: m.id, tile: m.art, weight: m.weight }))],
+        /* `tile` is the REVIEW KEY when the member is one (tiles/<cell>/<key8>)
+         * — the tiles agent's plates resolve maps it to a plate by pure string
+         * (plates/index.json `expects`). A ballot member has no review key, so
+         * its art path stands: its file IS transition geometry and serves as
+         * its own plate, alpha verified byte-identical to the silhouette. */
+        ...s.members.map((m) => ({ kind: "tile", id: m.id, tile: /^tiles\/[^/]+\/[0-9a-f]{8}$/.test(m.id ?? "") ? m.id : m.art, weight: m.weight }))],
     })),
   };
   doc.updated_at = new Date().toISOString();

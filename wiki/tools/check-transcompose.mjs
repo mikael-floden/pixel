@@ -148,6 +148,29 @@ for (const c of CASES) {
   ok(inNW > 150 && matchG === inNW,
     `polarity: every pixel of the NW corner region is GRASS on the composed tile (${matchG}/${inNW}) — swapped sides would fail this at 0`);
 }
+/* ---- 3. HIS EXACT SCREENSHOT: Black Rock -> Transitions. A ground with ZERO
+ * pregenerated pairs must show the full neighbour roster, composed — the empty
+ * "Being generated" state is what he reported and what this page must never
+ * show again while the library exists. */
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+await p.waitForTimeout(3000);
+const br = await p.evaluate(() => ({
+  rows: document.querySelectorAll("a.trans-row").length,
+  canvases: document.querySelectorAll(".trans-row canvas").length,
+  painted: [...document.querySelectorAll(".trans-row canvas")].filter((c) => {
+    try {
+      const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 0) return true;
+      return false;
+    } catch { return false; }
+  }).length,
+  beingGenerated: /Being generated/.test(document.body.textContent),
+}));
+const roster = Object.keys(LIB ? JSON.parse(readFileSync(ROOT + "tiles/plates/index.json", "utf8")).grounds : {}).filter((x) => x !== "black_rock").length;
+ok(br.rows === roster && !br.beingGenerated,
+  `Black Rock lists all ${roster} neighbours — the "Being generated" empty state is gone (${br.rows} rows)`);
+ok(br.canvases >= br.rows * 4 && br.painted === br.canvases,
+  `every strip is composed and every canvas actually painted (${br.painted}/${br.canvases})`);
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nTRANS-COMPOSE CHECKS FAILED (${fails.length})` : "\nALL TRANS-COMPOSE CHECKS PASSED");

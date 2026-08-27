@@ -523,45 +523,51 @@ ok(gap >= 8, `with a real gap before whatever comes next (${gap}px)`);
 // processed tiles under every setting and Before looked identical to After.
 // Asserted on the FILES FETCHED, which is the only thing that cannot lie.
 const transFetch = [];
-const countTrans = (r) => { if (/tiles\/transitions\//.test(r.url())) transFetch.push(r.url()); };
+const plateFetch = [];
+const countTrans = (r) => {
+  if (/tiles\/transitions\//.test(r.url())) transFetch.push(r.url());
+  if (/tiles\/(plates|patterns|base_candidates)\//.test(r.url())) plateFetch.push(r.url());
+};
 p.on("request", countTrans);
 const passFetches = async (name) => {
   await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
   await p.waitForTimeout(1600);
   await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
   await p.waitForTimeout(1400);
-  transFetch.length = 0;
+  transFetch.length = 0; plateFetch.length = 0;
   await p.evaluate((n) => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === n)?.click(), name);
   await p.waitForTimeout(2200);
   return {
     post: transFetch.filter((u) => /\/post\//.test(u)).length,
     raw: transFetch.filter((u) => !/\/post\//.test(u)).length,
+    // NOT the fetch count: plates and the mask sheet sit in the HTTP cache
+    // after the first visit, so requests undercount on exactly the runs that
+    // matter — the same warm-cache trap this file already documents for
+    // Textured. The composer's own probe counts every composition.
+    mixes: await p.evaluate(() => window.__wikiMix ?? 0),
     kids: await p.evaluate(() => {
       const s2 = document.querySelector(".trans-row .trans-strip");
       return s2 ? [...s2.children].map((c) => c.tagName.toLowerCase()).join(",") : "";
     }),
   };
 };
-const trAfter = await passFetches("Clean #0");
-ok(trAfter.post > 0 && trAfter.raw === 0,
-  `on Transitions, Clean #0 draws the PROCESSED tiles and only those (${trAfter.post} post, ${trAfter.raw} raw)`);
+/* THE MASKS LANDED (tiles agent, 2026-08-25: tiles/patterns/ + tiles/plates/),
+ * so the switch composes now. Clean and Set passes fetch PLATES and the mask
+ * sheet — never tiles/transitions/ art; Raw fetches exactly the pregenerated
+ * raw pass, which is the only place it exists. The old assertion here — that a
+ * set chip still draws the processed pair art — was written to fail on the day
+ * the masks landed, and it did. */
+const trClean = await passFetches("Clean #0");
+ok(trClean.post === 0 && trClean.raw === 0 && trClean.mixes > 0,
+  `on Transitions, Clean #0 composes from plates — no pregenerated art fetched (${trClean.mixes} composites, ${trClean.post} post, ${trClean.raw} raw)`);
+ok(trClean.kids.includes("canvas") && !trClean.kids.includes("img"),
+  `the strip is composed canvases, not files (${trClean.kids})`);
 const trBefore = await passFetches("Raw");
 ok(trBefore.raw > 0 && trBefore.post === 0,
-  `and Before draws the generator's own, which is the half that was broken (${trBefore.post} post, ${trBefore.raw} raw)`);
-// TEXTURED IS ASSERTED ON THE PICTURE, NOT ON FETCHES. It needs both passes,
-// but "both were fetched" only holds on a cold cache — and any earlier check
-// that visited Raw has already warmed it, so counting requests here made this
-// go red for a reason that had nothing to do with the page. What matters is
-// that the strip is SYNTHESIZED: canvases, not <img>s, with real colour in them.
-/* THE SET CHIPS DO NOT REACH TRANSITIONS YET, and the page must not pretend
- * they do. A transition tile is still pregenerated art per material pair; the
- * tiles agent is publishing the 18 boundary masks that will let it be composed
- * from a mask plus one base tile per side, and until they land the switch here
- * means what it always did: Raw or processed. Asserted so that the day the
- * masks arrive, THIS is the check that fails and says to wire them up. */
+  `and Raw draws the generator's own pregenerated tiles (${trBefore.post} post, ${trBefore.raw} raw)`);
 const trSet = await passFetches("Set #1");
-ok(trSet.post > 0 && trSet.raw === 0,
-  `a set chip on Transitions still draws the processed pair art, honestly (${trSet.post} post, ${trSet.raw} raw)`);
+ok(trSet.post === 0 && trSet.raw === 0,
+  `a set chip composes too — zero pregenerated fetches (${trSet.post} post, ${trSet.raw} raw)`);
 p.off("request", countTrans);
 await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(900);
@@ -771,7 +777,9 @@ await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await p.waitForTimeout(1600);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
 await p.waitForTimeout(900);
-const expTrans = (META.transitions ?? []).filter((t) => t.a === "grass" || t.b === "grass");
+/* EVERY NEIGHBOUR now means every ground with plates, minus itself — the
+ * generated pairs are a subset with extra art, not the roster. */
+const expTrans = Object.keys(META.patternLib?.plates ?? {}).filter((x) => x !== "grass");
 const tt = await p.evaluate(() => ({
   rows: document.querySelectorAll("a.trans-row").length,
   post: [...document.querySelectorAll(".trans-row .pill")].map((x) => x.textContent),
@@ -779,8 +787,8 @@ const tt = await p.evaluate(() => ({
   imgs: document.querySelectorAll(".trans-strip img").length,
 }));
 ok(tt.rows === expTrans.length, `the Transitions tab lists every neighbour (${tt.rows})`);
-ok(tt.post.every((x) => /postprocess/.test(x)),
-  `and says whether each shows the postprocessed pass — none published yet, so "${tt.post[0]}"`);
+ok(tt.post.some((x) => /composed/.test(x)),
+  `and the pill names what is drawn — composed under Clean/Set (${tt.post.find((x) => /composed/.test(x))})`);
 ok(/#\/world\/transition\//.test(tt.href ?? ""), "each row links to the transition's own page");
 await p.evaluate(() => document.querySelector("a.trans-row")?.click());
 await p.waitForTimeout(2600);
@@ -789,17 +797,19 @@ const demo = await p.evaluate(() => ({
   scenes: [...document.querySelectorAll(".trans-scene .panel-title")].map((x) => x.textContent.trim()),
   canvases: [...document.querySelectorAll(".trans-scene canvas")].map((c) => c.width),
   chips: document.querySelectorAll(".sortbar-btn").length,
-  strip: document.querySelectorAll(".trans-all img").length,
-  stripLoaded: [...document.querySelectorAll(".trans-all img")].filter((i) => i.complete && i.naturalWidth > 0).length,
+  strip: document.querySelectorAll(".trans-all canvas, .trans-all img").length,
+  stripLoaded: [...document.querySelectorAll(".trans-all canvas")].filter((c) => c.width > 0).length
+    + [...document.querySelectorAll(".trans-all img")].filter((i) => i.complete && i.naturalWidth > 0).length,
 }));
 ok(/↔/.test(demo.h1), `the demo page names the pair (${demo.h1})`);
 ok(demo.scenes.length === 5 && demo.canvases.length === 5 && demo.canvases.every((w2) => w2 > 300),
   `five direction scenes, each a real composed field (${demo.scenes.join("; ")})`);
 const pairId = (await p.evaluate(() => location.hash)).split("/transition/")[1];
 const pairMeta = (META.transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
-ok(pairMeta.sets.length === 1 || demo.chips >= pairMeta.sets.length,
-  `every generated set is pickable (${pairMeta.sets.length} sets)`);
-ok(demo.strip === pairMeta.sets[0].n && demo.stripLoaded === demo.strip,
+// The picker is the LIBRARY's 18 patterns on every pair — generated or not.
+ok(demo.chips >= (META.patternLib?.patterns.length ?? 18),
+  `all ${META.patternLib?.patterns.length} library patterns are pickable (${demo.chips} chips${pairMeta ? ", pair also has " + pairMeta.sets.length + " generated sets" : ", never generated"})`);
+ok(demo.strip === 16 && demo.stripLoaded === demo.strip,
   `and the 16 corner tiles are shown and load (${demo.stripLoaded}/${demo.strip})`);
 // randomize re-rolls the wandering edge
 const wanderBefore = await p.evaluate(() => [...document.querySelectorAll(".trans-scene canvas")].at(-1)?.toDataURL().length);
