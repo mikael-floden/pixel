@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md.",
-  "updated_at": "2026-08-27T18:33:56.416Z",
+  "updated_at": "2026-08-27T18:37:11.943Z",
   "overrides": {
     "scenery/soulstone_outcrops/soulstone_outcrop_021": {
       "boxes": [
@@ -26,6 +26,18 @@
         }
       ],
       "updated_at": "2026-08-27T18:33:47.139Z"
+    },
+    "scenery/stones/stone_054": {
+      "boxes": [
+        {
+          "ax": 0.27,
+          "ay": 10.95,
+          "rx": 27,
+          "ry": 13.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-27T18:37:10.535Z"
     }
   }
 }
