@@ -4704,8 +4704,9 @@ function openPoolPicker(typeId, setId, onDone) {
       addSetMember(typeId, setId, cand.id);
       added++;
       addBtn.disabled = true; rejBtn.disabled = true;
-      addBtn.replaceChildren(`✓ in ${setLabel(setOf())} — commit when you are done`);
+      addBtn.replaceChildren(`✓ in ${setLabel(setOf())}`);
       row.classList.add("in-set");
+      retally();
     };
     rejBtn.onclick = () => {
       const on = !row.classList.contains("set-rejected");
@@ -4714,6 +4715,7 @@ function openPoolPicker(typeId, setId, onDone) {
       row.classList.toggle("set-rejected", on);
       addBtn.disabled = on;
       rejBtn.replaceChildren(on ? "↩ undo — offer it again" : "✕ not for this set");
+      retally();
     };
     const row = h("div", { class: "pool-cell", "data-cand": cand.id },
       h("div", { class: "pool-head" },
@@ -4733,6 +4735,30 @@ function openPoolPicker(typeId, setId, onDone) {
   // behind is stale while the dialog is up, and that is fine — the dialog IS
   // the page while it is open.
   const close = () => dlg.close();
+  /* THE WAY OUT IS AT THE BOTTOM RIGHT (maintainer 2026-08-27: "After clicking
+   * + Add to Set #2 where should I click for Ok/Close. Now I click at the very
+   * right and that closes the wiki entire wiki ... Aaah now I see it. You added
+   * the Close button at the top of the dialog and not the bottom right. I have
+   * naver seen that UX before").
+   *
+   * The × at the top-right is the convention for DISMISSING a dialog; this one
+   * is a task he finishes, and a finished task's button lives where every OK
+   * button he has ever pressed lives. Reaching past a 400-row list to a header
+   * to say "done" is not a thing anyone should have to discover — and while he
+   * was looking for it he tapped outside and closed the whole wiki drawer.
+   *
+   * Sticky, because the list scrolls under it: the way out is never off screen.
+   * It also carries what he just did, so "Done" is a summary and not a leap of
+   * faith, and it names the Commit that still has to follow. */
+  const tally = h("span", { class: "muted pool-tally" });
+  const retally = () => {
+    const set = setNow();
+    const n = set?.members.length ?? 0;
+    const rej = set?.rejected?.length ?? 0;
+    tally.replaceChildren(added
+      ? `${n} tile${n === 1 ? "" : "s"} in ${setLabel(setOf())}${rej ? `, ${rej} rejected for it` : ""} — Commit to save`
+      : "Nothing changed yet");
+  };
   const dlg = h("dialog", { class: "promote-modal pool-modal" },
     h("div", { class: "promote-head" },
       h("b", {}, `Add to ${setLabel(setOf())}`),
@@ -4753,7 +4779,10 @@ function openPoolPicker(typeId, setId, onDone) {
         : basePool(typeId).length
           ? "Every candidate for this ground is already in this set."
           : "No textured candidates for this ground yet — the tiles agent publishes them to tiles/base_candidates/. Until then this ground can only draw its clean colour."),
-    h("div", { class: "pool-list" }, ...pool.map(rowFor)));
+    h("div", { class: "pool-list" }, ...pool.map(rowFor)),
+    h("div", { class: "pool-foot" }, tally,
+      h("button", { class: "primary-btn pool-done", type: "button", onclick: close }, "Done")));
+  retally();
   document.body.append(dlg);
   dlg.showModal();
   dlg.addEventListener("close", () => { seen.disconnect(); dlg.remove(); if (added) onDone?.(); });

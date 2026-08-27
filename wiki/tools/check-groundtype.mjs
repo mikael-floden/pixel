@@ -325,6 +325,29 @@ const rejState = await p.evaluate(() => ({
   undo: /undo/.test(document.querySelector(".pool-reject")?.textContent ?? ""),
 }));
 ok(rejState.dimmed === 1 && rejState.undo, "rejecting dims the row in place and offers an undo where the thumb just was");
+/* THE WAY OUT IS BOTTOM-RIGHT AND ALWAYS REACHABLE (maintainer 2026-08-27:
+ * "where should I click for Ok/Close ... You added the Close button at the top
+ * of the dialog and not the bottom right. I have naver seen that UX before").
+ * Asserted with the list scrolled to its END, which is the state that made the
+ * header unreachable in the first place. */
+await p.evaluate(() => { const l = document.querySelector(".pool-list"); l.scrollTop = l.scrollHeight; });
+await p.waitForTimeout(400);
+const foot = await p.evaluate(() => {
+  const dlg = document.querySelector(".pool-modal"), f = document.querySelector(".pool-foot"), d2 = document.querySelector(".pool-done");
+  if (!dlg || !f || !d2) return null;
+  const dr = dlg.getBoundingClientRect(), fr = f.getBoundingClientRect(), br = d2.getBoundingClientRect();
+  return {
+    onScreen: br.top >= 0 && br.bottom <= window.innerHeight + 1,
+    right: Math.abs(br.right - (fr.right - 14)) < 8,
+    bottom: Math.abs(fr.bottom - dr.bottom) < 3,
+    tall: Math.round(br.height),
+    tally: document.querySelector(".pool-tally")?.textContent ?? "",
+  };
+});
+ok(foot && foot.onScreen && foot.right && foot.bottom,
+  `Done sits at the dialog's bottom-right and stays there with the list scrolled to the end (${JSON.stringify(foot && { onScreen: foot.onScreen, right: foot.right, bottom: foot.bottom })})`);
+ok(foot.tall >= 44, `at the 44px tap target this site holds everywhere else (${foot.tall}px)`);
+ok(/Commit to save/.test(foot.tally), `and it says what happened and what is still owed (${foot.tally})`);
 await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
 await p.evaluate(() => document.querySelector(".add-tiles")?.click());
