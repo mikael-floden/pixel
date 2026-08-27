@@ -551,6 +551,37 @@ await p.waitForTimeout(700);
 await p.evaluate(() => document.querySelector(".add-tiles")?.click());
 await p.waitForTimeout(900);
 
+/* A MISCLICK IS RECOVERABLE (maintainer 2026-08-27: "I missclicked and
+ * clicked + Add to Set #1. Now I'm unable to click - Remove from Set #1. All
+ * I can do is cancel everything and start all over"). The add button used to
+ * disable itself on the way in, so one wrong tap could only be undone by
+ * discarding every other decision in the sitting — the reject button had been
+ * given an undo for exactly this reason and this one had not. Nothing here is
+ * saved until Commit, so every verdict in the dialog must be reversible in
+ * place. */
+{
+  const cell = async () => p.evaluate(() => {
+    const c = document.querySelector(".pool-cell");
+    const a = c.querySelector(".pool-add");
+    return { label: a.textContent.trim(), disabled: a.disabled, inSet: c.classList.contains("in-set") };
+  });
+  const members = async () => p.evaluate(() =>
+    (window.__wiki.state.tuning.base_tile_sets.grounds.grass?.sets.find((s) => s.id === 1)?.members ?? [])
+      .filter((m) => m.kind === "tile").length);
+  const m0 = await members();
+  await p.evaluate(() => document.querySelector(".pool-cell .pool-add").click());
+  await p.waitForTimeout(500);
+  const inS = await cell();
+  ok(inS.inSet && !inS.disabled && /tap to remove/.test(inS.label),
+    `after adding, the button stays live and says how to undo (${inS.label})`);
+  ok((await members()) === m0 + 1, "and the member really went in");
+  await p.evaluate(() => document.querySelector(".pool-cell .pool-add").click());
+  await p.waitForTimeout(500);
+  const back = await cell();
+  ok(!back.inSet && /^\+ Add/.test(back.label) && (await members()) === m0,
+    `tapping it again takes the member back out (${back.label}, ${await members()} members)`);
+}
+
 // Adding keeps the audition open — he adds several in one sitting.
 await p.evaluate(() => document.querySelector(".pool-add")?.click());
 await p.waitForTimeout(700);

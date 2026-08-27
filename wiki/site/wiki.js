@@ -5212,12 +5212,31 @@ function openPoolPicker(typeId, setId, onDone) {
      * undoable in place, because a misthumb on a phone must not silently bury
      * a tile until someone edits a JSON file. */
     const rejBtn = h("button", { class: "ghost-btn pool-reject", type: "button", title: `Never offer this top for ${setLabel(setOf())} again — other sets still see it` }, "✕ not for this set");
+    /* ADDING IS A TOGGLE, because a thumb slips (maintainer 2026-08-27: "I
+     * missclicked and clicked + Add to Set #1. Now I'm unable to click -
+     * Remove from Set #1. All I can do is cancel everything and start all
+     * over").
+     *
+     * It used to disable itself on the way in, so one wrong tap could only be
+     * undone by discarding every other decision in the sitting — the reject
+     * button had been given an undo for exactly this reason and the add
+     * button had not. The verdict is not a commitment until Commit, so the
+     * dialog must let it be taken back in place. */
+    const paintAdd = () => {
+      const inSet = !!setNow()?.members.some((m) => m.id === cand.id);
+      addBtn.replaceChildren(inSet ? `✓ in ${setLabel(setOf())} — tap to remove` : `+ Add to ${setLabel(setOf())}`);
+      addBtn.title = inSet
+        ? `Take it back out of ${setLabel(setOf())} — nothing is saved until you Commit`
+        : `Put this top into ${setLabel(setOf())}`;
+      row.classList.toggle("in-set", inSet);
+      rejBtn.disabled = inSet;      // a member is not also a rejection
+    };
     addBtn.onclick = () => {
-      addSetMember(typeId, setId, cand.id);
-      added++;
-      addBtn.disabled = true; rejBtn.disabled = true;
-      addBtn.replaceChildren(`✓ in ${setLabel(setOf())}`);
-      row.classList.add("in-set");
+      const inSet = !!setNow()?.members.some((m) => m.id === cand.id);
+      if (inSet) removeSetMember(typeId, setId, cand.id);
+      else addSetMember(typeId, setId, cand.id);
+      added += inSet ? -1 : 1;
+      paintAdd();
       retally();
     };
     rejBtn.onclick = () => {
@@ -5227,6 +5246,7 @@ function openPoolPicker(typeId, setId, onDone) {
       row.classList.toggle("set-rejected", on);
       addBtn.disabled = on;
       rejBtn.replaceChildren(on ? "↩ undo — offer it again" : "✕ not for this set");
+      if (!on) paintAdd();
       retally();
     };
     const row = h("div", { class: "pool-cell", "data-cand": cand.id },
@@ -5239,6 +5259,7 @@ function openPoolPicker(typeId, setId, onDone) {
         addBtn, rejBtn),
       h("div", { class: "iso-stage checker group-stage pool-stage" },
         h("p", { class: "muted" }, "…")));
+    paintAdd();
     rows.set(cand.id, row);
     seen.observe(row);
     return row;
