@@ -678,6 +678,31 @@ function buildWorld() {
    *
    * Grounds with no ballot are not an error: a ground draws its clean colour
    * until a texture beats it, and lava/water/deep_water probably always will. */
+  /* IS THIS TILE'S TOP ACTUALLY A SURFACE? (dominant share of its top face).
+   *
+   * A base tile is judged ENTIRELY on its top, and most published art has a
+   * deliberately flat one — palette.json flat_top, "a clean flat top is the
+   * default for every material". Measured over the plates: grass and snow and
+   * light_soil come out 100% flat (2.5-2.8 colours), while brown paving is
+   * only 10% flat at 11.8 colours, because paving's postprocess keeps its
+   * texture. So the pool cannot be filtered by ground or by source — only by
+   * what the pixels say. A flat plate offered as a base tile IS the clean
+   * colour, which every set already carries as its clean member. */
+  const TOPFLAT = 0.9;
+  const topDominant = (rel) => {
+    let d = null;
+    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { return 1; }
+    const { w, h, pix } = d;
+    const cols = new Map(); let n = 0;
+    for (let x = 0; x < w; x++) {
+      let top = -1, bot = -1;
+      for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
+      if (top < 0) continue;
+      for (let y = top; y <= bot - 17; y++) { const c = pix[y * w + x] & 0xffffff; cols.set(c, (cols.get(c) ?? 0) + 1); n++; }
+    }
+    if (!n) return 1;
+    return Math.max(...cols.values()) / n;
+  };
   const basePools = {};
   const bcDir = join(ROOT, "tiles", "base_candidates");
   if (isDir(bcDir)) {
@@ -688,6 +713,7 @@ function buildWorld() {
       try { ballot = JSON.parse(readFileSync(idx, "utf8")); } catch { continue; }
       const cands = (ballot?.candidates ?? [])
         .filter((c) => c?.id && c?.file && existsSync(join(ROOT, c.file)))
+        .filter((c) => topDominant(c.file) < TOPFLAT)
         .map((c) => ({ id: c.id, art: c.file, from: c.source_set ?? null }));
       if (cands.length) basePools[ground] = cands;
     }
@@ -741,11 +767,24 @@ function buildWorld() {
         agreement: x.agreement, meanDev: x.roughness?.mean_dev_px ?? null,
         duplicateOf: x.duplicate_of ?? null,
       })),
-      // ground -> its plate key8 list + whether a clean plate exists, so the
-      // client can resolve a set member to a plate without fetching-to-404.
+      /* ground -> its plates, which is also THE POOL a base tile set picks
+       * from: plates/index.json's own `pool.rule` is "ground G's pool is every
+       * approved candidate of every G__over__* cell". Paths are derived, not
+       * shipped (tiles/plates/<g>/<k>.webp, review key tiles/<cell>/<k>) —
+       * 3,685 entries, so spelling them here would cost a third of a megabyte
+       * for strings the client already knows how to write. */
       plates: Object.fromEntries(Object.entries(platesIdx.grounds).map(([g, e]) => [g, {
         clean: e.clean?.file ? `tiles/plates/${g}/clean.webp` : null,
         keys: Object.values(e.plates ?? {}).flat(),
+        // [key8, cell] per plate, so a pool row can name its provenance and
+        // resolve to the review key the tiles agent asks members to carry.
+        // Only plates whose top is a real surface — see topDominant. The count
+        // that did not make it is published so the picker can say so rather
+        // than look short.
+        pool: Object.entries(e.plates ?? {}).flatMap(([cell, ks]) => ks.map((k) => [k, cell]))
+          .filter(([k]) => topDominant(`tiles/plates/${g}/${k}.webp`) < TOPFLAT),
+        flatOut: Object.values(e.plates ?? {}).flat()
+          .filter((k) => topDominant(`tiles/plates/${g}/${k}.webp`) >= TOPFLAT).length,
       }])),
     };
   }

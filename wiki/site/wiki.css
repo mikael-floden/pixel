@@ -496,7 +496,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   background: transparent; color: var(--ink);
   border: 1px solid var(--border); border-radius: 9px; padding: 6px 12px;
 }
-.ghost-btn:hover { background: var(--surface-2); }
+.ghost-btn:hover:not(:disabled) { background: var(--surface-2); }
+/* A DEAD GHOST BUTTON MUST LOOK DEAD. It had no disabled styling at all, so
+   "+ Add tiles…" on a ground with no textured candidates was pixel-identical
+   to a working one — the maintainer pressed it twice and reported the page
+   broken, correctly (2026-08-27). Only .shadow-bar had ever dimmed its own. */
+.ghost-btn:disabled { opacity: 0.45; cursor: default; }
 /* A hero now has more animation states than fit one drawer-width row
    (maintainer 2026-08-05: keep this layout, let the finger scroll). The seg
    LOOKS identical — no scrollbar, same border, same pills — but pans

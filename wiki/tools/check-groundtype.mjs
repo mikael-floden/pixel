@@ -276,8 +276,31 @@ const pool = await p.evaluate(() => {
   };
 });
 ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ballot (${pool.cells} candidates)`);
-ok(pool.srcs.every((s) => /base_candidates/.test(s)),
-  "sourced from tiles/base_candidates, never from the x-over-y tiles whose tops are deliberately flat");
+/* SOURCED FROM TEXTURED ART, whatever directory it lives in. The pool was the
+ * ballot alone until 2026-08-27, which exists for five grounds — the other ten
+ * had a disabled "+ Add tiles…" that did nothing when pressed. It is the
+ * plates roster now (plates/index.json's own pool.rule) plus the ballot, minus
+ * every tile whose top is >=90% one tone. That filter is the point: measured,
+ * grass plates are 100% flat and paving plates only 10%, so a filter by ground
+ * or by directory would be wrong in both directions. A flat tile offered as a
+ * base tile IS the clean colour, which every set already carries. */
+ok(pool.srcs.every((s) => /base_candidates|\/plates\//.test(s)),
+  `sourced from published tile art (${pool.srcs.map((s) => s.split("/").slice(-2, -1)[0]).join(", ")})`);
+{
+  const flat = await p.evaluate(() => {
+    const cv = document.querySelector(".pool-stage canvas");
+    if (!cv) return null;
+    try {
+      const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+      const c = new Map();
+      for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; c.set(k, (c.get(k) ?? 0) + 1); }
+      const n = [...c.values()].reduce((a, b2) => a + b2, 0);
+      return { colours: c.size, dominant: Math.max(...c.values()) / n };
+    } catch { return null; }
+  });
+  ok(flat && flat.colours > 6 && flat.dominant < 0.9,
+    `and every candidate offered has a top worth judging (${flat?.colours} colours, commonest ${(100 * (flat?.dominant ?? 1)).toFixed(0)}%)`);
+}
 // A 7x7 at 1:1 is 13 lattice steps + a tile wide = 448px + padding. Anything
 // materially narrower is not the field he specified.
 ok(pool.field && pool.field.w > 440 && pool.built >= 1 && pool.built < pool.cells,

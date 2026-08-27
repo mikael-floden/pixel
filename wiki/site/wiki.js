@@ -4369,9 +4369,33 @@ const SETS_KEY = "tuning/base_tile_sets";
 const CLEAN_SET = 0;
 const setsDoc = () => state.tuning.base_tile_sets
   ?? (state.tuning.base_tile_sets = { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} });
-/** Every candidate this ground's sets may draw from (worldMeta.basePools) —
- *  the textured ballot, 356 tiles across five grounds. */
-const basePool = (typeId) => (worldMeta().basePools ?? {})[typeId] ?? [];
+/* EVERY CANDIDATE THIS GROUND'S SETS MAY DRAW FROM — its PLATES first, then
+ * the textured ballot.
+ *
+ * The ballot alone was the pool until 2026-08-27, and it exists for only five
+ * grounds: on the other ten "+ Add tiles…" rendered disabled and did nothing
+ * when pressed, which is exactly what the maintainer hit on Brown Paving
+ * Stone. The tiles agent's plates/index.json states the real rule — "ground
+ * G's pool is every approved candidate of every G__over__* cell" — and ships
+ * it for all fifteen: 210 for paving where the ballot had none.
+ *
+ * A plate is also the better preview: it is the ground's own approved art
+ * already conformed to transition geometry with the ground's OWN wall, so a
+ * field of plates is literally what the game will draw. Its id is the review
+ * key the tiles agent asks set members to carry, which resolves to the plate
+ * by pure string with no lookup.
+ *
+ * The ballot stays, appended: its tiles are the pure corners of generated
+ * transition sets — a different source, not duplicates — and they are the
+ * grass he called insanely good. Nothing that was pickable stops being
+ * pickable. */
+function basePool(typeId) {
+  const plates = patternLib()?.plates[typeId]?.pool ?? [];
+  return [
+    ...plates.map(([k, cell]) => ({ id: `tiles/${cell}/${k}`, art: `tiles/plates/${typeId}/${k}.webp`, from: cell })),
+    ...((worldMeta().basePools ?? {})[typeId] ?? []),
+  ];
+}
 /* A MEMBER MAY COME FROM EITHER POOL. The ballot is the right one to pick from
  * and the one the picker offers — but he can also promote a tile straight from
  * an x-over-y review card, and that decision predates this model and should
@@ -4422,6 +4446,21 @@ function groundSets(typeId) {
 }
 /** "Clean #0", "Set #1", "Meadow #2" — the number is the identity he reads. */
 const setLabel = (s) => `${s.name} #${s.id}`;
+/* WHAT A MEMBER IS, in words. Raw ids read as machine noise on a phone —
+ * "tiles/brown_paving_stone__over__black_rock/3fd89e73" tells him nothing he
+ * wants at a glance. What identifies a base tile to him is the WALL it was
+ * generated over (that is what makes two tops of one ground differ) and a
+ * short handle to tell twins apart. */
+function memberLabel(typeId, id) {
+  const rk = /^tiles\/([^/]+)__over__([^/]+)\/([0-9a-f]{8})$/.exec(id ?? "");
+  if (rk) return `over ${typeLabelWorld(rk[2]).toLowerCase()} · ${rk[3]}`;
+  const bal = /^(.+)__to__(.+)__(a\d+_s\d+)$/.exec(id ?? "");
+  if (bal) {
+    const other = bal[1] === typeId ? bal[2] : bal[1];
+    return `edge with ${typeLabelWorld(other).toLowerCase()} · ${bal[3]}`;
+  }
+  return String(id ?? "");
+}
 /** Every set of this ground that holds this candidate. A tile may sit in more
  *  than one — the same grass can belong to both a meadow and a lawn. */
 const setsWith = (typeId, id) => groundSets(typeId).filter((x) => x.members.some((m) => m.id === id));
@@ -4630,7 +4669,7 @@ function openPoolPicker(typeId, setId, onDone) {
     const row = h("div", { class: "pool-cell", "data-cand": cand.id },
       h("div", { class: "pool-head" },
         h("img", { class: "pool-tile", src: assetUrl(cand.art), alt: cand.id, loading: "lazy" }),
-        h("span", { class: "pool-name" }, cand.from ? `from ${cand.from.split("/").slice(-2).join(" ")}` : cand.id),
+        h("span", { class: "pool-name", title: cand.id }, memberLabel(typeId, cand.id)),
         addBtn),
       h("div", { class: "iso-stage checker group-stage pool-stage" },
         h("p", { class: "muted" }, "…")));
@@ -6235,6 +6274,7 @@ function viewWorldType(top) {
     const sets = groundSets(t.id);
     const setShares = shareOf(sets.map((s) => s.weight));
     const pool = basePool(t.id);
+    const flatOut = patternLib()?.plates[t.id]?.flatOut ?? 0;
     const setPanel = (s, share) => {
       const okey = `${t.id}/${s.id}`;
       const origin = setOrigins.get(okey) ?? [0, 0];
@@ -6270,7 +6310,8 @@ function viewWorldType(top) {
             ? h("span", { class: "swatch ground-swatch", title: "The ground's flat palette colour", style: `background:${groundBaseColor(t.id)?.c ?? "transparent"}` })
             : m.art ? h("img", { class: "set-row-tile", src: assetUrl(m.art), alt: m.id, loading: "lazy" })
               : h("span", { class: "swatch ground-swatch" }),
-          h("span", { class: "set-row-name" }, m.clean ? "Clean colour" : m.gone ? `${m.id} — art is gone` : m.id.replace(/__/g, " ")),
+          h("span", { class: "set-row-name", title: m.clean ? null : m.id },
+            m.clean ? "Clean colour" : m.gone ? `${memberLabel(t.id, m.id)} — art is gone` : memberLabel(t.id, m.id)),
           h("span", { class: "pill", title: "How much of this set's ground this row paints" }, sharePct(mShares[i])),
           state.admin && !(m.clean && s.id === CLEAN_SET) ? weightBox(m.weight,
             m.clean ? "How often this set paints the plain colour instead of a tile. 0 always draws with texture; make it the only weight and the set is all clean."
@@ -6283,16 +6324,21 @@ function viewWorldType(top) {
         // SET 0 CANNOT HOLD A TILE, by his rule — it "can only contain 100% the
         // clean/plain base color". The button is absent rather than disabled:
         // a control that exists but never works is a worse answer than none.
+        /* THE BUTTON SAYS WHY IT IS DEAD. A ground whose every published tile
+         * has a flat top has nothing to offer a set — that is a fact about the
+         * art, not a fault, and the label carries it rather than leaving him
+         * pressing a control that cannot answer. */
         state.admin && s.id !== CLEAN_SET ? h("button", {
           class: "ghost-btn add-tiles", ...(pool.length ? {} : { disabled: "disabled" }),
           title: pool.length ? `Pick from the ${pool.length} textured candidates for this ground`
-            : "No textured candidates published for this ground yet",
+            : `Every published tile of this ground has a flat top, so there is nothing to add that the clean colour is not already${flatOut ? ` (${flatOut} checked)` : ""}. It draws its clean colour until the tiles agent publishes a texture.`,
           onclick: pool.length ? () => openPoolPicker(t.id, s.id, () => { keepScrollY = window.scrollY; route(); }) : null,
-        }, "+ Add tiles…") : null);
+        }, pool.length ? "+ Add tiles…" : "+ Add tiles — none textured yet") : null);
     };
     return h("div", {},
       h("p", { class: "muted" },
-        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} textured candidate${pool.length === 1 ? "" : "s"} to build them from. ` +
+        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} textured candidate${pool.length === 1 ? "" : "s"} to build them from` +
+        (flatOut ? ` (${flatOut} more have a flat top, which the clean colour already is)` : "") + ". " +
         "A set is a group of tiles that look good together; the world picks ONE set for an area and stays with it, then varies inside it."),
       ...sets.map((s, i) => setPanel(s, setShares[i])),
       state.admin ? h("button", {
