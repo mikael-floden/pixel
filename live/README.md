@@ -145,6 +145,14 @@ The laws around the flow:
   - `overrides["scenery/<category>/<piece>"] = { boxes: [{ax, ay, rx, ry,
     rot}], updated_at }`. `rot` is degrees, 0–179 (an ellipse is symmetric
     under a half turn).
+  - **Stored in SCREEN space, unlike a monster's.** A monster's `rx`/`ry` are
+    ground-space, tuned facing south, and the game unsquashes, rotates and
+    re-squashes them per facing. Scenery never turns, and the Game Master fits
+    the ellipse to the art by eye — so what he draws is what is stored. A
+    consumer wanting the **ground** footprint divides `ry` by the iso ratio
+    (`dy/dx`, 15/32 today); the editor's default starts at a ground circle for
+    exactly that reason. Named explicitly because a space nobody writes down
+    is what two agents each assume differently and neither finds out.
   - **Several are normal** — *"the Scenery might have two collisions and not
     just one … an entrance with two pillars touching the ground"*.
   - **Three states, and the difference matters.** No entry = nobody has

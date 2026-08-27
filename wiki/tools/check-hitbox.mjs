@@ -69,7 +69,16 @@ const bb = Object.values(PIECE.animations)[0]?.dirs?.south?.bb;
 const box0 = open.probe.boxes[0];
 ok(bb && Math.abs(box0.rx * 2 - (bb[2] - bb[0])) < 2,
   `its first ellipse starts as wide as the art's own content box (${(box0.rx * 2).toFixed(1)} vs ${bb ? bb[2] - bb[0] : "?"} px)`);
-ok(box0.ry < box0.rx, `and squashed by the ground's own foreshortening, not a circle (${box0.rx.toFixed(1)} x ${box0.ry.toFixed(1)})`);
+/* SQUASHED BY THE GAME'S OWN LATTICE, not by a number restated here. The
+ * first cut hard-coded 14/32 from the tiles 3.0 pitch while the game ships
+ * dy=15 — every default would have been 7% too shallow and he would have
+ * corrected the same error on all 739 pieces. Asserted against data.json's
+ * own iso block, so the day ISO_DY becomes 14 this follows instead of
+ * failing. */
+const K = (D.iso?.dy ?? 15) / (D.iso?.dx ?? 32);
+ok(Math.abs(box0.ry - box0.rx * K) < 0.6,
+  `and squashed by the GAME's own foreshortening (${box0.rx.toFixed(1)} x ${box0.ry.toFixed(1)}, iso ${D.iso?.dx}/${D.iso?.dy} = ${K.toFixed(4)})`);
+ok(box0.ry < box0.rx, "which is an ellipse on screen, never a circle");
 
 // ---- 3. the pad moves it, through the real gain curve ---------------------
 await p.evaluate(() => document.querySelector(".hit-bar .shadow-pad")?.scrollIntoView({ block: "center" }));

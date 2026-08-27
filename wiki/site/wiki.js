@@ -800,6 +800,16 @@ function shadowDefault(entity) {
  * game resolves are one number. Per PIECE, not per direction: 679 of 739 are
  * south-only and the footprint is the ground it stands on, which does not turn
  * with the art.
+ *
+ * STORED IN SCREEN SPACE, WHICH IS NOT WHERE A MONSTER'S IS. A monster's
+ * rx/ry are ground-space, tuned facing south, and the game unsquashes,
+ * rotates and re-squashes them per facing (shadowEllipse / shadowScreenEllipse
+ * in games2/shared). Scenery never turns, so there is nothing to rotate
+ * through — and he is fitting the ellipse to the art with his eye, so what he
+ * draws must be what is stored. A consumer wanting the GROUND footprint
+ * divides ry by isoK(); the default starts at a ground circle for that reason.
+ * Written down because a space nobody names is the kind of thing two agents
+ * each assume differently and neither finds out.
  */
 const HITBOX_KEY = "tuning/scenery_hitbox";
 const hitboxDoc = () => state.tuning.scenery_hitbox
@@ -837,15 +847,17 @@ function hitboxDefault(entity, bb, fw, fh) {
     // two of contact shadow or grass the piece is standing IN, not ON.
     ay: +(foot - H / 2 - Math.max(1, w * 0.06)).toFixed(2),
     rx: +(w / 2).toFixed(2),
-    ry: +Math.max(3, (w / 2) * ISO_SQUASH).toFixed(2),
+    ry: +Math.max(3, (w / 2) * isoK()).toFixed(2),
     rot: 0,
   };
 }
-/* THE GROUND IS SEEN AT AN ANGLE, so a circle on it is an ellipse on screen.
- * The tiles' own lattice is the authority: a 64-wide tile steps 32 across and
- * 14 down, so a ground circle is squashed to 14/32. Written once here because
- * a default that guesses this is a default he has to fix on every piece. */
-const ISO_SQUASH = 14 / 32;
+/* THE GROUND IS SEEN AT AN ANGLE, so a circle on it is an ellipse on screen —
+ * and the squash comes from THE GAME'S OWN LATTICE, isoK(), the same function
+ * the monster shadow uses. I first wrote 14/32 here from the tiles 3.0 pitch;
+ * the game ships dy=15, so every default would have been 7% too shallow and he
+ * would have corrected the same error on 739 pieces. Scenery is placed and
+ * drawn by the GAME, so the game's number is the right one, and reading it
+ * rather than restating it means the day ISO_DY becomes 14 this follows. */
 
 /** Write one piece's boxes. [] is a real answer — "this needs none". */
 function setHitboxes(entity, boxes) {
