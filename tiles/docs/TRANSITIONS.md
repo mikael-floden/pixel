@@ -150,3 +150,41 @@ grass tile — hundreds on the account, free to harvest.
 
 Composition is `transition_render.compose_transition()`; the lab builds with it via
 `tiles/lab/build_pairs.py`.
+
+## The OTHER transition: blend tiles (`tiles/blends/`)
+
+A boundary is not the only way one ground becomes another. **Blend tiles** are top-only
+art that is mostly ground A with ground B creeping in, and they carry no boundary at
+all: a field drifts through them *before* any Wang edge is drawn, so the change is
+already under way by the time the edge arrives. (Maintainer, 2026-08-27: *"to start ease
+in a change in base tile change long before the base tile change is enforced… a gradual
+change towards the new ground."*)
+
+They are the second section of the game's Transitions surface, not a variant of the
+first: `tiles/patterns/` answers *where exactly* grass stops and lava starts; blends
+answer *this is still grass, but lava is coming*.
+
+- **`<dominant>__with__<minor>/p<NN>/`**, NN = percent of the MINOR ground.
+  `schema tiles3/blends@1`, `kind blend_top_only`, `use_for "transition"`,
+  `wall_is_meaningless true`. Nothing in the tree contains `__over__` — by construction,
+  so a blend can never be addressed or rendered as an x-over-y cell.
+- **Each ground generates only where it dominates**, p10–p50. The rest of the ladder is
+  the other ground's own entry read backwards: *80% grass / 20% lava* IS
+  `grass__with__lava/p20`; *20% grass / 80% lava* IS `lava__with__grass/p20`. So a pair
+  needs nine distinct mixes, both grounds own five, and 50/50 exists twice as two
+  independent takes. 15 grounds ⇒ 1,050 sheets ⇒ $100.80 at $0.096/sheet.
+- **The percentage is spoken, not numbered.** A generative model does not measure area,
+  so `10%` in a prompt buys nothing; the ladder is worded by how much of B you would
+  notice ("a few small spots" → "mixed evenly") and the number survives in the path.
+- **Label by the measured mix, never the ordered one.** `blends_post.py` publishes
+  `measured_tiles[]` — index-aligned with `tiles[]`/`post_files[]`, the mix actually
+  present per tile by nearest-clean-colour area. Measured: an ordered p10 sheet produced
+  16 takes ranging **0%–20%** minor. The order is an intent; only the measurement is a
+  fact, and the audition sorts by it.
+- **Only the dominant portion is aligned.** Top pixels split by nearest clean colour and
+  the trimmed median is taken over the A-side alone, then the whole tile moves by that
+  one delta. So the A-portion lands exactly on A's clean colour and a p10 tile drops into
+  a plain A field with no border, while B rides along keeping its contrast. (Not the
+  whole-top median — at p50 that lands between the grounds and drags the tile off BOTH
+  palettes. Not per-side snapping — that flattens the drift into two flat colours, which
+  is the very thing the ladder exists to avoid.)
