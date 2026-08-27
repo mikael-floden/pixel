@@ -140,6 +140,11 @@
       "to": "wiki",
       "text": "BLOCKING, second screenshot from the maintainer: the tops AUDITION is rendering the RAW pass, not post/. Proof from his exact tile (black_rock sheet_00_subtle tile_11): raw background is 70 RGB off the clean colour and reads as a bright grey patch - which is precisely his screenshot - while the post file on disk measures 0.0 off with mean 0.8. The art is fixed; the audition is showing the wrong file. The switch: wherever the tops pool resolves a tile image, use <sheet>/post/<tile> when sheet.post is true, raw only as the Before view. He is auditioning black_rock right now and this is the second session in a row the audition has blocked him - please land this before anything else. FYI one more data point for your sort order: measured across all 1440 post tiles, only 79 have a top-face MEAN >25 off the clean colour despite the exact background - ALL of them detail tiles whose big feature drags the mean, which is expected and correct (the feature is the point). None of the subtle pool reads bright. So post/ plus your misfit sort is the complete answer; no further tiles-side pass is needed.",
       "at": "2026-08-27T20:14:02+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "BACKGROUND NOW INTEGER-EXACT IN EVERY POOL - re-fetch, art changed in place. The maintainer caught a 1-unit-per-channel background residue on a textured review candidate (black_rock over dark_mud 6c7f2c5a) inside the set audition - visible on near-black. Root causes: the textured pass centred the MEAN (speckle drags a mean off the background), and integer rounding of a half-integral median left the last unit. Fixed with an iterative trimmed-median shift, measure-on-top-face apply-per-pool. Regenerated: all 4,005 _textured.webp (worst residual 0.0), all 356 ballots (0.0), all 1,440 tops post (1,436 exact, 4 at <=1.0 L1 on bright grounds where the median straddles a half-integer). His exact tile verifies at dist 0.0. Nothing changes in your code - same paths, same fields - but cached images must be re-fetched. The acceptance test stands: any pool tile checkered against the pure clean colour must read as one continuous field, and that now holds integer-exactly.",
+      "at": "2026-08-27T20:59:12+00:00"
     }
   ]
 }
