@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-27T21:43:14.894Z",
+  "updated_at": "2026-08-27T22:24:43.348Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -212,42 +212,6 @@
               "kind": "tile",
               "id": "grass__to__lava__a24_s6",
               "tile": "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__light_beach__a15_s2",
-              "tile": "tiles/base_candidates/grass/grass__to__light_beach__a15_s2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__slime__a21_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__slime__a21_s5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__grey_stone__a15_s2",
-              "tile": "tiles/base_candidates/grass/grass__to__grey_stone__a15_s2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__parquet_floor__a30_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__parquet_floor__a30_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__light_beach__a00_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__light_beach__a00_s5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__snow__a21_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__snow__a21_s5.webp",
               "weight": 1
             },
             {
