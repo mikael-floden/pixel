@@ -160,7 +160,13 @@ def align(img, clean_a, clean_b):
         np.clip(rgb, 0, 255, out=rgb)
     np.rint(rgb, out=rgb)
     TP.rim_suppress(rgb, top, clean_a)
-    moved_b = float(np.abs(rgb - before)[b_side].max()) if b_side.any() else 0.0
+    # The 95th percentile, not the max: the ramp is 3px wide, so a handful of pixels
+    # right at the turnover always carry most of the delta. Measured on grass/light_beach
+    # the max read 254/255 while the art is correct - sand stays sand - because that max
+    # was one ramp pixel. p95 tracks whether the MINOR GROUND as a whole is being dragged,
+    # which is the thing that would show.
+    moved_b = (float(np.percentile(np.abs(rgb - before)[b_side], 95))
+               if b_side.any() else 0.0)
     out = arr.copy()
     out[..., :3] = np.clip(rgb, 0, 255).astype(int)
     return Image.fromarray(out.astype(np.uint8), "RGBA"), frac, how, moved_b
