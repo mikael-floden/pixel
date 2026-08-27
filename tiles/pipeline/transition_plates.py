@@ -395,6 +395,12 @@ def index_doc(built, cand, unresolved, generated_at, sizes):
             "rule": "tiles/<top>__over__<side>/<key8>  ->  <top>/<key8>.webp",
             "clean": "<ground>/clean.webp",
             "root": "tiles/plates/",
+            "ballot": "an id NOT matching ^tiles/[^/]+/[0-9a-f]{8}$ is a BALLOT id: use "
+                      "tiles/base_candidates/<ground>/<id>.webp AS the plate directly. "
+                      "Blessed after the wiki agent verified every ballot file's alpha is "
+                      "byte-identical to the library silhouette - they are this domain's "
+                      "own post-pass tiles, already in plate geometry. Two resolves, one "
+                      "regex between them.",
             "_comment": "A PURE STRING FUNCTION OF THE REVIEW KEY - no lookup table, so "
                         "nothing can go stale between this domain and a consumer. The "
                         "ground is the cell up to '__over__'; the file name is the key's "

@@ -777,6 +777,10 @@ def index_doc(patterns, sil, generated_at):
             "tone": BORDER_TONE, "overlay_alpha": BORDER_ALPHA, "overlay_rgb": [0, 0, 0],
             "covers": ["top_face", "wall"],
             "empty_on": [0, 15],
+            "symmetric_under_flip": True,
+            "_symmetry": "border frame i == border frame 15-i, byte-identical - measured "
+                         "0 of 423,936 px differing (wiki agent, all 18 patterns). A "
+                         "consumer that flips the MASK frame does not flip the border.",
             "_comment": [
                 "THE SEAM, 1px on each side, and it is NOT optional - a transition without",
                 "it is a 0-100 hard cut, which is not what the generator drew.",
@@ -814,6 +818,14 @@ def index_doc(patterns, sil, generated_at):
                  "globalAlpha": BORDER_ALPHA,
                  "note": "the seam - black at this alpha over the border mask is exactly "
                          "multiply by border.tone, so each side darkens in its own colour"},
+                {"op": "_caveat",
+                 "note": "the drawImage path is an APPROXIMATION good to 2/255: canvas "
+                         "composites premultiplied in 8 bits, so seam pixels land up to 2 "
+                         "per channel from the reference's rint(v * tone) - every one "
+                         "still darkens, none lightens (wiki agent, measured over four "
+                         "pairs). Bit-exact consumers apply the seam per pixel with "
+                         "HALF-TO-EVEN rounding: np.rint, which is NOT JS Math.round - "
+                         "channel values 25/75/125/175/225 at tone 0.82 discriminate."},
             ],
             "_comment": [
                 "THE MASK IS WHITE-ON-TRANSPARENT, so 'source-in' after drawing it keeps",
