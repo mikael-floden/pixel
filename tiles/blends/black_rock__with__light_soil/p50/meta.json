@@ -1,0 +1,40 @@
+{
+ "schema": "tiles3/blends@1",
+ "kind": "blend_top_only",
+ "wall_is_meaningless": true,
+ "use_for": "transition",
+ "dominant": "black_rock",
+ "minor": "light_soil",
+ "pct_minor": 50,
+ "prompt": "black rock and light soil mixed evenly",
+ "seed": 89675,
+ "tile_id": "c8fcdb97-9caa-4be9-a4d0-4fdf875333a8",
+ "settings": {
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "view_angle": 28.0,
+  "depth_ratio": 0.5,
+  "tile_type": "isometric",
+  "flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "n_tiles": 16,
+ "tiles": [
+  "tile_00.webp",
+  "tile_01.webp",
+  "tile_02.webp",
+  "tile_03.webp",
+  "tile_04.webp",
+  "tile_05.webp",
+  "tile_06.webp",
+  "tile_07.webp",
+  "tile_08.webp",
+  "tile_09.webp",
+  "tile_10.webp",
+  "tile_11.webp",
+  "tile_12.webp",
+  "tile_13.webp",
+  "tile_14.webp",
+  "tile_15.webp"
+ ]
+}
