@@ -4619,6 +4619,27 @@ const SURFACE_LABEL = {
   flat: { text: "clean colour for now", cls: "warn", title: "Painted as a clean flat colour until a texture beats it — the maintainer's declared stopgap, not the goal." },
 };
 const transitionsOf = (typeId) => (worldMeta().transitions ?? []).filter((t) => t.a === typeId || t.b === typeId);
+/* EVERY NEIGHBOUR, not just the generated ones (maintainer 2026-08-25,
+ * clicking Black Rock -> Transitions and finding nothing: "I expected to
+ * see/find transitions for all tiles VS all tiles"). With the pattern library
+ * a transition needs no pregenerated art, so the tab lists every other ground;
+ * a pair that also has generated sets keeps them, and is the only place Raw
+ * exists. Without the library (data too old) it degrades to the generated
+ * list rather than to a page of dead cards. */
+function allTransitionsOf(typeId) {
+  if (!patternLib()) return transitionsOf(typeId);
+  const gen = worldMeta().transitions ?? [];
+  /* THE PLATES INDEX IS THE ROSTER, not the config vocabulary: the config
+   * still says paving_stone while the palette, the plates and his sets split
+   * it into brown/grey — a transition composes for exactly the grounds that
+   * have plates, so that list is the honest one (15 today, 14 neighbours). */
+  return Object.keys(patternLib().plates)
+    .filter((id) => id !== typeId)
+    .map((other) => {
+      const g = gen.find((x) => (x.a === typeId && x.b === other) || (x.a === other && x.b === typeId));
+      return g ? { ...g, generated: true } : { a: typeId, b: other, sets: [], generated: false };
+    });
+}
 /* ---- GROUND DETAILS — the fourth tab, and the second review axis ----
  * Maintainer 2026-08-21: "There are a LOT of tiles that look AMAZING if you
  * not show them to often! ... Tiles here will NEVER EVER show the wall side.
@@ -4930,7 +4951,7 @@ const viewArt = (cand) => viewArtIn(worldView(), cand);
  *  isoScene composition. */
 function artNodeFor(path, cls, alt) {
   const p = String(path ?? "");
-  const virt = p.startsWith("tex:") ? "tex" : p.startsWith("sub:") ? "sub" : null;
+  const virt = p.startsWith("tex:") ? "tex" : p.startsWith("sub:") ? "sub" : p.startsWith("mix:") ? "mix" : null;
   if (!virt) return h("img", { class: cls, src: assetUrl(path), alt });
   const cv = h("canvas", { class: cls, width: 64, height: 46, "aria-label": alt });
   const [a, b] = p.slice(4).split("::");
@@ -4949,6 +4970,14 @@ function artNodeFor(path, cls, alt) {
     im.src = assetUrl(a);
   };
   const take = (c) => { if (c) paint(c, c.width, c.height); else fall(); };
+  if (virt === "mix") {
+    const [row, idx, pa, pb] = p.slice(4).split("|");
+    mixFor(+row, +idx, pa, pb, (c) => {
+      if (c) paint(c, c.width, c.height);
+      else { const im = new Image(); im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); }; im.src = assetUrl(pa); }
+    });
+    return cv;
+  }
   if (virt === "tex") texFor(a, b, take); else subFor(a, b, take);
   return cv;
 }
@@ -5019,6 +5048,128 @@ function detailField(centerArt, surround, seed, scale = 1, pass = null) {
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
  *  metadata only). `post` picks the retextured pass once the tiles agent
  *  publishes it. */
+/* ---- COMPOSED TRANSITIONS: two plates and a mask -------------------------
+ * Maintainer 2026-08-25: "By studying how this is done we can without
+ * generating more transition tiles get transition tiles for everything
+ * automatically by using the formula and inserting the base tile from tile
+ * type A on one side and base tile from tile type B on the other side."
+ *
+ * The tiles agent measured his hypothesis and it held: the 284 pregenerated
+ * sets collapse to 18 (roughness, seed) patterns whose boundary is material-
+ * independent (95% pixel agreement across ~17 pairs each). tiles/patterns/
+ * publishes those 18 boundaries as one mask sheet; tiles/plates/ publishes
+ * every approved ground conformed into 64x46 plates whose alpha is
+ * byte-identical to the shared silhouette. Composition is therefore exactly
+ * the three canvas ops published in patterns/index.json — draw mask, draw
+ * plate_b through source-in, fill the rest from plate_a with destination-over
+ * — with no geometry knowledge here at all.
+ *
+ * WHAT THE PASS SWITCH MEANS HERE: Clean #0 fills each side with that
+ * ground's clean plate; Set #N fills each side from that ground's OWN set N,
+ * picked per cell with the same hash the game uses. Raw stays what it always
+ * was — the generator's own pregenerated tiles — and exists only for the 26
+ * pairs that were ever generated.
+ *
+ * WHAT COMPOSITION HONESTLY CANNOT DO (patterns/index.json `reproduces`): it
+ * reproduces the boundary SHAPE, not the generator's shading along the seam —
+ * no grass blades leaning over a road edge. That is the declared cost of
+ * transitions-for-every-pair, and the pregenerated art stays reachable under
+ * Raw so he can compare and rule.
+ */
+const patternLib = () => worldMeta().patternLib ?? null;
+const patternOf = (id) => patternLib()?.patterns.find((x) => x.id === id) ?? null;
+/* side_b is whichever ground appears LATER in the library's side_order
+ * (wettest to built) — a total order, so two consumers never disagree about
+ * which way a boundary fades and a 3-way vertex has a defined answer. */
+function transSides(a, b) {
+  const ord = patternLib()?.sideOrder ?? [];
+  const ia = ord.indexOf(a), ib = ord.indexOf(b);
+  return (ib > ia) ? { sideA: a, sideB: b } : { sideA: b, sideB: a };
+}
+/* THE PLATE A SET MEMBER COMPOSES WITH. Two member kinds, two resolutions:
+ * a review key (tiles/<cell>/<key8>) maps to tiles/plates/<top>/<key8>.webp by
+ * pure string — the tiles agent's published rule, backed by the key list in
+ * patternLib so a rejected key degrades to clean instead of a 404. A ballot id
+ * (<pair>__<variant>) IS transition geometry already: its file is the pure
+ * corner tile of a generated set, and its alpha was verified byte-identical to
+ * the library silhouette, so it serves as its own plate. */
+function memberPlate(typeId, m) {
+  const lib = patternLib();
+  if (!lib) return null;
+  const ground = lib.plates[typeId];
+  if (!m || m.kind === "clean" || m.clean) return ground?.clean ?? null;
+  const rk = /^tiles\/[^/]+\/([0-9a-f]{8})$/.exec(m.id ?? "");
+  if (rk) return ground?.keys.includes(rk[1]) ? `tiles/plates/${typeId}/${rk[1]}.webp` : (ground?.clean ?? null);
+  return basePool(typeId).find((c) => c.id === m.id)?.art ?? ground?.clean ?? null;
+}
+/** Which plate fills cell (x,y) of this ground under the current pass. */
+function platePickAt(typeId, x, y) {
+  const lib = patternLib();
+  if (!lib) return null;
+  const clean = lib.plates[typeId]?.clean ?? null;
+  const set = passSet(typeId, worldViewFor(typeId));
+  if (!set) return clean;
+  const rows = [{ kind: "clean", weight: set.clean }, ...set.members];
+  const i = pickWeighted(rows.map((m) => (m.kind === "clean" ? m.weight : (m.art ? m.weight : 0))), unitHash(`bts1|tile|${set.id}|${x}|${y}`));
+  return i < 0 ? clean : memberPlate(typeId, rows[i]);
+}
+/* The mask sheet, fetched once; frames cut on demand. crossOrigin for the same
+ * reason as texFor — the sheet lives on the staging origin, and a gate must be
+ * able to read the composed pixels back. */
+let MASK_SHEET = null;               // undefined-ish: null = not asked, false = loading
+const MASK_WAIT = [];
+function maskSheet(cb) {
+  if (MASK_SHEET) { cb(MASK_SHEET); return; }
+  MASK_WAIT.push(cb);
+  if (MASK_SHEET === false) return;
+  MASK_SHEET = false;
+  const im = new Image();
+  im.crossOrigin = "anonymous";
+  im.onload = im.onerror = () => {
+    MASK_SHEET = im.naturalWidth ? im : null;
+    const q = MASK_WAIT.splice(0);
+    if (MASK_SHEET) q.forEach((f) => f(MASK_SHEET));
+  };
+  im.src = assetUrl(patternLib()?.masks ?? "tiles/patterns/masks.webp");
+}
+/* One composed transition tile: mask frame (row, idx) + plate_a + plate_b,
+ * through the library's published canvas ops. The result's alpha is the
+ * silhouette because both plates already carry it and the mask is a subset. */
+const MIX_CACHE = new Map();          // "row|idx|a|b" -> HTMLCanvasElement | null
+function mixFor(row, idx, plateA, plateB, cb) {
+  const key = `${row}|${idx}|${plateA}|${plateB}`;
+  if (MIX_CACHE.has(key)) { cb(MIX_CACHE.get(key)); return; }
+  const lib = patternLib();
+  let a = null, b = null, sheet = null, left = 3;
+  const done = () => {
+    if (--left > 0) return;
+    let cv = null;
+    if (a && b && sheet && lib) {
+      cv = document.createElement("canvas");
+      cv.width = lib.frameW; cv.height = lib.frameH;
+      const cx = cv.getContext("2d");
+      cx.imageSmoothingEnabled = false;
+      cx.drawImage(sheet, idx * lib.frameW, row * lib.frameH, lib.frameW, lib.frameH, 0, 0, lib.frameW, lib.frameH);
+      cx.globalCompositeOperation = "source-in";
+      cx.drawImage(b, 0, 0);
+      cx.globalCompositeOperation = "destination-over";
+      cx.drawImage(a, 0, 0);
+      cx.globalCompositeOperation = "source-over";
+    }
+    MIX_CACHE.set(key, cv);
+    window.__wikiMix = (window.__wikiMix ?? 0) + 1;   // gate probe
+    cb(cv);
+  };
+  const mk = (path, set) => {
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
+    im.src = assetUrl(path);
+  };
+  maskSheet((s) => { sheet = s; done(); });
+  mk(plateA, (x) => { a = x; });
+  mk(plateB, (x) => { b = x; });
+}
 const transTile = (a, b, setId, i, post) =>
   `tiles/transitions/${a}__to__${b}/${setId}/${post ? "post/" : ""}tile_${String(i).padStart(2, "0")}.webp`;
 /* WHAT ONE TRANSITION TILE SHOWS UNDER THE CURRENT PASS — one rule, so the
@@ -5041,23 +5192,48 @@ const transTile = (a, b, setId, i, post) =>
  * confusing now that 283 of 284 sets do. It names the pass on screen instead,
  * and the one set still lacking a processed pass says so, which is both what is
  * drawn AND the fact worth knowing about it. */
-function transPassPill(hasPost) {
-  if (!hasPost) {
-    return h("span", { class: "pill warn", title: "This set ships only the generator's own tiles — the retexture pass has not been published for it, so there is nothing else to show" }, "raw only");
+/* WHAT THE STRIP OR SCENE IS SHOWING, in words. The pill names what is DRAWN,
+ * never what merely exists (maintainer 2026-08-24: "If I press Before the pill
+ * still reads postprocessed") — and under the pattern library there are two
+ * honest kinds of picture: a COMPOSED one (two plates through a mask, works
+ * for every pair) and the generator's RAW art (exists only for pregenerated
+ * pairs). */
+function transPassPill(genSet) {
+  const lib = patternLib();
+  const pass = storedPass();
+  if (pass === PASS_RAW) {
+    if (genSet) return h("span", { class: "pill", title: "The generator's own pregenerated tiles for this pattern — the seam shading is the generator's, which composition cannot reproduce" }, "raw · generated");
+    return h("span", { class: "pill warn", title: "This pair was never pregenerated, so no raw art exists — the boundary is composed live from the pattern library, and both sides draw their clean plate" }, "no raw — composed clean");
   }
-  const pass = worldView();
-  if (pass === PASS_RAW) return h("span", { class: "pill", title: "Showing the generator's own tiles. This set also has a processed pass — switch to After for it" }, "raw");
-
-  return h("span", { class: "pill ok", title: "Showing the retextured pass — the set's colours corrected to the game palette" }, "postprocessed");
+  if (!lib) return h("span", { class: "pill warn" }, "pattern library missing");
+  return h("span", { class: "pill ok", title: "Composed live: each side is that ground's base tile set through the pattern's mask — what the game will draw" },
+    pass === PASS_CLEAN ? "composed · Clean #0" : `composed · Set #${/^set:(\d+)$/.exec(pass)?.[1] ?? "?"}`);
 }
-const transArt = (a, b, setId, i, hasPost) => {
-  /* TRANSITIONS ARE STILL PREGENERATED ART, pending the tiles agent's masks —
-   * so a set cannot be composed into one yet and the switch means what it
-   * always did here: Raw is the generator's own tiles, anything else the
-   * processed pass. When the masks land this becomes mask + one base tile per
-   * side and the set chips light up here too. */
-  const pass = worldViewFor(a);
-  return transTile(a, b, setId, i, hasPost && pass !== PASS_RAW);
+/* ONE COMPOSED TILE of pair (a, b) — pattern `patId`, Wang index `idxA` whose
+ * bits mean "ground `a` owns the corner" (the pregenerated sets' own
+ * convention, kept so scenes and captions did not have to change). The
+ * LIBRARY's bits mean "side_b owns" with side_b fixed by side_order, so the
+ * frame flips to 15-idxA when `a` is side_a — polarity is decided in exactly
+ * one place, here, because backwards polarity still renders beautifully and
+ * is exactly wrong. (x, y) are the cell's coordinates, so each side's plate is
+ * that ground's own per-cell pick and a field of composed tiles varies the way
+ * the ground itself does. */
+function mixTile(a, b, patId, idxA, x, y) {
+  const lib = patternLib();
+  const pat = patternOf(patId);
+  if (!lib || !pat) return null;
+  const { sideA, sideB } = transSides(a, b);
+  const frame = (a === sideB) ? idxA : 15 - idxA;
+  const pa = platePickAt(sideA, x, y), pb = platePickAt(sideB, x, y);
+  if (!pa || !pb) return null;
+  return `mix:${pat.row}|${frame}|${pa}|${pb}`;
+}
+/* What one transition tile shows under the current pass — one rule, so the
+ * strips and the composed scenes cannot disagree. Raw is the pregenerated art
+ * and only exists where a generated set does; every other pass composes. */
+const transArt = (a, b, patId, i, genSet, x = 0, y = 0) => {
+  if (storedPass() === PASS_RAW && genSet) return transTile(a, b, patId, i, false);
+  return mixTile(a, b, patId, i, x, y) ?? (genSet ? transTile(a, b, patId, i, genSet.post) : null);
 };
 /** Seeded RNG for the composites — a Randomize press swaps the seed, and the
  *  same seed always paints the same field (mulberry32; deterministic keeps the
@@ -5095,27 +5271,22 @@ function centeredField(centerArt, members, seed, scale = 1, pass = null) {
 /** A Wang-corner scene: `corner(x, y)` returns 1 where material A (the pair's
  *  first name — the set-bit material) owns the lattice point. Index per cell =
  *  8·NW + 4·NE + 2·SW + 1·SE, exactly the sets' own convention. */
-function wangScene(a, b, setId, post, n, corner, scale = 1) {
+/** A Wang-corner scene: `corner(x, y)` returns 1 where material A (the pair's
+ *  first name) owns the lattice point. Index per cell = 8·NW + 4·NE + 2·SW +
+ *  1·SE. Under Raw (a generated pair) the cells are the generator's tiles;
+ *  under Clean/Set each cell is composed from the two grounds' plates, picked
+ *  per cell so the field varies like the grounds themselves do. */
+function wangScene(a, b, patId, genSet, n, corner, scale = 1) {
   const box = h("div", { class: "iso-stage checker trans-stage" });
   const cells = [];
-  // A postprocessed set has both passes on disk, so the Textured view can be
-  // synthesized here too — a transition tile carries TWO clean colours, and
-  // texSynth handles every flat region it finds, not just one.
-  // WITH A PROCESSED PASS ON DISK, THIS FOLLOWS THE SWITCH like everything
-  // else: Before is the generator's own tiles, After the retextured ones, and
-  // Textured the synthesis between them. Without one there is only raw, and the
-  // page says so rather than letting the switch look effective.
-  const pass = worldViewFor(a);
-  const pathOf = (idx) => transTile(a, b, setId, idx, post && pass !== PASS_RAW);
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
-    cells.push({ c, r, img: pathOf(idx) });
+    cells.push({ c, r, img: transArt(a, b, patId, idx, genSet, c, r) });
   }
-  loadImages([...new Set(cells.map((x) => x.img))], (images) =>
-    box.replaceChildren(isoScene(cells, images, scale, 4, worldIso())));
+  loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) =>
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
   return box;
 }
-
 
 /* THE PAIRS ARE READ LIVE FROM THE AGENT, NOT FROM THE BUILD.
  * Every other domain is settled art: a build a few hours old describes it
@@ -5751,7 +5922,7 @@ function viewWorldType(top) {
   const sets = groundSets(t.id);
   const setsToShow = sets.filter((x) => x.id !== CLEAN_SET && setDraws(x));
   const baseDead = !state.admin && !setsToShow.length;
-  const trans = transitionsOf(t.id);
+  const trans = allTransitionsOf(t.id);
   const details = detailsOf(t.id);
   const queue = state.admin ? detailQueue(t.id) : [];
   const swatch = (c, title) => h("span", {
@@ -5906,27 +6077,27 @@ function viewWorldType(top) {
    * otherwise — so the tab says it in a line of its own, and names what is
    * missing. The moment the tiles agent publishes post/, every one of these
    * flips with no wiki change. */
-  const transHasPost = trans.some((x) => x.sets.some((y) => y.post));
   const transTab = () => h("div", {},
-    trans.length && !transHasPost ? h("p", { class: "muted trans-nopost" },
-      h("span", { class: "pill warn" }, "raw only"),
-      " Transitions have no postprocessed pass published yet — every set here is the generator's raw output, whatever the switch above says. The boundary SHAPE is what these previews are for; the colours arrive with the retexture pass.") : null,
     trans.length
       ? h("div", {}, ...trans.map((x) => {
         const other = x.a === t.id ? x.b : x.a;
-        const s0 = x.sets[0];
-        const picks = [1, 3, 12, 14].map((i) => transArt(x.a, x.b, s0.id, i, s0.post));
+        // The strip previews the pair's DEFAULT look: the library's default
+        // pattern (or the pair's straightest generated set under Raw), four
+        // mixed indices, composed under the current pass.
+        const patId = x.sets[0]?.id ?? patternLib()?.defaultPattern;
+        const genSet = x.sets[0] ?? null;
+        const picks = [1, 3, 12, 14].map((i) => transArt(x.a, x.b, patId, i, genSet)).filter(Boolean);
         return h("a", { class: "trans-row", href: `#/world/transition/${x.a}__to__${x.b}` },
           h("span", { class: "trans-name" }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
-          h("span", { class: "muted" }, ` ${x.sets.length} set${x.sets.length === 1 ? "" : "s"}`),
-          transPassPill(s0.post),
-          // artNodeFor, not a bare <img>: under Textured the path is a virtual
-          // tex: one that has to be synthesized onto a canvas.
+          x.generated
+            ? h("span", { class: "muted", title: "This pair was also pregenerated — its raw art is reachable under Raw" }, ` ${x.sets.length} generated set${x.sets.length === 1 ? "" : "s"}`)
+            : null,
+          transPassPill(genSet),
           h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
             artNodeFor(f, "", `${t.name} to ${other} transition tile`))));
       }))
       : h("p", { class: "muted" }, state.admin
-        ? "Being generated — no transition sets published for this ground yet (tiles/transitions/)."
+        ? "The pattern library has not been published yet (tiles/patterns/) — nothing to compose transitions from."
         : "The edges where this ground meets its neighbours are still being painted."));
 
   return h("div", {},
@@ -6066,11 +6237,31 @@ function viewWorldType(top) {
  * around in the game. Make the page look good and ambitious.") ---- */
 const transState = new Map();   // pair -> { set, seed }
 function viewWorldTransition(pairId) {
-  const tr = (worldMeta().transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
-  if (!tr) return h("p", {}, "Unknown transition.");
-  const st = transState.get(pairId) ?? { set: tr.sets[0].id, seed: 2 };
+  /* ANY PAIR IS A PAGE now, not only the pregenerated ones — a pair that was
+   * never generated is composed live from the pattern library, which is the
+   * point of the library ("transition tiles for everything automatically").
+   * A generated pair keeps its sets: they are the same 18 pattern ids, and
+   * the only place a Raw pass exists. */
+  let tr = (worldMeta().transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
+  if (!tr) {
+    const [pa, pb] = pairId.split("__to__");
+    tr = (worldMeta().transitions ?? []).find((x) => x.a === pb && x.b === pa);
+    if (!tr) {
+      const lib = patternLib();
+      const known = (id) => !!lib?.plates[id];
+      if (lib && known(pa) && known(pb)) tr = { a: pa, b: pb, sets: [], generated: false };
+      else return h("p", {}, "Unknown transition.");
+    }
+  }
+  /* The picker is the LIBRARY's 18 patterns — every one of them composes for
+   * every pair. Where this pair was also generated, the matching pattern
+   * additionally carries the generator's raw art. */
+  const lib = patternLib();
+  const pickable = lib?.patterns ?? tr.sets;
+  const st = transState.get(pairId) ?? { set: tr.sets[0]?.id ?? lib?.defaultPattern ?? pickable[0]?.id, seed: 2 };
   transState.set(pairId, st);
-  const set = tr.sets.find((x) => x.id === st.set) ?? tr.sets[0];
+  const pat = pickable.find((x) => x.id === st.set) ?? pickable[0];
+  const genSet = tr.sets.find((x) => x.id === pat.id) ?? null;
   const nameA = typeLabelWorld(tr.a), nameB = typeLabelWorld(tr.b);
   const rerender = () => { keepScrollY = window.scrollY; route(); };
   // The scenes: the same boundary crossing the field in every direction —
@@ -6098,14 +6289,15 @@ function viewWorldTransition(pairId) {
   ];
   return h("div", {},
     crumbRow("#/world", `← ${label("world")}`, "world/transitions",
-      (worldMeta().transitions ?? []).map((x) => ({ id: `transition/${x.a}__to__${x.b}`, name: `${typeLabelWorld(x.a)} ↔ ${typeLabelWorld(x.b).toLowerCase()}` })),
-      `transition/${pairId}`),
+      allTransitionsOf(tr.a).map((x) => ({ id: `transition/${x.a}__to__${x.b}`, name: `${typeLabelWorld(x.a)} ↔ ${typeLabelWorld(x.b).toLowerCase()}` })),
+      `transition/${tr.a}__to__${tr.b}`),
     h("div", { class: "sect-head" }, h("h1", {}, `${nameA} ↔ ${nameB.toLowerCase()}`)),
     h("div", { class: "spawn-line" },
       h("a", { class: "pill", href: `#/world/${tr.a}` }, nameA.toLowerCase()),
       h("a", { class: "pill", href: `#/world/${tr.b}` }, nameB.toLowerCase()),
-      h("span", { class: "pill" }, `${tr.sets.length} set${tr.sets.length === 1 ? "" : "s"}`),
-      transPassPill(set.post)),
+      tr.sets.length ? h("span", { class: "pill", title: "This pair was also pregenerated — those sets carry the generator's own raw art" }, `${tr.sets.length} generated set${tr.sets.length === 1 ? "" : "s"}`)
+        : h("span", { class: "pill", title: "Composed live from the pattern library — no pregenerated art exists or is needed" }, "composed live"),
+      transPassPill(genSet)),
     h("p", { class: "muted" },
       `Where ${nameA.toLowerCase()} meets ${nameB.toLowerCase()} — the same Wang corner set drawn across every direction a boundary can run. `,
       "The whole world's edges will look like this page."),
@@ -6115,31 +6307,37 @@ function viewWorldTransition(pairId) {
      * corner"). It is the same control as every other World page — and while
      * no set carries a postprocessed pass it is shown INERT with the reason,
      * rather than offered as a choice that silently does nothing. */
-    state.admin ? h("div", { class: `ground-pass${set.post ? "" : " idle"}` },
+    state.admin ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
-      set.post
-        ? passBar(tr.a,
-          () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })
-        : h("span", { class: "pill warn", title: "tiles/transitions/<pair>/<set>/post/ does not exist yet — there is no processed pass to switch to" }, "raw only"),
-      ) : null,
-    // The set picker: a00 is the straightest boundary; higher amplitudes are
-    // rougher. One chip per generated set.
-    tr.sets.length > 1 ? sortBar(`trans-set-${pairId}`, tr.sets.map((x) => [x.id,
-      `${x.amplitude === 0 ? "straight" : `rough ${x.amplitude}`} · s${x.seed}`,
-      `boundary_amplitude ${x.amplitude}, seed ${x.seed} — ${x.n} tiles`]),
-    set.id, (id) => { st.set = id; rerender(); }, { persist: false }) : null,
+      // Always live: every pair composes under Clean/Set now, so the switch
+      // always has something to change. Each side resolves its OWN set by id.
+      passBar(tr.a, () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
+    /* The pattern picker: the library's 18 boundaries, every one of which
+     * composes for every pair — these are "the alternatives we downloaded when
+     * building the perfect road", distilled. A pattern that also exists as a
+     * generated set for THIS pair says so in its tooltip: that is where Raw
+     * art lives. Chip labels stay his vocabulary (straight / rough · seed). */
+    pickable.length > 1 ? sortBar(`trans-set-${pairId}`, pickable.map((x) => {
+      const gen = tr.sets.some((y) => y.id === x.id);
+      return [x.id,
+        `${x.amplitude === 0 ? "straight" : `rough ${x.amplitude}`} · s${x.seed}`,
+        `boundary_amplitude ${x.amplitude}, seed ${x.seed}`
+        + (x.agreement != null ? ` — voted from the generated sets, ${Math.round(x.agreement * 100)}% pixel agreement` : "")
+        + (gen ? " — also pregenerated for this pair (Raw shows the generator's art)" : "")];
+    }),
+    pat.id, (id) => { st.set = id; rerender(); }, { persist: false }) : null,
     h("div", { class: "player-controls" },
       h("button", { class: "ghost-btn", title: "Re-roll the island and the wandering edge", onclick: () => { st.seed = (st.seed * 16807 + 11) % 2147483647; rerender(); } }, "🎲 Randomize")),
     ...SCENES.map((sc) => h("div", { class: "panel trans-scene" },
       h("div", { class: "panel-title" }, sc.name),
       h("p", { class: "muted" }, sc.sub),
-      wangScene(tr.a, tr.b, set.id, set.post, N, sc.corner, 1))),
+      wangScene(tr.a, tr.b, pat.id, genSet, N, sc.corner, 1))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "The 16 corner tiles",
-        h("span", { class: "pill" }, `set ${set.id}`)),
+        h("span", { class: "pill" }, `pattern ${pat.id}`)),
       h("p", { class: "muted" }, `Index = 8·NW + 4·NE + 2·SW + 1·SE, a set bit meaning ${nameA.toLowerCase()}. 0 is pure ${nameB.toLowerCase()}, 15 pure ${nameA.toLowerCase()}.`),
-      h("div", { class: "trans-strip checker trans-all" }, ...Array.from({ length: set.n }, (_, i) => {
-        const node = artNodeFor(transArt(tr.a, tr.b, set.id, i, set.post), "", `tile ${i}`);
+      h("div", { class: "trans-strip checker trans-all" }, ...Array.from({ length: 16 }, (_, i) => {
+        const node = artNodeFor(transArt(tr.a, tr.b, pat.id, i, genSet), "", `tile ${i}`);
         node.title = `index ${i}`;
         return node;
       }))));
@@ -6923,9 +7121,21 @@ function loadImages(paths, cb) {
     // A virtual "tex:<after>::<raw>" path resolves to the synthesized
     // textured-top canvas — or to plain After when it cannot be built.
     // A "sub:<cand>::<base>" path is the same idea for the other composite:
-    // the reviewed tile wearing a set member's top face.
-    const virt = String(p).startsWith("tex:") ? "tex" : String(p).startsWith("sub:") ? "sub" : null;
+    // the reviewed tile wearing a set member's top face. "mix:row|idx|a|b" is
+    // the third — a transition composed from two plates and a mask frame.
+    const virt = String(p).startsWith("tex:") ? "tex" : String(p).startsWith("sub:") ? "sub"
+      : String(p).startsWith("mix:") ? "mix" : null;
     if (virt) {
+      if (virt === "mix") {
+        const [row, idx, a2, b2] = p.slice(4).split("|");
+        mixFor(+row, +idx, a2, b2, (c) => {
+          // A composite that cannot be built falls back to plate_a — a plate
+          // is a real tile of one of the two grounds, never an empty box.
+          if (c) { out[p] = c; if (--left <= 0) cb(out); }
+          else plain(a2, p);
+        });
+        continue;
+      }
       const [a, b] = p.slice(4).split("::");
       const take = (c) => {
         if (c) { out[p] = c; if (--left <= 0) cb(out); }

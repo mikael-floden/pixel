@@ -707,6 +707,36 @@ function buildWorld() {
       basePool: (basePools[t.id] ?? []).length,
     };
   });
+  // ---- the pattern library + plates: composed transitions for EVERY pair ----
+  let patternLib = null;
+  const patIdx = readJson(join(ROOT, "tiles", "patterns", "index.json"));
+  const platesIdx = readJson(join(ROOT, "tiles", "plates", "index.json"));
+  if (patIdx?.patterns?.length && platesIdx?.grounds) {
+    patternLib = {
+      schema: patIdx.schema,
+      masks: patIdx.masks?.file ?? "tiles/patterns/masks.webp",
+      silhouette: patIdx.silhouette?.file ?? "tiles/patterns/silhouette.webp",
+      frameW: patIdx.masks?.frame_w ?? 64,
+      frameH: patIdx.masks?.frame_h ?? 46,
+      cols: patIdx.masks?.cols ?? 16,
+      defaultPattern: patIdx.selection?.default_pattern ?? patIdx.patterns[0].id,
+      // side_b is whichever ground appears LATER here (wettest to built), so
+      // two consumers never disagree about which way a boundary fades.
+      sideOrder: patIdx.selection?.side_order ?? [],
+      patterns: patIdx.patterns.map((x) => ({
+        id: x.id, row: x.row, label: x.label,
+        amplitude: x.amplitude, seed: x.seed,
+        agreement: x.agreement, meanDev: x.roughness?.mean_dev_px ?? null,
+        duplicateOf: x.duplicate_of ?? null,
+      })),
+      // ground -> its plate key8 list + whether a clean plate exists, so the
+      // client can resolve a set member to a plate without fetching-to-404.
+      plates: Object.fromEntries(Object.entries(platesIdx.grounds).map(([g, e]) => [g, {
+        clean: e.clean?.file ? `tiles/plates/${g}/clean.webp` : null,
+        keys: Object.values(e.plates ?? {}).flat(),
+      }])),
+    };
+  }
   // ---- transitions: what exists on disk, per unordered material pair ----
   // Tile paths are NOT shipped — they are fully derivable
   // (tiles/transitions/<pair>/<set>/tile_XX.webp, or post/tile_XX.webp once
@@ -761,6 +791,14 @@ function buildWorld() {
     // every candidate's path at once to draw the picker.
     basePools,
     transitions,
+    // THE TRANSITION PATTERN LIBRARY + BASE PLATES (tiles agent, 2026-08-25):
+    // a transition is now two plates and a mask. 18 material-free boundary
+    // patterns (tiles/patterns/masks.webp, one 64x46 alpha frame per pattern x
+    // Wang index) + every approved ground conformed into plates whose alpha is
+    // byte-identical to the shared silhouette — so the wiki composes a
+    // transition for ANY ground pair with three drawImage calls, and the pass
+    // switch (Clean #0 / Set #N) decides which plate fills each side.
+    patternLib,
     tombstoned: [...dead],
     schema: review?.schema ?? null,
   };
