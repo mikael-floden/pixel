@@ -210,9 +210,17 @@ def main():
             with open(os.path.join(post, hashed), "wb") as fh:
                 fh.write(data)
             post_files.append(hashed)
-            for old_f in glob.glob(os.path.join(post, name.replace(".webp", "*.webp"))):
-                if os.path.basename(old_f) != hashed:
-                    os.remove(old_f)
+            # THE PREVIOUS GENERATION IS KEPT, NOT DELETED. A hashed name is content-
+            # addressed: retaining it can only ever serve the identical bytes, so it is
+            # not a cache hazard - while deleting it 404s every page ALREADY OPEN, which
+            # is what put holes in the maintainer's audition ("Why is so many tiles just
+            # a hole"). His page named the previous generation; main had only the new
+            # one. Keep current + one previous, drop anything older, so an open page
+            # keeps rendering and the repo stays bounded.
+            gens = sorted(glob.glob(os.path.join(post, name.replace(".webp", ".*.webp"))),
+                          key=os.path.getmtime, reverse=True)
+            for old_f in gens[2:]:
+                os.remove(old_f)
             wrote += 1
             # THE HUE IS THE ONLY UNFIXABLE AXIS. The shift lands the background's
             # VALUE and tint exactly on the clean colour, so distance alone must not

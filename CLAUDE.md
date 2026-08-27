@@ -91,9 +91,13 @@ introduce a cache bug again. The next time I see a cache bug I delete the entire
 project." Cache bugs killed his last two projects; this is not hyperbole. The rule
 that makes them structurally impossible: **a published, regenerable asset is never
 rewritten under a stable name** - a regenerated file gets a NEW filename carrying its
-content hash, the index points at the current name, the stale name is deleted, and
-consumers read names from the index rather than constructing them. A stale cache may
-then show a coherent old version or a 404 - never a mix of generations.
+content hash, the index points at the current name, and consumers read names from the
+index rather than constructing them. A stale cache then shows a coherent old version -
+never a mix of generations. The PREVIOUS generation is retained (current + one back):
+a hashed name is content-addressed, so keeping it can only serve identical bytes, while
+deleting it 404s every page already open - measured, that put holes through a live
+audition. Mutable names are the thing that must never exist; old hashed names are
+harmless and are what keep an open page rendering.
 `tiles/pipeline/check_immutable.py` gates every tiles publish (0 mutable names, 0
 dangling references, every content hash re-verified); any domain that serves or
 caches assets follows the same rule. Write-once assets (raw generator output) may

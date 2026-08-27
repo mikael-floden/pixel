@@ -118,9 +118,13 @@ def write_textured(manifest_path=None, only_missing=False):
             hashed = after.replace("_after.webp", f"_textured.{h8}.webp")
             with open(hashed, "wb") as fh:
                 fh.write(data)
-            for old_f in glob.glob(after.replace("_after.webp", "_textured*.webp")):
-                if os.path.abspath(old_f) != os.path.abspath(hashed):
-                    os.remove(old_f)
+            # Keep current + one previous generation - see tops_post. Deleting the
+            # previous hashed name 404s pages already open; retaining it is safe because
+            # a hashed name can only ever serve identical bytes.
+            gens = sorted(glob.glob(after.replace("_after.webp", "_textured.*.webp")),
+                          key=os.path.getmtime, reverse=True)
+            for old_f in gens[2:]:
+                os.remove(old_f)
             e["textured"] = os.path.relpath(hashed, REPO)
             wrote += 1
     with open(mp, "w") as f:
