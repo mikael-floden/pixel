@@ -162,6 +162,12 @@ COPY --from=curate /shipped/ /assets/
 # old, so the one thing telling the Game Master which build he is looking at
 # named the wrong build.
 COPY --from=build /full/wiki/site/data.json /assets/wiki/site/data.json
+# And its 60-byte freshness beacon, REBUILT IN THE SAME RUN — copying only
+# data.json left version.json as the committed file, so the beacon named a
+# build from before the deploy: the exact stale-registry bug documented above,
+# on the file that exists to detect staleness (found live 2026-08-27, beacon
+# 16cbaf162 beside a data.json already on e7091ee0a).
+COPY --from=build /full/wiki/site/version.json /assets/wiki/site/version.json
 ENV ASSETS_ROOT=/assets
 
 ARG GIT_SHA=dev
