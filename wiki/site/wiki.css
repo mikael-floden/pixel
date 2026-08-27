@@ -364,6 +364,13 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .pool-done { flex: none; min-width: 92px; min-height: 44px; padding: 10px 18px; }
 .base-group { margin-bottom: 14px; }
 .group-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
+/* CENTERED, NO SCROLL (maintainer 2026-08-27: "If 7x7 doesn't fit in the
+   preview. Just center it and disable the scroll. Same for the + Add tiles
+   popup"). The field is a picture to judge, not a document to pan: what
+   matters is the middle, and the ring exists precisely so the clipped edges
+   hold nothing he needs. justify-content centering with hidden overflow clips
+   both edges equally, which keeps the reviewed tiles dead centre. */
+.stage-clip { overflow: hidden; }
 .base-member {
   display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;
   padding: 10px 0; border-top: 1px solid var(--border); margin-top: 10px;

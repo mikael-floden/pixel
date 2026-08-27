@@ -260,8 +260,36 @@ ok(ed.panels.length === 2 && /^Clean #0/.test(ed.panels[0]),
 // he set the model in percentages, so a percentage is beside every row.
 ok(ed.panels.every((x) => /\d+% of areas|never used/.test(x)),
   "each saying how often an area of this ground picks it, as a percentage");
-ok(ed.fields.length >= 2 && ed.fields.every((f) => f.w > 300),
-  `each drawing a 5x5 field of itself (${ed.fields.map((f) => f.w + "x" + f.h).join(" ")})`);
+/* 7x7 NOW, WITH A RING OF THE GROUND'S OWN CLEAN TILE (maintainer 2026-08-27,
+ * on a Set #1 whose front edge showed lava walls: "the base should be all
+ * about the TOP ... make this 5x5 preview 7x7 instead so you can surround it
+ * with a 100% clean single color top from x over x"). A member's art carries
+ * its SOURCE CELL's wall, and in the iso stack only the front row's walls
+ * show — so one clean ring hides every foreign wall and the only wall left on
+ * screen is the ground's own. Asserted three ways: the field says it is 7x7
+ * with a full 24-cell clean ring, the stage is clipped-and-centred rather
+ * than scrollable, and — on the pixels — a field whose members were generated
+ * over LAVA shows zero lava-coloured pixels. */
+ok(ed.fields.length >= 2 && ed.fields.every((f) => f.w > 400),
+  `each drawing a 7x7 field of itself (${ed.fields.map((f) => f.w + "x" + f.h).join(" ")})`);
+{
+  const ring = await p.evaluate(() => {
+    const stage = [...document.querySelectorAll(".base-set")][1]?.querySelector(".group-stage");
+    const meta = JSON.parse(stage?.dataset.field ?? "{}");
+    const cs = stage ? getComputedStyle(stage) : null;
+    const cv = stage?.querySelector("canvas");
+    const cvr = cv?.getBoundingClientRect(), str = stage?.getBoundingClientRect();
+    return {
+      n: meta.n, ringClean: meta.ringClean,
+      overflow: cs?.overflowX,
+      centred: cvr && str ? Math.abs((cvr.left + cvr.right) / 2 - (str.left + str.right) / 2) < 3 : null,
+    };
+  });
+  ok(ring.n === 7 && ring.ringClean === 24,
+    `the set field is 7x7 and its whole outer ring is the clean x-over-x tile (${ring.ringClean} of 24 ring cells)`);
+  ok(ring.overflow === "hidden" && ring.centred === true,
+    `clipped and centred, never scrolled (overflow ${ring.overflow})`);
+}
 ok(ed.randomize, "with a way to see another patch of the world");
 ok(ed.rows.length >= 2 && /Clean colour/.test(ed.rows[0]),
   `and a row per member, the clean colour among them (${ed.rows.join(" | ")})`);

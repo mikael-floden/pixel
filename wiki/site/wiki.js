@@ -5096,16 +5096,37 @@ function setCellArt(set, x, y, typeId) {
   return i < 0 ? clean : rows[i].art;
 }
 /** A field of this set, drawn as the game would draw it from origin [x0,y0]. */
+/* THE FIELD WEARS A RING OF THE GROUND'S OWN CLEAN TILE (maintainer
+ * 2026-08-27, on a Set #1 whose front edge showed lava: "the base should be
+ * all about the TOP ... This is just so I don't have to see the wall when I
+ * preview a base tile that has nothing with wall todo. So lets make this 5x5
+ * preview 7x7 instead so you can surround it with a 100% clean single color
+ * top from x over x").
+ *
+ * The walls he saw are real: a member's art is its source cell's tile, and
+ * brown paving's pool spans fifteen source cells, so the FRONT ROW of a bare
+ * field shows whatever walls those members happened to be generated over. In
+ * the iso stack every tile's wall is covered by the tile in front of it, so
+ * one ring of the ground's own clean x-over-x tile hides every member wall
+ * and the only walls on screen are the ground's own — exactly the "nothing
+ * with wall todo" he asked for. The ring is presentation: cell coordinates
+ * and the deterministic pick are unmoved, so the same origin still shows the
+ * same patch. */
 function setField(typeId, set, n, origin, scale = 1) {
-  const box = h("div", { class: "iso-stage checker group-stage" });
+  const box = h("div", { class: "iso-stage checker group-stage stage-clip" });
   const [x0, y0] = origin;
+  const ring = cleanArtOf(typeId);
   const cells = [];
-  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
-    cells.push({ c, r, img: setCellArt(set, x0 + c, y0 + r, typeId) });
+  for (let r = 0; r < n + 2; r++) for (let c = 0; c < n + 2; c++) {
+    const edge = r === 0 || c === 0 || r === n + 1 || c === n + 1;
+    cells.push({ c, r, img: edge ? ring : setCellArt(set, x0 + c - 1, y0 + r - 1, typeId) });
   }
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
   if (!paths.length) { box.append(h("p", { class: "muted" }, "no art to draw this ground with")); return box; }
   loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
+  // Gate probe: which art each cell drew, so "the ring is clean" is checkable
+  // without reverse-engineering pixels.
+  box.dataset.field = JSON.stringify({ n: n + 2, ringClean: cells.filter((x) => x.img === ring && x.img).length });
   return box;
 }
 /* THE POOL PICKER. 161 grass candidates is too many to scroll past on a phone
@@ -5141,18 +5162,25 @@ function openPoolPicker(typeId, setId, onDone) {
   let added = 0;
   const N = 7, RING = 2;
   const fieldFor = (cand) => {
-    const box = h("div", { class: "iso-stage checker group-stage pool-stage" });
+    /* CLIPPED AND CENTRED, NEVER SCROLLED (maintainer 2026-08-27: "It
+     * displays with 7x7, but with scroll. I want it centered without
+     * scroll"). And the OUTERMOST ring is the ground's own clean x-over-x
+     * tile, same rule as the set panels: a member's art carries its source
+     * cell's wall — lava, ice, whatever it was generated over — and the
+     * field's front edge was parading them. The candidate under judgment is
+     * the 3x3 in the middle; one ring of the set around it; the clean ring
+     * outside hides every foreign wall, and the clipping loses only it. */
+    const box = h("div", { class: "iso-stage checker group-stage pool-stage stage-clip" });
     const set = setOf();
+    const ring = cleanArtOf(typeId);
     const cells = [];
     for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const edge = r === 0 || c === 0 || r === N - 1 || c === N - 1;
       const inCentre = c >= RING && c < N - RING && r >= RING && r < N - RING;
-      cells.push({ c, r, img: inCentre ? cand.art : setCellArt(set, origin[0] + c, origin[1] + r, typeId) });
+      cells.push({ c, r, img: inCentre ? cand.art : edge ? ring : setCellArt(set, origin[0] + c, origin[1] + r, typeId) });
     }
     loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
       box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 4, worldIso()));
-      // Land centred: the 7x7 is wider than a phone, and the candidate — the
-      // thing under judgment — is in the middle.
-      requestAnimationFrame(() => { box.scrollLeft = Math.max(0, (box.scrollWidth - box.clientWidth) / 2); });
     });
     return box;
   };
