@@ -407,6 +407,19 @@ ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
    * the sheets meant to survive repetition, which is what a set does. */
   ok(br.srcs.slice(0, 3).every((s) => /tiles\/tops\//.test(s)),
     `the top-only pool leads the audition (${br.srcs[0]?.split("/").slice(-2).join("/")})`);
+  /* AND IT DRAWS THE PUBLISHED POST PASS, NEVER THE RAW SHEET (tiles agent,
+   * blocking, 2026-08-27: "the tops AUDITION is rendering the RAW pass, not
+   * post/ ... please land this before anything else").
+   *
+   * A top-only sheet ships in the generator's colour; the post pass moves the
+   * whole tile so its background lands on the ground's clean colour, keeping
+   * each detail's own colour instead of dragging it to the anchor. Measured on
+   * the tile he was auditioning — black_rock sheet_00_subtle tile_11 — the raw
+   * top face is 41 RGB off that colour and the post file is 0. Asserted on the
+   * PATH each row asks for, which cannot disagree with what is on screen. */
+  const topsSrcs = br.srcs.filter((s) => /tiles\/tops\//.test(s));
+  ok(topsSrcs.length > 0 && topsSrcs.every((s) => /\/post\//.test(s)),
+    `and every one of them from its post/ pass, none raw (${topsSrcs.length} tops rows, ${topsSrcs.filter((s) => !/\/post\//.test(s)).length} raw)`);
   /* AND IT IS POSTPROCESSED, NOT RAW (maintainer 2026-08-27: "Ofc I don't
    * want to see the tile as raw here. I want to see the top as textured, but
    * postprocessed"). The sheets are raw generator COLOUR — grass measures 84
@@ -428,20 +441,46 @@ ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
     await p3.waitForTimeout(700);
     await p3.evaluate(() => { if (!document.querySelector(".pool-modal[open]")) document.querySelector(".add-tiles")?.click(); });
     await p3.waitForTimeout(2200);
-    const pp = await p3.evaluate(() => {
-      const cv = document.querySelector(".pool-cell canvas.pool-tile");
-      if (!cv) return null;
+    /* MEASURED ON WHATEVER THE ROW RENDERS, and on the TOP FACE alone.
+     * Two corrections, both paid for: the audition used to draw an
+     * in-browser-corrected CANVAS and now draws the tiles agent's published
+     * post/ file as an <img>, so a canvas-only probe read null and scored 999
+     * against a page that was in fact correct. And a top-only tile's wall is
+     * meaningless by its own index, so averaging the whole tile is the wrong
+     * region — measuring it that way is what made me nearly tell the tiles
+     * agent their pass was worse than the raw art. */
+    const pp = await p3.evaluate(async () => {
+      const node = document.querySelector(".pool-cell canvas.pool-tile, .pool-cell img.pool-tile");
+      if (!node) return null;
       try {
-        const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+        const w = node.naturalWidth || node.width, h2 = node.naturalHeight || node.height;
+        if (!w || !h2) return null;
+        if (node.tagName === "IMG" && !node.complete) await node.decode();
+        const cv = document.createElement("canvas");
+        cv.width = w; cv.height = h2;
+        const cx = cv.getContext("2d", { willReadFrequently: true });
+        cx.imageSmoothingEnabled = false;
+        cx.drawImage(node, 0, 0, w, h2);
+        const d = cx.getImageData(0, 0, w, h2).data;
+        const WALL = 17;
         let r = 0, g2 = 0, b2 = 0, n = 0;
-        for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { r += d[i]; g2 += d[i + 1]; b2 += d[i + 2]; n++; }
+        for (let x = 0; x < w; x++) {
+          let top = -1, bot = -1;
+          for (let y = 0; y < h2; y++) if (d[(y * w + x) * 4 + 3] > 200) { if (top < 0) top = y; bot = y; }
+          if (top < 0) continue;
+          for (let y = top; y <= bot - WALL; y++) {
+            const i = (y * w + x) * 4;
+            if (d[i + 3] <= 200) continue;
+            r += d[i]; g2 += d[i + 1]; b2 += d[i + 2]; n++;
+          }
+        }
         return n ? [r / n, g2 / n, b2 / n] : null;
       } catch { return "tainted"; }
     });
     const tgt = [0x14, 0x52, 0x3b];
     const dist = Array.isArray(pp) ? Math.round(Math.hypot(...pp.map((v, i) => v - tgt[i]))) : 999;
     ok(Array.isArray(pp) && dist <= 12,
-      `a grass top auditions in the game's own palette — corrected mean ${Array.isArray(pp) ? "#" + pp.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("") : pp} is ${dist} from #14523b (raw art misses by 84)`);
+      `a grass top auditions in the game's own palette — corrected mean ${Array.isArray(pp) ? "#" + pp.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("") : pp} is ${dist} from #14523b on the TOP FACE (raw art misses by 84)`);
     await p3.close();
   }
   ok(br.srcs.slice(0, 3).every((s) => /_subtle_/.test(s)),
@@ -474,10 +513,26 @@ ok(pool.srcs.every((s) => /base_candidates|\/plates\/|tiles\/tops\/|_textured\.w
     (window.__wiki.state.tuning.base_tile_sets.grounds.grass?.sets.find((x) => x.id === 1)?.rejected ?? []).length);
   ok(pool.cells === expect - inSet - rejHere,
     `every approved top is offered, none filtered (${pool.cells} = plates ${META.patternLib?.plates?.grass?.pool.length} + ballot ${META.basePools?.grass?.length} + top-only ${META.tops?.grass?.length} − ${inSet} in the set − ${rejHere} rejected for it)`);
-  const order = await p.evaluate(() => [...document.querySelectorAll(".pool-cell")].map((r) => r.querySelectorAll(".pool-head .pill").length ? 1 : 0));
-  const firstFlat = order.indexOf(1), lastTextured = order.lastIndexOf(0);
+  /* THE OFFERED ORDER, read by what each pill SAYS rather than by whether a
+   * row has one. It counted any pill as "flat", which the new off-colour badge
+   * also is — a probe that broke the moment a second badge existed.
+   *
+   * Two claims, both his: the top-only pool leads (it is the pool generated
+   * FOR this decision), and within what follows the flat tops come last —
+   * sorted, never dropped, since "all accepted tiles ... should be a
+   * candidate here". */
+  const order = await p.evaluate(() => [...document.querySelectorAll(".pool-cell")].map((r) => ({
+    tops: /tiles\/tops\//.test(r.querySelector(".pool-tile")?.getAttribute("src") ?? r.dataset.cand ?? ""),
+    flat: [...r.querySelectorAll(".pool-head .pill")].some((x) => /flat top/.test(x.textContent)),
+  })));
+  const lastTop = order.map((x) => x.tops).lastIndexOf(true);
+  const firstOther = order.findIndex((x) => !x.tops);
+  ok(lastTop === -1 || firstOther === -1 || lastTop < firstOther,
+    `the top-only pool leads — the tiles generated for this decision come first (${order.filter((x) => x.tops).length} of ${order.length})`);
+  const rest = order.filter((x) => !x.tops);
+  const firstFlat = rest.findIndex((x) => x.flat), lastTextured = rest.map((x) => x.flat).lastIndexOf(false);
   ok(firstFlat === -1 || lastTextured < firstFlat,
-    `most textured first, the flat tops after — sorted, not dropped (${order.filter((x) => !x).length} textured, ${order.filter(Boolean).length} flat)`);
+    `and among the rest the flat tops come last — sorted, not dropped (${rest.filter((x) => !x.flat).length} textured, ${rest.filter((x) => x.flat).length} flat)`);
 }
 // A 7x7 at 1:1 is 13 lattice steps + a tile wide = 448px + padding. Anything
 // materially narrower is not the field he specified.

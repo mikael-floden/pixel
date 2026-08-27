@@ -4809,9 +4809,33 @@ function basePool(typeId) {
    * cell, so its verdict rides the same feedback file keyed by its own path. */
   const tops = (worldMeta().tops?.[typeId] ?? [])
     .filter((c) => fb("tiles", c.id).status !== "rejected")
-    // ppPath: the sheets are raw generator COLOUR (grass measures 84 RGB off
-    // the palette), so the audition corrects them the way the pipeline will.
-    .map((c) => ({ id: c.id, art: ppPath(typeId, c.art), from: null, flat: c.flat ?? 0, flavour: c.flavour, colours: c.colours, topOnly: true }));
+    /* THE PUBLISHED POST PASS, NOT MY BROWSER'S GUESS (tiles agent, blocking,
+     * 2026-08-27: "the tops AUDITION is rendering the RAW pass, not post/").
+     *
+     * The sheets ship in the generator's own colour, and while no better pass
+     * existed the audition corrected them in-browser (ppPath). There is one
+     * now, and it is better than the approximation: the whole tile is
+     * translated so its background lands exactly on the ground's clean
+     * colour, which keeps every detail's own colour instead of dragging it
+     * toward the anchor. Measured on the tile he was auditioning — black_rock
+     * sheet_00_subtle tile_11 — the raw top face is 41 RGB off that colour
+     * and the post file is 0.
+     *
+     * I MEASURED IT WRONG FIRST and nearly pushed back: over the WHOLE tile
+     * raw reads closer than post. These are top-only tiles whose index says
+     * `wall_is_meaningless`, so the whole tile is the wrong region — on the
+     * top face, the only part anyone judges, the published pass wins outright.
+     *
+     * The identity stays the RAW path (his verdicts are keyed by it, and the
+     * post file is a rendering of the same tile), and ppPath remains the
+     * fallback for anything not yet republished. */
+    .map((c) => ({
+      id: c.id,
+      art: c.post ?? ppPath(typeId, c.art),
+      raw: c.art,
+      from: null, flat: c.flat ?? 0, flavour: c.flavour, colours: c.colours,
+      misfit: c.misfit, topOnly: true,
+    }));
   const all = [
     ...tops,
     ...plates.map(([k, cell, flat]) => {
@@ -5256,6 +5280,12 @@ function openPoolPicker(typeId, setId, onDone) {
         artNodeFor(cand.art, "pool-tile", cand.id),
         h("span", { class: "pool-name", title: cand.id }, memberLabel(typeId, cand.id)),
         (cand.flat ?? 0) >= TOP_FLAT ? h("span", { class: "pill", title: `The top is ${Math.round((cand.flat ?? 1) * 100)}% one tone — adding it draws close to the clean colour` }, "flat top") : null,
+        /* FLAGGED, SORTED LAST, NEVER HIDDEN (tiles agent 2026-08-27: "They
+         * are still written and still auditionable - SORT THEM LAST, do not
+         * hide them; the maintainer may love one anyway and his verdict
+         * outranks my flag"). 178 of 1,440 could not be landed on the clean
+         * colour by translation alone. */
+        cand.misfit ? h("span", { class: "pill warn", title: "The pass could not land this one on the ground's clean colour by moving it — its contrast was squeezed too far, or its hue sits too far off. Shown last, because you may still want it." }, "off-colour") : null,
         addBtn, rejBtn),
       h("div", { class: "iso-stage checker group-stage pool-stage" },
         h("p", { class: "muted" }, "…")));

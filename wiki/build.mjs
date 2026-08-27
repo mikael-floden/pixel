@@ -792,11 +792,38 @@ function buildWorld() {
   if (topsIdx?.sheets?.length) {
     for (const sh of topsIdx.sheets) {
       if (!sh?.ground || !sh?.dir) continue;
+      /* PREFER THE POST PASS (tiles agent cb43e2d89, and blocking: "the tops
+       * AUDITION is rendering the RAW pass, not post/ ... please land this
+       * before anything else").
+       *
+       * The sheets ship in the generator's own colour and the wiki corrected
+       * them IN THE BROWSER while no better pass existed. There is one now —
+       * every tile's background landed exactly on the ground's clean colour by
+       * a whole-tile translation, so the detail keeps its own colour instead
+       * of being flattened toward the anchor. Measured on the tile he was
+       * auditioning (black_rock sheet_00_subtle tile_11): the RAW top face is
+       * 41 RGB off the clean colour, the post file 0. The in-browser
+       * approximation stays reachable as the Before view; nothing here is a
+       * guess any more.
+       *
+       * MISFITS ARE WRITTEN, FLAGGED AND SORTED LAST — never hidden: "the
+       * maintainer may love one anyway and his verdict outranks my flag." */
+      // A MAP keyed by file name, not a list: {"tile_11.webp": {misfit, squeezed_pct, hue_deg}}.
+      // Read as a list it threw "object is not iterable" and killed the whole
+      // build — which the deploy's `||` fallback would have swallowed into a
+      // silently stale registry, the exact trap the Dockerfile documents.
+      const misfit = sh.misfit_tiles && typeof sh.misfit_tiles === "object" ? sh.misfit_tiles : {};
       for (const f of sh.tiles ?? []) {
         const rel = `${sh.dir}/${f}`;
         if (!existsSync(join(ROOT, rel))) continue;
+        const postRel = `${sh.dir}/post/${f}`;
+        const hasPost = sh.post === true && existsSync(join(ROOT, postRel));
         (tops[sh.ground] ??= []).push({
-          id: rel, art: rel, flavour: sh.flavour ?? null,
+          // The identity stays the RAW path — it is what his verdicts are
+          // keyed by, and a post pass is a rendering of the same tile, not a
+          // different one. `post` is what to SHOW.
+          id: rel, art: rel, post: hasPost ? postRel : null,
+          flavour: sh.flavour ?? null, misfit: misfit[f]?.misfit ? true : undefined,
           // The sheet's measured top-face numbers, so the picker can sort and
           // label without decoding 1,440 files in the browser.
           colours: sh.top_face?.mean_colours ?? null,
@@ -805,7 +832,11 @@ function buildWorld() {
       }
     }
     for (const g of Object.keys(tops)) {
-      tops[g].sort((a, b) => (a.flavour === b.flavour ? 0 : a.flavour === "subtle" ? -1 : 1));
+      // Subtle first (a base tile set is what he is filling), and the flagged
+      // misfits last within each flavour — shown, never hidden.
+      tops[g].sort((a, b) =>
+        (a.flavour === b.flavour ? 0 : a.flavour === "subtle" ? -1 : 1)
+        || ((a.misfit ? 1 : 0) - (b.misfit ? 1 : 0)));
     }
   }
   const groundTypes = [...types.values()].map((t) => {
