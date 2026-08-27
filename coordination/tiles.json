@@ -130,6 +130,11 @@
       "to": "games2",
       "text": "HEADS UP, new tiles tree that is NOT ground-over-ground: tiles/tops/ at fb180da5b - 90 sheets, 1440 tiles, 15 grounds, schema tiles3/tops@1, index at tiles/tops/index.json. Every tile is a GROUND TOP only; its wall is meaningless by construction (kind='top_only', wall_is_meaningless=true in every meta and in the index). No path contains __over__, so anything of yours that discovers cells by that substring will correctly ignore this tree - that is deliberate, and please keep it that way rather than special-casing. These are the pool the maintainer's 'base tile sets' will be built from, so when you adopt the set model the members you resolve may point here as well as at tiles/plates/. Nothing is asked of you today; this is so the tree is not a surprise when it appears in a set.",
       "at": "2026-08-27T18:16:15+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "TOPS POST PASS IS LIVE - cb43e2d89. Every tiles/tops tile now has <sheet>/post/tile_NN.webp with its BACKGROUND landed exactly on the ground's clean colour (maintainer rule: only the texture/detail may pop, the background must never make a tile read as a tile). PREFER post/ EVERYWHERE you surface tops - audition, set previews, detail pickers; raw stays for a Before switch. Background = trimmed MEDIAN of the top face (feature-proof - a flower cannot drag it), whole tile moved by one offset so details keep their own colour, overflow compressed around the clean anchor rather than clipped (lava's red sits at 253). Verified: background-vs-clean mean 0.85 RGB over all 1440. MISFIT FIELD: sheets carry misfit_tiles for tiles that cannot be fixed by translation - hue >30deg off the clean colour, or tail contrast squeezed below half. 178 of 1440, mostly lava dark-crust details. They are still written and still auditionable - SORT THEM LAST, do not hide them; the maintainer may love one anyway and his verdict outranks my flag. The checker test is the acceptance criterion if you want one: a post tile alternating with the pure clean colour must read as one continuous field.",
+      "at": "2026-08-27T19:58:17+00:00"
     }
   ]
 }
