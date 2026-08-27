@@ -6743,7 +6743,7 @@
       "id": "chess_tables",
       "prefix": "chess_table",
       "name": "Chess Table",
-      "quota": 15,
+      "quota": 2,
       "description": "a stout wooden games table with a chess board covering its whole top, thick legs and a heavy top, standing solidly on the floor, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another",
       "world_height_m": [
         0.75,
@@ -6775,14 +6775,15 @@
           9.9,
           "table-height, waist-high"
         ]
-      ]
+      ],
+      "_retired": "maintainer 2026-08-27: frozen at chess_table_006 and chess_table_009 \u2014 the two the game places on the_island2 (maps2/props bakes of these sprites, and the furniture for the playable chess feature). Never generate more."
     },
     {
       "rank": 173,
       "id": "chess_boards",
       "prefix": "chess_board",
       "name": "Chess Board",
-      "quota": 15,
+      "quota": 0,
       "description": "a chess board resting flat on the ground on its own with no table and no furniture beneath it, seen from above, the chequered board fills the frame almost edge to edge, exactly eight by eight large clean squares in strongly contrasting dark and pale, the pieces few and chunky with simple unmistakable silhouettes standing well clear of one another",
       "world_height_m": [
         0.7,
@@ -6814,7 +6815,8 @@
           9.9,
           "as broad across as a table top"
         ]
-      ]
+      ],
+      "_retired": "maintainer 2026-08-27: only the two chess TABLES the game actually uses survive; the bare boards are not in the game and are not wanted. Never generate more."
     }
   ],
   "modifier_pools": {
