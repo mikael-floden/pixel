@@ -9563,4 +9563,4 @@ async function upgradeToStaging() {
 /* GATE PROBE. The set model and the compositor are pure functions of published
  * data, so a gate can call them directly instead of inferring them from pixels
  * on screen — which is how a pass that "worked" could ship flat. */
-window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets };
+window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
