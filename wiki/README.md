@@ -38,6 +38,31 @@ assets against `../../` so the same build works from prod (`/assets/wiki/site/`
 repo root. `games2/Dockerfile` re-runs the builder at image build time, so
 every deploy ships a wiki that reflects the exact art baked into that image.
 
+## Push the moment a fix is proven — never sit on it
+
+Maintainer, three times in one day (2026-08-27), each time angrier: *"LOL you
+fixed it and didn't push! What a fail! Never hold on to fixes like that
+again!"* … *"NOTHING YET PUSHED?! ARE YOU KIDDING ME?! You find the issue and
+you push! You push! Immidiatly! I'm the only player/user and you want my
+feedback as soon as possible!"*
+
+He is right, and the reasoning is structural, not stylistic: **he is the only
+user, testing in production from a phone.** There is no release train to wait
+for and no other user to protect. Every minute between "the probe shows the
+fix works" and "pushed" is a minute he spends re-reporting a bug that no
+longer exists — which costs a round trip, his patience, and the credibility
+of the next "it's fixed".
+
+The rule: **the moment a fix is verified locally, commit it, push it, trigger
+the deploy, and say the SHA** — `PUSHED sha=…`, then `LIVE sha=…` once the
+beacon flips. Gates for the fix, README notes, board posts, and any further
+polish come AFTER that push, as their own commits. Batching a proven fix with
+its unfinished gate is holding a working fix hostage to paperwork.
+
+(The freshness bar exists for the same reason: his open tab learns a deploy
+landed without being asked. Both halves — ship instantly, notify instantly —
+are one law.)
+
 ## Sections: names and icons
 
 `SECTIONS` in `wiki.js` is the ONE table of every section's player-facing
