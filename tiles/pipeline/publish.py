@@ -848,6 +848,12 @@ def main():
 
     with open(os.path.join(REVIEW, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=2)
+    # THE TEXTURED PASS RIDES EVERY PUBLISH. The audition pool reads it; without it a
+    # clean-top ground auditions as flat colour and the maintainer reads that as a bug
+    # ("It's more likely you have a bug and show the clean single color instead of
+    # their real texture"). Derived from before+after on disk, so it needs no matrix.
+    import textured_pass
+    textured_pass.write_textured(os.path.join(REVIEW, "manifest.json"))
     print(f"published {n_pub} candidates across {len(manifest['cells'])} cells "
           f"-> {os.path.relpath(REVIEW, os.path.dirname(ROOT))}/")
     for cell, c in manifest["cells"].items():
