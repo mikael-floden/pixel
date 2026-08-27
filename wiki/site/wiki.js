@@ -4569,25 +4569,104 @@ function setField(typeId, set, n, origin, scale = 1) {
  * is answered by the field behind it, not by the grid. */
 function openPoolPicker(typeId, setId, onDone) {
   document.querySelector(".pool-modal")?.remove();
-  const already = new Set(groundSets(typeId).find((s) => s.id === setId)?.members.map((m) => m.id) ?? []);
-  const pool = basePool(typeId).filter((c) => !already.has(c.id));
+  const already = () => new Set(groundSets(typeId).find((s) => s.id === setId)?.members.map((m) => m.id) ?? []);
+  const pool = basePool(typeId).filter((c) => !already().has(c.id));
+  const setOf = () => groundSets(typeId).find((s) => s.id === setId) ?? { id: setId, name: "Set", clean: 0, members: [] };
+  /* EVERY CANDIDATE IS AUDITIONED IN THE SET (maintainer 2026-08-27: "a
+   * dialog/modal ... where I can scroll over lots of different tops and
+   * preview them in a 7x7 tile preview, where the tile I may add is the
+   * center 3x3 surrounded by a 2 border base tile set - according to how the
+   * base tile set should be drawn (its weights)"). The bare-thumbnail grid
+   * this replaces asked him to judge a tile alone, which is the one way a
+   * base tile is never seen — the question is "does it belong with those",
+   * and only the field can answer it.
+   *
+   * The ring is drawn with the REAL pick — setCellArt over world coordinates,
+   * clean member included at its weight — so Randomize moves the ORIGIN, the
+   * same rule as the set panels' "Another patch": every roll is a real patch
+   * of the world as this set would paint it.
+   *
+   * BUILT LAZILY. 161 grass candidates x 49 cells composed up front would
+   * hang the phone the dialog opens on; each field is composed when it
+   * scrolls near, and a Randomize only rebuilds the ones already built. */
+  let origin = [0, 0];
+  let added = 0;
+  const N = 7, RING = 2;
+  const fieldFor = (cand) => {
+    const box = h("div", { class: "iso-stage checker group-stage pool-stage" });
+    const set = setOf();
+    const cells = [];
+    for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+      const inCentre = c >= RING && c < N - RING && r >= RING && r < N - RING;
+      cells.push({ c, r, img: inCentre ? cand.art : setCellArt(set, origin[0] + c, origin[1] + r, typeId) });
+    }
+    loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
+      box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 4, worldIso()));
+      // Land centred: the 7x7 is wider than a phone, and the candidate — the
+      // thing under judgment — is in the middle.
+      requestAnimationFrame(() => { box.scrollLeft = Math.max(0, (box.scrollWidth - box.clientWidth) / 2); });
+    });
+    return box;
+  };
+  const rows = new Map();               // cand.id -> its row (for rebuilds)
+  const buildRow = (cand) => {
+    const row = rows.get(cand.id);
+    if (!row || row.dataset.built === "1") return;
+    row.dataset.built = "1";
+    row.querySelector(".pool-stage")?.replaceWith(fieldFor(cand));
+  };
+  const seen = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { buildRow(pool.find((c) => c.id === e.target.dataset.cand)); seen.unobserve(e.target); }
+  }, { rootMargin: "600px 0px" });
+  const rowFor = (cand) => {
+    const addBtn = h("button", { class: "ghost-btn pool-add", type: "button" }, `+ Add to ${setLabel(setOf())}`);
+    addBtn.onclick = () => {
+      addSetMember(typeId, setId, cand.id);
+      added++;
+      addBtn.disabled = true;
+      addBtn.replaceChildren(`✓ in ${setLabel(setOf())} — commit when you are done`);
+      row.classList.add("in-set");
+    };
+    const row = h("div", { class: "pool-cell", "data-cand": cand.id },
+      h("div", { class: "pool-head" },
+        h("img", { class: "pool-tile", src: assetUrl(cand.art), alt: cand.id, loading: "lazy" }),
+        h("span", { class: "pool-name" }, cand.from ? `from ${cand.from.split("/").slice(-2).join(" ")}` : cand.id),
+        addBtn),
+      h("div", { class: "iso-stage checker group-stage pool-stage" },
+        h("p", { class: "muted" }, "…")));
+    rows.set(cand.id, row);
+    seen.observe(row);
+    return row;
+  };
+  // All teardown lives on the close EVENT (Esc closes a dialog too), and the
+  // button just asks for it — two paths into one handler, so onDone cannot
+  // fire twice. One repaint at the end rather than one per add: the page
+  // behind is stale while the dialog is up, and that is fine — the dialog IS
+  // the page while it is open.
+  const close = () => dlg.close();
   const dlg = h("dialog", { class: "promote-modal pool-modal" },
-    h("div", { class: "panel-title" }, `Add to ${setLabel(groundSets(typeId).find((s) => s.id === setId) ?? { name: "Set", id: setId })}`,
-      h("span", { class: "pill" }, `${pool.length} to choose from`)),
+    h("div", { class: "promote-head" },
+      h("b", {}, `Add to ${setLabel(setOf())}`),
+      h("span", { class: "pill" }, `${pool.length} to audition`),
+      h("button", {
+        class: "ghost-btn", type: "button",
+        title: "Re-roll the surrounding set — a candidate belongs when every roll still looks like one ground",
+        onclick: () => {
+          origin = [origin[0] + 7, origin[1] + 3];
+          for (const [id, row] of rows) if (row.dataset.built === "1") { row.dataset.built = "0"; buildRow(pool.find((c) => c.id === id)); }
+        },
+      }, "🎲 Randomize"),
+      h("button", { class: "ghost-btn", type: "button", onclick: close }, "✕ Close")),
     h("p", { class: "muted" },
       pool.length
-        ? "Every one of these is a real generated surface, already corrected to this ground's palette — tap one to add it."
+        ? `Each candidate sits as the centre 3×3 in two rings of ${setLabel(setOf())}, drawn by its weights — judge the field, then add.`
         : basePool(typeId).length
           ? "Every candidate for this ground is already in this set."
           : "No textured candidates for this ground yet — the tiles agent publishes them to tiles/base_candidates/. Until then this ground can only draw its clean colour."),
-    pool.length ? h("div", { class: "pool-grid" }, ...pool.map((c) => h("button", {
-      class: "pool-cell", type: "button", title: c.from ? `from ${c.from.split("/").slice(-2).join(" ")}` : c.id,
-      onclick: () => { addSetMember(typeId, setId, c.id); dlg.close(); dlg.remove(); onDone?.(); },
-    }, h("img", { class: "pool-tile", src: assetUrl(c.art), alt: c.id, loading: "lazy" })))) : null,
-    h("button", { class: "ghost-btn", onclick: () => { dlg.close(); dlg.remove(); } }, "Close"));
+    h("div", { class: "pool-list" }, ...pool.map(rowFor)));
   document.body.append(dlg);
   dlg.showModal();
-  dlg.addEventListener("close", () => dlg.remove());
+  dlg.addEventListener("close", () => { seen.disconnect(); dlg.remove(); if (added) onDone?.(); });
 }
 /** One weight box: he edits the number, the percentage beside it tells him what
  *  the number MEANS in this row. 0 is legal and is how he says "never". */
@@ -7357,7 +7436,15 @@ function isoScene(cells, images, scale = 1, pad = 4, isoIn = null) {
     // contract; height follows the art.
     const iw = im.naturalWidth || im.width || iso.tilePx;
     const dh = iso.tilePx * ((im.naturalHeight || im.height || iw) / iw);
-    ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) - minY + pad) * scale, iso.tilePx * scale, dh * scale);
+    /* CENTRED IN THE SLOT, which is FOOT-ALIGNED. A 64x46 transition-geometry
+     * tile beside a 64x64 review tile top-anchored floats 9px high, because
+     * the review render pads the same 46 rows of art with 9 above and 9 below
+     * (apex 9, wall foot 54 = 45+9 — measured). (tilePx - height)/2 is that 9
+     * exactly, and 0 for full-height tiles, so uniform fields only translate.
+     * Latent until a SET mixed the two geometries: a ballot member (its own
+     * 64x46 file) in a ring of review-key members. */
+    const dyOff = (iso.tilePx - dh) / 2;
+    ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) + dyOff - minY + pad) * scale, iso.tilePx * scale, dh * scale);
   }
   return canvas;
 }

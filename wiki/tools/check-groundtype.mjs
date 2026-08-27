@@ -257,19 +257,41 @@ await p.waitForTimeout(900);
 ok(!ed.chips.includes("After") && !ed.chips.includes("Textured"),
   "and After and Textured are gone — a set member IS the texture, so the synthesis has nothing left to do");
 
-// THE POOL PICKER draws from the textured ballot, not the flat-topped x-over-y
-// tiles ("the tile show a clean color top so I can't see the art under").
+/* THE POOL PICKER IS AN AUDITION (maintainer 2026-08-27: "scroll over lots of
+ * different tops and preview them in a 7x7 tile preview, where the tile I may
+ * add is the center 3x3 surrounded by a 2 border base tile set — according to
+ * how the base tile set should be drawn (its weights)"). Still sourced from
+ * the textured ballot, never the flat-topped x-over-y tiles. */
 await p.evaluate(() => document.querySelector(".add-tiles")?.click());
-await p.waitForTimeout(900);
-const pool = await p.evaluate(() => ({
-  open: !!document.querySelector(".pool-modal[open]"),
-  cells: document.querySelectorAll(".pool-cell").length,
-  srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 3).map((i) => i.getAttribute("src")),
-}));
+await p.waitForTimeout(1600);
+const pool = await p.evaluate(() => {
+  const cv = document.querySelector(".pool-stage canvas");
+  return {
+    open: !!document.querySelector(".pool-modal[open]"),
+    cells: document.querySelectorAll(".pool-cell").length,
+    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 3).map((i) => i.getAttribute("src")),
+    built: document.querySelectorAll(".pool-cell[data-built='1']").length,
+    field: cv ? { w: cv.width, h: cv.height } : null,
+    randomize: [...document.querySelectorAll(".pool-modal button")].some((x) => /Randomize/.test(x.textContent)),
+  };
+});
 ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ballot (${pool.cells} candidates)`);
 ok(pool.srcs.every((s) => /base_candidates/.test(s)),
   "sourced from tiles/base_candidates, never from the x-over-y tiles whose tops are deliberately flat");
-await p.evaluate(() => document.querySelector(".pool-cell")?.click());
+// A 7x7 at 1:1 is 13 lattice steps + a tile wide = 448px + padding. Anything
+// materially narrower is not the field he specified.
+ok(pool.field && pool.field.w > 440 && pool.built >= 1 && pool.built < pool.cells,
+  `each candidate auditions in a 7×7 field of the set, built lazily (${pool.built} built of ${pool.cells}, ${pool.field?.w}×${pool.field?.h})`);
+ok(pool.randomize, "with a Randomize that re-rolls the surrounding set");
+// Adding keeps the audition open — he adds several in one sitting.
+await p.evaluate(() => document.querySelector(".pool-add")?.click());
+await p.waitForTimeout(700);
+const afterAdd = await p.evaluate(() => ({
+  open: !!document.querySelector(".pool-modal[open]"),
+  marked: document.querySelectorAll(".pool-cell.in-set").length,
+}));
+ok(afterAdd.open && afterAdd.marked === 1, `adding marks the row and keeps the audition open (${afterAdd.marked} marked)`);
+await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(900);
 
 // WEIGHT 0 MUST MEAN NEVER — the old base-tile weight clamped to a 0.1 floor,

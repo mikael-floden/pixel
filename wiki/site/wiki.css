@@ -336,16 +336,17 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 /* THE POOL PICKER: 161 candidates, so the grid is dense and the tiles are shown
    at their authored size — a base tile is judged on its surface, and scaling a
    pixel surface up is judging a different surface. */
-.pool-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
-  gap: 6px; margin: 10px 0; max-height: 56vh; overflow-y: auto;
-}
-.pool-cell {
-  padding: 3px; border: 1px solid var(--border); border-radius: 7px;
-  background: var(--surface); cursor: pointer; line-height: 0;
-}
-.pool-cell:hover, .pool-cell:focus-visible { border-color: var(--accent, #c9a227); }
-.pool-tile { width: 100%; height: auto; image-rendering: pixelated; }
+/* THE AUDITION LIST (maintainer 2026-08-27): one row per candidate, each a
+   7x7 field with the candidate as the centre 3x3 in two rings of the set.
+   Vertical scroll over rows; each FIELD pans horizontally on its own, since
+   7x7 at 1:1 is wider than a phone and pixel art scales only by integers. */
+.pool-list { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; max-height: 62vh; overflow-y: auto; }
+.pool-cell { padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+.pool-cell.in-set { border-color: var(--good, #4a7); }
+.pool-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 6px; }
+.pool-tile { width: 44px; height: auto; image-rendering: pixelated; flex: none; }
+.pool-name { flex: 1 1 120px; min-width: 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.pool-stage { min-height: 120px; }
 .base-group { margin-bottom: 14px; }
 .group-stage { display: flex; justify-content: center; padding: 8px; border-radius: 10px; overflow-x: auto; }
 .base-member {
