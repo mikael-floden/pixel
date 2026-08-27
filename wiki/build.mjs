@@ -688,7 +688,6 @@ function buildWorld() {
    * texture. So the pool cannot be filtered by ground or by source — only by
    * what the pixels say. A flat plate offered as a base tile IS the clean
    * colour, which every set already carries as its clean member. */
-  const TOPFLAT = 0.9;
   const topDominant = (rel) => {
     let d = null;
     try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { return 1; }
@@ -713,8 +712,7 @@ function buildWorld() {
       try { ballot = JSON.parse(readFileSync(idx, "utf8")); } catch { continue; }
       const cands = (ballot?.candidates ?? [])
         .filter((c) => c?.id && c?.file && existsSync(join(ROOT, c.file)))
-        .filter((c) => topDominant(c.file) < TOPFLAT)
-        .map((c) => ({ id: c.id, art: c.file, from: c.source_set ?? null }));
+        .map((c) => ({ id: c.id, art: c.file, from: c.source_set ?? null, flat: +topDominant(c.file).toFixed(2) }));
       if (cands.length) basePools[ground] = cands;
     }
   }
@@ -778,13 +776,16 @@ function buildWorld() {
         keys: Object.values(e.plates ?? {}).flat(),
         // [key8, cell] per plate, so a pool row can name its provenance and
         // resolve to the review key the tiles agent asks members to carry.
-        // Only plates whose top is a real surface — see topDominant. The count
-        // that did not make it is published so the picker can say so rather
-        // than look short.
-        pool: Object.entries(e.plates ?? {}).flatMap(([cell, ks]) => ks.map((k) => [k, cell]))
-          .filter(([k]) => topDominant(`tiles/plates/${g}/${k}.webp`) < TOPFLAT),
-        flatOut: Object.values(e.plates ?? {}).flat()
-          .filter((k) => topDominant(`tiles/plates/${g}/${k}.webp`) >= TOPFLAT).length,
+        /* EVERY approved tile, with its top's dominant share measured — never
+         * filtered (maintainer 2026-08-27: "all accepted tiles for brown
+         * paving stone over x should be a candidate here. So why do you try to
+         * make the button disabled in the first place?"). An earlier build
+         * dropped tops >=90% one tone, which was this build making a taste
+         * call that is his: whether a flat top belongs in a set is decided in
+         * the audition, by him. The number ships so the picker can SAY a top
+         * is flat and sort the textured ones first — information, not a gate. */
+        pool: Object.entries(e.plates ?? {}).flatMap(([cell, ks]) =>
+          ks.map((k) => [k, cell, +topDominant(`tiles/plates/${g}/${k}.webp`).toFixed(2)])),
       }])),
     };
   }

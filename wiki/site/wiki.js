@@ -4391,11 +4391,28 @@ const setsDoc = () => state.tuning.base_tile_sets
  * pickable. */
 function basePool(typeId) {
   const plates = patternLib()?.plates[typeId]?.pool ?? [];
-  return [
-    ...plates.map(([k, cell]) => ({ id: `tiles/${cell}/${k}`, art: `tiles/plates/${typeId}/${k}.webp`, from: cell })),
-    ...((worldMeta().basePools ?? {})[typeId] ?? []),
+  const all = [
+    ...plates.map(([k, cell, flat]) => ({ id: `tiles/${cell}/${k}`, art: `tiles/plates/${typeId}/${k}.webp`, from: cell, flat: flat ?? 1 })),
+    ...((worldMeta().basePools ?? {})[typeId] ?? []).map((c) => ({ ...c, flat: c.flat ?? 0 })),
   ];
+  /* EVERYTHING APPROVED IS OFFERED, most textured first (maintainer
+   * 2026-08-27: "all accepted tiles for brown paving stone over x should be a
+   * candidate here. So why do you try to make the button disabled in the
+   * first place?"). An earlier build FILTERED tops >=90% one tone out of the
+   * pool, which was a taste call that is his to make in the audition, not
+   * mine to make in a build script. The measurement survives as the sort key
+   * and a pill — the flat tops are all there, after the ones with something
+   * to look at. */
+  /* A TILE HE REJECTED IN REVIEW IS NOT A CANDIDATE (maintainer 2026-08-27:
+   * "The only tops I don't want in this list is tiles I have rejected as a
+   * x over y/x..."). The plates roster is approved-only already — a rejected
+   * key has no plate — but a rejection made THIS session must drop now, not
+   * on the tiles agent's next republish. */
+  return all
+    .filter((c) => !/^tiles\//.test(c.id) || fb("tiles", c.id).status !== "rejected")
+    .sort((a, b) => (a.flat ?? 1) - (b.flat ?? 1));
 }
+const TOP_FLAT = 0.9;    // >= this share of one tone reads as a flat top
 /* A MEMBER MAY COME FROM EITHER POOL. The ballot is the right one to pick from
  * and the one the picker offers — but he can also promote a tile straight from
  * an x-over-y review card, and that decision predates this model and should
@@ -4441,6 +4458,12 @@ function groundSets(typeId) {
         weight: Math.max(0, Number(s.weight) || 0),
         clean: cm ? Math.max(0, Number(cm.weight) || 0) : (tiles.length ? 0 : 1),
         members: tiles,
+        /* PER-SET REJECTIONS (maintainer 2026-08-27: "rejecting a tile not
+         * being good enough for Base Tile Set #1 doesn't mean the tile is not
+         * good enough to be part of Base Tile Set #2"). A verdict about THIS
+         * set, so it lives on the set — the audition skips these and he never
+         * reviews the same top twice for the same set. */
+        rejected: (Array.isArray(s.rejected) ? s.rejected : []).filter((x) => typeof x === "string"),
       };
     });
 }
@@ -4483,6 +4506,7 @@ function writeSets(typeId, sets) {
   doc.grounds[typeId] = {
     sets: sets.map((s) => ({
       id: s.id, name: s.name, weight: s.weight,
+      ...(s.rejected?.length ? { rejected: s.rejected } : {}),
       members: [{ kind: "clean", weight: s.clean },
         /* `tile` is the REVIEW KEY when the member is one (tiles/<cell>/<key8>)
          * — the tiles agent's plates resolve maps it to a plate by pure string
@@ -4525,6 +4549,14 @@ function addSetMember(typeId, id, candId) {
     s.members.push({ id: candId, art: memberArt(typeId, candId), gone: false, weight: 1 });
   });
 }
+/* Not good enough for THIS set — and only this set. */
+const rejectForSet = (typeId, id, candId, on) =>
+  editSets(typeId, (sets) => {
+    const s2 = sets.find((x) => x.id === id);
+    if (!s2) return;
+    s2.rejected = (s2.rejected ?? []).filter((x) => x !== candId);
+    if (on) s2.rejected.push(candId);
+  });
 const removeSetMember = (typeId, id, candId) =>
   editSets(typeId, (sets) => { const s = sets.find((x) => x.id === id); if (s) s.members = s.members.filter((m) => m.id !== candId); });
 const setMemberWeight = (typeId, id, candId, w) =>
@@ -4608,8 +4640,11 @@ function setField(typeId, set, n, origin, scale = 1) {
  * is answered by the field behind it, not by the grid. */
 function openPoolPicker(typeId, setId, onDone) {
   document.querySelector(".pool-modal")?.remove();
-  const already = () => new Set(groundSets(typeId).find((s) => s.id === setId)?.members.map((m) => m.id) ?? []);
-  const pool = basePool(typeId).filter((c) => !already().has(c.id));
+  const setNow = () => groundSets(typeId).find((s) => s.id === setId);
+  const already = () => new Set(setNow()?.members.map((m) => m.id) ?? []);
+  const rejectedHere = new Set(setNow()?.rejected ?? []);
+  const pool = basePool(typeId).filter((c) => !already().has(c.id) && !rejectedHere.has(c.id));
+  const rejectedN = rejectedHere.size;
   const setOf = () => groundSets(typeId).find((s) => s.id === setId) ?? { id: setId, name: "Set", clean: 0, members: [] };
   /* EVERY CANDIDATE IS AUDITIONED IN THE SET (maintainer 2026-08-27: "a
    * dialog/modal ... where I can scroll over lots of different tops and
@@ -4659,18 +4694,33 @@ function openPoolPicker(typeId, setId, onDone) {
   }, { rootMargin: "600px 0px" });
   const rowFor = (cand) => {
     const addBtn = h("button", { class: "ghost-btn pool-add", type: "button" }, `+ Add to ${setLabel(setOf())}`);
+    /* THE OTHER VERDICT (maintainer 2026-08-27: "I need a reject button here
+     * to not have to review the same tiles over and over again!"). Scoped to
+     * THIS set — the same top stays a candidate for every other set — and
+     * undoable in place, because a misthumb on a phone must not silently bury
+     * a tile until someone edits a JSON file. */
+    const rejBtn = h("button", { class: "ghost-btn pool-reject", type: "button", title: `Never offer this top for ${setLabel(setOf())} again — other sets still see it` }, "✕ not for this set");
     addBtn.onclick = () => {
       addSetMember(typeId, setId, cand.id);
       added++;
-      addBtn.disabled = true;
+      addBtn.disabled = true; rejBtn.disabled = true;
       addBtn.replaceChildren(`✓ in ${setLabel(setOf())} — commit when you are done`);
       row.classList.add("in-set");
+    };
+    rejBtn.onclick = () => {
+      const on = !row.classList.contains("set-rejected");
+      rejectForSet(typeId, setId, cand.id, on);
+      added += on ? 1 : -1;        // a rejection is a change worth repainting for
+      row.classList.toggle("set-rejected", on);
+      addBtn.disabled = on;
+      rejBtn.replaceChildren(on ? "↩ undo — offer it again" : "✕ not for this set");
     };
     const row = h("div", { class: "pool-cell", "data-cand": cand.id },
       h("div", { class: "pool-head" },
         h("img", { class: "pool-tile", src: assetUrl(cand.art), alt: cand.id, loading: "lazy" }),
         h("span", { class: "pool-name", title: cand.id }, memberLabel(typeId, cand.id)),
-        addBtn),
+        (cand.flat ?? 0) >= TOP_FLAT ? h("span", { class: "pill", title: `The top is ${Math.round((cand.flat ?? 1) * 100)}% one tone — adding it draws close to the clean colour` }, "flat top") : null,
+        addBtn, rejBtn),
       h("div", { class: "iso-stage checker group-stage pool-stage" },
         h("p", { class: "muted" }, "…")));
     rows.set(cand.id, row);
@@ -4687,6 +4737,7 @@ function openPoolPicker(typeId, setId, onDone) {
     h("div", { class: "promote-head" },
       h("b", {}, `Add to ${setLabel(setOf())}`),
       h("span", { class: "pill" }, `${pool.length} to audition`),
+      rejectedN ? h("span", { class: "pill", title: "Rejected for this set earlier — other sets still offer them" }, `${rejectedN} rejected here`) : null,
       h("button", {
         class: "ghost-btn", type: "button",
         title: "Re-roll the surrounding set — a candidate belongs when every roll still looks like one ground",
@@ -6274,7 +6325,7 @@ function viewWorldType(top) {
     const sets = groundSets(t.id);
     const setShares = shareOf(sets.map((s) => s.weight));
     const pool = basePool(t.id);
-    const flatOut = patternLib()?.plates[t.id]?.flatOut ?? 0;
+    const flatN = pool.filter((c) => (c.flat ?? 0) >= TOP_FLAT).length;
     const setPanel = (s, share) => {
       const okey = `${t.id}/${s.id}`;
       const origin = setOrigins.get(okey) ?? [0, 0];
@@ -6324,21 +6375,20 @@ function viewWorldType(top) {
         // SET 0 CANNOT HOLD A TILE, by his rule — it "can only contain 100% the
         // clean/plain base color". The button is absent rather than disabled:
         // a control that exists but never works is a worse answer than none.
-        /* THE BUTTON SAYS WHY IT IS DEAD. A ground whose every published tile
-         * has a flat top has nothing to offer a set — that is a fact about the
-         * art, not a fault, and the label carries it rather than leaving him
-         * pressing a control that cannot answer. */
+        /* Disabled ONLY when the ground has no approved tiles at all, which no
+         * ground has today — every approved tile is a candidate, flat or not,
+         * and whether a flat top belongs in a set is decided in the audition. */
         state.admin && s.id !== CLEAN_SET ? h("button", {
           class: "ghost-btn add-tiles", ...(pool.length ? {} : { disabled: "disabled" }),
-          title: pool.length ? `Pick from the ${pool.length} textured candidates for this ground`
-            : `Every published tile of this ground has a flat top, so there is nothing to add that the clean colour is not already${flatOut ? ` (${flatOut} checked)` : ""}. It draws its clean colour until the tiles agent publishes a texture.`,
+          title: pool.length ? `Audition any of this ground's ${pool.length} approved tops — most textured first`
+            : "No approved tiles for this ground yet",
           onclick: pool.length ? () => openPoolPicker(t.id, s.id, () => { keepScrollY = window.scrollY; route(); }) : null,
-        }, pool.length ? "+ Add tiles…" : "+ Add tiles — none textured yet") : null);
+        }, "+ Add tiles…") : null);
     };
     return h("div", {},
       h("p", { class: "muted" },
-        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} textured candidate${pool.length === 1 ? "" : "s"} to build them from` +
-        (flatOut ? ` (${flatOut} more have a flat top, which the clean colour already is)` : "") + ". " +
+        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} candidate${pool.length === 1 ? "" : "s"} to build them from` +
+        (flatN ? ` (${flatN} with a flat top)` : "") + ". " +
         "A set is a group of tiles that look good together; the world picks ONE set for an area and stays with it, then varies inside it."),
       ...sets.map((s, i) => setPanel(s, setShares[i])),
       state.admin ? h("button", {

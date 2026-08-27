@@ -343,6 +343,9 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 .pool-list { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; max-height: 62vh; overflow-y: auto; }
 .pool-cell { padding: 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
 .pool-cell.in-set { border-color: var(--good, #4a7); }
+/* Rejected FOR THIS SET: dimmed but standing, with the undo where the mistake
+   was made — it disappears from the list on the next open, not this one. */
+.pool-cell.set-rejected { opacity: 0.5; }
 .pool-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 6px; }
 .pool-tile { width: 44px; height: auto; image-rendering: pixelated; flex: none; }
 .pool-name { flex: 1 1 120px; min-width: 0; font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }

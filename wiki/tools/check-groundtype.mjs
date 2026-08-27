@@ -286,26 +286,68 @@ ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ba
  * base tile IS the clean colour, which every set already carries. */
 ok(pool.srcs.every((s) => /base_candidates|\/plates\//.test(s)),
   `sourced from published tile art (${pool.srcs.map((s) => s.split("/").slice(-2, -1)[0]).join(", ")})`);
+/* EVERYTHING APPROVED IS OFFERED — the full plates roster plus the ballot,
+ * nothing filtered (maintainer 2026-08-27: "all accepted tiles for brown
+ * paving stone over x should be a candidate here. So why do you try to make
+ * the button disabled in the first place?"). A build briefly dropped tops
+ * >=90% one tone from the pool; that was a taste call made in a script, and
+ * this assertion exists so it cannot come back: the offered count must equal
+ * roster + ballot exactly. Flatness is a SORT and a PILL, never a gate. */
 {
-  const flat = await p.evaluate(() => {
-    const cv = document.querySelector(".pool-stage canvas");
-    if (!cv) return null;
-    try {
-      const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
-      const c = new Map();
-      for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { const k = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; c.set(k, (c.get(k) ?? 0) + 1); }
-      const n = [...c.values()].reduce((a, b2) => a + b2, 0);
-      return { colours: c.size, dominant: Math.max(...c.values()) / n };
-    } catch { return null; }
-  });
-  ok(flat && flat.colours > 6 && flat.dominant < 0.9,
-    `and every candidate offered has a top worth judging (${flat?.colours} colours, commonest ${(100 * (flat?.dominant ?? 1)).toFixed(0)}%)`);
+  const expect = (META.patternLib?.plates?.grass?.pool.length ?? 0) + (META.basePools?.grass?.length ?? 0);
+  // Minus what this run already added to the set — a member is rightly not
+  // offered twice, and that is the only legitimate subtraction.
+  const inSet = await p.evaluate(() =>
+    (window.__wiki.state.tuning.base_tile_sets.grounds.grass?.sets.find((x) => x.id === 1)?.members ?? []).filter((m) => m.kind === "tile").length);
+  const rejHere = await p.evaluate(() =>
+    (window.__wiki.state.tuning.base_tile_sets.grounds.grass?.sets.find((x) => x.id === 1)?.rejected ?? []).length);
+  ok(pool.cells === expect - inSet - rejHere,
+    `every approved top is offered, none filtered (${pool.cells} = plates ${META.patternLib?.plates?.grass?.pool.length} + ballot ${META.basePools?.grass?.length} − ${inSet} in the set − ${rejHere} rejected for it)`);
+  const order = await p.evaluate(() => [...document.querySelectorAll(".pool-cell")].map((r) => r.querySelectorAll(".pool-head .pill").length ? 1 : 0));
+  const firstFlat = order.indexOf(1), lastTextured = order.lastIndexOf(0);
+  ok(firstFlat === -1 || lastTextured < firstFlat,
+    `most textured first, the flat tops after — sorted, not dropped (${order.filter((x) => !x).length} textured, ${order.filter(Boolean).length} flat)`);
 }
 // A 7x7 at 1:1 is 13 lattice steps + a tile wide = 448px + padding. Anything
 // materially narrower is not the field he specified.
 ok(pool.field && pool.field.w > 440 && pool.built >= 1 && pool.built < pool.cells,
   `each candidate auditions in a 7×7 field of the set, built lazily (${pool.built} built of ${pool.cells}, ${pool.field?.w}×${pool.field?.h})`);
 ok(pool.randomize, "with a Randomize that re-rolls the surrounding set");
+/* REJECT IS PER SET (maintainer 2026-08-27: "I need a reject button here to
+ * not have to review the same tiles over and over again! But rejecting the
+ * tile in the Base Tile #1 add dialog doesn't reject that same top/tile in
+ * the Base Tile #2 add dialog."). Proven across two sets on the same top. */
+const rejCand = await p.evaluate(() => document.querySelector(".pool-cell")?.dataset.cand);
+await p.evaluate(() => document.querySelector(".pool-reject")?.click());
+await p.waitForTimeout(500);
+const rejState = await p.evaluate(() => ({
+  dimmed: document.querySelectorAll(".pool-cell.set-rejected").length,
+  undo: /undo/.test(document.querySelector(".pool-reject")?.textContent ?? ""),
+}));
+ok(rejState.dimmed === 1 && rejState.undo, "rejecting dims the row in place and offers an undo where the thumb just was");
+await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
+await p.waitForTimeout(700);
+await p.evaluate(() => document.querySelector(".add-tiles")?.click());
+await p.waitForTimeout(1200);
+const gone = await p.evaluate((f) => ({
+  offersIt: !!document.querySelector(`.pool-cell[data-cand="${f}"]`),
+  pill: [...document.querySelectorAll(".promote-head .pill")].some((x) => /rejected here/.test(x.textContent)),
+}), rejCand);
+ok(!gone.offersIt && gone.pill, `reopening the same set no longer offers it, and says so (${rejCand})`);
+await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
+await p.waitForTimeout(700);
+// A SECOND set still offers the same top — the verdict did not leak.
+await p.evaluate(() => document.querySelector(".new-set")?.click());
+await p.waitForTimeout(600);
+await p.evaluate(() => [...document.querySelectorAll(".add-tiles")].at(-1)?.click());
+await p.waitForTimeout(1200);
+ok(await p.evaluate((f) => !!document.querySelector(`.pool-cell[data-cand="${f}"]`), rejCand),
+  "while a different set still offers the same top — the rejection is the set's, not the tile's");
+await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
+await p.waitForTimeout(700);
+await p.evaluate(() => document.querySelector(".add-tiles")?.click());
+await p.waitForTimeout(900);
+
 // Adding keeps the audition open — he adds several in one sitting.
 await p.evaluate(() => document.querySelector(".pool-add")?.click());
 await p.waitForTimeout(700);
