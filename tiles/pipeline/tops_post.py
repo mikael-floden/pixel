@@ -35,6 +35,9 @@ raw pass stays reviewable and the rule can be re-run when it changes.
 
 from __future__ import annotations
 
+import glob
+import hashlib
+import io
 import json
 import os
 import sys
@@ -185,12 +188,31 @@ def main():
         post = os.path.join(d, "post")
         os.makedirs(post, exist_ok=True)
         flags = {}
+        # ART IS IMMUTABLE: A REGENERATED TILE GETS A NEW NAME. Rewriting pixels under a
+        # stable URL is how the maintainer's phone showed two generations of the same
+        # file side by side and read it as the game being destroyed ("What is real and
+        # what is a cache bug? Noone knows now"). The post filename carries the content
+        # hash, the index points at the current name, and every stale name is deleted -
+        # so a cache can only ever show a coherent old version or a missing image,
+        # never a wrong-pixel mix. The class is gone, not patched.
+        post_files = []
         for name in sheet["tiles"]:
             img = Image.open(os.path.join(d, name))
             aligned, bg, clipped = align(img, clean)
             if aligned is None:
+                post_files.append(None)
                 continue
-            aligned.save(os.path.join(post, name), "WEBP", lossless=True, exact=True)
+            buf = io.BytesIO()
+            aligned.save(buf, "WEBP", lossless=True, exact=True)
+            data = buf.getvalue()
+            h8 = hashlib.sha1(data).hexdigest()[:8]
+            hashed = name.replace(".webp", f".{h8}.webp")
+            with open(os.path.join(post, hashed), "wb") as fh:
+                fh.write(data)
+            post_files.append(hashed)
+            for old_f in glob.glob(os.path.join(post, name.replace(".webp", "*.webp"))):
+                if os.path.basename(old_f) != hashed:
+                    os.remove(old_f)
             wrote += 1
             # THE HUE IS THE ONLY UNFIXABLE AXIS. The shift lands the background's
             # VALUE and tint exactly on the clean colour, so distance alone must not
@@ -215,13 +237,17 @@ def main():
                 misfits += 1
             worst.append((clipped, hue_deg, f'{sheet["dir"]}/{name}'))
         sheet["post"] = True
+        sheet["post_files"] = post_files
         sheet.pop("misfit_tiles", None)     # stale flags from a prior run must not survive
         if flags:
             sheet["misfit_tiles"] = flags
     idx["post_pass"] = {
         "rule": "out = art + (clean - background), overflow compressed into the gamut "
                 "around the clean anchor; background = trimmed median of the top face",
-        "dir": "<sheet>/post/tile_NN.webp",
+        "dir": "<sheet>/post/<name from sheet.post_files - NEVER constructed by convention>",
+        "immutable": "a regenerated tile gets a new content-hashed filename and the old "
+                     "one is deleted; stale caches show a coherent old version or a 404, "
+                     "never mixed generations",
         "misfit": f"tail contrast squeezed below {int((1-CLIP_MISFIT)*100)}%, or background "
                   f"hue more than {int(HUE_MISFIT)} degrees from the clean colour - "
                   f"written but flagged; value distance never flags, the shift fixes it",

@@ -26,6 +26,9 @@ this pass needs only before + after, which are both in git.
 
 from __future__ import annotations
 
+import glob
+import hashlib
+import io
 import json
 import os
 import sys
@@ -94,10 +97,8 @@ def write_textured(manifest_path=None, only_missing=False):
         for e in c["candidates"]:
             after = os.path.join(REPO, e["after"])
             before = os.path.join(REPO, e["before"])
-            tex = after.replace("_after.webp", "_textured.webp")
-            rel = os.path.relpath(tex, REPO)
-            if only_missing and os.path.isfile(tex):
-                e["textured"] = rel
+            if only_missing and e.get("textured") and \
+                    os.path.isfile(os.path.join(REPO, e["textured"])):
                 skipped += 1
                 continue
             if not (os.path.isfile(after) and os.path.isfile(before)) or not hexv:
@@ -107,8 +108,20 @@ def write_textured(manifest_path=None, only_missing=False):
             if im is None:
                 failed += 1
                 continue
-            im.save(tex, "WEBP", lossless=True, exact=True)
-            e["textured"] = rel
+            # IMMUTABLE, content-hashed name - see tops_post. The manifest's `textured`
+            # field is the ONLY valid address; constructing the path by convention is
+            # how a consumer ends up mixing cache generations.
+            buf = io.BytesIO()
+            im.save(buf, "WEBP", lossless=True, exact=True)
+            data = buf.getvalue()
+            h8 = hashlib.sha1(data).hexdigest()[:8]
+            hashed = after.replace("_after.webp", f"_textured.{h8}.webp")
+            with open(hashed, "wb") as fh:
+                fh.write(data)
+            for old_f in glob.glob(after.replace("_after.webp", "_textured*.webp")):
+                if os.path.abspath(old_f) != os.path.abspath(hashed):
+                    os.remove(old_f)
+            e["textured"] = os.path.relpath(hashed, REPO)
             wrote += 1
     with open(mp, "w") as f:
         json.dump(man, f, indent=2)

@@ -526,3 +526,15 @@ transition was never drawn, and no amount of re-ranking will produce one.
 Paths are **repo-relative**, matching how the wiki addresses every other domain's art.
 Verdicts are read back from `live/feedback/tiles.json` in the `pixel-wiki-feedback@1`
 format the scenery domain already uses.
+
+## Art immutability (LAW, 2026-08-27)
+
+A published art file is NEVER rewritten. A pass that regenerates a tile writes a NEW
+filename carrying the content hash (`tile_00.<sha8>.webp`, `<n>_textured.<sha8>.webp`),
+updates the index/manifest to point at it, and deletes the stale name. Consumers read
+art paths from the index, never construct them by convention. (The one time art was
+rewritten in place under stable names, the maintainer's phone rendered two cache
+generations of the same file side by side and it read as the game being destroyed -
+"What is real and what is a cache bug? Noone knows now." With hashed names a stale
+cache can only show a coherent old version or a missing image, never a mix. Raw
+generator output is exempt: it is written once at generation and never regenerated.)
