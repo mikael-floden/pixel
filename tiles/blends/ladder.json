@@ -1,0 +1,1211 @@
+{
+ "schema": "tiles3/blends-ladder@1",
+ "kind": "blend_top_only",
+ "use_for": "transition",
+ "wall_is_meaningless": true,
+ "levels": [
+  10,
+  20,
+  30,
+  40,
+  50
+ ],
+ "n_sheets": 7,
+ "sheets": [
+  {
+   "dir": "tiles/blends/grass__with__lava/p10",
+   "dominant": "grass",
+   "minor": "lava",
+   "pct_minor": 10,
+   "prompt": "mostly grass, a few small spots of lava",
+   "seed": 61139,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.eb57f613.webp",
+    "tile_01.b01646b3.webp",
+    "tile_02.542ceae5.webp",
+    "tile_03.c99b4d80.webp",
+    "tile_04.29bcdc9e.webp",
+    "tile_05.60aa105d.webp",
+    "tile_06.6be8c82e.webp",
+    "tile_07.e73e71f3.webp",
+    "tile_08.e1a1269a.webp",
+    "tile_09.c07a2c53.webp",
+    "tile_10.631369c6.webp",
+    "tile_11.b49f1e3c.webp",
+    "tile_12.a4e18703.webp",
+    "tile_13.f6ef13bb.webp",
+    "tile_14.dba753f1.webp",
+    "tile_15.cfc456e5.webp"
+   ],
+   "measured_pct_minor": 10.9,
+   "measured_tiles": [
+    0.1,
+    0.0,
+    25.6,
+    7.9,
+    2.5,
+    21.9,
+    16.2,
+    6.8,
+    0.4,
+    16.9,
+    0.0,
+    19.2,
+    17.7,
+    6.3,
+    29.8,
+    2.9
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__lava/p20",
+   "dominant": "grass",
+   "minor": "lava",
+   "pct_minor": 20,
+   "prompt": "mostly grass, scattered patches of lava",
+   "seed": 62133,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.c7ada128.webp",
+    "tile_01.79639081.webp",
+    "tile_02.067e27a9.webp",
+    "tile_03.e7969f45.webp",
+    "tile_04.3616ade9.webp",
+    "tile_05.faeb44a1.webp",
+    "tile_06.9d2a580c.webp",
+    "tile_07.ee8c208b.webp",
+    "tile_08.2763302c.webp",
+    "tile_09.7f181882.webp",
+    "tile_10.d9c91725.webp",
+    "tile_11.a9f86cf8.webp",
+    "tile_12.6f1d585c.webp",
+    "tile_13.901051f4.webp",
+    "tile_14.402a4276.webp",
+    "tile_15.c360ef72.webp"
+   ],
+   "measured_pct_minor": 26.2,
+   "measured_tiles": [
+    23.9,
+    25.4,
+    42.4,
+    29.1,
+    24.1,
+    30.8,
+    21.3,
+    31.9,
+    22.5,
+    18.5,
+    30.9,
+    25.2,
+    28.3,
+    26.3,
+    27.3,
+    10.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__lava/p30",
+   "dominant": "grass",
+   "minor": "lava",
+   "pct_minor": 30,
+   "prompt": "grass with clear patches of lava breaking through",
+   "seed": 67869,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.51ab4de7.webp",
+    "tile_01.379886c4.webp",
+    "tile_02.0d1ca8c4.webp",
+    "tile_03.7e60ab4e.webp",
+    "tile_04.c8c1189f.webp",
+    "tile_05.0a72aceb.webp",
+    "tile_06.d4815b36.webp",
+    "tile_07.0675c579.webp",
+    "tile_08.7115a61c.webp",
+    "tile_09.85c58e4e.webp",
+    "tile_10.a7747080.webp",
+    "tile_11.d1311b54.webp",
+    "tile_12.25b2c96a.webp",
+    "tile_13.a878c332.webp",
+    "tile_14.0635c371.webp",
+    "tile_15.9b1893de.webp"
+   ],
+   "measured_pct_minor": 21.7,
+   "measured_tiles": [
+    21.2,
+    23.1,
+    18.7,
+    0.0,
+    16.8,
+    17.4,
+    35.3,
+    19.5,
+    30.4,
+    20.9,
+    12.9,
+    41.3,
+    37.4,
+    18.1,
+    34.4,
+    0.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__lava/p40",
+   "dominant": "grass",
+   "minor": "lava",
+   "pct_minor": 40,
+   "prompt": "grass and lava mixed, more grass",
+   "seed": 89189,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.0e1ba4f8.webp",
+    "tile_01.4ff40872.webp",
+    "tile_02.f37dfa7f.webp",
+    "tile_03.d1e39d68.webp",
+    "tile_04.f60453de.webp",
+    "tile_05.bd03681c.webp",
+    "tile_06.02bb6338.webp",
+    "tile_07.a8086c13.webp",
+    "tile_08.f2932402.webp",
+    "tile_09.b8e55d65.webp",
+    "tile_10.483eab3f.webp",
+    "tile_11.3ef22fa7.webp",
+    "tile_12.c0186a9f.webp",
+    "tile_13.29ad5b55.webp",
+    "tile_14.f1b01af6.webp",
+    "tile_15.c2e6225f.webp"
+   ],
+   "measured_pct_minor": 18.7,
+   "measured_tiles": [
+    7.6,
+    15.6,
+    7.7,
+    12.6,
+    28.0,
+    16.6,
+    15.7,
+    19.3,
+    16.8,
+    0.0,
+    27.8,
+    34.8,
+    40.2,
+    10.3,
+    35.1,
+    12.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__lava/p50",
+   "dominant": "grass",
+   "minor": "lava",
+   "pct_minor": 50,
+   "prompt": "grass and lava mixed evenly",
+   "seed": 76672,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.f82c4853.webp",
+    "tile_01.439836e0.webp",
+    "tile_02.2e860ae5.webp",
+    "tile_03.c6ba893a.webp",
+    "tile_04.b0be70d2.webp",
+    "tile_05.7ed86c18.webp",
+    "tile_06.06ce974f.webp",
+    "tile_07.2403e08c.webp",
+    "tile_08.dd8d9d31.webp",
+    "tile_09.658492b1.webp",
+    "tile_10.e41b8836.webp",
+    "tile_11.0b08fb6e.webp",
+    "tile_12.d456b00e.webp",
+    "tile_13.34efe998.webp",
+    "tile_14.73510524.webp",
+    "tile_15.b0447fc3.webp"
+   ],
+   "measured_pct_minor": 42.2,
+   "measured_tiles": [
+    11.2,
+    64.0,
+    47.2,
+    54.6,
+    50.4,
+    53.9,
+    49.5,
+    46.6,
+    13.9,
+    45.1,
+    37.5,
+    44.2,
+    28.3,
+    47.7,
+    54.9,
+    25.4
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__light_beach/p10",
+   "dominant": "grass",
+   "minor": "light_beach",
+   "pct_minor": 10,
+   "prompt": "mostly grass, a few small spots of light beach",
+   "seed": 60604,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.6ec1ed6b.webp",
+    "tile_01.01cd96a3.webp",
+    "tile_02.ca7f857f.webp",
+    "tile_03.fd38f276.webp",
+    "tile_04.5c19a9f3.webp",
+    "tile_05.f1f12c77.webp",
+    "tile_06.b931df9e.webp",
+    "tile_07.240926d3.webp",
+    "tile_08.8b916567.webp",
+    "tile_09.5694672a.webp",
+    "tile_10.7a568791.webp",
+    "tile_11.3ba0e63e.webp",
+    "tile_12.738b12b5.webp",
+    "tile_13.ff141777.webp",
+    "tile_14.4d761623.webp",
+    "tile_15.e72c78cd.webp"
+   ],
+   "measured_pct_minor": 4.3,
+   "measured_tiles": [
+    0.4,
+    0.1,
+    15.1,
+    3.9,
+    1.5,
+    7.5,
+    0.1,
+    15.0,
+    0.0,
+    0.1,
+    6.4,
+    7.7,
+    0.0,
+    0.4,
+    9.8,
+    0.4
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__light_beach/p20",
+   "dominant": "grass",
+   "minor": "light_beach",
+   "pct_minor": 20,
+   "prompt": "mostly grass, scattered patches of light beach",
+   "seed": 44055,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.62c504f6.webp",
+    "tile_01.3108e474.webp",
+    "tile_02.457153a3.webp",
+    "tile_03.ed0c1678.webp",
+    "tile_04.aa2372ea.webp",
+    "tile_05.11db63a7.webp",
+    "tile_06.a443f565.webp",
+    "tile_07.1e3d8647.webp",
+    "tile_08.49382205.webp",
+    "tile_09.2df6911c.webp",
+    "tile_10.5467fa19.webp",
+    "tile_11.9cd7195f.webp",
+    "tile_12.eb8463ed.webp",
+    "tile_13.663ba11a.webp",
+    "tile_14.e67fa882.webp",
+    "tile_15.7673a2ae.webp"
+   ],
+   "measured_pct_minor": 26.6,
+   "measured_tiles": [
+    2.6,
+    9.8,
+    19.2,
+    20.0,
+    14.4,
+    100.0,
+    14.9,
+    42.5,
+    10.2,
+    21.3,
+    32.6,
+    26.3,
+    27.4,
+    45.4,
+    21.9,
+    16.7
+   ]
+  }
+ ],
+ "buckets": {
+  "grass__with__lava": {
+   "30": [
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 11,
+     "file": "tile_11.a9f86cf8.webp",
+     "raw": "tile_11.webp",
+     "measured": 25.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 1,
+     "file": "tile_01.79639081.webp",
+     "raw": "tile_01.webp",
+     "measured": 25.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 15,
+     "file": "tile_15.b0447fc3.webp",
+     "raw": "tile_15.webp",
+     "measured": 25.4,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 2,
+     "file": "tile_02.542ceae5.webp",
+     "raw": "tile_02.webp",
+     "measured": 25.6,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 13,
+     "file": "tile_13.901051f4.webp",
+     "raw": "tile_13.webp",
+     "measured": 26.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 14,
+     "file": "tile_14.402a4276.webp",
+     "raw": "tile_14.webp",
+     "measured": 27.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 10,
+     "file": "tile_10.483eab3f.webp",
+     "raw": "tile_10.webp",
+     "measured": 27.8,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 4,
+     "file": "tile_04.f60453de.webp",
+     "raw": "tile_04.webp",
+     "measured": 28.0,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 12,
+     "file": "tile_12.6f1d585c.webp",
+     "raw": "tile_12.webp",
+     "measured": 28.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 12,
+     "file": "tile_12.d456b00e.webp",
+     "raw": "tile_12.webp",
+     "measured": 28.3,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 3,
+     "file": "tile_03.e7969f45.webp",
+     "raw": "tile_03.webp",
+     "measured": 29.1,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 14,
+     "file": "tile_14.dba753f1.webp",
+     "raw": "tile_14.webp",
+     "measured": 29.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 8,
+     "file": "tile_08.7115a61c.webp",
+     "raw": "tile_08.webp",
+     "measured": 30.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 5,
+     "file": "tile_05.faeb44a1.webp",
+     "raw": "tile_05.webp",
+     "measured": 30.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 10,
+     "file": "tile_10.d9c91725.webp",
+     "raw": "tile_10.webp",
+     "measured": 30.9,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 7,
+     "file": "tile_07.ee8c208b.webp",
+     "raw": "tile_07.webp",
+     "measured": 31.9,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 14,
+     "file": "tile_14.0635c371.webp",
+     "raw": "tile_14.webp",
+     "measured": 34.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 11,
+     "file": "tile_11.3ef22fa7.webp",
+     "raw": "tile_11.webp",
+     "measured": 34.8,
+     "ordered": 40
+    }
+   ],
+   "10": [
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 13,
+     "file": "tile_13.f6ef13bb.webp",
+     "raw": "tile_13.webp",
+     "measured": 6.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 7,
+     "file": "tile_07.e73e71f3.webp",
+     "raw": "tile_07.webp",
+     "measured": 6.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 0,
+     "file": "tile_00.0e1ba4f8.webp",
+     "raw": "tile_00.webp",
+     "measured": 7.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 2,
+     "file": "tile_02.f37dfa7f.webp",
+     "raw": "tile_02.webp",
+     "measured": 7.7,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 3,
+     "file": "tile_03.c99b4d80.webp",
+     "raw": "tile_03.webp",
+     "measured": 7.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 13,
+     "file": "tile_13.29ad5b55.webp",
+     "raw": "tile_13.webp",
+     "measured": 10.3,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 15,
+     "file": "tile_15.c360ef72.webp",
+     "raw": "tile_15.webp",
+     "measured": 10.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 0,
+     "file": "tile_00.f82c4853.webp",
+     "raw": "tile_00.webp",
+     "measured": 11.2,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 15,
+     "file": "tile_15.c2e6225f.webp",
+     "raw": "tile_15.webp",
+     "measured": 12.0,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 3,
+     "file": "tile_03.d1e39d68.webp",
+     "raw": "tile_03.webp",
+     "measured": 12.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 10,
+     "file": "tile_10.a7747080.webp",
+     "raw": "tile_10.webp",
+     "measured": 12.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 8,
+     "file": "tile_08.dd8d9d31.webp",
+     "raw": "tile_08.webp",
+     "measured": 13.9,
+     "ordered": 50
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 1,
+     "file": "tile_01.4ff40872.webp",
+     "raw": "tile_01.webp",
+     "measured": 15.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 6,
+     "file": "tile_06.02bb6338.webp",
+     "raw": "tile_06.webp",
+     "measured": 15.7,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 6,
+     "file": "tile_06.6be8c82e.webp",
+     "raw": "tile_06.webp",
+     "measured": 16.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 5,
+     "file": "tile_05.bd03681c.webp",
+     "raw": "tile_05.webp",
+     "measured": 16.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 4,
+     "file": "tile_04.c8c1189f.webp",
+     "raw": "tile_04.webp",
+     "measured": 16.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 8,
+     "file": "tile_08.f2932402.webp",
+     "raw": "tile_08.webp",
+     "measured": 16.8,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 9,
+     "file": "tile_09.c07a2c53.webp",
+     "raw": "tile_09.webp",
+     "measured": 16.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 5,
+     "file": "tile_05.0a72aceb.webp",
+     "raw": "tile_05.webp",
+     "measured": 17.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 12,
+     "file": "tile_12.a4e18703.webp",
+     "raw": "tile_12.webp",
+     "measured": 17.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 13,
+     "file": "tile_13.a878c332.webp",
+     "raw": "tile_13.webp",
+     "measured": 18.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 9,
+     "file": "tile_09.7f181882.webp",
+     "raw": "tile_09.webp",
+     "measured": 18.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 2,
+     "file": "tile_02.0d1ca8c4.webp",
+     "raw": "tile_02.webp",
+     "measured": 18.7,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 11,
+     "file": "tile_11.b49f1e3c.webp",
+     "raw": "tile_11.webp",
+     "measured": 19.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 7,
+     "file": "tile_07.a8086c13.webp",
+     "raw": "tile_07.webp",
+     "measured": 19.3,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 7,
+     "file": "tile_07.0675c579.webp",
+     "raw": "tile_07.webp",
+     "measured": 19.5,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 9,
+     "file": "tile_09.85c58e4e.webp",
+     "raw": "tile_09.webp",
+     "measured": 20.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 0,
+     "file": "tile_00.51ab4de7.webp",
+     "raw": "tile_00.webp",
+     "measured": 21.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 6,
+     "file": "tile_06.9d2a580c.webp",
+     "raw": "tile_06.webp",
+     "measured": 21.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p10",
+     "i": 5,
+     "file": "tile_05.60aa105d.webp",
+     "raw": "tile_05.webp",
+     "measured": 21.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 8,
+     "file": "tile_08.2763302c.webp",
+     "raw": "tile_08.webp",
+     "measured": 22.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 1,
+     "file": "tile_01.379886c4.webp",
+     "raw": "tile_01.webp",
+     "measured": 23.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 0,
+     "file": "tile_00.c7ada128.webp",
+     "raw": "tile_00.webp",
+     "measured": 23.9,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 4,
+     "file": "tile_04.3616ade9.webp",
+     "raw": "tile_04.webp",
+     "measured": 24.1,
+     "ordered": 20
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 14,
+     "file": "tile_14.f1b01af6.webp",
+     "raw": "tile_14.webp",
+     "measured": 35.1,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 6,
+     "file": "tile_06.d4815b36.webp",
+     "raw": "tile_06.webp",
+     "measured": 35.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 12,
+     "file": "tile_12.25b2c96a.webp",
+     "raw": "tile_12.webp",
+     "measured": 37.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 10,
+     "file": "tile_10.e41b8836.webp",
+     "raw": "tile_10.webp",
+     "measured": 37.5,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p40",
+     "i": 12,
+     "file": "tile_12.c0186a9f.webp",
+     "raw": "tile_12.webp",
+     "measured": 40.2,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p30",
+     "i": 11,
+     "file": "tile_11.d1311b54.webp",
+     "raw": "tile_11.webp",
+     "measured": 41.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p20",
+     "i": 2,
+     "file": "tile_02.067e27a9.webp",
+     "raw": "tile_02.webp",
+     "measured": 42.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 11,
+     "file": "tile_11.0b08fb6e.webp",
+     "raw": "tile_11.webp",
+     "measured": 44.2,
+     "ordered": 50
+    }
+   ],
+   "50": [
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 9,
+     "file": "tile_09.658492b1.webp",
+     "raw": "tile_09.webp",
+     "measured": 45.1,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 7,
+     "file": "tile_07.2403e08c.webp",
+     "raw": "tile_07.webp",
+     "measured": 46.6,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 2,
+     "file": "tile_02.2e860ae5.webp",
+     "raw": "tile_02.webp",
+     "measured": 47.2,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 13,
+     "file": "tile_13.34efe998.webp",
+     "raw": "tile_13.webp",
+     "measured": 47.7,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 6,
+     "file": "tile_06.06ce974f.webp",
+     "raw": "tile_06.webp",
+     "measured": 49.5,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 4,
+     "file": "tile_04.b0be70d2.webp",
+     "raw": "tile_04.webp",
+     "measured": 50.4,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 5,
+     "file": "tile_05.7ed86c18.webp",
+     "raw": "tile_05.webp",
+     "measured": 53.9,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 3,
+     "file": "tile_03.c6ba893a.webp",
+     "raw": "tile_03.webp",
+     "measured": 54.6,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/grass__with__lava/p50",
+     "i": 14,
+     "file": "tile_14.73510524.webp",
+     "raw": "tile_14.webp",
+     "measured": 54.9,
+     "ordered": 50
+    }
+   ]
+  },
+  "grass__with__light_beach": {
+   "20": [
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 2,
+     "file": "tile_02.ca7f857f.webp",
+     "raw": "tile_02.webp",
+     "measured": 15.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 15,
+     "file": "tile_15.7673a2ae.webp",
+     "raw": "tile_15.webp",
+     "measured": 16.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 2,
+     "file": "tile_02.457153a3.webp",
+     "raw": "tile_02.webp",
+     "measured": 19.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 3,
+     "file": "tile_03.ed0c1678.webp",
+     "raw": "tile_03.webp",
+     "measured": 20.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 9,
+     "file": "tile_09.2df6911c.webp",
+     "raw": "tile_09.webp",
+     "measured": 21.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 14,
+     "file": "tile_14.e67fa882.webp",
+     "raw": "tile_14.webp",
+     "measured": 21.9,
+     "ordered": 20
+    }
+   ],
+   "10": [
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 10,
+     "file": "tile_10.7a568791.webp",
+     "raw": "tile_10.webp",
+     "measured": 6.4,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 5,
+     "file": "tile_05.f1f12c77.webp",
+     "raw": "tile_05.webp",
+     "measured": 7.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 11,
+     "file": "tile_11.3ba0e63e.webp",
+     "raw": "tile_11.webp",
+     "measured": 7.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 14,
+     "file": "tile_14.4d761623.webp",
+     "raw": "tile_14.webp",
+     "measured": 9.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 1,
+     "file": "tile_01.3108e474.webp",
+     "raw": "tile_01.webp",
+     "measured": 9.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 8,
+     "file": "tile_08.49382205.webp",
+     "raw": "tile_08.webp",
+     "measured": 10.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 4,
+     "file": "tile_04.aa2372ea.webp",
+     "raw": "tile_04.webp",
+     "measured": 14.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 6,
+     "file": "tile_06.a443f565.webp",
+     "raw": "tile_06.webp",
+     "measured": 14.9,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p10",
+     "i": 7,
+     "file": "tile_07.240926d3.webp",
+     "raw": "tile_07.webp",
+     "measured": 15.0,
+     "ordered": 10
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 7,
+     "file": "tile_07.1e3d8647.webp",
+     "raw": "tile_07.webp",
+     "measured": 42.5,
+     "ordered": 20
+    }
+   ],
+   "30": [
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 11,
+     "file": "tile_11.9cd7195f.webp",
+     "raw": "tile_11.webp",
+     "measured": 26.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 12,
+     "file": "tile_12.eb8463ed.webp",
+     "raw": "tile_12.webp",
+     "measured": 27.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 10,
+     "file": "tile_10.5467fa19.webp",
+     "raw": "tile_10.webp",
+     "measured": 32.6,
+     "ordered": 20
+    }
+   ],
+   "50": [
+    {
+     "dir": "tiles/blends/grass__with__light_beach/p20",
+     "i": 13,
+     "file": "tile_13.663ba11a.webp",
+     "raw": "tile_13.webp",
+     "measured": 45.4,
+     "ordered": 20
+    }
+   ]
+  }
+ },
+ "bucket_rule": "THE LADDER. buckets[<dominant>__with__<minor>][<10|20|30|40|50>] = the tiles whose MEASURED minor-ground area is nearest that decile; `measured` is the real mix, `ordered` only records which prompt produced it. Render from these, not from pct_minor - the prompt level moves the distribution but does not set it. Art is at <dir>/post/<file>; below 5% and above 55% are excluded.",
+ "post_pass": {
+  "rule": "out = art + (clean_dominant - background_of_the_dominant_portion); top pixels are split by nearest clean colour and only the dominant side is measured, so the tile drops into a plain field of its dominant ground with no border while the minor ground keeps its contrast",
+  "dir": "<sheet>/post/<name from sheet.post_files - NEVER constructed by convention>",
+  "immutable": "a regenerated tile gets a new content-hashed filename; current + one previous generation are retained so an open page keeps rendering",
+  "measured_pct_minor": "the mix actually present in the art (nearest-clean-colour area), beside pct_minor which is what was ordered",
+  "measured_tiles": "the same measure PER TILE, index-aligned with `tiles` and `post_files`; a sheet's 16 takes vary widely around the ordered level, so sort and label by this, not by pct_minor"
+ }
+}

@@ -100,13 +100,36 @@ def seed_of(a, b, pct):
     return int(h[:6], 16) % 90000 + 1000
 
 
-def plan(only=None, levels=LEVELS):
+def transition_pairs():
+    """The unordered pairs that HAVE a generated transition set.
+
+    Derived from the filesystem, never hand-listed (the same law the backup workflow
+    learned the hard way: a hand-set value silently backed up nothing for three nights).
+
+    This is the scope that matters first. The wiki's Transitions tab has a page per
+    generated pair and nowhere else, and the maintainer's ask is that those pages also
+    show the blends - "the same page that shows Transitions from 'grass to lava' should
+    also show tiles that are '20% lava and 80% grass'". Covering exactly these pairs
+    fills every page that exists, for $22.08 instead of $100.80 for the full matrix.
+    """
+    import re
+    pairs = set()
+    for d in glob.glob(os.path.join(ROOT, "transitions", "*")):
+        m = re.match(r"([a-z_]+)__to__([a-z_]+)$", os.path.basename(d))
+        if m and m.group(1) in GROUNDS and m.group(2) in GROUNDS:
+            pairs.add(tuple(sorted(m.groups())))
+    return pairs
+
+
+def plan(only=None, levels=LEVELS, pairs=None):
     jobs = []
     for a in GROUNDS:
         if only and a != only:
             continue
         for b in GROUNDS:
             if b == a:
+                continue
+            if pairs is not None and tuple(sorted((a, b))) not in pairs:
                 continue
             for pct in levels:
                 jobs.append({
@@ -171,8 +194,16 @@ def write_index():
         "sheets": sheets,
     }
     os.makedirs(OUT, exist_ok=True)
-    with open(os.path.join(OUT, "index.json"), "w") as f:
+    # ATOMIC, because several generator processes run in parallel on disjoint pairs and
+    # every one of them rewrites this file from a full filesystem scan. A plain open("w")
+    # would let a reader (or the wiki) catch a truncated index; os.replace makes each
+    # write all-or-nothing, so the worst case is a momentarily stale index rather than a
+    # broken one - and the next writer's scan picks up whatever it missed.
+    dst = os.path.join(OUT, "index.json")
+    tmp = f"{dst}.{os.getpid()}.tmp"
+    with open(tmp, "w") as f:
         json.dump(doc, f, indent=1)
+    os.replace(tmp, dst)
     return doc
 
 
@@ -180,6 +211,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", help="only this dominant ground")
     ap.add_argument("--pairs", nargs="*", help="only these dominant:minor pairs")
+    ap.add_argument("--transition-pairs", action="store_true",
+                    help="only pairs that have a generated transition set - the scope "
+                         "the wiki's Transitions tab can actually show")
     ap.add_argument("--max-usd", type=float, default=10.0)
     ap.add_argument("--min-usd", type=float, default=5.0,
                     help="never draw the shared account below this")
@@ -192,7 +226,8 @@ def main():
         print(f"index: {doc['n_sheets']} sheets, {doc['n_tiles']} tiles")
         return
 
-    jobs = plan(only=args.only)
+    jobs = plan(only=args.only,
+                pairs=transition_pairs() if args.transition_pairs else None)
     if args.pairs:
         want = {tuple(p.split(":")) for p in args.pairs}
         jobs = [j for j in jobs if (j["dominant"], j["minor"]) in want]

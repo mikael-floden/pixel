@@ -62,8 +62,11 @@ def main():
                 p = e.get(k)
                 if p and not os.path.isfile(os.path.join(REPO, p)):
                     bad.append(f"DANGLING {k}: {p}")
-    for tree in ("tops", "blends"):
-        ip = os.path.join(ROOT, tree, "index.json")
+    # tops publishes post_files in its own index; blends' post pass owns a SEPARATE file
+    # (the generator rebuilds blends/index.json from disk after every sheet, so a shared
+    # file loses whatever the post pass wrote).
+    for tree, fname in (("tops", "index.json"), ("blends", "ladder.json")):
+        ip = os.path.join(ROOT, tree, fname)
         if not os.path.isfile(ip):
             continue
         idx = json.load(open(ip))
