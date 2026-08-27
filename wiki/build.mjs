@@ -2643,6 +2643,15 @@ const data = {
 };
 
 writeFileSync(OUT, JSON.stringify(data));
+/* THE FRESHNESS BEACON. The wiki is a single-page app the maintainer keeps
+ * open in a tab or the game's drawer for hours; nothing ever told a running
+ * page that a deploy landed, so a fix could be LIVE while his screen still
+ * ran the previous build — which he then reported broken, correctly
+ * (2026-08-27, twice in one afternoon). data.json is 6.6 MB and cannot be
+ * polled; this 60-byte sidecar can, and the client compares its sha against
+ * the one it booted with. */
+writeFileSync(join(dirname(OUT), "version.json"),
+  JSON.stringify({ git_sha: data.git_sha, generated_at: data.generated_at }) + "\n");
 console.log(`[wiki] wrote ${OUT}`);
 console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}${levelled ? ` — backfilled ${levelled} monster level(s)` : ""}`);
 console.log(`[wiki] art: ${Object.keys(artHashes).length} clips — measured ${artMeasuredN} now, ${artCachedN} from cache${artFailed.length ? `, ${artFailed.length} FAILED` : ""}; stage ${Object.entries(artBoxes).map(([d, b]) => `${d} ${b[0]}x${b[1]}`).join(", ")} at ${artScale}x`);

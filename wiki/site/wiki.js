@@ -10021,4 +10021,40 @@ async function upgradeToStaging() {
 /* GATE PROBE. The set model and the compositor are pure functions of published
  * data, so a gate can call them directly instead of inferring them from pixels
  * on screen — which is how a pass that "worked" could ship flat. */
+/* A RUNNING PAGE LEARNS ABOUT NEW BUILDS (maintainer 2026-08-27, on a fix
+ * that was live while his screen still ran the previous build: "I can't
+ * belive it ... Tell me you're joking?"). He was not wrong and the page was
+ * not lying — it was OLD, and being a single-page app it would have stayed
+ * old for as long as the tab lived. Nothing on a phone hard-refreshes a tab
+ * it keeps in a drawer.
+ *
+ * So the page polls a 60-byte version beacon — every five minutes, and the
+ * moment the tab becomes visible again, which is the phone case: he comes
+ * BACK to a tab that went stale while it slept. A differing sha shows one
+ * fixed bar naming both builds; tapping it reloads. It never reloads on its
+ * own — he may be mid-edit with unsaved verdicts, and throwing those away to
+ * be "fresh" would be worse than any staleness. */
+(() => {
+  const mine = () => state.data?.git_sha ?? null;
+  let bar = null;
+  const offer = (sha) => {
+    if (bar || !state.data) return;
+    bar = h("button", { class: "update-bar", type: "button",
+      title: "A newer build of the wiki is deployed. Reload to run it — unsaved changes are lost, so Commit first if the save bar is up." },
+      `build ${sha} is live — you are on ${mine() ?? "?"} · tap to reload`);
+    bar.onclick = () => location.reload();
+    document.body.append(bar);
+  };
+  const check = async () => {
+    try {
+      const r = await fetch(new URL("version.json", location.href), { cache: "no-store" });
+      if (!r.ok) return;
+      const v = await r.json();
+      if (v?.git_sha && mine() && v.git_sha !== mine()) offer(v.git_sha);
+    } catch { /* offline is not stale */ }
+  };
+  setInterval(check, 5 * 60 * 1000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
+  setTimeout(check, 20 * 1000);
+})();
 window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
