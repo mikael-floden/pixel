@@ -62,6 +62,17 @@ def textured_of(before_path, after_path, top_hex):
         out[..., :3][m] = px
     else:
         out[..., :3][m] = ab[..., :3][m]
+    # THE BACKGROUND LANDS ON THE CLEAN COLOUR EXACTLY, not merely the mean.
+    # substitute() recentres the MEAN, and bright speckle drags a mean: measured on the
+    # tile the maintainer flagged (black_rock over dark_mud 6c7f2c5a), the mean sat 0.1
+    # from clean while the BACKGROUND - the thing the eye reads as the tile's colour -
+    # sat at (29,28,29) against (30,29,30). One unit per channel on near-black is a
+    # visible patch in a set field. The same integer-exact shift the tops pass uses
+    # closes it; the wall is not touched (it belongs to the cell's side material).
+    import tops_post as _tp
+    rgbf = out[..., :3].astype(float)
+    _tp.shift_mask_to_clean(rgbf, m, _tp._hex(top_hex))
+    out[..., :3] = np.clip(np.rint(rgbf), 0, 255).astype(int)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 

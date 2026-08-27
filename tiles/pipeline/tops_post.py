@@ -72,6 +72,50 @@ def background_of(rgb, top):
     return med
 
 
+def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
+    """Shift the pixels under `mask` so their trimmed-median background lands on the
+    clean colour INTEGER-EXACTLY, compressing overflow around the clean anchor.
+
+    Exactness needs iteration, not faith: a median of integers can be half-integral,
+    so one rounded shift can leave the background 1/255 off - and on a near-black
+    ground one unit per channel is a visible patch ("the bg has a small differences
+    against it's surrounding" - measured on his tile, background (29,28,29) against
+    clean (30,29,30)). Each pass applies the rounded residual; it converges in <=3.
+
+    Modifies rgb in place. Returns (1 - worst compression factor).
+    """
+    squeeze = 1.0
+    # MEASURE AND APPLY ARE DIFFERENT MASKS when the wall rides along: the background
+    # is a property of the TOP FACE, and a median taken over top+wall answers a
+    # question nobody asked.
+    measure = mask if measure is None else measure
+    for _ in range(iters):
+        bg = background_of(rgb, measure)
+        delta = np.rint(clean_rgb - bg)
+        if not np.abs(delta).sum():
+            break
+        rgb[mask] += delta
+        for c in range(3):
+            anchor = clean_rgb[c]
+            ch = rgb[..., c]
+            vals = ch[mask]
+            mx = float(vals.max())
+            if mx > 255.0 and mx > anchor:
+                f = (255.0 - anchor) / (mx - anchor)
+                sel = mask & (ch > anchor)
+                ch[sel] = anchor + (ch[sel] - anchor) * f
+                squeeze = min(squeeze, f)
+            mn = float(vals.min())
+            if mn < 0.0 and mn < anchor:
+                f = anchor / (anchor - mn) if anchor > 0 else 0.0
+                sel = mask & (ch < anchor)
+                ch[sel] = anchor + (ch[sel] - anchor) * f
+                squeeze = min(squeeze, f)
+        np.rint(rgb, out=rgb)
+        np.clip(rgb, 0, 255, out=rgb)
+    return 1.0 - squeeze
+
+
 def align(img, clean_rgb):
     """(aligned image, background before, clipped fraction of top pixels)."""
     a = np.array(img.convert("RGBA"), int)
@@ -80,34 +124,14 @@ def align(img, clean_rgb):
         return None, None, 1.0
     rgb = a[..., :3].astype(float)
     bg = background_of(rgb, top)
-    shifted = rgb + (clean_rgb - bg)
-    # THE OVERFLOW IS COMPRESSED, NEVER CLIPPED. Lava's clean colour has red at 253, so
-    # a plain shift throws every glow highlight off the top of the range and hard-clips
-    # it flat - measured, up to 91% of a lava tile's top pixels, the texture destroyed.
-    # Instead each channel's tail beyond the anchor is scaled into the headroom that is
-    # actually left: the background stays EXACTLY on the clean colour (the anchor is the
-    # fixed point of the scaling) and everything above or below it keeps its ordering,
-    # just tighter. `squeeze` records the worst channel's factor - 1.0 means the shift
-    # fitted without touching anything.
-    squeeze = 1.0
-    for c in range(3):
-        anchor = clean_rgb[c]
-        ch = shifted[..., c]
-        mx = float(ch[top].max()) if top.any() else anchor
-        if mx > 255.0 and mx > anchor:
-            f = (255.0 - anchor) / (mx - anchor)
-            sel = ch > anchor
-            ch[sel] = anchor + (ch[sel] - anchor) * f
-            squeeze = min(squeeze, f)
-        mn = float(ch[top].min()) if top.any() else anchor
-        if mn < 0.0 and mn < anchor:
-            f = anchor / (anchor - mn) if anchor > 0 else 0.0
-            sel = ch < anchor
-            ch[sel] = anchor + (ch[sel] - anchor) * f
-            squeeze = min(squeeze, f)
+    # One region, one shift: the wall moves with the top (wall_is_meaningless on this
+    # art), the background is measured on the top face, and the helper drives it onto
+    # the clean colour integer-exactly with anchored compression for the overflow.
+    opaque = a[..., 3] > 0
+    clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
     out = a.copy()
-    out[..., :3] = np.clip(np.rint(shifted), 0, 255).astype(int)
-    return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, 1.0 - squeeze
+    out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
+    return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
 
 
 def main():

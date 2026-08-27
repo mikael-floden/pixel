@@ -747,7 +747,24 @@
     "mean_colours": 12.75,
     "mean_dominant_share": 0.4832
    },
-   "post": true
+   "post": true,
+   "misfit_tiles": {
+    "tile_01.webp": {
+     "misfit": true,
+     "squeezed_pct": 57.7,
+     "hue_deg": 9.9
+    },
+    "tile_07.webp": {
+     "misfit": true,
+     "squeezed_pct": 57.7,
+     "hue_deg": 9.9
+    },
+    "tile_14.webp": {
+     "misfit": true,
+     "squeezed_pct": 57.7,
+     "hue_deg": 9.9
+    }
+   }
   },
   {
    "ground": "deep_water",
@@ -784,7 +801,7 @@
    "misfit_tiles": {
     "tile_06.webp": {
      "misfit": true,
-     "squeezed_pct": 60.0,
+     "squeezed_pct": 66.2,
      "hue_deg": 14.3
     }
    }
@@ -886,7 +903,24 @@
     "mean_colours": 4.5,
     "mean_dominant_share": 0.7399
    },
-   "post": true
+   "post": true,
+   "misfit_tiles": {
+    "tile_00.webp": {
+     "misfit": true,
+     "squeezed_pct": 54.2,
+     "hue_deg": 2.7
+    },
+    "tile_04.webp": {
+     "misfit": true,
+     "squeezed_pct": 54.2,
+     "hue_deg": 2.7
+    },
+    "tile_08.webp": {
+     "misfit": true,
+     "squeezed_pct": 61.4,
+     "hue_deg": 0.6
+    }
+   }
   },
   {
    "ground": "grass",
@@ -1053,7 +1087,7 @@
    "misfit_tiles": {
     "tile_00.webp": {
      "misfit": true,
-     "squeezed_pct": 81.5,
+     "squeezed_pct": 81.8,
      "hue_deg": 46.6
     },
     "tile_01.webp": {
@@ -1063,7 +1097,7 @@
     },
     "tile_02.webp": {
      "misfit": true,
-     "squeezed_pct": 79.4,
+     "squeezed_pct": 79.8,
      "hue_deg": 45.6
     },
     "tile_03.webp": {
@@ -1083,7 +1117,7 @@
     },
     "tile_06.webp": {
      "misfit": true,
-     "squeezed_pct": 78.0,
+     "squeezed_pct": 79.8,
      "hue_deg": 45.4
     },
     "tile_07.webp": {
@@ -1098,7 +1132,7 @@
     },
     "tile_09.webp": {
      "misfit": true,
-     "squeezed_pct": 78.0,
+     "squeezed_pct": 79.8,
      "hue_deg": 45.4
     },
     "tile_10.webp": {
@@ -1123,7 +1157,7 @@
     },
     "tile_14.webp": {
      "misfit": true,
-     "squeezed_pct": 78.0,
+     "squeezed_pct": 79.4,
      "hue_deg": 45.0
     },
     "tile_15.webp": {
@@ -2319,7 +2353,7 @@
     },
     "tile_01.webp": {
      "misfit": true,
-     "squeezed_pct": 10.0,
+     "squeezed_pct": 25.0,
      "hue_deg": 30.0
     },
     "tile_02.webp": {
@@ -2344,7 +2378,7 @@
     },
     "tile_06.webp": {
      "misfit": true,
-     "squeezed_pct": 32.8,
+     "squeezed_pct": 38.4,
      "hue_deg": 30.0
     },
     "tile_07.webp": {
@@ -2562,22 +2596,22 @@
    "misfit_tiles": {
     "tile_00.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_01.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_02.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_03.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_04.webp": {
@@ -2587,42 +2621,52 @@
     },
     "tile_05.webp": {
      "misfit": true,
-     "squeezed_pct": 81.8,
+     "squeezed_pct": 84.6,
      "hue_deg": 4.2
+    },
+    "tile_06.webp": {
+     "misfit": true,
+     "squeezed_pct": 88.9,
+     "hue_deg": 11.7
+    },
+    "tile_07.webp": {
+     "misfit": true,
+     "squeezed_pct": 88.9,
+     "hue_deg": 11.7
     },
     "tile_08.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 85.7,
      "hue_deg": 8.0
     },
     "tile_09.webp": {
      "misfit": true,
-     "squeezed_pct": 71.4,
+     "squeezed_pct": 85.7,
      "hue_deg": 8.0
     },
     "tile_10.webp": {
      "misfit": true,
-     "squeezed_pct": 66.7,
+     "squeezed_pct": 85.7,
      "hue_deg": 8.0
     },
     "tile_11.webp": {
      "misfit": true,
-     "squeezed_pct": 66.7,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_12.webp": {
      "misfit": true,
-     "squeezed_pct": 80.0,
+     "squeezed_pct": 85.7,
      "hue_deg": 8.0
     },
     "tile_13.webp": {
      "misfit": true,
-     "squeezed_pct": 80.0,
+     "squeezed_pct": 88.2,
      "hue_deg": 8.0
     },
     "tile_14.webp": {
      "misfit": true,
-     "squeezed_pct": 80.0,
+     "squeezed_pct": 85.7,
      "hue_deg": 8.0
     },
     "tile_15.webp": {
@@ -3318,12 +3362,12 @@
    "misfit_tiles": {
     "tile_00.webp": {
      "misfit": true,
-     "squeezed_pct": 39.5,
+     "squeezed_pct": 54.2,
      "hue_deg": 34.0
     },
     "tile_03.webp": {
      "misfit": true,
-     "squeezed_pct": 17.4,
+     "squeezed_pct": 18.3,
      "hue_deg": 30.0
     },
     "tile_07.webp": {
@@ -3333,12 +3377,12 @@
     },
     "tile_08.webp": {
      "misfit": true,
-     "squeezed_pct": 15.9,
+     "squeezed_pct": 35.5,
      "hue_deg": 31.9
     },
     "tile_10.webp": {
      "misfit": true,
-     "squeezed_pct": 14.8,
+     "squeezed_pct": 27.9,
      "hue_deg": 30.3
     },
     "tile_13.webp": {
@@ -3445,7 +3489,79 @@
     "mean_colours": 10.88,
     "mean_dominant_share": 0.648
    },
-   "post": true
+   "post": true,
+   "misfit_tiles": {
+    "tile_00.webp": {
+     "misfit": true,
+     "squeezed_pct": 58.1,
+     "hue_deg": 19.7
+    },
+    "tile_01.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
+     "hue_deg": 19.3
+    },
+    "tile_03.webp": {
+     "misfit": true,
+     "squeezed_pct": 51.5,
+     "hue_deg": 19.3
+    },
+    "tile_04.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_06.webp": {
+     "misfit": true,
+     "squeezed_pct": 58.1,
+     "hue_deg": 19.7
+    },
+    "tile_07.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
+     "hue_deg": 19.3
+    },
+    "tile_08.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_09.webp": {
+     "misfit": true,
+     "squeezed_pct": 64.2,
+     "hue_deg": 20.6
+    },
+    "tile_10.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_11.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_12.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_13.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_14.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    },
+    "tile_15.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 19.3
+    }
+   }
   },
   {
    "ground": "slime",
@@ -3480,9 +3596,74 @@
    },
    "post": true,
    "misfit_tiles": {
+    "tile_00.webp": {
+     "misfit": true,
+     "squeezed_pct": 51.5,
+     "hue_deg": 21.9
+    },
+    "tile_01.webp": {
+     "misfit": true,
+     "squeezed_pct": 51.5,
+     "hue_deg": 21.9
+    },
+    "tile_02.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
+     "hue_deg": 21.9
+    },
+    "tile_03.webp": {
+     "misfit": true,
+     "squeezed_pct": 62.0,
+     "hue_deg": 18.7
+    },
+    "tile_05.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 21.9
+    },
+    "tile_06.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
+     "hue_deg": 21.9
+    },
+    "tile_07.webp": {
+     "misfit": true,
+     "squeezed_pct": 59.2,
+     "hue_deg": 18.7
+    },
+    "tile_08.webp": {
+     "misfit": true,
+     "squeezed_pct": 51.5,
+     "hue_deg": 21.9
+    },
     "tile_09.webp": {
      "misfit": true,
      "squeezed_pct": 56.6,
+     "hue_deg": 21.9
+    },
+    "tile_11.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 21.9
+    },
+    "tile_12.webp": {
+     "misfit": true,
+     "squeezed_pct": 54.6,
+     "hue_deg": 18.7
+    },
+    "tile_13.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
+     "hue_deg": 21.9
+    },
+    "tile_14.webp": {
+     "misfit": true,
+     "squeezed_pct": 56.6,
+     "hue_deg": 21.9
+    },
+    "tile_15.webp": {
+     "misfit": true,
+     "squeezed_pct": 52.9,
      "hue_deg": 21.9
     }
    }
@@ -3921,17 +4102,17 @@
     },
     "tile_06.webp": {
      "misfit": true,
-     "squeezed_pct": 0.0,
+     "squeezed_pct": 6.0,
      "hue_deg": 35.5
     },
     "tile_07.webp": {
      "misfit": true,
-     "squeezed_pct": 0.0,
+     "squeezed_pct": 11.3,
      "hue_deg": 30.2
     },
     "tile_08.webp": {
      "misfit": true,
-     "squeezed_pct": 0.0,
+     "squeezed_pct": 6.0,
      "hue_deg": 37.5
     },
     "tile_09.webp": {
