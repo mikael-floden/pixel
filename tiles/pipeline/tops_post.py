@@ -116,6 +116,45 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
     return 1.0 - squeeze
 
 
+# The drawn edge line lives in the outermost pixels of the top face: measured on the
+# maintainer's deep_water tile, ring 1 has 27% of pixels >8 off the clean colour while
+# rings 2-4 and the interior sit at exactly 0. Two rings covers every ground sampled.
+RIM_W = 2
+# A rim pixel is snapped only when it is NEAR the clean colour - the faint edge shading
+# always is, a sparkle or a flower crossing the edge never is. L1 over RGB.
+RIM_SNAP = 120.0
+
+
+def rim_suppress(rgb, top, clean_rgb, width=RIM_W, snap=RIM_SNAP):
+    """Erase the tile's own edge line so a field of copies shows no lattice.
+
+    "At the border/edge they have a line that makes it very obvious this is a tile" -
+    the generator draws every tile as an OBJECT, with a subtle bevel along the top
+    face's rim, and a field of them reads as a grid of diamonds. The rim pixels are
+    not background, so background alignment cannot reach them.
+
+    Only near-clean rim pixels are snapped: the bevel is always a modest offset from
+    the background, while a genuine detail crossing the edge (a sparkle on water, a
+    blade of grass) is far from it and passes through untouched. Returns snapped count.
+    """
+    cur = top.copy()
+    for _ in range(width):
+        e = cur.copy()
+        e[1:] &= cur[:-1]
+        e[:-1] &= cur[1:]
+        e[:, 1:] &= cur[:, :-1]
+        e[:, :-1] &= cur[:, 1:]
+        cur = e
+    rim = top & ~cur
+    if not rim.any():
+        return 0
+    d1 = np.abs(rgb[rim] - clean_rgb).sum(1)
+    sel = np.zeros(rgb.shape[:2], bool)
+    sel[rim] = d1 < snap
+    rgb[sel] = clean_rgb
+    return int(sel.sum())
+
+
 def align(img, clean_rgb):
     """(aligned image, background before, clipped fraction of top pixels)."""
     a = np.array(img.convert("RGBA"), int)
@@ -129,6 +168,7 @@ def align(img, clean_rgb):
     # the clean colour integer-exactly with anchored compression for the overflow.
     opaque = a[..., 3] > 0
     clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
+    rim_suppress(rgb, top, clean_rgb)
     out = a.copy()
     out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped

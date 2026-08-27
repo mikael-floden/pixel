@@ -72,6 +72,10 @@ def textured_of(before_path, after_path, top_hex):
     import tops_post as _tp
     rgbf = out[..., :3].astype(float)
     _tp.shift_mask_to_clean(rgbf, m, _tp._hex(top_hex))
+    # The same rim suppression as the tops pass: the raw art draws each tile as an
+    # object with a bevel along the top face's edge, and a field of them shows a
+    # lattice. Audition-only file; the after/before x-over-y art is untouched.
+    _tp.rim_suppress(rgbf, m, _tp._hex(top_hex))
     out[..., :3] = np.clip(np.rint(rgbf), 0, 255).astype(int)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
