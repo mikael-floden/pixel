@@ -225,6 +225,49 @@ ok(over.chips.length === 2 && over.chips[0] === "Clean #0*" && over.chips[1] ===
   `the mixed-grounds overview offers exactly Clean #0 / Raw, Clean selected even with set:1 stored (${over.chips.join(" ")})`);
 ok(over.pavingComposed === 1,
   `and its paving card obeys the bar — a flat clean top, not the stored set (${over.pavingComposed} colour)`);
+/* ---- 5. OWN TOP OUTRANKS THE COMPOSITION (maintainer 2026-08-27: "I want a
+ * new per tile option ... own top ... will have higher priority and be used
+ * instead of swapping out the top to the base tile sets top"). The mirror of
+ * the wall designation, for the other face — and the priority is the claim,
+ * so it is proven on the resolved art path, not on the chip. */
+const tSaves = [];
+await p.route("**/api/wiki/save", (r) => { tSaves.push(r.request().postDataJSON()); r.fulfill({ status: 200, contentType: "application/json", body: "{}" }); });
+await p.goto(`${W}#/world/grass/ice`, { waitUntil: "load" });
+await p.waitForTimeout(2800);
+const topState = () => p.evaluate(() => {
+  const card = document.querySelector(".world-cand");
+  const row = [...card.querySelectorAll(".wall-mode")].find((r) => r.textContent.startsWith("Top"));
+  return {
+    chips: [...(row?.querySelectorAll("button") ?? [])].map((x) => x.textContent.trim() + (x.classList.contains("sel") ? "*" : "")),
+    face: card.querySelector(".tile-preview")?.dataset.face ?? null,
+  };
+});
+const t0 = await topState();
+ok(t0.chips.join("/") === "base tile top*/own top",
+  `every tile carries the Top designation, defaulting to the ground's surface (${t0.chips.join("/")})`);
+ok(/^sub:/.test(t0.face ?? ""), `and by default the top IS composed (${String(t0.face).slice(0, 34)}…)`);
+await p.evaluate(() => {
+  const row = [...document.querySelector(".world-cand").querySelectorAll(".wall-mode")].find((r) => r.textContent.startsWith("Top"));
+  [...row.querySelectorAll("button")].find((x) => x.textContent.trim() === "own top")?.click();
+});
+await p.waitForTimeout(1400);
+const t1 = await topState();
+ok(!/^sub:/.test(t1.face ?? "") && /_after\.webp$/.test(t1.face ?? ""),
+  `own top wins over the composition — the tile draws its own art, no sub: (${String(t1.face).split("/").pop()})`);
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(900);
+const tSave = tSaves.at(-1);
+ok(tSave?.file === "tuning/tile_tops" && Object.values(tSave.set ?? {})[0]?.own_top === true,
+  `and Commit posts own_top on the tile's own key (${Object.keys(tSave?.set ?? {})[0]})`);
+await p.evaluate(() => {
+  const row = [...document.querySelector(".world-cand").querySelectorAll(".wall-mode")].find((r) => r.textContent.startsWith("Top"));
+  [...row.querySelectorAll("button")].find((x) => x.textContent.trim() === "base tile top")?.click();
+});
+await p.waitForTimeout(900);
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(900);
+ok(Object.values(tSaves.at(-1)?.set ?? {})[0] === null,
+  "setting it back DELETES the entry — the file only ever names the exceptions");
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 

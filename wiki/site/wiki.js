@@ -4955,6 +4955,11 @@ const viewArtIn = (view, cand) => {
    * cell coordinates are the tile's own position in whatever field draws it;
    * a lone card is cell (0,0), which is a real cell, not a placeholder. */
   const top = candTop(cand);
+  /* OWN TOP WINS OVER EVERYTHING COMPOSED (maintainer 2026-08-27: "This option
+   * will have higher priority and be used instead of swapping out the top").
+   * The tile's generated art already carries the top he is protecting, so the
+   * answer is simply the art itself — no composition at all. */
+  if (cand.art && ownTop(cand.key)) return cand.art;
   const set = top ? passSet(top, view) : null;
   if (set && cand.art) {
     const face = setCellArt(set, cand.subX ?? 0, cand.subY ?? 0, top);
@@ -6641,6 +6646,35 @@ const WALL_MODES = {
   own: { label: "own wall", title: "This tile stacks to build its own cliff — the default" },
   top: { label: "top only", title: "Only ever the top of a column; whatever stacks under it is the pure tile" },
 };
+/* DOES THIS TILE KEEP ITS OWN TOP? (maintainer 2026-08-27: "Some on top
+ * of-tiles have graphics that looks very very good with its own top texture.
+ * Replacing with the base tile sets top doesn't transition as nicely toward
+ * the wall. So if I can mark tiles that should always use its own top ... we
+ * will be able to maintain some tiles transition towards the top.")
+ *
+ * The mirror of the wall designation one row up, for the other face: a
+ * property of the TILE, on its own live document, defaulting to the ground's
+ * configured surface. A tile marked own_top is EXEMPT from the base-tile-set
+ * swap — higher priority than the composition, his rule — because the art it
+ * was generated with meets its own wall in a way a pasted top cannot.
+ *
+ * Absent means the default, same law as tile_walls: the file only ever names
+ * the exceptions, so it stays a list of decisions instead of a census. */
+const TILETOP_KEY = "tuning/tile_tops";
+const tileTops = () => state.tuning.tile_tops ?? (state.tuning.tile_tops = { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} });
+const ownTop = (key) => tileTops().overrides?.[key]?.own_top === true;
+function setOwnTop(key, on) {
+  const doc = tileTops();
+  if (!on) delete (doc.overrides ??= {})[key];
+  else (doc.overrides ??= {})[key] = { own_top: true, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(TILETOP_KEY, key);
+  markDirty(TILETOP_KEY);
+}
+const TOP_MODES = {
+  base: { label: "base tile top", title: "The top follows the ground's configured surface — the clean colour or the chosen set — which is the default" },
+  own: { label: "own top", title: "This tile always draws the top it was generated with — its texture meets its own wall better than a swapped top would" },
+};
 
 /* ---- HOW THIS ONE TILE LOOKS WHEN IT IS TILED ----
  * Maintainer 2026-08-17: "The individual tile preview under Tiles in this set
@@ -6928,6 +6962,16 @@ function wallModeRow(cand, onVerdict) {
   draw();
   return box;
 }
+function topModeRow(cand, onVerdict) {
+  const box = h("div", { class: "card-sub wall-mode" });
+  const draw = () => box.replaceChildren(
+    h("span", { class: "muted" }, "Top"),
+    sortBar(`tile-top:${cand.key}`, Object.entries(TOP_MODES).map(([id, m]) => [id, m.label, m.title]),
+      ownTop(cand.key) ? "own" : "base",
+      (v) => { setOwnTop(cand.key, v === "own"); draw(); onVerdict?.(); }, { persist: false }));
+  draw();
+  return box;
+}
 /* THE BRIM, AND WHETHER IT SHIPPED (maintainer 2026-08-22, painting on a
  * screenshot of deep water over grass: "I have painted RED on the overhang
  * that should be deep_water, but currently is green/grass").
@@ -7063,6 +7107,8 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.
     state.admin ? wallModeRow(cand, onVerdict) : null,
+    // AND ITS TOP — the same kind of designation for the other face.
+    state.admin ? topModeRow(cand, onVerdict) : null,
     // IS IT THE GROUND'S BASE TILE? Promotion goes through a MODAL that shows
     // this tile sitting centred in EVERY existing group ("so we can see how
     // this tile looks in the different base tile groups ... with members
@@ -9318,11 +9364,12 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, tileTopsDoc, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
        fromApi((s) => s.tuning.scenery_lights), fromApi((s) => s.tuning.base_tiles),
        fromApi((s) => s.tuning.base_tile_sets),
+       fromApi((s) => s.tuning.tile_tops),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
@@ -9333,6 +9380,7 @@ async function loadLiveFiles() {
         fetchJson(new URL("live/tuning/scenery_lights.json", ROOT)),
         fetchJson(new URL("live/tuning/base_tiles.json", ROOT)),
         fetchJson(new URL("live/tuning/base_tile_sets.json", ROOT)),
+        fetchJson(new URL("live/tuning/tile_tops.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
@@ -9347,6 +9395,7 @@ async function loadLiveFiles() {
   state.tuning.scenery_lights = sceneryLightsDoc ?? { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   state.tuning.base_tiles = baseTiles ?? { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   state.tuning.base_tile_sets = baseSets ?? { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
+  state.tuning.tile_tops = tileTopsDoc ?? { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

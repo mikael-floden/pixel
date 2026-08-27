@@ -119,6 +119,20 @@ The laws around the flow:
     top-only tile would silently hide a fine tile).
   - It is a PROPERTY, not a verdict — a top-tile-only tile is not worse, it
     has one job — which is why it does not live in `feedback/tiles.json`.
+- `live/tuning/tile_tops.json` — `pixel-wiki-tile-tops@1`. **Which Tiles 3.0
+  tiles always keep their own top.** The base-tile-set model swaps an
+  x-over-y tile's top for the ground's configured surface — the clean colour
+  or the chosen set member; a tile the Game Master marks **own top** is
+  exempt and always draws the texture it was generated with, at **higher
+  priority than the set composition** (maintainer 2026-08-27: *"Some on top
+  of-tiles have graphics that looks very very good with its own top texture.
+  Replacing with the base tile sets top doesn't transition as nicely toward
+  the wall."*). **Consumed by whatever composes ground tops** — the wiki
+  today, the game when it adopts the set model.
+  - Keyed like tile_walls, by the review manifest's own key:
+    `overrides["tiles/<cell>/<key8>"] = { own_top: true, updated_at }`.
+  - **Absent means the default** (the ground's configured surface). Setting a
+    tile back deletes its entry — the file only ever names the exceptions.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed
