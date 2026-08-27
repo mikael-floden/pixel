@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-27T19:24:14.570Z",
+  "updated_at": "2026-08-27T19:44:57.373Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -19,6 +19,59 @@
             {
               "kind": "clean",
               "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/4bda7b3e",
+              "tile": "tiles/black_rock__over__deep_water/4bda7b3e",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/2c7e89ad",
+              "tile": "tiles/black_rock__over__deep_water/2c7e89ad",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/2e0ce035",
+              "tile": "tiles/black_rock__over__deep_water/2e0ce035",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/5c499fd1",
+              "tile": "tiles/black_rock__over__deep_water/5c499fd1",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__black_rock/2bfb3cd0",
+              "tile": "tiles/black_rock__over__black_rock/2bfb3cd0",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__black_rock/50d341cc",
+              "tile": "tiles/black_rock__over__black_rock/50d341cc",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__dark_mud/eab63e38",
+              "tile": "tiles/black_rock__over__dark_mud/eab63e38",
+              "weight": 0.1
             }
           ]
         }
