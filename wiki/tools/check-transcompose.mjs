@@ -171,33 +171,68 @@ ok(br.rows === roster && !br.beingGenerated,
   `Black Rock lists all ${roster} neighbours — the "Being generated" empty state is gone (${br.rows} rows)`);
 ok(br.canvases >= br.rows * 4 && br.painted === br.canvases,
   `every strip is composed and every canvas actually painted (${br.painted}/${br.canvases})`);
-/* ---- 4. TWO GROUPS, ONE PER TYPE (maintainer 2026-08-27: "we need two radio
- * button groups on this page. 1: How do you want to view tile type A? 2: How
- * do you want to view tile type B?"). Each bar lists ITS ground's own passes —
- * paving has a set, grass does not, and neither list leaks into the other.
- * Raw is a pair state: entered from either group, left from either group. */
+/* ---- 4. TWO INDEPENDENT GROUPS, ONE PER TYPE, AND RAW BELONGS TO THE PAIR
+ * (maintainer 2026-08-27: "we need two radio button groups on this page ...
+ * How do you want to view tile type A? ... type B?" and then "when switching
+ * between Raw and Clean #0 today both radio button group changes state").
+ *
+ * The second note forced the shape of the first: a raw transition tile is ONE
+ * generated picture of both materials, so Raw inside a per-side group can only
+ * ever move both groups. It is a pair-level control instead, and the side
+ * groups became genuinely independent — which is what the split was for. */
 await p.goto(`${W}#/world/transition/brown_paving_stone__to__grass`, { waitUntil: "load" });
 await p.waitForTimeout(2600);
-const sideBars = () => p.evaluate(() => [...document.querySelectorAll(".ground-pass")].map((r) => ({
+const rows = () => p.evaluate(() => [...document.querySelectorAll(".ground-pass")].map((r) => ({
   label: r.querySelector(".muted")?.textContent.trim(),
+  idle: r.classList.contains("idle"),
   chips: [...r.querySelectorAll("button")].map((x) => x.textContent.trim()),
+  off: [...r.querySelectorAll("button")].filter((x) => x.disabled).map((x) => x.textContent.trim()),
   sel: [...r.querySelectorAll("button")].find((x) => x.classList.contains("sel"))?.textContent.trim(),
 })));
-const bars0 = await sideBars();
-ok(bars0.length === 2 && bars0[0].label === "Brown Paving Stone" && bars0[1].label === "Grass",
-  `the pair page carries one group per type, labelled (${bars0.map((x) => x.label).join(" / ")})`);
-ok(bars0[0].chips.join("/") === "Clean #0/Set #1/Raw" && bars0[1].chips.join("/") === "Clean #0/Raw",
-  `each listing exactly its own ground's passes (${bars0[0].chips.length} vs ${bars0[1].chips.length})`);
-await p.evaluate(() => { const r = [...document.querySelectorAll(".ground-pass")].find((x) => /Grass/.test(x.textContent)); [...r.querySelectorAll("button")].find((x) => x.textContent.trim() === "Raw")?.click(); });
-await p.waitForTimeout(1000);
-const rawBars = await sideBars();
-ok(rawBars.every((x) => x.sel === "Raw"),
-  `Raw is a pair state — picking it on one side raws both (${rawBars.map((x) => x.sel).join(" / ")})`);
+const r0 = await rows();
+ok(r0.length === 3 && r0[0].label === "Brown Paving Stone" && r0[1].label === "Grass" && r0[2].label === "Tile art",
+  `one group per type plus the pair's own source (${r0.map((x) => x.label).join(" / ")})`);
+ok(r0[0].chips.join("/") === "Clean #0/Set #1" && r0[1].chips.join("/") === "Clean #0",
+  `each side lists exactly its own ground's COMPOSED passes, no Raw among them (${r0[0].chips.join("/")} | ${r0[1].chips.join("/")})`);
+ok(r0[2].chips.join("/") === "Composed/Raw", `and the pair carries Composed/Raw (${r0[2].chips.join("/")})`);
+
+// INDEPENDENCE: moving one side moves nothing else. This is the whole ask.
 await p.evaluate(() => { const r = [...document.querySelectorAll(".ground-pass")].find((x) => /Brown/.test(x.textContent)); [...r.querySelectorAll("button")].find((x) => x.textContent.trim() === "Set #1")?.click(); });
-await p.waitForTimeout(1000);
-const backBars = await sideBars();
-ok(backBars[0].sel === "Set #1" && backBars[1].sel === "Clean #0",
-  `and leaving it from the other side pulls the pair out of raw (${backBars.map((x) => x.sel).join(" / ")})`);
+await p.waitForTimeout(1400);
+const r1 = await rows();
+ok(r1[0].sel === "Set #1" && r1[1].sel === "Clean #0" && r1[2].sel === "Composed",
+  `picking a set on one side moves nothing else (${r1.map((x) => x.sel).join(" / ")})`);
+
+/* RAW DISABLED WHERE THERE IS NONE ("If no raw is available for a type. Just
+ * make the state/button disabled instead") — his screenshot's pair, which the
+ * generator never produced. Disabled, not absent: the row keeps its shape. */
+await p.goto(`${W}#/world/transition/brown_paving_stone__to__black_rock`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const rNo = await rows();
+ok(rNo[2].off.includes("Raw") && rNo[2].sel === "Composed",
+  `a pair with no generated art has Raw DISABLED, Composed drawn (off: ${rNo[2].off.join(",") || "none"})`);
+
+// A pair that WAS generated: Raw works, and selecting it dims the side groups
+// without changing their selections — the picture moves, the controls do not.
+await p.goto(`${W}#/world/transition/brown_paving_stone__to__light_soil`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const before = await rows();
+await p.evaluate(() => { const r = [...document.querySelectorAll(".ground-pass")].find((x) => /Tile art/.test(x.textContent)); [...r.querySelectorAll("button")].find((x) => x.textContent.trim() === "Raw")?.click(); });
+await p.waitForTimeout(1600);
+const after = await rows();
+ok(after[2].sel === "Raw" && after[0].sel === before[0].sel && after[1].sel === before[1].sel,
+  `Raw on a generated pair leaves both side selections untouched (${after[0].sel} / ${after[1].sel})`);
+ok(after[0].idle && after[1].idle && !after[2].idle,
+  "and dims them instead of hiding them — their choice does not apply to a generated tile");
+
+// The preference survives, but the CHIP never lies: back on a pair with no raw
+// it reads Composed, because Composed is what is drawn.
+await p.goto(`${W}#/world/transition/brown_paving_stone__to__black_rock`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const rBack = await rows();
+ok(rBack[2].sel === "Composed" && rBack[2].off.includes("Raw"),
+  `and with Raw still wanted, a pair without it shows Composed selected and Raw disabled (${rBack[2].sel})`);
+
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nTRANS-COMPOSE CHECKS FAILED (${fails.length})` : "\nALL TRANS-COMPOSE CHECKS PASSED");

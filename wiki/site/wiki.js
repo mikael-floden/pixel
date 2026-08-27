@@ -2775,10 +2775,16 @@ function sortBar(key, options, current, onPick, { persist = true } = {}) {
   // anything selecting a chip — including the gates — needs to say which row
   // it means.
   const row = h("div", { class: "sortbar", "data-bar": key, role: "radiogroup" });
-  row.append(...options.map(([id, label, title]) => h("button", {
-    class: `sortbar-btn${id === current ? " sel" : ""}`, type: "button", title, "data-sort": id,
+  // A fourth tuple element DISABLES a chip. Used where an option exists in the
+  // vocabulary but cannot apply here — a Raw chip on a pair the generator never
+  // produced (maintainer 2026-08-27: "If no raw is available for a type. Just
+  // make the state/button disabled instead"). Disabled beats absent: the row
+  // keeps its shape between pairs, and the tooltip says why it is out.
+  row.append(...options.map(([id, label, title, off]) => h("button", {
+    class: `sortbar-btn${id === current ? " sel" : ""}${off ? " off" : ""}`, type: "button", title, "data-sort": id,
     role: "radio", "aria-checked": id === current ? "true" : "false",
-    onclick: () => { if (persist) { try { localStorage.setItem(key, id); } catch { /* private mode */ } } onPick(id); },
+    ...(off ? { disabled: "disabled" } : {}),
+    onclick: off ? null : () => { if (persist) { try { localStorage.setItem(key, id); } catch { /* private mode */ } } onPick(id); },
   }, label)));
   // The strip pans instead of wrapping, so the chosen chip can start off
   // screen — 8 types do not fit a phone. Bring it into view once laid out.
@@ -5107,6 +5113,34 @@ const patternLib = () => worldMeta().patternLib ?? null;
  * pair that ground appears in, defaulting to the ground's own page-level pass
  * — so a ground with 4 sets and a ground with none each offer exactly their
  * own list, which is the whole point of making it per type. */
+/* RAW IS NOT A SIDE'S CHOICE (maintainer 2026-08-27: "when switching between
+ * Raw and Clean #0 today both radio button group changes state"). He is right,
+ * and it was forced: a raw transition tile is ONE generated picture of both
+ * materials, so if Raw sits in both per-side groups then every correct
+ * implementation must move both together — otherwise one group would claim a
+ * state the picture does not have.
+ *
+ * So Raw LEAVES the per-side groups. Each side keeps a purely composed choice
+ * (Clean #0, Set #N) that nothing else can move, and the pair carries one
+ * Composed/Raw control of its own. That makes the two groups genuinely
+ * independent, which is what he asked the split for in the first place.
+ *
+ * The flag is wanted-vs-effective: a pair the generator never produced has no
+ * raw to show, so its Raw chip is DISABLED and the row draws Composed while
+ * the preference survives for pairs that do have it. The chip always shows
+ * what is on screen. */
+const TRANS_RAW_KEY = "wiki-trans-raw";
+const transRawWanted = () => { try { return localStorage.getItem(TRANS_RAW_KEY) === "1"; } catch { return false; } };
+const setTransRaw = (on) => { try { localStorage.setItem(TRANS_RAW_KEY, on ? "1" : "0"); } catch { /* private mode */ } };
+/** Raw is only ON where the generator actually produced this pair + pattern. */
+const rawOn = (genSet) => transRawWanted() && !!genSet;
+const rawBarOptions = (genSet) => [
+  ["composed", "Composed", "Built live from the pattern's mask and each side's own base tiles — what the game will draw"],
+  [PASS_RAW, "Raw", genSet
+    ? "The generator's own pregenerated tiles for this pattern, seam shading and all — the comparison composition cannot reproduce"
+    : "No raw art exists for this pair and pattern — it was never pregenerated, so there is nothing to show",
+    !genSet],
+];
 const TRANS_SIDES_KEY = "wiki-trans-sides";
 const transSideViews = new Map(); // ground -> pass id override
 try {
@@ -5118,22 +5152,10 @@ const saveSideViews = () => { try { localStorage.setItem(TRANS_SIDES_KEY, JSON.s
  * leaking into fourteen different B-sides is the genericity he rejected. */
 const sideViewOf = (g) => {
   const v = transSideViews.get(g);
-  return v && passOptions(g).some(([id]) => id === v) ? v : PASS_CLEAN;
+  return v && passOptions(g, { raw: false }).some(([id]) => id === v) ? v : PASS_CLEAN;
 };
-/* RAW IS JOINT. A raw transition tile is ONE generated picture of both
- * materials — there is no "side A raw, side B set". So picking Raw on either
- * group raws the pair, and picking anything else on either group while the
- * other is Raw pulls that other side back to Clean rather than leaving a
- * choice on screen that the picture ignores. */
-function setSideView(a, b, side, id) {
-  if (id === PASS_RAW) { transSideViews.set(a, PASS_RAW); transSideViews.set(b, PASS_RAW); }
-  else {
-    transSideViews.set(side, id);
-    const other = side === a ? b : a;
-    if (sideViewOf(other) === PASS_RAW) transSideViews.set(other, PASS_CLEAN);
-  }
-  saveSideViews();
-}
+/** One side's composed choice. Nothing else moves — that is the point. */
+function setSideView(g, id) { transSideViews.set(g, id); saveSideViews(); }
 const passLabelOf = (g, view) => view === PASS_RAW ? "Raw"
   : view === PASS_CLEAN ? "Clean #0"
   : (passSet(g, view) ? setLabel(passSet(g, view)) : "Clean #0");
@@ -5261,9 +5283,8 @@ const transTile = (a, b, setId, i, post) =>
  * pairs). */
 function transPassPill(a, b, genSet) {
   const lib = patternLib();
-  if (transRawActive(a, b)) {
-    if (genSet) return h("span", { class: "pill", title: "The generator's own pregenerated tiles for this pattern — one picture of both materials, which is why Raw is a pair state, not a per-side one" }, "raw · generated");
-    return h("span", { class: "pill warn", title: "This pair was never pregenerated, so no raw art exists — the boundary is composed live, and both sides draw their clean plate" }, "no raw — composed clean");
+  if (rawOn(genSet)) {
+    return h("span", { class: "pill", title: "The generator's own pregenerated tiles for this pattern — one picture of both materials, which is why Raw belongs to the pair and not to a side" }, "raw · generated");
   }
   if (!lib) return h("span", { class: "pill warn" }, "pattern library missing");
   const la = passLabelOf(a, sideViewOf(a)), lb = passLabelOf(b, sideViewOf(b));
@@ -5294,9 +5315,8 @@ function mixTile(a, b, patId, idxA, x, y) {
 /* What one transition tile shows under the current pass — one rule, so the
  * strips and the composed scenes cannot disagree. Raw is the pregenerated art
  * and only exists where a generated set does; every other pass composes. */
-const transRawActive = (a, b) => sideViewOf(a) === PASS_RAW || sideViewOf(b) === PASS_RAW;
 const transArt = (a, b, patId, i, genSet, x = 0, y = 0) => {
-  if (transRawActive(a, b) && genSet) return transTile(a, b, patId, i, false);
+  if (rawOn(genSet)) return transTile(a, b, patId, i, false);
   return mixTile(a, b, patId, i, x, y) ?? (genSet ? transTile(a, b, patId, i, genSet.post) : null);
 };
 /** Seeded RNG for the composites — a Randomize press swaps the seed, and the
@@ -5610,7 +5630,7 @@ function storedPass() {
  * change on this page? Some might have 1 some 3 some 8... The only safe
  * option here is Clean #0 ... Raw"). Offering the union of everyone's set
  * numbers was my invention, and he is right that it does not generalize. */
-function passOptions(typeId) {
+function passOptions(typeId, { raw = true } = {}) {
   const sets = typeId
     ? groundSets(typeId).filter((s) => s.id !== CLEAN_SET && setDraws(s))
     : [];
@@ -5618,7 +5638,8 @@ function passOptions(typeId) {
     [PASS_CLEAN, `Clean #${CLEAN_SET}`, PASS_TITLE[PASS_CLEAN]],
     ...sets.map((s) => [`set:${s.id}`, setLabel(s),
       `This ground painted with ${setLabel(s)}, drawn the way the game will draw it`]),
-    [PASS_RAW, "Raw", PASS_TITLE[PASS_RAW]],
+    // A transition's sides omit Raw — see the note on transRawWanted.
+    ...(raw ? [[PASS_RAW, "Raw", PASS_TITLE[PASS_RAW]]] : []),
   ];
 }
 /** The pass in force on a page, after falling back to something it can show. */
@@ -6154,14 +6175,23 @@ function viewWorldType(top) {
    * otherwise — so the tab says it in a line of its own, and names what is
    * missing. The moment the tiles agent publishes post/, every one of these
    * flips with no wiki change. */
+  const transAnyGen = trans.some((x) => x.sets.length);
   const transTab = () => h("div", {},
     /* Group 1 of his two: how THIS ground is viewed on every pair below. The
      * second group is per pair — fourteen different neighbours cannot share
      * one — and lives on each pair's own page, where exactly two types exist. */
-    state.admin && trans.length ? h("div", { class: "ground-pass" },
+    state.admin && trans.length ? h("div", { class: `ground-pass${transRawWanted() && transAnyGen ? " idle" : ""}` },
       h("span", { class: "muted" }, t.name),
-      sortBar(`trans-side-${t.id}`, passOptions(t.id), sideViewOf(t.id),
-        (id) => { transSideViews.set(t.id, id); saveSideViews(); tileViews.clear(); keepScrollY = window.scrollY; route(); },
+      sortBar(`trans-side-${t.id}`, passOptions(t.id, { raw: false }), sideViewOf(t.id),
+        (id) => { setSideView(t.id, id); tileViews.clear(); keepScrollY = window.scrollY; route(); },
+        { persist: false })) : null,
+    /* Raw across the page. Enabled when ANY row was pregenerated; the rows that
+     * were not keep composing and say so in their own pill, which is the honest
+     * answer for a directory of fourteen neighbours with different histories. */
+    state.admin && trans.length ? h("div", { class: "ground-pass" },
+      h("span", { class: "muted" }, "Tile art"),
+      sortBar("trans-raw", rawBarOptions(transAnyGen), transRawWanted() && transAnyGen ? PASS_RAW : "composed",
+        (id) => { setTransRaw(id === PASS_RAW); tileViews.clear(); keepScrollY = window.scrollY; route(); },
         { persist: false })) : null,
     state.admin && trans.length ? h("p", { class: "muted" },
       "Each neighbour draws its own side as chosen on its pair page — open one for its second switch.") : null,
@@ -6409,15 +6439,27 @@ function viewWorldTransition(pairId) {
     /* TWO GROUPS, ONE PER TYPE (maintainer 2026-08-27: "we need two radio
      * button groups on this page. 1: How do you want to view tile type A?
      * 2: How do you want to view tile type B?"). Each bar lists exactly its
-     * own ground's passes — a ground with 4 sets and one with none stop
-     * having to share a control that fits neither. Raw is a PAIR state (a raw
-     * transition tile is one generated picture of both materials), so picking
-     * it on either group raws both, and leaving it from either side works. */
-    ...(state.admin ? [tr.a, tr.b].map((g) => h("div", { class: "ground-pass" },
+     * own ground's composed passes — a ground with 4 sets and one with none
+     * stop having to share a control that fits neither — and moving one moves
+     * nothing else. Raw is NOT here; it belongs to the pair, below.
+     *
+     * Under Raw the two are dimmed rather than hidden: their choice does not
+     * apply to a generated tile, and a control that vanishes would move every
+     * picture beneath it on a page whose whole job is comparing pictures. */
+    ...(state.admin ? [tr.a, tr.b].map((g) => h("div", { class: `ground-pass${rawOn(genSet) ? " idle" : ""}` },
       h("span", { class: "muted" }, typeLabelWorld(g)),
-      sortBar(`trans-side-${g}`, passOptions(g), sideViewOf(g),
-        (id) => { setSideView(tr.a, tr.b, g, id); tileViews.clear(); keepScrollY = window.scrollY; route(); },
+      sortBar(`trans-side-${g}`, passOptions(g, { raw: false }), sideViewOf(g),
+        (id) => { setSideView(g, id); tileViews.clear(); keepScrollY = window.scrollY; route(); },
         { persist: false }))) : []),
+    /* THE PAIR'S OWN SOURCE. Raw is disabled outright where the generator never
+     * produced this pair and pattern ("If no raw is available for a type. Just
+     * make the state/button disabled instead") — and it is per PATTERN, since a
+     * pair can be pregenerated at one roughness and not another. */
+    state.admin ? h("div", { class: "ground-pass" },
+      h("span", { class: "muted" }, "Tile art"),
+      sortBar("trans-raw", rawBarOptions(genSet), rawOn(genSet) ? PASS_RAW : "composed",
+        (id) => { setTransRaw(id === PASS_RAW); tileViews.clear(); keepScrollY = window.scrollY; route(); },
+        { persist: false })) : null,
     /* The pattern picker: the library's 18 boundaries, every one of which
      * composes for every pair — these are "the alternatives we downloaded when
      * building the perfect road", distilled. A pattern that also exists as a

@@ -506,16 +506,28 @@ for (const w of [360, 393, 412, 430]) {
  * below it with it. A control for comparing two pictures cannot move the
  * pictures. Measured, not eyeballed: the switch keeps its height and the first
  * tile under it keeps its position across all three passes. */
+/* MEASURED ON A REVIEW TAB, with the labels that exist. This loop still asked
+ * for "After"/"Textured" long after they became Clean #0 and the ground's
+ * sets — `?.click()` swallowed both misses, so it compared one pass against
+ * itself twice and proved nothing. Worse, its selector spanned EVERY
+ * .ground-pass on the page: on Transitions that now includes the pair-level
+ * Tile art row, so asking for "Raw" there switched the whole section to raw
+ * art and leaked into the checks below it. Scoped to the ground's own switch,
+ * on the tab that has one. */
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(1000);
 const passGeom = [];
-for (const want of ["After", "Textured", "Raw"]) {
-  await p.evaluate((w) => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === w)?.click(), want);
+const groundPasses = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
+for (const want of groundPasses) {
+  await p.evaluate((w) => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === w)?.click(), want);
   await p.waitForTimeout(900);
   passGeom.push(await p.evaluate(() => {
     const bar = document.querySelector(".ground-pass").getBoundingClientRect();
-    const first = document.querySelector(".trans-row, .detail-card, .world-cand, .base-group")?.getBoundingClientRect();
+    const first = document.querySelector(".trans-row, .detail-card, .world-cand, .base-group, .grid .card")?.getBoundingClientRect();
     return { h: Math.round(bar.height), art: first ? Math.round(first.top - bar.top) : null };
   }));
 }
+ok(groundPasses.length >= 2, `measured across every pass the ground offers (${groundPasses.join(", ")})`);
 ok(new Set(passGeom.map((g2) => g2.h)).size === 1,
   `the switch is the same height on every pass, so nothing below it moves (${passGeom.map((g2) => g2.h).join(", ")}px)`);
 ok(new Set(passGeom.map((g2) => g2.art)).size === 1,
@@ -545,13 +557,31 @@ const countTrans = (r) => {
   if (/tiles\/(plates|patterns|base_candidates)\//.test(r.url())) plateFetch.push(r.url());
 };
 p.on("request", countTrans);
-const passFetches = async (name) => {
+/* TWO ROWS TO DRIVE NOW: the ground's own side choice, and the pair-level
+ * source (Composed/Raw). They are INDEPENDENT since 2026-08-27 — picking a set
+ * no longer leaves raw, which is the whole point — so a check about composing
+ * has to set the source itself instead of assuming a side click clears it. */
+const passFetches = async (side, source = "Composed") => {
   await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
   await p.waitForTimeout(1600);
   await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
   await p.waitForTimeout(1400);
-  transFetch.length = 0; plateFetch.length = 0;
-  await p.evaluate((n) => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === n)?.click(), name);
+  const clickIn = async (label, txt) => p.evaluate(([l, x2]) => {
+    const row = [...document.querySelectorAll(".ground-pass")].find((r) => new RegExp(l).test(r.querySelector(".muted")?.textContent ?? ""));
+    [...(row?.querySelectorAll("button") ?? [])].find((b2) => b2.textContent.trim() === x2)?.click();
+  }, [label, txt]);
+  // Count the ACTION's fetches, not the setup's: whichever row is not under
+  // test is settled first, then the counters are cleared, then the one being
+  // measured is pressed.
+  if (side) {
+    await clickIn("Tile art", source);
+    await p.waitForTimeout(900);
+    transFetch.length = 0; plateFetch.length = 0;
+    await clickIn("Grass", side);
+  } else {
+    transFetch.length = 0; plateFetch.length = 0;
+    await clickIn("Tile art", source);
+  }
   await p.waitForTimeout(2200);
   return {
     post: transFetch.filter((u) => /\/post\//.test(u)).length,
@@ -578,7 +608,7 @@ ok(trClean.post === 0 && trClean.raw === 0 && trClean.mixes > 0,
   `on Transitions, Clean #0 composes from plates — no pregenerated art fetched (${trClean.mixes} composites, ${trClean.post} post, ${trClean.raw} raw)`);
 ok(trClean.kids.includes("canvas") && !trClean.kids.includes("img"),
   `the strip is composed canvases, not files (${trClean.kids})`);
-const trBefore = await passFetches("Raw");
+const trBefore = await passFetches(null, "Raw");
 ok(trBefore.raw > 0 && trBefore.post === 0,
   `and Raw draws the generator's own pregenerated tiles (${trBefore.post} post, ${trBefore.raw} raw)`);
 const trSet = await passFetches("Set #1");

@@ -1330,6 +1330,10 @@ input[type="range"] { accent-color: var(--accent); }
 /* On a page the bar is not sharing a fixed modal width, so the buttons hug
    their text instead of stretching across a desktop column. */
 .sortbar-btn { flex: 0 0 auto; padding: 7px 13px; }
+/* A chip whose option cannot apply here — a Raw pass on a pair the generator
+   never produced. Dimmed and inert, never removed: the row keeps its shape
+   from pair to pair, so nothing shifts under his thumb as he pages. */
+.sortbar-btn.off { opacity: 0.42; cursor: default; }
 /* The selected chip wears the seg's own on-state, so the two controls cannot
    drift apart: same fill, same ink, same weight. */
 .sortbar-btn.sel,
