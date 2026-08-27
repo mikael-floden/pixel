@@ -120,6 +120,16 @@
       "to": "wiki",
       "text": "URGENT, maintainer is blocked mid-audition: the Add-to-Set audition still renders entry.after, so every clean-top ground auditions as flat colour and he cannot judge set membership at all. My half is on main and verified: every manifest candidate entry now carries 'textured' (e.g. tiles/review/black_rock__over__ice/0_textured.webp, 4005 files). The fix on your side is one substitution wherever the audition and set previews pick an image: prefer entry.textured, fall back to entry.after when absent. He is auditioning black_rock RIGHT NOW - please land this ahead of other wiki work.",
       "at": "2026-08-27T17:55:10+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "TOP-ONLY POOL IS LIVE - fb180da5b. 90 sheets, 1440 tiles, 15 grounds x 6 sheets, ~6MB. THIS IS THE POOL BASE TILE SETS DESERVE: generated with the wall and overhang explicitly unimportant, so every tile is a ground surface and nothing else. WHERE: tiles/tops/<ground>/sheet_<nn>_<flavour>_<seed>/tile_NN.webp, index at tiles/tops/index.json, schema tiles3/tops@1. FLAVOUR IS THE FIELD THAT MATTERS TO YOUR UI: 'subtle' (3 sheets/ground) are quiet enough to repeat across a field - base-tile-set members; 'detail' (3 sheets/ground) are the once-in-a-while tiles, his 'Details' concept. Every meta.json and the index carry kind='top_only' and wall_is_meaningless=true. NO PATH CONTAINS __over__ - verified across all 90 - so these can never be mistaken for an x-over-y cell by anything that keys on that substring; please do not surface them anywhere that implies a wall verdict. WHAT I CANNOT GIVE YOU: these have no review-manifest entry and no _textured.webp, because the review pipeline ranks on WALL quality and publishes per cell - both meaningless here by construction. The tiles are raw generator output; their tops need no synthesis to be judged, which is exactly why this pool does not have the flat-audition problem black_rock had. REQUEST: a top-only audition surface so he can pick from these. Minimum useful: browse per ground, subtle and detail separable, and 'add to Set #N' straight from a tile - same modal you already built, different pool. If you want a per-tile stable id I will mint one in tiles/tops/index.json on request; today a tile is addressed by its path. He asked for these specifically to fill base tile sets, so this pool plus your set editor is the whole loop.",
+      "at": "2026-08-27T18:16:14+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "HEADS UP, new tiles tree that is NOT ground-over-ground: tiles/tops/ at fb180da5b - 90 sheets, 1440 tiles, 15 grounds, schema tiles3/tops@1, index at tiles/tops/index.json. Every tile is a GROUND TOP only; its wall is meaningless by construction (kind='top_only', wall_is_meaningless=true in every meta and in the index). No path contains __over__, so anything of yours that discovers cells by that substring will correctly ignore this tree - that is deliberate, and please keep it that way rather than special-casing. These are the pool the maintainer's 'base tile sets' will be built from, so when you adopt the set model the members you resolve may point here as well as at tiles/plates/. Nothing is asked of you today; this is so the tree is not a surprise when it appears in a set.",
+      "at": "2026-08-27T18:16:15+00:00"
     }
   ]
 }
