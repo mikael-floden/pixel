@@ -5160,7 +5160,12 @@ function openPoolPicker(typeId, setId, onDone) {
    * scrolls near, and a Randomize only rebuilds the ones already built. */
   let origin = [0, 0];
   let added = 0;
-  const N = 7, RING = 2;
+  /* 9x9 (maintainer 2026-08-27: "you need todo that preview 9x9 in order to
+   * fit the x over x with clean wall around the current 7x7"): the centre 3x3
+   * is the candidate, the 2-thick ring around it is the SET — the judgment
+   * picture, unchanged — and the outermost ring is the ground's own clean
+   * x-over-x tile, there only to stand in front of the set's walls. */
+  const N = 9, RING = 3;
   const fieldFor = (cand) => {
     /* CLIPPED AND CENTRED, NEVER SCROLLED (maintainer 2026-08-27: "It
      * displays with 7x7, but with scroll. I want it centered without
@@ -5179,6 +5184,11 @@ function openPoolPicker(typeId, setId, onDone) {
       const inCentre = c >= RING && c < N - RING && r >= RING && r < N - RING;
       cells.push({ c, r, img: inCentre ? cand.art : edge ? ring : setCellArt(set, origin[0] + c, origin[1] + r, typeId) });
     }
+    box.dataset.field = JSON.stringify({
+      n: N,
+      ringClean: cells.filter((x) => (x.r === 0 || x.c === 0 || x.r === N - 1 || x.c === N - 1) && x.img === ring).length,
+      centre: cells.filter((x) => x.img === cand.art).length,
+    });
     loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
       box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 4, worldIso()));
     });

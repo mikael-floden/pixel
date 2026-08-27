@@ -332,6 +332,26 @@ const pool = await p.evaluate(() => {
   };
 });
 ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ballot (${pool.cells} candidates)`);
+/* THE AUDITION FIELD IS 9x9 (maintainer 2026-08-27: "you need todo that
+ * preview 9x9 in order to fit the x over x with clean wall around the current
+ * 7x7"). The judgment picture is UNCHANGED — centre 3x3 candidate, 2-thick
+ * ring of the set — and the added outermost ring is the ground's clean
+ * x-over-x tile, standing in front of the set's walls. Clipped and centred,
+ * never scrolled. */
+{
+  const f9 = await p.evaluate(() => {
+    const stage = document.querySelector(".pool-stage");
+    const meta = JSON.parse(stage?.dataset.field ?? "{}");
+    const cv = stage?.querySelector("canvas");
+    const cvr = cv?.getBoundingClientRect(), str = stage?.getBoundingClientRect();
+    return { ...meta, overflow: stage ? getComputedStyle(stage).overflowX : null,
+      centred: cvr && str ? Math.abs((cvr.left + cvr.right) / 2 - (str.left + str.right) / 2) < 3 : null };
+  });
+  ok(f9.n === 9 && f9.ringClean === 32 && f9.centre === 9,
+    `the audition field is 9x9 — candidate 3x3, set ring 2 thick, clean ring outside (${f9.ringClean}/32 clean, ${f9.centre}/9 centre)`);
+  ok(f9.overflow === "hidden" && f9.centred === true,
+    `and it too is clipped and centred, never scrolled (overflow ${f9.overflow})`);
+}
 /* SOURCED FROM TEXTURED ART, whatever directory it lives in. The pool was the
  * ballot alone until 2026-08-27, which exists for five grounds — the other ten
  * had a disabled "+ Add tiles…" that did nothing when pressed. It is the
