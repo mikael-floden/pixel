@@ -109,6 +109,26 @@ const page = await p.evaluate(() => ({
 ok(page.pills.some((t) => t === `base ${GRASS.top}`), `the base colour pill shows the game's own colour (${page.pills.join(" | ")})`);
 ok(page.pills.includes("always its own texture") && page.pills.includes("solid"),
   "with the surface taxonomy and category in words");
+/* THE CLEAN COLOUR IS NOT MEASURED FROM THE ART, and the page says so where it
+ * matters (maintainer 2026-08-27: "Isn't this a median of the top textures? (I
+ * thought it was)"). It is palette.json types[g].top; grass's textured tops
+ * average 17 RGB units away from it, and darker, which is why a clean tile in
+ * a set reads as a patch. Shown only when the gap is visible — parquet is 1
+ * unit off and says nothing, which is the check that stops this becoming
+ * noise on every page. */
+{
+  const avgPill = page.pills.find((x) => /texture averages/.test(x));
+  const gm = (META.groundTypes ?? []).find((x) => x.id === "grass");
+  ok(!!avgPill && avgPill.includes(gm.topAvg),
+    `grass names what its texture really averages to, beside the clean colour (${avgPill})`);
+  await p.goto(`${W}#/world/parquet_floor`, { waitUntil: "load" });
+  await p.waitForTimeout(1600);
+  const quiet = await p.evaluate(() => [...document.querySelectorAll(".ground-idcard .pill")].map((x) => x.textContent.trim()));
+  ok(!quiet.some((x) => /texture averages/.test(x)),
+    `and a ground whose colours already agree stays quiet (parquet, ${quiet.join(" | ")})`);
+  await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+  await p.waitForTimeout(1800);
+}
 ok(page.palette.length === GRASS.palette.length && page.palette[0] === rgb(GRASS.palette[0].c),
   `the measured palette is drawn, largest share first (${page.palette.length} swatches, first ${page.palette[0]})`);
 

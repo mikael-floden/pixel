@@ -4584,6 +4584,16 @@ const setOrigins = new Map();          // "type/set" -> [x0, y0] for Randomize
 function fnv1a(str) {
   let x = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) { x ^= str.charCodeAt(i) & 0xff; x = Math.imul(x, 0x01000193) >>> 0; }
+  /* fmix32 — WITHOUT IT THE GROUND STRIPES. FNV-1a's last byte reaches only the
+   * low bits while h/2^32 reads the high ones, and our keys end in the
+   * coordinate that varies, so consecutive rows drew the same tile: measured
+   * 89.2% against a 14.3% chance, runs of 50 down a column. See the reasoning
+   * in wiki/lib/basesets.mjs, which this copy must match to the bit. */
+  x ^= x >>> 16;
+  x = Math.imul(x, 0x85ebca6b) >>> 0;
+  x ^= x >>> 13;
+  x = Math.imul(x, 0xc2b2ae35) >>> 0;
+  x ^= x >>> 16;
   return x >>> 0;
 }
 const unitHash = (s) => fnv1a(s) / 4294967296;
@@ -6510,6 +6520,29 @@ function viewWorldType(top) {
     h("div", { class: "spawn-line ground-idcard" },
       baseCol ? h("span", { class: "pill ground-base", title: `Base colour ${baseCol.c} — ${baseCol.from}` },
         swatch(baseCol.c), ` base ${baseCol.c}`) : null,
+      /* AND WHAT ITS TEXTURE ACTUALLY AVERAGES TO, when that differs from the
+       * clean colour (maintainer 2026-08-27: "our clean/plain tile single
+       * color is not at all an avarage/median of how the tile top with texture
+       * looks like ... How did you pick a ground types single/clean color?").
+       * It was never measured from the art: it is palette.json types[g].top,
+       * authored against tiles2. Measured against 3.0 it is 17-22 RGB units
+       * off on grass, ice, light beach and light soil, and DARKER on all four
+       * — which is exactly why a clean tile among textured ones reads as a
+       * patch. palette.json belongs to the tiles agent, so the wiki's job is
+       * to show the number, not to quietly draw a different colour than the
+       * game will. */
+      (() => {
+        const avg = meta.topAvg, dec = baseCol?.c;
+        if (!avg || !dec || !/^#[0-9a-f]{6}$/i.test(dec)) return null;
+        const px = (h2) => [1, 3, 5].map((i) => parseInt(h2.slice(i, i + 2), 16));
+        const [a, b2] = [px(dec), px(avg)];
+        const gap = Math.round(Math.hypot(a[0] - b2[0], a[1] - b2[1], a[2] - b2[2]));
+        if (gap < 8) return null;      // indistinguishable; no note earns its space
+        const darker = a[0] + a[1] + a[2] < b2[0] + b2[1] + b2[2];
+        return h("span", { class: "pill warn", title:
+          `The clean colour is ${dec}, from the tiles agent's palette.json — it is NOT measured from this ground's art. Its textured tops average ${avg}, ${gap} RGB units ${darker ? "lighter" : "darker"} than the clean colour, which is why a clean tile among textured ones shows as a patch. Changing it is the tiles agent's call.` },
+          swatch(avg), ` texture averages ${avg}`);
+      })(),
       surface ? h("span", { class: `pill ${surface.cls}`, title: surface.title }, surface.text) : null,
       meta.category ? h("span", { class: "pill", title: meta.category === "liquid" ? "A liquid ground — bodies swim rather than walk" : "A solid ground — bodies walk on it" }, meta.category) : null),
     (meta.palette ?? []).length ? h("div", { class: "ground-palette", title: "The measured palette of this ground's own tiles — every colour its art actually uses, largest share first" },
@@ -10050,40 +10083,54 @@ async function upgradeToStaging() {
 /* GATE PROBE. The set model and the compositor are pure functions of published
  * data, so a gate can call them directly instead of inferring them from pixels
  * on screen — which is how a pass that "worked" could ship flat. */
-/* A RUNNING PAGE LEARNS ABOUT NEW BUILDS (maintainer 2026-08-27, on a fix
- * that was live while his screen still ran the previous build: "I can't
- * belive it ... Tell me you're joking?"). He was not wrong and the page was
- * not lying — it was OLD, and being a single-page app it would have stayed
- * old for as long as the tab lived. Nothing on a phone hard-refreshes a tab
- * it keeps in a drawer.
+/* A RUNNING PAGE LEARNS ABOUT NEW BUILDS (maintainer 2026-08-27, on a fix that
+ * was live while his screen still ran the previous build). The wiki is a
+ * single-page app he keeps in a tab or the game's drawer; nothing ever told a
+ * running page that a deploy landed.
  *
- * So the page polls a 60-byte version beacon — every five minutes, and the
- * moment the tab becomes visible again, which is the phone case: he comes
- * BACK to a tab that went stale while it slept. A differing sha shows one
- * fixed bar naming both builds; tapping it reloads. It never reloads on its
- * own — he may be mid-edit with unsaved verdicts, and throwing those away to
- * be "fresh" would be worse than any staleness. */
+ * IT COMPARES THE BEACON WITH THE BEACON, never with the page's own stamp.
+ * The first cut compared version.json against state.data.git_sha — and for the
+ * ADMIN those are different quantities: his page re-stamps git_sha with the
+ * REPO HEAD it pinned its staging fetch to, while the beacon names the
+ * DEPLOYED BUILD. Every Commit he makes to live/ moves main without deploying,
+ * so the two diverged permanently and the bar returned on every tab switch,
+ * pointing at an OLDER build than the one his header showed. His words: "I
+ * press it and change app to claude and switch back. The same message AGAIN!"
+ *
+ * So the beacon read at startup IS "the build I am running", and only a later
+ * beacon that differs from it means anything. Like with like, and a reload
+ * re-anchors it, which is what makes the loop impossible rather than unlikely.
+ *
+ * It never reloads on its own — he may be mid-review with unsaved verdicts —
+ * and the bar can be dismissed, so a wrong one can never trap him again. */
 (() => {
-  const mine = () => state.data?.git_sha ?? null;
-  let bar = null;
-  const offer = (sha) => {
-    if (bar || !state.data) return;
-    bar = h("button", { class: "update-bar", type: "button",
-      title: "A newer build of the wiki is deployed. Reload to run it — unsaved changes are lost, so Commit first if the save bar is up." },
-      `build ${sha} is live — you are on ${mine() ?? "?"} · tap to reload`);
-    bar.onclick = () => location.reload();
+  let boot = null;                    // the beacon as it read when this page started
+  let bar = null, dismissed = null;
+  const show = (sha) => {
+    if (bar || dismissed === sha) return;
+    bar = h("div", { class: "update-bar" },
+      h("button", { class: "update-go", type: "button",
+        title: "A newer build of the wiki is deployed. Reload to run it — unsaved changes are lost, so Commit first if the save bar is up.",
+        onclick: () => location.reload() },
+        `A newer build is live (${sha}) · tap to reload`),
+      h("button", { class: "update-x", type: "button", title: "Not now",
+        onclick: () => { dismissed = sha; bar?.remove(); bar = null; } }, "✕"));
     document.body.append(bar);
   };
   const check = async () => {
+    let v = null;
     try {
       const r = await fetch(new URL("version.json", location.href), { cache: "no-store" });
       if (!r.ok) return;
-      const v = await r.json();
-      if (v?.git_sha && mine() && v.git_sha !== mine()) offer(v.git_sha);
-    } catch { /* offline is not stale */ }
+      v = await r.json();
+    } catch { return; }               // offline is not stale
+    const sha = v?.git_sha;
+    if (!sha) return;
+    if (!boot) { boot = sha; return; }   // first read anchors, never offers
+    if (sha !== boot) show(sha);
   };
+  check();
   setInterval(check, 5 * 60 * 1000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
-  setTimeout(check, 20 * 1000);
 })();
 window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };

@@ -49,16 +49,36 @@ export const SCHEMA = "pixel-wiki-base-tile-sets@1";
  * means there is always one set that can draw. */
 export const CLEAN_SET_ID = 0;
 
-/* FNV-1a, 32-bit. Chosen because it is portable to the byte: no library, no
- * platform-dependent string hashing, and identical in JS, Python and TS. Uses
- * Math.imul so the multiply stays 32-bit in JS, where a plain * would go
- * through a double and lose the low bits. */
+/* FNV-1a, 32-bit, THEN AN AVALANCHE FINALIZER. Both halves are required.
+ *
+ * FNV-1a alone is portable and fast but it does NOT avalanche at the tail: the
+ * last byte is XORed in and multiplied exactly once, so it moves mostly the LOW
+ * bits, while a value taken as h/2^32 is dominated by the HIGH ones. Our keys
+ * end in the coordinate that varies — "…|<x>|<y>" — so consecutive rows landed
+ * in the same bucket almost every time.
+ *
+ * MEASURED, on a 60x60 field of a 7-tile set: a cell matched the one BELOW it
+ * 89.2% of the time against a 14.3% chance, with runs of 50 identical tiles
+ * down a column. That is the "vertical stripes" the maintainer reported
+ * (2026-08-27: "Why would we holding on to a tile to create vertical visible
+ * stripes?") — not a quirk of his eye, and not confined to the wiki: this is
+ * the spec the game and the tiles agent port, so the world would have shipped
+ * the stripes.
+ *
+ * The finalizer is MurmurHash3's fmix32, five integer ops, as portable as the
+ * rest. After it: 13.5% below and 14.6% right against 14.3% expected. */
 export function fnv1a(str) {
   let h = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) {
     h ^= str.charCodeAt(i) & 0xff;
     h = Math.imul(h, 0x01000193) >>> 0;
   }
+  // fmix32 — spreads every input bit across all 32 output bits.
+  h ^= h >>> 16;
+  h = Math.imul(h, 0x85ebca6b) >>> 0;
+  h ^= h >>> 13;
+  h = Math.imul(h, 0xc2b2ae35) >>> 0;
+  h ^= h >>> 16;
   return h >>> 0;
 }
 
@@ -172,17 +192,17 @@ export function tileAt(doc, ground, region, x, y) {
  * exists to make impossible to ship. Regenerate with wiki/tools/baseset-vectors.mjs. */
 export const TEST_VECTORS = {
   fnv1a: [
-    ["", 2166136261],
-    ["a", 3826002220],
-    ["grass", 2993663101],
-    ["bts1|set|grass|r0", 3204451657],
-    ["bts1|tile|1|0|0", 3317126178],
+    ["", 2872998923],
+    ["a", 444641715],
+    ["grass", 876385684],
+    ["bts1|set|grass|r0", 876574184],
+    ["bts1|tile|1|0|0", 1995477220],
   ],
   pickWeighted: [
-    [[1, 1], 0.0, 0],
+    [[1, 1], 0, 0],
     [[1, 1], 0.4999, 0],
     [[1, 1], 0.5, 1],
-    [[0, 5], 0.0, 1],
+    [[0, 5], 0, 1],
     [[0, 5], 0.999, 1],
     [[3, 1], 0.74, 0],
     [[3, 1], 0.76, 1],

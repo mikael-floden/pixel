@@ -688,20 +688,32 @@ function buildWorld() {
    * texture. So the pool cannot be filtered by ground or by source — only by
    * what the pixels say. A flat plate offered as a base tile IS the clean
    * colour, which every set already carries as its clean member. */
-  const topDominant = (rel) => {
+  const topStatsCache = new Map();
+  const topStats = (rel) => {
+    if (topStatsCache.has(rel)) return topStatsCache.get(rel);
     let d = null;
-    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { return 1; }
-    const { w, h, pix } = d;
-    const cols = new Map(); let n = 0;
-    for (let x = 0; x < w; x++) {
-      let top = -1, bot = -1;
-      for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
-      if (top < 0) continue;
-      for (let y = top; y <= bot - 17; y++) { const c = pix[y * w + x] & 0xffffff; cols.set(c, (cols.get(c) ?? 0) + 1); n++; }
+    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { d = null; }
+    let out = { dominant: 1, sum: [0, 0, 0], n: 0 };
+    if (d) {
+      const { w, h, pix } = d;
+      const cols = new Map(); const sum = [0, 0, 0]; let n = 0;
+      for (let x = 0; x < w; x++) {
+        let top = -1, bot = -1;
+        for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
+        if (top < 0) continue;
+        for (let y = top; y <= bot - 17; y++) {
+          const v = pix[y * w + x], c = v & 0xffffff;
+          cols.set(c, (cols.get(c) ?? 0) + 1);
+          sum[0] += (v >> 16) & 255; sum[1] += (v >> 8) & 255; sum[2] += v & 255;
+          n++;
+        }
+      }
+      if (n) out = { dominant: Math.max(...cols.values()) / n, sum, n };
     }
-    if (!n) return 1;
-    return Math.max(...cols.values()) / n;
+    topStatsCache.set(rel, out);
+    return out;
   };
+  const topDominant = (rel) => topStats(rel).dominant;
   const basePools = {};
   const bcDir = join(ROOT, "tiles", "base_candidates");
   if (isDir(bcDir)) {
@@ -716,6 +728,41 @@ function buildWorld() {
       if (cands.length) basePools[ground] = cands;
     }
   }
+  /* WHAT THE GROUND'S TEXTURE ACTUALLY AVERAGES TO (maintainer 2026-08-27: "I
+   * now also feel our clean/plain tile single color is not at all an
+   * avarage/median of how the tile top with texture looks like ... How did you
+   * pick a ground types single/clean color? Isn't this a median of the top
+   * textures? (I thought it was)").
+   *
+   * It is not: the clean colour is palette.json types[g].top, authored against
+   * tiles2 by the tiles agent, and it comes out systematically DARKER than the
+   * 3.0 art it now sits beside — grass declared #14523b against a measured
+   * #175f43. That is why a clean tile in a textured set reads as a patch. The
+   * fix lives in palette.json, which is the tiles agent's file; what the wiki
+   * owes him is the measurement, on the page, so the gap is visible instead of
+   * being something he has to feel. Averaged over the TEXTURED candidates only
+   * — the flat ones already are the clean colour and would drag the mean back
+   * onto itself. */
+  const topAvg = {};
+  // Read here rather than reusing the one below: the pattern library is built
+  // AFTER the ground types, and reaching forward to it threw
+  // "Cannot access 'platesIdx' before initialization" — which build.mjs
+  // swallowed into a stack trace nobody was reading, leaving topAvg silently
+  // absent on every ground. readJson caches nothing but costs one file read.
+  const platesForAvg = readJson(join(ROOT, "tiles", "plates", "index.json"));
+  for (const [g, e] of Object.entries(platesForAvg?.grounds ?? {})) {
+    const sum = [0, 0, 0]; let n = 0;
+    const files = [
+      ...Object.values(e.plates ?? {}).flat().map((k) => `tiles/plates/${g}/${k}.webp`),
+      ...(basePools[g] ?? []).map((c) => c.art),
+    ];
+    for (const f of files) {
+      const st = topStats(f);
+      if (st.dominant >= 0.9 || !st.n) continue;
+      sum[0] += st.sum[0]; sum[1] += st.sum[1]; sum[2] += st.sum[2]; n += st.n;
+    }
+    if (n) topAvg[g] = "#" + sum.map((v) => Math.round(v / n).toString(16).padStart(2, "0")).join("");
+  }
   const groundTypes = [...types.values()].map((t) => {
     const pal = palCfg?.types?.[t.id] ?? {};
     return {
@@ -729,6 +776,9 @@ function buildWorld() {
       // How many textured tiles he can choose from for this ground's sets.
       // The art itself is in basePool; this is for counts without walking it.
       basePool: (basePools[t.id] ?? []).length,
+      // What this ground's textured tops actually average to, against which
+      // `top` (the clean colour) can be compared on the page.
+      topAvg: topAvg[t.id] ?? null,
     };
   });
   // ---- the pattern library + plates: composed transitions for EVERY pair ----

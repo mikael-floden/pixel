@@ -35,9 +35,18 @@ ok(TEST_VECTORS.fnv1a.every(([s, v]) => fnv1a(s) === v),
   `the published hash vectors match the implementation (${TEST_VECTORS.fnv1a.length})`);
 ok(TEST_VECTORS.pickWeighted.every(([ws, u, i]) => pickWeighted(ws, u) === i),
   `and the published pick vectors too (${TEST_VECTORS.pickWeighted.length})`);
-// FNV-1a's own published constants, so "we ported it consistently wrong" is out.
-ok(fnv1a("") === 2166136261 && fnv1a("a") === 3826002220,
-  "and it really is FNV-1a/32, against the algorithm's own published values");
+/* STILL FNV-1a AT ITS CORE, with fmix32 on top — checked against the
+ * algorithm's own published values so "we ported it consistently wrong" stays
+ * out, and against the finalizer separately so a copy that drops the avalanche
+ * (the striping bug) cannot pass by matching the core alone. */
+{
+  const core = (s2) => { let h = 0x811c9dc5; for (let i = 0; i < s2.length; i++) { h ^= s2.charCodeAt(i) & 0xff; h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+  const fmix = (h) => { h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b) >>> 0; h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35) >>> 0; h ^= h >>> 16; return h >>> 0; };
+  ok(core("") === 2166136261 && core("a") === 3826002220,
+    "the core is genuine FNV-1a/32, against the algorithm's own published values");
+  ok(["", "a", "grass", "bts1|tile|1|4|9"].every((s2) => fnv1a(s2) === fmix(core(s2))),
+    "and the published hash is that core through fmix32 — a copy that drops the avalanche fails here, not in the field");
+}
 
 // ---- 1. the model's rules --------------------------------------------------
 const empty = setsFor({}, "grass");
@@ -63,6 +72,48 @@ ok(pickWeighted(sets.map((s) => s.weight), 0.999) !== 2,
 // shimmers between reloads and every screenshot argues with the last one.
 const a1 = pickMember(meadow, 4, 7), a2 = pickMember(meadow, 4, 7);
 ok(a1 === a2 || JSON.stringify(a1) === JSON.stringify(a2), "the same cell resolves to the same member every time");
+
+/* ---- 1b. THE GROUND MUST NOT STRIPE (maintainer 2026-08-27: "the random tile
+ * function when looking at a set often give me vertical stripes with the same
+ * texture used vertically several tiles before changing tile ... Why would we
+ * holding on to a tile to create vertical visible stripes?").
+ *
+ * It did, and the cause was in the SPEC, not the preview: FNV-1a's last byte
+ * moves only the low bits while the pick reads h/2^32, and every key ends in
+ * the coordinate that varies — so a cell matched the one BELOW it 89.2% of the
+ * time against a 14.3% chance, in runs of 50. A hash without avalanche is
+ * invisible in every unit test that checks one value at a time; only the field
+ * shows it. So the field is what is measured here.
+ *
+ * Both axes, because fixing one by reordering the key would have moved the
+ * defect to the other. */
+{
+  const N = 60;
+  for (const members of [2, 4, 7, 10]) {
+    const grid = [];
+    for (let y = 0; y < N; y++) {
+      const row = [];
+      for (let x = 0; x < N; x++) row.push(pickWeighted(Array(members).fill(1), fnv1a(`bts1|tile|1|${x}|${y}`) / 4294967296));
+      grid.push(row);
+    }
+    let right = 0, down = 0, tot = 0;
+    for (let y = 0; y < N - 1; y++) for (let x = 0; x < N - 1; x++) {
+      tot++;
+      if (grid[y][x] === grid[y][x + 1]) right++;
+      if (grid[y][x] === grid[y + 1][x]) down++;
+    }
+    const chance = 100 / members;
+    const pr = 100 * right / tot, pd = 100 * down / tot;
+    // Half again over chance is generous for 3,481 samples and nowhere near
+    // the 6x the striping bug produced.
+    ok(pr < chance * 1.5 && pd < chance * 1.5,
+      `a ${members}-tile set does not stripe: neighbours match ${pr.toFixed(1)}% across and ${pd.toFixed(1)}% down, against ${chance.toFixed(1)}% by chance`);
+    const hist = Array(members).fill(0);
+    for (const row of grid) for (const v of row) hist[v]++;
+    const lo = Math.min(...hist), hi = Math.max(...hist);
+    ok(hi / lo < 1.35, `and every tile of it gets its share (${lo}-${hi} of ${N * N})`);
+  }
+}
 
 // ---- 2. the browser copies agree with the reference ------------------------
 const b = await chromium.launch({ executablePath: process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
