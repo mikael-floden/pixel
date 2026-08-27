@@ -171,6 +171,33 @@ ok(br.rows === roster && !br.beingGenerated,
   `Black Rock lists all ${roster} neighbours — the "Being generated" empty state is gone (${br.rows} rows)`);
 ok(br.canvases >= br.rows * 4 && br.painted === br.canvases,
   `every strip is composed and every canvas actually painted (${br.painted}/${br.canvases})`);
+/* ---- 4. TWO GROUPS, ONE PER TYPE (maintainer 2026-08-27: "we need two radio
+ * button groups on this page. 1: How do you want to view tile type A? 2: How
+ * do you want to view tile type B?"). Each bar lists ITS ground's own passes —
+ * paving has a set, grass does not, and neither list leaks into the other.
+ * Raw is a pair state: entered from either group, left from either group. */
+await p.goto(`${W}#/world/transition/brown_paving_stone__to__grass`, { waitUntil: "load" });
+await p.waitForTimeout(2600);
+const sideBars = () => p.evaluate(() => [...document.querySelectorAll(".ground-pass")].map((r) => ({
+  label: r.querySelector(".muted")?.textContent.trim(),
+  chips: [...r.querySelectorAll("button")].map((x) => x.textContent.trim()),
+  sel: [...r.querySelectorAll("button")].find((x) => x.classList.contains("sel"))?.textContent.trim(),
+})));
+const bars0 = await sideBars();
+ok(bars0.length === 2 && bars0[0].label === "Brown Paving Stone" && bars0[1].label === "Grass",
+  `the pair page carries one group per type, labelled (${bars0.map((x) => x.label).join(" / ")})`);
+ok(bars0[0].chips.join("/") === "Clean #0/Set #1/Raw" && bars0[1].chips.join("/") === "Clean #0/Raw",
+  `each listing exactly its own ground's passes (${bars0[0].chips.length} vs ${bars0[1].chips.length})`);
+await p.evaluate(() => { const r = [...document.querySelectorAll(".ground-pass")].find((x) => /Grass/.test(x.textContent)); [...r.querySelectorAll("button")].find((x) => x.textContent.trim() === "Raw")?.click(); });
+await p.waitForTimeout(1000);
+const rawBars = await sideBars();
+ok(rawBars.every((x) => x.sel === "Raw"),
+  `Raw is a pair state — picking it on one side raws both (${rawBars.map((x) => x.sel).join(" / ")})`);
+await p.evaluate(() => { const r = [...document.querySelectorAll(".ground-pass")].find((x) => /Brown/.test(x.textContent)); [...r.querySelectorAll("button")].find((x) => x.textContent.trim() === "Set #1")?.click(); });
+await p.waitForTimeout(1000);
+const backBars = await sideBars();
+ok(backBars[0].sel === "Set #1" && backBars[1].sel === "Clean #0",
+  `and leaving it from the other side pulls the pair out of raw (${backBars.map((x) => x.sel).join(" / ")})`);
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nTRANS-COMPOSE CHECKS FAILED (${fails.length})` : "\nALL TRANS-COMPOSE CHECKS PASSED");
