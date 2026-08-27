@@ -6168,7 +6168,14 @@ function viewWorldType(top) {
      * with it. A switch whose whole purpose is comparing two pictures must not
      * move the pictures. The chips keep their tooltips; that is where an
      * explanation belongs. */
-    state.admin ? h("div", { class: "ground-pass" },
+    /* NOT ON THE BASE TAB (maintainer 2026-08-27: "When I click on the Base
+     * tab - it makes no sense to be able to change the Tile art. That is for
+     * reviewing other pages how they look with a different base set. This is
+     * where you look at the individual base sets and looking at Set #2 as if
+     * it was Set #1 makes no sense"). The editor's panels each draw their OWN
+     * set; a pass switch above them is a control with nothing to control. It
+     * stays on the review tabs, which is what it is for. */
+    state.admin && tab !== "base" ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
       passBar(t.id, () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },

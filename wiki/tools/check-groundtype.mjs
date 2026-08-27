@@ -132,10 +132,20 @@ const setState = await p.evaluate(() => ({
 }));
 ok(setState.panels.length === 1 && /^Clean #0/.test(setState.panels[0]),
   `with Clean #0 present and nothing else until he makes one (${setState.panels.join(" | ")})`);
-// HIS EXACT WORDS FOR THE EMPTY CASE: "And if no set has been created yet at
-// least draw: 'Clean #0'/'Raw'".
-ok(setState.chips.length === 2 && setState.chips[0] === "Clean #0" && setState.chips[1] === "Raw",
-  `and the switch reads exactly Clean #0 / Raw (${setState.chips.join(" / ")})`);
+/* NO SWITCH ON THE EDITOR (maintainer 2026-08-27: "When I click on the Base
+ * tab - it makes no sense to be able to change the Tile art ... looking at
+ * Set #2 as if it was Set #1 makes no sense"). The panels each draw their own
+ * set; the switch lives on the review tabs. */
+ok(setState.chips.length === 0, `the Base tab carries NO pass switch — the panels are the sets (${setState.chips.length} chips)`);
+// HIS EXACT WORDS FOR THE EMPTY CASE, on a tab that reviews: "And if no set
+// has been created yet at least draw: 'Clean #0'/'Raw'".
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(900);
+const chips0 = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
+ok(chips0.length === 2 && chips0[0] === "Clean #0" && chips0[1] === "Raw",
+  `and the review tabs' switch reads exactly Clean #0 / Raw (${chips0.join(" / ")})`);
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Base/.test(x.textContent.trim()))?.click());
+await p.waitForTimeout(900);
 ok(setState.fields >= 1 && setState.addBtn, "the set draws a field of itself, and a new set can be started");
 // Then over to the grid, which is where the rest of this gate works.
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
@@ -236,8 +246,14 @@ ok(ed.addTiles === 1, `and Clean #0 cannot take tiles, Set #1 can (${ed.addTiles
 
 /* THE SWITCH IS THE SETS (maintainer: "the After/Texture/Raw instead will be
  * Set #1/Set #2/Set #3/Raw ... Clean #0/Set #1/Set #2/Set #3/Raw"). */
-ok(ed.chips[0] === "Clean #0" && ed.chips.at(-1) === "Raw" && ed.chips.length === 3,
-  `the pass switch reads Clean #0 / the sets / Raw (${ed.chips.join(" / ")})`);
+ok(ed.chips.length === 0, "and still no switch above the editor once sets exist");
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.waitForTimeout(900);
+const chips1 = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
+ok(chips1[0] === "Clean #0" && chips1.at(-1) === "Raw" && chips1.length === 3,
+  `the review tabs' switch reads Clean #0 / the sets / Raw (${chips1.join(" / ")})`);
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Base/.test(x.textContent.trim()))?.click());
+await p.waitForTimeout(900);
 ok(!ed.chips.includes("After") && !ed.chips.includes("Textured"),
   "and After and Textured are gone — a set member IS the texture, so the synthesis has nothing left to do");
 
