@@ -5117,9 +5117,13 @@ function openPoolPicker(typeId, setId, onDone) {
     const set = setNow();
     const n = set?.members.length ?? 0;
     const rej = set?.rejected?.length ?? 0;
-    tally.replaceChildren(added
-      ? `${n} tile${n === 1 ? "" : "s"} in ${setLabel(setOf())}${rej ? `, ${rej} rejected for it` : ""} — Commit to save`
-      : "Nothing changed yet");
+    /* ALWAYS THE SET'S STATE, never a session delta. "Nothing changed yet" sat
+     * beside a save bar reading "1 change" and the two looked like they were
+     * arguing; what he wants to know before pressing Done is what the set
+     * HOLDS, and the Commit reminder is what is still owed. */
+    tally.replaceChildren(
+      `${n} tile${n === 1 ? "" : "s"} in ${setLabel(setOf())}${rej ? `, ${rej} rejected for it` : ""}`
+      + (added ? " — Commit to save" : ""));
   };
   const dlg = h("dialog", { class: "promote-modal pool-modal" },
     h("div", { class: "promote-head" },
@@ -5133,8 +5137,14 @@ function openPoolPicker(typeId, setId, onDone) {
           origin = [origin[0] + 7, origin[1] + 3];
           for (const [id, row] of rows) if (row.dataset.built === "1") { row.dataset.built = "0"; buildRow(pool.find((c) => c.id === id)); }
         },
-      }, "🎲 Randomize"),
-      h("button", { class: "ghost-btn", type: "button", onclick: close }, "✕ Close")),
+      }, "🎲 Randomize")),
+      /* NO SECOND WAY OUT. This dialog once carried "✕ Close" up here as well
+       * as Done at the foot — two buttons doing the identical thing, since the
+       * picks are staged the moment they are made and neither one discards
+       * anything (maintainer 2026-08-27: "you added a Done button, but didn't
+       * remove the X Close button at the top. So now we have both"). Done, at
+       * the bottom right, is the way out; the header is for what the dialog IS
+       * and the one control that changes what it shows. */
     h("p", { class: "muted" },
       pool.length
         ? `Each candidate sits as the centre 3×3 in two rings of ${setLabel(setOf())}, drawn by its weights — judge the field, then add.`

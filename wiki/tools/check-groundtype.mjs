@@ -367,6 +367,15 @@ const foot = await p.evaluate(() => {
 ok(foot && foot.onScreen && foot.right && foot.bottom,
   `Done sits at the dialog's bottom-right and stays there with the list scrolled to the end (${JSON.stringify(foot && { onScreen: foot.onScreen, right: foot.right, bottom: foot.bottom })})`);
 ok(foot.tall >= 44, `at the 44px tap target this site holds everywhere else (${foot.tall}px)`);
+/* EXACTLY ONE WAY OUT (maintainer 2026-08-27: "you added a Done button, but
+ * didn't remove the X Close button at the top. So now we have both"). They did
+ * the identical thing — picks are staged as they are made and neither discards
+ * anything — so the dialog carried two buttons for one action. Counted, not
+ * eyeballed, because a second exit is exactly the sort of thing that gets
+ * added back by someone being helpful. */
+const exits = await p.evaluate(() =>
+  [...document.querySelectorAll(".pool-modal button")].filter((x) => /close|done|cancel/i.test(x.textContent)).map((x) => x.textContent.trim()));
+ok(exits.length === 1 && exits[0] === "Done", `and it is the ONLY way out of the dialog (${exits.join(", ") || "none"})`);
 ok(/Commit to save/.test(foot.tally), `and it says what happened and what is still owed (${foot.tally})`);
 await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
