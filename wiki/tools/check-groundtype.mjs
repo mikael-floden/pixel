@@ -117,10 +117,18 @@ ok(page.pills.includes("always its own texture") && page.pills.includes("solid")
  * unit off and says nothing, which is the check that stops this becoming
  * noise on every page. */
 {
+  /* THE PILL IS SHOWN IFF THE GAP IS VISIBLE — and the gap is the tiles
+   * agent's to close, which they since have: grass was 17 RGB units off and
+   * is now 1, so the honest assertion is the RULE, not that grass still
+   * differs. Naming grass specifically would fail the day they fixed it,
+   * which is the day it should stay quiet. */
   const avgPill = page.pills.find((x) => /texture averages/.test(x));
   const gm = (META.groundTypes ?? []).find((x) => x.id === "grass");
-  ok(!!avgPill && avgPill.includes(gm.topAvg),
-    `grass names what its texture really averages to, beside the clean colour (${avgPill})`);
+  const px = (h2) => [1, 3, 5].map((i) => parseInt(h2.slice(i, i + 2), 16));
+  const gap = gm?.topAvg && gm?.top
+    ? Math.round(Math.hypot(...px(gm.top).map((v, i) => v - px(gm.topAvg)[i]))) : 0;
+  ok(gap >= 8 ? (!!avgPill && avgPill.includes(gm.topAvg)) : !avgPill,
+    `grass's clean colour and its texture are ${gap} RGB apart, so the pill is ${gap >= 8 ? `shown (${avgPill})` : "correctly silent"}`);
   await p.goto(`${W}#/world/parquet_floor`, { waitUntil: "load" });
   await p.waitForTimeout(1600);
   const quiet = await p.evaluate(() => [...document.querySelectorAll(".ground-idcard .pill")].map((x) => x.textContent.trim()));
@@ -315,8 +323,11 @@ ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ba
 /* Only the REVIEW candidates have a textured pass — a ballot entry
  * (<pair>__<variant>.webp from tiles/base_candidates) is its own art, the pure
  * corner of a generated transition, and never had a flattened top to fix. */
-ok(pool.srcs.filter((s) => !/base_candidates/.test(s)).every((s) => /_textured\.webp$/.test(s)),
-  `every review candidate is auditioned as its TEXTURED pass, never the flattened one (${pool.srcs.find((s) => !/base_candidates/.test(s))?.split("/").pop() ?? "none in view"})`);
+// Only REVIEW candidates have a textured pass: a ballot tile is its own art,
+// and a top-only tile never had a wall or a flattened top to fix.
+const reviewSrcs = pool.srcs.filter((s) => !/base_candidates|\/tiles\/tops\//.test(s));
+ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
+  `every review candidate is auditioned as its TEXTURED pass, never the flattened one (${reviewSrcs[0]?.split("/").pop() ?? "none in view"})`);
 /* ...AND ON A GROUND WITH NO BALLOT AT ALL, which is where it actually broke.
  * Grass's pool opens with ballot tiles, so the check above can pass over three
  * rows that never had a textured pass to prefer — vacuously. black_rock
@@ -338,13 +349,26 @@ ok(pool.srcs.filter((s) => !/base_candidates/.test(s)).every((s) => /_textured\.
   await p2.waitForTimeout(2200);
   const br = await p2.evaluate(() => ({
     n: document.querySelectorAll(".pool-cell").length,
-    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 6).map((i) => i.getAttribute("src")),
+    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 8).map((i) => i.getAttribute("src")),
+    labels: [...document.querySelectorAll(".pool-name")].slice(0, 8).map((i) => i.textContent),
   }));
-  ok(br.n > 100 && br.srcs.length > 0 && br.srcs.every((s) => /_textured\.webp$/.test(s)),
-    `black_rock — no ballot, every row a review candidate — auditions TEXTURED (${br.n} rows, ${br.srcs[0]?.split("/").pop()})`);
+  /* THE TOP-ONLY POOL LEADS THE AUDITION (maintainer 2026-08-27: "you should
+   * include this new set when I scroll over details tiles or base set tiles
+   * that has not been rejected"). Generated with the wall meaningless, so they
+   * are ground surface and nothing else — and SUBTLE first, because those are
+   * the sheets meant to survive repetition, which is what a set does. */
+  ok(br.srcs.slice(0, 3).every((s) => /\/tiles\/tops\//.test(s)),
+    `the top-only pool leads the audition (${br.srcs[0]?.split("/").slice(-2).join("/")})`);
+  ok(br.srcs.slice(0, 3).every((s) => /_subtle_/.test(s)),
+    "and its SUBTLE sheets come first — the ones that survive being repeated across a field");
+  ok(br.labels.slice(0, 3).every((l) => /subtle top/.test(l)),
+    `each naming its flavour, since there is no wall to name it by (${br.labels[0]})`);
+  // The review candidates are still there, behind them, still textured.
+  ok(br.srcs.some((s) => /_textured\.webp$/.test(s)) || br.n > 300,
+    `with the review candidates behind them (${br.n} rows in all)`);
   await p2.close();
 }
-ok(pool.srcs.every((s) => /base_candidates|\/plates\/|_textured\.webp$/.test(s)),
+ok(pool.srcs.every((s) => /base_candidates|\/plates\/|\/tiles\/tops\/|_textured\.webp$/.test(s)),
   `sourced from published tile art (${pool.srcs.map((s) => s.split("/").slice(-2, -1)[0]).join(", ")})`);
 /* EVERYTHING APPROVED IS OFFERED — the full plates roster plus the ballot,
  * nothing filtered (maintainer 2026-08-27: "all accepted tiles for brown
@@ -354,7 +378,9 @@ ok(pool.srcs.every((s) => /base_candidates|\/plates\/|_textured\.webp$/.test(s))
  * this assertion exists so it cannot come back: the offered count must equal
  * roster + ballot exactly. Flatness is a SORT and a PILL, never a gate. */
 {
-  const expect = (META.patternLib?.plates?.grass?.pool.length ?? 0) + (META.basePools?.grass?.length ?? 0);
+  const expect = (META.patternLib?.plates?.grass?.pool.length ?? 0)
+    + (META.basePools?.grass?.length ?? 0)
+    + (META.tops?.grass?.length ?? 0);
   // Minus what this run already added to the set — a member is rightly not
   // offered twice, and that is the only legitimate subtraction.
   const inSet = await p.evaluate(() =>
@@ -362,7 +388,7 @@ ok(pool.srcs.every((s) => /base_candidates|\/plates\/|_textured\.webp$/.test(s))
   const rejHere = await p.evaluate(() =>
     (window.__wiki.state.tuning.base_tile_sets.grounds.grass?.sets.find((x) => x.id === 1)?.rejected ?? []).length);
   ok(pool.cells === expect - inSet - rejHere,
-    `every approved top is offered, none filtered (${pool.cells} = plates ${META.patternLib?.plates?.grass?.pool.length} + ballot ${META.basePools?.grass?.length} − ${inSet} in the set − ${rejHere} rejected for it)`);
+    `every approved top is offered, none filtered (${pool.cells} = plates ${META.patternLib?.plates?.grass?.pool.length} + ballot ${META.basePools?.grass?.length} + top-only ${META.tops?.grass?.length} − ${inSet} in the set − ${rejHere} rejected for it)`);
   const order = await p.evaluate(() => [...document.querySelectorAll(".pool-cell")].map((r) => r.querySelectorAll(".pool-head .pill").length ? 1 : 0));
   const firstFlat = order.indexOf(1), lastTextured = order.lastIndexOf(0);
   ok(firstFlat === -1 || lastTextured < firstFlat,
@@ -1015,6 +1041,26 @@ ok(tt.rows === expTrans.length, `the Transitions tab lists every neighbour (${tt
 ok(tt.post.some((x) => /composed/.test(x)),
   `and the pill names what is drawn — composed under Clean/Set (${tt.post.find((x) => /composed/.test(x))})`);
 ok(/#\/world\/transition\//.test(tt.href ?? ""), "each row links to the transition's own page");
+/* TOP-ONLY TILES ARE NEVER AN X-OVER-Y CANDIDATE — the tiles agent's own rule
+ * ("never resolve one against tiles/review/manifest.json — nothing here is a
+ * cell") and the maintainer's ("You should not include the new tiles in x over
+ * x/y review. This is top only tiles"). They live in their own worldMeta field
+ * for exactly this reason, but the pair page is where a wall verdict is given,
+ * so it is where the claim is worth checking. */
+{
+  const pv = await ctx.newPage();
+  await pv.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await pv.addInitScript(() => {
+    localStorage.setItem("wiki-admin-token", "gate");
+    localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  });
+  await pv.goto(`${W}#/world/grass/ice`, { waitUntil: "load" });
+  await pv.waitForTimeout(2400);
+  const leak = await pv.evaluate(() => [...document.querySelectorAll("img, canvas")]
+    .map((n) => n.getAttribute("src") ?? "").filter((s) => /\/tiles\/tops\//.test(s)));
+  ok(leak.length === 0, `no top-only tile appears in an x-over-y review (${leak.length} found)`);
+  await pv.close();
+}
 await p.evaluate(() => document.querySelector("a.trans-row")?.click());
 await p.waitForTimeout(2600);
 const demo = await p.evaluate(() => ({

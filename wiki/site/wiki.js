@@ -4781,7 +4781,24 @@ const setsDoc = () => state.tuning.base_tile_sets
  * pickable. */
 function basePool(typeId) {
   const plates = patternLib()?.plates[typeId]?.pool ?? [];
+  /* THE TOP-ONLY POOL LEADS (maintainer 2026-08-27: "The tiles generated now
+   * is candidates for being 'details' tile or a 'base tile'. So you should
+   * include this new set when I scroll over details tiles or base set tiles
+   * that has not been rejected").
+   *
+   * Generated with the wall and overhang explicitly meaningless, so every one
+   * of them is a ground surface and nothing else — which is exactly what a
+   * base tile is judged on, and why these need no textured pass: there was
+   * never a flattened top to undo. They lead because they are the pool built
+   * FOR this decision; plates and ballot tiles follow as what came before.
+   *
+   * REJECTED ONES ARE NOT CANDIDATES, his words. A top-only tile has no review
+   * cell, so its verdict rides the same feedback file keyed by its own path. */
+  const tops = (worldMeta().tops?.[typeId] ?? [])
+    .filter((c) => fb("tiles", c.id).status !== "rejected")
+    .map((c) => ({ id: c.id, art: c.art, from: null, flat: c.flat ?? 0, flavour: c.flavour, colours: c.colours, topOnly: true }));
   const all = [
+    ...tops,
     ...plates.map(([k, cell, flat]) => {
       const key = `tiles/${cell}/${k}`;
       // The plate stays the identity and the game's own geometry; what is
@@ -4805,7 +4822,20 @@ function basePool(typeId) {
    * on the tiles agent's next republish. */
   return all
     .filter((c) => !/^tiles\//.test(c.id) || fb("tiles", c.id).status !== "rejected")
-    .sort((a, b) => (a.flat ?? 1) - (b.flat ?? 1));
+    /* Top-only tiles lead — they are the pool he asked for, and the only one
+     * where a flat reading is a property of the ART rather than of a
+     * postprocess that flattened it. SUBTLE FIRST among them: the tiles agent
+     * generated three subtle sheets per ground precisely because those are
+     * the ones that survive being repeated across a field, which is what a
+     * base tile set does. Detail sheets are the once-in-a-while showpieces and
+     * follow; sorting them first by texture put the loudest tiles at the top
+     * of the list a field is built from. Nothing is hidden — the flavour is in
+     * every row's label, so he can still take a detail tile if he wants one. */
+    .sort((a, b) => {
+      if (a.topOnly !== b.topOnly) return a.topOnly ? -1 : 1;
+      if (a.topOnly && a.flavour !== b.flavour) return a.flavour === "subtle" ? -1 : 1;
+      return (a.flat ?? 1) - (b.flat ?? 1);
+    });
 }
 const TOP_FLAT = 0.9;    // >= this share of one tone reads as a flat top
 /* A MEMBER MAY COME FROM EITHER POOL. The ballot is the right one to pick from
@@ -4837,6 +4867,7 @@ function candByKey(key) {
  * has to be applied to the PLATE POOL too and not only to review art. */
 const displayArt = (key, fallback) => candByKey(key)?.tex ?? fallback ?? candByKey(key)?.art ?? null;
 function memberArt(typeId, id) {
+  if (/^tiles\/tops\//.test(id ?? "")) return id;   // a top-only tile's path IS its art
   const p = basePool(typeId).find((c) => c.id === id);
   if (p) return p.art;
   const cand = candByKey(id);
@@ -4889,6 +4920,10 @@ const setLabel = (s) => `${s.name} #${s.id}`;
  * generated over (that is what makes two tops of one ground differ) and a
  * short handle to tell twins apart. */
 function memberLabel(typeId, id) {
+  // A top-only tile names its flavour and its sheet — there is no wall to name
+  // it by, which is the whole point of that pool.
+  const to = /^tiles\/tops\/[^/]+\/sheet_(\d+)_(\w+?)_\d+\/tile_(\d+)\.webp$/.exec(id ?? "");
+  if (to) return `${to[2]} top · sheet ${to[1]} · ${to[3]}`;
   const rk = /^tiles\/([^/]+)__over__([^/]+)\/([0-9a-f]{8})$/.exec(id ?? "");
   if (rk) return `over ${typeLabelWorld(rk[2]).toLowerCase()} · ${rk[3]}`;
   const bal = /^(.+)__to__(.+)__(a\d+_s\d+)$/.exec(id ?? "");
@@ -10610,4 +10645,4 @@ async function upgradeToStaging() {
   setInterval(check, 5 * 60 * 1000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
 })();
-window.__basesets = { groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
+window.__basesets = { basePool, groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };

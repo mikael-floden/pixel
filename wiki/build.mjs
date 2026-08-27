@@ -770,6 +770,44 @@ function buildWorld() {
     }
     if (n) topAvg[g] = "#" + sum.map((v) => Math.round(v / n).toString(16).padStart(2, "0")).join("");
   }
+  /* THE TOP-ONLY POOL (tiles agent fb180da5b, schema tiles3/tops@1).
+   *
+   * "This set of textures/tiles is not supposed to show the wall ... The tiles
+   * generated now is candidates for being 'details' tile or a 'base tile'"
+   * (maintainer 2026-08-27). Generated with the wall and overhang explicitly
+   * unimportant, so every tile is a ground surface and nothing else — which is
+   * why these need no textured pass: there is no flattened top to undo.
+   *
+   * FLAVOUR IS A HINT, NOT A GATE. `subtle` is quiet enough to repeat across a
+   * field, `detail` is the once-in-a-while showpiece — but he named BOTH pools
+   * in one breath, so both flavours reach both surfaces and the flavour is
+   * shown rather than enforced. Sorted subtle-first, since a base tile set is
+   * the thing he is filling right now.
+   *
+   * NEVER an x-over-y candidate: nothing here is a cell, has a wall verdict, or
+   * appears in tiles/review/manifest.json. Kept in its own field for exactly
+   * that reason — anything walking worldCells cannot reach it by accident. */
+  const tops = {};
+  const topsIdx = readJson(join(ROOT, "tiles", "tops", "index.json"));
+  if (topsIdx?.sheets?.length) {
+    for (const sh of topsIdx.sheets) {
+      if (!sh?.ground || !sh?.dir) continue;
+      for (const f of sh.tiles ?? []) {
+        const rel = `${sh.dir}/${f}`;
+        if (!existsSync(join(ROOT, rel))) continue;
+        (tops[sh.ground] ??= []).push({
+          id: rel, art: rel, flavour: sh.flavour ?? null,
+          // The sheet's measured top-face numbers, so the picker can sort and
+          // label without decoding 1,440 files in the browser.
+          colours: sh.top_face?.mean_colours ?? null,
+          flat: sh.top_face?.mean_dominant_share ?? null,
+        });
+      }
+    }
+    for (const g of Object.keys(tops)) {
+      tops[g].sort((a, b) => (a.flavour === b.flavour ? 0 : a.flavour === "subtle" ? -1 : 1));
+    }
+  }
   const groundTypes = [...types.values()].map((t) => {
     const pal = palCfg?.types?.[t.id] ?? {};
     return {
@@ -899,6 +937,9 @@ function buildWorld() {
     // from. Shipped whole (356 entries, ~40 KB) because the set editor needs
     // every candidate's path at once to draw the picker.
     basePools,
+    // ground -> [{id, art, flavour, colours, flat}] — the top-only pool, which
+    // is NOT a review cell and must never be offered as an x-over-y candidate.
+    tops,
     transitions,
     // THE TRANSITION PATTERN LIBRARY + BASE PLATES (tiles agent, 2026-08-25):
     // a transition is now two plates and a mask. 18 material-free boundary
