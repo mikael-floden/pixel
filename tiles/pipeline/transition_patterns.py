@@ -106,6 +106,15 @@ REPO = os.path.dirname(ROOT)
 TRANS = os.path.join(ROOT, "transitions")
 OUT = os.path.join(ROOT, "patterns")
 REL_MASKS = "tiles/patterns/masks.webp"
+REL_BORDERS = "tiles/patterns/borders.webp"
+
+# THE BORDER TONE. Each side of a boundary is darkened to this much of its OWN colour,
+# which is what the generator drew: measured on the original PixelLab sets, the rim at
+# the cut is a darker shade of each ground's own colour by 5-8 per channel - never a
+# blend of the two, never lighter. 0.82 is that, expressed so a consumer can apply it
+# as one composite: black at alpha 0.18 over the border mask IS multiply by 0.82.
+BORDER_TONE = 0.82
+BORDER_ALPHA = round(1.0 - BORDER_TONE, 2)
 SIDE_ORDER = ["deep_water", "water", "ice", "snow", "slime", "lava", "black_rock",
               "grey_stone", "dark_mud", "light_soil", "light_beach", "grass",
               "parquet_floor", "grey_paving_stone", "brown_paving_stone"]
@@ -649,6 +658,41 @@ def _webp_bytes(arr):
     return data
 
 
+def border_masks(pattern_masks, sil):
+    """The 1px seam, per index: pixels of each side that TOUCH the other side.
+
+    ONLY WHERE THE TWO GROUNDS MEET - not around the tile. Eroding each side against the
+    whole silhouette instead outlines every tile, and a field of them reads as a grid:
+    "The way you added the 1px border everywhere will make the tile look repeated and
+    tiled." Measured on one tile, the outline version paints 184 px where the true
+    meeting line is 68 - 2.7x of it tile edge that no boundary passes through.
+
+    Both sides are one mask because both take the same factor, so a consumer darkens
+    once and each side goes darker in its own colour by construction.
+
+    It covers the WALL as well as the top face (maintainer's choice of the three
+    variants): 33% of all border pixels are wall, the vertical seam at columns 15/16 and
+    47/48 where two grounds own adjacent wall bands - which is what a cliff shows
+    edge-on. Indices 0 and 15 are pure, have no boundary, and come out empty on all 18
+    patterns; that is what keeps a field of one ground completely unmarked.
+    """
+    out = []
+    for m in pattern_masks:
+        a = (~m) & sil
+        b = m & sil
+
+        def touch(x, y):
+            n = np.zeros_like(y)
+            n[1:] |= y[:-1]
+            n[:-1] |= y[1:]
+            n[:, 1:] |= y[:, :-1]
+            n[:, :-1] |= y[:, 1:]
+            return x & n
+
+        out.append(touch(a, b) | touch(b, a))
+    return out
+
+
 def sheet_array(patterns, sil):
     """16 columns x N rows of 64x46 frames. frame = row*16 + index, row-major, which is
     Phaser's own spritesheet numbering - so the game needs no lookup table."""
@@ -660,6 +704,19 @@ def sheet_array(patterns, sil):
         for i in range(16):
             arr[r * TILE_H:(r + 1) * TILE_H, i * TILE_W:(i + 1) * TILE_W, 3] = \
                 p["_build"]["masks"][i].astype(np.uint8) * 255
+    return arr
+
+
+def border_sheet_array(patterns, sil):
+    """The border masks in the SAME layout as masks.webp - frame = row*16 + index."""
+    rows = len(patterns)
+    arr = np.zeros((TILE_H * rows, TILE_W * 16, 4), np.uint8)
+    arr[..., 0:3] = 255
+    for p in patterns:
+        r = p["row"]
+        for i, b in enumerate(border_masks(p["_build"]["masks"], sil)):
+            arr[r * TILE_H:(r + 1) * TILE_H, i * TILE_W:(i + 1) * TILE_W, 3] = \
+                b.astype(np.uint8) * 255
     return arr
 
 
@@ -714,6 +771,29 @@ def index_doc(patterns, sil, generated_at):
                         "Identical on all 16 tiles of every complete set. A composed "
                         "tile whose alpha differs from this is a bug.",
         },
+        "border": {
+            "file": REL_BORDERS, "encoding": "lossless-webp-alpha", "channel": "alpha",
+            "layout": "identical to masks.webp - frame = row*16 + index",
+            "tone": BORDER_TONE, "overlay_alpha": BORDER_ALPHA, "overlay_rgb": [0, 0, 0],
+            "covers": ["top_face", "wall"],
+            "empty_on": [0, 15],
+            "_comment": [
+                "THE SEAM, 1px on each side, and it is NOT optional - a transition without",
+                "it is a 0-100 hard cut, which is not what the generator drew.",
+                "Each side is darkened to BORDER_TONE of ITS OWN colour. One mask serves",
+                "both sides because both take the same factor: darkening what is already",
+                "there gives each side a darker shade of itself, never a blend.",
+                "Black at overlay_alpha over this mask IS multiply by tone, so a consumer",
+                "needs one extra drawImage and no per-pixel work.",
+                "ONLY WHERE THE TWO GROUNDS MEET. Outlining each side against the whole",
+                "tile instead marks every tile and a field reads as a grid: measured, 184",
+                "px against the true meeting line's 68.",
+                "It covers the WALL too (maintainer's choice): 33% of border pixels are",
+                "the vertical seam at columns 15/16 and 47/48, which is what a cliff shows",
+                "edge-on. Indices 0 and 15 are pure and their frames are EMPTY on all 18",
+                "patterns, so a field of one ground carries no marks at all.",
+            ],
+        },
         "compose": {
             "recipe": [
                 "1. draw plate_a  (source-over onto a cleared 64x46 canvas)",
@@ -728,6 +808,12 @@ def index_doc(patterns, sil, generated_at):
                 {"op": "drawImage", "img": "mask", "gco": "source-over"},
                 {"op": "drawImage", "img": "plate_b", "gco": "source-in"},
                 {"op": "drawImage", "img": "plate_a", "gco": "destination-over"},
+                {"op": "drawImage", "img": "border", "gco": "source-over",
+                 "on": "scratch2", "then": "fill #000 with source-in"},
+                {"op": "drawImage", "img": "scratch2", "gco": "source-over",
+                 "globalAlpha": BORDER_ALPHA,
+                 "note": "the seam - black at this alpha over the border mask is exactly "
+                         "multiply by border.tone, so each side darkens in its own colour"},
             ],
             "_comment": [
                 "THE MASK IS WHITE-ON-TRANSPARENT, so 'source-in' after drawing it keeps",
@@ -1007,16 +1093,38 @@ def plate(img, root=None):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
 
-def compose(base_a, base_b, pattern, index, conform=True, root=None):
+def border_of(pattern, index, root=None):
+    """The published seam mask for one (pattern, index). Empty on 0 and 15."""
+    root = root or OUT
+    key = os.path.abspath(root) + "|border"
+    if key not in _LIB:
+        _LIB[key] = np.array(Image.open(os.path.join(root, "borders.webp"))
+                             .convert("RGBA"))[..., 3] > 0
+    doc, _, _ = load_library(root)
+    row = [p["id"] for p in doc["patterns"]].index(pattern)
+    sheet = _LIB[key]
+    return sheet[row * TILE_H:(row + 1) * TILE_H, index * TILE_W:(index + 1) * TILE_W]
+
+
+def compose(base_a, base_b, pattern, index, conform=True, root=None, seam=True):
     """THE reference implementation. Any consumer that disagrees with this is wrong.
 
-    out.rgb = mask ? B.rgb : A.rgb ; out.a = silhouette. No blending, no feathering, no
-    resampling, no colour correction at the seam - every output pixel comes verbatim
-    from exactly one plate. Top face and wall are the same rule: the mask covers both,
-    and a wall is never cut across because every wall column is single-material.
+    out.rgb = mask ? B.rgb : A.rgb, then the SEAM: every pixel of the border mask is
+    darkened to BORDER_TONE of what it already is. out.a = silhouette.
+
+    No blending between the two materials anywhere - a border pixel darkens the colour
+    ALREADY THERE, so each side gets a darker shade of its own ground and the two meet
+    without mixing. That is what the generator drew (measured: 5-8 per channel darker,
+    never a blend, never lighter), and it is not optional: without it the mask is a
+    0-100 hard cut.
+
+    Top face and wall follow the same rule: the mask covers both, a wall is never cut
+    across because every wall column is single-material, and the seam runs down the
+    vertical band boundary a cliff shows edge-on.
 
     `conform=False` when the inputs are already plates (64x46 on the library
     silhouette), which is what a transition set's own tile_00 / tile_15 are.
+    `seam=False` returns the bare cut, for measuring what the seam changed.
     """
     _, _, sil = load_library(root)
     pa = plate(base_a, root) if conform else base_a.convert("RGBA")
@@ -1025,6 +1133,10 @@ def compose(base_a, base_b, pattern, index, conform=True, root=None):
     a = np.array(pa, int)
     b = np.array(pb, int)
     out = np.where(m[..., None], b, a)
+    if seam:
+        bd = border_of(pattern, index, root)
+        if bd.any():
+            out[..., :3][bd] = np.rint(out[..., :3][bd] * BORDER_TONE)
     out[..., 3] = np.where(sil, 255, 0)
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGBA")
 
@@ -1105,12 +1217,15 @@ def main():
         sheet = sheet_array(patterns, sil)
         sb = _webp_bytes(sheet)
         sib = _webp_bytes(silhouette_array(sil))
+        bb = _webp_bytes(border_sheet_array(patterns, sil))
         open(os.path.join(OUT, "masks.webp"), "wb").write(sb)
+        open(os.path.join(OUT, "borders.webp"), "wb").write(bb)
         open(os.path.join(OUT, "silhouette.webp"), "wb").write(sib)
         doc = index_doc(patterns, sil, stamp)
         ij = json.dumps(doc, indent=1) + "\n"
         open(os.path.join(OUT, "index.json"), "w").write(ij)
         print("\nwrote %s  %d bytes" % (REL_MASKS, len(sb)))
+        print("wrote %s  %d bytes" % (REL_BORDERS, len(bb)))
         print("wrote %s  %d bytes" % (REL_SIL, len(sib)))
         print("wrote tiles/patterns/index.json  %d bytes" % len(ij.encode()))
         if a.legacy:

@@ -30,6 +30,43 @@
   "opaque_px": 2012,
   "_comment": "THE alpha of every transition tile and every base plate. Identical on all 16 tiles of every complete set. A composed tile whose alpha differs from this is a bug."
  },
+ "border": {
+  "file": "tiles/patterns/borders.webp",
+  "encoding": "lossless-webp-alpha",
+  "channel": "alpha",
+  "layout": "identical to masks.webp - frame = row*16 + index",
+  "tone": 0.82,
+  "overlay_alpha": 0.18,
+  "overlay_rgb": [
+   0,
+   0,
+   0
+  ],
+  "covers": [
+   "top_face",
+   "wall"
+  ],
+  "empty_on": [
+   0,
+   15
+  ],
+  "_comment": [
+   "THE SEAM, 1px on each side, and it is NOT optional - a transition without",
+   "it is a 0-100 hard cut, which is not what the generator drew.",
+   "Each side is darkened to BORDER_TONE of ITS OWN colour. One mask serves",
+   "both sides because both take the same factor: darkening what is already",
+   "there gives each side a darker shade of itself, never a blend.",
+   "Black at overlay_alpha over this mask IS multiply by tone, so a consumer",
+   "needs one extra drawImage and no per-pixel work.",
+   "ONLY WHERE THE TWO GROUNDS MEET. Outlining each side against the whole",
+   "tile instead marks every tile and a field reads as a grid: measured, 184",
+   "px against the true meeting line's 68.",
+   "It covers the WALL too (maintainer's choice): 33% of border pixels are",
+   "the vertical seam at columns 15/16 and 47/48, which is what a cliff shows",
+   "edge-on. Indices 0 and 15 are pure and their frames are EMPTY on all 18",
+   "patterns, so a field of one ground carries no marks at all."
+  ]
+ },
  "compose": {
   "recipe": [
    "1. draw plate_a  (source-over onto a cleared 64x46 canvas)",
@@ -55,6 +92,20 @@
     "op": "drawImage",
     "img": "plate_a",
     "gco": "destination-over"
+   },
+   {
+    "op": "drawImage",
+    "img": "border",
+    "gco": "source-over",
+    "on": "scratch2",
+    "then": "fill #000 with source-in"
+   },
+   {
+    "op": "drawImage",
+    "img": "scratch2",
+    "gco": "source-over",
+    "globalAlpha": 0.18,
+    "note": "the seam - black at this alpha over the border mask is exactly multiply by border.tone, so each side darkens in its own colour"
    }
   ],
   "_comment": [
