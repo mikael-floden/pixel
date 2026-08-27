@@ -118,8 +118,11 @@ ok(lvl1.hrefs.every((x) => /^#\/world\/[a-z0-9_]+$/.test(x)), "opening one groun
 // as the top, so a best-of-all-pairs face had "Grass" advertising light soil.
 const faces = await p.evaluate(() => [...document.querySelectorAll("a.card")].map((a) => ({
   type: a.getAttribute("href").split("/").pop(),
-  // The visible one, since the before/after switch keeps both in the DOM.
-  src: [...a.querySelectorAll("img")].find((i) => getComputedStyle(i).display !== "none")?.getAttribute("src") ?? "",
+  // Under Clean the card is a COMPOSED canvas (the tile's own art + the clean
+  // plate) and the imgs beneath it are hidden — the identity being asserted
+  // lives in the base layer's src, which is the art the composite was built
+  // from, visible or not.
+  src: a.querySelector("img.art-after")?.getAttribute("src") ?? "",
 })));
 console.log("type faces:", JSON.stringify(faces));
 for (const f of faces) {
@@ -417,7 +420,12 @@ const shot = () => p.evaluate(() => ({
 const asShipped = await shot();
 console.log("after :", JSON.stringify(asShipped));
 ok(asShipped.mode[0] === "*Clean #0", `it opens on what the game gets — the clean colour (${asShipped.mode.join(" ")})`);
-ok(asShipped.faces.every((f) => /_after\.webp$/.test(f ?? "")), "and every tile preview is composed from the postprocessed art");
+// Under Clean every preview is a COMPOSITE of the postprocessed art and the
+// ground's clean plate — sub:<after>::<clean> — since 2026-08-27 ("if I press
+// Clean #0 the tiles doesn't become clean"). Either form carries the claim:
+// the source is the after art, never the raw.
+ok(asShipped.faces.every((f) => /_after\.webp$/.test(f ?? "") || /^sub:.*_after\.webp::.*clean\.webp$/.test(f ?? "")),
+  "and every tile preview is composed from the postprocessed art (+ the clean plate)");
 
 await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].find((b) => /Raw/.test(b.textContent)).click());
 await p.waitForTimeout(1000);
@@ -472,7 +480,7 @@ const texPeek = await chips();
 console.log("after pressing tile 2:", JSON.stringify(texPeek.map((c) => `${c.label}/${c.view}`)));
 ok(texPeek[1].view !== "clean" && texPeek[1].face,
   `one press moves THAT tile off the clean colour (${String(texPeek[1].face).slice(0, 28)}…)`);
-ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "clean" && /_after\.webp$/.test(c.face ?? "")),
+ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "clean" && /_after\.webp/.test(c.face ?? "")),
   "while the tiles beside it hold still — the difference he sees is the pass, not the page");
 ok(/⇄/.test(texPeek[1].label ?? ""), `and the chip says which pass he is looking at (“${texPeek[1].label}”)`);
 const peek = texPeek;
@@ -488,7 +496,7 @@ for (let i = 0; i < 8; i++) {
   await press(1); await p.waitForTimeout(700);
 }
 const backAgain = await chips();
-ok(backAgain[1].view === "clean" && /_after\.webp$/.test(backAgain[1].face ?? ""), "and cycling round puts that tile back");
+ok(backAgain[1].view === "clean" && /_after\.webp/.test(backAgain[1].face ?? ""), "and cycling round puts that tile back");
 // THE SET-WIDE SWITCH STILL RULES THE SET, and clears a peek: "Clean #0" for the
 // set has to mean all of it, or a tile left on before would be read as one the
 // postprocess did nothing to.

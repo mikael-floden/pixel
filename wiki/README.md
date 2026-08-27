@@ -723,6 +723,25 @@ shared vocabulary, so a page showing many grounds offers "Set #1" and each
 ground answers with its own — one that has no set 1 falls back to clean and says
 "no such set" rather than silently showing the same picture.
 
+**Clean #0 is COMPOSED, never inherited** (maintainer 2026-08-27: *"if I press
+on Brown Paving Stone and click on Clean #0 the tiles doesn't become clean ...
+The idea with the big task was to normalize and make all tile types work the
+same way"*). The shipped after-art only *looks* clean on grounds whose
+postprocess flattened the top; paving and parquet keep their texture, so
+showing `cand.art` under Clean showed texture — the old per-material rule
+leaking through the new model. Every non-Raw pass now composes: a set member's
+top, or the ground's clean plate, onto the tile's own wall. Gated on paving
+specifically, because grass passes either way (top reads 1 colour under Clean,
+the set's 8 under Set #1).
+
+**A page of MANY grounds offers only Clean #0 / Raw** (maintainer 2026-08-27:
+*"Different ground types have different number of base tile sets. So how is it
+possible to have a generic change on this page? Some might have 1 some 3 some
+8... The only safe option here is Clean #0 ... Raw"*). Offering the union of
+everyone's set numbers was my invention and does not generalize. The overview's
+cards render exactly what its bar shows — never a per-card reading of a stored
+set preference the bar cannot express.
+
 **Textured is gone, and its going is the point.** It was a browser-side *guess*
 at what a kept texture might look like, because there was no data for it. A set
 member IS that texture, as real art he chose, so the synthesis has nothing left

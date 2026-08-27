@@ -166,6 +166,65 @@ for (const pair of PAIRS) {
 }
 ok(agreed === PAIRS.length,
   `the browser and wiki/lib/topsub.mjs compose the same pixels on all ${PAIRS.length} pairs (worst ${worst} px${worstPair ? " on " + worstPair : ""})`);
+/* ---- 3. CLEAN #0 CLEANS EVERY SURFACE, paving included (maintainer
+ * 2026-08-27: "if I press on Brown Paving Stone and click on Clean #0 the
+ * tiles doesn't become clean ... The idea with the big task was to normalize
+ * and make all tile types work the same way"). Paving is the ground whose
+ * after-art keeps its texture, so it is the one where inheriting the shipped
+ * art instead of composing shows up — grass would pass either way. */
+await p.goto(`${W}#/world/brown_paving_stone`, { waitUntil: "load" });
+await p.waitForTimeout(2500);
+const topColours = async () => p.evaluate(() => {
+  const cv = document.querySelector(".grid .card canvas");
+  if (!cv || !cv.width) return null;
+  try {
+    const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    const s2 = new Set();
+    for (let y = 10; y < 26; y++) for (let x = 8; x < 56; x++) {
+      const i = (y * cv.width + x) * 4;
+      if (d[i + 3] > 200) s2.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+    }
+    return s2.size;
+  } catch { return "tainted"; }
+});
+const passTo = async (name) => {
+  await p.evaluate((n) => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === n)?.click(), name);
+  await p.waitForTimeout(500);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+  await p.waitForTimeout(2200);
+};
+await passTo("Clean #0");
+const cleanTop = await topColours();
+ok(cleanTop === 1, `paving under Clean #0 composes a FLAT top — one colour, not its texture (${cleanTop})`);
+await passTo("Set #1");
+const setTop = await topColours();
+ok(typeof setTop === "number" && setTop > 3, `and Set #1 puts the set's texture there (${setTop} colours)`);
+
+/* ---- 4. A PAGE OF MANY GROUNDS OFFERS ONLY CLEAN/RAW (maintainer 2026-08-27:
+ * "Some might have 1 some 3 some 8... The only safe option here is Clean #0
+ * ... Raw") — and its cards obey the bar, not the stored set preference. */
+await p.evaluate(() => { localStorage.setItem("wiki-world-view", "set:1"); });
+await p.goto(`${W}#/world`, { waitUntil: "load" });
+await p.reload({ waitUntil: "load" });
+await p.waitForTimeout(2800);
+const over = await p.evaluate(() => ({
+  chips: [...document.querySelectorAll('[data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim() + (x.classList.contains("sel") ? "*" : "")),
+  pavingComposed: (() => {
+    const c = [...document.querySelectorAll(".grid .card")].find((x) => /Brown Paving/.test(x.textContent));
+    const cv = c?.querySelector("canvas");
+    if (!cv || !cv.width) return null;
+    try {
+      const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+      const s2 = new Set();
+      for (let y = 10; y < 26; y++) for (let x = 8; x < 56; x++) { const i = (y * cv.width + x) * 4; if (d[i + 3] > 200) s2.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]); }
+      return s2.size;
+    } catch { return "tainted"; }
+  })(),
+}));
+ok(over.chips.length === 2 && over.chips[0] === "Clean #0*" && over.chips[1] === "Raw",
+  `the mixed-grounds overview offers exactly Clean #0 / Raw, Clean selected even with set:1 stored (${over.chips.join(" ")})`);
+ok(over.pavingComposed === 1,
+  `and its paving card obeys the bar — a flat clean top, not the stored set (${over.pavingComposed} colour)`);
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 

@@ -27,12 +27,20 @@ const TYPES = {
   ".ogg": "audio/ogg", ".m4a": "audio/mp4", ".mp3": "audio/mpeg", ".wav": "audio/wav",
   ".woff2": "font/woff2", ".ttf": "font/ttf",
 };
-// Kept in step with games2/server/src/live.ts by name only — a doc the gates
-// read, never a second source of truth.
-const FEEDBACK = ["monsters", "characters", "tiles", "objects", "sounds", "music",
-  "items", "lore", "composer", "composer-music", "bindings"];
-const TUNING = ["monsters", "constants", "sfx_requests", "shadow_notes", "tile_walls",
-  "scenery_lights", "base_tiles"];
+/* ENUMERATED FROM DISK, never a hand-kept list. This stand-in once mirrored
+ * live.ts's file lists by hand, and the day base_tile_sets.json was added the
+ * list was not — so every gate that read a paving set through this server got
+ * an empty doc, the page silently fell back to Clean, and a check on set
+ * rendering measured the stand-in's staleness instead of the wiki. The gate
+ * suite's one recurring lesson is that the harness must not differ from
+ * production in the dimension under test; a directory listing cannot. */
+import { readdirSync } from "node:fs";
+const docsIn = (dir) => {
+  try { return readdirSync(join(ROOT, dir)).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)); }
+  catch { return []; }
+};
+const FEEDBACK = docsIn("live/feedback");
+const TUNING = docsIn("live/tuning");
 const readJson = async (p) => { try { return JSON.parse(await readFile(p, "utf8")); } catch { return null; } };
 
 createServer(async (req, res) => {

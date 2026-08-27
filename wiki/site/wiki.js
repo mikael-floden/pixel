@@ -4529,7 +4529,13 @@ function pickWeighted(weights, u) {
 function cleanArtOf(typeId) {
   const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
   if (!own) return null;
-  return (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
+  const art = (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
+  /* COMPOSED, for the same reason as viewArtIn's clean branch: on paving and
+   * parquet the x-over-x tile's top is deliberately textured, so using it raw
+   * made the Clean #0 panel draw a textured field — a clean set that was not
+   * clean. The tile keeps its own wall; only the top becomes the flat colour. */
+  const cleanPlate = patternLib()?.plates[typeId]?.clean;
+  return art && cleanPlate ? `sub:${art}::${cleanPlate}` : art;
 }
 /** What fills cell (x,y) of a set: a member's art, or the ground's clean tile. */
 function setCellArt(set, x, y, typeId) {
@@ -4948,6 +4954,17 @@ const viewArtIn = (view, cand) => {
     const face = setCellArt(set, cand.subX ?? 0, cand.subY ?? 0, top);
     if (face) return `sub:${cand.art}::${face}`;
   }
+  /* CLEAN #0 IS COMPOSED TOO, NOT INHERITED (maintainer 2026-08-27: "if I
+   * press on Brown Paving Stone and click on Clean #0 the tiles doesn't
+   * become clean ... The idea with the big task was to normalize and make all
+   * tile types work the same way"). The shipped after-art only LOOKS clean on
+   * grounds whose postprocess flattened the top; paving and parquet keep
+   * their texture, so showing cand.art under Clean showed texture — the old
+   * per-material rule leaking through the new model. The clean plate is the
+   * ground's flat colour in tile geometry, and topSub puts it on this tile's
+   * own wall. Falls back to cand.art only when the library is not published. */
+  const cleanPlate = top ? patternLib()?.plates[top]?.clean : null;
+  if (cand.art && cleanPlate) return `sub:${cand.art}::${cleanPlate}`;
   return cand.art;
 };
 const viewArt = (cand) => viewArtIn(worldView(), cand);
@@ -5544,19 +5561,21 @@ function storedPass() {
   if (v === "after" || v === "texture" || !v) return PASS_CLEAN;
   return v;
 }
-/** The passes a page can offer. `typeId` null = a page showing many grounds, in
- *  which case every set id that exists anywhere is offered by number. */
+/* The passes a page can offer. A page about ONE ground offers that ground's
+ * own sets between Clean and Raw. A page showing MANY grounds offers ONLY
+ * Clean #0 and Raw (maintainer 2026-08-27: "Different ground types have
+ * different number of base tile sets. So how is it possible to have a generic
+ * change on this page? Some might have 1 some 3 some 8... The only safe
+ * option here is Clean #0 ... Raw"). Offering the union of everyone's set
+ * numbers was my invention, and he is right that it does not generalize. */
 function passOptions(typeId) {
-  const ids = new Map();      // set id -> label
-  const add = (s) => { if (s.id !== CLEAN_SET && setDraws(s)) ids.set(s.id, typeId ? setLabel(s) : `Set #${s.id}`); };
-  if (typeId) groundSets(typeId).forEach(add);
-  else for (const g of worldMeta().groundTypes ?? []) groundSets(g.id).forEach(add);
+  const sets = typeId
+    ? groundSets(typeId).filter((s) => s.id !== CLEAN_SET && setDraws(s))
+    : [];
   return [
     [PASS_CLEAN, `Clean #${CLEAN_SET}`, PASS_TITLE[PASS_CLEAN]],
-    ...[...ids.entries()].sort((a, b) => a[0] - b[0]).map(([id, label]) => [`set:${id}`,
-      label,
-      typeId ? `This ground painted with ${label}, drawn the way the game will draw it`
-        : `Every ground painted with its own set ${id}, where it has one`]),
+    ...sets.map((s) => [`set:${s.id}`, setLabel(s),
+      `This ground painted with ${setLabel(s)}, drawn the way the game will draw it`]),
     [PASS_RAW, "Raw", PASS_TITLE[PASS_RAW]],
   ];
 }
@@ -5565,8 +5584,12 @@ function worldViewFor(typeId) {
   const v = storedPass();
   return passOptions(typeId).some(([id]) => id === v) ? v : PASS_CLEAN;
 }
-/** Back-compatible name for the many call sites that have no ground in hand. */
-const worldView = () => worldViewFor(null);
+/* The STORED pass, unvalidated — for renderers that resolve per ground. A
+ * stored "set:2" on a ground without set 2 falls to clean where the set is
+ * looked up (passSet returns null), which is the per-ground fallback; running
+ * it through worldViewFor(null) instead would clamp every set pass to clean
+ * everywhere, because the many-grounds option list no longer names sets. */
+const worldView = () => storedPass();
 /** The set a pass names, or null for Clean/Raw. */
 function passSet(typeId, view) {
   const m = /^set:(\d+)$/.exec(view ?? "");
@@ -5634,14 +5657,21 @@ const worldIso = () => ({ ...(state.data.iso ?? { tilePx: 64, dx: 32, levelPx: 1
  * substituted onto this wall) has no file to point an <img> at, so it is a
  * canvas painted when the composite answers — and falls back to the plain tile
  * rather than to an empty box if it cannot be built. */
-function worldArt(cand, alt, box = "thumb") {
+/* The card thumbnail, following the switch. `viewOverride` exists for pages
+ * that show MANY grounds and offer only Clean/Raw: their cards must render the
+ * pass the page's own bar shows, not each card's private reading of the stored
+ * preference — a bar saying Clean over cards drawing a set is the "Clean
+ * doesn't clean" bug wearing a different hat. */
+function worldArt(cand, alt, box = "thumb", viewOverride = null) {
   const top = candTop(cand);
-  const v = worldViewFor(top);
+  const v = viewOverride ?? worldViewFor(top);
   const showRaw = v === PASS_RAW && cand.raw;
   const set = passSet(top, v);
-  const composed = set ? viewArtIn(v, cand) : null;
+  /* Everything that is not Raw is COMPOSED now — a set member's top, or the
+   * clean plate's. viewArtIn owns that decision; this only paints its answer. */
+  const composed = showRaw ? null : viewArtIn(v, cand);
   const showSub = !!(composed && String(composed).startsWith("sub:"));
-  const cv = showSub ? h("canvas", { class: "art-tex", "aria-label": `${alt} — ${setLabel(set)}` }) : null;
+  const cv = showSub ? h("canvas", { class: "art-tex", "aria-label": `${alt} — ${set ? setLabel(set) : "clean top"}` }) : null;
   if (cv) {
     const [a, bArt] = composed.slice(4).split("::");
     const paint = (src, w2, ht) => {
@@ -5660,14 +5690,11 @@ function worldArt(cand, alt, box = "thumb") {
     cand.raw ? h("img", { class: "art-before", src: assetUrl(cand.raw), alt: `${alt} — raw, before postprocess`, loading: "lazy" }) : null,
     cv,
     // The badge is not decoration: mid-comparison, "which one am I looking
-    // at" is the one question the screen must always answer.
+    // at" is the one question the screen must always answer. Clean gets no
+    // badge — it is the ground's normal state, not a mode worth naming.
     showRaw ? h("span", { class: "art-tag" }, "raw") : null,
-    showSub ? h("span", { class: "art-tag" }, setLabel(set)) : null,
-    // A GROUND THAT HAS NO SUCH SET SAYS SO. On a grid of many grounds the
-    // chosen set may not exist here, and a card silently showing clean would
-    // read as "this set looks identical", which is a different claim.
-    v === PASS_RAW && !cand.raw ? h("span", { class: "art-tag muted-tag" }, "no raw") : null,
-    v.startsWith("set:") && !set ? h("span", { class: "art-tag muted-tag" }, "no such set") : null);
+    set && showSub ? h("span", { class: "art-tag" }, setLabel(set)) : null,
+    v === PASS_RAW && !cand.raw ? h("span", { class: "art-tag muted-tag" }, "no raw") : null);
 }
 /** The ground TYPES — grass, ice, snow — grouped from the pairs that use them
  *  as their walkable top. Derived rather than baked, so the live manifest
@@ -5880,7 +5907,10 @@ function viewWorld() {
         : `${TILE_MATCH_EMPTY[mode]} Nothing to walk through.`) : null,
     types.length ? h("div", { class: "grid" }, ...types.map((t) =>
       h("a", { class: "card", href: `#/world/${t.id}` },
-        t.face ? worldArt(t.face, t.name) : h("div", { class: "thumb checker" }),
+        // The OVERVIEW mixes grounds, so its bar offers only Clean/Raw and
+        // every card renders exactly what the bar says — never a per-card
+        // reading of a set preference the bar cannot express.
+        t.face ? worldArt(t.face, t.name, "thumb", worldViewFor(null)) : h("div", { class: "thumb checker" }),
         h("div", { class: "card-name" }, t.name),
         h("div", { class: "card-sub" }, state.admin
           ? `${t.pairs.length} pair${t.pairs.length === 1 ? "" : "s"}`
