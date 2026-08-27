@@ -603,6 +603,7 @@ def compose_transition(tiles, side0, side15, despeckle=2, trust_art=False):
     import palette_snap as _ps
     ra = np.array(tiles[0].convert("RGBA"), int)
     rb = np.array(tiles[15].convert("RGBA"), int)
+    _top_face = top_face(np.array(tiles[0].convert("RGBA"), int)[..., 3] > 0)
     prepared = []
     for side in (side0, side15):
         base = side.get("base")
@@ -641,9 +642,28 @@ def compose_transition(tiles, side0, side15, despeckle=2, trust_art=False):
             if not owned.any():
                 continue
             if side["mode"] == "own":
-                px = _ps.substitute(a, owned, side["hex"])
-                if px is not None:
-                    out[..., :3][owned] = px
+                # TOP AND WALL ARE SUBSTITUTED SEPARATELY, each against its own palette
+                # colour. Doing them together against the TOP colour is what put the
+                # clean tile out of step with the textured ones: substitute() recentres
+                # brightness over the whole mask it is given, and a wall is darker than
+                # a top, so the mean lands between them and the TOP FACE comes out
+                # ABOVE its own colour. Measured on one grass tile: top face lands +3.9
+                # points of value above target when the wall is included, -2.7 when it
+                # is not. Across the published ballot that read as a consistent +5, and
+                # the clean single-colour top visibly popped against textured
+                # neighbours - "This makes the clean single color top POP and produce an
+                # edge against textured tiles."
+                #
+                # It also stops painting the wall in the TOP material's colour, which is
+                # its own bug: a grass wall was being tinted with grass's top hex rather
+                # than its wall hex.
+                for _m, _hex in ((owned & _top_face, side["hex"]),
+                                 (owned & ~_top_face, side.get("wall_hex") or side["hex"])):
+                    if not _m.any():
+                        continue
+                    px = _ps.substitute(a, _m, _hex)
+                    if px is not None:
+                        out[..., :3][_m] = px
             else:
                 out[..., :3][owned] = basearr[..., :3][owned]
         out[..., 3] = np.where(alpha, 255, 0)

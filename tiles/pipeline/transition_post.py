@@ -162,7 +162,8 @@ def side_spec(material, cache):
             # X-over-X tile the taxonomy assumes it has.
             print(f"   ! {material}: mode '{mode}' but no base tile found - using 'own'")
             mode = "own"
-        cache[material] = {"mode": mode, "hex": v.get("top"), "base": base}
+        cache[material] = {"mode": mode, "hex": v.get("top"),
+                           "wall_hex": v.get("wall"), "base": base}
     return cache[material]
 
 
