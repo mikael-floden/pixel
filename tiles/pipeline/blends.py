@@ -77,6 +77,19 @@ LADDER = {
     40: "{a} and {b} mixed, more {a}",
     50: "{a} and {b} mixed evenly",
 }
+# A SECOND WORDING FOR THE SAME MIX. PixelLab's content filter rejects the occasional
+# phrasing for no reason a reader can see - measured, "mostly brown paving stone,
+# scattered patches of light soil" came back "against policy" while its neighbours in the
+# same ladder passed. A rejected sheet would fail identically on every re-run, so the
+# generator retries once with a differently-worded ask for the same mix rather than
+# leaving a permanent hole in the matrix.
+ALT_LADDER = {
+    10: "{a} ground with a little {b}",
+    20: "{a} ground with some {b}",
+    30: "{a} ground with quite a lot of {b}",
+    40: "mix of {a} and {b}, {a} leading",
+    50: "half {a} half {b}",
+}
 LEVELS = tuple(sorted(LADDER))
 
 
@@ -135,6 +148,7 @@ def plan(only=None, levels=LEVELS, pairs=None):
                 jobs.append({
                     "dominant": a, "minor": b, "pct": pct,
                     "prompt": LADDER[pct].format(a=words(a), b=words(b)),
+                    "alt_prompt": ALT_LADDER[pct].format(a=words(a), b=words(b)),
                     "seed": seed_of(a, b, pct),
                     "dir": os.path.relpath(sheet_dir(a, b, pct), REPO),
                     "palette_top": PALETTE[a]["top"],
@@ -262,15 +276,24 @@ def main():
             break
         purpose = f"blend:{j['dominant']}:{j['minor']}:p{j['pct']}"
         try:
-            images, tile_id = client.create_tiles(
-                description=j["prompt"], seed=j["seed"], **matrix.FIXED)
-            pixellab_gc.record(tile_id, purpose=purpose, prompt=j["prompt"])
+            prompt = j["prompt"]
+            try:
+                images, tile_id = client.create_tiles(
+                    description=prompt, seed=j["seed"], **matrix.FIXED)
+            except PixelLabError as e:
+                if "policy" not in str(e).lower():
+                    raise
+                prompt = j["alt_prompt"]
+                print(f"    policy-rejected, retrying as: {prompt!r}", flush=True)
+                images, tile_id = client.create_tiles(
+                    description=prompt, seed=j["seed"], **matrix.FIXED)
+            pixellab_gc.record(tile_id, purpose=purpose, prompt=prompt)
             if not images and tile_id:
                 images = client.fetch_tiles(tile_id)      # paid for; never re-buy
             if not images:
                 print(f"  ! {purpose} produced no tiles")
                 continue
-            write_sheet(j, images, tile_id)
+            write_sheet(dict(j, prompt=prompt), images, tile_id)
             spent += matrix.SHEET_USD
             print(f"  [{n}/{len(todo)}] {j['dominant']} +{j['pct']}% {j['minor']} "
                   f"seed={j['seed']}  ${matrix.SHEET_USD:.3f}  "
