@@ -643,6 +643,68 @@ and gated on the **files fetched**, which cannot lie:
 | Before | 0 | 40 |
 | Textured | 45 | 40 (synthesized onto a canvas) |
 
+## Transitions compose: two plates and a mask, for every pair
+
+Maintainer 2026-08-25: *"By studying how this is done we can without generating
+more transition tiles get transition tiles for everything automatically by
+using the formula and inserting the base tile from tile type A on one side and
+base tile from tile type B on the other side."* And, on finding Black Rock's
+tab empty: *"I expected to see/find transitions for all tiles VS all tiles."*
+
+The hypothesis held, measured by the tiles agent: the 284 pregenerated sets
+collapse to **18 (roughness, seed) patterns** whose boundary is
+material-independent (95% pixel agreement across ~17 pairs each). They publish
+the boundary as `tiles/patterns/masks.webp` (18 × 16 Wang frames, alpha = the
+mask) and every approved ground as `tiles/plates/` — 64×46 plates whose alpha
+is **byte-identical to one shared silhouette**, so composition is exactly their
+three published canvas ops: draw the mask frame, draw plate B through
+`source-in`, fill the rest from plate A with `destination-over`. No geometry
+knowledge on this side at all; that is what plates are for (composing from a
+review tile instead puts 928 of 2012 px in the wrong alpha, their measurement).
+
+- **The Transitions tab lists every neighbour** — 14 per ground. The roster is
+  the plates index, *not* the config vocabulary: the config still says
+  `paving_stone` while the palette, the plates and his sets split it into
+  brown/grey.
+- **The pass switch decides the plates.** Clean #0 = each side's clean plate;
+  Set #N = each side's OWN set N, picked per cell with the game's hash, so a
+  field of composed tiles varies the way the ground itself does. **Raw stays
+  the generator's art** and exists only for the 26 pregenerated pairs; on the
+  others the pill says "no raw — composed clean" rather than letting the
+  switch look effective.
+- **Polarity is decided in exactly one place** (`mixTile`). The library's mask
+  bit means side_b; side_b is whichever ground is later in the published
+  `side_order` (a total order, wettest→built); the scenes' own convention (bit
+  = first-named ground) flips the frame to `15-idx` when the first-named
+  ground is side_a. Backwards polarity still renders beautifully — grass and
+  rock simply trade places — which is why it gets one owner and a pixel gate.
+- **What composition honestly cannot do** (`patterns/index.json reproduces`):
+  the boundary *shape*, not the generator's seam shading — no grass blades
+  leaning over a road edge. The pregenerated art stays reachable under Raw so
+  he can compare and rule.
+
+`check-transcompose.mjs` proves browser compose == the library's reference rule
+(0 of 2012 px differ, alpha == silhouette) on four loud pairs, proves polarity
+against **independent** truth (NW region of grass/deep_water = grass on
+242/242 px; swapped sides read 0/242), and pins the screenshot that started
+this: Black Rock lists all 14 neighbours, every strip canvas painted, the
+"Being generated" empty state asserted gone.
+
+**The polarity check was circular at first.** It parsed the plates back out of
+the `mix:` path under test, so with the sides deliberately swapped it followed
+the swap and still matched 242/242. The ground truth is now resolved by rule
+(grass under Clean = `tiles/plates/grass/clean.webp`), never from the path —
+and both fixtures were proven by breaking `mixTile` on purpose before trusting
+the green. Same law as the blind-fixture lesson below: a gate is only as
+honest as its independence from the thing it checks.
+
+**Set members resolve to plates two ways.** A review key
+(`tiles/<cell>/<key8>`) maps to `tiles/plates/<top>/<key8>.webp` by the tiles
+agent's pure string rule, and it is what the member's `tile` field stores (their
+`expects`). A ballot member (`<pair>__<variant>`) has no review key — its
+`tiles/base_candidates/` file IS plate geometry (alpha verified identical to
+the silhouette) and serves as its own plate.
+
 ## The pass switch IS the ground's base tile sets
 
 Maintainer 2026-08-25: *"Each ground type have a list of base tile sets. A base
