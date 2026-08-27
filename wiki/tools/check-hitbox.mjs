@@ -103,6 +103,47 @@ ok(Math.abs((after0.ax - before.ax) - 24) < 0.6,
 ok(moved.probe.state === "has" && !/not set/.test(moved.read),
   "and the first movement adopts the record — the piece leaves the to-do queue");
 
+/* ---- 3b. THE ELLIPSE IS NEVER CLIPPED BY THE ART (maintainer 2026-08-27: "I
+ * feel the hitbox I draw is clipped and can only render inside the scenery
+ * texture ... makes it hard to see the hitbox if it's not at the correct place
+ * already"). The canvas used to crop to the art's own content box, so a
+ * footprint wider than the piece — which it almost always is BEFORE he has
+ * placed it — was drawn outside the canvas and vanished. Checked at the three
+ * extremes that broke it: widened, turned, and dragged clear of the art. */
+const fits = async (what) => {
+  const f = await p.evaluate(() => {
+    const hb = window.__wikiHitbox; if (!hb) return null;
+    const span = hb.boxes.map((bx, i) => {
+      const th = (bx.rot || 0) * Math.PI / 180;
+      const hx = Math.hypot(bx.rx * Math.cos(th), bx.ry * Math.sin(th)) * hb.s;
+      const hy = Math.hypot(bx.rx * Math.sin(th), bx.ry * Math.cos(th)) * hb.s;
+      const c = hb.screen[i];
+      return [c.ex - hx, c.ex + hx, c.ey - hy, c.ey + hy];
+    });
+    return { W: hb.W, H: hb.H,
+      l: Math.min(...span.map((x) => x[0])), r: Math.max(...span.map((x) => x[1])),
+      t: Math.min(...span.map((x) => x[2])), b: Math.max(...span.map((x) => x[3])) };
+  });
+  ok(f && f.l >= -1 && f.r <= f.W + 1 && f.t >= -1 && f.b <= f.H + 1,
+    `${what}: the whole ellipse is inside the canvas (x ${f?.l.toFixed(0)}..${f?.r.toFixed(0)} of ${f?.W}, y ${f?.t.toFixed(0)}..${f?.b.toFixed(0)} of ${f?.H})`);
+};
+await fits("at its default size");
+await p.evaluate(() => { const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0]; w2.value = w2.max; w2.dispatchEvent(new Event("input", { bubbles: true })); w2.dispatchEvent(new Event("change", { bubbles: true })); });
+await p.waitForTimeout(700);
+await fits("widened past the art");
+await p.evaluate(() => { const r = [...document.querySelectorAll(".hit-bar .shadow-slider")][2]; r.value = "60"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); });
+await p.waitForTimeout(700);
+await fits("turned 60 degrees");
+{
+  const pb2 = await (await p.$(".hit-bar .shadow-pad")).boundingBox();
+  await p.mouse.move(pb2.x + pb2.width / 2, pb2.y + pb2.height / 2);
+  await p.mouse.down();
+  await p.mouse.move(pb2.x + pb2.width / 2 + 200, pb2.y + pb2.height / 2 - 140, { steps: 10 });
+  await p.mouse.up();
+  await p.waitForTimeout(900);
+}
+await fits("dragged clear of the art");
+
 // ---- 4. several ellipses, and a rotation on each --------------------------
 await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /\+ ellipse/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
@@ -113,11 +154,14 @@ ok(two.probe.n === 2 && two.chips === 2 && two.probe.sel === 1,
   `a second ellipse can be added and is selected for editing (${two.probe.n} ellipses, ${two.chips} chips)`);
 ok(two.probe.boxes[1].ax !== two.probe.boxes[0].ax,
   "offset from the one it was copied from, so it is not hiding exactly behind it");
+// The OTHER ellipse must not move — compared against what it actually held a
+// moment ago, not against a constant, since earlier steps here turn #1 too.
+const rotBefore = (await p.evaluate(() => window.__wikiHitbox)).boxes.map((x) => x.rot);
 await p.evaluate(() => { const r = [...document.querySelectorAll(".hit-bar .shadow-slider")][2]; r.value = "35"; r.dispatchEvent(new Event("input", { bubbles: true })); });
 await p.waitForTimeout(500);
 const rot = await p.evaluate(() => window.__wikiHitbox);
-ok(rot.boxes[1].rot === 35 && rot.boxes[0].rot === 0,
-  `the rotation applies to the selected ellipse alone (${rot.boxes.map((x) => x.rot).join(", ")})`);
+ok(rot.boxes[rot.sel].rot === 35 && rot.boxes.every((x, i) => i === rot.sel || x.rot === rotBefore[i]),
+  `the rotation applies to the selected ellipse alone (${rotBefore.join(", ")} -> ${rot.boxes.map((x) => x.rot).join(", ")}, sel #${rot.sel + 1})`);
 
 // ---- 5. "needs none" is a decision, and it is not the same as undecided ---
 await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /needs none/.test(x.textContent))?.click());

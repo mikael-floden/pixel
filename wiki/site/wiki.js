@@ -1407,6 +1407,44 @@ function makePlayer(entity, kind, opts = {}) {
       anchorY = -box.top * s;
       dx = Math.round(anchorX - A.x * s);
       dy = Math.round(anchorY - A.y * s);
+    } else if (cur.editHit && kind === "object") {
+      /* THE HITBOX MUST NOT BE CLIPPED BY THE ART (maintainer 2026-08-27: "I
+       * feel the hitbox I draw is clipped and can only render inside the
+       * scenery texture. This feels like a bug and makes it hard to see the
+       * hitbox if it's not at the correct place already").
+       *
+       * It was: this branch crops the canvas to the art's own content box, so
+       * an ellipse wider than the piece — which a footprint often is, and
+       * ALWAYS is before he has placed it — was drawn outside the canvas and
+       * simply vanished. He was being asked to aim something he could only
+       * half see.
+       *
+       * So while the editor is open the box is the UNION of the art and every
+       * ellipse, in frame pixels, plus room to drag into. The monster editor
+       * solved the same problem with shadowExtents; this is that idea for a
+       * shape that can sit anywhere and turn. */
+      const R = 16;                              // frame px of drag room, every side
+      let x0 = bb[0], y0 = bb[1], x1 = bb[2], y1 = bb[3];
+      for (const b of hitList()) {
+        // The half-extents of a rotated ellipse, exactly: the extreme of
+        // rx·cos t·cos th − ry·sin t·sin th over t. Cheaper and tighter than
+        // walking the outline, and it must be exact or the rim clips again at
+        // some angles and not others, which reads as a flicker.
+        const th = (b.rot || 0) * Math.PI / 180;
+        const hx = Math.hypot(b.rx * Math.cos(th), b.ry * Math.sin(th));
+        const hy = Math.hypot(b.rx * Math.sin(th), b.ry * Math.cos(th));
+        const cx = fw / 2 + b.ax, cy = fh / 2 + b.ay;
+        x0 = Math.min(x0, cx - hx); x1 = Math.max(x1, cx + hx);
+        y0 = Math.min(y0, cy - hy); y1 = Math.max(y1, cy + hy);
+      }
+      // FROZEN FOR THE GESTURE, like the monster editor's box: a canvas that
+      // resizes under the thumb slides the art and halves every correction.
+      if (!editBox) editBox = { x0: x0 - R, y0: y0 - R, x1: x1 + R, y1: y1 + R };
+      const bx = editBox;
+      wantW = Math.ceil((bx.x1 - bx.x0) * s);
+      wantH = Math.ceil((bx.y1 - bx.y0) * s);
+      dx = Math.round(-bx.x0 * s);
+      dy = Math.round(-bx.y0 * s);
     } else {
       // Legacy content-crop layout — the padding falls outside the canvas.
       wantW = Math.ceil(cw * s);
@@ -4744,7 +4782,12 @@ const setsDoc = () => state.tuning.base_tile_sets
 function basePool(typeId) {
   const plates = patternLib()?.plates[typeId]?.pool ?? [];
   const all = [
-    ...plates.map(([k, cell, flat]) => ({ id: `tiles/${cell}/${k}`, art: `tiles/plates/${typeId}/${k}.webp`, from: cell, flat: flat ?? 1 })),
+    ...plates.map(([k, cell, flat]) => {
+      const key = `tiles/${cell}/${k}`;
+      // The plate stays the identity and the game's own geometry; what is
+      // SHOWN is the textured pass where one exists.
+      return { id: key, art: displayArt(key, null) ?? `tiles/plates/${typeId}/${k}.webp`, from: cell, flat: flat ?? 1 };
+    }),
     ...((worldMeta().basePools ?? {})[typeId] ?? []).map((c) => ({ ...c, flat: c.flat ?? 0 })),
   ];
   /* EVERYTHING APPROVED IS OFFERED, most textured first (maintainer
@@ -4770,15 +4813,34 @@ const TOP_FLAT = 0.9;    // >= this share of one tone reads as a flat top
  * an x-over-y review card, and that decision predates this model and should
  * keep working. Ballot ids (<pair>__<variant>) and review keys (tiles/<cell>/
  * <sha1>) cannot collide, so one lookup can serve both. */
+/* EVERY REVIEW CANDIDATE BY KEY, built once. The audition resolves up to 471
+ * candidates per ground and the old lookup scanned every cell for each one. */
+let CAND_BY_KEY = null, CAND_BY_KEY_N = -1;
+function candByKey(key) {
+  const cells = worldCells();
+  if (!CAND_BY_KEY || CAND_BY_KEY_N !== cells.length) {
+    CAND_BY_KEY = new Map();
+    CAND_BY_KEY_N = cells.length;
+    for (const c of cells) for (const cand of c.candidates) CAND_BY_KEY.set(cand.key, cand);
+  }
+  return CAND_BY_KEY.get(key) ?? null;
+}
+/* THE TEXTURED PASS IS WHAT A BASE TILE LOOKS LIKE (tiles agent, 2026-08-27:
+ * "the Add-to-Set audition still renders entry.after, so every clean-top
+ * ground auditions as flat colour and he cannot judge set membership at all").
+ *
+ * `after` is the pass whose top the postprocess flattens, and a base tile is
+ * judged ENTIRELY on its top — so the audition was showing the one thing it
+ * exists to hide. Their `textured` pass is the after tile with the raw top
+ * substituted against the ground's palette, relief intact. Plates carry the
+ * same flat top, because they were conformed from `after`, so the preference
+ * has to be applied to the PLATE POOL too and not only to review art. */
+const displayArt = (key, fallback) => candByKey(key)?.tex ?? fallback ?? candByKey(key)?.art ?? null;
 function memberArt(typeId, id) {
   const p = basePool(typeId).find((c) => c.id === id);
   if (p) return p.art;
-  for (const c of worldCells()) {
-    if (c.top !== typeId) continue;
-    const cand = c.candidates.find((x) => x.key === id);
-    if (cand) return cand.art;
-  }
-  return null;
+  const cand = candByKey(id);
+  return cand ? (cand.tex ?? cand.art) : null;
 }
 
 /* THE SETS OF ONE GROUND, normalised: Clean #0 always present, ids ascending,
@@ -6060,7 +6122,13 @@ async function refreshWorldPairs() {
   const dead = new Set(worldMeta().tombstoned ?? []);
   worldLive = cells.map(([id, cell]) => {
     const cands = (cell.candidates ?? []).map((c) => ({
-      key: c.key, art: c.after ?? c.file ?? null, raw: c.before ?? null,
+      /* `tex` is the TEXTURED pass (tiles agent, 2026-08-27): the after tile
+       * with its top face substituted from the RAW top against the ground's
+       * palette hue and saturation, keeping the art's own relief — the wall
+       * treatment, applied to the top. It is what a base tile actually looks
+       * like, and without it every clean-top ground auditioned as flat colour.
+       * Nullable: manifests written before that pass have no field. */
+      key: c.key, art: c.after ?? c.file ?? null, raw: c.before ?? null, tex: c.textured ?? null,
       wallScore: c.wall_score ?? null, wall: c.wall ?? null, topShare: c.top_share ?? null,
       overhang: c.overhang ?? null, clarity: c.clarity ?? null, paletteTop: c.palette_top ?? null,
       tileId: c.tile_id ?? null, style: c.style ?? null, prompt: c.prompt ?? null,

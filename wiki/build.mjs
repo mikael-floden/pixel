@@ -555,6 +555,13 @@ function buildWorld() {
         // like every other domain's art. `file` is their @1 alias of `after`,
         // so a manifest still on @1 keeps resolving.
         art: c.after ?? c.file ?? null,
+        /* THE TEXTURED PASS (tiles agent, 2026-08-27): the after tile with its
+         * top substituted from the RAW top against the ground's palette, the
+         * art's own relief kept. A base tile is judged entirely on its top and
+         * `after` is the pass that flattens it, so the audition needs this or
+         * a clean-top ground shows every candidate as one colour. Nullable —
+         * a manifest written before that pass has no field. */
+        tex: c.textured ?? null,
         raw: c.before ?? null,
         wallScore: c.wall_score ?? null,
         wall: c.wall ?? null,

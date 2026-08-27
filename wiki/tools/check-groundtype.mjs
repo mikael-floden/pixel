@@ -304,7 +304,47 @@ ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ba
  * grass plates are 100% flat and paving plates only 10%, so a filter by ground
  * or by directory would be wrong in both directions. A flat tile offered as a
  * base tile IS the clean colour, which every set already carries. */
-ok(pool.srcs.every((s) => /base_candidates|\/plates\//.test(s)),
+/* THE AUDITION SHOWS THE TEXTURED PASS (tiles agent, 2026-08-27, relaying the
+ * maintainer mid-audition: "the Add-to-Set audition still renders entry.after,
+ * so every clean-top ground auditions as flat colour and he cannot judge set
+ * membership at all"). `after` is the pass whose top the postprocess flattens
+ * and a base tile is judged ENTIRELY on its top — measured on black_rock,
+ * after is 100% flat tops against textured's 30%. Plates carry the same flat
+ * top because they were conformed from after, so the preference has to reach
+ * the plate pool and not only review art. */
+/* Only the REVIEW candidates have a textured pass — a ballot entry
+ * (<pair>__<variant>.webp from tiles/base_candidates) is its own art, the pure
+ * corner of a generated transition, and never had a flattened top to fix. */
+ok(pool.srcs.filter((s) => !/base_candidates/.test(s)).every((s) => /_textured\.webp$/.test(s)),
+  `every review candidate is auditioned as its TEXTURED pass, never the flattened one (${pool.srcs.find((s) => !/base_candidates/.test(s))?.split("/").pop() ?? "none in view"})`);
+/* ...AND ON A GROUND WITH NO BALLOT AT ALL, which is where it actually broke.
+ * Grass's pool opens with ballot tiles, so the check above can pass over three
+ * rows that never had a textured pass to prefer — vacuously. black_rock
+ * appears in ZERO transition pairs, so every row is a review candidate, and it
+ * is the ground he was auditioning when he found every candidate flat. */
+{
+  const p2 = await ctx.newPage();
+  await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await p2.route("**/api/wiki/save", (r) => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }));
+  await p2.addInitScript(() => {
+    localStorage.setItem("wiki-admin-token", "gate");
+    localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+  });
+  await p2.goto(`${W}#/world/black_rock`, { waitUntil: "load" });
+  await p2.waitForTimeout(2400);
+  await p2.evaluate(() => document.querySelector(".new-set")?.click());
+  await p2.waitForTimeout(600);
+  await p2.evaluate(() => document.querySelector(".add-tiles")?.click());
+  await p2.waitForTimeout(2200);
+  const br = await p2.evaluate(() => ({
+    n: document.querySelectorAll(".pool-cell").length,
+    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 6).map((i) => i.getAttribute("src")),
+  }));
+  ok(br.n > 100 && br.srcs.length > 0 && br.srcs.every((s) => /_textured\.webp$/.test(s)),
+    `black_rock — no ballot, every row a review candidate — auditions TEXTURED (${br.n} rows, ${br.srcs[0]?.split("/").pop()})`);
+  await p2.close();
+}
+ok(pool.srcs.every((s) => /base_candidates|\/plates\/|_textured\.webp$/.test(s)),
   `sourced from published tile art (${pool.srcs.map((s) => s.split("/").slice(-2, -1)[0]).join(", ")})`);
 /* EVERYTHING APPROVED IS OFFERED — the full plates roster plus the ballot,
  * nothing filtered (maintainer 2026-08-27: "all accepted tiles for brown
