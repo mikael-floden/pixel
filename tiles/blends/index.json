@@ -29,8 +29,8 @@
   "50": "{a} and {b} mixed evenly"
  },
  "pair_note": "<dominant>__with__<minor>/p<NN>, NN = percent of the MINOR ground",
- "n_sheets": 40,
- "n_tiles": 640,
+ "n_sheets": 44,
+ "n_tiles": 704,
  "sheets": [
   {
    "schema": "tiles3/blends@1",
@@ -154,6 +154,47 @@
     "tile_15.webp"
    ],
    "dir": "tiles/blends/black_rock__with__brown_paving_stone/p30"
+  },
+  {
+   "schema": "tiles3/blends@1",
+   "kind": "blend_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "black_rock",
+   "minor": "brown_paving_stone",
+   "pct_minor": 40,
+   "prompt": "black rock and brown paving stone mixed, more black rock",
+   "seed": 21507,
+   "tile_id": "8f0fdedf-7b7a-46c5-86e3-8ab6535dd6c4",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/blends/black_rock__with__brown_paving_stone/p40"
   },
   {
    "schema": "tiles3/blends@1",
@@ -441,6 +482,47 @@
     "tile_15.webp"
    ],
    "dir": "tiles/blends/black_rock__with__deep_water/p30"
+  },
+  {
+   "schema": "tiles3/blends@1",
+   "kind": "blend_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "black_rock",
+   "minor": "deep_water",
+   "pct_minor": 40,
+   "prompt": "black rock and deep water mixed, more black rock",
+   "seed": 14928,
+   "tile_id": "938b71fa-0bc7-4ef8-8626-1448fd54c2e4",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/blends/black_rock__with__deep_water/p40"
   },
   {
    "schema": "tiles3/blends@1",
@@ -857,6 +939,47 @@
    "kind": "blend_top_only",
    "wall_is_meaningless": true,
    "use_for": "transition",
+   "dominant": "brown_paving_stone",
+   "minor": "light_soil",
+   "pct_minor": 50,
+   "prompt": "brown paving stone and light soil mixed evenly",
+   "seed": 44194,
+   "tile_id": "34eeb0ba-c2ac-45ac-a115-3fe9609a7d26",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/blends/brown_paving_stone__with__light_soil/p50"
+  },
+  {
+   "schema": "tiles3/blends@1",
+   "kind": "blend_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
    "dominant": "dark_mud",
    "minor": "grass",
    "pct_minor": 10,
@@ -1015,6 +1138,47 @@
     "tile_15.webp"
    ],
    "dir": "tiles/blends/dark_mud__with__grass/p40"
+  },
+  {
+   "schema": "tiles3/blends@1",
+   "kind": "blend_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "dark_mud",
+   "minor": "grass",
+   "pct_minor": 50,
+   "prompt": "dark mud and grass mixed evenly",
+   "seed": 81699,
+   "tile_id": "0335bcdf-b641-4e22-9937-cfaaeccd1fd1",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/blends/dark_mud__with__grass/p50"
   },
   {
    "schema": "tiles3/blends@1",
