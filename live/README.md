@@ -133,6 +133,25 @@ The laws around the flow:
     `overrides["tiles/<cell>/<key8>"] = { own_top: true, updated_at }`.
   - **Absent means the default** (the ground's configured surface). Setting a
     tile back deletes its entry — the file only ever names the exceptions.
+- `live/tuning/scenery_hitbox.json` — `pixel-wiki-scenery-hitbox@1`. **The
+  ground a scenery piece occupies.** One or more ellipses per piece, in FRAME
+  PIXELS with the origin at the frame's centre — the same quantity and units
+  as a monster's nadir shadow, so a consumer that already resolves those needs
+  no new arithmetic. **It is not a shadow and is never drawn** (maintainer
+  2026-08-27: *"This scenery nadir 'shadow' is also not a shadow. This is just
+  a hitbox and a way for the game to change rendering order."*). Each
+  ellipse's centre line decides draw order: a player **above** it is drawn
+  behind that part of the piece, **below** it in front.
+  - `overrides["scenery/<category>/<piece>"] = { boxes: [{ax, ay, rx, ry,
+    rot}], updated_at }`. `rot` is degrees, 0–179 (an ellipse is symmetric
+    under a half turn).
+  - **Several are normal** — *"the Scenery might have two collisions and not
+    just one … an entrance with two pillars touching the ground"*.
+  - **Three states, and the difference matters.** No entry = nobody has
+    decided; `boxes: []` = decided, this piece needs none (the right answer
+    for anything hung on a wall — 134 of 739 are MOUNTAIN_WALL or WINDOW);
+    `boxes: [...]` = the footprint. Written by the wiki's Scenery pages,
+    consumed by the game for collision and draw order.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed

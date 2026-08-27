@@ -75,6 +75,13 @@ const LIVE_FILES: Record<string, string> = {
   // consumed by whatever composes ground tops (the wiki today, the game when
   // it adopts the set model). See live/README.md.
   "tuning/tile_tops.json": "tuning/tile_tops",
+  // THE GROUND A SCENERY PIECE OCCUPIES: one or more ellipses per piece, in
+  // frame pixels from the frame centre — the same units as a monster's nadir
+  // shadow. Not a shadow and never drawn; it is the hitbox, and each ellipse's
+  // centre line decides whether the player is drawn in front of or behind that
+  // part of the piece. Absent = undecided, [] = decided-none (wall-mounted).
+  // Written by the wiki's Scenery pages. See live/README.md.
+  "tuning/scenery_hitbox.json": "tuning/scenery_hitbox",
   "tuning/chess.json": "tuning/chess",
   // WHETHER A SCENERY STATE IS REALLY LIT. The generator names a state LIT_* or
   // NOT_LIT_*, but the AI that draws it sometimes fails to put the light in —
@@ -122,6 +129,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/shadow_notes") return { format: "pixel-wiki-shadow-notes@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_tops") return { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_hitbox") return { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tile_sets") return { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
@@ -411,6 +419,7 @@ export function registerLiveRoutes(app: express.Application): void {
         scenery_lights: docs.get("tuning/scenery_lights"),
         base_tiles: docs.get("tuning/base_tiles"),
         tile_tops: docs.get("tuning/tile_tops"),
+        scenery_hitbox: docs.get("tuning/scenery_hitbox"),
         base_tile_sets: docs.get("tuning/base_tile_sets"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),

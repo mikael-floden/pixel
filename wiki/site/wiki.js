@@ -770,6 +770,118 @@ function shadowDefault(entity) {
     ay: +(((entity.artBottom ?? 0.85) * fh + (entity.hoverPx ?? 0)) - fh / 2).toFixed(2),
   };
 }
+/* ---- THE SCENERY HITBOX (maintainer 2026-08-27) -------------------------
+ * "The monsters today have good UX for me to set an explicit nadir shadow.
+ * This shadow also works as a hitbox and tells the game when to render the
+ * monster on top of VS under the player. We need the same for Scenery."
+ *
+ * FOUR THINGS MAKE IT NOT A MONSTER SHADOW, and each is in the model:
+ *
+ *  1. IT IS NOT A SHADOW and is never drawn. "This scenery nadir 'shadow' is
+ *     also not a shadow. This is just a hitbox and a way for the game to
+ *     change rendering order." So it is called a hitbox everywhere, and the
+ *     editor draws it as an outline the game will not paint.
+ *  2. THERE CAN BE SEVERAL. "The Scenery might have two collisions and not
+ *     just one ... for example when the scenery is an entrance with two
+ *     pillars touching the ground." A list, not a record.
+ *  3. EACH ONE ROTATES. "A scenery that need a hitbox is always facing south.
+ *     But the ellips might still need a rotation to fit the object." A monster
+ *     shadow turns with the facing and never needed one; scenery does not turn
+ *     and does.
+ *  4. NONE IS A REAL ANSWER. "Some scenery is meant to be placed on a house/
+ *     mountain/cave wall - they ofc need no hitbox." 134 of the 739 pieces are
+ *     MOUNTAIN_WALL or WINDOW. So an EMPTY LIST is a decision, and the absence
+ *     of a record is a different thing — not yet looked at. Collapsing those
+ *     two would make the review filter unable to say what is left to do, which
+ *     is the whole reason he asked for the filter.
+ *
+ * Units are FRAME PIXELS with the origin at the frame's CENTRE — the same
+ * quantity a monster's nadir shadow speaks, so what he reads here and what the
+ * game resolves are one number. Per PIECE, not per direction: 679 of 739 are
+ * south-only and the footprint is the ground it stands on, which does not turn
+ * with the art.
+ */
+const HITBOX_KEY = "tuning/scenery_hitbox";
+const hitboxDoc = () => state.tuning.scenery_hitbox
+  ?? (state.tuning.scenery_hitbox = { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} });
+/** The piece's key — its path, the same key scenery_lights uses. */
+const hitboxKey = (entity) => entity?.path ?? entity?.id ?? null;
+/** The stored record, or null when nobody has decided yet. */
+function hitboxRaw(entity) {
+  const k = hitboxKey(entity);
+  const r = k ? hitboxDoc().overrides?.[k] : null;
+  return r && Array.isArray(r.boxes) ? r : null;
+}
+/** Normalised boxes; [] means "decided: none". null means undecided. */
+function hitboxes(entity) {
+  const r = hitboxRaw(entity);
+  if (!r) return null;
+  return r.boxes
+    .filter((b) => b && ["ax", "ay", "rx", "ry"].every((k) => isFinite(b[k])) && b.rx > 0 && b.ry > 0)
+    .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0 }));
+}
+/* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
+ * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
+ * stands on the bottom of its own silhouette, so the ellipse starts centred on
+ * the box horizontally, sitting at its foot, as wide as the box and squashed
+ * by the iso foreshortening the ground actually has. It is a starting point to
+ * drag from, never a decision: nothing is stored until he touches it. */
+function hitboxDefault(entity, bb, fw, fh) {
+  const W = fw ?? entity.size ?? 96, H = fh ?? entity.size ?? 96;
+  const box = Array.isArray(bb) && bb.length === 4 ? bb : [W * 0.2, H * 0.2, W * 0.8, H * 0.9];
+  const cx = (box[0] + box[2]) / 2, foot = box[3];
+  const w = Math.max(6, box[2] - box[0]);
+  return {
+    ax: +(cx - W / 2).toFixed(2),
+    // Seated a little above the very bottom pixel: art usually has a row or
+    // two of contact shadow or grass the piece is standing IN, not ON.
+    ay: +(foot - H / 2 - Math.max(1, w * 0.06)).toFixed(2),
+    rx: +(w / 2).toFixed(2),
+    ry: +Math.max(3, (w / 2) * ISO_SQUASH).toFixed(2),
+    rot: 0,
+  };
+}
+/* THE GROUND IS SEEN AT AN ANGLE, so a circle on it is an ellipse on screen.
+ * The tiles' own lattice is the authority: a 64-wide tile steps 32 across and
+ * 14 down, so a ground circle is squashed to 14/32. Written once here because
+ * a default that guesses this is a default he has to fix on every piece. */
+const ISO_SQUASH = 14 / 32;
+
+/** Write one piece's boxes. [] is a real answer — "this needs none". */
+function setHitboxes(entity, boxes) {
+  const k = hitboxKey(entity);
+  if (!k) return;
+  const doc = hitboxDoc();
+  (doc.overrides ??= {})[k] = {
+    boxes: boxes.map((b) => ({
+      ax: +(+b.ax).toFixed(2), ay: +(+b.ay).toFixed(2),
+      rx: +(+b.rx).toFixed(2), ry: +(+b.ry).toFixed(2),
+      rot: +(((+b.rot || 0) % 360 + 360) % 360).toFixed(1),
+    })),
+    updated_at: new Date().toISOString(),
+  };
+  doc.updated_at = new Date().toISOString();
+  touch(HITBOX_KEY, k);
+  markDirty(HITBOX_KEY);
+}
+/** Back to undecided — the record goes, not an empty list. */
+function clearHitbox(entity) {
+  const k = hitboxKey(entity);
+  if (!k) return;
+  delete hitboxDoc().overrides?.[k];
+  hitboxDoc().updated_at = new Date().toISOString();
+  touch(HITBOX_KEY, k);
+  markDirty(HITBOX_KEY);
+}
+/* THE REVIEW STATE OF ONE PIECE, which is what the filter counts.
+ * "Filter on Scenery objects not having a hitbox VS having a hitbox" — with
+ * the third state he did not name but needs: the ones nobody has judged. */
+function hitboxState(entity) {
+  const b = hitboxes(entity);
+  if (b === null) return "todo";
+  return b.length ? "has" : "none";
+}
+
 /** The raw tuned record ({rx, ry, ax?, ay?, offsets?}), or null. */
 function shadowRaw(entity) {
   const t = state.tuning.monsters?.monsters?.[entity.id]?.shadow;
@@ -902,6 +1014,7 @@ function makePlayer(entity, kind, opts = {}) {
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
     editShadow: false,
+    editHit: false,
   };
   let onShadowEdit = null;
   const baseFps = 8;
@@ -1350,6 +1463,53 @@ function makePlayer(entity, kind, opts = {}) {
     } else if (frameImgs[f]?.complete && frameImgs[f].naturalWidth) {
       ctx.drawImage(frameImgs[f], dx, dy, fw * s, fh * s);
     }
+    /* ---- THE SCENERY HITBOX, DRAWN OVER THE ART -------------------------
+     * A monster's shadow is painted UNDER its sprite because it is a shadow.
+     * This is not one — "this scenery nadir 'shadow' is also not a shadow.
+     * This is just a hitbox" — and a piece is often far taller than its
+     * footprint, so an outline underneath would be hidden by the very art it
+     * describes. It goes on top, as an outline the game never paints.
+     *
+     * THE CENTRE LINE IS THE POINT. "When the player is over the hitbox/
+     * elliptic center the scenery is rendered on top of the player and when
+     * the player is under the elliptic center the player is rendered on top."
+     * That boundary is a horizontal line through the centre, so it is drawn
+     * as one — the thing being decided, made visible. */
+    if (cur.editHit && kind === "object") {
+      const boxes = hitList();
+      ctx.save();
+      boxes.forEach((b, i) => {
+        const on = i === hitSel;
+        const ex = dx + (fw / 2 + b.ax) * s, ey = dy + (fh / 2 + b.ay) * s;
+        const th = (b.rot || 0) * Math.PI / 180;
+        // The unselected ones stay visible but quiet: with two pillars he must
+        // see both to judge the pair, and know which one the rails drive.
+        ctx.strokeStyle = on ? "rgba(217,119,87,1)" : "rgba(217,119,87,0.45)";
+        ctx.lineWidth = on ? 1.5 : 1;
+        ctx.beginPath();
+        ctx.ellipse(ex, ey, Math.max(1, b.rx * s), Math.max(1, b.ry * s), th, 0, Math.PI * 2);
+        ctx.stroke();
+        if (on) {
+          ctx.setLineDash([3, 3]);
+          ctx.strokeStyle = "rgba(217,119,87,0.6)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, ey); ctx.lineTo(canvas.width, ey);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "rgba(217,119,87,1)";
+          ctx.fillRect(ex - 1.5, ey - 1.5, 3, 3);
+        }
+      });
+      ctx.restore();
+      // QA probe: what the page believes about the hitbox, for the gate.
+      window.__wikiHitbox = {
+        state: hitboxState(entity), sel: hitSel, n: boxes.length, s, dx, dy,
+        W: canvas.width, H: canvas.height,
+        boxes: boxes.map((b) => ({ ...b })),
+        screen: boxes.map((b) => ({ ex: +(dx + (fw / 2 + b.ax) * s).toFixed(2), ey: +(dy + (fh / 2 + b.ay) * s).toFixed(2) })),
+      };
+    }
     frameNo.textContent = `${f + 1} / ${clip.frames}`;
   }
   function tick(t) {
@@ -1611,6 +1771,185 @@ function makePlayer(entity, kind, opts = {}) {
         h("label", {}, h("span", {}, "H"), hSlider)),
       padEl),
     h("span", { class: "muted shadow-hint" }, "One SIZE for the whole monster; the pad places THIS animation + direction (others inherit from this direction's Idle). The rails resize; the monster slides opposite the pad."));
+  /* ---- EDIT THE SCENERY HITBOX (admin; scenery only) --------------------
+   * "We need the same for Scenery ... When I look at an image I immediately
+   * see where is the hitbox." Same instrument as the monster shadow — the
+   * proxy pad, so his thumb is never on the art — with the four differences
+   * scenery has: several ellipses, a rotation on each, "needs none" as a real
+   * answer, and no facings to inherit through.
+   */
+  let hitSel = 0;                       // which ellipse the controls drive
+  const hitRead = h("span", { class: "shadow-read" });
+  const hitChips = h("div", { class: "hit-chips" });
+  /* THE WORKING LIST. An untouched piece starts from the art's own content
+   * box so there is something to drag, but NOTHING IS STORED until he moves
+   * it — a piece that merely got looked at must still count as "to do". */
+  const hitList = () => hitboxes(entity) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH)];
+  const commitHit = (boxes) => { setHitboxes(entity, boxes); onShadowEdit?.(); refreshHitBar(); draw(); };
+  const editHit = (i, patch) => {
+    const boxes = hitList().map((b, n) => (n === i ? { ...b, ...patch } : b));
+    commitHit(boxes);
+  };
+
+  const hitPadKnob = h("span", { class: "pad-knob" });
+  const hitPad = h("div", {
+    class: "shadow-pad", title: "Drag to move this ellipse — your thumb stays off the art",
+  }, h("span", { class: "pad-label" }, "move"), hitPadKnob);
+  let hitDrag = null;
+  hitPad.addEventListener("pointerdown", (ev) => {
+    ev.preventDefault();
+    hitPad.setPointerCapture(ev.pointerId);
+    hitPad.classList.add("held");
+    const b = hitList()[hitSel];
+    hitDrag = { x: ev.clientX, y: ev.clientY, from: { ax: b.ax, ay: b.ay }, k: 1 / (cur.zoom || (state.data.artScale || 2)) };
+  });
+  hitPad.addEventListener("pointermove", (ev) => {
+    if (!hitDrag) return;
+    // The SAME gain curve as the monster pad — the first PAD_FINE_ZONE of
+    // thumb travel geared to PAD_FINE, the rest 1:1 — because he tuned that
+    // on his own phone and a second feel would be a second thing to learn.
+    const dx = padGain(ev.clientX - hitDrag.x), dy = padGain(ev.clientY - hitDrag.y);
+    const r = hitPad.getBoundingClientRect();
+    const lim = Math.max(8, Math.min(r.width, r.height) / 2 - 20);
+    const knob = (d) => Math.max(-lim, Math.min(lim, (d / PAD_FINE_ZONE) * lim));
+    hitPadKnob.style.transform = `translate(${knob(ev.clientX - hitDrag.x)}px, ${knob(ev.clientY - hitDrag.y)}px)`;
+    editHit(hitSel, { ax: hitDrag.from.ax + dx * hitDrag.k, ay: hitDrag.from.ay + dy * hitDrag.k });
+  });
+  const hitPadEnd = (ev) => {
+    if (!hitDrag) return;
+    hitDrag = null;
+    hitPad.classList.remove("held");
+    hitPadKnob.style.transform = "";
+    try { hitPad.releasePointerCapture(ev.pointerId); } catch { /* already gone */ }
+    editBox = null; draw();
+  };
+  hitPad.addEventListener("pointerup", hitPadEnd);
+  hitPad.addEventListener("pointercancel", hitPadEnd);
+
+  /* Three rails, same reasoning as the monster's two: a slider is an ABSOLUTE
+   * value, so his eye can stay on the ellipse while his thumb is anywhere on
+   * a rail he is not looking at. The third is the one scenery needs and a
+   * monster never did — "the ellips might still need a rotation to fit the
+   * object", because scenery does not turn to face the camera. */
+  const mkHitRail = (key, label, cfg) => {
+    const inp = h("input", { type: "range", class: "shadow-slider", "aria-label": label, ...cfg });
+    inp.addEventListener("input", () => {
+      const v = +inp.value;
+      editHit(hitSel, key === "w" ? { rx: v / 2 } : key === "h" ? { ry: v / 2 } : { rot: v });
+    });
+    inp.addEventListener("change", () => { editBox = null; draw(); });
+    return inp;
+  };
+  const hitW = mkHitRail("w", "Width", { min: "2", step: "0.5" });
+  const hitH = mkHitRail("h", "Depth", { min: "2", step: "0.5" });
+  // 0-179, not 0-359: an ellipse is symmetric under a half turn, so the top
+  // half of the circle is every distinct shape there is. Offering 360 would
+  // give him two ways to say the same thing and a rail twice as coarse.
+  const hitRot = mkHitRail("r", "Rotation", { min: "0", max: "179", step: "1" });
+
+  const hitAddBtn = h("button", {
+    class: "ghost-btn",
+    title: "Add a second ellipse — an entrance with two pillars touches the ground twice",
+    onclick: () => {
+      const boxes = hitList();
+      const b = boxes[hitSel] ?? hitboxDefault(entity, clip?.bb, clip?.fw, clip?.fh);
+      // Offset from the one it was copied from, so the new one is visible
+      // instead of hiding exactly behind its parent.
+      boxes.push({ ...b, ax: +(b.ax + b.rx * 1.2).toFixed(2) });
+      hitSel = boxes.length - 1;
+      commitHit(boxes);
+    },
+  }, "+ ellipse");
+  const hitDelBtn = h("button", {
+    class: "ghost-btn",
+    title: "Remove this ellipse",
+    onclick: () => {
+      const boxes = hitList().filter((_, i) => i !== hitSel);
+      hitSel = Math.max(0, hitSel - 1);
+      commitHit(boxes);
+    },
+  }, "− ellipse");
+  /* "SOME SCENERY IS MEANT TO BE PLACED ON A HOUSE/MOUNTAIN/CAVE WALL - THEY
+   * OFC NEED NO HITBOX." An empty list is a DECISION and is stored as one, so
+   * the queue can tell it apart from a piece nobody has opened. */
+  const hitNoneBtn = h("button", {
+    class: "ghost-btn",
+    title: "This piece needs no hitbox — the right answer for anything hung on a wall. It leaves the to-do queue.",
+    onclick: () => { hitSel = 0; commitHit([]); },
+  }, "⊘ needs none");
+  const hitResetBtn = h("button", {
+    class: "ghost-btn",
+    title: "Forget this piece's record entirely — it goes back to undecided and returns to the to-do queue",
+    onclick: () => { hitSel = 0; clearHitbox(entity); onShadowEdit?.(); refreshHitBar(); draw(); },
+  }, "Reset");
+
+  const hitBar = h("div", { class: "shadow-bar hit-bar hidden" },
+    h("div", { class: "player-controls" }, hitRead),
+    hitChips,
+    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitResetBtn),
+    h("div", { class: "shadow-tools" },
+      h("div", { class: "shadow-sliders" },
+        h("label", {}, h("span", {}, "W"), hitW),
+        h("label", {}, h("span", {}, "D"), hitH),
+        h("label", {}, h("span", {}, "⟳"), hitRot)),
+      hitPad),
+    h("span", { class: "muted shadow-hint" },
+      "The ground this piece stands on. Its centre line is the render order: a player above it is drawn behind the piece, below it in front. Never drawn in game."));
+  const hitBtn = state.admin && kind === "object"
+    ? h("button", {
+      class: "ghost-btn shadow-btn",
+      title: "Draw the ground this piece occupies — its hitbox, and the line that decides whether the player walks in front of it or behind. Committed with everything else.",
+      onclick: () => setEditHit(!cur.editHit),
+    }, "✎ Edit hitbox")
+    : null;
+  function setEditHit(on) {
+    cur.editHit = !!on && !!hitBtn;
+    editBox = null;
+    stage.classList.toggle("editing-shadow", cur.editHit);
+    refreshHitBar();
+    draw();
+  }
+  function refreshHitBar() {
+    if (!hitBtn) return;
+    hitBar.classList.toggle("hidden", !cur.editHit);
+    hitBtn.classList.toggle("on", cur.editHit);
+    if (!cur.editHit) return;
+    const st = hitboxState(entity);
+    const boxes = hitList();
+    hitSel = Math.min(hitSel, Math.max(0, boxes.length - 1));
+    const b = boxes[hitSel];
+    // ONE CHIP PER ELLIPSE, because with two pillars he must be able to say
+    // which one the rails are driving without hunting for it on the art.
+    hitChips.replaceChildren(...boxes.map((_, i) => {
+      const on = i === hitSel;
+      return h("button", {
+        class: `sortbar-btn${on ? " sel" : ""}`, type: "button",
+        title: `Edit ellipse ${i + 1} of ${boxes.length}`,
+        onclick: () => { hitSel = i; refreshHitBar(); draw(); },
+      }, `${i + 1}`);
+    }));
+    hitChips.classList.toggle("hidden", boxes.length < 2);
+    hitDelBtn.disabled = boxes.length < 2;
+    hitNoneBtn.disabled = st === "none";
+    hitResetBtn.disabled = st === "todo";
+    const fw = clip?.fw ?? entity.frameW ?? 96, fh = clip?.fh ?? entity.frameH ?? 96;
+    hitW.max = String(Math.max(32, Math.round(fw * 1.2)));
+    hitH.max = String(Math.max(16, Math.round(fh * 0.8)));
+    if (b) {
+      if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
+      if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);
+      if (document.activeElement !== hitRot) hitRot.value = String(Math.round(b.rot) % 180);
+    }
+    const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
+    hitRead.replaceChildren(
+      st === "none"
+        ? h("b", {}, "no hitbox — this piece hangs on a wall")
+        : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
+      st === "none" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
+      st === "todo" ? " · not set — move anything to adopt it" : "",
+    );
+  }
+
   const shadowBtn = state.admin && kind === "monster"
     ? h("button", {
       class: "ghost-btn shadow-btn",
@@ -1674,6 +2013,7 @@ function makePlayer(entity, kind, opts = {}) {
     zoomSeg,
     kind === "monster" ? h("label", { class: "chk" }, shadowChk, "Show shadow") : null,
     shadowBtn,
+    hitBtn,
   );
 
   let onFacetChange = null;
@@ -1703,7 +2043,7 @@ function makePlayer(entity, kind, opts = {}) {
     // The shadow tools go DIRECTLY under the art, above the transport and zoom
     // rows: the pad and the ellipse have to be on screen together, and every
     // row between them is a row that can push one of the two off a phone.
-    stage, overflowNote, shadowBar, controls2);
+    stage, overflowNote, shadowBar, hitBar, controls2);
   return {
     el: rootEl,
     destroy: () => cancelAnimationFrame(rafTimer),
@@ -7919,6 +8259,40 @@ const OBJ_SORTS = {
   group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
   newest: { label: "newest first", title: "Latest generated content first" },
 };
+/* WHICH PIECES STILL NEED A HITBOX (maintainer 2026-08-27: "also be able to
+ * filter on Scenery objects not having a hitbox VS having a hitbox").
+ *
+ * THREE CHIPS, NOT TWO. He named two, but "not having a hitbox" is two
+ * different facts: a piece nobody has looked at, and a piece he has decided
+ * needs none because it hangs on a wall. 134 of the 739 are MOUNTAIN_WALL or
+ * WINDOW, so the second group is large and permanent — folding it into the
+ * first would make the queue never reach zero and hide what is actually left.
+ * Same shape as the monster shadow filter: counts on the chips, so "to do 605"
+ * is the size of the job and its reaching 0 is what finishing looks like. */
+const OBJ_HITBOX_KEY = "wiki-object-hitbox";
+const OBJ_HITBOXES = {
+  all: { label: "all", title: "Every piece", hit: () => true },
+  todo: {
+    label: "no hitbox yet",
+    title: "Nobody has decided about these — the ones left to do",
+    hit: (o) => hitboxState(o) === "todo",
+  },
+  has: {
+    label: "hitbox set",
+    title: "Pieces whose ground footprint you have drawn — one ellipse or several",
+    hit: (o) => hitboxState(o) === "has",
+  },
+  none: {
+    label: "needs none",
+    title: "Decided: this piece needs no hitbox — what you mark on anything hung on a wall",
+    hit: (o) => hitboxState(o) === "none",
+  },
+};
+const hitboxFilter = () => {
+  if (!state.admin) return "all";
+  try { return OBJ_HITBOXES[localStorage.getItem(OBJ_HITBOX_KEY)] ? localStorage.getItem(OBJ_HITBOX_KEY) : "all"; }
+  catch { return "all"; }
+};
 function objectQueue() {
   const all = state.data.domains.objects;
   const read = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
@@ -7936,10 +8310,15 @@ function objectQueue() {
   const filter = OBJ_FILTERS[read(OBJ_FILTER_KEY, "all")] ? read(OBJ_FILTER_KEY, "all") : "all";
   let list = byType;
   if (filter !== "all") list = list.filter((o) => OBJ_FILTERS[filter].match(objVerdict(o), o));
+  // The hitbox filter rides the SAME queue as type/sort/review, so ‹ › on a
+  // piece page walks only the pieces still missing one — "a filter you cannot
+  // navigate is the dead end he hit on tiles".
+  const hb = hitboxFilter();
+  if (hb !== "all") list = list.filter((o) => OBJ_HITBOXES[hb].hit(o));
   // `added` is the commit that introduced the piece (build.mjs). Undated art
   // sorts last rather than first — a missing date is not a claim of newness.
   if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
-  return { list, sort, filter, type, active: filter !== "all" || sort !== "group" || type !== "all", total: all.length };
+  return { list, sort, filter, type, hitbox: hb, active: filter !== "all" || sort !== "group" || type !== "all" || hb !== "all", total: all.length };
 }
 function viewObjects() {
   const q = objectQueue();
@@ -7971,6 +8350,11 @@ function viewObjects() {
         .filter(([, , n]) => n > 0)
         .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),
     ], q.type, () => route()),
+    state.admin ? sortBar(OBJ_HITBOX_KEY, Object.entries(OBJ_HITBOXES).map(([id, f]) => {
+      const n = id === "all" ? state.data.domains.objects.length
+        : state.data.domains.objects.filter((o) => f.hit(o)).length;
+      return [id, `${f.label} ${n}`, f.title];
+    }), q.hitbox, () => route()) : null,
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
     // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
     // legitimately empty the page: the maintainer reviewed the whole domain,
@@ -9687,12 +10071,13 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, tileTopsDoc, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, tileTopsDoc, hitboxDoc, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
        fromApi((s) => s.tuning.scenery_lights), fromApi((s) => s.tuning.base_tiles),
        fromApi((s) => s.tuning.base_tile_sets),
        fromApi((s) => s.tuning.tile_tops),
+       fromApi((s) => s.tuning.scenery_hitbox),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
@@ -9704,6 +10089,7 @@ async function loadLiveFiles() {
         fetchJson(new URL("live/tuning/base_tiles.json", ROOT)),
         fetchJson(new URL("live/tuning/base_tile_sets.json", ROOT)),
         fetchJson(new URL("live/tuning/tile_tops.json", ROOT)),
+        fetchJson(new URL("live/tuning/scenery_hitbox.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
@@ -9719,6 +10105,7 @@ async function loadLiveFiles() {
   state.tuning.base_tiles = baseTiles ?? { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   state.tuning.base_tile_sets = baseSets ?? { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   state.tuning.tile_tops = tileTopsDoc ?? { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
+  state.tuning.scenery_hitbox = hitboxDoc ?? { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

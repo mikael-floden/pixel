@@ -1721,3 +1721,14 @@ input[type="range"] { accent-color: var(--accent); }
   flex: none; min-width: 48px; border: 0; border-left: 1px solid var(--border);
   background: transparent; color: var(--muted); font-size: 15px; cursor: pointer;
 }
+
+/* ---- THE SCENERY HITBOX EDITOR (maintainer 2026-08-27) ----
+   Same instrument as the monster shadow bar — it reuses .shadow-bar,
+   .shadow-pad and .shadow-slider wholesale, because a second feel would be a
+   second thing to learn. What is added is the ellipse picker, which only
+   appears once a piece has more than one. */
+.hit-chips { display: flex; gap: 6px; margin: 6px 0; }
+.hit-chips.hidden { display: none; }
+.hit-chips .sortbar-btn { min-width: 40px; min-height: 40px; border-radius: 8px; }
+/* Three rails now, not two, so they get a little less room each. */
+.hit-bar .shadow-sliders { gap: 6px; }
