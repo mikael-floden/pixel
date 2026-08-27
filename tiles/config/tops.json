@@ -1,0 +1,136 @@
+{
+  "schema": "tiles3/tops-prompts@1",
+  "kind": "top_only",
+  "_comment": "Prompts for TOP-ONLY ground tiles (tiles/pipeline/tops.py). These sheets are judged on the top surface alone: the wall and the overhang are never shown, so nothing here asks for a transition, an edge, a tuft or a spill. (Maintainer brief 2026-08-27: 'the wall and overhang is 100% unimportant'.) NEVER reuse these prompts for the x-over-y matrix, and never offer a sheet generated from them as an x-over-y candidate.",
+  "_prompt_comment": "Two flavours per ground, one axis between them: DENSITY. 'subtle' is a base-tile-set member, so it says quiet/even/little variation; 'detail' is a once-in-a-while tile, so it says rich/varied/lots of detail. Short keyword prompts, no named features (PixelLab invents flowers, cracks and bubbles unasked on a plain ground prompt, so naming one spends prompt weight on something that arrives for free). Colour is named in WORDS and aimed at config/palette.json's `top` for that ground - no #hex here, unlike config/tiles.json flat_base, because a textured top must keep its own variation and hex-anchoring flattens it.",
+  "sheets_per_flavour": 3,
+  "flavours": {
+    "subtle": "repeat-safe base texture - a field of it must not show where the repeat starts",
+    "detail": "a showpiece tile placed once in a while, never tiled across an area"
+  },
+  "prompts": {
+    "black_rock": {
+      "subtle": "quiet black volcanic rock, near black, fine even grain, barely any variation",
+      "detail": "black volcanic rock, deep black, glassy sharp glints, bold sparse forms, rich detail"
+    },
+    "brown_paving_stone": {
+      "subtle": "old brown paving, warm grey brown, evenly laid, worn smooth, plain",
+      "detail": "beautiful old brown paving, warm grey brown, richly worn and varied, lots of detail"
+    },
+    "dark_mud": {
+      "subtle": "quiet dark mud, cold brown, smooth and even, almost featureless",
+      "detail": "churned wet mud, deep cold brown, glossy sheen, coarse and uneven, lots of detail"
+    },
+    "deep_water": {
+      "subtle": "still deep sea, dark navy, smooth and even, almost no movement",
+      "detail": "beautiful deep sea, dark navy, slow heavy swell, moonlit shimmer, rich detail"
+    },
+    "grass": {
+      "subtle": "calm meadow grass, deep green, fine even texture, very little variation",
+      "detail": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail"
+    },
+    "grey_paving_stone": {
+      "subtle": "grey paving stones, cool pale grey, evenly laid, worn flat, plain",
+      "detail": "beautiful grey paving stones, pale silver grey, finely cut, richly worn, lots of detail"
+    },
+    "grey_stone": {
+      "subtle": "quiet grey mountain stone, plain medium grey, fine even grain, little variation",
+      "detail": "beautiful craggy grey stone, medium grey, rough and mottled, deep shadow, rich detail"
+    },
+    "ice": {
+      "subtle": "still pale blue ice, smooth and even, faint texture, calm",
+      "detail": "beautiful glacial ice, pale blue, glassy translucent glow, bright glints, rich detail"
+    },
+    "lava": {
+      "subtle": "molten lava, bright orange, smooth even flow, steady soft glow, little variation",
+      "detail": "burning lava, blazing orange and yellow, bright flowing glow, high contrast, lots of detail"
+    },
+    "light_beach": {
+      "subtle": "calm beach sand, warm cream, fine even grain, undisturbed",
+      "detail": "beautiful sunlit beach sand, warm pale gold, rippled and varied, lots of detail"
+    },
+    "light_soil": {
+      "subtle": "quiet dry soil, light warm brown, fine even crumb, little variation",
+      "detail": "freshly turned soil, light warm brown, crumbly and varied, lots of detail"
+    },
+    "parquet_floor": {
+      "subtle": "quiet parquet wood floor, warm tan, even repeating grain, calm",
+      "detail": "beautiful parquet wood floor, warm brown, polished sheen, richly patterned, lots of detail"
+    },
+    "slime": {
+      "subtle": "quiet green slime, soft green, even smooth sheen, calm",
+      "detail": "thick green slime, glowing bright green, wet glossy shine, lots of detail"
+    },
+    "snow": {
+      "subtle": "quiet unbroken snow, soft white, smooth even surface, almost no variation",
+      "detail": "beautiful deep snow, bright white, wind shaped, sparkling, cold blue shadows, rich detail"
+    },
+    "water": {
+      "subtle": "calm shallow water, soft blue, gentle even ripples, quiet",
+      "detail": "beautiful sunlit shallow water, clear blue, lively ripples, sparkling, rich detail"
+    }
+  },
+  "_why_comment": "Why each prompt reads the way it does, kept so the choice is not re-litigated. 'set 1/2/3' are the three competing proposal sets from the 2026-08-27 prompt round; criterion 2 = name no feature the generator supplies unasked, criterion 5 = the words must separate this ground from its neighbours (water/deep_water, light_soil/light_beach).",
+  "why": {
+    "black_rock": {
+      "subtle": "Set 3, trimmed 'ground' to 'rock' for material clarity — it is the only set whose colour word ('near black') actually matches palette #1e1d1e, and it names nothing but grain.",
+      "detail": "Rewrite on set 3's spine: set 1's 'obsidian veins/fractures' and set 2's colourless prompt both failed criteria 2 and 5, so I kept the glassy-glint keyword, added set 2's sparse/bold scale knob, and dropped every named feature."
+    },
+    "brown_paving_stone": {
+      "subtle": "Set 3 verbatim — 'warm grey brown' is the single most palette-accurate colour phrase in any set (#7d7265 is a grey-brown, not a brown), and 'evenly laid, worn smooth, plain' is pure density language.",
+      "detail": "Set 3 with its weak colour word ('warm stone') replaced by the subtle slot's 'warm grey brown'; set 1's 'deep shadowed joints, varied blocks' named features the generator supplies unasked."
+    },
+    "dark_mud": {
+      "subtle": "Set 3 verbatim — shortest of the three, 'cold brown' matches #514137, and 'almost featureless' is the strongest repeat-safe density cue offered.",
+      "detail": "Set 3 plus set 2's grain knob ('coarse and uneven'); set 1's 'sparse deep pits' named a feature and set 2 alone carried no colour at all."
+    },
+    "deep_water": {
+      "subtle": "Set 3 verbatim — 'still deep sea' is the only phrasing that separates this ground from `water` on the noun rather than on an adjective, which criterion 5 demands.",
+      "detail": "Set 3 verbatim — 'slow heavy swell, moonlit shimmer' is motion and light, not named objects, and it keeps the dark navy that #162843 asks for; set 1's 'rolling ripples, scattered reflections' drifts toward shallow water."
+    },
+    "grass": {
+      "subtle": "Set 3 verbatim — 'deep green' is the only colour phrase pointed at #14523b's pine rather than PixelLab's default yellow-green, and set 1's 'fine even blades' names blades.",
+      "detail": "Rewrite: set 3's spine with the waffly 'the most beautiful' cut and set 2's light knob ('sunlit') folded in — set 1's 'thick clumped blades, sparse tall growth' names exactly the features the maintainer says arrive for free."
+    },
+    "grey_paving_stone": {
+      "subtle": "Set 3 with 'stones' added so the ground reads as paving and not as a grey floor; 'cool pale grey' is right for #a8a8a8 and 'evenly laid, worn flat, plain' carries the density axis.",
+      "detail": "Set 3 with 'stones' added and 'pale silver stone' tightened to 'pale silver grey' so the colour keyword is a colour; 'finely cut, richly worn' beats set 1's 'crisp shadow joints'."
+    },
+    "grey_stone": {
+      "subtle": "Set 3's opening plus set 1's 'fine even grain', with 'plain grey' made 'plain medium grey' to hit #808082 rather than drifting light.",
+      "detail": "Rewrite: all three were weak here — set 1 named fissures, set 2 named no colour, set 3's 'silver grey' sits too light for #808082 — so I kept craggy/mottled and a single depth word."
+    },
+    "ice": {
+      "subtle": "Set 3 verbatim — nine words, no named feature, and 'still/smooth/faint/calm' is unambiguous low-density language.",
+      "detail": "Rewrite from set 3 with set 2's gloss and translucence keywords: set 1's 'sparse deep cyan fractures, glassy facets' named two features, which criterion 2 forbids."
+    },
+    "lava": {
+      "subtle": "Set 1, trimmed and with the colour word promoted to 'bright orange' — set 3's 'cooling / dull deep orange' and set 2's 'mostly dark' both fight palette #fd5a02, which is a hot orange.",
+      "detail": "Set 3 plus a contrast knob — 'blazing orange and yellow, bright flowing glow' keeps the palette hue, where set 1's 'white-hot veins, dark cooling crust' names features and darkens the tile."
+    },
+    "light_beach": {
+      "subtle": "Set 3 with 'beach' restored to the noun so the ground cannot be confused with `light_soil`; 'warm cream' matches #e4c495 and 'fine even grain, undisturbed' is the density cue.",
+      "detail": "Set 3 with 'beach' added and 'pale gold' warmed to 'warm pale gold' for #e4c495; set 1's 'sparse coarse grit, rippled wind texture' was longer for no extra keyword."
+    },
+    "light_soil": {
+      "subtle": "Rewrite: criterion 5 decides this slot — set 3's 'pale earth' and set 1's 'fine even dust' both read as sand, so I took set 2's unambiguous 'dry soil' noun and set 3's sentence shape, with 'light warm brown' for #c9ab7e.",
+      "detail": "Set 3's 'freshly turned' opening (the strongest anti-sand keyword in any set), trimmed, with the colour made explicit; set 1's 'crumbly clods, cracked gritty surface, coarse lumps' named three features."
+    },
+    "parquet_floor": {
+      "subtle": "Set 3 verbatim — 'even repeating grain' is precisely what a base-set floor tile needs and no set said it better.",
+      "detail": "Set 3 rewritten to drop 'old hall', which is a scene word that risks the model inventing surroundings, keeping its 'polished, richly patterned' and correcting 'honey' to 'warm brown' for #a7754b."
+    },
+    "slime": {
+      "subtle": "Set 3 verbatim — nine words, and 'green slime' plus 'even smooth sheen' keeps it slime rather than generic goo without naming a bubble.",
+      "detail": "Set 3 with 'heavy' swapped for 'thick' and gloss made explicit; set 1's 'sparse fat bubbles, bright rim highlights' named the one feature PixelLab reliably invents on its own."
+    },
+    "snow": {
+      "subtle": "Set 3 verbatim — 'quiet unbroken snow ... almost no variation' is the cleanest low-density statement of the thirty proposals.",
+      "detail": "Set 3 plus set 2's 'cold blue shadows', which is both a contrast knob and true to #ebf4f6's blue-white; set 1's 'drifted windswept crust' says the same thing with a feature noun."
+    },
+    "water": {
+      "subtle": "Set 3 verbatim — 'calm shallow water' separates it from `deep_water` on the noun, and 'gentle even ripples' is the density cue.",
+      "detail": "Set 3 with 'shallow' added for the same separation and 'bright blue' softened to 'clear blue' for #7eb7c7; set 1's 'sparkling caustics' is a word the model will not weigh."
+    }
+  }
+}

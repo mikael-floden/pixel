@@ -414,12 +414,23 @@ The wall-visible set is the DEFAULT, not the whole library. The maintainer:
 | set | wall | what it must satisfy |
 |---|---|---|
 | **wall-visible** (all of `tiles/` today) | seen — it becomes every cliff face | the whole bar: seam, wall quality, the transition, materials |
-| **top-only** (next) | never seen; the tile is surrounded | the top surface alone |
+| **top-only** (`tiles/tops/`) | never seen; the tile is surrounded | the top surface alone |
 
 So a rejection during the wall-visible review means *"the wall is not good enough to be
 SEEN"*, which says nothing about the top. Those tiles are **deferred**, not deleted —
 `tombstones.json` holds them under `deferred` with `from_set: "wall_visible"`, and the
-top-only review will draw from exactly that pool.
+top-only review draws from that pool as well as from `tiles/tops/`.
+
+**Top-only tiles are generated, not salvaged, and they live in their own tree.**
+`tiles/pipeline/tops.py` buys 6 sheets per ground — 3 `subtle` (repeat-safe, for a base
+tile set) and 3 `detail` (a showpiece placed once in a while) — into
+`tiles/tops/<ground>/sheet_<nn>_<flavour>_<seed>/`, indexed by `tiles/tops/index.json`
+(`tiles3/tops@1`). Prompts are `tiles/config/tops.json` and ask only for the ground:
+nothing there asks for a transition, an edge or a tuft, so **the wall on these sheets is
+meaningless and none of them is ever an x-over-y candidate** — which is why no path in
+that tree carries `__over__` and every record carries `kind: "top_only"` and
+`wall_is_meaningless: true`. Format is `matrix.FIXED`, imported. $0.096 a sheet, 90
+sheets ≈ $8.64. See `tiles/tops/README.md`.
 
 > "So instead of regenerating, we might be able to reuse tiles from this set that didn't
 >  have a wall good enough."
