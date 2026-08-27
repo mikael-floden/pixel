@@ -1982,9 +1982,22 @@ function makePlayer(entity, kind, opts = {}) {
     hitDelBtn.disabled = boxes.length < 2;
     hitNoneBtn.disabled = st === "none";
     hitResetBtn.disabled = st === "todo";
+    /* BOTH RAILS REACH TWICE THE FRAME (maintainer 2026-08-27: "Why is this the
+     * max D? Some scenery are really long/tall/wide... Make the max a little
+     * bigger/longer").
+     *
+     * D was capped at 0.8 of the frame HEIGHT on the assumption that a ground
+     * footprint is always foreshortened — which is wrong twice over: a long
+     * piece laid across the ground (a fallen log, an aqueduct span) is genuinely
+     * deep, and once an ellipse is TURNED the D rail is its long axis. The two
+     * rails are the same quantity in different directions, so they get the same
+     * reach. Range costs nothing here: the step stays 0.5px, so a bigger max is
+     * more room, not less precision, and the canvas already grows to hold
+     * whatever they produce. */
     const fw = clip?.fw ?? entity.frameW ?? 96, fh = clip?.fh ?? entity.frameH ?? 96;
-    hitW.max = String(Math.max(32, Math.round(fw * 1.2)));
-    hitH.max = String(Math.max(16, Math.round(fh * 0.8)));
+    const reach = Math.max(64, Math.round(Math.max(fw, fh) * 2));
+    hitW.max = String(reach);
+    hitH.max = String(reach);
     if (b) {
       if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
       if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);
@@ -4796,7 +4809,9 @@ function basePool(typeId) {
    * cell, so its verdict rides the same feedback file keyed by its own path. */
   const tops = (worldMeta().tops?.[typeId] ?? [])
     .filter((c) => fb("tiles", c.id).status !== "rejected")
-    .map((c) => ({ id: c.id, art: c.art, from: null, flat: c.flat ?? 0, flavour: c.flavour, colours: c.colours, topOnly: true }));
+    // ppPath: the sheets are raw generator COLOUR (grass measures 84 RGB off
+    // the palette), so the audition corrects them the way the pipeline will.
+    .map((c) => ({ id: c.id, art: ppPath(typeId, c.art), from: null, flat: c.flat ?? 0, flavour: c.flavour, colours: c.colours, topOnly: true }));
   const all = [
     ...tops,
     ...plates.map(([k, cell, flat]) => {
@@ -4867,7 +4882,7 @@ function candByKey(key) {
  * has to be applied to the PLATE POOL too and not only to review art. */
 const displayArt = (key, fallback) => candByKey(key)?.tex ?? fallback ?? candByKey(key)?.art ?? null;
 function memberArt(typeId, id) {
-  if (/^tiles\/tops\//.test(id ?? "")) return id;   // a top-only tile's path IS its art
+  if (/^tiles\/tops\//.test(id ?? "")) return ppPath(typeId, id);   // its path is its art, palette-corrected
   const p = basePool(typeId).find((c) => c.id === id);
   if (p) return p.art;
   const cand = candByKey(id);
@@ -5178,7 +5193,9 @@ function openPoolPicker(typeId, setId, onDone) {
     };
     const row = h("div", { class: "pool-cell", "data-cand": cand.id },
       h("div", { class: "pool-head" },
-        h("img", { class: "pool-tile", src: assetUrl(cand.art), alt: cand.id, loading: "lazy" }),
+        // artNodeFor, not a bare <img>: a top-only tile's art is a pp: virtual
+        // that has to be corrected onto a canvas.
+        artNodeFor(cand.art, "pool-tile", cand.id),
         h("span", { class: "pool-name", title: cand.id }, memberLabel(typeId, cand.id)),
         (cand.flat ?? 0) >= TOP_FLAT ? h("span", { class: "pill", title: `The top is ${Math.round((cand.flat ?? 1) * 100)}% one tone — adding it draws close to the clean colour` }, "flat top") : null,
         addBtn, rejBtn),
@@ -5581,6 +5598,87 @@ function topSub(candImg, baseImg) {
   cx.putImageData(out, 0, 0);
   return cv;
 }
+/* ---- THE TOP-ONLY POOL, POSTPROCESSED IN THE BROWSER --------------------
+ * Maintainer 2026-08-27, auditioning black_rock: "Ofc I don't want to see the
+ * tile as raw here. I want to see the top as textured, but postprocessed ...
+ * In order to see how this tile should look like if it was part of this base
+ * tile set."
+ *
+ * He is right and the numbers agree: the top-only sheets are raw generator
+ * output, and raw means raw COLOUR — measured against the palette, grass tops
+ * average 84 RGB units off (lime green against the game's blue-green), ice 31.
+ * The texture needs no synthesis; the colour does.
+ *
+ * THE RULE IS THE PIPELINE'S OWN, palette_snap.substitute(): hue and
+ * saturation are SET from the palette, never read off the art, and only the
+ * value carries through — recentred on the target with its spread compressed
+ * (SPILL_SPREAD 16, the tiles2 grass measurement), clamped to ±58 of the
+ * target. Same constants, same maths, so what this shows is what the tiles
+ * agent's corrected pass will produce when it lands — at which point their
+ * files replace this synthesis and nothing else changes.
+ */
+const PP_CACHE = new Map();           // "path::hex" -> HTMLCanvasElement | null
+function ppSynth(img, hex) {
+  const w = img.naturalWidth, h = img.naturalHeight;
+  if (!w || !/^#[0-9a-f]{6}$/i.test(hex)) return null;
+  const cv = document.createElement("canvas");
+  cv.width = w; cv.height = h;
+  const cx = cv.getContext("2d", { willReadFrequently: true });
+  cx.imageSmoothingEnabled = false;
+  cx.drawImage(img, 0, 0);
+  const im = cx.getImageData(0, 0, w, h);            // throws if tainted — caller falls back
+  const d = im.data;
+  const [tr, tg, tb] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const tM = Math.max(tr, tg, tb);
+  const unit = tM ? [tr / tM, tg / tM, tb / tM] : [1, 1, 1];
+  let sum = 0, sumSq = 0, n = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] === 0) continue;
+    const v = Math.max(d[i], d[i + 1], d[i + 2]);
+    sum += v; sumSq += v * v; n++;
+  }
+  if (!n) return null;
+  const mean = sum / n;
+  const std = Math.sqrt(Math.max(0, sumSq / n - mean * mean));
+  const scale = Math.min(1, 16 / (std || 16));       // SPILL_SPREAD, compressed only
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] === 0) continue;
+    const v = Math.max(d[i], d[i + 1], d[i + 2]);
+    let v2 = tM + (v - mean) * scale;
+    v2 = Math.max(tM - 58, Math.min(tM + 58, v2));   // the guard's own clamp
+    v2 = Math.max(0, Math.min(255, v2));
+    /* The pixel's value v2, wearing the target's hue and saturation exactly:
+     * scale the target's own channel proportions to v2. out = v2 · (tc / tM)
+     * keeps H and S identical to the target by construction — the same
+     * "nothing here reads anything off the art" property substitute() has. */
+    d[i]     = Math.round(v2 * unit[0]);
+    d[i + 1] = Math.round(v2 * unit[1]);
+    d[i + 2] = Math.round(v2 * unit[2]);
+  }
+  cx.putImageData(im, 0, 0);
+  return cv;
+}
+function ppFor(path, hex, cb) {
+  const key = `${path}::${hex}`;
+  if (PP_CACHE.has(key)) { cb(PP_CACHE.get(key)); return; }
+  const im = new Image();
+  im.crossOrigin = "anonymous";       // same reason as texFor — see the note there
+  im.onload = im.onerror = () => {
+    let c = null;
+    try { c = im.naturalWidth ? ppSynth(im, hex) : null; } catch { c = null; }
+    PP_CACHE.set(key, c);
+    window.__wikiPP = (window.__wikiPP ?? 0) + 1;    // gate probe
+    cb(c);
+  };
+  im.src = assetUrl(path);
+}
+/** The pp: virtual path for a top-only tile, or the plain path when the
+ *  ground has no palette colour to correct to. */
+function ppPath(typeId, art) {
+  const hex = groundTypeMeta(typeId)?.top;
+  return /^#[0-9a-f]{6}$/i.test(hex ?? "") ? `pp:${art}::${hex}` : art;
+}
+
 /** Async resolve of a virtual "sub:<cand>::<base>" path, mirroring texFor. */
 function subFor(cand, base, cb) {
   const key = `${cand}::${base}`;
@@ -5651,7 +5749,7 @@ const viewArt = (cand) => viewArtIn(worldView(), cand);
  *  isoScene composition. */
 function artNodeFor(path, cls, alt) {
   const p = String(path ?? "");
-  const virt = p.startsWith("tex:") ? "tex" : p.startsWith("sub:") ? "sub" : p.startsWith("mix:") ? "mix" : null;
+  const virt = p.startsWith("tex:") ? "tex" : p.startsWith("sub:") ? "sub" : p.startsWith("mix:") ? "mix" : p.startsWith("pp:") ? "pp" : null;
   if (!virt) return h("img", { class: cls, src: assetUrl(path), alt });
   const cv = h("canvas", { class: cls, width: 64, height: 46, "aria-label": alt });
   const [a, b] = p.slice(4).split("::");
@@ -5670,6 +5768,14 @@ function artNodeFor(path, cls, alt) {
     im.src = assetUrl(a);
   };
   const take = (c) => { if (c) paint(c, c.width, c.height); else fall(); };
+  if (virt === "pp") {
+    const [a2, hex] = p.slice(3).split("::");
+    ppFor(a2, hex, (c) => {
+      if (c) paint(c, c.width, c.height);
+      else { const im = new Image(); im.onload = () => { if (im.naturalWidth) paint(im, im.naturalWidth, im.naturalHeight); }; im.src = assetUrl(a2); }
+    });
+    return cv;
+  }
   if (virt === "mix") {
     const [row, idx, pa, pb] = p.slice(4).split("|");
     mixFor(+row, +idx, pa, pb, (c) => {
@@ -5683,9 +5789,32 @@ function artNodeFor(path, cls, alt) {
 }
 /** Every candidate whose TOP belongs to this ground — every pair of the type,
  *  the wall deliberately ignored. */
-const typeTops = (typeId) => worldCells()
-  .filter((c) => c.top === typeId)
-  .flatMap((c) => c.candidates.map((cand) => ({ cell: c, cand })));
+/* EVERY TOP OF THIS GROUND — the x-over-y candidates AND the top-only tiles
+ * (maintainer 2026-08-27: "you should include this new set when I scroll over
+ * details tiles or base set tiles that has not been rejected").
+ *
+ * A top-only tile has no cell: it was generated with the wall meaningless, so
+ * there is no "over what" to name and no wall verdict to give. It gets a
+ * cell-SHAPED stand-in whose `side` is null, which is what every caller reads
+ * to decide whether a wall question even applies — and which keeps these out
+ * of anything that walks worldCells, where an x-over-y verdict lives.
+ *
+ * DETAIL SHEETS FIRST here, the mirror of subtle-first in the base-tile pool:
+ * the tiles agent generates three of each per ground, and a detail is by
+ * construction the once-in-a-while showpiece this tab collects. */
+const typeTops = (typeId) => [
+  // TOP-ONLY FIRST: purpose-built for this decision, where an x-over-y
+  // candidate's top is a by-product of a tile generated to show a wall.
+  ...(worldMeta().tops?.[typeId] ?? [])
+    .slice()
+    .sort((a, b) => (a.flavour === b.flavour ? 0 : a.flavour === "detail" ? -1 : 1))
+    .map((t) => ({
+      cell: { id: t.id, top: typeId, side: null, name: `${typeLabelWorld(typeId)} · ${t.flavour ?? "top"}`, topOnly: true },
+      cand: { key: t.id, art: ppPath(typeId, t.art), raw: null, tex: null, topOnly: true, flavour: t.flavour, paletteTop: null },
+    })),
+  ...worldCells().filter((c) => c.top === typeId)
+    .flatMap((c) => c.candidates.map((cand) => ({ cell: c, cand }))),
+];
 /** The ground's detail collection: tops he approved. */
 const detailsOf = (typeId) => typeTops(typeId).filter(({ cand }) => topFb(cand.key).status === "approved");
 /** The boredom queue: tops nobody has judged yet. */
@@ -6863,7 +6992,7 @@ function viewWorldType(top) {
         h("div", { class: "set-rows" }, ...rows.map((m, i) => h("div", { class: `set-row${m.weight > 0 ? "" : " off"}${m.gone ? " gone" : ""}` },
           m.clean
             ? h("span", { class: "swatch ground-swatch", title: "The ground's flat palette colour", style: `background:${groundBaseColor(t.id)?.c ?? "transparent"}` })
-            : m.art ? h("img", { class: "set-row-tile", src: assetUrl(m.art), alt: m.id, loading: "lazy" })
+            : m.art ? artNodeFor(m.art, "set-row-tile", m.id)
               : h("span", { class: "swatch ground-swatch" }),
           h("span", { class: "set-row-name", title: m.clean ? null : m.id },
             m.clean ? "Clean colour" : m.gone ? `${memberLabel(t.id, m.id)} — art is gone` : memberLabel(t.id, m.id)),
@@ -7086,7 +7215,13 @@ function viewWorldType(top) {
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
       detailField(viewArtIn(dPass, cand), surround, dSeed, 1, dPass),
       h("div", { class: "card-sub" },
-        h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
+        /* A TOP-ONLY TILE HAS NOWHERE TO LINK TO. It is not a cell — there is
+         * no "over what" — so the link would have been #/world/<g>/null, a
+         * dead end. It names its sheet instead, which is the only thing that
+         * distinguishes one from another. */
+        cell.topOnly
+          ? h("span", { class: "muted", title: cand.key }, memberLabel(cell.top, cand.key))
+          : h("a", { href: `#/world/${cell.top}/${cell.side}` }, `from ${cell.name.toLowerCase()}`),
         // Only ever says something when the picture is NOT what the switch
         // asked for: a tile with no raw generation cannot show a "before".
         dPass === PASS_RAW && !cand.raw
@@ -8106,8 +8241,16 @@ function loadImages(paths, cb) {
     // the reviewed tile wearing a set member's top face. "mix:row|idx|a|b" is
     // the third — a transition composed from two plates and a mask frame.
     const virt = String(p).startsWith("tex:") ? "tex" : String(p).startsWith("sub:") ? "sub"
-      : String(p).startsWith("mix:") ? "mix" : null;
+      : String(p).startsWith("mix:") ? "mix" : String(p).startsWith("pp:") ? "pp" : null;
     if (virt) {
+      if (virt === "pp") {
+        const [a2, hex] = p.slice(3).split("::");
+        ppFor(a2, hex, (c) => {
+          if (c) { out[p] = c; if (--left <= 0) cb(out); }
+          else plain(a2, p);      // uncorrectable still beats missing
+        });
+        continue;
+      }
       if (virt === "mix") {
         const [row, idx, a2, b2] = p.slice(4).split("|");
         mixFor(+row, +idx, a2, b2, (c) => {
@@ -10559,6 +10702,10 @@ async function upgradeToStaging() {
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
     state, route,
+    // The pass -> art-path resolver, so a gate can assert WHICH pass a card
+    // resolves to without counting network requests — which measures the HTTP
+    // cache once anything has been viewed, not the page.
+    viewArtIn,
     counts: () => state.data.counts,
     fb, setFb,
     // The synthesized third pass, exposed so QA can render it at 6x and LOOK

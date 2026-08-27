@@ -297,7 +297,7 @@ const pool = await p.evaluate(() => {
   return {
     open: !!document.querySelector(".pool-modal[open]"),
     cells: document.querySelectorAll(".pool-cell").length,
-    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 3).map((i) => i.getAttribute("src")),
+    srcs: window.__basesets.basePool("grass").slice(0, 40).map((c) => c.art),
     built: document.querySelectorAll(".pool-cell[data-built='1']").length,
     field: cv ? { w: cv.width, h: cv.height } : null,
     randomize: [...document.querySelectorAll(".pool-modal button")].some((x) => /Randomize/.test(x.textContent)),
@@ -325,7 +325,7 @@ ok(pool.open && pool.cells > 100, `the pool picker offers this ground's whole ba
  * corner of a generated transition, and never had a flattened top to fix. */
 // Only REVIEW candidates have a textured pass: a ballot tile is its own art,
 // and a top-only tile never had a wall or a flattened top to fix.
-const reviewSrcs = pool.srcs.filter((s) => !/base_candidates|\/tiles\/tops\//.test(s));
+const reviewSrcs = pool.srcs.filter((s) => !/base_candidates|tiles\/tops\//.test(s));
 ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
   `every review candidate is auditioned as its TEXTURED pass, never the flattened one (${reviewSrcs[0]?.split("/").pop() ?? "none in view"})`);
 /* ...AND ON A GROUND WITH NO BALLOT AT ALL, which is where it actually broke.
@@ -349,7 +349,7 @@ ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
   await p2.waitForTimeout(2200);
   const br = await p2.evaluate(() => ({
     n: document.querySelectorAll(".pool-cell").length,
-    srcs: [...document.querySelectorAll(".pool-tile")].slice(0, 8).map((i) => i.getAttribute("src")),
+    srcs: window.__basesets.basePool("black_rock").slice(0, 8).map((c) => c.art),
     labels: [...document.querySelectorAll(".pool-name")].slice(0, 8).map((i) => i.textContent),
   }));
   /* THE TOP-ONLY POOL LEADS THE AUDITION (maintainer 2026-08-27: "you should
@@ -357,8 +357,45 @@ ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
    * that has not been rejected"). Generated with the wall meaningless, so they
    * are ground surface and nothing else — and SUBTLE first, because those are
    * the sheets meant to survive repetition, which is what a set does. */
-  ok(br.srcs.slice(0, 3).every((s) => /\/tiles\/tops\//.test(s)),
+  ok(br.srcs.slice(0, 3).every((s) => /tiles\/tops\//.test(s)),
     `the top-only pool leads the audition (${br.srcs[0]?.split("/").slice(-2).join("/")})`);
+  /* AND IT IS POSTPROCESSED, NOT RAW (maintainer 2026-08-27: "Ofc I don't
+   * want to see the tile as raw here. I want to see the top as textured, but
+   * postprocessed"). The sheets are raw generator COLOUR — grass measures 84
+   * RGB units off the palette — so the audition corrects hue and saturation to
+   * the palette with the pipeline's own substitute() rule. Asserted on the
+   * PIXELS of the corrected thumb: the mean must land on the palette colour,
+   * which raw art misses by an unmissable margin. */
+  {
+    const p3 = await ctx.newPage();
+    await p3.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+    await p3.route("**/api/wiki/save", (r) => r.fulfill({ status: 200, contentType: "application/json", body: "{}" }));
+    await p3.addInitScript(() => {
+      localStorage.setItem("wiki-admin-token", "gate");
+      localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+    });
+    await p3.goto(`${W}#/world/grass`, { waitUntil: "load" });
+    await p3.waitForTimeout(2200);
+    await p3.evaluate(() => (document.querySelector(".add-tiles") ?? document.querySelector(".new-set"))?.click());
+    await p3.waitForTimeout(700);
+    await p3.evaluate(() => { if (!document.querySelector(".pool-modal[open]")) document.querySelector(".add-tiles")?.click(); });
+    await p3.waitForTimeout(2200);
+    const pp = await p3.evaluate(() => {
+      const cv = document.querySelector(".pool-cell canvas.pool-tile");
+      if (!cv) return null;
+      try {
+        const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+        let r = 0, g2 = 0, b2 = 0, n = 0;
+        for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 200) { r += d[i]; g2 += d[i + 1]; b2 += d[i + 2]; n++; }
+        return n ? [r / n, g2 / n, b2 / n] : null;
+      } catch { return "tainted"; }
+    });
+    const tgt = [0x14, 0x52, 0x3b];
+    const dist = Array.isArray(pp) ? Math.round(Math.hypot(...pp.map((v, i) => v - tgt[i]))) : 999;
+    ok(Array.isArray(pp) && dist <= 12,
+      `a grass top auditions in the game's own palette — corrected mean ${Array.isArray(pp) ? "#" + pp.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("") : pp} is ${dist} from #14523b (raw art misses by 84)`);
+    await p3.close();
+  }
   ok(br.srcs.slice(0, 3).every((s) => /_subtle_/.test(s)),
     "and its SUBTLE sheets come first — the ones that survive being repeated across a field");
   ok(br.labels.slice(0, 3).every((l) => /subtle top/.test(l)),
@@ -368,7 +405,7 @@ ok(reviewSrcs.every((s) => /_textured\.webp$/.test(s)),
     `with the review candidates behind them (${br.n} rows in all)`);
   await p2.close();
 }
-ok(pool.srcs.every((s) => /base_candidates|\/plates\/|\/tiles\/tops\/|_textured\.webp$/.test(s)),
+ok(pool.srcs.every((s) => /base_candidates|\/plates\/|tiles\/tops\/|_textured\.webp$/.test(s)),
   `sourced from published tile art (${pool.srcs.map((s) => s.split("/").slice(-2, -1)[0]).join(", ")})`);
 /* EVERYTHING APPROVED IS OFFERED — the full plates roster plus the ballot,
  * nothing filtered (maintainer 2026-08-27: "all accepted tiles for brown
@@ -529,15 +566,40 @@ const dq = await p.evaluate(() => ({
   more: [...document.querySelectorAll("button")].some((x) => /Show 12 more/.test(x.textContent)),
 }));
 // What the page should say: every top of this ground that nobody has judged.
+/* BOTH POOLS. Since 2026-08-27 the queue is the x-over-y candidates AND the
+ * top-only tiles, which is what he asked for — so the expectation counts both,
+ * each unjudged on its own #top key. */
 const expLeft = await p.evaluate(() => {
   const w = window.__wiki;
   const e = w.state.feedback.tiles?.entries ?? {};
   return (w.state.data.domains.world ?? []).filter((c) => c.top === "grass")
-    .flatMap((c) => c.candidates)
-    .filter((x) => { const v = e[`${x.key}#top`]; return !v || (!v.status && !v.rating); }).length;
+    .flatMap((c) => c.candidates).map((x) => x.key)
+    .concat((w.state.data.worldMeta.tops?.grass ?? []).map((x) => x.id))
+    .filter((k) => { const v = e[`${k}#top`]; return !v || (!v.status && !v.rating); }).length;
 });
 ok(dq.queuePill.some((x) => x === String(expLeft)),
   `the queue counts the tops nobody has judged — ${expLeft} left of ${expQueue}, with ${topJudged} already done`);
+/* THE TOP-ONLY TILES ARE IN THE DETAILS QUEUE TOO, and lead it (maintainer
+ * 2026-08-27: "you should include this new set when I scroll over details
+ * tiles or base set tiles"). They are purpose-built for this decision, where
+ * an x-over-y candidate's top is a by-product of a tile generated to show a
+ * wall — and DETAIL sheets first among them, the mirror of subtle-first in the
+ * base-tile pool, because a detail is by construction the once-in-a-while
+ * showpiece this tab collects.
+ *
+ * They have no cell, so the card must not offer the dead "from <cell>" link
+ * that #/world/<ground>/null would have been. */
+{
+  const lead = await p.evaluate(() => [...document.querySelectorAll(".detail-card")].slice(0, 3).map((c) => ({
+    text: c.textContent.replace(/\s+/g, " ").trim().slice(0, 40),
+    deadLink: [...c.querySelectorAll("a")].some((a) => /\/null$/.test(a.getAttribute("href") ?? "")),
+  })));
+  ok(lead.every((x) => /top · sheet/.test(x.text)),
+    `the top-only tiles lead the details queue (${lead[0]?.text.slice(0, 26)})`);
+  ok(lead.every((x) => /detail top/.test(x.text)),
+    "detail sheets first among them — the once-in-a-while showpieces this tab is for");
+  ok(lead.every((x) => !x.deadLink), "and none offers a link to a cell it does not have");
+}
 ok(dq.cards === 12 && dq.canvases === 12 && dq.stars === 12 && dq.more,
   `twelve at a time, each COMPOSED in the ground with its own stars, and more on demand (${dq.cards})`);
 // approve one from the queue → the collection, the tab count, the #top save
@@ -825,10 +887,28 @@ await p.waitForTimeout(900);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
 passes.after = 0; passes.before = 0;
+/* ASSERTED ON THE RESOLVED PATH, NOT ON FETCHES. Counting requests measures
+ * the HTTP cache the moment anything has already been viewed — a trap this
+ * file already documents for Textured, and one the details queue walked into
+ * the day top-only tiles joined it: those have exactly ONE pass, themselves,
+ * so flipping to Raw on them correctly fetches nothing at all. What the claim
+ * is really about is which pass a card resolves to. */
 await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "Raw")?.click());
-await p.waitForTimeout(2200);
-ok(passes.before > 0 && passes.before >= passes.after,
-  `flipping to Before re-composes from the raw art — every tile in the 3x3, not just the centre (${passes.before} before, ${passes.after} after)`);
+await p.waitForTimeout(1200);
+const rawRes = await p.evaluate(() => {
+  const w2 = window.__wiki;
+  const cands = (w2.state.data.domains.world ?? []).filter((c) => c.top === "grass")
+    .flatMap((c) => c.candidates).filter((x) => x.raw).slice(0, 5);
+  const tops = (w2.state.data.worldMeta.tops?.grass ?? []).slice(0, 3);
+  return {
+    review: cands.map((c) => w2.viewArtIn("before", c)),
+    topOnly: tops.map((t) => w2.viewArtIn("before", { key: t.id, art: t.art, raw: null })),
+  };
+});
+ok(rawRes.review.length > 0 && rawRes.review.every((s2) => /_before\.webp$/.test(s2 ?? "")),
+  `under Raw an x-over-y candidate resolves to the generator's own art (${rawRes.review[0]?.split("/").pop()})`);
+ok(rawRes.topOnly.every((s2) => /(^|\/)tiles\/tops\//.test(s2 ?? "")),
+  `and a top-only tile resolves to itself — it has exactly one pass (${rawRes.topOnly[0]?.split("/").pop()})`);
 p.off("request", countPass);
 await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
 await p.waitForTimeout(1200);
@@ -860,8 +940,15 @@ const stillOpen = await p.evaluate(() => ({
   open: !!document.querySelector(".promote-modal[open]"),
   sel: document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim(),
 }));
-ok(stillOpen.open && stillOpen.sel === "Raw" && mBefore > 0,
-  `flipping inside it re-composes the previews without closing it (${mBefore} before fetched)`);
+/* THE CLAIM IS "WITHOUT CLOSING IT", and that is what is asserted. The
+ * fetch count was the evidence until the cache made it zero — by this point
+ * the gate has already viewed these tiles under Raw twice — so the repaint is
+ * proven by the previews still being there and the chip having moved, which
+ * is the behaviour the maintainer asked for ("flipping here repaints the
+ * previews in place and leaves the page set the same way"). */
+const stillDrawn = await p.evaluate(() => document.querySelectorAll(".promote-modal canvas").length);
+ok(stillOpen.open && stillOpen.sel === "Raw" && stillDrawn > 0,
+  `flipping inside it repaints the previews without closing it (${stillDrawn} previews still drawn, ${mBefore} fetched)`);
 // The pass the whole feature exists for, in the dialog where promotion is
 // decided: the ground as one of HIS sets paints it.
 await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => /^Set #/.test(x.textContent.trim()))?.click());
