@@ -813,10 +813,22 @@ function buildWorld() {
       // build — which the deploy's `||` fallback would have swallowed into a
       // silently stale registry, the exact trap the Dockerfile documents.
       const misfit = sh.misfit_tiles && typeof sh.misfit_tiles === "object" ? sh.misfit_tiles : {};
+      /* THE POST NAME COMES FROM THE INDEX, NEVER FROM ARITHMETIC. The cache-
+       * safety law renamed every post file to tile_NN.<hash>.webp, and this
+       * loop was still guessing post/tile_NN.webp — existsSync said no, `post`
+       * fell to null in a fresh build, and the COMMITTED registry (built
+       * before the rename) kept the unhashed names outright: every audition
+       * centre 404ed and drew as a hole in an intact ring, which is exactly
+       * the screenshot the maintainer sent (2026-08-27, "all I see is
+       * holes"). The index publishes post_files in tile order for precisely
+       * this reason; matched by stem, verified on disk, so a name this build
+       * emits is a file that exists. */
+      const postByStem = new Map((sh.post_files ?? []).map((pf) => [pf.replace(/\.(?:[0-9a-f]{8}\.)?webp$/, ""), pf]));
       for (const f of sh.tiles ?? []) {
         const rel = `${sh.dir}/${f}`;
         if (!existsSync(join(ROOT, rel))) continue;
-        const postRel = `${sh.dir}/post/${f}`;
+        const postName = postByStem.get(f.replace(/\.webp$/, "")) ?? f;
+        const postRel = `${sh.dir}/post/${postName}`;
         const hasPost = sh.post === true && existsSync(join(ROOT, postRel));
         (tops[sh.ground] ??= []).push({
           // The identity stays the RAW path — it is what his verdicts are
@@ -2771,6 +2783,41 @@ const data = {
   constants,
 };
 
+/* NO EMITTED TILE PATH MAY POINT AT NOTHING. The registry has now shipped
+ * broken paths twice, both times through a RENAME on the tiles agent's side —
+ * hashless _textured.webp in the world candidates, hashless post/ names in the
+ * tops pool — and both times the symptom was the same: holes in an audition,
+ * on the maintainer's phone, with nothing anywhere saying why. Their board
+ * note asked for exactly this ("manifest revalidation there" — retention on
+ * their side, revalidation on ours).
+ *
+ * SANITISED, NOT FATAL: a missing OPTIONAL pass (tex, post) is nulled so the
+ * page falls back to the pass that exists; a missing PRIMARY art is left in
+ * place but counted, because dropping a candidate outright would silently
+ * shrink a review queue. Every repair is printed. The deploy swallows a build
+ * FAILURE into a stale committed registry (the Dockerfile documents that
+ * trap), so failing loud here would reintroduce the very staleness this
+ * guards against — loud-and-fixed beats dead. */
+{
+  const exists = (rel) => typeof rel === "string" && !rel.includes("::") && existsSync(join(ROOT, rel));
+  let nulled = 0, broken = 0;
+  const scrub = (obj, key, required) => {
+    const v = obj?.[key];
+    if (v == null || typeof v !== "string") return;
+    if (exists(v)) return;
+    if (required) { broken++; console.warn(`[wiki] MISSING art (kept): ${v}`); }
+    else { obj[key] = null; nulled++; console.warn(`[wiki] missing ${key} pass nulled: ${v}`); }
+  };
+  for (const c of data.domains.world ?? []) for (const cand of c.candidates ?? []) {
+    scrub(cand, "art", true); scrub(cand, "raw", false); scrub(cand, "tex", false);
+  }
+  for (const list of Object.values(data.worldMeta?.tops ?? {})) for (const c of list) {
+    scrub(c, "art", true); scrub(c, "post", false);
+  }
+  for (const list of Object.values(data.worldMeta?.basePools ?? {})) for (const c of list) scrub(c, "art", true);
+  if (nulled || broken) console.warn(`[wiki] path sweep: ${nulled} optional pass(es) nulled, ${broken} primary path(s) missing`);
+  else console.log("[wiki] path sweep: every emitted tile path exists");
+}
 writeFileSync(OUT, JSON.stringify(data));
 /* THE FRESHNESS BEACON. The wiki is a single-page app the maintainer keeps
  * open in a tab or the game's drawer for hours; nothing ever told a running

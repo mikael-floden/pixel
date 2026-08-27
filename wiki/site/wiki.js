@@ -4918,7 +4918,20 @@ function memberArt(typeId, id) {
  * no entry still gets Clean — the model has no "no sets" state, which is what
  * lets every caller render without a special case. Mirrors setsFor() in
  * wiki/lib/basesets.mjs; check-basesets.mjs proves the two agree. */
+/* Memoised per (ground, doc revision): every write path stamps updated_at, so
+ * the cache can never serve a set list older than the document — and a row
+ * shell asking for the members costs a Map hit instead of a re-normalisation
+ * of every member through memberArt. */
+const SETS_CACHE = new Map();              // typeId -> { rev, sets }
 function groundSets(typeId) {
+  const rev = `${setsDoc().updated_at}|${(setsDoc().grounds?.[typeId]?.sets ?? []).length}`;
+  const hit = SETS_CACHE.get(typeId);
+  if (hit && hit.rev === rev) return hit.sets;
+  const sets = groundSetsUncached(typeId);
+  SETS_CACHE.set(typeId, { rev, sets });
+  return sets;
+}
+function groundSetsUncached(typeId) {
   const raw = setsDoc().grounds?.[typeId]?.sets;
   const list = Array.isArray(raw) ? raw.slice() : [];
   if (!list.some((s) => s && s.id === CLEAN_SET)) {
@@ -5389,6 +5402,7 @@ function openPoolPicker(typeId, setId, onDone) {
       `${n} tile${n === 1 ? "" : "s"} in ${setLabel(setOf())}${rej ? `, ${rej} rejected for it` : ""}`
       + (added ? " — Commit to save" : ""));
   };
+  let poolClosed = false;
   const dlg = h("dialog", { class: "promote-modal pool-modal" },
     h("div", { class: "promote-head" },
       h("b", {}, `Add to ${setLabel(setOf())}`),
@@ -5415,13 +5429,37 @@ function openPoolPicker(typeId, setId, onDone) {
         : basePool(typeId).length
           ? "Every candidate for this ground is already in this set."
           : "No textured candidates for this ground yet — the tiles agent publishes them to tiles/base_candidates/. Until then this ground can only draw its clean colour."),
-    h("div", { class: "pool-list" }, ...pool.map(rowFor)),
+    (() => {
+      /* IN SLICES, NEVER IN ONE PASS (maintainer 2026-08-27: "Pressing the
+       * + Add tiles button lags and make the entire game freeze"). Building
+       * all 373 row shells synchronously was one 6.7-SECOND main-thread task
+       * — and the wiki lives in the game's drawer, so that thread is the
+       * game's thread and the whole game hung with it. The fields were
+       * already lazy; the shells were the freeze.
+       *
+       * The first slice paints before the dialog is even readable and each
+       * later one is a frame's worth of work, so scrolling meets rows that
+       * already exist — the IntersectionObserver's 600px margin covers the
+       * gap. Building stops the moment the dialog closes. */
+      const listEl = h("div", { class: "pool-list" });
+      const SLICE = 30;
+      let at = 0;
+      const build = () => {
+        if (poolClosed) return;                      // closed mid-build
+        const frag = document.createDocumentFragment();
+        for (const end = Math.min(pool.length, at + SLICE); at < end; at++) frag.append(rowFor(pool[at]));
+        listEl.append(frag);
+        if (at < pool.length) requestAnimationFrame(build);
+      };
+      build();
+      return listEl;
+    })(),
     h("div", { class: "pool-foot" }, tally,
       h("button", { class: "primary-btn pool-done", type: "button", onclick: close }, "Done")));
   retally();
   document.body.append(dlg);
   dlg.showModal();
-  dlg.addEventListener("close", () => { seen.disconnect(); dlg.remove(); if (added) onDone?.(); });
+  dlg.addEventListener("close", () => { poolClosed = true; seen.disconnect(); dlg.remove(); if (added) onDone?.(); });
 }
 /** One weight box: he edits the number, the percentage beside it tells him what
  *  the number MEANS in this row. 0 is legal and is how he says "never". */
