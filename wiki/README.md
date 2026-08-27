@@ -672,6 +672,28 @@ review tile instead puts 928 of 2012 px in the wrong alpha, their measurement).
   the generator's art** and exists only for the 26 pregenerated pairs; on the
   others the pill says "no raw — composed clean" rather than letting the
   switch look effective.
+- **The 1px seam is not optional.** A transition is not a bare 0-100 cut
+  through the mask: the two grounds meet along a border, and without it the
+  wiki draws a hard edge the generator never drew (tiles agent, maintainer
+  verdict 2026-08-27). `tiles/patterns/borders.webp` shares the mask sheet's
+  layout, so the same frame arithmetic indexes it. **One mask serves both
+  sides because it DARKENS what is already there** — each side becomes a
+  darker shade of *its own* ground, never a blend. Frames 0 and 15 are empty
+  on all 18 patterns (verified), so a field of one ground carries no marks —
+  if a grid appears, the wrong frame is being cut. A third of the seam is on
+  the **wall**, the vertical edge a cliff shows. It is symmetric under the
+  polarity flip (verified, 0 of 423,936 px differ), so the seam cannot be
+  applied backwards.
+- **Applied per pixel with `np.rint`, not by `globalAlpha`.** The library's
+  published `canvas_ops` paint the seam as black at 0.18, which is
+  multiply-by-tone in ideal arithmetic — but canvas composites premultiplied
+  in 8 bits and lands up to **2 per channel** off the reference's own
+  `np.rint(v * tone)`. Invisible, and still closed: the game will render
+  these tiles too, and a wiki that rounds differently makes every screenshot
+  argue with the build. Half-to-**even**, which is not `Math.round` —
+  `25 × 0.82 = 20.5` rints to 20 and rounds to 21. The published drawImage
+  path stays as the fallback for a tainted canvas, where pixels cannot be
+  read back at all.
 - **Polarity is decided in exactly one place** (`mixTile`). The library's mask
   bit means side_b; side_b is whichever ground is later in the published
   `side_order` (a total order, wettest→built); the scenes' own convention (bit

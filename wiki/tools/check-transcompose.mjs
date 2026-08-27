@@ -30,13 +30,26 @@ const masks = decodeWebP(readFileSync(ROOT + LIB.masks.file));
 const FW = LIB.masks.frame_w, FH = LIB.masks.frame_h;
 const maskBit = (row, idx, x, y) => (masks.pix[(row * FH + y) * masks.w + idx * FW + x] >>> 24) > 0;
 
-/* The reference compose, straight from the index: out = mask ? B : A. */
+const bord = decodeWebP(readFileSync(ROOT + LIB.border.file));
+const bordBit = (row, idx, x, y) => (bord.pix[(row * FH + y) * bord.w + idx * FW + x] >>> 24) > 0;
+/* np.rint — half to EVEN, which is what transition_patterns.compose() applies
+ * and is NOT Math.round: 25 * 0.82 = 20.5 rints to 20 and rounds to 21. */
+const rint = (v) => { const f = Math.floor(v), d = v - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1); };
+/* The reference compose, straight from the index: out = mask ? B : A, then
+ * every border pixel darkened to `tone` of what it already is. The seam is
+ * NOT optional — "a transition without it is a 0-100 hard cut, which is not
+ * what the generator drew" (tiles agent, maintainer verdict 2026-08-27). */
 function refCompose(row, idx, A, B) {
   const out = new Uint32Array(FW * FH);
   for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
     const i = y * FW + x;
     if (!((sil.pix[i] >>> 24) > 0)) continue;
-    out[i] = maskBit(row, idx, x, y) ? B.pix[i] : A.pix[i];
+    let v = maskBit(row, idx, x, y) ? B.pix[i] : A.pix[i];
+    if (bordBit(row, idx, x, y)) {
+      v = (((v >>> 24) << 24) | (rint(((v >> 16) & 255) * LIB.border.tone) << 16)
+        | (rint(((v >> 8) & 255) * LIB.border.tone) << 8) | rint((v & 255) * LIB.border.tone)) >>> 0;
+    }
+    out[i] = v;
   }
   return out;
 }
@@ -55,6 +68,27 @@ ok(masks.w === LIB.masks.sheet_w && masks.h === LIB.masks.sheet_h,
   }
   ok(holes === 0 && strays === 0,
     `frame 15 is the silhouette and frame 0 is empty on the default pattern (${holes} holes, ${strays} strays)`);
+}
+
+/* THE SEAM'S OWN INVARIANTS. Frames 0 and 15 must be EMPTY on every pattern —
+ * a field of ONE ground has to carry no marks at all, or the world reads as a
+ * grid. And no border pixel may fall outside the silhouette. */
+{
+  let inPure = 0, outside = 0, onWall = 0, total = 0;
+  const top = new Int16Array(FW).fill(-1), bot = new Int16Array(FW).fill(-1);
+  for (let x = 0; x < FW; x++) for (let y = 0; y < FH; y++) if ((sil.pix[y * FW + x] >>> 24) > 0) { if (top[x] < 0) top[x] = y; bot[x] = y; }
+  for (const pat of LIB.patterns) for (let idx = 0; idx < 16; idx++) {
+    for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+      if (!bordBit(pat.row, idx, x, y)) continue;
+      total++;
+      if (idx === 0 || idx === 15) inPure++;
+      if (!((sil.pix[y * FW + x] >>> 24) > 0)) outside++;
+      if (top[x] >= 0 && y > bot[x] - 17) onWall++;
+    }
+  }
+  ok(inPure === 0, `a pure tile carries NO seam on any of the ${LIB.patterns.length} patterns — a field of one ground is not a grid (${inPure} px)`);
+  ok(outside === 0, `and no seam pixel falls outside the silhouette (${outside})`);
+  ok(onWall > total * 0.25, `a third of the seam is on the WALL, the vertical edge a cliff shows (${(100 * onWall / total).toFixed(1)}%)`);
 }
 
 // ---- 1. browser output == reference, on pairs of every flavour -------------
@@ -78,7 +112,18 @@ const CASES = [
   { a: "deep_water", b: "grass", pat: "a18_s4", idx: 12 },   // reversed naming, same pair
   { a: "parquet_floor", b: "lava", pat: "a00_s3", idx: 9 },
   { a: "black_rock", b: "snow", pat: "a30_s1", idx: 6 },
+  /* THE ROUNDING FIXTURE. The four above cannot tell np.rint from Math.round:
+   * they hold no seam pixel whose channel × tone lands exactly on .5, so both
+   * roundings give the same answer and a wrong one would pass. Only channel
+   * values 25, 75, 125, 175 and 225 discriminate; this pair carries one, and
+   * `halfPx` below re-measures that it still does — a republished plate that
+   * lost it would otherwise blind the check silently. */
+  { a: "grass", b: "brown_paving_stone", pat: "a00_s3", idx: 1, halfPx: true },
 ];
+// Channel values where v * tone has fractional part exactly .5, so half-to-even
+// and half-up disagree. Derived, not typed.
+const HALF = new Set();
+for (let v = 0; v < 256; v++) { const q = v * LIB.border.tone; if (Math.abs(q - Math.floor(q) - 0.5) < 1e-9) HALF.add(v); }
 for (const c of CASES) {
   const got = await p.evaluate(async ([a, b2, patId, idx]) => {
     const lib = window.__basesets.patternLib();
@@ -107,6 +152,32 @@ for (const c of CASES) {
   }
   ok(diff === 0 && alphaBad === 0,
     `${c.a} ↔ ${c.b} ${c.pat} idx ${c.idx}: browser == reference, alpha == silhouette (${diff} rgb, ${alphaBad} alpha of 2012)`);
+  /* THE SEAM IS REALLY THERE, and it only ever darkens. A composite that
+   * matched a reference computed WITHOUT the seam would also read 0 differing
+   * pixels, so the count and the direction are checked against the bare cut. */
+  let seamPx = 0, darker = 0, lighter = 0;
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const i = y * FW + x;
+    if (!bordBit(got.row, +frame, x, y)) continue;
+    seamPx++;
+    const bare = maskBit(got.row, +frame, x, y) ? B.pix[i] : A.pix[i];
+    const gr = got.px[i * 4], gg = got.px[i * 4 + 1], gb = got.px[i * 4 + 2];
+    if (gr < ((bare >> 16) & 255) || gg < ((bare >> 8) & 255) || gb < (bare & 255)) darker++;
+    if (gr > ((bare >> 16) & 255) || gg > ((bare >> 8) & 255) || gb > (bare & 255)) lighter++;
+  }
+  if (c.halfPx) {
+    let half = 0;
+    for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+      const i = y * FW + x;
+      if (!bordBit(got.row, +frame, x, y)) continue;
+      const bare = maskBit(got.row, +frame, x, y) ? B.pix[i] : A.pix[i];
+      if (HALF.has((bare >> 16) & 255) || HALF.has((bare >> 8) & 255) || HALF.has(bare & 255)) half++;
+    }
+    ok(half > 0,
+      `  and this pair can still tell np.rint from Math.round — ${half} seam px land on a .5 boundary (values ${[...HALF].join(",")})`);
+  }
+  ok(seamPx > 40 && darker === seamPx && lighter === 0,
+    `  its ${seamPx}-px seam is drawn, every pixel darker than the bare cut and none lighter (${darker} darker, ${lighter} lighter)`);
 }
 
 /* ---- 2. POLARITY, against the ground truth: on the composed tile, the
@@ -135,18 +206,26 @@ for (const c of CASES) {
    * deliberately swapped it followed the swap and still matched 242/242. */
   const G = decodeWebP(readFileSync(ROOT + "tiles/plates/grass/clean.webp"));
   const row = LIB.patterns.find((x) => x.id === "a00_s3").row;
-  let inNW = 0, matchG = 0;
+  let inNW = 0, matchG = 0, seamHere = 0;
   for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
     const i = y * FW + x;
     if (!maskBit(row, 8, x, y)) continue;
     inNW++;
+    /* SEAM PIXELS ARE STILL GRASS — a darker grass. Comparing them against the
+     * plate's undarkened colour read 210 of 242 the moment the seam landed,
+     * which is the check being right about a changed world, not a defect. The
+     * expectation carries the seam so every pixel stays in the comparison
+     * rather than 32 of them being excused from it. */
     const v = G.pix[i];
-    if (got.px[i * 4] === ((v >> 16) & 255) && got.px[i * 4 + 1] === ((v >> 8) & 255) && got.px[i * 4 + 2] === (v & 255)) matchG++;
+    const seam = bordBit(row, 8, x, y);
+    if (seam) seamHere++;
+    const ch = (c) => seam ? rint(c * LIB.border.tone) : c;
+    if (got.px[i * 4] === ch((v >> 16) & 255) && got.px[i * 4 + 1] === ch((v >> 8) & 255) && got.px[i * 4 + 2] === ch(v & 255)) matchG++;
   }
   // The NW-alone region of a00_s3 measures 242 px; the floor guards against a
   // degenerate mask making the claim vacuous, not against normal variation.
   ok(inNW > 150 && matchG === inNW,
-    `polarity: every pixel of the NW corner region is GRASS on the composed tile (${matchG}/${inNW}) — swapped sides would fail this at 0`);
+    `polarity: every pixel of the NW corner region is GRASS on the composed tile (${matchG}/${inNW}, ${seamHere} of them seam) — swapped sides would fail this at 0`);
 }
 /* ---- 3. HIS EXACT SCREENSHOT: Black Rock -> Transitions. A ground with ZERO
  * pregenerated pairs must show the full neighbour roster, composed — the empty

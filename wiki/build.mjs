@@ -716,6 +716,18 @@ function buildWorld() {
       schema: patIdx.schema,
       masks: patIdx.masks?.file ?? "tiles/patterns/masks.webp",
       silhouette: patIdx.silhouette?.file ?? "tiles/patterns/silhouette.webp",
+      /* THE SEAM, and it is not optional (tiles agent, maintainer verdict
+       * 2026-08-27): a transition without it is a 0-100 hard cut, which is not
+       * what the generator drew. Same sheet layout as the masks, so the same
+       * frame arithmetic indexes it; black at overlay_alpha over it IS multiply
+       * by tone, which is why the consumer needs one more drawImage and no
+       * per-pixel work. */
+      border: patIdx.border ? {
+        file: patIdx.border.file,
+        alpha: patIdx.border.overlay_alpha ?? 0.18,
+        tone: patIdx.border.tone ?? 0.82,
+        rgb: patIdx.border.overlay_rgb ?? [0, 0, 0],
+      } : null,
       frameW: patIdx.masks?.frame_w ?? 64,
       frameH: patIdx.masks?.frame_h ?? 46,
       cols: patIdx.masks?.cols ?? 16,

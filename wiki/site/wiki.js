@@ -5201,24 +5201,33 @@ function platePickAt(typeId, x, y, view = null) {
   const i = pickWeighted(rows.map((m) => (m.kind === "clean" ? m.weight : (m.art ? m.weight : 0))), unitHash(`bts1|tile|${set.id}|${x}|${y}`));
   return i < 0 ? clean : memberPlate(typeId, rows[i]);
 }
-/* The mask sheet, fetched once; frames cut on demand. crossOrigin for the same
- * reason as texFor — the sheet lives on the staging origin, and a gate must be
- * able to read the composed pixels back. */
-let MASK_SHEET = null;               // undefined-ish: null = not asked, false = loading
-const MASK_WAIT = [];
-function maskSheet(cb) {
-  if (MASK_SHEET) { cb(MASK_SHEET); return; }
-  MASK_WAIT.push(cb);
-  if (MASK_SHEET === false) return;
-  MASK_SHEET = false;
+/* The library's sheets — masks and borders — each fetched once, frames cut on
+ * demand. crossOrigin for the same reason as texFor: they live on the staging
+ * origin, and a gate must be able to read the composed pixels back.
+ *
+ * ALWAYS CALLS BACK, with null on failure. The single-sheet loader this
+ * replaces dropped its waiters when the fetch failed, so `left` never reached
+ * zero and the callback never fired — a scene that could not get its mask
+ * would sit blank for ever instead of falling back to a plate. A loader that
+ * can silently never answer is worse than one that answers "no". */
+const SHEETS = new Map();            // path -> HTMLImageElement | null | undefined (loading)
+const SHEET_WAIT = new Map();        // path -> [cb]
+function sheet(path, cb) {
+  if (!path) { cb(null); return; }
+  if (SHEETS.has(path) && SHEETS.get(path) !== undefined) { cb(SHEETS.get(path)); return; }
+  const waiting = SHEET_WAIT.get(path);
+  if (waiting) { waiting.push(cb); return; }
+  SHEET_WAIT.set(path, [cb]);
+  SHEETS.set(path, undefined);
   const im = new Image();
   im.crossOrigin = "anonymous";
   im.onload = im.onerror = () => {
-    MASK_SHEET = im.naturalWidth ? im : null;
-    const q = MASK_WAIT.splice(0);
-    if (MASK_SHEET) q.forEach((f) => f(MASK_SHEET));
+    const got = im.naturalWidth ? im : null;
+    SHEETS.set(path, got);
+    (SHEET_WAIT.get(path) ?? []).splice(0).forEach((f) => f(got));
+    SHEET_WAIT.delete(path);
   };
-  im.src = assetUrl(patternLib()?.masks ?? "tiles/patterns/masks.webp");
+  im.src = assetUrl(path);
 }
 /* One composed transition tile: mask frame (row, idx) + plate_a + plate_b,
  * through the library's published canvas ops. The result's alpha is the
@@ -5228,21 +5237,87 @@ function mixFor(row, idx, plateA, plateB, cb) {
   const key = `${row}|${idx}|${plateA}|${plateB}`;
   if (MIX_CACHE.has(key)) { cb(MIX_CACHE.get(key)); return; }
   const lib = patternLib();
-  let a = null, b = null, sheet = null, left = 3;
+  const bord = lib?.border ?? null;
+  let a = null, b = null, maskS = null, bordS = null;
+  let left = 3 + (bord ? 1 : 0);
   const done = () => {
     if (--left > 0) return;
     let cv = null;
-    if (a && b && sheet && lib) {
+    if (a && b && maskS && lib) {
+      const W2 = lib.frameW, H2 = lib.frameH;
+      const sx = idx * W2, sy = row * H2;
       cv = document.createElement("canvas");
-      cv.width = lib.frameW; cv.height = lib.frameH;
+      cv.width = W2; cv.height = H2;
       const cx = cv.getContext("2d");
       cx.imageSmoothingEnabled = false;
-      cx.drawImage(sheet, idx * lib.frameW, row * lib.frameH, lib.frameW, lib.frameH, 0, 0, lib.frameW, lib.frameH);
+      cx.drawImage(maskS, sx, sy, W2, H2, 0, 0, W2, H2);
       cx.globalCompositeOperation = "source-in";
       cx.drawImage(b, 0, 0);
       cx.globalCompositeOperation = "destination-over";
       cx.drawImage(a, 0, 0);
       cx.globalCompositeOperation = "source-over";
+      /* THE 1PX SEAM (tiles agent b64c3f97d, maintainer verdict): a transition
+       * is not a bare 0-100 cut through the mask — the two grounds meet along a
+       * border, and without it this draws a hard edge the generator never drew.
+       *
+       * ONE MASK SERVES BOTH SIDES because it DARKENS what is already there:
+       * each side comes out a darker shade of ITS OWN ground, never a blend of
+       * the two — measured 5-8 per channel darker, never lighter. Black at
+       * overlay_alpha over the border mask is exactly multiply by `tone`, so
+       * the whole seam is one more drawImage and no per-pixel work.
+       *
+       * Frames 0 and 15 are empty on all 18 patterns (verified), so a field of
+       * a single ground carries no marks — if a grid appears, the wrong frame
+       * is being cut. The mask is symmetric under the polarity flip (verified,
+       * 0 of 423,936 px differ), so `idx` here cannot get the seam backwards.
+       * A third of it lies on the WALL, the vertical seam a cliff shows
+       * edge-on, which is why it is drawn before nothing and after everything. */
+      if (bordS) {
+        const sc = document.createElement("canvas");
+        sc.width = W2; sc.height = H2;
+        const bx = sc.getContext("2d", { willReadFrequently: true });
+        bx.imageSmoothingEnabled = false;
+        bx.drawImage(bordS, sx, sy, W2, H2, 0, 0, W2, H2);
+        /* EXACT, NOT ALMOST. The library's canvas_ops paint the seam as black
+         * at overlay_alpha, which is multiply-by-tone in ideal arithmetic — but
+         * canvas composites premultiplied in 8 bits, so it lands up to 2 per
+         * channel away from the reference's own np.rint(v * tone). Measured on
+         * four pairs: every seam pixel darkened, none lightened, max delta 2.
+         *
+         * Invisible, and still worth closing: the game will render these tiles
+         * too, and a wiki that rounds differently makes every screenshot argue
+         * with the build. So the seam is applied per pixel with the reference's
+         * rounding — half-to-EVEN, which is np.rint and is NOT Math.round
+         * (25 * 0.82 = 20.5 rints to 20 and rounds to 21).
+         *
+         * The published drawImage path is kept as the fallback for the one case
+         * that cannot read pixels back: a tainted canvas, when the art comes
+         * from an origin that refused CORS. Off by a rounding step beats not
+         * drawing the seam at all. */
+        try {
+          const bd = bx.getImageData(0, 0, W2, H2).data;
+          const im2 = cx.getImageData(0, 0, W2, H2);
+          const px = im2.data, tone = bord.tone;
+          const rint = (v) => {
+            const f = Math.floor(v), d = v - f;
+            return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1);
+          };
+          for (let i = 0; i < px.length; i += 4) {
+            if (bd[i + 3] === 0 || px[i + 3] === 0) continue;
+            px[i] = rint(px[i] * tone);
+            px[i + 1] = rint(px[i + 1] * tone);
+            px[i + 2] = rint(px[i + 2] * tone);
+          }
+          cx.putImageData(im2, 0, 0);
+        } catch {
+          bx.globalCompositeOperation = "source-in";
+          bx.fillStyle = `rgb(${(bord.rgb ?? [0, 0, 0]).join(",")})`;
+          bx.fillRect(0, 0, W2, H2);
+          cx.globalAlpha = bord.alpha;
+          cx.drawImage(sc, 0, 0);
+          cx.globalAlpha = 1;
+        }
+      }
     }
     MIX_CACHE.set(key, cv);
     window.__wikiMix = (window.__wikiMix ?? 0) + 1;   // gate probe
@@ -5254,7 +5329,10 @@ function mixFor(row, idx, plateA, plateB, cb) {
     im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
     im.src = assetUrl(path);
   };
-  maskSheet((s) => { sheet = s; done(); });
+  sheet(lib?.masks ?? "tiles/patterns/masks.webp", (x) => { maskS = x; done(); });
+  // The seam is required, but a sheet that will not load must not take the
+  // whole transition with it: the composite still draws, without its border.
+  if (bord) sheet(bord.file, (x) => { bordS = x; done(); });
   mk(plateA, (x) => { a = x; });
   mk(plateB, (x) => { b = x; });
 }
