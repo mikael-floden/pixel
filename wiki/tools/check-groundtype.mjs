@@ -648,6 +648,32 @@ ok(afterAdd.open && afterAdd.marked === 1, `adding marks the row and keeps the a
 await p.evaluate(() => [...document.querySelectorAll(".pool-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(900);
 
+/* A TILE IN A SET CAN BE LOOKED AT CLOSE UP (maintainer 2026-08-27: "a way to
+ * look at a specific tile in a base tile set in 2x by clicking on it ... can
+ * be hard when not able to look at a given tile zoomed in"). The dialog opens
+ * at the 2x he asked for AND shows a field of that tile alone, because what he
+ * is hunting is the member causing a visible repeat, and a mark only reads as
+ * a pattern once it sits next to itself. */
+await p.evaluate(() => document.querySelector(".set-row-zoom")?.click());
+await p.waitForTimeout(1600);
+const tz = await p.evaluate(() => {
+  const tile = document.querySelector(".tilezoom-tile");
+  return {
+    open: !!document.querySelector(".tilezoom-modal[open]"),
+    zoomSel: document.querySelector('[data-bar="tilezoom"] .sel')?.textContent.trim(),
+    tileW: tile ? Math.round(tile.getBoundingClientRect().width) : 0,
+    fieldTiles: !!document.querySelector(".tilezoom-modal .group-stage canvas"),
+    done: !!document.querySelector(".tilezoom-modal .pool-done"),
+  };
+});
+ok(tz.open && tz.zoomSel === "2×" && tz.tileW === 128,
+  `tapping a set row's tile opens it at 2x — 128 screen px of a 64px tile (${tz.tileW}px, sel ${tz.zoomSel})`);
+ok(tz.fieldTiles, "beside a field of that tile ALONE, where a repeat becomes visible");
+ok(tz.done, "with the way out at the bottom right, where an OK button lives");
+await p.evaluate(() => document.querySelector(".tilezoom-modal .pool-done")?.click());
+await p.waitForTimeout(600);
+ok(await p.evaluate(() => !document.querySelector(".tilezoom-modal[open]")), "and Done closes it");
+
 // WEIGHT 0 MUST MEAN NEVER — the old base-tile weight clamped to a 0.1 floor,
 // which made "never" impossible to say. It is how he switches a set off.
 await p.evaluate(() => { const w = [...document.querySelectorAll(".base-set")][1].querySelector(".weight-input"); w.value = "0"; w.dispatchEvent(new Event("change", { bubbles: true })); });

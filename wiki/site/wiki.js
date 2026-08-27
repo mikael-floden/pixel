@@ -5153,6 +5153,67 @@ function setField(typeId, set, n, origin, scale = 1) {
   box.dataset.field = JSON.stringify({ n: n + 2, ringClean: cells.filter((x) => x.img === ring && x.img).length });
   return box;
 }
+/* ---- LOOK AT ONE TILE CLOSELY (maintainer 2026-08-27) -------------------
+ * "It would be awesome if I can click on a tile in a 'base tile list' to open
+ * a dialog that shows that tile in x2. This makes it easy for me to find that
+ * tile that makes a clear repeated pattern (can be hard when not able to look
+ * at a given tile zoomed in)."
+ *
+ * WHAT HE IS ACTUALLY HUNTING is not the tile — it is the tile's PATTERN. A
+ * set's field shows an obvious repeat and he needs to know which member causes
+ * it, and one tile alone cannot answer that: a mark only reads as a pattern
+ * once it lands next to itself. So the dialog shows both — the tile at the
+ * zoom he asked for, and a field of that tile ALONE, which is the picture the
+ * question is really about.
+ *
+ * 44px in a row is 0.7mm of a pixel on his phone; this opens at 2x and goes to
+ * 6x, because "is that a seam or is that the art" is a per-pixel question. */
+const TILE_ZOOMS = [2, 4, 6];
+function openTileZoom(typeId, member) {
+  document.querySelector(".tilezoom-modal")?.remove();
+  const art = member?.art;
+  if (!art) return;
+  let z = 2;
+  const solo = h("div", { class: "iso-stage checker tilezoom-solo" });
+  const field = h("div", { class: "iso-stage checker group-stage" });
+  const paint = () => {
+    paintZoom();
+    solo.replaceChildren(artNodeFor(art, "tilezoom-tile", member.id));
+    solo.style.setProperty("--z", String(z));
+    // A FIELD OF THIS TILE ALONE — five across, because a repeat that only
+    // shows up every other tile needs more than a 3x3 to become visible.
+    const cells = [];
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) cells.push({ c, r, img: art });
+    loadImages([art], (images) => field.replaceChildren(isoScene(cells, images, z >= 4 ? 2 : 1, 4, worldIso())));
+  };
+  // REBUILT ON EVERY PAINT, like the promote dialog's own pass bar: sortBar
+  // renders the selection at build time, so a bar kept across a change shows
+  // the chip he pressed a moment ago as unselected — the control disagreeing
+  // with the picture it just changed.
+  const zoomRow = h("div", { class: "player-controls" });
+  const paintZoom = () => zoomRow.replaceChildren(
+    h("span", { class: "muted" }, "Zoom"),
+    sortBar("tilezoom", TILE_ZOOMS.map((n) => [String(n), `${n}×`, `Show the tile at ${n} times its own size`]),
+      String(z), (v) => { z = +v; paint(); }, { persist: false }));
+  const dlg = h("dialog", { class: "promote-modal tilezoom-modal" },
+    h("div", { class: "promote-head" },
+      h("b", {}, memberLabel(typeId, member.id)),
+      h("button", { class: "ghost-btn", onclick: () => { dlg.close(); dlg.remove(); } }, "✕")),
+    zoomRow,
+    solo,
+    h("p", { class: "muted" }, "The same tile five across — a mark only reads as a pattern once it sits next to itself."),
+    field,
+    // The way out at the bottom right, where an OK button lives — the lesson
+    // the pool picker learned on 2026-08-27.
+    h("div", { class: "pool-foot" },
+      h("span", { class: "muted pool-tally" }, member.id),
+      h("button", { class: "primary-btn pool-done", type: "button", onclick: () => { dlg.close(); dlg.remove(); } }, "Done")));
+  paint();
+  document.body.append(dlg);
+  dlg.showModal();
+  dlg.addEventListener("close", () => dlg.remove());
+}
+
 /* THE POOL PICKER. 161 grass candidates is too many to scroll past on a phone
  * while deciding, so it opens as a dialog over the set he is filling and closes
  * on the first pick — the decision is "does this one belong with those", which
@@ -7081,7 +7142,11 @@ function viewWorldType(top) {
         h("div", { class: "set-rows" }, ...rows.map((m, i) => h("div", { class: `set-row${m.weight > 0 ? "" : " off"}${m.gone ? " gone" : ""}` },
           m.clean
             ? h("span", { class: "swatch ground-swatch", title: "The ground's flat palette colour", style: `background:${groundBaseColor(t.id)?.c ?? "transparent"}` })
-            : m.art ? artNodeFor(m.art, "set-row-tile", m.id)
+            : m.art ? h("button", {
+              class: "set-row-zoom", type: "button",
+              title: "Look at this tile close up — and at a field of it alone, which is where a repeat shows",
+              onclick: () => openTileZoom(t.id, m),
+            }, artNodeFor(m.art, "set-row-tile", m.id))
               : h("span", { class: "swatch ground-swatch" }),
           h("span", { class: "set-row-name", title: m.clean ? null : m.id },
             m.clean ? "Clean colour" : m.gone ? `${memberLabel(t.id, m.id)} — art is gone` : memberLabel(t.id, m.id)),

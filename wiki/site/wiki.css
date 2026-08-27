@@ -1739,3 +1739,18 @@ input[type="range"] { accent-color: var(--accent); }
 .hit-chips .sortbar-btn { min-width: 40px; min-height: 40px; border-radius: 8px; }
 /* Three rails now, not two, so they get a little less room each. */
 .hit-bar .shadow-sliders { gap: 6px; }
+
+/* ---- ONE TILE, CLOSE UP (maintainer 2026-08-27) ----
+   The row thumbnail is a button now; it must not look like one — the tile is
+   the affordance, so the button is a bare frame around it with a real tap
+   target. */
+.set-row-zoom {
+  flex: none; padding: 0; border: 0; background: transparent; cursor: zoom-in;
+  line-height: 0; min-height: 44px; display: flex; align-items: center;
+}
+.set-row-zoom:focus-visible { outline: 2px solid var(--accent, #c9a227); outline-offset: 2px; }
+/* The solo tile scales by a CSS variable so the zoom chips cost no reflow of
+   anything but the tile itself. */
+.tilezoom-solo { display: flex; justify-content: center; padding: 10px; border-radius: 10px; overflow: auto; }
+.tilezoom-tile { width: calc(64px * var(--z, 2)); height: auto; image-rendering: pixelated; }
+.tilezoom-modal .group-stage { margin-top: 6px; }
