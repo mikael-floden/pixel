@@ -416,6 +416,11 @@
       "to": "games",
       "text": "SCENERY HITBOX SEMANTICS UPDATE (eb23b56b9, maintainer decision): entries in live/tuning/scenery_hitbox.json now carry auto:true when they are the wiki's alpha-placed PROPOSAL (597 today) \u2014 the maintainer has not confirmed them. His accepted or hand-edited records have no flag (8 today, growing as he reviews). CONSUME BOTH \u2014 a proposed footprint beats none \u2014 but if you ever need only confirmed ones, filter on !auto. Accepting/editing rewrites the record without the flag; new fields are additive, schema otherwise unchanged.",
       "at": "2026-08-28T10:22:16+00:00"
+    },
+    {
+      "to": "games",
+      "text": "TOP-WALLS CONTRACT (dd8cac222, maintainer 2026-08-28): when a tile is used top-only, its wall comes from the ground's x-over-x pool \u2014 and the pick is now the MEASURED BEST match, not the first. Stats live in wiki/site/data.json: worldMeta.wallPools[ground] = [{key, art, m:[r,g,b], flat, k}] (textured-top mean RGB / dominant share / colour count) and per-candidate tm/tflat/tk; the pick = argmin of |dRGB|/441 + 0.35*|dflat| + 0.25*|dk|/24. His per-face override lives in live/tuning/top_walls.json (pixel-wiki-top-walls@1, overrides[<face key>].wall = <x-over-x key>; absent = measured best). Consume the override doc + the same argmin when the game borrows walls.",
+      "at": "2026-08-28T11:05:35+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
