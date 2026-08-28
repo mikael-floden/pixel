@@ -25,8 +25,42 @@ const PIECES = D.domains.objects ?? [];
  * one with a measured content box so the default-derivation assertions have
  * something real to check. */
 const LIVE = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8"));
+
+/* THE DEFAULT PASS (maintainer 2026-08-28: "place the hitbox as good as you
+ * can on all Scenery objects ... I will only have to edit the hitboxes where
+ * you are off/wrong"). Every non-wall piece carries a stored footprint,
+ * auto-placed from its own alpha with his split-rock as the reference; these
+ * checks keep the mass data structurally sound without pinning taste. */
+{
+  const wallsOv = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_walls.json", import.meta.url), "utf8")).overrides ?? {};
+  const isWall = (o) => typeof wallsOv[o.path]?.wall === "boolean" ? wallsOv[o.path].wall : ["MOUNTAIN_WALL", "WINDOW"].includes(o.type);
+  const eligible = PIECES.filter((o) => !isWall(o));
+  const missing = eligible.filter((o) => !LIVE.overrides?.[o.path]);
+  ok(missing.length === 0, `every non-wall piece has a stored hitbox (${missing.length ? "first missing: " + missing[0].path : eligible.length + " pieces"})`);
+  const badBox = [];
+  for (const o of eligible) {
+    const rec = LIVE.overrides?.[o.path]; if (!rec) continue;
+    const dd = Object.values(o.animations ?? {})[0]?.dirs?.south ?? {};
+    const fw = dd.fw ?? o.size ?? 96, fh = dd.fh ?? o.size ?? 96;
+    for (const b of rec.boxes ?? []) {
+      const fin = ["ax", "ay", "rx", "ry"].every((k) => isFinite(b[k])) && b.rx > 0 && b.ry > 0;
+      const inX = Math.abs(b.ax) + b.rx <= fw / 2 + 2;
+      const inY = b.ay + b.ry <= fh / 2 + 2 && b.ay - b.ry >= -fh / 2 - 2;
+      if (!(fin && inX && inY)) badBox.push(`${o.path} ${JSON.stringify(b)} in ${fw}x${fh}`);
+    }
+    if ((rec.boxes ?? []).length > 1 && ((dd.bb ? dd.bb[2] - dd.bb[0] : fw) < 80)) {
+      badBox.push(`${o.path}: ${rec.boxes.length} ellipses on a piece too narrow to be an entrance`);
+    }
+  }
+  ok(badBox.length === 0, badBox.length ? `bad stored box: ${badBox[0]} (${badBox.length})` : `every stored box is finite, inside its frame, and entrances are wide (${eligible.length} pieces)`);
+}
 const bbOf = (o) => Object.values(o.animations ?? {})[0]?.dirs?.south?.bb;
-const PIECE = PIECES.find((o) => bbOf(o) && !LIVE.overrides?.[o.path]) ?? PIECES.find((o) => bbOf(o)) ?? PIECES[0];
+/* NON-WALL, always: since the 2026-08-28 default pass every non-wall piece
+ * HAS a stored record, so "no entry" would select a wall piece — which has no
+ * editor at all. The in-page reset below already makes any piece undecided. */
+const PIECE = PIECES.find((o) => bbOf(o) && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type) && !LIVE.overrides?.[o.path])
+  ?? PIECES.find((o) => bbOf(o) && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type))
+  ?? PIECES[0];
 
 const b = await chromium.launch({ executablePath: process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await b.newContext({ viewport: { width: 412, height: 900 }, isMobile: true, hasTouch: true });
@@ -56,10 +90,16 @@ ok(chips.length === 5 && /^all \d+/.test(chips[0]) && /no hitbox yet/.test(chips
 const total = +(chips[0].match(/\d+/) ?? [0])[0];
 ok(total === PIECES.length, `over the whole domain (${total} of ${PIECES.length})`);
 {
-  const wallN = PIECES.filter((o) => o.type === "WINDOW" || o.type === "MOUNTAIN_WALL").length;
+  /* OVERRIDE-AWARE, like the predicate itself: his scenery_walls corrections
+   * move pieces in and out of the wall class, and a count pinned to the raw
+   * tag reddens every time he corrects one — a gate failing because the
+   * maintainer worked is a broken gate. */
+  const wallsOv2 = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_walls.json", import.meta.url), "utf8")).overrides ?? {};
+  const wallN = PIECES.filter((o) => typeof wallsOv2[o.path]?.wall === "boolean"
+    ? wallsOv2[o.path].wall : (o.type === "WINDOW" || o.type === "MOUNTAIN_WALL")).length;
   const chipN = (name) => +((chips.find((c) => c.startsWith(name)) ?? "").match(/\d+$/) ?? [NaN])[0];
   ok(chipN("wall scenery") === wallN,
-    `wall scenery counts exactly the WINDOW + MOUNTAIN_WALL pieces (${chipN("wall scenery")} of ${wallN})`);
+    `wall scenery counts the pieces the override-aware predicate calls walls (${chipN("wall scenery")} of ${wallN})`);
   ok(chipN("no hitbox yet") + chipN("hitbox set") + chipN("needs none") + chipN("wall scenery") === total,
     "and the four states partition the domain — no piece in two queues, none in zero");
   // A window must NOT appear under "no hitbox yet".

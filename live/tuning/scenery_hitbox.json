@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
-  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md.",
-  "updated_at": "2026-08-28T07:05:53.844Z",
+  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre \u2014 the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order \u2014 a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md.",
+  "updated_at": "2026-08-28T07:42:22.228Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -98,6 +98,7205 @@
         }
       ],
       "updated_at": "2026-08-28T07:05:21.760Z"
+    },
+    "scenery/anchors/anchor_001": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 24.67,
+          "rx": 31.0,
+          "ry": 13.33,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/anchors/anchor_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 28.0,
+          "rx": 26.5,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ancient_trees/ancient_tree_001": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 73.62,
+          "rx": 112.5,
+          "ry": 48.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ancient_trees/ancient_tree_002": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 78.78,
+          "rx": 107.5,
+          "ry": 46.23,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ant_hills/ant_hill_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 7.0,
+          "rx": 21.5,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/anvils/anvil_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.26,
+          "rx": 18.0,
+          "ry": 7.74,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/anvils/anvil_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 17.0,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/aqueduct_fragments/aqueduct_fragment_002": {
+      "boxes": [
+        {
+          "ax": -27.5,
+          "ay": 53.55,
+          "rx": 15.0,
+          "ry": 6.45,
+          "rot": 0
+        },
+        {
+          "ax": 31.5,
+          "ay": 62.55,
+          "rx": 15.0,
+          "ry": 6.45,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/aqueduct_fragments/aqueduct_fragment_901": {
+      "boxes": [
+        {
+          "ax": -30.0,
+          "ay": 76.47,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        },
+        {
+          "ax": 31.0,
+          "ay": 79.47,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/barrels/barrel_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/barrels/barrel_003": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 17.83,
+          "rx": 19.0,
+          "ry": 8.17,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/barrels/barrel_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 21.0,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/barrels/barrel_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/barrels/barrel_016": {
+      "boxes": [
+        {
+          "ax": 5.5,
+          "ay": 14.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beached_rowboats/beached_rowboat_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 45.23,
+          "rx": 39.0,
+          "ry": 16.77,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beached_rowboats/beached_rowboat_900": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 45.09,
+          "rx": 37.0,
+          "ry": 15.91,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_001": {
+      "boxes": [
+        {
+          "ax": -8.0,
+          "ay": 46.0,
+          "rx": 32.5,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 82.0,
+          "rx": 28.5,
+          "ry": 11.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 80.34,
+          "rx": 8.5,
+          "ry": 3.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_007": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 82.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 83.0,
+          "rx": 39.5,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_010": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 76.48,
+          "rx": 10.5,
+          "ry": 4.51,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_011": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 67.5,
+          "rx": 32.5,
+          "ry": 12.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_012": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 83.0,
+          "rx": 31.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_014": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 88.5,
+          "rx": 24.5,
+          "ry": 3.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_015": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 78.75,
+          "rx": 21.5,
+          "ry": 9.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beacons/beacon_016": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 83.0,
+          "rx": 31.5,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beast_skulls/beast_skull_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beast_skulls/beast_skull_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.5,
+          "rx": 24.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beds/bed_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 37.23,
+          "rx": 39.0,
+          "ry": 16.77,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beds/bed_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 38.52,
+          "rx": 36.0,
+          "ry": 15.48,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beds/bed_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 36.66,
+          "rx": 38.0,
+          "ry": 16.34,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beds/bed_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 42.02,
+          "rx": 39.5,
+          "ry": 16.98,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beehives/beehive_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.76,
+          "rx": 21.5,
+          "ry": 9.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/beehives/beehive_004": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 17.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bell_posts/bell_post_004": {
+      "boxes": [
+        {
+          "ax": -5.0,
+          "ay": 52.0,
+          "rx": 18.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/blood_spatter": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 8.5,
+          "rx": 10.5,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_004": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 18.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.83,
+          "rx": 19.0,
+          "ry": 8.17,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_006": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_008": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 17.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_011": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 17.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_015": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/braziers/brazier_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_010": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 12.5,
+          "rx": 34.5,
+          "ry": 12.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_013": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 15.5,
+          "rx": 32.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_014": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 13.17,
+          "rx": 34.5,
+          "ry": 14.83,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_015": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 13.5,
+          "rx": 32.5,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.0,
+          "rx": 30.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_019": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.0,
+          "rx": 32.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.0,
+          "rx": 27.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_021": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 13.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_022": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 13.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/briar_thickets/briar_thicket_024": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 19.0,
+          "rx": 30.5,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/broken_columns/broken_column_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 39.47,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/broken_columns/broken_column_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 41.5,
+          "rx": 30.5,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 17.04,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_007": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 20.59,
+          "rx": 33.5,
+          "ry": 14.4,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_008": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 15.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.1,
+          "rx": 30.0,
+          "ry": 12.9,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_015": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.61,
+          "rx": 26.5,
+          "ry": 11.39,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/bushes/bush_900": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 14.04,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_009": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 21.0,
+          "rx": 31.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.5,
+          "rx": 24.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.0,
+          "rx": 24.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_012": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 20.0,
+          "rx": 27.5,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_013": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.0,
+          "rx": 24.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.5,
+          "rx": 26.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_015": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.0,
+          "rx": 26.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 25.0,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.5,
+          "rx": 28.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_019": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.0,
+          "rx": 24.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_021": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.5,
+          "rx": 25.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_022": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 25.0,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_024": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.5,
+          "rx": 25.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cairns/cairn_026": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.5,
+          "rx": 28.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/campfire": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 22.0,
+          "rx": 35.0,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 44.09,
+          "rx": 37.0,
+          "ry": 15.91,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 42.95,
+          "rx": 35.0,
+          "ry": 15.05,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 35.38,
+          "rx": 34.0,
+          "ry": 14.62,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 45.51,
+          "rx": 43.0,
+          "ry": 18.49,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_022": {
+      "boxes": [
+        {
+          "ax": 6.0,
+          "ay": 40.3,
+          "rx": 43.5,
+          "ry": 18.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/carts/cart_901": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 45.3,
+          "rx": 36.5,
+          "ry": 15.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_005": {
+      "boxes": [
+        {
+          "ax": 3.0,
+          "ay": 26.88,
+          "rx": 30.5,
+          "ry": 13.12,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.95,
+          "rx": 35.0,
+          "ry": 15.05,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.83,
+          "rx": 19.0,
+          "ry": 8.17,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cattail_clumps/cattail_clump_900": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 23.5,
+          "rx": 22.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cauldron_camps/cauldron_camp_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.5,
+          "rx": 25.5,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cauldron_camps/cauldron_camp_002": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 17.5,
+          "rx": 22.5,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.26,
+          "rx": 18.0,
+          "ry": 7.74,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_006": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 23.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/charcoal_kilns/charcoal_kiln_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 45.3,
+          "rx": 43.5,
+          "ry": 18.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_features/cliff_feature_002": {
+      "boxes": [
+        {
+          "ax": 2.5,
+          "ay": 35.5,
+          "rx": 59.0,
+          "ry": 21.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_features/cliff_feature_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 23.5,
+          "rx": 63.0,
+          "ry": 20.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_features/cliff_feature_010": {
+      "boxes": [
+        {
+          "ax": 4.0,
+          "ay": 32.14,
+          "rx": 55.5,
+          "ry": 23.86,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_features/cliff_feature_900": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 29.14,
+          "rx": 48.5,
+          "ry": 20.86,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_features/cliff_feature_903": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.5,
+          "rx": 51.0,
+          "ry": 16.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_001": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 28.35,
+          "rx": 55.0,
+          "ry": 23.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_fragments/cliff_fragment_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 26.5,
+          "rx": 51.5,
+          "ry": 20.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_mosses/cliff_moss_043": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_mosses/cliff_moss_054": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.5,
+          "rx": 26.0,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_roots/cliff_root_067": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 37.81,
+          "rx": 33.0,
+          "ry": 14.19,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_007": {
+      "boxes": [
+        {
+          "ax": -23.5,
+          "ay": 81.5,
+          "rx": 59.0,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_009": {
+      "boxes": [
+        {
+          "ax": -4.0,
+          "ay": 57.0,
+          "rx": 46.5,
+          "ry": 20.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_010": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 78.0,
+          "rx": 52.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_011": {
+      "boxes": [
+        {
+          "ax": 10.5,
+          "ay": 69.0,
+          "rx": 42.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_012": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 57.42,
+          "rx": 52.5,
+          "ry": 22.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_013": {
+      "boxes": [
+        {
+          "ax": 3.5,
+          "ay": 57.35,
+          "rx": 55.0,
+          "ry": 23.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_014": {
+      "boxes": [
+        {
+          "ax": -13.0,
+          "ay": 58.87,
+          "rx": 44.5,
+          "ry": 19.13,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_016": {
+      "boxes": [
+        {
+          "ax": -6.5,
+          "ay": 63.78,
+          "rx": 54.0,
+          "ry": 23.22,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_shrubs/cliff_shrub_017": {
+      "boxes": [
+        {
+          "ax": -10.0,
+          "ay": 68.0,
+          "rx": 44.5,
+          "ry": 11.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_vines/cliff_vine_018": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 110.0,
+          "rx": 51.0,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_vines/cliff_vine_096": {
+      "boxes": [
+        {
+          "ax": 15.0,
+          "ay": 94.12,
+          "rx": 69.5,
+          "ry": 29.88,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_vines/cliff_vine_135": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 119.0,
+          "rx": 38.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_vines/cliff_vine_140": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 104.0,
+          "rx": 59.5,
+          "ry": 19.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cliff_vines/cliff_vine_153": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 113.0,
+          "rx": 32.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystal_trees/crystal_tree_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 25.91,
+          "rx": 9.5,
+          "ry": 4.08,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 26.0,
+          "rx": 31.0,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_006": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 22.5,
+          "rx": 33.5,
+          "ry": 13.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_009": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.32,
+          "rx": 22.5,
+          "ry": 9.68,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_012": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/crystals/crystal_901": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cup_fungi/cup_fungus_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 8.0,
+          "rx": 19.5,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cup_fungi/cup_fungus_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 7.19,
+          "rx": 20.5,
+          "ry": 8.81,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 37.37,
+          "rx": 41.0,
+          "ry": 17.63,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 37.16,
+          "rx": 41.5,
+          "ry": 17.84,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 41.0,
+          "rx": 41.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 37.36,
+          "rx": 48.0,
+          "ry": 20.64,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 32.07,
+          "rx": 51.0,
+          "ry": 21.93,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 32.45,
+          "rx": 38.5,
+          "ry": 16.55,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 38.51,
+          "rx": 43.0,
+          "ry": 18.49,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_001": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 19.1,
+          "rx": 30.0,
+          "ry": 12.9,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 35.0,
+          "rx": 34.0,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_006": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 23.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_007": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 28.95,
+          "rx": 35.0,
+          "ry": 15.05,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 17.48,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_009": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.32,
+          "rx": 22.5,
+          "ry": 9.68,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_011": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 16.76,
+          "rx": 21.5,
+          "ry": 9.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_013": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 15.04,
+          "rx": 18.5,
+          "ry": 7.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 26.0,
+          "rx": 26.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dock_pilings/dock_piling_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dragon_ribcages/dragon_ribcage_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 37.0,
+          "rx": 52.5,
+          "ry": 20.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/dragon_ribcages/dragon_ribcage_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 33.36,
+          "rx": 48.0,
+          "ry": 20.64,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/driftwood_logs/driftwood_log_901": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 27.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fallen_logs/fallen_log_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 16.0,
+          "rx": 63.5,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fallen_logs/fallen_log_011": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 10.5,
+          "rx": 55.5,
+          "ry": 18.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fallen_logs/fallen_log_013": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 39.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fallen_logs/fallen_log_014": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 32.0,
+          "rx": 60.5,
+          "ry": 24.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fences/fence_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 21.0,
+          "rx": 61.5,
+          "ry": 15.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fences/fence_003": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 15.0,
+          "rx": 57.0,
+          "ry": 20.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fences/fence_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 15.5,
+          "rx": 53.5,
+          "ry": 18.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_006": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 15.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_007": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 17.89,
+          "rx": 23.5,
+          "ry": 10.11,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 14.89,
+          "rx": 23.5,
+          "ry": 10.11,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_009": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 26.0,
+          "rx": 22.5,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_011": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 17.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_012": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 14.5,
+          "rx": 28.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ferns/fern_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_002": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 26.0,
+          "rx": 34.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 32.5,
+          "rx": 40.5,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/fish_drying_racks/fish_drying_rack_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 31.5,
+          "rx": 41.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 29.5,
+          "rx": 31.0,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 19.19,
+          "rx": 20.5,
+          "ry": 8.81,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_007": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 24.45,
+          "rx": 31.5,
+          "ry": 13.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.5,
+          "rx": 21.0,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_015": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 22.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_018": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 15.5,
+          "rx": 23.0,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flame_niches/flame_niche_900": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_stands/flower_stand_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_stands/flower_stand_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 15.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_stands/flower_stand_007": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 15.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_stands/flower_stand_008": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 18.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_stands/flower_stand_015": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_trellises/flower_trellis_001": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 29.29,
+          "rx": 50.5,
+          "ry": 21.71,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/flower_trellises/flower_trellis_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 32.64,
+          "rx": 52.0,
+          "ry": 22.36,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/frost_flowers/frost_flower_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.98,
+          "rx": 14.0,
+          "ry": 6.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/frozen_springs/frozen_spring_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 21.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/geodes/geode_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_fallen_bells/giant_fallen_bell_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.5,
+          "rx": 28.0,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_mushrooms/giant_mushroom_001": {
+      "boxes": [
+        {
+          "ax": -7.0,
+          "ay": 67.59,
+          "rx": 33.5,
+          "ry": 14.4,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_mushrooms/giant_mushroom_002": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 62.38,
+          "rx": 34.0,
+          "ry": 14.62,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_skulls/giant_skull_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 40.59,
+          "rx": 40.5,
+          "ry": 17.41,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_snail_shells/giant_snail_shell_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 19.0,
+          "rx": 29.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_snail_shells/giant_snail_shell_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 17.0,
+          "rx": 30.5,
+          "ry": 11.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/giant_snail_shells/giant_snail_shell_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 17.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/grass_tufts/grass_tuft_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 11.48,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/grass_tufts/grass_tuft_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 19.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/grass_tufts/grass_tuft_010": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 11.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/grave_cross": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 6.0,
+          "rx": 4.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/gravel_piles/gravel_pile_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 10.5,
+          "rx": 29.5,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/gravel_piles/gravel_pile_002": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 14.5,
+          "rx": 26.5,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 28.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.5,
+          "rx": 27.0,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.0,
+          "rx": 28.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.0,
+          "rx": 28.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.0,
+          "rx": 26.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 25.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_026": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 27.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_028": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.0,
+          "rx": 24.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/graves/grave_034": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 23.0,
+          "rx": 26.5,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hanging_baskets/hanging_basket_005": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 15.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hanging_baskets/hanging_basket_006": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 16.89,
+          "rx": 23.5,
+          "ry": 10.11,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hanging_willows/hanging_willow_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 113.5,
+          "rx": 123.5,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hanging_willows/hanging_willow_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 100.0,
+          "rx": 123.0,
+          "ry": 21.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/harvest_altars/harvest_altar_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/haystacks/haystack_008": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 35.5,
+          "rx": 53.0,
+          "ry": 21.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/haystacks/haystack_013": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 34.5,
+          "rx": 58.0,
+          "ry": 15.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/haystacks/haystack_021": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 39.0,
+          "rx": 57.5,
+          "ry": 19.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 29.0,
+          "rx": 55.5,
+          "ry": 21.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 34.0,
+          "rx": 53.5,
+          "ry": 23.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 28.14,
+          "rx": 48.5,
+          "ry": 20.86,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 41.5,
+          "rx": 51.5,
+          "ry": 13.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_008": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 38.79,
+          "rx": 47.0,
+          "ry": 20.21,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_900": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 27.43,
+          "rx": 45.5,
+          "ry": 19.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hearths/hearth_901": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 33.5,
+          "rx": 54.5,
+          "ry": 14.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/honey_trees/honey_tree_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 21.0,
+          "rx": 26.5,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hop_poles/hop_pole_001": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 89.0,
+          "rx": 20.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hop_poles/hop_pole_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 78.5,
+          "rx": 31.5,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/hot_springs/hot_spring_002": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 12.67,
+          "rx": 31.0,
+          "ry": 13.33,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_001": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 18.0,
+          "rx": 27.5,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_002": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 14.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 20.48,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_005": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 13.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_006": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.0,
+          "rx": 23.0,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 10.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 14.89,
+          "rx": 23.5,
+          "ry": 10.11,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.5,
+          "rx": 29.0,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/house_clutter/clutter_900": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ivy_posts/ivy_post_005": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 45.47,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ivy_posts/ivy_post_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 40.76,
+          "rx": 21.5,
+          "ry": 9.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ivy_posts/ivy_post_010": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 33.33,
+          "rx": 22.5,
+          "ry": 9.68,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.0,
+          "rx": 5.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_004": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 30.34,
+          "rx": 8.5,
+          "ry": 3.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_005": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 30.5,
+          "rx": 17.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_006": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 34.84,
+          "rx": 12.0,
+          "ry": 5.16,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_008": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 33.48,
+          "rx": 10.5,
+          "ry": 4.51,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_014": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 21.48,
+          "rx": 10.5,
+          "ry": 4.51,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_015": {
+      "boxes": [
+        {
+          "ax": 3.0,
+          "ay": 23.0,
+          "rx": 11.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 23.56,
+          "rx": 8.0,
+          "ry": 3.44,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_017": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 20.91,
+          "rx": 9.5,
+          "ry": 4.08,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.0,
+          "rx": 18.0,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.41,
+          "rx": 13.0,
+          "ry": 5.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_posts/lantern_post_026": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 19.2,
+          "rx": 13.5,
+          "ry": 5.8,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_004": {
+      "boxes": [
+        {
+          "ax": 5.0,
+          "ay": 56.0,
+          "rx": 26.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_005": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 51.0,
+          "rx": 21.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_007": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 54.0,
+          "rx": 15.0,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 56.0,
+          "rx": 22.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_018": {
+      "boxes": [
+        {
+          "ax": -3.5,
+          "ay": 47.0,
+          "rx": 23.0,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/lantern_stands/lantern_stand_902": {
+      "boxes": [
+        {
+          "ax": 4.5,
+          "ay": 48.55,
+          "rx": 15.0,
+          "ry": 6.45,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/letter_boxes/letter_box_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.41,
+          "rx": 13.0,
+          "ry": 5.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/market_stalls/market_stall_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 30.59,
+          "rx": 40.5,
+          "ry": 17.41,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/market_stalls/market_stall_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 31.14,
+          "rx": 48.5,
+          "ry": 20.86,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/market_stalls/market_stall_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 40.0,
+          "rx": 53.5,
+          "ry": 17.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/market_stalls/market_stall_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 32.64,
+          "rx": 52.0,
+          "ry": 22.36,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/maypoles/maypole_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 113.05,
+          "rx": 18.5,
+          "ry": 7.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/maypoles/maypole_007": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 70.0,
+          "rx": 100.0,
+          "ry": 43.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/meteor_stones/meteor_stone_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.0,
+          "rx": 29.0,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/moon_pools/moon_pool_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 11.61,
+          "rx": 26.5,
+          "ry": 11.39,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/moss_clumps/moss_clump_008": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 7.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/moss_clumps/moss_clump_009": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 6.5,
+          "rx": 20.5,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/moss_clumps/moss_clump_012": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 10.0,
+          "rx": 22.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/moss_clumps/moss_clump_900": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 7.0,
+          "rx": 21.5,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 12.5,
+          "rx": 15.5,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 20.0,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 12.91,
+          "rx": 16.5,
+          "ry": 7.09,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 9.41,
+          "rx": 13.0,
+          "ry": 5.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 11.77,
+          "rx": 14.5,
+          "ry": 6.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_007": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 11.34,
+          "rx": 15.5,
+          "ry": 6.67,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_008": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 10.91,
+          "rx": 16.5,
+          "ry": 7.09,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.12,
+          "rx": 16.0,
+          "ry": 6.88,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.5,
+          "rx": 17.0,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_011": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 14.0,
+          "rx": 19.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_013": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 14.0,
+          "rx": 20.5,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/mushrooms/mushroom_016": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 15.0,
+          "rx": 17.5,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 9.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 9.88,
+          "rx": 30.5,
+          "ry": 13.12,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 8.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 8.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 10.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 7.5,
+          "rx": 27.0,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 9.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 7.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/offering_tables/offering_table_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/overgrown_archways/overgrown_archway_001": {
+      "boxes": [
+        {
+          "ax": -47.0,
+          "ay": 66.62,
+          "rx": 12.5,
+          "ry": 5.38,
+          "rot": 0
+        },
+        {
+          "ax": 49.0,
+          "ay": 65.62,
+          "rx": 12.5,
+          "ry": 5.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/overgrown_archways/overgrown_archway_002": {
+      "boxes": [
+        {
+          "ax": -41.5,
+          "ay": 61.12,
+          "rx": 16.0,
+          "ry": 6.88,
+          "rot": 0
+        },
+        {
+          "ax": 42.5,
+          "ay": 60.55,
+          "rx": 15.0,
+          "ry": 6.45,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/owl_snags/owl_snag_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 82.0,
+          "rx": 40.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/owl_snags/owl_snag_002": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 76.5,
+          "rx": 42.0,
+          "ry": 16.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/petrified_stumps/petrified_stump_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.5,
+          "rx": 25.5,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/petrified_stumps/petrified_stump_003": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 18.0,
+          "rx": 18.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/puffballs/puffball_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 6.12,
+          "rx": 16.0,
+          "ry": 6.88,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/puffballs/puffball_900": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 5.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/reed_beds/reed_bed_005": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 36.5,
+          "rx": 30.5,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/reed_beds/reed_bed_007": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 34.5,
+          "rx": 39.0,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/reed_beds/reed_bed_010": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 23.0,
+          "rx": 24.5,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rock_spires/rock_spire_001": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 102.5,
+          "rx": 78.5,
+          "ry": 17.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rock_spires/rock_spire_002": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 97.0,
+          "rx": 65.0,
+          "ry": 19.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rope_swings/rope_swing_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 30.57,
+          "rx": 47.5,
+          "ry": 20.43,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rope_swings/rope_swing_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 26.64,
+          "rx": 52.0,
+          "ry": 22.36,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.5,
+          "rx": 23.0,
+          "ry": 6.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.1,
+          "rx": 30.0,
+          "ry": 12.9,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 25.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rugs_and_hides/rug_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.0,
+          "rx": 27.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ruined_arches/ruined_arch_001": {
+      "boxes": [
+        {
+          "ax": -38.0,
+          "ay": 66.19,
+          "rx": 13.5,
+          "ry": 5.8,
+          "rot": 0
+        },
+        {
+          "ax": 40.0,
+          "ay": 67.19,
+          "rx": 13.5,
+          "ry": 5.8,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/ruined_arches/ruined_arch_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 62.5,
+          "rx": 68.0,
+          "ry": 15.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rusted_machines/rusted_machine_001": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 39.8,
+          "rx": 40.0,
+          "ry": 17.2,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/rusted_machines/rusted_machine_900": {
+      "boxes": [
+        {
+          "ax": 6.5,
+          "ay": 37.37,
+          "rx": 41.0,
+          "ry": 17.63,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/scarecrows/scarecrow_005": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 39.34,
+          "rx": 15.5,
+          "ry": 6.67,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/scarecrows/scarecrow_018": {
+      "boxes": [
+        {
+          "ax": -6.0,
+          "ay": 23.05,
+          "rx": 18.5,
+          "ry": 7.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/scarecrows/scarecrow_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.98,
+          "rx": 14.0,
+          "ry": 6.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/scarecrows/scarecrow_022": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/scarecrows/scarecrow_901": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 36.27,
+          "rx": 11.0,
+          "ry": 4.73,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sheaf_poles/sheaf_pole_002": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 31.0,
+          "rx": 3.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sheaf_poles/sheaf_pole_005": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 22.34,
+          "rx": 8.5,
+          "ry": 3.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/shipwreck_prows/shipwreck_prow_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 44.0,
+          "rx": 64.5,
+          "ry": 19.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/signposts/signpost_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 49.33,
+          "rx": 22.5,
+          "ry": 9.68,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/signposts/signpost_009": {
+      "boxes": [
+        {
+          "ax": 3.5,
+          "ay": 46.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/signposts/signpost_025": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 49.48,
+          "rx": 17.5,
+          "ry": 7.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/signposts/signpost_028": {
+      "boxes": [
+        {
+          "ax": -4.0,
+          "ay": 42.59,
+          "rx": 40.5,
+          "ry": 17.41,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sky_stairs/sky_stair_001": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 56.5,
+          "rx": 72.5,
+          "ry": 29.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sky_stairs/sky_stair_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 75.0,
+          "rx": 65.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sleeping_giants/sleeping_giant_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 39.5,
+          "rx": 91.5,
+          "ry": 30.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_009": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 25.0,
+          "rx": 33.5,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_010": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 18.0,
+          "rx": 31.5,
+          "ry": 12.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_014": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.0,
+          "rx": 31.5,
+          "ry": 12.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_015": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.5,
+          "rx": 25.0,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_019": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.5,
+          "rx": 32.5,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_outcrops/soulstone_outcrop_900": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.81,
+          "rx": 33.0,
+          "ry": 14.19,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/soulstone_plinths/soulstone_plinth_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 20.5,
+          "rx": 27.5,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/spring_basins/spring_basin_003": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 18.0,
+          "rx": 40.5,
+          "ry": 16.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/spring_basins/spring_basin_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 10.5,
+          "rx": 30.5,
+          "ry": 12.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/standing_stones/standing_stone_001": {
+      "boxes": [
+        {
+          "ax": 2.5,
+          "ay": 73.0,
+          "rx": 32.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/statues/statue_003": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 41.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stone_fountains/stone_fountain_001": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 40.86,
+          "rx": 51.5,
+          "ry": 22.14,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stone_fountains/stone_fountain_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 44.87,
+          "rx": 44.5,
+          "ry": 19.13,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_001": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 13.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_004": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 10.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_005": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 13.0,
+          "rx": 28.5,
+          "ry": 12.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_009": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 9.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_010": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 11.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_012": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 12.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_013": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 11.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_014": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 20.5,
+          "rx": 27.5,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_015": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_019": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 12.04,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_020": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 12.89,
+          "rx": 23.5,
+          "ry": 10.11,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_021": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_022": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 14.18,
+          "rx": 27.5,
+          "ry": 11.82,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_024": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 12.5,
+          "rx": 29.5,
+          "ry": 12.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_025": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 14.04,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_026": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_027": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 13.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_028": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_029": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 16.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_030": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 8.5,
+          "rx": 30.5,
+          "ry": 12.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_031": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 13.5,
+          "rx": 27.5,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_033": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_034": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.46,
+          "rx": 24.5,
+          "ry": 10.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_035": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_036": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_037": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 26.0,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_038": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 10.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_039": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 14.31,
+          "rx": 29.5,
+          "ry": 12.69,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_040": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_042": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.0,
+          "rx": 25.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_043": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_044": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_046": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 29.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_047": {
+      "boxes": [
+        {
+          "ax": 3.0,
+          "ay": 15.04,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_048": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stones/stone_050": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.0,
+          "rx": 28.5,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_001": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 31.0,
+          "rx": 6.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 23.84,
+          "rx": 12.0,
+          "ry": 5.16,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_011": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 24.5,
+          "rx": 14.5,
+          "ry": 3.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_013": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.0,
+          "rx": 14.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 24.7,
+          "rx": 10.0,
+          "ry": 4.3,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/story_posts/story_post_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.7,
+          "rx": 10.0,
+          "ry": 4.3,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/streetlights/streetlight_007": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 68.0,
+          "rx": 21.5,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/streetlights/streetlight_011": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 54.98,
+          "rx": 14.0,
+          "ry": 6.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/streetlights/streetlight_013": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 51.77,
+          "rx": 14.5,
+          "ry": 6.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/streetlights/streetlight_024": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 58.0,
+          "rx": 19.5,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/streetlights/streetlight_034": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 37.48,
+          "rx": 10.5,
+          "ry": 4.51,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_001": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 18.5,
+          "rx": 24.5,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.5,
+          "rx": 24.5,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 30.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_005": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 18.0,
+          "rx": 27.5,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.5,
+          "rx": 26.0,
+          "ry": 10.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.5,
+          "rx": 29.0,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.5,
+          "rx": 24.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_013": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.5,
+          "rx": 27.0,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.0,
+          "rx": 25.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_016": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 15.0,
+          "rx": 26.5,
+          "ry": 11.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/stumps/stump_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.0,
+          "rx": 28.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sundials/sundial_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.0,
+          "rx": 17.0,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/sundials/sundial_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.0,
+          "rx": 21.0,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_003": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 10.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_005": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_008": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 15.97,
+          "rx": 21.0,
+          "ry": 9.03,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 9.25,
+          "rx": 25.0,
+          "ry": 10.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/tables/table_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/telegraph_poles/telegraph_pole_003": {
+      "boxes": [
+        {
+          "ax": 19.0,
+          "ay": 117.0,
+          "rx": 45.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/telegraph_poles/telegraph_pole_004": {
+      "boxes": [
+        {
+          "ax": 6.5,
+          "ay": 107.69,
+          "rx": 17.0,
+          "ry": 7.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/telegraph_poles/telegraph_pole_006": {
+      "boxes": [
+        {
+          "ax": -7.0,
+          "ay": 100.0,
+          "rx": 45.5,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/telegraph_poles/telegraph_pole_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 95.59,
+          "rx": 40.5,
+          "ry": 17.41,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_001": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 10.5,
+          "rx": 38.0,
+          "ry": 14.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 14.94,
+          "rx": 42.0,
+          "ry": 18.06,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_006": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.0,
+          "rx": 39.0,
+          "ry": 16.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 11.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_010": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 12.5,
+          "rx": 35.5,
+          "ry": 13.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.96,
+          "rx": 28.0,
+          "ry": 12.04,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 9.5,
+          "rx": 29.0,
+          "ry": 11.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_013": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.1,
+          "rx": 30.0,
+          "ry": 12.9,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_014": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 10.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_015": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 15.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/toadstool_rings/toadstool_ring_018": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 10.75,
+          "rx": 28.5,
+          "ry": 12.25,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_004": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 42.34,
+          "rx": 8.5,
+          "ry": 3.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_005": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 36.62,
+          "rx": 12.5,
+          "ry": 5.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 36.34,
+          "rx": 8.5,
+          "ry": 3.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 29.0,
+          "rx": 5.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 36.0,
+          "rx": 4.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 28.0,
+          "rx": 4.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.0,
+          "rx": 12.0,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_013": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 23.0,
+          "rx": 4.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 23.0,
+          "rx": 5.0,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_015": {
+      "boxes": [
+        {
+          "ax": 2.5,
+          "ay": 22.27,
+          "rx": 11.0,
+          "ry": 4.73,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_018": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.7,
+          "rx": 10.0,
+          "ry": 4.3,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_021": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 28.0,
+          "rx": 4.5,
+          "ry": 3.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_022": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 25.77,
+          "rx": 7.5,
+          "ry": 3.23,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/torch_posts/torch_post_024": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 28.5,
+          "rx": 11.0,
+          "ry": 3.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trailing_planters/trailing_planter_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trailing_planters/trailing_planter_004": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.4,
+          "rx": 20.0,
+          "ry": 8.6,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_001": {
+      "boxes": [
+        {
+          "ax": 3.5,
+          "ay": 74.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 73.38,
+          "rx": 34.0,
+          "ry": 14.62,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_004": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 65.22,
+          "rx": 46.0,
+          "ry": 19.78,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_005": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 58.92,
+          "rx": 56.0,
+          "ry": 24.08,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_006": {
+      "boxes": [
+        {
+          "ax": -4.0,
+          "ay": 68.73,
+          "rx": 35.5,
+          "ry": 15.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_007": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 74.67,
+          "rx": 31.0,
+          "ry": 13.33,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 68.88,
+          "rx": 37.5,
+          "ry": 16.12,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_009": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 68.44,
+          "rx": 38.5,
+          "ry": 16.55,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_011": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 64.44,
+          "rx": 45.5,
+          "ry": 19.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_012": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 69.36,
+          "rx": 48.0,
+          "ry": 20.64,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_013": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 63.77,
+          "rx": 61.0,
+          "ry": 26.23,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 66.5,
+          "rx": 50.0,
+          "ry": 21.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_015": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 62.73,
+          "rx": 42.5,
+          "ry": 18.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_016": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 80.75,
+          "rx": 21.5,
+          "ry": 9.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_017": {
+      "boxes": [
+        {
+          "ax": -5.5,
+          "ay": 70.51,
+          "rx": 43.0,
+          "ry": 18.49,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_018": {
+      "boxes": [
+        {
+          "ax": -4.5,
+          "ay": 65.78,
+          "rx": 54.0,
+          "ry": 23.22,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_019": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 67.36,
+          "rx": 48.0,
+          "ry": 20.64,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_020": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 69.79,
+          "rx": 47.0,
+          "ry": 20.21,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_021": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 72.94,
+          "rx": 42.0,
+          "ry": 18.06,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_022": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 68.28,
+          "rx": 57.5,
+          "ry": 24.72,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_023": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 63.33,
+          "rx": 69.0,
+          "ry": 29.67,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_024": {
+      "boxes": [
+        {
+          "ax": -3.5,
+          "ay": 66.22,
+          "rx": 46.0,
+          "ry": 19.78,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_025": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 67.41,
+          "rx": 59.5,
+          "ry": 25.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_028": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 59.86,
+          "rx": 51.5,
+          "ry": 22.14,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_029": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 66.49,
+          "rx": 57.0,
+          "ry": 24.51,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_030": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 64.41,
+          "rx": 59.5,
+          "ry": 25.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_031": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 79.0,
+          "rx": 61.5,
+          "ry": 13.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_032": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 68.87,
+          "rx": 44.5,
+          "ry": 19.13,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_034": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 75.45,
+          "rx": 31.5,
+          "ry": 13.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_035": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 59.98,
+          "rx": 67.5,
+          "ry": 29.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_036": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 75.5,
+          "rx": 72.5,
+          "ry": 13.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_038": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 73.3,
+          "rx": 43.5,
+          "ry": 18.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_039": {
+      "boxes": [
+        {
+          "ax": 3.5,
+          "ay": 64.76,
+          "rx": 68.0,
+          "ry": 29.24,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_040": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 74.45,
+          "rx": 31.5,
+          "ry": 13.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_041": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 76.22,
+          "rx": 46.0,
+          "ry": 19.78,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_042": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 81.0,
+          "rx": 47.5,
+          "ry": 9.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_043": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 59.42,
+          "rx": 52.5,
+          "ry": 22.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_044": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 71.22,
+          "rx": 46.0,
+          "ry": 19.78,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_045": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 73.44,
+          "rx": 38.5,
+          "ry": 16.55,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_046": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 61.47,
+          "rx": 71.0,
+          "ry": 30.53,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_047": {
+      "boxes": [
+        {
+          "ax": -5.5,
+          "ay": 24.03,
+          "rx": 79.0,
+          "ry": 33.97,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_048": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 65.0,
+          "rx": 46.5,
+          "ry": 20.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_049": {
+      "boxes": [
+        {
+          "ax": 5.5,
+          "ay": 60.05,
+          "rx": 65.0,
+          "ry": 27.95,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_050": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 66.08,
+          "rx": 44.0,
+          "ry": 18.92,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_051": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 74.16,
+          "rx": 41.5,
+          "ry": 17.84,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_052": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 69.93,
+          "rx": 49.0,
+          "ry": 21.07,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_053": {
+      "boxes": [
+        {
+          "ax": 2.5,
+          "ay": 57.9,
+          "rx": 70.0,
+          "ry": 30.1,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_054": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 66.48,
+          "rx": 64.0,
+          "ry": 27.52,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_055": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 66.3,
+          "rx": 43.5,
+          "ry": 18.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_056": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 66.45,
+          "rx": 31.5,
+          "ry": 13.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_057": {
+      "boxes": [
+        {
+          "ax": 2.0,
+          "ay": 78.03,
+          "rx": 25.5,
+          "ry": 10.96,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_058": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 76.17,
+          "rx": 34.5,
+          "ry": 14.83,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_059": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 63.51,
+          "rx": 43.0,
+          "ry": 18.49,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_060": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 70.93,
+          "rx": 49.0,
+          "ry": 21.07,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_063": {
+      "boxes": [
+        {
+          "ax": 3.0,
+          "ay": 53.11,
+          "rx": 76.5,
+          "ry": 32.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_064": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 79.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_065": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 73.3,
+          "rx": 43.5,
+          "ry": 18.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_066": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 58.05,
+          "rx": 65.0,
+          "ry": 27.95,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_067": {
+      "boxes": [
+        {
+          "ax": -3.5,
+          "ay": 82.0,
+          "rx": 64.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_069": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 73.03,
+          "rx": 32.5,
+          "ry": 13.97,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_070": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 64.98,
+          "rx": 60.5,
+          "ry": 26.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_071": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 50.18,
+          "rx": 74.0,
+          "ry": 31.82,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_072": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 73.51,
+          "rx": 43.0,
+          "ry": 18.49,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_074": {
+      "boxes": [
+        {
+          "ax": 9.0,
+          "ay": 62.14,
+          "rx": 55.5,
+          "ry": 23.86,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_075": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 56.25,
+          "rx": 71.5,
+          "ry": 30.75,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_077": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 50.12,
+          "rx": 62.5,
+          "ry": 26.88,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_079": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 69.5,
+          "rx": 64.5,
+          "ry": 9.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_082": {
+      "boxes": [
+        {
+          "ax": 6.5,
+          "ay": 64.66,
+          "rx": 38.0,
+          "ry": 16.34,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_083": {
+      "boxes": [
+        {
+          "ax": -2.5,
+          "ay": 72.95,
+          "rx": 35.0,
+          "ry": 15.05,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_085": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 59.7,
+          "rx": 56.5,
+          "ry": 24.29,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/trees/tree_086": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 66.42,
+          "rx": 52.5,
+          "ry": 22.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 12.11,
+          "rx": 23.0,
+          "ry": 9.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 18.55,
+          "rx": 15.0,
+          "ry": 6.45,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_011": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 22.62,
+          "rx": 12.5,
+          "ry": 5.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_012": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.54,
+          "rx": 22.0,
+          "ry": 9.46,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_014": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.83,
+          "rx": 19.0,
+          "ry": 8.17,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 29.0,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wall_hangings/wall_hanging_019": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.82,
+          "rx": 26.0,
+          "ry": 11.18,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 10.0,
+          "rx": 59.0,
+          "ry": 22.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 19.0,
+          "rx": 53.5,
+          "ry": 23.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_007": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 15.5,
+          "rx": 50.0,
+          "ry": 21.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_009": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 38.0,
+          "rx": 62.5,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.5,
+          "rx": 56.0,
+          "ry": 23.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_011": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 17.55,
+          "rx": 61.5,
+          "ry": 26.45,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/washing_lines/washing_line_016": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 14.0,
+          "rx": 59.5,
+          "ry": 24.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wasp_nest_trees/wasp_nest_tree_001": {
+      "boxes": [
+        {
+          "ax": -7.0,
+          "ay": 59.44,
+          "rx": 45.5,
+          "ry": 19.57,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wasp_nest_trees/wasp_nest_tree_002": {
+      "boxes": [
+        {
+          "ax": -2.5,
+          "ay": 64.35,
+          "rx": 55.0,
+          "ry": 23.65,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wasp_nest_trees/wasp_nest_tree_004": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 53.64,
+          "rx": 52.0,
+          "ry": 22.36,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/water_lily_clumps/water_lily_clump_001": {
+      "boxes": [
+        {
+          "ax": -3.0,
+          "ay": 19.91,
+          "rx": 16.5,
+          "ry": 7.09,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/water_lily_clumps/water_lily_clump_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/water_lily_clumps/water_lily_clump_004": {
+      "boxes": [
+        {
+          "ax": 2.5,
+          "ay": 11.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/water_pumps/water_pump_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 25.41,
+          "rx": 13.0,
+          "ry": 5.59,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/water_pumps/water_pump_002": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 25.62,
+          "rx": 12.5,
+          "ry": 5.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waterwheels/waterwheel_003": {
+      "boxes": [
+        {
+          "ax": -1.0,
+          "ay": 30.87,
+          "rx": 44.5,
+          "ry": 19.13,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waterwheels/waterwheel_006": {
+      "boxes": [
+        {
+          "ax": -4.5,
+          "ay": 35.5,
+          "rx": 55.0,
+          "ry": 21.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waterwheels/waterwheel_008": {
+      "boxes": [
+        {
+          "ax": -1.5,
+          "ay": 32.63,
+          "rx": 59.0,
+          "ry": 25.37,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.5,
+          "rx": 20.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_011": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 22.39,
+          "rx": 27.0,
+          "ry": 11.61,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_013": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.0,
+          "rx": 26.0,
+          "ry": 7.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_015": {
+      "boxes": [
+        {
+          "ax": -0.5,
+          "ay": 21.68,
+          "rx": 24.0,
+          "ry": 10.32,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.5,
+          "rx": 19.0,
+          "ry": 7.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wayside_shrines/wayside_shrine_020": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 16.5,
+          "rx": 22.0,
+          "ry": 8.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 22.0,
+          "rx": 21.5,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_009": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.5,
+          "rx": 19.0,
+          "ry": 3.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_010": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.0,
+          "rx": 23.0,
+          "ry": 6.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_011": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.5,
+          "rx": 19.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_013": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 20.5,
+          "rx": 21.0,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_015": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 22.0,
+          "rx": 22.0,
+          "ry": 5.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_016": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 19.0,
+          "rx": 22.0,
+          "ry": 8.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_019": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 20.5,
+          "rx": 18.5,
+          "ry": 5.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_022": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 21.0,
+          "rx": 18.5,
+          "ry": 4.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_026": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 19.62,
+          "rx": 19.5,
+          "ry": 8.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/waystones/waystone_030": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 21.5,
+          "rx": 21.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_002": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 44.45,
+          "rx": 31.5,
+          "ry": 13.54,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_006": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 42.16,
+          "rx": 34.5,
+          "ry": 14.83,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_008": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 43.94,
+          "rx": 42.0,
+          "ry": 18.06,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_009": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 38.73,
+          "rx": 35.5,
+          "ry": 15.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_010": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 43.3,
+          "rx": 36.5,
+          "ry": 15.7,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_011": {
+      "boxes": [
+        {
+          "ax": -2.0,
+          "ay": 39.88,
+          "rx": 37.5,
+          "ry": 16.12,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_012": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 37.16,
+          "rx": 34.5,
+          "ry": 14.83,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_013": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 39.73,
+          "rx": 35.5,
+          "ry": 15.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_014": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 38.73,
+          "rx": 35.5,
+          "ry": 15.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_016": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 46.73,
+          "rx": 35.5,
+          "ry": 15.27,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_017": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 40.95,
+          "rx": 35.0,
+          "ry": 15.05,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wells/well_019": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 39.09,
+          "rx": 37.0,
+          "ry": 15.91,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/whale_bones/whale_bone_001": {
+      "boxes": [
+        {
+          "ax": -4.5,
+          "ay": 71.69,
+          "rx": 117.0,
+          "ry": 50.31,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/windmills/windmill_009": {
+      "boxes": [
+        {
+          "ax": 1.0,
+          "ay": 72.0,
+          "rx": 62.5,
+          "ry": 17.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/wisteria_snags/wisteria_snag_001": {
+      "boxes": [
+        {
+          "ax": 1.5,
+          "ay": 66.67,
+          "rx": 31.0,
+          "ry": 13.33,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/witch_rings/witch_ring_002": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 14.53,
+          "rx": 29.0,
+          "ry": 12.47,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/woodpiles/woodpile_001": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 13.0,
+          "rx": 28.0,
+          "ry": 10.0,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/woodpiles/woodpile_008": {
+      "boxes": [
+        {
+          "ax": 0.0,
+          "ay": 14.18,
+          "rx": 27.5,
+          "ry": 11.82,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:41:34.942Z"
+    },
+    "scenery/chairs_and_benches/chair_003": {
+      "boxes": [
+        {
+          "ax": 0.5,
+          "ay": 17.5,
+          "rx": 23.0,
+          "ry": 4.5,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-08-28T07:42:22.228Z"
     }
   }
 }
