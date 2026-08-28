@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:27:47.939Z",
+  "updated_at": "2026-08-28T02:30:22.250Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -2601,6 +2601,113 @@
           "members": [
             {
               "kind": "clean",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 30
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_beach/aa3287b9",
+              "tile": "tiles/water__over__light_beach/aa3287b9",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_soil/60141780",
+              "tile": "tiles/water__over__light_soil/60141780",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_soil/688cb16f",
+              "tile": "tiles/water__over__light_soil/688cb16f",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__black_rock/5d55ad2d",
+              "tile": "tiles/water__over__black_rock/5d55ad2d",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__black_rock/e453c50b",
+              "tile": "tiles/water__over__black_rock/e453c50b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__grey_stone/3c0aeddc",
+              "tile": "tiles/water__over__grey_stone/3c0aeddc",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__grey_stone/775b3c7c",
+              "tile": "tiles/water__over__grey_stone/775b3c7c",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__grey_stone/a774baca",
+              "tile": "tiles/water__over__grey_stone/a774baca",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__grey_stone/b90126c9",
+              "tile": "tiles/water__over__grey_stone/b90126c9",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__grey_stone/ccf68cd7",
+              "tile": "tiles/water__over__grey_stone/ccf68cd7",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_beach/4b2608c8",
+              "tile": "tiles/water__over__light_beach/4b2608c8",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_soil/20228e4e",
+              "tile": "tiles/water__over__light_soil/20228e4e",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_soil/7b8be427",
+              "tile": "tiles/water__over__light_soil/7b8be427",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__light_soil/cf10cb1f",
+              "tile": "tiles/water__over__light_soil/cf10cb1f",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__slime/f1e42f16",
+              "tile": "tiles/water__over__slime/f1e42f16",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/water__over__snow/fff46f2e",
+              "tile": "tiles/water__over__snow/fff46f2e",
               "weight": 1
             }
           ]
