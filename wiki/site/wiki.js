@@ -6123,7 +6123,11 @@ const typeTops = (typeId) => [
     .sort((a, b) => (a.flavour === b.flavour ? 0 : a.flavour === "detail" ? -1 : 1))
     .map((t) => ({
       cell: { id: t.id, top: typeId, side: null, name: `${typeLabelWorld(typeId)} · ${t.flavour ?? "top"}`, topOnly: true },
-      cand: { key: t.id, art: ppPath(typeId, t.art), raw: null, tex: null, topOnly: true, flavour: t.flavour, paletteTop: null },
+      // POST IS WHAT TO SHOW (maintainer 2026-08-28: "Ofc I want to see the
+      // center tile with a postprocessed top") — same rule the base-set pool
+      // and set members already follow. ppPath stays only for a sheet the
+      // postprocess could not align; the raw pass is what Raw means.
+      cand: { key: t.id, art: t.post ?? ppPath(typeId, t.art), raw: t.art, tex: null, topOnly: true, flavour: t.flavour, paletteTop: null },
     })),
   ...worldCells().filter((c) => c.top === typeId)
     .flatMap((c) => c.candidates.map((cand) => ({ cell: c, cand }))),

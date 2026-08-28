@@ -884,6 +884,19 @@ ok(/^set:/.test(dSet.view) && dSet.ringDistinct >= 1 && dSet.ringSample !== dCle
   `flipping to a set changes the RING's source art (${dSet.ringSample?.split("/").slice(-1)[0]})`);
 ok(pixClean !== null && pixSet !== null && pixClean !== pixSet,
   "and the pixels on screen actually change — the switch is not a placebo");
+/* THE CENTRE IS THE POST PASS (maintainer 2026-08-28: "Ofc I want to see the
+ * center tile with a postprocessed top"). A top-only tile's queue candidate
+ * used to wrap the RAW sheet in the in-browser palette guess (ppPath) — hue
+ * corrected, raw relief — while the audition and set members already drew the
+ * tiles agent's published post file. One tile, two renderings. The candidate
+ * carries `post` as art now; Raw is the one view that means the raw sheet. */
+ok(typeof dSet.centre === "string" && /\/post\//.test(dSet.centre) && !dSet.centre.startsWith("pp:"),
+  `a top-only detail's centre face IS the published post file (${dSet.centre?.split("/").slice(-2).join("/")})`);
+await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Raw")?.click());
+await p.waitForTimeout(1600);
+const dRaw = await dProbe();
+ok(dRaw.view === "before" && typeof dRaw.centre === "string" && !/\/post\//.test(dRaw.centre) && !dRaw.centre.startsWith("pp:"),
+  `and Raw shows the generator's own sheet, unsubstituted (${dRaw.centre?.split("/").slice(-2).join("/")})`);
 await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(1200);
 // THE DETAILS TAB DELIBERATELY IGNORES "After" NOW (2026-08-22): a
