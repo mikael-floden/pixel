@@ -5349,7 +5349,12 @@ function faceLookup() {
   FACE_LOOKUP = { rev, meta: worldMeta(), stats, keys };
   return FACE_LOOKUP;
 }
-const faceRefOf = (face) => String(face ?? "").startsWith("pp:") ? String(face).slice(3).split("::")[0] : face;
+const faceRefOf = (face) => {
+  const f = String(face ?? "");
+  if (f.startsWith("pp:")) return f.slice(3).split("::")[0];
+  if (f.startsWith("sub:") || f.startsWith("tex:")) return f.slice(4).split("::")[0];
+  return face;
+};
 let BW_CACHE = { rev: "", map: new Map() };
 /** The wall to dress `face` in: his override, else the measured best, else
  *  the pool's first (approved-first — the old rule, now the fallback). */
@@ -6654,6 +6659,20 @@ function sidePlateCanvas(wallArt, face, clean, cb) {
     if (String(path).startsWith("pp:")) {
       const [a2, hex] = path.slice(3).split("::");
       ppFor(a2, hex, (c) => { set(c); done(); });
+      return;
+    }
+    /* AND a sub:/tex: composite (a tile wearing a set member's top — the
+     * pair page's face under any Set view). Loading these as URLs failed the
+     * whole compose and the 5x5 centre drew as a HOLE (maintainer
+     * 2026-08-28, Black Rock over black rock under Set #3). */
+    if (String(path).startsWith("sub:")) {
+      const [a2, b2] = path.slice(4).split("::");
+      subFor(a2, b2, (c) => { set(c); done(); });
+      return;
+    }
+    if (String(path).startsWith("tex:")) {
+      const [a2, b2] = path.slice(4).split("::");
+      texFor(a2, b2, (c) => { set(c); done(); });
       return;
     }
     const im = new Image();
@@ -8517,7 +8536,9 @@ function tileScenes(cell, cand, onView) {
     const face = art(cand);
     // No pure tile for that material yet: stack the tile itself and say so,
     // rather than draw a cliff out of nothing.
-    const course = topOnly(cand.key) ? (pureArt ? art(pureArt) : face) : face;
+    const bw = topOnly(cand.key) ? bestWall(cell.side, cand.tex ?? cand.art) : null;
+    const wallCand = (bw && pure?.candidates.find((c2) => c2.key === bw.key)) ?? pureArt;
+    const course = topOnly(cand.key) ? (wallCand ? art(wallCand) : face) : face;
     const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: face })));
     const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
       ...pos, lvl: 2, img: course, top: face, stack: [course, course],
@@ -8528,6 +8549,7 @@ function tileScenes(cell, cand, onView) {
     // they produced can be read back.
     stage.dataset.face = face ?? "";
     stage.dataset.course = course ?? "";
+    stage.dataset.wallpick = bw?.key ?? "";
     stage.dataset.view = mode;
     stage.dataset.dy = String(worldIso().dy);
     if (chip) {
@@ -8737,13 +8759,19 @@ function viewWorldPair(top, side) {
  *  than merely low. */
 /** The wall-mode strip, which has to REDRAW ITSELF: a pick-one that keeps
  *  showing the old pick after you press it is worse than no control at all. */
-function wallModeRow(cand, onVerdict) {
+function wallModeRow(cand, onVerdict, side) {
   const box = h("div", { class: "card-sub wall-mode" });
   const draw = () => box.replaceChildren(
     h("span", { class: "muted" }, "Wall"),
     sortBar(`tile-wall:${cand.key}`, Object.entries(WALL_MODES).map(([id, m]) => [id, m.label, m.title]),
       topOnly(cand.key) ? "top" : "own",
-      (v) => { setTopOnly(cand.key, v === "top"); draw(); onVerdict?.(); }, { persist: false }));
+      (v) => { setTopOnly(cand.key, v === "top"); draw(); onVerdict?.(); }, { persist: false }),
+    /* THE STEPPER LIVES WHERE THE MARK IS MADE (maintainer 2026-08-28: "When
+     * I click on a x over x/y tile and mark it as top only ... It should
+     * also be possible for me to change what x over x tile we use"): the
+     * moment a tile is top-only, the borrowed wall is choosable right here,
+     * and the cliff preview above rebuilds with each step. */
+    topOnly(cand.key) && side ? wallStepper(side, cand.tex ?? cand.art, () => { draw(); onVerdict?.(); }) : null);
   draw();
   return box;
 }
@@ -8892,7 +8920,7 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     // CAN IT BUILD A WALL? Its own row, above the verdict: this is not a
     // judgement on the tile, it is what the tile is FOR, and a tile marked
     // top-only is still a keeper.
-    state.admin ? wallModeRow(cand, onVerdict) : null,
+    state.admin ? wallModeRow(cand, onVerdict, cell.side) : null,
     // AND ITS TOP — the same kind of designation for the other face.
     state.admin ? topModeRow(cand, onVerdict) : null,
     // IS IT THE GROUND'S BASE TILE? Promotion goes through a MODAL that shows
@@ -9125,6 +9153,10 @@ function loadImages(paths, cb) {
           else if (String(faceA).startsWith("pp:")) {
             const [a3, hex3] = faceA.slice(3).split("::");
             ppFor(a3, hex3, (c2) => { out[p] = c2 ?? null; if (--left <= 0) cb(out); });
+          } else if (String(faceA).startsWith("sub:") || String(faceA).startsWith("tex:")) {
+            // an undressable composite still beats a hole
+            const [a3, b3] = faceA.slice(4).split("::");
+            (faceA.startsWith("sub:") ? subFor : texFor)(a3, b3, (c2) => { out[p] = c2 ?? null; if (--left <= 0) cb(out); });
           } else plain(faceA, p);
         });
         continue;

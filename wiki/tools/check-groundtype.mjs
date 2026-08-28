@@ -1370,6 +1370,79 @@ const tGone = await p.evaluate(() => ({
  * count he controls. */
 ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "clean" && tGone.chips >= 2,
   `the "review the top" expander is GONE; on Clean #0 one row rates the TILE with stars, and Show carries every set (${tGone.chips})`);
+/* ---- MARK TOP ONLY → THE BEST WALL, STEPPABLE AT THE MARK (maintainer
+ * 2026-08-28: "I have now clicked on 'top only' on a lot of tiles and I
+ * always get the same wall" — the cliff preview composed with the page-level
+ * first pick; now it borrows the wall MEASURED closest to this tile, and the
+ * ‹ › stepper sits in the Wall row itself). ---- */
+{
+  const card0 = () => p.evaluate(() => {
+    const c2 = document.querySelector(".world-cand");
+    return {
+      wallpick: c2?.querySelector(".tile-preview")?.dataset.wallpick ?? "",
+      course: c2?.querySelector(".tile-preview")?.dataset.course ?? "",
+      face: c2?.querySelector(".tile-preview")?.dataset.face ?? "",
+      stepper: !!c2?.querySelector(".wall-mode .wall-step"),
+      label: c2?.querySelector(".wall-mode .wall-step")?.textContent.replace(/\s+/g, " ").trim() ?? "",
+    };
+  });
+  const off = await card0();
+  ok(!off.stepper && off.wallpick === "", "under own-wall the Wall row offers no stepper — there is nothing to choose");
+  await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); r.scrollIntoView({ block: "center" }); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "top only")?.click(); });
+  await p.waitForTimeout(1800);
+  const on = await card0();
+  ok(on.stepper && /auto · best match/.test(on.label) && on.wallpick !== "",
+    `marking TOP ONLY grows the ‹ › stepper on auto, and the cliff borrows a measured wall (${on.wallpick.split("/").pop()})`);
+  // the course is view-dependent (Clean shows the plate pass of the picked
+  // wall), so the claim is the PICK itself: a real pool candidate, published
+  ok(on.course !== "" && (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side === "grass")
+    ?.candidates.some((x) => x.key === on.wallpick),
+    `the pick is a real candidate of the pool and the courses compose from it (${String(on.wallpick).split("/").pop()})`);
+  await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-step"); [...r.querySelectorAll("button")].find((b2) => b2.textContent === "›")?.click(); });
+  await p.waitForTimeout(1800);
+  const nxt = await card0();
+  ok(nxt.wallpick !== on.wallpick && /your pick/.test(nxt.label),
+    `stepping › swaps the borrowed wall and stores the choice (${nxt.wallpick.split("/").pop()})`);
+  await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-step"); [...r.querySelectorAll("button")].find((b2) => b2.textContent === "‹")?.click(); });
+  await p.waitForTimeout(1800);
+  const back = await card0();
+  ok(back.wallpick === on.wallpick && /auto · best match/.test(back.label)
+    && await p.evaluate(() => Object.keys(window.__wiki.state.tuning.top_walls?.overrides ?? {}).length === 0),
+    "stepping back onto the best CLEARS the override");
+  await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "own wall")?.click(); });
+  await p.waitForTimeout(1400);
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(700);
+  /* THE CENTRE MUST NEVER BE A HOLE UNDER A SET VIEW (maintainer 2026-08-28,
+   * Black Rock over black rock + Set #3: "the preview stops rendering the
+   * tile in review in the center. Instead I see a hole"): the face is a
+   * sub: composite there, and the tex2 dresser used to fail it wholesale. */
+  await p.evaluate(() => { const c2 = document.querySelector(".stage-flip"); c2.scrollIntoView({ block: "center" }); c2.click(); });
+  await p.waitForTimeout(2600);
+  const setHole = await p.evaluate(() => {
+    const st = document.querySelector(".world-cand .tile-preview");
+    const cv = st?.querySelector(".scene-box canvas");
+    let opaque = -1;
+    if (cv && cv.width) {
+      try {
+        const d2 = cv.getContext("2d").getImageData(cv.width / 2 - 12, cv.height / 2 - 8, 24, 16).data;
+        opaque = 0;
+        for (let i = 3; i < d2.length; i += 4) if (d2[i] > 60) opaque++;
+      } catch { opaque = -2; }
+    }
+    return { view: st?.dataset.view, face: (st?.dataset.face ?? "").slice(0, 4), opaque };
+  });
+  ok(/^set:/.test(setHole.view ?? "") && setHole.face === "sub:" && setHole.opaque > 200,
+    `under a Set view the sub: composite centre RENDERS — no hole (${setHole.opaque} opaque px, view ${setHole.view})`);
+  // the chip only advances — cycle the whole way home so later sections
+  // start from Clean, the state they were written against
+  for (let i2 = 0; i2 < 6; i2++) {
+    const v2 = await p.evaluate(() => document.querySelector(".world-cand .tile-preview")?.dataset.view);
+    if (v2 === "clean") break;
+    await p.evaluate(() => document.querySelector(".stage-flip")?.click());
+    await p.waitForTimeout(900);
+  }
+}
 await p.evaluate(() => { const c2 = document.querySelector(".stage-flip"); c2.scrollIntoView({ block: "center" }); c2.click(); });
 await p.waitForTimeout(2400);
 const tTex = await p.evaluate(() => ({
