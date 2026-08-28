@@ -151,7 +151,48 @@ grass tile — hundreds on the account, free to harvest.
 Composition is `transition_render.compose_transition()`; the lab builds with it via
 `tiles/lab/build_pairs.py`.
 
-## The OTHER transition: blend tiles (`tiles/blends/`)
+## The OTHER transition: fade tiles (`tiles/fades/`)
+
+A boundary is not the only way one ground becomes another. **Fade tiles** carry BOTH
+grounds on one top - grass with black rocks breaking through - so a field drifts toward
+the new ground long before any Wang edge is drawn. (Maintainer: *"to start ease in a
+change in base tile change long before the base tile change is enforced."*)
+
+**The prompt is tiny and free; the percentage is measured, never ordered.** The
+maintainer's architecture, verbatim: *"You will know after the generation how much 'grass
+vs black_rock' a tile should be classified as... You must analyse the image."* Prompts
+name only the mixture ("grass with black rock") - nothing about shape, placement, amount
+or edges. Two rejected approaches, both paid for, both kept on disk (`tiles/blends/`,
+`tiles/puddles/`), neither to be re-attempted:
+
+- *Ordered percentages* ("mostly grass, a few small spots of lava", p10..p50): the level
+  moves the distribution but does not set it - one p10 sheet's takes spanned 0-30% minor,
+  sheet means came out non-monotone. 349 sheets.
+- *Prescriptive shape prompts* ("one small patch of {b} in the middle, {a} all around the
+  edge"): worked exactly as written and that was the failure - a field of centred ovals,
+  rejected outright ("you have generated round spheres... give pixellab freedom"). 126
+  sheets.
+
+Phrasing still matters even at three words, so all three tiny forms run per ordered pair
+and the measurement sorts the results: measured on grass/black_rock, **"{b} on top of
+{a}" draws 100% coverage of b** (no mixture at all), while "{a} with {b}" and "{a} and
+{b}" draw genuine mixtures from either side.
+
+**Validity (maintainer rules, 2026-08-28):** a clear majority ground - never 50/50; both
+grounds visibly present; edges that still read as the majority. The edge filter is NOT
+absolute: a tall feature may cross the rim ("the image is a visualization of a 3D stone
+with height"), so `edge_contact` is published as a number and only a rim mostly owned by
+the minority rejects. Invalid tiles are omitted from the index, never deleted.
+
+**The consumer surface is the wiki's contract, adopted verbatim** (their board post,
+2026-08-28): `tiles/fades/index.json`, schema `tiles3/fade-tiles@1`,
+`pairs["<a>__to__<b>"] = [{key, file, pct: {"<a>": 62.5, "<b>": 37.5}}]`. `key` is stable
+for the life of the art (verdicts ride on it); `file` is the content-hashed post path,
+never constructed by a consumer; `pct` is per ground BY NAME, measured on the exact bytes
+in `file`. The raw generator listing is `tiles/fades/sheets.json`. Top-only art: the wall
+is meaningless, same as `tiles/tops`.
+
+## Superseded: the blend-tile ladder (`tiles/blends/`, kept on disk)
 
 A boundary is not the only way one ground becomes another. **Blend tiles** are top-only
 art that is mostly ground A with ground B creeping in, and they carry no boundary at
