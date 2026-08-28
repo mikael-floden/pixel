@@ -271,8 +271,14 @@ def main():
     states = sum(len(n) for _, n in plan)
     billed = sum(0 if anc else 3 for _, n in plan for _s, anc in n)
     print(f"{len(plan)} piece(s), {states} state(s) to animate")
-    print(f"  ~{billed} generations  (measured 2026-08-28: $0.0045/generation, "
-          f"so about ${billed * 0.0045:.2f})")
+    # $0.012/generation, from the FULL 82-tree run (3,360 generations,
+    # 2026-08-28). An earlier figure of $0.0045 came from timing a single
+    # 39-generation piece and was ~3x optimistic — it was quoted to him as
+    # "$14" for a job that cost $40. Never size a run off one piece: the
+    # PixelLab account is shared with the other art domains, so a short
+    # measurement window attributes their spend to nobody.
+    print(f"  ~{billed} generations  (measured over the full 2026-08-28 run: "
+          f"$0.012/generation, so roughly ${billed * 0.012:.2f})")
     if args.dry_run:
         for rel, need in plan[:20]:
             print(f"    {rel}: {len(need)}")
