@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-top-walls@1",
   "_comment": "WHICH x-OVER-x TILE BUILDS THE WALL under a borrowed-wall top (maintainer 2026-08-28). When a tile is used top-only, its wall comes from the ground's own x-over-x pool; the wiki picks the candidate MEASURED closest to the top in colour and structure (mean top-face RGB + dominant-share + colour-count distance, stats in wiki/site/data.json wallPools and per-candidate tm/tflat/tk). An entry here is the Game Master's per-face override from the wiki's wall stepper: keyed by the FACE tile's stable key (a tops id or an x-over-y candidate key), value.wall = the chosen x-over-x candidate key. Absent = the measured best; stepping back onto the measured best deletes the entry. Written by the wiki; consumed by whatever composes ground tops (the wiki today, the game when it borrows walls). See live/README.md.",
-  "updated_at": "2026-08-28T13:24:35.747Z",
+  "updated_at": "2026-08-28T13:25:42.696Z",
   "overrides": {
     "tiles/grass__over__black_rock/cd84cd48": {
       "wall": "tiles/black_rock__over__black_rock/a54bc953",
@@ -146,6 +146,26 @@
     "tiles/grass__over__black_rock/e21f2f7c": {
       "wall": "tiles/black_rock__over__black_rock/01101e0a",
       "updated_at": "2026-08-28T13:24:30.013Z"
+    },
+    "tiles/grass__over__black_rock/d4dca3bc": {
+      "wall": "tiles/black_rock__over__black_rock/7228c2d0",
+      "updated_at": "2026-08-28T13:24:48.722Z"
+    },
+    "tiles/grass__over__black_rock/80fe1fbf": {
+      "wall": "tiles/black_rock__over__black_rock/c8ef157d",
+      "updated_at": "2026-08-28T13:24:59.042Z"
+    },
+    "tiles/grass__over__black_rock/7e339269": {
+      "wall": "tiles/black_rock__over__black_rock/c51bfa48",
+      "updated_at": "2026-08-28T13:25:10.086Z"
+    },
+    "tiles/grass__over__black_rock/723e4a0f": {
+      "wall": "tiles/black_rock__over__black_rock/aac59257",
+      "updated_at": "2026-08-28T13:25:21.624Z"
+    },
+    "tiles/grass__over__black_rock/50c83d8a": {
+      "wall": "tiles/black_rock__over__black_rock/aac59257",
+      "updated_at": "2026-08-28T13:25:37.950Z"
     }
   }
 }
