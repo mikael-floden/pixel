@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:02:12.159Z",
+  "updated_at": "2026-08-28T02:03:49.553Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1806,6 +1806,53 @@
               "kind": "tile",
               "id": "tiles/light_soil__over__dark_mud/01a51c4e",
               "tile": "tiles/light_soil__over__dark_mud/01a51c4e",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__water/9118a674",
+              "tile": "tiles/light_soil__over__water/9118a674",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__water/77fa2b9e",
+              "tile": "tiles/light_soil__over__water/77fa2b9e",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__water/285316e9",
+              "tile": "tiles/light_soil__over__water/285316e9",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__light_beach/f168a348",
+              "tile": "tiles/light_soil__over__light_beach/f168a348",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__light_beach/61b9eeb4",
+              "tile": "tiles/light_soil__over__light_beach/61b9eeb4",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/light_soil__over__dark_mud/bab407c9",
+              "tile": "tiles/light_soil__over__dark_mud/bab407c9",
               "weight": 1
             }
           ]
