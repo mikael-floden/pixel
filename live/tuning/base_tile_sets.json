@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T01:27:07.715Z",
+  "updated_at": "2026-08-28T01:28:21.194Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -944,6 +944,47 @@
               "kind": "tile",
               "id": "tiles/grey_paving_stone__over__ice/86845cc7",
               "tile": "tiles/grey_paving_stone__over__ice/86845cc7",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_07.webp",
+              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_07.df7c12c0.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_08.webp",
+              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_08.7edde4a9.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_10.webp",
+              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_10.aef9b872.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/tile_01.webp",
+              "tile": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/post/tile_01.b245a564.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_04.webp",
+              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_04.f6ee74bd.webp",
               "weight": 1
             }
           ]
