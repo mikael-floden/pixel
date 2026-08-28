@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:20:06.334Z",
+  "updated_at": "2026-08-28T02:23:38.093Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -2218,7 +2218,7 @@
         {
           "id": 0,
           "name": "Clean",
-          "weight": 1,
+          "weight": 0.1,
           "members": [
             {
               "kind": "clean",
@@ -2424,6 +2424,65 @@
               "kind": "tile",
               "id": "tiles/slime__over__parquet_floor/767921e1",
               "tile": "tiles/slime__over__parquet_floor/767921e1",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/24b6bd8b",
+              "tile": "tiles/slime__over__black_rock/24b6bd8b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__snow/a27706be",
+              "tile": "tiles/slime__over__snow/a27706be",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__snow/2a0abb5d",
+              "tile": "tiles/slime__over__snow/2a0abb5d",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__light_beach/cfa5d5b3",
+              "tile": "tiles/slime__over__light_beach/cfa5d5b3",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/7e7c7606",
+              "tile": "tiles/slime__over__black_rock/7e7c7606",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__brown_paving_stone/e2edd071",
+              "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__light_soil/480079e1",
+              "tile": "tiles/slime__over__light_soil/480079e1",
+              "weight": 0.3
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__snow/8104ec8d",
+              "tile": "tiles/slime__over__snow/8104ec8d",
               "weight": 1
             }
           ]
