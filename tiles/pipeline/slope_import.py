@@ -41,6 +41,9 @@ def slug(ground, amp, seed):
     return os.path.join(OUT, ground, f"a{int(round(amp * 100)):02d}_s{seed:02d}")
 
 
+REPLACE = False
+
+
 def run(apply=True, limit=1200):
     client = PixelLabClient()
     jobs = json.load(open(os.path.join(OUT, "jobs.json")))["jobs"]
@@ -61,7 +64,12 @@ def run(apply=True, limit=1200):
     written = skipped = missing = 0
     for desc, js in sorted(by_desc.items()):
         g = js[0]["a"]
-        ts = sorted(got.get(desc, []), key=lambda r: r.get("created_at") or "")
+        # THE NEWEST N, because the account now holds two runs under the SAME
+        # description: the first (Thickness 0%, 64x30 flat-top-only, wrong perspective)
+        # and the regeneration at the house depth. Sorting ascending and zipping would
+        # import the old ones. Take the most recent len(js), then restore seed order.
+        allts = sorted(got.get(desc, []), key=lambda r: r.get("created_at") or "")
+        ts = allts[-len(js):] if len(allts) >= len(js) else allts
         if len(ts) != len(js):
             print(f"MISMATCH {g}: {len(ts)} tiles on the account for {len(js)} jobs "
                   f"- skipped (re-run once generation finishes)")
@@ -69,7 +77,7 @@ def run(apply=True, limit=1200):
             continue
         for j, t in zip(js, ts):
             d = slug(g, j["amplitude"], j["seed"])
-            if os.path.exists(os.path.join(d, "meta.json")):
+            if os.path.exists(os.path.join(d, "meta.json")) and not REPLACE:
                 skipped += 1
                 continue
             if not apply:
@@ -148,7 +156,11 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--limit", type=int, default=1200)
+    ap.add_argument("--replace", action="store_true",
+                    help="overwrite sets already on disk (the v2 regeneration)")
     a = ap.parse_args()
+    REPLACE = a.replace
+    globals()["REPLACE"] = a.replace
     run(apply=not a.dry_run, limit=a.limit)
     if not a.dry_run:
         d = write_index()

@@ -202,12 +202,7 @@ echo "token ok (${#TOK} chars)"
 
 DONE=${DONE:-__DONE__}
 touch "$DONE"
-# Carry progress over from the first run, which used the older file name. Without this,
-# renaming would silently re-buy every set already paid for.
-if [ ! -s "$DONE" ] && [ -s plateau_done.txt ]; then
-  cp plateau_done.txt "$DONE"
-  echo "carried over $(wc -l < "$DONE") job(s) from plateau_done.txt"
-fi
+echo "resuming: $(wc -l < "$DONE") job(s) already done"
 echo "resuming: $(wc -l < "$DONE") job(s) already done"
 
 run() {  # a b amp seed elevation step_slope description
@@ -301,9 +296,15 @@ if __name__ == "__main__":
     if a.shell:
         path = os.path.join(out_dir, "run_slopes.sh" if a.slope
                             else "run_in_cloudshell.sh")
-        depth = a.depth_ratio if a.depth_ratio is not None else (0.0 if a.slope else None)
+        # THE HOUSE PERSPECTIVE, ALWAYS. The first slope run copied the web UI's
+        # Thickness 0% and produced 64x30 flat-top-only art - the diamond was correct
+        # (widest@row14, 2.21px/row, 2px flat top, identical to transitions and tops)
+        # but with no wall it reads as a low-res top-down chip. Maintainer, 2026-08-28:
+        # "You generated low res topdown. I wanted the perspective we always have and
+        # 64x64." So slopes take GEOMETRY's tile_depth_ratio like every other tile.
+        depth = a.depth_ratio
         open(path, "w").write(shell_script(
-            jobs, done=("slope_done.txt" if a.slope else "run_done.txt"),
+            jobs, done=("slope_v2_done.txt" if a.slope else "run_done.txt"),
             depth_ratio=depth) + "\n")
         print(f"wrote {path}  ({len(jobs)} jobs, est ${len(jobs)*RATE_USD:.2f})")
     else:
