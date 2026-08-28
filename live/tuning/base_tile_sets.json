@@ -7,14 +7,14 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T06:47:43.979Z",
+  "updated_at": "2026-08-28T06:53:59.692Z",
   "grounds": {
     "black_rock": {
       "sets": [
         {
           "id": 0,
           "name": "Clean",
-          "weight": 1,
+          "weight": 0,
           "members": [
             {
               "kind": "clean",
@@ -677,6 +677,137 @@
               "id": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
               "tile": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
               "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__black_rock/031525f7",
+              "tile": "tiles/dark_mud__over__black_rock/031525f7",
+              "weight": 0.5
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__black_rock/0ce9376f",
+              "tile": "tiles/dark_mud__over__black_rock/0ce9376f",
+              "weight": 0.5
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__black_rock/1a8d00c1",
+              "tile": "tiles/dark_mud__over__black_rock/1a8d00c1",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__black_rock/2c2c77ae",
+              "tile": "tiles/dark_mud__over__black_rock/2c2c77ae",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__black_rock/f9e52b1e",
+              "tile": "tiles/dark_mud__over__black_rock/f9e52b1e",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/24775ad5",
+              "tile": "tiles/dark_mud__over__dark_mud/24775ad5",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/350fb069",
+              "tile": "tiles/dark_mud__over__dark_mud/350fb069",
+              "weight": 0.3
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/684a8f83",
+              "tile": "tiles/dark_mud__over__dark_mud/684a8f83",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/7ab43073",
+              "tile": "tiles/dark_mud__over__dark_mud/7ab43073",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/8ab05341",
+              "tile": "tiles/dark_mud__over__dark_mud/8ab05341",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/8ea65088",
+              "tile": "tiles/dark_mud__over__dark_mud/8ea65088",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/985608cb",
+              "tile": "tiles/dark_mud__over__dark_mud/985608cb",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/a37e7ce5",
+              "tile": "tiles/dark_mud__over__dark_mud/a37e7ce5",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/ad6144bf",
+              "tile": "tiles/dark_mud__over__dark_mud/ad6144bf",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/ce7a9e75",
+              "tile": "tiles/dark_mud__over__dark_mud/ce7a9e75",
+              "weight": 1.5
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/f409eb74",
+              "tile": "tiles/dark_mud__over__dark_mud/f409eb74",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__dark_mud/f927588d",
+              "tile": "tiles/dark_mud__over__dark_mud/f927588d",
+              "weight": 0.8
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__grey_stone/70bd19df",
+              "tile": "tiles/dark_mud__over__grey_stone/70bd19df",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__ice/984d6ad5",
+              "tile": "tiles/dark_mud__over__ice/984d6ad5",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/dark_mud__over__snow/3bce5308",
+              "tile": "tiles/dark_mud__over__snow/3bce5308",
+              "weight": 2
             }
           ]
         }
@@ -2387,7 +2518,7 @@
         {
           "id": 0,
           "name": "Clean",
-          "weight": 0.1,
+          "weight": 0,
           "members": [
             {
               "kind": "clean",
@@ -2600,7 +2731,7 @@
         {
           "id": 3,
           "name": "Set",
-          "weight": 1,
+          "weight": 5,
           "members": [
             {
               "kind": "clean",
