@@ -9649,15 +9649,6 @@
           "generated_at": "2026-08-13T19:54:37+00:00",
           "art_hash": "a128f31bce5b1dd2"
         },
-        "LIT_2": {
-          "sprite": "cliff_features/cliff_feature_002/lit_2/sprite.webp",
-          "pixellab_object_id": "ab74b45b-f12d-4bf2-850a-964d5dd6a3d7",
-          "generated_at": "2026-08-16T09:18:16+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8407,
-          "glow_score": 0.0,
-          "art_hash": "c9d8c3fbb65661e4"
-        },
         "LIT_3": {
           "sprite": "cliff_features/cliff_feature_002/lit_3/sprite.webp",
           "pixellab_object_id": "d6937a6e-001c-4f6c-8ebe-685ef5d7142c",
@@ -9676,23 +9667,15 @@
           "glow_score": 0.0284,
           "art_hash": "4f5b1324c44f6585"
         },
-        "NOT_LIT_1": {
-          "sprite": "cliff_features/cliff_feature_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "93335956-802f-46e3-b13a-8f491bc8acbd",
-          "generated_at": "2026-08-16T09:18:17+00:00",
+        "NOT_LIT_3": {
+          "sprite": "cliff_features/cliff_feature_002/not_lit_3/sprite.webp",
+          "pixellab_object_id": "ab74b45b-f12d-4bf2-850a-964d5dd6a3d7",
+          "generated_at": "2026-08-16T09:18:16+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.6547,
+          "difference_from_source": 0.8407,
           "glow_score": 0.0,
-          "art_hash": "36b6623b975ad809"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_features/cliff_feature_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "e66d24d4-9bd8-47fb-b863-d801bb60b822",
-          "generated_at": "2026-08-16T09:18:18+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8623,
-          "glow_score": 0.0,
-          "art_hash": "22e793952377f1cf"
+          "relit_from": "LIT_2",
+          "art_hash": "c9d8c3fbb65661e4"
         }
       },
       "animations": []
@@ -9722,15 +9705,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_features/cliff_feature_007/lit_1/sprite.webp",
-          "pixellab_object_id": "dc2cbe01-317f-4182-bb88-7f1a0a17d46c",
-          "generated_at": "2026-08-16T09:21:08+00:00",
-          "glow_concept": "warm light spilling from a deep crevice",
-          "difference_from_source": 0.9315,
-          "glow_score": 0.0055,
-          "art_hash": "3b49fb4c9a4b7ae8"
-        },
         "LIT_2": {
           "sprite": "cliff_features/cliff_feature_007/lit_2/sprite.webp",
           "pixellab_object_id": "48a77921-d0b3-4032-b7a2-4734044e452c",
@@ -9824,33 +9798,6 @@
           "difference_from_source": 0.3903,
           "glow_score": 0.0457,
           "art_hash": "8c3441ee25397150"
-        },
-        "LIT_4": {
-          "sprite": "cliff_features/cliff_feature_010/lit_4/sprite.webp",
-          "pixellab_object_id": "70b478c3-7f9f-4ad1-ae86-20165bab7d94",
-          "generated_at": "2026-08-16T09:21:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6513,
-          "glow_score": 0.0,
-          "art_hash": "85870acb5703c330"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_features/cliff_feature_010/not_lit_1/sprite.webp",
-          "pixellab_object_id": "288029e2-fd3d-4d3e-a80a-7f0817296e84",
-          "generated_at": "2026-08-16T09:22:01+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.1739,
-          "glow_score": 0.0,
-          "art_hash": "54ad5d88741abc37"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_features/cliff_feature_010/not_lit_2/sprite.webp",
-          "pixellab_object_id": "4edc9bef-54ba-496b-9abc-cf55c0559124",
-          "generated_at": "2026-08-16T09:21:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2176,
-          "glow_score": 0.0,
-          "art_hash": "e60228e0dad5ec08"
         }
       },
       "animations": []
@@ -9921,15 +9868,6 @@
           "difference_from_source": 0.9126,
           "glow_score": 0.0,
           "art_hash": "f76d979cc0fdd233"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_features/cliff_feature_900/not_lit_2/sprite.webp",
-          "pixellab_object_id": "e12ecb56-02ea-4a02-8e83-5c7f1f9a4a11",
-          "generated_at": "2026-08-16T09:23:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9926,
-          "glow_score": 0.0,
-          "art_hash": "137d9840ae79ad91"
         }
       },
       "animations": []
@@ -9983,15 +9921,6 @@
           "generated_at": "2026-08-13T23:28:58+00:00",
           "art_hash": "63e6d0a47e8f7bf3"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_features/cliff_feature_903/not_lit_2/sprite.webp",
-          "pixellab_object_id": "3b9df5e2-1e5e-4f8d-8ee7-85a85d3c67b8",
-          "generated_at": "2026-08-16T09:26:43+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6261,
-          "glow_score": 0.2097,
-          "art_hash": "29b486af63f59638"
-        },
         "NOT_LIT_3": {
           "sprite": "cliff_features/cliff_feature_903/not_lit_3/sprite.webp",
           "pixellab_object_id": "7ca166ef-92c7-4aa0-a800-8902c5ba8f5b",
@@ -10000,15 +9929,6 @@
           "difference_from_source": 0.6409,
           "glow_score": 0.2616,
           "art_hash": "11c2c68db34b160f"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_features/cliff_feature_903/not_lit_4/sprite.webp",
-          "pixellab_object_id": "b4ff38f4-046e-45fc-bc34-b684c665b5d1",
-          "generated_at": "2026-08-16T09:27:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7449,
-          "glow_score": 0.1916,
-          "art_hash": "12347c089f814b8d"
         }
       },
       "animations": []
@@ -10117,56 +10037,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "cliff_fragments/cliff_fragment_002/sprite.webp",
           "pixellab_object_id": "c6908fd1-403b-47ad-b74f-9def501a1b65",
           "generated_at": "2026-08-13T05:37:08+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "213331bd37f74316"
         },
-        "LIT_2": {
-          "sprite": "cliff_fragments/cliff_fragment_002/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_4/sprite.webp",
           "pixellab_object_id": "0a94f54d-c193-43bd-984a-ba8c436dff38",
           "generated_at": "2026-08-16T09:29:44+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5499,
           "glow_score": 0.2364,
+          "relit_from": "LIT_2",
           "art_hash": "1a4be471ead279dc"
         },
-        "LIT_3": {
-          "sprite": "cliff_fragments/cliff_fragment_002/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_5/sprite.webp",
           "pixellab_object_id": "892bdf72-2278-4517-83fc-49fbff0c9131",
           "generated_at": "2026-08-16T09:30:05+00:00",
           "glow_concept": null,
           "difference_from_source": 0.665,
           "glow_score": 0.1943,
+          "relit_from": "LIT_3",
           "art_hash": "4ccc60e2980b0a65"
         },
-        "LIT_4": {
-          "sprite": "cliff_fragments/cliff_fragment_002/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_6/sprite.webp",
           "pixellab_object_id": "0e4b6efb-81f8-4b6f-86b0-b609c60498f9",
           "generated_at": "2026-08-16T09:33:23+00:00",
           "glow_concept": null,
           "difference_from_source": 0.8726,
           "glow_score": 0.0063,
+          "relit_from": "LIT_4",
           "art_hash": "179f6dc8e59ac827"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "84bd0223-4e85-4fd0-a60b-a8e40590bccc",
-          "generated_at": "2026-08-16T09:31:30+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.97,
-          "glow_score": 0.0,
-          "art_hash": "79863bafa7ec1eb2"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_fragments/cliff_fragment_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "f040382f-179e-4e1c-91c8-04bd36599286",
-          "generated_at": "2026-08-16T09:30:47+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9019,
-          "glow_score": 0.0,
-          "art_hash": "505fcbe8985daede"
         }
       },
       "animations": []
@@ -10196,24 +10102,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_mosses/cliff_moss_011/lit_1/sprite.webp",
-          "pixellab_object_id": "5f9ecbc4-6cfb-4bb9-99d6-f2cdd514685c",
-          "generated_at": "2026-08-16T09:36:34+00:00",
-          "glow_concept": "glow-lichen in bright rings",
-          "difference_from_source": 0.3614,
-          "glow_score": 0.1803,
-          "art_hash": "21db8656f32fd9a1"
-        },
-        "LIT_2": {
-          "sprite": "cliff_mosses/cliff_moss_011/lit_2/sprite.webp",
-          "pixellab_object_id": "fae0bd8c-52ba-4770-b34c-47fbbe4a11e4",
-          "generated_at": "2026-08-16T09:37:03+00:00",
-          "glow_concept": "the moss glowing soft green",
-          "difference_from_source": 0.3596,
-          "glow_score": 0.0223,
-          "art_hash": "4272e77c7b6d5a22"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_mosses/cliff_moss_011/sprite.webp",
           "pixellab_object_id": "7eab3b6d-8c5a-459e-bc88-be98620b928e",
@@ -10457,15 +10345,6 @@
           "generated_at": "2026-08-14T04:08:58+00:00",
           "art_hash": "e8bc8e4c819aef9d"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_roots/cliff_root_013/not_lit_2/sprite.webp",
-          "pixellab_object_id": "554e8b34-f771-4dcc-adf2-ad0d0eb99304",
-          "generated_at": "2026-08-16T09:41:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2558,
-          "glow_score": 0.0028,
-          "art_hash": "4883b7aa4ea7d790"
-        },
         "NOT_LIT_3": {
           "sprite": "cliff_roots/cliff_root_013/not_lit_3/sprite.webp",
           "pixellab_object_id": "88c48b01-202e-4331-8c28-fcfd16f04774",
@@ -10544,24 +10423,6 @@
           "difference_from_source": 0.6866,
           "glow_score": 0.3682,
           "art_hash": "0b7533b4e5e904c2"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_roots/cliff_root_016/not_lit_1/sprite.webp",
-          "pixellab_object_id": "19812ae5-6dfc-4e0b-8214-8733b283616e",
-          "generated_at": "2026-08-16T09:43:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9998,
-          "glow_score": 0.0,
-          "art_hash": "0fcc0ba13fe4b105"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_roots/cliff_root_016/not_lit_2/sprite.webp",
-          "pixellab_object_id": "7f08db61-4235-4257-b931-f95bb6617fc5",
-          "generated_at": "2026-08-16T09:44:12+00:00",
-          "glow_concept": null,
-          "difference_from_source": 1.0,
-          "glow_score": 0.0,
-          "art_hash": "98e79de4b789c600"
         }
       },
       "animations": []
@@ -10591,12 +10452,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_roots/cliff_root_040/sprite.webp",
-          "pixellab_object_id": "a4dd0bdb-336d-4f34-acdb-6c72b3eb4d73",
-          "generated_at": "2026-08-14T04:48:50+00:00",
-          "art_hash": "7c575c539b99087c"
-        },
         "LIT_2": {
           "sprite": "cliff_roots/cliff_root_040/lit_2/sprite.webp",
           "pixellab_object_id": "38bf7908-5784-4d93-b525-dbe45489dbf9",
@@ -10605,15 +10460,6 @@
           "difference_from_source": 0.8403,
           "glow_score": 0.2994,
           "art_hash": "b2f04c761972eaa5"
-        },
-        "LIT_3": {
-          "sprite": "cliff_roots/cliff_root_040/lit_3/sprite.webp",
-          "pixellab_object_id": "f70aa823-59f1-4314-9db5-e4d8af37e175",
-          "generated_at": "2026-08-16T09:44:44+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6633,
-          "glow_score": 0.3399,
-          "art_hash": "fe8ad0e060da202f"
         },
         "LIT_4": {
           "sprite": "cliff_roots/cliff_root_040/lit_4/sprite.webp",
@@ -10624,15 +10470,6 @@
           "glow_score": 0.3624,
           "art_hash": "14641943d3cce9ed"
         },
-        "NOT_LIT_1": {
-          "sprite": "cliff_roots/cliff_root_040/not_lit_1/sprite.webp",
-          "pixellab_object_id": "ce60b552-6ca4-4dfd-92f4-847b5b96aba6",
-          "generated_at": "2026-08-16T09:45:27+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9979,
-          "glow_score": 0.0003,
-          "art_hash": "d6234ecc07f498ca"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_roots/cliff_root_040/not_lit_2/sprite.webp",
           "pixellab_object_id": "224b634b-c4a3-46ac-b992-c0d6de334d04",
@@ -10641,6 +10478,13 @@
           "difference_from_source": 0.6272,
           "glow_score": 0.2615,
           "art_hash": "094f2964c401ba9d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_roots/cliff_root_040/sprite.webp",
+          "pixellab_object_id": "a4dd0bdb-336d-4f34-acdb-6c72b3eb4d73",
+          "generated_at": "2026-08-14T04:48:50+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "7c575c539b99087c"
         }
       },
       "animations": []
@@ -10670,15 +10514,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_roots/cliff_root_047/lit_1/sprite.webp",
-          "pixellab_object_id": "3f95c5e2-282d-48e7-9aa6-b4c7e7691350",
-          "generated_at": "2026-08-16T09:46:39+00:00",
-          "glow_concept": "glow-moss packed between them",
-          "difference_from_source": 0.6289,
-          "glow_score": 0.0659,
-          "art_hash": "7d19e2a86f7cf03d"
-        },
         "LIT_2": {
           "sprite": "cliff_roots/cliff_root_047/lit_2/sprite.webp",
           "pixellab_object_id": "ccc29ad9-f82c-4db5-a1d5-f0021550cdfe",
@@ -10828,56 +10663,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "cliff_roots/cliff_root_052/sprite.webp",
           "pixellab_object_id": "f57fb241-6bce-45ba-974e-fe2d11113705",
           "generated_at": "2026-08-14T04:52:44+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "b5dd445b19d74b43"
         },
-        "LIT_2": {
-          "sprite": "cliff_roots/cliff_root_052/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "cliff_roots/cliff_root_052/not_lit_4/sprite.webp",
           "pixellab_object_id": "05634b9f-c966-43dc-bb4a-ae1ceeead30e",
           "generated_at": "2026-08-16T09:48:12+00:00",
           "glow_concept": null,
           "difference_from_source": 0.7257,
           "glow_score": 0.2029,
+          "relit_from": "LIT_2",
           "art_hash": "f8057abb64ef3e2a"
         },
-        "LIT_3": {
-          "sprite": "cliff_roots/cliff_root_052/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "cliff_roots/cliff_root_052/not_lit_5/sprite.webp",
           "pixellab_object_id": "af04f744-b5e1-4abc-b733-20e8d6189627",
           "generated_at": "2026-08-16T09:48:26+00:00",
           "glow_concept": null,
           "difference_from_source": 0.7799,
           "glow_score": 0.099,
+          "relit_from": "LIT_3",
           "art_hash": "1b496bacc7fb93ef"
         },
-        "LIT_4": {
-          "sprite": "cliff_roots/cliff_root_052/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "cliff_roots/cliff_root_052/not_lit_6/sprite.webp",
           "pixellab_object_id": "99da29a4-aba8-4281-8fab-90ac1898ac9a",
           "generated_at": "2026-08-16T09:49:20+00:00",
           "glow_concept": null,
           "difference_from_source": 0.3626,
           "glow_score": 0.2319,
+          "relit_from": "LIT_4",
           "art_hash": "f5251930a19d47fb"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_roots/cliff_root_052/not_lit_1/sprite.webp",
-          "pixellab_object_id": "0dda6a53-f40e-4b5b-aa95-cbbd8a54ee06",
-          "generated_at": "2026-08-16T09:49:00+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8939,
-          "glow_score": 0.0,
-          "art_hash": "84f2e24f120a1da9"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_roots/cliff_root_052/not_lit_2/sprite.webp",
-          "pixellab_object_id": "0cbc9d85-02b7-4994-9401-243d4664875c",
-          "generated_at": "2026-08-16T09:48:49+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8307,
-          "glow_score": 0.0,
-          "art_hash": "be138b836f7de4d7"
         }
       },
       "animations": []
@@ -10986,56 +10807,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
           "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
           "generated_at": "2026-08-14T02:59:42+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "a18d030f8dfd09d9"
         },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_002/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_4/sprite.webp",
           "pixellab_object_id": "31eccee1-93d9-4237-9b31-44881d4c77c0",
           "generated_at": "2026-08-16T09:50:29+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5234,
           "glow_score": 0.0,
+          "relit_from": "LIT_2",
           "art_hash": "9daf594764b1a323"
         },
-        "LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_002/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_5/sprite.webp",
           "pixellab_object_id": "4bed6757-4253-4b4f-aaa2-c4a67b8d4e2a",
           "generated_at": "2026-08-16T09:50:31+00:00",
           "glow_concept": null,
           "difference_from_source": 0.7608,
           "glow_score": 0.0029,
+          "relit_from": "LIT_3",
           "art_hash": "05df2a5d0f0ba2a0"
         },
-        "LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_002/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_6/sprite.webp",
           "pixellab_object_id": "238fdc7b-759d-4abf-9205-f456bb47ba09",
           "generated_at": "2026-08-16T09:50:43+00:00",
           "glow_concept": null,
           "difference_from_source": 0.729,
           "glow_score": 0.0048,
+          "relit_from": "LIT_4",
           "art_hash": "a363106ac277b205"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_1/sprite.webp",
-          "pixellab_object_id": "232df00c-4173-494e-92b7-f6e4640c507f",
-          "generated_at": "2026-08-16T09:51:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8004,
-          "glow_score": 0.0,
-          "art_hash": "c3d3c7c43822658d"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_2/sprite.webp",
-          "pixellab_object_id": "0f08a026-2866-4285-8131-5da87b5361b2",
-          "generated_at": "2026-08-16T09:51:39+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7705,
-          "glow_score": 0.0,
-          "art_hash": "fe97cd086bc84313"
         }
       },
       "animations": []
@@ -11065,39 +10872,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
-          "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
-          "generated_at": "2026-08-14T03:13:33+00:00",
-          "art_hash": "608d5f8e716ce491"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_006/lit_2/sprite.webp",
-          "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
-          "generated_at": "2026-08-16T09:51:40+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4967,
-          "glow_score": 0.007,
-          "art_hash": "4b077e2752f3a14a"
-        },
-        "LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_006/lit_3/sprite.webp",
-          "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
-          "generated_at": "2026-08-16T09:51:52+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.532,
-          "glow_score": 0.0055,
-          "art_hash": "a7b2ee4d69627fed"
-        },
-        "LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_006/lit_4/sprite.webp",
-          "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
-          "generated_at": "2026-08-16T09:51:53+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7818,
-          "glow_score": 0.0055,
-          "art_hash": "0e8be2b20e49aaf8"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_1/sprite.webp",
           "pixellab_object_id": "b8687c05-1a2c-49d1-93dd-e19ede1b1097",
@@ -11115,6 +10889,43 @@
           "difference_from_source": 0.5799,
           "glow_score": 0.0,
           "art_hash": "412f47de9f60a3eb"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
+          "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+          "generated_at": "2026-08-14T03:13:33+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "608d5f8e716ce491"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_4/sprite.webp",
+          "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
+          "generated_at": "2026-08-16T09:51:40+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4967,
+          "glow_score": 0.007,
+          "relit_from": "LIT_2",
+          "art_hash": "4b077e2752f3a14a"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_5/sprite.webp",
+          "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
+          "generated_at": "2026-08-16T09:51:52+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.532,
+          "glow_score": 0.0055,
+          "relit_from": "LIT_3",
+          "art_hash": "a7b2ee4d69627fed"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_6/sprite.webp",
+          "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
+          "generated_at": "2026-08-16T09:51:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7818,
+          "glow_score": 0.0055,
+          "relit_from": "LIT_4",
+          "art_hash": "0e8be2b20e49aaf8"
         }
       },
       "animations": []
@@ -11144,24 +10955,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_007/lit_1/sprite.webp",
-          "pixellab_object_id": "a4174604-ba6f-4e5e-a349-1c9965a88a1a",
-          "generated_at": "2026-08-16T09:54:54+00:00",
-          "glow_concept": "the leaves shining faintly",
-          "difference_from_source": 0.3953,
-          "glow_score": 0.1114,
-          "art_hash": "e2d77818ffe93cc2"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_007/lit_2/sprite.webp",
-          "pixellab_object_id": "91606954-a967-4ddb-938a-b65015cd9f11",
-          "generated_at": "2026-08-16T09:53:14+00:00",
-          "glow_concept": "blossoms glowing along the branches",
-          "difference_from_source": 0.4752,
-          "glow_score": 0.1391,
-          "art_hash": "97c0a0c08294d360"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_007/sprite.webp",
           "pixellab_object_id": "11507fd0-3719-4b61-859c-b3a01c849160",
@@ -11216,63 +11009,23 @@
       },
       "status": "complete",
       "generated_at": "2026-08-14T03:32:55+00:00",
-      "pixellab_object_id": "71c12f50-72ff-40c7-af12-bcedbafc8c32",
+      "pixellab_object_id": "13f3c5f7-1bcd-4f75-88f9-ae81017f2c7e",
       "sprite": "cliff_shrubs/cliff_shrub_009/sprite.webp",
-      "art_hash": "4ff93f4b6cc287d7",
+      "art_hash": "1d2fb8b90b784125",
       "type": "MOUNTAIN_WALL",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/lit_1/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_009/sprite.webp",
           "pixellab_object_id": "13f3c5f7-1bcd-4f75-88f9-ae81017f2c7e",
           "generated_at": "2026-08-16T09:54:19+00:00",
           "glow_concept": "the leaves shining faintly",
           "difference_from_source": 0.6827,
           "glow_score": 0.1253,
+          "relit_from": "LIT_1",
+          "replaced_anchor": "NOT_LIT_1",
           "art_hash": "1d2fb8b90b784125"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/lit_2/sprite.webp",
-          "pixellab_object_id": "ea86af61-8c9b-47d0-8747-580b6d3aa2d6",
-          "generated_at": "2026-08-16T09:54:33+00:00",
-          "glow_concept": "blossoms glowing along the branches",
-          "difference_from_source": 0.3504,
-          "glow_score": 0.0759,
-          "art_hash": "9f0decb884b7bd62"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/sprite.webp",
-          "pixellab_object_id": "71c12f50-72ff-40c7-af12-bcedbafc8c32",
-          "generated_at": "2026-08-14T03:32:55+00:00",
-          "art_hash": "4ff93f4b6cc287d7"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_2/sprite.webp",
-          "pixellab_object_id": "9ac0aff3-33eb-41fe-a384-9e60cae81e4d",
-          "generated_at": "2026-08-16T09:53:37+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5257,
-          "glow_score": 0.0,
-          "art_hash": "2b248bc6bee13201"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_3/sprite.webp",
-          "pixellab_object_id": "8a433e6c-1337-4f4a-bbc7-b9f7b9134ccc",
-          "generated_at": "2026-08-16T09:53:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7459,
-          "glow_score": 0.0,
-          "art_hash": "5fe7ccb60d2009a8"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_009/not_lit_4/sprite.webp",
-          "pixellab_object_id": "ab28109f-3f24-4190-8b9a-d5017612c722",
-          "generated_at": "2026-08-16T09:54:32+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6378,
-          "glow_score": 0.0,
-          "art_hash": "7696657c37fca31b"
         }
       },
       "animations": []
@@ -11302,39 +11055,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_010/sprite.webp",
-          "pixellab_object_id": "45cb2e35-aafa-4aeb-8883-a6835ad15a76",
-          "generated_at": "2026-08-14T03:33:54+00:00",
-          "art_hash": "abf3bde9e4b99b7e"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_010/lit_2/sprite.webp",
-          "pixellab_object_id": "5998338e-23eb-48f0-9838-dd2dbfd843a7",
-          "generated_at": "2026-08-16T09:54:21+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3997,
-          "glow_score": 0.028,
-          "art_hash": "ba6570cc5bbb1b00"
-        },
-        "LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_010/lit_3/sprite.webp",
-          "pixellab_object_id": "1892fab2-d505-418a-9f6f-455b2f1c7c54",
-          "generated_at": "2026-08-16T09:54:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6031,
-          "glow_score": 0.0244,
-          "art_hash": "481a34cfc02c0c87"
-        },
-        "LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_010/lit_4/sprite.webp",
-          "pixellab_object_id": "54f16a0a-fda0-4990-8522-c7709b6db262",
-          "generated_at": "2026-08-16T09:54:56+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9332,
-          "glow_score": 0.0149,
-          "art_hash": "2b093ee521d2ec35"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_010/not_lit_1/sprite.webp",
           "pixellab_object_id": "07f16482-5ebf-411c-accf-8238203a72ae",
@@ -11352,6 +11072,43 @@
           "difference_from_source": 0.427,
           "glow_score": 0.0,
           "art_hash": "20a19836591a55f7"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_010/sprite.webp",
+          "pixellab_object_id": "45cb2e35-aafa-4aeb-8883-a6835ad15a76",
+          "generated_at": "2026-08-14T03:33:54+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "abf3bde9e4b99b7e"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_010/not_lit_4/sprite.webp",
+          "pixellab_object_id": "5998338e-23eb-48f0-9838-dd2dbfd843a7",
+          "generated_at": "2026-08-16T09:54:21+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3997,
+          "glow_score": 0.028,
+          "relit_from": "LIT_2",
+          "art_hash": "ba6570cc5bbb1b00"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_010/not_lit_5/sprite.webp",
+          "pixellab_object_id": "1892fab2-d505-418a-9f6f-455b2f1c7c54",
+          "generated_at": "2026-08-16T09:54:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6031,
+          "glow_score": 0.0244,
+          "relit_from": "LIT_3",
+          "art_hash": "481a34cfc02c0c87"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_shrubs/cliff_shrub_010/not_lit_6/sprite.webp",
+          "pixellab_object_id": "54f16a0a-fda0-4990-8522-c7709b6db262",
+          "generated_at": "2026-08-16T09:54:56+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9332,
+          "glow_score": 0.0149,
+          "relit_from": "LIT_4",
+          "art_hash": "2b093ee521d2ec35"
         }
       },
       "animations": []
@@ -11390,15 +11147,6 @@
           "glow_score": 0.0553,
           "art_hash": "583623b4c99c1503"
         },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_011/lit_2/sprite.webp",
-          "pixellab_object_id": "617c31d3-2df9-479d-b8ad-bc62e5d6892e",
-          "generated_at": "2026-08-16T09:56:20+00:00",
-          "glow_concept": "the leaves shining faintly",
-          "difference_from_source": 0.8757,
-          "glow_score": 0.0845,
-          "art_hash": "9a922e906ae77af3"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_011/sprite.webp",
           "pixellab_object_id": "417337fd-d090-4022-970d-971c3342d7e8",
@@ -11431,6 +11179,16 @@
           "difference_from_source": 0.8329,
           "glow_score": 0.0,
           "art_hash": "668317410b8e48dc"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_011/not_lit_5/sprite.webp",
+          "pixellab_object_id": "617c31d3-2df9-479d-b8ad-bc62e5d6892e",
+          "generated_at": "2026-08-16T09:56:20+00:00",
+          "glow_concept": "the leaves shining faintly",
+          "difference_from_source": 0.8757,
+          "glow_score": 0.0845,
+          "relit_from": "LIT_2",
+          "art_hash": "9a922e906ae77af3"
         }
       },
       "animations": []
@@ -11539,24 +11297,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_013/lit_1/sprite.webp",
-          "pixellab_object_id": "094565cb-3a41-4b01-b87d-0fadb1b5d79b",
-          "generated_at": "2026-08-16T09:58:58+00:00",
-          "glow_concept": "the leaves shining faintly",
-          "difference_from_source": 0.7418,
-          "glow_score": 0.0837,
-          "art_hash": "792b2039b7f49f54"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_013/lit_2/sprite.webp",
-          "pixellab_object_id": "61709fa6-557c-4c59-9306-326be34b73c7",
-          "generated_at": "2026-08-16T09:58:35+00:00",
-          "glow_concept": "blossoms glowing along the branches",
-          "difference_from_source": 0.446,
-          "glow_score": 0.1137,
-          "art_hash": "939b24c2e5f93fb2"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_013/sprite.webp",
           "pixellab_object_id": "19f43907-f2b1-4a13-97ec-1be4239951d0",
@@ -11626,12 +11366,13 @@
         },
         "LIT_2": {
           "sprite": "cliff_shrubs/cliff_shrub_014/lit_2/sprite.webp",
-          "pixellab_object_id": "a65280cc-a328-408d-9979-8b1797593315",
-          "generated_at": "2026-08-16T09:58:23+00:00",
+          "pixellab_object_id": "334d1d47-eb95-4caa-aea6-d7b1dc7c0521",
+          "generated_at": "2026-08-16T09:58:36+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.9123,
-          "glow_score": 0.0,
-          "art_hash": "e7eda69c7064fdb4"
+          "difference_from_source": 0.7709,
+          "glow_score": 0.0084,
+          "relit_from": "NOT_LIT_1",
+          "art_hash": "0ed9593405447c42"
         },
         "LIT_3": {
           "sprite": "cliff_shrubs/cliff_shrub_014/lit_3/sprite.webp",
@@ -11651,23 +11392,15 @@
           "glow_score": 0.0055,
           "art_hash": "dd84b8adab76eac5"
         },
-        "NOT_LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_014/not_lit_1/sprite.webp",
-          "pixellab_object_id": "334d1d47-eb95-4caa-aea6-d7b1dc7c0521",
-          "generated_at": "2026-08-16T09:58:36+00:00",
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_014/not_lit_3/sprite.webp",
+          "pixellab_object_id": "a65280cc-a328-408d-9979-8b1797593315",
+          "generated_at": "2026-08-16T09:58:23+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.7709,
-          "glow_score": 0.0084,
-          "art_hash": "0ed9593405447c42"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_014/not_lit_2/sprite.webp",
-          "pixellab_object_id": "ed876926-7d5a-4230-ae13-8c91bb62f81c",
-          "generated_at": "2026-08-16T09:58:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9852,
+          "difference_from_source": 0.9123,
           "glow_score": 0.0,
-          "art_hash": "790b3775754814f2"
+          "relit_from": "LIT_2",
+          "art_hash": "e7eda69c7064fdb4"
         }
       },
       "animations": []
@@ -11697,39 +11430,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_shrubs/cliff_shrub_016/sprite.webp",
-          "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
-          "generated_at": "2026-08-14T03:59:39+00:00",
-          "art_hash": "c08b1ec60fd7c404"
-        },
-        "LIT_2": {
-          "sprite": "cliff_shrubs/cliff_shrub_016/lit_2/sprite.webp",
-          "pixellab_object_id": "3dda49bc-d3b3-43d0-a0d4-1eaadf60c3e0",
-          "generated_at": "2026-08-16T09:59:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6328,
-          "glow_score": 0.082,
-          "art_hash": "cad4697aff572b70"
-        },
-        "LIT_3": {
-          "sprite": "cliff_shrubs/cliff_shrub_016/lit_3/sprite.webp",
-          "pixellab_object_id": "d5ac804f-fa78-436f-b435-14f1b92163e4",
-          "generated_at": "2026-08-16T10:00:15+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.565,
-          "glow_score": 0.1106,
-          "art_hash": "68a176363088b3ac"
-        },
-        "LIT_4": {
-          "sprite": "cliff_shrubs/cliff_shrub_016/lit_4/sprite.webp",
-          "pixellab_object_id": "8327cfc8-8b55-44ee-8f74-e5263783cab4",
-          "generated_at": "2026-08-16T10:00:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9162,
-          "glow_score": 0.0627,
-          "art_hash": "763e9d684059608d"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_1/sprite.webp",
           "pixellab_object_id": "11d75d0a-3b9b-47f4-9c8c-0252957eef6b",
@@ -11747,6 +11447,43 @@
           "difference_from_source": 0.7864,
           "glow_score": 0.0,
           "art_hash": "d0b416555e54dd02"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/sprite.webp",
+          "pixellab_object_id": "2ff5dcf8-7d44-4a4f-a105-7a1b9ffa8499",
+          "generated_at": "2026-08-14T03:59:39+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "c08b1ec60fd7c404"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_4/sprite.webp",
+          "pixellab_object_id": "3dda49bc-d3b3-43d0-a0d4-1eaadf60c3e0",
+          "generated_at": "2026-08-16T09:59:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6328,
+          "glow_score": 0.082,
+          "relit_from": "LIT_2",
+          "art_hash": "cad4697aff572b70"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_5/sprite.webp",
+          "pixellab_object_id": "d5ac804f-fa78-436f-b435-14f1b92163e4",
+          "generated_at": "2026-08-16T10:00:15+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.565,
+          "glow_score": 0.1106,
+          "relit_from": "LIT_3",
+          "art_hash": "68a176363088b3ac"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_shrubs/cliff_shrub_016/not_lit_6/sprite.webp",
+          "pixellab_object_id": "8327cfc8-8b55-44ee-8f74-e5263783cab4",
+          "generated_at": "2026-08-16T10:00:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.9162,
+          "glow_score": 0.0627,
+          "relit_from": "LIT_4",
+          "art_hash": "763e9d684059608d"
         }
       },
       "animations": []
@@ -11887,24 +11624,6 @@
           "difference_from_source": 0.637,
           "glow_score": 0.0269,
           "art_hash": "565465e7f558c42e"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_018/not_lit_1/sprite.webp",
-          "pixellab_object_id": "21ed1506-d56f-4a77-bcc9-1c1d82ca1a39",
-          "generated_at": "2026-08-16T10:08:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8812,
-          "glow_score": 0.0016,
-          "art_hash": "b604c9b616e0e18f"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_018/not_lit_2/sprite.webp",
-          "pixellab_object_id": "bf42b9a9-86bf-47ad-b2df-d0169678a725",
-          "generated_at": "2026-08-16T10:07:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8512,
-          "glow_score": 0.0,
-          "art_hash": "a49a68cd4aff0721"
         }
       },
       "animations": []
@@ -11934,15 +11653,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_021/lit_1/sprite.webp",
-          "pixellab_object_id": "6bca1644-8136-4c1d-9922-e6e37a1918a1",
-          "generated_at": "2026-08-16T10:12:55+00:00",
-          "glow_concept": "pale blue soul-flowers dotted down the fall",
-          "difference_from_source": 0.2974,
-          "glow_score": 0.1155,
-          "art_hash": "afdc60695a5c0893"
-        },
         "LIT_2": {
           "sprite": "cliff_vines/cliff_vine_021/lit_2/sprite.webp",
           "pixellab_object_id": "973a673c-881a-4eeb-a55e-3921248dc42f",
@@ -11957,33 +11667,6 @@
           "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
           "generated_at": "2026-08-14T04:08:57+00:00",
           "art_hash": "89ff22e5fcb46787"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_021/not_lit_2/sprite.webp",
-          "pixellab_object_id": "8405d4b2-2baa-4da0-aa92-0922b705c729",
-          "generated_at": "2026-08-16T10:09:48+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4365,
-          "glow_score": 0.1088,
-          "art_hash": "1164a13a88b37a7f"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_021/not_lit_3/sprite.webp",
-          "pixellab_object_id": "a9b9d16d-5488-4363-b15c-fe4da6679c63",
-          "generated_at": "2026-08-16T10:08:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3885,
-          "glow_score": 0.0781,
-          "art_hash": "8b02f75d5d7803bc"
-        },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_021/not_lit_4/sprite.webp",
-          "pixellab_object_id": "4771b6e2-887e-49bc-aab2-0ab2ba31dc30",
-          "generated_at": "2026-08-16T10:10:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4944,
-          "glow_score": 0.0551,
-          "art_hash": "630c952fba1cabf5"
         }
       },
       "animations": []
@@ -12013,56 +11696,42 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
+        "NOT_LIT_3": {
           "sprite": "cliff_vines/cliff_vine_022/sprite.webp",
           "pixellab_object_id": "d2b8647a-a07e-4751-81ab-7a712e595ee7",
           "generated_at": "2026-08-14T03:32:53+00:00",
+          "relit_from": "LIT_1",
           "art_hash": "df8a61210d61d2aa"
         },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_022/lit_2/sprite.webp",
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_022/not_lit_4/sprite.webp",
           "pixellab_object_id": "1d2b2e8a-9e6d-48de-9646-9caee52fc924",
           "generated_at": "2026-08-16T10:11:28+00:00",
           "glow_concept": null,
           "difference_from_source": 0.3608,
           "glow_score": 0.011,
+          "relit_from": "LIT_2",
           "art_hash": "e61e91179c688c01"
         },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_022/lit_3/sprite.webp",
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_022/not_lit_5/sprite.webp",
           "pixellab_object_id": "3cb80fcd-6472-4e6e-85c3-657b7f61bc5f",
           "generated_at": "2026-08-16T10:09:25+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6687,
           "glow_score": 0.01,
+          "relit_from": "LIT_3",
           "art_hash": "26dfc7c2f404d0f6"
         },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_022/lit_4/sprite.webp",
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_022/not_lit_6/sprite.webp",
           "pixellab_object_id": "a73f2ae8-8ea4-4707-a801-227ac62d031f",
           "generated_at": "2026-08-16T10:09:37+00:00",
           "glow_concept": null,
           "difference_from_source": 0.2656,
           "glow_score": 0.0264,
+          "relit_from": "LIT_4",
           "art_hash": "a9574e5c31f36230"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_022/not_lit_1/sprite.webp",
-          "pixellab_object_id": "cf59cdad-1193-438b-8a6a-08dfd8bf63db",
-          "generated_at": "2026-08-16T10:10:52+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8558,
-          "glow_score": 0.0,
-          "art_hash": "c2de599ae847f406"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_022/not_lit_2/sprite.webp",
-          "pixellab_object_id": "a6390612-92d3-4fdf-bfa7-e05b3a17f931",
-          "generated_at": "2026-08-16T10:10:54+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9244,
-          "glow_score": 0.0,
-          "art_hash": "6e5fa156f196ce0e"
         }
       },
       "animations": []
@@ -12092,30 +11761,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
-          "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
-          "generated_at": "2026-08-14T03:32:24+00:00",
-          "art_hash": "34c29ff31d53a674"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_024/lit_2/sprite.webp",
-          "pixellab_object_id": "01e14579-b6e9-4568-ab9b-ae57ef07279c",
-          "generated_at": "2026-08-16T10:15:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4526,
-          "glow_score": 0.2588,
-          "art_hash": "06e1e709d6735f81"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_024/lit_3/sprite.webp",
-          "pixellab_object_id": "6f4fcdd3-e087-4158-ad45-86377c9c2946",
-          "generated_at": "2026-08-16T10:12:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6194,
-          "glow_score": 0.1833,
-          "art_hash": "f73904cd685795b0"
-        },
         "LIT_4": {
           "sprite": "cliff_vines/cliff_vine_024/lit_4/sprite.webp",
           "pixellab_object_id": "952ad4f6-4bf7-4078-9272-9b0e2baac4d6",
@@ -12125,23 +11770,32 @@
           "glow_score": 0.2215,
           "art_hash": "dc7a9fa28789b63f"
         },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_024/not_lit_1/sprite.webp",
-          "pixellab_object_id": "786ed393-6d39-45a2-b755-d06466ab1a41",
-          "generated_at": "2026-08-16T10:12:11+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9943,
-          "glow_score": 0.0,
-          "art_hash": "1d9888783f4314e0"
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_024/sprite.webp",
+          "pixellab_object_id": "3befe0ba-5245-4a14-93eb-c7ab23711223",
+          "generated_at": "2026-08-14T03:32:24+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "34c29ff31d53a674"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_024/not_lit_2/sprite.webp",
-          "pixellab_object_id": "2c11befb-81ca-456b-9c93-a6f588e8448f",
-          "generated_at": "2026-08-16T10:12:44+00:00",
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_024/not_lit_4/sprite.webp",
+          "pixellab_object_id": "01e14579-b6e9-4568-ab9b-ae57ef07279c",
+          "generated_at": "2026-08-16T10:15:38+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.9047,
-          "glow_score": 0.0545,
-          "art_hash": "a4848d8bdbccea0b"
+          "difference_from_source": 0.4526,
+          "glow_score": 0.2588,
+          "relit_from": "LIT_2",
+          "art_hash": "06e1e709d6735f81"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_024/not_lit_5/sprite.webp",
+          "pixellab_object_id": "6f4fcdd3-e087-4158-ad45-86377c9c2946",
+          "generated_at": "2026-08-16T10:12:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.6194,
+          "glow_score": 0.1833,
+          "relit_from": "LIT_3",
+          "art_hash": "f73904cd685795b0"
         }
       },
       "animations": []
@@ -12171,38 +11825,11 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_025/lit_1/sprite.webp",
-          "pixellab_object_id": "3983f5f9-a91a-4965-bd96-1d73116f2040",
-          "generated_at": "2026-08-16T10:13:38+00:00",
-          "glow_concept": "luminous sap veins glowing through the leaves",
-          "difference_from_source": 0.2023,
-          "glow_score": 0.0581,
-          "art_hash": "04aad7cac1e26a97"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_025/lit_2/sprite.webp",
-          "pixellab_object_id": "3e1cb12c-3e07-42b0-ad6b-b7d2d6482285",
-          "generated_at": "2026-08-16T10:14:09+00:00",
-          "glow_concept": "pale blue soul-flowers dotted down the fall",
-          "difference_from_source": 0.4378,
-          "glow_score": 0.2831,
-          "art_hash": "7f97b5d49e60f5e0"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_025/sprite.webp",
           "pixellab_object_id": "90cd8fc1-ea5d-4d23-b44d-c7c8fa36112a",
           "generated_at": "2026-08-14T04:24:20+00:00",
           "art_hash": "19c5678ff48b6b51"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_025/not_lit_2/sprite.webp",
-          "pixellab_object_id": "bcfb65cf-3414-4150-88a2-17bb7950fef8",
-          "generated_at": "2026-08-16T10:12:45+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3373,
-          "glow_score": 0.0013,
-          "art_hash": "16de4b4c1084c2dc"
         },
         "NOT_LIT_3": {
           "sprite": "cliff_vines/cliff_vine_025/not_lit_3/sprite.webp",
@@ -12250,48 +11877,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
-          "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
-          "generated_at": "2026-08-14T03:36:49+00:00",
-          "art_hash": "69a4b142a72babe8"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_028/lit_2/sprite.webp",
-          "pixellab_object_id": "519568e6-54fd-4a45-91f3-9371d064ab4f",
-          "generated_at": "2026-08-16T10:14:10+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3938,
-          "glow_score": 0.1607,
-          "art_hash": "52ca84fc8d0ed8ee"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_028/lit_3/sprite.webp",
-          "pixellab_object_id": "6944e100-96e0-4cbe-876c-82cd9b26bf8f",
-          "generated_at": "2026-08-16T10:13:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3912,
-          "glow_score": 0.1811,
-          "art_hash": "b7cf45a88cf1d8eb"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_028/lit_4/sprite.webp",
-          "pixellab_object_id": "c73e56c9-20cb-4759-8bcb-ea08cd3323ad",
-          "generated_at": "2026-08-16T10:15:28+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4187,
-          "glow_score": 0.1593,
-          "art_hash": "fdc20185b9db7245"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_028/not_lit_1/sprite.webp",
-          "pixellab_object_id": "0b59dbb7-c4d5-4857-bc14-5953d8ff5459",
-          "generated_at": "2026-08-16T10:18:19+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7714,
-          "glow_score": 0.0,
-          "art_hash": "854c75491779503e"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_028/not_lit_2/sprite.webp",
           "pixellab_object_id": "10101fef-4e2f-4ca8-aca1-26d4909889ec",
@@ -12300,6 +11885,43 @@
           "difference_from_source": 0.3577,
           "glow_score": 0.0638,
           "art_hash": "39be39ce0f150044"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_028/sprite.webp",
+          "pixellab_object_id": "d6367e15-0d98-4faf-aaa2-69f1ceeff8f1",
+          "generated_at": "2026-08-14T03:36:49+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "69a4b142a72babe8"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_028/not_lit_4/sprite.webp",
+          "pixellab_object_id": "519568e6-54fd-4a45-91f3-9371d064ab4f",
+          "generated_at": "2026-08-16T10:14:10+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3938,
+          "glow_score": 0.1607,
+          "relit_from": "LIT_2",
+          "art_hash": "52ca84fc8d0ed8ee"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_028/not_lit_5/sprite.webp",
+          "pixellab_object_id": "6944e100-96e0-4cbe-876c-82cd9b26bf8f",
+          "generated_at": "2026-08-16T10:13:59+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3912,
+          "glow_score": 0.1811,
+          "relit_from": "LIT_3",
+          "art_hash": "b7cf45a88cf1d8eb"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_028/not_lit_6/sprite.webp",
+          "pixellab_object_id": "c73e56c9-20cb-4759-8bcb-ea08cd3323ad",
+          "generated_at": "2026-08-16T10:15:28+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4187,
+          "glow_score": 0.1593,
+          "relit_from": "LIT_4",
+          "art_hash": "fdc20185b9db7245"
         }
       },
       "animations": []
@@ -12329,48 +11951,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_044/sprite.webp",
-          "pixellab_object_id": "44a6e116-bf3d-44bb-8c57-cbfa1efe20d7",
-          "generated_at": "2026-08-14T04:30:16+00:00",
-          "art_hash": "d688cd31c5f687a9"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_044/lit_2/sprite.webp",
-          "pixellab_object_id": "871b8451-aed2-4dbe-ba0f-f94ecf93470d",
-          "generated_at": "2026-08-16T10:17:26+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5545,
-          "glow_score": 0.0,
-          "art_hash": "c5083d3d6d171135"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_044/lit_3/sprite.webp",
-          "pixellab_object_id": "9f1e8109-302e-4980-ad46-a55526a2b58a",
-          "generated_at": "2026-08-16T10:17:38+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5718,
-          "glow_score": 0.0,
-          "art_hash": "46fe6c446820adcf"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_044/lit_4/sprite.webp",
-          "pixellab_object_id": "17a6de82-dcf7-4600-9ffd-fe9f0a0bf5a8",
-          "generated_at": "2026-08-16T10:18:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7196,
-          "glow_score": 0.0,
-          "art_hash": "71a552ffa6a9ca2d"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_044/not_lit_1/sprite.webp",
-          "pixellab_object_id": "f60eaf73-b36a-4661-8758-39ce66e3e49c",
-          "generated_at": "2026-08-16T10:18:08+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8424,
-          "glow_score": 0.0,
-          "art_hash": "909533536ca9d04a"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_044/not_lit_2/sprite.webp",
           "pixellab_object_id": "b5cff3a2-8698-4450-ad68-66a00733e335",
@@ -12379,6 +11959,43 @@
           "difference_from_source": 0.6363,
           "glow_score": 0.0,
           "art_hash": "04fdab14ff77af64"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_044/sprite.webp",
+          "pixellab_object_id": "44a6e116-bf3d-44bb-8c57-cbfa1efe20d7",
+          "generated_at": "2026-08-14T04:30:16+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "d688cd31c5f687a9"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_044/not_lit_4/sprite.webp",
+          "pixellab_object_id": "871b8451-aed2-4dbe-ba0f-f94ecf93470d",
+          "generated_at": "2026-08-16T10:17:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5545,
+          "glow_score": 0.0,
+          "relit_from": "LIT_2",
+          "art_hash": "c5083d3d6d171135"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_044/not_lit_5/sprite.webp",
+          "pixellab_object_id": "9f1e8109-302e-4980-ad46-a55526a2b58a",
+          "generated_at": "2026-08-16T10:17:38+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5718,
+          "glow_score": 0.0,
+          "relit_from": "LIT_3",
+          "art_hash": "46fe6c446820adcf"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_044/not_lit_6/sprite.webp",
+          "pixellab_object_id": "17a6de82-dcf7-4600-9ffd-fe9f0a0bf5a8",
+          "generated_at": "2026-08-16T10:18:07+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7196,
+          "glow_score": 0.0,
+          "relit_from": "LIT_4",
+          "art_hash": "71a552ffa6a9ca2d"
         }
       },
       "animations": []
@@ -12496,15 +12113,6 @@
           "glow_score": 0.0384,
           "art_hash": "093fceecb6bbfde3"
         },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_047/lit_2/sprite.webp",
-          "pixellab_object_id": "7375d61c-c1ee-4331-835b-d30ffe1532d0",
-          "generated_at": "2026-08-16T10:20:40+00:00",
-          "glow_concept": "moonlit silver shimmer across the leaves",
-          "difference_from_source": 0.2779,
-          "glow_score": 0.0174,
-          "art_hash": "3442f6bfacef4664"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_047/sprite.webp",
           "pixellab_object_id": "1789338f-08f5-4e67-a2c8-4ef8625d4269",
@@ -12584,37 +12192,41 @@
           "glow_score": 0.0969,
           "art_hash": "e2a61bf0c17b8835"
         },
-        "NOT_LIT_1": {
+        "LIT_3": {
           "sprite": "cliff_vines/cliff_vine_049/sprite.webp",
           "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",
           "generated_at": "2026-08-14T04:52:51+00:00",
+          "relit_from": "NOT_LIT_1",
           "art_hash": "6336bf150a5300c8"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_049/not_lit_2/sprite.webp",
+        "LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_049/lit_4/sprite.webp",
           "pixellab_object_id": "0330c54b-a342-4f0e-b368-60c5081f90cc",
           "generated_at": "2026-08-16T10:22:19+00:00",
           "glow_concept": null,
           "difference_from_source": 0.6062,
           "glow_score": 0.1761,
+          "relit_from": "NOT_LIT_2",
           "art_hash": "b5c2e62eb4f6c7e1"
         },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_049/not_lit_3/sprite.webp",
+        "LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_049/lit_5/sprite.webp",
           "pixellab_object_id": "4585e2bb-1a7a-4efe-8a3e-b55fc83a38d8",
           "generated_at": "2026-08-16T10:22:50+00:00",
           "glow_concept": null,
           "difference_from_source": 0.3656,
           "glow_score": 0.0611,
+          "relit_from": "NOT_LIT_3",
           "art_hash": "d6536c1e158dc417"
         },
-        "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_049/not_lit_4/sprite.webp",
+        "LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_049/lit_6/sprite.webp",
           "pixellab_object_id": "fb891347-085b-4f3f-ac6a-9de9a3eac16d",
           "generated_at": "2026-08-16T10:23:24+00:00",
           "glow_concept": null,
           "difference_from_source": 0.4003,
           "glow_score": 0.0601,
+          "relit_from": "NOT_LIT_4",
           "art_hash": "ce6c7d7bff86e1d4"
         }
       },
@@ -12803,12 +12415,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_056/sprite.webp",
-          "pixellab_object_id": "79b49fca-02d6-4c93-818d-1ed10d46eda2",
-          "generated_at": "2026-08-14T04:51:21+00:00",
-          "art_hash": "d4dd357e643d0961"
-        },
         "LIT_2": {
           "sprite": "cliff_vines/cliff_vine_056/lit_2/sprite.webp",
           "pixellab_object_id": "62e181a2-fdf9-4c2a-83cd-4c6db2a7309e",
@@ -12853,6 +12459,13 @@
           "difference_from_source": 0.816,
           "glow_score": 0.0003,
           "art_hash": "6dc71070411fe6be"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_056/sprite.webp",
+          "pixellab_object_id": "79b49fca-02d6-4c93-818d-1ed10d46eda2",
+          "generated_at": "2026-08-14T04:51:21+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "d4dd357e643d0961"
         }
       },
       "animations": []
@@ -12875,22 +12488,13 @@
       },
       "status": "complete",
       "generated_at": "2026-08-14T04:55:57+00:00",
-      "pixellab_object_id": "905c1fb2-1257-4370-80ba-2346f6f1c12f",
+      "pixellab_object_id": "47b8a45f-c7e8-466b-bea6-c9844d6035fc",
       "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
-      "art_hash": "49578f2f9c1001c2",
+      "art_hash": "5843555913e61f63",
       "type": "MOUNTAIN_WALL",
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_057/lit_1/sprite.webp",
-          "pixellab_object_id": "7e033eb3-f03e-467a-a23f-2d121fcad63d",
-          "generated_at": "2026-08-16T10:29:14+00:00",
-          "glow_concept": "pale blue soul-flowers dotted down the fall",
-          "difference_from_source": 0.1423,
-          "glow_score": 0.0226,
-          "art_hash": "aa87317692bd8d9a"
-        },
         "LIT_2": {
           "sprite": "cliff_vines/cliff_vine_057/lit_2/sprite.webp",
           "pixellab_object_id": "30ce9328-06fe-4148-80e4-91db44a2d305",
@@ -12899,12 +12503,6 @@
           "difference_from_source": 0.2664,
           "glow_score": 0.0402,
           "art_hash": "89daa64deec5beb1"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
-          "pixellab_object_id": "905c1fb2-1257-4370-80ba-2346f6f1c12f",
-          "generated_at": "2026-08-14T04:55:57+00:00",
-          "art_hash": "49578f2f9c1001c2"
         },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_057/not_lit_2/sprite.webp",
@@ -12925,12 +12523,13 @@
           "art_hash": "e351e324dadcdbc5"
         },
         "NOT_LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_057/not_lit_4/sprite.webp",
+          "sprite": "cliff_vines/cliff_vine_057/sprite.webp",
           "pixellab_object_id": "47b8a45f-c7e8-466b-bea6-c9844d6035fc",
           "generated_at": "2026-08-16T10:28:21+00:00",
           "glow_concept": null,
           "difference_from_source": 0.5752,
           "glow_score": 0.0008,
+          "replaced_anchor": "NOT_LIT_1",
           "art_hash": "5843555913e61f63"
         }
       },
@@ -12961,39 +12560,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_058/sprite.webp",
-          "pixellab_object_id": "986ce81a-7973-4bf4-8f22-4e9b390212fa",
-          "generated_at": "2026-08-14T04:51:38+00:00",
-          "art_hash": "2593727c0df6323a"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_058/lit_2/sprite.webp",
-          "pixellab_object_id": "4b101911-9447-4a7a-bce5-007459bafa23",
-          "generated_at": "2026-08-16T10:29:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.516,
-          "glow_score": 0.0008,
-          "art_hash": "9fd773d849949406"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_058/lit_3/sprite.webp",
-          "pixellab_object_id": "1b9c7b87-20fd-43c5-8ef8-1c49e7724b50",
-          "generated_at": "2026-08-16T10:34:05+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2729,
-          "glow_score": 0.0006,
-          "art_hash": "cf179ef4d44d3a3c"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_058/lit_4/sprite.webp",
-          "pixellab_object_id": "3fde56da-b35a-41a4-99c6-9c24a3e18984",
-          "generated_at": "2026-08-16T10:30:58+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3419,
-          "glow_score": 0.0007,
-          "art_hash": "43fbc5e4aaafa58d"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_058/not_lit_1/sprite.webp",
           "pixellab_object_id": "9a51a014-536b-49b4-bb20-c2e5d1880b4e",
@@ -13003,14 +12569,42 @@
           "glow_score": 0.0006,
           "art_hash": "4ec2efe26682680e"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_058/not_lit_2/sprite.webp",
-          "pixellab_object_id": "fde43fcf-985a-41a6-b55e-ab5130535acd",
-          "generated_at": "2026-08-16T10:35:04+00:00",
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_058/sprite.webp",
+          "pixellab_object_id": "986ce81a-7973-4bf4-8f22-4e9b390212fa",
+          "generated_at": "2026-08-14T04:51:38+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "2593727c0df6323a"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_058/not_lit_4/sprite.webp",
+          "pixellab_object_id": "4b101911-9447-4a7a-bce5-007459bafa23",
+          "generated_at": "2026-08-16T10:29:50+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.721,
-          "glow_score": 0.0062,
-          "art_hash": "b788265830aafd3c"
+          "difference_from_source": 0.516,
+          "glow_score": 0.0008,
+          "relit_from": "LIT_2",
+          "art_hash": "9fd773d849949406"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_058/not_lit_5/sprite.webp",
+          "pixellab_object_id": "1b9c7b87-20fd-43c5-8ef8-1c49e7724b50",
+          "generated_at": "2026-08-16T10:34:05+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2729,
+          "glow_score": 0.0006,
+          "relit_from": "LIT_3",
+          "art_hash": "cf179ef4d44d3a3c"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_058/not_lit_6/sprite.webp",
+          "pixellab_object_id": "3fde56da-b35a-41a4-99c6-9c24a3e18984",
+          "generated_at": "2026-08-16T10:30:58+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3419,
+          "glow_score": 0.0007,
+          "relit_from": "LIT_4",
+          "art_hash": "43fbc5e4aaafa58d"
         }
       },
       "animations": []
@@ -13160,15 +12754,6 @@
           "difference_from_source": 0.847,
           "glow_score": 0.0,
           "art_hash": "072aea125db2298f"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_060/not_lit_2/sprite.webp",
-          "pixellab_object_id": "6df38b5d-212c-4010-a230-4caddde59264",
-          "generated_at": "2026-08-16T10:35:59+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8597,
-          "glow_score": 0.0,
-          "art_hash": "170670879417f6e5"
         }
       },
       "animations": []
@@ -13309,24 +12894,6 @@
           "difference_from_source": 0.3399,
           "glow_score": 0.0006,
           "art_hash": "39d074ad1e1b35e4"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_064/not_lit_1/sprite.webp",
-          "pixellab_object_id": "6375048b-d899-4945-aebc-038c29c7945f",
-          "generated_at": "2026-08-16T10:41:46+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7471,
-          "glow_score": 0.0,
-          "art_hash": "dfa3914570b63c80"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_064/not_lit_2/sprite.webp",
-          "pixellab_object_id": "19c02e15-2507-4e1d-a598-2002770b479c",
-          "generated_at": "2026-08-16T10:37:56+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4982,
-          "glow_score": 0.0,
-          "art_hash": "3f74f59e355a8294"
         }
       },
       "animations": []
@@ -13444,15 +13011,6 @@
           "glow_score": 0.0805,
           "art_hash": "3fd3fd53106d5e56"
         },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_067/lit_2/sprite.webp",
-          "pixellab_object_id": "1487237e-c543-40c1-8a3a-4d5c7886675b",
-          "generated_at": "2026-08-16T10:40:25+00:00",
-          "glow_concept": "pale blue soul-flowers dotted down the fall",
-          "difference_from_source": 0.4254,
-          "glow_score": 0.1372,
-          "art_hash": "c9f138fea74dc065"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_067/sprite.webp",
           "pixellab_object_id": "4995ce90-1993-405c-b5bf-589033a2f178",
@@ -13467,15 +13025,6 @@
           "difference_from_source": 0.5223,
           "glow_score": 0.0004,
           "art_hash": "3796f35b406ae513"
-        },
-        "NOT_LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_067/not_lit_3/sprite.webp",
-          "pixellab_object_id": "f7db8c75-d500-4f6f-9410-b4eb52880e37",
-          "generated_at": "2026-08-16T10:45:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2882,
-          "glow_score": 0.0006,
-          "art_hash": "907c74a87061c793"
         },
         "NOT_LIT_4": {
           "sprite": "cliff_vines/cliff_vine_067/not_lit_4/sprite.webp",
@@ -13514,48 +13063,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
-          "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
-          "generated_at": "2026-08-14T04:57:15+00:00",
-          "art_hash": "9649da8b0f27825d"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_070/lit_2/sprite.webp",
-          "pixellab_object_id": "b9e2ee2e-75d4-497a-ad12-a4b560c709bc",
-          "generated_at": "2026-08-16T10:40:26+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3463,
-          "glow_score": 0.0756,
-          "art_hash": "f0f67475c631dbc3"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_070/lit_3/sprite.webp",
-          "pixellab_object_id": "b1c64a99-c6f1-40a9-b93e-5ed839ac681b",
-          "generated_at": "2026-08-16T10:40:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3892,
-          "glow_score": 0.0236,
-          "art_hash": "0225c863ae91db56"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_070/lit_4/sprite.webp",
-          "pixellab_object_id": "b9f4be69-2404-4b3e-b000-211dcabe20d2",
-          "generated_at": "2026-08-16T10:41:25+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4087,
-          "glow_score": 0.0552,
-          "art_hash": "c0cc12860f5e465b"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_070/not_lit_1/sprite.webp",
-          "pixellab_object_id": "fef6b704-fb02-48e8-8cbc-25ed3801e09f",
-          "generated_at": "2026-08-16T10:41:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7805,
-          "glow_score": 0.0101,
-          "art_hash": "ef63ddf2827ca088"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_070/not_lit_2/sprite.webp",
           "pixellab_object_id": "52de666b-b66e-498e-b3f0-cebd8e4d0a0f",
@@ -13564,6 +13071,43 @@
           "difference_from_source": 0.2534,
           "glow_score": 0.0455,
           "art_hash": "ca4e74425b763ef9"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_070/sprite.webp",
+          "pixellab_object_id": "219ac62a-4571-45d3-ab1b-407c3513913f",
+          "generated_at": "2026-08-14T04:57:15+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "9649da8b0f27825d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_070/not_lit_4/sprite.webp",
+          "pixellab_object_id": "b9e2ee2e-75d4-497a-ad12-a4b560c709bc",
+          "generated_at": "2026-08-16T10:40:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3463,
+          "glow_score": 0.0756,
+          "relit_from": "LIT_2",
+          "art_hash": "f0f67475c631dbc3"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_070/not_lit_5/sprite.webp",
+          "pixellab_object_id": "b1c64a99-c6f1-40a9-b93e-5ed839ac681b",
+          "generated_at": "2026-08-16T10:40:51+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3892,
+          "glow_score": 0.0236,
+          "relit_from": "LIT_3",
+          "art_hash": "0225c863ae91db56"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_070/not_lit_6/sprite.webp",
+          "pixellab_object_id": "b9f4be69-2404-4b3e-b000-211dcabe20d2",
+          "generated_at": "2026-08-16T10:41:25+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4087,
+          "glow_score": 0.0552,
+          "relit_from": "LIT_4",
+          "art_hash": "c0cc12860f5e465b"
         }
       },
       "animations": []
@@ -13593,48 +13137,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_072/sprite.webp",
-          "pixellab_object_id": "3a45ad23-36a7-44d6-bcd2-5cfec1d91797",
-          "generated_at": "2026-08-14T04:57:40+00:00",
-          "art_hash": "d688b67fe7a5b309"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_072/lit_2/sprite.webp",
-          "pixellab_object_id": "a84b127a-04cf-4f8a-9c92-f760eb7928d8",
-          "generated_at": "2026-08-16T10:43:04+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2761,
-          "glow_score": 0.0,
-          "art_hash": "a2572573441a6f30"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_072/lit_3/sprite.webp",
-          "pixellab_object_id": "24362fa5-5ec1-4194-9926-29608a720943",
-          "generated_at": "2026-08-16T10:45:19+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2464,
-          "glow_score": 0.0018,
-          "art_hash": "e0068241b63fa6df"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_072/lit_4/sprite.webp",
-          "pixellab_object_id": "3067415e-3a1c-4542-99f7-fc64dae2d580",
-          "generated_at": "2026-08-16T10:43:35+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2979,
-          "glow_score": 0.0014,
-          "art_hash": "9a6c5ce7eca92a17"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_072/not_lit_1/sprite.webp",
-          "pixellab_object_id": "11699387-a0f2-40a3-a0a9-3bd8d2ed2b75",
-          "generated_at": "2026-08-16T10:43:06+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7735,
-          "glow_score": 0.0,
-          "art_hash": "e669b37c5bfd6f3d"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_072/not_lit_2/sprite.webp",
           "pixellab_object_id": "1d0a838e-845c-4a86-8b2b-0e5bbc18a408",
@@ -13643,6 +13145,43 @@
           "difference_from_source": 0.5474,
           "glow_score": 0.0019,
           "art_hash": "de41739e8f750528"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_072/sprite.webp",
+          "pixellab_object_id": "3a45ad23-36a7-44d6-bcd2-5cfec1d91797",
+          "generated_at": "2026-08-14T04:57:40+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "d688b67fe7a5b309"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_072/not_lit_4/sprite.webp",
+          "pixellab_object_id": "a84b127a-04cf-4f8a-9c92-f760eb7928d8",
+          "generated_at": "2026-08-16T10:43:04+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2761,
+          "glow_score": 0.0,
+          "relit_from": "LIT_2",
+          "art_hash": "a2572573441a6f30"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_072/not_lit_5/sprite.webp",
+          "pixellab_object_id": "24362fa5-5ec1-4194-9926-29608a720943",
+          "generated_at": "2026-08-16T10:45:19+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2464,
+          "glow_score": 0.0018,
+          "relit_from": "LIT_3",
+          "art_hash": "e0068241b63fa6df"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_072/not_lit_6/sprite.webp",
+          "pixellab_object_id": "3067415e-3a1c-4542-99f7-fc64dae2d580",
+          "generated_at": "2026-08-16T10:43:35+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2979,
+          "glow_score": 0.0014,
+          "relit_from": "LIT_4",
+          "art_hash": "9a6c5ce7eca92a17"
         }
       },
       "animations": []
@@ -13751,48 +13290,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_074/sprite.webp",
-          "pixellab_object_id": "0662abef-59d3-46ec-9716-dce79a970610",
-          "generated_at": "2026-08-14T04:59:03+00:00",
-          "art_hash": "59a7234503329176"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_074/lit_2/sprite.webp",
-          "pixellab_object_id": "d9671d5d-bfaa-4a06-b9a4-0fede144efc4",
-          "generated_at": "2026-08-16T10:46:03+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2419,
-          "glow_score": 0.0492,
-          "art_hash": "1cc41fddcbc66aff"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_074/lit_3/sprite.webp",
-          "pixellab_object_id": "7096f8f5-097c-4668-a5a3-38cf596e863b",
-          "generated_at": "2026-08-16T10:46:26+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.7008,
-          "glow_score": 0.0586,
-          "art_hash": "b65f172c7b1e7b90"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_074/lit_4/sprite.webp",
-          "pixellab_object_id": "fb214870-8c39-446e-80ae-79fd9bf55614",
-          "generated_at": "2026-08-16T10:48:17+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4082,
-          "glow_score": 0.1226,
-          "art_hash": "edbf2479076e45c4"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_074/not_lit_1/sprite.webp",
-          "pixellab_object_id": "11c468b3-06e3-43ad-86b0-794c92370ac7",
-          "generated_at": "2026-08-16T10:46:51+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.8479,
-          "glow_score": 0.0,
-          "art_hash": "75a8808e5a182b37"
-        },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_074/not_lit_2/sprite.webp",
           "pixellab_object_id": "569cc3d5-9db0-4d14-a6fb-b0059dc5193a",
@@ -13801,6 +13298,43 @@
           "difference_from_source": 0.5887,
           "glow_score": 0.0046,
           "art_hash": "94f56da52e9b93c3"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_074/sprite.webp",
+          "pixellab_object_id": "0662abef-59d3-46ec-9716-dce79a970610",
+          "generated_at": "2026-08-14T04:59:03+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "59a7234503329176"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_074/not_lit_4/sprite.webp",
+          "pixellab_object_id": "d9671d5d-bfaa-4a06-b9a4-0fede144efc4",
+          "generated_at": "2026-08-16T10:46:03+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2419,
+          "glow_score": 0.0492,
+          "relit_from": "LIT_2",
+          "art_hash": "1cc41fddcbc66aff"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_074/not_lit_5/sprite.webp",
+          "pixellab_object_id": "7096f8f5-097c-4668-a5a3-38cf596e863b",
+          "generated_at": "2026-08-16T10:46:26+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.7008,
+          "glow_score": 0.0586,
+          "relit_from": "LIT_3",
+          "art_hash": "b65f172c7b1e7b90"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_074/not_lit_6/sprite.webp",
+          "pixellab_object_id": "fb214870-8c39-446e-80ae-79fd9bf55614",
+          "generated_at": "2026-08-16T10:48:17+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4082,
+          "glow_score": 0.1226,
+          "relit_from": "LIT_4",
+          "art_hash": "edbf2479076e45c4"
         }
       },
       "animations": []
@@ -13830,39 +13364,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
-          "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
-          "generated_at": "2026-08-14T05:00:14+00:00",
-          "art_hash": "8b0b41fc3346ae8d"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_076/lit_2/sprite.webp",
-          "pixellab_object_id": "29240c86-c56e-426a-9234-ef61960a8059",
-          "generated_at": "2026-08-16T10:47:24+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3454,
-          "glow_score": 0.0681,
-          "art_hash": "0f247fb3be63c33c"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_076/lit_3/sprite.webp",
-          "pixellab_object_id": "4a5a3a33-9425-4179-b63d-4fd6378db0dd",
-          "generated_at": "2026-08-16T10:47:55+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.3702,
-          "glow_score": 0.0486,
-          "art_hash": "4359345ffa6a0df2"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_076/lit_4/sprite.webp",
-          "pixellab_object_id": "73b5f3e5-97a7-4d83-907b-a2804b62ab07",
-          "generated_at": "2026-08-16T10:48:50+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.2578,
-          "glow_score": 0.0737,
-          "art_hash": "b33746814e180223"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_076/not_lit_1/sprite.webp",
           "pixellab_object_id": "4d428e6f-34fe-4d21-be8b-c45182e46fe2",
@@ -13872,14 +13373,42 @@
           "glow_score": 0.0252,
           "art_hash": "67b1330de69b9970"
         },
-        "NOT_LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_076/not_lit_2/sprite.webp",
-          "pixellab_object_id": "fc6c0316-dbd3-4f02-a050-7d40e61159e9",
-          "generated_at": "2026-08-16T10:48:07+00:00",
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_076/sprite.webp",
+          "pixellab_object_id": "7e2eb4e9-b6ef-4368-8318-265de17be365",
+          "generated_at": "2026-08-14T05:00:14+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "8b0b41fc3346ae8d"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_076/not_lit_4/sprite.webp",
+          "pixellab_object_id": "29240c86-c56e-426a-9234-ef61960a8059",
+          "generated_at": "2026-08-16T10:47:24+00:00",
           "glow_concept": null,
-          "difference_from_source": 0.7375,
-          "glow_score": 0.0,
-          "art_hash": "06e9662b3110e78a"
+          "difference_from_source": 0.3454,
+          "glow_score": 0.0681,
+          "relit_from": "LIT_2",
+          "art_hash": "0f247fb3be63c33c"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_076/not_lit_5/sprite.webp",
+          "pixellab_object_id": "4a5a3a33-9425-4179-b63d-4fd6378db0dd",
+          "generated_at": "2026-08-16T10:47:55+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.3702,
+          "glow_score": 0.0486,
+          "relit_from": "LIT_3",
+          "art_hash": "4359345ffa6a0df2"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_076/not_lit_6/sprite.webp",
+          "pixellab_object_id": "73b5f3e5-97a7-4d83-907b-a2804b62ab07",
+          "generated_at": "2026-08-16T10:48:50+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.2578,
+          "glow_score": 0.0737,
+          "relit_from": "LIT_4",
+          "art_hash": "b33746814e180223"
         }
       },
       "animations": []
@@ -13941,15 +13470,6 @@
           "difference_from_source": 0.2483,
           "glow_score": 0.0011,
           "art_hash": "74cda2f9e4ed001a"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_078/not_lit_1/sprite.webp",
-          "pixellab_object_id": "28406cc4-8a0f-48c1-81d5-2194740ada40",
-          "generated_at": "2026-08-16T10:52:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.6123,
-          "glow_score": 0.0002,
-          "art_hash": "6313b92a4426a6b6"
         },
         "NOT_LIT_2": {
           "sprite": "cliff_vines/cliff_vine_078/not_lit_2/sprite.webp",
@@ -14146,39 +13666,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {
-        "LIT_1": {
-          "sprite": "cliff_vines/cliff_vine_096/sprite.webp",
-          "pixellab_object_id": "eeab9932-4d2f-46b3-a73b-369b070f5f8e",
-          "generated_at": "2026-08-14T05:20:03+00:00",
-          "art_hash": "cded19977b7eccb2"
-        },
-        "LIT_2": {
-          "sprite": "cliff_vines/cliff_vine_096/lit_2/sprite.webp",
-          "pixellab_object_id": "0be416cd-a940-4a50-81f4-6f51759858ed",
-          "generated_at": "2026-08-16T10:54:47+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4977,
-          "glow_score": 0.0741,
-          "art_hash": "d54fb9cd88c32d96"
-        },
-        "LIT_3": {
-          "sprite": "cliff_vines/cliff_vine_096/lit_3/sprite.webp",
-          "pixellab_object_id": "e19221a3-e53f-410d-a42c-88caeb28f67b",
-          "generated_at": "2026-08-16T10:53:41+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.5704,
-          "glow_score": 0.0751,
-          "art_hash": "8e5ee6af8bc5e83b"
-        },
-        "LIT_4": {
-          "sprite": "cliff_vines/cliff_vine_096/lit_4/sprite.webp",
-          "pixellab_object_id": "4afb27a0-62b1-4aec-9f95-64449dfecd47",
-          "generated_at": "2026-08-16T10:53:53+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4388,
-          "glow_score": 0.0775,
-          "art_hash": "f3d7bf8586cca56c"
-        },
         "NOT_LIT_1": {
           "sprite": "cliff_vines/cliff_vine_096/not_lit_1/sprite.webp",
           "pixellab_object_id": "9cd0a48d-5616-40b9-ba9e-89a1470d15d8",
@@ -14196,6 +13683,43 @@
           "difference_from_source": 0.4743,
           "glow_score": 0.0792,
           "art_hash": "4f4a59844899c77d"
+        },
+        "NOT_LIT_3": {
+          "sprite": "cliff_vines/cliff_vine_096/sprite.webp",
+          "pixellab_object_id": "eeab9932-4d2f-46b3-a73b-369b070f5f8e",
+          "generated_at": "2026-08-14T05:20:03+00:00",
+          "relit_from": "LIT_1",
+          "art_hash": "cded19977b7eccb2"
+        },
+        "NOT_LIT_4": {
+          "sprite": "cliff_vines/cliff_vine_096/not_lit_4/sprite.webp",
+          "pixellab_object_id": "0be416cd-a940-4a50-81f4-6f51759858ed",
+          "generated_at": "2026-08-16T10:54:47+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4977,
+          "glow_score": 0.0741,
+          "relit_from": "LIT_2",
+          "art_hash": "d54fb9cd88c32d96"
+        },
+        "NOT_LIT_5": {
+          "sprite": "cliff_vines/cliff_vine_096/not_lit_5/sprite.webp",
+          "pixellab_object_id": "e19221a3-e53f-410d-a42c-88caeb28f67b",
+          "generated_at": "2026-08-16T10:53:41+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.5704,
+          "glow_score": 0.0751,
+          "relit_from": "LIT_3",
+          "art_hash": "8e5ee6af8bc5e83b"
+        },
+        "NOT_LIT_6": {
+          "sprite": "cliff_vines/cliff_vine_096/not_lit_6/sprite.webp",
+          "pixellab_object_id": "4afb27a0-62b1-4aec-9f95-64449dfecd47",
+          "generated_at": "2026-08-16T10:53:53+00:00",
+          "glow_concept": null,
+          "difference_from_source": 0.4388,
+          "glow_score": 0.0775,
+          "relit_from": "LIT_4",
+          "art_hash": "f3d7bf8586cca56c"
         }
       },
       "animations": []

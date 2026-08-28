@@ -32,14 +32,6 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "cliff_vines/cliff_vine_021/lit_1/sprite.webp",
-      "pixellab_object_id": "6bca1644-8136-4c1d-9922-e6e37a1918a1",
-      "generated_at": "2026-08-16T10:12:55+00:00",
-      "glow_concept": "pale blue soul-flowers dotted down the fall",
-      "difference_from_source": 0.2974,
-      "glow_score": 0.1155
-    },
     "LIT_2": {
       "sprite": "cliff_vines/cliff_vine_021/lit_2/sprite.webp",
       "pixellab_object_id": "973a673c-881a-4eeb-a55e-3921248dc42f",
@@ -52,30 +44,6 @@
       "sprite": "cliff_vines/cliff_vine_021/sprite.webp",
       "pixellab_object_id": "f3a413cb-313d-42cb-b3f4-d877c7fb7211",
       "generated_at": "2026-08-14T04:08:57+00:00"
-    },
-    "NOT_LIT_2": {
-      "sprite": "cliff_vines/cliff_vine_021/not_lit_2/sprite.webp",
-      "pixellab_object_id": "8405d4b2-2baa-4da0-aa92-0922b705c729",
-      "generated_at": "2026-08-16T10:09:48+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.4365,
-      "glow_score": 0.1088
-    },
-    "NOT_LIT_3": {
-      "sprite": "cliff_vines/cliff_vine_021/not_lit_3/sprite.webp",
-      "pixellab_object_id": "a9b9d16d-5488-4363-b15c-fe4da6679c63",
-      "generated_at": "2026-08-16T10:08:17+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.3885,
-      "glow_score": 0.0781
-    },
-    "NOT_LIT_4": {
-      "sprite": "cliff_vines/cliff_vine_021/not_lit_4/sprite.webp",
-      "pixellab_object_id": "4771b6e2-887e-49bc-aab2-0ab2ba31dc30",
-      "generated_at": "2026-08-16T10:10:50+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.4944,
-      "glow_score": 0.0551
     }
   }
 }

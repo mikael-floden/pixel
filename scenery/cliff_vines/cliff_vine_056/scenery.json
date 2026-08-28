@@ -32,11 +32,6 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "cliff_vines/cliff_vine_056/sprite.webp",
-      "pixellab_object_id": "79b49fca-02d6-4c93-818d-1ed10d46eda2",
-      "generated_at": "2026-08-14T04:51:21+00:00"
-    },
     "LIT_2": {
       "sprite": "cliff_vines/cliff_vine_056/lit_2/sprite.webp",
       "pixellab_object_id": "62e181a2-fdf9-4c2a-83cd-4c6db2a7309e",
@@ -76,6 +71,12 @@
       "glow_concept": null,
       "difference_from_source": 0.816,
       "glow_score": 0.0003
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_vines/cliff_vine_056/sprite.webp",
+      "pixellab_object_id": "79b49fca-02d6-4c93-818d-1ed10d46eda2",
+      "generated_at": "2026-08-14T04:51:21+00:00",
+      "relit_from": "LIT_1"
     }
   }
 }

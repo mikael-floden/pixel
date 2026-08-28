@@ -129,19 +129,17 @@ the full quota-fair flood while the real run would have made only the four
 tables — a safety check describing a different run than the one about to
 happen, which is worse than no safety check at all.
 
-**The 405 unreviewed states are not a backlog.** They are deliberately
-unjudged and must stay that way. 390 of them are the CLIFF families —
-cliff_vines (174), cliff_shrubs (66), cliff_mosses (42), cliff_features (36),
-cliff_roots (30), cliff_falls (30), cliff_fragments (12) — which only read
-correctly mounted against a mountain wall, and the game has no placement code
-for that yet. His own notes say it: "We might be able to put this against a
-mountain wall", and on a vine, "would be even better if it wasn't so thick.
-Want more sparse scenery like this (so you can see the mountain wall between
-the leaves)." Whether they ship at all is undecided.
+**The cliff families ARE under review now (2026-08-27).** This section first
+recorded them as deliberately unjudged, because they only read correctly against
+a mountain wall and the game had no placement code. He has since started
+reviewing them anyway and is rejecting freely — 63 cliff states in one batch.
+So do NOT protect them from his verdicts: process cliff rejections exactly like
+any other group. What stands from the original note is only the reason they were
+held: whether they ship at all is still undecided, and they need custom
+placement code to look right.
 
-So: never auto-approve them, never surface them as a review queue to be
-drained, never delete them for being unjudged, and never regenerate them to
-"improve" them. Leave them exactly as they are until he says otherwise.
+Never auto-approve anything, never drain his queue for him, and never delete a
+piece for being merely unjudged — an unreviewed state is not a rejected one.
 
 ### Wiki verdicts are standing orders (maintainer)
 

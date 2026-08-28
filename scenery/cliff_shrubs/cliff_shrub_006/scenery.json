@@ -32,35 +32,6 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
-      "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
-      "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
-      "generated_at": "2026-08-14T03:13:33+00:00"
-    },
-    "LIT_2": {
-      "sprite": "cliff_shrubs/cliff_shrub_006/lit_2/sprite.webp",
-      "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
-      "generated_at": "2026-08-16T09:51:40+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.4967,
-      "glow_score": 0.007
-    },
-    "LIT_3": {
-      "sprite": "cliff_shrubs/cliff_shrub_006/lit_3/sprite.webp",
-      "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
-      "generated_at": "2026-08-16T09:51:52+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.532,
-      "glow_score": 0.0055
-    },
-    "LIT_4": {
-      "sprite": "cliff_shrubs/cliff_shrub_006/lit_4/sprite.webp",
-      "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
-      "generated_at": "2026-08-16T09:51:53+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.7818,
-      "glow_score": 0.0055
-    },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_1/sprite.webp",
       "pixellab_object_id": "b8687c05-1a2c-49d1-93dd-e19ede1b1097",
@@ -76,6 +47,39 @@
       "glow_concept": null,
       "difference_from_source": 0.5799,
       "glow_score": 0.0
+    },
+    "NOT_LIT_3": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/sprite.webp",
+      "pixellab_object_id": "d8bc9b5a-93a0-405b-995c-3b7b7877d22b",
+      "generated_at": "2026-08-14T03:13:33+00:00",
+      "relit_from": "LIT_1"
+    },
+    "NOT_LIT_4": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_4/sprite.webp",
+      "pixellab_object_id": "1a07277f-6ef2-4969-bcf9-b64779dc259e",
+      "generated_at": "2026-08-16T09:51:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4967,
+      "glow_score": 0.007,
+      "relit_from": "LIT_2"
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_5/sprite.webp",
+      "pixellab_object_id": "287feb5c-e8a3-4654-98ee-b2aec51b58c1",
+      "generated_at": "2026-08-16T09:51:52+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.532,
+      "glow_score": 0.0055,
+      "relit_from": "LIT_3"
+    },
+    "NOT_LIT_6": {
+      "sprite": "cliff_shrubs/cliff_shrub_006/not_lit_6/sprite.webp",
+      "pixellab_object_id": "b838751e-bf72-46f8-9274-51b7a662752a",
+      "generated_at": "2026-08-16T09:51:53+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7818,
+      "glow_score": 0.0055,
+      "relit_from": "LIT_4"
     }
   }
 }

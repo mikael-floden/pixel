@@ -40,14 +40,6 @@
       "difference_from_source": 0.4711,
       "glow_score": 0.0553
     },
-    "LIT_2": {
-      "sprite": "cliff_shrubs/cliff_shrub_011/lit_2/sprite.webp",
-      "pixellab_object_id": "617c31d3-2df9-479d-b8ad-bc62e5d6892e",
-      "generated_at": "2026-08-16T09:56:20+00:00",
-      "glow_concept": "the leaves shining faintly",
-      "difference_from_source": 0.8757,
-      "glow_score": 0.0845
-    },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_011/sprite.webp",
       "pixellab_object_id": "417337fd-d090-4022-970d-971c3342d7e8",
@@ -76,6 +68,15 @@
       "glow_concept": null,
       "difference_from_source": 0.8329,
       "glow_score": 0.0
+    },
+    "NOT_LIT_5": {
+      "sprite": "cliff_shrubs/cliff_shrub_011/not_lit_5/sprite.webp",
+      "pixellab_object_id": "617c31d3-2df9-479d-b8ad-bc62e5d6892e",
+      "generated_at": "2026-08-16T09:56:20+00:00",
+      "glow_concept": "the leaves shining faintly",
+      "difference_from_source": 0.8757,
+      "glow_score": 0.0845,
+      "relit_from": "LIT_2"
     }
   }
 }

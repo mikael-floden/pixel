@@ -32,50 +32,38 @@
   "source": "pixellab.ai create-1-direction-object (single, S-only)",
   "must_be_imbplemented_with_random_hflip": true,
   "states": {
-    "LIT_1": {
+    "NOT_LIT_3": {
       "sprite": "cliff_roots/cliff_root_052/sprite.webp",
       "pixellab_object_id": "f57fb241-6bce-45ba-974e-fe2d11113705",
-      "generated_at": "2026-08-14T04:52:44+00:00"
+      "generated_at": "2026-08-14T04:52:44+00:00",
+      "relit_from": "LIT_1"
     },
-    "LIT_2": {
-      "sprite": "cliff_roots/cliff_root_052/lit_2/sprite.webp",
+    "NOT_LIT_4": {
+      "sprite": "cliff_roots/cliff_root_052/not_lit_4/sprite.webp",
       "pixellab_object_id": "05634b9f-c966-43dc-bb4a-ae1ceeead30e",
       "generated_at": "2026-08-16T09:48:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7257,
-      "glow_score": 0.2029
+      "glow_score": 0.2029,
+      "relit_from": "LIT_2"
     },
-    "LIT_3": {
-      "sprite": "cliff_roots/cliff_root_052/lit_3/sprite.webp",
+    "NOT_LIT_5": {
+      "sprite": "cliff_roots/cliff_root_052/not_lit_5/sprite.webp",
       "pixellab_object_id": "af04f744-b5e1-4abc-b733-20e8d6189627",
       "generated_at": "2026-08-16T09:48:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7799,
-      "glow_score": 0.099
+      "glow_score": 0.099,
+      "relit_from": "LIT_3"
     },
-    "LIT_4": {
-      "sprite": "cliff_roots/cliff_root_052/lit_4/sprite.webp",
+    "NOT_LIT_6": {
+      "sprite": "cliff_roots/cliff_root_052/not_lit_6/sprite.webp",
       "pixellab_object_id": "99da29a4-aba8-4281-8fab-90ac1898ac9a",
       "generated_at": "2026-08-16T09:49:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3626,
-      "glow_score": 0.2319
-    },
-    "NOT_LIT_1": {
-      "sprite": "cliff_roots/cliff_root_052/not_lit_1/sprite.webp",
-      "pixellab_object_id": "0dda6a53-f40e-4b5b-aa95-cbbd8a54ee06",
-      "generated_at": "2026-08-16T09:49:00+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8939,
-      "glow_score": 0.0
-    },
-    "NOT_LIT_2": {
-      "sprite": "cliff_roots/cliff_root_052/not_lit_2/sprite.webp",
-      "pixellab_object_id": "0cbc9d85-02b7-4994-9401-243d4664875c",
-      "generated_at": "2026-08-16T09:48:49+00:00",
-      "glow_concept": null,
-      "difference_from_source": 0.8307,
-      "glow_score": 0.0
+      "glow_score": 0.2319,
+      "relit_from": "LIT_4"
     }
   }
 }

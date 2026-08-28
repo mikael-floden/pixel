@@ -48,34 +48,38 @@
       "difference_from_source": 0.3754,
       "glow_score": 0.0969
     },
-    "NOT_LIT_1": {
+    "LIT_3": {
       "sprite": "cliff_vines/cliff_vine_049/sprite.webp",
       "pixellab_object_id": "b99ce23a-5130-4930-b055-dcb0ca072039",
-      "generated_at": "2026-08-14T04:52:51+00:00"
+      "generated_at": "2026-08-14T04:52:51+00:00",
+      "relit_from": "NOT_LIT_1"
     },
-    "NOT_LIT_2": {
-      "sprite": "cliff_vines/cliff_vine_049/not_lit_2/sprite.webp",
+    "LIT_4": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_4/sprite.webp",
       "pixellab_object_id": "0330c54b-a342-4f0e-b368-60c5081f90cc",
       "generated_at": "2026-08-16T10:22:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6062,
-      "glow_score": 0.1761
+      "glow_score": 0.1761,
+      "relit_from": "NOT_LIT_2"
     },
-    "NOT_LIT_3": {
-      "sprite": "cliff_vines/cliff_vine_049/not_lit_3/sprite.webp",
+    "LIT_5": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_5/sprite.webp",
       "pixellab_object_id": "4585e2bb-1a7a-4efe-8a3e-b55fc83a38d8",
       "generated_at": "2026-08-16T10:22:50+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3656,
-      "glow_score": 0.0611
+      "glow_score": 0.0611,
+      "relit_from": "NOT_LIT_3"
     },
-    "NOT_LIT_4": {
-      "sprite": "cliff_vines/cliff_vine_049/not_lit_4/sprite.webp",
+    "LIT_6": {
+      "sprite": "cliff_vines/cliff_vine_049/lit_6/sprite.webp",
       "pixellab_object_id": "fb891347-085b-4f3f-ac6a-9de9a3eac16d",
       "generated_at": "2026-08-16T10:23:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4003,
-      "glow_score": 0.0601
+      "glow_score": 0.0601,
+      "relit_from": "NOT_LIT_4"
     }
   }
 }
