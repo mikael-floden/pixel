@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T00:57:30.056Z",
+  "updated_at": "2026-08-28T01:04:20.680Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -425,6 +425,52 @@
               "kind": "tile",
               "id": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/tile_05.webp",
               "tile": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.36000560.webp",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
+              "tile": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+              "tile": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/brown_paving_stone__over__ice/5142e4b2",
+              "tile": "tiles/brown_paving_stone__over__ice/5142e4b2",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
+              "tile": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
               "weight": 1
             }
           ]
