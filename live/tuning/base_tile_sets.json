@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T01:39:57.315Z",
+  "updated_at": "2026-08-28T01:43:29.583Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1344,6 +1344,71 @@
               "kind": "tile",
               "id": "tiles/ice__over__black_rock/708f240a",
               "tile": "tiles/ice__over__black_rock/708f240a",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/4984046c",
+              "tile": "tiles/ice__over__parquet_floor/4984046c",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/4230ffbb",
+              "tile": "tiles/ice__over__parquet_floor/4230ffbb",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/41928a39",
+              "tile": "tiles/ice__over__parquet_floor/41928a39",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/41557ff5",
+              "tile": "tiles/ice__over__parquet_floor/41557ff5",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/3bb25d40",
+              "tile": "tiles/ice__over__parquet_floor/3bb25d40",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/2f6b883a",
+              "tile": "tiles/ice__over__parquet_floor/2f6b883a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__parquet_floor/225b36b0",
+              "tile": "tiles/ice__over__parquet_floor/225b36b0",
+              "weight": 0.05
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/24580b09",
+              "tile": "tiles/ice__over__deep_water/24580b09",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/da6ab2eb",
+              "tile": "tiles/ice__over__deep_water/da6ab2eb",
               "weight": 1
             }
           ]
