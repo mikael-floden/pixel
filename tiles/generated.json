@@ -12,6 +12,12 @@
       "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
+    "00e2ed29-af38-45d8-9b68-c53b6eb27b37": {
+      "created": "2026-08-28T04:11:15+00:00",
+      "prompt": "brown paving stone and black rock",
+      "purpose": "fade:brown_paving_stone:black_rock:and1",
+      "status": "pending"
+    },
     "00e6dee6-53ec-487e-8fe5-98728441faf0": {
       "created": "2026-08-17T23:12:02+00:00",
       "prompt": "isometric cube of thick bubbling slime capped with deep dark ocean water. The cap overhangs slightly, deep water draping down onto the slime beneath it. Uniform flat deep water top. No outline.",
@@ -36,6 +42,12 @@
       "purpose": "matrix:deep_water_over_water",
       "status": "pending"
     },
+    "01558966-3514-43b1-925d-b9dce9a336c0": {
+      "created": "2026-08-28T04:18:58+00:00",
+      "prompt": "deep water with slime",
+      "purpose": "fade:deep_water:slime:with1",
+      "status": "pending"
+    },
     "01580635-2589-49a7-9b2a-26acd37c11b5": {
       "created": "2026-08-28T03:55:30+00:00",
       "prompt": "brown paving stone all around the edge, a small pool of ice inside",
@@ -48,10 +60,22 @@
       "purpose": "blend:deep_water:light_soil:p30",
       "status": "pending"
     },
+    "0176ac4f-d81a-46fb-a804-c5a9c0fa889f": {
+      "created": "2026-08-28T04:28:32+00:00",
+      "prompt": "deep water on top of lava",
+      "purpose": "fade:lava:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "01791839-841d-4c8b-90d4-3b5605b4e92d": {
       "created": "2026-08-17T20:35:50+00:00",
       "prompt": "isometric ground tile. deep dark ocean water on top of dark volcanic rock. The deep water grows over the edge and tufts down over the black rock below, so the two meet naturally with no hard line between them. The black rock side walls show their own surface detail. Seen from above, the deep water surface is even and uniform. No outline.",
       "purpose": "matrix:deep_water_over_black_rock",
+      "status": "pending"
+    },
+    "0187f162-c26c-4f8c-bf8d-2102571f40cc": {
+      "created": "2026-08-28T04:30:16+00:00",
+      "prompt": "ice and snow",
+      "purpose": "fade:ice:snow:and1",
       "status": "pending"
     },
     "0190baf6-7b65-4896-85c5-22d7d558545c": {
@@ -108,6 +132,12 @@
       "purpose": "matrix:paving_stone_over_grey_stone",
       "status": "pending"
     },
+    "02a966e1-a4c1-4ab0-aecf-174cbfda2145": {
+      "created": "2026-08-28T04:26:16+00:00",
+      "prompt": "ice with grey stone",
+      "purpose": "fade:ice:grey_stone:with1",
+      "status": "pending"
+    },
     "02c6decd-0626-4c9a-8832-955de352c578": {
       "created": "2026-08-17T20:48:11+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: dark volcanic rock with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -160,6 +190,12 @@
       "created": "2026-08-28T00:37:42+00:00",
       "prompt": "deep water and brown paving stone mixed evenly",
       "purpose": "blend:deep_water:brown_paving_stone:p50",
+      "status": "pending"
+    },
+    "03f120e2-6a3e-446d-b953-49f2f5075d82": {
+      "created": "2026-08-28T04:24:05+00:00",
+      "prompt": "grey paving stone with grass",
+      "purpose": "fade:grey_paving_stone:grass:with1",
       "status": "pending"
     },
     "03f5045e-89e5-434f-9b87-6f61cfe5bec7": {
@@ -240,6 +276,12 @@
       "purpose": "puddle:brown_paving_stone:light_soil:p30",
       "status": "pending"
     },
+    "051320b2-3701-4df4-bd89-666c199bbcf7": {
+      "created": "2026-08-28T04:28:31+00:00",
+      "prompt": "lava and deep water",
+      "purpose": "fade:lava:deep_water:and1",
+      "status": "pending"
+    },
     "052b047a-b11d-41b2-a2b9-dc6291b87b9e": {
       "created": "2026-08-17T17:19:43+00:00",
       "prompt": "isometric cube of wooden parquet floor capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the parquet floor beneath it. Uniform flat black rock top. No outline.",
@@ -256,6 +298,18 @@
       "created": "2026-08-27T23:52:02+00:00",
       "prompt": "mostly grass, a few small spots of dark mud",
       "purpose": "blend:grass:dark_mud:p10",
+      "status": "pending"
+    },
+    "05ef2ce0-232a-4fa9-bf07-88b2adbcce0f": {
+      "created": "2026-08-28T04:16:50+00:00",
+      "prompt": "water on top of dark mud",
+      "purpose": "fade:dark_mud:water:on_top_of1",
+      "status": "pending"
+    },
+    "05f07326-867d-4083-abae-a627cf454726": {
+      "created": "2026-08-28T04:20:38+00:00",
+      "prompt": "light beach on top of grass",
+      "purpose": "fade:grass:light_beach:on_top_of1",
       "status": "pending"
     },
     "06137139-95c1-4822-a180-8a8845b01a34": {
@@ -298,6 +352,18 @@
       "created": "2026-08-17T23:19:50+00:00",
       "prompt": "isometric terrain block of rugged grey mountain rock with clean fresh snow growing on top. The snow spills over the rim and hangs down the grey stone face in an uneven fringe. Flat even snow seen from above. No outline.",
       "purpose": "matrix:snow_over_grey_stone",
+      "status": "pending"
+    },
+    "0717d90a-4f27-4ddb-970d-970fa7b8e4eb": {
+      "created": "2026-08-28T04:11:26+00:00",
+      "prompt": "brown paving stone and ice",
+      "purpose": "fade:brown_paving_stone:ice:and1",
+      "status": "pending"
+    },
+    "07192a63-27f0-4c59-a1d2-aa538e9f5935": {
+      "created": "2026-08-28T04:14:56+00:00",
+      "prompt": "dark mud with black rock",
+      "purpose": "fade:dark_mud:black_rock:with1",
       "status": "pending"
     },
     "07348f7f-3027-42bd-90e3-6d043b52e1b6": {
@@ -354,6 +420,12 @@
       "purpose": "matrix:snow_over_slime",
       "status": "pending"
     },
+    "088111b9-2dfa-4c17-b2bb-ada9e3e44928": {
+      "created": "2026-08-28T04:29:41+00:00",
+      "prompt": "lava and grey paving stone",
+      "purpose": "fade:lava:grey_paving_stone:and1",
+      "status": "pending"
+    },
     "088393fa-e3e8-49b8-9069-c4c1dd1bde67": {
       "created": "2026-08-28T04:09:38+00:00",
       "prompt": "brown paving stone and dark mud",
@@ -376,6 +448,12 @@
       "created": "2026-08-27T16:43:32+00:00",
       "prompt": "quiet grey mountain stone, plain medium grey, fine even grain, little variation",
       "purpose": "tops:grey_stone:subtle:27653",
+      "status": "pending"
+    },
+    "09a0c23b-f178-45a9-be3b-deb203b2af51": {
+      "created": "2026-08-28T04:30:27+00:00",
+      "prompt": "black rock on top of ice",
+      "purpose": "fade:ice:black_rock:on_top_of1",
       "status": "pending"
     },
     "09b07b03-0d6f-4cfe-b4ba-2038bc232212": {
@@ -564,6 +642,12 @@
       "purpose": "matrix:dark_mud_over_snow",
       "status": "pending"
     },
+    "0ccc27f9-cadd-4ee2-bb92-6eccfb818d6f": {
+      "created": "2026-08-28T04:28:38+00:00",
+      "prompt": "grey stone with water",
+      "purpose": "fade:grey_stone:water:with1",
+      "status": "pending"
+    },
     "0d07b7c0-8ad7-4083-9063-35ced3cde0e7": {
       "created": "2026-08-28T00:09:10+00:00",
       "prompt": "brown paving stone and dark mud mixed evenly",
@@ -618,6 +702,12 @@
       "purpose": "puddle:black_rock:light_soil:p40",
       "status": "pending"
     },
+    "0e2e00e3-c807-4c16-8f25-bdb39832503d": {
+      "created": "2026-08-28T04:13:48+00:00",
+      "prompt": "dark mud and black rock",
+      "purpose": "fade:dark_mud:black_rock:and1",
+      "status": "pending"
+    },
     "0e4a7b02-733b-43fd-bc09-dcd5a31890cd": {
       "created": "2026-08-17T20:54:46+00:00",
       "prompt": "isometric tile: a layer of thick bubbling slime covering a block of dark volcanic rock. Ragged slime edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform slime on the top face. No outline.",
@@ -646,6 +736,12 @@
       "created": "2026-08-17T12:07:37+00:00",
       "prompt": "isometric cube of wooden parquet floor capped with dry light soil. The cap overhangs slightly, light soil draping down onto the parquet floor beneath it. Uniform flat light soil top. No outline.",
       "purpose": "matrix:light_soil_over_parquet_floor",
+      "status": "pending"
+    },
+    "0eceea5e-f8cf-49a1-acf2-0f927efedcaf": {
+      "created": "2026-08-28T04:30:33+00:00",
+      "prompt": "lava on top of ice",
+      "purpose": "fade:ice:lava:on_top_of1",
       "status": "pending"
     },
     "0ee62505-cfcc-403a-9784-736151e1cc51": {
@@ -720,6 +816,12 @@
       "created": "2026-08-28T03:57:39+00:00",
       "prompt": "brown paving stone, one large patch of grey stone in the middle, brown paving stone all around the edge",
       "purpose": "puddle:brown_paving_stone:grey_stone:p40",
+      "status": "pending"
+    },
+    "109f0b8d-dd3b-4a8a-a4f0-d081e8d5de5c": {
+      "created": "2026-08-28T04:10:21+00:00",
+      "prompt": "brown paving stone with grey stone",
+      "purpose": "fade:brown_paving_stone:grey_stone:with1",
       "status": "pending"
     },
     "10fc1035-d4d7-4d73-837d-3401b647d000": {
@@ -800,6 +902,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "12758582-0df4-4dff-9e21-d926efaff16a": {
+      "created": "2026-08-28T04:29:04+00:00",
+      "prompt": "ice with black rock",
+      "purpose": "fade:ice:black_rock:with1",
+      "status": "pending"
+    },
     "127b7d7b-a79b-4e21-ac2d-8410491021b4": {
       "created": "2026-08-17T22:35:47+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken wet dark mud. Sides: deep dark ocean water with visible texture. Between them the dark mud overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -830,6 +938,12 @@
       "purpose": "fade:black_rock:snow:with1",
       "status": "pending"
     },
+    "131a4fd6-780c-448e-a6c4-8111759c4aab": {
+      "created": "2026-08-28T04:19:48+00:00",
+      "prompt": "water on top of deep water",
+      "purpose": "fade:deep_water:water:on_top_of1",
+      "status": "pending"
+    },
     "13c8b445-467c-4746-af7e-1bbfb9a16fc7": {
       "created": "2026-08-17T22:25:51+00:00",
       "prompt": "one repeating segment of a tall deep dark ocean water wall, isometric. The deep water texture leaves the bottom edge exactly as it enters the top edge, so many copies stack into one continuous wall with no line where they join. Flat even deep water on the top face. No outline.",
@@ -842,10 +956,22 @@
       "purpose": "matrix:snow_over_lava",
       "status": "pending"
     },
+    "14e156f4-9724-442b-a289-8b03487db50b": {
+      "created": "2026-08-28T04:21:39+00:00",
+      "prompt": "light soil on top of grass",
+      "purpose": "fade:grass:light_soil:on_top_of1",
+      "status": "pending"
+    },
     "14edee79-d866-454c-9170-88584f3858ce": {
       "created": "2026-08-23T18:47:03+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clear calm water. Sides: clean fresh snow with visible texture. Between them the water overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:water_over_snow",
+      "status": "pending"
+    },
+    "152b3536-f1b0-440d-be18-c47d61a373a9": {
+      "created": "2026-08-28T04:19:41+00:00",
+      "prompt": "ice on top of grass",
+      "purpose": "fade:grass:ice:on_top_of1",
       "status": "pending"
     },
     "1558d21b-948c-4b27-bdbd-ec32304f7e10": {
@@ -920,10 +1046,22 @@
       "purpose": "matrix:slime_over_water",
       "status": "pending"
     },
+    "16d2f60f-f822-4a3e-a6cf-c99c58af1fcc": {
+      "created": "2026-08-28T04:27:11+00:00",
+      "prompt": "parquet floor on top of grey stone",
+      "purpose": "fade:grey_stone:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
     "16e381d9-110f-4dac-8665-a20dea961a1d": {
       "created": "2026-08-27T16:40:24+00:00",
       "prompt": "beautiful grey paving stones, pale silver grey, finely cut, richly worn, lots of detail",
       "purpose": "tops:grey_paving_stone:detail:67911",
+      "status": "pending"
+    },
+    "16ea5923-6d0b-4255-b867-c8347b589853": {
+      "created": "2026-08-28T04:23:09+00:00",
+      "prompt": "grass with ice",
+      "purpose": "fade:grass:ice:with1",
       "status": "pending"
     },
     "16f32699-dabd-4990-a6e5-16e920e5366c": {
@@ -972,6 +1110,12 @@
       "created": "2026-08-28T03:42:26+00:00",
       "prompt": "black rock, one patch of ice in the middle, black rock all around the edge",
       "purpose": "puddle:black_rock:ice:p20",
+      "status": "pending"
+    },
+    "18d1c313-10e0-4865-a065-4bca96b7790c": {
+      "created": "2026-08-28T04:19:07+00:00",
+      "prompt": "grass and slime",
+      "purpose": "fade:grass:slime:and1",
       "status": "pending"
     },
     "190a733e-ee0f-4826-9b50-61d158c87def": {
@@ -1046,6 +1190,12 @@
       "purpose": "matrix:light_soil_over_light_beach",
       "status": "pending"
     },
+    "1a3042e1-9e0b-4105-9050-72f8a3e22df6": {
+      "created": "2026-08-28T04:21:02+00:00",
+      "prompt": "parquet floor on top of deep water",
+      "purpose": "fade:deep_water:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
     "1a3bbd72-2066-42c4-8752-e1672cc10af7": {
       "created": "2026-08-28T00:18:19+00:00",
       "prompt": "mostly dark mud, scattered patches of deep water",
@@ -1076,6 +1226,12 @@
       "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
+    "1ab59bf9-9053-4893-9794-6e4f447ecea8": {
+      "created": "2026-08-28T04:16:02+00:00",
+      "prompt": "grass on top of deep water",
+      "purpose": "fade:deep_water:grass:on_top_of1",
+      "status": "pending"
+    },
     "1addf58a-b85c-40d6-861e-0e65445580dc": {
       "created": "2026-08-28T03:42:01+00:00",
       "prompt": "black rock all around the edge, a pool of grass inside",
@@ -1098,6 +1254,12 @@
       "created": "2026-08-17T22:14:28+00:00",
       "prompt": "a block of deep dark ocean water with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:snow_over_deep_water",
+      "status": "pending"
+    },
+    "1b93fb50-3dc6-4ad6-a945-a9a4179fae41": {
+      "created": "2026-08-28T04:13:49+00:00",
+      "prompt": "dark mud with deep water",
+      "purpose": "fade:dark_mud:deep_water:with1",
       "status": "pending"
     },
     "1ba83b23-f273-42ab-857a-3e0e49172045": {
@@ -1208,6 +1370,12 @@
       "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
+    "1d32481b-e5e8-4ccc-a65f-669524eee746": {
+      "created": "2026-08-28T04:23:26+00:00",
+      "prompt": "light beach on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:light_beach:on_top_of1",
+      "status": "pending"
+    },
     "1d73f4c3-eaf2-41cc-a1ee-90329c59c0a8": {
       "created": "2026-08-17T23:36:14+00:00",
       "prompt": "a block of thick bubbling slime with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -1254,6 +1422,18 @@
       "created": "2026-08-17T11:55:08+00:00",
       "prompt": "isometric terrain block of dry light soil with dry light soil growing on top. The light soil spills over the rim and hangs down the light soil face in an uneven fringe. Flat even light soil seen from above. No outline.",
       "purpose": "matrix:light_soil_over_light_soil",
+      "status": "pending"
+    },
+    "1ebfcaa9-f1fe-4d35-bc0a-482a56d6531d": {
+      "created": "2026-08-28T04:15:01+00:00",
+      "prompt": "brown paving stone and snow",
+      "purpose": "fade:brown_paving_stone:snow:and1",
+      "status": "pending"
+    },
+    "1ec07022-30f4-4eb9-b532-fc651ffcd42e": {
+      "created": "2026-08-28T04:18:44+00:00",
+      "prompt": "black rock on top of deep water",
+      "purpose": "fade:deep_water:black_rock:on_top_of1",
       "status": "pending"
     },
     "1ec48d46-a143-4e5a-9a18-4ced37cd025a": {
@@ -1376,6 +1556,18 @@
       "purpose": "matrix:paving_stone_over_grey_stone",
       "status": "pending"
     },
+    "20ecdff4-3986-490c-80a8-1a3e30ceb9a7": {
+      "created": "2026-08-28T04:11:06+00:00",
+      "prompt": "brown paving stone and deep water",
+      "purpose": "fade:brown_paving_stone:deep_water:and1",
+      "status": "pending"
+    },
+    "21099025-034f-44e7-88ec-04700eb29d44": {
+      "created": "2026-08-28T04:10:58+00:00",
+      "prompt": "black rock with water",
+      "purpose": "fade:black_rock:water:with1",
+      "status": "pending"
+    },
     "21354b54-4e36-4d92-848b-b4fc49a8562b": {
       "created": "2026-08-17T22:59:37+00:00",
       "prompt": "isometric ground tile, deep dark ocean water over dry light soil, photographed from above. Soft irregular boundary where deep water meets light soil \u2014 the deep water creeps down over the light soil. Plain even deep water surface. No outline.",
@@ -1400,6 +1592,12 @@
       "purpose": "matrix:grass_over_light_beach",
       "status": "pending"
     },
+    "2160452c-a991-49fe-b41d-6712fe255037": {
+      "created": "2026-08-28T04:29:54+00:00",
+      "prompt": "light beach on top of grey stone",
+      "purpose": "fade:grey_stone:light_beach:on_top_of1",
+      "status": "pending"
+    },
     "216b6ef9-23ea-4459-b8d7-ebe9e7570492": {
       "created": "2026-08-17T18:50:01+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of molten glowing lava. The grey stone grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
@@ -1410,6 +1608,12 @@
       "created": "2026-08-17T20:53:01+00:00",
       "prompt": "isometric tile: a layer of pale sandy beach covering a block of wet dark mud. Ragged light beach edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform light beach on the top face. No outline.",
       "purpose": "matrix:light_beach_over_dark_mud",
+      "status": "pending"
+    },
+    "219fdc0e-288b-4f4e-9b2f-b9602a86e63d": {
+      "created": "2026-08-28T04:25:05+00:00",
+      "prompt": "grey paving stone with slime",
+      "purpose": "fade:grey_paving_stone:slime:with1",
       "status": "pending"
     },
     "21c2b671-1ba9-456e-ad5f-9c6c51c01110": {
@@ -1448,6 +1652,12 @@
       "purpose": "matrix:snow_over_grass",
       "status": "pending"
     },
+    "22783fa3-9216-4c88-963f-e74c5559eff7": {
+      "created": "2026-08-28T04:19:14+00:00",
+      "prompt": "deep water and snow",
+      "purpose": "fade:deep_water:snow:and1",
+      "status": "pending"
+    },
     "2280f7e8-bb69-4ef4-9f9e-ac578d6c7cbe": {
       "created": "2026-08-17T20:55:02+00:00",
       "prompt": "isometric ground tile. thick bubbling slime on top of rugged grey mountain rock. The slime grows over the edge and tufts down over the grey stone below, so the two meet naturally with no hard line between them. The grey stone side walls show their own surface detail. Seen from above, the slime surface is even and uniform. No outline.",
@@ -1458,6 +1668,30 @@
       "created": "2026-08-16T16:29:15+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are wooden parquet floor with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_parquet_floor",
+      "status": "pending"
+    },
+    "230557ae-51ce-4a24-b010-193e93676147": {
+      "created": "2026-08-28T04:19:31+00:00",
+      "prompt": "deep water and parquet floor",
+      "purpose": "fade:deep_water:parquet_floor:and1",
+      "status": "pending"
+    },
+    "23572aba-27ca-4229-b486-1bcb7370da21": {
+      "created": "2026-08-28T04:20:41+00:00",
+      "prompt": "grey paving stone with dark mud",
+      "purpose": "fade:grey_paving_stone:dark_mud:with1",
+      "status": "pending"
+    },
+    "23642493-56ea-4db8-b1a3-ca3dee0d8a8f": {
+      "created": "2026-08-28T04:25:52+00:00",
+      "prompt": "ice on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:ice:on_top_of1",
+      "status": "pending"
+    },
+    "238f97b1-59b2-4098-8d57-757efd0bbcc2": {
+      "created": "2026-08-28T04:26:11+00:00",
+      "prompt": "light soil on top of grey stone",
+      "purpose": "fade:grey_stone:light_soil:on_top_of1",
       "status": "pending"
     },
     "2399fb4c-9f14-4c42-9609-902a482e0438": {
@@ -1538,6 +1772,12 @@
       "purpose": "matrix:paving_stone_over_grass",
       "status": "pending"
     },
+    "24948298-debc-4dd8-adba-84257df73933": {
+      "created": "2026-08-28T04:23:34+00:00",
+      "prompt": "grey paving stone and ice",
+      "purpose": "fade:grey_paving_stone:ice:and1",
+      "status": "pending"
+    },
     "24bc9492-05ab-4636-b6db-3ec195bf807c": {
       "created": "2026-08-16T16:45:28+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are thick bubbling slime with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -1560,6 +1800,12 @@
       "created": "2026-08-16T17:05:56+00:00",
       "prompt": "clean single color clean fresh snow on top of clean dry light soil",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "2521ce8a-a206-4f2b-8ea1-9d6f98eeb592": {
+      "created": "2026-08-28T04:26:58+00:00",
+      "prompt": "grey stone with grey paving stone",
+      "purpose": "fade:grey_stone:grey_paving_stone:with1",
       "status": "pending"
     },
     "252dab9f-2b3f-4644-bf8e-231003ec2c21": {
@@ -1616,6 +1862,12 @@
       "created": "2026-08-17T23:47:09+00:00",
       "prompt": "isometric terrain block of clean fresh snow with deep dark ocean water growing on top. The deep water spills over the rim and hangs down the snow face in an uneven fringe. Flat even deep water seen from above. No outline.",
       "purpose": "matrix:deep_water_over_snow",
+      "status": "pending"
+    },
+    "25ecc498-4732-4b45-9f92-19a61e50face": {
+      "created": "2026-08-28T04:11:39+00:00",
+      "prompt": "brown paving stone with grass",
+      "purpose": "fade:brown_paving_stone:grass:with1",
       "status": "pending"
     },
     "25efde51-d7a2-4baf-901d-8b050a88e42c": {
@@ -1722,6 +1974,12 @@
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
     },
+    "27adfb31-26c1-446b-854c-ac609f65e516": {
+      "created": "2026-08-28T04:25:39+00:00",
+      "prompt": "ice and brown paving stone",
+      "purpose": "fade:ice:brown_paving_stone:and1",
+      "status": "pending"
+    },
     "27bc858f-9378-4b07-8806-b6c616c20f5b": {
       "created": "2026-08-17T22:54:39+00:00",
       "prompt": "isometric ground tile, molten glowing lava over translucent crystal ice, photographed from above. Soft irregular boundary where lava meets ice \u2014 the lava creeps down over the ice. Plain even lava surface. No outline.",
@@ -1800,6 +2058,12 @@
       "purpose": "matrix:dark_mud_over_paving_stone",
       "status": "pending"
     },
+    "2903b55b-2276-4dba-ba5c-56a7b0d5c403": {
+      "created": "2026-08-28T04:29:16+00:00",
+      "prompt": "grey stone and ice",
+      "purpose": "fade:grey_stone:ice:and1",
+      "status": "pending"
+    },
     "292dcb05-a052-449e-bbd9-49a7aeb60ca7": {
       "created": "2026-08-17T22:40:26+00:00",
       "prompt": "top-down isometric ground block. Thick wet dark mud carpet over exposed clean fresh snow. Where the two meet the dark mud droops over the edge instead of being cut off. Even dark mud surface, detailed snow sides. No outline.",
@@ -1858,6 +2122,12 @@
       "created": "2026-08-17T22:26:20+00:00",
       "prompt": "isometric cube of molten glowing lava capped with dark volcanic rock. The cap overhangs slightly, black rock draping down onto the lava beneath it. Uniform flat black rock top. No outline.",
       "purpose": "matrix:black_rock_over_lava",
+      "status": "pending"
+    },
+    "29e02fdb-de54-438a-9b96-0299b0efc67a": {
+      "created": "2026-08-28T04:12:28+00:00",
+      "prompt": "slime on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:slime:on_top_of1",
       "status": "pending"
     },
     "29eea50b-ce5f-4a7a-b4a0-5116745f1de5": {
@@ -1940,6 +2210,18 @@
       "purpose": "matrix:snow_over_paving_stone",
       "status": "pending"
     },
+    "2b8b9e92-28d3-42b9-a38b-02e8a5d2598a": {
+      "created": "2026-08-28T04:26:31+00:00",
+      "prompt": "grey stone and grass",
+      "purpose": "fade:grey_stone:grass:and1",
+      "status": "pending"
+    },
+    "2bbc5b04-e2bb-4620-a1cf-2f52dddec20a": {
+      "created": "2026-08-28T04:16:04+00:00",
+      "prompt": "deep water and light soil",
+      "purpose": "fade:deep_water:light_soil:and1",
+      "status": "pending"
+    },
     "2bc5139d-e11a-424d-9094-b2454456db34": {
       "created": "2026-08-28T00:20:03+00:00",
       "prompt": "grey stone with clear patches of light beach breaking through",
@@ -1956,6 +2238,12 @@
       "created": "2026-08-27T17:53:06+00:00",
       "prompt": "thick green slime, glowing bright green, wet glossy shine, lots of detail",
       "purpose": "tops:slime:detail:36519",
+      "status": "pending"
+    },
+    "2c375182-d929-47ef-8309-d6e45a8e3267": {
+      "created": "2026-08-28T04:20:52+00:00",
+      "prompt": "grey paving stone with light soil",
+      "purpose": "fade:grey_paving_stone:light_soil:with1",
       "status": "pending"
     },
     "2c3bc4ae-61ab-4ba3-9a64-060973f00a3c": {
@@ -2000,6 +2288,12 @@
       "purpose": "matrix:grey_stone_over_paving_stone",
       "status": "pending"
     },
+    "2cf07ca8-cf59-4d95-af7f-6a77eeaf29a2": {
+      "created": "2026-08-28T04:30:36+00:00",
+      "prompt": "ice and lava",
+      "purpose": "fade:ice:lava:and1",
+      "status": "pending"
+    },
     "2cf85998-fea4-4980-a0b8-2945f06dc33d": {
       "created": "2026-08-28T00:05:27+00:00",
       "prompt": "brown paving stone and grey stone mixed, more brown paving stone",
@@ -2028,6 +2322,12 @@
       "created": "2026-08-17T11:59:49+00:00",
       "prompt": "isometric tile: a layer of dry light soil covering a block of wet dark mud. Ragged light soil edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform light soil on the top face. No outline.",
       "purpose": "matrix:light_soil_over_dark_mud",
+      "status": "pending"
+    },
+    "2e07e5a6-1e9f-4260-980f-45d277193c93": {
+      "created": "2026-08-28T04:25:46+00:00",
+      "prompt": "grass on top of grey stone",
+      "purpose": "fade:grey_stone:grass:on_top_of1",
       "status": "pending"
     },
     "2e16844a-97d7-4958-b4c5-601c56437057": {
@@ -2076,6 +2376,18 @@
       "created": "2026-08-17T22:32:00+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken dark volcanic rock. Sides: rugged grey mountain rock with visible texture. Between them the black rock overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:black_rock_over_grey_stone",
+      "status": "pending"
+    },
+    "2f0cfee7-cb43-47dc-8502-c5498b6701b0": {
+      "created": "2026-08-28T04:14:02+00:00",
+      "prompt": "parquet floor on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
+    "2fa31f2e-7638-4744-a7ae-2aaff7798c86": {
+      "created": "2026-08-28T04:22:41+00:00",
+      "prompt": "grey paving stone with grey stone",
+      "purpose": "fade:grey_paving_stone:grey_stone:with1",
       "status": "pending"
     },
     "2fa6decd-d83d-4829-9f85-c9922e9ac9a9": {
@@ -2162,6 +2474,12 @@
       "purpose": "tops:light_soil:detail:81752",
       "status": "pending"
     },
+    "3195e8cf-d53c-426f-91d3-f7b1fb8bb04f": {
+      "created": "2026-08-28T04:22:26+00:00",
+      "prompt": "dark mud on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:dark_mud:on_top_of1",
+      "status": "pending"
+    },
     "31bbf543-0f22-4f10-88dd-84373adb1040": {
       "created": "2026-08-16T18:52:49+00:00",
       "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed deep dark ocean water. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed deep water sides. No outline.",
@@ -2202,6 +2520,12 @@
       "created": "2026-08-19T10:47:21+00:00",
       "prompt": "isometric cube of wet dark mud capped with cut paving stone slabs. The cap overhangs slightly, paving stone draping down onto the dark mud beneath it. Uniform flat paving stone top. No outline.",
       "purpose": "matrix:paving_stone_over_dark_mud",
+      "status": "pending"
+    },
+    "339bf069-fce1-49d7-9762-a94390741720": {
+      "created": "2026-08-28T04:19:29+00:00",
+      "prompt": "slime on top of grass",
+      "purpose": "fade:grass:slime:on_top_of1",
       "status": "pending"
     },
     "33bda435-2ce4-4dd1-88e5-bfd77fefefe3": {
@@ -2306,6 +2630,12 @@
       "purpose": "matrix:slime_over_dark_mud",
       "status": "pending"
     },
+    "34b5799e-647a-484e-a1ce-81721b48b4ee": {
+      "created": "2026-08-28T04:20:41+00:00",
+      "prompt": "water on top of grass",
+      "purpose": "fade:grass:water:on_top_of1",
+      "status": "pending"
+    },
     "34e42d3e-5435-40cd-b5db-8cd419b27a63": {
       "created": "2026-08-28T03:46:26+00:00",
       "prompt": "black rock, one large patch of lava in the middle, black rock all around the edge",
@@ -2384,10 +2714,22 @@
       "purpose": "matrix:grey_stone_over_ice",
       "status": "pending"
     },
+    "367701c0-4ea3-48c2-b506-6e96db149dff": {
+      "created": "2026-08-28T04:17:57+00:00",
+      "prompt": "deep water with lava",
+      "purpose": "fade:deep_water:lava:with1",
+      "status": "pending"
+    },
     "36a2d34f-2ff5-443a-bd6a-1c657f0cfdba": {
       "created": "2026-08-17T16:35:10+00:00",
       "prompt": "isometric ground tile, dark volcanic rock over clean fresh snow, photographed from above. Soft irregular boundary where black rock meets snow \u2014 the black rock creeps down over the snow. Plain even black rock surface. No outline.",
       "purpose": "matrix:black_rock_over_snow",
+      "status": "pending"
+    },
+    "36c41dd5-f5b4-446a-b852-def640a0bbcf": {
+      "created": "2026-08-28T04:17:00+00:00",
+      "prompt": "deep water with black rock",
+      "purpose": "fade:deep_water:black_rock:with1",
       "status": "pending"
     },
     "36e9975a-37c7-4201-a006-24195ef54837": {
@@ -2406,6 +2748,12 @@
       "created": "2026-08-17T22:43:05+00:00",
       "prompt": "isometric cube of pale sandy beach capped with wooden parquet floor. The cap overhangs slightly, parquet floor draping down onto the light beach beneath it. Uniform flat parquet floor top. No outline.",
       "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
+    "373586c1-9f24-4bfa-b8b3-d770c6643726": {
+      "created": "2026-08-28T04:25:20+00:00",
+      "prompt": "grey stone and dark mud",
+      "purpose": "fade:grey_stone:dark_mud:and1",
       "status": "pending"
     },
     "3748e087-f5e3-40e0-baf6-2171cd375eec": {
@@ -2498,6 +2846,12 @@
       "purpose": "blend:brown_paving_stone:water:p20",
       "status": "pending"
     },
+    "3967cad1-0046-46d6-954a-ba3450a60fde": {
+      "created": "2026-08-28T04:20:04+00:00",
+      "prompt": "brown paving stone on top of grass",
+      "purpose": "fade:grass:brown_paving_stone:on_top_of1",
+      "status": "pending"
+    },
     "3985b72f-b9c7-4ca6-b596-7c9cd85aa2e5": {
       "created": "2026-08-27T23:53:06+00:00",
       "prompt": "mostly grass, a few small spots of ice",
@@ -2546,6 +2900,12 @@
       "purpose": "matrix:slime_over_black_rock",
       "status": "pending"
     },
+    "3aeee6a0-942c-46e2-9327-6cbb7bfc4e66": {
+      "created": "2026-08-28T04:29:03+00:00",
+      "prompt": "grass on top of ice",
+      "purpose": "fade:ice:grass:on_top_of1",
+      "status": "pending"
+    },
     "3afb9aa5-330b-48a7-9d49-3fa2fb673d11": {
       "created": "2026-08-17T20:52:29+00:00",
       "prompt": "isometric terrain block of thick bubbling slime with translucent crystal ice growing on top. The ice spills over the rim and hangs down the slime face in an uneven fringe. Flat even ice seen from above. No outline.",
@@ -2556,6 +2916,12 @@
       "created": "2026-08-17T19:10:43+00:00",
       "prompt": "isometric tile: a layer of wet dark mud covering a block of clean fresh snow. Ragged dark mud edge overhanging the snow cliff, individual strands breaking the line. Smooth uniform dark mud on the top face. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "3b443361-266f-49ac-8e15-939549eb026f": {
+      "created": "2026-08-28T04:16:45+00:00",
+      "prompt": "dark mud with snow",
+      "purpose": "fade:dark_mud:snow:with1",
       "status": "pending"
     },
     "3b4ebce6-5b46-480c-b0a3-13462aa4beb5": {
@@ -2592,6 +2958,12 @@
       "created": "2026-08-19T10:10:37+00:00",
       "prompt": "isometric ground tile, rugged grey mountain rock over pale sandy beach, photographed from above. Soft irregular boundary where grey stone meets light beach \u2014 the grey stone creeps down over the light beach. Plain even grey stone surface. No outline.",
       "purpose": "matrix:grey_stone_over_light_beach",
+      "status": "pending"
+    },
+    "3c81f0f8-ad19-4351-ba4c-7468b6f3acf3": {
+      "created": "2026-08-28T04:17:33+00:00",
+      "prompt": "grass and deep water",
+      "purpose": "fade:grass:deep_water:and1",
       "status": "pending"
     },
     "3c9d45a4-eff6-43d5-96e9-67c720a4fd82": {
@@ -2666,6 +3038,12 @@
       "purpose": "matrix:grey_stone_over_deep_water",
       "status": "pending"
     },
+    "3e1b1f4f-8380-4ebb-ac14-d4243a25658d": {
+      "created": "2026-08-28T04:22:32+00:00",
+      "prompt": "water on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:water:on_top_of1",
+      "status": "pending"
+    },
     "3e2618c8-7855-45e7-aeab-b1342c221a17": {
       "created": "2026-08-19T10:36:15+00:00",
       "prompt": "flat pure flat near-black charcoal on top of wet dark mud. isometric. no outline.",
@@ -2688,6 +3066,12 @@
       "created": "2026-08-19T10:44:22+00:00",
       "prompt": "rugged grey mountain rock ground tile on a translucent crystal ice block, isometric. No outline.",
       "purpose": "matrix:grey_stone_over_ice",
+      "status": "pending"
+    },
+    "3e89dfb7-ad2b-4260-9289-9d786ba0319d": {
+      "created": "2026-08-28T04:28:56+00:00",
+      "prompt": "grey stone and water",
+      "purpose": "fade:grey_stone:water:and1",
       "status": "pending"
     },
     "3ec32643-6940-4620-ba82-620687971b34": {
@@ -2724,6 +3108,12 @@
       "created": "2026-08-19T09:42:43+00:00",
       "prompt": "isometric block of translucent crystal ice that has been painted pure flat cool light grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare translucent crystal ice. No outline.",
       "purpose": "matrix:paving_stone_over_ice",
+      "status": "pending"
+    },
+    "3f02e784-48a4-47fe-9dae-35a2bc307851": {
+      "created": "2026-08-28T04:27:06+00:00",
+      "prompt": "grey stone and parquet floor",
+      "purpose": "fade:grey_stone:parquet_floor:and1",
       "status": "pending"
     },
     "3f0d1fe7-5f70-4055-abe3-1392a58f5105": {
@@ -2774,6 +3164,12 @@
       "purpose": "matrix:deep_water_over_black_rock",
       "status": "pending"
     },
+    "40e75f38-3697-43e7-9d41-614ddd1f1417": {
+      "created": "2026-08-28T04:14:28+00:00",
+      "prompt": "dark mud with lava",
+      "purpose": "fade:dark_mud:lava:with1",
+      "status": "pending"
+    },
     "410e4344-f7c0-4766-a702-661caaf2abce": {
       "created": "2026-08-18T00:45:52+00:00",
       "prompt": "isometric cross-section through translucent crystal ice. The top face is the exposed surface, flat and one even tone; the sides are the same translucent crystal ice sliced open, so the wall is the inside of what you see on top. Continuous material, no seam, no band and no colour change where the top meets the sides. No outline.",
@@ -2796,6 +3192,12 @@
       "created": "2026-08-19T10:44:37+00:00",
       "prompt": "isometric wooden parquet floor over pale sandy beach tile. No outline.",
       "purpose": "matrix:parquet_floor_over_light_beach",
+      "status": "pending"
+    },
+    "415b2ef1-e988-4432-a5a3-63645763ff34": {
+      "created": "2026-08-28T04:12:16+00:00",
+      "prompt": "dark mud with grass",
+      "purpose": "fade:dark_mud:grass:with1",
       "status": "pending"
     },
     "4197d1eb-c07f-4392-ae68-707c65ac0aad": {
@@ -2858,6 +3260,12 @@
       "purpose": "blend:black_rock:ice:p20",
       "status": "pending"
     },
+    "4293861c-ee8d-496d-a591-05ccbdd0aee4": {
+      "created": "2026-08-28T04:20:43+00:00",
+      "prompt": "light beach on top of deep water",
+      "purpose": "fade:deep_water:light_beach:on_top_of1",
+      "status": "pending"
+    },
     "42da3675-620b-412e-a96a-eeea0c377373": {
       "created": "2026-08-19T10:57:32+00:00",
       "prompt": "isometric ground tile where molten glowing lava has settled over a base of dry light soil. The whole visible top is pure flat dark orange; the light soil is only visible in the walls where the ground has been cut away. No outline.",
@@ -2874,6 +3282,12 @@
       "created": "2026-08-27T23:40:12+00:00",
       "prompt": "mostly dark mud, scattered patches of light soil",
       "purpose": "blend:dark_mud:light_soil:p20",
+      "status": "pending"
+    },
+    "42ea03d9-9e8b-4795-9473-6a42b352809c": {
+      "created": "2026-08-28T04:15:25+00:00",
+      "prompt": "dark mud with ice",
+      "purpose": "fade:dark_mud:ice:with1",
       "status": "pending"
     },
     "42ea8cc3-0c25-4126-84d1-fe7993e5a188": {
@@ -2906,6 +3320,12 @@
       "purpose": "blend:grass:light_beach:p10",
       "status": "pending"
     },
+    "43747b6a-a10f-4fdb-ae3e-ac8b0b711f12": {
+      "created": "2026-08-28T04:22:39+00:00",
+      "prompt": "lava on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:lava:on_top_of1",
+      "status": "pending"
+    },
     "4388dbf0-5ad0-4ba8-96ec-798ad06e8564": {
       "created": "2026-08-19T10:49:33+00:00",
       "prompt": "top-down isometric ground block. Thick cut paving stone slabs carpet over exposed translucent crystal ice. Where the two meet the paving stone droops over the edge instead of being cut off. Even paving stone surface, detailed ice sides. No outline.",
@@ -2934,6 +3354,12 @@
       "created": "2026-08-16T19:45:38+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: dry light soil with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "44247fce-0155-4143-8e1f-d8d3ab51d4dd": {
+      "created": "2026-08-28T04:28:14+00:00",
+      "prompt": "black rock on top of grey stone",
+      "purpose": "fade:grey_stone:black_rock:on_top_of1",
       "status": "pending"
     },
     "44d28816-6547-4065-9065-ce7dfc2ebf0c": {
@@ -2972,6 +3398,12 @@
       "purpose": "tops:ice:detail:30131",
       "status": "pending"
     },
+    "456cb08f-7372-4ca7-89a1-9787c17d8781": {
+      "created": "2026-08-28T04:11:00+00:00",
+      "prompt": "brown paving stone and water",
+      "purpose": "fade:brown_paving_stone:water:and1",
+      "status": "pending"
+    },
     "4574b0a0-5c8d-4337-868d-9c9e12b50cba": {
       "created": "2026-08-28T00:25:38+00:00",
       "prompt": "mostly dark mud, a few small spots of lava",
@@ -2988,6 +3420,12 @@
       "created": "2026-08-19T10:55:59+00:00",
       "prompt": "isometric ground tile where thick bubbling slime has settled over a base of clear calm water. The whole visible top is pure flat bright yellow-green; the water is only visible in the walls where the ground has been cut away. No outline.",
       "purpose": "matrix:slime_over_water",
+      "status": "pending"
+    },
+    "45c21013-1f52-401c-8838-63150a35cc74": {
+      "created": "2026-08-28T04:25:46+00:00",
+      "prompt": "grey paving stone and slime",
+      "purpose": "fade:grey_paving_stone:slime:and1",
       "status": "pending"
     },
     "461b27a2-395a-45da-9ad8-3bfb2522e6b1": {
@@ -3080,6 +3518,12 @@
       "purpose": "matrix:black_rock_over_black_rock",
       "status": "pending"
     },
+    "47c61c3c-cd1d-4754-9023-c3bdc80643c5": {
+      "created": "2026-08-28T04:12:59+00:00",
+      "prompt": "dark mud and lava",
+      "purpose": "fade:dark_mud:lava:and1",
+      "status": "pending"
+    },
     "48171545-8c19-4c21-9168-abc3f0acf9a4": {
       "created": "2026-08-27T23:59:48+00:00",
       "prompt": "black rock and parquet floor mixed, more black rock",
@@ -3092,6 +3536,12 @@
       "purpose": "matrix:snow_over_paving_stone",
       "status": "pending"
     },
+    "4860d44b-3d35-437d-ba95-332d10392962": {
+      "created": "2026-08-28T04:28:49+00:00",
+      "prompt": "ice with brown paving stone",
+      "purpose": "fade:ice:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "48b83dba-edfe-4343-ad92-a1e032ec4410": {
       "created": "2026-08-16T17:37:25+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour translucent crystal ice, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -3102,6 +3552,12 @@
       "created": "2026-08-28T04:08:07+00:00",
       "prompt": "black rock with brown paving stone",
       "purpose": "fade:black_rock:brown_paving_stone:with1",
+      "status": "pending"
+    },
+    "48e484e0-7c65-4f39-980c-17166ce216db": {
+      "created": "2026-08-28T04:18:02+00:00",
+      "prompt": "grass with lava",
+      "purpose": "fade:grass:lava:with1",
       "status": "pending"
     },
     "4930f186-af9c-436e-8b87-35062d2cfa6b": {
@@ -3206,6 +3662,12 @@
       "purpose": "matrix:lava_over_parquet_floor",
       "status": "pending"
     },
+    "4a8e0ea7-1923-4a56-879f-c4859fce418f": {
+      "created": "2026-08-28T04:30:12+00:00",
+      "prompt": "black rock on top of lava",
+      "purpose": "fade:lava:black_rock:on_top_of1",
+      "status": "pending"
+    },
     "4aff9f5e-b597-4c14-9395-3d0f3085b489": {
       "created": "2026-08-19T10:50:36+00:00",
       "prompt": "isometric tile. Side walls: wet dark mud. Top: flat pure flat cool light grey. No outline.",
@@ -3216,6 +3678,12 @@
       "created": "2026-08-16T18:57:40+00:00",
       "prompt": "isometric cube of translucent crystal ice capped with lush green grass. The cap overhangs slightly, grass draping down onto the ice beneath it. Uniform flat grass top. No outline.",
       "purpose": "matrix:grass_over_ice",
+      "status": "pending"
+    },
+    "4b1109c0-e084-40cf-8013-fb08ef61064d": {
+      "created": "2026-08-28T04:20:51+00:00",
+      "prompt": "grass with grey stone",
+      "purpose": "fade:grass:grey_stone:with1",
       "status": "pending"
     },
     "4b22d738-d50d-4617-ad78-f8b9de68c890": {
@@ -3264,6 +3732,12 @@
       "created": "2026-08-17T17:40:02+00:00",
       "prompt": "isometric terrain block of thick bubbling slime with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the slime face in an uneven fringe. Flat even black rock seen from above. No outline.",
       "purpose": "matrix:black_rock_over_slime",
+      "status": "pending"
+    },
+    "4c2d82cf-5d86-4396-99d6-d3573fb97181": {
+      "created": "2026-08-28T04:21:25+00:00",
+      "prompt": "grass with slime",
+      "purpose": "fade:grass:slime:with1",
       "status": "pending"
     },
     "4c3e355a-7863-4049-830e-55244d113062": {
@@ -3356,6 +3830,12 @@
       "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
+    "4d3fc35b-b1cf-46ab-87bc-f3447a6de040": {
+      "created": "2026-08-28T04:27:31+00:00",
+      "prompt": "ice with dark mud",
+      "purpose": "fade:ice:dark_mud:with1",
+      "status": "pending"
+    },
     "4d4d8877-76ec-4082-9d07-db06afd6703d": {
       "created": "2026-08-19T10:31:06+00:00",
       "prompt": "top-down isometric ground block. Thick lush green grass carpet over exposed wooden parquet floor. Where the two meet the grass droops over the edge instead of being cut off. Even grass surface, detailed parquet floor sides. No outline.",
@@ -3402,6 +3882,18 @@
       "created": "2026-08-28T00:21:44+00:00",
       "prompt": "mostly brown paving stone, scattered patches of snow",
       "purpose": "blend:brown_paving_stone:snow:p20",
+      "status": "pending"
+    },
+    "4e9c415f-ced5-492f-8ab1-e752c952aec5": {
+      "created": "2026-08-28T04:26:09+00:00",
+      "prompt": "grey stone with light beach",
+      "purpose": "fade:grey_stone:light_beach:with1",
+      "status": "pending"
+    },
+    "4ed30f40-036a-4ed0-86be-c5f3168837ce": {
+      "created": "2026-08-28T04:14:46+00:00",
+      "prompt": "dark mud and grey stone",
+      "purpose": "fade:dark_mud:grey_stone:and1",
       "status": "pending"
     },
     "4ed33693-28fe-4160-b677-b1e406a7cc09": {
@@ -3566,6 +4058,12 @@
       "purpose": "matrix:snow_over_snow",
       "status": "pending"
     },
+    "512af293-bce9-4a39-8645-e2d990bc81f6": {
+      "created": "2026-08-28T04:11:22+00:00",
+      "prompt": "brown paving stone with grey paving stone",
+      "purpose": "fade:brown_paving_stone:grey_paving_stone:with1",
+      "status": "pending"
+    },
     "512ea0a9-f8cf-4edb-931e-4a77eaaab35e": {
       "created": "2026-08-28T00:13:53+00:00",
       "prompt": "grey paving stone and grass mixed, more grey paving stone",
@@ -3576,6 +4074,18 @@
       "created": "2026-08-28T03:59:37+00:00",
       "prompt": "brown paving stone, one large patch of light beach in the middle, brown paving stone all around the edge",
       "purpose": "puddle:brown_paving_stone:light_beach:p40",
+      "status": "pending"
+    },
+    "5195e379-021a-46f4-bb2a-ef6d122a2538": {
+      "created": "2026-08-28T04:27:36+00:00",
+      "prompt": "grey paving stone on top of grey stone",
+      "purpose": "fade:grey_stone:grey_paving_stone:on_top_of1",
+      "status": "pending"
+    },
+    "51ae3609-29fc-48af-8d84-bcdd664b436e": {
+      "created": "2026-08-28T04:10:28+00:00",
+      "prompt": "light beach on top of black rock",
+      "purpose": "fade:black_rock:light_beach:on_top_of1",
       "status": "pending"
     },
     "51defee8-6b69-4e20-82a2-c8542dfa6c0b": {
@@ -3602,6 +4112,12 @@
       "purpose": "matrix:water_over_parquet_floor",
       "status": "pending"
     },
+    "5222932b-bf4d-41b5-84d0-3c137b9c2a08": {
+      "created": "2026-08-28T04:23:22+00:00",
+      "prompt": "parquet floor on top of grass",
+      "purpose": "fade:grass:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
     "52484ea4-de70-4e1b-b794-01654adde5dc": {
       "created": "2026-08-28T03:46:50+00:00",
       "prompt": "black rock all around the edge, a small pool of slime inside",
@@ -3626,10 +4142,22 @@
       "purpose": "blend:dark_mud:black_rock:p30",
       "status": "pending"
     },
+    "52f4b454-c76c-4a33-bfa8-287536397b0d": {
+      "created": "2026-08-28T04:25:40+00:00",
+      "prompt": "grey paving stone with water",
+      "purpose": "fade:grey_paving_stone:water:with1",
+      "status": "pending"
+    },
     "5307c3bc-f1d6-4bc8-8c24-114df040b864": {
       "created": "2026-08-19T09:45:56+00:00",
       "prompt": "flat pure flat dark navy blue on top of pale sandy beach. isometric. no outline.",
       "purpose": "matrix:deep_water_over_light_beach",
+      "status": "pending"
+    },
+    "53426b45-78ca-46b8-8706-7c867ea7a6f6": {
+      "created": "2026-08-28T04:29:03+00:00",
+      "prompt": "lava with ice",
+      "purpose": "fade:lava:ice:with1",
       "status": "pending"
     },
     "53598fa6-8d29-44e7-8552-df232f9f6631": {
@@ -3678,6 +4206,12 @@
       "created": "2026-08-27T23:54:13+00:00",
       "prompt": "mostly grass, a few small spots of parquet floor",
       "purpose": "blend:grass:parquet_floor:p10",
+      "status": "pending"
+    },
+    "55348747-65c5-4789-b680-326ab3494fc0": {
+      "created": "2026-08-28T04:11:10+00:00",
+      "prompt": "dark mud on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:dark_mud:on_top_of1",
       "status": "pending"
     },
     "55440933-5b29-4c51-93fb-518e83a8c4b7": {
@@ -3764,6 +4298,12 @@
       "purpose": "matrix:deep_water_over_dark_mud",
       "status": "pending"
     },
+    "56a5cae1-4e74-4c3d-9029-f3f5e02e9c36": {
+      "created": "2026-08-28T04:27:42+00:00",
+      "prompt": "ice with water",
+      "purpose": "fade:ice:water:with1",
+      "status": "pending"
+    },
     "5705142b-5b3f-4d6a-aa49-2df82d3e5246": {
       "created": "2026-08-17T22:41:10+00:00",
       "prompt": "isometric cube of thick bubbling slime capped with wet dark mud. The cap overhangs slightly, dark mud draping down onto the slime beneath it. Uniform flat dark mud top. No outline.",
@@ -3798,6 +4338,18 @@
       "created": "2026-08-17T22:29:25+00:00",
       "prompt": "isometric cube of wooden parquet floor capped with pale sandy beach. The cap overhangs slightly, light beach draping down onto the parquet floor beneath it. Uniform flat light beach top. No outline.",
       "purpose": "matrix:light_beach_over_parquet_floor",
+      "status": "pending"
+    },
+    "584a28c3-ddea-4789-979c-84a747fd6744": {
+      "created": "2026-08-28T04:17:55+00:00",
+      "prompt": "dark mud with parquet floor",
+      "purpose": "fade:dark_mud:parquet_floor:with1",
+      "status": "pending"
+    },
+    "585beacc-b09c-42e4-a121-793ddfc46bdb": {
+      "created": "2026-08-28T04:24:01+00:00",
+      "prompt": "grass and parquet floor",
+      "purpose": "fade:grass:parquet_floor:and1",
       "status": "pending"
     },
     "58635ae0-8650-4152-a2fc-d940b4f8a158": {
@@ -3890,6 +4442,12 @@
       "purpose": "matrix:grey_stone_over_light_beach",
       "status": "pending"
     },
+    "59a47048-7d1c-4b1a-b1cf-1058f59ea1ae": {
+      "created": "2026-08-28T04:26:56+00:00",
+      "prompt": "grey stone with ice",
+      "purpose": "fade:grey_stone:ice:with1",
+      "status": "pending"
+    },
     "59bb372d-83b1-4b83-95f7-1dfb8f2b5722": {
       "created": "2026-08-27T23:58:51+00:00",
       "prompt": "black rock and snow mixed, more black rock",
@@ -3926,6 +4484,12 @@
       "purpose": "matrix:light_beach_over_grass",
       "status": "pending"
     },
+    "5a4b5b48-bdc1-4c78-bb38-e31fd934505f": {
+      "created": "2026-08-28T04:11:13+00:00",
+      "prompt": "brown paving stone and grass",
+      "purpose": "fade:brown_paving_stone:grass:and1",
+      "status": "pending"
+    },
     "5a675b2d-ddd4-434c-93dc-840b2a40d4d5": {
       "created": "2026-08-17T22:43:33+00:00",
       "prompt": "top-down isometric ground block. Thick cut paving stone slabs carpet over exposed rugged grey mountain rock. Where the two meet the paving stone droops over the edge instead of being cut off. Even paving stone surface, detailed grey stone sides. No outline.",
@@ -3938,6 +4502,12 @@
       "purpose": "blend:grey_paving_stone:grass:p30",
       "status": "pending"
     },
+    "5ac851ae-5bbd-4207-8aac-821f9d2767b3": {
+      "created": "2026-08-28T04:27:33+00:00",
+      "prompt": "grey stone with lava",
+      "purpose": "fade:grey_stone:lava:with1",
+      "status": "pending"
+    },
     "5ad21c8c-d4cb-4492-8843-169b689056cb": {
       "created": "2026-08-17T20:55:22+00:00",
       "prompt": "isometric ground tile. thick bubbling slime on top of molten glowing lava. The slime grows over the edge and tufts down over the lava below, so the two meet naturally with no hard line between them. The lava side walls show their own surface detail. Seen from above, the slime surface is even and uniform. No outline.",
@@ -3948,6 +4518,12 @@
       "created": "2026-08-28T00:10:27+00:00",
       "prompt": "mostly brown paving stone, scattered patches of slime",
       "purpose": "blend:brown_paving_stone:slime:p20",
+      "status": "pending"
+    },
+    "5af6c4b8-e9ff-4bdb-aac8-af9b76a5cd5e": {
+      "created": "2026-08-28T04:24:08+00:00",
+      "prompt": "grey paving stone and deep water",
+      "purpose": "fade:grey_paving_stone:deep_water:and1",
       "status": "pending"
     },
     "5b2d701f-66bf-4b80-bbf9-fdbdd0e0730f": {
@@ -3986,6 +4562,12 @@
       "purpose": "matrix:light_soil_over_parquet_floor",
       "status": "pending"
     },
+    "5bab192b-60d0-40cb-a28f-9508dc875739": {
+      "created": "2026-08-28T04:12:33+00:00",
+      "prompt": "deep water on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "5bc67433-8e1a-419b-a268-2925ea4dfaf6": {
       "created": "2026-08-27T23:51:27+00:00",
       "prompt": "black rock and lava mixed, more black rock",
@@ -4008,6 +4590,12 @@
       "created": "2026-08-17T23:37:19+00:00",
       "prompt": "isometric ground tile. wet dark mud on top of clean fresh snow. The dark mud grows over the edge and tufts down over the snow below, so the two meet naturally with no hard line between them. The snow side walls show their own surface detail. Seen from above, the dark mud surface is even and uniform. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "5bf04536-f2c4-4fe8-8c26-d726d2861803": {
+      "created": "2026-08-28T04:10:11+00:00",
+      "prompt": "black rock with light soil",
+      "purpose": "fade:black_rock:light_soil:with1",
       "status": "pending"
     },
     "5c42289d-2cec-46aa-92f1-d7d42695ac9e": {
@@ -4106,6 +4694,12 @@
       "purpose": "blend:grey_stone:light_beach:p20",
       "status": "pending"
     },
+    "5e42afb1-b936-4919-915a-2c34083ac263": {
+      "created": "2026-08-28T04:30:15+00:00",
+      "prompt": "slime on top of ice",
+      "purpose": "fade:ice:slime:on_top_of1",
+      "status": "pending"
+    },
     "5e42d918-699a-4596-9736-be5744ce5873": {
       "created": "2026-08-23T18:57:50+00:00",
       "prompt": "isometric block of lush green grass that has been painted pure flat cool light grey across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare lush green grass. No outline.",
@@ -4134,6 +4728,12 @@
       "created": "2026-08-27T23:55:43+00:00",
       "prompt": "mostly grass, scattered patches of parquet floor",
       "purpose": "blend:grass:parquet_floor:p20",
+      "status": "pending"
+    },
+    "5f25c2d3-1a09-4e81-942b-8daf057c3e44": {
+      "created": "2026-08-28T04:25:51+00:00",
+      "prompt": "grey stone and black rock",
+      "purpose": "fade:grey_stone:black_rock:and1",
       "status": "pending"
     },
     "5f57634c-c019-4240-a4ab-0aa559623c62": {
@@ -4202,6 +4802,12 @@
       "purpose": "matrix:black_rock_over_light_beach",
       "status": "pending"
     },
+    "6048b3c7-eb80-4e80-bdc3-3accee424057": {
+      "created": "2026-08-28T04:10:48+00:00",
+      "prompt": "brown paving stone with light soil",
+      "purpose": "fade:brown_paving_stone:light_soil:with1",
+      "status": "pending"
+    },
     "605392ac-5da1-4276-975e-2579c41b2830": {
       "created": "2026-08-17T17:32:25+00:00",
       "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed deep dark ocean water. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed deep water sides. No outline.",
@@ -4212,6 +4818,12 @@
       "created": "2026-08-28T03:49:42+00:00",
       "prompt": "brown paving stone, one patch of black rock in the middle, brown paving stone all around the edge",
       "purpose": "puddle:brown_paving_stone:black_rock:p20",
+      "status": "pending"
+    },
+    "609aa25d-ca5f-4acc-b138-98ee83e9d1f2": {
+      "created": "2026-08-28T04:22:04+00:00",
+      "prompt": "grey paving stone with parquet floor",
+      "purpose": "fade:grey_paving_stone:parquet_floor:with1",
       "status": "pending"
     },
     "60b4c087-bb7a-4f0c-ab41-77d05a3c9f0a": {
@@ -4248,6 +4860,12 @@
       "created": "2026-08-16T19:07:07+00:00",
       "prompt": "isometric tile: a layer of lush green grass covering a block of clear calm water. Ragged grass edge overhanging the water cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
       "purpose": "matrix:grass_over_water",
+      "status": "pending"
+    },
+    "6116577d-ffad-4038-a9de-8d675477bce4": {
+      "created": "2026-08-28T04:23:27+00:00",
+      "prompt": "brown paving stone on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:brown_paving_stone:on_top_of1",
       "status": "pending"
     },
     "61281f70-beb5-4c13-8c97-f2aa7a6379f8": {
@@ -4328,10 +4946,22 @@
       "purpose": "matrix:grey_stone_over_snow",
       "status": "pending"
     },
+    "62b3b760-bb1e-41fc-b7c1-72290352a3e9": {
+      "created": "2026-08-28T04:27:58+00:00",
+      "prompt": "deep water on top of ice",
+      "purpose": "fade:ice:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "62b52d04-f0dd-445c-9fea-b66f0c7a89cc": {
       "created": "2026-08-17T23:42:59+00:00",
       "prompt": "a block of clean fresh snow with rugged grey mountain rock established across the top and spilling over every edge. Isometric view. The grey stone surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:grey_stone_over_snow",
+      "status": "pending"
+    },
+    "62c8d49e-0fe7-4cef-aac2-8564f517f323": {
+      "created": "2026-08-28T04:11:12+00:00",
+      "prompt": "grey paving stone on top of black rock",
+      "purpose": "fade:black_rock:grey_paving_stone:on_top_of1",
       "status": "pending"
     },
     "62cb42d1-53e3-40d6-9ac6-e8a19dae2cf7": {
@@ -4454,6 +5084,12 @@
       "purpose": "tops:grey_stone:detail:54137",
       "status": "pending"
     },
+    "6535c886-ffd9-4ef8-b8e1-3497964a1427": {
+      "created": "2026-08-28T04:21:04+00:00",
+      "prompt": "deep water with snow",
+      "purpose": "fade:deep_water:snow:with1",
+      "status": "pending"
+    },
     "655b5d70-923c-44ea-a740-6e63f582dc23": {
       "created": "2026-08-17T22:47:23+00:00",
       "prompt": "isometric ground tile, wooden parquet floor over lush green grass, photographed from above. Soft irregular boundary where parquet floor meets grass \u2014 the parquet floor creeps down over the grass. Plain even parquet floor surface. No outline.",
@@ -4476,6 +5112,12 @@
       "created": "2026-08-17T17:56:30+00:00",
       "prompt": "isometric terrain block of translucent crystal ice with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the ice face in an uneven fringe. Flat even grey stone seen from above. No outline.",
       "purpose": "matrix:grey_stone_over_ice",
+      "status": "pending"
+    },
+    "661c2bfa-66ec-44e6-9848-080cbc607ea2": {
+      "created": "2026-08-28T04:22:14+00:00",
+      "prompt": "grass and light soil",
+      "purpose": "fade:grass:light_soil:and1",
       "status": "pending"
     },
     "66435e2c-6cd3-4f24-b275-8f73748a2489": {
@@ -4574,6 +5216,12 @@
       "purpose": "matrix:ice_over_lava",
       "status": "pending"
     },
+    "68b64ff1-e812-4dac-bc2b-fa68a9197993": {
+      "created": "2026-08-28T04:18:11+00:00",
+      "prompt": "grass and lava",
+      "purpose": "fade:grass:lava:and1",
+      "status": "pending"
+    },
     "68bf1fdf-d18a-4046-9238-f0e30324ee08": {
       "created": "2026-08-17T22:28:08+00:00",
       "prompt": "isometric ground tile, wet dark mud over dry light soil, photographed from above. Soft irregular boundary where dark mud meets light soil \u2014 the dark mud creeps down over the light soil. Plain even dark mud surface. No outline.",
@@ -4670,6 +5318,12 @@
       "purpose": "puddle:brown_paving_stone:dark_mud:p40",
       "status": "pending"
     },
+    "6ac18fcb-4ae4-44d6-ab14-595d910a69b7": {
+      "created": "2026-08-28T04:29:35+00:00",
+      "prompt": "ice and dark mud",
+      "purpose": "fade:ice:dark_mud:and1",
+      "status": "pending"
+    },
     "6ac43641-786b-4e0b-9142-95810e4a3d73": {
       "created": "2026-08-28T04:08:29+00:00",
       "prompt": "black rock with slime",
@@ -4686,6 +5340,12 @@
       "created": "2026-08-19T10:12:34+00:00",
       "prompt": "isometric tile: a thin layer of cut paving stone slabs laid down on top of a thick block of thick bubbling slime. The layer is pure flat cool light grey and covers the entire top face. The block below it shows slime on every side. No outline.",
       "purpose": "matrix:paving_stone_over_slime",
+      "status": "pending"
+    },
+    "6b3e7181-1473-4f96-8c3f-eb8d0dc52ba7": {
+      "created": "2026-08-28T04:25:28+00:00",
+      "prompt": "grey paving stone with snow",
+      "purpose": "fade:grey_paving_stone:snow:with1",
       "status": "pending"
     },
     "6b4ccb90-65fc-4d3f-be60-103170033ad7": {
@@ -4722,6 +5382,12 @@
       "created": "2026-08-17T20:46:49+00:00",
       "prompt": "isometric cube of wet dark mud capped with deep dark ocean water. The cap overhangs slightly, deep water draping down onto the dark mud beneath it. Uniform flat deep water top. No outline.",
       "purpose": "matrix:deep_water_over_dark_mud",
+      "status": "pending"
+    },
+    "6c21b45d-4de7-4eed-b988-7bd4d1a9bccb": {
+      "created": "2026-08-28T04:18:21+00:00",
+      "prompt": "deep water with light beach",
+      "purpose": "fade:deep_water:light_beach:with1",
       "status": "pending"
     },
     "6c38a908-7c1a-4295-9a60-daacf1151fc5": {
@@ -4798,6 +5464,12 @@
       "purpose": "matrix:ice_over_dark_mud",
       "status": "pending"
     },
+    "6d79ee31-c43a-4d49-982c-87bb38354ff1": {
+      "created": "2026-08-28T04:12:37+00:00",
+      "prompt": "dark mud and brown paving stone",
+      "purpose": "fade:dark_mud:brown_paving_stone:and1",
+      "status": "pending"
+    },
     "6d9d6f5b-7159-4627-89f6-e78a11cfc899": {
       "created": "2026-08-16T09:20:57+00:00",
       "deleted_at": "2026-08-16T09:22:36+00:00",
@@ -4828,6 +5500,12 @@
       "created": "2026-08-19T10:35:34+00:00",
       "prompt": "isometric terrain tile of wet dark mud resting on dark volcanic rock. IMPORTANT: the black rock is UNDERNEATH and the dark mud is ON TOP. Do not put the black rock on top. Seen from above you see only pure flat dark cold brown. No outline.",
       "purpose": "matrix:dark_mud_over_black_rock",
+      "status": "pending"
+    },
+    "6e6d5e5b-8846-473f-83fa-4d878e694aeb": {
+      "created": "2026-08-28T04:30:21+00:00",
+      "prompt": "lava with grass",
+      "purpose": "fade:lava:grass:with1",
       "status": "pending"
     },
     "6e721603-5dc3-46c2-ad05-dc409f9a0106": {
@@ -4894,6 +5572,18 @@
       "created": "2026-08-28T04:09:26+00:00",
       "prompt": "brown paving stone with dark mud",
       "purpose": "fade:brown_paving_stone:dark_mud:with1",
+      "status": "pending"
+    },
+    "6f6ba87e-a7d5-454a-baec-cdb871418d9d": {
+      "created": "2026-08-28T04:25:50+00:00",
+      "prompt": "slime on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:slime:on_top_of1",
+      "status": "pending"
+    },
+    "6fb5d62a-cd7f-457e-aac9-da6c4e40b466": {
+      "created": "2026-08-28T04:30:31+00:00",
+      "prompt": "snow on top of ice",
+      "purpose": "fade:ice:snow:on_top_of1",
       "status": "pending"
     },
     "6fb8ecc6-54b1-4e66-8dc1-05b87fa3ce52": {
@@ -5084,6 +5774,12 @@
       "purpose": "matrix:dark_mud_over_ice",
       "status": "pending"
     },
+    "72d33e11-9d4f-4b39-aa4b-ef6569378a91": {
+      "created": "2026-08-28T04:23:03+00:00",
+      "prompt": "grey paving stone and dark mud",
+      "purpose": "fade:grey_paving_stone:dark_mud:and1",
+      "status": "pending"
+    },
     "72ecede7-6603-4a30-9952-be6e6c29c886": {
       "created": "2026-08-16T16:39:03+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are deep dark ocean water with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
@@ -5106,6 +5802,12 @@
       "created": "2026-08-17T23:34:06+00:00",
       "prompt": "isometric game tile of wet dark mud growing over clean fresh snow. Overgrown edges, dark mud cascading down the snow walls. Flat clean dark mud on top. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "7379307e-caf1-4e34-9f21-60637fe75f15": {
+      "created": "2026-08-28T04:27:26+00:00",
+      "prompt": "grey stone with dark mud",
+      "purpose": "fade:grey_stone:dark_mud:with1",
       "status": "pending"
     },
     "7396ce89-059e-4f6f-84d6-92980218ec76": {
@@ -5180,6 +5882,18 @@
       "purpose": "matrix:parquet_floor_over_deep_water",
       "status": "pending"
     },
+    "755d5fc9-7bff-4ec4-8291-50a60008fce2": {
+      "created": "2026-08-28T04:21:06+00:00",
+      "prompt": "grass with light soil",
+      "purpose": "fade:grass:light_soil:with1",
+      "status": "pending"
+    },
+    "757a474a-b39e-4de6-98fc-23a0282bd36c": {
+      "created": "2026-08-28T04:16:17+00:00",
+      "prompt": "dark mud with water",
+      "purpose": "fade:dark_mud:water:with1",
+      "status": "pending"
+    },
     "758bce62-d6c3-475f-8890-5ae0ce3e2e4e": {
       "created": "2026-08-17T22:16:32+00:00",
       "prompt": "isometric ground tile, dark volcanic rock over cut paving stone slabs, photographed from above. Soft irregular boundary where black rock meets paving stone \u2014 the black rock creeps down over the paving stone. Plain even black rock surface. No outline.",
@@ -5210,10 +5924,22 @@
       "purpose": "matrix:grass_over_parquet_floor",
       "status": "pending"
     },
+    "765ebedf-6ec7-4aa6-854c-cc759267b153": {
+      "created": "2026-08-28T04:19:17+00:00",
+      "prompt": "deep water with parquet floor",
+      "purpose": "fade:deep_water:parquet_floor:with1",
+      "status": "pending"
+    },
     "76c7c3d0-5a25-4a0f-8e9b-a4923a4a62e2": {
       "created": "2026-08-17T23:24:41+00:00",
       "prompt": "isometric ground tile cut from a single block of deep dark ocean water. The flat top surface is clean single colour deep water, completely smooth with no texture. The vertical side walls are the same deep dark ocean water seen from the side, with its natural surface detail clearly visible all the way down. The top edge is a clean straight line and nothing hangs over it. Top perfectly flat, walls t",
       "purpose": "matrix:deep_water_over_deep_water",
+      "status": "pending"
+    },
+    "76faaa92-aee4-4e44-abde-c9ef55a7c689": {
+      "created": "2026-08-28T04:23:58+00:00",
+      "prompt": "grey paving stone and light beach",
+      "purpose": "fade:grey_paving_stone:light_beach:and1",
       "status": "pending"
     },
     "7700382b-7546-4f55-bc8b-2b230e509a4f": {
@@ -5324,6 +6050,18 @@
       "purpose": "puddle:black_rock:snow:p10",
       "status": "pending"
     },
+    "790952cb-cc4c-47ef-be83-2d2c78d2b195": {
+      "created": "2026-08-28T04:13:09+00:00",
+      "prompt": "brown paving stone and grey paving stone",
+      "purpose": "fade:brown_paving_stone:grey_paving_stone:and1",
+      "status": "pending"
+    },
+    "791b7c0b-a96a-4ade-905f-5addec23cfe2": {
+      "created": "2026-08-28T04:24:46+00:00",
+      "prompt": "grey stone with black rock",
+      "purpose": "fade:grey_stone:black_rock:with1",
+      "status": "pending"
+    },
     "793a7fd4-692d-4933-adfd-4306fbfbdca2": {
       "created": "2026-08-27T18:14:46+00:00",
       "prompt": "beautiful sunlit shallow water, clear blue, lively ripples, sparkling, rich detail",
@@ -5372,6 +6110,12 @@
       "purpose": "matrix:black_rock_over_black_rock",
       "status": "pending"
     },
+    "7a50d4cd-7838-4264-9822-555680f85224": {
+      "created": "2026-08-28T04:27:03+00:00",
+      "prompt": "light soil on top of ice",
+      "purpose": "fade:ice:light_soil:on_top_of1",
+      "status": "pending"
+    },
     "7a765f24-5cd1-4903-b443-1299555cc378": {
       "created": "2026-08-28T00:14:24+00:00",
       "prompt": "grass and slime mixed evenly",
@@ -5382,6 +6126,12 @@
       "created": "2026-08-28T03:58:42+00:00",
       "prompt": "brown paving stone all around the edge, a small pool of parquet floor inside",
       "purpose": "puddle:brown_paving_stone:parquet_floor:p10",
+      "status": "pending"
+    },
+    "7ab542c7-22b6-4966-b48a-69b3a0380e21": {
+      "created": "2026-08-28T04:30:02+00:00",
+      "prompt": "lava with light beach",
+      "purpose": "fade:lava:light_beach:with1",
       "status": "pending"
     },
     "7abdb730-a354-485b-91d4-996a675a8673": {
@@ -5402,6 +6152,18 @@
       "purpose": "matrix:snow_over_lava",
       "status": "pending"
     },
+    "7b299204-2f70-4c13-b1f8-fca45010b985": {
+      "created": "2026-08-28T04:12:39+00:00",
+      "prompt": "light soil on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:light_soil:on_top_of1",
+      "status": "pending"
+    },
+    "7b351442-1aaf-4530-8fd1-9b08a1fb10f0": {
+      "created": "2026-08-28T04:22:22+00:00",
+      "prompt": "grey paving stone and water",
+      "purpose": "fade:grey_paving_stone:water:and1",
+      "status": "pending"
+    },
     "7b5644d8-efdc-4aea-aa58-cbe5acb30698": {
       "created": "2026-08-19T10:59:04+00:00",
       "prompt": "isometric tile, molten glowing lava on cut paving stone slabs. The walls must be paving stone and nothing else. No outline.",
@@ -5412,6 +6174,12 @@
       "created": "2026-08-16T11:06:17+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are clean fresh snow with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_snow",
+      "status": "pending"
+    },
+    "7b6ed4d8-7d0a-40dc-90e6-cd196615297f": {
+      "created": "2026-08-28T04:27:50+00:00",
+      "prompt": "ice and slime",
+      "purpose": "fade:ice:slime:and1",
       "status": "pending"
     },
     "7bbf8834-ce63-489e-aa42-ab0597dfa636": {
@@ -5522,6 +6290,12 @@
       "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
+    "7e856eca-48f8-4dc2-bd85-2dd3e7d8742d": {
+      "created": "2026-08-28T04:13:55+00:00",
+      "prompt": "dark mud with brown paving stone",
+      "purpose": "fade:dark_mud:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "7e8bf8cd-994d-4c62-907c-18f18cf691e7": {
       "created": "2026-08-19T10:38:35+00:00",
       "prompt": "isometric cube of dark volcanic rock capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the black rock beneath it. Uniform flat grey stone top. No outline.",
@@ -5546,6 +6320,18 @@
       "purpose": "puddle:grass:lava:p40",
       "status": "pending"
     },
+    "7f0984ca-33dd-4fc9-a460-f9d7fa5f1d49": {
+      "created": "2026-08-28T04:13:56+00:00",
+      "prompt": "dark mud with slime",
+      "purpose": "fade:dark_mud:slime:with1",
+      "status": "pending"
+    },
+    "7f2f514c-a7aa-45b7-b4c0-d9e6289901cc": {
+      "created": "2026-08-28T04:19:18+00:00",
+      "prompt": "grey stone on top of grass",
+      "purpose": "fade:grass:grey_stone:on_top_of1",
+      "status": "pending"
+    },
     "7f54ff14-e226-492c-9eb3-34aa6ca720f9": {
       "created": "2026-08-28T00:05:22+00:00",
       "prompt": "grass and grey stone mixed, more grass",
@@ -5556,6 +6342,12 @@
       "created": "2026-08-23T19:01:17+00:00",
       "prompt": "isometric tile, flat pure flat cool light grey top, pure flat green sides. No outline.",
       "purpose": "matrix:paving_stone_over_grass",
+      "status": "pending"
+    },
+    "7fa37816-3df4-4ab9-b672-3c1d27ed60a2": {
+      "created": "2026-08-28T04:25:34+00:00",
+      "prompt": "brown paving stone on top of ice",
+      "purpose": "fade:ice:brown_paving_stone:on_top_of1",
       "status": "pending"
     },
     "7faecc26-d8bf-40a7-9f5c-bd67854943be": {
@@ -5612,10 +6404,28 @@
       "purpose": "matrix:lava_over_grass",
       "status": "pending"
     },
+    "806a8834-d6d4-4762-98e4-f6e48a4cb80a": {
+      "created": "2026-08-28T04:13:23+00:00",
+      "prompt": "brown paving stone on top of dark mud",
+      "purpose": "fade:dark_mud:brown_paving_stone:on_top_of1",
+      "status": "pending"
+    },
     "8074a7a7-657c-4ec1-abc7-211e62f07ff4": {
       "created": "2026-08-16T11:17:24+00:00",
       "prompt": "clean single color lush green grass on top of clean rugged grey mountain rock",
       "purpose": "matrix:grass_over_grey_stone",
+      "status": "pending"
+    },
+    "8084c699-c92c-45f6-9f34-e05f08880bf6": {
+      "created": "2026-08-28T04:16:45+00:00",
+      "prompt": "light soil on top of deep water",
+      "purpose": "fade:deep_water:light_soil:on_top_of1",
+      "status": "pending"
+    },
+    "8086be9a-f2a5-4c0c-8566-3b56eacf4b9b": {
+      "created": "2026-08-28T04:11:04+00:00",
+      "prompt": "brown paving stone with black rock",
+      "purpose": "fade:brown_paving_stone:black_rock:with1",
       "status": "pending"
     },
     "809c6759-f9e0-45c1-aaf7-2532e73ef364": {
@@ -5664,6 +6474,12 @@
       "created": "2026-08-28T00:33:00+00:00",
       "prompt": "mostly light soil, scattered patches of brown paving stone",
       "purpose": "blend:light_soil:brown_paving_stone:p20",
+      "status": "pending"
+    },
+    "81a89726-0be1-44fc-8330-b21eab188214": {
+      "created": "2026-08-28T04:24:24+00:00",
+      "prompt": "snow on top of grass",
+      "purpose": "fade:grass:snow:on_top_of1",
       "status": "pending"
     },
     "81acfe08-e3c2-4a68-bfaa-98adb05af608": {
@@ -5764,6 +6580,30 @@
       "purpose": "matrix:paving_stone_over_light_beach",
       "status": "pending"
     },
+    "8392f7a1-80cc-41da-ba33-abb338190a99": {
+      "created": "2026-08-28T04:25:02+00:00",
+      "prompt": "grass on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:grass:on_top_of1",
+      "status": "pending"
+    },
+    "8402bb5b-a610-4270-af7c-08b187955628": {
+      "created": "2026-08-28T04:17:21+00:00",
+      "prompt": "deep water and slime",
+      "purpose": "fade:deep_water:slime:and1",
+      "status": "pending"
+    },
+    "840eab95-48bc-4c20-8627-5a4ccee783a1": {
+      "created": "2026-08-28T04:16:41+00:00",
+      "prompt": "deep water and water",
+      "purpose": "fade:deep_water:water:and1",
+      "status": "pending"
+    },
+    "8424ff2b-8ff3-4c7d-8bb8-7637b0667981": {
+      "created": "2026-08-28T04:26:51+00:00",
+      "prompt": "ice and light soil",
+      "purpose": "fade:ice:light_soil:and1",
+      "status": "pending"
+    },
     "842c8a63-1f40-40e7-881a-8a5aedc2549a": {
       "created": "2026-08-17T22:55:24+00:00",
       "prompt": "a block of clean fresh snow with molten glowing lava established across the top and spilling over every edge. Isometric view. The lava surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -5798,6 +6638,24 @@
       "created": "2026-08-17T22:21:39+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: rugged grey mountain rock with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:snow_over_grey_stone",
+      "status": "pending"
+    },
+    "8492541e-595c-4005-b7aa-74dd7469560e": {
+      "created": "2026-08-28T04:11:00+00:00",
+      "prompt": "grass on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:grass:on_top_of1",
+      "status": "pending"
+    },
+    "84a20942-5059-49f9-bb9a-f398ea99aa30": {
+      "created": "2026-08-28T04:28:41+00:00",
+      "prompt": "ice and grass",
+      "purpose": "fade:ice:grass:and1",
+      "status": "pending"
+    },
+    "84a5c9a8-29a7-4f2b-9e32-adad2a7c4e9c": {
+      "created": "2026-08-28T04:14:02+00:00",
+      "prompt": "ice on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:ice:on_top_of1",
       "status": "pending"
     },
     "84aeb4e5-519e-414f-b7ba-e77df2d88608": {
@@ -5848,6 +6706,12 @@
       "purpose": "matrix:deep_water_over_grass",
       "status": "pending"
     },
+    "86001552-a9dd-4fbf-a992-75862d0c741b": {
+      "created": "2026-08-28T04:18:55+00:00",
+      "prompt": "grass and grey stone",
+      "purpose": "fade:grass:grey_stone:and1",
+      "status": "pending"
+    },
     "86006aac-ae87-42d4-886f-4128b50b49d5": {
       "created": "2026-08-17T22:44:39+00:00",
       "prompt": "top-down isometric ground block. Thick cut paving stone slabs carpet over exposed molten glowing lava. Where the two meet the paving stone droops over the edge instead of being cut off. Even paving stone surface, detailed lava sides. No outline.",
@@ -5872,6 +6736,12 @@
       "purpose": "puddle:black_rock:dark_mud:p10",
       "status": "pending"
     },
+    "869f9a92-acee-42d5-99cb-711e317131dd": {
+      "created": "2026-08-28T04:29:05+00:00",
+      "prompt": "ice on top of grey stone",
+      "purpose": "fade:grey_stone:ice:on_top_of1",
+      "status": "pending"
+    },
     "86a944b4-2e25-451d-9c1d-158fe917dfc3": {
       "created": "2026-08-28T03:49:58+00:00",
       "prompt": "black rock, one wide patch of light soil in the middle, black rock all around the edge",
@@ -5888,6 +6758,18 @@
       "created": "2026-08-28T00:18:24+00:00",
       "prompt": "mostly grey paving stone, scattered patches of snow",
       "purpose": "blend:grey_paving_stone:snow:p20",
+      "status": "pending"
+    },
+    "87641aab-87fd-46ae-9bad-a2f6337d1563": {
+      "created": "2026-08-28T04:20:14+00:00",
+      "prompt": "grass with dark mud",
+      "purpose": "fade:grass:dark_mud:with1",
+      "status": "pending"
+    },
+    "87c0b4dc-7db0-408d-b9ca-6bc92a8e7020": {
+      "created": "2026-08-28T04:11:54+00:00",
+      "prompt": "light beach on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:light_beach:on_top_of1",
       "status": "pending"
     },
     "87ccaca9-5809-4e4e-a222-ff12216993f4": {
@@ -5938,6 +6820,12 @@
       "purpose": "matrix:black_rock_over_snow",
       "status": "pending"
     },
+    "8930e70c-8f53-4b01-aee4-01b20c3f566c": {
+      "created": "2026-08-28T04:20:38+00:00",
+      "prompt": "grass with grey paving stone",
+      "purpose": "fade:grass:grey_paving_stone:with1",
+      "status": "pending"
+    },
     "893725ac-b621-442e-9000-b1f4d36a7e54": {
       "created": "2026-08-17T23:21:24+00:00",
       "prompt": "isometric block of pale sandy beach. Flat plain light beach on top. The side walls are light beach whose grain, cracks and shading run VERTICALLY down the face, unbroken from the top edge to the bottom edge \u2014 no horizontal layers, no ledge, no shelf, no band. No outline.",
@@ -5948,6 +6836,18 @@
       "created": "2026-08-28T03:46:45+00:00",
       "prompt": "black rock, one large patch of deep water in the middle, black rock all around the edge",
       "purpose": "puddle:black_rock:deep_water:p40",
+      "status": "pending"
+    },
+    "896ed987-8ee8-4a9d-8810-caf073b41ed4": {
+      "created": "2026-08-28T04:26:08+00:00",
+      "prompt": "ice with grey paving stone",
+      "purpose": "fade:ice:grey_paving_stone:with1",
+      "status": "pending"
+    },
+    "89c30335-4c21-4446-8253-d978d98373db": {
+      "created": "2026-08-28T04:25:19+00:00",
+      "prompt": "light soil on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:light_soil:on_top_of1",
       "status": "pending"
     },
     "89f2b836-f6b0-4d8b-a1b5-8a74ae8ae57e": {
@@ -5968,10 +6868,22 @@
       "purpose": "matrix:ice_over_lava",
       "status": "pending"
     },
+    "8a3210fd-4d3f-48bb-a20a-eb31e6c95ccf": {
+      "created": "2026-08-28T04:26:47+00:00",
+      "prompt": "deep water on top of grey stone",
+      "purpose": "fade:grey_stone:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "8a73ad80-9083-4b93-bc4e-dcbf56574c44": {
       "created": "2026-08-18T00:45:58+00:00",
       "prompt": "isometric cross-section through lush green grass. The top face is the exposed surface, flat and one even tone; the sides are the same lush green grass sliced open, so the wall is the inside of what you see on top. Continuous material, no seam, no band and no colour change where the top meets the sides. No outline.",
       "purpose": "matrix:grass_over_grass",
+      "status": "pending"
+    },
+    "8a9cd297-0ca2-4272-a54c-d4db8354e397": {
+      "created": "2026-08-28T04:29:05+00:00",
+      "prompt": "lava and ice",
+      "purpose": "fade:lava:ice:and1",
       "status": "pending"
     },
     "8ac3fe2f-8693-4392-aef1-edc6e97fa89c": {
@@ -5990,6 +6902,12 @@
       "created": "2026-08-17T17:16:22+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of wooden parquet floor. Ragged black rock edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
       "purpose": "matrix:black_rock_over_parquet_floor",
+      "status": "pending"
+    },
+    "8b5651f2-2e98-4ec9-810e-53b59d77ace2": {
+      "created": "2026-08-28T04:22:07+00:00",
+      "prompt": "grass with snow",
+      "purpose": "fade:grass:snow:with1",
       "status": "pending"
     },
     "8b64e8aa-b5c1-4d21-af70-17191ae697b4": {
@@ -6046,6 +6964,12 @@
       "purpose": "blend:deep_water:light_soil:p40",
       "status": "pending"
     },
+    "8cc7952f-5933-442a-8128-7fd635f996c9": {
+      "created": "2026-08-28T04:16:21+00:00",
+      "prompt": "deep water with brown paving stone",
+      "purpose": "fade:deep_water:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "8cf2fa89-18d7-447a-8b09-826ee118819b": {
       "created": "2026-08-17T18:35:12+00:00",
       "prompt": "isometric ground tile. rugged grey mountain rock on top of wooden parquet floor. The grey stone grows over the edge and tufts down over the parquet floor below, so the two meet naturally with no hard line between them. The parquet floor side walls show their own surface detail. Seen from above, the grey stone surface is even and uniform. No outline.",
@@ -6062,6 +6986,12 @@
       "created": "2026-08-28T00:14:00+00:00",
       "prompt": "brown paving stone with clear patches of ice breaking through",
       "purpose": "blend:brown_paving_stone:ice:p30",
+      "status": "pending"
+    },
+    "8d3de1c2-d8f3-4bf4-b459-69f31cd7a2e9": {
+      "created": "2026-08-28T04:16:49+00:00",
+      "prompt": "slime on top of dark mud",
+      "purpose": "fade:dark_mud:slime:on_top_of1",
       "status": "pending"
     },
     "8d5b0152-4fd6-4af4-a2a5-0b856ffd7c8c": {
@@ -6142,10 +7072,28 @@
       "purpose": "blend:black_rock:brown_paving_stone:p40",
       "status": "pending"
     },
+    "8f25ed3f-01d8-45bd-9de3-a63c12eb393b": {
+      "created": "2026-08-28T04:11:09+00:00",
+      "prompt": "parquet floor on top of black rock",
+      "purpose": "fade:black_rock:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
+    "8f269a96-e94d-4781-9e81-598c915bb85d": {
+      "created": "2026-08-28T04:20:46+00:00",
+      "prompt": "grass and light beach",
+      "purpose": "fade:grass:light_beach:and1",
+      "status": "pending"
+    },
     "8f487282-ba66-464a-a68a-255c5f0867a9": {
       "created": "2026-08-28T00:24:41+00:00",
       "prompt": "mostly grey stone, a few small spots of snow",
       "purpose": "blend:grey_stone:snow:p10",
+      "status": "pending"
+    },
+    "8f52dde8-9b29-456b-b64c-234002a9e339": {
+      "created": "2026-08-28T04:15:02+00:00",
+      "prompt": "grass on top of dark mud",
+      "purpose": "fade:dark_mud:grass:on_top_of1",
       "status": "pending"
     },
     "8f71deb1-8c46-4e39-b7ca-9e3afd9826c3": {
@@ -6166,6 +7114,12 @@
       "purpose": "matrix:paving_stone_over_water",
       "status": "pending"
     },
+    "8fd4ee9d-505c-4c51-bf31-be5b785f9f3d": {
+      "created": "2026-08-28T04:17:43+00:00",
+      "prompt": "deep water with light soil",
+      "purpose": "fade:deep_water:light_soil:with1",
+      "status": "pending"
+    },
     "8fe885ff-cc75-4e57-b298-ee964bb0f620": {
       "created": "2026-08-17T23:06:02+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken thick bubbling slime. Sides: translucent crystal ice with visible texture. Between them the slime overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -6184,10 +7138,22 @@
       "purpose": "matrix:black_rock_over_light_soil",
       "status": "pending"
     },
+    "90547301-f1eb-4bb4-8444-8345284724d2": {
+      "created": "2026-08-28T04:23:26+00:00",
+      "prompt": "grey stone with grass",
+      "purpose": "fade:grey_stone:grass:with1",
+      "status": "pending"
+    },
     "90830724-3273-4e4c-98e8-cd7347cdb5d2": {
       "created": "2026-08-28T04:08:22+00:00",
       "prompt": "black rock with deep water",
       "purpose": "fade:black_rock:deep_water:with1",
+      "status": "pending"
+    },
+    "9086a72e-d838-4541-af9e-bbe45d7f090f": {
+      "created": "2026-08-28T04:16:19+00:00",
+      "prompt": "dark mud with light beach",
+      "purpose": "fade:dark_mud:light_beach:with1",
       "status": "pending"
     },
     "91142385-7b5e-487d-8c49-c6a6a45f19cd": {
@@ -6340,6 +7306,18 @@
       "purpose": "matrix:deep_water_over_slime",
       "status": "pending"
     },
+    "93c3d446-2892-4ab8-839d-a23e72985010": {
+      "created": "2026-08-28T04:22:36+00:00",
+      "prompt": "grey stone and deep water",
+      "purpose": "fade:grey_stone:deep_water:and1",
+      "status": "pending"
+    },
+    "93c6a450-fd74-40f1-be73-11dac883e801": {
+      "created": "2026-08-28T04:29:00+00:00",
+      "prompt": "grey stone with parquet floor",
+      "purpose": "fade:grey_stone:parquet_floor:with1",
+      "status": "pending"
+    },
     "93df5dfa-76de-439d-b0e9-cd7e75bb5641": {
       "created": "2026-08-17T10:56:33+00:00",
       "prompt": "isometric tile: a layer of lush green grass covering a block of pale sandy beach. Ragged grass edge overhanging the light beach cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
@@ -6350,6 +7328,18 @@
       "created": "2026-08-19T10:11:07+00:00",
       "prompt": "isometric terrain block of deep dark ocean water with molten glowing lava growing on top. The lava spills over the rim and hangs down the deep water face in an uneven fringe. Flat even lava seen from above. No outline.",
       "purpose": "matrix:lava_over_deep_water",
+      "status": "pending"
+    },
+    "940fc4fb-9db8-4cfd-a789-51cb7653a17e": {
+      "created": "2026-08-28T04:23:19+00:00",
+      "prompt": "deep water on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:deep_water:on_top_of1",
+      "status": "pending"
+    },
+    "9416895e-44a0-4dc2-ae9f-c86644df8107": {
+      "created": "2026-08-28T04:22:10+00:00",
+      "prompt": "lava on top of grass",
+      "purpose": "fade:grass:lava:on_top_of1",
       "status": "pending"
     },
     "9435632d-2989-47e6-a801-2734d8faaa14": {
@@ -6412,6 +7402,12 @@
       "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
+    "94d957e4-f7de-43b0-bd91-7a2b191c0330": {
+      "created": "2026-08-28T04:27:02+00:00",
+      "prompt": "snow on top of grey stone",
+      "purpose": "fade:grey_stone:snow:on_top_of1",
+      "status": "pending"
+    },
     "94f88bdc-2572-42cb-b2de-7413a782a58f": {
       "created": "2026-08-17T23:31:59+00:00",
       "prompt": "isometric cube of thick bubbling slime capped with clean fresh snow. The cap overhangs slightly, snow draping down onto the slime beneath it. Uniform flat snow top. No outline.",
@@ -6428,6 +7424,12 @@
       "created": "2026-08-17T22:23:29+00:00",
       "prompt": "isometric tile of a sheer molten glowing lava cliff. Flat lava plateau on top, dropping straight down into a tall vertical lava cliff face with even texture over its whole height. Nothing overhangs the brink; the plateau ends exactly at the edge. No outline.",
       "purpose": "matrix:lava_over_lava",
+      "status": "pending"
+    },
+    "95846a9e-36c1-48e2-9551-611865b08299": {
+      "created": "2026-08-28T04:11:19+00:00",
+      "prompt": "lava on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:lava:on_top_of1",
       "status": "pending"
     },
     "95a2dded-31d7-4599-b91e-fc397c065f26": {
@@ -6454,6 +7456,12 @@
       "purpose": "puddle:brown_paving_stone:parquet_floor:p20",
       "status": "pending"
     },
+    "960b56e9-de8d-4aef-a3c6-074d43e59901": {
+      "created": "2026-08-28T04:12:59+00:00",
+      "prompt": "grey paving stone on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:grey_paving_stone:on_top_of1",
+      "status": "pending"
+    },
     "9637e84c-6c7a-41a8-94ba-eb32adbed415": {
       "created": "2026-08-19T10:33:46+00:00",
       "prompt": "isometric ground tile with tall clear calm water side walls, clearly water, textured from top to bottom. Plain pure flat green top. No outline.",
@@ -6478,6 +7486,12 @@
       "purpose": "matrix:deep_water_over_snow",
       "status": "pending"
     },
+    "96ef4789-f46b-45ce-b71c-f1f5ebd19890": {
+      "created": "2026-08-28T04:25:59+00:00",
+      "prompt": "grey paving stone with light beach",
+      "purpose": "fade:grey_paving_stone:light_beach:with1",
+      "status": "pending"
+    },
     "970fffe4-ad92-4539-9077-c7a1e0d84112": {
       "created": "2026-08-27T17:13:53+00:00",
       "prompt": "calm beach sand, warm cream, fine even grain, undisturbed",
@@ -6494,6 +7508,18 @@
       "created": "2026-08-17T22:39:05+00:00",
       "prompt": "isometric game tile of thick bubbling slime growing over pale sandy beach. Overgrown edges, slime cascading down the light beach walls. Flat clean slime on top. No outline.",
       "purpose": "matrix:slime_over_light_beach",
+      "status": "pending"
+    },
+    "9762299c-8246-44d1-b3fe-97cd64ef7de4": {
+      "created": "2026-08-28T04:28:52+00:00",
+      "prompt": "ice with parquet floor",
+      "purpose": "fade:ice:parquet_floor:with1",
+      "status": "pending"
+    },
+    "976a4f85-152c-4ec4-b120-6d6032b31470": {
+      "created": "2026-08-28T04:18:12+00:00",
+      "prompt": "light beach on top of dark mud",
+      "purpose": "fade:dark_mud:light_beach:on_top_of1",
       "status": "pending"
     },
     "9798c703-dc1e-49d5-9a42-6694f91e8dfe": {
@@ -6550,6 +7576,12 @@
       "purpose": "blend:ice:grass:p20",
       "status": "pending"
     },
+    "984614ac-f8ad-4ff6-b6f9-b475aadb7f95": {
+      "created": "2026-08-28T04:16:15+00:00",
+      "prompt": "dark mud and water",
+      "purpose": "fade:dark_mud:water:and1",
+      "status": "pending"
+    },
     "98479ea6-c9bf-491d-9747-d8b30a1d2e33": {
       "created": "2026-08-27T23:40:34+00:00",
       "prompt": "mostly black rock, scattered patches of dark mud",
@@ -6578,6 +7610,24 @@
       "created": "2026-08-19T10:02:02+00:00",
       "prompt": "isometric block of thick bubbling slime that has been painted pure flat green across its flat top face only. The paint covers the whole upper surface; the vertical sides are left as bare thick bubbling slime. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "997d8efc-fcf6-4c9c-8232-7ff282ed646e": {
+      "created": "2026-08-28T04:12:01+00:00",
+      "prompt": "brown paving stone with ice",
+      "purpose": "fade:brown_paving_stone:ice:with1",
+      "status": "pending"
+    },
+    "99b7d5f1-798c-4b92-9354-1228c88c8878": {
+      "created": "2026-08-28T04:12:31+00:00",
+      "prompt": "dark mud and grass",
+      "purpose": "fade:dark_mud:grass:and1",
+      "status": "pending"
+    },
+    "99cd0884-79d9-4725-b8dc-ee48e4f30996": {
+      "created": "2026-08-28T04:15:18+00:00",
+      "prompt": "deep water and grey stone",
+      "purpose": "fade:deep_water:grey_stone:and1",
       "status": "pending"
     },
     "99cf46ea-884d-4c73-b4d8-7dd9011e0088": {
@@ -6634,6 +7684,12 @@
       "purpose": "puddle:black_rock:water:p40",
       "status": "pending"
     },
+    "9aa4963b-22a1-4f81-8b52-0549bb19073c": {
+      "created": "2026-08-28T04:26:16+00:00",
+      "prompt": "grey stone with brown paving stone",
+      "purpose": "fade:grey_stone:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "9aad505b-258e-4ddf-b4fb-dbdfdfd2553c": {
       "created": "2026-08-17T20:37:20+00:00",
       "prompt": "isometric terrain block of dark volcanic rock with pale sandy beach growing on top. The light beach spills over the rim and hangs down the black rock face in an uneven fringe. Flat even light beach seen from above. No outline.",
@@ -6650,6 +7706,18 @@
       "created": "2026-08-23T18:27:04+00:00",
       "prompt": "a chunk of lush green grass, isometric, with pure flat dark orange on its flat upper face. The sides are grass. No outline.",
       "purpose": "matrix:lava_over_grass",
+      "status": "pending"
+    },
+    "9afe2c66-e262-4518-874c-63a3bff87edc": {
+      "created": "2026-08-28T04:13:14+00:00",
+      "prompt": "brown paving stone with slime",
+      "purpose": "fade:brown_paving_stone:slime:with1",
+      "status": "pending"
+    },
+    "9b027691-5ff2-45b9-902f-55be2b7b6f49": {
+      "created": "2026-08-28T04:28:38+00:00",
+      "prompt": "grey stone and snow",
+      "purpose": "fade:grey_stone:snow:and1",
       "status": "pending"
     },
     "9b0281ef-7e39-4d59-9b9e-ea8404af4b34": {
@@ -6676,10 +7744,22 @@
       "purpose": "matrix:deep_water_over_water",
       "status": "pending"
     },
+    "9be7f4f2-d7aa-42e3-adb5-ffff80b16c03": {
+      "created": "2026-08-28T04:12:19+00:00",
+      "prompt": "brown paving stone with water",
+      "purpose": "fade:brown_paving_stone:water:with1",
+      "status": "pending"
+    },
     "9bf88fed-4339-4e81-8010-c558bc0fcbd0": {
       "created": "2026-08-27T23:49:55+00:00",
       "prompt": "grass with clear patches of grey paving stone breaking through",
       "purpose": "blend:grass:grey_paving_stone:p30",
+      "status": "pending"
+    },
+    "9c1cdf79-94e1-4889-93d4-b7204a798d63": {
+      "created": "2026-08-28T04:19:30+00:00",
+      "prompt": "deep water and ice",
+      "purpose": "fade:deep_water:ice:and1",
       "status": "pending"
     },
     "9c393f18-8c7b-4f60-875e-5f2a7e09755f": {
@@ -6724,6 +7804,18 @@
       "purpose": "matrix:ice_over_deep_water",
       "status": "pending"
     },
+    "9d0d55ab-a4bf-4d9a-b75e-5565b114aee5": {
+      "created": "2026-08-28T04:15:31+00:00",
+      "prompt": "grey paving stone on top of dark mud",
+      "purpose": "fade:dark_mud:grey_paving_stone:on_top_of1",
+      "status": "pending"
+    },
+    "9d20300d-b2ae-45cc-b199-a75a330cd290": {
+      "created": "2026-08-28T04:14:52+00:00",
+      "prompt": "snow on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:snow:on_top_of1",
+      "status": "pending"
+    },
     "9d2611ff-91d5-4a4d-9940-c6d304eb07ce": {
       "created": "2026-08-17T18:19:18+00:00",
       "prompt": "isometric cube of pale sandy beach capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the light beach beneath it. Uniform flat grey stone top. No outline.",
@@ -6752,6 +7844,12 @@
       "created": "2026-08-18T00:45:47+00:00",
       "prompt": "isometric ground tile: a flat dark volcanic rock surface extruded downwards. The top face is smooth uniform black rock; the vertical faces are that same black rock extruded, evenly textured over their whole height. The boundary between top and side is a single clean edge \u2014 no fringe, no darker band, no shading strip. No outline.",
       "purpose": "matrix:black_rock_over_black_rock",
+      "status": "pending"
+    },
+    "9dacdb4e-c2b1-4750-b59f-11310752fce9": {
+      "created": "2026-08-28T04:11:34+00:00",
+      "prompt": "black rock and parquet floor",
+      "purpose": "fade:black_rock:parquet_floor:and1",
       "status": "pending"
     },
     "9dd6a98c-91c9-4528-8410-dd24faa0f61c": {
@@ -6850,6 +7948,12 @@
       "purpose": "matrix:black_rock_over_slime",
       "status": "pending"
     },
+    "9f68355e-1be2-48a3-bdac-c4b49cfd851c": {
+      "created": "2026-08-28T04:19:32+00:00",
+      "prompt": "grass with brown paving stone",
+      "purpose": "fade:grass:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "9f790288-e4ea-4a14-8021-4ecac5989c5a": {
       "created": "2026-08-19T10:30:36+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken lush green grass. Sides: rugged grey mountain rock with visible texture. Between them the grass overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -6934,6 +8038,12 @@
       "purpose": "matrix:light_beach_over_slime",
       "status": "pending"
     },
+    "a13e5148-2996-476c-b371-7bfb1850a163": {
+      "created": "2026-08-28T04:20:51+00:00",
+      "prompt": "grey stone on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:grey_stone:on_top_of1",
+      "status": "pending"
+    },
     "a187a64f-ac81-4238-9b1c-1d446ed36f01": {
       "created": "2026-08-19T10:51:31+00:00",
       "prompt": "a block of dry light soil with thick bubbling slime established across the top and spilling over every edge. Isometric view. The slime surface itself is calm and uniform; only the rim is ragged. No outline.",
@@ -6944,6 +8054,12 @@
       "created": "2026-08-17T20:53:54+00:00",
       "prompt": "isometric ground tile. pale sandy beach on top of deep dark ocean water. The light beach grows over the edge and tufts down over the deep water below, so the two meet naturally with no hard line between them. The deep water side walls show their own surface detail. Seen from above, the light beach surface is even and uniform. No outline.",
       "purpose": "matrix:light_beach_over_deep_water",
+      "status": "pending"
+    },
+    "a1f7741b-0e01-4fdd-8c8a-d40fa3ea6998": {
+      "created": "2026-08-28T04:20:29+00:00",
+      "prompt": "grass and water",
+      "purpose": "fade:grass:water:and1",
       "status": "pending"
     },
     "a26592f4-31bf-4ecc-ba71-6b0109d675f1": {
@@ -6976,6 +8092,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "a2db6592-702b-4113-a905-f8a05849efae": {
+      "created": "2026-08-28T04:22:24+00:00",
+      "prompt": "grass with parquet floor",
+      "purpose": "fade:grass:parquet_floor:with1",
+      "status": "pending"
+    },
     "a3036d61-f5f7-4fa2-bf27-011e6dcb73ff": {
       "created": "2026-08-17T23:29:04+00:00",
       "prompt": "isometric tile: a layer of translucent crystal ice covering a block of wet dark mud. Ragged ice edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform ice on the top face. No outline.",
@@ -7006,10 +8128,22 @@
       "purpose": "matrix:grass_over_light_beach",
       "status": "pending"
     },
+    "a3752c91-dd1e-4191-bfb8-a714485c875d": {
+      "created": "2026-08-28T04:19:36+00:00",
+      "prompt": "deep water with grey paving stone",
+      "purpose": "fade:deep_water:grey_paving_stone:with1",
+      "status": "pending"
+    },
     "a3da83da-131d-434c-ace7-7fd9809e6835": {
       "created": "2026-08-17T23:35:30+00:00",
       "prompt": "isometric cube of dark volcanic rock capped with pale sandy beach. The cap overhangs slightly, light beach draping down onto the black rock beneath it. Uniform flat light beach top. No outline.",
       "purpose": "matrix:light_beach_over_black_rock",
+      "status": "pending"
+    },
+    "a40aa8e3-d9b9-425c-9141-5af8e46df015": {
+      "created": "2026-08-28T04:18:02+00:00",
+      "prompt": "dark mud and snow",
+      "purpose": "fade:dark_mud:snow:and1",
       "status": "pending"
     },
     "a44b618c-98cc-4e82-aa9d-07f4031d8152": {
@@ -7036,6 +8170,12 @@
       "purpose": "blend:brown_paving_stone:ice:p40",
       "status": "pending"
     },
+    "a530dc4b-bd95-485e-ae64-cf0c06da341d": {
+      "created": "2026-08-28T04:30:40+00:00",
+      "prompt": "light beach and brown paving stone",
+      "purpose": "fade:light_beach:brown_paving_stone:and1",
+      "status": "pending"
+    },
     "a53b0c56-598d-4424-911f-6dec35ebd13b": {
       "created": "2026-08-28T00:27:58+00:00",
       "prompt": "dark mud with clear patches of grey stone breaking through",
@@ -7046,6 +8186,12 @@
       "created": "2026-08-18T20:47:24+00:00",
       "prompt": "isometric tile. top = pure flat cool light grey. sides = pure flat warm tan. flat top, textured sides, no outline.",
       "purpose": "matrix:paving_stone_over_parquet_floor",
+      "status": "pending"
+    },
+    "a57b0a7b-b248-4bc5-b26d-9c9f1b6182c6": {
+      "created": "2026-08-28T04:16:32+00:00",
+      "prompt": "black rock on top of dark mud",
+      "purpose": "fade:dark_mud:black_rock:on_top_of1",
       "status": "pending"
     },
     "a5cc75ca-6246-4d2f-93ce-80eb75b3d19f": {
@@ -7162,6 +8308,12 @@
       "purpose": "matrix:grass_over_slime",
       "status": "pending"
     },
+    "a83ddc87-c74c-4b0c-abbb-31b158342579": {
+      "created": "2026-08-28T04:28:21+00:00",
+      "prompt": "slime on top of grey stone",
+      "purpose": "fade:grey_stone:slime:on_top_of1",
+      "status": "pending"
+    },
     "a846a225-7845-40f4-8834-ad0e36a75101": {
       "created": "2026-08-17T22:40:02+00:00",
       "prompt": "isometric ground tile where wet dark mud has taken over a deep dark ocean water block. The dark mud rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
@@ -7258,10 +8410,22 @@
       "purpose": "matrix:black_rock_over_dark_mud",
       "status": "pending"
     },
+    "aa8981ea-0c9d-4910-a370-5f1baf3359e3": {
+      "created": "2026-08-28T04:15:46+00:00",
+      "prompt": "deep water and grass",
+      "purpose": "fade:deep_water:grass:and1",
+      "status": "pending"
+    },
     "aa8bbf45-3c61-462b-9e28-5e41a436af72": {
       "created": "2026-08-27T23:54:44+00:00",
       "prompt": "light beach with clear patches of grass breaking through",
       "purpose": "blend:light_beach:grass:p30",
+      "status": "pending"
+    },
+    "aa8f668c-0b19-45e4-a7e0-ebd0ac54b51b": {
+      "created": "2026-08-28T04:13:26+00:00",
+      "prompt": "brown paving stone with snow",
+      "purpose": "fade:brown_paving_stone:snow:with1",
       "status": "pending"
     },
     "aabe1ec3-aa31-49c1-8904-b5369dd44214": {
@@ -7300,6 +8464,12 @@
       "purpose": "matrix:lava_over_light_beach",
       "status": "pending"
     },
+    "abab5dff-b673-4b0b-8d16-47a564d8a7e1": {
+      "created": "2026-08-28T04:22:35+00:00",
+      "prompt": "grey paving stone and black rock",
+      "purpose": "fade:grey_paving_stone:black_rock:and1",
+      "status": "pending"
+    },
     "abac48e0-b3e4-43e7-90b1-fa7d3283b393": {
       "created": "2026-08-17T22:24:23+00:00",
       "prompt": "isometric tile of a sheer deep dark ocean water cliff. Flat deep water plateau on top, dropping straight down into a tall vertical deep water cliff face with even texture over its whole height. Nothing overhangs the brink; the plateau ends exactly at the edge. No outline.",
@@ -7334,6 +8504,18 @@
       "created": "2026-08-17T20:39:53+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of wet dark mud. Ragged black rock edge overhanging the dark mud cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
       "purpose": "matrix:black_rock_over_dark_mud",
+      "status": "pending"
+    },
+    "ac8022de-4279-4e29-b784-f774f7a2248d": {
+      "created": "2026-08-28T04:27:17+00:00",
+      "prompt": "grey paving stone and snow",
+      "purpose": "fade:grey_paving_stone:snow:and1",
+      "status": "pending"
+    },
+    "ac924b89-d44f-480d-bcdf-09f8bd612673": {
+      "created": "2026-08-28T04:12:24+00:00",
+      "prompt": "brown paving stone with deep water",
+      "purpose": "fade:brown_paving_stone:deep_water:with1",
       "status": "pending"
     },
     "aca9d1b9-1eeb-4220-8040-e74e80ecb9ac": {
@@ -7402,6 +8584,12 @@
       "purpose": "blend:grass:grey_stone:p50",
       "status": "pending"
     },
+    "ad52567b-42d0-4cb8-bcaf-b6e078aa1ff2": {
+      "created": "2026-08-28T04:24:48+00:00",
+      "prompt": "grey stone and light soil",
+      "purpose": "fade:grey_stone:light_soil:and1",
+      "status": "pending"
+    },
     "ad5460f9-87c7-4881-9836-6ef0764ea618": {
       "created": "2026-08-28T00:36:35+00:00",
       "prompt": "deep water with clear patches of black rock breaking through",
@@ -7412,6 +8600,12 @@
       "created": "2026-08-17T22:29:19+00:00",
       "prompt": "isometric terrain block of dry light soil with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the light soil face in an uneven fringe. Flat even black rock seen from above. No outline.",
       "purpose": "matrix:black_rock_over_light_soil",
+      "status": "pending"
+    },
+    "ad61a774-51e6-45c1-b051-ed56e34dd176": {
+      "created": "2026-08-28T04:19:44+00:00",
+      "prompt": "grass and brown paving stone",
+      "purpose": "fade:grass:brown_paving_stone:and1",
       "status": "pending"
     },
     "ad6b3116-329a-412d-a182-8be4cfa20fe6": {
@@ -7588,6 +8782,12 @@
       "purpose": "matrix:light_beach_over_ice",
       "status": "pending"
     },
+    "b222fa6c-3ae2-4478-b78a-6b78e43d7f5a": {
+      "created": "2026-08-28T04:22:27+00:00",
+      "prompt": "grass and dark mud",
+      "purpose": "fade:grass:dark_mud:and1",
+      "status": "pending"
+    },
     "b23e687c-09ef-40e2-9214-b41e931fb63b": {
       "created": "2026-08-28T04:09:06+00:00",
       "prompt": "brown paving stone on top of black rock",
@@ -7654,6 +8854,12 @@
       "purpose": "matrix:paving_stone_over_slime",
       "status": "pending"
     },
+    "b44dadcf-8093-4d18-b9d3-899377d4b6ae": {
+      "created": "2026-08-28T04:21:09+00:00",
+      "prompt": "black rock on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:black_rock:on_top_of1",
+      "status": "pending"
+    },
     "b44e6a07-0271-47c5-8b67-d781cddfc24a": {
       "created": "2026-08-17T11:26:08+00:00",
       "prompt": "isometric terrain block of clean fresh snow with dry light soil growing on top. The light soil spills over the rim and hangs down the snow face in an uneven fringe. Flat even light soil seen from above. No outline.",
@@ -7714,6 +8920,12 @@
       "purpose": "matrix:parquet_floor_over_light_soil",
       "status": "pending"
     },
+    "b55fccf0-3a92-4850-a490-2f96362e4e2f": {
+      "created": "2026-08-28T04:16:22+00:00",
+      "prompt": "dark mud and parquet floor",
+      "purpose": "fade:dark_mud:parquet_floor:and1",
+      "status": "pending"
+    },
     "b595e7f3-b4bb-4841-a1c9-1ac543ec9667": {
       "created": "2026-08-28T00:13:11+00:00",
       "prompt": "brown paving stone and slime mixed, more brown paving stone",
@@ -7724,6 +8936,12 @@
       "created": "2026-08-27T16:34:53+00:00",
       "prompt": "grey paving stones, cool pale grey, evenly laid, worn flat, plain",
       "purpose": "tops:grey_paving_stone:subtle:38939",
+      "status": "pending"
+    },
+    "b5ae42e2-afa0-4bf6-b098-6cd7ea0e9850": {
+      "created": "2026-08-28T04:27:34+00:00",
+      "prompt": "grey stone and grey paving stone",
+      "purpose": "fade:grey_stone:grey_paving_stone:and1",
       "status": "pending"
     },
     "b5c57c5f-979e-4574-bd54-2b05ed91cd17": {
@@ -7810,6 +9028,12 @@
       "purpose": "blend:grass:light_beach:p30",
       "status": "pending"
     },
+    "b7980a11-9797-4b2e-9cf4-c10799eb2550": {
+      "created": "2026-08-28T04:26:16+00:00",
+      "prompt": "ice and deep water",
+      "purpose": "fade:ice:deep_water:and1",
+      "status": "pending"
+    },
     "b7d548fd-fc6b-4b2c-9253-1395268efe51": {
       "created": "2026-08-16T17:31:55+00:00",
       "prompt": "clean single color translucent crystal ice on top of clean lush green grass",
@@ -7820,6 +9044,12 @@
       "created": "2026-08-17T22:54:43+00:00",
       "prompt": "isometric cube of dry light soil capped with molten glowing lava. The cap overhangs slightly, lava draping down onto the light soil beneath it. Uniform flat lava top. No outline.",
       "purpose": "matrix:lava_over_light_soil",
+      "status": "pending"
+    },
+    "b87a6eff-3693-4ade-a72d-04d29625df1c": {
+      "created": "2026-08-28T04:25:37+00:00",
+      "prompt": "grey paving stone and grass",
+      "purpose": "fade:grey_paving_stone:grass:and1",
       "status": "pending"
     },
     "b87b6682-4d25-4dda-8ef7-455a16fd781b": {
@@ -7918,6 +9148,12 @@
       "purpose": "matrix:dark_mud_over_light_beach",
       "status": "pending"
     },
+    "ba7da4c8-d5eb-41b7-8689-95e4bacd2261": {
+      "created": "2026-08-28T04:18:13+00:00",
+      "prompt": "deep water on top of grass",
+      "purpose": "fade:grass:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "ba809144-342d-4837-8e5f-b9cfb1499462": {
       "created": "2026-08-28T00:11:55+00:00",
       "prompt": "brown paving stone with clear patches of slime breaking through",
@@ -7972,6 +9208,12 @@
       "purpose": "matrix:snow_over_grass",
       "status": "pending"
     },
+    "bc23323e-4da5-46a3-9c29-f9f1f2a42483": {
+      "created": "2026-08-28T04:24:25+00:00",
+      "prompt": "grey paving stone and parquet floor",
+      "purpose": "fade:grey_paving_stone:parquet_floor:and1",
+      "status": "pending"
+    },
     "bc3a2b44-fa0a-4d4e-ba5b-4e08d7a7f6cf": {
       "created": "2026-08-28T00:06:42+00:00",
       "prompt": "brown paving stone and grass mixed, more brown paving stone",
@@ -7982,6 +9224,12 @@
       "created": "2026-08-28T03:43:29+00:00",
       "prompt": "black rock, one wide patch of brown paving stone in the middle, black rock all around the edge",
       "purpose": "puddle:black_rock:brown_paving_stone:p30",
+      "status": "pending"
+    },
+    "bc7148aa-dfab-451d-afcc-5afa893b9ebc": {
+      "created": "2026-08-28T04:23:25+00:00",
+      "prompt": "grey stone and brown paving stone",
+      "purpose": "fade:grey_stone:brown_paving_stone:and1",
       "status": "pending"
     },
     "bca7ffbf-85d7-4eb3-8dba-11b2bf1787d4": {
@@ -8024,6 +9272,12 @@
       "created": "2026-08-17T23:21:05+00:00",
       "prompt": "a block of dry light soil with clean fresh snow established across the top and spilling over every edge. Isometric view. The snow surface itself is calm and uniform; only the rim is ragged. No outline.",
       "purpose": "matrix:snow_over_light_soil",
+      "status": "pending"
+    },
+    "bda824b0-9b1a-4491-8c0a-95d3ba6623d4": {
+      "created": "2026-08-28T04:18:17+00:00",
+      "prompt": "snow on top of deep water",
+      "purpose": "fade:deep_water:snow:on_top_of1",
       "status": "pending"
     },
     "bdb55b90-40de-4f71-9802-64b29a3402da": {
@@ -8086,6 +9340,18 @@
       "purpose": "matrix:grey_stone_over_black_rock",
       "status": "pending"
     },
+    "bf299ec8-fcf6-4dfb-9fcd-d6bab02c8011": {
+      "created": "2026-08-28T04:12:52+00:00",
+      "prompt": "snow on top of black rock",
+      "purpose": "fade:black_rock:snow:on_top_of1",
+      "status": "pending"
+    },
+    "bf48e9e4-4eac-4d1f-8106-345b34c5cc02": {
+      "created": "2026-08-28T04:16:52+00:00",
+      "prompt": "deep water with grass",
+      "purpose": "fade:deep_water:grass:with1",
+      "status": "pending"
+    },
     "bf571bf3-378c-4362-998c-4c0df1b94771": {
       "created": "2026-08-19T10:32:33+00:00",
       "prompt": "isometric tile: a thin layer of lush green grass laid down on top of a thick block of wooden parquet floor. The layer is pure flat green and covers the entire top face. The block below it shows parquet floor on every side. No outline.",
@@ -8114,6 +9380,12 @@
       "created": "2026-08-17T17:05:24+00:00",
       "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed dry light soil. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed light soil sides. No outline.",
       "purpose": "matrix:black_rock_over_light_soil",
+      "status": "pending"
+    },
+    "c02e2c88-35e3-462a-9459-ba1209378f2a": {
+      "created": "2026-08-28T04:20:36+00:00",
+      "prompt": "grass and ice",
+      "purpose": "fade:grass:ice:and1",
       "status": "pending"
     },
     "c03c85eb-4559-4189-a77d-e0ff6242089c": {
@@ -8164,6 +9436,12 @@
       "purpose": "blend:black_rock:dark_mud:p40",
       "status": "pending"
     },
+    "c0fdbba3-46fb-47cd-9bc8-e8d9ae4f572d": {
+      "created": "2026-08-28T04:15:23+00:00",
+      "prompt": "dark mud with grey paving stone",
+      "purpose": "fade:dark_mud:grey_paving_stone:with1",
+      "status": "pending"
+    },
     "c10ef669-c9a4-4231-8ad5-333b5f5b5587": {
       "created": "2026-08-28T00:02:47+00:00",
       "prompt": "mostly brown paving stone, scattered patches of deep water",
@@ -8180,6 +9458,12 @@
       "created": "2026-08-16T17:01:27+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour clean fresh snow, completely smooth with no texture. The vertical side walls are pale sandy beach with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:snow_over_light_beach",
+      "status": "pending"
+    },
+    "c1474a2a-d955-4821-af76-ba3c1089f0e5": {
+      "created": "2026-08-28T04:09:56+00:00",
+      "prompt": "black rock with light beach",
+      "purpose": "fade:black_rock:light_beach:with1",
       "status": "pending"
     },
     "c1dc667e-6139-4c7a-9c66-179d8476bd4c": {
@@ -8376,6 +9660,12 @@
       "purpose": "puddle:brown_paving_stone:slime:p10",
       "status": "pending"
     },
+    "c4d10748-5b63-4e48-950b-79e2b637240c": {
+      "created": "2026-08-28T04:23:37+00:00",
+      "prompt": "grey paving stone with deep water",
+      "purpose": "fade:grey_paving_stone:deep_water:with1",
+      "status": "pending"
+    },
     "c50f4a50-01b1-455a-934c-5693183cac66": {
       "created": "2026-08-19T10:30:36+00:00",
       "prompt": "top-down isometric ground block. Thick dark volcanic rock carpet over exposed wet dark mud. Where the two meet the black rock droops over the edge instead of being cut off. Even black rock surface, detailed dark mud sides. No outline.",
@@ -8424,6 +9714,12 @@
       "purpose": "blend:brown_paving_stone:deep_water:p50",
       "status": "pending"
     },
+    "c5d9c931-3b91-49fd-a81b-3afc6d3e5ee1": {
+      "created": "2026-08-28T04:24:37+00:00",
+      "prompt": "grey paving stone with black rock",
+      "purpose": "fade:grey_paving_stone:black_rock:with1",
+      "status": "pending"
+    },
     "c5e73d5c-f50c-42d7-86ad-5610dea4a132": {
       "created": "2026-08-17T20:41:58+00:00",
       "prompt": "isometric tile: a layer of clean fresh snow covering a block of dark volcanic rock. Ragged snow edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline.",
@@ -8434,6 +9730,12 @@
       "created": "2026-08-27T23:59:47+00:00",
       "prompt": "brown paving stone and black rock mixed evenly",
       "purpose": "blend:brown_paving_stone:black_rock:p50",
+      "status": "pending"
+    },
+    "c6000a0c-a8d8-4dd0-94e2-c80957a9db94": {
+      "created": "2026-08-28T04:27:12+00:00",
+      "prompt": "snow on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:snow:on_top_of1",
       "status": "pending"
     },
     "c63d5cd3-bb66-429f-a625-878cb94fc932": {
@@ -8478,6 +9780,12 @@
       "purpose": "blend:deep_water:black_rock:p40",
       "status": "pending"
     },
+    "c6d7a885-3791-4a69-94e0-a520cc6ffb24": {
+      "created": "2026-08-28T04:13:58+00:00",
+      "prompt": "deep water on top of dark mud",
+      "purpose": "fade:dark_mud:deep_water:on_top_of1",
+      "status": "pending"
+    },
     "c6e78a51-892a-4b4d-8d8b-5e01bd868fb8": {
       "created": "2026-08-16T17:24:42+00:00",
       "prompt": "clean single color clean fresh snow on top of clean molten glowing lava",
@@ -8514,6 +9822,18 @@
       "purpose": "matrix:ice_over_lava",
       "status": "pending"
     },
+    "c7ad0ebf-bc12-474f-bf87-b69dc08505b9": {
+      "created": "2026-08-28T04:28:17+00:00",
+      "prompt": "grey stone on top of ice",
+      "purpose": "fade:ice:grey_stone:on_top_of1",
+      "status": "pending"
+    },
+    "c7bd64d3-c34b-43d1-bf1f-49b2993b443a": {
+      "created": "2026-08-28T04:26:15+00:00",
+      "prompt": "ice and grey paving stone",
+      "purpose": "fade:ice:grey_paving_stone:and1",
+      "status": "pending"
+    },
     "c7f7f449-62eb-4efb-98b8-ee996e24a8c7": {
       "created": "2026-08-23T18:30:33+00:00",
       "prompt": "isometric ground tile, molten glowing lava over lush green grass, photographed from above. Soft irregular boundary where lava meets grass \u2014 the lava creeps down over the grass. Plain even lava surface. No outline.",
@@ -8542,6 +9862,12 @@
       "created": "2026-08-27T16:26:18+00:00",
       "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
       "purpose": "tops:grass:detail:74402",
+      "status": "pending"
+    },
+    "c867fb84-e842-4f15-a67c-445d36aa6f88": {
+      "created": "2026-08-28T04:17:09+00:00",
+      "prompt": "ice on top of dark mud",
+      "purpose": "fade:dark_mud:ice:on_top_of1",
       "status": "pending"
     },
     "c89792b0-e3cc-4771-8e2c-9378f8430e19": {
@@ -8596,6 +9922,18 @@
       "created": "2026-08-19T10:03:42+00:00",
       "prompt": "isometric tile: a thin layer of lush green grass laid down on top of a thick block of thick bubbling slime. The layer is pure flat green and covers the entire top face. The block below it shows slime on every side. No outline.",
       "purpose": "matrix:grass_over_slime",
+      "status": "pending"
+    },
+    "c94a362e-85d9-46f2-97d2-5fa6978eb403": {
+      "created": "2026-08-28T04:12:21+00:00",
+      "prompt": "brown paving stone with lava",
+      "purpose": "fade:brown_paving_stone:lava:with1",
+      "status": "pending"
+    },
+    "c993e4f6-c700-41b3-9d51-0e6bbffde25e": {
+      "created": "2026-08-28T04:13:24+00:00",
+      "prompt": "brown paving stone and slime",
+      "purpose": "fade:brown_paving_stone:slime:and1",
       "status": "pending"
     },
     "c99789c9-5d81-4854-8680-d2c2b753b443": {
@@ -8676,6 +10014,12 @@
       "purpose": "matrix:black_rock_over_ice",
       "status": "pending"
     },
+    "cbc5a17c-78ad-4eb6-8159-705dd8480b22": {
+      "created": "2026-08-28T04:18:00+00:00",
+      "prompt": "snow on top of dark mud",
+      "purpose": "fade:dark_mud:snow:on_top_of1",
+      "status": "pending"
+    },
     "cbe16908-9604-40d0-a12c-794de4efcac0": {
       "created": "2026-08-28T00:20:20+00:00",
       "prompt": "brown paving stone with clear patches of water breaking through",
@@ -8724,6 +10068,12 @@
       "purpose": "matrix:dark_mud_over_ice",
       "status": "pending"
     },
+    "cc858681-08b6-4989-b7f9-e35157bf981d": {
+      "created": "2026-08-28T04:15:19+00:00",
+      "prompt": "deep water with grey stone",
+      "purpose": "fade:deep_water:grey_stone:with1",
+      "status": "pending"
+    },
     "cca7954b-c226-4929-bacd-ab608346e6c0": {
       "created": "2026-08-17T22:48:54+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken wet dark mud. Sides: pale sandy beach with visible texture. Between them the dark mud overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
@@ -8738,10 +10088,22 @@
       "reviewed": "2026-08-16T09:22:22+00:00",
       "status": "deleted"
     },
+    "ccb35cc7-5b7a-4777-92dc-ad467613d5ce": {
+      "created": "2026-08-28T04:19:34+00:00",
+      "prompt": "dark mud on top of deep water",
+      "purpose": "fade:deep_water:dark_mud:on_top_of1",
+      "status": "pending"
+    },
     "ccba5bca-f43e-4811-8706-2a4cd9ab8402": {
       "created": "2026-08-17T18:48:33+00:00",
       "prompt": "top-down isometric ground block. Thick rugged grey mountain rock carpet over exposed deep dark ocean water. Where the two meet the grey stone droops over the edge instead of being cut off. Even grey stone surface, detailed deep water sides. No outline.",
       "purpose": "matrix:grey_stone_over_deep_water",
+      "status": "pending"
+    },
+    "ccc9901f-67eb-457d-b2c9-ce70f53cb037": {
+      "created": "2026-08-28T04:18:02+00:00",
+      "prompt": "deep water with ice",
+      "purpose": "fade:deep_water:ice:with1",
       "status": "pending"
     },
     "ccd34461-9a98-4ed3-b361-a8e37eb8e4f2": {
@@ -8774,6 +10136,12 @@
       "created": "2026-08-27T23:41:47+00:00",
       "prompt": "mostly lava, a few small spots of grass",
       "purpose": "blend:lava:grass:p10",
+      "status": "pending"
+    },
+    "cdab6cb1-6f5a-4b43-bf8c-7d36192bf5e6": {
+      "created": "2026-08-28T04:23:01+00:00",
+      "prompt": "grey paving stone on top of grass",
+      "purpose": "fade:grass:grey_paving_stone:on_top_of1",
       "status": "pending"
     },
     "cdc556f8-1657-4702-83dd-7071f03890e7": {
@@ -8822,6 +10190,12 @@
       "created": "2026-08-17T19:12:27+00:00",
       "prompt": "top-down isometric ground block. Thick wet dark mud carpet over exposed clean fresh snow. Where the two meet the dark mud droops over the edge instead of being cut off. Even dark mud surface, detailed snow sides. No outline.",
       "purpose": "matrix:dark_mud_over_snow",
+      "status": "pending"
+    },
+    "cea02488-3a14-4dce-8021-36216bc9a00b": {
+      "created": "2026-08-28T04:12:32+00:00",
+      "prompt": "water on top of brown paving stone",
+      "purpose": "fade:brown_paving_stone:water:on_top_of1",
       "status": "pending"
     },
     "ceae10c8-c6e3-4758-a499-c8b624295f73": {
@@ -8884,10 +10258,22 @@
       "purpose": "blend:black_rock:snow:p30",
       "status": "pending"
     },
+    "cf3a0bb4-31d5-46ec-a3c0-251c594f9333": {
+      "created": "2026-08-28T04:22:05+00:00",
+      "prompt": "dark mud on top of grass",
+      "purpose": "fade:grass:dark_mud:on_top_of1",
+      "status": "pending"
+    },
     "cf401d24-93cf-4f4b-9981-c5b9f54e0954": {
       "created": "2026-08-17T18:08:51+00:00",
       "prompt": "isometric tile: a layer of rugged grey mountain rock covering a block of dark volcanic rock. Ragged grey stone edge overhanging the black rock cliff, individual strands breaking the line. Smooth uniform grey stone on the top face. No outline.",
       "purpose": "matrix:grey_stone_over_black_rock",
+      "status": "pending"
+    },
+    "cf457275-0f42-46c6-95f6-b0e4f2fb5ed5": {
+      "created": "2026-08-28T04:22:33+00:00",
+      "prompt": "grey stone with deep water",
+      "purpose": "fade:grey_stone:deep_water:with1",
       "status": "pending"
     },
     "cf60d382-338d-4fb5-bf6a-52048051a9ad": {
@@ -8906,6 +10292,24 @@
       "created": "2026-08-17T22:25:16+00:00",
       "prompt": "isometric game tile of pale sandy beach growing over dark volcanic rock. Overgrown edges, light beach cascading down the black rock walls. Flat clean light beach on top. No outline.",
       "purpose": "matrix:light_beach_over_black_rock",
+      "status": "pending"
+    },
+    "cfbf7078-2fbf-43e1-bceb-eb3053b8a567": {
+      "created": "2026-08-28T04:24:42+00:00",
+      "prompt": "grey stone with snow",
+      "purpose": "fade:grey_stone:snow:with1",
+      "status": "pending"
+    },
+    "cfd440e0-c081-4efa-af9c-588632b0b241": {
+      "created": "2026-08-28T04:22:14+00:00",
+      "prompt": "grass with water",
+      "purpose": "fade:grass:water:with1",
+      "status": "pending"
+    },
+    "d005c8e6-a16a-4d34-ae56-9bdf3e997d18": {
+      "created": "2026-08-28T04:20:58+00:00",
+      "prompt": "deep water and light beach",
+      "purpose": "fade:deep_water:light_beach:and1",
       "status": "pending"
     },
     "d018bf3d-0a5e-4093-81ec-56c0f52e7a86": {
@@ -8962,6 +10366,12 @@
       "purpose": "matrix:light_soil_over_black_rock",
       "status": "pending"
     },
+    "d1a32781-389c-40d1-bdea-f55a309c9d78": {
+      "created": "2026-08-28T04:28:58+00:00",
+      "prompt": "water on top of grey stone",
+      "purpose": "fade:grey_stone:water:on_top_of1",
+      "status": "pending"
+    },
     "d1eba5aa-4692-4987-9aa0-3c7ebcdd0529": {
       "created": "2026-08-18T20:49:31+00:00",
       "prompt": "isometric cutaway showing two layers. The upper layer, seen from above, is pure flat cool light grey. The lower layer, seen from the side, is pale sandy beach. Upper layer paving stone, lower layer light beach. No outline.",
@@ -8990,6 +10400,30 @@
       "created": "2026-08-17T20:49:47+00:00",
       "prompt": "isometric tile: a layer of deep dark ocean water covering a block of clear calm water. Ragged deep water edge overhanging the water cliff, individual strands breaking the line. Smooth uniform deep water on the top face. No outline.",
       "purpose": "matrix:deep_water_over_water",
+      "status": "pending"
+    },
+    "d27810a5-26f7-4c9f-b059-8cc53a51241f": {
+      "created": "2026-08-28T04:19:34+00:00",
+      "prompt": "grey paving stone and brown paving stone",
+      "purpose": "fade:grey_paving_stone:brown_paving_stone:and1",
+      "status": "pending"
+    },
+    "d2826f64-de33-498f-a31f-a9fd82f62a34": {
+      "created": "2026-08-28T04:12:27+00:00",
+      "prompt": "brown paving stone and parquet floor",
+      "purpose": "fade:brown_paving_stone:parquet_floor:and1",
+      "status": "pending"
+    },
+    "d2ace140-af13-45fc-bd73-bb49bf7623dc": {
+      "created": "2026-08-28T04:20:35+00:00",
+      "prompt": "grey paving stone and grey stone",
+      "purpose": "fade:grey_paving_stone:grey_stone:and1",
+      "status": "pending"
+    },
+    "d2c1533d-7c3d-4538-b296-758fc4b9498c": {
+      "created": "2026-08-28T04:16:42+00:00",
+      "prompt": "grey paving stone on top of deep water",
+      "purpose": "fade:deep_water:grey_paving_stone:on_top_of1",
       "status": "pending"
     },
     "d2ef0b0b-be78-4f10-8324-3ecece08a9c4": {
@@ -9118,6 +10552,12 @@
       "purpose": "matrix:slime_over_grey_stone",
       "status": "pending"
     },
+    "d539f4b8-51ed-44f1-ad50-d3ba4280be20": {
+      "created": "2026-08-28T04:24:02+00:00",
+      "prompt": "grey stone with slime",
+      "purpose": "fade:grey_stone:slime:with1",
+      "status": "pending"
+    },
     "d54d8616-df39-4dd5-b1ee-3a425cb244ca": {
       "created": "2026-08-28T00:26:34+00:00",
       "prompt": "mostly grey stone, a few small spots of light soil",
@@ -9134,6 +10574,12 @@
       "created": "2026-08-28T00:28:15+00:00",
       "prompt": "mostly grey stone, scattered patches of light soil",
       "purpose": "blend:grey_stone:light_soil:p20",
+      "status": "pending"
+    },
+    "d55629ec-2def-4f32-8aaa-8aefa0ba8b1e": {
+      "created": "2026-08-28T04:29:36+00:00",
+      "prompt": "ice with deep water",
+      "purpose": "fade:ice:deep_water:with1",
       "status": "pending"
     },
     "d5680b9b-4009-42b0-8569-beae4ca19177": {
@@ -9200,6 +10646,18 @@
       "created": "2026-08-28T00:21:49+00:00",
       "prompt": "brown paving stone and water mixed, more brown paving stone",
       "purpose": "blend:brown_paving_stone:water:p40",
+      "status": "pending"
+    },
+    "d6bdb569-d82d-41ae-8437-2d140ecdfc88": {
+      "created": "2026-08-28T04:24:25+00:00",
+      "prompt": "brown paving stone on top of grey stone",
+      "purpose": "fade:grey_stone:brown_paving_stone:on_top_of1",
+      "status": "pending"
+    },
+    "d6dc58f8-57ab-485b-b38b-7130a5d76a14": {
+      "created": "2026-08-28T04:24:48+00:00",
+      "prompt": "grey stone and slime",
+      "purpose": "fade:grey_stone:slime:and1",
       "status": "pending"
     },
     "d6f6892d-b3ea-4067-bcd9-8726bac0a4f0": {
@@ -9286,6 +10744,12 @@
       "purpose": "puddle:black_rock:light_soil:p10",
       "status": "pending"
     },
+    "d8173d4f-4f87-41e8-8687-cf52adfbf132": {
+      "created": "2026-08-28T04:11:09+00:00",
+      "prompt": "brown paving stone and lava",
+      "purpose": "fade:brown_paving_stone:lava:and1",
+      "status": "pending"
+    },
     "d832da3a-1cbf-4ae3-bd26-c2762146bf50": {
       "created": "2026-08-16T16:40:39+00:00",
       "prompt": "clean single color lush green grass on top of clean molten glowing lava",
@@ -9308,6 +10772,12 @@
       "created": "2026-08-17T16:58:38+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of rugged grey mountain rock. The black rock grows over the edge and tufts down over the grey stone below, so the two meet naturally with no hard line between them. The grey stone side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
       "purpose": "matrix:black_rock_over_grey_stone",
+      "status": "pending"
+    },
+    "d8aab254-3272-4d2d-940d-6796e0ffcacc": {
+      "created": "2026-08-28T04:11:00+00:00",
+      "prompt": "brown paving stone and light soil",
+      "purpose": "fade:brown_paving_stone:light_soil:and1",
       "status": "pending"
     },
     "d8acbc38-95ab-4a47-98a1-f1ec266bce62": {
@@ -9418,6 +10888,24 @@
       "purpose": "matrix:black_rock_over_black_rock",
       "status": "pending"
     },
+    "dc0c6920-f976-45ee-aa1b-299cdc946abe": {
+      "created": "2026-08-28T04:14:54+00:00",
+      "prompt": "dark mud with grey stone",
+      "purpose": "fade:dark_mud:grey_stone:with1",
+      "status": "pending"
+    },
+    "dc31cffa-85f8-4824-987d-feb08aa98f51": {
+      "created": "2026-08-28T04:23:48+00:00",
+      "prompt": "lava on top of grey stone",
+      "purpose": "fade:grey_stone:lava:on_top_of1",
+      "status": "pending"
+    },
+    "dc3e52db-9d53-414f-998b-92098351a458": {
+      "created": "2026-08-28T04:14:54+00:00",
+      "prompt": "dark mud and deep water",
+      "purpose": "fade:dark_mud:deep_water:and1",
+      "status": "pending"
+    },
     "dc53e494-9409-4371-be3b-67dce684b732": {
       "created": "2026-08-17T22:18:25+00:00",
       "prompt": "isometric tile cut from a deep dark ocean water quarry. The top is the quarry floor, flat and even. The sides are freshly cut deep water faces, sheer and vertical, showing the material's own grain and tool marks evenly from top to bottom. The cut edge along the top is sharp and straight. No outline.",
@@ -9514,10 +11002,28 @@
       "purpose": "matrix:grey_stone_over_ice",
       "status": "pending"
     },
+    "de6d6be8-8fdc-4ce0-90f8-673b8ae51771": {
+      "created": "2026-08-28T04:16:57+00:00",
+      "prompt": "deep water and dark mud",
+      "purpose": "fade:deep_water:dark_mud:and1",
+      "status": "pending"
+    },
+    "de7cb727-a8b7-43ba-96ea-65f6bdcac11f": {
+      "created": "2026-08-28T04:21:00+00:00",
+      "prompt": "grass and grey paving stone",
+      "purpose": "fade:grass:grey_paving_stone:and1",
+      "status": "pending"
+    },
     "de912649-dc2e-4ff6-b80a-a28a3330a513": {
       "created": "2026-08-17T16:45:33+00:00",
       "prompt": "isometric ground tile, dark volcanic rock over translucent crystal ice, photographed from above. Soft irregular boundary where black rock meets ice \u2014 the black rock creeps down over the ice. Plain even black rock surface. No outline.",
       "purpose": "matrix:black_rock_over_ice",
+      "status": "pending"
+    },
+    "de922c78-4db7-4592-8432-fa4a6b206ebb": {
+      "created": "2026-08-28T04:18:29+00:00",
+      "prompt": "deep water and black rock",
+      "purpose": "fade:deep_water:black_rock:and1",
       "status": "pending"
     },
     "de9ff963-4b89-4075-86c3-7e1356a5728e": {
@@ -9530,6 +11036,18 @@
       "created": "2026-08-28T00:40:25+00:00",
       "prompt": "mostly deep water, a few small spots of grey paving stone",
       "purpose": "blend:deep_water:grey_paving_stone:p10",
+      "status": "pending"
+    },
+    "deb336e0-bc7f-4e27-9af3-7bc3e9ad7599": {
+      "created": "2026-08-28T04:14:03+00:00",
+      "prompt": "dark mud and grey paving stone",
+      "purpose": "fade:dark_mud:grey_paving_stone:and1",
+      "status": "pending"
+    },
+    "debd1e21-ee7c-42d8-80a4-104a703632f4": {
+      "created": "2026-08-28T04:14:24+00:00",
+      "prompt": "dark mud and light soil",
+      "purpose": "fade:dark_mud:light_soil:and1",
       "status": "pending"
     },
     "ded30765-1bf3-47c1-aa6a-5b459271c3e7": {
@@ -9556,10 +11074,22 @@
       "purpose": "matrix:black_rock_over_deep_water",
       "status": "pending"
     },
+    "dfb2be3f-a1c7-4fa6-8b4a-7b7e468ac429": {
+      "created": "2026-08-28T04:14:45+00:00",
+      "prompt": "light soil on top of dark mud",
+      "purpose": "fade:dark_mud:light_soil:on_top_of1",
+      "status": "pending"
+    },
     "dfc4a205-ed69-438d-8ab9-e4a154f7505a": {
       "created": "2026-08-28T00:06:14+00:00",
       "prompt": "brown paving stone and deep water mixed, more brown paving stone",
       "purpose": "blend:brown_paving_stone:deep_water:p40",
+      "status": "pending"
+    },
+    "dfc68c53-714c-426c-bbd7-98952f7fa485": {
+      "created": "2026-08-28T04:22:16+00:00",
+      "prompt": "grass and snow",
+      "purpose": "fade:grass:snow:and1",
       "status": "pending"
     },
     "dfdf8f8e-e075-430f-83b7-516475a47861": {
@@ -9574,6 +11104,18 @@
       "purpose": "tops:grass:detail:75979",
       "status": "pending"
     },
+    "e01793ae-9214-4972-8256-9c257da75ab2": {
+      "created": "2026-08-28T04:14:27+00:00",
+      "prompt": "deep water and brown paving stone",
+      "purpose": "fade:deep_water:brown_paving_stone:and1",
+      "status": "pending"
+    },
+    "e05852bc-90f8-49a6-acd5-42370117f2d7": {
+      "created": "2026-08-28T04:16:48+00:00",
+      "prompt": "dark mud and ice",
+      "purpose": "fade:dark_mud:ice:and1",
+      "status": "pending"
+    },
     "e08edf9a-51ba-4b5f-9216-a6d925cc7ec7": {
       "created": "2026-08-17T22:38:02+00:00",
       "prompt": "top-down isometric ground block. Thick clear calm water carpet over exposed translucent crystal ice. Where the two meet the water droops over the edge instead of being cut off. Even water surface, detailed ice sides. No outline.",
@@ -9584,6 +11126,12 @@
       "created": "2026-08-19T10:45:51+00:00",
       "prompt": "isometric tile, cut paving stone slabs on dry light soil. The walls must be light soil and nothing else. No outline.",
       "purpose": "matrix:paving_stone_over_light_soil",
+      "status": "pending"
+    },
+    "e0bbcd8f-90e8-40a9-9031-97e9125fade3": {
+      "created": "2026-08-28T04:27:38+00:00",
+      "prompt": "ice and water",
+      "purpose": "fade:ice:water:and1",
       "status": "pending"
     },
     "e0ca8a76-9927-4ac4-8a38-2bf39b304f12": {
@@ -9604,10 +11152,22 @@
       "purpose": "blend:deep_water:black_rock:p10",
       "status": "pending"
     },
+    "e11b98ed-54e6-4f42-b7b7-1a486c87de8a": {
+      "created": "2026-08-28T04:24:18+00:00",
+      "prompt": "parquet floor on top of grey paving stone",
+      "purpose": "fade:grey_paving_stone:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
     "e125e18c-8e58-45af-b3ca-e01409957d0d": {
       "created": "2026-08-28T03:52:44+00:00",
       "prompt": "black rock, one large patch of parquet floor in the middle, black rock all around the edge",
       "purpose": "puddle:black_rock:parquet_floor:p40",
+      "status": "pending"
+    },
+    "e152243a-89c2-4fdb-b289-d967a1c373bb": {
+      "created": "2026-08-28T04:29:42+00:00",
+      "prompt": "grey paving stone on top of ice",
+      "purpose": "fade:ice:grey_paving_stone:on_top_of1",
       "status": "pending"
     },
     "e1646ad1-4b46-4abf-b799-11f20d86f8ba": {
@@ -9646,6 +11206,12 @@
       "purpose": "matrix:snow_over_grass",
       "status": "pending"
     },
+    "e1b41aa3-e68d-42a5-8c12-ee77b80b61a5": {
+      "created": "2026-08-28T04:18:36+00:00",
+      "prompt": "lava on top of deep water",
+      "purpose": "fade:deep_water:lava:on_top_of1",
+      "status": "pending"
+    },
     "e1cedc74-5acb-4785-9f67-8b537ecb3157": {
       "created": "2026-08-17T23:27:53+00:00",
       "prompt": "isometric ground tile where dark volcanic rock has taken over a translucent crystal ice block. The black rock rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
@@ -9658,10 +11224,22 @@
       "purpose": "matrix:deep_water_over_deep_water",
       "status": "pending"
     },
+    "e273bf30-d2af-4ace-a559-167d81ef2923": {
+      "created": "2026-08-28T04:17:42+00:00",
+      "prompt": "slime on top of deep water",
+      "purpose": "fade:deep_water:slime:on_top_of1",
+      "status": "pending"
+    },
     "e2a43138-e4ea-4fd0-8872-88048886e976": {
       "created": "2026-08-17T18:45:05+00:00",
       "prompt": "isometric terrain block of deep dark ocean water with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the deep water face in an uneven fringe. Flat even grey stone seen from above. No outline.",
       "purpose": "matrix:grey_stone_over_deep_water",
+      "status": "pending"
+    },
+    "e2b9b827-ee8e-4b7c-84e5-ee049c53509e": {
+      "created": "2026-08-28T04:23:29+00:00",
+      "prompt": "grey paving stone with ice",
+      "purpose": "fade:grey_paving_stone:ice:with1",
       "status": "pending"
     },
     "e32a692e-7a43-44dc-8e68-288f11cb5820": {
@@ -9700,6 +11278,12 @@
       "purpose": "matrix:deep_water_over_snow",
       "status": "pending"
     },
+    "e3c82850-4e9c-40e1-b5ff-315b592783d6": {
+      "created": "2026-08-28T04:20:56+00:00",
+      "prompt": "grey paving stone and light soil",
+      "purpose": "fade:grey_paving_stone:light_soil:and1",
+      "status": "pending"
+    },
     "e3c8ff2b-2a9e-40c8-a024-1ae6ae81cded": {
       "created": "2026-08-17T22:11:48+00:00",
       "prompt": "a solid block of clear calm water. Isometric view. One material all the way through: flat even water on top, the same water continuing straight down the vertical sides. No rim, no lip, no cap, no shadow band \u2014 the sides are simply the inside of the block. No outline.",
@@ -9728,6 +11312,12 @@
       "created": "2026-08-17T23:29:58+00:00",
       "prompt": "top-down isometric ground block. Thick translucent crystal ice carpet over exposed deep dark ocean water. Where the two meet the ice droops over the edge instead of being cut off. Even ice surface, detailed deep water sides. No outline.",
       "purpose": "matrix:ice_over_deep_water",
+      "status": "pending"
+    },
+    "e45eb8af-f0e0-469c-8215-23d82f3f664c": {
+      "created": "2026-08-28T04:14:03+00:00",
+      "prompt": "grey stone on top of dark mud",
+      "purpose": "fade:dark_mud:grey_stone:on_top_of1",
       "status": "pending"
     },
     "e4d3213e-6e3c-4bca-8d7e-dffa793ddbdb": {
@@ -9794,6 +11384,18 @@
       "created": "2026-08-16T16:41:50+00:00",
       "prompt": "isometric ground tile. The flat top surface is clean single colour lush green grass, completely smooth with no texture. The vertical side walls are molten glowing lava with its natural surface detail clearly visible. Top perfectly flat, walls textured. No outline.",
       "purpose": "matrix:grass_over_lava",
+      "status": "pending"
+    },
+    "e6493b3c-892e-4c64-9314-fc90330d9d2f": {
+      "created": "2026-08-28T04:12:27+00:00",
+      "prompt": "brown paving stone with light beach",
+      "purpose": "fade:brown_paving_stone:light_beach:with1",
+      "status": "pending"
+    },
+    "e6acd5ca-e650-4fd5-a25f-1f1c0d1862db": {
+      "created": "2026-08-28T04:19:18+00:00",
+      "prompt": "grass with light beach",
+      "purpose": "fade:grass:light_beach:with1",
       "status": "pending"
     },
     "e6d0c12d-31c3-4ceb-956b-620f28d20b96": {
@@ -9868,10 +11470,22 @@
       "purpose": "matrix:snow_over_grass",
       "status": "pending"
     },
+    "e8937013-fc66-44f2-a8d0-495f82e5389c": {
+      "created": "2026-08-28T04:13:46+00:00",
+      "prompt": "brown paving stone with parquet floor",
+      "purpose": "fade:brown_paving_stone:parquet_floor:with1",
+      "status": "pending"
+    },
     "e8c9c041-16cf-4783-bcc4-ff696136db05": {
       "created": "2026-08-17T22:19:01+00:00",
       "prompt": "isometric tile: a layer of dark volcanic rock covering a block of translucent crystal ice. Ragged black rock edge overhanging the ice cliff, individual strands breaking the line. Smooth uniform black rock on the top face. No outline.",
       "purpose": "matrix:black_rock_over_ice",
+      "status": "pending"
+    },
+    "e8f39b23-b09c-4716-9865-77ee93d98fa7": {
+      "created": "2026-08-28T04:17:36+00:00",
+      "prompt": "deep water with dark mud",
+      "purpose": "fade:deep_water:dark_mud:with1",
       "status": "pending"
     },
     "e9057a98-ee35-4cae-a98b-8df16866c1b3": {
@@ -9916,6 +11530,12 @@
       "purpose": "puddle:brown_paving_stone:grey_paving_stone:p40",
       "status": "pending"
     },
+    "e9cbdd56-6bc6-4a63-9cdc-ac6c560f8265": {
+      "created": "2026-08-28T04:27:43+00:00",
+      "prompt": "grey stone with light soil",
+      "purpose": "fade:grey_stone:light_soil:with1",
+      "status": "pending"
+    },
     "e9d7ae97-8674-476f-9b2b-f79b2593f564": {
       "created": "2026-08-16T18:59:16+00:00",
       "prompt": "isometric tile: a layer of lush green grass covering a block of wooden parquet floor. Ragged grass edge overhanging the parquet floor cliff, individual strands breaking the line. Smooth uniform grass on the top face. No outline.",
@@ -9926,6 +11546,12 @@
       "created": "2026-08-28T00:30:02+00:00",
       "prompt": "grey stone with clear patches of light soil breaking through",
       "purpose": "blend:grey_stone:light_soil:p30",
+      "status": "pending"
+    },
+    "e9ea9db4-158d-4aab-8040-a3e590956f60": {
+      "created": "2026-08-28T04:14:01+00:00",
+      "prompt": "lava on top of dark mud",
+      "purpose": "fade:dark_mud:lava:on_top_of1",
       "status": "pending"
     },
     "ea20be60-3f7e-4a36-9149-40317d006832": {
@@ -9952,6 +11578,12 @@
       "purpose": "matrix:snow_over_light_soil",
       "status": "pending"
     },
+    "ea93f54c-6faa-4349-ba47-a58c8f2e3887": {
+      "created": "2026-08-28T04:28:13+00:00",
+      "prompt": "grey stone and light beach",
+      "purpose": "fade:grey_stone:light_beach:and1",
+      "status": "pending"
+    },
     "eaa0d853-1eed-4441-a4e3-27b296d58099": {
       "created": "2026-08-18T00:53:06+00:00",
       "prompt": "isometric block of dark volcanic rock. Flat plain black rock on top. The side walls are black rock whose grain, cracks and shading run VERTICALLY down the face, unbroken from the top edge to the bottom edge \u2014 no horizontal layers, no ledge, no shelf, no band. No outline.",
@@ -9968,6 +11600,18 @@
       "created": "2026-08-27T17:17:25+00:00",
       "prompt": "beautiful sunlit beach sand, warm pale gold, rippled and varied, lots of detail",
       "purpose": "tops:light_beach:detail:96953",
+      "status": "pending"
+    },
+    "eb233018-cb76-4dbb-af1d-c0e57cf89d96": {
+      "created": "2026-08-28T04:23:43+00:00",
+      "prompt": "grey paving stone with lava",
+      "purpose": "fade:grey_paving_stone:lava:with1",
+      "status": "pending"
+    },
+    "eb2d0879-ebe1-4c4e-aadf-f019b5993e46": {
+      "created": "2026-08-28T04:21:50+00:00",
+      "prompt": "grey paving stone and lava",
+      "purpose": "fade:grey_paving_stone:lava:and1",
       "status": "pending"
     },
     "eb2f558c-7cb4-4b07-b3f3-7dc594e0e9f6": {
@@ -10070,6 +11714,12 @@
       "created": "2026-08-16T19:17:16+00:00",
       "prompt": "isometric terrain tile. Top face: smooth unbroken clean fresh snow. Sides: lush green grass with visible texture. Between them the snow overgrows the edge, hanging down in a broken fringe rather than a straight cut. No outline.",
       "purpose": "matrix:snow_over_grass",
+      "status": "pending"
+    },
+    "ecd588e7-097c-4cc6-a6cf-14627da570f6": {
+      "created": "2026-08-28T04:17:51+00:00",
+      "prompt": "deep water and grey paving stone",
+      "purpose": "fade:deep_water:grey_paving_stone:and1",
       "status": "pending"
     },
     "ecd9a199-6f75-41d5-be51-2c60c01160f0": {
@@ -10180,6 +11830,12 @@
       "purpose": "matrix:black_rock_over_snow",
       "status": "pending"
     },
+    "ee2d8d32-d27e-44f7-9e40-f3d68bfe0327": {
+      "created": "2026-08-28T04:19:36+00:00",
+      "prompt": "grass with deep water",
+      "purpose": "fade:grass:deep_water:with1",
+      "status": "pending"
+    },
     "ee729610-fd94-40b9-965a-293d9766843c": {
       "created": "2026-08-17T22:44:52+00:00",
       "prompt": "isometric ground tile, cut paving stone slabs over lush green grass, photographed from above. Soft irregular boundary where paving stone meets grass \u2014 the paving stone creeps down over the grass. Plain even paving stone surface. No outline.",
@@ -10246,6 +11902,12 @@
       "purpose": "matrix:snow_over_black_rock",
       "status": "pending"
     },
+    "efa70254-c895-4820-9555-03571d441c4f": {
+      "created": "2026-08-28T04:29:52+00:00",
+      "prompt": "lava and slime",
+      "purpose": "fade:lava:slime:and1",
+      "status": "pending"
+    },
     "efd6c3db-af8a-4c13-931d-0576b78b580a": {
       "created": "2026-08-17T18:01:30+00:00",
       "prompt": "isometric cube of translucent crystal ice capped with rugged grey mountain rock. The cap overhangs slightly, grey stone draping down onto the ice beneath it. Uniform flat grey stone top. No outline.",
@@ -10276,6 +11938,12 @@
       "purpose": "probe:grass_on_lava__maintainer",
       "status": "pending"
     },
+    "f0bbf207-d03d-48cc-9e49-cca68bc94429": {
+      "created": "2026-08-28T04:30:18+00:00",
+      "prompt": "ice with light soil",
+      "purpose": "fade:ice:light_soil:with1",
+      "status": "pending"
+    },
     "f0c18c3e-58fc-4861-bf5b-9467e8c869a1": {
       "created": "2026-08-17T22:38:42+00:00",
       "prompt": "isometric terrain block of deep dark ocean water with dark volcanic rock growing on top. The black rock spills over the rim and hangs down the deep water face in an uneven fringe. Flat even black rock seen from above. No outline.",
@@ -10286,6 +11954,18 @@
       "created": "2026-08-19T10:48:01+00:00",
       "prompt": "isometric terrain block of dark volcanic rock with cut paving stone slabs growing on top. The paving stone spills over the rim and hangs down the black rock face in an uneven fringe. Flat even paving stone seen from above. No outline.",
       "purpose": "matrix:paving_stone_over_black_rock",
+      "status": "pending"
+    },
+    "f1108e43-6a0a-42a6-98f2-06319c53dc1a": {
+      "created": "2026-08-28T04:15:20+00:00",
+      "prompt": "parquet floor on top of dark mud",
+      "purpose": "fade:dark_mud:parquet_floor:on_top_of1",
+      "status": "pending"
+    },
+    "f1c7d18a-6140-42f2-94f5-f16789f88ced": {
+      "created": "2026-08-28T04:15:18+00:00",
+      "prompt": "dark mud with light soil",
+      "purpose": "fade:dark_mud:light_soil:with1",
       "status": "pending"
     },
     "f213ae8a-8244-42e1-a35a-17f0dea2b01c": {
@@ -10426,6 +12106,12 @@
       "purpose": "blend:dark_mud:brown_paving_stone:p10",
       "status": "pending"
     },
+    "f4378c2f-9842-4486-9bf1-7b050791cb18": {
+      "created": "2026-08-28T04:12:37+00:00",
+      "prompt": "brown paving stone and light beach",
+      "purpose": "fade:brown_paving_stone:light_beach:and1",
+      "status": "pending"
+    },
     "f44b084e-6fdd-444a-8b52-c9516bcf6694": {
       "created": "2026-08-28T00:03:57+00:00",
       "prompt": "brown paving stone with clear patches of grey stone breaking through",
@@ -10462,6 +12148,18 @@
       "purpose": "matrix:deep_water_over_grey_stone",
       "status": "pending"
     },
+    "f519fea8-e2a2-4ce4-92e5-521a279dba71": {
+      "created": "2026-08-28T04:15:17+00:00",
+      "prompt": "dark mud and light beach",
+      "purpose": "fade:dark_mud:light_beach:and1",
+      "status": "pending"
+    },
+    "f55500c0-6f04-4c1c-a9db-fa9507cfef6e": {
+      "created": "2026-08-28T04:18:26+00:00",
+      "prompt": "grey stone on top of deep water",
+      "purpose": "fade:deep_water:grey_stone:on_top_of1",
+      "status": "pending"
+    },
     "f58186ba-ff86-4e69-889a-99623755d5cc": {
       "created": "2026-08-28T00:27:01+00:00",
       "prompt": "mostly dark mud, scattered patches of lava",
@@ -10496,6 +12194,24 @@
       "created": "2026-08-17T23:00:09+00:00",
       "prompt": "isometric ground tile where thick bubbling slime has taken over a clean fresh snow block. The slime rolls over the lip and trails down the sides. Top surface smooth and one even tone. No outline.",
       "purpose": "matrix:slime_over_snow",
+      "status": "pending"
+    },
+    "f6495e60-ecfe-4a38-b67f-f74304bbc295": {
+      "created": "2026-08-28T04:19:22+00:00",
+      "prompt": "ice on top of deep water",
+      "purpose": "fade:deep_water:ice:on_top_of1",
+      "status": "pending"
+    },
+    "f6551510-4b72-412b-be32-620b2de331cb": {
+      "created": "2026-08-28T04:17:44+00:00",
+      "prompt": "deep water and lava",
+      "purpose": "fade:deep_water:lava:and1",
+      "status": "pending"
+    },
+    "f6649ebb-8d37-402e-9f42-9ebfbbc400ae": {
+      "created": "2026-08-28T04:24:04+00:00",
+      "prompt": "grey stone and lava",
+      "purpose": "fade:grey_stone:lava:and1",
       "status": "pending"
     },
     "f6cb0a34-cd4a-45d1-9857-a06188555eb0": {
@@ -10648,6 +12364,12 @@
       "purpose": "matrix:parquet_floor_over_paving_stone",
       "status": "pending"
     },
+    "fa489dcd-9073-439e-bd62-798d7ad776f7": {
+      "created": "2026-08-28T04:24:48+00:00",
+      "prompt": "dark mud on top of grey stone",
+      "purpose": "fade:grey_stone:dark_mud:on_top_of1",
+      "status": "pending"
+    },
     "fa59ad6c-aab4-4cb4-b420-baca563f500d": {
       "created": "2026-08-16T19:29:59+00:00",
       "prompt": "isometric tile: a layer of clean fresh snow covering a block of molten glowing lava. Ragged snow edge overhanging the lava cliff, individual strands breaking the line. Smooth uniform snow on the top face. No outline.",
@@ -10696,6 +12418,12 @@
       "purpose": "matrix:black_rock_over_light_beach",
       "status": "pending"
     },
+    "fb130412-4870-46c3-9ac6-e4ea975efedc": {
+      "created": "2026-08-28T04:19:18+00:00",
+      "prompt": "grey paving stone with brown paving stone",
+      "purpose": "fade:grey_paving_stone:brown_paving_stone:with1",
+      "status": "pending"
+    },
     "fb1bce93-a20c-4a14-801d-bd6ad1150d48": {
       "created": "2026-08-28T03:57:32+00:00",
       "prompt": "brown paving stone, one wide patch of light beach in the middle, brown paving stone all around the edge",
@@ -10724,6 +12452,12 @@
       "created": "2026-08-27T23:39:19+00:00",
       "prompt": "mostly black rock, a few small spots of brown paving stone",
       "purpose": "blend:black_rock:brown_paving_stone:p10",
+      "status": "pending"
+    },
+    "fbcad282-1e03-4e93-95dc-5145414bc570": {
+      "created": "2026-08-28T04:13:47+00:00",
+      "prompt": "dark mud and slime",
+      "purpose": "fade:dark_mud:slime:and1",
       "status": "pending"
     },
     "fbe83283-0ab5-4cb8-abd3-12ae34fe0857": {
@@ -10768,6 +12502,12 @@
       "purpose": "tops:light_soil:subtle:30072",
       "status": "pending"
     },
+    "fcda4f88-22bd-4e96-9080-c2cf8bf18db7": {
+      "created": "2026-08-28T04:15:29+00:00",
+      "prompt": "brown paving stone on top of deep water",
+      "purpose": "fade:deep_water:brown_paving_stone:on_top_of1",
+      "status": "pending"
+    },
     "fce2969f-e370-4cf1-bff9-d1afe8ee617d": {
       "created": "2026-08-27T23:41:43+00:00",
       "prompt": "dark mud with clear patches of light soil breaking through",
@@ -10796,6 +12536,12 @@
       "created": "2026-08-17T18:54:57+00:00",
       "prompt": "isometric terrain block of thick bubbling slime with rugged grey mountain rock growing on top. The grey stone spills over the rim and hangs down the slime face in an uneven fringe. Flat even grey stone seen from above. No outline.",
       "purpose": "matrix:grey_stone_over_slime",
+      "status": "pending"
+    },
+    "fd77572c-27db-4f3c-b259-dcace466b398": {
+      "created": "2026-08-28T04:30:29+00:00",
+      "prompt": "ice with grass",
+      "purpose": "fade:ice:grass:with1",
       "status": "pending"
     },
     "fd8e912c-5e3d-4089-8609-d397b2ee18e9": {
@@ -10858,6 +12604,12 @@
       "purpose": "matrix:parquet_floor_over_light_soil",
       "status": "pending"
     },
+    "feab3691-7061-4532-ac2f-9d444b72610f": {
+      "created": "2026-08-28T04:28:27+00:00",
+      "prompt": "lava with black rock",
+      "purpose": "fade:lava:black_rock:with1",
+      "status": "pending"
+    },
     "feae5c97-d397-4e25-8d50-a579fa3a8b33": {
       "created": "2026-08-17T22:36:31+00:00",
       "prompt": "isometric ground tile. dark volcanic rock on top of pale sandy beach. The black rock grows over the edge and tufts down over the light beach below, so the two meet naturally with no hard line between them. The light beach side walls show their own surface detail. Seen from above, the black rock surface is even and uniform. No outline.",
@@ -10910,6 +12662,12 @@
       "created": "2026-08-17T23:40:15+00:00",
       "prompt": "isometric ground tile, rugged grey mountain rock over clean fresh snow, photographed from above. Soft irregular boundary where grey stone meets snow \u2014 the grey stone creeps down over the snow. Plain even grey stone surface. No outline.",
       "purpose": "matrix:grey_stone_over_snow",
+      "status": "pending"
+    },
+    "ffe7205d-c866-4f8d-8951-d42c3dff5e70": {
+      "created": "2026-08-28T04:16:41+00:00",
+      "prompt": "deep water with water",
+      "purpose": "fade:deep_water:water:with1",
       "status": "pending"
     }
   },

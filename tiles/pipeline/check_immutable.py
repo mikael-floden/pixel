@@ -53,6 +53,10 @@ def main():
     for f in glob.glob(os.path.join(ROOT, "blends", "*", "p??", "post", "*.webp")):
         if not HASHED.search(f):
             bad.append(f"MUTABLE NAME: {os.path.relpath(f, REPO)}")
+    for f in (glob.glob(os.path.join(ROOT, "puddles", "*", "p??", "post", "*.webp"))
+              + glob.glob(os.path.join(ROOT, "fades", "*", "*", "post", "*.webp"))):
+        if not HASHED.search(f):
+            bad.append(f"MUTABLE NAME: {os.path.relpath(f, REPO)}")
 
     # 2. every reference resolves
     man = json.load(open(os.path.join(ROOT, "review", "manifest.json")))
@@ -79,7 +83,9 @@ def main():
     checked = 0
     for f in (glob.glob(os.path.join(ROOT, "review", "*", "*_textured.*.webp"))
               + glob.glob(os.path.join(ROOT, "tops", "*", "sheet_*", "post", "*.webp"))
-              + glob.glob(os.path.join(ROOT, "blends", "*", "p??", "post", "*.webp"))):
+              + glob.glob(os.path.join(ROOT, "blends", "*", "p??", "post", "*.webp"))
+              + glob.glob(os.path.join(ROOT, "puddles", "*", "p??", "post", "*.webp"))
+              + glob.glob(os.path.join(ROOT, "fades", "*", "*", "post", "*.webp"))):
         m = HASHED.search(f)
         if not m:
             continue
@@ -88,6 +94,18 @@ def main():
             bad.append(f"HASH LIE (rewritten in place): {os.path.relpath(f, REPO)} "
                        f"names {m.group(1)}, content is {h8}")
         checked += 1
+
+    for fname, root_key in (("puddles/gated.json", "ladder"), ("fades/mix.json", "pages")):
+        ip = os.path.join(ROOT, fname)
+        if os.path.isfile(ip):
+            doc = json.load(open(ip))
+            groups = doc.get(root_key) or {}
+            for g in groups.values():
+                ents = (e for lv in g.values() for e in lv) if isinstance(g, dict) else iter(g)
+                for e in ents:
+                    p2 = os.path.join(REPO, e["dir"], "post", e["file"])
+                    if not os.path.isfile(p2):
+                        bad.append(f"DANGLING {fname}: {e['dir']}/post/{e['file']}")
 
     if bad:
         print(f"*** CACHE-SAFETY GATE FAILED - {len(bad)} violation(s) ***")
