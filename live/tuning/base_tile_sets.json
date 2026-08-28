@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T00:17:07.506Z",
+  "updated_at": "2026-08-28T00:22:18.391Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -83,7 +83,7 @@
               "kind": "tile",
               "id": "tiles/black_rock__over__light_beach/15a42aca",
               "tile": "tiles/black_rock__over__light_beach/15a42aca",
-              "weight": 1
+              "weight": 2
             },
             {
               "kind": "tile",
@@ -93,15 +93,9 @@
             },
             {
               "kind": "tile",
-              "id": "tiles/black_rock__over__deep_water/4c011850",
-              "tile": "tiles/black_rock__over__deep_water/4c011850",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
               "id": "tiles/black_rock__over__deep_water/aa31de9c",
               "tile": "tiles/black_rock__over__deep_water/aa31de9c",
-              "weight": 1
+              "weight": 0.5
             },
             {
               "kind": "tile",
@@ -215,6 +209,78 @@
               "kind": "tile",
               "id": "tiles/black_rock__over__water/b4c6e3e1",
               "tile": "tiles/black_rock__over__water/b4c6e3e1",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__black_rock/80252263",
+              "tile": "tiles/black_rock__over__black_rock/80252263",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__black_rock/cb3a9e7e",
+              "tile": "tiles/black_rock__over__black_rock/cb3a9e7e",
+              "weight": 0.05
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__dark_mud/eab63e38",
+              "tile": "tiles/black_rock__over__dark_mud/eab63e38",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/42595f95",
+              "tile": "tiles/black_rock__over__deep_water/42595f95",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/f2ac692a",
+              "tile": "tiles/black_rock__over__deep_water/f2ac692a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/3aa2ad39",
+              "tile": "tiles/black_rock__over__grey_stone/3aa2ad39",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/737963dd",
+              "tile": "tiles/black_rock__over__grey_stone/737963dd",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_soil/672aeefe",
+              "tile": "tiles/black_rock__over__light_soil/672aeefe",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/1e9599ce",
+              "tile": "tiles/black_rock__over__parquet_floor/1e9599ce",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/4a9f2898",
+              "tile": "tiles/black_rock__over__parquet_floor/4a9f2898",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/74d0a524",
+              "tile": "tiles/black_rock__over__parquet_floor/74d0a524",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/ea68dd6a",
+              "tile": "tiles/black_rock__over__parquet_floor/ea68dd6a",
               "weight": 1
             }
           ]
