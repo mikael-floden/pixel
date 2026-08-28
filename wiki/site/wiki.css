@@ -1721,6 +1721,17 @@ input[type="range"] { accent-color: var(--accent); }
 /* AT THE TOP, over the search bar (maintainer 2026-08-28: "I can't press on
    Commit and have a lot of things to commit") — the bottom is the savebar's:
    a banner there sits exactly on the Commit button mid-review. */
+/* The page's own error report — same shape as the update bar, red, and it
+   never hides an error behind a dead screen (2026-08-28). */
+.err-strip {
+  position: fixed; left: 12px; right: 12px; top: max(8px, env(safe-area-inset-top)); z-index: 61;
+  display: flex; align-items: stretch; gap: 0;
+  border-radius: 10px; border: 1px solid #c0392b;
+  background: var(--surface); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.err-strip .update-go { flex: 1; min-width: 0; padding: 12px 14px; border: 0; background: transparent; color: var(--ink); font-size: 12.5px; text-align: left; word-break: break-word; }
+.err-strip .update-x { flex: none; min-width: 48px; border: 0; border-left: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 15px; cursor: pointer; }
 .update-bar {
   position: fixed; left: 12px; right: 12px; top: max(8px, env(safe-area-inset-top)); z-index: 60;
   display: flex; align-items: stretch; gap: 0;

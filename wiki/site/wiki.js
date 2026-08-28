@@ -4034,11 +4034,24 @@ function fitStoryTail() {
  *  different content by the time the reader comes back. */
 function rememberSpot() {
   const card = $(".story-card");
+  /* ON A LIST, ANCHOR TO A CARD, not to a pixel (check-back, red since the
+   * lists grew lazy media: thumbnails finish AFTER the restore and push the
+   * content, so a raw scrollY lands hundreds of px off — measured 1400 saved,
+   * 2078 landed). The first on-screen link card is identity the rebuilt page
+   * still has; scroll THAT back to where it stood. */
+  let anchor = null;
+  if (!card) {
+    const bar = $("#topbar")?.getBoundingClientRect().height ?? 0;
+    const a = [...document.querySelectorAll("a.card[href^='#/'], a.trans-row[href^='#/']")]
+      .find((x) => x.getBoundingClientRect().bottom > bar + 4);
+    if (a) anchor = { href: a.getAttribute("href"), off: Math.round(a.getBoundingClientRect().top) };
+  }
   history.replaceState({ ...history.state, spot: {
     hash: location.hash,
     y: Math.round(window.scrollY),
     cardOff: card ? Math.round(card.getBoundingClientRect().top) : null,
     page: card?.pageIndex?.() ?? null,          // which page of the story
+    anchor,
   } }, "");
 }
 /** Put the reader back. False if the stamp isn't for this page, so the caller
@@ -4050,9 +4063,22 @@ function restoreSpot(spot) {
   // which decides whether the scroll below is even reachable.
   if (card && spot.page != null) card.goToPage(spot.page);
   fitStoryTail();
-  if (card && spot.cardOff != null)
+  if (card && spot.cardOff != null) {
     window.scrollTo(0, Math.max(0, card.getBoundingClientRect().top + window.scrollY - spot.cardOff));
-  else window.scrollTo(0, spot.y);
+    return true;
+  }
+  const toAnchor = () => {
+    const a = spot.anchor && document.querySelector(`a[href="${spot.anchor.href}"]`);
+    if (!a) return false;
+    window.scrollTo(0, Math.max(0, a.getBoundingClientRect().top + window.scrollY - spot.anchor.off));
+    return true;
+  };
+  if (!toAnchor()) window.scrollTo(0, spot.y);
+  /* Re-anchor once the lazy media has settled — but never under a moving
+   * finger (the 2026-08-15 lesson: an unconditional re-apply yanked the page
+   * mid-scroll). */
+  const settled = window.scrollY;
+  setTimeout(() => { if (Math.abs(window.scrollY - settled) <= 1) toAnchor(); }, 500);
   return true;
 }
 /** @param pages array of THUNKS returning Node[] — only the visible page exists.
@@ -5952,7 +5978,7 @@ function texFor(art, raw, cb) {
     if (--left > 0) return;
     let c = null;
     try { c = (a && r) ? texSynth(a, r) : null; } catch { c = null; /* tainted canvas — foreign staging root */ }
-    TEX_CACHE.set(key, c);
+    TEX_CACHE.set(key, c); capCache(TEX_CACHE);
     window.__wikiTex = (window.__wikiTex ?? 0) + 1;   // gate probe
     cb(c);
   };
@@ -6148,7 +6174,7 @@ function ppFor(path, hex, cb) {
   im.onload = im.onerror = () => {
     let c = null;
     try { c = im.naturalWidth ? ppSynth(im, hex) : null; } catch { c = null; }
-    PP_CACHE.set(key, c);
+    PP_CACHE.set(key, c); capCache(PP_CACHE);
     window.__wikiPP = (window.__wikiPP ?? 0) + 1;    // gate probe
     cb(c);
   };
@@ -6170,7 +6196,7 @@ function subFor(cand, base, cb) {
     if (--left > 0) return;
     let c = null;
     try { c = (a && b) ? topSub(a, b) : null; } catch { c = null; /* tainted canvas — foreign staging root */ }
-    SUB_CACHE.set(key, c);
+    SUB_CACHE.set(key, c); capCache(SUB_CACHE);
     window.__wikiSub = (window.__wikiSub ?? 0) + 1;   // gate probe
     cb(c);
   };
@@ -6600,6 +6626,11 @@ function parseTex2(p) {
   if (i2 === i1) return { wall: body.slice(0, i1), face: body.slice(i1 + 2), clean: null };
   return { wall: body.slice(0, i1), face: body.slice(i1 + 2, i2), clean: body.slice(i2 + 2) || null };
 }
+/* THE COMPOSE CACHES ARE CAPPED (2026-08-28): every browsed pair adds
+ * composed canvases these maps held FOREVER, and a phone's renderer pays for
+ * every backing store. FIFO — Map iteration order is insertion order. */
+const CACHE_CAP = 600;
+const capCache = (m) => { while (m.size > CACHE_CAP) m.delete(m.keys().next().value); };
 const SIDE_CACHE = new Map();         // "wall::face::clean" -> canvas | null
 function sidePlateCanvas(wallArt, face, clean, cb) {
   const key = `${wallArt}::${face}::${clean}`;
@@ -6647,7 +6678,7 @@ function sidePlateCanvas(wallArt, face, clean, cb) {
       cx.drawImage(silImg, 0, 0);
       cx.globalCompositeOperation = "source-over";
     }
-    SIDE_CACHE.set(key, cv);
+    SIDE_CACHE.set(key, cv); capCache(SIDE_CACHE);
     cb(cv);
   };
   sheet(lib?.silhouette ?? "tiles/patterns/silhouette.webp", (x) => { silImg = x; done(); });
@@ -6784,7 +6815,7 @@ function mixFor(row, idx, plateA, plateB, cb) {
         }
       }
     }
-    MIX_CACHE.set(key, cv);
+    MIX_CACHE.set(key, cv); capCache(MIX_CACHE);
     window.__wikiMix = (window.__wikiMix ?? 0) + 1;   // gate probe
     cb(cv);
   };
@@ -11421,6 +11452,21 @@ function initChrome() {
   // Ours to place, not the browser's — it would restore its own idea of the
   // scroll after we set ours, and race us for the last word.
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  /* A PAGE THAT DIES MUST SAY SO (maintainer 2026-08-28: "new Transitions
+   * will not load and I have to restart the game" — unreproducible in four
+   * harness set-ups, which is exactly why the page itself must carry the
+   * report). One dismissible strip, first error wins, full text on it. */
+  const errStrip = (msg) => {
+    if (document.querySelector(".err-strip")) return;
+    const bar = h("div", { class: "err-strip" },
+      h("button", { class: "update-go", type: "button", style: "cursor:text",
+        title: "The page hit an error — this text is what to report" }, `⚠ ${msg}`.slice(0, 220)),
+      h("button", { class: "update-x", type: "button", title: "Dismiss",
+        onclick: () => bar.remove() }, "✕"));
+    document.body.append(bar);
+  };
+  window.addEventListener("error", (e) => errStrip(`${e.message ?? e.error ?? "error"} @ ${(e.filename ?? "").split("/").pop()}:${e.lineno ?? "?"}`));
+  window.addEventListener("unhandledrejection", (e) => errStrip(`unhandled: ${String(e.reason).slice(0, 180)}`));
   window.addEventListener("hashchange", () => {
     const want = pendingScroll; pendingScroll = null;
     // Only an entry we stamped on the way out carries a spot, so this is a
