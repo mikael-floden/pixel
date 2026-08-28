@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T00:06:34.758Z",
+  "updated_at": "2026-08-28T00:17:07.506Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -29,6 +29,192 @@
           "members": [
             {
               "kind": "clean",
+              "weight": 0.05
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_beach/53afa117",
+              "tile": "tiles/black_rock__over__light_beach/53afa117",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_beach/b8e87572",
+              "tile": "tiles/black_rock__over__light_beach/b8e87572",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_beach/f9d36b7a",
+              "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_soil/3aff11ff",
+              "tile": "tiles/black_rock__over__light_soil/3aff11ff",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__black_rock/1f0977ec",
+              "tile": "tiles/black_rock__over__black_rock/1f0977ec",
+              "weight": 0.6
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__ice/da81461b",
+              "tile": "tiles/black_rock__over__ice/da81461b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__ice/f6310449",
+              "tile": "tiles/black_rock__over__ice/f6310449",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__lava/82cca49d",
+              "tile": "tiles/black_rock__over__lava/82cca49d",
+              "weight": 0.8
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_beach/15a42aca",
+              "tile": "tiles/black_rock__over__light_beach/15a42aca",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__snow/b7bb8617",
+              "tile": "tiles/black_rock__over__snow/b7bb8617",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/4c011850",
+              "tile": "tiles/black_rock__over__deep_water/4c011850",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/aa31de9c",
+              "tile": "tiles/black_rock__over__deep_water/aa31de9c",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__deep_water/efb03d36",
+              "tile": "tiles/black_rock__over__deep_water/efb03d36",
+              "weight": 0.8
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/3367ecc5",
+              "tile": "tiles/black_rock__over__grey_stone/3367ecc5",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/41f494b1",
+              "tile": "tiles/black_rock__over__grey_stone/41f494b1",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/3ea4568f",
+              "tile": "tiles/black_rock__over__grey_stone/3ea4568f",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/6683b4ae",
+              "tile": "tiles/black_rock__over__grey_stone/6683b4ae",
+              "weight": 0.05
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/8aea997b",
+              "tile": "tiles/black_rock__over__grey_stone/8aea997b",
+              "weight": 0.05
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__grey_stone/ac1f8e7b",
+              "tile": "tiles/black_rock__over__grey_stone/ac1f8e7b",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__lava/4d39233f",
+              "tile": "tiles/black_rock__over__lava/4d39233f",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_beach/8a122316",
+              "tile": "tiles/black_rock__over__light_beach/8a122316",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_soil/0f4ada16",
+              "tile": "tiles/black_rock__over__light_soil/0f4ada16",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_soil/2568d91b",
+              "tile": "tiles/black_rock__over__light_soil/2568d91b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__light_soil/8a1e4960",
+              "tile": "tiles/black_rock__over__light_soil/8a1e4960",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/02aa9c38",
+              "tile": "tiles/black_rock__over__parquet_floor/02aa9c38",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/444f6f79",
+              "tile": "tiles/black_rock__over__parquet_floor/444f6f79",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/7129860b",
+              "tile": "tiles/black_rock__over__parquet_floor/7129860b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/83ea63da",
+              "tile": "tiles/black_rock__over__parquet_floor/83ea63da",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__parquet_floor/c0b3caf7",
+              "tile": "tiles/black_rock__over__parquet_floor/c0b3caf7",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__water/33193dcc",
+              "tile": "tiles/black_rock__over__water/33193dcc",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/black_rock__over__water/b4c6e3e1",
+              "tile": "tiles/black_rock__over__water/b4c6e3e1",
               "weight": 1
             }
           ]
