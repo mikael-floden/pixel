@@ -128,15 +128,25 @@ function stagingBase(sha) {
  *  reviewing content that is not in the game yet is the entire point, and the
  *  newest art is by definition newer than the image. Cached per tab. */
 async function stagingSha() {
+  /* THE PIN EXPIRES (cache-safety law, 2026-08-27; tiles' ask after the
+   * audition holes). The sha used to live in sessionStorage unconditionally —
+   * which SURVIVES RELOADS, so a phone tab kept for days re-pinned to the same
+   * old commit on every reload and never saw new art, including right after he
+   * tapped the new-build bar. Ten minutes: within one page's life the pin is
+   * stable (a sha URL is immutable, so everything the page fetches is
+   * self-consistent), and the next load pins fresh. The pin itself is the
+   * cache-safe half — a page reading everything at ONE sha cannot see a rename
+   * as a hole, because the old sha still serves the old names. */
+  const TTL = 10 * 60 * 1000;
   try {
-    const hit = sessionStorage.getItem("ml-staging-sha");
-    if (hit) return hit;
+    const hit = JSON.parse(sessionStorage.getItem("ml-staging-sha2") ?? "null");
+    if (hit?.sha && Date.now() - (hit.at ?? 0) < TTL) return hit.sha;
   } catch {}
   try {
     const r = await fetch(`https://api.github.com/repos/${STAGING_REPO}/commits/main`);
     const sha = (await r.json())?.sha;
     if (sha) {
-      try { sessionStorage.setItem("ml-staging-sha", sha); } catch {}
+      try { sessionStorage.setItem("ml-staging-sha2", JSON.stringify({ sha, at: Date.now() })); } catch {}
       return sha;
     }
   } catch {}
@@ -6454,8 +6464,22 @@ function wangScene(a, b, patId, genSet, n, corner, scale = 1) {
  * session, on a page only he opens.
  */
 let worldLive = null;   // null = not fetched yet, [] = fetched and empty
+let worldLiveAt = 0;    // when, for the unpinned-base revalidation below
 async function refreshWorldPairs() {
-  if (!state.admin || worldLive) return false;
+  if (!state.admin) return false;
+  /* REVALIDATE WHEN THE BASE CANNOT GUARANTEE CONSISTENCY (tiles' ask,
+   * 2026-08-27, after the audition holes: "so the names a page uses always
+   * match the deployment it is fetching from"). Two regimes:
+   *  - Base pinned to a SHA: one fetch per page life is CORRECT, not lazy —
+   *    every URL under that sha is immutable, so refetching returns the same
+   *    bytes and a rename on main cannot strand anything.
+   *  - Base is `main` (the GitHub API rate-limited the pin — 60/hr, easy to
+   *    hit from his phone) or an injected override: names can move under the
+   *    page, so the manifest refetches when it is older than three minutes.
+   *    With the tiles agent retaining current + one previous generation, a
+   *    rename inside that window still resolves. */
+  const unpinned = repoBase && /\/(main)\/$|127\.0\.0\.1|localhost/.test(repoBase.href);
+  if (worldLive && (!unpinned || Date.now() - worldLiveAt < 3 * 60 * 1000)) return false;
   // THROUGH assetUrl, so it goes where the ART goes: tiles/ is a repo-only
   // domain and the image answers 404 for every path under it.
   const man = await fetchJson(assetUrl("tiles/review/manifest.json"));
@@ -6469,6 +6493,7 @@ async function refreshWorldPairs() {
   // retry: the live list is an IMPROVEMENT on the build, never a replacement
   // for it.
   if (!cells.length) return false;
+  worldLiveAt = Date.now();
   const names = new Map((worldMeta().groundTypes ?? []).map((g) => [g.id, g.name]));
   const nice = (id) => names.get(id) ?? String(id ?? "").replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const dead = new Set(worldMeta().tombstoned ?? []);
@@ -10846,7 +10871,7 @@ async function upgradeToStaging() {
     // "The wiki shows something different than the game"). The sha this page
     // PINNED its fetch to is the truth about what it is reading.
     try {
-      const pinned = (sessionStorage.getItem("ml-staging-sha") || "").slice(0, 9);
+      const pinned = (JSON.parse(sessionStorage.getItem("ml-staging-sha2") ?? "null")?.sha || "").slice(0, 9);
       if (pinned && pinned !== "main") full.git_sha = pinned;
     } catch { /* private mode */ }
     state.data = full;
