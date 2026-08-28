@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-top-walls@1",
   "_comment": "WHICH x-OVER-x TILE BUILDS THE WALL under a borrowed-wall top (maintainer 2026-08-28). When a tile is used top-only, its wall comes from the ground's own x-over-x pool; the wiki picks the candidate MEASURED closest to the top in colour and structure (mean top-face RGB + dominant-share + colour-count distance, stats in wiki/site/data.json wallPools and per-candidate tm/tflat/tk). An entry here is the Game Master's per-face override from the wiki's wall stepper: keyed by the FACE tile's stable key (a tops id or an x-over-y candidate key), value.wall = the chosen x-over-x candidate key. Absent = the measured best; stepping back onto the measured best deletes the entry. Written by the wiki; consumed by whatever composes ground tops (the wiki today, the game when it borrows walls). See live/README.md.",
-  "updated_at": "2026-08-28T13:16:22.781Z",
+  "updated_at": "2026-08-28T13:16:40.786Z",
   "overrides": {
     "tiles/grass__over__black_rock/cd84cd48": {
       "wall": "tiles/black_rock__over__black_rock/a54bc953",
@@ -54,6 +54,10 @@
     "tiles/grass__over__black_rock/73575a8f": {
       "wall": "tiles/black_rock__over__black_rock/679d46a7",
       "updated_at": "2026-08-28T13:16:17.561Z"
+    },
+    "tiles/grass__over__black_rock/30c4fcf3": {
+      "wall": "tiles/black_rock__over__black_rock/b7b6a710",
+      "updated_at": "2026-08-28T13:16:34.406Z"
     }
   }
 }
