@@ -1792,4 +1792,4 @@ input[type="range"] { accent-color: var(--accent); }
 
 /* ---- SLOPES (maintainer 2026-08-28): the walkable ramp cards ---- */
 .slope-stage { padding: 10px; display: flex; justify-content: center; }
-.slope-tile { width: 128px; height: auto; image-rendering: pixelated; }
+.slope-tile { image-rendering: pixelated; }   /* 1x, the game's own scale (maintainer 2026-08-28) */
