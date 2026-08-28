@@ -61,7 +61,11 @@ WIND = (
 )
 NAME = "wind"
 FRAME_COUNT = 4
-PARALLEL = 5          # modest on purpose: he watches the PixelLab queue
+PARALLEL = 14         # one full piece per wave (pieces carry 13-14 states),
+                      # so no half-empty tail wave doubles the wall time.
+                      # Tier 3 allows 25 concurrent and the PixelLab account is
+                      # SHARED with the other art domains, so this deliberately
+                      # leaves 11 slots rather than taking the ceiling.
 
 
 def _now():
@@ -169,39 +173,136 @@ def one(client, rel, man, state, oid, is_anchor):
         return (state, 0, f"ERROR: {type(e).__name__}: {str(e)[:90]}")
 
 
-def main():
-    ap = argparse.ArgumentParser(description="Animate every state of a tree.")
-    ap.add_argument("--piece", default="trees/tree_015")
-    ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--limit", type=int, default=0)
-    args = ap.parse_args()
+def tree_pieces():
+    """Every TREE-type piece, in a stable order."""
+    cfg_path = os.path.join(factory.ROOT, "config", "factory.json")
+    with open(cfg_path, encoding="utf-8") as f:
+        types = {g["id"]: g.get("type") for g in json.load(f).get("groups", [])}
+    out = []
+    for rel, man in factory.discover():
+        if "/" not in rel:
+            continue
+        group = rel.split("/")[0]
+        if (man.get("type") or types.get(group) or "OTHER") != "TREE":
+            continue
+        out.append(rel)
+    return sorted(out)
 
-    man, sts = states_of(args.piece)
+
+def _git(*a, check=True):
+    import subprocess
+    return subprocess.run(["git", *a], cwd=factory.ROOT, capture_output=True,
+                          text=True, check=check)
+
+
+def _rebase_in_progress():
+    for p in ("rebase-merge", "rebase-apply"):
+        r = _git("rev-parse", "--git-path", p, check=False).stdout.strip()
+        if r and os.path.exists(os.path.join(factory.ROOT, r)):
+            return True
+    return False
+
+
+def commit_push(message):
+    """Same guards as the other long runners: never commit into someone else's
+    half-finished rebase, and back out of a conflicted one rather than leaving
+    the tree wedged mid-run."""
+    if _rebase_in_progress():
+        print("  ! rebase in progress — skipping this commit, art is on disk")
+        return
+    _git("add", "-A", ".")
+    if not _git("status", "--porcelain", "--", ".").stdout.strip():
+        return
+    _git("commit", "-m", message)
+    for attempt in range(4):
+        if _git("push", "-u", "origin", "main", check=False).returncode == 0:
+            print(f"  ^ pushed: {message}")
+            return
+        _git("fetch", "origin", "main", check=False)
+        _git("rebase", "--autostash", "origin/main", check=False)
+        if _rebase_in_progress():
+            _git("rebase", "--abort", check=False)
+            print("  ! push rebase conflicted — will retry on the next commit")
+            return
+        time.sleep(2 ** attempt)
+    print("  ! push failed after retries — art is committed locally")
+
+
+def animate_piece(client, rel):
+    """-> (done, attempted). Commits the piece when it finishes."""
+    man, sts = states_of(rel)
     todo = [(s, oid, anc) for s, oid, have, anc in sts if not have]
-    if args.limit:
-        todo = todo[:args.limit]
-    billed = sum(0 if anc else 3 for _, _, anc in todo)
-    print(f"{args.piece}: {len(sts)} state(s), {len(todo)} to animate")
-    print(f"  ~{billed} generations (3 per state; the anchor's is already his)")
-    for s, _, anc in todo:
-        print(f"    {s}{'  (anchor — adopt his existing animation)' if anc else ''}")
-    if args.dry_run or not todo:
-        return 0
-
-    client = PixelLabClient()
+    if not todo:
+        return 0, 0
     ok = 0
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
-        futs = [pool.submit(one, client, args.piece, man, s, oid, anc)
+        futs = [pool.submit(one, client, rel, man, s, oid, anc)
                 for s, oid, anc in todo]
         for f in futs:
             state, n, how = f.result()
             if n:
                 ok += 1
-                print(f"  = {state}: {n} frames ({how})")
             else:
-                print(f"  x {state}: {how}")
+                print(f"    x {rel} {state}: {how}")
+    return ok, len(todo)
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Animate every state of a tree.")
+    ap.add_argument("--piece", default=None)
+    ap.add_argument("--all-trees", action="store_true",
+                    help="every TREE-type piece in the domain")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--limit", type=int, default=0, help="only N pieces (with --all-trees)")
+    ap.add_argument("--min-usd", type=float, default=2.0,
+                    help="stop before the credit pool runs dry")
+    args = ap.parse_args()
+
+    pieces = tree_pieces() if args.all_trees else [args.piece or "trees/tree_015"]
+    if args.limit:
+        pieces = pieces[:args.limit]
+
+    plan = []
+    for rel in pieces:
+        _, sts = states_of(rel)
+        need = [(s, anc) for s, _oid, have, anc in sts if not have]
+        if need:
+            plan.append((rel, need))
+    states = sum(len(n) for _, n in plan)
+    billed = sum(0 if anc else 3 for _, n in plan for _s, anc in n)
+    print(f"{len(plan)} piece(s), {states} state(s) to animate")
+    print(f"  ~{billed} generations  (measured 2026-08-28: $0.0045/generation, "
+          f"so about ${billed * 0.0045:.2f})")
+    if args.dry_run:
+        for rel, need in plan[:20]:
+            print(f"    {rel}: {len(need)}")
+        if len(plan) > 20:
+            print(f"    … +{len(plan) - 20} more piece(s)")
+        return 0
+    if not plan:
+        print("nothing to do — every tree state already has its wind animation")
+        return 0
+
+    client = PixelLabClient()
+    done = attempted = 0
+    for i, (rel, _need) in enumerate(plan, 1):
+        usd = (client.balance().get("credits") or {}).get("usd", 0)
+        if usd is not None and usd < args.min_usd:
+            print(f"\nstopping: credits ${usd:.2f} below the ${args.min_usd:.2f} "
+                  f"floor. Re-run to resume — finished states are skipped.")
+            break
+        o, a = animate_piece(client, rel)
+        done += o
+        attempted += a
+        print(f"  = [{i}/{len(plan)}] {rel}: {o}/{a} states  "
+              f"(total {done}/{states})")
+        # COMMIT PER PIECE. This run is hours long and shares the repo with
+        # other agents; art that is only on disk is art one bad rebase loses.
+        commit_push(f"scenery: wind animation for {rel} ({o} state(s))")
     viewer_build.build()
-    print(f"\nanimated {ok}/{len(todo)} state(s) of {args.piece}")
+    commit_push(f"scenery: wind animations — {done} state(s) across "
+                f"{len(plan)} tree(s)")
+    print(f"\nanimated {done}/{states} state(s) across {len(plan)} piece(s)")
     return 0
 
 
