@@ -6156,31 +6156,47 @@ function detailSurround(typeId) {
   const s = groundSets(typeId).find((x) => x.id !== CLEAN_SET && x.members.some((m) => m.weight > 0 && m.art));
   return { members: (s?.members ?? []).filter((m) => m.art).map((m) => ({ key: m.id, weight: m.weight, hit: { cand: { art: m.art, raw: null } } })), clean };
 }
-/* FIVE BY FIVE, WITH THE TILE UNDER REVIEW AS THE MIDDLE THREE BY THREE
- * (maintainer 2026-08-23: "On the details page I want to review the tile as 5x5
- * with the tile I'm reviewing as the center 3x3 surrounded by the base tile").
+/* FIVE BY FIVE, THE DETAIL EXACTLY ONCE (maintainer 2026-08-28: "A detail is
+ * supposed to only be displayed once and not tiled. So the 5x5 preview should
+ * display the base tile set selected on all tiles except the center tile. The
+ * center tile should be the detail tile I'm currently reviewing.").
  *
- * A single tile in a 3×3 showed how it MEETS the ground; nine of it inside a
- * ring shows what it does when several land near each other, which is the
- * question a repeated ground detail actually raises. The ring is the ground
- * itself — the promoted base group, or the clean tile when nothing is promoted. */
-function detailField(centerArt, surround, seed, scale = 1, pass = null) {
+ * This replaces the 2026-08-23 nine-in-a-ring: a detail is a thing the map
+ * agent scatters ONCE in a while — a flower, a stone — so nine of it was a
+ * picture of exactly the repetition it must never have.
+ *
+ * THE RING IS THE SWITCH, live: each ring cell is the selected pass's own
+ * per-cell pick — Clean draws the clean plate, Set #N the set's members with
+ * the game's hash, Raw keeps the ring clean and shows the detail's raw top in
+ * the centre. And every cell wears the ground's x-over-x WALL (his rule: "a
+ * base tile set should never show a wall so we need help from the x over x"),
+ * through the same tex2 dressing the transitions use. */
+function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   const box = h("div", { class: "iso-stage checker group-stage" });
-  const rnd = seededRnd(seed);
-  const members = surround?.members ?? [];
+  const lib = patternLib();
+  const wall = xoverxArt(typeId);
+  const clean = lib?.plates[typeId]?.clean ?? cleanArtOf(typeId);
+  const dress = (face) => (face && wall && clean) ? `tex2:${wall}::${face}::${clean}` : face;
+  const set = passSet(typeId, view);
+  const [x0, y0] = origin;
+  const centreTop = view === PASS_RAW ? (cand?.raw ?? cand?.art) : cand?.art;
+  const ringAt = (x, y) => {
+    if (set) return setCellArt(set, x, y, typeId) ?? clean;
+    return clean;                       // Clean and Raw ring alike: the ground as it ships
+  };
   const cells = [];
+  let ringFaces = new Set();
   for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
-    const inner = c >= 1 && c <= 3 && r >= 1 && r <= 3;
-    let img;
-    if (inner) img = centerArt;
-    else if (members.length) {
-      const cand = pickBaseMember(members, rnd).hit?.cand;
-      img = pass ? viewArtIn(pass, cand) : viewArt(cand);
-    } else {
-      img = surround?.clean ?? null;           // no base tile promoted yet
-    }
-    cells.push({ c, r, img });
+    const centre = c === 2 && r === 2;
+    const face = centre ? centreTop : ringAt(x0 + c, y0 + r);
+    if (!centre && face) ringFaces.add(face);
+    cells.push({ c, r, img: dress(face) });
   }
+  // QA probe: what this composition believes, for the gate.
+  window.__wikiDetail = {
+    view, typeId, centre: centreTop ?? null, dressed: !!(wall && clean),
+    ringDistinct: ringFaces.size, ringSample: [...ringFaces][0] ?? null,
+  };
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
   if (!paths.length) { box.append(h("p", { class: "muted" }, "no ground to stand this on yet")); return box; }
   loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
@@ -6410,6 +6426,18 @@ function topFaceMask(cb) {
  * review/tops framing at -9, wall foot on row 45 either way — measured).
  * Cached per (wall art, face); a virtual "tex2:<wall>::<face>" path names it
  * so mixFor's cache keys stay honest. */
+/* tex2:<wall>::<face>::<clean> — the FACE may itself be a virtual path that
+ * contains "::" (a pp: substitution does), so the wall is everything before
+ * the FIRST separator and the clean everything after the LAST; the face is
+ * the middle, verbatim. A naive split ate the pp: hex and the centre of every
+ * detail field fell back to a broken URL. */
+function parseTex2(p) {
+  const body = p.slice(5);
+  const i1 = body.indexOf("::"), i2 = body.lastIndexOf("::");
+  if (i1 < 0) return { wall: body, face: null, clean: null };
+  if (i2 === i1) return { wall: body.slice(0, i1), face: body.slice(i1 + 2), clean: null };
+  return { wall: body.slice(0, i1), face: body.slice(i1 + 2, i2), clean: body.slice(i2 + 2) || null };
+}
 const SIDE_CACHE = new Map();         // "wall::face::clean" -> canvas | null
 function sidePlateCanvas(wallArt, face, clean, cb) {
   const key = `${wallArt}::${face}::${clean}`;
@@ -6463,6 +6491,14 @@ function sidePlateCanvas(wallArt, face, clean, cb) {
   sheet(lib?.silhouette ?? "tiles/patterns/silhouette.webp", (x) => { silImg = x; done(); });
   topFaceMask((m) => { mask = m; done(); });
   const mk = (path, set) => {
+    // A face can be a pp: substitution (a raw top-only tile corrected to the
+    // palette in the browser); it resolves to a canvas, which draws like an
+    // image everywhere this function uses it.
+    if (String(path).startsWith("pp:")) {
+      const [a2, hex] = path.slice(3).split("::");
+      ppFor(a2, hex, (c) => { set(c); done(); });
+      return;
+    }
     const im = new Image();
     im.crossOrigin = "anonymous";
     im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
@@ -6583,8 +6619,8 @@ function mixFor(row, idx, plateA, plateB, cb) {
      * is exactly yesterday's plate — degradation to the previous behaviour,
      * never to something invented. */
     if (String(path).startsWith("tex2:")) {
-      const [wallArt, face, cleanP] = path.slice(5).split("::");
-      sidePlateCanvas(wallArt, face, cleanP ?? null, (cv2) => {
+      const { wall: wallArt, face, clean: cleanP } = parseTex2(path);
+      sidePlateCanvas(wallArt, face, cleanP, (cv2) => {
         if (cv2) { set(cv2); done(); }
         else {
           const im2 = new Image();
@@ -7448,12 +7484,13 @@ function viewWorldType(top) {
    * preference, because flipping the stored pass on arrival would silently
    * change every other page in the section. With no set built yet there is
    * nothing better to show and Clean stands. */
-  const detailPass = () => {
-    const v = worldViewFor(t.id);
-    if (v !== PASS_CLEAN) return v;
-    const first = sets.find((x) => x.id !== CLEAN_SET && setDraws(x));
-    return first ? `set:${first.id}` : v;
-  };
+  /* THE SWITCH DRIVES THE DETAILS TAB DIRECTLY (maintainer 2026-08-28:
+   * "doesn't matter what Tile art option I click on, nothing changes in the
+   * preview"). The old redirect quietly swapped Clean for the first set —
+   * meant kindly, and it made the control a placebo: with only the centre
+   * textured now, Clean is a real thing to judge a detail against, so every
+   * chip means itself. */
+  const detailPass = () => worldViewFor(t.id);
   const tabBtn = (id, label2, count, disabled, title) => h("button", {
     class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
     type: "button", title,
@@ -7730,7 +7767,7 @@ function viewWorldType(top) {
     const shownQueue = detailShown.get(t.id) ?? 12;
     const dPass = detailPass();
     const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
-      detailField(viewArtIn(dPass, cand), surround, dSeed, 1, dPass),
+      detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
       h("div", { class: "card-sub" },
         /* A TOP-ONLY TILE HAS NOWHERE TO LINK TO. It is not a cell — there is
          * no "over what" — so the link would have been #/world/<g>/null, a
@@ -8318,19 +8355,20 @@ function tileScenes(cell, cand, onView) {
      * member is. Under the old model this was the synthesized "texture" pass,
      * the only way to see a top at all; now it is any of his sets. */
     if (passSet(cell.top, mode)) {
-      // THE SAME PICTURE THE DETAILS TAB USES: nine of this top in a ring of the
-      // ground, so the two places he judges a top agree with each other.
-      const surround = detailSurround(cell.top);
-      const rnd = seededRnd(3);
+      /* THE SAME PICTURE THE DETAILS TAB USES, and the same 2026-08-28 rule:
+       * the top under review appears ONCE, in the centre, with the chosen
+       * set's own per-cell picks around it and the ground's x-over-x wall on
+       * every cell — the two places he judges a top must keep agreeing. */
+      const lib2 = patternLib();
+      const wall2 = xoverxArt(cell.top);
+      const clean2 = lib2?.plates[cell.top]?.clean ?? cleanArtOf(cell.top);
+      const dress2 = (f2) => (f2 && wall2 && clean2) ? `tex2:${wall2}::${f2}::${clean2}` : f2;
+      const set2 = passSet(cell.top, mode);
       const cells = [];
       for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
-        const inner = c >= 1 && c <= 3 && r >= 1 && r <= 3;
-        // A set member IS the real top, so there is no pass to resolve here —
-        // the old call asked for the synthesized texture of a review tile.
-        const ring = surround.members.length
-          ? pickBaseMember(surround.members, rnd).hit?.cand?.art
-          : surround.clean;
-        cells.push({ c, r, img: inner ? face : ring });
+        const centre = c === 2 && r === 2;
+        const f2 = centre ? face : (setCellArt(set2, c, r, cell.top) ?? clean2);
+        cells.push({ c, r, img: centre ? dress2(face) : dress2(f2) });
       }
       loadImages([face, ...cells.map((x) => x.img)].filter(Boolean), (images) => {
         const iso = worldIso();
@@ -8879,10 +8917,13 @@ function loadImages(paths, cb) {
       // x-over-x wall, drawable on its own in any scene (the fade review
       // fields use it to stand a top-only tile on a real wall).
       if (virt === "tex2") {
-        const [wallA, faceA, cleanA] = p.slice(5).split("::");
-        sidePlateCanvas(wallA, faceA, cleanA ?? null, (c) => {
+        const { wall: wallA, face: faceA, clean: cleanA } = parseTex2(p);
+        sidePlateCanvas(wallA, faceA, cleanA, (c) => {
           if (c) { out[p] = c; if (--left <= 0) cb(out); }
-          else plain(faceA, p);
+          else if (String(faceA).startsWith("pp:")) {
+            const [a3, hex3] = faceA.slice(3).split("::");
+            ppFor(a3, hex3, (c2) => { out[p] = c2 ?? null; if (--left <= 0) cb(out); });
+          } else plain(faceA, p);
         });
         continue;
       }

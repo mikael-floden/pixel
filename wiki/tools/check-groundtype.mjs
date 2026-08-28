@@ -852,8 +852,40 @@ const dSwitch = await p.evaluate(() => ({
   promote: document.querySelectorAll(".detail-card .base-btn").length,
   cards: document.querySelectorAll(".detail-card").length,
 }));
-ok(dSwitch.chips.join("/") === "Clean #0/Set #1/Raw" && dSwitch.sel === "Clean #0",
+ok(dSwitch.chips[0] === "Clean #0" && dSwitch.chips.at(-1) === "Raw" && dSwitch.sel === "Clean #0",
   `the Details tab carries the set switch, on Clean #0 (${dSwitch.chips.join(" | ")}, sel ${dSwitch.sel})`);
+/* HIS 2026-08-28 SPEC, all three parts ("A detail is supposed to only be
+ * displayed once and not tiled ... the base tile set selected on all tiles
+ * except the center ... we need help from the x over x in order to draw the
+ * outer cell border so we get a nice looking wall"):
+ * once — the probe's centre is a single face, not a 3x3;
+ * the switch is LIVE — Clean and Set ring on different art, and the pixels
+ * under the same window actually change (the bug reported was a placebo
+ * switch: "doesn't matter what Tile art option I click on");
+ * walls — every cell is tex2-dressed in the ground's x-over-x wall. */
+const dProbe = () => p.evaluate(() => ({ ...(window.__wikiDetail ?? {}) }));
+const dPix = () => p.evaluate(() => {
+  const cv = document.querySelector(".detail-card canvas");
+  if (!cv || !cv.width) return null;
+  const d2 = cv.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, cv.width, cv.height).data;
+  let h2 = 0;
+  for (let i = 0; i < d2.length; i += 7) h2 = (h2 * 31 + d2[i]) >>> 0;
+  return h2;
+});
+const dClean = await dProbe();
+ok(dClean.view === "clean" && dClean.dressed && dClean.ringDistinct === 1,
+  `under Clean the ring is the clean plate, walls from x-over-x (${dClean.ringDistinct} ring face, dressed ${dClean.dressed})`);
+const pixClean = await dPix();
+await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => /^Set #/.test(x.textContent.trim()))?.click());
+await p.waitForTimeout(2000);
+const dSet = await dProbe();
+const pixSet = await dPix();
+ok(/^set:/.test(dSet.view) && dSet.ringDistinct >= 1 && dSet.ringSample !== dClean.ringSample,
+  `flipping to a set changes the RING's source art (${dSet.ringSample?.split("/").slice(-1)[0]})`);
+ok(pixClean !== null && pixSet !== null && pixClean !== pixSet,
+  "and the pixels on screen actually change — the switch is not a placebo");
+await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
+await p.waitForTimeout(1200);
 // THE DETAILS TAB DELIBERATELY IGNORES "After" NOW (2026-08-22): a
 // clean-colour top is nothing to judge, so its compositions ask for texture —
 // which fetches the raw pass too, by design. The default-is-After claim
