@@ -127,7 +127,7 @@ function stagingBase(sha) {
 /** The commit to pin staging reads to. HEAD of main, not the deployed sha —
  *  reviewing content that is not in the game yet is the entire point, and the
  *  newest art is by definition newer than the image. Cached per tab. */
-async function stagingSha() {
+async function stagingSha(force = false) {
   /* THE PIN EXPIRES (cache-safety law, 2026-08-27; tiles' ask after the
    * audition holes). The sha used to live in sessionStorage unconditionally —
    * which SURVIVES RELOADS, so a phone tab kept for days re-pinned to the same
@@ -140,7 +140,7 @@ async function stagingSha() {
   const TTL = 10 * 60 * 1000;
   try {
     const hit = JSON.parse(sessionStorage.getItem("ml-staging-sha2") ?? "null");
-    if (hit?.sha && Date.now() - (hit.at ?? 0) < TTL) return hit.sha;
+    if (!force && hit?.sha && Date.now() - (hit.at ?? 0) < TTL) return hit.sha;
   } catch {}
   try {
     const r = await fetch(`https://api.github.com/repos/${STAGING_REPO}/commits/main`);
@@ -151,6 +151,23 @@ async function stagingSha() {
     }
   } catch {}
   return "main"; // still correct, just not immutably cacheable
+}
+/* THE PIN MOVES FORWARD FOR A LIVE INDEX (maintainer 2026-08-28, on Light
+ * Soil: "I can see no slope tiles at all" — 240 of them were on main and on
+ * disk). A page pins ONE sha at boot so everything it reads is
+ * self-consistent, which is right; but the slopes and fades indexes are read
+ * LIVE precisely because the tiles agent publishes while he reviews, and a
+ * phone tab open since before their push stayed pinned behind it for the
+ * life of the page. So those refreshes re-resolve HEAD and, when it has
+ * moved, move the WHOLE page's base to the new sha — one sha still, just a
+ * newer one, which is exactly what a reload would have done. */
+async function repinToHead() {
+  if (!repoBase || /127\.0\.0\.1|localhost/.test(repoBase.href)) return false;
+  const sha = await stagingSha(true);
+  const next = stagingBase(sha);
+  if (next.href === repoBase.href) return false;
+  repoBase = next;
+  return true;
 }
 /** A feedback id is a repo path WITHOUT the extension, which is what lets the
  *  maintainer's verdicts survive the art changing format underneath them (the
@@ -8168,8 +8185,11 @@ let slopesIndex;                      // undefined = not fetched, null = absent
 let slopesAt = 0;
 async function refreshSlopes() {
   if (!state.admin) return false;
-  const unpinned = repoBase && /\/(main)\/$|127\.0\.0\.1|localhost/.test(repoBase.href);
-  if (slopesIndex !== undefined && (!unpinned || Date.now() - slopesAt < 3 * 60 * 1000)) return false;
+  // a pinned page re-pins to HEAD first: the index is published while he
+  // reviews, and the boot pin would otherwise hide it for the page's life
+  if (slopesIndex !== undefined && Date.now() - slopesAt < 3 * 60 * 1000) return false;
+  const moved = slopesIndex === undefined ? false : await repinToHead();
+  void moved;
   const idx = await fetchJson(assetUrl("tiles/slopes/index.json"));
   slopesAt = Date.now();
   const had = !!slopesIndex;
@@ -8217,8 +8237,11 @@ let fadesIndex;                       // undefined = not fetched, null = absent
 let fadesAt = 0;
 async function refreshFades() {
   if (!state.admin) return false;
-  const unpinned = repoBase && /\/(main)\/$|127\.0\.0\.1|localhost/.test(repoBase.href);
-  if (fadesIndex !== undefined && (!unpinned || Date.now() - fadesAt < 3 * 60 * 1000)) return false;
+  // a pinned page re-pins to HEAD first: the index is published while he
+  // reviews, and the boot pin would otherwise hide it for the page's life
+  if (fadesIndex !== undefined && Date.now() - fadesAt < 3 * 60 * 1000) return false;
+  const moved = fadesIndex === undefined ? false : await repinToHead();
+  void moved;
   const idx = await fetchJson(assetUrl("tiles/fades/index.json"));
   fadesAt = Date.now();
   const had = !!fadesIndex;

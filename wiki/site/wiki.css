@@ -1791,5 +1791,8 @@ input[type="range"] { accent-color: var(--accent); }
 .fade-key { font-size: 11.5px; overflow-wrap: anywhere; }
 
 /* ---- SLOPES (maintainer 2026-08-28): the walkable ramp cards ---- */
-.slope-stage { padding: 10px; display: flex; justify-content: center; }
-.slope-tile { image-rendering: pixelated; }   /* 1x, the game's own scale (maintainer 2026-08-28) */
+.slope-stage { padding: 10px; display: flex; justify-content: center; align-items: center; }
+/* 1x, the game's own scale (maintainer 2026-08-28). height:auto is load-bearing:
+   a flex item stretches on the cross axis by default, which drew a 64x46 tile
+   64x120 — right width, wrong height, and it read as "very zoomed in". */
+.slope-tile { width: auto; height: auto; align-self: center; image-rendering: pixelated; }
