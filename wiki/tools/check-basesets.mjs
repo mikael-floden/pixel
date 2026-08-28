@@ -319,6 +319,49 @@ await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(900);
 ok(Object.values(tSaves.at(-1)?.set ?? {})[0] === null,
   "setting it back DELETES the entry — the file only ever names the exceptions");
+/* ---- 6. A TOPS MEMBER DRAWS WHAT THE AUDITION DRAWS (maintainer 2026-08-28,
+ * on a Set #2 field glowing beside its clean ring: "Why is this ground so
+ * bright? Didn't you normalize all tile tops to fit togather?"). The art WAS
+ * normalized — in the published post pass — but memberArt's tops branch
+ * predated it and still served the raw sheet, so one tile drew corrected in
+ * the audition centre and 35 V-units brighter in the set field around it.
+ * Asserted on the resolved path AND on pixels, against the clean plate the
+ * eye compares it with. */
+{
+  const V = await p.evaluate(async () => {
+    const tops = window.__wiki.state.data.worldMeta.tops ?? {};
+    const ground = Object.keys(tops).find((g2) => (tops[g2] ?? []).some((c) => c.post));
+    if (!ground) return { skip: true };
+    const entry = tops[ground].find((c) => c.post);
+    const art = window.__basesets.memberArt(ground, entry.id);
+    const load = (u) => new Promise((r2) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => r2(i); i.onerror = () => r2(null); i.src = window.__basesets.assetUrl(u); });
+    const meanV = async (u) => {
+      const im = await load(u); if (!im) return null;
+      const cv = document.createElement("canvas"); cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+      const cx = cv.getContext("2d", { willReadFrequently: true }); cx.drawImage(im, 0, 0);
+      const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+      let s2 = 0, n = 0;
+      for (let x = 0; x < cv.width; x++) {
+        let t2 = -1, bo = -1;
+        for (let y = 0; y < cv.height; y++) { if (d[(y * cv.width + x) * 4 + 3] > 8) { if (t2 < 0) t2 = y; bo = y; } }
+        if (t2 < 0) continue;
+        for (let y = t2; y <= bo - 17; y++) { const i2 = (y * cv.width + x) * 4; s2 += Math.max(d[i2], d[i2 + 1], d[i2 + 2]); n++; }
+      }
+      return n ? s2 / n : null;
+    };
+    return { ground, art, post: entry.post, raw: entry.id,
+      memberV: await meanV(art), rawV: await meanV(entry.id),
+      cleanV: await meanV(`tiles/plates/${ground}/clean.webp`) };
+  });
+  if (V.skip) { ok(false, "no tops sheet with a post pass — the fixture pool vanished"); }
+  else {
+    ok(V.art === V.post, `a tops set member resolves to the PUBLISHED post file, not the raw sheet (${String(V.art).split("/").pop()})`);
+    ok(V.memberV != null && V.cleanV != null && Math.abs(V.memberV - V.cleanV) < 10,
+      `and its drawn top sits WITH the clean colour (member V ${V.memberV?.toFixed(1)} vs clean ${V.cleanV?.toFixed(1)})`);
+    ok(V.rawV != null && Math.abs(V.rawV - V.cleanV) > 15,
+      `while the raw sheet it replaced really is the bright one — the fixture can see the bug (raw V ${V.rawV?.toFixed(1)})`);
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 

@@ -4916,7 +4916,21 @@ function candByKey(key) {
  * has to be applied to the PLATE POOL too and not only to review art. */
 const displayArt = (key, fallback) => candByKey(key)?.tex ?? fallback ?? candByKey(key)?.art ?? null;
 function memberArt(typeId, id) {
-  if (/^tiles\/tops\//.test(id ?? "")) return ppPath(typeId, id);   // its path is its art, palette-corrected
+  /* A TOPS MEMBER DRAWS THE PUBLISHED POST PASS, exactly as the audition does
+   * (maintainer 2026-08-28, on a Set #2 field glowing beside its clean ring:
+   * "Why is this ground so bright? Didn't you normalize all tile tops to fit
+   * togather?"). The art IS normalized — measured on his tile, the raw sheet's
+   * top is V 160 against the palette's 125 and the post file is 121 — but this
+   * branch predated the post pass and still routed set members through ppPath,
+   * the in-browser guess the audition retired. So the same tile drew corrected
+   * in the audition centre and raw-bright in the set field and every ring
+   * around it: one tile, two colours, depending on which code path looked.
+   * The pool entry is the single source now; ppPath stays only for a sheet
+   * not yet republished. */
+  if (/^tiles\/tops\//.test(id ?? "")) {
+    const t = (worldMeta().tops?.[typeId] ?? []).find((c) => c.id === id);
+    return t?.post ?? ppPath(typeId, id);
+  }
   const p = basePool(typeId).find((c) => c.id === id);
   if (p) return p.art;
   const cand = candByKey(id);
@@ -11011,4 +11025,4 @@ async function upgradeToStaging() {
   setInterval(check, 5 * 60 * 1000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
 })();
-window.__basesets = { basePool, groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
+window.__basesets = { basePool, memberArt, groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
