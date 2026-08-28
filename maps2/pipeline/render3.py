@@ -47,6 +47,79 @@ import render as TILE_RENDER            # tiles/pipeline/render.py — wall_heig
 
 DX, DY, WALL, TILE = 32, 14, 17, 64
 TOP_Y = 10                              # review tiles: diamond apex row in the 64-box
+PATTERNS = json.load(open(os.path.join(REPO, "tiles", "patterns", "index.json")))
+PLATES = json.load(open(os.path.join(REPO, "tiles", "plates", "index.json")))
+_SIL = None
+_MASKS = None
+
+
+def _silhouette():
+    global _SIL
+    if _SIL is None:
+        _SIL = np.array(Image.open(os.path.join(REPO,
+                        PATTERNS["silhouette"]["file"])).convert("RGBA"))[..., 3]
+    return _SIL
+
+
+def _mask(index, pattern=None):
+    """One Wang mask from the sheet: alpha 255 = side_b."""
+    global _MASKS
+    if _MASKS is None:
+        _MASKS = np.array(Image.open(os.path.join(REPO,
+                          PATTERNS["masks"]["file"])).convert("RGBA"))[..., 3]
+    pid = pattern or PATTERNS["selection"]["default_pattern"]
+    row = next(pp["row"] for pp in PATTERNS["patterns"] if pp["id"] == pid)
+    fw, fh = PATTERNS["masks"]["frame_w"], PATTERNS["masks"]["frame_h"]
+    fi = row * 16 + index
+    r0, c0 = (fi // 16) * fh, (fi % 16) * fw
+    return _MASKS[r0:r0 + fh, c0:c0 + fw] > 127
+
+
+def region_of(x, y, regions):
+    return regions.get((x, y), "r0")
+
+
+def plate_img(ground, region, x, y):
+    """The maintainer's ground look: SET per region, MEMBER per cell
+    (basesets port above), member -> plate (tiles/plates resolve rule),
+    clean -> the ground's clean plate."""
+    chosen = pick_set(ground, region)
+    m = pick_member(chosen, x, y)
+    root = os.path.join(REPO, "tiles", "plates")
+    if m.get("kind") == "tile":
+        key8 = m["tile"].rsplit("/", 1)[-1]
+        f = os.path.join(root, ground, key8 + ".webp")
+        if os.path.isfile(f):
+            ck = ("plate", ground, key8)
+            if ck not in _tile_cache:
+                _tile_cache[ck] = Image.open(f).convert("RGBA")
+            return _tile_cache[ck]
+    ck = ("plate", ground, "clean")
+    if ck not in _tile_cache:
+        _tile_cache[ck] = Image.open(os.path.join(root, ground, "clean.webp")).convert("RGBA")
+    return _tile_cache[ck]
+
+
+def composed_boundary(ga, gb, index, pa, pb):
+    """out.rgb = mask ? plate_b : plate_a; out.alpha = silhouette — the
+    patterns/plates contract, three draws, no geometry knowledge."""
+    a = np.array(pa); b = np.array(pb)
+    mk = _mask(index)
+    out = np.where(mk[..., None], b, a)
+    out[..., 3] = _silhouette()
+    return Image.fromarray(out.astype(np.uint8))
+
+
+SIDE_ORDER = PATTERNS["selection"]["side_order"]
+
+
+def side_roles(a, b):
+    """side_a / side_b assignment, canonical via the library's side_order."""
+    ia = SIDE_ORDER.index(a) if a in SIDE_ORDER else 99
+    ib = SIDE_ORDER.index(b) if b in SIDE_ORDER else 99
+    return (a, b) if ia <= ib else (b, a)
+
+
 FADES = json.load(open(os.path.join(REPO, "tiles", "fades", "index.json"))) \
     if os.path.isfile(os.path.join(REPO, "tiles", "fades", "index.json")) else {"pairs": {}}
 FADE_BAND = 2                           # cells of fade band each side of a hard edge
@@ -85,6 +158,97 @@ def approved_candidate(top, side, storey=False):
         rest = [c for c in cands if not WALL_OV.get(c["key"], {}).get("top_only")]
         cands = rest or cands
     return cands[0] if cands else None
+
+
+# -- BASE TILE SETS — port of wiki/lib/basesets.mjs (the shared reference) ----
+# THE GROUND'S LOOK IS THE MAINTAINER'S DATA (live/tuning/base_tile_sets.json,
+# pixel-wiki-base-tile-sets@1): a SET per REGION keeps an area coherent, a
+# MEMBER per CELL varies the field, weights are his, clean is a member. The
+# pick is FNV-1a/32 + fmix32 to the bit — proven against TEST_VECTORS below,
+# because a port that drifts makes the ground disagree between the game, the
+# wiki and this renderer.
+BTS = json.load(open(os.path.join(REPO, "live", "tuning", "base_tile_sets.json"))) \
+    if os.path.isfile(os.path.join(REPO, "live", "tuning", "base_tile_sets.json")) else {"grounds": {}}
+CLEAN_SET_ID = 0
+
+
+def fnv1a(sstr):
+    h = 0x811c9dc5
+    for ch in sstr:
+        h ^= ord(ch) & 0xff
+        h = (h * 0x01000193) & 0xffffffff
+    h ^= h >> 16
+    h = (h * 0x85ebca6b) & 0xffffffff
+    h ^= h >> 13
+    h = (h * 0xc2b2ae35) & 0xffffffff
+    h ^= h >> 16
+    return h
+
+
+def unit_hash(sstr):
+    return fnv1a(sstr) / 4294967296
+
+
+def pick_weighted(weights, u):
+    total = sum(w for w in weights if w > 0)
+    if not total > 0:
+        return -1
+    acc, target = 0.0, u * total
+    for i, w in enumerate(weights):
+        acc += w if w > 0 else 0
+        if target < acc:
+            return i
+    for i in range(len(weights) - 1, -1, -1):
+        if weights[i] > 0:
+            return i
+    return -1
+
+
+def _norm_members(set_id, members):
+    src = members if isinstance(members, list) else []
+    tiles = [] if set_id == CLEAN_SET_ID else [
+        {"kind": "tile", "tile": m["tile"], "weight": max(0, float(m.get("weight") or 0))}
+        for m in src if m and m.get("kind") == "tile" and isinstance(m.get("tile"), str) and m["tile"]]
+    clean = next((m for m in src if m and m.get("kind") == "clean"), None)
+    cw = max(0, float(clean.get("weight") or 0)) if clean else (0 if tiles else 1)
+    return [{"kind": "clean", "weight": cw}] + tiles
+
+
+def sets_for(ground):
+    raw = (BTS.get("grounds", {}).get(ground) or {}).get("sets")
+    lst = list(raw) if isinstance(raw, list) else []
+    if not any(s and s.get("id") == CLEAN_SET_ID for s in lst):
+        lst.append({"id": CLEAN_SET_ID, "name": "Clean", "weight": 1,
+                    "members": [{"kind": "clean", "weight": 1}]})
+    lst = [s for s in lst if s and isinstance(s.get("id"), int) and s["id"] >= 0]
+    lst.sort(key=lambda s: s["id"])
+    return [{"id": s["id"], "weight": max(0, float(s.get("weight") or 0)),
+             "members": _norm_members(s["id"], s.get("members"))} for s in lst]
+
+
+def pick_set(ground, region):
+    sets = sets_for(ground)
+    i = pick_weighted([s["weight"] for s in sets],
+                      unit_hash(f"bts1|set|{ground}|{region}"))
+    return next(s for s in sets if s["id"] == CLEAN_SET_ID) if i < 0 else sets[i]
+
+
+def pick_member(chosen, x, y):
+    if not chosen or not chosen.get("members"):
+        return {"kind": "clean"}
+    i = pick_weighted([m["weight"] for m in chosen["members"]],
+                      unit_hash(f"bts1|tile|{chosen['id']}|{x}|{y}"))
+    return {"kind": "clean"} if i < 0 else chosen["members"][i]
+
+
+# the port is proven at import, not trusted
+for sstr, want in (("", 2872998923), ("a", 444641715), ("grass", 876385684),
+                   ("bts1|set|grass|r0", 876574184), ("bts1|tile|1|0|0", 1995477220)):
+    assert fnv1a(sstr) == want, f"fnv1a port broken on {sstr!r}"
+for w, u, want in (([1, 1], 0, 0), ([1, 1], 0.4999, 0), ([1, 1], 0.5, 1),
+                   ([0, 5], 0, 1), ([0, 5], 0.999, 1), ([3, 1], 0.74, 0),
+                   ([3, 1], 0.76, 1), ([0, 0], 0.5, -1), ([], 0.5, -1)):
+    assert pick_weighted(w, u) == want, f"pickWeighted port broken on {w},{u}"
 
 
 _tile_cache = {}
@@ -329,6 +493,10 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     grd = doc["ground"]
     lvl = doc["level"]
     liq = set(doc.get("liquids", []))
+    wall_over = {}
+    for w_ in doc.get("walls", []):
+        for c in w_["cells"]:
+            wall_over[(c["x"], c["y"])] = w_["side"]
 
     def g(x, y):
         if not (x0 <= x < x1 and y0 <= y < y1):
@@ -338,6 +506,34 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
 
     def L(x, y):
         return lvl[y][x] if (0 <= x < W and 0 <= y < H) else 0
+
+    # REGIONS for the base-tile-set pick: 4-connected same-ground components,
+    # id = ground@min-cell — stable for stable terrain, and one set per patch
+    # is exactly the maintainer's "the world-agent will always stick to a
+    # single base tile set at one location".
+    regions = {}
+    seen = set()
+    from collections import deque as _dq
+    for yy in range(y0, y1):
+        for xx in range(x0, x1):
+            if (xx, yy) in seen:
+                continue
+            gg = g(xx, yy)
+            if not gg:
+                continue
+            comp, q = [(xx, yy)], _dq([(xx, yy)])
+            seen.add((xx, yy))
+            while q:
+                cx2, cy2 = q.popleft()
+                for dx2, dy2 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx2 + dx2, cy2 + dy2)
+                    if n not in seen and g(*n) == gg:
+                        seen.add(n)
+                        comp.append(n)
+                        q.append(n)
+            rid = f"{gg}@{min(comp)[0]},{min(comp)[1]}"
+            for c in comp:
+                regions[c] = rid
 
     maxL = max(max(r) for r in lvl)
     ox = (y1 - 1 - y0) * DX + 8
@@ -370,13 +566,18 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
             if zl == 0 or gr in liq:
-                t = flat_tile(gr)
+                if gr in liq:
+                    t = flat_tile(gr)
+                else:
+                    t = plate_img(gr, regions.get((x, y), "r0"), x, y)
+                    is_plate = True
                 if gr not in liq:
                     # FADE BAND: within FADE_BAND cells of a different SOLID
                     # ground at the same level, ease the change with the fades
                     # product (top-only, placed by edge_ground). Deterministic.
                     near = None
-                    for r in range(1, FADE_BAND + 1):
+                    for r in range(2, FADE_BAND + 1):   # ring 1 belongs to the
+                        # composed boundary tile; the fade eases further out
                         for dx2, dy2 in ((r, 0), (-r, 0), (0, r), (0, -r)):
                             og = g(x + dx2, y + dy2)
                             if og and og != gr and og not in liq \
@@ -402,16 +603,18 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                         dp = detail_pool(gr)
                         if dp and _rng((x * 83492791) ^ (y * 2654435761))() < DETAIL_FREQ:
                             t = dp[int(_rng(x * 31 + y)() * len(dp)) % len(dp)]
-                img.alpha_composite(t, (bx, col_y(x, y, zl) - TOP_Y))
+                img.alpha_composite(t, (bx, col_y(x, y, zl) -
+                                        (0 if locals().get("is_plate") and t.height == 46 else TOP_Y)))
+                is_plate = False
                 continue
             front_low = min(L(x + 1, y), L(x, y + 1))
             fx, fy = (x + 1, y) if L(x + 1, y) <= L(x, y + 1) else (x, y + 1)
-            side = g(fx, fy) or gr
-            if side in INDOOR_GROUNDS or side in liq:
+            side = wall_over.get((x, y)) or (g(fx, fy) or gr)
+            if (x, y) not in wall_over and (side in INDOOR_GROUNDS or side in liq):
                 side = gr                    # stone over its own body; water is
                                              # never a wall material either
             cap = over_tile(gr, side) if front_low < zl else flat_tile(gr)
-            mid = storey_tile(gr)
+            mid = storey_tile(side if (x, y) in wall_over else gr)
             for f in range(max(0, front_low), zl + 1):
                 t = cap if f == zl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
@@ -429,21 +632,21 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             if len({L(*c) for c in quad}) != 1:
                 continue
             a, b = sorted(set(gs))
-            ps = pair_set(a, b)
-            if ps is None:
-                fades[(a, b)] += 1        # hard edge today; the log is the
-                continue                  # transition-set shopping list
-            tiles, upper = ps
-            idx = (8 * (gs[0] == upper) + 4 * (gs[1] == upper)
-                   + 2 * (gs[2] == upper) + 1 * (gs[3] == upper))
+            sa, sb = side_roles(a, b)
+            idx = (8 * (gs[0] == sb) + 4 * (gs[1] == sb)
+                   + 2 * (gs[2] == sb) + 1 * (gs[3] == sb))
             if idx in (0, 15):
                 continue
+            reg = regions.get((x, y), "r0")
+            tile = composed_boundary(sa, sb, idx,
+                                     plate_img(sa, reg, x, y),
+                                     plate_img(sb, reg, x, y))
             z = L(x, y)
             cx = ox + (x - x0 - (y - y0)) * DX - DX
             cy = col_y(x, y, z) - DY
             # apex (32,0) of the transition tile sits on corner (x+1,y+1)'s
             # top vertex = the shared corner of the quad
-            img.alpha_composite(tiles[idx], (cx + DX - DX, cy + DY + TOP_Y - TOP_Y + 2 * DY - DY))
+            img.alpha_composite(tile, (cx, cy + DY))
     if fades:
         log("FADE fallback used (no committed set): " +
             ", ".join(f"{a}~{b} x{n}" for (a, b), n in fades.most_common()))

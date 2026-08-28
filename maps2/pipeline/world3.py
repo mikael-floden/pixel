@@ -139,23 +139,42 @@ def _fen(W, H, mat, lvl):
     return out
 
 
-def _house_floors(doc, mat):
-    """parquet inside both houses, brown paving as the stone-house yard.
+def _houses(doc, mat):
+    """THE HOUSES ARE BUILT FROM THE X-OVER-Y MATRIX (maintainer 2026-08-28:
+    "rebuild the houses using new tiles like grass over parquet floor... in
+    both stone (brown paving stone) and wood... you can also change the top
+    ground type without adding a new layer").
 
-    A house interior = the cells under a kind:"roof" deck whose base sits BELOW
-    the deck's underside (the walls reach it; the floor does not) — the same
-    floor/wall split places.py bands with."""
+    A wall is a raised cell whose TOP is one ground and whose FACE is the
+    building material — no extra layer, the over matrix carries every pair:
+
+      the STONE HOUSE (spawn cottage): grey_paving_stone tops over
+        brown_paving_stone faces — a slate-rimmed cobble build; cobble roof.
+      the MEADOW HOUSE: grass tops over parquet_floor faces — a turf-roofed
+        timber build (the maintainer's own example pair), turf roof slab.
+
+    Interiors floor in parquet. Returns (floors, walls_overrides)."""
     floors = 0
-    for dk in doc.get("decks", []):
-        if dk.get("kind") != "roof":
-            continue
+    walls = []
+    # the meadow house roof deck is the big one; the stone house's the small
+    roofs = sorted((dk for dk in doc.get("decks", []) if dk.get("kind") == "roof"),
+                   key=lambda dk: len(dk["cells"]))
+    for hi, dk in enumerate(roofs):
         lv, th = int(dk["level"]), int(dk.get("thickness", 1))
+        stone = hi == 0                       # smallest roof = the spawn cottage
+        wallmat = "brown_paving_stone" if stone else "parquet_floor"
+        topmat = "grey_paving_stone" if stone else "grass"
+        wcells = []
         for c in dk["cells"]:
             x, y = int(c["x"]), int(c["y"])
-            if doc["level"][y][x] < lv - th:      # floor, not wall top
+            if doc["level"][y][x] < lv - th:  # floor, not wall top
                 mat[y][x] = "parquet_floor"
                 floors += 1
-    return floors
+            else:                              # wall cell: authored top + face
+                mat[y][x] = topmat
+                wcells.append({"x": x, "y": y})
+        walls.append({"side": wallmat, "cells": wcells})
+    return floors, walls
 
 
 def _yard(doc, mat, lvl):
@@ -235,7 +254,7 @@ def build():
     W, H, mat, lvl = _grid(src)
     _deep_water(W, H, mat)
     fen = _fen(W, H, mat, lvl)
-    floors = _house_floors(src, mat)
+    floors, walls = _houses(src, mat)
     yard = _yard(src, mat, lvl)
     scen = _scenery(src)
 
@@ -251,7 +270,9 @@ def build():
         # is v3's patterned always-own-texture surface with a published base
         # tile — it reads as shingles. A taste call, flagged in the build log.
         if kind == "roof":
-            ground = "grey_paving_stone"
+            small = len(dk["cells"]) <= min(len(d2["cells"]) for d2 in src["decks"]
+                                            if d2.get("kind") == "roof")
+            ground = "grey_paving_stone" if small else "grass"
         decks.append({"kind": kind, "level": dk["level"],
                       "thickness": dk.get("thickness", 1), "ground": ground,
                       "cells": [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]})
@@ -266,6 +287,7 @@ def build():
         "level": lvl,
         "spawn": src["spawn"],
         "decks": decks,
+        "walls": walls,
         "scenery": scen,
     }
     os.makedirs(OUT, exist_ok=True)
