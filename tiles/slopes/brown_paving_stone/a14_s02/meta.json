@@ -1,0 +1,36 @@
+{
+ "schema": "tiles3/slopes@1",
+ "kind": "slope_set",
+ "ground": "brown_paving_stone",
+ "boundary_amplitude": 0.14,
+ "boundary_seed": 2,
+ "elevation": 4,
+ "step_slope": 0.55,
+ "tile_id": "02f24d98-3727-4c9e-96a9-9fda2500daf5",
+ "n_tiles": 3,
+ "complete": false,
+ "size": [
+  64,
+  30
+ ],
+ "prompt": "clean brown paving stone to clean brown paving stone",
+ "settings": {
+  "description": "clean brown paving stone to clean brown paving stone",
+  "elevation": 4,
+  "step_slope": 0.55,
+  "tile_type": "isometric",
+  "tile_feature": "tileset",
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "tile_view_angle": 28,
+  "tile_depth_ratio": 0.5,
+  "tile_flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "tiles": {
+  "0": "tile_00.webp",
+  "14": "tile_14.webp",
+  "15": "tile_15.webp"
+ },
+ "note": "Wang corner set on ELEVATION, not on material: the index is the corner bitmask NW NE SW SE and a set bit means that corner is RAISED. Index 0 is flat brown_paving_stone, index 15 is full plateau top, and the 14 between are the partial shapes. One ground at two heights - not a transition between two materials."
+}

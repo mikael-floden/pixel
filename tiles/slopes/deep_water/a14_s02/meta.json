@@ -1,0 +1,39 @@
+{
+ "schema": "tiles3/slopes@1",
+ "kind": "slope_set",
+ "ground": "deep_water",
+ "boundary_amplitude": 0.14,
+ "boundary_seed": 2,
+ "elevation": 4,
+ "step_slope": 0.55,
+ "tile_id": "7e06cb8f-8631-47cb-a037-129757579a02",
+ "n_tiles": 6,
+ "complete": false,
+ "size": [
+  64,
+  30
+ ],
+ "prompt": "clean deep water to clean deep water",
+ "settings": {
+  "description": "clean deep water to clean deep water",
+  "elevation": 4,
+  "step_slope": 0.55,
+  "tile_type": "isometric",
+  "tile_feature": "tileset",
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "tile_view_angle": 28,
+  "tile_depth_ratio": 0.5,
+  "tile_flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "tiles": {
+  "0": "tile_00.webp",
+  "8": "tile_08.webp",
+  "10": "tile_10.webp",
+  "11": "tile_11.webp",
+  "14": "tile_14.webp",
+  "15": "tile_15.webp"
+ },
+ "note": "Wang corner set on ELEVATION, not on material: the index is the corner bitmask NW NE SW SE and a set bit means that corner is RAISED. Index 0 is flat deep_water, index 15 is full plateau top, and the 14 between are the partial shapes. One ground at two heights - not a transition between two materials."
+}
