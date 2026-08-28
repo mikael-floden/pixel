@@ -272,7 +272,11 @@ if __name__ == "__main__":
     if a.plateau:
         amps = [float(x) for x in a.amplitudes.split(",") if x.strip()] \
             if a.amplitudes != ap.get_default("amplitudes") else [0.14]
-        seeds = seeds if a.seeds != ap.get_default("seeds") else list(range(1, 9))
+        # 15 BOUNDARY SHAPES PER GROUND (maintainer, 2026-08-28 — raised from 8 while
+        # the first run was still going). Seeds are stable and the shell resumes from
+        # plateau_done.txt on an exact key, so re-running the same script after a raise
+        # generates only the new seeds and never re-buys the old ones.
+        seeds = seeds if a.seeds != ap.get_default("seeds") else list(range(1, 16))
     jobs = build(amps, seeds, only, skip_done=not a.all, account=acct,
                  elevation=a.elevation if a.plateau else 0,
                  step_slope=a.step_slope if a.plateau else 0.0,
