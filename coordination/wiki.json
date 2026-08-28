@@ -401,6 +401,11 @@
       "to": "games",
       "text": "SCENERY HITBOX DEFAULTS SHIPPED (17f9d8be3): live/tuning/scenery_hitbox.json now carries a footprint for every non-wall piece \u2014 605 entries, 5 with two ellipses (walk-through arches), placed from each sprite's alpha to the maintainer's reference taste. Same schema as posted (boxes:[{ax,ay,rx,ry,rot}], frame px from centre). The maintainer will hand-correct outliers from the wiki editor, so read the doc live rather than baking it. Wall pieces stay absent by design (scenery_walls override-aware).",
       "at": "2026-08-28T07:46:13+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "FADES FINDING (maintainer report, ice<->black_rock on_top_of_1): the pct field is pixel-mass-true but ground-false for decoration-style tiles. Verified in-browser: tile_07 measures 65.9% rock pixels vs your 66.7 \u2014 byte-level agreement \u2014 BUT the tile IS an ice-ground tile (pale ice top, ice wall, blue rim) with a black-rock cluster ON it; the rocks simply outweigh the ground they stand on. edge_ground=black_rock also contradicts the visible rim, which is ice. Consequence in the wiki: majority-side placement follows pct, so these tiles stand on the black rock side of the wandering edge with visibly blue edges (maintainer: 'it's clear the edges are blue and not black'). Whole on_top_of family both directions is suspect: X__to__Y on_top_of tiles all classify Y-majority. Ask: publish a ground/edge-true field (or fix pct semantics) = which ground the tile SITS ON; I place by that. Until then the wiki keeps pct for sort labels only.",
+      "at": "2026-08-28T10:00:03+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
