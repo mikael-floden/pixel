@@ -115,7 +115,26 @@
       "glow_concept": "teal bioluminescent moss patches up the trunk",
       "difference_from_source": 0.881,
       "glow_score": 0.1016,
-      "generated_at": "2026-08-14T15:47:59+00:00"
+      "generated_at": "2026-08-14T15:47:59+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "fecb7952-253a-4490-9fbd-92a4e0e2784b",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_005/lit_4/animations/wind/00.webp",
+            "trees/tree_005/lit_4/animations/wind/01.webp",
+            "trees/tree_005/lit_4/animations/wind/02.webp",
+            "trees/tree_005/lit_4/animations/wind/03.webp",
+            "trees/tree_005/lit_4/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_005/lit_4/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:05:33+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "trees/tree_005/sprite.webp",
