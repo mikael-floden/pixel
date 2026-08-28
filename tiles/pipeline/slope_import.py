@@ -42,6 +42,7 @@ def slug(ground, amp, seed):
 
 
 REPLACE = False
+AFTER = ""      # ISO8601; only generations created after this are imported
 
 
 def run(apply=True, limit=1200):
@@ -64,11 +65,17 @@ def run(apply=True, limit=1200):
     written = skipped = missing = 0
     for desc, js in sorted(by_desc.items()):
         g = js[0]["a"]
-        # THE NEWEST N, because the account now holds two runs under the SAME
-        # description: the first (Thickness 0%, 64x30 flat-top-only, wrong perspective)
-        # and the regeneration at the house depth. Sorting ascending and zipping would
-        # import the old ones. Take the most recent len(js), then restore seed order.
-        allts = sorted(got.get(desc, []), key=lambda r: r.get("created_at") or "")
+        # A TIME CUTOFF, NOT "THE NEWEST N". The account holds two runs under the SAME
+        # description: v1 at Thickness 0% (64x30 flat-top-only, wrong perspective) and
+        # the regeneration at the house depth 0.5. While v2 is still generating, a ground
+        # has 15 old sets plus however many new ones, so "newest 15" would SPLICE the two
+        # generations into one set - some tiles with a wall, some without. AFTER is the
+        # v2 run's start; only sets created past it are eligible, and a ground is
+        # imported only once it has all 15, so a partially generated ground waits instead
+        # of landing half old.
+        allts = sorted((t for t in got.get(desc, [])
+                        if not AFTER or (t.get("created_at") or "") > AFTER),
+                       key=lambda r: r.get("created_at") or "")
         ts = allts[-len(js):] if len(allts) >= len(js) else allts
         if len(ts) != len(js):
             print(f"MISMATCH {g}: {len(ts)} tiles on the account for {len(js)} jobs "
@@ -156,11 +163,13 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--limit", type=int, default=1200)
+    ap.add_argument("--after", default="",
+                    help="ISO8601 cutoff: ignore generations created at or before it")
     ap.add_argument("--replace", action="store_true",
                     help="overwrite sets already on disk (the v2 regeneration)")
     a = ap.parse_args()
-    REPLACE = a.replace
     globals()["REPLACE"] = a.replace
+    globals()["AFTER"] = a.after
     run(apply=not a.dry_run, limit=a.limit)
     if not a.dry_run:
         d = write_index()
