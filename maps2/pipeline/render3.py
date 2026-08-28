@@ -667,8 +667,10 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
             lo = dl if front_covered else max(0, dl - max(1, th))
             bx = ox + (x - x0 - (y - y0)) * DX - DX
-            cap = flat_tile(dg) if front_covered else over_tile(dg, dg)
-            mid = storey_tile(dg)
+            body = "grey_stone" if (dk.get("kind") == "cave"
+                                    and dg not in ("black_rock", "grey_stone")) else dg
+            cap = flat_tile(dg) if front_covered else over_tile(dg, body)
+            mid = storey_tile(body)
             for f in range(lo, dl + 1):
                 t = cap if f == dl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))

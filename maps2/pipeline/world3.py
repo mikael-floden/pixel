@@ -198,6 +198,51 @@ SCEN_BY_GROUND = {
 }
 
 
+MASSIF_LVL = 14          # at/above this the land is the mountain: rock body
+ROCKY = {"black_rock", "grey_stone", "light_beach", "dark_mud",
+         "brown_paving_stone", "grey_paving_stone", "parquet_floor"}
+
+
+def _terrain_walls(W, H, mat, lvl):
+    """THE MOUNTAIN IS ROCK UNDER ITS GROUND (maintainer 2026-08-28: "the
+    mountain and all cliffs should use the new x-over-x/y to specify what
+    mountain/wall type should be under the ground type").
+
+    Every exposed rim cell gets an authored wall BODY through the same `walls`
+    channel the houses use:
+
+      massif (level >= MASSIF_LVL)  grey_stone body — snow, ice and grass are
+                                    a skin on the mountain, so a cliff shows
+                                    snow-over-stone, never snow all the way
+                                    down;
+      lowland grass/soil tiers      light_soil body — the maze terraces are
+                                    turf over earth, the v2 ochre cliffs
+                                    reborn as a real over-pair;
+      rocky/paved/mud grounds       keep their own body (skip — the foot rule
+                                    and same-over-same already say it).
+    """
+    out = {}
+    for y in range(H):
+        for x in range(W):
+            g = mat[y][x]
+            if not g or g in ROCKY or g in ("water", "deep_water"):
+                continue
+            zl = lvl[y][x]
+            if zl <= 0:
+                continue
+            lower = False
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < W and 0 <= ny < H and lvl[ny][nx] < zl:
+                    lower = True
+                    break
+            if not lower:
+                continue
+            side = "grey_stone" if zl >= MASSIF_LVL else "light_soil"
+            out.setdefault(side, []).append({"x": x, "y": y})
+    return [{"side": side, "cells": cells} for side, cells in sorted(out.items())]
+
+
 def _scenery(doc):
     """Translate v2 prop-tiles into scenery placements, plus the pieces already
     placed as props (the chess tables ARE scenery pieces).
@@ -249,14 +294,148 @@ def _scenery(doc):
     return out
 
 
+def _rng32(seed):
+    s0 = seed & 0xffffffff
+    def r():
+        nonlocal s0
+        s0 = (s0 * 1664525 + 1013904223) & 0xffffffff
+        return s0 / 2 ** 32
+    return r
+
+
+def _forests(W, H, mat, lvl, scen, spawn):
+    """REAL WOODS (maintainer 2026-08-28: "you can now place lots of trees to
+    create a forest"). Scenery is cheap now, so the eight lonely groves become
+    forests — grown by rule:
+
+      seeds     every existing tree placement on grass (the v2 grove sites)
+                plus the three biggest open-grass interiors;
+      ground    flat grass only — never roads (+2), banks, beach, rims, water;
+      keep-outs spawn plaza (r 12), the houses (+4), existing pieces;
+      density   jittered stride grid, ~1 tree per 4-5 cells inside a wood,
+                thinning toward the edge; species weighted (common trees
+                heavy, ancients rare, a bush fringe), hflip alternating;
+      lights    all BASE (unlit) pieces — the engine's budget is 8 point
+                lights per camera window (games2 check-light-budget) and the
+                forest must cost ZERO of them.
+    """
+    import os as _os
+    trees = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "trees"))
+                   if _os.path.isdir(_os.path.join(REPO, "scenery", "trees", d)))
+    ancients = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "ancient_trees"))
+                      if _os.path.isdir(_os.path.join(REPO, "scenery", "ancient_trees", d)))
+    bushes = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "bushes"))
+                    if _os.path.isdir(_os.path.join(REPO, "scenery", "bushes", d)))
+    sx, sy = spawn
+
+    def grass_flat(x, y):
+        if not (0 <= x < W and 0 <= y < H) or mat[y][x] != "grass":
+            return False
+        z = lvl[y][x]
+        return all(0 <= x + dx < W and 0 <= y + dy < H and lvl[y + dy][x + dx] == z
+                   for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+
+    def clear(x, y):
+        if abs(x - sx) + abs(y - sy) <= 12:
+            return False
+        for dx in (-2, -1, 0, 1, 2):
+            for dy in (-2, -1, 0, 1, 2):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < W and 0 <= ny < H and mat[ny][nx] in (
+                        "light_soil", "dark_mud", "brown_paving_stone",
+                        "grey_paving_stone", "parquet_floor"):
+                    return False
+        return True
+
+    seeds = [(int(p["x"]), int(p["y"])) for p in scen
+             if p["piece"].startswith(("trees/", "ancient_trees/"))
+             and mat[int(p["y"])][int(p["x"])] == "grass"]
+    # three broad open-grass interiors as new heartwoods (deterministic scan)
+    best = []
+    for y in range(8, H - 8, 6):
+        for x in range(8, W - 8, 6):
+            if not grass_flat(x, y) or not clear(x, y):
+                continue
+            score = sum(grass_flat(x + dx, y + dy)
+                        for dx in range(-6, 7, 3) for dy in range(-6, 7, 3))
+            best.append((score, x, y))
+    best.sort(reverse=True)
+    hearts = []
+    for sc, x, y in best:
+        if sc < 20:
+            break
+        if all(abs(x - hx) + abs(y - hy) > 40 for hx, hy in hearts):
+            hearts.append((x, y))
+        if len(hearts) >= 3:
+            break
+    seeds += hearts
+    WOOD_R = 9
+    out, taken = [], {(int(p["x"]), int(p["y"])) for p in scen}
+    for y in range(0, H, 2):
+        for x in range(0, W, 2):
+            r = _rng32((x * 2654435761) ^ (y * 40503) ^ 0x5eed)
+            d2 = min(((x - ax) ** 2 + (y - ay) ** 2 for ax, ay in seeds), default=10**9)
+            if d2 > WOOD_R * WOOD_R:
+                continue
+            edge = d2 > (WOOD_R - 3) ** 2
+            if r() > (0.42 if not edge else 0.22):
+                continue
+            jx, jy = x + int(r() * 2), y + int(r() * 2)
+            if not grass_flat(jx, jy) or not clear(jx, jy) or (jx, jy) in taken:
+                continue
+            taken.add((jx, jy))
+            u = r()
+            if edge and u < 0.30:
+                grp, pool = "bushes", bushes
+            elif u < 0.06:
+                grp, pool = "ancient_trees", ancients
+            else:
+                grp, pool = "trees", trees
+            pick = pool[int(r() * len(pool)) % len(pool)]
+            out.append({"piece": f"{grp}/{pick}",
+                        "x": jx + 0.25 + round(r() * 0.5, 2),
+                        "y": jy + 0.25 + round(r() * 0.5, 2),
+                        "hflip": r() < 0.5})
+    return out
+
+
+def _light_audit(scen):
+    """THE ENGINE'S LIGHT BUDGET (games2/scripts/check-light-budget.mjs): 8
+    point-light slots per worst-case camera window (899x774 px, each light
+    grown by its reach). Mirrored here for worlds3 so a scenery pass can never
+    ship a scene the engine has to degrade. Radius assumed campfire-class (7
+    cells) for lit scenery until scenery publishes real radii."""
+    import math
+    VIEW_W, VIEW_H, SLOTS, RAD = 899, 774, 8, 7
+    RX, RY = math.sqrt(2) * 32 * RAD, math.sqrt(2) * 15 * RAD
+    lit = []
+    for p in scen:
+        d = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
+        if d.get("lights") == "LIGHTS_ON":
+            lit.append(((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15))
+    worst = 0
+    for (cx, cy) in lit:
+        n = sum(1 for (ox, oy) in lit
+                if abs(ox - cx) <= VIEW_W / 2 + RX and abs(oy - cy) <= VIEW_H / 2 + RY)
+        worst = max(worst, n)
+    assert worst <= SLOTS, (
+        f"LIGHT BUDGET BLOWN: {worst} lit scenery pieces share one camera "
+        f"window — the engine has {SLOTS} slots (check-light-budget). Unlight "
+        f"or spread them.")
+    return len(lit), worst
+
+
 def build():
     src = json.load(open(os.path.join(MAPS2, "worlds", "the_island2", "world.json")))
     W, H, mat, lvl = _grid(src)
     _deep_water(W, H, mat)
     fen = _fen(W, H, mat, lvl)
     floors, walls = _houses(src, mat)
+    walls += _terrain_walls(W, H, mat, lvl)
     yard = _yard(src, mat, lvl)
     scen = _scenery(src)
+    scen += _forests(W, H, mat, lvl, scen, (int(src["spawn"][0]), int(src["spawn"][1])))
+    nlit, worst = _light_audit(scen)
 
     grounds = sorted({m for row in mat for m in row if m})
     gi = {g: i for i, g in enumerate(grounds)}
@@ -295,8 +474,9 @@ def build():
         json.dump(doc, f, separators=(",", ":"))
     from collections import Counter
     c = Counter(m for row in mat for m in row if m)
-    print(f"the_game: {W}x{H}, {len(grounds)} grounds, {len(scen)} scenery, "
-          f"{len(decks)} decks | fen {fen}, floors {floors}, yard {yard}")
+    print(f"the_game: {W}x{H}, {len(grounds)} grounds, {len(scen)} scenery "
+          f"({nlit} lit, worst window {worst}/8), {len(decks)} decks | "
+          f"fen {fen}, floors {floors}, yard {yard}")
     for g, n in c.most_common():
         print(f"   {g:20s} {n}")
     return doc
