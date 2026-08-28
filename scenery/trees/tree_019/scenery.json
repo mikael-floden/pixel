@@ -37,7 +37,26 @@
       "pixellab_object_id": "2ec1e112-c600-45e4-a41a-9233cd0792aa",
       "difference_from_source": 0.2837,
       "glow_score": 0.0204,
-      "generated_at": "2026-08-14T14:55:16+00:00"
+      "generated_at": "2026-08-14T14:55:16+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "b7bed1cc-8b44-4d22-9cfd-a50058d19613",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/lit_1/animations/wind/00.webp",
+            "trees/tree_019/lit_1/animations/wind/01.webp",
+            "trees/tree_019/lit_1/animations/wind/02.webp",
+            "trees/tree_019/lit_1/animations/wind/03.webp",
+            "trees/tree_019/lit_1/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/lit_1/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:54+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "trees/tree_019/lit_2/sprite.webp",
@@ -45,7 +64,26 @@
       "glow_concept": "pale blossoms shining faintly across the branches",
       "difference_from_source": 0.5201,
       "glow_score": 0.1651,
-      "generated_at": "2026-08-15T12:06:12+00:00"
+      "generated_at": "2026-08-15T12:06:12+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "fd2c4c86-631c-4866-ad74-4467d8c2a561",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/lit_2/animations/wind/00.webp",
+            "trees/tree_019/lit_2/animations/wind/01.webp",
+            "trees/tree_019/lit_2/animations/wind/02.webp",
+            "trees/tree_019/lit_2/animations/wind/03.webp",
+            "trees/tree_019/lit_2/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/lit_2/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:37+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "trees/tree_019/lit_3/sprite.webp",
@@ -53,7 +91,26 @@
       "glow_concept": "iron lantern hung from a low branch",
       "difference_from_source": 0.3671,
       "glow_score": 0.0044,
-      "generated_at": "2026-08-14T16:05:39+00:00"
+      "generated_at": "2026-08-14T16:05:39+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "e4543c7c-d78c-47eb-a2bc-702bcc1d8785",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/lit_3/animations/wind/00.webp",
+            "trees/tree_019/lit_3/animations/wind/01.webp",
+            "trees/tree_019/lit_3/animations/wind/02.webp",
+            "trees/tree_019/lit_3/animations/wind/03.webp",
+            "trees/tree_019/lit_3/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:07:34+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "trees/tree_019/lit_4/sprite.webp",
@@ -61,13 +118,51 @@
       "glow_concept": "golden sap veins glowing through bark cracks",
       "difference_from_source": 0.287,
       "glow_score": 0.0205,
-      "generated_at": "2026-08-14T16:05:39+00:00"
+      "generated_at": "2026-08-14T16:05:39+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "638fa40f-a780-4c54-83af-3f757752e3d4",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/lit_4/animations/wind/00.webp",
+            "trees/tree_019/lit_4/animations/wind/01.webp",
+            "trees/tree_019/lit_4/animations/wind/02.webp",
+            "trees/tree_019/lit_4/animations/wind/03.webp",
+            "trees/tree_019/lit_4/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/lit_4/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:07:03+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "trees/tree_019/sprite.webp",
       "pixellab_object_id": "ded2c906-787a-4e5b-b938-e6386454601b",
       "glow_score": 0.0009,
-      "generated_at": "2026-08-14T01:34:32+00:00"
+      "generated_at": "2026-08-14T01:34:32+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "89498e84-0527-4019-9fec-46fde7386546",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/animations/wind/00.webp",
+            "trees/tree_019/animations/wind/01.webp",
+            "trees/tree_019/animations/wind/02.webp",
+            "trees/tree_019/animations/wind/03.webp",
+            "trees/tree_019/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:29+00:00"
+        }
+      }
     },
     "NOT_LIT_10": {
       "sprite": "trees/tree_019/not_lit_10/sprite.webp",
@@ -75,35 +170,130 @@
       "glow_concept": null,
       "difference_from_source": 0.8298,
       "glow_score": 0.0006,
-      "generated_at": "2026-08-14T16:07:41+00:00"
+      "generated_at": "2026-08-14T16:07:41+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "bd44bbce-bbc6-4037-b3d6-cad05f7c7d09",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_10/animations/wind/00.webp",
+            "trees/tree_019/not_lit_10/animations/wind/01.webp",
+            "trees/tree_019/not_lit_10/animations/wind/02.webp",
+            "trees/tree_019/not_lit_10/animations/wind/03.webp",
+            "trees/tree_019/not_lit_10/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_10/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:45+00:00"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "trees/tree_019/not_lit_2/sprite.webp",
       "pixellab_object_id": "49045b5d-9ef9-410f-829c-3808104ca41a",
       "difference_from_source": 0.864,
       "glow_score": 0.0,
-      "generated_at": "2026-08-14T14:55:16+00:00"
+      "generated_at": "2026-08-14T14:55:16+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "be65d94d-bf6b-4a6e-a8de-57281431f933",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_2/animations/wind/00.webp",
+            "trees/tree_019/not_lit_2/animations/wind/01.webp",
+            "trees/tree_019/not_lit_2/animations/wind/02.webp",
+            "trees/tree_019/not_lit_2/animations/wind/03.webp",
+            "trees/tree_019/not_lit_2/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_2/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:54+00:00"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "trees/tree_019/not_lit_3/sprite.webp",
       "pixellab_object_id": "218561f0-f4ba-4e24-88c6-5725a879b20a",
       "difference_from_source": 0.2989,
       "glow_score": 0.0012,
-      "generated_at": "2026-08-14T11:05:54+00:00"
+      "generated_at": "2026-08-14T11:05:54+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "745e9614-d69c-4ae3-8f0a-ff2e7981fc0b",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_3/animations/wind/00.webp",
+            "trees/tree_019/not_lit_3/animations/wind/01.webp",
+            "trees/tree_019/not_lit_3/animations/wind/02.webp",
+            "trees/tree_019/not_lit_3/animations/wind/03.webp",
+            "trees/tree_019/not_lit_3/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:07:12+00:00"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "trees/tree_019/not_lit_4/sprite.webp",
       "pixellab_object_id": "ee9bdbdd-61d6-4f70-9d38-5fc97917e702",
       "difference_from_source": 0.3007,
       "glow_score": 0.0009,
-      "generated_at": "2026-08-14T11:08:57+00:00"
+      "generated_at": "2026-08-14T11:08:57+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "c7aec7b9-ac22-4579-8817-651682d830eb",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_4/animations/wind/00.webp",
+            "trees/tree_019/not_lit_4/animations/wind/01.webp",
+            "trees/tree_019/not_lit_4/animations/wind/02.webp",
+            "trees/tree_019/not_lit_4/animations/wind/03.webp",
+            "trees/tree_019/not_lit_4/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_4/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:07:43+00:00"
+        }
+      }
     },
     "NOT_LIT_5": {
       "sprite": "trees/tree_019/not_lit_5/sprite.webp",
       "pixellab_object_id": "c6a2fdf5-0ffc-4f33-a217-753b2d115d48",
       "difference_from_source": 0.23,
       "glow_score": 0.001,
-      "generated_at": "2026-08-14T11:08:57+00:00"
+      "generated_at": "2026-08-14T11:08:57+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "86feb1fa-012d-490d-949b-f884c6339ed7",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_5/animations/wind/00.webp",
+            "trees/tree_019/not_lit_5/animations/wind/01.webp",
+            "trees/tree_019/not_lit_5/animations/wind/02.webp",
+            "trees/tree_019/not_lit_5/animations/wind/03.webp",
+            "trees/tree_019/not_lit_5/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_5/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:46+00:00"
+        }
+      }
     },
     "NOT_LIT_6": {
       "sprite": "trees/tree_019/not_lit_6/sprite.webp",
@@ -111,7 +301,26 @@
       "glow_concept": null,
       "difference_from_source": 0.2883,
       "glow_score": 0.0016,
-      "generated_at": "2026-08-14T16:02:03+00:00"
+      "generated_at": "2026-08-14T16:02:03+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "f4c376c0-2852-4792-a9b6-2920fab4591b",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_6/animations/wind/00.webp",
+            "trees/tree_019/not_lit_6/animations/wind/01.webp",
+            "trees/tree_019/not_lit_6/animations/wind/02.webp",
+            "trees/tree_019/not_lit_6/animations/wind/03.webp",
+            "trees/tree_019/not_lit_6/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_6/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:30+00:00"
+        }
+      }
     },
     "NOT_LIT_7": {
       "sprite": "trees/tree_019/not_lit_7/sprite.webp",
@@ -119,7 +328,26 @@
       "glow_concept": null,
       "difference_from_source": 0.8842,
       "glow_score": 0.0,
-      "generated_at": "2026-08-14T16:05:39+00:00"
+      "generated_at": "2026-08-14T16:05:39+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "435402c4-37e0-426e-b94d-81a69e06d616",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_7/animations/wind/00.webp",
+            "trees/tree_019/not_lit_7/animations/wind/01.webp",
+            "trees/tree_019/not_lit_7/animations/wind/02.webp",
+            "trees/tree_019/not_lit_7/animations/wind/03.webp",
+            "trees/tree_019/not_lit_7/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_7/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:46+00:00"
+        }
+      }
     },
     "NOT_LIT_8": {
       "sprite": "trees/tree_019/not_lit_8/sprite.webp",
@@ -127,7 +355,26 @@
       "glow_concept": null,
       "difference_from_source": 0.3392,
       "glow_score": 0.0017,
-      "generated_at": "2026-08-14T16:05:39+00:00"
+      "generated_at": "2026-08-14T16:05:39+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "83440e63-4975-4db4-9419-857d34e50531",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_8/animations/wind/00.webp",
+            "trees/tree_019/not_lit_8/animations/wind/01.webp",
+            "trees/tree_019/not_lit_8/animations/wind/02.webp",
+            "trees/tree_019/not_lit_8/animations/wind/03.webp",
+            "trees/tree_019/not_lit_8/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_8/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:06:38+00:00"
+        }
+      }
     },
     "NOT_LIT_9": {
       "sprite": "trees/tree_019/not_lit_9/sprite.webp",
@@ -135,7 +382,26 @@
       "glow_concept": null,
       "difference_from_source": 0.4105,
       "glow_score": 0.001,
-      "generated_at": "2026-08-14T16:05:39+00:00"
+      "generated_at": "2026-08-14T16:05:39+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "d1684679-aa72-40c3-89f0-5dcd4e6ec9ee",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_019/not_lit_9/animations/wind/00.webp",
+            "trees/tree_019/not_lit_9/animations/wind/01.webp",
+            "trees/tree_019/not_lit_9/animations/wind/02.webp",
+            "trees/tree_019/not_lit_9/animations/wind/03.webp",
+            "trees/tree_019/not_lit_9/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_019/not_lit_9/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T13:07:11+00:00"
+        }
+      }
     }
   },
   "must_be_imbplemented_with_random_hflip": true
