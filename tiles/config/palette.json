@@ -1,497 +1,542 @@
 {
-  "schema": "tiles3/palette@1",
-  "_comment": "The game's palette, taken from tiles2 rather than from the generator. tiles2 re-tints its whole tileset to the HUD's muted-forest theme via postprocess.palette (grass and dirt are colours the DESIGNER supplied); an earlier tiles 3.0 palette was measured from what PixelLab happens to produce, which is the generator's average and not an art direction at all. That is why 3.0 grass came out a bright yellow-green (#64b84d, hue 107deg) against 2.0's deep pine (hue 166deg) \u2014 90 luminance apart. Values here are tiles2's ACTUAL APPEARANCE, not its configured target: 2.0 harmonises hue/sat while keeping each pixel's own value, so its art lands well above its target, and a flat 3.0 top has to match what the eye sees.",
-  "types": {
-    "grass": {
-      "top": "#14523b",
-      "source": "the maintainer's ladder pick, 2026-08-20: 75% from the 50%-blend toward tiles2/saturated_grass \u2014 they circled the column on a five-step preview ('The grass color is important becouse we will have a lot of grass in the game')",
-      "wall": "#14644e",
-      "wall_n": 7,
-      "transition_surface": "own"
-    },
-    "snow": {
-      "top": "#ebf4f6",
-      "source": "reference tile tiles/matrix/snow__over__snow/sheet_01_explicit/tile_05.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#c7d4d9",
-      "wall_n": 7,
-      "transition_surface": "own"
-    },
-    "ice": {
-      "top": "#99ced1",
-      "source": "reference tile tiles/matrix/ice__over__ice/sheet_00_maintainer/tile_00.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#6eacb2",
-      "wall_n": 7,
-      "transition_surface": "own"
-    },
-    "black_rock": {
-      "top": "#1e1d1e",
-      "source": "reference tile tiles/matrix/black_rock__over__black_rock/sheet_02_chase2/tile_03.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#212122",
-      "wall_n": 7,
-      "kill_highlight": true,
-      "kill_note": "the set of top materials whose edge carries NO highlight \u2014 'black-rock over black-rock #6 ... looks extremely good becouse we have no highlight at all ... If the type on top is black-rock. Always try to get rid of the entire highlight.' soften_rim runs in kill mode for every cell with this material on top: grey glow above the brighter surface fades fully into it, no margin, no kept excess.",
-      "transition_surface": "flat"
-    },
-    "light_beach": {
-      "top": "#e4c495",
-      "source": "reference tile tiles/matrix/light_beach__over__light_beach/sheet_02_same2_18712/tile_05.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#ab9274",
-      "wall_n": 7,
-      "transition_surface": "own"
-    },
-    "grey_stone": {
-      "top": "#808082",
-      "source": "reference tile tiles/matrix/grey_stone__over__grey_stone/sheet_00_chase0/tile_09.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#45474b",
-      "wall_n": 6,
-      "ramp": [
-        "#22252c",
-        "#33373d",
-        "#585a5f",
-        "#727272",
-        "#8c8c8c",
-        "#949599"
-      ],
-      "ramp_note": "the maintainer's #71 reference's own greys, dark grout to lit stone \u2014 added when single-hex wall substitution sank a light drawn wall onto the dark wall hex: 'Why did you turn the grey stone so dark? The grey stone looks really bad like that.'",
-      "transition_surface": "flat"
-    },
-    "light_soil": {
-      "top": "#c9ab7e",
-      "source": "reference tile tiles/matrix/light_soil__over__light_soil/sheet_02_same2_10066/tile_14.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#9d784b",
-      "wall_n": 6,
-      "flat_top_note": "Shown a road drawn with light_soil flat and with light_soil given the WALL's own treatment (flat_top false -> substitute with a value spread, 3 colours on the top face becoming 13), the maintainer chose FLAT: 'First is what I want.' The ask that prompted the test - 'when you postprocess the tile you should let the tile have texture' and 'I don't want any palette to only have 2 colors' - was answered by looking at it. Do not re-open: a clean top is the default AND the verdict for ground, and the textured route stays reserved for parquet_floor and the paving twins. (Also settled there: the walls he likes are 21 tones because postprocess never flattens them; the top face is 96% one colour by design, not by omission.)",
-      "transition_surface": "own"
-    },
-    "dark_mud": {
-      "top": "#514137",
-      "source": "reference tile tiles/matrix/dark_mud__over__dark_mud/sheet_11_same2_11397/tile_15.png \u2014 the maintainer's chosen look for this material (recovered: the entry recorded the review SLOT 0_before.webp, which renumbers on every republish)",
-      "wall": "#3b2f28",
-      "wall_n": 6,
-      "ramp": [
-        "#1f1813",
-        "#302623",
-        "#44362f",
-        "#4d3b31",
-        "#5a473b",
-        "#66554b"
-      ],
-      "ramp_note": "The reference tile's own browns, dark to light \u2014 the maintainer picked it FOR the range: 'the ref has several colors of brown ... you have managed to get everything into a single brown color. I don't like that.' Substitution maps overhang and wall pixels into these stops instead of forcing one hue.",
-      "transition_surface": "flat"
-    },
-    "parquet_floor": {
-      "top": "#a7754b",
-      "source": "reference tile tiles/matrix/parquet_floor__over__parquet_floor/sheet_02_same2_18715/tile_15.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#684934",
-      "wall_n": 6,
-      "flat_top": false,
-      "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'",
-      "claim_lip": 4,
-      "claim_lip_note": "'Parquet Floor should have a overhang looking like a list/border' / 'Parquet Floor lacks overhang border' - reported on lava, light beach and light soil, and 1-starred across the group. A laid floor ends in a moulding: the top 4 wall rows are the wood's wherever parquet is the top material. Type-level, so it cannot be forgotten on a new pair.",
-      "transition_surface": "base",
-      "base_tiles": [
-        "tiles/review/parquet_floor__over__parquet_floor/0_after.webp"
-      ]
-    },
-    "paving_stone": {
-      "top": "#7d7265",
-      "wall": "#5c544b",
-      "_comment": "GENERATION alias only. The matrix keeps generating under this name (tiles.json ground_types is unchanged); publish expands it into brown_paving_stone and grey_paving_stone via their generated_as fields and never publishes a cell under this name. Hexes mirror the brown nomination so chase.py's quality gating stays consistent.",
-      "transition_surface": "base",
-      "base_tiles": [
-        "tiles/review/paving_stone__over__paving_stone/0_after.webp"
-      ]
-    },
-    "water": {
-      "top": "#7eb7c7",
-      "source": "reference tile tiles/matrix/water__over__water/sheet_01_same1_18719/tile_14.png \u2014 the maintainer's chosen look for this material",
-      "wall": "#4c8a98",
-      "wall_n": 6,
-      "transition_surface": "flat"
-    },
-    "deep_water": {
-      "top": "#162843",
-      "source": "wall of reference tile tiles/matrix/grass__over__deep_water/sheet_02_chase2/tile_04.png (grass over deep_water) \u2014 the maintainer's chosen look for this material; top reconstructed from deep_water same-over-same lit/shaded ratio (n=6)",
-      "wall": "#102235",
-      "wall_n": 6,
-      "transition_surface": "flat"
-    },
-    "lava": {
-      "top": "#fd5a02",
-      "source": "the TOP of tiles/matrix/lava__over__light_soil/sheet_05_chase5_32648/tile_13.png \u2014 nominated mid-review: 'The top of this tile is more like how I see the lava palette.'",
-      "wall": "#a73211",
-      "wall_n": 6,
-      "ramp": [
-        "#e2460f",
-        "#fd5a02",
-        "#fd6802",
-        "#fd7e08"
-      ],
-      "flat_top": true,
-      "ramp_note": "the nominated top's own tones, dark red to bright bubble highlight. Lava was flat-filled with a single orange (#fb7f10) \u2014 'I feel we paint a single orange color. As if lava has no own palette. Lava is also more red than orange.' flat_top false keeps the bubbling texture; the ramp keeps the range; the base is redder.",
-      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
-      "transition_surface": "flat"
-    },
-    "slime": {
-      "top": "#31bd75",
-      "source": "the slime WALL of tiles/matrix/grass__over__slime/sheet_04_chase4/tile_06.png \u2014 nominated mid-review: 'The bottom in that image (not the grass) is a ref slime color. Just make sure to not include the grass.'",
-      "wall": "#5b882d",
-      "wall_n": 6,
-      "ramp": [
-        "#0f5946",
-        "#117558",
-        "#2aa072",
-        "#31bd75",
-        "#3cd68a",
-        "#82e18e"
-      ],
-      "flat_top": true,
-      "ramp_note": "the nominated wall's own tones, deep shadow to pale sparkle, measured with the grass excluded (slime separates as the MINT family, b-r >= +32; grass is warm). The ramp APPLIES TO SLIME WALLS UNDER EVERY TOP: the committed, reviewed, beloved slime is this mint family, and nine of fourteen *__over__slime cells carry it. ramp_top_only once turned the side ramp OFF, which made every republished slime wall land on the olive wall hex instead - that is the 'publish.py no longer reproduces the committed slime' divergence of 2026-08-22, proven by removing the flag and republishing ice/water/grass over slime: 48 of 48 files byte-identical to the committed art. Five cells (grey_stone/light_beach/light_soil/parquet_floor/snow over slime) were published olive while the flag was set and will flip to mint on their next republish - toward the palette he loves, not away from it.",
-      "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
-      "transition_surface": "flat",
-      "PROTECTED": "THE SLIME PALETTE IS THE MAINTAINER'S FAVOURITE IN THE GAME AND IS NOT TO BE CHANGED OR REPAINTED. His words, 2026-08-22: 'THE SLIME IS THE COLOR PALETTE I'M MOST SATISFIED WITH. I LOVE IT. AND WANT IT TO STAY IN THIS GAME.' That means the hexes here AND the slime pixels in every published *__over__slime tile. Two 'scoped' pair_tweaks were reverted the same day for breaking it without anyone intending to: raising claim_lip on brown_paving_stone__over__slime and adding claim_depth to dark_mud__over__slime both re-ran the wall split, which re-centres substitute()'s statistics over the whole side region - so the slime wall moved from (42,160,114) vivid mint to (90,132,44) olive, 751 of 776 pixels, on a change that was only supposed to deepen a lip. ANY tweak touching a slime cell must be proved pixel-identical on the slime side before it ships: compare the slime-green wall pixels against the previous revision and require zero shift. Colour-family measures will not catch it - only a byte comparison will."
-    },
-    "brown_paving_stone": {
-      "top": "#7d7265",
-      "source": "reference tile tiles/matrix/black_rock__over__paving_stone/sheet_06_chase6_25758/tile_15.png \u2014 the maintainer's chosen look for this material, nominated by its WALL only: 'the ref should be #2 in Black Rock over paving stone. But only the paving stone part on that tile (not the black rock).'",
-      "wall": "#5c544b",
-      "ramp": [
-        "#443f3a",
-        "#4c463f",
-        "#62594f",
-        "#6d6356",
-        "#786e61",
-        "#8a8274"
-      ],
-      "ramp_note": "the ref wall's own tones, dark grout to lit brick, black-rock drips rejected nearest-of-two (55.7% of the wall). Chosen 'becouse the paving_stone on this image is so ugly and look so different compared to other paving_stones'; the top #7d7265 is projected from the wall by the lit/shaded ratio of 6 nominated materials.",
-      "flat_top": false,
-      "generated_as": "paving_stone",
-      "force_align_wall": true,
-      "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells.",
-      "transition_surface": "base",
-      "base_tiles": [
-        "tiles/review/brown_paving_stone__over__brown_paving_stone/0_after.webp"
-      ]
-    },
-    "grey_paving_stone": {
-      "top": "#a8a8a8",
-      "source": "reference tile tiles/matrix/paving_stone__over__paving_stone/sheet_01_same1_18717/tile_06.png \u2014 #8, the clean-line tile the maintainer pointed at when splitting paving into two types: 'The same paving_stone will generate both a brown and a grey version.'",
-      "wall": "#8a8a8a",
-      "ramp": [
-        "#4a4a4a",
-        "#636363",
-        "#7b7b7b",
-        "#8f8f8f",
-        "#a3a3a3",
-        "#b8b8b8"
-      ],
-      "ramp_note": "LIGHT and NEUTRAL by the maintainer's direction, not measured: the ref's own paint carries a blue undertone (#68686e, b-r +6) and its weight sits in the mid-darks, so a measured ramp read 'dark with small tint of blue'. These stops are pure greys with a lighter centre of gravity \u2014 the maintainer's 'light grey paving stone', literally.",
-      "flat_top": false,
-      "generated_as": "paving_stone",
-      "force_align_wall": true,
-      "ramp_abs": true,
-      "transition_surface": "base",
-      "base_tiles": [
-        "tiles/review/grey_paving_stone__over__grey_paving_stone/0_after.webp"
-      ]
-    }
+ "schema": "tiles3/palette@1",
+ "_comment": "The game's palette, taken from tiles2 rather than from the generator. tiles2 re-tints its whole tileset to the HUD's muted-forest theme via postprocess.palette (grass and dirt are colours the DESIGNER supplied); an earlier tiles 3.0 palette was measured from what PixelLab happens to produce, which is the generator's average and not an art direction at all. That is why 3.0 grass came out a bright yellow-green (#64b84d, hue 107deg) against 2.0's deep pine (hue 166deg) \u2014 90 luminance apart. Values here are tiles2's ACTUAL APPEARANCE, not its configured target: 2.0 harmonises hue/sat while keeping each pixel's own value, so its art lands well above its target, and a flat 3.0 top has to match what the eye sees.",
+ "types": {
+  "grass": {
+   "top": "#14523b",
+   "source": "the maintainer's ladder pick, 2026-08-20: 75% from the 50%-blend toward tiles2/saturated_grass \u2014 they circled the column on a five-step preview ('The grass color is important becouse we will have a lot of grass in the game')",
+   "wall": "#14644e",
+   "wall_n": 7,
+   "transition_surface": "own",
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour"
   },
-  "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
-  "pair_tweaks": {
-    "_comment": "Per-cell overrides for pairs the global classifier cannot decide. The maintainer, on black_rock over ice: 'It's almost as if it's time to do special tweaks for each different tile vs tile. That's a safe way to tweak when the postprocessing is already very good.' Used only where colour genuinely cannot separate the materials \u2014 black rock draws as dark navy (#03101c) and shaded ice as dark blue (#17212f).",
-    "black_rock__over__ice": {
-      "claim_depth": 0.35,
-      "note": "the rock overhang on this pair hugs the top edge; claims deeper than a third of the face were shaded ice painted black \u2014 'black rock on the left wall that should have been ice (not the overhang, but under the overhang)'"
-    },
-    "black_rock__over__deep_water": {
-      "force_align": true,
-      "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
-    },
-    "dark_mud__over__deep_water": {
-      "force_align": true,
-      "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
-    },
-    "black_rock__over__grey_stone": {
-      "note": "claims stop at the lip (claim_depth) EXCEPT for drawn drips: below the lip a pixel is claimed iff it is strongly the top colour and connected to the lip through such pixels (deep_claim). The maintainer, on the beheaded overhangs: 'the overhang always starts from the edge ... Isn't it clear that this is still black_rock?' It is: measured on tile 17, drip pixels sit at 0.29-0.65 of the wall distance in the whitened space, the stones the cap protects at 1.49 \u2014 0.7 splits them with margin on both sides. The wall below still takes the grey_stone ramp.",
-      "claim_depth": 0.3,
-      "deep_claim": 0.7
-    },
-    "black_rock__over__dark_mud": {
-      "drip_match": 1,
-      "note": "the overhang, by the maintainer's definition: the top's own paint (cool \u2014 blue >= red; the mud is warm) connected to the top edge, allowed to jump the 1px drawn edge highlight; the highlight band itself is claimed with it and capped darker. Claims OVERWRITE the live wall paint, which is computed from the base classification \u2014 proven on all 31 candidates: zero pixels outside the claims differ from live ('WHAT WE HAVE IN GAME NOW HAS COLORED THE BOTTOM BROWN PERFECTLY ALREADY'). Approved: 'Your last post did it. It's Perfect now'"
-    },
-    "snow__over__brown_paving_stone": {
-      "claim_floor": 230,
-      "note": "the snow drape's drawn underside kept its dark relief through substitution and read as leftover grey paving on the new brown wall (the maintainer circled it). Claimed pixels are floored to near the snow paint's own brightness: the shadow shape survives, but it is snow-bright."
-    },
-    "brown_paving_stone__over__grey_paving_stone": {
-      "no_claims": true,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched.",
-      "side_ramp_abs": false
-    },
-    "grey_paving_stone__over__brown_paving_stone": {
-      "no_claims": true,
-      "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
-    },
-    "black_rock__over__slime": {
-      "claim_depth": 0.3,
-      "note": "the generator lights the right face darker, dark green leans toward the black anchor, and the flood claimed 57% of a wall that is pure green in the art ('made the right green wall black'). Claims stop at the lip, like ice and grey_stone before it."
-    },
-    "brown_paving_stone__over__deep_water": {
-      "claim_lip": 3,
-      "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
-    },
-    "grey_paving_stone__over__deep_water": {
-      "claim_lip": 3,
-      "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
-    },
-    "brown_paving_stone__over__water": {
-      "claim_lip": 3,
-      "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
-    },
-    "grey_paving_stone__over__water": {
-      "claim_lip": 3,
-      "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
-    },
-    "brown_paving_stone__over__grey_stone": {
-      "claim_lip": 3,
-      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
-      "claim_depth": 0.3
-    },
-    "grey_paving_stone__over__grey_stone": {
-      "claim_lip": 3,
-      "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
-      "claim_depth": 0.3
-    },
-    "brown_paving_stone__over__ice": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "shaded ice on the darker-lit face leans toward the paving anchor and the flood ate 40% of the right wall ('The right side wall got brown and should be ice'). The standard paving treatment: the brim is geometric (claim_lip) and the flood stops at the lip zone (claim_depth)."
-    },
-    "grey_paving_stone__over__ice": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "shaded ice on the darker-lit face leans toward the paving anchor and the flood ate 40% of the right wall ('The right side wall got brown and should be ice'). The standard paving treatment: the brim is geometric (claim_lip) and the flood stops at the lip zone (claim_depth)."
-    },
-    "brown_paving_stone__over__lava": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit lava face leans toward the paving anchor and turns brown ('The left lava wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "grey_paving_stone__over__lava": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit lava face leans toward the paving anchor and turns brown ('The left lava wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "brown_paving_stone__over__slime": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "grey_paving_stone__over__slime": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "brown_paving_stone__over__light_soil": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit face leans toward the paving anchor \u2014 here the paving's own overhang went the OTHER way and painted as soil ('The left side overhang is light soil'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "grey_paving_stone__over__light_soil": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "the darker-lit face leans toward the paving anchor \u2014 here the paving's own overhang went the OTHER way and painted as soil ('The left side overhang is light soil'). The standard paving treatment: geometric brim, flood stops at the lip zone."
-    },
-    "brown_paving_stone__over__snow": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "bluish snow shadow at the very bottom measured closer to greige than to WHITE snow \u2014 brightness dominates the comparison \u2014 and a lean chain crawled to the floor: 'It's snow down there! ... blue is far away from brown as well.' The maintainer's prior is the rule: the bottom of the wall is the wall. Geometric brim, flood stops at the lip zone."
-    },
-    "grey_paving_stone__over__snow": {
-      "claim_lip": 3,
-      "claim_depth": 0.3,
-      "note": "bluish snow shadow at the very bottom measured closer to greige than to WHITE snow \u2014 brightness dominates the comparison \u2014 and a lean chain crawled to the floor: 'It's snow down there! ... blue is far away from brown as well.' The maintainer's prior is the rule: the bottom of the wall is the wall. Geometric brim, flood stops at the lip zone."
-    },
-    "grey_stone__over__ice": {
-      "claim_depth": 0.3,
-      "note": "shaded ice leans toward the grey stone anchor and the flood painted it stone ('Grey stone over ice painted grey on the ice wall'). Claims stop at the lip, the same cap black_rock over ice has carried all along."
-    },
-    "grey_stone__over__lava": {
-      "claim_depth": 0.3,
-      "note": "the darker lava face leans toward the grey stone anchor and the flood painted it stone ('grey stone over lava. makes the lava wall grey.'). Claims stop at the lip."
-    },
-    "grey_stone__over__parquet_floor": {
-      "side_band": 999,
-      "note": "the parquet's drawn varnish glints sit far above the wall's median value, the alien band shipped them raw, and they pop ('shiny pixels that doesn't get converted to parquet floor'). On this pair every side pixel paints; the relief clamp bounds how bright a glint can come back."
-    },
-    "ice__over__grass": {
-      "claim_depth": 0.3,
-      "note": "shaded grass leans toward the pale ice anchor and the flood iced the wall ('The ice over grass makes the grass wall into ice'). Claims stop at the lip."
-    },
-    "ice__over__lava": {
-      "claim_depth": 0.3,
-      "note": "two failures at once: the generator draws a THICK ice slab whose side is most of the wall, and the flood then ran on through it into the genuinely hot red below ('It's ICE over LAVA and the bottom is HOT RED. Your code turned that into..... ICE!!!'). The cell means wall-of-lava, so everything below the lip paints as lava."
-    },
-    "ice__over__brown_paving_stone": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__dark_mud": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__deep_water": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__grey_paving_stone": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__light_beach": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__light_soil": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__parquet_floor": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__slime": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__snow": {
-      "claim_depth": 0.3,
-      "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
-    },
-    "ice__over__water": {
-      "claim_depth": 0.3,
-      "note": "the tenth ice cell to lean \u2014 it measured mildest in the sweep (17% mean) but the right faces still iced over ('ice over water makes the water wall on the very right turn ice'). Claims stop at the lip like its nine siblings. And the inverse on the same pair \u2014 the water repaint covered the drawn icy overhang ('The water also extends over the ice overhang') \u2014 is fixed by the geometric lip: the top 3 wall rows are the ice's, unconditionally. Scoped to this pair only, as instructed: 'This is a ice over water fix only!' | 2026-08-22: 'The ice overhang in ice over water sometimes doesn't follow the ice crustals all the way.' claim_lip 3 is a straight 3-row RIBBON, and the generator draws icicles hanging well past it, so the ribbon sliced their tips off and the water repaint took them. deep_claim is the documented companion to the cap ('THE CAP CUTS DRIPS TOO'): below the lip a pixel is claimed iff it is strongly the top colour AND still reachable from the claim, so a real icicle hangs and an honestly watery pixel does not. 1.8 is where it plateaus - swept 0.8/1.3/1.8/2.3 and the wall claimed goes 23% -> 25% total (left 22->24, right 24->27) then stops moving, so it follows the crystals without reopening the over-claim this cell's claim_depth exists to stop. NOT a new bug: this cell's art was byte-identical to the morning backup.",
-      "claim_lip": 3,
-      "deep_claim": 1.8
-    },
-    "lava__over__ice": {
-      "claim_depth": 0.3,
-      "note": "lava claims ran down the ice wall ('Lava also paints where it should be ICE (lava on top)'). Claims stop at the lip."
-    },
-    "lava__over__light_beach": {
-      "claim_depth": 0.3,
-      "note": "lava claims painted beach spots on the wall ('Here lava thinks light beach is lava'). Claims stop at the lip. This pair only, as instructed."
-    },
-    "light_beach__over__ice": {
-      "claim_depth": 0.3,
-      "note": "sand claims ran to the wall base through the ice ('draws the light beach all the way down to the bottom (where ice should have been first to occupy the color white)'). Claims stop at the lip. Local fix only, as instructed."
-    },
-    "light_soil__over__parquet_floor": {
-      "claim_depth": 0.3,
-      "note": "'Lots of light soil overhang to the left that is deep brown wood' / 'The brown overhang to the left is missing'. The claim_depth 0.3 cap added here earlier - for the opposite complaint, soil bleeding down the RIGHT wall - also removed the legitimate brim on the left. The lip restores the brim without re-flooding the wall: cap and lip do different jobs and both apply.",
-      "claim_lip": 3
-    },
-    "light_soil__over__slime": {
-      "claim_lip": 3,
-      "note": "the slime repaint covered the soil's drawn overhang ('the slime renders on the light soils overhang to the left'). The top 3 wall rows are the soil's, geometrically."
-    },
-    "parquet_floor__over__brown_paving_stone": {
-      "claim_depth": 0.3,
-      "note": "wood claims painted the paving wall ('brown wood on the right stone wall'). Claims stop at the lip."
-    },
-    "parquet_floor__over__grass": {
-      "claim_depth": 0.3,
-      "note": "wood claims painted the grass wall ('brown on the green wall to the right'). Claims stop at the lip."
-    },
-    "parquet_floor__over__light_beach": {
-      "claim_depth": 0.3,
-      "note": "wood claims streaked down the sand wall ('Parquet Floor over light beach got issues (marked in red)'). Claims stop at the lip."
-    },
-    "parquet_floor__over__light_soil": {
-      "claim_depth": 0.3,
-      "note": "wood claims on the soil wall ('Parquet Floor over light soil also got issues'). Claims stop at the lip."
-    },
-    "slime__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "the wall shipped as a flat slab ('Slime over grey paving stone makes the grey paving stone texture disappear'): grey_paving's ramp_abs maps this cell's dark source walls into a single stop's basin and the in-basin relief is the texture. Relative relief instead \u2014 this pair only."
-    },
-    "slime__over__lava": {
-      "claim_lip": 3,
-      "note": "lip 3, and it STAYS at 3. Raising it to 7 to chase 'lava has taken over the left slime overhang' made the tile WORSE and the maintainer named the reason exactly: 'Looks like you have destroyed the image by drawing a line and change color based on over/under. We have tried this before and of course it's not that easy. You try to simplify something that cannot be simplified.' claim_lip IS a geometric row cut - it takes the top N wall rows whatever the art draws. At 3 that reads as a thin brim following the drape; past that it reads as a horizontal line slicing the tile by row. NEVER raise this to chase drape depth: the drape needs a shape-aware claim, not a deeper cut."
-    },
-    "snow__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'Snow over grey paving stone. Same here.' \u2014 the same crush as slime__over__grey_paving_stone: absolute stops clamp the lit stone caps into the mid-greys (p90 123 shipped vs 143-184 in the art's own relief). Relative relief instead \u2014 this pair only."
-    },
-    "snow__over__light_beach": {
-      "claim_depth": 0.3,
-      "note": "snow claims ran down the sand ('Snow over light beach has a lot of snow of the right sand beach wall'). Claims stop at the lip \u2014 the brim the art draws stays, the flood goes. This pair only."
-    },
-    "black_rock__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone looks very very wrong and dark when Black Rock is over' \u2014 the wall was not mis-shaded, it was CLAIMED: 74% of the wall band shipped near-black, where every other black_rock pair sits at 0.38-0.57 and deep water over the same paving sits at 0.15. The rock's overhang flood ran the whole face. Claims stop at the lip; the drawn overhang stays, the stones come back (74% -> 43%, in line with its siblings). This pair only.",
-      "claim_depth": 0.3
-    },
-    "dark_mud__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
-    },
-    "deep_water__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
-    },
-    "grass__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
-    },
-    "parquet_floor__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
-    },
-    "water__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
-    },
-    "light_soil__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "claim_lip": 3,
-      "note": "two reports on this cell: 'Should be light beach at the left overhang! It's grey now!' and 'Some grey paving stones are also very dark'. The lip gives the soil its brim back (top 3 wall rows are the top material's, unconditionally); dropping absolute side mapping lifts the wall out of the dark stops (median 99 -> 123). This cell was one of five deliberately left on absolute mapping because it carried stars - the maintainer has now reported it, so it joins the rest."
-    },
-    "lava__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 99 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
-    },
-    "grey_stone__over__grey_paving_stone": {
-      "side_ramp_abs": false,
-      "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 114 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
-    },
-    "slime__over__grass": {
-      "force_align": true,
-      "note": "'The grass is not colored to our grass in this image' - every tile in the set measures wall_err 39-46 against the gate of 30, so the grass wall shipped RAW in the generator's olive-yellow instead of our deep green. Same override the maintainer sanctioned for deep water: the wall material is not in question here, only its drawn colour. Olive share 0.21 -> 0.00."
-    },
-    "dark_mud__over__slime": {
-      "reclaim_left_wall": true,
-      "note": "'The left slime wall is light brown redish? Bottom left wall should be green.' The darker-lit LEFT wall face sits closer to the mud anchor than to slime's own wall, so the split hands it over - 16 of 17 rows wrongly brown, against a correct 6-row brim on the right face. fix_left_wall.reclaim_left_wall converts only the body: the brim depth is measured per column on the RIGHT face and protected on the left, and the bottom row of each column stays brown. It repaints nothing - the converted pixels take a colour already in the tile, rank-matched and rescaled to the face's own brightness. APPLIED DIRECTLY to the published art, never via a publish run: publish.py no longer reproduces the committed slime (a fresh run turns vivid mint 49,189,117 into olive 94,138,46 with no tweak at all), and slime is PROTECTED."
-    },
-    "deep_water__over__grass": {
-      "relight_faces": true,
-      "note": "'I have painted RED on the overhang that should be deep_water, but currently is green/grass. I also marked in purple what should be grass so you don't take too much.' The generator draws the water droop on BOTH faces - the prompt asks for it - but the wall split measured every drape against an anchor taken on the fully lit TOP face, so on the shaded left face the water read as far from its own material and was handed to grass: 90% of the drawn water kept on the right face, 5% on the left. relight_faces scales that anchor to each face's own lighting, read off the side material because it is the one thing drawn on both faces, and only where the palette confirms it really is the side material - this cell's left drape covers 74% of its face, so an unfiltered median would measure the WATER and call the face bright. Result: left 5% -> 94%, right unchanged, and ZERO grass pixels claimed, which is the purple half of the instruction. OPT-IN, because refereed library-wide on a lighting-invariant hue metric it is a wash that makes left/right asymmetry worse (7.8% -> 9.8%, 42 tiles better and 29 worse)."
-    },
-    "deep_water__over__slime": {
-      "claim_depth": 0.4,
-      "note": "'RED = the lower part of the left wall and should be slime. YELLOW = the upper parts of the left wall is currently deep_water and should continue to be deep water.' Measured: the left wall is DRAWN 4-8% water and shipped 95-99% of it. The flood is not the culprit here and neither are the anchors - the colour test alone calls 95-98% of that wall water, and it is not wrong to be confused: shaded slime is (28,61,30) against a water top face of (43,72,74), while the same slime on the lit face is (78,132,65). Relighting the anchors per face was tried and fixed one tile of five. So this is the pair claim_depth exists for - 'for the pairs colour cannot decide... the tweak is geometric'. 0.40 keeps the top 40% of the wall as the drape and returns the rest to slime, which is exactly the yellow/red line drawn. Swept 0.30-0.50; the right face, which was never complained about, moves by at most 2 points at this setting."
-    },
-    "grass__over__black_rock": {
-      "drape_lit": true,
-      "relight_faces": true,
-      "note": "'Grass over black rock has an issue where the green overhang is grey' - three tiles sent, all with grey patches in the green drape near the lip. Diagnosed per axis on the pixels that ship grey: they are plainly green in the art (21,84,62) and the split calls them rock 100% of the time, because the grass anchor is measured on the LIT TOP FACE at value 159 while the drape hangs on a shaded wall at 83, with the rock anchor at 43 - the drape lands nearer the rock, 6.30 against 10.08. Every whitening weight is pinned at WHITEN_STD_FLOOR here, so the metric is not the problem: the anchor is standing in the sunshine. drape_lit relights it to the drape's own lighting (selected by hue, which black rock cannot contaminate because it has none); relight_faces then corrects the shaded face against the lit one. Measured over all 45 candidates: grass kept 94% -> 100%, worst tile 60% -> 98%, and rock wrongly claimed stays at ZERO px. claim_lip was tried first and rejected - it buys 4 points by greening up to 48 rock pixels a tile."
-    },
-    "grey_stone__over__dark_mud": {
-      "claim_lip": 3,
-      "note": "'The grey stone overhang to the left (looks like a border) is brown.' Measured over all 17 candidates: of the stone actually drawn in that border band, only 76% survived, and on the worst tiles the left face kept 13-16%. This pair is the case claim_lip exists for and the reason is measurable: BOTH materials are achromatic in the art - stone is saturation 4 and the mud only 9 - so nothing in the colour plane separates them and only value is left, and on the shaded left face the drape sits at 82 with mud at 32 and the stone top at 134. Dead even, 50 against 52. The claim is 3 rows because that is what the generator draws: median drape depth 3 on both faces. Result: border 76% -> 100%, for 7 wrongly claimed mud px per tile (max 11). relight_faces and drape_lit were both measured here first and rejected - they buy deeper drips the maintainer did not ask about and over-claim up to 348 px of mud."
-    }
+  "snow": {
+   "top": "#ebf4f6",
+   "source": "reference tile tiles/matrix/snow__over__snow/sheet_01_explicit/tile_05.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#c7d4d9",
+   "wall_n": 7,
+   "transition_surface": "own",
+   "top_extras": [
+    "#c0d5de"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 15/40 sampled tiles, mean jump 12.4dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
   },
-  "_transition_comment": "transition_surface is the maintainer's taxonomy (2026-08-21), set after reviewing all 17 composed pairs. 'own' keeps the generated transition art with hue/sat corrected to the palette and the pixel's relief carried through - his verdict on the grass pages: 'A calm base texture is better than a clean color, but they have to be very very subtile'. And near a boundary it SHOULD differ from the field: 'grass near a road usually is different'. 'base' copies the material's base tile into its region so the transition mimics its neighbour - paving and parquet, where the generator's freehand stones read wrong beside the laid field. 'flat' fills the top with the single palette colour, wall texture kept - the declared fallback 'when we have still not found that perfect texture', and probably permanent for lava/water/deep_water, which the game animates instead. A material may later carry several base_tiles; a field then draws them interchangeably to kill repetition.",
-  "_LAW_no_repetition": "NEVER INTRODUCE A TOP TEXTURE. A flat top stays flat. Texture on the ground arrives ONE way only: the maintainer promotes a base tile. No agent decides a surface should carry texture, no matter how good the individual tile looks, because a good tile repeated is still repetition and repetition is the thing he cannot stand. His words, 2026-08-21: 'YOU CAN NEVER TAKE DECISION TO BRING IN A TOP TEXTURE. DONT EVER BRING IN REPETITION AGAIN.' This has now been learned three times in one day - mixing 15 different grass sets per cell, rolling pure cells across pool sets, and prototyping a textured matrix top - so it is written here rather than remembered. transition_surface 'own' is NOT an exception: it keeps texture the generator already drew INSIDE a transition tile, where each tile is unique and nothing repeats. It never applies to a field."
+  "ice": {
+   "top": "#99ced1",
+   "source": "reference tile tiles/matrix/ice__over__ice/sheet_00_maintainer/tile_00.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#6eacb2",
+   "wall_n": 7,
+   "transition_surface": "own",
+   "top_extras": [
+    "#83b9c3"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 22/40 sampled tiles, mean jump 14.2dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "black_rock": {
+   "top": "#1e1d1e",
+   "source": "reference tile tiles/matrix/black_rock__over__black_rock/sheet_02_chase2/tile_03.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#212122",
+   "wall_n": 7,
+   "kill_highlight": true,
+   "kill_note": "the set of top materials whose edge carries NO highlight \u2014 'black-rock over black-rock #6 ... looks extremely good becouse we have no highlight at all ... If the type on top is black-rock. Always try to get rid of the entire highlight.' soften_rim runs in kill mode for every cell with this material on top: grey glow above the brighter surface fades fully into it, no margin, no kept excess.",
+   "transition_surface": "flat",
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
+  },
+  "light_beach": {
+   "top": "#e4c495",
+   "source": "reference tile tiles/matrix/light_beach__over__light_beach/sheet_02_same2_18712/tile_05.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#ab9274",
+   "wall_n": 7,
+   "transition_surface": "own",
+   "top_extras": [
+    "#d1ad81"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 29/40 sampled tiles, mean jump 12.7dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "grey_stone": {
+   "top": "#808082",
+   "source": "reference tile tiles/matrix/grey_stone__over__grey_stone/sheet_00_chase0/tile_09.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#45474b",
+   "wall_n": 6,
+   "ramp": [
+    "#22252c",
+    "#33373d",
+    "#585a5f",
+    "#727272",
+    "#8c8c8c",
+    "#949599"
+   ],
+   "ramp_note": "the maintainer's #71 reference's own greys, dark grout to lit stone \u2014 added when single-hex wall substitution sank a light drawn wall onto the dark wall hex: 'Why did you turn the grey stone so dark? The grey stone looks really bad like that.'",
+   "transition_surface": "flat",
+   "top_extras": [
+    "#434449"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 33/40 sampled tiles, mean jump 17.7dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "light_soil": {
+   "top": "#c9ab7e",
+   "source": "reference tile tiles/matrix/light_soil__over__light_soil/sheet_02_same2_10066/tile_14.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#9d784b",
+   "wall_n": 6,
+   "flat_top_note": "Shown a road drawn with light_soil flat and with light_soil given the WALL's own treatment (flat_top false -> substitute with a value spread, 3 colours on the top face becoming 13), the maintainer chose FLAT: 'First is what I want.' The ask that prompted the test - 'when you postprocess the tile you should let the tile have texture' and 'I don't want any palette to only have 2 colors' - was answered by looking at it. Do not re-open: a clean top is the default AND the verdict for ground, and the textured route stays reserved for parquet_floor and the paving twins. (Also settled there: the walls he likes are 21 tones because postprocess never flattens them; the top face is 96% one colour by design, not by omission.)",
+   "transition_surface": "own",
+   "top_extras": [
+    "#a68661"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 27/40 sampled tiles, mean jump 13.6dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "dark_mud": {
+   "top": "#514137",
+   "source": "reference tile tiles/matrix/dark_mud__over__dark_mud/sheet_11_same2_11397/tile_15.png \u2014 the maintainer's chosen look for this material (recovered: the entry recorded the review SLOT 0_before.webp, which renumbers on every republish)",
+   "wall": "#3b2f28",
+   "wall_n": 6,
+   "ramp": [
+    "#1f1813",
+    "#302623",
+    "#44362f",
+    "#4d3b31",
+    "#5a473b",
+    "#66554b"
+   ],
+   "ramp_note": "The reference tile's own browns, dark to light \u2014 the maintainer picked it FOR the range: 'the ref has several colors of brown ... you have managed to get everything into a single brown color. I don't like that.' Substitution maps overhang and wall pixels into these stops instead of forcing one hue.",
+   "transition_surface": "flat",
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
+  },
+  "parquet_floor": {
+   "top": "#a7754b",
+   "source": "reference tile tiles/matrix/parquet_floor__over__parquet_floor/sheet_02_same2_18715/tile_15.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#684934",
+   "wall_n": 6,
+   "flat_top": false,
+   "flat_top_note": "the maintainer: 'parquet_floor is not expected to be clean. So a parquet_floor should always maintain it's unclean top texture (but the color palette should still align).'",
+   "claim_lip": 4,
+   "claim_lip_note": "'Parquet Floor should have a overhang looking like a list/border' / 'Parquet Floor lacks overhang border' - reported on lava, light beach and light soil, and 1-starred across the group. A laid floor ends in a moulding: the top 4 wall rows are the wood's wherever parquet is the top material. Type-level, so it cannot be forgotten on a new pair.",
+   "transition_surface": "base",
+   "base_tiles": [
+    "tiles/review/parquet_floor__over__parquet_floor/0_after.webp"
+   ],
+   "top_extras": [
+    "#754c36"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 22/40 sampled tiles, mean jump 16.5dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "paving_stone": {
+   "top": "#7d7265",
+   "wall": "#5c544b",
+   "_comment": "GENERATION alias only. The matrix keeps generating under this name (tiles.json ground_types is unchanged); publish expands it into brown_paving_stone and grey_paving_stone via their generated_as fields and never publishes a cell under this name. Hexes mirror the brown nomination so chase.py's quality gating stays consistent.",
+   "transition_surface": "base",
+   "base_tiles": [
+    "tiles/review/paving_stone__over__paving_stone/0_after.webp"
+   ]
+  },
+  "water": {
+   "top": "#7eb7c7",
+   "source": "reference tile tiles/matrix/water__over__water/sheet_01_same1_18719/tile_14.png \u2014 the maintainer's chosen look for this material",
+   "wall": "#4c8a98",
+   "wall_n": 6,
+   "transition_surface": "flat",
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
+  },
+  "deep_water": {
+   "top": "#162843",
+   "source": "wall of reference tile tiles/matrix/grass__over__deep_water/sheet_02_chase2/tile_04.png (grass over deep_water) \u2014 the maintainer's chosen look for this material; top reconstructed from deep_water same-over-same lit/shaded ratio (n=6)",
+   "wall": "#102235",
+   "wall_n": 6,
+   "transition_surface": "flat",
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
+  },
+  "lava": {
+   "top": "#fd5a02",
+   "source": "the TOP of tiles/matrix/lava__over__light_soil/sheet_05_chase5_32648/tile_13.png \u2014 nominated mid-review: 'The top of this tile is more like how I see the lava palette.'",
+   "wall": "#a73211",
+   "wall_n": 6,
+   "ramp": [
+    "#e2460f",
+    "#fd5a02",
+    "#fd6802",
+    "#fd7e08"
+   ],
+   "flat_top": true,
+   "ramp_note": "the nominated top's own tones, dark red to bright bubble highlight. Lava was flat-filled with a single orange (#fb7f10) \u2014 'I feel we paint a single orange color. As if lava has no own palette. Lava is also more red than orange.' flat_top false keeps the bubbling texture; the ramp keeps the range; the base is redder.",
+   "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
+   "transition_surface": "flat",
+   "top_extras": [
+    "#ff8f0e"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 34/40 sampled tiles, mean jump 26.0dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "slime": {
+   "top": "#31bd75",
+   "source": "the slime WALL of tiles/matrix/grass__over__slime/sheet_04_chase4/tile_06.png \u2014 nominated mid-review: 'The bottom in that image (not the grass) is a ref slime color. Just make sure to not include the grass.'",
+   "wall": "#5b882d",
+   "wall_n": 6,
+   "ramp": [
+    "#0f5946",
+    "#117558",
+    "#2aa072",
+    "#31bd75",
+    "#3cd68a",
+    "#82e18e"
+   ],
+   "flat_top": true,
+   "ramp_note": "the nominated wall's own tones, deep shadow to pale sparkle, measured with the grass excluded (slime separates as the MINT family, b-r >= +32; grass is warm). The ramp APPLIES TO SLIME WALLS UNDER EVERY TOP: the committed, reviewed, beloved slime is this mint family, and nine of fourteen *__over__slime cells carry it. ramp_top_only once turned the side ramp OFF, which made every republished slime wall land on the olive wall hex instead - that is the 'publish.py no longer reproduces the committed slime' divergence of 2026-08-22, proven by removing the flag and republishing ice/water/grass over slime: 48 of 48 files byte-identical to the committed art. Five cells (grey_stone/light_beach/light_soil/parquet_floor/snow over slime) were published olive while the flag was set and will flip to mint on their next republish - toward the palette he loves, not away from it.",
+   "flat_top_note": "'It also looks as if the lava top is not a clean top. Lava is like every other tile (except paving stone and parquet that is special).' A clean flat top is the default for every material; the ONLY textured tops are the two paving twins and parquet_floor. Both lava and slime had been given textured tops when their palettes were nominated; the rule says otherwise, so both are flat again. The ramp still carries their range on the walls and overhangs.",
+   "transition_surface": "flat",
+   "PROTECTED": "THE SLIME PALETTE IS THE MAINTAINER'S FAVOURITE IN THE GAME AND IS NOT TO BE CHANGED OR REPAINTED. His words, 2026-08-22: 'THE SLIME IS THE COLOR PALETTE I'M MOST SATISFIED WITH. I LOVE IT. AND WANT IT TO STAY IN THIS GAME.' That means the hexes here AND the slime pixels in every published *__over__slime tile. Two 'scoped' pair_tweaks were reverted the same day for breaking it without anyone intending to: raising claim_lip on brown_paving_stone__over__slime and adding claim_depth to dark_mud__over__slime both re-ran the wall split, which re-centres substitute()'s statistics over the whole side region - so the slime wall moved from (42,160,114) vivid mint to (90,132,44) olive, 751 of 776 pixels, on a change that was only supposed to deepen a lip. ANY tweak touching a slime cell must be proved pixel-identical on the slime side before it ships: compare the slime-green wall pixels against the previous revision and require zero shift. Colour-family measures will not catch it - only a byte comparison will.",
+   "top_extras": [
+    "#11846d"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 32/40 sampled tiles, mean jump 27.4dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "brown_paving_stone": {
+   "top": "#7d7265",
+   "source": "reference tile tiles/matrix/black_rock__over__paving_stone/sheet_06_chase6_25758/tile_15.png \u2014 the maintainer's chosen look for this material, nominated by its WALL only: 'the ref should be #2 in Black Rock over paving stone. But only the paving stone part on that tile (not the black rock).'",
+   "wall": "#5c544b",
+   "ramp": [
+    "#443f3a",
+    "#4c463f",
+    "#62594f",
+    "#6d6356",
+    "#786e61",
+    "#8a8274"
+   ],
+   "ramp_note": "the ref wall's own tones, dark grout to lit brick, black-rock drips rejected nearest-of-two (55.7% of the wall). Chosen 'becouse the paving_stone on this image is so ugly and look so different compared to other paving_stones'; the top #7d7265 is projected from the wall by the lit/shaded ratio of 6 nominated materials.",
+   "flat_top": false,
+   "generated_as": "paving_stone",
+   "force_align_wall": true,
+   "force_align_note": "both paving types' walls are paving BY CONSTRUCTION \u2014 the art was generated as paving_stone \u2014 so the material gate cannot mean 'wrong material' here, only 'other colour family': exactly what these types exist to convert. Without this, warm-family walls failed the gate against the grey palette and shipped raw brown inside the grey cells.",
+   "transition_surface": "base",
+   "base_tiles": [
+    "tiles/review/brown_paving_stone__over__brown_paving_stone/0_after.webp"
+   ],
+   "top_extras": [
+    "#4a3f33"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 36/40 sampled tiles, mean jump 12.6dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  },
+  "grey_paving_stone": {
+   "top": "#a8a8a8",
+   "source": "reference tile tiles/matrix/paving_stone__over__paving_stone/sheet_01_same1_18717/tile_06.png \u2014 #8, the clean-line tile the maintainer pointed at when splitting paving into two types: 'The same paving_stone will generate both a brown and a grey version.'",
+   "wall": "#8a8a8a",
+   "ramp": [
+    "#4a4a4a",
+    "#636363",
+    "#7b7b7b",
+    "#8f8f8f",
+    "#a3a3a3",
+    "#b8b8b8"
+   ],
+   "ramp_note": "LIGHT and NEUTRAL by the maintainer's direction, not measured: the ref's own paint carries a blue undertone (#68686e, b-r +6) and its weight sits in the mid-darks, so a measured ramp read 'dark with small tint of blue'. These stops are pure greys with a lighter centre of gravity \u2014 the maintainer's 'light grey paving stone', literally.",
+   "flat_top": false,
+   "generated_as": "paving_stone",
+   "force_align_wall": true,
+   "ramp_abs": true,
+   "transition_surface": "base",
+   "base_tiles": [
+    "tiles/review/grey_paving_stone__over__grey_paving_stone/0_after.webp"
+   ],
+   "top_extras": [
+    "#818081"
+   ],
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 40/40 sampled tiles, mean jump 9.6dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+  }
+ },
+ "_wall_comment": "The colour a material has as a WALL, which is NOT its top colour. The maintainer spotted that grass under an ice tile did not match grass under a grass tile: the same material was coming out four different greens depending on which cell drew it (hue 72-119, value 71-113). A wall needs one target per material, and it cannot simply be the top colour \u2014 a vertical face is lit differently, and the ratio is not even constant across materials (measured: grass 1.38x its top value, ice 0.70x). So hue and saturation come from the palette, and the VALUE is the median of what the generator actually draws for that material as a wall.",
+ "pair_tweaks": {
+  "_comment": "Per-cell overrides for pairs the global classifier cannot decide. The maintainer, on black_rock over ice: 'It's almost as if it's time to do special tweaks for each different tile vs tile. That's a safe way to tweak when the postprocessing is already very good.' Used only where colour genuinely cannot separate the materials \u2014 black rock draws as dark navy (#03101c) and shaded ice as dark blue (#17212f).",
+  "black_rock__over__ice": {
+   "claim_depth": 0.35,
+   "note": "the rock overhang on this pair hugs the top edge; claims deeper than a third of the face were shaded ice painted black \u2014 'black rock on the left wall that should have been ice (not the overhang, but under the overhang)'"
+  },
+  "black_rock__over__deep_water": {
+   "force_align": true,
+   "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
+  },
+  "dark_mud__over__deep_water": {
+   "force_align": true,
+   "note_align": "wall is deep water CONFIRMED by the maintainer's section review; the generator draws it mid-blue so wall_err fails every tile and the raw wall reads as the wrong water"
+  },
+  "black_rock__over__grey_stone": {
+   "note": "claims stop at the lip (claim_depth) EXCEPT for drawn drips: below the lip a pixel is claimed iff it is strongly the top colour and connected to the lip through such pixels (deep_claim). The maintainer, on the beheaded overhangs: 'the overhang always starts from the edge ... Isn't it clear that this is still black_rock?' It is: measured on tile 17, drip pixels sit at 0.29-0.65 of the wall distance in the whitened space, the stones the cap protects at 1.49 \u2014 0.7 splits them with margin on both sides. The wall below still takes the grey_stone ramp.",
+   "claim_depth": 0.3,
+   "deep_claim": 0.7
+  },
+  "black_rock__over__dark_mud": {
+   "drip_match": 1,
+   "note": "the overhang, by the maintainer's definition: the top's own paint (cool \u2014 blue >= red; the mud is warm) connected to the top edge, allowed to jump the 1px drawn edge highlight; the highlight band itself is claimed with it and capped darker. Claims OVERWRITE the live wall paint, which is computed from the base classification \u2014 proven on all 31 candidates: zero pixels outside the claims differ from live ('WHAT WE HAVE IN GAME NOW HAS COLORED THE BOTTOM BROWN PERFECTLY ALREADY'). Approved: 'Your last post did it. It's Perfect now'"
+  },
+  "snow__over__brown_paving_stone": {
+   "claim_floor": 230,
+   "note": "the snow drape's drawn underside kept its dark relief through substitution and read as leftover grey paving on the new brown wall (the maintainer circled it). Claimed pixels are floored to near the snow paint's own brightness: the shadow shape survives, but it is snow-bright."
+  },
+  "brown_paving_stone__over__grey_paving_stone": {
+   "no_claims": true,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched.",
+   "side_ramp_abs": false
+  },
+  "grey_paving_stone__over__brown_paving_stone": {
+   "no_claims": true,
+   "note": "a manufactured cross pair: two published types painted onto one generated material's art. The classifier sees the top's paint rolling over the lip and claims it, painting the wall's first rows the top's colour (the maintainer marked the band red). There is no spill on a cross tile \u2014 the drawn clean line is the boundary \u2014 so nothing is claimed."
+  },
+  "black_rock__over__slime": {
+   "claim_depth": 0.3,
+   "note": "the generator lights the right face darker, dark green leans toward the black anchor, and the flood claimed 57% of a wall that is pure green in the art ('made the right green wall black'). Claims stop at the lip, like ice and grey_stone before it."
+  },
+  "brown_paving_stone__over__deep_water": {
+   "claim_lip": 3,
+   "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
+  },
+  "grey_paving_stone__over__deep_water": {
+   "claim_lip": 3,
+   "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
+  },
+  "brown_paving_stone__over__water": {
+   "claim_lip": 3,
+   "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
+  },
+  "grey_paving_stone__over__water": {
+   "claim_lip": 3,
+   "note": "the drawn paving is bluish over blue water \u2014 cool against cool \u2014 so the colour tests starve (124 of 1070 wall px claimed) and the water painted over the slab brim: 'The water got all the way up on the paving stones overhang.' The brim is the slab's own edge and always hugs the lip; the top 3 wall rows are the overhang, geometrically."
+  },
+  "brown_paving_stone__over__grey_stone": {
+   "claim_lip": 3,
+   "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
+   "claim_depth": 0.3
+  },
+  "grey_paving_stone__over__grey_stone": {
+   "claim_lip": 3,
+   "note": "the slab brim at the wall top classified as stone and painted grey \u2014 'The paving stone overhang turned into the stone.' Same geometric truth as the water pairs: the brim is the slab's own edge and hugs the lip; the top 3 wall rows are the overhang. And the opposite failure on the same pair \u2014 greige stones mid-face claimed as paving and painted brown ('Here we have the opposite. The grey stone turned brown.') \u2014 is cut by claim_depth: flood claims stop at the lip zone, the geometric brim stays.",
+   "claim_depth": 0.3
+  },
+  "brown_paving_stone__over__ice": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "shaded ice on the darker-lit face leans toward the paving anchor and the flood ate 40% of the right wall ('The right side wall got brown and should be ice'). The standard paving treatment: the brim is geometric (claim_lip) and the flood stops at the lip zone (claim_depth)."
+  },
+  "grey_paving_stone__over__ice": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "shaded ice on the darker-lit face leans toward the paving anchor and the flood ate 40% of the right wall ('The right side wall got brown and should be ice'). The standard paving treatment: the brim is geometric (claim_lip) and the flood stops at the lip zone (claim_depth)."
+  },
+  "brown_paving_stone__over__lava": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit lava face leans toward the paving anchor and turns brown ('The left lava wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "grey_paving_stone__over__lava": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit lava face leans toward the paving anchor and turns brown ('The left lava wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "brown_paving_stone__over__slime": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "grey_paving_stone__over__slime": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit slime face leans toward the paving anchor and turns paving-grey ('The green slime wall got brown'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "brown_paving_stone__over__light_soil": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit face leans toward the paving anchor \u2014 here the paving's own overhang went the OTHER way and painted as soil ('The left side overhang is light soil'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "grey_paving_stone__over__light_soil": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "the darker-lit face leans toward the paving anchor \u2014 here the paving's own overhang went the OTHER way and painted as soil ('The left side overhang is light soil'). The standard paving treatment: geometric brim, flood stops at the lip zone."
+  },
+  "brown_paving_stone__over__snow": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "bluish snow shadow at the very bottom measured closer to greige than to WHITE snow \u2014 brightness dominates the comparison \u2014 and a lean chain crawled to the floor: 'It's snow down there! ... blue is far away from brown as well.' The maintainer's prior is the rule: the bottom of the wall is the wall. Geometric brim, flood stops at the lip zone."
+  },
+  "grey_paving_stone__over__snow": {
+   "claim_lip": 3,
+   "claim_depth": 0.3,
+   "note": "bluish snow shadow at the very bottom measured closer to greige than to WHITE snow \u2014 brightness dominates the comparison \u2014 and a lean chain crawled to the floor: 'It's snow down there! ... blue is far away from brown as well.' The maintainer's prior is the rule: the bottom of the wall is the wall. Geometric brim, flood stops at the lip zone."
+  },
+  "grey_stone__over__ice": {
+   "claim_depth": 0.3,
+   "note": "shaded ice leans toward the grey stone anchor and the flood painted it stone ('Grey stone over ice painted grey on the ice wall'). Claims stop at the lip, the same cap black_rock over ice has carried all along."
+  },
+  "grey_stone__over__lava": {
+   "claim_depth": 0.3,
+   "note": "the darker lava face leans toward the grey stone anchor and the flood painted it stone ('grey stone over lava. makes the lava wall grey.'). Claims stop at the lip."
+  },
+  "grey_stone__over__parquet_floor": {
+   "side_band": 999,
+   "note": "the parquet's drawn varnish glints sit far above the wall's median value, the alien band shipped them raw, and they pop ('shiny pixels that doesn't get converted to parquet floor'). On this pair every side pixel paints; the relief clamp bounds how bright a glint can come back."
+  },
+  "ice__over__grass": {
+   "claim_depth": 0.3,
+   "note": "shaded grass leans toward the pale ice anchor and the flood iced the wall ('The ice over grass makes the grass wall into ice'). Claims stop at the lip."
+  },
+  "ice__over__lava": {
+   "claim_depth": 0.3,
+   "note": "two failures at once: the generator draws a THICK ice slab whose side is most of the wall, and the flood then ran on through it into the genuinely hot red below ('It's ICE over LAVA and the bottom is HOT RED. Your code turned that into..... ICE!!!'). The cell means wall-of-lava, so everything below the lip paints as lava."
+  },
+  "ice__over__brown_paving_stone": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__dark_mud": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__deep_water": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__grey_paving_stone": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__light_beach": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__light_soil": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__parquet_floor": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__slime": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__snow": {
+   "claim_depth": 0.3,
+   "note": "systemic on ice tops: the pale ice anchor plus value dominance claims every darker-or-warmer wall ('ICE over light beach thinks the almost already light beach color at the bottom is ICE!'). Measured across the section: 25-55% of the wall claimed on nine cells. Claims stop at the lip on all of them."
+  },
+  "ice__over__water": {
+   "claim_depth": 0.3,
+   "note": "the tenth ice cell to lean \u2014 it measured mildest in the sweep (17% mean) but the right faces still iced over ('ice over water makes the water wall on the very right turn ice'). Claims stop at the lip like its nine siblings. And the inverse on the same pair \u2014 the water repaint covered the drawn icy overhang ('The water also extends over the ice overhang') \u2014 is fixed by the geometric lip: the top 3 wall rows are the ice's, unconditionally. Scoped to this pair only, as instructed: 'This is a ice over water fix only!' | 2026-08-22: 'The ice overhang in ice over water sometimes doesn't follow the ice crustals all the way.' claim_lip 3 is a straight 3-row RIBBON, and the generator draws icicles hanging well past it, so the ribbon sliced their tips off and the water repaint took them. deep_claim is the documented companion to the cap ('THE CAP CUTS DRIPS TOO'): below the lip a pixel is claimed iff it is strongly the top colour AND still reachable from the claim, so a real icicle hangs and an honestly watery pixel does not. 1.8 is where it plateaus - swept 0.8/1.3/1.8/2.3 and the wall claimed goes 23% -> 25% total (left 22->24, right 24->27) then stops moving, so it follows the crystals without reopening the over-claim this cell's claim_depth exists to stop. NOT a new bug: this cell's art was byte-identical to the morning backup.",
+   "claim_lip": 3,
+   "deep_claim": 1.8
+  },
+  "lava__over__ice": {
+   "claim_depth": 0.3,
+   "note": "lava claims ran down the ice wall ('Lava also paints where it should be ICE (lava on top)'). Claims stop at the lip."
+  },
+  "lava__over__light_beach": {
+   "claim_depth": 0.3,
+   "note": "lava claims painted beach spots on the wall ('Here lava thinks light beach is lava'). Claims stop at the lip. This pair only, as instructed."
+  },
+  "light_beach__over__ice": {
+   "claim_depth": 0.3,
+   "note": "sand claims ran to the wall base through the ice ('draws the light beach all the way down to the bottom (where ice should have been first to occupy the color white)'). Claims stop at the lip. Local fix only, as instructed."
+  },
+  "light_soil__over__parquet_floor": {
+   "claim_depth": 0.3,
+   "note": "'Lots of light soil overhang to the left that is deep brown wood' / 'The brown overhang to the left is missing'. The claim_depth 0.3 cap added here earlier - for the opposite complaint, soil bleeding down the RIGHT wall - also removed the legitimate brim on the left. The lip restores the brim without re-flooding the wall: cap and lip do different jobs and both apply.",
+   "claim_lip": 3
+  },
+  "light_soil__over__slime": {
+   "claim_lip": 3,
+   "note": "the slime repaint covered the soil's drawn overhang ('the slime renders on the light soils overhang to the left'). The top 3 wall rows are the soil's, geometrically."
+  },
+  "parquet_floor__over__brown_paving_stone": {
+   "claim_depth": 0.3,
+   "note": "wood claims painted the paving wall ('brown wood on the right stone wall'). Claims stop at the lip."
+  },
+  "parquet_floor__over__grass": {
+   "claim_depth": 0.3,
+   "note": "wood claims painted the grass wall ('brown on the green wall to the right'). Claims stop at the lip."
+  },
+  "parquet_floor__over__light_beach": {
+   "claim_depth": 0.3,
+   "note": "wood claims streaked down the sand wall ('Parquet Floor over light beach got issues (marked in red)'). Claims stop at the lip."
+  },
+  "parquet_floor__over__light_soil": {
+   "claim_depth": 0.3,
+   "note": "wood claims on the soil wall ('Parquet Floor over light soil also got issues'). Claims stop at the lip."
+  },
+  "slime__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "the wall shipped as a flat slab ('Slime over grey paving stone makes the grey paving stone texture disappear'): grey_paving's ramp_abs maps this cell's dark source walls into a single stop's basin and the in-basin relief is the texture. Relative relief instead \u2014 this pair only."
+  },
+  "slime__over__lava": {
+   "claim_lip": 3,
+   "note": "lip 3, and it STAYS at 3. Raising it to 7 to chase 'lava has taken over the left slime overhang' made the tile WORSE and the maintainer named the reason exactly: 'Looks like you have destroyed the image by drawing a line and change color based on over/under. We have tried this before and of course it's not that easy. You try to simplify something that cannot be simplified.' claim_lip IS a geometric row cut - it takes the top N wall rows whatever the art draws. At 3 that reads as a thin brim following the drape; past that it reads as a horizontal line slicing the tile by row. NEVER raise this to chase drape depth: the drape needs a shape-aware claim, not a deeper cut."
+  },
+  "snow__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'Snow over grey paving stone. Same here.' \u2014 the same crush as slime__over__grey_paving_stone: absolute stops clamp the lit stone caps into the mid-greys (p90 123 shipped vs 143-184 in the art's own relief). Relative relief instead \u2014 this pair only."
+  },
+  "snow__over__light_beach": {
+   "claim_depth": 0.3,
+   "note": "snow claims ran down the sand ('Snow over light beach has a lot of snow of the right sand beach wall'). Claims stop at the lip \u2014 the brim the art draws stays, the flood goes. This pair only."
+  },
+  "black_rock__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone looks very very wrong and dark when Black Rock is over' \u2014 the wall was not mis-shaded, it was CLAIMED: 74% of the wall band shipped near-black, where every other black_rock pair sits at 0.38-0.57 and deep water over the same paving sits at 0.15. The rock's overhang flood ran the whole face. Claims stop at the lip; the drawn overhang stays, the stones come back (74% -> 43%, in line with its siblings). This pair only.",
+   "claim_depth": 0.3
+  },
+  "dark_mud__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+  },
+  "deep_water__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+  },
+  "grass__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+  },
+  "parquet_floor__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+  },
+  "water__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'grey paving stone is not this dark! Look at the palette!' (black_rock cell, no-star pass) \u2014 third confirmed instance of the ramp_abs crush after slime and snow. All unstarred *__over__grey_paving_stone cells opt out together; the five cells carrying stars (grey_stone, ice, lava, light_beach, light_soil) keep the reviewed look untouched."
+  },
+  "light_soil__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "claim_lip": 3,
+   "note": "two reports on this cell: 'Should be light beach at the left overhang! It's grey now!' and 'Some grey paving stones are also very dark'. The lip gives the soil its brim back (top 3 wall rows are the top material's, unconditionally); dropping absolute side mapping lifts the wall out of the dark stops (median 99 -> 123). This cell was one of five deliberately left on absolute mapping because it carried stars - the maintainer has now reported it, so it joins the rest."
+  },
+  "lava__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 99 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
+  },
+  "grey_stone__over__grey_paving_stone": {
+   "side_ramp_abs": false,
+   "note": "'Some grey paving stones are also very dark' - measured below the light target on this cell (median 114 against 123+ elsewhere). Same opt-out as its siblings; the paving palette is light and neutral by the maintainer's direction."
+  },
+  "slime__over__grass": {
+   "force_align": true,
+   "note": "'The grass is not colored to our grass in this image' - every tile in the set measures wall_err 39-46 against the gate of 30, so the grass wall shipped RAW in the generator's olive-yellow instead of our deep green. Same override the maintainer sanctioned for deep water: the wall material is not in question here, only its drawn colour. Olive share 0.21 -> 0.00."
+  },
+  "dark_mud__over__slime": {
+   "reclaim_left_wall": true,
+   "note": "'The left slime wall is light brown redish? Bottom left wall should be green.' The darker-lit LEFT wall face sits closer to the mud anchor than to slime's own wall, so the split hands it over - 16 of 17 rows wrongly brown, against a correct 6-row brim on the right face. fix_left_wall.reclaim_left_wall converts only the body: the brim depth is measured per column on the RIGHT face and protected on the left, and the bottom row of each column stays brown. It repaints nothing - the converted pixels take a colour already in the tile, rank-matched and rescaled to the face's own brightness. APPLIED DIRECTLY to the published art, never via a publish run: publish.py no longer reproduces the committed slime (a fresh run turns vivid mint 49,189,117 into olive 94,138,46 with no tweak at all), and slime is PROTECTED."
+  },
+  "deep_water__over__grass": {
+   "relight_faces": true,
+   "note": "'I have painted RED on the overhang that should be deep_water, but currently is green/grass. I also marked in purple what should be grass so you don't take too much.' The generator draws the water droop on BOTH faces - the prompt asks for it - but the wall split measured every drape against an anchor taken on the fully lit TOP face, so on the shaded left face the water read as far from its own material and was handed to grass: 90% of the drawn water kept on the right face, 5% on the left. relight_faces scales that anchor to each face's own lighting, read off the side material because it is the one thing drawn on both faces, and only where the palette confirms it really is the side material - this cell's left drape covers 74% of its face, so an unfiltered median would measure the WATER and call the face bright. Result: left 5% -> 94%, right unchanged, and ZERO grass pixels claimed, which is the purple half of the instruction. OPT-IN, because refereed library-wide on a lighting-invariant hue metric it is a wash that makes left/right asymmetry worse (7.8% -> 9.8%, 42 tiles better and 29 worse)."
+  },
+  "deep_water__over__slime": {
+   "claim_depth": 0.4,
+   "note": "'RED = the lower part of the left wall and should be slime. YELLOW = the upper parts of the left wall is currently deep_water and should continue to be deep water.' Measured: the left wall is DRAWN 4-8% water and shipped 95-99% of it. The flood is not the culprit here and neither are the anchors - the colour test alone calls 95-98% of that wall water, and it is not wrong to be confused: shaded slime is (28,61,30) against a water top face of (43,72,74), while the same slime on the lit face is (78,132,65). Relighting the anchors per face was tried and fixed one tile of five. So this is the pair claim_depth exists for - 'for the pairs colour cannot decide... the tweak is geometric'. 0.40 keeps the top 40% of the wall as the drape and returns the rest to slime, which is exactly the yellow/red line drawn. Swept 0.30-0.50; the right face, which was never complained about, moves by at most 2 points at this setting."
+  },
+  "grass__over__black_rock": {
+   "drape_lit": true,
+   "relight_faces": true,
+   "note": "'Grass over black rock has an issue where the green overhang is grey' - three tiles sent, all with grey patches in the green drape near the lip. Diagnosed per axis on the pixels that ship grey: they are plainly green in the art (21,84,62) and the split calls them rock 100% of the time, because the grass anchor is measured on the LIT TOP FACE at value 159 while the drape hangs on a shaded wall at 83, with the rock anchor at 43 - the drape lands nearer the rock, 6.30 against 10.08. Every whitening weight is pinned at WHITEN_STD_FLOOR here, so the metric is not the problem: the anchor is standing in the sunshine. drape_lit relights it to the drape's own lighting (selected by hue, which black rock cannot contaminate because it has none); relight_faces then corrects the shaded face against the lit one. Measured over all 45 candidates: grass kept 94% -> 100%, worst tile 60% -> 98%, and rock wrongly claimed stays at ZERO px. claim_lip was tried first and rejected - it buys 4 points by greening up to 48 rock pixels a tile."
+  },
+  "grey_stone__over__dark_mud": {
+   "claim_lip": 3,
+   "note": "'The grey stone overhang to the left (looks like a border) is brown.' Measured over all 17 candidates: of the stone actually drawn in that border band, only 76% survived, and on the worst tiles the left face kept 13-16%. This pair is the case claim_lip exists for and the reason is measurable: BOTH materials are achromatic in the art - stone is saturation 4 and the mud only 9 - so nothing in the colour plane separates them and only value is left, and on the shaded left face the drape sits at 82 with mud at 32 and the stone top at 134. Dead even, 50 against 52. The claim is 3 rows because that is what the generator draws: median drape depth 3 on both faces. Result: border 76% -> 100%, for 7 wrongly claimed mud px per tile (max 11). relight_faces and drape_lit were both measured here first and rejected - they buy deeper drips the maintainer did not ask about and over-claim up to 348 px of mud."
+  }
+ },
+ "_transition_comment": "transition_surface is the maintainer's taxonomy (2026-08-21), set after reviewing all 17 composed pairs. 'own' keeps the generated transition art with hue/sat corrected to the palette and the pixel's relief carried through - his verdict on the grass pages: 'A calm base texture is better than a clean color, but they have to be very very subtile'. And near a boundary it SHOULD differ from the field: 'grass near a road usually is different'. 'base' copies the material's base tile into its region so the transition mimics its neighbour - paving and parquet, where the generator's freehand stones read wrong beside the laid field. 'flat' fills the top with the single palette colour, wall texture kept - the declared fallback 'when we have still not found that perfect texture', and probably permanent for lava/water/deep_water, which the game animates instead. A material may later carry several base_tiles; a field then draws them interchangeably to kill repetition.",
+ "_LAW_no_repetition": "NEVER INTRODUCE A TOP TEXTURE. A flat top stays flat. Texture on the ground arrives ONE way only: the maintainer promotes a base tile. No agent decides a surface should carry texture, no matter how good the individual tile looks, because a good tile repeated is still repetition and repetition is the thing he cannot stand. His words, 2026-08-21: 'YOU CAN NEVER TAKE DECISION TO BRING IN A TOP TEXTURE. DONT EVER BRING IN REPETITION AGAIN.' This has now been learned three times in one day - mixing 15 different grass sets per cell, rolling pure cells across pool sets, and prototyping a textured matrix top - so it is written here rather than remembered. transition_surface 'own' is NOT an exception: it keeps texture the generator already drew INSIDE a transition tile, where each tile is unique and nothing repeats. It never applies to a field."
 }

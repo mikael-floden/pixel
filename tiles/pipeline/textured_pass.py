@@ -45,7 +45,24 @@ REPO = os.path.dirname(ROOT)
 PALETTE = json.load(open(os.path.join(ROOT, "config", "palette.json")))["types"]
 
 
-def textured_of(before_path, after_path, top_hex):
+def _extras_of(top_hex, top_name=None):
+    """The `top_extras` for this top. BY NAME when the caller has one - a hex is NOT
+    a key: brown_paving_stone shares #7d7265 with its legacy matrix-source entry
+    `paving_stone` (generated_as twin), and the reverse lookup hit the twin first and
+    silently dropped brown's extra colour (caught because its republish churned zero
+    files). The hex path stays only for nameless direct callers, preferring an entry
+    that carries extras."""
+    if top_name:
+        v = PALETTE.get(top_name) or {}
+        return v.get("top_extras") or []
+    hits = [v for v in PALETTE.values()
+            if isinstance(v, dict) and v.get("top") == top_hex]
+    for v in sorted(hits, key=lambda v: not v.get("top_extras")):
+        return v.get("top_extras") or []
+    return []
+
+
+def textured_of(before_path, after_path, top_hex, top_name=None):
     """The after tile, its top face carrying the raw art's texture, colour-corrected."""
     bef = PS.canonicalise(Image.open(before_path).convert("RGBA"))
     aft = PS.canonicalise(Image.open(after_path).convert("RGBA"))
@@ -59,12 +76,44 @@ def textured_of(before_path, after_path, top_hex):
     m = reg["top"] & (ab[..., 3] > 0)
     if not m.any():
         return None
-    px = PS.substitute(ab, m, top_hex)
+    # MULTI-ANCHOR SUBSTITUTION (maintainer verdict 2026-08-28, Palette Headroom page):
+    # a ground may carry `top_extras` beside `top`, and each top pixel snaps to the
+    # NEAREST anchor instead of always the one - which is what stops a lava glow or a
+    # stone shadow collapsing into the single palette colour. Assignment happens in the
+    # BACKGROUND-ALIGNED frame (raw shifted so its background sits on the clean colour)
+    # because that is the frame the pixels will be judged in after the shift below; each
+    # group then gets the house substitution toward its own anchor. With no extras this
+    # reduces byte-for-byte to the old single call, so the five unchanged grounds
+    # ("good as is") rehash to their existing filenames.
+    extras = _extras_of(top_hex, top_name)
     out = aa.copy()
-    if px is not None:
-        out[..., :3][m] = px
+    if not extras:
+        px = PS.substitute(ab, m, top_hex)
+        if px is not None:
+            out[..., :3][m] = px
+        else:
+            out[..., :3][m] = ab[..., :3][m]
     else:
-        out[..., :3][m] = ab[..., :3][m]
+        import puddle_gate as PG
+        import tops_post as _tp0
+        clean = PS._hex(top_hex)
+        rgbr = ab[..., :3].astype(float)
+        delta = clean - _tp0.background_of(rgbr, m)
+        al = np.clip(rgbr + delta, 0, 255)
+        anchors = [clean] + [PS._hex(e) for e in extras]
+        A = PG.srgb_to_lab(np.array(anchors, float))
+        Pl = PG.srgb_to_lab(al[m])
+        assign = np.linalg.norm(Pl[:, None, :] - A[None, :, :], axis=2).argmin(1)
+        for k, anc in enumerate(anchors):
+            gm = np.zeros_like(m)
+            gm[m] = assign == k
+            if not gm.any():
+                continue
+            px = PS.substitute(ab, gm, "%02x%02x%02x" % tuple(int(round(v)) for v in anc))
+            if px is not None:
+                out[..., :3][gm] = px
+            else:
+                out[..., :3][gm] = ab[..., :3][gm]
     # THE BACKGROUND LANDS ON THE CLEAN COLOUR EXACTLY, not merely the mean.
     # substitute() recentres the MEAN, and bright speckle drags a mean: measured on the
     # tile the maintainer flagged (black_rock over dark_mud 6c7f2c5a), the mean sat 0.1
@@ -104,7 +153,7 @@ def write_textured(manifest_path=None, only_missing=False):
             if not (os.path.isfile(after) and os.path.isfile(before)) or not hexv:
                 failed += 1
                 continue
-            im = textured_of(before, after, hexv)
+            im = textured_of(before, after, hexv, top_name=top)
             if im is None:
                 failed += 1
                 continue
