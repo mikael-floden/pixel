@@ -127,14 +127,20 @@ def flat_tile(ground):
         return _tile_cache[key]
     g = GT.get(ground, {})
     promos = [k for k, v in BASE.items() if v.get("type") == ground]
-    if promos:                            # maintainer-promoted base tile
-        cand = None
-        for cell in MAN["cells"].values():
+    if promos:                            # maintainer-promoted base tile: the
+        path = None                       # key may name a review candidate OR a
+        for cell in MAN["cells"].values():        # textured base_candidates entry
             for c in cell["candidates"]:
                 if c["key"] == promos[0]:
-                    cand = c
-        if cand:
-            im = Image.open(os.path.join(REPO, cand["file"])).convert("RGBA")
+                    path = c["file"]
+        if path is None:
+            idxp = os.path.join(REPO, "tiles", "base_candidates", ground, "index.json")
+            if os.path.isfile(idxp):
+                for c in json.load(open(idxp))["candidates"]:
+                    if c["id"] == promos[0] or c["file"].endswith(promos[0] + ".webp"):
+                        path = c["file"]
+        if path:
+            im = Image.open(os.path.join(REPO, path)).convert("RGBA")
             _tile_cache[key] = im
             return im
     top = _hex(g.get("palette", {}).get("top", g.get("base_color", "#808080")))
