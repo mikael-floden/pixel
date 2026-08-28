@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T01:31:57.288Z",
+  "updated_at": "2026-08-28T01:34:12.947Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1135,6 +1135,54 @@
             {
               "kind": "clean",
               "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__lava/fcc813fc",
+              "tile": "tiles/grey_stone__over__lava/fcc813fc",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__light_beach/083312a3",
+              "tile": "tiles/grey_stone__over__light_beach/083312a3",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__grey_stone/0dfea6f7",
+              "tile": "tiles/grey_stone__over__grey_stone/0dfea6f7",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__grey_stone/240d6c60",
+              "tile": "tiles/grey_stone__over__grey_stone/240d6c60",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__grey_stone/76892932",
+              "tile": "tiles/grey_stone__over__grey_stone/76892932",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__grey_stone/c672fd45",
+              "tile": "tiles/grey_stone__over__grey_stone/c672fd45",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__light_beach/54716e94",
+              "tile": "tiles/grey_stone__over__light_beach/54716e94",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_stone__over__light_beach/e9cdb04a",
+              "tile": "tiles/grey_stone__over__light_beach/e9cdb04a",
+              "weight": 1
             }
           ]
         }
