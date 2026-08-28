@@ -31,11 +31,14 @@ existed and adopted verbatim rather than negotiated:
   - `file` is the full repo-relative path of the shipped bytes ("I never construct
     paths" - wiki). Content-hashed, immutable, current + one previous generation kept.
   - `pct` both grounds by name, 0-100. Extra fields ride along and are ignored by the
-    wiki: edge_ground, edge_contact, spill, phrasing, prompt.
+    wiki: edge_ground, edge_contact, phrasing, prompt.
 
 The raw generator listing lives in tiles/fades/sheets.json; this file owns index.json.
-Every published number is measured on the exact post/ bytes named in `file`, never on the
-raw sheet and never on the prompt.
+The EDGE numbers are measured on the exact post/ bytes named in `file` (the border rule
+compares the band against the tile's own shipped background). The MIX is measured on the
+raw art, because the meter's prototypes were learned from raw generator output and
+alignment deliberately shifts the art off that distribution; alignment is a uniform
+shift, so the area each ground covers - which is what pct claims - is unchanged by it.
 """
 
 from __future__ import annotations
@@ -115,14 +118,12 @@ def analyse(sheet, i, name):
     for old in gens[2:]:
         os.remove(old)              # current + one previous generation - cache law
 
-    # 3. EVERY PUBLISHED NUMBER FROM THE PUBLISHED BYTES.
+    # 3. THE GATE ON THE PUBLISHED BYTES; THE MIX ON THE RAW ART. The border rule is
+    #    self-referential (band vs the tile's own background) so it must see exactly
+    #    what ships - alignment moves every pixel. The METER is the opposite case: its
+    #    prototypes were learned from raw generator output, and alignment deliberately
+    #    shifts the art off that distribution, so raw is where its numbers are valid.
     shipped = os.path.join(post, hashed)
-    mix2 = FM.mix_fraction(Image.open(shipped), a, b)
-    if mix2 is None or mix2.get("uncertain"):
-        return None, "uncertain on post"
-    frac_b = float(mix2["frac_b"])
-    if (b if frac_b > 0.5 else a) != majority:
-        return None, "majority flipped in post"
     frac_min = min(frac_b, 1.0 - frac_b)
     if frac_min < MIN_MIX:
         return None, "no real mixture"
