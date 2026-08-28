@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T06:44:00.332Z",
+  "updated_at": "2026-08-28T06:45:52.292Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1009,22 +1009,35 @@
               "id": "tiles/grey_paving_stone__over__grass/25b85d82",
               "tile": "tiles/grey_paving_stone__over__grass/25b85d82",
               "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 7,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
             },
             {
               "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grey_stone/1638a611",
-              "tile": "tiles/grey_paving_stone__over__grey_stone/1638a611",
+              "id": "tiles/grey_paving_stone__over__grass/ef10735e",
+              "tile": "tiles/grey_paving_stone__over__grass/ef10735e",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_paving_stone__over__grass/53d54774",
+              "tile": "tiles/grey_paving_stone__over__grass/53d54774",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_paving_stone__over__grass/26a88fbf",
+              "tile": "tiles/grey_paving_stone__over__grass/26a88fbf",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+              "tile": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/grey_paving_stone__over__deep_water/16e692cd",
+              "tile": "tiles/grey_paving_stone__over__deep_water/16e692cd",
               "weight": 1
             }
           ]
