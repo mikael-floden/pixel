@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T01:58:25.192Z",
+  "updated_at": "2026-08-28T02:01:04.447Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1682,6 +1682,71 @@
           "members": [
             {
               "kind": "clean",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_03.webp",
+              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_03.45b26d9b.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_04.webp",
+              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_04.fb64d441.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_05.webp",
+              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_05.03ea54d5.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_06.webp",
+              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_06.2efffd31.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_10.webp",
+              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_10.d2b588db.webp",
+              "weight": 0.5
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/light_soil/sheet_00_subtle_30072/tile_08.webp",
+              "tile": "tiles/tops/light_soil/sheet_00_subtle_30072/post/tile_08.baeef302.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "grey_stone__to__light_soil__a18_s6",
+              "tile": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "light_soil__to__water__a00_s3",
+              "tile": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "brown_paving_stone__to__light_soil__a21_s5",
+              "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
               "weight": 1
             }
           ]
