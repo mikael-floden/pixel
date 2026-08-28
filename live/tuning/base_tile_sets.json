@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T01:36:55.500Z",
+  "updated_at": "2026-08-28T01:38:28.631Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1262,6 +1262,59 @@
               "kind": "tile",
               "id": "grass__to__ice__a15_s2",
               "tile": "tiles/base_candidates/ice/grass__to__ice__a15_s2.webp",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__dark_mud/fc0e50cf",
+              "tile": "tiles/ice__over__dark_mud/fc0e50cf",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__dark_mud/d46debf7",
+              "tile": "tiles/ice__over__dark_mud/d46debf7",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/2eef499a",
+              "tile": "tiles/ice__over__deep_water/2eef499a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/6a4537b9",
+              "tile": "tiles/ice__over__deep_water/6a4537b9",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/7fd7b6ba",
+              "tile": "tiles/ice__over__deep_water/7fd7b6ba",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/a943ee96",
+              "tile": "tiles/ice__over__deep_water/a943ee96",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/ice__over__deep_water/d79e1bf5",
+              "tile": "tiles/ice__over__deep_water/d79e1bf5",
               "weight": 1
             }
           ]
