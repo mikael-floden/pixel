@@ -165,6 +165,18 @@ The laws around the flow:
     type**, decided by the scenery agent's classification, not by review. A
     consumer must treat those types as hitbox-less without looking in this
     file, and must not read their absence here as "undecided".
+- `live/tuning/scenery_walls.json` — `pixel-wiki-scenery-walls@1`. **The Game
+  Master's corrections to which pieces are wall scenery** (maintainer
+  2026-08-28: *"you have tagged some scenery as wall scenery that is not wall
+  scenery and I can also find scenery that IS wall scenery, but you think
+  it's not"*). Wall scenery hangs on a house/mountain/cave wall: no hitbox,
+  never y-sorted against the player. The agent's own tag is the piece `type`
+  (`MOUNTAIN_WALL` and `WINDOW` read as wall); an entry here overrides it.
+  - `overrides["scenery/<category>/<piece>"] = { wall: true|false, was:
+    "<the type the tag said>", updated_at }`. **Absent means the tag is
+    right** — agreeing with the tag deletes the entry.
+  - **Consumed by the scenery agent**, which re-files the piece's type and
+    deletes the entry — the same contract as `scenery_lights`.
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed

@@ -226,6 +226,41 @@ const s = saves.at(-1);
 ok(s?.file === "tuning/scenery_hitbox" && Object.keys(s.set ?? {})[0] === PIECE.path,
   `Commit posts one delta per PIECE, keyed by its path (${Object.keys(s?.set ?? {})[0]})`);
 ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty or otherwise");
+/* ---- 7. THE WALL TAG IS CORRECTABLE, both ways (maintainer 2026-08-28:
+ * "you have tagged some scenery as wall scenery that is not wall scenery and
+ * I can also find scenery that IS wall scenery, but you think it's not ...
+ * so I can fix errors like this during the review"). The correction is not a
+ * label: it moves the piece in and out of the hitbox queue and grants or
+ * removes the editor itself. */
+{
+  const wallPiece = PIECES.find((o) => o.type === "WINDOW");
+  await p.goto(`${W}#/objects/${wallPiece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  const readW = () => p.evaluate(() => ({
+    placed: [...document.querySelectorAll(".lit-mode")].map((r) => r.textContent.replace(/\s+/g, " ").trim()).find((x) => x.startsWith("Placed")) ?? "",
+    hitBtn: !![...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent)),
+  }));
+  const w0 = await readW();
+  ok(/Placed/.test(w0.placed) && !w0.hitBtn,
+    `a tagged wall piece shows the Placed row and NO hitbox editor (${wallPiece.id})`);
+  await p.evaluate(() => { const r = [...document.querySelectorAll(".lit-mode")].find((x) => x.textContent.startsWith("Placed")); [...r.querySelectorAll("button")].find((b2) => /on the ground/.test(b2.textContent))?.click(); });
+  await p.waitForTimeout(1400);
+  const w1 = await readW();
+  ok(w1.hitBtn && /tagged wall/.test(w1.placed),
+    "correcting it to ground GRANTS the editor and shows what the tag said — a correction is only readable against what it corrects");
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(900);
+  const sW = saves.at(-1);
+  ok(sW?.file === "tuning/scenery_walls" && Object.values(sW.set ?? {})[0]?.wall === false
+    && Object.values(sW.set ?? {})[0]?.was === "WINDOW",
+    `Commit posts the correction with what it overrode (${JSON.stringify(Object.values(sW?.set ?? {})[0])})`);
+  await p.evaluate(() => { const r = [...document.querySelectorAll(".lit-mode")].find((x) => x.textContent.startsWith("Placed")); [...r.querySelectorAll("button")].find((b2) => /wall scenery/.test(b2.textContent))?.click(); });
+  await p.waitForTimeout(900);
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(900);
+  ok(Object.values(saves.at(-1)?.set ?? {})[0] === null,
+    "agreeing with the tag again DELETES the correction — absent means the tag is right");
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();

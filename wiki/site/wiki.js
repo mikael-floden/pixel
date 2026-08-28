@@ -821,6 +821,35 @@ function shadowDefault(entity) {
  * Written down because a space nobody names is the kind of thing two agents
  * each assume differently and neither finds out.
  */
+/* IS THIS PIECE WALL SCENERY? The agent's tag, with his correction on top
+ * (maintainer 2026-08-28: "you have tagged some scenery as wall scenery that
+ * is not wall scenery and I can also find scenery that IS wall scenery, but
+ * you think it's not ... It would be good if I can change an object from
+ * being treated as wall scenery so I can fix errors like this during the
+ * review"). Wall scenery hangs on a wall: no hitbox, never y-sorted against
+ * the player. Absent means the tag is right — the file only ever names his
+ * corrections, and the scenery agent re-files the piece and deletes the
+ * entry, the same contract as scenery_lights. */
+const SCWALL_KEY = "tuning/scenery_walls";
+const sceneryWalls = () => state.tuning.scenery_walls
+  ?? (state.tuning.scenery_walls = { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} });
+const WALL_TYPES = new Set(["MOUNTAIN_WALL", "WINDOW"]);
+const taggedWall = (o) => WALL_TYPES.has(o?.type);
+function isWallScenery(o) {
+  const ov = sceneryWalls().overrides?.[o?.path];
+  return typeof ov?.wall === "boolean" ? ov.wall : taggedWall(o);
+}
+function setWallScenery(o, wall) {
+  const doc = sceneryWalls();
+  doc.overrides ??= {};
+  // Choosing what the tag already says DELETES the correction — absent means
+  // the tag is right, so agreeing with it must not leave a phantom entry.
+  if (wall === taggedWall(o)) delete doc.overrides[o.path];
+  else doc.overrides[o.path] = { wall, was: o.type ?? null, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(SCWALL_KEY, o.path);
+  markDirty(SCWALL_KEY);
+}
 const HITBOX_KEY = "tuning/scenery_hitbox";
 const hitboxDoc = () => state.tuning.scenery_hitbox
   ?? (state.tuning.scenery_hitbox = { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} });
@@ -906,8 +935,12 @@ function clearHitbox(entity) {
  * them in the to-do queue was asking him to hand-mark, one by one, a fact the
  * data has known all along. Decided by type BEFORE any stored record, so a
  * stray record on a wall piece cannot pull it back into a queue. */
-const WALL_SCENERY_TYPES = new Set(["WINDOW", "MOUNTAIN_WALL"]);
-const isWallScenery = (o) => WALL_SCENERY_TYPES.has(o?.type);
+/* …AND THE TYPE IS SOMETIMES WRONG, both ways (maintainer 2026-08-28: "you
+ * have tagged some scenery as wall scenery that is not wall scenery and I can
+ * also find scenery that IS wall scenery, but you think it's not"). So the
+ * predicate lives above, override-aware: his correction in scenery_walls
+ * outranks the tag, and correcting a piece moves it in and out of the hitbox
+ * queue and the editor with no further marking. */
 function hitboxState(entity) {
   if (isWallScenery(entity)) return "wall";
   const b = hitboxes(entity);
@@ -3737,6 +3770,34 @@ const LIT_MODES = {
 };
 /** The strip itself, which REDRAWS ITSELF: a pick-one that still shows the old
  *  pick after you press it is worse than no control at all. */
+/* WALL OR GROUND — the placement kind, correctable in review (maintainer
+ * 2026-08-28). Per PIECE, unlike the lit row's per-state: hanging on a wall
+ * is a property of the object, not of an animation. Same size discipline as
+ * litRow — the ordinary control size, not the tiles card's dense strip. */
+const SCWALL_MODES = {
+  ground: { label: "on the ground", title: "Stands in the world: it has a footprint, y-sorts against the player, and belongs in the hitbox queue" },
+  wall: { label: "wall scenery", title: "Hangs on a house/mountain/cave wall: no hitbox, never sorted against the player" },
+};
+function wallRow(o, onChange) {
+  const box = h("div", { class: "card-sub lit-mode" });
+  const draw = () => {
+    const wall = isWallScenery(o);
+    const tag = taggedWall(o);
+    const corrected = wall !== tag;
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Placed"),
+      sortBar(`scenery-wall:${o.path}`, Object.entries(SCWALL_MODES).map(([id, m]) => [id, m.label, m.title]),
+        wall ? "wall" : "ground",
+        (v) => { setWallScenery(o, v === "wall"); draw(); onChange?.(); }, { persist: false }),
+      // The disagreement, once there is one — a correction is only readable
+      // against what it corrects, and the scenery agent re-files from it.
+      corrected ? h("span", { class: "pill warn", title: `The scenery agent tagged this ${o.type ?? "untyped"} — your correction overrides it until the agent re-files the piece` },
+        `tagged ${tag ? "wall" : "ground"}`) : null,
+    ].filter(Boolean));
+  };
+  draw();
+  return box;
+}
 function litRow(path, st, onChange) {
   // NOT `.wall-mode`: that class exists to SHRINK a strip into a dense tiles
   // card (3px padding, 12px type), and reusing it made this the smallest thing
@@ -9197,6 +9258,9 @@ function viewObject(id) {
     // (maintainer 2026-08-17). Per STATE, not per direction — the light is a
     // property of the sprite, and scenery is south-only anyway.
     facetBox.replaceChildren(...[
+      // Placement first: whether it is wall scenery decides whether the hitbox
+      // machinery below even applies, so the correction sits above it.
+      state.admin ? wallRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? litRow(o.path, st, () => player.refreshMarks()) : null,
       feedbackRow("objects", `${o.path}#${st}#${dir}`, {
         // The chip the verdict belongs to turns green or red the moment it lands.
@@ -10782,13 +10846,14 @@ async function loadLiveFiles() {
   // offline fallback (viewing the wiki without the game server).
   const apiState = await fetchJson(API("/api/live/state"));
   const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
-  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, tileTopsDoc, hitboxDoc, ...fbs] = apiState
+  const [monTune, constTune, sfxReq, shadowNotes, tileWalls, sceneryLightsDoc, baseTiles, baseSets, tileTopsDoc, hitboxDoc, sceneryWallsDoc, ...fbs] = apiState
     ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants), fromApi((s) => s.tuning.sfx_requests),
        fromApi((s) => s.tuning.shadow_notes), fromApi((s) => s.tuning.tile_walls),
        fromApi((s) => s.tuning.scenery_lights), fromApi((s) => s.tuning.base_tiles),
        fromApi((s) => s.tuning.base_tile_sets),
        fromApi((s) => s.tuning.tile_tops),
        fromApi((s) => s.tuning.scenery_hitbox),
+       fromApi((s) => s.tuning.scenery_walls),
        ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
     : await Promise.all([
         fetchJson(new URL("live/tuning/monsters.json", ROOT)),
@@ -10801,6 +10866,7 @@ async function loadLiveFiles() {
         fetchJson(new URL("live/tuning/base_tile_sets.json", ROOT)),
         fetchJson(new URL("live/tuning/tile_tops.json", ROOT)),
         fetchJson(new URL("live/tuning/scenery_hitbox.json", ROOT)),
+        fetchJson(new URL("live/tuning/scenery_walls.json", ROOT)),
         ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
       ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
@@ -10817,6 +10883,7 @@ async function loadLiveFiles() {
   state.tuning.base_tile_sets = baseSets ?? { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
   state.tuning.tile_tops = tileTopsDoc ?? { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   state.tuning.scenery_hitbox = hitboxDoc ?? { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
+  state.tuning.scenery_walls = sceneryWallsDoc ?? { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
     state.feedback[d] = fbs[i] ?? { format: "pixel-wiki-feedback@1", domain: d, updated_at: "", entries: {} };
   });

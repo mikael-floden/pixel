@@ -82,6 +82,10 @@ const LIVE_FILES: Record<string, string> = {
   // part of the piece. Absent = undecided, [] = decided-none (wall-mounted).
   // Written by the wiki's Scenery pages. See live/README.md.
   "tuning/scenery_hitbox.json": "tuning/scenery_hitbox",
+  // The Game Master's corrections to WHICH pieces are wall scenery — the
+  // agent's type tag is wrong both ways sometimes. Same contract as
+  // scenery_lights: wiki writes, the scenery agent re-files and deletes.
+  "tuning/scenery_walls.json": "tuning/scenery_walls",
   "tuning/chess.json": "tuning/chess",
   // WHETHER A SCENERY STATE IS REALLY LIT. The generator names a state LIT_* or
   // NOT_LIT_*, but the AI that draws it sometimes fails to put the light in —
@@ -130,6 +134,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_tops") return { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_hitbox") return { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_walls") return { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tile_sets") return { format: "pixel-wiki-base-tile-sets@1", updated_at: "", grounds: {} };
@@ -420,6 +425,7 @@ export function registerLiveRoutes(app: express.Application): void {
         base_tiles: docs.get("tuning/base_tiles"),
         tile_tops: docs.get("tuning/tile_tops"),
         scenery_hitbox: docs.get("tuning/scenery_hitbox"),
+        scenery_walls: docs.get("tuning/scenery_walls"),
         base_tile_sets: docs.get("tuning/base_tile_sets"),
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
