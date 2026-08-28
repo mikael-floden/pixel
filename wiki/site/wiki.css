@@ -276,7 +276,7 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
 
 /* ---- ground type page: identity card, tabs, base groups, transitions ---- */
 .groundtabs, .pagetabs {
-  display: flex; gap: 0; margin: 10px 0 14px;
+  display: flex; flex-wrap: wrap; gap: 0; margin: 10px 0 14px;
   border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
   overflow: hidden; width: fit-content; max-width: 100%;
 }
@@ -1780,3 +1780,7 @@ input[type="range"] { accent-color: var(--accent); }
    share line, the wandering-edge field it sits in, the standard verdict row. */
 .fade-tile { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 12px; }
 .fade-key { font-size: 11.5px; overflow-wrap: anywhere; }
+
+/* ---- SLOPES (maintainer 2026-08-28): the walkable ramp cards ---- */
+.slope-stage { padding: 10px; display: flex; justify-content: center; }
+.slope-tile { width: 128px; height: auto; image-rendering: pixelated; }

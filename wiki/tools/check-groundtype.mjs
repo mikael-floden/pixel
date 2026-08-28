@@ -703,8 +703,8 @@ ok(Array.isArray(Object.values(saved?.set ?? {})[0]?.sets),
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
 const tabsD = await readTabs();
-ok(tabsD.length === 4 && /Details/.test(tabsD[1].t) && !tabsD[1].disabled,
-  `four tabs, Details second — enabled for the admin even when empty, the queue is his TODO (${tabsD.map((x) => x.t).join(" | ")})`);
+ok(tabsD.length === 5 && /Details/.test(tabsD[1].t) && !tabsD[1].disabled,
+  `five tabs, Details second — enabled for the admin even when empty, the queue is his TODO (${tabsD.map((x) => x.t).join(" | ")})`);
 await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
 await p.waitForTimeout(1800);
 // THE QUEUE IS WHAT IS LEFT, not the whole ground. This counted every grass
@@ -1621,7 +1621,7 @@ const pubView = await pub.evaluate(() => ({
   promote: document.querySelectorAll(".base-btn").length,
   weights: document.querySelectorAll(".weight-input").length,
 }));
-ok(pubView.palette > 0 && pubView.tabs.length === 4 && pubView.trans > 0,
+ok(pubView.palette > 0 && pubView.tabs.length === 5 && pubView.trans > 0,
   `a player gets the palette, the tabs and the transitions (${pubView.trans} pairs)`);
 ok(pubView.promote === 0 && pubView.weights === 0, "and none of the promotion or weight machinery");
 const pubDetails = await pub.evaluate(() => {

@@ -7697,6 +7697,11 @@ function viewWorldType(top) {
   const baseDead = !state.admin && !setsToShow.length;
   const trans = allTransitionsOf(t.id);
   const details = detailsOf(t.id);
+  // the Slope tab's inventory — refreshed live so the count appears the day
+  // the tiles agent publishes, with no deploy on this side
+  refreshSlopes().then((changed) => { if (changed && location.hash.startsWith("#/world/")) route(); });
+  const slopes = slopeTilesFor(t.id);
+  const slopesDead = !state.admin && !slopes.some((x) => fb("tiles", x.key).status === "approved");
   const queue = state.admin ? detailQueue(t.id) : [];
   const swatch = (c, title) => h("span", {
     class: "swatch ground-swatch", title,
@@ -7705,7 +7710,7 @@ function viewWorldType(top) {
   // The tab: his rule verbatim — Base tiles first, disabled when empty.
   const wanted = groundTab.get(t.id);
   const detailsDead = !details.length && !state.admin;   // a player with nothing to see
-  const tab = (wanted === "base" && baseDead) || (wanted === "details" && detailsDead) ? "ontop"
+  const tab = (wanted === "base" && baseDead) || (wanted === "details" && detailsDead) || (wanted === "slope" && slopesDead) ? "ontop"
     : wanted ?? (baseDead ? "ontop" : "base");
   const pickTab = (id) => { groundTab.set(t.id, id); keepScrollY = window.scrollY; route(); };
   /* ON THE DETAILS TAB, "AFTER" IS NOTHING TO JUDGE (maintainer 2026-08-22:
@@ -7976,7 +7981,7 @@ function viewWorldType(top) {
      * with this ground's name, controlling this ground's SIDE of every pair.
      * The other side of each pair keeps its own choice, made on the pair's
      * page, so a global bar here would claim rows it does not control. */
-    state.admin && tab !== "base" && tab !== "trans" ? h("div", { class: "ground-pass" },
+    state.admin && tab !== "base" && tab !== "trans" && tab !== "slope" ? h("div", { class: "ground-pass" },
       h("span", { class: "muted" }, "Tile art"),
       passBar(t.id, () => { tileViews.clear(); keepScrollY = window.scrollY; route(); })) : null,
     h("div", { class: "groundtabs", role: "tablist" },
@@ -7996,10 +8001,49 @@ function viewWorldType(top) {
       tabBtn("details", "Details", details.length || null, detailsDead,
         details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
       tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
-      tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours")),
+      tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours"),
+      /* SLOPE (maintainer 2026-08-28): a fifth tile type — the walkable ramp.
+       * Present for the admin even before the tiles agent publishes, so the
+       * review is ready the moment the art lands. */
+      tabBtn("slope", "Slope", slopes.length || null, slopesDead,
+        slopes.length ? "Ramps of this ground — one level split into two half steps, walkable without a jump"
+          : state.admin ? "The tiles agent is generating slope tiles — this tab fills the moment their index lands"
+            : "No slopes for this ground yet")),
     state.admin && !setsToShow.length && tab === "ontop" ? h("p", { class: "muted" },
       `This ground only draws its clean colour. Open Base to build a set from its ${basePool(t.id).length} textured candidates.`) : null,
-    tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : onTopTab());
+    tab === "base" ? baseTab() : tab === "details" ? detailsTab() : tab === "trans" ? transTab() : tab === "slope" ? slopeTab() : onTopTab());
+
+  /* ---------------- TAB: slopes — the walkable ramp (maintainer 2026-08-28:
+   * "makes a 1 level block look like two 0.5 level blocks so the player can
+   * run straight up without jumping ... We need the same as usual. A
+   * Accept/Reject/Star/Note.") ---- */
+  function slopeTab() {
+    const list = state.admin ? slopes : slopes.filter((x) => fb("tiles", x.key).status === "approved");
+    if (!list.length) return h("p", { class: "muted" }, state.admin
+      ? "The tiles agent is generating slope tiles now (their jobs are queued in tiles/slopes/). The moment tiles/slopes/index.json lands on main, this tab fills with them — it reads live, no deploy in between."
+      : `No slopes for ${t.name.toLowerCase()} yet.`);
+    const shown = slopeShown.get(t.id) ?? 12;
+    const label2 = (x) => x.seed != null || x.amplitude != null
+      ? ["slope", x.seed != null ? `seed ${x.seed}` : null, x.amplitude != null ? `amp ${x.amplitude}` : null].filter(Boolean).join(" · ")
+      : x.key.split("/").slice(-2).join(" · ");
+    return h("div", {},
+      h("p", { class: "muted" }, `One level split into two half steps — the player runs straight up, no jump.${state.admin ? " Approve the ones the game may ship; reject the ones the tiles agent should regenerate." : ""}`),
+      h("div", { class: "grid detail-grid" }, ...list.slice(0, shown).map((x) => h("div", { class: "card slope-card" },
+        h("div", { class: "iso-stage checker slope-stage" }, artNodeFor(x.file, "slope-tile", x.key)),
+        h("div", { class: "card-sub" },
+          h("span", { class: "muted", title: x.key }, label2(x)),
+          x.pair && x.pair.split("__over__")[1] !== t.id
+            ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null),
+        state.admin ? feedbackRow("tiles", x.key, {
+          reject: "✕ regenerate",
+          rejectTitle: "Not slope material — the tiles agent regenerates it on its next run",
+          rejectedLabel: "slated for regeneration",
+        }) : null))),
+      list.length > shown ? h("button", {
+        class: "ghost-btn", style: "margin-top:10px",
+        onclick: () => { slopeShown.set(t.id, shown + 12); keepScrollY = window.scrollY; route(); },
+      }, `Show 12 more (${list.length - shown} left)`) : null);
+  }
 
   /* ---------------- TAB: ground details — "where the fun begins" ----------
    * The collection first (the tops he approved, each composed the way the
@@ -8105,6 +8149,41 @@ const fadeShown = new Map();    // unordered pair -> fade tiles shown (12 at a t
  * The % lives with the tile because the maintainer ruled it does: "I think
  * that data belongs to the tile."
  */
+/* ---- SLOPES (maintainer 2026-08-28): "makes a 1 level block look like two
+ * 0.5 level blocks so the player can run straight up without jumping." Read
+ * LIVE like the fades: the tiles agent is generating now
+ * (tiles/slopes/jobs.json), and the moment tiles/slopes/index.json lands on
+ * main the Slope tab fills — no wiki deploy between their push and his
+ * review. Contract posted to their board (tiles3/slopes@1); the reader takes
+ * pairs keyed "<a>__over__<b>" or a grounds map, key+file required per tile,
+ * everything else optional. */
+let slopesIndex;                      // undefined = not fetched, null = absent
+let slopesAt = 0;
+async function refreshSlopes() {
+  if (!state.admin) return false;
+  const unpinned = repoBase && /\/(main)\/$|127\.0\.0\.1|localhost/.test(repoBase.href);
+  if (slopesIndex !== undefined && (!unpinned || Date.now() - slopesAt < 3 * 60 * 1000)) return false;
+  const idx = await fetchJson(assetUrl("tiles/slopes/index.json"));
+  slopesAt = Date.now();
+  const had = !!slopesIndex;
+  // A failed fetch must not empty a tab that had data — the manifest law.
+  if (!idx || (!idx.pairs && !idx.grounds)) { if (slopesIndex === undefined) slopesIndex = null; return false; }
+  slopesIndex = idx;
+  return !had;
+}
+/** Every slope whose walkable TOP is this ground, both index shapes. */
+function slopeTilesFor(typeId) {
+  if (!slopesIndex) return [];
+  const out = [];
+  for (const [k, list] of Object.entries(slopesIndex.pairs ?? {})) {
+    if (k.split("__over__")[0] !== typeId) continue;
+    for (const t of list ?? []) if (t?.key && t?.file) out.push({ ...t, pair: k });
+  }
+  for (const t of (slopesIndex.grounds?.[typeId] ?? [])) if (t?.key && t?.file) out.push({ ...t, pair: null });
+  return out;
+}
+const slopeShown = new Map();         // typeId -> how many slope cards are unrolled
+
 let fadesIndex;                       // undefined = not fetched, null = absent
 let fadesAt = 0;
 async function refreshFades() {
