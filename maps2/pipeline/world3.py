@@ -303,6 +303,29 @@ def _rng32(seed):
     return r
 
 
+def _tree_species():
+    """The 71 trees clustered into SPECIES by their own names. A forest speaks
+    ONE species (plus one accent); variation comes from within the species —
+    maintainer 2026-08-29: "don't use to many different tree types. It looks
+    better if you use different versions/variations of a few tree types."
+    Species with < 3 variations can't vary, so they stay solitary specimens."""
+    import re as _re
+    KEY = _re.compile(r"\b(oak|pine|birch|willow|spruce|maple|apple|cherry|elm"
+                      r"|ash|beech|fir|aspen|rowan|linden|lime|poplar|yew|alder"
+                      r"|cedar|chestnut|hazel|juniper|hawthorn|larch|pear)\b")
+    sp = {}
+    for d in sorted(os.listdir(os.path.join(REPO, "scenery", "trees"))):
+        p = os.path.join(REPO, "scenery", "trees", d, "scenery.json")
+        if not os.path.isfile(p):
+            continue
+        name = (json.load(open(p)).get("name") or "").lower()
+        m = KEY.search(name)
+        sp.setdefault(m.group(1) if m else "wild", []).append(d)
+    out = {k: v for k, v in sp.items() if len(v) >= 3 and k != "wild"}
+    assert len(out) >= 6, f"species clustering collapsed: {list(out)}"
+    return out
+
+
 def _forests(W, H, mat, lvl, scen, spawn):
     """REAL WOODS (maintainer 2026-08-28: "you can now place lots of trees to
     create a forest"). Scenery is cheap now, so the eight lonely groves become
@@ -310,18 +333,21 @@ def _forests(W, H, mat, lvl, scen, spawn):
 
       seeds     every existing tree placement on grass (the v2 grove sites)
                 plus the three biggest open-grass interiors;
+      woods     seeds within 14 cells cluster into one WOOD; each wood is
+                assigned ONE primary species + ONE accent (~25%) by hash —
+                variation comes from the 3-6 pieces within the species, never
+                from mixing many species (maintainer rule, 2026-08-29);
       ground    flat grass only — never roads (+2), banks, beach, rims, water;
       keep-outs spawn plaza (r 12), the houses (+4), existing pieces;
       density   jittered stride grid, ~1 tree per 4-5 cells inside a wood,
-                thinning toward the edge; species weighted (common trees
-                heavy, ancients rare, a bush fringe), hflip alternating;
+                thinning toward the edge; ancients rare, a bush fringe;
       lights    all BASE (unlit) pieces — the engine's budget is 8 point
                 lights per camera window (games2 check-light-budget) and the
                 forest must cost ZERO of them.
     """
     import os as _os
-    trees = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "trees"))
-                   if _os.path.isdir(_os.path.join(REPO, "scenery", "trees", d)))
+    species = _tree_species()
+    spnames = sorted(species)
     ancients = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "ancient_trees"))
                       if _os.path.isdir(_os.path.join(REPO, "scenery", "ancient_trees", d)))
     bushes = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "bushes"))
@@ -364,33 +390,49 @@ def _forests(W, H, mat, lvl, scen, spawn):
     for sc, x, y in best:
         if sc < 20:
             break
-        if all(abs(x - hx) + abs(y - hy) > 40 for hx, hy in hearts):
+        if all(abs(x - hx) + abs(y - hy) > 34 for hx, hy in hearts):
             hearts.append((x, y))
-        if len(hearts) >= 3:
+        if len(hearts) >= 5:
             break
     seeds += hearts
-    WOOD_R = 9
+    # seeds within 14 cells are ONE wood; the wood's hash picks its species
+    woods = []
+    for s in seeds:
+        for wd in woods:
+            if any(abs(s[0] - m[0]) + abs(s[1] - m[1]) <= 14 for m in wd):
+                wd.append(s)
+                break
+        else:
+            woods.append([s])
+    wood_of = {m: wi for wi, wd in enumerate(woods) for m in wd}
+    WOOD_R = 12       # real woods, not groves (maintainer 2026-08-29: "don't
+                      # be shy... I'm looking forward to see hundreds of trees")
     out, taken = [], {(int(p["x"]), int(p["y"])) for p in scen}
     for y in range(0, H, 2):
         for x in range(0, W, 2):
             r = _rng32((x * 2654435761) ^ (y * 40503) ^ 0x5eed)
-            d2 = min(((x - ax) ** 2 + (y - ay) ** 2 for ax, ay in seeds), default=10**9)
+            d2, near = min((((x - ax) ** 2 + (y - ay) ** 2, (ax, ay))
+                            for ax, ay in seeds), default=(10 ** 9, None))
             if d2 > WOOD_R * WOOD_R:
                 continue
             edge = d2 > (WOOD_R - 3) ** 2
-            if r() > (0.42 if not edge else 0.22):
+            if r() > (0.55 if not edge else 0.30):
                 continue
             jx, jy = x + int(r() * 2), y + int(r() * 2)
             if not grass_flat(jx, jy) or not clear(jx, jy) or (jx, jy) in taken:
                 continue
             taken.add((jx, jy))
+            wh = (wood_of[near] * 2654435761 ^ 0x9e33) & 0xffffffff
+            prim = spnames[wh % len(spnames)]
+            acc = spnames[(wh // 97 + 1 + wh % 7) % len(spnames)]
             u = r()
             if edge and u < 0.30:
                 grp, pool = "bushes", bushes
-            elif u < 0.06:
+            elif u < 0.04:
                 grp, pool = "ancient_trees", ancients
             else:
-                grp, pool = "trees", trees
+                grp = "trees"
+                pool = species[acc] if r() < 0.25 else species[prim]
             pick = pool[int(r() * len(pool)) % len(pool)]
             out.append({"piece": f"{grp}/{pick}",
                         "x": jx + 0.25 + round(r() * 0.5, 2),
@@ -411,7 +453,10 @@ def _light_audit(scen):
     lit = []
     for p in scen:
         d = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
-        if d.get("lights") == "LIGHTS_ON":
+        # a light is a PLACEMENT choice: {"lit": true} selects the piece's
+        # LIT_* state sprite; inherently-lit pieces (lights == LIGHTS_ON)
+        # count too. Unlit placements of lightable pieces cost nothing.
+        if p.get("lit") or d.get("lights") == "LIGHTS_ON":
             lit.append(((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15))
     worst = 0
     for (cx, cy) in lit:

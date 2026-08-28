@@ -688,8 +688,13 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
         if (int(px), int(py)) in roofed:
             continue
         meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
-        sp = Image.open(os.path.join(REPO, "scenery",
-                                     meta["sprite"].split("/", 0)[0] if False else meta["sprite"])).convert("RGBA")
+        spath = meta["sprite"]
+        if p.get("lit"):              # {"lit": true} selects the LIT_* state
+            litk = sorted(k for k in (meta.get("states") or {})
+                          if k.startswith("LIT"))
+            if litk:
+                spath = meta["states"][litk[0]]["sprite"]
+        sp = Image.open(os.path.join(REPO, "scenery", spath)).convert("RGBA")
         want = meta.get("placement", {}).get("world_px_height") or sp.height
         bb = sp.getbbox()
         art = sp.crop(bb)
@@ -713,7 +718,11 @@ def main():
         img = render(doc, 190, 108, 216, 134)
         out = os.path.join(MAPS2, "worlds3", "the_game", "cal.webp")
     else:
-        img = render(doc, scale=0.5)
+        # WebP hard-limits each side to 16383 px; cap the overview scale so a
+        # grown map still encodes (512-wide world -> full canvas is ~32.8k px)
+        W, H = doc["size"]["w"], doc["size"]["h"]
+        fw = (W + H) * 32 + 16
+        img = render(doc, scale=min(0.5, 16300 / fw))
         out = os.path.join(MAPS2, "worlds3", "the_game", "overview.webp")
     img.convert("RGB").save(out, lossless=True, method=4, exact=True)
     print("wrote", out, img.size)
