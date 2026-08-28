@@ -1117,11 +1117,59 @@ ok(rawRes.topOnly.every((s2) => /(^|\/)tiles\/tops\//.test(s2 ?? "")),
 p.off("request", countPass);
 await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => x.textContent.trim() === "After")?.click());
 await p.waitForTimeout(1200);
-// PROMOTE FROM THE DETAILS PAGE, same modal ("On this page it should also be
-// possible to promote to base tile (same popup)").
-ok(dSwitch.promote === dSwitch.cards && dSwitch.cards > 0,
-  `every detail card carries the promote control (${dSwitch.promote}/${dSwitch.cards})`);
-await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.scrollIntoView({ block: "center" }); b2.click(); });
+/* THE DETAIL CARD ASKS ONE QUESTION (maintainer 2026-08-28: "Remove the
+ * 'add to a base tile set..' button and make the rating have normal stars" —
+ * superseding 2026-08-21's promote-from-here). Promotion lives on the Base
+ * tab's pool picker; the card carries plain, visible stars. */
+ok(dSwitch.promote === 0 && dSwitch.cards > 0,
+  `no promote control on a detail card — the card asks only "is this a detail" (${dSwitch.promote} on ${dSwitch.cards} cards)`);
+const starRead = () => p.evaluate(() => {
+  const c = [...document.querySelectorAll(".detail-card")].at(-1);   // a QUEUE card
+  return {
+    cards: document.querySelectorAll(".detail-card").length,
+    label: c?.querySelector(".card-sub .muted, .card-sub a")?.textContent ?? "",
+    roofs: document.querySelectorAll(".detail-card .stars.roofs").length,
+    glyphs: [...(c?.querySelectorAll(".stars button") ?? [])].map((x) => x.textContent),
+    lit: c?.querySelectorAll(".stars button.lit").length ?? -1,
+    // The NUMBER the savebar renders, read at its source — the bar's text
+    // repaint is async and a mid-flight read sees the pre-commit value.
+    pending: Object.values(window.__wiki.state.touched).reduce((n2, s3) => n2 + s3.size, 0),
+  };
+});
+// Flush whatever earlier steps left pending, so the tap's delta is its own —
+// and WAIT for the bar to hide: the commit is async, and reading the bar
+// mid-flight sees the pre-commit number.
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForFunction(() => document.querySelector("#savebar")?.classList.contains("hidden"), { timeout: 6000 }).catch(() => {});
+const st0 = await starRead();
+ok(st0.roofs === 0 && st0.glyphs.length === 5 && st0.glyphs.every((g2) => g2 === "\u2606"),
+  `the rating is five NORMAL stars, empty before any tap (${st0.glyphs.join("")})`);
+/* THE TAP MUST BE VISIBLE AND THE CARD MUST HOLD STILL (maintainer
+ * 2026-08-28: "when clicking on the rating today I can't see it getting any
+ * stars. So I click again and again and the 'x changes' just keep counting
+ * up"): rating a tile removed it from the judged-by-nobody queue and the
+ * re-route slid the next card under his thumb — every further tap starred a
+ * DIFFERENT tile, one more pending change each. */
+await p.evaluate(() => [...document.querySelectorAll(".detail-card")].at(-1)?.querySelectorAll(".stars button")[2]?.click());
+await p.waitForTimeout(400);
+const st1 = await starRead();
+ok(st1.lit === 3 && st1.cards === st0.cards && st1.label === st0.label,
+  `tapping the third star LIGHTS three stars on the SAME card — no vanish, no shuffle (${st1.lit} lit)`);
+ok(st1.pending === st0.pending + 1, `one tap, one pending change (${st0.pending} → ${st1.pending})`);
+await p.evaluate(() => [...document.querySelectorAll(".detail-card")].at(-1)?.querySelectorAll(".stars button")[2]?.click());
+await p.waitForTimeout(400);
+const st2 = await starRead();
+ok(st2.lit === 0 && st2.cards === st1.cards && st2.label === st1.label && st2.pending === st1.pending,
+  `a second tap on the same star clears it in place — the count does NOT keep counting up (still ${st2.pending})`);
+await p.evaluate(() => document.querySelector("#save-btn")?.click());
+await p.waitForTimeout(700);
+
+// THE PROMOTION MODAL, deep-tested where its button lives now: the x-over-y
+// candidate card (the pool picker covers the Base tab).
+const mCell = (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side !== "grass");
+await p.goto(`${W}#/world/grass/${mCell.side}`, { waitUntil: "load" });
+await p.waitForTimeout(1900);
+await p.evaluate(() => { const b2 = document.querySelector(".world-cand .base-btn"); b2.scrollIntoView({ block: "center" }); b2.click(); });
 await p.waitForTimeout(900);
 const dModal = await p.evaluate(() => ({
   open: !!document.querySelector(".promote-modal[open]"),
@@ -1182,7 +1230,8 @@ ok(mTex.open && /^Set #\d+$/.test(mTex.sel ?? "") && typeof mTex.colours === "nu
 // "textured, in palette" / "clean colour"), three different widths reflowing
 // the header above the very previews the dialog exists to compare.
 const modalGeom = [];
-for (const want of ["After", "Textured", "Raw"]) {
+const mChips = await p.evaluate(() => [...document.querySelectorAll(".promote-pass .sortbar-btn")].map((x) => x.textContent.trim()));
+for (const want of mChips) {
   await p.evaluate((w) => [...document.querySelectorAll(".promote-pass .sortbar-btn")].find((x) => x.textContent.trim() === w)?.click(), want);
   await p.waitForTimeout(900);
   modalGeom.push(await p.evaluate(() => {
@@ -1200,22 +1249,10 @@ ok(modalGeom.every(Boolean) && new Set(modalGeom.map((x) => x.h)).size === 1 && 
 const leftOn = await p.evaluate(() => document.querySelector(".promote-pass .sortbar-btn.sel")?.textContent.trim() ?? "");
 await p.evaluate(() => [...document.querySelectorAll(".promote-modal button")].find((x) => /Close/.test(x.textContent))?.click());
 await p.waitForTimeout(1000);
-const synced = await p.evaluate(() => document.querySelector(".ground-pass .sortbar-btn.sel")?.textContent.trim());
+const synced = await p.evaluate(() => document.querySelector(".world-viewbar .sortbar-btn.sel")?.textContent.trim());
 ok(!!leftOn && synced === leftOn, `and the page behind adopts the pass the modal was left on (${leftOn} → ${synced})`);
-await p.evaluate(() => [...document.querySelectorAll(".ground-pass .sortbar-btn")].find((x) => x.textContent.trim() === "Clean #0")?.click());
+await p.evaluate(() => [...document.querySelectorAll(".world-viewbar .sortbar-btn")].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(900);
-await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2?.scrollIntoView({ block: "center" }); b2?.click(); });
-await p.waitForTimeout(900);
-await p.evaluate(() => [...document.querySelectorAll(".promote-into")].at(-1)?.click());
-await p.waitForTimeout(800);
-const dPromoted = await p.evaluate(() => ({
-  btn: document.querySelector(".detail-card .base-btn")?.textContent ?? "",
-  pill: document.querySelector(".detail-card .base-row .pill")?.textContent ?? "",
-}));
-ok(/another set/.test(dPromoted.btn) && /in Set #/.test(dPromoted.pill),
-  `promoting from a detail card takes effect on it (${dPromoted.pill})`);
-await p.evaluate(() => { const b2 = document.querySelector(".detail-card .base-btn"); b2.click(); });
-await p.waitForTimeout(600);
 
 // THE VIEW IS THE REVIEW (maintainer 2026-08-21: "The current button and
 // everything that expands when clicking on the 'review the top' should be
@@ -1457,14 +1494,14 @@ const five = await p.evaluate(() => {
   const span = (n) => (2 * n - 2) * iso.dx + iso.tilePx + 8;
   return { w: cv.width, want5: span(5), want3: span(3), colours,
     promoted: Object.keys(window.__wiki.state.tuning.base_tiles?.overrides ?? {}).length,
-    says: [...document.querySelectorAll("p.muted")].map((x) => x.textContent).find((x) => /ring of the ground/.test(x)) ?? "" };
+    says: [...document.querySelectorAll("p.muted")].map((x) => x.textContent).find((x) => /ONCE in the centre/.test(x)) ?? "" };
 });
 ok(five.w === five.want5,
   `the detail picture is a 5x5 field, not a 3x3 (${five.w}px, 5x5 spans ${five.want5}, 3x3 would be ${five.want3})`);
 ok(typeof five.colours === "number" && five.colours > 8,
   `and it is readable and textured rather than a wall of one colour (${five.colours} colours)`);
-ok(/clean-colour tile|promoted base tile/.test(five.says),
-  `the page says what the ring IS, so the picture is never ambiguous ("${five.says.slice(0, 76)}…")`);
+ok(/Drawn (in Set #|on the clean colour|RAW)/.test(five.says),
+  `the page says what the ring IS — the switch's own pick, in words ("${five.says.slice(-60)}")`);
 
 // ---- IT HAS TO WORK ACROSS ORIGINS, WHICH IS THE ONLY WAY IT EVER RUNS -----
 // Maintainer 2026-08-22: "Textured doesn't work and also displays the clean

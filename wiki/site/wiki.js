@@ -6136,30 +6136,6 @@ const typeTops = (typeId) => [
 const detailsOf = (typeId) => typeTops(typeId).filter(({ cand }) => topFb(cand.key).status === "approved");
 /** The boredom queue: tops nobody has judged yet. */
 const detailQueue = (typeId) => typeTops(typeId).filter(({ cand }) => !topReviewed(cand.key));
-/** What surrounds a detail in its composition: the base group's members —
- *  or, before any exist, the ground's own best pure tile, so the review is
- *  possible in either order. */
-/* WHAT THE GROUND AROUND A DETAIL IS (maintainer 2026-08-23: "The idea with a
- * base tile is a tile that looks better than a single color tile, so if no base
- * tile exist that mean the base tile is used 100% as the base tile").
- *
- * A promoted base group is the ground. With nothing promoted the ground IS the
- * clean-colour tile — that is what the game paints today — so the fallback is
- * that tile in its FLATTENED pass, not its textured one. Surrounding a detail
- * with a textured neighbour would be showing him a ground that does not exist
- * yet and letting it flatter the tile under review.
- *
- * → { members, clean } — members empty means "no base tile promoted; use clean". */
-function detailSurround(typeId) {
-  const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
-  const ownCand = own?.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own?.candidates[0];
-  const clean = ownCand?.art ?? null;          // the shipped, clean-top pass
-  /* THE RING IS THE GROUND AS CONFIGURED. Its members come from the first set
-   * that can actually draw something other than the flat colour — a ring of
-   * clean tiles around a detail is the same picture as no ring at all. */
-  const s = groundSets(typeId).find((x) => x.id !== CLEAN_SET && x.members.some((m) => m.weight > 0 && m.art));
-  return { members: (s?.members ?? []).filter((m) => m.art).map((m) => ({ key: m.id, weight: m.weight, hit: { cand: { art: m.art, raw: null } } })), clean };
-}
 /* FIVE BY FIVE, THE DETAIL EXACTLY ONCE (maintainer 2026-08-28: "A detail is
  * supposed to only be displayed once and not tiled. So the 5x5 preview should
  * display the base tile set selected on all tiles except the center tile. The
@@ -7765,12 +7741,24 @@ function viewWorldType(top) {
    * every top nobody has judged, reviewable in place: "Then I will have
    * something TODO when I get bored :)" */
   function detailsTab() {
-    const surround = detailSurround(t.id);
     const seedKey = `${t.id}/details`;
     const dSeed = baseFieldSeeds.get(seedKey) ?? 5;
     const shownQueue = detailShown.get(t.id) ?? 12;
     const dPass = detailPass();
-    const detailCard = ({ cell, cand }, reviewing) => h("div", { class: "card detail-card" },
+    /* SIMPLIFIED TO THE ONE DECISION (maintainer 2026-08-28: "Remove the
+     * 'add to a base tile set..' button and make the rating have normal
+     * stars"). Promotion to a set lives on the Base tab's pool picker; this
+     * card asks only "is this a detail, and how good".
+     *
+     * NO onStars ROUTE — that was the invisible-rating bug he reported
+     * ("I can't see it getting any stars ... the 'x changes' just keep
+     * counting up"): a rated tile leaves the judged-by-nobody queue, so the
+     * re-route removed the card MID-TAP and the next tile slid under his
+     * thumb — every further tap starred a different tile, one more pending
+     * change each. The stars now fill in place and the card stays until the
+     * next natural render. The roof glyph went with it: lit and dim ⌂ differ
+     * only by colour, which is exactly what he could not see. */
+    const detailCard = ({ cell, cand }) => h("div", { class: "card detail-card" },
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
       h("div", { class: "card-sub" },
         /* A TOP-ONLY TILE HAS NOWHERE TO LINK TO. It is not a cell — there is
@@ -7785,26 +7773,9 @@ function viewWorldType(top) {
         dPass === PASS_RAW && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
-      // PROMOTE FROM HERE TOO (maintainer 2026-08-21: "On this page it should
-      // also be possible to promote to base tile (same popup)") — a top that
-      // is good enough to sprinkle may well be good enough to pave with, and
-      // it is the same modal, so the decision is made in the same picture.
-      state.admin ? (() => {
-        const inSets = setsWith(cell.top, cand.key);
-        return h("div", { class: "card-sub base-row" },
-          inSets.length ? h("span", { class: "pill ok", title: `${typeLabelWorld(cell.top)} paints fields from this tile` },
-            `in ${inSets.map(setLabel).join(", ")}`) : null,
-          h("button", {
-            class: `ghost-btn base-btn${inSets.length ? " on" : ""}`,
-            title: `See how this tile sits in each set of ${typeLabelWorld(cell.top)}, then add it to one`,
-            onclick: (e) => { e.stopPropagation(); openPromoteModal(cell, cand, () => { keepScrollY = window.scrollY; route(); }); },
-          }, inSets.length ? "☗ in another set too…" : "☖ add to a base tile set…"));
-      })() : null,
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
-          glyph: ROOF_GLYPH,
           onchange: () => { keepScrollY = window.scrollY; route(); },
-          onStars: reviewing ? () => { keepScrollY = window.scrollY; route(); } : undefined,
           reject: "✕ not a detail",
           rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
           rejectedLabel: "not a detail",
@@ -7812,14 +7783,14 @@ function viewWorldType(top) {
         })) : null);
     return h("div", {},
       h("p", { class: "muted" }, state.admin
-        ? `Nine of the tile in a ring of the ground it would decorate — ${surround.members.length ? `the ${surround.members.length} promoted base tile${surround.members.length === 1 ? "" : "s"}` : "the clean-colour tile, since nothing is promoted yet and that IS the ground today"}. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
+        ? `The detail ONCE in the centre of the ground it would decorate. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
           h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
           h("button", { class: "ghost-btn", title: "Re-roll every composition", onclick: () => { baseFieldSeeds.set(seedKey, (dSeed * 16807 + 7) % 2147483647); keepScrollY = window.scrollY; route(); } }, "🎲 Randomize")),
         details.length
-          ? h("div", { class: "grid detail-grid" }, ...details.map((d) => detailCard(d, false)))
+          ? h("div", { class: "grid detail-grid" }, ...details.map(detailCard))
           : h("p", { class: "muted" }, state.admin
             ? "Nothing approved yet — the queue below is where they come from."
             : "None yet — they are being picked right now.")),
@@ -7829,7 +7800,7 @@ function viewWorldType(top) {
           h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
         queue.length
           ? h("div", {},
-            h("div", { class: "grid detail-grid" }, ...queue.slice(0, shownQueue).map((d) => detailCard(d, true))),
+            h("div", { class: "grid detail-grid" }, ...queue.slice(0, shownQueue).map(detailCard)),
             queue.length > shownQueue ? h("button", {
               class: "ghost-btn", style: "margin-top:10px",
               onclick: () => { detailShown.set(t.id, shownQueue + 12); keepScrollY = window.scrollY; route(); },
