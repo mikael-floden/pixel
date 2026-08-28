@@ -53,6 +53,13 @@ const LIVE = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_hitbox.j
     }
   }
   ok(badBox.length === 0, badBox.length ? `bad stored box: ${badBox[0]} (${badBox.length})` : `every stored box is finite, inside its frame, and entrances are wide (${eligible.length} pieces)`);
+  /* PROPOSALS ARE MARKED (maintainer 2026-08-28: "Your default hitbox does
+   * not count as 'hitbox set'"): the alpha pass carries auto:true; only
+   * accepted or hand-edited records lack it. */
+  const nAuto = Object.values(LIVE.overrides ?? {}).filter((r) => r.auto === true).length;
+  const nSet = Object.values(LIVE.overrides ?? {}).filter((r) => !r.auto).length;
+  ok(nAuto >= 400 && nSet >= 1,
+    `the alpha-placed records are flagged as proposals, his own are not (${nAuto} auto, ${nSet} maintainer-set)`);
 }
 const bbOf = (o) => Object.values(o.animations ?? {})[0]?.dirs?.south?.bb;
 /* NON-WALL, always: since the 2026-08-28 default pass every non-wall piece
@@ -300,6 +307,76 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   await p.waitForTimeout(900);
   ok(Object.values(saves.at(-1)?.set ?? {})[0] === null,
     "agreeing with the tag again DELETES the correction — absent means the tag is right");
+}
+/* ---- ACCEPT + ALWAYS SHOW (maintainer 2026-08-28: "I should be able to
+ * review the scenery with 'Always show hitbox' ... Next to button 'Edit
+ * hitbox' should be a button called 'Accept default hitbox'. It's only if I
+ * accept the default or edit it manually, the scenery object is marked as
+ * 'hitbox set'.") ---- */
+{
+  // a piece the earlier flows have NOT touched — the fixture piece and every
+  // path this run saved carry gate-made state, not the shipped proposal
+  const gateTouched = new Set(saves.flatMap((s2) => Object.keys(s2.set ?? {})));
+  const autoPiece = PIECES.find((o) => LIVE.overrides?.[o.path]?.auto === true
+    && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type)
+    && o !== PIECE && !gateTouched.has(o.path));
+  await p.goto(`${W}#/objects/${autoPiece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  const btns = await p.evaluate(() => {
+    const all = [...document.querySelectorAll("button")].map((x) => ({ t: x.textContent.trim(), hidden: x.classList.contains("hidden") }));
+    return {
+      edit: all.find((x) => /Edit hitbox/.test(x.t)),
+      accept: all.find((x) => /Accept default hitbox/.test(x.t)),
+      show: all.find((x) => /Always show hitbox/.test(x.t)),
+    };
+  });
+  ok(!!btns.edit && !!btns.accept && !btns.accept.hidden && !!btns.show,
+    `an auto-proposed piece offers Edit, ACCEPT and Always-show side by side (${autoPiece.id})`);
+  // the proposal counts as NOT SET until he speaks
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(1000);
+  const before = await p.evaluate(() => ({ ...(window.__wikiHitbox ?? {}) }));
+  const read0 = await p.evaluate(() => document.querySelector(".hit-bar .shadow-read")?.textContent ?? "");
+  ok(before.state === "todo" && /proposed default/.test(read0) && /not set/.test(read0),
+    `the proposal reads as a PROPOSAL, and the piece still counts as to-do ("${read0.slice(-60)}")`);
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(600);
+  // accept: same boxes, his record now
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Accept default hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(800);
+  const after = await p.evaluate((k) => {
+    const r = window.__wiki.state.tuning.scenery_hitbox.overrides?.[k];
+    return { auto: r?.auto === true, n: r?.boxes?.length ?? 0, boxes: r?.boxes ?? [] };
+  }, autoPiece.path);
+  ok(!after.auto && after.n === before.n
+    && after.boxes.every((b2, i) => Math.abs(b2.ax - before.boxes[i].ax) < 0.01 && Math.abs(b2.rx - before.boxes[i].rx) < 0.01),
+    `Accept stores the very boxes on screen, without the auto flag (${after.n} box)`);
+  const st2 = await p.evaluate(() => {
+    const acc = [...document.querySelectorAll("button")].find((x) => /Accept default hitbox/.test(x.textContent));
+    return { accHidden: acc?.classList.contains("hidden") };
+  });
+  ok(st2.accHidden === true, "and the Accept button retires — the decision is made");
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(800);
+  const sA = saves.at(-1);
+  ok(sA?.file === "tuning/scenery_hitbox" && sA.set?.[autoPiece.path]?.auto === undefined && Array.isArray(sA.set?.[autoPiece.path]?.boxes),
+    "Commit posts the accepted record clean of the flag");
+
+  // ALWAYS SHOW: overlay with the editor closed, persisting across the pager
+  await p.evaluate(() => { delete window.__wikiHitbox; });
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Always show hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(900);
+  const shown = await p.evaluate(() => ({ probe: !!window.__wikiHitbox, on: [...document.querySelectorAll("button")].find((x) => /Always show hitbox/.test(x.textContent))?.classList.contains("on") }));
+  ok(shown.probe && shown.on, "Always show draws the hitbox with NO editor open");
+  const nextPiece = PIECES.find((o) => o !== autoPiece && o !== PIECE && LIVE.overrides?.[o.path]?.auto === true
+    && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type) && !gateTouched.has(o.path));
+  await p.goto(`${W}#/objects/${nextPiece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2200);
+  const still = await p.evaluate(() => ({ probe: !!window.__wikiHitbox, state: window.__wikiHitbox?.state }));
+  ok(still.probe && still.state === "todo",
+    `…and stays on while browsing to the next piece — the mode is the review (${nextPiece.id})`);
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Always show hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(500);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 

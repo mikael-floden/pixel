@@ -851,6 +851,8 @@ function setWallScenery(o, wall) {
   markDirty(SCWALL_KEY);
 }
 const HITBOX_KEY = "tuning/scenery_hitbox";
+const HIT_ALWAYS_KEY = "wiki-hitbox-always";
+const hitAlwaysShow = () => { try { return localStorage.getItem(HIT_ALWAYS_KEY) === "1"; } catch { return false; } };
 const hitboxDoc = () => state.tuning.scenery_hitbox
   ?? (state.tuning.scenery_hitbox = { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} });
 /** The piece's key — its path, the same key scenery_lights uses. */
@@ -941,8 +943,16 @@ function clearHitbox(entity) {
  * predicate lives above, override-aware: his correction in scenery_walls
  * outranks the tag, and correcting a piece moves it in and out of the hitbox
  * queue and the editor with no further marking. */
+/* AN AUTO-PLACED DEFAULT IS A PROPOSAL, NOT A VERDICT (maintainer
+ * 2026-08-28: "It's only if I accept the default or edit it manually, the
+ * scenery object is marked/tagged as 'hitbox set'. Your default hitbox does
+ * not count"). The 2026-08-28 alpha pass wrote every undecided piece a
+ * footprint with auto:true; accepting or editing rewrites the record without
+ * the flag, which is what "set" means. */
+const hitboxAuto = (entity) => hitboxRaw(entity)?.auto === true;
 function hitboxState(entity) {
   if (isWallScenery(entity)) return "wall";
+  if (hitboxAuto(entity)) return "todo";
   const b = hitboxes(entity);
   if (b === null) return "todo";
   return b.length ? "has" : "none";
@@ -1461,7 +1471,7 @@ function makePlayer(entity, kind, opts = {}) {
       anchorY = -box.top * s;
       dx = Math.round(anchorX - A.x * s);
       dy = Math.round(anchorY - A.y * s);
-    } else if (cur.editHit && kind === "object") {
+    } else if ((cur.editHit || (hitBtn && hitAlwaysShow())) && kind === "object") {
       /* THE HITBOX MUST NOT BE CLIPPED BY THE ART (maintainer 2026-08-27: "I
        * feel the hitbox I draw is clipped and can only render inside the
        * scenery texture. This feels like a bug and makes it hard to see the
@@ -1579,7 +1589,7 @@ function makePlayer(entity, kind, opts = {}) {
      * the player is under the elliptic center the player is rendered on top."
      * That boundary is a horizontal line through the centre, so it is drawn
      * as one — the thing being decided, made visible. */
-    if (cur.editHit && kind === "object") {
+    if ((cur.editHit || (hitBtn && hitAlwaysShow())) && kind === "object") {
       const boxes = hitList();
       ctx.save();
       boxes.forEach((b, i) => {
@@ -2008,6 +2018,32 @@ function makePlayer(entity, kind, opts = {}) {
       onclick: () => setEditHit(!cur.editHit),
     }, "✎ Edit hitbox")
     : null;
+  /* ONE TAP SAYS "THE DEFAULT IS RIGHT" (maintainer 2026-08-28: "Next to
+   * button 'Edit hitbox' should be a button called 'Accept default hitbox'").
+   * It stores the very boxes on screen, without the auto flag — the same
+   * record a manual edit would write — so the piece becomes "hitbox set". */
+  const hitAcceptBtn = hitBtn
+    ? h("button", {
+      class: `ghost-btn shadow-btn${hitboxState(entity) !== "todo" ? " hidden" : ""}`,
+      title: "The proposed hitbox is right as drawn — store it as YOUR decision. Only accepted or hand-edited hitboxes count as set.",
+      onclick: () => { setHitboxes(entity, hitList()); onShadowEdit?.(); refreshHitBar(); draw(); },
+    }, "✓ Accept default hitbox")
+    : null;
+  /* BROWSE WITH THE HITBOX VISIBLE (maintainer 2026-08-28: "with this mode I
+   * can browse around and always be able to see the hitbox"). Persisted, so
+   * the ‹ › pager keeps it on from piece to piece. */
+  const hitShowBtn = hitBtn
+    ? h("button", {
+      class: `ghost-btn shadow-btn${hitAlwaysShow() ? " on" : ""}`,
+      title: "Draw the hitbox on every piece while you browse — no editor needed. Stays on until you turn it off.",
+      onclick: () => {
+        try { localStorage.setItem(HIT_ALWAYS_KEY, hitAlwaysShow() ? "0" : "1"); } catch {}
+        hitShowBtn.classList.toggle("on", hitAlwaysShow());
+        editBox = null;
+        draw();
+      },
+    }, "👁 Always show hitbox")
+    : null;
   function setEditHit(on) {
     cur.editHit = !!on && !!hitBtn;
     editBox = null;
@@ -2017,6 +2053,8 @@ function makePlayer(entity, kind, opts = {}) {
   }
   function refreshHitBar() {
     if (!hitBtn) return;
+    // Accept exists exactly while the decision is still a proposal.
+    if (hitAcceptBtn) hitAcceptBtn.classList.toggle("hidden", hitboxState(entity) !== "todo");
     hitBar.classList.toggle("hidden", !cur.editHit);
     hitBtn.classList.toggle("on", cur.editHit);
     if (!cur.editHit) return;
@@ -2037,7 +2075,7 @@ function makePlayer(entity, kind, opts = {}) {
     hitChips.classList.toggle("hidden", boxes.length < 2);
     hitDelBtn.disabled = boxes.length < 2;
     hitNoneBtn.disabled = st === "none";
-    hitResetBtn.disabled = st === "todo";
+    hitResetBtn.disabled = !hitboxRaw(entity);
     /* BOTH RAILS REACH TWICE THE FRAME (maintainer 2026-08-27: "Why is this the
      * max D? Some scenery are really long/tall/wide... Make the max a little
      * bigger/longer").
@@ -2065,7 +2103,7 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
       st === "none" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
-      st === "todo" ? " · not set — move anything to adopt it" : "",
+      st === "todo" ? (hitboxAuto(entity) ? " · proposed default — not set until you accept or adjust it" : " · not set — move anything to adopt it") : "",
     );
   }
 
@@ -2133,6 +2171,8 @@ function makePlayer(entity, kind, opts = {}) {
     kind === "monster" ? h("label", { class: "chk" }, shadowChk, "Show shadow") : null,
     shadowBtn,
     hitBtn,
+    hitAcceptBtn,
+    hitShowBtn,
   );
 
   let onFacetChange = null;

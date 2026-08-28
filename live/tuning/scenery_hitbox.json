@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
-  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre \u2014 the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order \u2014 a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md.",
+  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre \u2014 the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order \u2014 a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL (2026-08-28) \u2014 shown as the default, but the piece still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints.",
   "updated_at": "2026-08-28T07:42:22.228Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
@@ -109,7 +109,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/anchors/anchor_006": {
       "boxes": [
@@ -121,7 +122,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ancient_trees/ancient_tree_001": {
       "boxes": [
@@ -133,7 +135,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ancient_trees/ancient_tree_002": {
       "boxes": [
@@ -145,7 +148,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ant_hills/ant_hill_001": {
       "boxes": [
@@ -157,7 +161,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/anvils/anvil_003": {
       "boxes": [
@@ -169,7 +174,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/anvils/anvil_004": {
       "boxes": [
@@ -181,7 +187,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/aqueduct_fragments/aqueduct_fragment_002": {
       "boxes": [
@@ -200,7 +207,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/aqueduct_fragments/aqueduct_fragment_901": {
       "boxes": [
@@ -219,7 +227,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/barrels/barrel_001": {
       "boxes": [
@@ -231,7 +240,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/barrels/barrel_003": {
       "boxes": [
@@ -243,7 +253,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/barrels/barrel_007": {
       "boxes": [
@@ -255,7 +266,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/barrels/barrel_010": {
       "boxes": [
@@ -267,7 +279,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/barrels/barrel_016": {
       "boxes": [
@@ -279,7 +292,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beached_rowboats/beached_rowboat_001": {
       "boxes": [
@@ -291,7 +305,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beached_rowboats/beached_rowboat_900": {
       "boxes": [
@@ -303,7 +318,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_001": {
       "boxes": [
@@ -315,7 +331,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_002": {
       "boxes": [
@@ -327,7 +344,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_003": {
       "boxes": [
@@ -339,7 +357,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_007": {
       "boxes": [
@@ -351,7 +370,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_008": {
       "boxes": [
@@ -363,7 +383,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_010": {
       "boxes": [
@@ -375,7 +396,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_011": {
       "boxes": [
@@ -387,7 +409,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_012": {
       "boxes": [
@@ -399,7 +422,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_014": {
       "boxes": [
@@ -411,7 +435,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_015": {
       "boxes": [
@@ -423,7 +448,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beacons/beacon_016": {
       "boxes": [
@@ -435,7 +461,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beast_skulls/beast_skull_001": {
       "boxes": [
@@ -447,7 +474,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beast_skulls/beast_skull_002": {
       "boxes": [
@@ -459,7 +487,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beds/bed_001": {
       "boxes": [
@@ -471,7 +500,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beds/bed_002": {
       "boxes": [
@@ -483,7 +513,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beds/bed_005": {
       "boxes": [
@@ -495,7 +526,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beds/bed_006": {
       "boxes": [
@@ -507,7 +539,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beehives/beehive_003": {
       "boxes": [
@@ -519,7 +552,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/beehives/beehive_004": {
       "boxes": [
@@ -531,7 +565,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bell_posts/bell_post_004": {
       "boxes": [
@@ -543,7 +578,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/blood_spatter": {
       "boxes": [
@@ -555,7 +591,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_001": {
       "boxes": [
@@ -567,7 +604,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_002": {
       "boxes": [
@@ -579,7 +617,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_003": {
       "boxes": [
@@ -591,7 +630,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_004": {
       "boxes": [
@@ -603,7 +643,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_005": {
       "boxes": [
@@ -615,7 +656,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_006": {
       "boxes": [
@@ -627,7 +669,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_007": {
       "boxes": [
@@ -639,7 +682,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_008": {
       "boxes": [
@@ -651,7 +695,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_010": {
       "boxes": [
@@ -663,7 +708,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_011": {
       "boxes": [
@@ -675,7 +721,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_012": {
       "boxes": [
@@ -687,7 +734,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_014": {
       "boxes": [
@@ -699,7 +747,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_015": {
       "boxes": [
@@ -711,7 +760,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/braziers/brazier_018": {
       "boxes": [
@@ -723,7 +773,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_010": {
       "boxes": [
@@ -735,7 +786,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_013": {
       "boxes": [
@@ -747,7 +799,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_014": {
       "boxes": [
@@ -759,7 +812,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_015": {
       "boxes": [
@@ -771,7 +825,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_016": {
       "boxes": [
@@ -783,7 +838,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_019": {
       "boxes": [
@@ -795,7 +851,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_020": {
       "boxes": [
@@ -807,7 +864,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_021": {
       "boxes": [
@@ -819,7 +877,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_022": {
       "boxes": [
@@ -831,7 +890,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/briar_thickets/briar_thicket_024": {
       "boxes": [
@@ -843,7 +903,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/broken_columns/broken_column_001": {
       "boxes": [
@@ -855,7 +916,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/broken_columns/broken_column_002": {
       "boxes": [
@@ -867,7 +929,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_001": {
       "boxes": [
@@ -879,7 +942,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_007": {
       "boxes": [
@@ -891,7 +955,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_008": {
       "boxes": [
@@ -903,7 +968,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_011": {
       "boxes": [
@@ -915,7 +981,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_014": {
       "boxes": [
@@ -927,7 +994,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_015": {
       "boxes": [
@@ -939,7 +1007,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_016": {
       "boxes": [
@@ -951,7 +1020,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/bushes/bush_900": {
       "boxes": [
@@ -963,7 +1033,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_009": {
       "boxes": [
@@ -975,7 +1046,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_010": {
       "boxes": [
@@ -987,7 +1059,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_011": {
       "boxes": [
@@ -999,7 +1072,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_012": {
       "boxes": [
@@ -1011,7 +1085,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_013": {
       "boxes": [
@@ -1023,7 +1098,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_014": {
       "boxes": [
@@ -1035,7 +1111,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_015": {
       "boxes": [
@@ -1047,7 +1124,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_016": {
       "boxes": [
@@ -1059,7 +1137,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_017": {
       "boxes": [
@@ -1071,7 +1150,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_019": {
       "boxes": [
@@ -1083,7 +1163,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_021": {
       "boxes": [
@@ -1095,7 +1176,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_022": {
       "boxes": [
@@ -1107,7 +1189,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_024": {
       "boxes": [
@@ -1119,7 +1202,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cairns/cairn_026": {
       "boxes": [
@@ -1131,7 +1215,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/campfire": {
       "boxes": [
@@ -1143,7 +1228,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_004": {
       "boxes": [
@@ -1155,7 +1241,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_005": {
       "boxes": [
@@ -1167,7 +1254,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_011": {
       "boxes": [
@@ -1179,7 +1267,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_016": {
       "boxes": [
@@ -1191,7 +1280,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_022": {
       "boxes": [
@@ -1203,7 +1293,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/carts/cart_901": {
       "boxes": [
@@ -1215,7 +1306,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cattail_clumps/cattail_clump_005": {
       "boxes": [
@@ -1227,7 +1319,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cattail_clumps/cattail_clump_007": {
       "boxes": [
@@ -1239,7 +1332,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cattail_clumps/cattail_clump_020": {
       "boxes": [
@@ -1251,7 +1345,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cattail_clumps/cattail_clump_900": {
       "boxes": [
@@ -1263,7 +1358,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cauldron_camps/cauldron_camp_001": {
       "boxes": [
@@ -1275,7 +1371,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cauldron_camps/cauldron_camp_002": {
       "boxes": [
@@ -1287,7 +1384,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_001": {
       "boxes": [
@@ -1299,7 +1397,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_005": {
       "boxes": [
@@ -1311,7 +1410,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_006": {
       "boxes": [
@@ -1323,7 +1423,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_010": {
       "boxes": [
@@ -1335,7 +1436,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_012": {
       "boxes": [
@@ -1347,7 +1449,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_014": {
       "boxes": [
@@ -1359,7 +1462,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/charcoal_kilns/charcoal_kiln_002": {
       "boxes": [
@@ -1371,7 +1475,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_features/cliff_feature_002": {
       "boxes": [
@@ -1383,7 +1488,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_features/cliff_feature_007": {
       "boxes": [
@@ -1395,7 +1501,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_features/cliff_feature_010": {
       "boxes": [
@@ -1407,7 +1514,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_features/cliff_feature_900": {
       "boxes": [
@@ -1419,7 +1527,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_features/cliff_feature_903": {
       "boxes": [
@@ -1431,7 +1540,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_fragments/cliff_fragment_001": {
       "boxes": [
@@ -1443,7 +1553,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_fragments/cliff_fragment_002": {
       "boxes": [
@@ -1455,7 +1566,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_mosses/cliff_moss_043": {
       "boxes": [
@@ -1467,7 +1579,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_mosses/cliff_moss_054": {
       "boxes": [
@@ -1479,7 +1592,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_roots/cliff_root_067": {
       "boxes": [
@@ -1491,7 +1605,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_007": {
       "boxes": [
@@ -1503,7 +1618,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_009": {
       "boxes": [
@@ -1515,7 +1631,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_010": {
       "boxes": [
@@ -1527,7 +1644,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_011": {
       "boxes": [
@@ -1539,7 +1657,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_012": {
       "boxes": [
@@ -1551,7 +1670,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_013": {
       "boxes": [
@@ -1563,7 +1683,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_014": {
       "boxes": [
@@ -1575,7 +1696,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_016": {
       "boxes": [
@@ -1587,7 +1709,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_shrubs/cliff_shrub_017": {
       "boxes": [
@@ -1599,7 +1722,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_vines/cliff_vine_018": {
       "boxes": [
@@ -1611,7 +1735,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_vines/cliff_vine_096": {
       "boxes": [
@@ -1623,7 +1748,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_vines/cliff_vine_135": {
       "boxes": [
@@ -1635,7 +1761,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_vines/cliff_vine_140": {
       "boxes": [
@@ -1647,7 +1774,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cliff_vines/cliff_vine_153": {
       "boxes": [
@@ -1659,7 +1787,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystal_trees/crystal_tree_002": {
       "boxes": [
@@ -1671,7 +1800,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_005": {
       "boxes": [
@@ -1683,7 +1813,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_006": {
       "boxes": [
@@ -1695,7 +1826,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_009": {
       "boxes": [
@@ -1707,7 +1839,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_010": {
       "boxes": [
@@ -1719,7 +1852,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_011": {
       "boxes": [
@@ -1731,7 +1865,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_012": {
       "boxes": [
@@ -1743,7 +1878,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_014": {
       "boxes": [
@@ -1755,7 +1891,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/crystals/crystal_901": {
       "boxes": [
@@ -1767,7 +1904,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cup_fungi/cup_fungus_001": {
       "boxes": [
@@ -1779,7 +1917,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cup_fungi/cup_fungus_002": {
       "boxes": [
@@ -1791,7 +1930,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_001": {
       "boxes": [
@@ -1803,7 +1943,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_002": {
       "boxes": [
@@ -1815,7 +1956,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_003": {
       "boxes": [
@@ -1827,7 +1969,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_004": {
       "boxes": [
@@ -1839,7 +1982,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_005": {
       "boxes": [
@@ -1851,7 +1995,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_008": {
       "boxes": [
@@ -1863,7 +2008,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/cupboards_and_shelves/cupboard_010": {
       "boxes": [
@@ -1875,7 +2021,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_001": {
       "boxes": [
@@ -1887,7 +2034,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_005": {
       "boxes": [
@@ -1899,7 +2047,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_006": {
       "boxes": [
@@ -1911,7 +2060,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_007": {
       "boxes": [
@@ -1923,7 +2073,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_008": {
       "boxes": [
@@ -1935,7 +2086,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_009": {
       "boxes": [
@@ -1947,7 +2099,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_010": {
       "boxes": [
@@ -1959,7 +2112,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_011": {
       "boxes": [
@@ -1971,7 +2125,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_013": {
       "boxes": [
@@ -1983,7 +2138,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_014": {
       "boxes": [
@@ -1995,7 +2151,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dock_pilings/dock_piling_016": {
       "boxes": [
@@ -2007,7 +2164,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dragon_ribcages/dragon_ribcage_001": {
       "boxes": [
@@ -2019,7 +2177,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/dragon_ribcages/dragon_ribcage_004": {
       "boxes": [
@@ -2031,7 +2190,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/driftwood_logs/driftwood_log_901": {
       "boxes": [
@@ -2043,7 +2203,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fallen_logs/fallen_log_006": {
       "boxes": [
@@ -2055,7 +2216,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fallen_logs/fallen_log_011": {
       "boxes": [
@@ -2067,7 +2229,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fallen_logs/fallen_log_013": {
       "boxes": [
@@ -2079,7 +2242,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fallen_logs/fallen_log_014": {
       "boxes": [
@@ -2091,7 +2255,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fences/fence_001": {
       "boxes": [
@@ -2103,7 +2268,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fences/fence_003": {
       "boxes": [
@@ -2115,7 +2281,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fences/fence_006": {
       "boxes": [
@@ -2127,7 +2294,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_001": {
       "boxes": [
@@ -2139,7 +2307,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_005": {
       "boxes": [
@@ -2151,7 +2320,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_006": {
       "boxes": [
@@ -2163,7 +2333,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_007": {
       "boxes": [
@@ -2175,7 +2346,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_008": {
       "boxes": [
@@ -2187,7 +2359,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_009": {
       "boxes": [
@@ -2199,7 +2372,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_011": {
       "boxes": [
@@ -2211,7 +2385,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_012": {
       "boxes": [
@@ -2223,7 +2398,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_014": {
       "boxes": [
@@ -2235,7 +2411,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ferns/fern_016": {
       "boxes": [
@@ -2247,7 +2424,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fish_drying_racks/fish_drying_rack_002": {
       "boxes": [
@@ -2259,7 +2437,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fish_drying_racks/fish_drying_rack_003": {
       "boxes": [
@@ -2271,7 +2450,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/fish_drying_racks/fish_drying_rack_005": {
       "boxes": [
@@ -2283,7 +2463,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_005": {
       "boxes": [
@@ -2295,7 +2476,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_006": {
       "boxes": [
@@ -2307,7 +2489,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_007": {
       "boxes": [
@@ -2319,7 +2502,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_012": {
       "boxes": [
@@ -2331,7 +2515,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_015": {
       "boxes": [
@@ -2343,7 +2528,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_017": {
       "boxes": [
@@ -2355,7 +2541,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_018": {
       "boxes": [
@@ -2367,7 +2554,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flame_niches/flame_niche_900": {
       "boxes": [
@@ -2379,7 +2567,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_stands/flower_stand_002": {
       "boxes": [
@@ -2391,7 +2580,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_stands/flower_stand_003": {
       "boxes": [
@@ -2403,7 +2593,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_stands/flower_stand_007": {
       "boxes": [
@@ -2415,7 +2606,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_stands/flower_stand_008": {
       "boxes": [
@@ -2427,7 +2619,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_stands/flower_stand_015": {
       "boxes": [
@@ -2439,7 +2632,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_trellises/flower_trellis_001": {
       "boxes": [
@@ -2451,7 +2645,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/flower_trellises/flower_trellis_004": {
       "boxes": [
@@ -2463,7 +2658,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/frost_flowers/frost_flower_002": {
       "boxes": [
@@ -2475,7 +2671,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/frozen_springs/frozen_spring_002": {
       "boxes": [
@@ -2487,7 +2684,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/geodes/geode_001": {
       "boxes": [
@@ -2499,7 +2697,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_fallen_bells/giant_fallen_bell_002": {
       "boxes": [
@@ -2511,7 +2710,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_mushrooms/giant_mushroom_001": {
       "boxes": [
@@ -2523,7 +2723,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_mushrooms/giant_mushroom_002": {
       "boxes": [
@@ -2535,7 +2736,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_skulls/giant_skull_002": {
       "boxes": [
@@ -2547,7 +2749,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_snail_shells/giant_snail_shell_002": {
       "boxes": [
@@ -2559,7 +2762,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_snail_shells/giant_snail_shell_003": {
       "boxes": [
@@ -2571,7 +2775,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/giant_snail_shells/giant_snail_shell_004": {
       "boxes": [
@@ -2583,7 +2788,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/grass_tufts/grass_tuft_001": {
       "boxes": [
@@ -2595,7 +2801,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/grass_tufts/grass_tuft_007": {
       "boxes": [
@@ -2607,7 +2814,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/grass_tufts/grass_tuft_010": {
       "boxes": [
@@ -2619,7 +2827,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/grave_cross": {
       "boxes": [
@@ -2631,7 +2840,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/gravel_piles/gravel_pile_001": {
       "boxes": [
@@ -2643,7 +2853,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/gravel_piles/gravel_pile_002": {
       "boxes": [
@@ -2655,7 +2866,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_001": {
       "boxes": [
@@ -2667,7 +2879,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_003": {
       "boxes": [
@@ -2679,7 +2892,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_004": {
       "boxes": [
@@ -2691,7 +2905,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_005": {
       "boxes": [
@@ -2703,7 +2918,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_017": {
       "boxes": [
@@ -2715,7 +2931,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_020": {
       "boxes": [
@@ -2727,7 +2944,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_026": {
       "boxes": [
@@ -2739,7 +2957,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_028": {
       "boxes": [
@@ -2751,7 +2970,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/graves/grave_034": {
       "boxes": [
@@ -2763,7 +2983,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hanging_baskets/hanging_basket_005": {
       "boxes": [
@@ -2775,7 +2996,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hanging_baskets/hanging_basket_006": {
       "boxes": [
@@ -2787,7 +3009,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hanging_willows/hanging_willow_001": {
       "boxes": [
@@ -2799,7 +3022,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hanging_willows/hanging_willow_002": {
       "boxes": [
@@ -2811,7 +3035,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/harvest_altars/harvest_altar_002": {
       "boxes": [
@@ -2823,7 +3048,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/haystacks/haystack_008": {
       "boxes": [
@@ -2835,7 +3061,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/haystacks/haystack_013": {
       "boxes": [
@@ -2847,7 +3074,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/haystacks/haystack_021": {
       "boxes": [
@@ -2859,7 +3087,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_001": {
       "boxes": [
@@ -2871,7 +3100,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_002": {
       "boxes": [
@@ -2883,7 +3113,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_003": {
       "boxes": [
@@ -2895,7 +3126,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_004": {
       "boxes": [
@@ -2907,7 +3139,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_008": {
       "boxes": [
@@ -2919,7 +3152,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_900": {
       "boxes": [
@@ -2931,7 +3165,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hearths/hearth_901": {
       "boxes": [
@@ -2943,7 +3178,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/honey_trees/honey_tree_002": {
       "boxes": [
@@ -2955,7 +3191,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hop_poles/hop_pole_001": {
       "boxes": [
@@ -2967,7 +3204,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hop_poles/hop_pole_002": {
       "boxes": [
@@ -2979,7 +3217,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/hot_springs/hot_spring_002": {
       "boxes": [
@@ -2991,7 +3230,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_001": {
       "boxes": [
@@ -3003,7 +3243,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_002": {
       "boxes": [
@@ -3015,7 +3256,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_003": {
       "boxes": [
@@ -3027,7 +3269,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_005": {
       "boxes": [
@@ -3039,7 +3282,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_006": {
       "boxes": [
@@ -3051,7 +3295,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_007": {
       "boxes": [
@@ -3063,7 +3308,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_008": {
       "boxes": [
@@ -3075,7 +3321,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_012": {
       "boxes": [
@@ -3087,7 +3334,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/house_clutter/clutter_900": {
       "boxes": [
@@ -3099,7 +3347,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ivy_posts/ivy_post_005": {
       "boxes": [
@@ -3111,7 +3360,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ivy_posts/ivy_post_008": {
       "boxes": [
@@ -3123,7 +3373,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ivy_posts/ivy_post_010": {
       "boxes": [
@@ -3135,7 +3386,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_001": {
       "boxes": [
@@ -3147,7 +3399,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_004": {
       "boxes": [
@@ -3159,7 +3412,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_005": {
       "boxes": [
@@ -3171,7 +3425,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_006": {
       "boxes": [
@@ -3183,7 +3438,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_008": {
       "boxes": [
@@ -3195,7 +3451,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_014": {
       "boxes": [
@@ -3207,7 +3464,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_015": {
       "boxes": [
@@ -3219,7 +3477,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_016": {
       "boxes": [
@@ -3231,7 +3490,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_017": {
       "boxes": [
@@ -3243,7 +3503,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_018": {
       "boxes": [
@@ -3255,7 +3516,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_020": {
       "boxes": [
@@ -3267,7 +3529,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_posts/lantern_post_026": {
       "boxes": [
@@ -3279,7 +3542,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_004": {
       "boxes": [
@@ -3291,7 +3555,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_005": {
       "boxes": [
@@ -3303,7 +3568,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_007": {
       "boxes": [
@@ -3315,7 +3581,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_014": {
       "boxes": [
@@ -3327,7 +3594,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_018": {
       "boxes": [
@@ -3339,7 +3607,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/lantern_stands/lantern_stand_902": {
       "boxes": [
@@ -3351,7 +3620,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/letter_boxes/letter_box_003": {
       "boxes": [
@@ -3363,7 +3633,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/market_stalls/market_stall_001": {
       "boxes": [
@@ -3375,7 +3646,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/market_stalls/market_stall_002": {
       "boxes": [
@@ -3387,7 +3659,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/market_stalls/market_stall_003": {
       "boxes": [
@@ -3399,7 +3672,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/market_stalls/market_stall_004": {
       "boxes": [
@@ -3411,7 +3685,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/maypoles/maypole_002": {
       "boxes": [
@@ -3423,7 +3698,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/maypoles/maypole_007": {
       "boxes": [
@@ -3435,7 +3711,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/meteor_stones/meteor_stone_002": {
       "boxes": [
@@ -3447,7 +3724,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/moon_pools/moon_pool_002": {
       "boxes": [
@@ -3459,7 +3737,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/moss_clumps/moss_clump_008": {
       "boxes": [
@@ -3471,7 +3750,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/moss_clumps/moss_clump_009": {
       "boxes": [
@@ -3483,7 +3763,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/moss_clumps/moss_clump_012": {
       "boxes": [
@@ -3495,7 +3776,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/moss_clumps/moss_clump_900": {
       "boxes": [
@@ -3507,7 +3789,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_001": {
       "boxes": [
@@ -3519,7 +3802,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_002": {
       "boxes": [
@@ -3531,7 +3815,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_003": {
       "boxes": [
@@ -3543,7 +3828,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_005": {
       "boxes": [
@@ -3555,7 +3841,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_006": {
       "boxes": [
@@ -3567,7 +3854,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_007": {
       "boxes": [
@@ -3579,7 +3867,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_008": {
       "boxes": [
@@ -3591,7 +3880,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_009": {
       "boxes": [
@@ -3603,7 +3893,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_010": {
       "boxes": [
@@ -3615,7 +3906,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_011": {
       "boxes": [
@@ -3627,7 +3919,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_013": {
       "boxes": [
@@ -3639,7 +3932,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/mushrooms/mushroom_016": {
       "boxes": [
@@ -3651,7 +3945,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_001": {
       "boxes": [
@@ -3663,7 +3958,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_002": {
       "boxes": [
@@ -3675,7 +3971,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_003": {
       "boxes": [
@@ -3687,7 +3984,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_004": {
       "boxes": [
@@ -3699,7 +3997,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_007": {
       "boxes": [
@@ -3711,7 +4010,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_009": {
       "boxes": [
@@ -3723,7 +4023,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_012": {
       "boxes": [
@@ -3735,7 +4036,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_016": {
       "boxes": [
@@ -3747,7 +4049,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_018": {
       "boxes": [
@@ -3759,7 +4062,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/offering_tables/offering_table_020": {
       "boxes": [
@@ -3771,7 +4075,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/overgrown_archways/overgrown_archway_001": {
       "boxes": [
@@ -3790,7 +4095,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/overgrown_archways/overgrown_archway_002": {
       "boxes": [
@@ -3809,7 +4115,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/owl_snags/owl_snag_001": {
       "boxes": [
@@ -3821,7 +4128,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/owl_snags/owl_snag_002": {
       "boxes": [
@@ -3833,7 +4141,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/petrified_stumps/petrified_stump_002": {
       "boxes": [
@@ -3845,7 +4154,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/petrified_stumps/petrified_stump_003": {
       "boxes": [
@@ -3857,7 +4167,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/puffballs/puffball_001": {
       "boxes": [
@@ -3869,7 +4180,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/puffballs/puffball_900": {
       "boxes": [
@@ -3881,7 +4193,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/reed_beds/reed_bed_005": {
       "boxes": [
@@ -3893,7 +4206,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/reed_beds/reed_bed_007": {
       "boxes": [
@@ -3905,7 +4219,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/reed_beds/reed_bed_010": {
       "boxes": [
@@ -3917,7 +4232,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rock_spires/rock_spire_001": {
       "boxes": [
@@ -3929,7 +4245,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rock_spires/rock_spire_002": {
       "boxes": [
@@ -3941,7 +4258,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rope_swings/rope_swing_001": {
       "boxes": [
@@ -3953,7 +4271,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rope_swings/rope_swing_002": {
       "boxes": [
@@ -3965,7 +4284,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_009": {
       "boxes": [
@@ -3977,7 +4297,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_011": {
       "boxes": [
@@ -3989,7 +4310,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_012": {
       "boxes": [
@@ -4001,7 +4323,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_014": {
       "boxes": [
@@ -4013,7 +4336,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_016": {
       "boxes": [
@@ -4025,7 +4349,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rugs_and_hides/rug_017": {
       "boxes": [
@@ -4037,7 +4362,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ruined_arches/ruined_arch_001": {
       "boxes": [
@@ -4056,7 +4382,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/ruined_arches/ruined_arch_002": {
       "boxes": [
@@ -4068,7 +4395,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rusted_machines/rusted_machine_001": {
       "boxes": [
@@ -4080,7 +4408,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/rusted_machines/rusted_machine_900": {
       "boxes": [
@@ -4092,7 +4421,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/scarecrows/scarecrow_005": {
       "boxes": [
@@ -4104,7 +4434,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/scarecrows/scarecrow_018": {
       "boxes": [
@@ -4116,7 +4447,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/scarecrows/scarecrow_020": {
       "boxes": [
@@ -4128,7 +4460,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/scarecrows/scarecrow_022": {
       "boxes": [
@@ -4140,7 +4473,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/scarecrows/scarecrow_901": {
       "boxes": [
@@ -4152,7 +4486,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sheaf_poles/sheaf_pole_002": {
       "boxes": [
@@ -4164,7 +4499,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sheaf_poles/sheaf_pole_005": {
       "boxes": [
@@ -4176,7 +4512,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/shipwreck_prows/shipwreck_prow_002": {
       "boxes": [
@@ -4188,7 +4525,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/signposts/signpost_004": {
       "boxes": [
@@ -4200,7 +4538,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/signposts/signpost_009": {
       "boxes": [
@@ -4212,7 +4551,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/signposts/signpost_025": {
       "boxes": [
@@ -4224,7 +4564,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/signposts/signpost_028": {
       "boxes": [
@@ -4236,7 +4577,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sky_stairs/sky_stair_001": {
       "boxes": [
@@ -4248,7 +4590,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sky_stairs/sky_stair_002": {
       "boxes": [
@@ -4260,7 +4603,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sleeping_giants/sleeping_giant_002": {
       "boxes": [
@@ -4272,7 +4616,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_009": {
       "boxes": [
@@ -4284,7 +4629,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_010": {
       "boxes": [
@@ -4296,7 +4642,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_014": {
       "boxes": [
@@ -4308,7 +4655,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_015": {
       "boxes": [
@@ -4320,7 +4668,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_016": {
       "boxes": [
@@ -4332,7 +4681,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_017": {
       "boxes": [
@@ -4344,7 +4694,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_019": {
       "boxes": [
@@ -4356,7 +4707,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_outcrops/soulstone_outcrop_900": {
       "boxes": [
@@ -4368,7 +4720,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/soulstone_plinths/soulstone_plinth_001": {
       "boxes": [
@@ -4380,7 +4733,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/spring_basins/spring_basin_003": {
       "boxes": [
@@ -4392,7 +4746,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/spring_basins/spring_basin_004": {
       "boxes": [
@@ -4404,7 +4759,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/standing_stones/standing_stone_001": {
       "boxes": [
@@ -4416,7 +4772,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/statues/statue_003": {
       "boxes": [
@@ -4428,7 +4785,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stone_fountains/stone_fountain_001": {
       "boxes": [
@@ -4440,7 +4798,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stone_fountains/stone_fountain_004": {
       "boxes": [
@@ -4452,7 +4811,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_001": {
       "boxes": [
@@ -4464,7 +4824,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_004": {
       "boxes": [
@@ -4476,7 +4837,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_005": {
       "boxes": [
@@ -4488,7 +4850,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_009": {
       "boxes": [
@@ -4500,7 +4863,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_010": {
       "boxes": [
@@ -4512,7 +4876,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_011": {
       "boxes": [
@@ -4524,7 +4889,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_012": {
       "boxes": [
@@ -4536,7 +4902,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_013": {
       "boxes": [
@@ -4548,7 +4915,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_014": {
       "boxes": [
@@ -4560,7 +4928,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_015": {
       "boxes": [
@@ -4572,7 +4941,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_017": {
       "boxes": [
@@ -4584,7 +4954,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_018": {
       "boxes": [
@@ -4596,7 +4967,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_019": {
       "boxes": [
@@ -4608,7 +4980,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_020": {
       "boxes": [
@@ -4620,7 +4993,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_021": {
       "boxes": [
@@ -4632,7 +5006,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_022": {
       "boxes": [
@@ -4644,7 +5019,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_024": {
       "boxes": [
@@ -4656,7 +5032,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_025": {
       "boxes": [
@@ -4668,7 +5045,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_026": {
       "boxes": [
@@ -4680,7 +5058,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_027": {
       "boxes": [
@@ -4692,7 +5071,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_028": {
       "boxes": [
@@ -4704,7 +5084,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_029": {
       "boxes": [
@@ -4716,7 +5097,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_030": {
       "boxes": [
@@ -4728,7 +5110,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_031": {
       "boxes": [
@@ -4740,7 +5123,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_033": {
       "boxes": [
@@ -4752,7 +5136,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_034": {
       "boxes": [
@@ -4764,7 +5149,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_035": {
       "boxes": [
@@ -4776,7 +5162,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_036": {
       "boxes": [
@@ -4788,7 +5175,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_037": {
       "boxes": [
@@ -4800,7 +5188,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_038": {
       "boxes": [
@@ -4812,7 +5201,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_039": {
       "boxes": [
@@ -4824,7 +5214,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_040": {
       "boxes": [
@@ -4836,7 +5227,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_042": {
       "boxes": [
@@ -4848,7 +5240,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_043": {
       "boxes": [
@@ -4860,7 +5253,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_044": {
       "boxes": [
@@ -4872,7 +5266,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_046": {
       "boxes": [
@@ -4884,7 +5279,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_047": {
       "boxes": [
@@ -4896,7 +5292,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_048": {
       "boxes": [
@@ -4908,7 +5305,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stones/stone_050": {
       "boxes": [
@@ -4920,7 +5318,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_001": {
       "boxes": [
@@ -4932,7 +5331,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_009": {
       "boxes": [
@@ -4944,7 +5344,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_011": {
       "boxes": [
@@ -4956,7 +5357,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_013": {
       "boxes": [
@@ -4968,7 +5370,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_014": {
       "boxes": [
@@ -4980,7 +5383,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/story_posts/story_post_018": {
       "boxes": [
@@ -4992,7 +5396,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/streetlights/streetlight_007": {
       "boxes": [
@@ -5004,7 +5409,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/streetlights/streetlight_011": {
       "boxes": [
@@ -5016,7 +5422,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/streetlights/streetlight_013": {
       "boxes": [
@@ -5028,7 +5435,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/streetlights/streetlight_024": {
       "boxes": [
@@ -5040,7 +5448,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/streetlights/streetlight_034": {
       "boxes": [
@@ -5052,7 +5461,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_001": {
       "boxes": [
@@ -5064,7 +5474,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_002": {
       "boxes": [
@@ -5076,7 +5487,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_003": {
       "boxes": [
@@ -5088,7 +5500,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_005": {
       "boxes": [
@@ -5100,7 +5513,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_007": {
       "boxes": [
@@ -5112,7 +5526,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_011": {
       "boxes": [
@@ -5124,7 +5539,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_012": {
       "boxes": [
@@ -5136,7 +5552,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_013": {
       "boxes": [
@@ -5148,7 +5565,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_014": {
       "boxes": [
@@ -5160,7 +5578,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_016": {
       "boxes": [
@@ -5172,7 +5591,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/stumps/stump_020": {
       "boxes": [
@@ -5184,7 +5604,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sundials/sundial_002": {
       "boxes": [
@@ -5196,7 +5617,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/sundials/sundial_003": {
       "boxes": [
@@ -5208,7 +5630,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_003": {
       "boxes": [
@@ -5220,7 +5643,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_005": {
       "boxes": [
@@ -5232,7 +5656,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_007": {
       "boxes": [
@@ -5244,7 +5669,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_008": {
       "boxes": [
@@ -5256,7 +5682,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_009": {
       "boxes": [
@@ -5268,7 +5695,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_010": {
       "boxes": [
@@ -5280,7 +5708,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_011": {
       "boxes": [
@@ -5292,7 +5721,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_012": {
       "boxes": [
@@ -5304,7 +5734,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_014": {
       "boxes": [
@@ -5316,7 +5747,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/tables/table_016": {
       "boxes": [
@@ -5328,7 +5760,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/telegraph_poles/telegraph_pole_003": {
       "boxes": [
@@ -5340,7 +5773,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/telegraph_poles/telegraph_pole_004": {
       "boxes": [
@@ -5352,7 +5786,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/telegraph_poles/telegraph_pole_006": {
       "boxes": [
@@ -5364,7 +5799,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/telegraph_poles/telegraph_pole_008": {
       "boxes": [
@@ -5376,7 +5812,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_001": {
       "boxes": [
@@ -5388,7 +5825,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_005": {
       "boxes": [
@@ -5400,7 +5838,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_006": {
       "boxes": [
@@ -5412,7 +5851,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_009": {
       "boxes": [
@@ -5424,7 +5864,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_010": {
       "boxes": [
@@ -5436,7 +5877,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_011": {
       "boxes": [
@@ -5448,7 +5890,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_012": {
       "boxes": [
@@ -5460,7 +5903,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_013": {
       "boxes": [
@@ -5472,7 +5916,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_014": {
       "boxes": [
@@ -5484,7 +5929,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_015": {
       "boxes": [
@@ -5496,7 +5942,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/toadstool_rings/toadstool_ring_018": {
       "boxes": [
@@ -5508,7 +5955,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_004": {
       "boxes": [
@@ -5520,7 +5968,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_005": {
       "boxes": [
@@ -5532,7 +5981,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_006": {
       "boxes": [
@@ -5544,7 +5994,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_007": {
       "boxes": [
@@ -5556,7 +6007,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_008": {
       "boxes": [
@@ -5568,7 +6020,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_011": {
       "boxes": [
@@ -5580,7 +6033,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_012": {
       "boxes": [
@@ -5592,7 +6046,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_013": {
       "boxes": [
@@ -5604,7 +6059,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_014": {
       "boxes": [
@@ -5616,7 +6072,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_015": {
       "boxes": [
@@ -5628,7 +6085,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_018": {
       "boxes": [
@@ -5640,7 +6098,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_021": {
       "boxes": [
@@ -5652,7 +6111,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_022": {
       "boxes": [
@@ -5664,7 +6124,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/torch_posts/torch_post_024": {
       "boxes": [
@@ -5676,7 +6137,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trailing_planters/trailing_planter_003": {
       "boxes": [
@@ -5688,7 +6150,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trailing_planters/trailing_planter_004": {
       "boxes": [
@@ -5700,7 +6163,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_001": {
       "boxes": [
@@ -5712,7 +6176,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_003": {
       "boxes": [
@@ -5724,7 +6189,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_004": {
       "boxes": [
@@ -5736,7 +6202,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_005": {
       "boxes": [
@@ -5748,7 +6215,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_006": {
       "boxes": [
@@ -5760,7 +6228,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_007": {
       "boxes": [
@@ -5772,7 +6241,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_008": {
       "boxes": [
@@ -5784,7 +6254,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_009": {
       "boxes": [
@@ -5796,7 +6267,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_011": {
       "boxes": [
@@ -5808,7 +6280,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_012": {
       "boxes": [
@@ -5820,7 +6293,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_013": {
       "boxes": [
@@ -5832,7 +6306,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_014": {
       "boxes": [
@@ -5844,7 +6319,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_015": {
       "boxes": [
@@ -5856,7 +6332,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_016": {
       "boxes": [
@@ -5868,7 +6345,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_017": {
       "boxes": [
@@ -5880,7 +6358,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_018": {
       "boxes": [
@@ -5892,7 +6371,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_019": {
       "boxes": [
@@ -5904,7 +6384,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_020": {
       "boxes": [
@@ -5916,7 +6397,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_021": {
       "boxes": [
@@ -5928,7 +6410,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_022": {
       "boxes": [
@@ -5940,7 +6423,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_023": {
       "boxes": [
@@ -5952,7 +6436,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_024": {
       "boxes": [
@@ -5964,7 +6449,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_025": {
       "boxes": [
@@ -5976,7 +6462,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_028": {
       "boxes": [
@@ -5988,7 +6475,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_029": {
       "boxes": [
@@ -6000,7 +6488,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_030": {
       "boxes": [
@@ -6012,7 +6501,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_031": {
       "boxes": [
@@ -6024,7 +6514,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_032": {
       "boxes": [
@@ -6036,7 +6527,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_034": {
       "boxes": [
@@ -6048,7 +6540,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_035": {
       "boxes": [
@@ -6060,7 +6553,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_036": {
       "boxes": [
@@ -6072,7 +6566,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_038": {
       "boxes": [
@@ -6084,7 +6579,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_039": {
       "boxes": [
@@ -6096,7 +6592,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_040": {
       "boxes": [
@@ -6108,7 +6605,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_041": {
       "boxes": [
@@ -6120,7 +6618,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_042": {
       "boxes": [
@@ -6132,7 +6631,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_043": {
       "boxes": [
@@ -6144,7 +6644,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_044": {
       "boxes": [
@@ -6156,7 +6657,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_045": {
       "boxes": [
@@ -6168,7 +6670,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_046": {
       "boxes": [
@@ -6180,7 +6683,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_047": {
       "boxes": [
@@ -6192,7 +6696,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_048": {
       "boxes": [
@@ -6204,7 +6709,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_049": {
       "boxes": [
@@ -6216,7 +6722,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_050": {
       "boxes": [
@@ -6228,7 +6735,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_051": {
       "boxes": [
@@ -6240,7 +6748,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_052": {
       "boxes": [
@@ -6252,7 +6761,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_053": {
       "boxes": [
@@ -6264,7 +6774,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_054": {
       "boxes": [
@@ -6276,7 +6787,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_055": {
       "boxes": [
@@ -6288,7 +6800,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_056": {
       "boxes": [
@@ -6300,7 +6813,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_057": {
       "boxes": [
@@ -6312,7 +6826,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_058": {
       "boxes": [
@@ -6324,7 +6839,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_059": {
       "boxes": [
@@ -6336,7 +6852,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_060": {
       "boxes": [
@@ -6348,7 +6865,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_063": {
       "boxes": [
@@ -6360,7 +6878,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_064": {
       "boxes": [
@@ -6372,7 +6891,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_065": {
       "boxes": [
@@ -6384,7 +6904,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_066": {
       "boxes": [
@@ -6396,7 +6917,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_067": {
       "boxes": [
@@ -6408,7 +6930,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_069": {
       "boxes": [
@@ -6420,7 +6943,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_070": {
       "boxes": [
@@ -6432,7 +6956,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_071": {
       "boxes": [
@@ -6444,7 +6969,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_072": {
       "boxes": [
@@ -6456,7 +6982,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_074": {
       "boxes": [
@@ -6468,7 +6995,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_075": {
       "boxes": [
@@ -6480,7 +7008,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_077": {
       "boxes": [
@@ -6492,7 +7021,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_079": {
       "boxes": [
@@ -6504,7 +7034,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_082": {
       "boxes": [
@@ -6516,7 +7047,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_083": {
       "boxes": [
@@ -6528,7 +7060,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_085": {
       "boxes": [
@@ -6540,7 +7073,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/trees/tree_086": {
       "boxes": [
@@ -6552,7 +7086,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_009": {
       "boxes": [
@@ -6564,7 +7099,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_010": {
       "boxes": [
@@ -6576,7 +7112,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_011": {
       "boxes": [
@@ -6588,7 +7125,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_012": {
       "boxes": [
@@ -6600,7 +7138,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_014": {
       "boxes": [
@@ -6612,7 +7151,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_016": {
       "boxes": [
@@ -6624,7 +7164,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_017": {
       "boxes": [
@@ -6636,7 +7177,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wall_hangings/wall_hanging_019": {
       "boxes": [
@@ -6648,7 +7190,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_001": {
       "boxes": [
@@ -6660,7 +7203,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_002": {
       "boxes": [
@@ -6672,7 +7216,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_007": {
       "boxes": [
@@ -6684,7 +7229,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_009": {
       "boxes": [
@@ -6696,7 +7242,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_010": {
       "boxes": [
@@ -6708,7 +7255,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_011": {
       "boxes": [
@@ -6720,7 +7268,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/washing_lines/washing_line_016": {
       "boxes": [
@@ -6732,7 +7281,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wasp_nest_trees/wasp_nest_tree_001": {
       "boxes": [
@@ -6744,7 +7294,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wasp_nest_trees/wasp_nest_tree_002": {
       "boxes": [
@@ -6756,7 +7307,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wasp_nest_trees/wasp_nest_tree_004": {
       "boxes": [
@@ -6768,7 +7320,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/water_lily_clumps/water_lily_clump_001": {
       "boxes": [
@@ -6780,7 +7333,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/water_lily_clumps/water_lily_clump_002": {
       "boxes": [
@@ -6792,7 +7346,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/water_lily_clumps/water_lily_clump_004": {
       "boxes": [
@@ -6804,7 +7359,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/water_pumps/water_pump_001": {
       "boxes": [
@@ -6816,7 +7372,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/water_pumps/water_pump_002": {
       "boxes": [
@@ -6828,7 +7385,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waterwheels/waterwheel_003": {
       "boxes": [
@@ -6840,7 +7398,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waterwheels/waterwheel_006": {
       "boxes": [
@@ -6852,7 +7411,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waterwheels/waterwheel_008": {
       "boxes": [
@@ -6864,7 +7424,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_010": {
       "boxes": [
@@ -6876,7 +7437,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_011": {
       "boxes": [
@@ -6888,7 +7450,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_013": {
       "boxes": [
@@ -6900,7 +7463,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_015": {
       "boxes": [
@@ -6912,7 +7476,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_016": {
       "boxes": [
@@ -6924,7 +7489,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wayside_shrines/wayside_shrine_020": {
       "boxes": [
@@ -6936,7 +7502,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_008": {
       "boxes": [
@@ -6948,7 +7515,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_009": {
       "boxes": [
@@ -6960,7 +7528,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_010": {
       "boxes": [
@@ -6972,7 +7541,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_011": {
       "boxes": [
@@ -6984,7 +7554,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_013": {
       "boxes": [
@@ -6996,7 +7567,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_015": {
       "boxes": [
@@ -7008,7 +7580,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_016": {
       "boxes": [
@@ -7020,7 +7593,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_019": {
       "boxes": [
@@ -7032,7 +7606,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_022": {
       "boxes": [
@@ -7044,7 +7619,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_026": {
       "boxes": [
@@ -7056,7 +7632,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/waystones/waystone_030": {
       "boxes": [
@@ -7068,7 +7645,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_002": {
       "boxes": [
@@ -7080,7 +7658,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_006": {
       "boxes": [
@@ -7092,7 +7671,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_008": {
       "boxes": [
@@ -7104,7 +7684,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_009": {
       "boxes": [
@@ -7116,7 +7697,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_010": {
       "boxes": [
@@ -7128,7 +7710,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_011": {
       "boxes": [
@@ -7140,7 +7723,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_012": {
       "boxes": [
@@ -7152,7 +7736,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_013": {
       "boxes": [
@@ -7164,7 +7749,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_014": {
       "boxes": [
@@ -7176,7 +7762,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_016": {
       "boxes": [
@@ -7188,7 +7775,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_017": {
       "boxes": [
@@ -7200,7 +7788,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wells/well_019": {
       "boxes": [
@@ -7212,7 +7801,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/whale_bones/whale_bone_001": {
       "boxes": [
@@ -7224,7 +7814,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/windmills/windmill_009": {
       "boxes": [
@@ -7236,7 +7827,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/wisteria_snags/wisteria_snag_001": {
       "boxes": [
@@ -7248,7 +7840,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/witch_rings/witch_ring_002": {
       "boxes": [
@@ -7260,7 +7853,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/woodpiles/woodpile_001": {
       "boxes": [
@@ -7272,7 +7866,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/woodpiles/woodpile_008": {
       "boxes": [
@@ -7284,7 +7879,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:41:34.942Z"
+      "updated_at": "2026-08-28T07:41:34.942Z",
+      "auto": true
     },
     "scenery/chairs_and_benches/chair_003": {
       "boxes": [
@@ -7296,7 +7892,8 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-28T07:42:22.228Z"
+      "updated_at": "2026-08-28T07:42:22.228Z",
+      "auto": true
     }
   }
 }
