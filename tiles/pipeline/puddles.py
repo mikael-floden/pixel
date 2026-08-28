@@ -34,12 +34,18 @@ buys or poisons all 16 tiles at once. Feature COUNT is the strongest geometric l
 clean-rim rate falls 16.4% -> 0.4% going from one blob to 9-16 - so the ladder scales one
 island's SIZE and never its count.
 
-TWO WORDING FAMILIES PER LEVEL, alternating by pair. A rule that confines every island to
-the middle of the tile manufactures a polka-dot grid, which is the same artefact the
-maintainer has rejected twice before ("will make the tile look repeated and tiled"). The
-gate only requires the island to stay off the rim, NOT to be centred, so half the sheets
-ask for a centred pool and half only for a clear edge - which lets the island sit
-off-centre and keeps a laid field from beating like a drum.
+TWO WORDING FAMILIES, SPLIT BY LEVEL - see family_of(). A rule that confines every island
+to the middle manufactures a polka-dot grid, the same artefact the maintainer has rejected
+twice before ("will make the tile look repeated and tiled"), and measured on the gated
+tiles the islands ARE strongly centred (centroid radius p50 0.146 of the diamond's
+half-width). So p10/p20 alternate between a centred ask and an anywhere-inside ask, where
+yield is high enough to spend on variety; p30/p40 always ask for the middle, because a big
+island reaches the rim unless told not to.
+
+DENSITY IS PART OF THE CONTRACT. Rendered as fields, these read as ground with pools at
+20-35% coverage and as a grid of dots above ~50%. That is not a defect to fix in the art -
+it is how the set is meant to be laid, easing a change in gradually - but a consumer that
+tiles a solid field of them will see the lattice, so the index says so.
 """
 
 from __future__ import annotations
