@@ -224,7 +224,26 @@
       "glow_concept": null,
       "difference_from_source": 0.4926,
       "glow_score": 0.0685,
-      "generated_at": "2026-08-15T16:59:06+00:00"
+      "generated_at": "2026-08-15T16:59:06+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "05cb13e7-1f83-4f0d-bd77-87a2394eba3f",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind/00.webp",
+            "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind/01.webp",
+            "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind/02.webp",
+            "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind/03.webp",
+            "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind/04.webp"
+          ],
+          "strip": "wisteria_snags/wisteria_snag_001/not_lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:23:04+00:00"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "wisteria_snags/wisteria_snag_001/not_lit_4/sprite.webp",
