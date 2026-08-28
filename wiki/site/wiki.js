@@ -161,13 +161,22 @@ async function stagingSha(force = false) {
  * life of the page. So those refreshes re-resolve HEAD and, when it has
  * moved, move the WHOLE page's base to the new sha — one sha still, just a
  * newer one, which is exactly what a reload would have done. */
-async function repinToHead() {
-  if (!repoBase || /127\.0\.0\.1|localhost/.test(repoBase.href)) return false;
-  const sha = await stagingSha(true);
-  const next = stagingBase(sha);
-  if (next.href === repoBase.href) return false;
-  repoBase = next;
-  return true;
+function useMainRef() {
+  /* A LIVE INDEX AND ITS ART READ MAIN, not the boot pin. The pin exists so
+   * one page reads one immutable sha; the slopes and fades indexes exist
+   * because the tiles agent publishes WHILE he reviews, and those two rules
+   * cannot both hold. Main wins for these: the files an index names are
+   * content-hashed and immutable, so reading the newest index and the newest
+   * art together is self-consistent — it is the pinned-but-stale pairing
+   * that showed him "Slime shows nothing" with 236 tiles on main.
+   *
+   * NO api.github.com CALL. My first cut re-resolved HEAD through the API on
+   * a timer, which is a rate limit (60/hour/IP, unauthenticated) sitting in
+   * front of his review, and a 403 there degrades silently. "main" is a ref
+   * raw.githubusercontent serves directly. */
+  if (!repoBase || /127\.0\.0\.1|localhost/.test(repoBase.href)) return;
+  const main = stagingBase("main");
+  if (main.href !== repoBase.href) { repoBase = main; retryRepoMisses(); }
 }
 /** A feedback id is a repo path WITHOUT the extension, which is what lets the
  *  maintainer's verdicts survive the art changing format underneath them (the
@@ -234,7 +243,11 @@ const repoMisses = new Set();
 let repoBaseKnown = false;   // true once the base is up OR the upgrade gave up
 function retryRepoMisses() {
   if (!repoBase) return;
+  const first = !repoBaseKnown;
   repoBaseKnown = true;
+  // The live indexes bail out until the base is up; once it is, a world page
+  // has to ask again — otherwise the Slope/Fade tab waits for a navigation.
+  if (first && /^#\/?world/.test(location.hash)) queueMicrotask(() => route());
   // ...AND EVERY IMAGE ALREADY ON THE PAGE pointing at the image's origin for a
   // domain the image does not carry. Those cannot merely be waiting: that URL
   // will 404 whenever it is finally requested. The hidden before/after twin is
@@ -8185,11 +8198,16 @@ let slopesIndex;                      // undefined = not fetched, null = absent
 let slopesAt = 0;
 async function refreshSlopes() {
   if (!state.admin) return false;
+  /* WAIT FOR THE REPO BASE (maintainer 2026-08-28: "Slime shows nothing!
+   * BUG!" — 236 tiles were on main). tiles/** is never in the deploy image,
+   * so before the base resolves this URL is a guaranteed 404 against the
+   * game's origin, and caching THAT as "no index" blanked the tab for the
+   * life of the page. Nothing is remembered here: the next render retries. */
+  if (!repoBase) return false;
   // a pinned page re-pins to HEAD first: the index is published while he
   // reviews, and the boot pin would otherwise hide it for the page's life
   if (slopesIndex !== undefined && Date.now() - slopesAt < 3 * 60 * 1000) return false;
-  const moved = slopesIndex === undefined ? false : await repinToHead();
-  void moved;
+  useMainRef();
   const idx = await fetchJson(assetUrl("tiles/slopes/index.json"));
   slopesAt = Date.now();
   const had = !!slopesIndex;
@@ -8237,11 +8255,16 @@ let fadesIndex;                       // undefined = not fetched, null = absent
 let fadesAt = 0;
 async function refreshFades() {
   if (!state.admin) return false;
+  /* WAIT FOR THE REPO BASE (maintainer 2026-08-28: "Slime shows nothing!
+   * BUG!" — 236 tiles were on main). tiles/** is never in the deploy image,
+   * so before the base resolves this URL is a guaranteed 404 against the
+   * game's origin, and caching THAT as "no index" blanked the tab for the
+   * life of the page. Nothing is remembered here: the next render retries. */
+  if (!repoBase) return false;
   // a pinned page re-pins to HEAD first: the index is published while he
   // reviews, and the boot pin would otherwise hide it for the page's life
   if (fadesIndex !== undefined && Date.now() - fadesAt < 3 * 60 * 1000) return false;
-  const moved = fadesIndex === undefined ? false : await repinToHead();
-  void moved;
+  useMainRef();
   const idx = await fetchJson(assetUrl("tiles/fades/index.json"));
   fadesAt = Date.now();
   const had = !!fadesIndex;

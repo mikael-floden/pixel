@@ -75,6 +75,25 @@ const sv = saves.at(-1);
 ok(sv?.file === "feedback/tiles" && Object.keys(sv.set ?? {}).every((k) => /^tiles\/slopes\//.test(k)),
   `a star and an approve commit to feedback/tiles on the slope's own stable key (${Object.keys(sv?.set ?? {})[0]})`);
 
+// ---- 2b. THE INDEX IS ASKED OF THE REPO, NEVER THE GAME'S ORIGIN (maintainer
+// 2026-08-28: "Slime shows nothing! BUG!" — 236 tiles sat on main while the
+// tab read empty. tiles/** is never in the deploy image, so a fetch against
+// the origin is a guaranteed 404; caching that as "no index" blanked the tab
+// for the life of the page). Here the origin 404s exactly as production
+// does, and the repo origin still has it. ---------------------------------
+{
+  const p4 = await ctx.newPage();
+  await p4.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  // the game's own origin: no tiles/, like the real image
+  await p4.route("http://127.0.0.1:8902/assets/tiles/**", (r) => r.fulfill({ status: 404, body: "" }));
+  await p4.addInitScript(() => { localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", "http://127.0.0.1:8903/"); });
+  await p4.goto(`${W}#/world/grass`, { waitUntil: "load" });
+  await p4.waitForTimeout(3000);
+  const t4 = await p4.evaluate(() => [...document.querySelectorAll(".groundtab")].map((x) => x.textContent.replace(/\s+/g, " ").trim()).find((x) => /^Slope/.test(x)));
+  ok(t4 === `Slope${expTiles}`, `with the origin 404ing tiles/ (production's arrangement) the tab still fills from the repo (${t4})`);
+  await p4.close();
+}
+
 // ---- 3. before the index exists: the admin sees the promise, a player nothing
 const p2 = await ctx.newPage();
 await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
