@@ -17,12 +17,19 @@ DESCRIPTION = (
 )
 
 
-def mix_fraction(image, ground_a, ground_b):
-    """-> {"frac_b": float in [0,1]} or {"uncertain": True} when the meter cannot say."""
+def mix_fraction(image, ground_a, ground_b, detail=False):
+    """-> {"frac_b": float in [0,1]} or {"uncertain": True} when the meter cannot say.
+
+    With detail=True the result also carries "post" (per-pixel probability the pixel is
+    ground B) and "mask" (the meter's top-face mask) - the segmentation the two-sided
+    alignment steers by, from the same call that prices the mix."""
     try:
-        f = mixmeter.mix_fraction(image, ground_a, ground_b)
+        r = mixmeter.mix_fraction(image, ground_a, ground_b, detail=detail)
     except KeyError:
         return {"uncertain": True}
-    if f is None:
+    if r is None:
         return {"uncertain": True}
-    return {"frac_b": float(f)}
+    if detail:
+        f, det = r
+        return {"frac_b": float(f), "post": det["post"], "mask": det["mask"]}
+    return {"frac_b": float(r)}

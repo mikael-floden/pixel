@@ -59,6 +59,75 @@ import blends_post as BP
 import fade_mix as FM
 import puddle_gate as PG
 import tops_post as TP
+import transition_render as TR
+
+
+MIN_REGION_PX = 60   # a side needs this many pixels before its own median is
+                     # trustworthy; below it the shift falls back to the measured
+                     # art-rendition delta for that ground (art_refs -> clean)
+
+
+def align_two_sided(img, maj, mino, post_map, meter_mask):
+    """BOTH grounds land on their own palette colour - the fade fix, 2026-08-28.
+
+    The single-sided rule inherited from blends moved only the majority onto its clean
+    colour and let the minority "ride along keeping its own hue". For blends (small
+    embers) that protected the art; for fades it shipped the generator's hue for the
+    whole minority region - the maintainer caught grass-in-black_rock flecks wearing
+    olive (47,78,21) beside a wiki page whose every other green is the palette's
+    (20,82,59) exactly: "We don't have that grass color palette."
+
+    So: per-pixel weight w = the mix meter's own probability this pixel is the minority
+    ground (smoothed ~3px), and out = art + (1-w)*deltaMaj + w*deltaMin, iterated so
+    each side's trimmed median lands on ITS clean colour integer-exactly. A uniform
+    shift per region - detail rides, exactly the property the Palette Headroom page
+    established as the ceiling. No hard seam: the weight ramps where the meter is
+    unsure. Walls take the weight of the lowest top pixel above them (wall_is_
+    meaningless, but a top/wall step would be invented detail).
+    """
+    arr = np.array(img.convert("RGBA"), int)
+    top = TR.top_face(arr[..., 3] > 0)
+    if not top.any() or post_map is None:
+        return None
+    clean_a = TP._hex(PALETTE[maj]["top"])
+    clean_b = TP._hex(PALETTE[mino]["top"])
+    w = np.zeros(top.shape, float)
+    mm = meter_mask & top
+    w[mm] = np.clip(post_map[mm], 0.0, 1.0)
+    w = BP._smooth(w, passes=2)
+    w[~top] = 0.0
+    opaque = arr[..., 3] > 0
+    for x in range(w.shape[1]):
+        ys = np.flatnonzero(top[:, x])
+        if ys.size:
+            below = opaque[:, x].copy()
+            below[:ys[-1] + 1] = False
+            w[below, x] = w[ys[-1], x]
+    rgb = arr[..., :3].astype(float)
+    a_m = top & (w < 0.25)
+    b_m = top & (w > 0.75)
+    ref_b = BP.art_refs().get(mino)
+    w3 = w[..., None]
+    for _ in range(3):
+        da = (clean_a - TP.background_of(rgb, a_m)) if a_m.sum() >= MIN_REGION_PX             else np.zeros(3)
+        if b_m.sum() >= MIN_REGION_PX:
+            db = clean_b - TP.background_of(rgb, b_m)
+        elif ref_b is not None:
+            db = clean_b - ref_b          # the generator's typical rendition -> palette
+        else:
+            db = np.zeros(3)
+        da, db = np.rint(da), np.rint(db)
+        if not np.abs(da).sum() and not np.abs(db).sum():
+            break
+        rgb += (1.0 - w3) * da + w3 * db
+        np.clip(rgb, 0, 255, out=rgb)
+        if b_m.sum() < MIN_REGION_PX:
+            break                          # the fallback delta must not iterate
+    np.rint(rgb, out=rgb)
+    TP.rim_suppress(rgb, top, clean_a)
+    out = arr.copy()
+    out[..., :3] = np.clip(rgb, 0, 255).astype(int)
+    return Image.fromarray(out.astype(np.uint8), "RGBA")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(ROOT)
@@ -88,20 +157,22 @@ def analyse(sheet, i, name):
     if not os.path.isfile(src):
         return None, "missing"
 
-    # 1. THE MIX, measured on the image - the raw art decides which ground owns the tile.
+    # 1. THE MIX, measured on the image - the raw art decides which ground owns the
+    #    tile. detail=True also hands back the meter's per-pixel map, which is what the
+    #    two-sided alignment steers by.
     raw = Image.open(src)
-    mix = FM.mix_fraction(raw, a, b)
+    mix = FM.mix_fraction(raw, a, b, detail=True)
     if mix is None or mix.get("uncertain"):
         return None, "uncertain"
     frac_b = float(mix["frac_b"])
     majority = b if frac_b > 0.5 else a
     minority = a if majority == b else b
 
-    # 2. ALIGN toward the majority's clean colour: this tile will sit in a field of that
-    #    ground. The minority rides the weighted delta and keeps its own hue.
+    # 2. ALIGN BOTH SIDES onto their own palette colours (the minority riding was a
+    #    blends rule; on fades it shipped the generator's hue - see align_two_sided).
     clean = TP._hex(PALETTE[majority]["top"])
-    ref_o = BP.art_refs().get(minority, TP._hex(PALETTE[minority]["top"]))
-    aligned, _f, _how, _mv = BP.align(raw, clean, ref_o)
+    post_map = mix["post"] if majority == a else (1.0 - mix["post"])
+    aligned = align_two_sided(raw, majority, minority, post_map, mix["mask"])
     if aligned is None:
         return None, "no top face"
     post = os.path.join(d, "post")
