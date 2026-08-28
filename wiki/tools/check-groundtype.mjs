@@ -1164,6 +1164,31 @@ ok(st2.lit === 0 && st2.cards === st1.cards && st2.label === st1.label && st2.pe
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(700);
 
+/* AN X-OVER-Y DETAIL SHOWS ITS TEXTURED TOP (maintainer 2026-08-28: "it
+ * looks as if the top is just a plain/clean color... They need to show their
+ * postprocessed top that is not clean/plain!"). A flat-top ground SHIPS the
+ * clean colour on its After pass, so the card must draw `tex`. Mark every
+ * grass top-only tile judged so the queue's head becomes x-over-y cards. */
+{
+  const fdoc = (liveState.feedback.tiles ??= { entries: {} });
+  fdoc.entries ??= {};
+  for (const t of (META.tops?.grass ?? [])) fdoc.entries[`${t.id}#top`] = { rating: 2, updated_at: "2026-08-28T00:00:00Z" };
+  await p.reload({ waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+  await p.waitForTimeout(1400);
+  await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
+  await p.waitForTimeout(2000);
+  const dXY = await dProbe();
+  ok(/_textured\./.test(dXY.centre ?? ""),
+    `an x-over-y detail's centre is the TEXTURED pass — After ships the clean colour on flat-top grounds (${dXY.centre?.split("/").pop()})`);
+  await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Raw")?.click());
+  await p.waitForTimeout(1600);
+  const dXYr = await dProbe();
+  ok(/_before\.webp$/.test(dXYr.centre ?? ""),
+    `and Raw still means the generator's own (${dXYr.centre?.split("/").pop()})`);
+}
+
 // THE PROMOTION MODAL, deep-tested where its button lives now: the x-over-y
 // candidate card (the pool picker covers the Base tab).
 const mCell = (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side !== "grass");

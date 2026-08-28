@@ -6159,7 +6159,14 @@ function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   const dress = (face) => (face && wall && clean) ? `tex2:${wall}::${face}::${clean}` : face;
   const set = passSet(typeId, view);
   const [x0, y0] = origin;
-  const centreTop = view === PASS_RAW ? (cand?.raw ?? cand?.art) : cand?.art;
+  /* THE TEXTURED PASS, never After (maintainer 2026-08-28: "They need to
+   * show their postprocessed top that is not clean/plain! How should I else
+   * be able to approve their top texture being part of details?"). An
+   * x-over-y tile of a flat-top ground SHIPS with the clean colour on top —
+   * the After pass is the law, not a picture of the texture — so judging a
+   * top needs `tex`. A top-only tile has no tex and its art IS the
+   * postprocessed top; Raw stays the generator's own. */
+  const centreTop = view === PASS_RAW ? (cand?.raw ?? cand?.art) : (cand?.tex ?? cand?.art);
   const ringAt = (x, y) => {
     if (set) return setCellArt(set, x, y, typeId) ?? clean;
     return clean;                       // Clean and Raw ring alike: the ground as it ships
