@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T00:24:58.830Z",
+  "updated_at": "2026-08-28T00:28:23.236Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -29,31 +29,13 @@
           "members": [
             {
               "kind": "clean",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/53afa117",
-              "tile": "tiles/black_rock__over__light_beach/53afa117",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/b8e87572",
-              "tile": "tiles/black_rock__over__light_beach/b8e87572",
-              "weight": 1
+              "weight": 3
             },
             {
               "kind": "tile",
               "id": "tiles/black_rock__over__light_beach/f9d36b7a",
               "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/3aff11ff",
-              "tile": "tiles/black_rock__over__light_soil/3aff11ff",
-              "weight": 1
+              "weight": 0.5
             },
             {
               "kind": "tile",
@@ -93,33 +75,15 @@
             },
             {
               "kind": "tile",
-              "id": "tiles/black_rock__over__deep_water/aa31de9c",
-              "tile": "tiles/black_rock__over__deep_water/aa31de9c",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__deep_water/efb03d36",
-              "tile": "tiles/black_rock__over__deep_water/efb03d36",
-              "weight": 0.8
-            },
-            {
-              "kind": "tile",
               "id": "tiles/black_rock__over__grey_stone/3367ecc5",
               "tile": "tiles/black_rock__over__grey_stone/3367ecc5",
-              "weight": 1
+              "weight": 0.1
             },
             {
               "kind": "tile",
               "id": "tiles/black_rock__over__grey_stone/41f494b1",
               "tile": "tiles/black_rock__over__grey_stone/41f494b1",
               "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/3ea4568f",
-              "tile": "tiles/black_rock__over__grey_stone/3ea4568f",
-              "weight": 0.1
             },
             {
               "kind": "tile",
@@ -144,12 +108,6 @@
               "id": "tiles/black_rock__over__lava/4d39233f",
               "tile": "tiles/black_rock__over__lava/4d39233f",
               "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/8a122316",
-              "tile": "tiles/black_rock__over__light_beach/8a122316",
-              "weight": 1
             },
             {
               "kind": "tile",
@@ -203,25 +161,13 @@
               "kind": "tile",
               "id": "tiles/black_rock__over__water/33193dcc",
               "tile": "tiles/black_rock__over__water/33193dcc",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__water/b4c6e3e1",
-              "tile": "tiles/black_rock__over__water/b4c6e3e1",
-              "weight": 1
+              "weight": 0.05
             },
             {
               "kind": "tile",
               "id": "tiles/black_rock__over__black_rock/80252263",
               "tile": "tiles/black_rock__over__black_rock/80252263",
               "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__black_rock/cb3a9e7e",
-              "tile": "tiles/black_rock__over__black_rock/cb3a9e7e",
-              "weight": 0.05
             },
             {
               "kind": "tile",
