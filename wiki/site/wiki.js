@@ -5419,13 +5419,22 @@ function bestWall(typeId, face, { ignoreOverride = false } = {}) {
   if (BW_CACHE.rev !== rev) BW_CACHE = { rev, map: new Map() };
   const ck = `${typeId}|${face}|${ignoreOverride ? 1 : 0}`;
   if (BW_CACHE.map.has(ck)) return BW_CACHE.map.get(ck);
-  const pool = wallPool(typeId);
+  let pool = wallPool(typeId);
+  const { stats, keys } = faceLookup();
+  const ref = faceRefOf(face);
+  const fkey0 = keys.get(ref) ?? ref;
+  /* NEVER THE TILE'S OWN WALL (maintainer 2026-08-28: "I still don't
+   * understand how the find-the-best-wall feature work if I select top
+   * only"). It did not, on x-over-x pages: a tile's measured closest wall is
+   * usually ITSELF, and top-only means exactly "this tile's own wall is
+   * bad" — so the self-match handed back the wall he had just rejected and
+   * the mark changed nothing on screen. The tile is out of its own pool. */
+  const filtered = pool.filter((c) => c.key !== fkey0);
+  if (filtered.length) pool = filtered;
   let out;
   if (!pool.length) out = { art: xoverxArt(typeId), key: null, i: -1, n: 0, auto: true, fkey: null };
   else {
-    const { stats, keys } = faceLookup();
-    const ref = faceRefOf(face);
-    const fkey = keys.get(ref) ?? ref;
+    const fkey = fkey0;
     const ov = ignoreOverride ? null : topWallsDoc().overrides?.[fkey]?.wall;
     let i = ov ? pool.findIndex((c) => c.key === ov) : -1;
     const auto = i < 0;
@@ -5443,7 +5452,7 @@ function bestWall(typeId, face, { ignoreOverride = false } = {}) {
         });
       }
     }
-    out = { art: pool[i].art, key: pool[i].key, i, n: pool.length, auto, fkey };
+    out = { art: pool[i].art, key: pool[i].key, i, n: pool.length, auto, fkey, pool };
   }
   BW_CACHE.map.set(ck, out);
   return out;
@@ -5451,10 +5460,10 @@ function bestWall(typeId, face, { ignoreOverride = false } = {}) {
 /** ‹ #i/N › — step through the ground's x-over-x walls for this face.
  *  Stepping onto the measured best DELETES the override (absent = auto). */
 function wallStepper(typeId, face, onchange) {
-  const pool = wallPool(typeId);
-  if (!state.admin || pool.length < 2) return null;
   const cur2 = bestWall(typeId, face);
   const auto2 = bestWall(typeId, face, { ignoreOverride: true });
+  const pool = cur2.pool ?? [];
+  if (!state.admin || pool.length < 2) return null;
   const put = (idx) => {
     const i2 = (idx + pool.length) % pool.length;
     setTopWall(cur2.fkey, i2 === auto2.i ? null : pool[i2].key);
@@ -8053,11 +8062,23 @@ function viewWorldType(top) {
    * run straight up without jumping ... We need the same as usual. A
    * Accept/Reject/Star/Note.") ---- */
   function slopeTab() {
-    const list = state.admin ? slopes : slopes.filter((x) => fb("tiles", x.key).status === "approved");
+    /* WALL-LESS SETS ARE PARKED, not listed (maintainer 2026-08-28, three
+     * grounds in a row: parquet "still thin", slime, snow — the 64x30 batch
+     * has no cliff in the art, so there is no ramp to review and 240 broken
+     * cards per ground were only an invitation to keep reporting them).
+     * One line says how many wait; the cards return when the tiles agent
+     * republishes with a wall — the index is read live. */
+    const all = state.admin ? slopes : slopes.filter((x) => fb("tiles", x.key).status === "approved");
+    const parked = all.filter((x) => x.noCliff).length;
+    const list = all.filter((x) => !x.noCliff);
+    if (!list.length && parked) return h("p", { class: "muted" },
+      `All ${parked} slope tiles of ${t.name.toLowerCase()} came from wall-less sets — flat top faces with no cliff, nothing to walk up. The tiles agent was asked to regenerate them (2026-08-28); they appear here the moment the republished index lands.`);
     if (!list.length) return h("p", { class: "muted" }, state.admin
       ? "The tiles agent is generating slope tiles now (their jobs are queued in tiles/slopes/). The moment tiles/slopes/index.json lands on main, this tab fills with them — it reads live, no deploy in between."
       : `No slopes for ${t.name.toLowerCase()} yet.`);
     const shown = slopeShown.get(t.id) ?? 12;
+    const parkedNote = parked ? h("p", { class: "muted" },
+      `${parked} more tiles are parked: their sets shipped with no cliff, awaiting the tiles agent's regeneration.`) : null;
     const label2 = (x) => x.seed != null || x.amplitude != null
       ? ["slope", x.seed != null ? `seed ${x.seed}` : null, x.amplitude != null ? `amp ${x.amplitude}` : null].filter(Boolean).join(" · ")
       : x.key.split("/").slice(-2).join(" · ");
@@ -8080,7 +8101,8 @@ function viewWorldType(top) {
       list.length > shown ? h("button", {
         class: "ghost-btn", style: "margin-top:10px",
         onclick: () => { slopeShown.set(t.id, shown + 12); keepScrollY = window.scrollY; route(); },
-      }, `Show 12 more (${list.length - shown} left)`) : null);
+      }, `Show 12 more (${list.length - shown} left)`) : null,
+      parkedNote);
   }
 
   /* ---------------- TAB: ground details — "where the fun begins" ----------
@@ -8774,8 +8796,13 @@ function tileScenes(cell, cand, onView) {
     // No pure tile for that material yet: stack the tile itself and say so,
     // rather than draw a cliff out of nothing.
     const bw = topOnly(cand.key) ? bestWall(cell.side, cand.tex ?? cand.art) : null;
-    const wallCand = (bw && pure?.candidates.find((c2) => c2.key === bw.key)) ?? pureArt;
-    const course = topOnly(cand.key) ? (wallCand ? art(wallCand) : face) : face;
+    /* the courses draw the PICKED wall's own art, not its view-mapped pass:
+     * under Clean the view maps every candidate to the plate, which erased
+     * the pick from the picture entirely (maintainer 2026-08-28, "Are you
+     * sure that feature work?" — measured: course clean.webp under every
+     * pick). The crown above keeps following the view; the wall IS the
+     * thing being chosen. */
+    const course = topOnly(cand.key) ? (bw?.art ?? (pureArt ? art(pureArt) : face)) : face;
     const flat = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: face })));
     const vee = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }].map((pos) => ({
       ...pos, lvl: 2, img: course, top: face, stack: [course, course],

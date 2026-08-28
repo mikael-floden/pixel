@@ -1400,11 +1400,16 @@ ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "
   const on = await card0();
   ok(on.stepper && /auto · best match/.test(on.label) && on.wallpick !== "",
     `marking TOP ONLY grows the ‹ › stepper on auto, and the cliff borrows a measured wall (${on.wallpick.split("/").pop()})`);
-  // the course is view-dependent (Clean shows the plate pass of the picked
-  // wall), so the claim is the PICK itself: a real pool candidate, published
-  ok(on.course !== "" && (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side === "grass")
-    ?.candidates.some((x) => x.key === on.wallpick),
-    `the pick is a real candidate of the pool and the courses compose from it (${String(on.wallpick).split("/").pop()})`);
+  /* THE PICK REACHES THE PICTURE WHATEVER THE VIEW (maintainer 2026-08-28:
+   * "Are you sure that feature work?" — measured: under Clean the course was
+   * the flat plate for every pick). The courses are the picked wall's own
+   * art; and the pick is never the tile ITSELF — top-only means "my own
+   * wall is bad", so the self-match was handing back the rejected wall. */
+  const gg = (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side === "grass");
+  const pickCand = gg?.candidates.find((x) => x.key === on.wallpick);
+  ok(!!pickCand && on.course === pickCand.art,
+    `the courses compose from the PICKED wall's own art, view-proof (${String(on.course).split("/").pop()})`);
+
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-step"); [...r.querySelectorAll("button")].find((b2) => b2.textContent === "›")?.click(); });
   await p.waitForTimeout(1800);
   const nxt = await card0();

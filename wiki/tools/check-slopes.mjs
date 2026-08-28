@@ -73,12 +73,12 @@ ok(foreign > 0, `the index carries FOREIGN-cliff detections to surface (${foreig
   await p.waitForTimeout(2400);
   await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
   await p.waitForTimeout(2000);
-  const marked = await p.evaluate(() => {
-    const cards = [...document.querySelectorAll(".slope-card")];
-    return { cards: cards.length, pills: cards.filter((c) => /no cliff/.test(c.textContent)).length };
-  });
-  ok(marked.cards > 0 && marked.pills === marked.cards,
-    `every card of a wall-less set says so (${marked.pills}/${marked.cards} on ${flatGrounds[0]})`);
+  const marked = await p.evaluate(() => ({
+    cards: document.querySelectorAll(".slope-card").length,
+    parked: /came from wall-less sets|are parked/.test(document.body.textContent),
+  }));
+  ok(marked.cards === 0 && marked.parked,
+    `a wall-less ground PARKS its tiles behind one line instead of 240 broken cards (${flatGrounds[0]})`);
   await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
   await p.waitForTimeout(2200);
   await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
