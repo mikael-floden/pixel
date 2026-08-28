@@ -35,6 +35,45 @@ const bordBit = (row, idx, x, y) => (bord.pix[(row * FH + y) * bord.w + idx * FW
 /* np.rint — half to EVEN, which is what transition_patterns.compose() applies
  * and is NOT Math.round: 25 * 0.82 = 20.5 rints to 20 and rounds to 21. */
 const rint = (v) => { const f = Math.floor(v), d = v - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1); };
+/* Per-column bottom of the silhouette; the wall is its last 17 rows. */
+const silBot = new Int16Array(FW).fill(-1);
+for (let x = 0; x < FW; x++) for (let y = 0; y < FH; y++) if ((sil.pix[y * FW + x] >>> 24) > 0) silBot[x] = y;
+const isTopFace = (x, y) => silBot[x] >= 0 && y <= silBot[x] - 17;
+/* A SIDE IS TWO SOURCES since 2026-08-28 (maintainer: "the transition should
+ * work on the wall ... the same transition mask", "asking for wall help from
+ * x-over-x doesn't mean we will change the top texture"): the ground's own
+ * x-over-x tile for the WALL — the only wall that was ever art — and the
+ * pass's face for the TOP. Both centre-aligned into plate framing. */
+function sideArr(wallImg, faceImg, cleanImg) {
+  const out = new Uint32Array(FW * FH);
+  const cy = (img) => Math.round((FH - img.h) / 2);
+  const wdy = cy(wallImg), fdy = cy(faceImg), cdy = cleanImg ? cy(cleanImg) : 0;
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const i = y * FW + x;
+    if (!((sil.pix[i] >>> 24) > 0)) continue;
+    /* The browser's draw order, mirrored exactly: the wall tile under
+     * everything, the face over it through the top-face mask, the face again
+     * under it all as backfill. So a TOP pixel is the face where the face has
+     * one and the WALL's own top where it does not (a review outline runs ±1
+     * px from the silhouette, both ways); a WALL pixel is the wall where it
+     * has one and the face where it does not. */
+    const top2 = isTopFace(x, y);
+    const wy = y - wdy, fy = y - fdy;
+    const wallPx = wy >= 0 && wy < wallImg.h ? wallImg.pix[wy * wallImg.w + x] : 0;
+    const facePx = fy >= 0 && fy < faceImg.h ? faceImg.pix[fy * faceImg.w + x] : 0;
+    let v2 = top2
+      ? ((facePx >>> 24) > 0 ? facePx : wallPx)
+      : ((wallPx >>> 24) > 0 ? wallPx : facePx);
+    // …and the ground's CLEAN PLATE under both, so a rim pixel neither source
+    // covers is still THIS ground and never the other side's fill.
+    if (!((v2 >>> 24) > 0) && cleanImg) {
+      const cyy = y - cdy;
+      if (cyy >= 0 && cyy < cleanImg.h) v2 = cleanImg.pix[cyy * cleanImg.w + x];
+    }
+    out[i] = v2;
+  }
+  return out;
+}
 /* The reference compose, straight from the index: out = mask ? B : A, then
  * every border pixel darkened to `tone` of what it already is. The seam is
  * NOT optional — "a transition without it is a 0-100 hard cut, which is not
@@ -138,9 +177,20 @@ for (const c of CASES) {
     return { path, w: cv.width, h: cv.height, px: [...d], row: pat.row };
   }, [c.a, c.b, c.pat, c.idx]);
   if (got.err) { ok(false, `${c.a}__to__${c.b} ${c.pat}#${c.idx}: ${got.err}`); continue; }
-  // Reconstruct the reference from the SAME plates the browser picked.
+  // Reconstruct the reference from the SAME sources the browser picked — a
+  // side is now "tex2:<wall>::<face>", so both parts are decoded and split by
+  // the top-face rule; a bare path decodes as its own wall and face.
   const [, frame, pa, pb] = got.path.slice(4).split("|");
-  const A = decodeWebP(readFileSync(ROOT + pa)), B = decodeWebP(readFileSync(ROOT + pb));
+  const sideOf = (path) => {
+    if (path.startsWith("tex2:")) {
+      const [wallP, faceP, cleanP] = path.slice(5).split("::");
+      return sideArr(decodeWebP(readFileSync(ROOT + wallP)), decodeWebP(readFileSync(ROOT + faceP)),
+        cleanP ? decodeWebP(readFileSync(ROOT + cleanP)) : null);
+    }
+    const d2 = decodeWebP(readFileSync(ROOT + path));
+    return sideArr(d2, d2, null);
+  };
+  const A = { pix: sideOf(pa), w: FW, h: FH }, B = { pix: sideOf(pb), w: FW, h: FH };
   const ref = refCompose(got.row, +frame, A, B);
   let diff = 0, alphaBad = 0;
   for (let i = 0; i < ref.length; i++) {
@@ -364,6 +414,57 @@ ok(rBack[2].sel === "Composed" && rBack[2].off.includes("Raw"),
     }
     ok(inB5 > 800 && wrong5 === 0 && alphaBad5 === 0,
       `every pixel of the tops side IS the tops art, seam included — nothing leaks through from the other ground (${wrong5} wrong, ${alphaBad5} alpha, of ${inB5})`);
+  }
+}
+/* ---- 6. THE WALL IS ART AND THE TOP IS STILL THE SET'S (maintainer
+ * 2026-08-28: "asking for wall help from x-over-x doesn't mean we will change
+ * the top texture. If I select Set #6 I should see the Set #6 base set top
+ * textures ... the transition should work on the wall ... using the same
+ * transition mask"). Proven on a PURE composed tile against both sources:
+ * its wall pixels equal the ground's x-over-x tile's wall, its top pixels
+ * equal the face — two different files, one tile, split exactly at the
+ * top-face line. */
+{
+  const wallP = await p.evaluate(() => window.__basesets.xoverxArt("brown_paving_stone"));
+  ok(!!wallP && /__over__brown_paving_stone\//.test(wallP), `the wall source is the ground's own x-over-x tile (${wallP})`);
+  const pure = await p.evaluate(async () => {
+    const path = window.__basesets.mixTile("brown_paving_stone", "grass", "a18_s4", 15, 0, 0);
+    const cv = await new Promise((res) => { const [row2, fr, pa2, pb2] = path.slice(4).split("|"); window.__basesets.mixFor(+row2, +fr, pa2, pb2, res); });
+    if (!cv) return { err: "null" };
+    const d2 = cv.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, 64, 46).data;
+    return { path, px: [...d2] };
+  });
+  ok(!pure.err && /tex2:/.test(pure.path), `a composed side is dressed — tex2:<wall>::<face> (${pure.path.slice(4, 60)}…)`);
+  if (!pure.err) {
+    const wallImg = decodeWebP(readFileSync(ROOT + wallP));
+    const segs = pure.path.split("|")[3].startsWith("tex2:") ? pure.path.split("|")[3].slice(5).split("::") : [null, null, null];
+    const faceP = segs[1], cleanP2 = segs[2];
+    const faceImg = decodeWebP(readFileSync(ROOT + faceP));
+    const cleanImg2 = cleanP2 ? decodeWebP(readFileSync(ROOT + cleanP2)) : null;
+    const wdy = Math.round((FH - wallImg.h) / 2), fdy = Math.round((FH - faceImg.h) / 2), cdy2 = cleanImg2 ? Math.round((FH - cleanImg2.h) / 2) : 0;
+    let wallN = 0, wallBad = 0, topN = 0, topBad = 0;
+    for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+      const i = y * FW + x;
+      if (!((sil.pix[i] >>> 24) > 0)) continue;
+      const top2 = isTopFace(x, y);
+      const wy2 = y - wdy, fy2 = y - fdy;
+      const wPx = wy2 >= 0 && wy2 < wallImg.h ? wallImg.pix[wy2 * wallImg.w + x] : 0;
+      const fPx = fy2 >= 0 && fy2 < faceImg.h ? faceImg.pix[fy2 * faceImg.w + x] : 0;
+      // Face first on the top, wall first on the wall — each backfilling the
+      // other's rim, the browser's own draw order.
+      let v = top2 ? ((fPx >>> 24) > 0 ? fPx : wPx) : ((wPx >>> 24) > 0 ? wPx : fPx);
+      if (!((v >>> 24) > 0) && cleanImg2) { const cyy = y - cdy2; if (cyy >= 0 && cyy < cleanImg2.h) v = cleanImg2.pix[cyy * cleanImg2.w + x]; }
+      /* A rim pixel NEITHER source covers is legitimately empty on both sides
+       * — and comparing RGB there compares the junk lossless WebP keeps under
+       * alpha 0 (exact=True preserves it, by repo law). Empty-vs-empty is
+       * agreement; empty-vs-painted still fails. */
+      if (!((v >>> 24) > 0) && pure.px[i * 4 + 3] === 0) continue;
+      const okPx = pure.px[i * 4 + 3] > 0 && (v >>> 24) > 0
+        && pure.px[i * 4] === ((v >> 16) & 255) && pure.px[i * 4 + 1] === ((v >> 8) & 255) && pure.px[i * 4 + 2] === (v & 255);
+      if (top2) { topN++; if (!okPx) topBad++; } else { wallN++; if (!okPx) wallBad++; }
+    }
+    ok(wallN > 900 && wallBad === 0, `every wall pixel is the x-over-x tile's own wall (${wallBad} wrong of ${wallN})`);
+    ok(topN > 800 && topBad === 0, `and every top pixel is still the chosen face — borrowing the wall changed no top texture (${topBad} wrong of ${topN})`);
   }
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);

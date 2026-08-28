@@ -5172,6 +5172,13 @@ function cleanArtOf(typeId) {
    * composite remains only for a ground without plates. */
   const plate = patternLib()?.plates[typeId]?.clean;
   if (plate) return plate;
+  return xoverxArt(typeId);
+}
+/* THE GROUND'S OWN x-OVER-x TILE — the only WALL that was ever art. Approved
+ * first, first otherwise; null for a ground with no self pair. The transition
+ * page dresses each side's plate in this wall (maintainer 2026-08-28), while
+ * the top stays whatever the pass chose. */
+function xoverxArt(typeId) {
   const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
   if (!own) return null;
   return (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
@@ -6221,9 +6228,19 @@ function memberPlate(typeId, m) {
   if (!lib) return null;
   const ground = lib.plates[typeId];
   if (!m || m.kind === "clean" || m.clean) return ground?.clean ?? null;
-  const rk = /^tiles\/[^/]+\/([0-9a-f]{8})$/.exec(m.id ?? "");
-  if (rk) return ground?.keys.includes(rk[1]) ? `tiles/plates/${typeId}/${rk[1]}.webp` : (ground?.clean ?? null);
-  return basePool(typeId).find((c) => c.id === m.id)?.art ?? ground?.clean ?? null;
+  /* THE FACE IS THE MEMBER'S OWN ART — the same file the Base tab's field
+   * draws (maintainer 2026-08-28, Black Rock Set #1: "the black rock on the
+   * preview is clean single color black rock and not the same set you see on
+   * image 1"). Review-key members used to map to tiles/plates/<key8>, which
+   * is the SAME tile flattened: on a flat-surface ground the plate's top is
+   * the clean colour by the tiles agent's own design, so the set he audited
+   * textured composed clean — two files for one key, and the transition chose
+   * the wrong one. The plates' remaining job here was geometry, and the
+   * composer now takes any framing (centred, silhouette-clipped, face-
+   * backfilled), so what he sees in the set IS what the transition wears.
+   * The wall never comes from the face — tex2 dressing takes it from the
+   * ground's x-over-x tile — so a member's foreign wall cannot leak. */
+  return m.art ?? basePool(typeId).find((c) => c.id === m.id)?.art ?? ground?.clean ?? null;
 }
 /** Which plate fills cell (x,y) of this ground under the current pass. */
 function platePickAt(typeId, x, y, view = null) {
@@ -6267,6 +6284,121 @@ function sheet(path, cb) {
 /* One composed transition tile: mask frame (row, idx) + plate_a + plate_b,
  * through the library's published canvas ops. The result's alpha is the
  * silhouette because both plates already carry it and the mask is a subset. */
+/* THE TOP-FACE MASK: the library silhouette minus its bottom WALL_D rows per
+ * column — the stencil that lets a plate take one ground's WALL and another
+ * source's TOP with drawImage alone. Built once from the 112-byte silhouette;
+ * that is the ONLY getImageData in the transition path, deliberately: reading
+ * ART pixels is what tainted on his phone before (the Grey Paving Clean #0
+ * case), and a composite whose failure mode is the bug it exists to fix
+ * cannot be load-bearing. If even the silhouette read fails, sides fall back
+ * to today's flat-walled plates rather than to anything invented. */
+let TOPFACE_MASK;                     // canvas | null (failed) | undefined (not tried)
+const TOPFACE_WAIT = [];
+function topFaceMask(cb) {
+  if (TOPFACE_MASK !== undefined) { cb(TOPFACE_MASK); return; }
+  TOPFACE_WAIT.push(cb);
+  if (TOPFACE_WAIT.length > 1) return;
+  const im = new Image();
+  im.crossOrigin = "anonymous";
+  im.onload = im.onerror = () => {
+    let cv = null;
+    try {
+      if (im.naturalWidth) {
+        cv = document.createElement("canvas");
+        cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+        const cx = cv.getContext("2d", { willReadFrequently: true });
+        cx.drawImage(im, 0, 0);
+        const d = cx.getImageData(0, 0, cv.width, cv.height);
+        for (let x = 0; x < cv.width; x++) {
+          let bot = -1;
+          for (let y = 0; y < cv.height; y++) if (d.data[(y * cv.width + x) * 4 + 3] > 0) bot = y;
+          // the wall is the bottom 17 rows of every column (wall_d, published)
+          for (let y = Math.max(0, bot - 16); y <= bot; y++) d.data[(y * cv.width + x) * 4 + 3] = 0;
+        }
+        cx.putImageData(d, 0, 0);
+      }
+    } catch { cv = null; }
+    TOPFACE_MASK = cv;
+    TOPFACE_WAIT.splice(0).forEach((f) => f(cv));
+  };
+  im.src = assetUrl(patternLib()?.silhouette ?? "tiles/patterns/silhouette.webp");
+}
+/* A SIDE PLATE WITH THE GROUND'S REAL WALL (maintainer 2026-08-28: "the
+ * transition should work on the wall. Going from the x-over-x wall texture to
+ * the y-over-y wall texture using the same transition mask" — and "asking for
+ * wall help from x-over-x doesn't mean we will change the top texture. If I
+ * select Set #6 I should see the Set #6 base set top textures").
+ *
+ * So a side is TWO sources: the ground's own x-over-x tile for the wall — the
+ * only wall that was ever art — and the pass's face for the top. Composite ops
+ * only: draw the x-over-x tile, then the face clipped through the top-face
+ * mask over it. Both framings centre-align (a 64x46 plate at 0, the 64x64
+ * review/tops framing at -9, wall foot on row 45 either way — measured).
+ * Cached per (wall art, face); a virtual "tex2:<wall>::<face>" path names it
+ * so mixFor's cache keys stay honest. */
+const SIDE_CACHE = new Map();         // "wall::face::clean" -> canvas | null
+function sidePlateCanvas(wallArt, face, clean, cb) {
+  const key = `${wallArt}::${face}::${clean}`;
+  if (SIDE_CACHE.has(key)) { cb(SIDE_CACHE.get(key)); return; }
+  const lib = patternLib();
+  let wImg = null, fImg = null, cImg = null, mask = null, silImg = null, left = 5;
+  const done = () => {
+    if (--left > 0) return;
+    let cv = null;
+    if (wImg && fImg && mask && silImg && lib) {
+      const W2 = lib.frameW, H2 = lib.frameH;
+      cv = document.createElement("canvas");
+      cv.width = W2; cv.height = H2;
+      const cx = cv.getContext("2d");
+      cx.imageSmoothingEnabled = false;
+      const cy = (img) => Math.round((H2 - (img.naturalHeight ?? img.height)) / 2);
+      const cxx = (img) => Math.round((W2 - (img.naturalWidth ?? img.width)) / 2);
+      cx.drawImage(wImg, cxx(wImg), cy(wImg));
+      /* TWO BACKFILLS UNDER EVERYTHING. Review outlines vary a pixel from the
+       * library silhouette both ways, and a FACE that is itself review-framed
+       * art (a set member) shares the variance — so first the face stands
+       * under the wall, and under them both the ground's CLEAN PLATE, whose
+       * alpha IS the silhouette. Without the second, a rim pixel neither
+       * source covered was filled by the compose from the OTHER side of the
+       * transition: 14 grass pixels inside a pure paving tile, the stripe bug
+       * in miniature, found by the gate comparing against both sources. */
+      cx.globalCompositeOperation = "destination-over";
+      cx.drawImage(fImg, cxx(fImg), cy(fImg));
+      if (cImg) cx.drawImage(cImg, cxx(cImg), cy(cImg));
+      cx.globalCompositeOperation = "source-over";
+      const tmp = document.createElement("canvas");
+      tmp.width = W2; tmp.height = H2;
+      const tx = tmp.getContext("2d");
+      tx.imageSmoothingEnabled = false;
+      tx.drawImage(mask, 0, 0);
+      tx.globalCompositeOperation = "source-in";
+      tx.drawImage(fImg, cxx(fImg), cy(fImg));
+      cx.drawImage(tmp, 0, 0);
+      /* CLIPPED TO THE SILHOUETTE, both ways. A review outline can EXCEED the
+       * library silhouette by a pixel as well as fall short of it — the same
+       * ±1 variance — and an extra pixel survives every later composite (the
+       * wang mask only ever clips plate_b; plate_a fills by destination-over).
+       * Measured before the clip: 2 stray alpha pixels on black_rock ↔ snow. */
+      cx.globalCompositeOperation = "destination-in";
+      cx.drawImage(silImg, 0, 0);
+      cx.globalCompositeOperation = "source-over";
+    }
+    SIDE_CACHE.set(key, cv);
+    cb(cv);
+  };
+  sheet(lib?.silhouette ?? "tiles/patterns/silhouette.webp", (x) => { silImg = x; done(); });
+  topFaceMask((m) => { mask = m; done(); });
+  const mk = (path, set) => {
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
+    im.src = assetUrl(path);
+  };
+  mk(wallArt, (x) => { wImg = x; });
+  mk(face, (x) => { fImg = x; });
+  if (clean) mk(clean, (x) => { cImg = x; });
+  else done();
+}
 const MIX_CACHE = new Map();          // "row|idx|a|b" -> HTMLCanvasElement | null
 function mixFor(row, idx, plateA, plateB, cb) {
   const key = `${row}|${idx}|${plateA}|${plateB}`;
@@ -6295,8 +6427,8 @@ function mixFor(row, idx, plateA, plateB, cb) {
        * both geometries: (46-46)/2 = 0 for a real plate, (46-64)/2 = -9 for
        * tops and review framing. Measured: foot-aligned tops cover the
        * silhouette with 0 uncovered pixels. */
-      const plateY = (img) => Math.round((H2 - img.naturalHeight) / 2);
-      const plateX = (img) => Math.round((W2 - img.naturalWidth) / 2);
+      const plateY = (img) => Math.round((H2 - (img.naturalHeight ?? img.height)) / 2);
+      const plateX = (img) => Math.round((W2 - (img.naturalWidth ?? img.width)) / 2);
       cx.drawImage(maskS, sx, sy, W2, H2, 0, 0, W2, H2);
       cx.globalCompositeOperation = "source-in";
       cx.drawImage(b, plateX(b), plateY(b));
@@ -6371,6 +6503,24 @@ function mixFor(row, idx, plateA, plateB, cb) {
     cb(cv);
   };
   const mk = (path, set) => {
+    /* A "tex2:<wall>::<face>" plate is composed first — the ground's x-over-x
+     * wall wearing the pass's top. It resolves to a canvas; a canvas draws
+     * like an image. When it cannot be built the FACE alone stands in, which
+     * is exactly yesterday's plate — degradation to the previous behaviour,
+     * never to something invented. */
+    if (String(path).startsWith("tex2:")) {
+      const [wallArt, face, cleanP] = path.slice(5).split("::");
+      sidePlateCanvas(wallArt, face, cleanP ?? null, (cv2) => {
+        if (cv2) { set(cv2); done(); }
+        else {
+          const im2 = new Image();
+          im2.crossOrigin = "anonymous";
+          im2.onload = im2.onerror = () => { set(im2.naturalWidth ? im2 : null); done(); };
+          im2.src = assetUrl(face);
+        }
+      });
+      return;
+    }
     const im = new Image();
     im.crossOrigin = "anonymous";
     im.onload = im.onerror = () => { set(im.naturalWidth ? im : null); done(); };
@@ -6436,9 +6586,20 @@ function mixTile(a, b, patId, idxA, x, y) {
   if (!lib || !pat) return null;
   const { sideA, sideB } = transSides(a, b);
   const frame = (a === sideB) ? idxA : 15 - idxA;
-  // Each side under ITS OWN ground's chosen view — the two radio groups.
-  const pa = platePickAt(sideA, x, y, sideViewOf(sideA));
-  const pb = platePickAt(sideB, x, y, sideViewOf(sideB));
+  /* Each side under ITS OWN ground's chosen view — the two radio groups — and
+   * wearing ITS OWN x-over-x WALL (maintainer 2026-08-28: the flat plate wall
+   * is not the focus but it is what the eye lands on, so the wall is the real
+   * reviewed wall art, the top stays the set's, and at the boundary the wall
+   * transitions through the same mask bands the top does). A ground without
+   * an approved x-over-x tile keeps the plain plate. */
+  const dress = (g, facePath) => {
+    if (!facePath) return facePath;
+    const wall = xoverxArt(g);
+    const clean = lib.plates[g]?.clean ?? "";
+    return wall ? `tex2:${wall}::${facePath}::${clean}` : facePath;
+  };
+  const pa = dress(sideA, platePickAt(sideA, x, y, sideViewOf(sideA)));
+  const pb = dress(sideB, platePickAt(sideB, x, y, sideViewOf(sideB)));
   if (!pa || !pb) return null;
   return `mix:${pat.row}|${frame}|${pa}|${pb}`;
 }
@@ -7289,10 +7450,15 @@ function viewWorldType(top) {
         }, "+ Add tiles…") : null);
     };
     return h("div", {},
-      h("p", { class: "muted" },
-        `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} candidate${pool.length === 1 ? "" : "s"} to build them from` +
-        (flatN ? ` (${flatN} with a flat top)` : "") + ". " +
-        "A set is a group of tiles that look good together; the world picks ONE set for an area and stays with it, then varies inside it."),
+      /* THE FACTORY LINE IS THE ADMIN'S. A reader saw "383 candidates to build
+       * them from" — his review vocabulary — on a page that should talk about
+       * ground (check-world's own rule; the count is meaningless without the
+       * audition anyway). */
+      h("p", { class: "muted" }, state.admin
+        ? `${sets.length} set${sets.length === 1 ? "" : "s"} · ${pool.length} candidate${pool.length === 1 ? "" : "s"} to build them from` +
+          (flatN ? ` (${flatN} with a flat top)` : "") + ". " +
+        "A set is a group of tiles that look good together; the world picks ONE set for an area and stays with it, then varies inside it."
+        : `The looks this ground comes in — the world picks one for an area and stays with it.`),
       ...sets.map((s, i) => setPanel(s, setShares[i])),
       state.admin ? h("button", {
         class: "ghost-btn new-set",
@@ -11069,4 +11235,4 @@ async function upgradeToStaging() {
   setInterval(check, 5 * 60 * 1000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") check(); });
 })();
-window.__basesets = { basePool, memberArt, groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides };
+window.__basesets = { basePool, memberArt, groundSets, setCellArt, topSub, assetUrl, passOptions, worldViewFor, setLabel, fnv1a, pickWeighted, setsFor: groundSets, patternLib, mixTile, mixFor, platePickAt, memberPlate, transSides, xoverxArt };
