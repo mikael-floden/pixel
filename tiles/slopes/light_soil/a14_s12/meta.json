@@ -1,0 +1,49 @@
+{
+ "schema": "tiles3/slopes@1",
+ "kind": "slope_set",
+ "ground": "light_soil",
+ "boundary_amplitude": 0.14,
+ "boundary_seed": 12,
+ "elevation": 4,
+ "step_slope": 0.55,
+ "tile_id": "db38b42c-c20e-4dd0-8b77-d1a4946d7448",
+ "n_tiles": 16,
+ "complete": true,
+ "size": [
+  64,
+  30
+ ],
+ "prompt": "clean light soil to clean light soil",
+ "settings": {
+  "description": "clean light soil to clean light soil",
+  "elevation": 4,
+  "step_slope": 0.55,
+  "tile_type": "isometric",
+  "tile_feature": "tileset",
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "tile_view_angle": 28,
+  "tile_depth_ratio": 0.5,
+  "tile_flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "tiles": {
+  "0": "tile_00.webp",
+  "1": "tile_01.webp",
+  "2": "tile_02.webp",
+  "3": "tile_03.webp",
+  "4": "tile_04.webp",
+  "5": "tile_05.webp",
+  "6": "tile_06.webp",
+  "7": "tile_07.webp",
+  "8": "tile_08.webp",
+  "9": "tile_09.webp",
+  "10": "tile_10.webp",
+  "11": "tile_11.webp",
+  "12": "tile_12.webp",
+  "13": "tile_13.webp",
+  "14": "tile_14.webp",
+  "15": "tile_15.webp"
+ },
+ "note": "Wang corner set on ELEVATION, not on material: the index is the corner bitmask NW NE SW SE and a set bit means that corner is RAISED. Index 0 is flat light_soil, index 15 is full plateau top, and the 14 between are the partial shapes. One ground at two heights - not a transition between two materials."
+}
