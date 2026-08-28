@@ -328,7 +328,26 @@
       "glow_concept": null,
       "difference_from_source": 0.6804,
       "glow_score": 0.0,
-      "generated_at": "2026-08-14T17:02:45+00:00"
+      "generated_at": "2026-08-14T17:02:45+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "3c0f211d-b61e-4d4f-9df1-34cffc1fff68",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_058/not_lit_7/animations/wind/00.webp",
+            "trees/tree_058/not_lit_7/animations/wind/01.webp",
+            "trees/tree_058/not_lit_7/animations/wind/02.webp",
+            "trees/tree_058/not_lit_7/animations/wind/03.webp",
+            "trees/tree_058/not_lit_7/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_058/not_lit_7/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:11:24+00:00"
+        }
+      }
     },
     "NOT_LIT_8": {
       "sprite": "trees/tree_058/not_lit_8/sprite.webp",
@@ -336,7 +355,26 @@
       "glow_concept": null,
       "difference_from_source": 0.5553,
       "glow_score": 0.0,
-      "generated_at": "2026-08-14T17:02:45+00:00"
+      "generated_at": "2026-08-14T17:02:45+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "7ebf30ee-d63d-4486-b878-12193a99c8c0",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_058/not_lit_8/animations/wind/00.webp",
+            "trees/tree_058/not_lit_8/animations/wind/01.webp",
+            "trees/tree_058/not_lit_8/animations/wind/02.webp",
+            "trees/tree_058/not_lit_8/animations/wind/03.webp",
+            "trees/tree_058/not_lit_8/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_058/not_lit_8/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:11:17+00:00"
+        }
+      }
     },
     "NOT_LIT_9": {
       "sprite": "trees/tree_058/not_lit_9/sprite.webp",
@@ -344,7 +382,26 @@
       "glow_concept": null,
       "difference_from_source": 0.424,
       "glow_score": 0.0139,
-      "generated_at": "2026-08-14T17:02:45+00:00"
+      "generated_at": "2026-08-14T17:02:45+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "3365355a-9d72-4f03-a421-7797d646933b",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_058/not_lit_9/animations/wind/00.webp",
+            "trees/tree_058/not_lit_9/animations/wind/01.webp",
+            "trees/tree_058/not_lit_9/animations/wind/02.webp",
+            "trees/tree_058/not_lit_9/animations/wind/03.webp",
+            "trees/tree_058/not_lit_9/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_058/not_lit_9/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:11:33+00:00"
+        }
+      }
     }
   },
   "must_be_imbplemented_with_random_hflip": true
