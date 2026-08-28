@@ -148,7 +148,11 @@ def write_index():
         "sheets": sheets,
     }
     os.makedirs(OUT, exist_ok=True)
-    dst = os.path.join(OUT, "index.json")
+    # sheets.json, NOT index.json: the wiki claimed tiles/fades/index.json as the
+    # consumer surface (schema tiles3/fade-tiles@1, posted on the board) before this
+    # generator's raw listing had any consumer. The raw listing is pipeline-internal,
+    # so it yields the good name. fades_post.py owns index.json.
+    dst = os.path.join(OUT, "sheets.json")
     tmp = f"{dst}.{os.getpid()}.tmp"
     with open(tmp, "w") as f:
         json.dump(doc, f, indent=1)
