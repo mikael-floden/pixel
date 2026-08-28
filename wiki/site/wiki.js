@@ -7553,10 +7553,48 @@ function reviewLedgerPanel() {
         },
       }, `Start on ${typeLabelWorld(L.biggestTops[0]).toLowerCase()} — ${L.biggestTops[1].toLocaleString()} tops`),
       h("span", { class: "muted" }, "opens on a set, so you see the real top")) : null,
+    /* WHICH FADE PAIRS ARE STILL UNTOUCHED (maintainer 2026-08-28: "I didn't
+     * accept/reject everything, but if there is a pair that doesn't have a
+     * single accept/reject I must have missed it"). A pair counts as visited
+     * the moment ANY of its fade tiles carries a rating or a verdict — both
+     * orientation halves merged, pairs with nothing published excluded (there
+     * is nothing there to miss). */
+    ...(() => {
+      const pairsIdx = fadesIndex?.pairs;
+      if (!pairsIdx) return [];
+      const merged = new Map();
+      for (const [k, list] of Object.entries(pairsIdx)) {
+        const g = k.split("__to__").sort().join("|");
+        if (!merged.has(g)) merged.set(g, []);
+        merged.get(g).push(...list.map((t) => t.key));
+      }
+      const withTiles = [...merged.entries()].filter(([, keys]) => keys.length);
+      const untouched = withTiles
+        .filter(([, keys]) => !keys.some((k2) => { const e = fb("tiles", k2); return e.rating || e.status; }))
+        .map(([g]) => g.split("|"))
+        .sort((x, y) => x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]));
+      return [
+        line("Fade tiles", untouched.length
+          ? `${withTiles.length - untouched.length} of ${withTiles.length} published pairs carry your votes`
+          : `every one of the ${withTiles.length} published pairs carries at least one of your votes`,
+          untouched.length
+            ? h("span", { class: "pill warn", title: "Pairs whose fade tiles have not a single rating or verdict from you" }, `${untouched.length} untouched`)
+            : h("span", { class: "pill ok" }, "all visited")),
+        untouched.length ? h("div", { class: "ledger-jump" },
+          ...untouched.slice(0, 3).map(([a2, b2]) => h("button", {
+            class: "ghost-btn",
+            title: "Open the pair page — the fade review is at the bottom",
+            onclick: () => { location.hash = `#/world/transition/${a2}__to__${b2}`; },
+          }, `${typeLabelWorld(a2)} ↔ ${typeLabelWorld(b2).toLowerCase()}`)),
+          untouched.length > 3 ? h("span", { class: "muted" }, `+${untouched.length - 3} more pair${untouched.length - 3 === 1 ? "" : "s"}`) : null) : null,
+      ];
+    })(),
     h("p", { class: "muted ledger-foot" },
       "Counted from the tiles agent's live manifest and your own verdicts, every time this page opens."));
 }
 function viewWorld() {
+  // the fade ledger line needs the index; cached, so this is one fetch a session
+  refreshFades().then((changed) => { if (changed && location.hash.replace(/^#\/?/, "").split("/")[0] === "world") route(); });
   // Fire-and-forget: the baked list draws immediately, the live one replaces
   // it a moment later. Re-rendering only when the fetch actually landed keeps
   // the page still on every visit after the first.
@@ -8801,7 +8839,10 @@ function viewWorldPair(top, side) {
  *  showing the old pick after you press it is worse than no control at all. */
 function wallModeRow(cand, onVerdict, side) {
   const box = h("div", { class: "card-sub wall-mode" });
-  const draw = () => box.replaceChildren(
+  // replaceChildren stringifies a bare null into a literal "null" text node —
+  // the trap verdictWidget documents; filter, always.
+  const draw = () => box.replaceChildren(...[
+
     h("span", { class: "muted" }, "Wall"),
     sortBar(`tile-wall:${cand.key}`, Object.entries(WALL_MODES).map(([id, m]) => [id, m.label, m.title]),
       topOnly(cand.key) ? "top" : "own",
@@ -8811,7 +8852,8 @@ function wallModeRow(cand, onVerdict, side) {
      * also be possible for me to change what x over x tile we use"): the
      * moment a tile is top-only, the borrowed wall is choosable right here,
      * and the cliff preview above rebuilds with each step. */
-    topOnly(cand.key) && side ? wallStepper(side, cand.tex ?? cand.art, () => { draw(); onVerdict?.(); }) : null);
+    topOnly(cand.key) && side ? wallStepper(side, cand.tex ?? cand.art, () => { draw(); onVerdict?.(); }) : null,
+  ].filter(Boolean));
   draw();
   return box;
 }

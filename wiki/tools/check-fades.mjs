@@ -134,6 +134,45 @@ ok(far.length === 0, far.length
   await p.waitForTimeout(4000);
 }
 
+// ---- 4d. the World ledger names the pairs he has not touched (maintainer
+// 2026-08-28: "if there is a pair that doesn't have a single accept/reject I
+// must have missed it") ------------------------------------------------------
+{
+  // recomputed HERE from the index + the live feedback file, independently
+  const fbDoc = JSON.parse(readFileSync(ROOT + "live/feedback/tiles.json", "utf8"));
+  const merged = new Map();
+  for (const [k, list] of Object.entries(IDX.pairs)) {
+    const g = k.split("__to__").sort().join("|");
+    if (!merged.has(g)) merged.set(g, []);
+    merged.get(g).push(...list.map((t) => t.key));
+  }
+  const withTiles = [...merged.entries()].filter(([, keys]) => keys.length);
+  const expUntouched = withTiles.filter(([, keys]) => !keys.some((k2) => {
+    const e = fbDoc.entries?.[k2];
+    return e && (e.rating || e.status);
+  })).length;
+  await p.goto(`${W}#/world`, { waitUntil: "load" });
+  await p.waitForTimeout(3500);
+  const led = await p.evaluate(() => {
+    const rows = [...document.querySelectorAll(".ledger-line, .ledger-row, div")]
+      .find((x) => /Fade tiles/.test(x.textContent) && /untouched|carries|votes/.test(x.textContent));
+    const pill = [...document.querySelectorAll(".pill")].map((x) => x.textContent.trim()).find((t2) => /untouched|all visited/.test(t2));
+    const jumps = [...document.querySelectorAll(".ledger-jump button")].map((x) => x.textContent.trim()).filter((t2) => /↔/.test(t2));
+    return { has: !!rows, pill, jumps };
+  });
+  ok(led.has, "the World ledger carries a Fade tiles line");
+  ok(expUntouched === 0 ? led.pill === "all visited" : led.pill === `${expUntouched} untouched`,
+    `its count is the truth recomputed from the index and his feedback (${led.pill} vs expected ${expUntouched})`);
+  ok(!led.jumps.some((t2) => /parquet/.test(t2) && /black rock|grey stone|deep water/i.test(t2)) || IDX.pairs["black_rock__to__parquet_floor"],
+    "a pair with nothing published is never offered as missed — there is nothing there to vote on");
+  if (expUntouched > 0) {
+    await p.evaluate(() => [...document.querySelectorAll(".ledger-jump button")].find((x) => /↔/.test(x.textContent))?.click());
+    await p.waitForTimeout(3000);
+    ok(await p.evaluate(() => /transition/.test(location.hash) && !!document.querySelector("h1")),
+      "and its jump button lands on the pair page, fade review at the bottom");
+  }
+}
+
 // ---- 5. verdicts ride the tiles feedback file on the tile's own key --------
 await p.evaluate(() => { const r = document.querySelector(".fade-tile .fb-row"); r.querySelectorAll(".stars button")[3]?.click(); });
 await p.waitForTimeout(500);

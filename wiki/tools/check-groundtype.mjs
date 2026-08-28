@@ -1388,6 +1388,8 @@ ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "
   });
   const off = await card0();
   ok(!off.stepper && off.wallpick === "", "under own-wall the Wall row offers no stepper — there is nothing to choose");
+  ok(await p.evaluate(() => ![...document.querySelectorAll(".wall-mode")].some((r) => /\bnull\b/.test(r.textContent))),
+    'and no wall row ever prints a literal "null" — the replaceChildren trap');
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); r.scrollIntoView({ block: "center" }); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "top only")?.click(); });
   await p.waitForTimeout(1800);
   const on = await card0();
@@ -1506,7 +1508,8 @@ const L = await p.evaluate(() => ({
   lines: [...document.querySelectorAll(".ledger-line")].map((x) => x.textContent.replace(/\s+/g, " ").trim()),
   jumps: [...document.querySelectorAll(".ledger-jump button")].map((x) => x.textContent.trim()),
 }));
-ok(L.present && L.lines.length === 3, `the World section opens with the ledger — tiles, rejections, tops (${L.lines.length} lines)`);
+ok(L.present && L.lines.length >= 3 && ["Tiles", "Your rejections", "Tops"].every((n2) => L.lines.some((x) => x.startsWith(n2))),
+  `the World section opens with the ledger — tiles, rejections, tops (${L.lines.length} lines)`);
 const tileLine = L.lines.find((x) => x.startsWith("Tiles")) ?? "";
 const mNums = tileLine.match(/([\d,]+) of ([\d,]+) rated \((\d+)%\)/);
 const num = (x) => Number(String(x).replace(/,/g, ""));
@@ -1518,8 +1521,8 @@ const rejLine = L.lines.find((x) => x.startsWith("Your rejections")) ?? "";
 ok(/carried out|none outstanding/.test(rejLine),
   `his rejections get a receipt — carried out vs still standing (${rejLine.slice(0, 54)}…)`);
 ok(L.lines.some((x) => x.startsWith("Tops")), "and the top review is counted as its own axis");
-ok(L.jumps.length > 0 && /Start on/.test(L.jumps.at(-1) ?? ""),
-  `with a press that lands ON the work — the biggest queue, opened in Textured (${L.jumps.join(" | ").slice(0, 60)})`);
+ok(L.jumps.some((x) => /^Start on/.test(x)),
+  `with a press that lands ON the work — the biggest queue, opened in Textured (${L.jumps.filter((x) => /^Start on/.test(x)).join(" | ").slice(0, 60)})`);
 
 // ---- 3. TRANSITIONS: the tab and the demo page -----------------------------
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
