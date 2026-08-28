@@ -340,13 +340,33 @@ class PixelLabClient:
 
     def animate_object(self, object_id, animation_description, frame_count=4,
                        directions=None, display_name=None, replace_existing=True,
-                       job_timeout=900):
-        """Add an animation to an object across `directions` (default ALL 8 —
-        the API animates only the directions you pass). Returns the
-        animation_group_id; frames are fetched via download_object_animation."""
+                       job_timeout=900, mode="v3", keep_first_frame=True,
+                       all_directions=False):
+        """Add an animation to an object. Returns the animation_group_id; frames
+        are fetched via download_object_animation.
+
+        `directions` IS OMITTED BY DEFAULT, and that is not a detail: a
+        1-direction object (every scenery piece over 168px, which is every tree)
+        animates its single internal direction, and passing `directions` at all
+        returns 400. This used to default to all eight, so it could only ever
+        have worked on the 8-direction pieces. Pass all_directions=True for
+        those.
+
+        `mode` and `keep_first_frame` mirror the maintainer's own UI run
+        (2026-08-27): v3 is the API's default and is both cheaper and better
+        than 'pro', and keep_first_frame stores the reference art as frame 0 —
+        so frame_count=4 yields FIVE frames and costs three generations, the
+        original being free. enhance_prompt is deliberately left off: he writes
+        the motion himself and an auto-expanded prompt would not be his."""
         payload = {"animation_description": animation_description,
-                   "frame_count": int(frame_count), "replace_existing": replace_existing,
-                   "directions": list(directions) if directions else list(DIRECTIONS_8)}
+                   "frame_count": int(frame_count),
+                   "replace_existing": replace_existing,
+                   "mode": mode,
+                   "keep_first_frame": bool(keep_first_frame)}
+        if directions:
+            payload["directions"] = list(directions)
+        elif all_directions:
+            payload["directions"] = list(DIRECTIONS_8)
         if display_name:
             payload["display_name"] = display_name
         resp = self._request("POST", f"{OBJECTS_URL}/{object_id}/animations", json=payload)
