@@ -362,6 +362,39 @@ ok(Object.values(tSaves.at(-1)?.set ?? {})[0] === null,
       `while the raw sheet it replaced really is the bright one — the fixture can see the bug (raw V ${V.rawV?.toFixed(1)})`);
   }
 }
+/* ---- 7. THE CLEAN TILE IS A FILE, NOT A COMPOSITE (maintainer 2026-08-28,
+ * Grey Paving Stone's Clean #0 drawing a fully textured field). The old
+ * sub: composite was correct when it worked — but its failure mode (a
+ * tainted canvas on his phone) fell back to the plain textured after tile,
+ * i.e. exactly the bug it existed to fix. The plate file cannot taint. */
+{
+  const clean = await p.evaluate(() => {
+    const set0 = window.__basesets.groundSets("grey_paving_stone").find((s2) => s2.id === 0);
+    return {
+      art: window.__basesets.setCellArt(set0, 0, 0, "grey_paving_stone"),
+      plate: window.__basesets.patternLib()?.plates?.grey_paving_stone?.clean ?? null,
+    };
+  });
+  ok(clean.art === clean.plate && /\/clean\.webp$/.test(clean.art ?? ""),
+    `Clean #0 draws the published clean plate itself — a plain file with no composite to fail (${clean.art})`);
+  await p.goto(`${W}#/world/grey_paving_stone`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  const field = await p.evaluate(() => {
+    const panel = [...document.querySelectorAll(".base-set")].find((x) => /Clean #0/.test(x.textContent));
+    const cv = panel?.querySelector(".group-stage canvas");
+    if (!cv?.width) return null;
+    try {
+      const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+      const s2 = new Set();
+      for (let y = Math.round(cv.height * 0.25); y < cv.height * 0.55; y++)
+        for (let x = Math.round(cv.width * 0.3); x < cv.width * 0.7; x++) {
+          const i = (y * cv.width + x) * 4; if (d[i + 3] > 200) s2.add((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]);
+        }
+      return s2.size;
+    } catch { return "tainted"; }
+  });
+  ok(field === 1, `and grey paving's Clean #0 field really is ONE colour on top — the ground he reported (${field})`);
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 

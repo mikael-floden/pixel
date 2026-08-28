@@ -5152,15 +5152,29 @@ function pickWeighted(weights, u) {
  * the clean colour, it is the clean colour's tile. Drawing it as a flat CSS fill
  * instead would put a rectangle behind a field of diamonds. */
 function cleanArtOf(typeId) {
+  /* THE PLATE FILE ITSELF, never a browser composite (maintainer 2026-08-28,
+   * on Grey Paving Stone's Clean #0 drawing a fully textured field: "Why is
+   * the base tile page not showing a single color grey plain top on Clean
+   * #0?"). The old sub:<after>::<clean> composite was CORRECT — my probe
+   * composed it flat, both inputs answered 200 with CORS at his exact pinned
+   * sha — but it depended on getImageData, and a canvas his phone taints
+   * (a cached no-CORS image entry is enough) throws there, and the fallback
+   * for an unbuildable composite is the plain after tile: textured, for
+   * paving, across every cell and the ring at once. A composite whose
+   * failure mode is exactly the bug it exists to fix cannot be the clean
+   * tile's source.
+   *
+   * tiles/plates/<g>/clean.webp IS the clean tile — flat top landed
+   * integer-exactly on the palette colour, the ground's OWN wall, published
+   * by the tiles agent for every ground — and a plain file cannot taint,
+   * cannot half-fail, and costs one load instead of two plus a readback.
+   * isoScene foot-centres its 64x46 geometry beside 64x64 review tiles. The
+   * composite remains only for a ground without plates. */
+  const plate = patternLib()?.plates[typeId]?.clean;
+  if (plate) return plate;
   const own = worldCells().find((c) => c.top === typeId && c.side === typeId);
   if (!own) return null;
-  const art = (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
-  /* COMPOSED, for the same reason as viewArtIn's clean branch: on paving and
-   * parquet the x-over-x tile's top is deliberately textured, so using it raw
-   * made the Clean #0 panel draw a textured field — a clean set that was not
-   * clean. The tile keeps its own wall; only the top becomes the flat colour. */
-  const cleanPlate = patternLib()?.plates[typeId]?.clean;
-  return art && cleanPlate ? `sub:${art}::${cleanPlate}` : art;
+  return (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
 }
 /** What fills cell (x,y) of a set: a member's art, or the ground's clean tile. */
 function setCellArt(set, x, y, typeId) {
