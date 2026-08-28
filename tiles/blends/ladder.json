@@ -10,7 +10,7 @@
   40,
   50
  ],
- "n_sheets": 133,
+ "n_sheets": 160,
  "sheets": [
   {
    "dir": "tiles/blends/black_rock__with__brown_paving_stone/p10",
@@ -3415,6 +3415,69 @@
    ]
   },
   {
+   "dir": "tiles/blends/black_rock__with__parquet_floor/p50",
+   "dominant": "black_rock",
+   "minor": "parquet_floor",
+   "pct_minor": 50,
+   "prompt": "black rock and parquet floor mixed evenly",
+   "seed": 21629,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.ecb3d87f.webp",
+    "tile_01.71bcd7c8.webp",
+    "tile_02.0d5261ac.webp",
+    "tile_03.ed235ed3.webp",
+    "tile_04.e6f1090a.webp",
+    "tile_05.2973508d.webp",
+    "tile_06.790885a8.webp",
+    "tile_07.08e0c133.webp",
+    "tile_08.49411403.webp",
+    "tile_09.f680c51d.webp",
+    "tile_10.cad880fe.webp",
+    "tile_11.83e538cc.webp",
+    "tile_12.0db5b7e1.webp",
+    "tile_13.e3fec789.webp",
+    "tile_14.cf7a9f42.webp",
+    "tile_15.3016019b.webp"
+   ],
+   "measured_pct_minor": 73.9,
+   "measured_tiles": [
+    83.5,
+    69.2,
+    75.4,
+    91.7,
+    74.7,
+    41.0,
+    81.3,
+    68.9,
+    84.2,
+    72.5,
+    55.7,
+    88.1,
+    74.6,
+    67.7,
+    82.6,
+    71.5
+   ]
+  },
+  {
    "dir": "tiles/blends/black_rock__with__slime/p10",
    "dominant": "black_rock",
    "minor": "slime",
@@ -3982,6 +4045,69 @@
    ]
   },
   {
+   "dir": "tiles/blends/black_rock__with__snow/p50",
+   "dominant": "black_rock",
+   "minor": "snow",
+   "pct_minor": 50,
+   "prompt": "black rock and snow mixed evenly",
+   "seed": 59978,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.96dfea64.webp",
+    "tile_01.784f6cf2.webp",
+    "tile_02.72fc27e9.webp",
+    "tile_03.6f99908c.webp",
+    "tile_04.0a5e6f55.webp",
+    "tile_05.6c09932e.webp",
+    "tile_06.fed5d0f6.webp",
+    "tile_07.f677bb2e.webp",
+    "tile_08.29ebfc82.webp",
+    "tile_09.ed74ab64.webp",
+    "tile_10.32d1eb76.webp",
+    "tile_11.5bd32589.webp",
+    "tile_12.cf178015.webp",
+    "tile_13.a81edbfc.webp",
+    "tile_14.d8d67009.webp",
+    "tile_15.d8111949.webp"
+   ],
+   "measured_pct_minor": 49.9,
+   "measured_tiles": [
+    28.3,
+    39.8,
+    44.9,
+    81.9,
+    69.0,
+    68.7,
+    10.1,
+    67.2,
+    20.8,
+    31.0,
+    65.9,
+    79.5,
+    38.3,
+    92.5,
+    15.2,
+    45.5
+   ]
+  },
+  {
    "dir": "tiles/blends/black_rock__with__water/p10",
    "dominant": "black_rock",
    "minor": "water",
@@ -4168,6 +4294,132 @@
     1.9,
     12.9,
     8.9
+   ]
+  },
+  {
+   "dir": "tiles/blends/black_rock__with__water/p40",
+   "dominant": "black_rock",
+   "minor": "water",
+   "pct_minor": 40,
+   "prompt": "black rock and water mixed, more black rock",
+   "seed": 80625,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.0905b183.webp",
+    "tile_01.5e2cc523.webp",
+    "tile_02.bf3365d4.webp",
+    "tile_03.1d62f38c.webp",
+    "tile_04.e7593763.webp",
+    "tile_05.0026ef41.webp",
+    "tile_06.9a9c15d9.webp",
+    "tile_07.9bd549ac.webp",
+    "tile_08.642303da.webp",
+    "tile_09.3d00accc.webp",
+    "tile_10.7eb51b84.webp",
+    "tile_11.b3753b0b.webp",
+    "tile_12.e07e4cc4.webp",
+    "tile_13.61ec0438.webp",
+    "tile_14.626be395.webp",
+    "tile_15.5233fdf9.webp"
+   ],
+   "measured_pct_minor": 14.3,
+   "measured_tiles": [
+    7.4,
+    11.3,
+    13.4,
+    15.6,
+    15.2,
+    15.0,
+    19.8,
+    18.7,
+    12.1,
+    16.6,
+    15.7,
+    14.3,
+    17.3,
+    12.3,
+    12.7,
+    10.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/black_rock__with__water/p50",
+   "dominant": "black_rock",
+   "minor": "water",
+   "pct_minor": 50,
+   "prompt": "black rock and water mixed evenly",
+   "seed": 7639,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.f935c557.webp",
+    "tile_01.101bf793.webp",
+    "tile_02.429aa930.webp",
+    "tile_03.df13b7b2.webp",
+    "tile_04.99c0ab3c.webp",
+    "tile_05.04fdc541.webp",
+    "tile_06.82e7ceb2.webp",
+    "tile_07.5bbd0340.webp",
+    "tile_08.4ee60c68.webp",
+    "tile_09.e9d9e88a.webp",
+    "tile_10.b8116f02.webp",
+    "tile_11.48abfbef.webp",
+    "tile_12.1883f020.webp",
+    "tile_13.46d53d2e.webp",
+    "tile_14.486d9ac2.webp",
+    "tile_15.d44ef0e3.webp"
+   ],
+   "measured_pct_minor": 15.3,
+   "measured_tiles": [
+    8.1,
+    7.0,
+    13.1,
+    21.0,
+    13.4,
+    14.6,
+    19.4,
+    28.5,
+    16.8,
+    7.9,
+    13.9,
+    27.9,
+    10.2,
+    16.0,
+    13.5,
+    13.5
    ]
   },
   {
@@ -4483,6 +4735,762 @@
     51.0,
     27.3,
     23.2
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+   "dominant": "brown_paving_stone",
+   "minor": "dark_mud",
+   "pct_minor": 10,
+   "prompt": "mostly brown paving stone, a few small spots of dark mud",
+   "seed": 44160,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.fb5850e3.webp",
+    "tile_01.47f87c9d.webp",
+    "tile_02.4a5eff05.webp",
+    "tile_03.ea7f7933.webp",
+    "tile_04.ffbc3b97.webp",
+    "tile_05.7a70cd17.webp",
+    "tile_06.d48c8d74.webp",
+    "tile_07.9cc0c624.webp",
+    "tile_08.352338e8.webp",
+    "tile_09.15fe6cbb.webp",
+    "tile_10.92fcafa1.webp",
+    "tile_11.5dfd7255.webp",
+    "tile_12.3f9239cc.webp",
+    "tile_13.8f1d0729.webp",
+    "tile_14.0fec4912.webp",
+    "tile_15.6250e53e.webp"
+   ],
+   "measured_pct_minor": 28.8,
+   "measured_tiles": [
+    26.0,
+    23.2,
+    29.7,
+    26.8,
+    30.6,
+    26.8,
+    27.8,
+    25.5,
+    27.7,
+    30.7,
+    29.9,
+    30.3,
+    33.2,
+    28.5,
+    31.9,
+    31.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+   "dominant": "brown_paving_stone",
+   "minor": "dark_mud",
+   "pct_minor": 20,
+   "prompt": "mostly brown paving stone, scattered patches of dark mud",
+   "seed": 61213,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.b9bc07d0.webp",
+    "tile_01.ebb34f68.webp",
+    "tile_02.ce63dae7.webp",
+    "tile_03.762733eb.webp",
+    "tile_04.7db434e5.webp",
+    "tile_05.3a8e43b0.webp",
+    "tile_06.c4e0ff6d.webp",
+    "tile_07.6e835f6b.webp",
+    "tile_08.19df7f7b.webp",
+    "tile_09.70f3495d.webp",
+    "tile_10.cb2b9dbe.webp",
+    "tile_11.c5c9c3be.webp",
+    "tile_12.715f308d.webp",
+    "tile_13.959b7224.webp",
+    "tile_14.0906f542.webp",
+    "tile_15.2855d22e.webp"
+   ],
+   "measured_pct_minor": 40.5,
+   "measured_tiles": [
+    40.0,
+    40.2,
+    40.6,
+    33.7,
+    60.0,
+    41.7,
+    45.0,
+    23.5,
+    40.8,
+    60.6,
+    23.7,
+    34.6,
+    54.5,
+    27.1,
+    50.2,
+    32.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+   "dominant": "brown_paving_stone",
+   "minor": "deep_water",
+   "pct_minor": 10,
+   "prompt": "mostly brown paving stone, a few small spots of deep water",
+   "seed": 59096,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.b1987449.webp",
+    "tile_01.0fe6e72b.webp",
+    "tile_02.92649cce.webp",
+    "tile_03.8cf764ff.webp",
+    "tile_04.05427930.webp",
+    "tile_05.883714b6.webp",
+    "tile_06.80715f15.webp",
+    "tile_07.835c5c39.webp",
+    "tile_08.42701a93.webp",
+    "tile_09.6aa3fc4f.webp",
+    "tile_10.67f7a0db.webp",
+    "tile_11.447e2b32.webp",
+    "tile_12.f9c44f17.webp",
+    "tile_13.480597ed.webp",
+    "tile_14.bb5cef36.webp",
+    "tile_15.be0e3c84.webp"
+   ],
+   "measured_pct_minor": 5.1,
+   "measured_tiles": [
+    3.2,
+    2.1,
+    3.6,
+    8.5,
+    4.4,
+    3.7,
+    8.5,
+    2.3,
+    3.4,
+    7.1,
+    1.5,
+    7.0,
+    13.1,
+    4.0,
+    2.5,
+    6.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+   "dominant": "brown_paving_stone",
+   "minor": "deep_water",
+   "pct_minor": 20,
+   "prompt": "mostly brown paving stone, scattered patches of deep water",
+   "seed": 17980,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.f16da45e.webp",
+    "tile_01.906c7cfa.webp",
+    "tile_02.ae1aa323.webp",
+    "tile_03.7403851d.webp",
+    "tile_04.dc97b343.webp",
+    "tile_05.3dd88839.webp",
+    "tile_06.0722b80f.webp",
+    "tile_07.b62708ac.webp",
+    "tile_08.12ac4438.webp",
+    "tile_09.9e06048a.webp",
+    "tile_10.88c8f55b.webp",
+    "tile_11.8d4f55de.webp",
+    "tile_12.045fabf3.webp",
+    "tile_13.cf2bc303.webp",
+    "tile_14.69176f37.webp",
+    "tile_15.14a91e04.webp"
+   ],
+   "measured_pct_minor": 12.1,
+   "measured_tiles": [
+    0.3,
+    6.2,
+    6.4,
+    36.6,
+    10.6,
+    1.3,
+    19.4,
+    10.1,
+    5.2,
+    35.3,
+    4.5,
+    6.7,
+    3.7,
+    31.4,
+    2.0,
+    13.4
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+   "dominant": "brown_paving_stone",
+   "minor": "deep_water",
+   "pct_minor": 30,
+   "prompt": "brown paving stone with clear patches of deep water breaking through",
+   "seed": 36861,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.1e3bc271.webp",
+    "tile_01.a29b6427.webp",
+    "tile_02.2869e07d.webp",
+    "tile_03.eafabad8.webp",
+    "tile_04.a8d6916e.webp",
+    "tile_05.c58c4979.webp",
+    "tile_06.0e410237.webp",
+    "tile_07.f8c7d9cc.webp",
+    "tile_08.a8c20b12.webp",
+    "tile_09.4ce73494.webp",
+    "tile_10.b4d8cd26.webp",
+    "tile_11.62abf165.webp",
+    "tile_12.dc634518.webp",
+    "tile_13.d58eb6ad.webp",
+    "tile_14.4bcc107d.webp",
+    "tile_15.e4eaaa53.webp"
+   ],
+   "measured_pct_minor": 34.4,
+   "measured_tiles": [
+    27.6,
+    44.5,
+    25.2,
+    34.5,
+    4.6,
+    59.4,
+    40.6,
+    76.0,
+    35.8,
+    22.5,
+    9.2,
+    29.8,
+    36.6,
+    39.6,
+    35.2,
+    30.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grass/p10",
+   "dominant": "brown_paving_stone",
+   "minor": "grass",
+   "pct_minor": 10,
+   "prompt": "mostly brown paving stone, a few small spots of grass",
+   "seed": 3107,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.b08f1674.webp",
+    "tile_01.dc22bad4.webp",
+    "tile_02.b9eb349c.webp",
+    "tile_03.02637d06.webp",
+    "tile_04.e478325c.webp",
+    "tile_05.8db181ef.webp",
+    "tile_06.ed7f7008.webp",
+    "tile_07.0bbe8103.webp",
+    "tile_08.39f9b54a.webp",
+    "tile_09.edd24737.webp",
+    "tile_10.30cb83bb.webp",
+    "tile_11.2efb24c4.webp",
+    "tile_12.ee0d1b74.webp",
+    "tile_13.8508cb2e.webp",
+    "tile_14.c8844484.webp",
+    "tile_15.328bff5e.webp"
+   ],
+   "measured_pct_minor": 0.6,
+   "measured_tiles": [
+    0.0,
+    0.0,
+    0.0,
+    1.4,
+    1.9,
+    0.0,
+    0.0,
+    0.3,
+    2.2,
+    0.0,
+    0.0,
+    0.8,
+    1.1,
+    0.3,
+    0.5,
+    0.6
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+   "dominant": "brown_paving_stone",
+   "minor": "grass",
+   "pct_minor": 20,
+   "prompt": "mostly brown paving stone, scattered patches of grass",
+   "seed": 14986,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.894bd2a2.webp",
+    "tile_01.bce551df.webp",
+    "tile_02.636f8ab5.webp",
+    "tile_03.bb8f5a85.webp",
+    "tile_04.73b30843.webp",
+    "tile_05.c0c061f5.webp",
+    "tile_06.4f25e226.webp",
+    "tile_07.7003ae4f.webp",
+    "tile_08.e54fe214.webp",
+    "tile_09.0f61e1df.webp",
+    "tile_10.747cfda5.webp",
+    "tile_11.255ec284.webp",
+    "tile_12.bb9ad563.webp",
+    "tile_13.0a8df37f.webp",
+    "tile_14.4e755c02.webp",
+    "tile_15.e8c8020e.webp"
+   ],
+   "measured_pct_minor": 11.7,
+   "measured_tiles": [
+    5.0,
+    6.7,
+    13.4,
+    6.5,
+    2.1,
+    17.0,
+    1.4,
+    1.7,
+    2.4,
+    64.3,
+    19.5,
+    11.3,
+    8.3,
+    18.4,
+    6.6,
+    2.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grey_paving_stone/p10",
+   "dominant": "brown_paving_stone",
+   "minor": "grey_paving_stone",
+   "pct_minor": 10,
+   "prompt": "mostly brown paving stone, a few small spots of grey paving stone",
+   "seed": 50031,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.e1014ca2.webp",
+    "tile_01.bf9b01be.webp",
+    "tile_02.33c2ac1e.webp",
+    "tile_03.c36a642c.webp",
+    "tile_04.e4ded200.webp",
+    "tile_05.607a6856.webp",
+    "tile_06.c2cdd293.webp",
+    "tile_07.da1d7301.webp",
+    "tile_08.93fdbff1.webp",
+    "tile_09.921d479d.webp",
+    "tile_10.f9288df7.webp",
+    "tile_11.b1bb488d.webp",
+    "tile_12.18f8ba22.webp",
+    "tile_13.ca1c2080.webp",
+    "tile_14.dfc1769c.webp",
+    "tile_15.449acfc1.webp"
+   ],
+   "measured_pct_minor": 0.0,
+   "measured_tiles": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grey_paving_stone/p20",
+   "dominant": "brown_paving_stone",
+   "minor": "grey_paving_stone",
+   "pct_minor": 20,
+   "prompt": "mostly brown paving stone, scattered patches of grey paving stone",
+   "seed": 73240,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.b8d91ca6.webp",
+    "tile_01.53507eca.webp",
+    "tile_02.bce38135.webp",
+    "tile_03.65cf8885.webp",
+    "tile_04.4117e6c7.webp",
+    "tile_05.85fb6fea.webp",
+    "tile_06.db608658.webp",
+    "tile_07.65c90fcd.webp",
+    "tile_08.7be5755d.webp",
+    "tile_09.31a6d894.webp",
+    "tile_10.041399ba.webp",
+    "tile_11.6a2fb245.webp",
+    "tile_12.93f29cb8.webp",
+    "tile_13.0a07df7a.webp",
+    "tile_14.8c7e5e04.webp",
+    "tile_15.467c7031.webp"
+   ],
+   "measured_pct_minor": 3.4,
+   "measured_tiles": [
+    3.4,
+    3.8,
+    4.4,
+    3.8,
+    3.6,
+    4.3,
+    3.3,
+    4.1,
+    3.3,
+    2.7,
+    2.8,
+    2.5,
+    2.4,
+    2.2,
+    3.5,
+    3.9
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+   "dominant": "brown_paving_stone",
+   "minor": "grey_stone",
+   "pct_minor": 10,
+   "prompt": "mostly brown paving stone, a few small spots of grey stone",
+   "seed": 68347,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.a685b81b.webp",
+    "tile_01.180222f1.webp",
+    "tile_02.0d6cfa1c.webp",
+    "tile_03.1edebbd4.webp",
+    "tile_04.f28b0964.webp",
+    "tile_05.04152adb.webp",
+    "tile_06.5d84a034.webp",
+    "tile_07.d3a3bc85.webp",
+    "tile_08.a8aaf67c.webp",
+    "tile_09.0887d20c.webp",
+    "tile_10.ea051a38.webp",
+    "tile_11.92819285.webp",
+    "tile_12.f156ca43.webp",
+    "tile_13.15af1422.webp",
+    "tile_14.c9475ae8.webp",
+    "tile_15.6186f07d.webp"
+   ],
+   "measured_pct_minor": 51.5,
+   "measured_tiles": [
+    56.3,
+    55.0,
+    52.0,
+    53.1,
+    56.4,
+    59.8,
+    43.6,
+    47.0,
+    54.1,
+    56.4,
+    52.6,
+    48.7,
+    46.8,
+    44.4,
+    45.3,
+    51.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+   "dominant": "brown_paving_stone",
+   "minor": "grey_stone",
+   "pct_minor": 20,
+   "prompt": "mostly brown paving stone, scattered patches of grey stone",
+   "seed": 62355,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.0d5f7250.webp",
+    "tile_01.be0155c1.webp",
+    "tile_02.2fbc4fc1.webp",
+    "tile_03.a0c400ec.webp",
+    "tile_04.4f98f762.webp",
+    "tile_05.3eaf6ef1.webp",
+    "tile_06.ca1a12a7.webp",
+    "tile_07.568a373d.webp",
+    "tile_08.d8263fe5.webp",
+    "tile_09.c5ed7281.webp",
+    "tile_10.4fe93e34.webp",
+    "tile_11.d0086df1.webp",
+    "tile_12.58cc1650.webp",
+    "tile_13.93660bb3.webp",
+    "tile_14.fe99b598.webp",
+    "tile_15.ea6fec35.webp"
+   ],
+   "measured_pct_minor": 12.9,
+   "measured_tiles": [
+    1.4,
+    41.5,
+    8.3,
+    5.8,
+    18.8,
+    2.4,
+    34.5,
+    2.7,
+    4.0,
+    32.8,
+    1.3,
+    2.5,
+    5.3,
+    21.1,
+    19.0,
+    5.2
+   ]
+  },
+  {
+   "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+   "dominant": "brown_paving_stone",
+   "minor": "grey_stone",
+   "pct_minor": 30,
+   "prompt": "brown paving stone with clear patches of grey stone breaking through",
+   "seed": 34271,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.087c45f1.webp",
+    "tile_01.db1b096c.webp",
+    "tile_02.1faee79f.webp",
+    "tile_03.f64b0a2d.webp",
+    "tile_04.d4aac991.webp",
+    "tile_05.905da4e3.webp",
+    "tile_06.b6dfc692.webp",
+    "tile_07.68ca4e0b.webp",
+    "tile_08.220d376c.webp",
+    "tile_09.55c8e634.webp",
+    "tile_10.53e6ab69.webp",
+    "tile_11.6392f414.webp",
+    "tile_12.7d74984a.webp",
+    "tile_13.0d0ccd62.webp",
+    "tile_14.87352834.webp",
+    "tile_15.64eb46c3.webp"
+   ],
+   "measured_pct_minor": 17.4,
+   "measured_tiles": [
+    16.8,
+    19.0,
+    9.3,
+    25.2,
+    20.5,
+    21.3,
+    14.1,
+    18.8,
+    11.9,
+    20.7,
+    16.1,
+    14.1,
+    20.8,
+    14.7,
+    22.9,
+    11.6
    ]
   },
   {
@@ -6628,6 +7636,195 @@
    ]
   },
   {
+   "dir": "tiles/blends/grass__with__grey_stone/p10",
+   "dominant": "grass",
+   "minor": "grey_stone",
+   "pct_minor": 10,
+   "prompt": "mostly grass, a few small spots of grey stone",
+   "seed": 6473,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.ba789a4c.webp",
+    "tile_01.638d4182.webp",
+    "tile_02.b3d8a6b9.webp",
+    "tile_03.6b3e8a17.webp",
+    "tile_04.421ee79a.webp",
+    "tile_05.4e6170dd.webp",
+    "tile_06.e14c80e9.webp",
+    "tile_07.93bf90a9.webp",
+    "tile_08.aa6b39d9.webp",
+    "tile_09.bcbbb66d.webp",
+    "tile_10.b1296186.webp",
+    "tile_11.6870b255.webp",
+    "tile_12.aa418935.webp",
+    "tile_13.b4fbc361.webp",
+    "tile_14.7ac2a6ad.webp",
+    "tile_15.7db4b04c.webp"
+   ],
+   "measured_pct_minor": 76.4,
+   "measured_tiles": [
+    69.7,
+    87.2,
+    86.5,
+    73.6,
+    74.4,
+    92.8,
+    71.1,
+    81.1,
+    64.9,
+    87.2,
+    47.4,
+    83.7,
+    82.6,
+    76.3,
+    78.8,
+    64.6
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__grey_stone/p20",
+   "dominant": "grass",
+   "minor": "grey_stone",
+   "pct_minor": 20,
+   "prompt": "mostly grass, scattered patches of grey stone",
+   "seed": 1770,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.bc0b134d.webp",
+    "tile_01.820443e9.webp",
+    "tile_02.7cb0000e.webp",
+    "tile_03.e24caf01.webp",
+    "tile_04.1217a64c.webp",
+    "tile_05.e4d79e4c.webp",
+    "tile_06.4ca37882.webp",
+    "tile_07.29126fc0.webp",
+    "tile_08.81c03529.webp",
+    "tile_09.45da91a2.webp",
+    "tile_10.730f9cae.webp",
+    "tile_11.1f26cd0e.webp",
+    "tile_12.25e99202.webp",
+    "tile_13.05cc48ff.webp",
+    "tile_14.fcffdc42.webp",
+    "tile_15.b88c7041.webp"
+   ],
+   "measured_pct_minor": 99.7,
+   "measured_tiles": [
+    100.0,
+    99.8,
+    99.7,
+    99.9,
+    100.0,
+    99.4,
+    100.0,
+    100.0,
+    99.8,
+    99.9,
+    99.3,
+    99.9,
+    98.8,
+    99.6,
+    99.9,
+    99.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__grey_stone/p30",
+   "dominant": "grass",
+   "minor": "grey_stone",
+   "pct_minor": 30,
+   "prompt": "grass with clear patches of grey stone breaking through",
+   "seed": 14661,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.d9646c3e.webp",
+    "tile_01.100c6a29.webp",
+    "tile_02.87951b98.webp",
+    "tile_03.eab16f08.webp",
+    "tile_04.3d30afdc.webp",
+    "tile_05.244b8012.webp",
+    "tile_06.c5c55865.webp",
+    "tile_07.985b57ae.webp",
+    "tile_08.f73fe411.webp",
+    "tile_09.68c6efe0.webp",
+    "tile_10.ea88d5da.webp",
+    "tile_11.9c7d83a4.webp",
+    "tile_12.42a7b0e9.webp",
+    "tile_13.3325d197.webp",
+    "tile_14.786079bc.webp",
+    "tile_15.fe66ccce.webp"
+   ],
+   "measured_pct_minor": 77.1,
+   "measured_tiles": [
+    82.8,
+    91.2,
+    82.4,
+    69.5,
+    52.2,
+    76.1,
+    78.6,
+    96.7,
+    38.5,
+    89.7,
+    86.6,
+    72.4,
+    80.6,
+    82.9,
+    74.0,
+    78.7
+   ]
+  },
+  {
    "dir": "tiles/blends/grass__with__ice/p10",
    "dominant": "grass",
    "minor": "ice",
@@ -7822,6 +9019,510 @@
     24.8,
     13.7,
     43.8
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__parquet_floor/p50",
+   "dominant": "grass",
+   "minor": "parquet_floor",
+   "pct_minor": 50,
+   "prompt": "grass and parquet floor mixed evenly",
+   "seed": 50218,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.1e56b2b6.webp",
+    "tile_01.6e269f35.webp",
+    "tile_02.09f50c3b.webp",
+    "tile_03.abf53017.webp",
+    "tile_04.50357407.webp",
+    "tile_05.6153b01f.webp",
+    "tile_06.d75954f9.webp",
+    "tile_07.11766d6c.webp",
+    "tile_08.64a9c013.webp",
+    "tile_09.c9978e96.webp",
+    "tile_10.3d170f50.webp",
+    "tile_11.8e37d697.webp",
+    "tile_12.d3709cca.webp",
+    "tile_13.7d36d422.webp",
+    "tile_14.acfbfd36.webp",
+    "tile_15.7e674323.webp"
+   ],
+   "measured_pct_minor": 52.3,
+   "measured_tiles": [
+    0.1,
+    36.0,
+    66.5,
+    100.0,
+    32.2,
+    100.0,
+    28.1,
+    13.6,
+    100.0,
+    40.2,
+    29.6,
+    100.0,
+    39.3,
+    100.0,
+    51.2,
+    0.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__snow/p10",
+   "dominant": "grass",
+   "minor": "snow",
+   "pct_minor": 10,
+   "prompt": "mostly grass, a few small spots of snow",
+   "seed": 51237,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.6ec38a1a.webp",
+    "tile_01.d319e5b9.webp",
+    "tile_02.72d70632.webp",
+    "tile_03.7ad606d3.webp",
+    "tile_04.944b4f04.webp",
+    "tile_05.6ef0daf8.webp",
+    "tile_06.7a74b6b4.webp",
+    "tile_07.2504aac1.webp",
+    "tile_08.54a83aee.webp",
+    "tile_09.fe5c7ef3.webp",
+    "tile_10.d3ebeb49.webp",
+    "tile_11.70922089.webp",
+    "tile_12.7e325428.webp",
+    "tile_13.3ea49943.webp",
+    "tile_14.62fdbd8e.webp",
+    "tile_15.d5149481.webp"
+   ],
+   "measured_pct_minor": 28.9,
+   "measured_tiles": [
+    7.5,
+    40.8,
+    25.5,
+    1.4,
+    30.2,
+    44.3,
+    27.4,
+    7.3,
+    17.3,
+    61.5,
+    39.1,
+    43.9,
+    80.6,
+    25.2,
+    9.4,
+    0.4
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__snow/p20",
+   "dominant": "grass",
+   "minor": "snow",
+   "pct_minor": 20,
+   "prompt": "mostly grass, scattered patches of snow",
+   "seed": 51932,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.0e7af492.webp",
+    "tile_01.bd9b1848.webp",
+    "tile_02.b1bf5159.webp",
+    "tile_03.84b4456a.webp",
+    "tile_04.1157667c.webp",
+    "tile_05.a0eb0595.webp",
+    "tile_06.3f1b6582.webp",
+    "tile_07.66a96773.webp",
+    "tile_08.87e239ea.webp",
+    "tile_09.975af01e.webp",
+    "tile_10.b32a3e2e.webp",
+    "tile_11.7371a382.webp",
+    "tile_12.26acdf57.webp",
+    "tile_13.2a633d9a.webp",
+    "tile_14.b674ae8b.webp",
+    "tile_15.9fa94821.webp"
+   ],
+   "measured_pct_minor": 24.3,
+   "measured_tiles": [
+    0.0,
+    18.8,
+    19.4,
+    26.4,
+    20.0,
+    18.7,
+    17.8,
+    51.0,
+    39.7,
+    14.9,
+    20.2,
+    11.2,
+    40.2,
+    24.0,
+    32.7,
+    33.4
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__snow/p30",
+   "dominant": "grass",
+   "minor": "snow",
+   "pct_minor": 30,
+   "prompt": "grass with clear patches of snow breaking through",
+   "seed": 56850,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.f8acb08e.webp",
+    "tile_01.34e0aa33.webp",
+    "tile_02.92457fcf.webp",
+    "tile_03.bf16dc11.webp",
+    "tile_04.b23fd325.webp",
+    "tile_05.a31dd5c8.webp",
+    "tile_06.5270be81.webp",
+    "tile_07.91e12caf.webp",
+    "tile_08.9b3ca351.webp",
+    "tile_09.0c8537db.webp",
+    "tile_10.b6249cec.webp",
+    "tile_11.4837e3dd.webp",
+    "tile_12.a43d681f.webp",
+    "tile_13.b0a68554.webp",
+    "tile_14.18a72153.webp",
+    "tile_15.1c05ac51.webp"
+   ],
+   "measured_pct_minor": 30.5,
+   "measured_tiles": [
+    0.0,
+    59.5,
+    23.8,
+    31.9,
+    60.2,
+    4.0,
+    17.0,
+    43.6,
+    18.3,
+    33.2,
+    33.1,
+    44.6,
+    43.6,
+    21.8,
+    25.9,
+    27.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__snow/p40",
+   "dominant": "grass",
+   "minor": "snow",
+   "pct_minor": 40,
+   "prompt": "grass and snow mixed, more grass",
+   "seed": 10772,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.e646b76a.webp",
+    "tile_01.ae6743c2.webp",
+    "tile_02.b3bd6123.webp",
+    "tile_03.bfecce3e.webp",
+    "tile_04.c2cd9d27.webp",
+    "tile_05.40983c96.webp",
+    "tile_06.ebeff0d6.webp",
+    "tile_07.290f50d6.webp",
+    "tile_08.92ab046b.webp",
+    "tile_09.fad42ddd.webp",
+    "tile_10.12b29d9e.webp",
+    "tile_11.820a8be7.webp",
+    "tile_12.05b2c278.webp",
+    "tile_13.a158404d.webp",
+    "tile_14.e6b7dd1a.webp",
+    "tile_15.46568009.webp"
+   ],
+   "measured_pct_minor": 1.2,
+   "measured_tiles": [
+    0.0,
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    2.1,
+    0.7,
+    0.4,
+    0.0,
+    0.0,
+    4.9,
+    4.0,
+    0.0,
+    0.9,
+    5.4,
+    0.5
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__water/p10",
+   "dominant": "grass",
+   "minor": "water",
+   "pct_minor": 10,
+   "prompt": "mostly grass, a few small spots of water",
+   "seed": 54977,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.d06d763e.webp",
+    "tile_01.ec31b539.webp",
+    "tile_02.738ff9dd.webp",
+    "tile_03.93a384ce.webp",
+    "tile_04.a4cc1bcc.webp",
+    "tile_05.5cc9079a.webp",
+    "tile_06.570c0bff.webp",
+    "tile_07.289aae06.webp",
+    "tile_08.51441425.webp",
+    "tile_09.8ef8162a.webp",
+    "tile_10.ffb73ea8.webp",
+    "tile_11.c6e08dc3.webp",
+    "tile_12.1d8d47f4.webp",
+    "tile_13.610cd411.webp",
+    "tile_14.ecdb3e25.webp",
+    "tile_15.ce59a347.webp"
+   ],
+   "measured_pct_minor": 4.9,
+   "measured_tiles": [
+    0.0,
+    0.7,
+    0.1,
+    0.1,
+    0.0,
+    7.9,
+    24.7,
+    0.0,
+    18.3,
+    0.7,
+    0.0,
+    0.1,
+    0.2,
+    0.1,
+    0.2,
+    24.8
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__water/p20",
+   "dominant": "grass",
+   "minor": "water",
+   "pct_minor": 20,
+   "prompt": "mostly grass, scattered patches of water",
+   "seed": 44938,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.6967ed5e.webp",
+    "tile_01.60ff96cc.webp",
+    "tile_02.a67aa63f.webp",
+    "tile_03.ce8451dd.webp",
+    "tile_04.f2d73edb.webp",
+    "tile_05.a9ef5873.webp",
+    "tile_06.577d1f83.webp",
+    "tile_07.7299586b.webp",
+    "tile_08.14be34d9.webp",
+    "tile_09.88b325eb.webp",
+    "tile_10.ffc10966.webp",
+    "tile_11.1cd57a89.webp",
+    "tile_12.292e0f80.webp",
+    "tile_13.0877d809.webp",
+    "tile_14.f4f6bc9e.webp",
+    "tile_15.ae29559b.webp"
+   ],
+   "measured_pct_minor": 0.1,
+   "measured_tiles": [
+    0.0,
+    0.0,
+    0.0,
+    0.6,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.2,
+    0.0,
+    0.2,
+    0.0,
+    0.0,
+    0.4,
+    0.0
+   ]
+  },
+  {
+   "dir": "tiles/blends/grass__with__water/p30",
+   "dominant": "grass",
+   "minor": "water",
+   "pct_minor": 30,
+   "prompt": "grass with clear patches of water breaking through",
+   "seed": 27630,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "post_files": [
+    "tile_00.df4d1ba5.webp",
+    "tile_01.3beddb20.webp",
+    "tile_02.b40b62bb.webp",
+    "tile_03.64c78dbf.webp",
+    "tile_04.2e16d763.webp",
+    "tile_05.5e62dabb.webp",
+    "tile_06.cd640002.webp",
+    "tile_07.0107e52c.webp",
+    "tile_08.9fe99436.webp",
+    "tile_09.d21c3038.webp",
+    "tile_10.66601672.webp",
+    "tile_11.63bfeea1.webp",
+    "tile_12.b8a81089.webp",
+    "tile_13.59a0f961.webp",
+    "tile_14.29cb7839.webp",
+    "tile_15.d201007c.webp"
+   ],
+   "measured_pct_minor": 18.5,
+   "measured_tiles": [
+    18.7,
+    9.9,
+    24.4,
+    20.7,
+    17.3,
+    16.4,
+    12.6,
+    21.7,
+    22.3,
+    14.3,
+    27.0,
+    23.0,
+    14.1,
+    15.1,
+    12.8,
+    24.9
    ]
   },
   {
@@ -13096,6 +14797,14 @@
      "ordered": 40
     },
     {
+     "dir": "tiles/blends/black_rock__with__parquet_floor/p50",
+     "i": 5,
+     "file": "tile_05.2973508d.webp",
+     "raw": "tile_05.webp",
+     "measured": 41.0,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__parquet_floor/p40",
      "i": 12,
      "file": "tile_12.cccfec6a.webp",
@@ -13666,6 +15375,14 @@
      "ordered": 10
     },
     {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 15,
+     "file": "tile_15.d8111949.webp",
+     "raw": "tile_15.webp",
+     "measured": 45.5,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__snow/p10",
      "i": 0,
      "file": "tile_00.fdf9ba04.webp",
@@ -13732,6 +15449,22 @@
      "ordered": 20
     },
     {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 12,
+     "file": "tile_12.cf178015.webp",
+     "raw": "tile_12.webp",
+     "measured": 38.3,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 1,
+     "file": "tile_01.784f6cf2.webp",
+     "raw": "tile_01.webp",
+     "measured": 39.8,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__snow/p10",
      "i": 6,
      "file": "tile_06.2c0ad138.webp",
@@ -13772,6 +15505,14 @@
      "ordered": 10
     },
     {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 2,
+     "file": "tile_02.72fc27e9.webp",
+     "raw": "tile_02.webp",
+     "measured": 44.9,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__snow/p10",
      "i": 10,
      "file": "tile_10.7ebf1db8.webp",
@@ -13796,9 +15537,25 @@
      "raw": "tile_01.webp",
      "measured": 10.1,
      "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 6,
+     "file": "tile_06.fed5d0f6.webp",
+     "raw": "tile_06.webp",
+     "measured": 10.1,
+     "ordered": 50
     }
    ],
    "20": [
+    {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 14,
+     "file": "tile_14.d8d67009.webp",
+     "raw": "tile_14.webp",
+     "measured": 15.2,
+     "ordered": 50
+    },
     {
      "dir": "tiles/blends/black_rock__with__snow/p20",
      "i": 2,
@@ -13846,6 +15603,14 @@
      "raw": "tile_14.webp",
      "measured": 20.8,
      "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 8,
+     "file": "tile_08.29ebfc82.webp",
+     "raw": "tile_08.webp",
+     "measured": 20.8,
+     "ordered": 50
     },
     {
      "dir": "tiles/blends/black_rock__with__snow/p40",
@@ -13994,6 +15759,14 @@
      "ordered": 40
     },
     {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 0,
+     "file": "tile_00.96dfea64.webp",
+     "raw": "tile_00.webp",
+     "measured": 28.3,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__snow/p30",
      "i": 7,
      "file": "tile_07.0ce74828.webp",
@@ -14032,6 +15805,14 @@
      "raw": "tile_07.webp",
      "measured": 30.9,
      "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__snow/p50",
+     "i": 9,
+     "file": "tile_09.ed74ab64.webp",
+     "raw": "tile_09.webp",
+     "measured": 31.0,
+     "ordered": 50
     },
     {
      "dir": "tiles/blends/black_rock__with__snow/p20",
@@ -14158,12 +15939,28 @@
      "ordered": 20
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 1,
+     "file": "tile_01.101bf793.webp",
+     "raw": "tile_01.webp",
+     "measured": 7.0,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p10",
      "i": 10,
      "file": "tile_10.faedd78b.webp",
      "raw": "tile_10.webp",
      "measured": 7.3,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 0,
+     "file": "tile_00.0905b183.webp",
+     "raw": "tile_00.webp",
+     "measured": 7.4,
+     "ordered": 40
     },
     {
      "dir": "tiles/blends/black_rock__with__water/p30",
@@ -14180,6 +15977,22 @@
      "raw": "tile_08.webp",
      "measured": 7.9,
      "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 9,
+     "file": "tile_09.e9d9e88a.webp",
+     "raw": "tile_09.webp",
+     "measured": 7.9,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 0,
+     "file": "tile_00.f935c557.webp",
+     "raw": "tile_00.webp",
+     "measured": 8.1,
+     "ordered": 50
     },
     {
      "dir": "tiles/blends/black_rock__with__water/p20",
@@ -14206,12 +16019,28 @@
      "ordered": 10
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 12,
+     "file": "tile_12.1883f020.webp",
+     "raw": "tile_12.webp",
+     "measured": 10.2,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p10",
      "i": 5,
      "file": "tile_05.b43c5b10.webp",
      "raw": "tile_05.webp",
      "measured": 10.4,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 15,
+     "file": "tile_15.5233fdf9.webp",
+     "raw": "tile_15.webp",
+     "measured": 10.5,
+     "ordered": 40
     },
     {
      "dir": "tiles/blends/black_rock__with__water/p10",
@@ -14230,6 +16059,14 @@
      "ordered": 20
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 1,
+     "file": "tile_01.5e2cc523.webp",
+     "raw": "tile_01.webp",
+     "measured": 11.3,
+     "ordered": 40
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p30",
      "i": 10,
      "file": "tile_10.51ca24f5.webp",
@@ -14244,6 +16081,30 @@
      "raw": "tile_04.webp",
      "measured": 11.9,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 8,
+     "file": "tile_08.642303da.webp",
+     "raw": "tile_08.webp",
+     "measured": 12.1,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 13,
+     "file": "tile_13.61ec0438.webp",
+     "raw": "tile_13.webp",
+     "measured": 12.3,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 14,
+     "file": "tile_14.626be395.webp",
+     "raw": "tile_14.webp",
+     "measured": 12.7,
+     "ordered": 40
     },
     {
      "dir": "tiles/blends/black_rock__with__water/p30",
@@ -14262,12 +16123,68 @@
      "ordered": 10
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 2,
+     "file": "tile_02.429aa930.webp",
+     "raw": "tile_02.webp",
+     "measured": 13.1,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p30",
      "i": 4,
      "file": "tile_04.19cf9612.webp",
      "raw": "tile_04.webp",
      "measured": 13.2,
      "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 2,
+     "file": "tile_02.bf3365d4.webp",
+     "raw": "tile_02.webp",
+     "measured": 13.4,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 4,
+     "file": "tile_04.99c0ab3c.webp",
+     "raw": "tile_04.webp",
+     "measured": 13.4,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 14,
+     "file": "tile_14.486d9ac2.webp",
+     "raw": "tile_14.webp",
+     "measured": 13.5,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 15,
+     "file": "tile_15.d44ef0e3.webp",
+     "raw": "tile_15.webp",
+     "measured": 13.5,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 10,
+     "file": "tile_10.b8116f02.webp",
+     "raw": "tile_10.webp",
+     "measured": 13.9,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 11,
+     "file": "tile_11.b3753b0b.webp",
+     "raw": "tile_11.webp",
+     "measured": 14.3,
+     "ordered": 40
     },
     {
      "dir": "tiles/blends/black_rock__with__water/p10",
@@ -14278,15 +16195,63 @@
      "ordered": 10
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 5,
+     "file": "tile_05.04fdc541.webp",
+     "raw": "tile_05.webp",
+     "measured": 14.6,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p30",
      "i": 12,
      "file": "tile_12.45f36d3b.webp",
      "raw": "tile_12.webp",
      "measured": 14.9,
      "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 5,
+     "file": "tile_05.0026ef41.webp",
+     "raw": "tile_05.webp",
+     "measured": 15.0,
+     "ordered": 40
     }
    ],
    "20": [
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 4,
+     "file": "tile_04.e7593763.webp",
+     "raw": "tile_04.webp",
+     "measured": 15.2,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 3,
+     "file": "tile_03.1d62f38c.webp",
+     "raw": "tile_03.webp",
+     "measured": 15.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 10,
+     "file": "tile_10.7eb51b84.webp",
+     "raw": "tile_10.webp",
+     "measured": 15.7,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 13,
+     "file": "tile_13.46d53d2e.webp",
+     "raw": "tile_13.webp",
+     "measured": 16.0,
+     "ordered": 50
+    },
     {
      "dir": "tiles/blends/black_rock__with__water/p30",
      "i": 8,
@@ -14296,15 +16261,79 @@
      "ordered": 30
     },
     {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 9,
+     "file": "tile_09.3d00accc.webp",
+     "raw": "tile_09.webp",
+     "measured": 16.6,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 8,
+     "file": "tile_08.4ee60c68.webp",
+     "raw": "tile_08.webp",
+     "measured": 16.8,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 12,
+     "file": "tile_12.e07e4cc4.webp",
+     "raw": "tile_12.webp",
+     "measured": 17.3,
+     "ordered": 40
+    },
+    {
      "dir": "tiles/blends/black_rock__with__water/p10",
      "i": 7,
      "file": "tile_07.7bdd6740.webp",
      "raw": "tile_07.webp",
      "measured": 18.6,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 7,
+     "file": "tile_07.9bd549ac.webp",
+     "raw": "tile_07.webp",
+     "measured": 18.7,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 6,
+     "file": "tile_06.82e7ceb2.webp",
+     "raw": "tile_06.webp",
+     "measured": 19.4,
+     "ordered": 50
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p40",
+     "i": 6,
+     "file": "tile_06.9a9c15d9.webp",
+     "raw": "tile_06.webp",
+     "measured": 19.8,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 3,
+     "file": "tile_03.df13b7b2.webp",
+     "raw": "tile_03.webp",
+     "measured": 21.0,
+     "ordered": 50
     }
    ],
    "30": [
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 11,
+     "file": "tile_11.48abfbef.webp",
+     "raw": "tile_11.webp",
+     "measured": 27.9,
+     "ordered": 50
+    },
     {
      "dir": "tiles/blends/black_rock__with__water/p10",
      "i": 14,
@@ -14312,6 +16341,14 @@
      "raw": "tile_14.webp",
      "measured": 28.1,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/black_rock__with__water/p50",
+     "i": 7,
+     "file": "tile_07.5bbd0340.webp",
+     "raw": "tile_07.webp",
+     "measured": 28.5,
+     "ordered": 50
     }
    ],
    "40": [
@@ -14974,6 +17011,908 @@
      "raw": "tile_04.webp",
      "measured": 54.9,
      "ordered": 40
+    }
+   ]
+  },
+  "brown_paving_stone__with__dark_mud": {
+   "30": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 7,
+     "file": "tile_07.9cc0c624.webp",
+     "raw": "tile_07.webp",
+     "measured": 25.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 0,
+     "file": "tile_00.fb5850e3.webp",
+     "raw": "tile_00.webp",
+     "measured": 26.0,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 3,
+     "file": "tile_03.ea7f7933.webp",
+     "raw": "tile_03.webp",
+     "measured": 26.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 5,
+     "file": "tile_05.7a70cd17.webp",
+     "raw": "tile_05.webp",
+     "measured": 26.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 13,
+     "file": "tile_13.959b7224.webp",
+     "raw": "tile_13.webp",
+     "measured": 27.1,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 8,
+     "file": "tile_08.352338e8.webp",
+     "raw": "tile_08.webp",
+     "measured": 27.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 6,
+     "file": "tile_06.d48c8d74.webp",
+     "raw": "tile_06.webp",
+     "measured": 27.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 13,
+     "file": "tile_13.8f1d0729.webp",
+     "raw": "tile_13.webp",
+     "measured": 28.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 2,
+     "file": "tile_02.4a5eff05.webp",
+     "raw": "tile_02.webp",
+     "measured": 29.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 10,
+     "file": "tile_10.92fcafa1.webp",
+     "raw": "tile_10.webp",
+     "measured": 29.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 11,
+     "file": "tile_11.5dfd7255.webp",
+     "raw": "tile_11.webp",
+     "measured": 30.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 4,
+     "file": "tile_04.ffbc3b97.webp",
+     "raw": "tile_04.webp",
+     "measured": 30.6,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 9,
+     "file": "tile_09.15fe6cbb.webp",
+     "raw": "tile_09.webp",
+     "measured": 30.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 15,
+     "file": "tile_15.6250e53e.webp",
+     "raw": "tile_15.webp",
+     "measured": 31.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 14,
+     "file": "tile_14.0fec4912.webp",
+     "raw": "tile_14.webp",
+     "measured": 31.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 15,
+     "file": "tile_15.2855d22e.webp",
+     "raw": "tile_15.webp",
+     "measured": 32.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 12,
+     "file": "tile_12.3f9239cc.webp",
+     "raw": "tile_12.webp",
+     "measured": 33.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 3,
+     "file": "tile_03.762733eb.webp",
+     "raw": "tile_03.webp",
+     "measured": 33.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 11,
+     "file": "tile_11.c5c9c3be.webp",
+     "raw": "tile_11.webp",
+     "measured": 34.6,
+     "ordered": 20
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p10",
+     "i": 1,
+     "file": "tile_01.47f87c9d.webp",
+     "raw": "tile_01.webp",
+     "measured": 23.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 7,
+     "file": "tile_07.6e835f6b.webp",
+     "raw": "tile_07.webp",
+     "measured": 23.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 10,
+     "file": "tile_10.cb2b9dbe.webp",
+     "raw": "tile_10.webp",
+     "measured": 23.7,
+     "ordered": 20
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 0,
+     "file": "tile_00.b9bc07d0.webp",
+     "raw": "tile_00.webp",
+     "measured": 40.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 1,
+     "file": "tile_01.ebb34f68.webp",
+     "raw": "tile_01.webp",
+     "measured": 40.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 2,
+     "file": "tile_02.ce63dae7.webp",
+     "raw": "tile_02.webp",
+     "measured": 40.6,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 8,
+     "file": "tile_08.19df7f7b.webp",
+     "raw": "tile_08.webp",
+     "measured": 40.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 5,
+     "file": "tile_05.3a8e43b0.webp",
+     "raw": "tile_05.webp",
+     "measured": 41.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 6,
+     "file": "tile_06.c4e0ff6d.webp",
+     "raw": "tile_06.webp",
+     "measured": 45.0,
+     "ordered": 20
+    }
+   ],
+   "50": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 14,
+     "file": "tile_14.0906f542.webp",
+     "raw": "tile_14.webp",
+     "measured": 50.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__dark_mud/p20",
+     "i": 12,
+     "file": "tile_12.715f308d.webp",
+     "raw": "tile_12.webp",
+     "measured": 54.5,
+     "ordered": 20
+    }
+   ]
+  },
+  "brown_paving_stone__with__deep_water": {
+   "10": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 8,
+     "file": "tile_08.12ac4438.webp",
+     "raw": "tile_08.webp",
+     "measured": 5.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 1,
+     "file": "tile_01.906c7cfa.webp",
+     "raw": "tile_01.webp",
+     "measured": 6.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 2,
+     "file": "tile_02.ae1aa323.webp",
+     "raw": "tile_02.webp",
+     "measured": 6.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 15,
+     "file": "tile_15.be0e3c84.webp",
+     "raw": "tile_15.webp",
+     "measured": 6.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 11,
+     "file": "tile_11.8d4f55de.webp",
+     "raw": "tile_11.webp",
+     "measured": 6.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 11,
+     "file": "tile_11.447e2b32.webp",
+     "raw": "tile_11.webp",
+     "measured": 7.0,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 9,
+     "file": "tile_09.6aa3fc4f.webp",
+     "raw": "tile_09.webp",
+     "measured": 7.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 3,
+     "file": "tile_03.8cf764ff.webp",
+     "raw": "tile_03.webp",
+     "measured": 8.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 6,
+     "file": "tile_06.80715f15.webp",
+     "raw": "tile_06.webp",
+     "measured": 8.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 10,
+     "file": "tile_10.b4d8cd26.webp",
+     "raw": "tile_10.webp",
+     "measured": 9.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 7,
+     "file": "tile_07.b62708ac.webp",
+     "raw": "tile_07.webp",
+     "measured": 10.1,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 4,
+     "file": "tile_04.dc97b343.webp",
+     "raw": "tile_04.webp",
+     "measured": 10.6,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p10",
+     "i": 12,
+     "file": "tile_12.f9c44f17.webp",
+     "raw": "tile_12.webp",
+     "measured": 13.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 15,
+     "file": "tile_15.14a91e04.webp",
+     "raw": "tile_15.webp",
+     "measured": 13.4,
+     "ordered": 20
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 14,
+     "file": "tile_14.4bcc107d.webp",
+     "raw": "tile_14.webp",
+     "measured": 35.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 9,
+     "file": "tile_09.9e06048a.webp",
+     "raw": "tile_09.webp",
+     "measured": 35.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 8,
+     "file": "tile_08.a8c20b12.webp",
+     "raw": "tile_08.webp",
+     "measured": 35.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 3,
+     "file": "tile_03.7403851d.webp",
+     "raw": "tile_03.webp",
+     "measured": 36.6,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 12,
+     "file": "tile_12.dc634518.webp",
+     "raw": "tile_12.webp",
+     "measured": 36.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 13,
+     "file": "tile_13.d58eb6ad.webp",
+     "raw": "tile_13.webp",
+     "measured": 39.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 6,
+     "file": "tile_06.0e410237.webp",
+     "raw": "tile_06.webp",
+     "measured": 40.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 1,
+     "file": "tile_01.a29b6427.webp",
+     "raw": "tile_01.webp",
+     "measured": 44.5,
+     "ordered": 30
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 6,
+     "file": "tile_06.0722b80f.webp",
+     "raw": "tile_06.webp",
+     "measured": 19.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 9,
+     "file": "tile_09.4ce73494.webp",
+     "raw": "tile_09.webp",
+     "measured": 22.5,
+     "ordered": 30
+    }
+   ],
+   "30": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 2,
+     "file": "tile_02.2869e07d.webp",
+     "raw": "tile_02.webp",
+     "measured": 25.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 0,
+     "file": "tile_00.1e3bc271.webp",
+     "raw": "tile_00.webp",
+     "measured": 27.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 11,
+     "file": "tile_11.62abf165.webp",
+     "raw": "tile_11.webp",
+     "measured": 29.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 15,
+     "file": "tile_15.e4eaaa53.webp",
+     "raw": "tile_15.webp",
+     "measured": 30.0,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p20",
+     "i": 13,
+     "file": "tile_13.cf2bc303.webp",
+     "raw": "tile_13.webp",
+     "measured": 31.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__deep_water/p30",
+     "i": 3,
+     "file": "tile_03.eafabad8.webp",
+     "raw": "tile_03.webp",
+     "measured": 34.5,
+     "ordered": 30
+    }
+   ]
+  },
+  "brown_paving_stone__with__grass": {
+   "10": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 0,
+     "file": "tile_00.894bd2a2.webp",
+     "raw": "tile_00.webp",
+     "measured": 5.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 3,
+     "file": "tile_03.bb8f5a85.webp",
+     "raw": "tile_03.webp",
+     "measured": 6.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 14,
+     "file": "tile_14.4e755c02.webp",
+     "raw": "tile_14.webp",
+     "measured": 6.6,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 1,
+     "file": "tile_01.bce551df.webp",
+     "raw": "tile_01.webp",
+     "measured": 6.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 12,
+     "file": "tile_12.bb9ad563.webp",
+     "raw": "tile_12.webp",
+     "measured": 8.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 11,
+     "file": "tile_11.255ec284.webp",
+     "raw": "tile_11.webp",
+     "measured": 11.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 2,
+     "file": "tile_02.636f8ab5.webp",
+     "raw": "tile_02.webp",
+     "measured": 13.4,
+     "ordered": 20
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 5,
+     "file": "tile_05.c0c061f5.webp",
+     "raw": "tile_05.webp",
+     "measured": 17.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 13,
+     "file": "tile_13.0a8df37f.webp",
+     "raw": "tile_13.webp",
+     "measured": 18.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grass/p20",
+     "i": 10,
+     "file": "tile_10.747cfda5.webp",
+     "raw": "tile_10.webp",
+     "measured": 19.5,
+     "ordered": 20
+    }
+   ]
+  },
+  "brown_paving_stone__with__grey_stone": {
+   "50": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 14,
+     "file": "tile_14.c9475ae8.webp",
+     "raw": "tile_14.webp",
+     "measured": 45.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 12,
+     "file": "tile_12.f156ca43.webp",
+     "raw": "tile_12.webp",
+     "measured": 46.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 7,
+     "file": "tile_07.d3a3bc85.webp",
+     "raw": "tile_07.webp",
+     "measured": 47.0,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 11,
+     "file": "tile_11.92819285.webp",
+     "raw": "tile_11.webp",
+     "measured": 48.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 15,
+     "file": "tile_15.6186f07d.webp",
+     "raw": "tile_15.webp",
+     "measured": 51.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 2,
+     "file": "tile_02.0d6cfa1c.webp",
+     "raw": "tile_02.webp",
+     "measured": 52.0,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 10,
+     "file": "tile_10.ea051a38.webp",
+     "raw": "tile_10.webp",
+     "measured": 52.6,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 3,
+     "file": "tile_03.1edebbd4.webp",
+     "raw": "tile_03.webp",
+     "measured": 53.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 8,
+     "file": "tile_08.a8aaf67c.webp",
+     "raw": "tile_08.webp",
+     "measured": 54.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 1,
+     "file": "tile_01.180222f1.webp",
+     "raw": "tile_01.webp",
+     "measured": 55.0,
+     "ordered": 10
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 1,
+     "file": "tile_01.be0155c1.webp",
+     "raw": "tile_01.webp",
+     "measured": 41.5,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 6,
+     "file": "tile_06.5d84a034.webp",
+     "raw": "tile_06.webp",
+     "measured": 43.6,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p10",
+     "i": 13,
+     "file": "tile_13.15af1422.webp",
+     "raw": "tile_13.webp",
+     "measured": 44.4,
+     "ordered": 10
+    }
+   ],
+   "10": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 15,
+     "file": "tile_15.ea6fec35.webp",
+     "raw": "tile_15.webp",
+     "measured": 5.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 12,
+     "file": "tile_12.58cc1650.webp",
+     "raw": "tile_12.webp",
+     "measured": 5.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 3,
+     "file": "tile_03.a0c400ec.webp",
+     "raw": "tile_03.webp",
+     "measured": 5.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 2,
+     "file": "tile_02.2fbc4fc1.webp",
+     "raw": "tile_02.webp",
+     "measured": 8.3,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 2,
+     "file": "tile_02.1faee79f.webp",
+     "raw": "tile_02.webp",
+     "measured": 9.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 15,
+     "file": "tile_15.64eb46c3.webp",
+     "raw": "tile_15.webp",
+     "measured": 11.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 8,
+     "file": "tile_08.220d376c.webp",
+     "raw": "tile_08.webp",
+     "measured": 11.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 6,
+     "file": "tile_06.b6dfc692.webp",
+     "raw": "tile_06.webp",
+     "measured": 14.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 11,
+     "file": "tile_11.6392f414.webp",
+     "raw": "tile_11.webp",
+     "measured": 14.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 13,
+     "file": "tile_13.0d0ccd62.webp",
+     "raw": "tile_13.webp",
+     "measured": 14.7,
+     "ordered": 30
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 10,
+     "file": "tile_10.53e6ab69.webp",
+     "raw": "tile_10.webp",
+     "measured": 16.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 0,
+     "file": "tile_00.087c45f1.webp",
+     "raw": "tile_00.webp",
+     "measured": 16.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 4,
+     "file": "tile_04.4f98f762.webp",
+     "raw": "tile_04.webp",
+     "measured": 18.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 7,
+     "file": "tile_07.68ca4e0b.webp",
+     "raw": "tile_07.webp",
+     "measured": 18.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 14,
+     "file": "tile_14.fe99b598.webp",
+     "raw": "tile_14.webp",
+     "measured": 19.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 1,
+     "file": "tile_01.db1b096c.webp",
+     "raw": "tile_01.webp",
+     "measured": 19.0,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 4,
+     "file": "tile_04.d4aac991.webp",
+     "raw": "tile_04.webp",
+     "measured": 20.5,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 9,
+     "file": "tile_09.55c8e634.webp",
+     "raw": "tile_09.webp",
+     "measured": 20.7,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 12,
+     "file": "tile_12.7d74984a.webp",
+     "raw": "tile_12.webp",
+     "measured": 20.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 13,
+     "file": "tile_13.93660bb3.webp",
+     "raw": "tile_13.webp",
+     "measured": 21.1,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 5,
+     "file": "tile_05.905da4e3.webp",
+     "raw": "tile_05.webp",
+     "measured": 21.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 14,
+     "file": "tile_14.87352834.webp",
+     "raw": "tile_14.webp",
+     "measured": 22.9,
+     "ordered": 30
+    }
+   ],
+   "30": [
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p30",
+     "i": 3,
+     "file": "tile_03.f64b0a2d.webp",
+     "raw": "tile_03.webp",
+     "measured": 25.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 9,
+     "file": "tile_09.c5ed7281.webp",
+     "raw": "tile_09.webp",
+     "measured": 32.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/brown_paving_stone__with__grey_stone/p20",
+     "i": 6,
+     "file": "tile_06.ca1a12a7.webp",
+     "raw": "tile_06.webp",
+     "measured": 34.5,
+     "ordered": 20
     }
    ]
   },
@@ -17389,6 +20328,36 @@
     }
    ]
   },
+  "grass__with__grey_stone": {
+   "50": [
+    {
+     "dir": "tiles/blends/grass__with__grey_stone/p10",
+     "i": 10,
+     "file": "tile_10.b1296186.webp",
+     "raw": "tile_10.webp",
+     "measured": 47.4,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__grey_stone/p30",
+     "i": 4,
+     "file": "tile_04.3d30afdc.webp",
+     "raw": "tile_04.webp",
+     "measured": 52.2,
+     "ordered": 30
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/grass__with__grey_stone/p30",
+     "i": 8,
+     "file": "tile_08.f73fe411.webp",
+     "raw": "tile_08.webp",
+     "measured": 38.5,
+     "ordered": 30
+    }
+   ]
+  },
   "grass__with__ice": {
    "10": [
     {
@@ -18700,6 +21669,14 @@
      "ordered": 40
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 1,
+     "file": "tile_01.6e269f35.webp",
+     "raw": "tile_01.webp",
+     "measured": 36.0,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p30",
      "i": 6,
      "file": "tile_06.222815f6.webp",
@@ -18708,12 +21685,28 @@
      "ordered": 30
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 12,
+     "file": "tile_12.d3709cca.webp",
+     "raw": "tile_12.webp",
+     "measured": 39.3,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p10",
      "i": 3,
      "file": "tile_03.4e843ea3.webp",
      "raw": "tile_03.webp",
      "measured": 40.2,
      "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 9,
+     "file": "tile_09.c9978e96.webp",
+     "raw": "tile_09.webp",
+     "measured": 40.2,
+     "ordered": 50
     },
     {
      "dir": "tiles/blends/grass__with__parquet_floor/p10",
@@ -18926,6 +21919,14 @@
      "ordered": 30
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 14,
+     "file": "tile_14.acfbfd36.webp",
+     "raw": "tile_14.webp",
+     "measured": 51.2,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p20",
      "i": 9,
      "file": "tile_09.e923a5ef.webp",
@@ -19042,6 +22043,14 @@
      "ordered": 20
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 6,
+     "file": "tile_06.d75954f9.webp",
+     "raw": "tile_06.webp",
+     "measured": 28.1,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p40",
      "i": 2,
      "file": "tile_02.32af47d2.webp",
@@ -19066,12 +22075,28 @@
      "ordered": 30
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 10,
+     "file": "tile_10.3d170f50.webp",
+     "raw": "tile_10.webp",
+     "measured": 29.6,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p40",
      "i": 10,
      "file": "tile_10.668a72b9.webp",
      "raw": "tile_10.webp",
      "measured": 31.6,
      "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 4,
+     "file": "tile_04.50357407.webp",
+     "raw": "tile_04.webp",
+     "measured": 32.2,
+     "ordered": 50
     },
     {
      "dir": "tiles/blends/grass__with__parquet_floor/p20",
@@ -19116,6 +22141,14 @@
      "ordered": 40
     },
     {
+     "dir": "tiles/blends/grass__with__parquet_floor/p50",
+     "i": 7,
+     "file": "tile_07.11766d6c.webp",
+     "raw": "tile_07.webp",
+     "measured": 13.6,
+     "ordered": 50
+    },
+    {
      "dir": "tiles/blends/grass__with__parquet_floor/p40",
      "i": 14,
      "file": "tile_14.9ea72bb5.webp",
@@ -19130,6 +22163,506 @@
      "raw": "tile_00.webp",
      "measured": 14.4,
      "ordered": 40
+    }
+   ]
+  },
+  "grass__with__snow": {
+   "10": [
+    {
+     "dir": "tiles/blends/grass__with__snow/p40",
+     "i": 14,
+     "file": "tile_14.e6b7dd1a.webp",
+     "raw": "tile_14.webp",
+     "measured": 5.4,
+     "ordered": 40
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 7,
+     "file": "tile_07.2504aac1.webp",
+     "raw": "tile_07.webp",
+     "measured": 7.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 0,
+     "file": "tile_00.6ec38a1a.webp",
+     "raw": "tile_00.webp",
+     "measured": 7.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 14,
+     "file": "tile_14.62fdbd8e.webp",
+     "raw": "tile_14.webp",
+     "measured": 9.4,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 11,
+     "file": "tile_11.7371a382.webp",
+     "raw": "tile_11.webp",
+     "measured": 11.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 9,
+     "file": "tile_09.975af01e.webp",
+     "raw": "tile_09.webp",
+     "measured": 14.9,
+     "ordered": 20
+    }
+   ],
+   "40": [
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 10,
+     "file": "tile_10.d3ebeb49.webp",
+     "raw": "tile_10.webp",
+     "measured": 39.1,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 8,
+     "file": "tile_08.87e239ea.webp",
+     "raw": "tile_08.webp",
+     "measured": 39.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 12,
+     "file": "tile_12.26acdf57.webp",
+     "raw": "tile_12.webp",
+     "measured": 40.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 1,
+     "file": "tile_01.d319e5b9.webp",
+     "raw": "tile_01.webp",
+     "measured": 40.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 7,
+     "file": "tile_07.91e12caf.webp",
+     "raw": "tile_07.webp",
+     "measured": 43.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 12,
+     "file": "tile_12.a43d681f.webp",
+     "raw": "tile_12.webp",
+     "measured": 43.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 11,
+     "file": "tile_11.70922089.webp",
+     "raw": "tile_11.webp",
+     "measured": 43.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 5,
+     "file": "tile_05.6ef0daf8.webp",
+     "raw": "tile_05.webp",
+     "measured": 44.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 11,
+     "file": "tile_11.4837e3dd.webp",
+     "raw": "tile_11.webp",
+     "measured": 44.6,
+     "ordered": 30
+    }
+   ],
+   "30": [
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 13,
+     "file": "tile_13.3ea49943.webp",
+     "raw": "tile_13.webp",
+     "measured": 25.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 2,
+     "file": "tile_02.72d70632.webp",
+     "raw": "tile_02.webp",
+     "measured": 25.5,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 14,
+     "file": "tile_14.18a72153.webp",
+     "raw": "tile_14.webp",
+     "measured": 25.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 3,
+     "file": "tile_03.84b4456a.webp",
+     "raw": "tile_03.webp",
+     "measured": 26.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 15,
+     "file": "tile_15.1c05ac51.webp",
+     "raw": "tile_15.webp",
+     "measured": 27.0,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 6,
+     "file": "tile_06.7a74b6b4.webp",
+     "raw": "tile_06.webp",
+     "measured": 27.4,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 4,
+     "file": "tile_04.944b4f04.webp",
+     "raw": "tile_04.webp",
+     "measured": 30.2,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 3,
+     "file": "tile_03.bf16dc11.webp",
+     "raw": "tile_03.webp",
+     "measured": 31.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 14,
+     "file": "tile_14.b674ae8b.webp",
+     "raw": "tile_14.webp",
+     "measured": 32.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 10,
+     "file": "tile_10.b6249cec.webp",
+     "raw": "tile_10.webp",
+     "measured": 33.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 9,
+     "file": "tile_09.0c8537db.webp",
+     "raw": "tile_09.webp",
+     "measured": 33.2,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 15,
+     "file": "tile_15.9fa94821.webp",
+     "raw": "tile_15.webp",
+     "measured": 33.4,
+     "ordered": 20
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 6,
+     "file": "tile_06.5270be81.webp",
+     "raw": "tile_06.webp",
+     "measured": 17.0,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p10",
+     "i": 8,
+     "file": "tile_08.54a83aee.webp",
+     "raw": "tile_08.webp",
+     "measured": 17.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 6,
+     "file": "tile_06.3f1b6582.webp",
+     "raw": "tile_06.webp",
+     "measured": 17.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 8,
+     "file": "tile_08.9b3ca351.webp",
+     "raw": "tile_08.webp",
+     "measured": 18.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 5,
+     "file": "tile_05.a0eb0595.webp",
+     "raw": "tile_05.webp",
+     "measured": 18.7,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 1,
+     "file": "tile_01.bd9b1848.webp",
+     "raw": "tile_01.webp",
+     "measured": 18.8,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 2,
+     "file": "tile_02.b1bf5159.webp",
+     "raw": "tile_02.webp",
+     "measured": 19.4,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 4,
+     "file": "tile_04.1157667c.webp",
+     "raw": "tile_04.webp",
+     "measured": 20.0,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 10,
+     "file": "tile_10.b32a3e2e.webp",
+     "raw": "tile_10.webp",
+     "measured": 20.2,
+     "ordered": 20
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 13,
+     "file": "tile_13.b0a68554.webp",
+     "raw": "tile_13.webp",
+     "measured": 21.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p30",
+     "i": 2,
+     "file": "tile_02.92457fcf.webp",
+     "raw": "tile_02.webp",
+     "measured": 23.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 13,
+     "file": "tile_13.2a633d9a.webp",
+     "raw": "tile_13.webp",
+     "measured": 24.0,
+     "ordered": 20
+    }
+   ],
+   "50": [
+    {
+     "dir": "tiles/blends/grass__with__snow/p20",
+     "i": 7,
+     "file": "tile_07.66a96773.webp",
+     "raw": "tile_07.webp",
+     "measured": 51.0,
+     "ordered": 20
+    }
+   ]
+  },
+  "grass__with__water": {
+   "10": [
+    {
+     "dir": "tiles/blends/grass__with__water/p10",
+     "i": 5,
+     "file": "tile_05.5cc9079a.webp",
+     "raw": "tile_05.webp",
+     "measured": 7.9,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 1,
+     "file": "tile_01.3beddb20.webp",
+     "raw": "tile_01.webp",
+     "measured": 9.9,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 6,
+     "file": "tile_06.cd640002.webp",
+     "raw": "tile_06.webp",
+     "measured": 12.6,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 14,
+     "file": "tile_14.29cb7839.webp",
+     "raw": "tile_14.webp",
+     "measured": 12.8,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 12,
+     "file": "tile_12.b8a81089.webp",
+     "raw": "tile_12.webp",
+     "measured": 14.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 9,
+     "file": "tile_09.d21c3038.webp",
+     "raw": "tile_09.webp",
+     "measured": 14.3,
+     "ordered": 30
+    }
+   ],
+   "20": [
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 13,
+     "file": "tile_13.59a0f961.webp",
+     "raw": "tile_13.webp",
+     "measured": 15.1,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 5,
+     "file": "tile_05.5e62dabb.webp",
+     "raw": "tile_05.webp",
+     "measured": 16.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 4,
+     "file": "tile_04.2e16d763.webp",
+     "raw": "tile_04.webp",
+     "measured": 17.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p10",
+     "i": 8,
+     "file": "tile_08.51441425.webp",
+     "raw": "tile_08.webp",
+     "measured": 18.3,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 0,
+     "file": "tile_00.df4d1ba5.webp",
+     "raw": "tile_00.webp",
+     "measured": 18.7,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 3,
+     "file": "tile_03.64c78dbf.webp",
+     "raw": "tile_03.webp",
+     "measured": 20.7,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 7,
+     "file": "tile_07.0107e52c.webp",
+     "raw": "tile_07.webp",
+     "measured": 21.7,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 8,
+     "file": "tile_08.9fe99436.webp",
+     "raw": "tile_08.webp",
+     "measured": 22.3,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 11,
+     "file": "tile_11.63bfeea1.webp",
+     "raw": "tile_11.webp",
+     "measured": 23.0,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 2,
+     "file": "tile_02.b40b62bb.webp",
+     "raw": "tile_02.webp",
+     "measured": 24.4,
+     "ordered": 30
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p10",
+     "i": 6,
+     "file": "tile_06.570c0bff.webp",
+     "raw": "tile_06.webp",
+     "measured": 24.7,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p10",
+     "i": 15,
+     "file": "tile_15.ce59a347.webp",
+     "raw": "tile_15.webp",
+     "measured": 24.8,
+     "ordered": 10
+    },
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 15,
+     "file": "tile_15.d201007c.webp",
+     "raw": "tile_15.webp",
+     "measured": 24.9,
+     "ordered": 30
+    }
+   ],
+   "30": [
+    {
+     "dir": "tiles/blends/grass__with__water/p30",
+     "i": 10,
+     "file": "tile_10.66601672.webp",
+     "raw": "tile_10.webp",
+     "measured": 27.0,
+     "ordered": 30
     }
    ]
   },
