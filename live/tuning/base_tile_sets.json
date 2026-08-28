@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:23:38.093Z",
+  "updated_at": "2026-08-28T02:26:43.443Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -2499,6 +2499,59 @@
             {
               "kind": "clean",
               "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_02_subtle_44656/tile_03.webp",
+              "tile": "tiles/tops/snow/sheet_02_subtle_44656/post/tile_03.ee3f3b9a.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_12.webp",
+              "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_13.webp",
+              "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/snow__over__black_rock/52c71e6a",
+              "tile": "tiles/snow__over__black_rock/52c71e6a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/snow__over__deep_water/bd8247ed",
+              "tile": "tiles/snow__over__deep_water/bd8247ed",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/snow__over__deep_water/37bb52da",
+              "tile": "tiles/snow__over__deep_water/37bb52da",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/snow__over__black_rock/e52434f5",
+              "tile": "tiles/snow__over__black_rock/e52434f5",
+              "weight": 0.1
             }
           ]
         }
