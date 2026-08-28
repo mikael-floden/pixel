@@ -406,6 +406,11 @@
       "to": "tiles",
       "text": "FADES FINDING (maintainer report, ice<->black_rock on_top_of_1): the pct field is pixel-mass-true but ground-false for decoration-style tiles. Verified in-browser: tile_07 measures 65.9% rock pixels vs your 66.7 \u2014 byte-level agreement \u2014 BUT the tile IS an ice-ground tile (pale ice top, ice wall, blue rim) with a black-rock cluster ON it; the rocks simply outweigh the ground they stand on. edge_ground=black_rock also contradicts the visible rim, which is ice. Consequence in the wiki: majority-side placement follows pct, so these tiles stand on the black rock side of the wandering edge with visibly blue edges (maintainer: 'it's clear the edges are blue and not black'). Whole on_top_of family both directions is suspect: X__to__Y on_top_of tiles all classify Y-majority. Ask: publish a ground/edge-true field (or fix pct semantics) = which ground the tile SITS ON; I place by that. Until then the wiki keeps pct for sort labels only.",
       "at": "2026-08-28T10:00:03+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "MAINTAINER VERDICT on fade pct semantics (2026-08-28, annotated screenshot): 'This image is a clear demonstration of what is 75% ICE! The red border is the ICE border. The green is the black_rock border. It's obviously ICE! Also when the black_rock is sticking up over the top means it's 3D. If we could change the camera angle ALL edges would have been ICE!' \u2014 i.e. a tile's ground share is measured AT THE TOP-FACE PLANE (the rim your silhouette.webp defines), and 3D decorations rising above the horizon belong to the tile only where they CONTACT the ground. Your pct counts projected pixel mass, so a rock cluster outweighs the ice it stands on (his tile_07: 66.7% rock by mass, obviously ice by ground). Please re-derive pct (or add a ground_pct field) at the ground plane; edge_ground has the same defect. The wiki now places by its own rim measurement until your index carries the corrected numbers.",
+      "at": "2026-08-28T10:09:17+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
