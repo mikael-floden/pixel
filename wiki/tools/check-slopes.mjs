@@ -63,6 +63,29 @@ ok(g.cards === 12 && g.more === `Show 12 more (${expTiles - 12} left)`,
 ok(g.stars === 12 && g.regen === 12 && g.notes === 12,
   `every card carries the usual: stars, approve/regenerate, note (${g.stars}/${g.regen}/${g.notes})`);
 ok(foreign > 0, `the index carries FOREIGN-cliff detections to surface (${foreign} tiles fleet-wide)`);
+/* THE WALL-LESS BATCH IS MARKED (maintainer 2026-08-28: "super thin and
+ * doesn't look like the other tiles generated"): five grounds shipped 64x30,
+ * a top face with no cliff, so there is no ramp to judge. */
+{
+  const flatGrounds = [...new Set(IDX.sets.filter((x) => (x.size ?? [])[1] < 40).map((x) => x.ground))];
+  ok(flatGrounds.length > 0, `the index still carries wall-less sets to mark (${flatGrounds.join(", ")})`);
+  await p.goto(`${W}#/world/${flatGrounds[0]}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(2000);
+  const marked = await p.evaluate(() => {
+    const cards = [...document.querySelectorAll(".slope-card")];
+    return { cards: cards.length, pills: cards.filter((c) => /no cliff/.test(c.textContent)).length };
+  });
+  ok(marked.cards > 0 && marked.pills === marked.cards,
+    `every card of a wall-less set says so (${marked.pills}/${marked.cards} on ${flatGrounds[0]})`);
+  await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+  await p.waitForTimeout(2200);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(2000);
+  ok(await p.evaluate(() => ![...document.querySelectorAll(".slope-card")].some((c) => /no cliff/.test(c.textContent))),
+    "and a ground whose sets DO carry a wall says nothing");
+}
 
 // ---- 2. verdicts ride feedback/tiles on the agent's own key ----------------
 await p.evaluate(() => { const c2 = document.querySelector(".slope-card .fb-row"); c2.querySelectorAll(".stars button")[3]?.click(); });

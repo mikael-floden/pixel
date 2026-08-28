@@ -8069,6 +8069,7 @@ function viewWorldType(top) {
           h("span", { class: "muted", title: x.key }, label2(x)),
           x.pair && x.pair.split("__over__")[1] !== t.id
             ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null,
+          x.noCliff ? h("span", { class: "pill err", title: "This set was generated with no wall — a flat top face only, so there is no ramp to judge. Regeneration asked of the tiles agent 2026-08-28; nothing to review here until it lands." }, "no cliff — awaiting regeneration") : null,
           x.cliff ? h("span", { class: "pill warn", title: "The tiles agent's post pass detected this cliff face as ANOTHER ground and palettized it that way — judge whether that reads right" },
             `cliff reads ${typeLabelWorld(x.cliff).toLowerCase()}`) : null),
         state.admin ? feedbackRow("tiles", x.key, {
@@ -8235,6 +8236,10 @@ function slopeTilesFor(typeId) {
       if (!file) continue;
       out.push({
         key: `${set.dir}/tile_${String(i).padStart(2, "0")}`, file, pair: null,
+        // 64x46 = top + one level of wall; 64x30 = top face only, which
+        // cannot be a slope at all (maintainer 2026-08-28: "super thin and
+        // doesn't look like the other tiles generated"). Reported to tiles.
+        noCliff: Array.isArray(set.size) && set.size[1] > 0 && set.size[1] < 40,
         cliff: set.cliff_ground?.[i] && set.cliff_ground[i] !== set.ground ? set.cliff_ground[i] : null,
       });
     }
