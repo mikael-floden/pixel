@@ -57,6 +57,17 @@ const ctx = await b.newContext({ viewport: { width: 412, height: 900 } });
   }));
   ok(bar.n === 1 && /bbbbbbbbb/.test(bar.text) && bar.x,
     `a changed beacon offers ONE dismissible bar naming the new build (${bar.text})`);
+  /* AT THE TOP (maintainer 2026-08-28: "I can't press on Commit and have a
+   * lot of things to commit. Annoying as F.") — the bottom is the savebar's
+   * ground, and the bar was sitting exactly on the Commit button mid-review. */
+  const barPos = await p.evaluate(() => {
+    const r = document.querySelector(".update-bar").getBoundingClientRect();
+    const sv = document.querySelector("#savebar")?.getBoundingClientRect();
+    return { top: r.top, bottom: r.bottom, vh: innerHeight,
+      overSave: sv ? !(r.bottom <= sv.top || r.top >= sv.bottom) : false };
+  });
+  ok(barPos.bottom < barPos.vh / 3 && !barPos.overSave,
+    `and it sits at the TOP of the screen, never over the Commit bar (top ${Math.round(barPos.top)}px of ${barPos.vh})`);
   ok(await p.evaluate(() => !!document.querySelector("main")?.textContent.length),
     "and the page kept running — it never reloads on its own");
   // Dismissing must stick across further tab switches: a bar that can only be

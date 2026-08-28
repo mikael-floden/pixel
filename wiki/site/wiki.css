@@ -1711,8 +1711,11 @@ input[type="range"] { accent-color: var(--accent); }
 /* THE NEW-BUILD BAR: fixed over everything, never in the layout, so its
    arrival cannot move the page under a comparison. One line, both shas, one
    action. */
+/* AT THE TOP, over the search bar (maintainer 2026-08-28: "I can't press on
+   Commit and have a lot of things to commit") — the bottom is the savebar's:
+   a banner there sits exactly on the Commit button mid-review. */
 .update-bar {
-  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 60;
+  position: fixed; left: 12px; right: 12px; top: max(8px, env(safe-area-inset-top)); z-index: 60;
   display: flex; align-items: stretch; gap: 0;
   border-radius: 10px; border: 1px solid var(--accent, #c9a227);
   background: var(--surface); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
