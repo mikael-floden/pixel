@@ -176,11 +176,22 @@ answer *this is still grass, but lava is coming*.
 - **The percentage is spoken, not numbered.** A generative model does not measure area,
   so `10%` in a prompt buys nothing; the ladder is worded by how much of B you would
   notice ("a few small spots" → "mixed evenly") and the number survives in the path.
-- **Label by the measured mix, never the ordered one.** `blends_post.py` publishes
-  `measured_tiles[]` — index-aligned with `tiles[]`/`post_files[]`, the mix actually
-  present per tile by nearest-clean-colour area. Measured: an ordered p10 sheet produced
-  16 takes ranging **0%–20%** minor. The order is an intent; only the measurement is a
-  fact, and the audition sorts by it.
+- **The ladder is keyed by the level that was ORDERED** (`ladder[pair][p10..p50]` in
+  `tiles/blends/ladder.json`), because that is the only key reliable across all 210
+  pairs. Filing tiles by a *measured* mix was built and abandoned: no measure survived
+  every pair. Nearest-palette-colour cut black rock in half by brightness and called the
+  lighter half deep water; an opponent-hue test cannot run on `black_rock` at all, whose
+  clean colour has no chroma; and projecting onto the axis toward the minor ground's
+  colour read a dark_mud/grass sheet as 0.2% grass when the art plainly shows grass
+  tufts. The generator even draws the same ground differently depending on its partner —
+  water is bright in water sheets and near-black inside rock — so no single per-ground
+  reference exists either. `minor_seen` is still published per tile as an **advisory**
+  sorting hint: accurate on high-contrast pairs, unreliable on low-contrast ones, never
+  a label and never a filter. The maintainer reviews and rejects tiles himself.
+- **The prompt level is a sampling knob, not a specification.** One p10 sheet's 16 takes
+  spanned 0–30% minor and one p40 sheet spanned 0–40%. Expect a spread inside every
+  level, and expect some sheets to miss badly (a `deep_water + 50% light_soil` sheet came
+  back as almost pure water).
 - **Only the dominant portion is aligned.** Top pixels split by nearest clean colour and
   the trimmed median is taken over the A-side alone, then the whole tile moves by that
   one delta. So the A-portion lands exactly on A's clean colour and a p10 tile drops into

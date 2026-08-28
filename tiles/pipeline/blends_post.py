@@ -57,46 +57,75 @@ MIN_SIDE = 120       # top-face pixels needed before the A-side median is trustw
                      # (the top face is ~1450 px, so this is ~8% of the tile)
 
 
-MIN_HUE_SEP = 25.0   # opponent-space degrees between the two grounds' clean colours
-MIN_CHROMA = 12.0    # opponent magnitude below which a pixel has no hue to judge
+B_AT = 0.5          # a pixel is the minor ground once it is more than halfway from
+                    # this tile's own background toward the minor ground's clean colour
+MIN_TRAVEL = 24.0   # if the two grounds are closer than this in RGB there is no axis to
+                    # project onto and the tile is treated as all-dominant
 
 
-def _op(c):
-    """Opponent channels (R-G, G-B): a colour's HUE signature, free of brightness."""
-    c = np.asarray(c, float)
-    return np.stack([c[..., 0] - c[..., 1], c[..., 1] - c[..., 2]], -1)
+_REFS = None
 
 
-def split_masks(rgb, top, clean_a, clean_b):
-    """(A-side mask, B-side mask) - each top pixel assigned to the ground it belongs to.
+def art_refs():
+    """How the generator ACTUALLY draws each ground, measured from the blend tree.
 
-    BY HUE WHERE THE GROUNDS DIFFER IN HUE, by brightness where they do not. Nearest-RGB
-    alone is dominated by VALUE, and that mismeasures every dark-on-dark blend: a dim
-    lava ember (100,40,20) sits 161 from grass's clean (20,82,59) but 221 from lava's
-    (253,90,2), so it counts as grass. Measured on the pilot, that error alone reported
-    the p40 grass/lava sheet as 9% lava when it is 19%. Hue direction is invariant to how
-    dark the ember is and gets it right.
+    The palette's clean colour is a target, not a description. Anchoring the split on it
+    fails in both directions and the failures do not look alike: black_rock's clean is
+    near-black with no chroma, so a hue test cannot run at all; grass's clean is DARK
+    while the generator draws grass bright, so the axis from dark mud toward clean grass
+    points the wrong way and a bright grass pixel projects to zero - measured, that
+    reported a dark_mud/grass p50 sheet as 0.0% grass.
 
-    But hue is only a discriminator when the two grounds HAVE different hues: grey_stone
-    against black_rock differ in value alone, and an angle between two near-greys is
-    noise. So the rule falls back to RGB distance whenever the palette pair is closer
-    than MIN_HUE_SEP, and per pixel whenever that pixel has no chroma of its own.
+    Both are the same mistake: assuming the art looks like the palette. So the minor
+    ground's anchor is measured instead - the trimmed-median background of the p10 sheets
+    where that ground is DOMINANT, which is the same prompt family and therefore the same
+    rendition. Sampled, cached per run, and falls back to the clean colour only for a
+    ground with no sheets on disk yet.
     """
-    oa, ob = _op(clean_a), _op(clean_b)
-    na, nb = float(np.hypot(*oa)), float(np.hypot(*ob))
-    by_rgb = top & (np.abs(rgb - clean_a).sum(2) <= np.abs(rgb - clean_b).sum(2))
-    if na < MIN_CHROMA or nb < MIN_CHROMA:
-        return by_rgb, top & ~by_rgb
-    cosab = float((oa[0] * ob[0] + oa[1] * ob[1]) / (na * nb))
-    sep = np.degrees(np.arccos(max(-1.0, min(1.0, cosab))))
-    if sep < MIN_HUE_SEP:
-        return by_rgb, top & ~by_rgb
-    o = _op(rgb)
-    n = np.linalg.norm(o, axis=-1)
-    da = (o[..., 0] * oa[0] + o[..., 1] * oa[1]) / (np.maximum(n, 1e-6) * na)
-    db = (o[..., 0] * ob[0] + o[..., 1] * ob[1]) / (np.maximum(n, 1e-6) * nb)
-    a = np.where(n >= MIN_CHROMA, da >= db, by_rgb) & top
-    return a, top & ~a
+    global _REFS
+    if _REFS is not None:
+        return _REFS
+    _REFS = {}
+    for d in sorted(glob.glob(os.path.join(BLENDS, "*__with__*", "p10"))):
+        g = os.path.basename(os.path.dirname(d)).split("__with__")[0]
+        if len(_REFS.setdefault(g, [])) >= 12:
+            continue
+        for f in sorted(glob.glob(os.path.join(d, "tile_*.webp")))[:3]:
+            a = np.array(Image.open(f).convert("RGBA"), int)
+            t = TR.top_face(a[..., 3] > 0)
+            if t.any():
+                _REFS[g].append(TP.background_of(a[..., :3].astype(float), t))
+    _REFS = {g: np.median(np.array(v), 0) for g, v in _REFS.items() if v}
+    return _REFS
+
+
+def split_masks(rgb, top, clean_a, ref_b):
+    """(dominant mask, minor mask), measured RELATIVE TO THIS TILE'S OWN BACKGROUND.
+
+    Comparing each pixel to the two palette colours in the absolute is what a reasonable
+    person writes first, and it fails exactly where the generator's rendition of a ground
+    sits far from that ground's clean colour. Measured: black_rock's clean is (30,29,30),
+    near-black with no chroma at all, so a hue test cannot run and RGB distance simply
+    cuts the rock in half by BRIGHTNESS - it reported 61% of a black_rock/deep_water tile
+    as deep water, and the median of that "water" is (44,47,52), which is rock. Every
+    p10 sheet of that pair came out over 55% minor and was dropped from the ladder.
+
+    The tile's own background does not have that problem. It is the trimmed median of the
+    top face - the majority colour, feature-proof (tops_post) - so it IS the dominant
+    ground as this tile actually draws it, whatever the palette says. Each pixel is
+    projected onto the axis from that background toward the minor ground's clean colour,
+    and counts as minor once it travels more than halfway. Nothing depends on the
+    dominant ground's clean colour being an accurate description of the art, which is the
+    assumption that broke.
+    """
+    bg = TP.background_of(rgb, top)
+    d = ref_b - bg
+    travel = float(np.linalg.norm(d))
+    if travel < MIN_TRAVEL:
+        return top.copy(), np.zeros_like(top)
+    t = ((rgb - bg) @ (d / travel)) / travel
+    b = top & (t > B_AT)
+    return top & ~b, b
 
 
 def _smooth(m, passes=3):
@@ -114,7 +143,7 @@ def _smooth(m, passes=3):
     return np.clip(f, 0.0, 1.0)
 
 
-def align(img, clean_a, clean_b):
+def align(img, clean_a, ref_b):
     """(aligned image, A-side fraction, which mask drove the shift, max |delta| on B).
 
     THE DELTA IS WEIGHTED, NOT GLOBAL. Shifting the WHOLE tile by the A-side's delta is
@@ -135,7 +164,7 @@ def align(img, clean_a, clean_b):
     if not top.any():
         return None, 0.0, "none", 0.0
     rgb = arr[..., :3].astype(float)
-    a_side, b_side = split_masks(rgb, top, clean_a, clean_b)
+    a_side, b_side = split_masks(rgb, top, clean_a, ref_b)
     frac = float(a_side.sum()) / float(top.sum())
     measure, how = (a_side, "dominant") if a_side.sum() >= MIN_SIDE else (top, "whole")
     w = _smooth(a_side)
@@ -183,14 +212,15 @@ def main():
     worst_moved = []
     for sheet in idx["sheets"]:
         clean_a = TP._hex(PALETTE[sheet["dominant"]]["top"])
-        clean_b = TP._hex(PALETTE[sheet["minor"]]["top"])
+        # the minor ground as the ART draws it; the palette colour only as a fallback
+        ref_b = art_refs().get(sheet["minor"], TP._hex(PALETTE[sheet["minor"]]["top"]))
         d = os.path.join(REPO, sheet["dir"])
         post = os.path.join(d, "post")
         os.makedirs(post, exist_ok=True)
         post_files, fracs, measured, moved = [], [], [], []
         for name in sheet["tiles"]:
             aligned, frac, how, moved_b = align(Image.open(os.path.join(d, name)),
-                                                clean_a, clean_b)
+                                                clean_a, ref_b)
             if aligned is None:
                 post_files.append(None)
                 measured.append(None)      # both lists stay index-aligned with `tiles`
@@ -231,47 +261,52 @@ def main():
             # takes measured 0-20% minor against an ordered 10% - a sheet mean would hide
             # both ends. Aligned with `tiles`/`post_files` by index.
             sheet["measured_tiles"] = measured
-    # THE LADDER IS BUILT FROM THE MEASUREMENT, NOT FROM THE ORDER.
-    # Measured on the pilot: the prompt level is a weak lever. One p10 sheet's 16 takes
-    # spanned 0-30% lava and one p40 sheet spanned 0-40%, and the sheet means came out
-    # non-monotone (11, 26, 22, 19, 42) even though the endpoints work. So the ordered
-    # level is a SAMPLING knob - it moves the distribution, it does not set it - and
-    # publishing pNN as if it were the mix would hand the maintainer five labels the art
-    # contradicts. Instead every tile is filed under the decile it actually measures,
-    # which makes the label true by construction and turns the wide spread from a defect
-    # into coverage: 64 pilot tiles filled 5-45% densely.
-    # Below 5% a tile is just plain A (that belongs in tiles/tops, not here); above 55%
-    # it is dominated by B, and its background was aligned to A's clean colour, so it
-    # would sit wrong in a B field - both are dropped rather than mislabelled.
-    buckets = {}
+    # THE LADDER IS KEYED BY THE LEVEL THAT WAS ORDERED. That is what the maintainer
+    # asked for ("10% ground-type B, 20% ground-type B, ..."), and it is the only key
+    # that is reliable for every pair.
+    #
+    # Filing tiles by a MEASURED mix was tried first and abandoned, because no measure
+    # survived contact with all 210 pairs. Three were built and each failed differently:
+    # nearest-palette-colour cut black rock in half by brightness and called the lighter
+    # half deep water; an opponent-hue test cannot run at all on black_rock, whose clean
+    # colour has no chroma; and projecting onto the axis toward the minor ground's colour
+    # fails whenever the generator's rendition sits somewhere else - it read a dark_mud/
+    # grass sheet as 0.2% grass when the art plainly shows grass tufts, because the
+    # generator draws grass bright while the palette's clean grass is dark. The generator
+    # even renders the SAME ground differently depending on its partner (water is bright
+    # in water sheets, near-black inside rock), so no single per-ground reference exists.
+    #
+    # The measure is published anyway as `minor_seen`, clearly advisory: it is accurate on
+    # high-contrast pairs (grass/lava, grass/light_beach) and unreliable on low-contrast
+    # ones (mud/grass, brown/grey paving). It is a sorting hint for the audition, never a
+    # label and never a filter - the maintainer reviews and rejects tiles himself, which
+    # is the workflow every other tiles surface already uses.
+    ladder = {}
     for sheet in out_sheets:
         meas = sheet.get("measured_tiles") or []
         pf = sheet.get("post_files") or []
         key = f'{sheet["dominant"]}__with__{sheet["minor"]}'
-        for i, m in enumerate(meas):
-            if m is None or m < 5.0 or m > 55.0:
+        ents = []
+        for i, name in enumerate(sheet["tiles"]):
+            if i >= len(pf) or not pf[i]:
                 continue
-            b = min(LEVELS, key=lambda L: abs(L - m))
-            buckets.setdefault(key, {}).setdefault(str(b), []).append({
-                "dir": sheet["dir"], "i": i,
-                "file": pf[i] if i < len(pf) else None,
-                "raw": sheet["tiles"][i], "measured": m, "ordered": sheet["pct_minor"],
-            })
-    for k in buckets:
-        for b in buckets[k]:
-            buckets[k][b].sort(key=lambda e: e["measured"])
+            ents.append({"dir": sheet["dir"], "i": i, "file": pf[i], "raw": name,
+                         "minor_seen": meas[i] if i < len(meas) else None})
+        if ents:
+            ladder.setdefault(key, {})[str(sheet["pct_minor"])] = ents
     doc = {
-        "schema": "tiles3/blends-ladder@1", "kind": idx["kind"],
+        "schema": "tiles3/blends-ladder@2", "kind": idx["kind"],
         "use_for": idx["use_for"], "wall_is_meaningless": True,
         "levels": list(LEVELS), "n_sheets": len(out_sheets), "sheets": out_sheets,
-        "buckets": buckets,
     }
-    doc["bucket_rule"] = (
-        "THE LADDER. buckets[<dominant>__with__<minor>][<10|20|30|40|50>] = the tiles "
-        "whose MEASURED minor-ground area is nearest that decile; `measured` is the real "
-        "mix, `ordered` only records which prompt produced it. Render from these, not "
-        "from pct_minor - the prompt level moves the distribution but does not set it. "
-        "Art is at <dir>/post/<file>; below 5% and above 55% are excluded."
+    doc["ladder"] = ladder
+    doc["ladder_rule"] = (
+        "THE LADDER. ladder[<dominant>__with__<minor>][<10|20|30|40|50>] = the tiles "
+        "generated for that level, in sheet order. Art is at <dir>/post/<file> - read "
+        "the name, never build it. `minor_seen` is an ADVISORY estimate of how much of "
+        "the minor ground the tile actually shows: accurate on high-contrast pairs, "
+        "unreliable on low-contrast ones, so sort by it if it helps and never label or "
+        "filter with it."
     )
     doc["post_pass"] = {
         "rule": "out = art + (clean_dominant - background_of_the_dominant_portion); top "
@@ -294,9 +329,9 @@ def main():
     os.replace(tmp, dst)
     print(f"aligned {wrote} blend tiles ({whole} fell back to the whole-top median); "
           f"worst minor-ground pixel moved {max(worst_moved or [0]):.0f}/255")
-    tot = sum(len(v) for k in buckets for v in buckets[k].values())
-    per = {b: sum(len(buckets[k].get(str(b), [])) for k in buckets) for b in LEVELS}
-    print(f"ladder: {tot} tiles filed by measured mix  " +
+    tot = sum(len(v) for k in ladder for v in ladder[k].values())
+    per = {b: sum(len(ladder[k].get(str(b), [])) for k in ladder) for b in LEVELS}
+    print(f"ladder: {tot} tiles over {len(ladder)} ordered pairs  " +
           "  ".join(f"p{b}={n}" for b, n in per.items()))
     if out_sheets:
         rows = [(s.get("measured_pct_minor"), s["pct_minor"],
