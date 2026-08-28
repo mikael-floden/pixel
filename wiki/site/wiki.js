@@ -5645,7 +5645,13 @@ function allTransitionsOf(typeId) {
     .filter((id) => id !== typeId)
     .map((other) => {
       const g = gen.find((x) => (x.a === typeId && x.b === other) || (x.a === other && x.b === typeId));
-      return g ? { ...g, generated: true } : { a: typeId, b: other, sets: [], generated: false };
+      /* THE PAGE'S GROUND COMES FIRST, whatever order the art was generated
+       * in (maintainer 2026-08-28: "The Ice ↔ grass page should sort the list
+       * so tiles with the highest percentage of ice is at the top") — the
+       * directory's own order survives as dirA/dirB, because RAW file paths
+       * and the raw Wang indices live in that orientation. */
+      return g ? { a: typeId, b: other, sets: g.sets, generated: true, dirA: g.a, dirB: g.b }
+        : { a: typeId, b: other, sets: [], generated: false };
     });
 }
 /* ---- GROUND DETAILS — the fourth tab, and the second review axis ----
@@ -6675,7 +6681,14 @@ function mixTile(a, b, patId, idxA, x, y) {
  * strips and the composed scenes cannot disagree. Raw is the pregenerated art
  * and only exists where a generated set does; every other pass composes. */
 const transArt = (a, b, patId, i, genSet, x = 0, y = 0) => {
-  if (rawOn(genSet)) return transTile(a, b, patId, i, false);
+  if (rawOn(genSet)) {
+    // Raw art lives in the DIRECTORY's orientation: its files are named
+    // <dirA>__to__<dirB> and a set bit means dirA. On a page reading the pair
+    // the other way round, the path keeps the directory names and the index
+    // flips — the same complement the mask polarity uses.
+    const da = genSet.dirA ?? a, db = genSet.dirB ?? b;
+    return transTile(da, db, patId, a === da ? i : 15 - i, false);
+  }
   return mixTile(a, b, patId, i, x, y) ?? (genSet ? transTile(a, b, patId, i, genSet.post) : null);
 };
 /** Seeded RNG for the composites — a Randomize press swaps the seed, and the
@@ -7597,7 +7610,7 @@ function viewWorldType(top) {
         // pattern (or the pair's straightest generated set under Raw), four
         // mixed indices, composed under the current pass.
         const patId = x.sets[0]?.id ?? patternLib()?.defaultPattern;
-        const genSet = x.sets[0] ?? null;
+        const genSet = x.sets[0] ? { ...x.sets[0], dirA: x.dirA ?? x.a, dirB: x.dirB ?? x.b } : null;
         const picks = [1, 3, 12, 14].map((i) => transArt(x.a, x.b, patId, i, genSet)).filter(Boolean);
         return h("a", { class: "trans-row", href: `#/world/transition/${x.a}__to__${x.b}` },
           h("span", { class: "trans-name" }, `${t.name} ↔ ${typeLabelWorld(other).toLowerCase()}`),
@@ -7789,17 +7802,109 @@ function viewWorldType(top) {
  * it as a 'demo page' and a way for me to see all content without running
  * around in the game. Make the page look good and ambitious.") ---- */
 const transState = new Map();   // pair -> { set, seed }
+/* ---- FADE TILES: both grounds on ONE top (maintainer 2026-08-28) ---------
+ * "This is tiles the map-agent can use to start warming up the player for a
+ * new ground-type long before the transition happens. So this is tiles
+ * generated that have both ground type A and ground type B on the same tile.
+ * I want to be able to approve/reject/give stars and add a note to all tiles
+ * like this."
+ *
+ * READ LIVE, like the review manifest: the tiles agent is publishing these
+ * now ("it will be in main soon"), and a section that waits for a wiki
+ * deploy to notice them would be stale on arrival. Absent index = no
+ * section; the moment tiles/fades/index.json lands on main, every pair page
+ * grows its review list with no deploy on this side.
+ *
+ * THE CONTRACT (posted to the tiles board, theirs to counter-propose):
+ *   { schema: "tiles3/fade-tiles@1",
+ *     pairs: { "<a>__to__<b>": [ { key, file, pct: { "<a>": 62.5, "<b>": 37.5 } } ] } }
+ * key must be STABLE for the life of the art (their own positional-key lesson)
+ * — verdicts ride live/feedback/tiles.json on it, exactly like review tiles.
+ * The % lives with the tile because the maintainer ruled it does: "I think
+ * that data belongs to the tile."
+ */
+let fadesIndex;                       // undefined = not fetched, null = absent
+let fadesAt = 0;
+async function refreshFades() {
+  if (!state.admin) return false;
+  const unpinned = repoBase && /\/(main)\/$|127\.0\.0\.1|localhost/.test(repoBase.href);
+  if (fadesIndex !== undefined && (!unpinned || Date.now() - fadesAt < 3 * 60 * 1000)) return false;
+  const idx = await fetchJson(assetUrl("tiles/fades/index.json"));
+  fadesAt = Date.now();
+  const had = !!fadesIndex;
+  // A failed fetch must not empty a section that had data — same law as the
+  // review manifest. null only when we have never seen it.
+  if (!idx?.pairs) { if (fadesIndex === undefined) fadesIndex = null; return false; }
+  fadesIndex = idx;
+  return !had;
+}
+/* The pair's fade tiles, sorted for THIS page: the page's first ground's
+ * share, highest first — "The Grass ↔ ice page should sort the list so tiles
+ * with the highest percentage of grass is at the top", and the reversed page
+ * the other way round, same tiles. */
+function fadeTilesFor(a, b) {
+  const pairs = fadesIndex?.pairs;
+  if (!pairs) return [];
+  const list = pairs[`${a}__to__${b}`] ?? pairs[`${b}__to__${a}`] ?? [];
+  return list
+    .filter((t) => t && t.key && t.file && t.pct && isFinite(t.pct[a]))
+    .map((t) => ({ key: t.key, file: t.file, pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a] }))
+    .sort((x, y) => y.pctA - x.pctA);
+}
+/* One fade tile, reviewed IN THE FIELD: the wandering-edge scene at rough
+ * 0.12 · s4 (his pick), with every pure cell of the tile's MAJORITY side
+ * drawn as the fade tile — "display the fade tile on the grass side if grass
+ * is >= 50%" — dressed in that ground's own x-over-x wall like everything
+ * else, and the boundary composed as it really is. A field, not a lone tile,
+ * because a tile the map agent will scatter is judged by how it repeats. */
+const FADE_PATTERN = "a12_s4";
+function fadeScene(a, b, tile) {
+  const N = 6;
+  const onA = tile.pctA >= 50;
+  const rnd = seededRnd(fnv1a(`fade|${tile.key}`) || 1);
+  const walk = [];
+  let wx = Math.floor(N / 2) + 1;
+  for (let y = 0; y <= N; y++) { walk.push(wx); wx = Math.max(1, Math.min(N, wx + Math.floor(rnd() * 3) - 1)); }
+  const corner = (x, y) => (x < walk[Math.min(y, N)] ? 1 : 0);   // 1 = ground `a`
+  const lib = patternLib();
+  const majority = onA ? a : b;
+  const wall = xoverxArt(majority);
+  const clean = lib?.plates[majority]?.clean ?? "";
+  const dressed = wall ? `tex2:${wall}::${tile.file}::${clean}` : tile.file;
+  const box = h("div", { class: "iso-stage checker trans-stage" });
+  const genSet = null;                 // fades always compose; raw never exists
+  const cells = [];
+  let majorityCells = 0, fadeOnMajority = 0, fadeOnMinority = 0;
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
+    const pure = idx === 0 || idx === 15;
+    const isMaj = (idx === 15) === (majority === a);
+    const img = pure && isMaj ? dressed : transArt(a, b, FADE_PATTERN, idx, genSet, c, r);
+    if (pure && isMaj) { majorityCells++; if (img === dressed) fadeOnMajority++; }
+    if (pure && !isMaj && img === dressed) fadeOnMinority++;
+    cells.push({ c, r, img });
+  }
+  // QA probe: where the fade tile actually landed, per scene, for the gate.
+  (window.__wikiFades ??= []).push({ key: tile.key, majority, majorityCells, fadeOnMajority, fadeOnMinority });
+  loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) =>
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 2, worldIso())));
+  return box;
+}
+
 function viewWorldTransition(pairId) {
+  refreshFades().then((changed) => { if (changed && location.hash.includes("/transition/")) route(); });
   /* ANY PAIR IS A PAGE now, not only the pregenerated ones — a pair that was
    * never generated is composed live from the pattern library, which is the
    * point of the library ("transition tiles for everything automatically").
    * A generated pair keeps its sets: they are the same 18 pattern ids, and
    * the only place a Raw pass exists. */
-  let tr = (worldMeta().transitions ?? []).find((x) => `${x.a}__to__${x.b}` === pairId);
-  if (!tr) {
-    const [pa, pb] = pairId.split("__to__");
-    tr = (worldMeta().transitions ?? []).find((x) => x.a === pb && x.b === pa);
-    if (!tr) {
+  const [pa, pb] = pairId.split("__to__");
+  let tr = null;
+  {
+    const g = (worldMeta().transitions ?? []).find((x) =>
+      (x.a === pa && x.b === pb) || (x.a === pb && x.b === pa));
+    if (g) tr = { a: pa, b: pb, sets: g.sets, generated: true, dirA: g.a, dirB: g.b };
+    else {
       const lib = patternLib();
       const known = (id) => !!lib?.plates[id];
       if (lib && known(pa) && known(pb)) tr = { a: pa, b: pb, sets: [], generated: false };
@@ -7814,7 +7919,8 @@ function viewWorldTransition(pairId) {
   const st = transState.get(pairId) ?? { set: tr.sets[0]?.id ?? lib?.defaultPattern ?? pickable[0]?.id, seed: 2 };
   transState.set(pairId, st);
   const pat = pickable.find((x) => x.id === st.set) ?? pickable[0];
-  const genSet = tr.sets.find((x) => x.id === pat.id) ?? null;
+  const found = tr.sets.find((x) => x.id === pat.id) ?? null;
+  const genSet = found ? { ...found, dirA: tr.dirA ?? tr.a, dirB: tr.dirB ?? tr.b } : null;
   const nameA = typeLabelWorld(tr.a), nameB = typeLabelWorld(tr.b);
   const rerender = () => { keepScrollY = window.scrollY; route(); };
   // The scenes: the same boundary crossing the field in every direction —
@@ -7912,7 +8018,28 @@ function viewWorldTransition(pairId) {
         const node = artNodeFor(transArt(tr.a, tr.b, pat.id, i, genSet), "", `tile ${i}`);
         node.title = `index ${i}`;
         return node;
-      }))));
+      }))),
+    /* ---- FADE TILES, reviewed here (maintainer 2026-08-28: "The tiles
+     * should be shown/should be reviewed at the bottom of the transition
+     * pair page"). Sorted by this page's FIRST ground's share, so the two
+     * directions of one pair show the same tiles in opposite orders. The
+     * section exists only once the tiles agent's index does. */
+    ...(state.admin ? (() => {
+      const tiles2 = fadeTilesFor(tr.a, tr.b);
+      if (!tiles2.length) return [];
+      return [h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "Fade tiles",
+          h("span", { class: "pill" }, `${tiles2.length}`),
+          h("span", { class: "pill", title: `Sorted by ${nameA.toLowerCase()} share, highest first — the reversed page sorts the same tiles the other way` }, `most ${nameA.toLowerCase()} first`)),
+        h("p", { class: "muted" },
+          `Both grounds on one top — what the map agent scatters to warm a player up for ${nameB.toLowerCase()} long before the boundary. Each sits in the wandering edge on the side it mostly is.`),
+        ...tiles2.map((t) => h("div", { class: "fade-tile" },
+          h("div", { class: "player-controls" },
+            h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
+            h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
+          fadeScene(tr.a, tr.b, t),
+          feedbackRow("tiles", t.key, {}))))];
+    })() : []));
 }
 
 /* ---- THE PROMOTION MODAL (maintainer 2026-08-21: "That will open a
@@ -8745,8 +8872,20 @@ function loadImages(paths, cb) {
     // the reviewed tile wearing a set member's top face. "mix:row|idx|a|b" is
     // the third — a transition composed from two plates and a mask frame.
     const virt = String(p).startsWith("tex:") ? "tex" : String(p).startsWith("sub:") ? "sub"
-      : String(p).startsWith("mix:") ? "mix" : String(p).startsWith("pp:") ? "pp" : null;
+      : String(p).startsWith("mix:") ? "mix" : String(p).startsWith("pp:") ? "pp"
+      : String(p).startsWith("tex2:") ? "tex2" : null;
     if (virt) {
+      // "tex2:<wall>::<face>::<clean>" — one plate dressed in its ground's
+      // x-over-x wall, drawable on its own in any scene (the fade review
+      // fields use it to stand a top-only tile on a real wall).
+      if (virt === "tex2") {
+        const [wallA, faceA, cleanA] = p.slice(5).split("::");
+        sidePlateCanvas(wallA, faceA, cleanA ?? null, (c) => {
+          if (c) { out[p] = c; if (--left <= 0) cb(out); }
+          else plain(faceA, p);
+        });
+        continue;
+      }
       if (virt === "pp") {
         const [a2, hex] = p.slice(3).split("::");
         ppFor(a2, hex, (c) => {
