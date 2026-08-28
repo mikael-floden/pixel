@@ -7843,6 +7843,7 @@ function viewWorldType(top) {
  * it as a 'demo page' and a way for me to see all content without running
  * around in the game. Make the page look good and ambitious.") ---- */
 const transState = new Map();   // pair -> { set, seed }
+const fadeShown = new Map();    // unordered pair -> fade tiles shown (12 at a time)
 /* ---- FADE TILES: both grounds on ONE top (maintainer 2026-08-28) ---------
  * "This is tiles the map-agent can use to start warming up the player for a
  * new ground-type long before the transition happens. So this is tiles
@@ -7886,9 +7887,19 @@ async function refreshFades() {
 function fadeTilesFor(a, b) {
   const pairs = fadesIndex?.pairs;
   if (!pairs) return [];
-  const list = pairs[`${a}__to__${b}`] ?? pairs[`${b}__to__${a}`] ?? [];
+  /* BOTH ORIENTATION KEYS, MERGED. The published index (tiles3/fade-tiles@1,
+   * landed 2026-08-28) keys each tile by its GENERATION direction, so one
+   * unordered pair appears as two keys with disjoint tile lists — grass↔ice
+   * is 26 under grass__to__ice plus 26 under ice__to__grass. Taking either
+   * alone shows each page direction a different half, which is exactly what
+   * the maintainer ruled out: "both pages will ofc show the same tiles
+   * (since it's the same transition)". Deduped by key in case the tiles
+   * agent ever republishes a tile under the flipped orientation. */
+  const seen = new Set();
+  const list = [...(pairs[`${a}__to__${b}`] ?? []), ...(pairs[`${b}__to__${a}`] ?? [])]
+    .filter((t) => t && t.key && !seen.has(t.key) && seen.add(t.key));
   return list
-    .filter((t) => t && t.key && t.file && t.pct && isFinite(t.pct[a]))
+    .filter((t) => t.file && t.pct && isFinite(t.pct[a]))
     .map((t) => ({ key: t.key, file: t.file, pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a] }))
     .sort((x, y) => y.pctA - x.pctA);
 }
@@ -8068,18 +8079,29 @@ function viewWorldTransition(pairId) {
     ...(state.admin ? (() => {
       const tiles2 = fadeTilesFor(tr.a, tr.b);
       if (!tiles2.length) return [];
+      /* TWELVE AT A TIME (the audition's lesson, relearned the day the real
+       * index landed with up to 80 tiles in one merged pair): every row
+       * composes a full wandering-edge field, and eighty of those up front
+       * is a hung phone. The count is shared by both directions of the pair
+       * — the tiles are the same, only the order flips. */
+      const fkey = [tr.a, tr.b].sort().join("|");
+      const shown = fadeShown.get(fkey) ?? 12;
       return [h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "Fade tiles",
           h("span", { class: "pill" }, `${tiles2.length}`),
           h("span", { class: "pill", title: `Sorted by ${nameA.toLowerCase()} share, highest first — the reversed page sorts the same tiles the other way` }, `most ${nameA.toLowerCase()} first`)),
         h("p", { class: "muted" },
           `Both grounds on one top — what the map agent scatters to warm a player up for ${nameB.toLowerCase()} long before the boundary. Each sits in the wandering edge on the side it mostly is.`),
-        ...tiles2.map((t) => h("div", { class: "fade-tile" },
+        ...tiles2.slice(0, shown).map((t) => h("div", { class: "fade-tile" },
           h("div", { class: "player-controls" },
             h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
             h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
           fadeScene(tr.a, tr.b, t),
-          feedbackRow("tiles", t.key, {}))))];
+          feedbackRow("tiles", t.key, {}))),
+        tiles2.length > shown ? h("button", {
+          class: "ghost-btn", style: "margin-top:10px",
+          onclick: () => { fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY; route(); },
+        }, `Show 12 more (${tiles2.length - shown} left)`) : null)];
     })() : []));
 }
 
