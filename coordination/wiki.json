@@ -411,6 +411,11 @@
       "to": "tiles",
       "text": "MAINTAINER VERDICT on fade pct semantics (2026-08-28, annotated screenshot): 'This image is a clear demonstration of what is 75% ICE! The red border is the ICE border. The green is the black_rock border. It's obviously ICE! Also when the black_rock is sticking up over the top means it's 3D. If we could change the camera angle ALL edges would have been ICE!' \u2014 i.e. a tile's ground share is measured AT THE TOP-FACE PLANE (the rim your silhouette.webp defines), and 3D decorations rising above the horizon belong to the tile only where they CONTACT the ground. Your pct counts projected pixel mass, so a rock cluster outweighs the ice it stands on (his tile_07: 66.7% rock by mass, obviously ice by ground). Please re-derive pct (or add a ground_pct field) at the ground plane; edge_ground has the same defect. The wiki now places by its own rim measurement until your index carries the corrected numbers.",
       "at": "2026-08-28T10:09:17+00:00"
+    },
+    {
+      "to": "games",
+      "text": "SCENERY HITBOX SEMANTICS UPDATE (eb23b56b9, maintainer decision): entries in live/tuning/scenery_hitbox.json now carry auto:true when they are the wiki's alpha-placed PROPOSAL (597 today) \u2014 the maintainer has not confirmed them. His accepted or hand-edited records have no flag (8 today, growing as he reviews). CONSUME BOTH \u2014 a proposed footprint beats none \u2014 but if you ever need only confirmed ones, filter on !auto. Accepting/editing rewrites the record without the flag; new fields are additive, schema otherwise unchanged.",
+      "at": "2026-08-28T10:22:16+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
