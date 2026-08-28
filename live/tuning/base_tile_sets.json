@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:17:12.305Z",
+  "updated_at": "2026-08-28T02:20:06.334Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -2222,6 +2222,208 @@
           "members": [
             {
               "kind": "clean",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_00.webp",
+              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_07.webp",
+              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_08.webp",
+              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__grey_stone/4b474eb9",
+              "tile": "tiles/slime__over__grey_stone/4b474eb9",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__grey_stone/0bbe0cc8",
+              "tile": "tiles/slime__over__grey_stone/0bbe0cc8",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__light_beach/cfa5d5b3",
+              "tile": "tiles/slime__over__light_beach/cfa5d5b3",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/09f2ba3a",
+              "tile": "tiles/slime__over__black_rock/09f2ba3a",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/33c6314c",
+              "tile": "tiles/slime__over__black_rock/33c6314c",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/57f9eedd",
+              "tile": "tiles/slime__over__black_rock/57f9eedd",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/6884e45b",
+              "tile": "tiles/slime__over__black_rock/6884e45b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/7e7c7606",
+              "tile": "tiles/slime__over__black_rock/7e7c7606",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/8316c17d",
+              "tile": "tiles/slime__over__black_rock/8316c17d",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/8846643f",
+              "tile": "tiles/slime__over__black_rock/8846643f",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/939614f7",
+              "tile": "tiles/slime__over__black_rock/939614f7",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/a60ef340",
+              "tile": "tiles/slime__over__black_rock/a60ef340",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/b6f30cff",
+              "tile": "tiles/slime__over__black_rock/b6f30cff",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/bc695ac6",
+              "tile": "tiles/slime__over__black_rock/bc695ac6",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/c3847a78",
+              "tile": "tiles/slime__over__black_rock/c3847a78",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/d842fce1",
+              "tile": "tiles/slime__over__black_rock/d842fce1",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/dc9687a1",
+              "tile": "tiles/slime__over__black_rock/dc9687a1",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__black_rock/ed3f67a2",
+              "tile": "tiles/slime__over__black_rock/ed3f67a2",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__brown_paving_stone/02e6f3f4",
+              "tile": "tiles/slime__over__brown_paving_stone/02e6f3f4",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__brown_paving_stone/d3b8c193",
+              "tile": "tiles/slime__over__brown_paving_stone/d3b8c193",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__brown_paving_stone/d522eeda",
+              "tile": "tiles/slime__over__brown_paving_stone/d522eeda",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__brown_paving_stone/e2edd071",
+              "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 12
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__parquet_floor/7afab2e4",
+              "tile": "tiles/slime__over__parquet_floor/7afab2e4",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__parquet_floor/79d34f43",
+              "tile": "tiles/slime__over__parquet_floor/79d34f43",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__parquet_floor/79637f5b",
+              "tile": "tiles/slime__over__parquet_floor/79637f5b",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__parquet_floor/76f22137",
+              "tile": "tiles/slime__over__parquet_floor/76f22137",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/slime__over__parquet_floor/767921e1",
+              "tile": "tiles/slime__over__parquet_floor/767921e1",
               "weight": 1
             }
           ]
