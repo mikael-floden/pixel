@@ -47,7 +47,9 @@ import render as TILE_RENDER            # tiles/pipeline/render.py — wall_heig
 
 DX, DY, WALL, TILE = 32, 14, 17, 64
 TOP_Y = 10                              # review tiles: diamond apex row in the 64-box
-FADE_MASK_PAIR = ("grass", "water")     # borrowed geometry for pairs with no set
+FADES = json.load(open(os.path.join(REPO, "tiles", "fades", "index.json"))) \
+    if os.path.isfile(os.path.join(REPO, "tiles", "fades", "index.json")) else {"pairs": {}}
+FADE_BAND = 2                           # cells of fade band each side of a hard edge
 DETAIL_FREQ = 1 / 48                    # a detail roughly once per 48 field cells
 INDOOR_GROUNDS = {"parquet_floor", "brown_paving_stone", "grey_paving_stone"}
 # a wall's side is the ground at its FOOT — but an indoor floor is never a
@@ -65,15 +67,24 @@ def _hex(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def approved_candidate(top, side):
-    """The wiki's own rule: the approved candidate, else rank 0."""
+def _candidates(top, side):
     cell = MAN["cells"].get(f"{top}__over__{side}")
     if not cell:
-        return None
-    for c in cell["candidates"]:
-        if FB.get(c["key"], {}).get("status") == "approved":
-            return c
-    return cell["candidates"][0] if cell["candidates"] else None
+        return []
+    out = [c for c in cell["candidates"] if FB.get(c["key"], {}).get("status") == "approved"]
+    return out + [c for c in cell["candidates"] if c not in out]
+
+
+def approved_candidate(top, side, storey=False):
+    """The wiki's own rule: the approved candidate, else rank 0. For a STOREY
+    fill (the repeated wall below the cap), candidates the maintainer flagged
+    `top_only` in live/tuning/tile_walls.json are skipped — vertical.py's
+    doctrine: a top that repeats poorly vertically needs same-over-same backup."""
+    cands = _candidates(top, side)
+    if storey:
+        rest = [c for c in cands if not WALL_OV.get(c["key"], {}).get("top_only")]
+        cands = rest or cands
+    return cands[0] if cands else None
 
 
 _tile_cache = {}
@@ -97,12 +108,20 @@ def over_tile(top, side):
     if key in _tile_cache:
         return _tile_cache[key]
     c = approved_candidate(top, side) or approved_candidate(top, top)
-    if c:
-        im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
-    else:
-        im = flat_tile(top)
+    assert c, f"no review cell for {top} over {side} (nor {top} over {top}) — " \
+              f"the x-over-y matrix is the ONLY wall source and it has no tile"
+    im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
     _tile_cache[key] = im
     return im
+
+
+def storey_tile(ground):
+    """The repeated storey below a cap: same-over-same, honouring top_only."""
+    key = ("storey", ground)
+    if key not in _tile_cache:
+        c = approved_candidate(ground, ground, storey=True)
+        _tile_cache[key] = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
+    return _tile_cache[key]
 
 
 def wall_band(top, side):
@@ -119,20 +138,47 @@ def wall_band(top, side):
 
 
 def flat_tile(ground):
-    """A field tile: the promoted base tile when one exists, else the ground's
-    clean colour painted into the same-over-same silhouette (so the wall band
-    exists for rims); liquids get a plain diamond."""
+    """A FIELD tile, by the law's ladder:
+
+      liquids          -> a pure flat-colour diamond, NO wall — liquids never
+                          show one;
+      surface: base    -> the ground's own published base tile
+                          (ground_types.json base_tiles — paving, parquet);
+      live promotion   -> the maintainer's promoted base tile
+                          (live/tuning/base_tiles.json; review candidate or
+                          textured base_candidates entry);
+      otherwise        -> the APPROVED same-over-same review tile: its top is
+                          already flattened to the clean palette colour (the
+                          flat field the law demands) and its wall is the real
+                          x-over-x art — the only lawful wall source — for
+                          wherever a rim exposes it.
+    """
     key = ("flat", ground)
     if key in _tile_cache:
         return _tile_cache[key]
     g = GT.get(ground, {})
+    if ground in ("water", "deep_water", "lava", "slime"):
+        top = _hex(g.get("palette", {}).get("top", g.get("base_color", "#808080")))
+        im = Image.new("RGBA", (TILE, TILE), (0, 0, 0, 0))
+        px = im.load()
+        for y in range(2 * DY):
+            half = int(DX * (1 - abs(y - DY) / DY))
+            for x in range(DX - half, DX + half):
+                px[x, TOP_Y + y] = (*top, 255)
+        _tile_cache[key] = im
+        return im
+    canon = g.get("base_tiles") or []
+    if canon:
+        im = Image.open(os.path.join(REPO, canon[0])).convert("RGBA")
+        _tile_cache[key] = im
+        return im
     promos = [k for k, v in BASE.items() if v.get("type") == ground]
-    if promos:                            # maintainer-promoted base tile: the
-        path = None                       # key may name a review candidate OR a
-        for cell in MAN["cells"].values():        # textured base_candidates entry
+    if promos:
+        path = None
+        for cell in MAN["cells"].values():
             for c in cell["candidates"]:
                 if c["key"] == promos[0]:
-                    path = c["file"]
+                    path = c.get("before") or c["file"]
         if path is None:
             idxp = os.path.join(REPO, "tiles", "base_candidates", ground, "index.json")
             if os.path.isfile(idxp):
@@ -143,28 +189,9 @@ def flat_tile(ground):
             im = Image.open(os.path.join(REPO, path)).convert("RGBA")
             _tile_cache[key] = im
             return im
-    top = _hex(g.get("palette", {}).get("top", g.get("base_color", "#808080")))
-    wall = _hex(g.get("palette", {}).get("wall", g.get("base_color", "#606060")))
-    sil = approved_candidate(ground, ground)
-    if sil:                               # paint the palette through the real silhouette
-        base = np.array(Image.open(os.path.join(REPO, sil["file"])).convert("RGBA"))
-        a = base[..., 3] > 0
-        ys = np.arange(base.shape[0])[:, None]
-        topmask = a & (ys < TOP_Y + 2 * DY)
-        wallmask = a & ~topmask
-        out = np.zeros_like(base)
-        out[..., 3] = np.where(a, 255, 0)
-        for m, col in ((topmask, top), (wallmask, wall)):
-            for i in range(3):
-                out[..., i] = np.where(m, col[i], out[..., i])
-        im = Image.fromarray(out)
-    else:                                 # pure diamond (liquids)
-        im = Image.new("RGBA", (TILE, TILE), (0, 0, 0, 0))
-        px = im.load()
-        for y in range(2 * DY):
-            half = int(DX * (1 - abs(y - DY) / DY))
-            for x in range(DX - half, DX + half):
-                px[x, TOP_Y + y] = (*top, 255)
+    c = approved_candidate(ground, ground)
+    assert c, f"no same-over-same review cell for {ground}"
+    im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
     _tile_cache[key] = im
     return im
 
@@ -193,59 +220,92 @@ def pair_set(a, b):
     if d:
         sets = sorted(s for s in os.listdir(d) if os.path.isdir(os.path.join(d, s, "post")))
         if sets:
-            pick = sets[len(sets) // 2]   # mid amplitude; refined by eye later
-            meta = json.load(open(os.path.join(d, pick, "meta.json")))
-            tiles = [Image.open(os.path.join(d, pick, "post", f"tile_{i:02d}.webp")).convert("RGBA")
+            pick = sets[0]                # amplitude-then-seed — the wiki's order
+            base = os.path.join(d, pick)
+            tiles = [Image.open(os.path.join(base, "post", f"tile_{i:02d}.webp")).convert("RGBA")
                      for i in range(16)]
-            out = (tiles, meta["upper"])
+            # POLARITY IS MEASURED, never read from meta: 6 of 15 dark_mud
+            # sets carry the opposite material at index 0 than meta claims
+            # (transition_post.py). Classify tile 15's mean colour against the
+            # two grounds' palettes — bit=1 means tile 15's material.
+            na, nb = os.path.basename(d).split("__to__")
+            import numpy as _np
+            m15 = _np.array(tiles[15].convert("RGB"), float)[:2 * DY + 8].mean((0, 1))
+            ca = _np.array(_hex(GT[na]["palette"]["top"]), float)
+            cb = _np.array(_hex(GT[nb]["palette"]["top"]), float)
+            upper = na if ((m15 - ca) ** 2).sum() <= ((m15 - cb) ** 2).sum() else nb
+            out = (tiles, upper)
     _set_cache[key] = out
     return out
 
 
-def fade_set(a, b):
-    """FADE fallback for pairs with no art: the two grounds' palette colours
-    painted through a borrowed mask set's geometry (classify against the
-    borrowed set's own pure corners, repaint flat). Logged for review."""
-    key = frozenset(("fade", a, b))
+def detail_pool(ground):
+    """Top-approved detail tiles for a ground (live/feedback '#top' approvals,
+    raw pass — the flattening is why he had never seen them). Empty today."""
+    key = ("details", ground)
     if key in _set_cache:
         return _set_cache[key]
-    root = os.path.join(REPO, "tiles", "transitions",
-                        f"{FADE_MASK_PAIR[0]}__to__{FADE_MASK_PAIR[1]}")
-    sets = sorted(s for s in os.listdir(root) if os.path.isdir(os.path.join(root, s)))
-    pick = sets[0]
-    raw = [Image.open(os.path.join(root, pick, f"tile_{i:02d}.webp")).convert("RGBA")
-           for i in range(16)]
-    meta = json.load(open(os.path.join(root, pick, "meta.json")))
-    ca = _hex(GT[a].get("palette", {}).get("top", GT[a]["base_color"]))
-    cb = _hex(GT[b].get("palette", {}).get("top", GT[b]["base_color"]))
-    wa = _hex(GT[a].get("palette", {}).get("wall", GT[a]["base_color"]))
-    wb = _hex(GT[b].get("palette", {}).get("wall", GT[b]["base_color"]))
-    # classify each pixel against the borrowed set's own endpoints, then paint
-    # flat — no texture is invented, the geometry alone is borrowed
-    ref0 = np.array(raw[0].convert("RGB"), float)
-    ref15 = np.array(raw[15].convert("RGB"), float)
-    tiles = []
-    upper_is_a = True                     # bit=1 will mean ground `a`
-    for i, t in enumerate(raw):
-        arr = np.array(t.convert("RGB"), float)
-        alpha = np.array(t)[..., 3]
-        d0 = ((arr - ref0) ** 2).sum(-1)
-        d15 = ((arr - ref15) ** 2).sum(-1)
-        isb = d15 < d0                    # True = index-15 material = meta upper
-        out = np.zeros((*arr.shape[:2], 4), np.uint8)
-        out[..., 3] = np.where(alpha > 0, 255, 0)
-        ys = np.arange(arr.shape[0])[:, None]
-        topband = ys < 2 * DY + 2
-        for m, ctop, cwall in ((isb, ca, wa), (~isb, cb, cwall_b := cb if True else cb)):
-            pass
-        # paint: upper material (bit=1) = a; lower = b
-        for m, ct, cw in ((isb, ca, wa), (~isb, cb, wb)):
-            mm = m & (alpha > 0)
-            for ch in range(3):
-                out[..., ch] = np.where(mm & topband, ct[ch], out[..., ch])
-                out[..., ch] = np.where(mm & ~topband, cw[ch], out[..., ch])
-        tiles.append(Image.fromarray(out))
-    out = (tiles, a)
+    out = []
+    for ck, cell in MAN["cells"].items():
+        if cell["top"] != ground:
+            continue
+        for c in cell["candidates"]:
+            if FB.get(c["key"] + "#top", {}).get("status") == "approved":
+                out.append(Image.open(os.path.join(REPO, c.get("before") or c["file"])).convert("RGBA"))
+    _set_cache[key] = out
+    return out
+
+
+def fade_pool(field_ground, other):
+    """The REAL fade product (tiles/fades, tiles3/fade-tiles@1): top-only mix
+    tiles placed BY EDGE_GROUND — the ground the tile's rim belongs to — never
+    by area majority (maintainer ruling 2026-08-28: big rocks ON an ice sheet).
+    Returns [(file, other_pct)] usable inside a `field_ground` field next to
+    `other`, sorted by how much of the other ground shows."""
+    key = ("fadepool", field_ground, other)
+    if key in _set_cache:
+        return _set_cache[key]
+    out = []
+    for pk in (f"{field_ground}__to__{other}", f"{other}__to__{field_ground}"):
+        for t in FADES.get("pairs", {}).get(pk, []):
+            if t.get("edge_ground") != field_ground:
+                continue
+            pct = t.get("pct", {}).get(other, 0)
+            # honest mixes only: a ~0% tile is the source set's own idea of a
+            # pure field (a lime square on our grass), a >60% one reads as the
+            # other ground with a rim — the maintainer's never-50/50 rule
+            if not (8 <= pct <= 55):
+                continue
+            # palette sanity: the tile's own mean must sit near the pct-blend
+            # of the two grounds' palette tops — one mis-corrected set ships a
+            # lime square onto our dark meadow otherwise
+            try:
+                imt = Image.open(os.path.join(REPO, t["file"])).convert("RGBA")
+            except FileNotFoundError:
+                continue
+            import numpy as _np
+            arr = _np.array(imt, float)
+            m = arr[..., 3] > 0
+            if not m.any():
+                continue
+            ca = _np.array(_hex(GT[field_ground]["palette"]["top"]), float)
+            cb = _np.array(_hex(GT[other]["palette"]["top"]), float)
+            # a fade tile's WALL is explicitly meaningless (index law) — crop
+            # to the top diamond so a flat field never grows a stray wall
+            arr = arr[:TOP_Y + 2 * DY + 2]
+            m = arr[..., 3] > 0
+            if not m.any():
+                continue
+            px3 = arr[..., :3][m]
+            # alien-palette guard, tuned to kill wrong-green sets but keep the
+            # soil sets' honest shading range
+            da = _np.abs(px3 - ca).max(1)
+            db = _np.abs(px3 - cb).max(1)
+            near_d = _np.minimum(da, db)
+            if _np.percentile(near_d, 80) > 78:
+                continue
+            out.append((t["file"], pct))
+    out.sort(key=lambda r: r[1])
     _set_cache[key] = out
     return out
 
@@ -310,7 +370,39 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
             if zl == 0 or gr in liq:
-                img.alpha_composite(flat_tile(gr), (bx, col_y(x, y, L(x, y) if gr not in liq else 0) - TOP_Y))
+                t = flat_tile(gr)
+                if gr not in liq:
+                    # FADE BAND: within FADE_BAND cells of a different SOLID
+                    # ground at the same level, ease the change with the fades
+                    # product (top-only, placed by edge_ground). Deterministic.
+                    near = None
+                    for r in range(1, FADE_BAND + 1):
+                        for dx2, dy2 in ((r, 0), (-r, 0), (0, r), (0, -r)):
+                            og = g(x + dx2, y + dy2)
+                            if og and og != gr and og not in liq \
+                                    and L(x + dx2, y + dy2) == zl:
+                                near = (og, r)
+                                break
+                        if near:
+                            break
+                    if near:
+                        pool = fade_pool(gr, near[0])
+                        if pool:
+                            rr = _rng((x * 73856093) ^ (y * 19349663))
+                            # nearer the edge -> stronger mix; jittered pick
+                            hi = len(pool) - 1
+                            band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
+                            idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
+                            f = Image.open(os.path.join(REPO, pool[max(0, idx)][0])).convert("RGBA")
+                            f = f.crop((0, 0, f.width, min(f.height, TOP_Y + 2 * DY + 2)))
+                            t = f
+                    # DETAILS: a top-approved tile once in a while (pool is
+                    # empty until the maintainer approves — then it just works)
+                    if t is flat_tile(gr):
+                        dp = detail_pool(gr)
+                        if dp and _rng((x * 83492791) ^ (y * 2654435761))() < DETAIL_FREQ:
+                            t = dp[int(_rng(x * 31 + y)() * len(dp)) % len(dp)]
+                img.alpha_composite(t, (bx, col_y(x, y, zl) - TOP_Y))
                 continue
             front_low = min(L(x + 1, y), L(x, y + 1))
             fx, fy = (x + 1, y) if L(x + 1, y) <= L(x, y + 1) else (x, y + 1)
@@ -318,9 +410,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             if side in INDOOR_GROUNDS or side in liq:
                 side = gr                    # stone over its own body; water is
                                              # never a wall material either
-            side = WALL_OV.get(f"{gr}__over__{side}", {}).get("side", side)
             cap = over_tile(gr, side) if front_low < zl else flat_tile(gr)
-            mid = over_tile(gr, gr)
+            mid = storey_tile(gr)
             for f in range(max(0, front_low), zl + 1):
                 t = cap if f == zl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
@@ -340,8 +431,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             a, b = sorted(set(gs))
             ps = pair_set(a, b)
             if ps is None:
-                ps = fade_set(a, b)
-                fades[(a, b)] += 1
+                fades[(a, b)] += 1        # hard edge today; the log is the
+                continue                  # transition-set shopping list
             tiles, upper = ps
             idx = (8 * (gs[0] == upper) + 4 * (gs[1] == upper)
                    + 2 * (gs[2] == upper) + 1 * (gs[3] == upper))
@@ -374,7 +465,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             lo = dl if front_covered else max(0, dl - max(1, th))
             bx = ox + (x - x0 - (y - y0)) * DX - DX
             cap = flat_tile(dg) if front_covered else over_tile(dg, dg)
-            mid = over_tile(dg, dg)
+            mid = storey_tile(dg)
             for f in range(lo, dl + 1):
                 t = cap if f == dl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
