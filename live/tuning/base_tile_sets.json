@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:26:43.443Z",
+  "updated_at": "2026-08-28T02:27:47.939Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -2552,6 +2552,41 @@
               "id": "tiles/snow__over__black_rock/e52434f5",
               "tile": "tiles/snow__over__black_rock/e52434f5",
               "weight": 0.1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_03_detail_25767/tile_03.webp",
+              "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_03.72d58680.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_03_detail_25767/tile_10.webp",
+              "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_10.85b4e794.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/snow/sheet_05_detail_41912/tile_02.webp",
+              "tile": "tiles/tops/snow/sheet_05_detail_41912/post/tile_02.5e0101b2.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "light_soil__to__snow__a24_s6",
+              "tile": "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp",
+              "weight": 1
             }
           ]
         }
