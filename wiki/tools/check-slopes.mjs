@@ -16,19 +16,19 @@ const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ")
 const ROOT = new URL("../../", import.meta.url).pathname;
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 
-// real art as stand-ins, like the fades gate did before their data landed
-const sheet = readdirSync(ROOT + "tiles/tops/grass").find((d) => d.startsWith("sheet_"));
-const files = readdirSync(`${ROOT}tiles/tops/grass/${sheet}/post`).slice(0, 14);
-const STUB = { schema: "tiles3/slopes@1", pairs: {
-  "grass__over__grass": files.slice(0, 13).map((f, i) => ({
-    key: `tiles/slopes/grass__over__grass/set_1/tile_${String(i).padStart(2, "0")}`,
-    file: `tiles/tops/grass/${sheet}/post/${f}`, seed: i + 1, amplitude: 0.14,
-  })),
-  "grass__over__black_rock": [{
-    key: "tiles/slopes/grass__over__black_rock/set_1/tile_00",
-    file: `tiles/tops/grass/${sheet}/post/${files[13]}`, seed: 9, amplitude: 0.2,
-  }],
-} };
+// THE REAL INDEX (the tiles agent published 2026-08-28, their own shape:
+// 90 Wang-on-elevation sets, 16 tiles each, display = dir/post/<hashed>).
+// The pre-data stub retires; only the empty states still stub a 404.
+import { existsSync } from "node:fs";
+const IDX = JSON.parse(readFileSync(ROOT + "tiles/slopes/index.json", "utf8"));
+ok(IDX.schema === "tiles3/slopes@1" && Array.isArray(IDX.sets) && IDX.sets.length >= 30,
+  `the index speaks the schema, as a list of sets (${IDX.sets.length})`);
+const gSets = IDX.sets.filter((x) => x.ground === "grass");
+const expTiles = gSets.reduce((n, x) => n + (x.post_files ?? []).filter((pf, i) => pf || x.tiles?.[String(i)]).length, 0);
+ok(gSets.length >= 5 && expTiles >= 60, `grass has real slope sets to review (${gSets.length} sets, ${expTiles} tiles)`);
+const gone = IDX.sets.flatMap((x) => (x.post_files ?? []).map((pf) => `${x.dir}/post/${pf}`)).filter((f) => !existsSync(ROOT + f));
+ok(gone.length === 0, `every published post file exists on disk (${gone.length ? gone[0] : "all"})`);
+const foreign = IDX.sets.reduce((n, x) => n + (x.cliff_ground ?? []).filter((c) => c !== x.ground).length, 0);
 
 const b = await chromium.launch({ executablePath: process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await b.newContext({ viewport: { width: 412, height: 900 }, isMobile: true, hasTouch: true });
@@ -37,7 +37,7 @@ const errs = []; const saves = [];
 p.on("pageerror", (e) => errs.push(String(e).slice(0, 200)));
 await p.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
 await p.route("**/api/wiki/save", (r) => { saves.push(r.request().postDataJSON()); r.fulfill({ status: 200, contentType: "application/json", body: "{}" }); });
-await p.route("**/tiles/slopes/index.json*", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(STUB) }));
+// no stub — the page reads the REAL index off the serving origin
 await p.addInitScript(() => { localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", "http://127.0.0.1:8903/"); });
 
 // ---- 1. the tab, its count, and the cards ---------------------------------
@@ -55,13 +55,14 @@ const g = await p.evaluate(() => ({
   overPill: [...document.querySelectorAll(".slope-card .pill")].map((x) => x.textContent.trim()).find((x) => /^over /.test(x)),
   more: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).find((x) => /^Show 12 more/.test(x)),
 }));
-ok(g.tab.some((x) => /^Slope14$/.test(x.replace(/\s+/g, ""))), `the Slope tab exists with the inventory count (${g.tab.join(" | ")})`);
+ok(g.tab.some((x) => x.replace(/\s+/g, "") === `Slope${expTiles}`),
+  `the Slope tab exists with the REAL inventory count (${g.tab.join(" | ")})`);
 ok(g.fit <= 0, `five tabs still fit the strip — it wraps rather than clips (${g.fit}px over)`);
-ok(g.cards === 12 && g.more === "Show 12 more (2 left)", `twelve cards at a time, the rest behind a button (${g.cards}, ${g.more})`);
+ok(g.cards === 12 && g.more === `Show 12 more (${expTiles - 12} left)`,
+  `twelve cards at a time, the rest behind a button (${g.cards}, ${g.more})`);
 ok(g.stars === 12 && g.regen === 12 && g.notes === 12,
   `every card carries the usual: stars, approve/regenerate, note (${g.stars}/${g.regen}/${g.notes})`);
-ok(g.overPill === "over black rock" || [...(g.tab ?? [])].length > 0,
-  `a slope over ANOTHER ground names its wall (${g.overPill ?? "not in first 12 — fine"})`);
+ok(foreign > 0, `the index carries FOREIGN-cliff detections to surface (${foreign} tiles fleet-wide)`);
 
 // ---- 2. verdicts ride feedback/tiles on the agent's own key ----------------
 await p.evaluate(() => { const c2 = document.querySelector(".slope-card .fb-row"); c2.querySelectorAll(".stars button")[3]?.click(); });

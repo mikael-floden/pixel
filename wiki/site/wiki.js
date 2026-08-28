@@ -8033,7 +8033,9 @@ function viewWorldType(top) {
         h("div", { class: "card-sub" },
           h("span", { class: "muted", title: x.key }, label2(x)),
           x.pair && x.pair.split("__over__")[1] !== t.id
-            ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null),
+            ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null,
+          x.cliff ? h("span", { class: "pill warn", title: "The tiles agent's post pass detected this cliff face as ANOTHER ground and palettized it that way — judge whether that reads right" },
+            `cliff reads ${typeLabelWorld(x.cliff).toLowerCase()}`) : null),
         state.admin ? feedbackRow("tiles", x.key, {
           reject: "✕ regenerate",
           rejectTitle: "Not slope material — the tiles agent regenerates it on its next run",
@@ -8167,19 +8169,41 @@ async function refreshSlopes() {
   slopesAt = Date.now();
   const had = !!slopesIndex;
   // A failed fetch must not empty a tab that had data — the manifest law.
-  if (!idx || (!idx.pairs && !idx.grounds)) { if (slopesIndex === undefined) slopesIndex = null; return false; }
+  if (!idx || (!idx.pairs && !idx.grounds && !idx.sets)) { if (slopesIndex === undefined) slopesIndex = null; return false; }
   slopesIndex = idx;
   return !had;
 }
-/** Every slope whose walkable TOP is this ground, both index shapes. */
+/** Every slope whose ground is this one — THEIR published shape first
+ *  (tiles3/slopes@1, landed 2026-08-28: a LIST of Wang-on-elevation sets,
+ *  16 tiles each, the corner bitmask meaning RAISED; the display file is
+ *  dir/post/<post_files[i]> — "read the name, never build it" — and
+ *  cliff_ground names the ground their post pass DETECTED on each cliff
+ *  face). My proposed pairs/grounds-map shapes stay accepted. */
 function slopeTilesFor(typeId) {
   if (!slopesIndex) return [];
   const out = [];
+  for (const set of (Array.isArray(slopesIndex.sets) ? slopesIndex.sets : [])) {
+    if (set?.ground !== typeId || !set.dir) continue;
+    const n = set.n_tiles ?? Object.keys(set.tiles ?? {}).length;
+    for (let i = 0; i < n; i++) {
+      const pf = set.post_files?.[i];
+      const raw = set.tiles?.[String(i)];
+      const file = pf ? `${set.dir}/post/${pf}` : raw ? `${set.dir}/${raw}` : null;
+      if (!file) continue;
+      out.push({
+        key: `${set.dir}/tile_${String(i).padStart(2, "0")}`, file, pair: null,
+        cliff: set.cliff_ground?.[i] && set.cliff_ground[i] !== set.ground ? set.cliff_ground[i] : null,
+      });
+    }
+  }
+  const grounds = slopesIndex.grounds;
   for (const [k, list] of Object.entries(slopesIndex.pairs ?? {})) {
     if (k.split("__over__")[0] !== typeId) continue;
     for (const t of list ?? []) if (t?.key && t?.file) out.push({ ...t, pair: k });
   }
-  for (const t of (slopesIndex.grounds?.[typeId] ?? [])) if (t?.key && t?.file) out.push({ ...t, pair: null });
+  if (grounds && !Array.isArray(grounds)) {
+    for (const t of (grounds[typeId] ?? [])) if (t?.key && t?.file) out.push({ ...t, pair: null });
+  }
   return out;
 }
 const slopeShown = new Map();         // typeId -> how many slope cards are unrolled
