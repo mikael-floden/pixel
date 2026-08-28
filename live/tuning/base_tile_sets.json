@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:05:51.426Z",
+  "updated_at": "2026-08-28T02:06:10.791Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1888,12 +1888,6 @@
               "kind": "tile",
               "id": "tiles/light_soil__over__lava/f970e2b1",
               "tile": "tiles/light_soil__over__lava/f970e2b1",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__dark_mud/40efb46a",
-              "tile": "tiles/light_soil__over__dark_mud/40efb46a",
               "weight": 1
             }
           ]
