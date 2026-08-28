@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Usage in Cloud Shell:
 #   export RAW='<paste the whole cookie line from the bookmarklet>'
-#   nohup bash run_plateaus.sh > run.log 2>&1 &
+#   nohup bash run_slopes.sh > run.log 2>&1 &
 #   tail -f run.log        # ctrl-C stops watching, NOT the run
 # RAW may be the entire document.cookie dump or a bare eyJ... token.
 # nohup matters: a phone switching apps drops the Cloud Shell session, and without
@@ -11,9 +11,9 @@
 # the next run, so a token that lapses mid-way, a dropped session, or a script fired
 # twice costs nothing. (Not a hypothetical: an earlier run produced no output under
 # nohup, was re-triggered several times, and bought ~$8 of duplicates and 48 sets of
-# one pair.) plateau_done.txt is also the machine-readable result - `a b amp seed id` per
+# one pair.) slope_done.txt is also the machine-readable result - `a b amp seed id` per
 # line - so nothing has to be scraped out of run.log.
-#   To start over deliberately: rm plateau_done.txt
+#   To start over deliberately: rm slope_done.txt
 
 TOK=$(RAW="$RAW" python3 -c "
 import json,os,re,urllib.parse
@@ -31,8 +31,14 @@ print(t)")
 [ -z "$TOK" ] && { echo 'no token found in $RAW'; exit 1; }
 echo "token ok (${#TOK} chars)"
 
-DONE=${DONE:-plateau_done.txt}
+DONE=${DONE:-slope_done.txt}
 touch "$DONE"
+# Carry progress over from the first run, which used the older file name. Without this,
+# renaming would silently re-buy every set already paid for.
+if [ ! -s "$DONE" ] && [ -s plateau_done.txt ]; then
+  cp plateau_done.txt "$DONE"
+  echo "carried over $(wc -l < "$DONE") job(s) from plateau_done.txt"
+fi
 echo "resuming: $(wc -l < "$DONE") job(s) already done"
 
 run() {  # a b amp seed elevation step_slope description

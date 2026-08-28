@@ -20,6 +20,13 @@ import os
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(REPO, "tiles", "transitions")
+# SLOPES ARE THEIR OWN TREE, not a self-pair hiding in the transition matrix. A slope
+# tile is one ground raised into a plateau with a graded edge down to ITSELF (maintainer,
+# 2026-08-28: "This is a special slope tile and should be saved in a location so you know
+# this is a slope"). Filing them under tiles/transitions/<g>__to__<g> would also feed them
+# to the wiki's Transitions roster - every pair minus self - where they would read as a
+# transition between a ground and itself, which is not what they are.
+SLOPES = os.path.join(REPO, "tiles", "slopes")
 
 # Short MATERIAL descriptions. The endpoint wants the terrain named plainly and the
 # pair phrased as a transition ("grass to water"); the matrix's isometric-block prose
@@ -195,6 +202,12 @@ echo "token ok (${#TOK} chars)"
 
 DONE=${DONE:-__DONE__}
 touch "$DONE"
+# Carry progress over from the first run, which used the older file name. Without this,
+# renaming would silently re-buy every set already paid for.
+if [ ! -s "$DONE" ] && [ -s plateau_done.txt ]; then
+  cp plateau_done.txt "$DONE"
+  echo "carried over $(wc -l < "$DONE") job(s) from plateau_done.txt"
+fi
 echo "resuming: $(wc -l < "$DONE") job(s) already done"
 
 run() {  # a b amp seed elevation step_slope description
@@ -253,8 +266,9 @@ if __name__ == "__main__":
     # PLATEAUS: the x-to-x task, run with the maintainer's own web-UI settings
     # (2026-08-28 screenshots): uneven boundary 14%, terrain height 4px, edge
     # steepness mid-slope, thickness 0%, 2px flat top, no outline, 28 degrees.
-    ap.add_argument("--plateau", action="store_true",
-                    help="self-pairs with raised terrain: 8 boundary shapes per ground")
+    ap.add_argument("--slope", "--plateau", dest="slope", action="store_true",
+                    help="SLOPE tiles: one ground raised into a plateau with a graded "
+                         "edge down to itself, 15 boundary shapes per ground")
     ap.add_argument("--elevation", type=int, default=4, help="terrain height in px")
     ap.add_argument("--step-slope", type=float, default=0.55, help="edge steepness")
     ap.add_argument("--depth-ratio", type=float, default=None,
@@ -269,7 +283,7 @@ if __name__ == "__main__":
     seeds = [int(x) for x in a.seeds.split(",") if x.strip()]
     only = {x.strip() for x in a.only.split(",") if x.strip()} or None
     acct = done_from_account() if a.resume else None
-    if a.plateau:
+    if a.slope:
         amps = [float(x) for x in a.amplitudes.split(",") if x.strip()] \
             if a.amplitudes != ap.get_default("amplitudes") else [0.14]
         # 15 BOUNDARY SHAPES PER GROUND (maintainer, 2026-08-28 — raised from 8 while
@@ -278,18 +292,18 @@ if __name__ == "__main__":
         # generates only the new seeds and never re-buys the old ones.
         seeds = seeds if a.seeds != ap.get_default("seeds") else list(range(1, 16))
     jobs = build(amps, seeds, only, skip_done=not a.all, account=acct,
-                 elevation=a.elevation if a.plateau else 0,
-                 step_slope=a.step_slope if a.plateau else 0.0,
-                 self_only=a.plateau)
-    os.makedirs(OUT, exist_ok=True)
-    name = "plateaus" if a.plateau else "jobs"
-    json.dump({"jobs": jobs}, open(os.path.join(OUT, f"{name}.json"), "w"), indent=1)
+                 elevation=a.elevation if a.slope else 0,
+                 step_slope=a.step_slope if a.slope else 0.0,
+                 self_only=a.slope)
+    out_dir = SLOPES if a.slope else OUT
+    os.makedirs(out_dir, exist_ok=True)
+    json.dump({"jobs": jobs}, open(os.path.join(out_dir, "jobs.json"), "w"), indent=1)
     if a.shell:
-        path = os.path.join(OUT, "run_plateaus.sh" if a.plateau
+        path = os.path.join(out_dir, "run_slopes.sh" if a.slope
                             else "run_in_cloudshell.sh")
-        depth = a.depth_ratio if a.depth_ratio is not None else (0.0 if a.plateau else None)
+        depth = a.depth_ratio if a.depth_ratio is not None else (0.0 if a.slope else None)
         open(path, "w").write(shell_script(
-            jobs, done=("plateau_done.txt" if a.plateau else "run_done.txt"),
+            jobs, done=("slope_done.txt" if a.slope else "run_done.txt"),
             depth_ratio=depth) + "\n")
         print(f"wrote {path}  ({len(jobs)} jobs, est ${len(jobs)*RATE_USD:.2f})")
     else:
