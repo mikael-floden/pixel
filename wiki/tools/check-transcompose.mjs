@@ -281,7 +281,7 @@ for (const c of CASES) {
  * pregenerated pairs must show the full neighbour roster, composed — the empty
  * "Being generated" state is what he reported and what this page must never
  * show again while the library exists. */
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Fade/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(3000);
 const br = await p.evaluate(() => ({
   rows: document.querySelectorAll("a.trans-row").length,

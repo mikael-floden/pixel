@@ -136,7 +136,7 @@ await p.goto(`${W}#/world/${TOP}`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
 /* THE GROUND PAGE OPENS ON BASE since 2026-08-25 — Clean #0 always exists, so
  * the admin's set editor is what he lands on. The pairs live one tab over. */
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1400);
 const lvl2 = await p.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
@@ -257,7 +257,7 @@ await live.goto(`${W}#/world/sand`, { waitUntil: "load" });
 await live.waitForTimeout(2200);
 // Same as above: the ground page opens on its set editor, and the pairs a live
 // manifest refresh has to reshape are one tab over.
-await live.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await live.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await live.waitForTimeout(1200);
 const fresh = await live.evaluate(() => ({
   h1: document.querySelector("h1")?.textContent,
@@ -483,9 +483,19 @@ ok(texPeek[1].view !== "clean" && texPeek[1].face,
 ok(texPeek.filter((_, i) => i !== 1).every((c) => c.view === "clean" && /_after\.webp/.test(c.face ?? "")),
   "while the tiles beside it hold still — the difference he sees is the pass, not the page");
 ok(/⇄/.test(texPeek[1].label ?? ""), `and the chip says which pass he is looking at (“${texPeek[1].label}”)`);
-const peek = texPeek;
+/* PRESS UNTIL RAW, never a fixed count — the cycle is Clean #0, then every
+ * SET this ground has, then Raw, so its length is his own work. This asserted
+ * "a second press" from the two-state days and went red the moment he built
+ * a set on grass: a gate that reddens because the maintainer worked is a
+ * broken gate (the same lesson the loop below already learned). */
+let peek = texPeek;
+for (let i = 0; i < 8 && peek[1].view !== "before"; i++) {
+  await press(1);
+  await p.waitForTimeout(900);
+  peek = await chips();
+}
 ok(peek[1].view === "before" && /_before\.webp$/.test(peek[1].face ?? ""),
-  `a second press reaches the generator's raw output (${peek[1].face?.split("/").pop()})`);
+  `pressing on through his sets reaches the generator's raw output (${peek[1].face?.split("/").pop()})`);
 ok(/raw/.test(peek[1].label ?? ""), `and the chip follows it (“${peek[1].label}”)`);
 await press(1);
 await p.waitForTimeout(1000);

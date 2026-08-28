@@ -8000,8 +8000,13 @@ function viewWorldType(top) {
           : "The looks this ground comes in"),
       tabBtn("details", "Details", details.length || null, detailsDead,
         details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
-      tabBtn("ontop", "On top of", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
-      tabBtn("trans", "Transitions", trans.length || null, false, "Where this ground meets its neighbours"),
+      /* SHORT LABELS, ONE ROW (maintainer 2026-08-28: "We need to change the
+       * title button to fit all buttons on the same row. You can call 'On top
+       * of' just 'Wall' instead. You can call 'Transitions' just 'Fade'.").
+       * Five tabs with counts wrapped to two rows at every phone width; his
+       * words are the labels and the tooltips keep the long form. */
+      tabBtn("ontop", "Wall", t.pairs.length, false, "Every wall this ground can stand on — the x-over-y matrix"),
+      tabBtn("trans", "Fade", trans.length || null, false, "Where this ground meets its neighbours — the transitions, and the fade tiles that warm up to them"),
       /* SLOPE (maintainer 2026-08-28): a fifth tile type — the walkable ramp.
        * Present for the admin even before the tiles agent publishes, so the
        * review is ready the moment the art lands. */

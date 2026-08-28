@@ -290,22 +290,31 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
    was still 21px over at 412px wide. The rest comes out of the padding and the
    count chip, which is where slack belongs — the labels are his words and the
    tap target stays 44px tall. Measured after: 331px of content in 384px. */
+/* The roomy tier is for tablets and up: FIVE tabs with counts measured 400px
+   of content against 384 available at 412px wide, so every phone tier below
+   is tighter than the desktop one by design. */
 @media (max-width: 620px) {
-  .groundtab, .pagetab { padding: 10px 9px; font-size: 13.5px; }
-  .groundtab .tab-n { margin-left: 5px; padding: 1px 5px; font-size: 11px; }
+  .groundtab, .pagetab { padding: 10px 6px; font-size: 13.5px; }
+  .groundtab .tab-n { margin-left: 4px; padding: 1px 4px; font-size: 11px; }
 }
 /* And one tier tighter for the small phones. The thresholds moved 2026-08-28:
    the count chips change width with his review (a 3-digit queue became a
    2-digit one and the strip STILL measured 8px over at 393) — so the tiers
    are set against the widest realistic chip set, not the day's counts. */
+/* FIVE TABS, ONE ROW (maintainer 2026-08-28: "We need to change the title
+   button to fit all buttons on the same row"). Shortening the labels to his
+   words ("Wall", "Fade") recovered most of it; the last 6-10px come out of
+   the COUNT CHIPS, of which there are four — measured 338 of 332 available at
+   360px before, 27px per chip. The chip is a number in a pill: it survives a
+   tighter pill, where a label would not. */
 @media (max-width: 400px) {
-  .groundtab, .pagetab { padding: 10px 6px; font-size: 13px; }
-  .groundtab .tab-n { margin-left: 4px; padding: 1px 4px; }
+  .groundtab, .pagetab { padding: 10px 5px; font-size: 13px; }
+  .groundtab .tab-n { margin-left: 3px; padding: 1px 3px; font-size: 10.5px; }
 }
 @media (max-width: 366px) {
   /* the tap target survives the squeeze — 44px is the floor, not the padding */
-  .groundtab, .pagetab { padding: 10px 4px; font-size: 12.5px; min-height: 42px; }
-  .groundtab .tab-n { margin-left: 3px; padding: 1px 3px; font-size: 10.5px; }
+  .groundtab, .pagetab { padding: 10px 3px; font-size: 12.5px; min-height: 42px; }
+  .groundtab .tab-n { margin-left: 2px; padding: 0 3px; font-size: 10px; }
 }
 .groundtab:last-child { border-right: none; }
 .groundtab.sel, .pagetab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }

@@ -78,7 +78,7 @@ await p.goto(`${W}${type}`, { waitUntil: "load" });
 await p.waitForTimeout(2500);
 // The ground page opens on its set editor since 2026-08-25; the pairs are one
 // tab over, and it is a PAIR page this gate needs.
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1400);
 const pair = await p.evaluate(() => document.querySelector("a.card")?.getAttribute("href"));
 await p.goto(`${W}${pair}`, { waitUntil: "load" });

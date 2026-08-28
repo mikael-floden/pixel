@@ -241,7 +241,7 @@ const topColours = async () => p.evaluate(() => {
 const passTo = async (name) => {
   await p.evaluate((n) => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === n)?.click(), name);
   await p.waitForTimeout(500);
-  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
   await p.waitForTimeout(2200);
 };
 await passTo("Clean #0");

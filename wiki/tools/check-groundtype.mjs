@@ -167,7 +167,7 @@ ok(setState.panels.length === 1 && /^Clean #0/.test(setState.panels[0]),
 ok(setState.chips.length === 0, `the Base tab carries NO pass switch — the panels are the sets (${setState.chips.length} chips)`);
 // HIS EXACT WORDS FOR THE EMPTY CASE, on a tab that reviews: "And if no set
 // has been created yet at least draw: 'Clean #0'/'Raw'".
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(900);
 const chips0 = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
 ok(chips0.length === 2 && chips0[0] === "Clean #0" && chips0[1] === "Raw",
@@ -176,7 +176,7 @@ await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => 
 await p.waitForTimeout(900);
 ok(setState.fields >= 1 && setState.addBtn, "the set draws a field of itself, and a new set can be started");
 // Then over to the grid, which is where the rest of this gate works.
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1200);
 const onTopN = await p.evaluate(() => document.querySelectorAll("a.card").length);
 ok(onTopN === (D.domains.world ?? []).filter((c) => c.top === "grass").length,
@@ -303,7 +303,7 @@ ok(ed.addTiles === 1, `and Clean #0 cannot take tiles, Set #1 can (${ed.addTiles
 /* THE SWITCH IS THE SETS (maintainer: "the After/Texture/Raw instead will be
  * Set #1/Set #2/Set #3/Raw ... Clean #0/Set #1/Set #2/Set #3/Raw"). */
 ok(ed.chips.length === 0, "and still no switch above the editor once sets exist");
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(900);
 const chips1 = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
 ok(chips1[0] === "Clean #0" && chips1.at(-1) === "Raw" && chips1.length === 3,
@@ -786,7 +786,7 @@ const leak = await p.evaluate(() => {
     [...b2.querySelectorAll(".sortbar-btn")].some((x) => /^no stars /.test(x.textContent)));
   return [...(bar?.querySelectorAll(".sortbar-btn") ?? [])].map((x) => x.textContent.trim());
 });
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(700);
 const leak2 = await p.evaluate(() => {
   const bar = [...document.querySelectorAll(".sortbar")].find((b2) =>
@@ -989,7 +989,7 @@ ok(passes.before === 0,
 // is judged — and the promote modal — where the promotion is decided — had
 // none, and in After every field looks seamless because the postprocess
 // flattens the top to one colour.
-for (const tabName of ["Details", "On top of", "Transitions"]) {
+for (const tabName of ["Details", "Wall", "Fade"]) {
   await p.evaluate((t2) => [...document.querySelectorAll(".groundtab")].find((x) => x.textContent.includes(t2))?.click(), tabName);
   await p.waitForTimeout(700);
   const hasPass = await p.evaluate(() => ({
@@ -1030,12 +1030,17 @@ for (const w of [360, 393, 412, 430]) {
     const tabs = [...bar.querySelectorAll(".groundtab")];
     return {
       over: Math.round(bar.scrollWidth - bar.clientWidth),
+      // ONE ROW is the claim now (maintainer 2026-08-28: "fit all buttons on
+      // the same row"). The overflow number alone went vacuous the moment the
+      // strip could wrap — a wrapped strip never overflows horizontally — so
+      // the honest measure is how many rows the tops fall on.
+      rows: new Set(tabs.map((x) => Math.round(x.getBoundingClientRect().top))).size,
       labels: tabs.map((x) => x.textContent.replace(/\s+/g, " ").trim()).join(" | "),
       tall: Math.round(tabs[0].getBoundingClientRect().height),
     };
   });
-  ok(fit.over <= 0 && fit.tall >= 40,
-    `every tab is on screen at ${w}px, and still a 44px target (${fit.over}px over, ${fit.tall}px tall — ${fit.labels})`);
+  ok(fit.over <= 0 && fit.rows === 1 && fit.tall >= 40,
+    `every tab is on ONE row at ${w}px, and still a 44px target (${fit.rows} row, ${fit.over}px over, ${fit.tall}px tall — ${fit.labels})`);
   await ctxW.close();
 }
 
@@ -1057,7 +1062,7 @@ for (const w of [360, 393, 412, 430]) {
  * Tile art row, so asking for "Raw" there switched the whole section to raw
  * art and leaked into the checks below it. Scoped to the ground's own switch,
  * on the tab that has one. */
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(1000);
 const passGeom = [];
 const groundPasses = await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].map((x) => x.textContent.trim()));
@@ -1107,7 +1112,7 @@ p.on("request", countTrans);
 const passFetches = async (side, source = "Composed") => {
   await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
   await p.waitForTimeout(1600);
-  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Fade/.test(x.textContent.trim()))?.click());
   await p.waitForTimeout(1400);
   const clickIn = async (label, txt) => p.evaluate(([l, x2]) => {
     const row = [...document.querySelectorAll(".ground-pass")].find((r) => new RegExp(l).test(r.querySelector(".muted")?.textContent ?? ""));
@@ -1527,7 +1532,7 @@ ok(L.jumps.some((x) => /^Start on/.test(x)),
 // ---- 3. TRANSITIONS: the tab and the demo page -----------------------------
 await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await p.waitForTimeout(1600);
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Fade/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(900);
 /* EVERY NEIGHBOUR now means every ground with plates, minus itself — the
  * generated pairs are a subset with extra art, not the roster. */
@@ -1609,7 +1614,7 @@ await pub.addInitScript(() => localStorage.removeItem("wiki-admin-token"));
 await pub.goto(`${W}#/world/grass`, { waitUntil: "load" });
 await pub.waitForTimeout(1800);
 const seen = await pub.evaluate(() => {
-  [...document.querySelectorAll(".groundtab")].find((x) => /Transitions/.test(x.textContent))?.click();
+  [...document.querySelectorAll(".groundtab")].find((x) => /^Fade/.test(x.textContent.trim()))?.click();
   return null;
 });
 void seen;

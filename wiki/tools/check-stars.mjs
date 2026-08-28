@@ -122,7 +122,7 @@ await p.evaluate(() => document.querySelector("a.card")?.click());
 await p.waitForTimeout(700);
 // The ground page lands on Base (its set editor) — the filtered pair cards
 // this gate follows live on On top of.
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(900);
 const ty = await read();
 console.log(`type page: ${ty.h1} — ${ty.cards.map((c) => c.name).join(", ")}`);
@@ -224,7 +224,7 @@ await p.waitForTimeout(700);
 await p.evaluate(() => document.querySelector("a.card")?.click());
 await p.waitForTimeout(700);
 // Ground pages open on Base; the filtered pair cards are on On top of.
-await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /On top of/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Wall/.test(x.textContent.trim()))?.click());
 await p.waitForTimeout(900);
 const rty = await read();
 ok(rty.cards.length >= 1 && /\d+ of \d+ rejected/.test(rty.cards[0].sub),
