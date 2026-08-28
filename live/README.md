@@ -156,10 +156,15 @@ The laws around the flow:
   - **Several are normal** — *"the Scenery might have two collisions and not
     just one … an entrance with two pillars touching the ground"*.
   - **Three states, and the difference matters.** No entry = nobody has
-    decided; `boxes: []` = decided, this piece needs none (the right answer
-    for anything hung on a wall — 134 of 739 are MOUNTAIN_WALL or WINDOW);
-    `boxes: [...]` = the footprint. Written by the wiki's Scenery pages,
-    consumed by the game for collision and draw order.
+    decided; `boxes: []` = decided, this piece needs none; `boxes: [...]` =
+    the footprint. Written by the wiki's Scenery pages, consumed by the game
+    for collision and draw order.
+  - **Wall scenery never appears here at all** (maintainer 2026-08-28:
+    *"Everything that is placed on a wall doesn't have a hitbox"*). Pieces of
+    type `WINDOW` or `MOUNTAIN_WALL` — 134 of 715 — are no-hitbox **by
+    type**, decided by the scenery agent's classification, not by review. A
+    consumer must treat those types as hitbox-less without looking in this
+    file, and must not read their absence here as "undecided".
 - `live/feedback/<domain>.json` — `pixel-wiki-feedback@1` for monsters,
   characters, tiles, objects, sounds, music, items, lore, composer. Star
   ratings (1-5), approve/reject verdicts and notes per asset id. **Consumed

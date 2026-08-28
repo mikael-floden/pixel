@@ -898,7 +898,18 @@ function clearHitbox(entity) {
 /* THE REVIEW STATE OF ONE PIECE, which is what the filter counts.
  * "Filter on Scenery objects not having a hitbox VS having a hitbox" — with
  * the third state he did not name but needs: the ones nobody has judged. */
+/* WALL SCENERY CANNOT HAVE A HITBOX, BY TYPE (maintainer 2026-08-28: "Windows
+ * is placed on walls. Everything that is placed on a wall doesn't have a
+ * hitbox and should not be part of 'no hitbox yet'. It should also not be part
+ * of 'hitbox set'."). The scenery agent already classifies every piece, so the
+ * answer for these 134 is carried by the TYPE and needs no review — putting
+ * them in the to-do queue was asking him to hand-mark, one by one, a fact the
+ * data has known all along. Decided by type BEFORE any stored record, so a
+ * stray record on a wall piece cannot pull it back into a queue. */
+const WALL_SCENERY_TYPES = new Set(["WINDOW", "MOUNTAIN_WALL"]);
+const isWallScenery = (o) => WALL_SCENERY_TYPES.has(o?.type);
 function hitboxState(entity) {
+  if (isWallScenery(entity)) return "wall";
   const b = hitboxes(entity);
   if (b === null) return "todo";
   return b.length ? "has" : "none";
@@ -1955,7 +1966,9 @@ function makePlayer(entity, kind, opts = {}) {
       hitPad),
     h("span", { class: "muted shadow-hint" },
       "The ground this piece stands on. Its centre line is the render order: a player above it is drawn behind the piece, below it in front. Never drawn in game."));
-  const hitBtn = state.admin && kind === "object"
+  // Absent, not disabled: a control that can never do anything is a worse
+  // answer than none (the Base-tab lesson). The card's type pill says why.
+  const hitBtn = state.admin && kind === "object" && !isWallScenery(entity)
     ? h("button", {
       class: "ghost-btn shadow-btn",
       title: "Draw the ground this piece occupies — its hitbox, and the line that decides whether the player walks in front of it or behind. Committed with everything else.",
@@ -8783,8 +8796,13 @@ const OBJ_HITBOXES = {
   },
   none: {
     label: "needs none",
-    title: "Decided: this piece needs no hitbox — what you mark on anything hung on a wall",
+    title: "Decided piece by piece: this one needs no hitbox — for the odd standing piece that still should not collide",
     hit: (o) => hitboxState(o) === "none",
+  },
+  wall: {
+    label: "wall scenery",
+    title: "Windows and mountain-wall pieces — hung on a wall, so a hitbox does not apply. Decided by their type; nothing here ever needs marking",
+    hit: (o) => hitboxState(o) === "wall",
   },
 };
 const hitboxFilter = () => {

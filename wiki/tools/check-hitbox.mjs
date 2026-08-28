@@ -45,11 +45,40 @@ const chips = await p.evaluate(() => [...document.querySelectorAll('[data-bar="w
  * different facts — nobody has looked, versus decided-needs-none — and 134 of
  * the 739 pieces are MOUNTAIN_WALL or WINDOW, so the second group is large and
  * permanent. Folding them together would make the to-do count never reach 0. */
-ok(chips.length === 4 && /^all \d+/.test(chips[0]) && /no hitbox yet/.test(chips[1])
-  && /hitbox set/.test(chips[2]) && /needs none/.test(chips[3]),
+/* FIVE CHIPS. Wall scenery got its own (maintainer 2026-08-28: "Windows is
+ * placed on walls ... should not be part of 'no hitbox yet' ... also not part
+ * of 'hitbox set'. You can create a new filter ... called 'wall scenery'").
+ * Decided by TYPE, so the to-do queue holds only pieces a hitbox could ever
+ * apply to — with windows in it, its count could never reach zero. */
+ok(chips.length === 5 && /^all \d+/.test(chips[0]) && /no hitbox yet/.test(chips[1])
+  && /hitbox set/.test(chips[2]) && /needs none/.test(chips[3]) && /wall scenery/.test(chips[4]),
   `the Scenery page filters on hitbox state, with counts (${chips.join(" | ")})`);
 const total = +(chips[0].match(/\d+/) ?? [0])[0];
 ok(total === PIECES.length, `over the whole domain (${total} of ${PIECES.length})`);
+{
+  const wallN = PIECES.filter((o) => o.type === "WINDOW" || o.type === "MOUNTAIN_WALL").length;
+  const chipN = (name) => +((chips.find((c) => c.startsWith(name)) ?? "").match(/\d+$/) ?? [NaN])[0];
+  ok(chipN("wall scenery") === wallN,
+    `wall scenery counts exactly the WINDOW + MOUNTAIN_WALL pieces (${chipN("wall scenery")} of ${wallN})`);
+  ok(chipN("no hitbox yet") + chipN("hitbox set") + chipN("needs none") + chipN("wall scenery") === total,
+    "and the four states partition the domain — no piece in two queues, none in zero");
+  // A window must NOT appear under "no hitbox yet".
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /no hitbox yet/.test(x.textContent))?.click());
+  await p.waitForTimeout(1400);
+  const todoTypes = await p.evaluate(() => [...document.querySelectorAll("a.card")].slice(0, 60).map((a) => a.getAttribute("href")));
+  const winIds = new Set(PIECES.filter((o) => o.type === "WINDOW" || o.type === "MOUNTAIN_WALL").map((o) => `#/objects/${o.id}`));
+  ok(!todoTypes.some((h2) => winIds.has(h2)), "and the to-do queue contains no wall piece");
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /^all/.test(x.textContent))?.click());
+  await p.waitForTimeout(900);
+}
+// A wall piece offers NO editor at all — absent, not disabled.
+{
+  const wallPiece = PIECES.find((o) => o.type === "WINDOW");
+  await p.goto(`${W}#/objects/${wallPiece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2200);
+  ok(await p.evaluate(() => ![...document.querySelectorAll("button")].some((x) => /Edit hitbox/.test(x.textContent))),
+    `a window offers no Edit hitbox button — a control that can never apply is absent, not disabled (${wallPiece.id})`);
+}
 
 // ---- 2. the editor opens on a piece ---------------------------------------
 await p.goto(`${W}#/objects/${PIECE.id}`, { waitUntil: "load" });
