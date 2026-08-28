@@ -7884,10 +7884,16 @@ const FADE_PATTERN = "a12_s4";
 function fadeScene(a, b, tile) {
   const N = 6;
   const onA = tile.pctA >= 50;
-  const rnd = seededRnd(fnv1a(`fade|${tile.key}`) || 1);
+  /* ONE EDGE FOR EVERY SCENE, held near the middle (maintainer 2026-08-28:
+   * "you should not randomize the 'A wandering edge'. Keep it the same and
+   * somewhat centered"). The seed is a constant, so every card on the page —
+   * and every visit — walks the identical boundary: the tile under review is
+   * the only variable. The walk is clamped one column off either border so
+   * both grounds always keep a pure column for the tile to stand in. */
+  const rnd = seededRnd(fnv1a("fade|edge") || 1);
   const walk = [];
   let wx = Math.floor(N / 2) + 1;
-  for (let y = 0; y <= N; y++) { walk.push(wx); wx = Math.max(1, Math.min(N, wx + Math.floor(rnd() * 3) - 1)); }
+  for (let y = 0; y <= N; y++) { walk.push(wx); wx = Math.max(2, Math.min(N - 1, wx + Math.floor(rnd() * 3) - 1)); }
   const corner = (x, y) => (x < walk[Math.min(y, N)] ? 1 : 0);   // 1 = ground `a`
   const lib = patternLib();
   const majority = onA ? a : b;
@@ -7896,19 +7902,33 @@ function fadeScene(a, b, tile) {
   const dressed = wall ? `tex2:${wall}::${tile.file}::${clean}` : tile.file;
   const box = h("div", { class: "iso-stage checker trans-stage" });
   const genSet = null;                 // fades always compose; raw never exists
-  const cells = [];
-  let majorityCells = 0, fadeOnMajority = 0, fadeOnMinority = 0;
+  /* THE FADE TILE APPEARS ONCE, near the centre, on its majority side
+   * (maintainer 2026-08-28: "I also only want to see 1 tile near the center
+   * ... The 'fade' tiles are not meant to be repeated like that!"). It is a
+   * warm-up tile the map agent scatters — like a detail, filling every pure
+   * cell with it showed a repetition that will never exist. Every other cell
+   * is the ordinary wandering-edge composition. */
+  const grid = [];
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
     const idx = 8 * corner(c, r) + 4 * corner(c + 1, r) + 2 * corner(c, r + 1) + corner(c + 1, r + 1);
     const pure = idx === 0 || idx === 15;
     const isMaj = (idx === 15) === (majority === a);
-    const img = pure && isMaj ? dressed : transArt(a, b, FADE_PATTERN, idx, genSet, c, r);
-    if (pure && isMaj) { majorityCells++; if (img === dressed) fadeOnMajority++; }
-    if (pure && !isMaj && img === dressed) fadeOnMinority++;
-    cells.push({ c, r, img });
+    grid.push({ c, r, idx, pure, isMaj });
   }
-  // QA probe: where the fade tile actually landed, per scene, for the gate.
-  (window.__wikiFades ??= []).push({ key: tile.key, majority, majorityCells, fadeOnMajority, fadeOnMinority });
+  const mid = (N - 1) / 2;
+  const spot = grid.filter((g) => g.pure && g.isMaj)
+    .sort((x, y) => (Math.hypot(x.c - mid, x.r - mid) - Math.hypot(y.c - mid, y.r - mid)) || (x.r - y.r) || (x.c - y.c))[0] ?? null;
+  const cells = grid.map((g) => ({ c: g.c, r: g.r,
+    img: g === spot ? dressed : transArt(a, b, FADE_PATTERN, g.idx, genSet, g.c, g.r) }));
+  // QA probe: where the fade tile actually landed, per scene, for the gate —
+  // MEASURED off the composed cells, never restated from the intent.
+  (window.__wikiFades ??= []).push({
+    key: tile.key, majority, walk: [...walk],
+    majorityCells: grid.filter((g) => g.pure && g.isMaj).length,
+    fadeOnMajority: cells.filter((x, i) => x.img === dressed && grid[i].pure && grid[i].isMaj).length,
+    fadeOnMinority: cells.filter((x, i) => x.img === dressed && grid[i].pure && !grid[i].isMaj).length,
+    spot: spot ? { c: spot.c, r: spot.r, dist: +Math.hypot(spot.c - mid, spot.r - mid).toFixed(2) } : null,
+  });
   loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) =>
     box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 2, worldIso())));
   return box;

@@ -88,20 +88,31 @@ ok(i2.rows.length >= 12 && i2.rows[0].startsWith(`${iceTop}% ice`),
 
 // ---- 4. majority-side placement -------------------------------------------
 /* "Display the fade tile on the grass side if grass is >= 50% and on the ice
- * side if ice is > 50%." Probed through the scene's own cell list: every pure
- * cell of the majority side must be the dressed fade tile, and no cell of the
- * minority side may be. The audit array grows per RENDER, so the truth is the
- * last entry per tile. */
+ * side if ice is > 50%." Probed through the scene's own cell audit. The audit
+ * array grows per RENDER, so the truth is the last entry per tile. */
 const sides = await p.evaluate(() => {
   const last = new Map();
   for (const t of window.__wikiFades ?? []) last.set(t.key, t);
   return [...last.values()];
 });
 ok(sides.length >= 12, `the scenes publish their cell audit, one per rendered tile (${sides.length})`);
-const astray = sides.filter((t) => !(t.majorityCells > 0 && t.fadeOnMajority === t.majorityCells && t.fadeOnMinority === 0));
+/* ONCE, NEAR THE CENTRE, ON ITS OWN SIDE (maintainer 2026-08-28: "I also
+ * only want to see 1 tile near the center (but on the current side of the
+ * transition). The 'fade' tiles are not meant to be repeated like that!").
+ * And ONE SHARED EDGE: "you should not randomize the 'A wandering edge'.
+ * Keep it the same and somewhat centered" — every scene must walk the
+ * identical boundary, clamped off the borders. */
+const astray = sides.filter((t) => !(t.majorityCells > 0 && t.fadeOnMajority === 1 && t.fadeOnMinority === 0));
 ok(astray.length === 0, astray.length
-  ? `${astray[0].key}: fade tile astray (${astray[0].fadeOnMajority}/${astray[0].majorityCells} on ${astray[0].majority}, ${astray[0].fadeOnMinority} on the minority side)`
-  : `every audited tile fills its majority side and never the other (${sides.length} tiles)`);
+  ? `${astray[0].key}: fade tile astray (${astray[0].fadeOnMajority} on ${astray[0].majority} of ${astray[0].majorityCells} pure cells, ${astray[0].fadeOnMinority} on the minority side)`
+  : `every audited scene shows the fade tile EXACTLY ONCE, on its majority side (${sides.length} scenes)`);
+const walks = new Set(sides.map((t) => (t.walk ?? []).join(",")));
+ok(walks.size === 1 && sides.every((t) => (t.walk ?? []).every((w) => w >= 2 && w <= 5)),
+  `every scene walks the SAME edge, held off the borders (${[...walks][0]})`);
+const far = sides.filter((t) => !(t.spot && t.spot.dist <= 2.6));
+ok(far.length === 0, far.length
+  ? `${far[0].key}: fade tile far from centre (${JSON.stringify(far[0].spot)})`
+  : `and the tile stands near the centre of the field (max dist ${Math.max(...sides.map((t) => t.spot?.dist ?? 9))})`);
 
 // ---- 5. verdicts ride the tiles feedback file on the tile's own key --------
 await p.evaluate(() => { const r = document.querySelector(".fade-tile .fb-row"); r.querySelectorAll(".stars button")[3]?.click(); });
