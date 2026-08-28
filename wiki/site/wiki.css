@@ -294,11 +294,18 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   .groundtab, .pagetab { padding: 10px 9px; font-size: 13.5px; }
   .groundtab .tab-n { margin-left: 5px; padding: 1px 5px; font-size: 11px; }
 }
-/* And one tier tighter for the small phones, where four tabs were still 10px
-   over. Nothing below this exists in the wild worth designing for. */
-@media (max-width: 380px) {
+/* And one tier tighter for the small phones. The thresholds moved 2026-08-28:
+   the count chips change width with his review (a 3-digit queue became a
+   2-digit one and the strip STILL measured 8px over at 393) — so the tiers
+   are set against the widest realistic chip set, not the day's counts. */
+@media (max-width: 400px) {
   .groundtab, .pagetab { padding: 10px 6px; font-size: 13px; }
   .groundtab .tab-n { margin-left: 4px; padding: 1px 4px; }
+}
+@media (max-width: 366px) {
+  /* the tap target survives the squeeze — 44px is the floor, not the padding */
+  .groundtab, .pagetab { padding: 10px 4px; font-size: 12.5px; min-height: 42px; }
+  .groundtab .tab-n { margin-left: 3px; padding: 1px 3px; font-size: 10.5px; }
 }
 .groundtab:last-child { border-right: none; }
 .groundtab.sel, .pagetab.sel { background: var(--accent-soft, #f6dfd4); color: var(--ink); font-weight: 600; }

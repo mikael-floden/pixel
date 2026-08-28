@@ -1552,8 +1552,22 @@ const pubDetails = await pub.evaluate(() => {
   const t2 = [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent));
   return { disabled: t2?.disabled ?? null, topBtns: document.querySelectorAll(".top-btn").length };
 });
-ok(pubDetails.disabled === true && pubDetails.topBtns === 0,
-  "the empty Details tab is disabled for a player, and no review machinery leaks to them");
+/* EXPECT WHAT THE DATA SAYS, not "empty": the tab is FOR players once he has
+ * approved details, and this asserted disabled===true right up until the
+ * morning he approved some — a gate that reddens because the maintainer
+ * worked is a broken gate. */
+const grassTopIds = new Set([
+  ...(META.tops?.grass ?? []).map((t2) => t2.id),
+  ...(D.domains.world ?? []).filter((c2) => c2.top === "grass").flatMap((c2) => c2.candidates.map((x) => x.key)),
+]);
+let hasDetails = false;
+try {
+  const fbDoc = JSON.parse(readFileSync(join(ROOT, "live/feedback/tiles.json"), "utf8"));
+  hasDetails = Object.entries(fbDoc.entries ?? {}).some(([k, v]) =>
+    k.endsWith("#top") && v?.status === "approved" && grassTopIds.has(k.slice(0, -4)));
+} catch {}
+ok(pubDetails.disabled === !hasDetails && pubDetails.topBtns === 0,
+  `the Details tab follows his approvals for a player — ${hasDetails ? "approved details exist, so it opens" : "nothing approved, so it is disabled"} — and no review machinery leaks`);
 await pub.goto(`${W}#/world/transition/dark_mud__to__grass`, { waitUntil: "load" });
 await pub.waitForTimeout(2200);
 const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene canvas").length);
