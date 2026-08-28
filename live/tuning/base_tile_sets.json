@@ -7,7 +7,7 @@
     "tile_key": "bts1|tile|<set_id>|<x>|<y>",
     "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
   },
-  "updated_at": "2026-08-28T02:06:20.637Z",
+  "updated_at": "2026-08-28T02:08:56.110Z",
   "grounds": {
     "black_rock": {
       "sets": [
@@ -1920,6 +1920,77 @@
               "kind": "tile",
               "id": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
               "tile": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Set",
+          "weight": 1,
+          "members": [
+            {
+              "kind": "clean",
+              "weight": 0
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_00.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_01.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_06.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_06.d7cf16fb.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_07.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_07.5cd1f419.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_08.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_08.5b626834.webp",
+              "weight": 0.2
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_09.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_09.4ba87040.webp",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_10.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_10.987c8e65.webp",
+              "weight": 0.1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_11.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_11.7f453ed9.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_12.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_12.6fe9fdba.webp",
+              "weight": 1
+            },
+            {
+              "kind": "tile",
+              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_13.webp",
+              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_13.e3c8f939.webp",
               "weight": 1
             }
           ]
