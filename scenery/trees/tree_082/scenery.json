@@ -89,7 +89,26 @@
       "glow_concept": "swarm of fireflies drifting through the crown",
       "difference_from_source": 0.8302,
       "glow_score": 0.4255,
-      "generated_at": "2026-08-14T17:33:53+00:00"
+      "generated_at": "2026-08-14T17:33:53+00:00",
+      "animations": {
+        "wind": {
+          "group_id": "78f2a823-3f1a-44d1-a5ca-ac9a2f5ff7a2",
+          "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trees/tree_082/lit_3/animations/wind/00.webp",
+            "trees/tree_082/lit_3/animations/wind/01.webp",
+            "trees/tree_082/lit_3/animations/wind/02.webp",
+            "trees/tree_082/lit_3/animations/wind/03.webp",
+            "trees/tree_082/lit_3/animations/wind/04.webp"
+          ],
+          "strip": "trees/tree_082/lit_3/animations/wind__strip.webp",
+          "generated_at": "2026-08-28T16:20:16+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "trees/tree_082/lit_4/sprite.webp",
