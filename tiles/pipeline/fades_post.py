@@ -57,6 +57,7 @@ from PIL import Image
 
 import blends_post as BP
 import fade_mix as FM
+import palette_snap as PS
 import puddle_gate as PG
 import tops_post as TP
 import transition_render as TR
@@ -67,67 +68,76 @@ MIN_REGION_PX = 60   # a side needs this many pixels before its own median is
                      # art-rendition delta for that ground (art_refs -> clean)
 
 
-def align_two_sided(img, maj, mino, post_map, meter_mask):
-    """BOTH grounds land on their own palette colour - the fade fix, 2026-08-28.
+def process_two_sided(img, edge_g, other_g, post_map, meter_mask):
+    """BOTH grounds get THE postprocessing - substitution onto their own palettes.
 
-    The single-sided rule inherited from blends moved only the majority onto its clean
-    colour and let the minority "ride along keeping its own hue". For blends (small
-    embers) that protected the art; for fades it shipped the generator's hue for the
-    whole minority region - the maintainer caught grass-in-black_rock flecks wearing
-    olive (47,78,21) beside a wiki page whose every other green is the palette's
-    (20,82,59) exactly: "We don't have that grass color palette."
+    The additive two-sided shift tried first could not deliver this and the maintainer
+    caught why on the art: a shift moves a region's MEDIAN onto the palette but keeps
+    the region's hue-spread, so a lime grass tuft (huge G-B gap, bright) stayed lime
+    beside a world whose every other grass went through substitute(). "I still feel the
+    grass is more lime and vibrant and doesn't look like our grass. Are you sure you run
+    postprocessing on both ground-types?" We were not - now we are: each ground's region
+    (the mix meter's own map decides which is which) gets the house substitution toward
+    that ground's anchors - [top] + its approved top_extras, nearest-anchor exactly as
+    the textured pass does - then the region's background lands on its clean colour
+    integer-exactly. Hue and saturation are SET from the palette, never read off the
+    art; only the value relief carries. A fade's grass now looks like the game's grass,
+    because it goes through the game's own pipe.
 
-    So: per-pixel weight w = the mix meter's own probability this pixel is the minority
-    ground (smoothed ~3px), and out = art + (1-w)*deltaMaj + w*deltaMin, iterated so
-    each side's trimmed median lands on ITS clean colour integer-exactly. A uniform
-    shift per region - detail rides, exactly the property the Palette Headroom page
-    established as the ceiling. No hard seam: the weight ramps where the meter is
-    unsure. Walls take the weight of the lowest top pixel above them (wall_is_
-    meaningless, but a top/wall step would be invented detail).
+    The wall is never drawn by any fade consumer (wall_is_meaningless); it takes the
+    edge region's uniform delta so review strips do not show raw colours below a
+    processed top.
     """
     arr = np.array(img.convert("RGBA"), int)
     top = TR.top_face(arr[..., 3] > 0)
     if not top.any() or post_map is None:
         return None
-    clean_a = TP._hex(PALETTE[maj]["top"])
-    clean_b = TP._hex(PALETTE[mino]["top"])
-    w = np.zeros(top.shape, float)
+    af = arr.astype(float)
+    rgb = af[..., :3]
+    other_m = np.zeros_like(top)
     mm = meter_mask & top
-    w[mm] = np.clip(post_map[mm], 0.0, 1.0)
-    w = BP._smooth(w, passes=2)
-    w[~top] = 0.0
-    opaque = arr[..., 3] > 0
-    for x in range(w.shape[1]):
-        ys = np.flatnonzero(top[:, x])
-        if ys.size:
-            below = opaque[:, x].copy()
-            below[:ys[-1] + 1] = False
-            w[below, x] = w[ys[-1], x]
-    rgb = arr[..., :3].astype(float)
-    a_m = top & (w < 0.25)
-    b_m = top & (w > 0.75)
-    ref_b = BP.art_refs().get(mino)
-    w3 = w[..., None]
-    for _ in range(3):
-        da = (clean_a - TP.background_of(rgb, a_m)) if a_m.sum() >= MIN_REGION_PX             else np.zeros(3)
-        if b_m.sum() >= MIN_REGION_PX:
-            db = clean_b - TP.background_of(rgb, b_m)
-        elif ref_b is not None:
-            db = clean_b - ref_b          # the generator's typical rendition -> palette
+    other_m[mm] = post_map[mm] > 0.5
+    regions = ((edge_g, top & ~other_m), (other_g, top & other_m))
+    out = af.copy()
+    edge_delta = np.zeros(3)
+    for g, gm in regions:
+        if not gm.any():
+            continue
+        v = PALETTE[g]
+        anchors = [PS._hex(v["top"])] + [PS._hex(h) for h in (v.get("top_extras") or [])]
+        clean = anchors[0]
+        bg = TP.background_of(rgb, gm) if gm.sum() >= 40 else np.median(rgb[gm], 0)
+        delta = clean - bg
+        if g == edge_g:
+            edge_delta = delta
+        if len(anchors) == 1:
+            px = PS.substitute(af, gm, "%02x%02x%02x" % tuple(int(round(c)) for c in clean))
+            if px is not None:
+                out[..., :3][gm] = px
         else:
-            db = np.zeros(3)
-        da, db = np.rint(da), np.rint(db)
-        if not np.abs(da).sum() and not np.abs(db).sum():
-            break
-        rgb += (1.0 - w3) * da + w3 * db
-        np.clip(rgb, 0, 255, out=rgb)
-        if b_m.sum() < MIN_REGION_PX:
-            break                          # the fallback delta must not iterate
-    np.rint(rgb, out=rgb)
-    TP.rim_suppress(rgb, top, clean_a)
-    out = arr.copy()
-    out[..., :3] = np.clip(rgb, 0, 255).astype(int)
-    return Image.fromarray(out.astype(np.uint8), "RGBA")
+            al = np.clip(rgb + delta, 0, 255)
+            A = PG.srgb_to_lab(np.array(anchors, float))
+            Pl = PG.srgb_to_lab(al[gm])
+            assign = np.linalg.norm(Pl[:, None, :] - A[None, :, :], axis=2).argmin(1)
+            for k, anc in enumerate(anchors):
+                sub = np.zeros_like(gm)
+                sub[gm] = assign == k
+                if not sub.any():
+                    continue
+                px = PS.substitute(af, sub, "%02x%02x%02x" % tuple(int(round(c)) for c in anc))
+                if px is not None:
+                    out[..., :3][sub] = px
+        rgbf = out[..., :3]
+        TP.shift_mask_to_clean(rgbf, gm, clean, measure=gm)
+    # the wall rides the edge region's delta (never drawn, but strips show it)
+    wall = (arr[..., 3] > 0) & ~top
+    out[..., :3][wall] = np.clip(out[..., :3][wall] + edge_delta, 0, 255)
+    rgbf = out[..., :3]
+    TP.rim_suppress(rgbf, top, PS._hex(PALETTE[edge_g]["top"]))
+    res = arr.copy()
+    res[..., :3] = np.clip(np.rint(rgbf), 0, 255).astype(int)
+    return Image.fromarray(res.astype(np.uint8), "RGBA")
+
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(ROOT)
@@ -135,9 +145,10 @@ FADES = os.path.join(ROOT, "fades")
 PALETTE = json.load(open(os.path.join(ROOT, "config", "palette.json")))["types"]
 
 MIN_MIX = 0.02      # below this one ground is not visibly present: a plain top, not a fade
-MAX_EDGE_LOSS = 0.50  # more than half the rim band reading as the minority ground means
-                      # the tile sits well on NEITHER field - the one edge failure that
-                      # still rejects after the maintainer's "don't make it absolute"
+MIN_RIM = 0.60      # the edge ground must own at least this share of the rim band -
+                    # generous on purpose ("don't make the filter absolute... you can
+                    # pass images to me even if some edges are black_rock"); below it
+                    # the edges belong to no one ground and the tile sits well nowhere
 
 
 def sheets():
@@ -165,14 +176,70 @@ def analyse(sheet, i, name):
     if mix is None or mix.get("uncertain"):
         return None, "uncertain"
     frac_b = float(mix["frac_b"])
-    majority = b if frac_b > 0.5 else a
-    minority = a if majority == b else b
 
-    # 2. ALIGN BOTH SIDES onto their own palette colours (the minority riding was a
-    #    blends rule; on fades it shipped the generator's hue - see align_two_sided).
-    clean = TP._hex(PALETTE[majority]["top"])
-    post_map = mix["post"] if majority == a else (1.0 - mix["post"])
-    aligned = align_two_sided(raw, majority, minority, post_map, mix["mask"])
+    # 2. THE SIDE A TILE BELONGS ON IS ITS RIM, NOT ITS AREA MAJORITY. The maintainer's
+    #    counter-example: big black rocks ON an ice sheet - rock wins the area, but the
+    #    edges are ice, so the tile places seamlessly on ICE and nowhere else ("you put
+    #    it on black_rock and not on ice even if it's clear the edges are blue"). The
+    #    rim's ground is read from the meter's own per-pixel map over the border band
+    #    (the outer three erosion rings, the same band every edge rule here uses).
+    a2, dia = PG.diamond_of(raw)
+    band = None
+    if dia is not None:
+        band, _core = PG.band_and_core(dia)
+        if (band & mix["mask"]).sum() < 40:
+            band = None
+    if band is None:
+        # ~490 sheets draw alpha the staircase detector cannot read (band collapsed to
+        # ~20px against a ~940px top face). The meter's own mask is sound there, so the
+        # band falls back to the mask's outer three erosion rings - same width, same
+        # meaning, measured on the mask that every other number here already trusts.
+        mk = mix["mask"]
+        er = mk.copy()
+        for _ in range(3):
+            er = PG.erode(er)
+        band = mk & ~er
+        if (band & mk).sum() < 40:
+            return None, "no rim"
+        dia = mk
+    rim = band & mix["mask"]
+    # THE FIGHT IS DECIDED ON THE LOWER SIDES. The maintainer's camera argument
+    # (2026-08-28, drawn on the tile): a tall feature is rendered UPWARD in screen
+    # space, so it can overlap the NW/NE edges of the diamond while the ground under
+    # it is still the rim ground - "if we could change the camera angle ALL edges
+    # would have been ICE". Nothing can occlude the SW/SE edges from behind, so they
+    # are the honest witnesses; the upper edges join only when the lower half is too
+    # thin to vote.
+    try:
+        sides = PG.side_of(dia)
+        lower = (sides["SW"] | sides["SE"]) & rim
+    except Exception:
+        lower = np.zeros_like(rim)
+    if lower.sum() < 40:
+        # generic-mask fallback: the lower edges are the band below the mask's widest
+        # row - for a true diamond this IS SW/SE, and for odd alpha it stays the part
+        # of the rim nothing tall can occlude (features draw upward).
+        widths = dia.sum(1)
+        y_mid = int(np.argmax(widths))
+        lower = rim.copy()
+        lower[:y_mid + 1, :] = False
+    vote = lower if lower.sum() >= 40 else rim
+    rim_b = float(np.clip(mix["post"][vote], 0, 1).mean())
+    edge_ground = b if rim_b > 0.5 else a
+    other = a if edge_ground == b else b
+    rim_own = rim_b if edge_ground == b else 1.0 - rim_b
+    if rim_own < MIN_RIM:
+        return None, "edges mixed"
+    # reported contact stays WHOLE-band (how much of the full rim is not the edge
+    # ground - includes the 3D overlaps, which is honest as a display number)
+    whole_b = float(np.clip(mix["post"][rim], 0, 1).mean())
+    rim_own_whole = whole_b if edge_ground == b else 1.0 - whole_b
+
+    # 3. ALIGN BOTH SIDES onto their own palette colours; the rim treatment follows the
+    #    EDGE ground (that is whose field the tile will sit in).
+    clean = TP._hex(PALETTE[edge_ground]["top"])
+    post_map = mix["post"] if edge_ground == a else (1.0 - mix["post"])
+    aligned = process_two_sided(raw, edge_ground, other, post_map, mix["mask"])
     if aligned is None:
         return None, "no top face"
     post = os.path.join(d, "post")
@@ -198,24 +265,31 @@ def analyse(sheet, i, name):
     frac_min = min(frac_b, 1.0 - frac_b)
     if frac_min < MIN_MIX:
         return None, "no real mixture"
-    if frac_min > 0.5 - 1e-9 or abs(frac_b - 0.5) < 1e-9:
-        return None, "50/50"
     m = PG.border_purity(Image.open(shipped), clean_rgb=clean)
     if not m.get("ok"):
         return None, "no diamond"
-    # spill = the share of the rim band where a feature genuinely crosses out of the
-    # interior (the generator's own rim shading is excused). His tall-rock examples
-    # measure as moderate spill and PASS; only a rim mostly owned by the minority fails.
-    if m["spill"] > MAX_EDGE_LOSS:
-        return None, "edges mostly minority"
+    # No area-based edge reject here: the rim-coherence gate above already decided the
+    # edges, from the meter's map. An "inverted" tile (area majority rock, rim ice) is
+    # VALID and places on ice - that is the maintainer's ruling, not an edge failure.
 
+    # THE MAINTAINER'S PCT FORMULA (2026-08-28): "The border is worth a lot!" The
+    # edge-fight winner STARTS at 51 and the remaining 49 points scale with the
+    # measured top-face area share - pct[E] = 51 + 49*areaE. The ground a tile sits on
+    # is therefore ALWAYS the pct majority (">50% in the metadata" true by
+    # construction, so placement can never land a tile on the wrong side again), and
+    # his worked example lands exactly: area 49.5% ice with an ice rim -> 75% ice.
+    # Integers summing to 100, so no label can ever read 51+50 again.
+    areaE = frac_b if edge_ground == b else 1.0 - frac_b
+    pE = int(round(51.0 + 49.0 * areaE))
+    pct = {edge_ground: pE, other: 100 - pE}
     return {
         # STABLE for the life of the art: directory + position. The hash lives in `file`.
         "key": f'{sheet["dir"]}/{name[:-5]}',
         "file": os.path.relpath(shipped, REPO),
-        "pct": {a: round(100 * (1.0 - frac_b), 1), b: round(100 * frac_b, 1)},
-        "edge_ground": majority,
-        "edge_contact": round(float(m["spill"]), 4),
+        "pct": pct,
+        "area_pct": {a: round(100 * (1.0 - frac_b), 1), b: round(100 * frac_b, 1)},
+        "edge_ground": edge_ground,
+        "edge_contact": round(1.0 - rim_own_whole, 4),
         "border_impurity": m["border_impurity"],
         "phrasing": sheet["phrasing"], "prompt": sheet["prompt"],
     }, None
@@ -239,10 +313,13 @@ def main():
         "schema": "tiles3/fade-tiles@1",
         "kind": "fade_top_only", "use_for": "transition", "wall_is_meaningless": True,
         "_comment": [
-            "VALID fade tiles only, per the maintainer's rules: a clear majority ground",
-            "(never 50/50), both grounds visibly present, and edges that still read as",
-            "the majority - some edge contact by the minority is allowed (tall features",
-            "have height), so `edge_contact` is published as a number, 0 = fully clean.",
+            "VALID fade tiles only, per the maintainer's rules: never 50/50, both",
+            "grounds visibly present, and a rim that coherently belongs to ONE ground.",
+            "PLACE BY edge_ground, NOT by pct majority: edge_ground is the ground the",
+            "RIM belongs to, and a tile can be area-majority rock while sitting on ice",
+            "(big rocks ON an ice sheet - maintainer ruling 2026-08-28). edge_contact",
+            "is the share of rim NOT the edge ground, 0 = fully clean; moderate contact",
+            "is allowed (tall features have height).",
             "pct is MEASURED from the published bytes named in `file`, never taken from",
             "the prompt. `key` is stable for the life of the art; verdicts ride on it.",
             "Rejected tiles stay on disk (raw sheets are never deleted) but are not",
