@@ -224,6 +224,32 @@ await fits("widened past the art");
 await p.evaluate(() => { const r = [...document.querySelectorAll(".hit-bar .shadow-slider")][2]; r.value = "60"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); });
 await p.waitForTimeout(700);
 await fits("turned 60 degrees");
+/* THE D RAIL GROWS UPWARD ONLY (maintainer 2026-08-28: "you are good at
+ * finding the bottom, left and right - but you find it harder to know where
+ * in y the hitbox ends ... the scaling center is the bottom of the elipse").
+ * The bottom edge ay+ry must hold still while D changes. */
+{
+  // snapped ABSOLUTE values: a range input rounds to its step, so relative
+  // nudges land half a step off and a strict equality misses by exactly that
+  const b0 = await p.evaluate(() => {
+    const d2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][1];
+    const base = Math.round(+d2.value * 2) / 2;
+    d2.value = String(base); d2.dispatchEvent(new Event("input", { bubbles: true })); d2.dispatchEvent(new Event("change", { bubbles: true }));
+    return { base, ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] };
+  });
+  await p.waitForTimeout(400);
+  const drive = (v) => p.evaluate((v2) => { const d2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][1]; d2.value = String(v2); d2.dispatchEvent(new Event("input", { bubbles: true })); d2.dispatchEvent(new Event("change", { bubbles: true })); }, v);
+  await drive(b0.base + 14);
+  await p.waitForTimeout(500);
+  const b1 = await p.evaluate(() => ({ ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] }));
+  ok(Math.abs(b1.ry - (b0.base + 14) / 2) < 0.03 && Math.abs((b1.ay + b1.ry) - (b0.ay + b0.ry)) < 0.05,
+    `the D rail scales from the BOTTOM — deeper ellipse, same bottom edge (${(b0.ay + b0.ry).toFixed(1)} → ${(b1.ay + b1.ry).toFixed(1)})`);
+  await drive(b0.base);
+  await p.waitForTimeout(500);
+  const b2 = await p.evaluate(() => ({ ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] }));
+  ok(Math.abs(b2.ry - b0.base / 2) < 0.03 && Math.abs((b2.ay + b2.ry) - (b0.ay + b0.ry)) < 0.05,
+    "and shrinking D comes back down onto the very same bottom");
+}
 {
   const pb2 = await (await p.$(".hit-bar .shadow-pad")).boundingBox();
   await p.mouse.move(pb2.x + pb2.width / 2, pb2.y + pb2.height / 2);

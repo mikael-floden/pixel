@@ -82,6 +82,11 @@ const LIVE_FILES: Record<string, string> = {
   // part of the piece. Absent = undecided, [] = decided-none (wall-mounted).
   // Written by the wiki's Scenery pages. See live/README.md.
   "tuning/scenery_hitbox.json": "tuning/scenery_hitbox",
+  // WHICH x-OVER-x TILE BUILDS THE WALL under a borrowed-wall top. The wiki
+  // picks the measured closest match automatically; an entry here is the
+  // Game Master's override for one face. Written by the wiki; consumed by
+  // whatever composes ground tops. See live/README.md.
+  "tuning/top_walls.json": "tuning/top_walls",
   // The Game Master's corrections to WHICH pieces are wall scenery — the
   // agent's type tag is wrong both ways sometimes. Same contract as
   // scenery_lights: wiki writes, the scenery agent re-files and deletes.
@@ -134,6 +139,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_tops") return { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_hitbox") return { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
+  if (key === "tuning/top_walls") return { format: "pixel-wiki-top-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_walls") return { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
   if (key === "tuning/base_tiles") return { format: "pixel-wiki-base-tiles@1", updated_at: "", overrides: {} };
@@ -425,6 +431,7 @@ export function registerLiveRoutes(app: express.Application): void {
         base_tiles: docs.get("tuning/base_tiles"),
         tile_tops: docs.get("tuning/tile_tops"),
         scenery_hitbox: docs.get("tuning/scenery_hitbox"),
+        top_walls: docs.get("tuning/top_walls"),
         scenery_walls: docs.get("tuning/scenery_walls"),
         base_tile_sets: docs.get("tuning/base_tile_sets"),
       },

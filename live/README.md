@@ -133,6 +133,20 @@ The laws around the flow:
     `overrides["tiles/<cell>/<key8>"] = { own_top: true, updated_at }`.
   - **Absent means the default** (the ground's configured surface). Setting a
     tile back deletes its entry — the file only ever names the exceptions.
+- `live/tuning/top_walls.json` — `pixel-wiki-top-walls@1`. **Which x-over-x
+  tile builds the wall under a borrowed-wall top** (maintainer 2026-08-28:
+  *"you should not just pick 'the first' x over x - you should pick the BEST
+  ... closest in color/tune and structure"*). The wiki picks the measured
+  closest match automatically (mean top-face RGB + dominant share + colour
+  count, published in `wiki/site/data.json` `wallPools` and per-candidate
+  `tm/tflat/tk`); an entry here is the Game Master's per-face override from
+  the wall stepper. **Consumed by whatever composes ground tops** — the wiki
+  today, the game when it borrows walls.
+  - `overrides["<face key>"] = { wall: "tiles/<g>__over__<g>/<key8>", updated_at }`
+    — the face key is a tops id (`tiles/tops/...webp`) or an x-over-y
+    candidate key.
+  - **Absent means the measured best**; stepping onto the measured best
+    deletes the entry — the file only ever names his exceptions.
 - `live/tuning/scenery_hitbox.json` — `pixel-wiki-scenery-hitbox@1`. **The
   ground a scenery piece occupies.** One or more ellipses per piece, in FRAME
   PIXELS with the origin at the frame's centre — the same quantity and units

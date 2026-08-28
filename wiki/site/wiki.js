@@ -1949,7 +1949,19 @@ function makePlayer(entity, kind, opts = {}) {
     const inp = h("input", { type: "range", class: "shadow-slider", "aria-label": label, ...cfg });
     inp.addEventListener("input", () => {
       const v = +inp.value;
-      editHit(hitSel, key === "w" ? { rx: v / 2 } : key === "h" ? { ry: v / 2 } : { rot: v });
+      /* D GROWS UPWARD ONLY (maintainer 2026-08-28: "you are good at finding
+       * the bottom, left and right - but you find it harder to know where in
+       * y the hitbox ends ... the scaling center is the bottom of the
+       * elipse"). The auto-placed bottom is the trustworthy edge, so the D
+       * rail keeps ay+ry fixed and moves only the top — one rail now fixes
+       * the one thing usually wrong. */
+      if (key === "h") {
+        const b = hitList()[hitSel];
+        const bottom = (b?.ay ?? 0) + (b?.ry ?? 0);
+        editHit(hitSel, { ry: v / 2, ay: +(bottom - v / 2).toFixed(2) });
+        return;
+      }
+      editHit(hitSel, key === "w" ? { rx: v / 2 } : { rot: v });
     });
     inp.addEventListener("change", () => { editBox = null; draw(); });
     return inp;
@@ -5284,6 +5296,118 @@ function xoverxArt(typeId) {
   if (!own) return null;
   return (own.candidates.find((x) => fb("tiles", x.key).status === "approved") ?? own.candidates[0])?.art ?? null;
 }
+/* ---- THE BEST WALL FOR A TOP (maintainer 2026-08-28: "There might be
+ * several x over x tiles to help with the wall and we should pick the tile
+ * that is closest in color and shape vs the top only-tile ... you should not
+ * just pick 'the first' x over x - you should pick the BEST") ----
+ *
+ * The build measures every x-over-x candidate's TEXTURED top (wallPools) and
+ * every face the wiki dresses — top-only tiles and x-over-y candidates alike
+ * — with the same ruler: mean top-face RGB, dominant share, distinct
+ * colours. The pick is the argmin of colour distance plus a structure term;
+ * his stepper override outranks it, stored per face key in
+ * live/tuning/top_walls.json (agreeing with the auto pick DELETES the
+ * override, the scenery-walls rule). */
+const TOPWALL_KEY = "tuning/top_walls";
+const topWallsDoc = () => state.tuning.top_walls
+  ?? (state.tuning.top_walls = { format: "pixel-wiki-top-walls@1", updated_at: "", overrides: {} });
+function setTopWall(faceKey, candKey) {
+  const doc = topWallsDoc();
+  doc.overrides ??= {};
+  if (candKey == null) delete doc.overrides[faceKey];
+  else doc.overrides[faceKey] = { wall: candKey, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(TOPWALL_KEY, faceKey);
+  markDirty(TOPWALL_KEY);
+}
+/** The ground's x-over-x candidates, rejected ones out, approved first. */
+function wallPool(typeId) {
+  const pool = worldMeta().wallPools?.[typeId] ?? [];
+  const st = (k) => fb("tiles", k).status;
+  const keep = pool.filter((c) => st(c.key) !== "rejected");
+  return [...keep.filter((c) => st(c.key) === "approved"), ...keep.filter((c) => st(c.key) !== "approved")];
+}
+/* Face -> {stats, key}: tops by id/art/post, world candidates by key/art/tex.
+ * Rebuilt when the manifest or data refreshes. */
+let FACE_LOOKUP = null;
+function faceLookup() {
+  const rev = `${worldMeta() === FACE_LOOKUP?.meta ? 1 : 0}|${worldCells().length}`;
+  if (FACE_LOOKUP && FACE_LOOKUP.rev === rev && FACE_LOOKUP.meta === worldMeta()) return FACE_LOOKUP;
+  const stats = new Map(), keys = new Map();
+  for (const list of Object.values(worldMeta().tops ?? {})) {
+    for (const t of list) {
+      const st = t.m ? { m: t.m, flat: t.tflat ?? t.flat ?? 0.5, k: t.tk ?? 6 } : null;
+      for (const ref of [t.id, t.art, t.post]) if (ref) { if (st) stats.set(ref, st); keys.set(ref, t.id); }
+    }
+  }
+  for (const c of worldCells()) {
+    for (const cand of c.candidates ?? []) {
+      const st = cand.tm ? { m: cand.tm, flat: cand.tflat ?? 0.5, k: cand.tk ?? 6 } : null;
+      for (const ref of [cand.key, cand.art, cand.tex]) if (ref) { if (st) stats.set(ref, st); keys.set(ref, cand.key); }
+    }
+  }
+  FACE_LOOKUP = { rev, meta: worldMeta(), stats, keys };
+  return FACE_LOOKUP;
+}
+const faceRefOf = (face) => String(face ?? "").startsWith("pp:") ? String(face).slice(3).split("::")[0] : face;
+let BW_CACHE = { rev: "", map: new Map() };
+/** The wall to dress `face` in: his override, else the measured best, else
+ *  the pool's first (approved-first — the old rule, now the fallback). */
+function bestWall(typeId, face, { ignoreOverride = false } = {}) {
+  const rev = `${topWallsDoc().updated_at}|${state.feedback.tiles?.updated_at ?? ""}`;
+  if (BW_CACHE.rev !== rev) BW_CACHE = { rev, map: new Map() };
+  const ck = `${typeId}|${face}|${ignoreOverride ? 1 : 0}`;
+  if (BW_CACHE.map.has(ck)) return BW_CACHE.map.get(ck);
+  const pool = wallPool(typeId);
+  let out;
+  if (!pool.length) out = { art: xoverxArt(typeId), key: null, i: -1, n: 0, auto: true, fkey: null };
+  else {
+    const { stats, keys } = faceLookup();
+    const ref = faceRefOf(face);
+    const fkey = keys.get(ref) ?? ref;
+    const ov = ignoreOverride ? null : topWallsDoc().overrides?.[fkey]?.wall;
+    let i = ov ? pool.findIndex((c) => c.key === ov) : -1;
+    const auto = i < 0;
+    if (i < 0) {
+      i = 0;
+      const fst = stats.get(ref);
+      if (fst?.m) {
+        let bd = Infinity;
+        pool.forEach((c, n2) => {
+          if (!c.m) return;
+          const d = Math.hypot(c.m[0] - fst.m[0], c.m[1] - fst.m[1], c.m[2] - fst.m[2]) / 441
+            + 0.35 * Math.abs((c.flat ?? 0.5) - fst.flat)
+            + 0.25 * Math.abs((c.k ?? 6) - fst.k) / 24;
+          if (d < bd) { bd = d; i = n2; }
+        });
+      }
+    }
+    out = { art: pool[i].art, key: pool[i].key, i, n: pool.length, auto, fkey };
+  }
+  BW_CACHE.map.set(ck, out);
+  return out;
+}
+/** ‹ #i/N › — step through the ground's x-over-x walls for this face.
+ *  Stepping onto the measured best DELETES the override (absent = auto). */
+function wallStepper(typeId, face, onchange) {
+  const pool = wallPool(typeId);
+  if (!state.admin || pool.length < 2) return null;
+  const cur2 = bestWall(typeId, face);
+  const auto2 = bestWall(typeId, face, { ignoreOverride: true });
+  const put = (idx) => {
+    const i2 = (idx + pool.length) % pool.length;
+    setTopWall(cur2.fkey, i2 === auto2.i ? null : pool[i2].key);
+    onchange?.();
+  };
+  return h("div", { class: "card-sub wall-step" },
+    h("span", { class: "muted" }, "Wall"),
+    h("button", { class: "ghost-btn", title: "The previous x-over-x wall for this tile", onclick: (e) => { e.stopPropagation(); put(cur2.i - 1); } }, "‹"),
+    h("span", { class: "muted mono" }, `#${cur2.i + 1}/${cur2.n}`),
+    h("button", { class: "ghost-btn", title: "The next x-over-x wall for this tile", onclick: (e) => { e.stopPropagation(); put(cur2.i + 1); } }, "›"),
+    cur2.auto
+      ? h("span", { class: "pill", title: "Picked as the closest x-over-x in colour and structure. Step to another and your choice is stored instead." }, "auto · best match")
+      : h("span", { class: "pill ok", title: "Your stored choice — stepping back onto the measured best clears it." }, "your pick"));
+}
 /** What fills cell (x,y) of a set: a member's art, or the ground's clean tile. */
 function setCellArt(set, x, y, typeId) {
   const clean = typeId ? cleanArtOf(typeId) : null;
@@ -6194,9 +6318,13 @@ const detailQueue = (typeId) => typeTops(typeId).filter(({ cand }) => !topReview
 function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   const box = h("div", { class: "iso-stage checker group-stage" });
   const lib = patternLib();
-  const wall = xoverxArt(typeId);
   const clean = lib?.plates[typeId]?.clean ?? cleanArtOf(typeId);
-  const dress = (face) => (face && wall && clean) ? `tex2:${wall}::${face}::${clean}` : face;
+  // every face wears the wall MEASURED closest to it, as the game will
+  const dress = (face) => {
+    if (!face || !clean) return face;
+    const w = bestWall(typeId, face).art;
+    return w ? `tex2:${w}::${face}::${clean}` : face;
+  };
   const set = passSet(typeId, view);
   const [x0, y0] = origin;
   /* THE TEXTURED PASS, never After (maintainer 2026-08-28: "They need to
@@ -6220,8 +6348,10 @@ function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
     cells.push({ c, r, img: dress(face) });
   }
   // QA probe: what this composition believes, for the gate.
+  const centreWall = bestWall(typeId, centreTop);
   window.__wikiDetail = {
-    view, typeId, centre: centreTop ?? null, dressed: !!(wall && clean),
+    view, typeId, centre: centreTop ?? null, dressed: !!(centreWall.art && clean),
+    wall: centreWall.key, wallIdx: centreWall.i, wallAuto: centreWall.auto, wallN: centreWall.n,
     ringDistinct: ringFaces.size, ringSample: [...ringFaces][0] ?? null,
   };
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
@@ -6731,7 +6861,8 @@ function mixTile(a, b, patId, idxA, x, y) {
    * an approved x-over-x tile keeps the plain plate. */
   const dress = (g, facePath) => {
     if (!facePath) return facePath;
-    const wall = xoverxArt(g);
+    // the wall measured closest to THIS face — a set member is a top too
+    const wall = bestWall(g, facePath).art ?? xoverxArt(g);
     const clean = lib.plates[g]?.clean ?? "";
     return wall ? `tex2:${wall}::${facePath}::${clean}` : facePath;
   };
@@ -7807,6 +7938,9 @@ function viewWorldType(top) {
      * only by colour, which is exactly what he could not see. */
     const detailCard = ({ cell, cand }) => h("div", { class: "card detail-card" },
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
+      // the borrowed wall, steppable per tile (auto = measured best match)
+      wallStepper(t.id, dPass === PASS_RAW ? (cand.raw ?? cand.art) : (cand.tex ?? cand.art),
+        () => { keepScrollY = window.scrollY; route(); }),
       h("div", { class: "card-sub" },
         /* A TOP-ONLY TILE HAS NOWHERE TO LINK TO. It is not a cell — there is
          * no "over what" — so the link would have been #/world/<g>/null, a
@@ -7944,7 +8078,7 @@ function fadeScene(a, b, tile) {
   const corner = (x, y) => (x < walk[Math.min(y, N)] ? 1 : 0);   // 1 = ground `a`
   const lib = patternLib();
   const majority = onA ? a : b;
-  const wall = xoverxArt(majority);
+  const wall = bestWall(majority, tile.file).art ?? xoverxArt(majority);
   const clean = lib?.plates[majority]?.clean ?? "";
   const dressed = wall ? `tex2:${wall}::${tile.file}::${clean}` : tile.file;
   const box = h("div", { class: "iso-stage checker trans-stage" });
@@ -8424,9 +8558,12 @@ function tileScenes(cell, cand, onView) {
        * set's own per-cell picks around it and the ground's x-over-x wall on
        * every cell — the two places he judges a top must keep agreeing. */
       const lib2 = patternLib();
-      const wall2 = xoverxArt(cell.top);
       const clean2 = lib2?.plates[cell.top]?.clean ?? cleanArtOf(cell.top);
-      const dress2 = (f2) => (f2 && wall2 && clean2) ? `tex2:${wall2}::${f2}::${clean2}` : f2;
+      const dress2 = (f2) => {
+        if (!f2 || !clean2) return f2;
+        const w2 = bestWall(cell.top, f2).art;
+        return w2 ? `tex2:${w2}::${f2}::${clean2}` : f2;
+      };
       const set2 = passSet(cell.top, mode);
       const cells = [];
       for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
@@ -8706,6 +8843,7 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     reviewBox.replaceChildren(...[
       onTop ? h("p", { class: "muted top-hint" },
         "⌂ rating the TOP as a once-in-a-while ground detail — the tile keeps its own stars") : null,
+      onTop ? wallStepper(cell.top, cand.tex ?? cand.art, () => { keepScrollY = window.scrollY; route(); }) : null,
       onTop
         ? feedbackRow("tiles", topKey(cand.key), {
           glyph: ROOF_GLYPH,

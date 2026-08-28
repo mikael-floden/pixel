@@ -750,8 +750,9 @@ ok(dq.queuePill.some((x) => x === String(expLeft)),
  * They have no cell, so the card must not offer the dead "from <cell>" link
  * that #/world/<ground>/null would have been. */
 {
+  // the LABEL row, not the whole card — the wall stepper's text sits above it
   const lead = await p.evaluate(() => [...document.querySelectorAll(".detail-card")].slice(0, 3).map((c) => ({
-    text: c.textContent.replace(/\s+/g, " ").trim().slice(0, 40),
+    text: (c.querySelector(".card-sub .muted[title]")?.textContent ?? c.textContent).replace(/\s+/g, " ").trim().slice(0, 40),
     deadLink: [...c.querySelectorAll("a")].some((a) => /\/null$/.test(a.getAttribute("href") ?? "")),
   })));
   ok(lead.every((x) => /top · sheet/.test(x.text)),
@@ -897,6 +898,76 @@ await p.waitForTimeout(1600);
 const dRaw = await dProbe();
 ok(dRaw.view === "before" && typeof dRaw.centre === "string" && !/\/post\//.test(dRaw.centre) && !dRaw.centre.startsWith("pp:"),
   `and Raw shows the generator's own sheet, unsubstituted (${dRaw.centre?.split("/").slice(-2).join("/")})`);
+/* ---- THE BEST WALL, NOT THE FIRST (maintainer 2026-08-28: "you should not
+ * just pick 'the first' x over x - you should pick the BEST ... closest in
+ * color/tune and structure") -------------------------------------------- */
+{
+  const wp = META.wallPools ?? {};
+  ok(Object.keys(wp).length >= 10 && Object.values(wp).every((pool) => pool.every((c) =>
+    c.key && c.art && (!c.m || (c.m.length === 3 && c.m.every((v) => v >= 0 && v <= 255))))),
+    `every ground publishes its measured x-over-x wall pool (${Object.keys(wp).length} grounds)`);
+  // the same argmin the page computes, recomputed HERE from the raw data
+  const argmin = (pool, fst) => {
+    let bi = 0, bd = Infinity;
+    pool.forEach((c, i) => {
+      if (!c.m || !fst?.m) return;
+      const d = Math.hypot(c.m[0] - fst.m[0], c.m[1] - fst.m[1], c.m[2] - fst.m[2]) / 441
+        + 0.35 * Math.abs((c.flat ?? 0.5) - (fst.tflat ?? fst.flat ?? 0.5))
+        + 0.25 * Math.abs((c.k ?? 6) - (fst.tk ?? 6)) / 24;
+      if (d < bd) { bd = d; bi = i; }
+    });
+    return bi;
+  };
+  /* a fixture where best ≠ first, or the assertion cannot tell best-pick
+   * from first-pick: search the DATA for one */
+  let fix = null;
+  for (const [g, pool] of Object.entries(wp)) {
+    if (pool.length < 2) continue;
+    for (const t of META.tops?.[g] ?? []) {
+      if (t.m && argmin(pool, t) !== 0) { fix = { g, t, want: argmin(pool, t) }; break; }
+    }
+    if (fix) break;
+  }
+  ok(!!fix, `the data holds a top whose measured best wall is NOT the pool's first (${fix ? `${fix.g} → #${fix.want + 1}` : "none — the assertion below cannot discriminate"})`);
+  if (fix) {
+    await p.goto(`${W}#/world/${fix.g}`, { waitUntil: "load" });
+    await p.waitForTimeout(2200);
+    await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+    await p.waitForTimeout(2200);
+    const walls = await p.evaluate(() => ({ ...(window.__wikiDetail ?? {}) }));
+    ok(typeof walls.wallIdx === "number" && walls.wallN >= 2 && walls.wallAuto === true,
+      `a detail card publishes its chosen wall (#${walls.wallIdx + 1} of ${walls.wallN}, auto ${walls.wallAuto})`);
+    // the stepper: next stores HIS choice, stepping back onto auto deletes it
+    const step = await p.evaluate(() => {
+      const row = [...document.querySelectorAll(".wall-step")].at(-1);
+      return { rows: document.querySelectorAll(".wall-step").length, label: row?.textContent.replace(/\s+/g, " ").trim() ?? "" };
+    });
+    ok(step.rows >= 1 && /auto · best match|your pick/.test(step.label),
+      `every detail card carries the wall stepper (${step.rows} rows, "${step.label.slice(0, 40)}")`);
+    const w0 = await p.evaluate(() => window.__wikiDetail.wall);
+    await p.evaluate(() => { const row = [...document.querySelectorAll(".wall-step")].at(-1); [...row.querySelectorAll("button")].find((b2) => b2.textContent === "›")?.click(); });
+    await p.waitForTimeout(1600);
+    const w1 = await p.evaluate(() => ({ wall: window.__wikiDetail.wall, auto: window.__wikiDetail.wallAuto,
+      pending: Object.values(window.__wiki.state.touched).reduce((n2, s3) => n2 + s3.size, 0) }));
+    ok(w1.wall !== w0 && w1.auto === false && w1.pending >= 1,
+      `stepping › composes the NEXT wall and stores the choice (${String(w1.wall).split("/").pop()})`);
+    await p.evaluate(() => { const row = [...document.querySelectorAll(".wall-step")].at(-1); [...row.querySelectorAll("button")].find((b2) => b2.textContent === "‹")?.click(); });
+    await p.waitForTimeout(1600);
+    const w2 = await p.evaluate(() => ({ wall: window.__wikiDetail.wall, auto: window.__wikiDetail.wallAuto,
+      ov: Object.keys(window.__wiki.state.tuning.top_walls?.overrides ?? {}).length }));
+    ok(w2.wall === w0 && w2.auto === true && w2.ov === 0,
+      "stepping back onto the measured best CLEARS the override — absent means auto");
+    await p.evaluate(() => document.querySelector("#save-btn")?.click());
+    await p.waitForTimeout(700);
+    // back where the rest of the gate expects to be
+    await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
+    await p.waitForTimeout(2000);
+    await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
+    await p.waitForTimeout(1600);
+    await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
+    await p.waitForTimeout(1200);
+  }
+}
 await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
 await p.waitForTimeout(1200);
 // THE DETAILS TAB DELIBERATELY IGNORES "After" NOW (2026-08-22): a

@@ -543,6 +543,32 @@ function buildWorld() {
   const label = (id) => types.get(id)?.name ?? titleCase(id);
   const dead = new Set(Array.isArray(tombs?.cells) ? tombs.cells
     : tombs && typeof tombs === "object" ? Object.keys(tombs.cells ?? tombs) : []);
+  const topStatsCache = new Map();
+  const topStats = (rel) => {
+    if (topStatsCache.has(rel)) return topStatsCache.get(rel);
+    let d = null;
+    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { d = null; }
+    let out = { dominant: 1, sum: [0, 0, 0], n: 0, k: 0 };
+    if (d) {
+      const { w, h, pix } = d;
+      const cols = new Map(); const sum = [0, 0, 0]; let n = 0;
+      for (let x = 0; x < w; x++) {
+        let top = -1, bot = -1;
+        for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
+        if (top < 0) continue;
+        for (let y = top; y <= bot - 17; y++) {
+          const v = pix[y * w + x], c = v & 0xffffff;
+          cols.set(c, (cols.get(c) ?? 0) + 1);
+          sum[0] += (v >> 16) & 255; sum[1] += (v >> 8) & 255; sum[2] += v & 255;
+          n++;
+        }
+      }
+      if (n) out = { dominant: Math.max(...cols.values()) / n, sum, n, k: cols.size };
+    }
+    topStatsCache.set(rel, out);
+    return out;
+  };
+  const topDominant = (rel) => topStats(rel).dominant;
   const cells = [];
   for (const [id, cell] of Object.entries(review?.cells ?? {})) {
     const cands = (cell.candidates ?? [])
@@ -582,6 +608,16 @@ function buildWorld() {
       // The BEFORE is optional: a candidate generated before @2 has none, and
       // its card simply offers no comparison rather than a broken toggle.
       .map((c) => ({ ...c, raw: c.raw && existsSync(join(ROOT, c.raw)) ? c.raw : null }))
+      /* Measured TEXTURED-top stats per candidate (mean RGB, dominant share,
+       * colour count), so the best-wall matcher can compare ANY face — the
+       * maintainer's top-only flow starts from x-over-y tiles, and a matcher
+       * that only knew the tops pool would degenerate to first-pick on
+       * exactly those. Cached decode; the after pass would measure flat-top
+       * grounds as one identical colour, so tex. */
+      .map((c) => {
+        const st = (c.tex ?? c.art) && existsSync(join(ROOT, c.tex ?? c.art)) ? topStats(c.tex ?? c.art) : null;
+        return st?.n ? { ...c, tm: st.sum.map((v) => Math.round(v / st.n)), tflat: +st.dominant.toFixed(3), tk: st.k || null } : c;
+      })
       .filter((c) => c.art && existsSync(join(ROOT, c.art)))
       // BEST FIRST. The manifest stopped arriving ranked (measured 2026-08-20:
       // black_rock over black_rock came 3.21, 4.33, 1.18, 3.78, …), and the
@@ -695,32 +731,6 @@ function buildWorld() {
    * texture. So the pool cannot be filtered by ground or by source — only by
    * what the pixels say. A flat plate offered as a base tile IS the clean
    * colour, which every set already carries as its clean member. */
-  const topStatsCache = new Map();
-  const topStats = (rel) => {
-    if (topStatsCache.has(rel)) return topStatsCache.get(rel);
-    let d = null;
-    try { d = decodeWebP(readFileSync(join(ROOT, rel))); } catch { d = null; }
-    let out = { dominant: 1, sum: [0, 0, 0], n: 0 };
-    if (d) {
-      const { w, h, pix } = d;
-      const cols = new Map(); const sum = [0, 0, 0]; let n = 0;
-      for (let x = 0; x < w; x++) {
-        let top = -1, bot = -1;
-        for (let y = 0; y < h; y++) if ((pix[y * w + x] >>> 24) > 0) { if (top < 0) top = y; bot = y; }
-        if (top < 0) continue;
-        for (let y = top; y <= bot - 17; y++) {
-          const v = pix[y * w + x], c = v & 0xffffff;
-          cols.set(c, (cols.get(c) ?? 0) + 1);
-          sum[0] += (v >> 16) & 255; sum[1] += (v >> 8) & 255; sum[2] += v & 255;
-          n++;
-        }
-      }
-      if (n) out = { dominant: Math.max(...cols.values()) / n, sum, n };
-    }
-    topStatsCache.set(rel, out);
-    return out;
-  };
-  const topDominant = (rel) => topStats(rel).dominant;
   const basePools = {};
   const bcDir = join(ROOT, "tiles", "base_candidates");
   if (isDir(bcDir)) {
@@ -830,6 +840,10 @@ function buildWorld() {
         const postName = postByStem.get(f.replace(/\.webp$/, "")) ?? f;
         const postRel = `${sh.dir}/post/${postName}`;
         const hasPost = sh.post === true && existsSync(join(ROOT, postRel));
+        /* PER-TILE top-face stats on the DISPLAYED pass (post), so the
+         * best-wall matcher compares this exact picture — the sheet means
+         * below stay for the sort labels that already read them. */
+        const tst = topStats(hasPost ? postRel : rel);
         (tops[sh.ground] ??= []).push({
           // The identity stays the RAW path — it is what his verdicts are
           // keyed by, and a post pass is a rendering of the same tile, not a
@@ -840,6 +854,9 @@ function buildWorld() {
           // label without decoding 1,440 files in the browser.
           colours: sh.top_face?.mean_colours ?? null,
           flat: sh.top_face?.mean_dominant_share ?? null,
+          m: tst.n ? tst.sum.map((v) => Math.round(v / tst.n)) : null,
+          tflat: tst.n ? +tst.dominant.toFixed(3) : null,
+          tk: tst.k || null,
         });
       }
     }
@@ -965,6 +982,16 @@ function buildWorld() {
       transitions.push({ a, b: bSide, size, sets });
     }
   }
+  const wallPools = {};
+  for (const c of cells) {
+    if (!c.top || c.top !== c.side) continue;
+    wallPools[c.top] = c.candidates.map((cand) => {
+      const st = topStats(cand.tex ?? cand.art);
+      return { key: cand.key, art: cand.art,
+        m: st.n ? st.sum.map((v) => Math.round(v / st.n)) : null,
+        flat: st.n ? +st.dominant.toFixed(3) : null, k: st.k || null };
+    });
+  }
   worldMeta = {
     // key -> [drawn %, kept %, face] — see wiki/lib/overhang.mjs.
     fringe: fringeByKey,
@@ -983,6 +1010,14 @@ function buildWorld() {
     // ground -> [{id, art, flavour, colours, flat}] — the top-only pool, which
     // is NOT a review cell and must never be offered as an x-over-y candidate.
     tops,
+    /* ground -> [{key, art, m, flat, k}] — every x-over-x candidate with its
+     * measured TEXTURED-top stats (maintainer 2026-08-28: "you should not
+     * just pick 'the first' x over x — you should pick the BEST", closest in
+     * colour/tone and structure). Measured on the tex pass, like against
+     * like: the after pass flattens flat-top grounds to one colour and would
+     * make every wall measure identical. The browser picks argmin without
+     * decoding a pixel. */
+    wallPools,
     transitions,
     // THE TRANSITION PATTERN LIBRARY + BASE PLATES (tiles agent, 2026-08-25):
     // a transition is now two plates and a mask. 18 material-free boundary
