@@ -6285,11 +6285,23 @@ function mixFor(row, idx, plateA, plateB, cb) {
       cv.width = W2; cv.height = H2;
       const cx = cv.getContext("2d");
       cx.imageSmoothingEnabled = false;
+      /* A PLATE MAY ARRIVE ON A TALLER CANVAS. tiles/tops art is exact plate
+       * content (2012 opaque px, the silhouette's own count) vertically
+       * CENTERED on a 64x64 frame — the same rows-9..54 convention review
+       * tiles use. Drawn at (0,0) it sat 9 rows low, so wherever the mask
+       * wanted this side the top rows were transparent and destination-over
+       * filled them from the OTHER side: the maintainer's paving set composed
+       * with grass stripes through it (2026-08-28). Centering is exact for
+       * both geometries: (46-46)/2 = 0 for a real plate, (46-64)/2 = -9 for
+       * tops and review framing. Measured: foot-aligned tops cover the
+       * silhouette with 0 uncovered pixels. */
+      const plateY = (img) => Math.round((H2 - img.naturalHeight) / 2);
+      const plateX = (img) => Math.round((W2 - img.naturalWidth) / 2);
       cx.drawImage(maskS, sx, sy, W2, H2, 0, 0, W2, H2);
       cx.globalCompositeOperation = "source-in";
-      cx.drawImage(b, 0, 0);
+      cx.drawImage(b, plateX(b), plateY(b));
       cx.globalCompositeOperation = "destination-over";
-      cx.drawImage(a, 0, 0);
+      cx.drawImage(a, plateX(a), plateY(a));
       cx.globalCompositeOperation = "source-over";
       /* THE 1PX SEAM (tiles agent b64c3f97d, maintainer verdict): a transition
        * is not a bare 0-100 cut through the mask — the two grounds meet along a

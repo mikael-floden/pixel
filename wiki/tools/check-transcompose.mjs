@@ -271,8 +271,12 @@ const rows = () => p.evaluate(() => [...document.querySelectorAll(".ground-pass"
 const r0 = await rows();
 ok(r0.length === 3 && r0[0].label === "Brown Paving Stone" && r0[1].label === "Grass" && r0[2].label === "Tile art",
   `one group per type plus the pair's own source (${r0.map((x) => x.label).join(" / ")})`);
-ok(r0[0].chips.join("/") === "Clean #0/Set #1" && r0[1].chips.join("/") === "Clean #0",
-  `each side lists exactly its own ground's COMPOSED passes, no Raw among them (${r0[0].chips.join("/")} | ${r0[1].chips.join("/")})`);
+/* By SHAPE, not by his set count — he builds sets around the clock, and a gate
+ * that reddens because the maintainer worked is a broken gate (this one listed
+ * "Clean #0/Set #1" verbatim and failed the night he built seven). */
+const wellFormed = (c) => c[0] === "Clean #0" && !c.includes("Raw") && c.slice(1).every((x) => /^Set #\d+$/.test(x));
+ok(wellFormed(r0[0].chips) && wellFormed(r0[1].chips),
+  `each side lists exactly its own ground's COMPOSED passes, no Raw among them (${r0[0].chips.length} vs ${r0[1].chips.length} chips)`);
 ok(r0[2].chips.join("/") === "Composed/Raw", `and the pair carries Composed/Raw (${r0[2].chips.join("/")})`);
 
 // INDEPENDENCE: moving one side moves nothing else. This is the whole ask.
@@ -312,6 +316,56 @@ const rBack = await rows();
 ok(rBack[2].sel === "Composed" && rBack[2].off.includes("Raw"),
   `and with Raw still wanted, a pair without it shows Composed selected and Raw disabled (${rBack[2].sel})`);
 
+/* ---- 5. A TOPS MEMBER COMPOSES WITHOUT LEAKING (maintainer 2026-08-28, on
+ * his paving Set #5 in a grass transition: "I get a buggy paving stone with
+ * grass wall stripes"). tiles/tops art is exact plate content CENTERED on a
+ * 64x64 frame; drawn at (0,0) it sat 9 rows low, so wherever the mask wanted
+ * the paving the top rows were transparent and destination-over filled them
+ * from the OTHER side — grass, through the paving, everywhere.
+ *
+ * Checked per pixel against the tops file itself, foot-aligned and seamed —
+ * and the probe that first checked this reported the fix broken because its
+ * own argument names were swapped, so the sides here are spelled out. */
+{
+  const TOPS_PATH = (() => {
+    try {
+      const idx = JSON.parse(readFileSync(ROOT + "tiles/tops/index.json", "utf8"));
+      const js = JSON.stringify(idx);
+      const m = js.match(/tiles\/tops\/[^"]*post\/[^"]+\.webp/);
+      if (m) return m[0];
+    } catch { /* fall through */ }
+    return "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.36000560.webp";
+  })();
+  const tops = decodeWebP(readFileSync(ROOT + TOPS_PATH));
+  ok(tops.w === 64 && tops.h === 64, `the tops fixture is the 64x64 framing under test (${tops.w}x${tops.h})`);
+  const grassClean = "tiles/plates/grass/clean.webp";
+  const row5 = LIB.patterns.find((x) => x.id === "a18_s4").row;
+  const got5 = await p.evaluate(async ([row2, plateA_grass, plateB_tops]) => {
+    const cv = await new Promise((res) => window.__basesets.mixFor(row2, 3, plateA_grass, plateB_tops, res));
+    if (!cv) return { err: "null" };
+    const d = cv.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, cv.width, cv.height).data;
+    return { px: [...d] };
+  }, [row5, grassClean, TOPS_PATH]);
+  ok(!got5.err, "the composite builds");
+  if (!got5.err) {
+    let inB5 = 0, wrong5 = 0, alphaBad5 = 0;
+    const topsShift = (tops.h - FH) / 2;      // centered framing: 9 for 64x64
+    for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+      const i = y * FW + x;
+      const silOn = (sil.pix[i] >>> 24) > 0;
+      if ((got5.px[i * 4 + 3] > 0) !== silOn) alphaBad5++;
+      if (!silOn || !maskBit(row5, 3, x, y)) continue;
+      inB5++;
+      const tv = tops.pix[(y + topsShift) * tops.w + x];
+      const tone5 = bordBit(row5, 3, x, y) ? LIB.border.tone : 1;
+      if (got5.px[i * 4] !== rint(((tv >> 16) & 255) * tone5)
+        || got5.px[i * 4 + 1] !== rint(((tv >> 8) & 255) * tone5)
+        || got5.px[i * 4 + 2] !== rint((tv & 255) * tone5)) wrong5++;
+    }
+    ok(inB5 > 800 && wrong5 === 0 && alphaBad5 === 0,
+      `every pixel of the tops side IS the tops art, seam included — nothing leaks through from the other ground (${wrong5} wrong, ${alphaBad5} alpha, of ${inB5})`);
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nTRANS-COMPOSE CHECKS FAILED (${fails.length})` : "\nALL TRANS-COMPOSE CHECKS PASSED");
