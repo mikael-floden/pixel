@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-walls@1",
   "_comment": "WHETHER A SCENERY PIECE IS WALL SCENERY, when the Game Master says the agent's tag is wrong (maintainer 2026-08-28: 'I can see that you have tagged some scenery as wall scenery that is not wall scenery and I can also find scenery that IS wall scenery, but you think it's not'). Wall scenery hangs on a house/mountain/cave wall, needs no hitbox, and is never y-sorted against the player. The agent's own tag is the piece's type (MOUNTAIN_WALL and WINDOW read as wall scenery); an entry here OVERRIDES it. Keyed by the piece's path: overrides['scenery/<category>/<piece>'] = { wall: true|false, was: '<the type the tag said>', updated_at }. Absent means the tag is right. Written by the wiki's Scenery review; consumed by the scenery agent, which re-files the piece's type and deletes the entry - the same contract as scenery_lights. See live/README.md.",
-  "updated_at": "2026-08-28T05:35:55.472Z",
+  "updated_at": "2026-08-28T05:36:45.518Z",
   "overrides": {
     "scenery/cliff_roots/cliff_root_067": {
       "wall": false,
@@ -22,6 +22,16 @@
       "wall": false,
       "was": "MOUNTAIN_WALL",
       "updated_at": "2026-08-28T05:35:53.497Z"
+    },
+    "scenery/cliff_vines/cliff_vine_140": {
+      "wall": false,
+      "was": "MOUNTAIN_WALL",
+      "updated_at": "2026-08-28T05:36:10.474Z"
+    },
+    "scenery/cliff_vines/cliff_vine_135": {
+      "wall": false,
+      "was": "MOUNTAIN_WALL",
+      "updated_at": "2026-08-28T05:36:34.477Z"
     }
   }
 }
