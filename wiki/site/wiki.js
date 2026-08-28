@@ -6363,22 +6363,29 @@ function topFaceMask(cb) {
   im.crossOrigin = "anonymous";
   im.onload = im.onerror = () => {
     let cv = null;
-    try {
-      if (im.naturalWidth) {
-        cv = document.createElement("canvas");
-        cv.width = im.naturalWidth; cv.height = im.naturalHeight;
-        const cx = cv.getContext("2d", { willReadFrequently: true });
-        cx.drawImage(im, 0, 0);
-        const d = cx.getImageData(0, 0, cv.width, cv.height);
-        for (let x = 0; x < cv.width; x++) {
-          let bot = -1;
-          for (let y = 0; y < cv.height; y++) if (d.data[(y * cv.width + x) * 4 + 3] > 0) bot = y;
-          // the wall is the bottom 17 rows of every column (wall_d, published)
-          for (let y = Math.max(0, bot - 16); y <= bot; y++) d.data[(y * cv.width + x) * 4 + 3] = 0;
-        }
-        cx.putImageData(d, 0, 0);
-      }
-    } catch { cv = null; }
+    if (im.naturalWidth) {
+      /* NO PIXEL READS. The first cut derived this with getImageData, which
+       * throws on a tainted canvas — and his phone taints (a cached no-CORS
+       * image entry is enough; the documented poisoned-cache case). The
+       * fallback was "no mask, flat plates", so on HIS phone every transition
+       * wall composed flat while every gate here saw texture: the harness
+       * differing from production in exactly the dimension under test, again.
+       *
+       * The same mask by construction instead: a pixel is TOP FACE iff the
+       * silhouette is opaque there AND still opaque 17 rows further down
+       * (columns are contiguous spans, so y+wall_d inside means y is above
+       * the wall). That is the silhouette intersected with itself shifted up
+       * — two drawImage calls, taint-immune, byte-identical to the pixel
+       * derivation on the published silhouette. */
+      cv = document.createElement("canvas");
+      cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+      const cx = cv.getContext("2d");
+      cx.imageSmoothingEnabled = false;
+      cx.drawImage(im, 0, 0);
+      cx.globalCompositeOperation = "destination-in";
+      cx.drawImage(im, 0, -17);
+      cx.globalCompositeOperation = "source-over";
+    }
     TOPFACE_MASK = cv;
     TOPFACE_WAIT.splice(0).forEach((f) => f(cv));
   };
