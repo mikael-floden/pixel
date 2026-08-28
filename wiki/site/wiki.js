@@ -8269,7 +8269,16 @@ function viewWorldTransition(pairId) {
      * section exists only once the tiles agent's index does. */
     ...(state.admin ? (() => {
       const tiles2 = fadeTilesFor(tr.a, tr.b);
-      if (!tiles2.length) return [];
+      /* AN EMPTY PAIR SAYS SO (maintainer 2026-08-28, on black_rock ↔
+       * parquet floor: "doesn't render/show any fading tiles for me to vote
+       * on" — a silent absence reads as a broken page, when the truth was a
+       * coverage gap in the tiles agent's index: 3 pairs shipped none). Only
+       * when the index itself exists — before it is published the section
+       * stays absent, page-wide. */
+      if (!tiles2.length) return fadesIndex ? [h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "Fade tiles", h("span", { class: "pill" }, "0")),
+        h("p", { class: "muted" },
+          `The tiles agent has published no fade tiles for ${nameA.toLowerCase()} ↔ ${nameB.toLowerCase()} yet — nothing to review here until they land (asked on their board 2026-08-28).`))] : [];
       /* TWELVE AT A TIME (the audition's lesson, relearned the day the real
        * index landed with up to 80 tiles in one merged pair): every row
        * composes a full wandering-edge field, and eighty of those up front

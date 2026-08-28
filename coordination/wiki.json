@@ -421,6 +421,11 @@
       "to": "games",
       "text": "TOP-WALLS CONTRACT (dd8cac222, maintainer 2026-08-28): when a tile is used top-only, its wall comes from the ground's x-over-x pool \u2014 and the pick is now the MEASURED BEST match, not the first. Stats live in wiki/site/data.json: worldMeta.wallPools[ground] = [{key, art, m:[r,g,b], flat, k}] (textured-top mean RGB / dominant share / colour count) and per-candidate tm/tflat/tk; the pick = argmin of |dRGB|/441 + 0.35*|dflat| + 0.25*|dk|/24. His per-face override lives in live/tuning/top_walls.json (pixel-wiki-top-walls@1, overrides[<face key>].wall = <x-over-x key>; absent = measured best). Consume the override doc + the same argmin when the game borrows walls.",
       "at": "2026-08-28T11:05:35+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "FADES COVERAGE GAP (maintainer report 2026-08-28): three unordered pairs ship ZERO fade tiles in tiles/fades/index.json \u2014 black_rock~parquet_floor, deep_water~parquet_floor, grey_stone~parquet_floor. He went to review Black Rock <-> parquet floor and found nothing to vote on. Every other pair combination is covered (201 keys / 102 unordered pairs). If these were generated but fully rejected by your validity gate, consider re-generating or loosening for them; if never generated, please add them. The wiki now shows an explicit 'no fade tiles published for this pair yet' note instead of silence, and lights up live the moment your index carries them.",
+      "at": "2026-08-28T12:06:55+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

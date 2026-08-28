@@ -114,6 +114,26 @@ ok(far.length === 0, far.length
   ? `${far[0].key}: fade tile far from centre (${JSON.stringify(far[0].spot)})`
   : `and the tile stands near the centre of the field (max dist ${Math.max(...sides.map((t) => t.spot?.dist ?? 9))})`);
 
+// ---- 4c. a pair the index does not cover SAYS SO (maintainer 2026-08-28,
+// black_rock ↔ parquet floor: "doesn't render/show any fading tiles" — the
+// silent absence read as a broken page) -------------------------------------
+{
+  const bare = Object.keys(IDX.pairs).every((k) => !(k.includes("black_rock") && k.includes("parquet_floor")));
+  ok(bare, "black_rock↔parquet_floor is genuinely uncovered by the index — the case under test");
+  await p.goto(`${W}#/world/transition/black_rock__to__parquet_floor`, { waitUntil: "load" });
+  await p.waitForTimeout(3000);
+  const empt = await p.evaluate(() => {
+    const t2 = [...document.querySelectorAll(".panel-title")].find((x) => /Fade tiles/.test(x.textContent));
+    return { panel: !!t2, pill: t2?.querySelector(".pill")?.textContent.trim(),
+      says: t2?.parentElement?.querySelector("p.muted")?.textContent ?? "" };
+  });
+  ok(empt.panel && empt.pill === "0" && /published no fade tiles/.test(empt.says),
+    `an uncovered pair shows the section saying WHY it is empty (${empt.says.slice(0, 56)}…)`);
+  // back to a covered pair — section 5 stars a real fade card
+  await p.goto(`${W}#/world/transition/ice__to__grass`, { waitUntil: "load" });
+  await p.waitForTimeout(4000);
+}
+
 // ---- 5. verdicts ride the tiles feedback file on the tile's own key --------
 await p.evaluate(() => { const r = document.querySelector(".fade-tile .fb-row"); r.querySelectorAll(".stars button")[3]?.click(); });
 await p.waitForTimeout(500);
