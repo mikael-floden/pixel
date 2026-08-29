@@ -11230,8 +11230,22 @@ export class WorldScene extends Phaser.Scene {
           for (const d of this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [])) {
             const base = world.rows[row]?.[col]?.l ?? 0;
             if (d.level <= base) continue; // the terrain occluder already covers it
-            for (const op of tex.opsForDeck(d)) {
-              if (!shows(bx, op.y)) {
+            /* THE DECK TOP IS NEVER EXPOSURE-CULLED — world@2's rule, which this
+             * branch did not copy. The top is the walkable surface and it is
+             * the thing that hides a body walking UNDER the slab. `shows` is a
+             * TILE-sized test at the op's own y, and a roof six levels up sits
+             * ~90px above its cell, so the top fell outside the box, its image
+             * was dropped, and the meta was pushed anyway — a meta record
+             * describing terrain that draws nothing. The body then rendered
+             * straight over the roof it was standing under (maintainer
+             * 2026-08-29: "THE PLAYER STILL RENDERS OVER THE WALL WHEN BEHIND
+             * THE WALL. THIS WORKED PERFECTLY"). It did: world@2 keeps the top
+             * whenever the COLUMN reaches the cull box. Faces still cull. */
+            const dops = tex.opsForDeck(d);
+            for (let oi = 0; oi < dops.length; oi++) {
+              const op = dops[oi];
+              const isTop = oi === dops.length - 1;
+              if (!(isTop ? columnShows(bx, by - d.level * lh, by + tileSize) : shows(bx, op.y))) {
                 culled++;
                 continue;
               }
