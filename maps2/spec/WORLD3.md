@@ -63,7 +63,7 @@ decoration, it breaks every interior in the running game — measured
   is what makes a roof THIN: a material is thin when it is only the TOP of an
   x-over-y pair (grass over black_rock is a skin of grass; grass over grass
   fills the cell and reads as a slab — the maintainer's own two reference
-  tiles, 2026-08-30). House roofs are `light_soil` over `parquet_floor`. With
+  tiles, 2026-08-30). House roofs are `brown_paving_stone` over `parquet_floor` (maintainer, 2026-08-30). With
   no `side` a deck draws same-over-same, which is the thick look.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 

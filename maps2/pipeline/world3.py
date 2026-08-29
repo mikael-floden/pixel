@@ -168,10 +168,10 @@ def _houses(doc, mat):
         # materials are his three: parquet, brown paving, grey paving.
         # WOOD WALLS, THIN BLACK ROCK ROOF (maintainer 2026-08-30: "try wood
         # and maybe black_rock as a thin roof"). The roof is thin because it
-        # is only the TOP of the pair - black_rock over parquet_floor.
+        # is only the TOP of the pair - brown_paving_stone over parquet_floor.
         stone = hi == 0                       # smallest roof = the spawn cottage
         wallmat = "parquet_floor"
-        topmat = "black_rock"
+        topmat = "brown_paving_stone"
         wcells = []
         for c in dk["cells"]:
             x, y = int(c["x"]), int(c["y"])
@@ -675,12 +675,13 @@ def build():
         kind = dk.get("kind", "deck")
         ground = V2_TO_V3.get(src["materials"][dk["mat"]], "grey_stone") \
             if isinstance(dk.get("mat"), int) else "grey_stone"
-        # ROOFS: v2 slate was black_mountain; v3 black_rock is a flat
-        # near-black and a big flat black slab is not a roof. grey_paving_stone
-        # is v3's patterned always-own-texture surface with a published base
-        # tile — it reads as shingles. A taste call, flagged in the build log.
+        # ROOFS: v2 slate was black_mountain, and v3 black_rock is a flat
+        # near-black that reads as a hole in the map at roof scale.
+        # brown_paving_stone over parquet_floor is the roof (maintainer,
+        # 2026-08-30) — a patterned surface with its own published base tile,
+        # so it reads as shingles rather than as a black slab.
         if kind == "roof":
-            ground = "black_rock"     # thin roof: black rock over the timber
+            ground = "brown_paving_stone"
         cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]
         # THE ROOF COVERS THE WHOLE FOOTPRINT, as it did in v2 — the doorway
         # is a gap in the wall ring, and an interior-only deck leaves it

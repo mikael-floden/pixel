@@ -527,12 +527,12 @@ class Grow:
         x0, y0, TW, TH = self.town
         # wall material, then the thin roof course above it
         # WOOD WALLS, THIN BLACK ROCK ROOF (his call, 2026-08-30)
-        specs = [(cx - 13, cy - 8, 6, 5, "parquet_floor", "black_rock"),
-                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "black_rock"),
-                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "black_rock"),
-                 (cx + 9, cy + 2, 6, 5, "parquet_floor", "black_rock"),
-                 (cx - 4, cy - 12, 8, 6, "parquet_floor", "black_rock"),
-                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "black_rock")]
+        specs = [(cx - 13, cy - 8, 6, 5, "parquet_floor", "brown_paving_stone"),
+                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "brown_paving_stone"),
+                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "brown_paving_stone"),
+                 (cx + 9, cy + 2, 6, 5, "parquet_floor", "brown_paving_stone"),
+                 (cx - 4, cy - 12, 8, 6, "parquet_floor", "brown_paving_stone"),
+                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "brown_paving_stone")]
         built = 0
         for (hx, hy, w, h, wall, roof) in specs:
             try:
@@ -1048,7 +1048,7 @@ class Grow:
         # the house got a notch cut out of its roof and a full-height hole
         # (maintainer 2026-08-30: "the door on this house look fucked up! You
         # did it the entire V2!"). The roof is still THIN because thin is
-        # about x-over-y, not about footprint: black_rock over parquet_floor.
+        # about x-over-y, not about footprint: brown_paving_stone over parquet_floor.
         self.doc["decks"].append(
             {"kind": "roof", "level": base + rise, "thickness": 0,
              "ground": roof, "side": wall,
@@ -1113,7 +1113,7 @@ class Grow:
         # ABOVE the pier landing, never on the sand itself
         lx, ly = self.landing
         hx, hy = self.find_pad(lx - 6, ly - 6, 6, 5)
-        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "black_rock")
+        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "brown_paving_stone")
         # woodcutter's cabin: timber, at the forest edge — the grass cell with
         # the most trees within 12, at least 50 from spawn
         best = None
@@ -1129,10 +1129,10 @@ class Grow:
             if best is None or n > best[0]:
                 best = (n, x, y)
         wx, wy = self.find_pad(best[1], best[2], 7, 5)
-        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "black_rock")
+        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "brown_paving_stone")
         # the smithy: stone (slate over cobble), in the village near spawn
         mx, my = self.find_pad(sx + 8, sy - 6, 6, 5)
-        self.int_smith = self.house(mx, my, 6, 5, "parquet_floor", "black_rock")
+        self.int_smith = self.house(mx, my, 6, 5, "parquet_floor", "brown_paving_stone")
         self.smithy = (mx, my)
         self.woodcutter = (wx, wy)
         self.fisher = (hx, hy)
