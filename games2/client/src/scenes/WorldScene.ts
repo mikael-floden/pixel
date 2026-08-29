@@ -11065,8 +11065,14 @@ export class WorldScene extends Phaser.Scene {
       // transition pasted at the uncut level floats over the stump. With the
       // legacy kill switch (cuts null) every column is constrained, so no
       // boundary draws at all — which is what that switch means.
+      /* GUARDED, like the resolves above it. A composition throws on art that
+       * is not plate geometry, and an unguarded throw here escapes the whole
+       * pass — one bad cell would black out the entire world instead of
+       * costing its own diamond. */
       const bop =
-        b && !(mask && (!cuts || this.t3QuadCut(cuts, col, row))) ? tex.opsForBoundary(b) : null;
+        b && !(mask && (!cuts || this.t3QuadCut(cuts, col, row)))
+          ? this.t3Try(`boundary art ${col},${row}`, () => tex.opsForBoundary(b), null)
+          : null;
       // THE TILE IS THE BOUNDARY: on a flat cell the composed tile replaces the
       // plate rather than covering it — same silhouette, so the plate under it
       // was pure overdraw, and render3 composites exactly one tile here
@@ -11077,7 +11083,7 @@ export class WorldScene extends Phaser.Scene {
         stats.blits++;
         stats.boundaries++;
       } else {
-        for (const op of cellBlits(tex, this.t3tm, cell, cut)) {
+        for (const op of this.t3Try(`blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, cut), [])) {
           this.t3Blit(rt, op, ax, ay, tint);
           stats.blits++;
         }
