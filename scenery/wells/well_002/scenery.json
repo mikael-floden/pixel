@@ -39,6 +39,29 @@
         "south-east": "wells/well_002/rotations/south-east.webp",
         "south-west": "wells/well_002/rotations/south-west.webp",
         "south": "wells/well_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0b920dfa-e8c2-4265-b752-5186898ccd63",
+          "description": "Animate the hanging bucket and rope only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_002/animations/motion/00.webp",
+            "wells/well_002/animations/motion/01.webp",
+            "wells/well_002/animations/motion/02.webp",
+            "wells/well_002/animations/motion/03.webp",
+            "wells/well_002/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:39:52+00:00",
+          "brief": "M3"
+        }
       }
     },
     "LIT_2": {

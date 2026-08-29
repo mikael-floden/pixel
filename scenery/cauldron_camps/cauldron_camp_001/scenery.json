@@ -70,6 +70,27 @@
             }
           },
           "generated_at": "2026-08-29T08:14:30+00:00"
+        },
+        "motion": {
+          "group_id": "2bb39e4f-779a-41c5-9494-9c2c0f18d4ed",
+          "description": "Animate the bubbling surface and its steam only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/00.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/01.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/02.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/03.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cauldron_camps/cauldron_camp_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:39:46+00:00",
+          "brief": "S2"
         }
       },
       "rotations": {

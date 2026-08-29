@@ -5723,6 +5723,29 @@
             "south-west": "beehives/beehive_003/rotations/south-west.webp",
             "south": "beehives/beehive_003/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "ac249700-0775-44a0-b7e5-564eb1722c15",
+              "description": "Animate a few bees at the entrance hole only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beehives/beehive_003/animations/motion/00.webp",
+                "beehives/beehive_003/animations/motion/01.webp",
+                "beehives/beehive_003/animations/motion/02.webp",
+                "beehives/beehive_003/animations/motion/03.webp",
+                "beehives/beehive_003/animations/motion/04.webp"
+              ],
+              "strip": "beehives/beehive_003/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:53+00:00",
+              "brief": "A1"
+            }
+          },
           "art_hash": "93369409bef7475b"
         },
         "NOT_LIT_2": {
@@ -5873,6 +5896,29 @@
             "south-east": "bell_posts/bell_post_004/rotations/south-east.webp",
             "south-west": "bell_posts/bell_post_004/rotations/south-west.webp",
             "south": "bell_posts/bell_post_004/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "a991dcd3-b090-4c74-bba5-ae065070ba33",
+              "description": "Animate the bell only, rocking slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bell_posts/bell_post_004/animations/motion/00.webp",
+                "bell_posts/bell_post_004/animations/motion/01.webp",
+                "bell_posts/bell_post_004/animations/motion/02.webp",
+                "bell_posts/bell_post_004/animations/motion/03.webp",
+                "bell_posts/bell_post_004/animations/motion/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:25+00:00",
+              "brief": "C7"
+            }
           },
           "art_hash": "6bc3aa8cf1886fa9"
         },
@@ -9172,6 +9218,29 @@
           "sprite": "bushes/bush_001/sprite.webp",
           "pixellab_object_id": "4b5cbf58-b6e2-42ce-895a-9bed00c25235",
           "generated_at": "2026-08-13T00:55:11+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "16d8397e-0ba8-4623-869e-7caa0893d348",
+              "description": "Animate the leaves only, shivering in a gentle breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bushes/bush_001/animations/motion/00.webp",
+                "bushes/bush_001/animations/motion/01.webp",
+                "bushes/bush_001/animations/motion/02.webp",
+                "bushes/bush_001/animations/motion/03.webp",
+                "bushes/bush_001/animations/motion/04.webp"
+              ],
+              "strip": "bushes/bush_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:46+00:00",
+              "brief": "G7"
+            }
+          },
           "art_hash": "cfbfef7316407d44"
         },
         "NOT_LIT_2": {
@@ -11787,6 +11856,29 @@
           "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
           "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
           "generated_at": "2026-08-13T11:18:21+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "bbd32fa9-940a-4d89-8904-9b72bf527795",
+              "description": "Animate the leaves and seed heads only, in a gentle breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cattail_clumps/cattail_clump_005/animations/motion/00.webp",
+                "cattail_clumps/cattail_clump_005/animations/motion/01.webp",
+                "cattail_clumps/cattail_clump_005/animations/motion/02.webp",
+                "cattail_clumps/cattail_clump_005/animations/motion/03.webp",
+                "cattail_clumps/cattail_clump_005/animations/motion/04.webp"
+              ],
+              "strip": "cattail_clumps/cattail_clump_005/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:04+00:00",
+              "brief": "G2"
+            }
+          },
           "art_hash": "2962ac7d13162deb"
         },
         "NOT_LIT_2": {
@@ -12069,6 +12161,27 @@
                 }
               },
               "generated_at": "2026-08-29T08:14:30+00:00"
+            },
+            "motion": {
+              "group_id": "2bb39e4f-779a-41c5-9494-9c2c0f18d4ed",
+              "description": "Animate the bubbling surface and its steam only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/00.webp",
+                "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/01.webp",
+                "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/02.webp",
+                "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/03.webp",
+                "cauldron_camps/cauldron_camp_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cauldron_camps/cauldron_camp_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:39:46+00:00",
+              "brief": "S2"
             }
           },
           "rotations": {
@@ -13098,6 +13211,29 @@
             "south-east": "charcoal_kilns/charcoal_kiln_002/rotations/south-east.webp",
             "south-west": "charcoal_kilns/charcoal_kiln_002/rotations/south-west.webp",
             "south": "charcoal_kilns/charcoal_kiln_002/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "0c9168e0-79cd-4681-b966-a080c709a92d",
+              "description": "Animate the smoke leaking from the vents only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/animations/motion/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/animations/motion/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/animations/motion/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/animations/motion/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/animations/motion/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:55+00:00",
+              "brief": "S1"
+            }
           },
           "art_hash": "84764aae8062329f"
         },
@@ -14833,6 +14969,27 @@
           "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
           "generated_at": "2026-08-14T02:59:42+00:00",
           "relit_from": "LIT_1",
+          "animations": {
+            "motion": {
+              "group_id": "2ac605f0-61d0-4d4a-89a0-705852b73e31",
+              "description": "Animate the foliage only, shivering in a gentle breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_shrubs/cliff_shrub_002/animations/motion/00.webp",
+                "cliff_shrubs/cliff_shrub_002/animations/motion/01.webp",
+                "cliff_shrubs/cliff_shrub_002/animations/motion/02.webp",
+                "cliff_shrubs/cliff_shrub_002/animations/motion/03.webp",
+                "cliff_shrubs/cliff_shrub_002/animations/motion/04.webp"
+              ],
+              "strip": "cliff_shrubs/cliff_shrub_002/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:38:27+00:00",
+              "brief": "G6"
+            }
+          },
           "art_hash": "a18d030f8dfd09d9"
         },
         "NOT_LIT_4": {
@@ -19222,6 +19379,29 @@
           "glow_concept": "ground around the base lit in the crystal's color",
           "difference_from_source": 0.7122,
           "glow_score": 0.347,
+          "animations": {
+            "motion": {
+              "group_id": "b2d083a9-3b37-4b6d-8de8-a3d795ac3ba8",
+              "description": "Animate the glow inside the crystals only, pulsing slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystals/crystal_005/lit_1/animations/motion/00.webp",
+                "crystals/crystal_005/lit_1/animations/motion/01.webp",
+                "crystals/crystal_005/lit_1/animations/motion/02.webp",
+                "crystals/crystal_005/lit_1/animations/motion/03.webp",
+                "crystals/crystal_005/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "crystals/crystal_005/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:16+00:00",
+              "brief": "L1"
+            }
+          },
           "art_hash": "4f9ebae74361455c"
         },
         "NOT_LIT_1": {
@@ -23572,6 +23752,29 @@
             "south-west": "fish_drying_racks/fish_drying_rack_002/rotations/south-west.webp",
             "south": "fish_drying_racks/fish_drying_rack_002/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "bbf1c8b9-208b-4e40-bf55-4ef183f03214",
+              "description": "Animate the hanging fish only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:34+00:00",
+              "brief": "C4"
+            }
+          },
           "art_hash": "a335a8ebb8713d8d"
         },
         "LIT_2": {
@@ -25579,6 +25782,29 @@
             "south-west": "flower_stands/flower_stand_002/rotations/south-west.webp",
             "south": "flower_stands/flower_stand_002/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "b599df16-10f0-4a22-a21d-9a364865f19c",
+              "description": "Animate the flower heads only, nodding gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/animations/motion/00.webp",
+                "flower_stands/flower_stand_002/animations/motion/01.webp",
+                "flower_stands/flower_stand_002/animations/motion/02.webp",
+                "flower_stands/flower_stand_002/animations/motion/03.webp",
+                "flower_stands/flower_stand_002/animations/motion/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:15+00:00",
+              "brief": "G8"
+            }
+          },
           "art_hash": "3fd18992694b5b8d"
         },
         "NOT_LIT_4": {
@@ -26249,6 +26475,29 @@
           "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
           "generated_at": "2026-08-13T02:29:57+00:00",
           "relit_from": "NOT_LIT_1",
+          "animations": {
+            "motion": {
+              "group_id": "d4fbc80c-1ec7-431d-8cce-2b47a31fe173",
+              "description": "Animate the glint inside the geode only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "geodes/geode_001/animations/motion/00.webp",
+                "geodes/geode_001/animations/motion/01.webp",
+                "geodes/geode_001/animations/motion/02.webp",
+                "geodes/geode_001/animations/motion/03.webp",
+                "geodes/geode_001/animations/motion/04.webp"
+              ],
+              "strip": "geodes/geode_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:56+00:00",
+              "brief": "L8"
+            }
+          },
           "art_hash": "e004f9ae45766357"
         },
         "NOT_LIT_2": {
@@ -26398,6 +26647,27 @@
           "glow_concept": "glowing sap veins climbing the thick stalk",
           "difference_from_source": 0.8381,
           "glow_score": 0.0603,
+          "animations": {
+            "motion": {
+              "group_id": "2657249d-8212-4b77-89b3-e7d54b4b76bc",
+              "description": "Animate the glow on the cap only, breathing slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/00.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/01.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/02.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/03.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:39:10+00:00",
+              "brief": "L6"
+            }
+          },
           "art_hash": "e901201666d7e46a"
         },
         "NOT_LIT_1": {
@@ -26826,6 +27096,29 @@
           "sprite": "grass_tufts/grass_tuft_001/sprite.webp",
           "pixellab_object_id": "da258a02-1805-4537-ac0e-05dd2adb922c",
           "generated_at": "2026-08-13T00:56:54+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "4a4b36ab-8369-4327-90f1-822dfd4d4af7",
+              "description": "Animate the grass blades only, bending in a gentle breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "grass_tufts/grass_tuft_001/animations/motion/00.webp",
+                "grass_tufts/grass_tuft_001/animations/motion/01.webp",
+                "grass_tufts/grass_tuft_001/animations/motion/02.webp",
+                "grass_tufts/grass_tuft_001/animations/motion/03.webp",
+                "grass_tufts/grass_tuft_001/animations/motion/04.webp"
+              ],
+              "strip": "grass_tufts/grass_tuft_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:08+00:00",
+              "brief": "G3"
+            }
+          },
           "art_hash": "0b570d7355fc633a"
         },
         "NOT_LIT_2": {
@@ -28244,6 +28537,29 @@
             "south-west": "hanging_baskets/hanging_basket_005/rotations/south-west.webp",
             "south": "hanging_baskets/hanging_basket_005/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "c79671f3-6584-4d78-aeed-fb0d36b90124",
+              "description": "Animate the trailing flowers only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_005/animations/motion/00.webp",
+                "hanging_baskets/hanging_basket_005/animations/motion/01.webp",
+                "hanging_baskets/hanging_basket_005/animations/motion/02.webp",
+                "hanging_baskets/hanging_basket_005/animations/motion/03.webp",
+                "hanging_baskets/hanging_basket_005/animations/motion/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_005/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:07+00:00",
+              "brief": "C9"
+            }
+          },
           "art_hash": "5d1de8c335aa27f1"
         },
         "NOT_LIT_2": {
@@ -28519,6 +28835,25 @@
               ],
               "strip": "hanging_willows/hanging_willow_001/animations/wind__strip.webp",
               "generated_at": "2026-08-28T11:48:20+00:00"
+            },
+            "motion": {
+              "group_id": "6b634884-45b6-4c16-aaf9-3c8f30828af6",
+              "description": "Animate the trailing willow branches only, drifting in a breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hanging_willows/hanging_willow_001/animations/motion/00.webp",
+                "hanging_willows/hanging_willow_001/animations/motion/01.webp",
+                "hanging_willows/hanging_willow_001/animations/motion/02.webp",
+                "hanging_willows/hanging_willow_001/animations/motion/03.webp",
+                "hanging_willows/hanging_willow_001/animations/motion/04.webp"
+              ],
+              "strip": "hanging_willows/hanging_willow_001/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:38:05+00:00",
+              "brief": "G13"
             }
           },
           "art_hash": "ff61dd2c22930668"
@@ -31553,6 +31888,27 @@
           "sprite": "hop_poles/hop_pole_001/sprite.webp",
           "pixellab_object_id": "6dc5fc53-e670-4e95-a0ea-875f598e5c10",
           "generated_at": "2026-08-13T01:51:09+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "00e93590-b102-4d2d-8aa9-78a4dc18d753",
+              "description": "Animate the hanging bines only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hop_poles/hop_pole_001/animations/motion/00.webp",
+                "hop_poles/hop_pole_001/animations/motion/01.webp",
+                "hop_poles/hop_pole_001/animations/motion/02.webp",
+                "hop_poles/hop_pole_001/animations/motion/03.webp",
+                "hop_poles/hop_pole_001/animations/motion/04.webp"
+              ],
+              "strip": "hop_poles/hop_pole_001/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:37:16+00:00",
+              "brief": "G9"
+            }
+          },
           "art_hash": "96f30a03cecb86df"
         },
         "NOT_LIT_2": {
@@ -31694,6 +32050,29 @@
           "sprite": "hot_springs/hot_spring_002/sprite.webp",
           "pixellab_object_id": "61e71c59-c139-4d7b-83f2-0399f086cd12",
           "generated_at": "2026-08-14T01:10:53+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "d81bb4d8-cd2e-424e-9129-972a2f90a717",
+              "description": "Animate the rising steam only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hot_springs/hot_spring_002/animations/motion/00.webp",
+                "hot_springs/hot_spring_002/animations/motion/01.webp",
+                "hot_springs/hot_spring_002/animations/motion/02.webp",
+                "hot_springs/hot_spring_002/animations/motion/03.webp",
+                "hot_springs/hot_spring_002/animations/motion/04.webp"
+              ],
+              "strip": "hot_springs/hot_spring_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:33+00:00",
+              "brief": "W5"
+            }
+          },
           "art_hash": "c32fab83844acd24"
         }
       },
@@ -33126,6 +33505,29 @@
             "south-east": "ivy_posts/ivy_post_005/rotations/south-east.webp",
             "south-west": "ivy_posts/ivy_post_005/rotations/south-west.webp",
             "south": "ivy_posts/ivy_post_005/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "83e19088-96e7-4ee4-a90e-c5be40b071cb",
+              "description": "Animate the loose ivy trails only, stirring gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/animations/motion/00.webp",
+                "ivy_posts/ivy_post_005/animations/motion/01.webp",
+                "ivy_posts/ivy_post_005/animations/motion/02.webp",
+                "ivy_posts/ivy_post_005/animations/motion/03.webp",
+                "ivy_posts/ivy_post_005/animations/motion/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:13+00:00",
+              "brief": "G10"
+            }
           },
           "art_hash": "10e0ae2688b84397"
         },
@@ -35769,6 +36171,29 @@
             "south-west": "market_stalls/market_stall_001/rotations/south-west.webp",
             "south": "market_stalls/market_stall_001/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "a11203b1-ca67-4da6-bf7e-6f629403449c",
+              "description": "Animate the cloth canopy only, rippling in a breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "market_stalls/market_stall_001/animations/motion/00.webp",
+                "market_stalls/market_stall_001/animations/motion/01.webp",
+                "market_stalls/market_stall_001/animations/motion/02.webp",
+                "market_stalls/market_stall_001/animations/motion/03.webp",
+                "market_stalls/market_stall_001/animations/motion/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:10+00:00",
+              "brief": "C2"
+            }
+          },
           "art_hash": "696a7ec057a77fc5"
         },
         "NOT_LIT_2": {
@@ -36182,6 +36607,27 @@
           "sprite": "maypoles/maypole_002/sprite.webp",
           "pixellab_object_id": "51c67da6-a99c-44a2-8574-753692e1d2a2",
           "generated_at": "2026-08-13T04:31:02+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "5cddb0fc-1c0a-4646-9d62-9b66b335c83e",
+              "description": "Animate the ribbons only, streaming in a breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "maypoles/maypole_002/animations/motion/00.webp",
+                "maypoles/maypole_002/animations/motion/01.webp",
+                "maypoles/maypole_002/animations/motion/02.webp",
+                "maypoles/maypole_002/animations/motion/03.webp",
+                "maypoles/maypole_002/animations/motion/04.webp"
+              ],
+              "strip": "maypoles/maypole_002/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:35:43+00:00",
+              "brief": "C5"
+            }
+          },
           "art_hash": "4bfa6f6c18fb87da"
         },
         "LIT_2": {
@@ -36333,6 +36779,27 @@
                 "south"
               ],
               "generated_at": "2026-08-29T07:06:20+00:00"
+            },
+            "motion": {
+              "group_id": "b01e7e8e-7e79-4978-b3c7-b33c77835420",
+              "description": "Animate the ember glow in the cracks only, pulsing slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "meteor_stones/meteor_stone_002/animations/motion/00.webp",
+                "meteor_stones/meteor_stone_002/animations/motion/01.webp",
+                "meteor_stones/meteor_stone_002/animations/motion/02.webp",
+                "meteor_stones/meteor_stone_002/animations/motion/03.webp",
+                "meteor_stones/meteor_stone_002/animations/motion/04.webp"
+              ],
+              "strip": "meteor_stones/meteor_stone_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:22+00:00",
+              "brief": "L7"
             }
           },
           "art_hash": "5d4f7602434e4476"
@@ -36471,6 +36938,29 @@
           "sprite": "moon_pools/moon_pool_002/sprite.webp",
           "pixellab_object_id": "95fea78f-0ee3-4201-8642-29b1b206a309",
           "generated_at": "2026-08-14T02:01:35+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "cf9bd9dd-e3b4-4bc7-a283-b1ae29611ebd",
+              "description": "Animate the reflection on the water only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moon_pools/moon_pool_002/animations/motion/00.webp",
+                "moon_pools/moon_pool_002/animations/motion/01.webp",
+                "moon_pools/moon_pool_002/animations/motion/02.webp",
+                "moon_pools/moon_pool_002/animations/motion/03.webp",
+                "moon_pools/moon_pool_002/animations/motion/04.webp"
+              ],
+              "strip": "moon_pools/moon_pool_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:57+00:00",
+              "brief": "W6"
+            }
+          },
           "art_hash": "7795cfe3b73e1345"
         },
         "LIT_4": {
@@ -38678,6 +39168,29 @@
             "south-west": "overgrown_archways/overgrown_archway_001/rotations/south-west.webp",
             "south": "overgrown_archways/overgrown_archway_001/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "e845049a-4cba-4c66-997a-ac677c9760d9",
+              "description": "Animate the hanging vines only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "overgrown_archways/overgrown_archway_001/animations/motion/00.webp",
+                "overgrown_archways/overgrown_archway_001/animations/motion/01.webp",
+                "overgrown_archways/overgrown_archway_001/animations/motion/02.webp",
+                "overgrown_archways/overgrown_archway_001/animations/motion/03.webp",
+                "overgrown_archways/overgrown_archway_001/animations/motion/04.webp"
+              ],
+              "strip": "overgrown_archways/overgrown_archway_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:31+00:00",
+              "brief": "G11"
+            }
+          },
           "art_hash": "12eb1fa4bab190a5"
         },
         "NOT_LIT_3": {
@@ -40031,6 +40544,29 @@
           "sprite": "reed_beds/reed_bed_005/sprite.webp",
           "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
           "generated_at": "2026-08-13T11:18:21+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "fc73a756-ae07-45d5-b8e0-0fdb8256496e",
+              "description": "Animate the reeds only, bending in a gentle breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "reed_beds/reed_bed_005/animations/motion/00.webp",
+                "reed_beds/reed_bed_005/animations/motion/01.webp",
+                "reed_beds/reed_bed_005/animations/motion/02.webp",
+                "reed_beds/reed_bed_005/animations/motion/03.webp",
+                "reed_beds/reed_bed_005/animations/motion/04.webp"
+              ],
+              "strip": "reed_beds/reed_bed_005/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:52+00:00",
+              "brief": "G1"
+            }
+          },
           "art_hash": "3fa6d80a249bbbb7"
         },
         "NOT_LIT_2": {
@@ -40362,6 +40898,29 @@
             "south-east": "rope_swings/rope_swing_001/rotations/south-east.webp",
             "south-west": "rope_swings/rope_swing_001/rotations/south-west.webp",
             "south": "rope_swings/rope_swing_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "5ba248bb-3623-4a21-83dd-c5545a66a195",
+              "description": "Animate the swinging seat and its ropes only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "rope_swings/rope_swing_001/animations/motion/00.webp",
+                "rope_swings/rope_swing_001/animations/motion/01.webp",
+                "rope_swings/rope_swing_001/animations/motion/02.webp",
+                "rope_swings/rope_swing_001/animations/motion/03.webp",
+                "rope_swings/rope_swing_001/animations/motion/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:08+00:00",
+              "brief": "C6"
+            }
           },
           "art_hash": "aa16eace8e73f758"
         },
@@ -41275,6 +41834,29 @@
             "south-west": "rusted_machines/rusted_machine_001/rotations/south-west.webp",
             "south": "rusted_machines/rusted_machine_001/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "8ede2e6e-7210-4b2e-becd-5ce48dff5ce3",
+              "description": "Animate the flywheel only, turning very slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/animations/motion/00.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/01.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/02.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/03.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:39:23+00:00",
+              "brief": "M2"
+            }
+          },
           "art_hash": "7b9cc64f654cb468"
         },
         "NOT_LIT_2": {
@@ -41469,6 +42051,29 @@
             "south-east": "scarecrows/scarecrow_005/rotations/south-east.webp",
             "south-west": "scarecrows/scarecrow_005/rotations/south-west.webp",
             "south": "scarecrows/scarecrow_005/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "8d8dc4e5-ea28-4b94-8b6d-694b0f25c8a8",
+              "description": "Animate the loose clothing only, flapping in a breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "scarecrows/scarecrow_005/animations/motion/00.webp",
+                "scarecrows/scarecrow_005/animations/motion/01.webp",
+                "scarecrows/scarecrow_005/animations/motion/02.webp",
+                "scarecrows/scarecrow_005/animations/motion/03.webp",
+                "scarecrows/scarecrow_005/animations/motion/04.webp"
+              ],
+              "strip": "scarecrows/scarecrow_005/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:13+00:00",
+              "brief": "C3"
+            }
           },
           "art_hash": "0e2bfc98082c1937"
         }
@@ -42053,6 +42658,29 @@
             "south-east": "sheaf_poles/sheaf_pole_002/rotations/south-east.webp",
             "south-west": "sheaf_poles/sheaf_pole_002/rotations/south-west.webp",
             "south": "sheaf_poles/sheaf_pole_002/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "9f4b9a53-836d-4846-86f2-1b2c59ca56d0",
+              "description": "Animate the grain heads only, nodding gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/animations/motion/00.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/01.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/02.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/03.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:49+00:00",
+              "brief": "C11"
+            }
           },
           "art_hash": "c0b9085b12892bab"
         },
@@ -42902,6 +43530,29 @@
           "glow_concept": "hairline cracks bleeding golden light",
           "difference_from_source": 0.8786,
           "glow_score": 0.2081,
+          "animations": {
+            "motion": {
+              "group_id": "f7c44d07-c338-4a9e-95f5-3e1da94c2768",
+              "description": "Animate the glowing veins only, brightening and dimming slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion/00.webp",
+                "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion/01.webp",
+                "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion/02.webp",
+                "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion/03.webp",
+                "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "soulstone_outcrops/soulstone_outcrop_009/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:11+00:00",
+              "brief": "L2"
+            }
+          },
           "art_hash": "a430c637c12081fc"
         },
         "LIT_2": {
@@ -43571,6 +44222,29 @@
             "south-west": "soulstone_plinths/soulstone_plinth_001/lit_1/rotations/south-west.webp",
             "south": "soulstone_plinths/soulstone_plinth_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "e2d67c0c-0855-4e0b-8532-b222b468a0a8",
+              "description": "Animate the glow of the stone only, pulsing slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/00.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/01.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/02.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/03.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:15+00:00",
+              "brief": "L3"
+            }
+          },
           "art_hash": "f785949ee0ff7ae1"
         },
         "LIT_2": {
@@ -43681,6 +44355,29 @@
           "sprite": "spring_basins/spring_basin_003/sprite.webp",
           "pixellab_object_id": "38de4942-59b4-4a97-8ffb-b5aa7b6c8ddc",
           "generated_at": "2026-08-13T19:23:23+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "d5b84c41-fe12-450b-b790-c5db8f5d3e09",
+              "description": "Animate the water surface only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "spring_basins/spring_basin_003/animations/motion/00.webp",
+                "spring_basins/spring_basin_003/animations/motion/01.webp",
+                "spring_basins/spring_basin_003/animations/motion/02.webp",
+                "spring_basins/spring_basin_003/animations/motion/03.webp",
+                "spring_basins/spring_basin_003/animations/motion/04.webp"
+              ],
+              "strip": "spring_basins/spring_basin_003/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:57+00:00",
+              "brief": "W4"
+            }
+          },
           "art_hash": "3de152379e02a3f7"
         },
         "NOT_LIT_2": {
@@ -43998,6 +44695,29 @@
             "south-east": "stone_fountains/stone_fountain_001/rotations/south-east.webp",
             "south-west": "stone_fountains/stone_fountain_001/rotations/south-west.webp",
             "south": "stone_fountains/stone_fountain_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "82795845-1616-4440-8931-c763798e15cf",
+              "description": "Animate the running water only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_001/animations/motion/00.webp",
+                "stone_fountains/stone_fountain_001/animations/motion/01.webp",
+                "stone_fountains/stone_fountain_001/animations/motion/02.webp",
+                "stone_fountains/stone_fountain_001/animations/motion/03.webp",
+                "stone_fountains/stone_fountain_001/animations/motion/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:05+00:00",
+              "brief": "W3"
+            }
           },
           "art_hash": "2d2ebaeb9db8487d"
         },
@@ -51268,6 +51988,27 @@
           "sprite": "telegraph_poles/telegraph_pole_003/sprite.webp",
           "pixellab_object_id": "a944e349-7895-4b5b-b672-1738e8707cf4",
           "generated_at": "2026-08-13T07:45:28+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "b7fd4090-b09d-41d5-811c-13e4559fe943",
+              "description": "Animate the wires only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "telegraph_poles/telegraph_pole_003/animations/motion/00.webp",
+                "telegraph_poles/telegraph_pole_003/animations/motion/01.webp",
+                "telegraph_poles/telegraph_pole_003/animations/motion/02.webp",
+                "telegraph_poles/telegraph_pole_003/animations/motion/03.webp",
+                "telegraph_poles/telegraph_pole_003/animations/motion/04.webp"
+              ],
+              "strip": "telegraph_poles/telegraph_pole_003/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:39:39+00:00",
+              "brief": "M4"
+            }
+          },
           "art_hash": "22aaf37ae59523b2"
         },
         "NOT_LIT_2": {
@@ -52387,17 +53128,38 @@
               "frame_count": 5,
               "generated_frames": 4,
               "keep_first_frame": true,
-              "frame_paths": [
-                "torch_posts/torch_post_004/animations/flame/00.webp",
-                "torch_posts/torch_post_004/animations/flame/01.webp",
-                "torch_posts/torch_post_004/animations/flame/02.webp",
-                "torch_posts/torch_post_004/animations/flame/03.webp",
-                "torch_posts/torch_post_004/animations/flame/04.webp"
-              ],
-              "strip": "torch_posts/torch_post_004/animations/flame__strip.webp",
-              "directions": [
-                "south"
-              ],
+              "directions": {
+                "south": {
+                  "frames": 5,
+                  "frame_paths": [
+                    "torch_posts/torch_post_004/animations/flame/south/00.webp",
+                    "torch_posts/torch_post_004/animations/flame/south/01.webp",
+                    "torch_posts/torch_post_004/animations/flame/south/02.webp",
+                    "torch_posts/torch_post_004/animations/flame/south/03.webp",
+                    "torch_posts/torch_post_004/animations/flame/south/04.webp"
+                  ]
+                },
+                "south-east": {
+                  "frames": 5,
+                  "frame_paths": [
+                    "torch_posts/torch_post_004/animations/flame/south-east/00.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-east/01.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-east/02.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-east/03.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-east/04.webp"
+                  ]
+                },
+                "south-west": {
+                  "frames": 5,
+                  "frame_paths": [
+                    "torch_posts/torch_post_004/animations/flame/south-west/00.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-west/01.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-west/02.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-west/03.webp",
+                    "torch_posts/torch_post_004/animations/flame/south-west/04.webp"
+                  ]
+                }
+              },
               "generated_at": "2026-08-29T07:11:09+00:00"
             }
           },
@@ -54627,6 +55389,29 @@
             "south-east": "trailing_planters/trailing_planter_003/rotations/south-east.webp",
             "south-west": "trailing_planters/trailing_planter_003/rotations/south-west.webp",
             "south": "trailing_planters/trailing_planter_003/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "ee17deaa-3008-464b-8b32-65fc44feec34",
+              "description": "Animate the cascading vines only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/animations/motion/00.webp",
+                "trailing_planters/trailing_planter_003/animations/motion/01.webp",
+                "trailing_planters/trailing_planter_003/animations/motion/02.webp",
+                "trailing_planters/trailing_planter_003/animations/motion/03.webp",
+                "trailing_planters/trailing_planter_003/animations/motion/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:36:15+00:00",
+              "brief": "C10"
+            }
           },
           "art_hash": "6a8868b5a0b50006"
         },
@@ -84825,6 +85610,29 @@
             "south-west": "washing_lines/washing_line_001/rotations/south-west.webp",
             "south": "washing_lines/washing_line_001/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "785670cc-a4d7-438b-8690-386efecbf184",
+              "description": "Animate the hanging cloth only, billowing in a breeze. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_001/animations/motion/00.webp",
+                "washing_lines/washing_line_001/animations/motion/01.webp",
+                "washing_lines/washing_line_001/animations/motion/02.webp",
+                "washing_lines/washing_line_001/animations/motion/03.webp",
+                "washing_lines/washing_line_001/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:40+00:00",
+              "brief": "C1"
+            }
+          },
           "art_hash": "2af18cef6b1daf2f"
         },
         "NOT_LIT_2": {
@@ -86650,6 +87458,29 @@
           "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
           "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
           "generated_at": "2026-08-13T01:45:58+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "97b4ef4d-6bc9-48e9-a0e2-946cf3a6b981",
+              "description": "Animate the lily pads only, rocking very gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "water_lily_clumps/water_lily_clump_001/animations/motion/00.webp",
+                "water_lily_clumps/water_lily_clump_001/animations/motion/01.webp",
+                "water_lily_clumps/water_lily_clump_001/animations/motion/02.webp",
+                "water_lily_clumps/water_lily_clump_001/animations/motion/03.webp",
+                "water_lily_clumps/water_lily_clump_001/animations/motion/04.webp"
+              ],
+              "strip": "water_lily_clumps/water_lily_clump_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:16+00:00",
+              "brief": "W7"
+            }
+          },
           "art_hash": "ddc4a6bfe2e37b1f"
         },
         "NOT_LIT_2": {
@@ -86845,6 +87676,29 @@
             "south-east": "water_pumps/water_pump_001/rotations/south-east.webp",
             "south-west": "water_pumps/water_pump_001/rotations/south-west.webp",
             "south": "water_pumps/water_pump_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "042a19be-03bc-4730-a807-cef497f55eb9",
+              "description": "Animate a slow drip falling from the spout only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "water_pumps/water_pump_001/animations/motion/00.webp",
+                "water_pumps/water_pump_001/animations/motion/01.webp",
+                "water_pumps/water_pump_001/animations/motion/02.webp",
+                "water_pumps/water_pump_001/animations/motion/03.webp",
+                "water_pumps/water_pump_001/animations/motion/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:00+00:00",
+              "brief": "W8"
+            }
           },
           "art_hash": "b8d7413bda3cacee"
         },
@@ -87049,6 +87903,29 @@
             "south-east": "waterwheels/waterwheel_003/rotations/south-east.webp",
             "south-west": "waterwheels/waterwheel_003/rotations/south-west.webp",
             "south": "waterwheels/waterwheel_003/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "b6f54f41-9877-464c-9f22-ad213c55c929",
+              "description": "Animate the wheel only, turning slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/animations/motion/00.webp",
+                "waterwheels/waterwheel_003/animations/motion/01.webp",
+                "waterwheels/waterwheel_003/animations/motion/02.webp",
+                "waterwheels/waterwheel_003/animations/motion/03.webp",
+                "waterwheels/waterwheel_003/animations/motion/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:35:10+00:00",
+              "brief": "W1"
+            }
           },
           "art_hash": "81389f604a5ccab9"
         },
@@ -88899,6 +89776,29 @@
             "south-west": "wells/well_002/rotations/south-west.webp",
             "south": "wells/well_002/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "0b920dfa-e8c2-4265-b752-5186898ccd63",
+              "description": "Animate the hanging bucket and rope only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wells/well_002/animations/motion/00.webp",
+                "wells/well_002/animations/motion/01.webp",
+                "wells/well_002/animations/motion/02.webp",
+                "wells/well_002/animations/motion/03.webp",
+                "wells/well_002/animations/motion/04.webp"
+              ],
+              "strip": "wells/well_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:39:52+00:00",
+              "brief": "M3"
+            }
+          },
           "art_hash": "c0df2d13c0858e29"
         },
         "LIT_2": {
@@ -89939,6 +90839,27 @@
           "sprite": "windmills/windmill_009/sprite.webp",
           "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
           "generated_at": "2026-08-13T23:24:43+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "65ae7726-359f-4383-ade0-13c6337549d4",
+              "description": "Animate the sails only, turning slowly. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "windmills/windmill_009/animations/motion/00.webp",
+                "windmills/windmill_009/animations/motion/01.webp",
+                "windmills/windmill_009/animations/motion/02.webp",
+                "windmills/windmill_009/animations/motion/03.webp",
+                "windmills/windmill_009/animations/motion/04.webp"
+              ],
+              "strip": "windmills/windmill_009/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T08:39:22+00:00",
+              "brief": "M1"
+            }
+          },
           "art_hash": "99959eaa6cc5dbac"
         },
         "NOT_LIT_2": {
@@ -93738,6 +94659,27 @@
               ],
               "strip": "wisteria_snags/wisteria_snag_001/animations/wind__strip.webp",
               "generated_at": "2026-08-28T15:49:10+00:00"
+            },
+            "motion": {
+              "group_id": "e1453000-b3e2-41c4-a7f5-41fa56d508eb",
+              "description": "Animate the hanging wisteria only, swaying gently. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wisteria_snags/wisteria_snag_001/animations/motion/00.webp",
+                "wisteria_snags/wisteria_snag_001/animations/motion/01.webp",
+                "wisteria_snags/wisteria_snag_001/animations/motion/02.webp",
+                "wisteria_snags/wisteria_snag_001/animations/motion/03.webp",
+                "wisteria_snags/wisteria_snag_001/animations/motion/04.webp"
+              ],
+              "strip": "wisteria_snags/wisteria_snag_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:37:41+00:00",
+              "brief": "G12"
             }
           },
           "art_hash": "c7a58bc63601be39"
@@ -94045,6 +94987,29 @@
             "south-east": "witch_rings/witch_ring_002/rotations/south-east.webp",
             "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
             "south": "witch_rings/witch_ring_002/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "7ced46f7-b953-4883-bde1-5c8bad35220b",
+              "description": "Animate the candle flames only. Nothing else moves.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "witch_rings/witch_ring_002/animations/motion/00.webp",
+                "witch_rings/witch_ring_002/animations/motion/01.webp",
+                "witch_rings/witch_ring_002/animations/motion/02.webp",
+                "witch_rings/witch_ring_002/animations/motion/03.webp",
+                "witch_rings/witch_ring_002/animations/motion/04.webp"
+              ],
+              "strip": "witch_rings/witch_ring_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T08:38:07+00:00",
+              "brief": "L4"
+            }
           },
           "art_hash": "1b39ffedb96e378b"
         },
