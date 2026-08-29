@@ -363,13 +363,18 @@ def plate_img(ground, region, x, y):
     (basesets port above); a member resolves to its published plate, or is
     conformed from its own art when the plate library does not cover it;
     clean -> the ground's clean plate."""
-    chosen = pick_set(ground, region)
-    # ONE PARQUET FLOOR PER ROOM (maintainer 2026-08-30). A room is a
-    # connected patch of indoor floor, and every cell of it asks for the
-    # member at the room's anchor, so the floor is laid as one board rather
-    # than a patchwork that changes under your feet.
+    # ONE PARQUET FLOOR PER ROOM (maintainer 2026-08-30, twice). A room is a
+    # connected patch of indoor floor, and every cell of it asks at the room's
+    # ANCHOR - for the set as well as the member, which is the half that was
+    # missing. Sets are chosen per 24-cell chunk, so a room straddling a chunk
+    # border took two different sets and the floor changed pattern mid-room
+    # even though the member rule was already in place. Anchoring both lays
+    # the floor as one board.
     ax, ay = ROOM_ANCHOR.get((x, y), (x, y)) if ground == "parquet_floor" \
         else (x, y)
+    if (ax, ay) != (x, y):
+        region = f"{ground}@{ax // 24},{ay // 24}"
+    chosen = pick_set(ground, region)
     m = pick_member(chosen, ax, ay)
     root = os.path.join(REPO, "tiles", "plates")
     if m.get("kind") == "tile":
@@ -957,6 +962,14 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     for w_ in doc.get("walls", []):
         for c in w_["cells"]:
             wall_over[(c["x"], c["y"])] = w_["side"]
+    # INDOORS: every cell under a roof or cave deck. A wall face whose FOOT
+    # stands on one of these is an INTERIOR face - the inside of the far wall,
+    # seen from outside the building. Drawing it lit is what filled the
+    # doorway with planks and made the maintainer ask why the door was closed
+    # (2026-08-30): the door is a gap in the wall ring, so what shows through
+    # it is the back wall's inner face at full height, and it reads as a door.
+    indoor = {(c["x"], c["y"]) for dk in doc.get("decks", [])
+              if dk.get("kind") in ("roof", "cave") for c in dk["cells"]}
 
     def g(x, y):
         if not (x0 <= x < x1 and y0 <= y < y1):
@@ -1196,7 +1209,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             # where the ground is light_soil, light green where it is grass,
             # one per tile. The surface below supplies the top face; the wall
             # is drawn only where a face is actually exposed.
-            exposed = front_low < zl
+            exposed = front_low < zl and (fx, fy) not in indoor
             if exposed:
                 cap = over_tile(gr, side)
                 # the repeated course is the WALL's own material in every
