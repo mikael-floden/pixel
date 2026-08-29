@@ -42,6 +42,29 @@
         "south-east": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-east.webp",
         "south-west": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-west.webp",
         "south": "hanging_baskets/hanging_basket_006/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "630e83fe-713c-4284-a3ba-da954734f027",
+          "description": "This is the same picture in every frame. ONLY the two small hanging lanterns move, swinging very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_006/lit_4/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_006/lit_4/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_006/lit_4/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_006/lit_4/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_006/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_006/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:43:01+00:00",
+          "brief": "R38"
+        }
       }
     },
     "NOT_LIT_1": {

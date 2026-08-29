@@ -42,6 +42,29 @@
         "south-east": "fences/fence_001/lit_1/rotations/south-east.webp",
         "south-west": "fences/fence_001/lit_1/rotations/south-west.webp",
         "south": "fences/fence_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "96995aba-6dd9-4826-bc8a-e79089e72936",
+          "description": "This is the same picture in every frame. ONLY the small green lights along the rail move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fences/fence_001/lit_1/animations/motion/00.webp",
+            "fences/fence_001/lit_1/animations/motion/01.webp",
+            "fences/fence_001/lit_1/animations/motion/02.webp",
+            "fences/fence_001/lit_1/animations/motion/03.webp",
+            "fences/fence_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "fences/fence_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:41:39+00:00",
+          "brief": "R17"
+        }
       }
     },
     "LIT_2": {

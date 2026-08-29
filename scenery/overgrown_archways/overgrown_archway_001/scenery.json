@@ -88,6 +88,29 @@
         "south-east": "overgrown_archways/overgrown_archway_001/not_lit_3/rotations/south-east.webp",
         "south-west": "overgrown_archways/overgrown_archway_001/not_lit_3/rotations/south-west.webp",
         "south": "overgrown_archways/overgrown_archway_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "15314399-dcbf-4978-bc51-6362c8b5a53f",
+          "description": "This is the same picture in every frame. ONLY the long hanging flower trails move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/00.webp",
+            "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/01.webp",
+            "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/02.webp",
+            "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/03.webp",
+            "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:42:06+00:00",
+          "brief": "R37"
+        }
       }
     },
     "NOT_LIT_4": {

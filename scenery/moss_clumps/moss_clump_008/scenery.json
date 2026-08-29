@@ -65,7 +65,30 @@
       "generated_at": "2026-08-16T18:02:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5934,
-      "glow_score": 0.145
+      "glow_score": 0.145,
+      "animations": {
+        "motion": {
+          "group_id": "872d20e1-6191-4892-85d4-9bdf0d34b41e",
+          "description": "This is the same picture in every frame. ONLY the golden light in the middle of the moss brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_008/lit_2/animations/motion/00.webp",
+            "moss_clumps/moss_clump_008/lit_2/animations/motion/01.webp",
+            "moss_clumps/moss_clump_008/lit_2/animations/motion/02.webp",
+            "moss_clumps/moss_clump_008/lit_2/animations/motion/03.webp",
+            "moss_clumps/moss_clump_008/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_008/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:41:24+00:00",
+          "brief": "R31"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "moss_clumps/moss_clump_008/lit_4/sprite.webp",

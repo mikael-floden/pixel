@@ -3618,6 +3618,29 @@
             "south-west": "beached_rowboats/beached_rowboat_001/lit_1/rotations/south-west.webp",
             "south": "beached_rowboats/beached_rowboat_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "81b184c0-fabd-4a7d-b134-9e1abb589a54",
+              "description": "This is the same picture in every frame. ONLY the warm light showing between the planks brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/00.webp",
+                "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/01.webp",
+                "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/02.webp",
+                "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/03.webp",
+                "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:58+00:00",
+              "brief": "R26"
+            }
+          },
           "art_hash": "9cc5db35fd3694f6"
         },
         "LIT_2": {
@@ -5600,6 +5623,27 @@
                 }
               },
               "generated_at": "2026-08-29T08:10:07+00:00"
+            },
+            "motion": {
+              "group_id": "f70660ea-47c9-4d45-9589-55ed1229297c",
+              "description": "This is the same picture in every frame. ONLY the small candle flame on the headboard flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beds/bed_005/lit_2/animations/motion/00.webp",
+                "beds/bed_005/lit_2/animations/motion/01.webp",
+                "beds/bed_005/lit_2/animations/motion/02.webp",
+                "beds/bed_005/lit_2/animations/motion/03.webp",
+                "beds/bed_005/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "beds/bed_005/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:13+00:00",
+              "brief": "R25"
             }
           },
           "rotations": {
@@ -5858,6 +5902,29 @@
             "south-east": "beehives/beehive_003/not_lit_2/rotations/south-east.webp",
             "south-west": "beehives/beehive_003/not_lit_2/rotations/south-west.webp",
             "south": "beehives/beehive_003/not_lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "458c39f5-8641-477e-ab44-0e4995be96d1",
+              "description": "This is the same picture in every frame. ONLY the single tiny dark speck beside the opening moves, drifting slowly in the air. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_2/animations/motion/00.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/01.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/02.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/03.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:22+00:00",
+              "brief": "R13"
+            }
           },
           "art_hash": "3a749afa210fbe8a"
         },
@@ -8405,6 +8472,29 @@
           "sprite": "briar_thickets/briar_thicket_010/sprite.webp",
           "pixellab_object_id": "361c1df6-6dfe-4f53-ab24-9fd053ed66c1",
           "generated_at": "2026-08-13T20:54:29+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "f992ece8-5a3a-490b-b52d-79a64c7cfefe",
+              "description": "This is the same picture in every frame. ONLY the outermost flowers move, stirring very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "briar_thickets/briar_thicket_010/animations/motion/00.webp",
+                "briar_thickets/briar_thicket_010/animations/motion/01.webp",
+                "briar_thickets/briar_thicket_010/animations/motion/02.webp",
+                "briar_thickets/briar_thicket_010/animations/motion/03.webp",
+                "briar_thickets/briar_thicket_010/animations/motion/04.webp"
+              ],
+              "strip": "briar_thickets/briar_thicket_010/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:43:01+00:00",
+              "brief": "R40"
+            }
+          },
           "art_hash": "ae6885dc858a09e1"
         },
         "LIT_2": {
@@ -9312,6 +9402,29 @@
           "glow_concept": "inner lantern glow silhouetting the leaves",
           "difference_from_source": 0.8363,
           "glow_score": 0.2044,
+          "animations": {
+            "motion": {
+              "group_id": "b0bbabc9-f9a6-4353-be53-d04204bf8447",
+              "description": "This is the same picture in every frame. ONLY the single golden light inside the bush brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bushes/bush_001/lit_2/animations/motion/00.webp",
+                "bushes/bush_001/lit_2/animations/motion/01.webp",
+                "bushes/bush_001/lit_2/animations/motion/02.webp",
+                "bushes/bush_001/lit_2/animations/motion/03.webp",
+                "bushes/bush_001/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "bushes/bush_001/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:32+00:00",
+              "brief": "R30"
+            }
+          },
           "art_hash": "10be34063e6ed2cb"
         },
         "NOT_LIT_1": {
@@ -9350,6 +9463,29 @@
           "glow_concept": null,
           "difference_from_source": 0.8835,
           "glow_score": 0.0014,
+          "animations": {
+            "motion": {
+              "group_id": "d3e04a0a-3651-4a6d-bb1e-37c980f9d672",
+              "description": "This is the same picture in every frame. ONLY the leaves move, shivering very slightly in a faint breeze. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bushes/bush_001/not_lit_2/animations/motion/00.webp",
+                "bushes/bush_001/not_lit_2/animations/motion/01.webp",
+                "bushes/bush_001/not_lit_2/animations/motion/02.webp",
+                "bushes/bush_001/not_lit_2/animations/motion/03.webp",
+                "bushes/bush_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "bushes/bush_001/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:30+00:00",
+              "brief": "R41"
+            }
+          },
           "art_hash": "775fd323c3861e3f"
         },
         "NOT_LIT_3": {
@@ -13373,6 +13509,29 @@
             "south-west": "charcoal_kilns/charcoal_kiln_002/lit_3/rotations/south-west.webp",
             "south": "charcoal_kilns/charcoal_kiln_002/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "ba4e33d5-09b0-4002-8b54-5dec86d888b6",
+              "description": "This is the same picture in every frame. ONLY the thread of smoke above the dome moves, rising and thinning. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:47+00:00",
+              "brief": "R11"
+            }
+          },
           "art_hash": "6c999f451a1f611a"
         },
         "LIT_4": {
@@ -13983,6 +14142,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7247,
           "glow_score": 0.0818,
+          "animations": {
+            "motion": {
+              "group_id": "8797de97-fc5b-4e73-bffd-31d2d1d8e8fd",
+              "description": "This is the same picture in every frame. ONLY the light inside the two openings brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_features/cliff_feature_002/lit_3/animations/motion/00.webp",
+                "cliff_features/cliff_feature_002/lit_3/animations/motion/01.webp",
+                "cliff_features/cliff_feature_002/lit_3/animations/motion/02.webp",
+                "cliff_features/cliff_feature_002/lit_3/animations/motion/03.webp",
+                "cliff_features/cliff_feature_002/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_features/cliff_feature_002/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:33+00:00",
+              "brief": "R22"
+            }
+          },
           "art_hash": "18b03651ee5a93f4"
         },
         "LIT_4": {
@@ -14682,6 +14864,27 @@
           "glow_concept": "glow-moss packed between them",
           "difference_from_source": 0.336,
           "glow_score": 0.1515,
+          "animations": {
+            "motion": {
+              "group_id": "528d1275-e05c-4600-96c1-02c78dd7c7b1",
+              "description": "This is the same picture in every frame. ONLY the teal light among the twigs brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_roots/cliff_root_013/lit_1/animations/motion/00.webp",
+                "cliff_roots/cliff_root_013/lit_1/animations/motion/01.webp",
+                "cliff_roots/cliff_root_013/lit_1/animations/motion/02.webp",
+                "cliff_roots/cliff_root_013/lit_1/animations/motion/03.webp",
+                "cliff_roots/cliff_root_013/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_roots/cliff_root_013/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T12:40:57+00:00",
+              "brief": "R35"
+            }
+          },
           "art_hash": "3ba582583c203ccc"
         },
         "LIT_2": {
@@ -16035,6 +16238,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.4251,
           "glow_score": 0.2172,
+          "animations": {
+            "motion": {
+              "group_id": "252b8c92-7092-452d-8692-24c1209d02ea",
+              "description": "This is the same picture in every frame. ONLY the small green points of light move, blinking slowly one after another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_021/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_021/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_021/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_021/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_021/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_021/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T12:41:22+00:00",
+              "brief": "R18"
+            }
+          },
           "art_hash": "450c96729662c775"
         },
         "NOT_LIT_1": {
@@ -19222,6 +19446,27 @@
               ],
               "strip": "crystal_trees/crystal_tree_002/lit_2/animations/wind__strip.webp",
               "generated_at": "2026-08-28T11:45:34+00:00"
+            },
+            "motion": {
+              "group_id": "507f66ea-af3d-4f55-837d-50d51998036f",
+              "description": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly from one shard to another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystal_trees/crystal_tree_002/lit_2/animations/motion/00.webp",
+                "crystal_trees/crystal_tree_002/lit_2/animations/motion/01.webp",
+                "crystal_trees/crystal_tree_002/lit_2/animations/motion/02.webp",
+                "crystal_trees/crystal_tree_002/lit_2/animations/motion/03.webp",
+                "crystal_trees/crystal_tree_002/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "crystal_trees/crystal_tree_002/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:40:21+00:00",
+              "brief": "R21"
             }
           },
           "art_hash": "8386ef1755e97ad9"
@@ -19250,6 +19495,27 @@
               ],
               "strip": "crystal_trees/crystal_tree_002/lit_3/animations/wind__strip.webp",
               "generated_at": "2026-08-28T11:45:58+00:00"
+            },
+            "motion": {
+              "group_id": "4c88960a-8943-4849-b70e-554413d1c485",
+              "description": "This is the same picture in every frame. ONLY the light of the single blazing shard brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystal_trees/crystal_tree_002/lit_3/animations/motion/00.webp",
+                "crystal_trees/crystal_tree_002/lit_3/animations/motion/01.webp",
+                "crystal_trees/crystal_tree_002/lit_3/animations/motion/02.webp",
+                "crystal_trees/crystal_tree_002/lit_3/animations/motion/03.webp",
+                "crystal_trees/crystal_tree_002/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "crystal_trees/crystal_tree_002/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:24+00:00",
+              "brief": "R20"
             }
           },
           "art_hash": "6c1dbba5e83fc00f"
@@ -20216,6 +20482,29 @@
           "glow_concept": null,
           "difference_from_source": 0.637,
           "glow_score": 0.2105,
+          "animations": {
+            "motion": {
+              "group_id": "462b2dea-7099-4fed-8827-f05f596b3307",
+              "description": "This is the same picture in every frame. ONLY a faint drift of spores rises out of the cups and thins away. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cup_fungi/cup_fungus_001/not_lit_2/animations/motion/00.webp",
+                "cup_fungi/cup_fungus_001/not_lit_2/animations/motion/01.webp",
+                "cup_fungi/cup_fungus_001/not_lit_2/animations/motion/02.webp",
+                "cup_fungi/cup_fungus_001/not_lit_2/animations/motion/03.webp",
+                "cup_fungi/cup_fungus_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cup_fungi/cup_fungus_001/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:41+00:00",
+              "brief": "R10"
+            }
+          },
           "art_hash": "251313899d5adb6b"
         },
         "NOT_LIT_3": {
@@ -21106,6 +21395,29 @@
             "south-east": "dock_pilings/dock_piling_005/lit_1/rotations/south-east.webp",
             "south-west": "dock_pilings/dock_piling_005/lit_1/rotations/south-west.webp",
             "south": "dock_pilings/dock_piling_005/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "a349ba0a-fd48-4e23-871b-c771aa668e12",
+              "description": "This is the same picture in every frame. ONLY the glowing marks brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "dock_pilings/dock_piling_005/lit_1/animations/motion/00.webp",
+                "dock_pilings/dock_piling_005/lit_1/animations/motion/01.webp",
+                "dock_pilings/dock_piling_005/lit_1/animations/motion/02.webp",
+                "dock_pilings/dock_piling_005/lit_1/animations/motion/03.webp",
+                "dock_pilings/dock_piling_005/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_005/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:19+00:00",
+              "brief": "R27"
+            }
           },
           "art_hash": "2d0920a387cfcdce"
         },
@@ -22113,6 +22425,29 @@
           "difference_from_source": 0.9675,
           "glow_score": 0.12,
           "generated_at": "2026-08-15T14:47:58+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "27e5426a-8204-4aef-9c35-66965d43fa67",
+              "description": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "driftwood_logs/driftwood_log_901/lit_3/animations/motion/00.webp",
+                "driftwood_logs/driftwood_log_901/lit_3/animations/motion/01.webp",
+                "driftwood_logs/driftwood_log_901/lit_3/animations/motion/02.webp",
+                "driftwood_logs/driftwood_log_901/lit_3/animations/motion/03.webp",
+                "driftwood_logs/driftwood_log_901/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "driftwood_logs/driftwood_log_901/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:41+00:00",
+              "brief": "R29"
+            }
+          },
           "art_hash": "6c836e59e9e826b2"
         },
         "LIT_4": {
@@ -23106,6 +23441,29 @@
             "south-west": "fences/fence_001/lit_1/rotations/south-west.webp",
             "south": "fences/fence_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "96995aba-6dd9-4826-bc8a-e79089e72936",
+              "description": "This is the same picture in every frame. ONLY the small green lights along the rail move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "fences/fence_001/lit_1/animations/motion/00.webp",
+                "fences/fence_001/lit_1/animations/motion/01.webp",
+                "fences/fence_001/lit_1/animations/motion/02.webp",
+                "fences/fence_001/lit_1/animations/motion/03.webp",
+                "fences/fence_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "fences/fence_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:39+00:00",
+              "brief": "R17"
+            }
+          },
           "art_hash": "17cfbbbaef61028d"
         },
         "LIT_2": {
@@ -23316,6 +23674,29 @@
           "glow_concept": "central fiddlehead coil glowing as it unrolls",
           "difference_from_source": 0.8348,
           "glow_score": 0.0681,
+          "animations": {
+            "motion": {
+              "group_id": "f4a4eba3-c10b-47c4-b537-d63898bfd535",
+              "description": "This is the same picture in every frame. ONLY the light in the single curled frond brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "ferns/fern_001/lit_1/animations/motion/00.webp",
+                "ferns/fern_001/lit_1/animations/motion/01.webp",
+                "ferns/fern_001/lit_1/animations/motion/02.webp",
+                "ferns/fern_001/lit_1/animations/motion/03.webp",
+                "ferns/fern_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "ferns/fern_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:40:25+00:00",
+              "brief": "R32"
+            }
+          },
           "art_hash": "a04d03656518e992"
         },
         "LIT_2": {
@@ -26709,6 +27090,29 @@
           "difference_from_source": 0.9592,
           "glow_score": 0.1937,
           "relit_from": "LIT_2",
+          "animations": {
+            "motion": {
+              "group_id": "9b18ff10-872e-431f-8f00-4e3fd4055290",
+              "description": "This is the same picture in every frame. ONLY the surface of the water in the basin moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/00.webp",
+                "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/01.webp",
+                "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/02.webp",
+                "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/03.webp",
+                "frozen_springs/frozen_spring_002/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "frozen_springs/frozen_spring_002/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:32+00:00",
+              "brief": "R3"
+            }
+          },
           "art_hash": "de7329690b8e9316"
         },
         "NOT_LIT_5": {
@@ -26937,7 +27341,27 @@
           "glow_concept": "glowing sap veins climbing the thick stalk",
           "difference_from_source": 0.8381,
           "glow_score": 0.0603,
-          "animations": {},
+          "animations": {
+            "motion": {
+              "group_id": "d28deeb8-903f-409a-9ac4-f8faeb553658",
+              "description": "This is the same picture in every frame. ONLY the glowing sap in the stalk brightens and dims, moving slowly upward. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/00.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/01.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/02.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/03.webp",
+                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T12:40:48+00:00",
+              "brief": "R42"
+            }
+          },
           "art_hash": "e901201666d7e46a"
         },
         "NOT_LIT_1": {
@@ -27084,6 +27508,29 @@
           "sprite": "giant_skulls/giant_skull_002/sprite.webp",
           "pixellab_object_id": "59ae47ec-64d2-4991-910b-19e7d28b7084",
           "generated_at": "2026-08-14T02:04:26+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "b99c102e-8135-45de-bb49-c92b8214245e",
+              "description": "This is the same picture in every frame. ONLY the green light inside the jaw brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "giant_skulls/giant_skull_002/animations/motion/00.webp",
+                "giant_skulls/giant_skull_002/animations/motion/01.webp",
+                "giant_skulls/giant_skull_002/animations/motion/02.webp",
+                "giant_skulls/giant_skull_002/animations/motion/03.webp",
+                "giant_skulls/giant_skull_002/animations/motion/04.webp"
+              ],
+              "strip": "giant_skulls/giant_skull_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:49+00:00",
+              "brief": "R28"
+            }
+          },
           "art_hash": "3319a9b5357e3f28"
         },
         "NOT_LIT_1": {
@@ -27398,6 +27845,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6798,
           "glow_score": 0.126,
+          "animations": {
+            "motion": {
+              "group_id": "06e1af10-916e-48a8-bc2a-71ef4fc95987",
+              "description": "This is the same picture in every frame. ONLY the grass blades move, bending in a faint breeze and springing back. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/00.webp",
+                "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/01.webp",
+                "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/02.webp",
+                "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/03.webp",
+                "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "grass_tufts/grass_tuft_001/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:44+00:00",
+              "brief": "R39"
+            }
+          },
           "art_hash": "5c590103382a6a3d"
         },
         "NOT_LIT_3": {
@@ -28899,6 +29369,29 @@
             "south-east": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-east.webp",
             "south-west": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-west.webp",
             "south": "hanging_baskets/hanging_basket_006/lit_4/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "630e83fe-713c-4284-a3ba-da954734f027",
+              "description": "This is the same picture in every frame. ONLY the two small hanging lanterns move, swinging very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_006/lit_4/animations/motion/00.webp",
+                "hanging_baskets/hanging_basket_006/lit_4/animations/motion/01.webp",
+                "hanging_baskets/hanging_basket_006/lit_4/animations/motion/02.webp",
+                "hanging_baskets/hanging_basket_006/lit_4/animations/motion/03.webp",
+                "hanging_baskets/hanging_basket_006/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_006/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:43:01+00:00",
+              "brief": "R38"
+            }
           },
           "art_hash": "3fb04d4136dedd5d"
         },
@@ -31744,6 +32237,27 @@
               ],
               "strip": "honey_trees/honey_tree_002/animations/wind__strip.webp",
               "generated_at": "2026-08-28T12:00:30+00:00"
+            },
+            "motion": {
+              "group_id": "de07879b-6ced-4328-b11d-baa312aa4baf",
+              "description": "This is the same picture in every frame. ONLY the glowing honey moves, running slowly down and dripping. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "honey_trees/honey_tree_002/animations/motion/00.webp",
+                "honey_trees/honey_tree_002/animations/motion/01.webp",
+                "honey_trees/honey_tree_002/animations/motion/02.webp",
+                "honey_trees/honey_tree_002/animations/motion/03.webp",
+                "honey_trees/honey_tree_002/animations/motion/04.webp"
+              ],
+              "strip": "honey_trees/honey_tree_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:59+00:00",
+              "brief": "R8"
             }
           },
           "art_hash": "fe9b8d8285d7ec23"
@@ -32147,6 +32661,27 @@
           "glow_concept": "a thin line of glowing sap spiraling upward",
           "difference_from_source": 0.6256,
           "glow_score": 0.0715,
+          "animations": {
+            "motion": {
+              "group_id": "415dc416-0b3e-40ec-b65a-6c0007129cd0",
+              "description": "This is the same picture in every frame. ONLY the hanging bines move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hop_poles/hop_pole_001/lit_1/animations/motion/00.webp",
+                "hop_poles/hop_pole_001/lit_1/animations/motion/01.webp",
+                "hop_poles/hop_pole_001/lit_1/animations/motion/02.webp",
+                "hop_poles/hop_pole_001/lit_1/animations/motion/03.webp",
+                "hop_poles/hop_pole_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "hop_poles/hop_pole_001/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T12:42:13+00:00",
+              "brief": "R36"
+            }
+          },
           "art_hash": "9e9017c362197c6c"
         },
         "LIT_2": {
@@ -34072,6 +34607,27 @@
                 }
               },
               "generated_at": "2026-08-29T08:22:01+00:00"
+            },
+            "motion": {
+              "group_id": "c8af6322-3ee0-49c8-a119-9d8942faf3bc",
+              "description": "This is the same picture in every frame. ONLY the small candle flame inside the lantern flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "lantern_posts/lantern_post_001/lit_1/animations/motion/00.webp",
+                "lantern_posts/lantern_post_001/lit_1/animations/motion/01.webp",
+                "lantern_posts/lantern_post_001/lit_1/animations/motion/02.webp",
+                "lantern_posts/lantern_post_001/lit_1/animations/motion/03.webp",
+                "lantern_posts/lantern_post_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "lantern_posts/lantern_post_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:23+00:00",
+              "brief": "R24"
             }
           },
           "rotations": {
@@ -37106,6 +37662,27 @@
                 "south"
               ],
               "generated_at": "2026-08-29T07:06:08+00:00"
+            },
+            "motion": {
+              "group_id": "9f8416ee-7276-4003-af11-555f373450e5",
+              "description": "This is the same picture in every frame. ONLY the orange light at the base of the stones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "meteor_stones/meteor_stone_002/lit_2/animations/motion/00.webp",
+                "meteor_stones/meteor_stone_002/lit_2/animations/motion/01.webp",
+                "meteor_stones/meteor_stone_002/lit_2/animations/motion/02.webp",
+                "meteor_stones/meteor_stone_002/lit_2/animations/motion/03.webp",
+                "meteor_stones/meteor_stone_002/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "meteor_stones/meteor_stone_002/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:40:26+00:00",
+              "brief": "R33"
             }
           },
           "art_hash": "ff873631638f3663"
@@ -37254,6 +37831,29 @@
           "glow_concept": null,
           "difference_from_source": 0.9531,
           "glow_score": 0.0,
+          "animations": {
+            "motion": {
+              "group_id": "0b44f1e5-752b-4c95-bcf0-05a0c501b661",
+              "description": "This is the same picture in every frame. ONLY the surface of the dark water moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moon_pools/moon_pool_002/not_lit_1/animations/motion/00.webp",
+                "moon_pools/moon_pool_002/not_lit_1/animations/motion/01.webp",
+                "moon_pools/moon_pool_002/not_lit_1/animations/motion/02.webp",
+                "moon_pools/moon_pool_002/not_lit_1/animations/motion/03.webp",
+                "moon_pools/moon_pool_002/not_lit_1/animations/motion/04.webp"
+              ],
+              "strip": "moon_pools/moon_pool_002/not_lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:40:05+00:00",
+              "brief": "R7"
+            }
+          },
           "art_hash": "7f4d396c8efa2acb"
         }
       },
@@ -37320,6 +37920,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5934,
           "glow_score": 0.145,
+          "animations": {
+            "motion": {
+              "group_id": "872d20e1-6191-4892-85d4-9bdf0d34b41e",
+              "description": "This is the same picture in every frame. ONLY the golden light in the middle of the moss brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moss_clumps/moss_clump_008/lit_2/animations/motion/00.webp",
+                "moss_clumps/moss_clump_008/lit_2/animations/motion/01.webp",
+                "moss_clumps/moss_clump_008/lit_2/animations/motion/02.webp",
+                "moss_clumps/moss_clump_008/lit_2/animations/motion/03.webp",
+                "moss_clumps/moss_clump_008/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "moss_clumps/moss_clump_008/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:24+00:00",
+              "brief": "R31"
+            }
+          },
           "art_hash": "1e3534a9b95d1d70"
         },
         "LIT_4": {
@@ -38469,6 +39092,29 @@
             "south-west": "offering_tables/offering_table_001/lit_1/rotations/south-west.webp",
             "south": "offering_tables/offering_table_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "2be52851-ac6d-43e4-80ae-db545e0e628e",
+              "description": "This is the same picture in every frame. ONLY the pale wisps above the table move, drifting slowly and fading. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "offering_tables/offering_table_001/lit_1/animations/motion/00.webp",
+                "offering_tables/offering_table_001/lit_1/animations/motion/01.webp",
+                "offering_tables/offering_table_001/lit_1/animations/motion/02.webp",
+                "offering_tables/offering_table_001/lit_1/animations/motion/03.webp",
+                "offering_tables/offering_table_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:40:56+00:00",
+              "brief": "R16"
+            }
+          },
           "art_hash": "c735f5a6a64a1ba9"
         },
         "LIT_2": {
@@ -39525,6 +40171,29 @@
             "south-east": "overgrown_archways/overgrown_archway_001/not_lit_3/rotations/south-east.webp",
             "south-west": "overgrown_archways/overgrown_archway_001/not_lit_3/rotations/south-west.webp",
             "south": "overgrown_archways/overgrown_archway_001/not_lit_3/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "15314399-dcbf-4978-bc51-6362c8b5a53f",
+              "description": "This is the same picture in every frame. ONLY the long hanging flower trails move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/00.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/01.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/02.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/03.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "overgrown_archways/overgrown_archway_001/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:06+00:00",
+              "brief": "R37"
+            }
           },
           "art_hash": "e4a1c93bb7041c1a"
         },
@@ -40769,6 +41438,29 @@
           "glow_concept": "ring of glowing freckles around the middle",
           "difference_from_source": 0.2167,
           "glow_score": 0.3089,
+          "animations": {
+            "motion": {
+              "group_id": "52ed755f-e877-46f1-a7d1-05270693fc9b",
+              "description": "This is the same picture in every frame. ONLY the glowing freckles brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "puffballs/puffball_001/lit_1/animations/motion/00.webp",
+                "puffballs/puffball_001/lit_1/animations/motion/01.webp",
+                "puffballs/puffball_001/lit_1/animations/motion/02.webp",
+                "puffballs/puffball_001/lit_1/animations/motion/03.webp",
+                "puffballs/puffball_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "puffballs/puffball_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:01+00:00",
+              "brief": "R19"
+            }
+          },
           "art_hash": "ed9df075c3d519d3"
         },
         "NOT_LIT_1": {
@@ -40807,6 +41499,29 @@
           "glow_concept": null,
           "difference_from_source": 0.2873,
           "glow_score": 0.2534,
+          "animations": {
+            "motion": {
+              "group_id": "efb783bc-027e-4dcd-ba71-04f20e2c5f70",
+              "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "puffballs/puffball_001/not_lit_2/animations/motion/00.webp",
+                "puffballs/puffball_001/not_lit_2/animations/motion/01.webp",
+                "puffballs/puffball_001/not_lit_2/animations/motion/02.webp",
+                "puffballs/puffball_001/not_lit_2/animations/motion/03.webp",
+                "puffballs/puffball_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "puffballs/puffball_001/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:42:46+00:00",
+              "brief": "R9"
+            }
+          },
           "art_hash": "c3d6a0f4460d6859"
         },
         "NOT_LIT_3": {
@@ -44659,6 +45374,29 @@
             "south-west": "soulstone_plinths/soulstone_plinth_001/rotations/south-west.webp",
             "south": "soulstone_plinths/soulstone_plinth_001/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "70403b58-938b-42e0-918d-e4421244a491",
+              "description": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly across the face of the crystal. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "soulstone_plinths/soulstone_plinth_001/animations/motion/00.webp",
+                "soulstone_plinths/soulstone_plinth_001/animations/motion/01.webp",
+                "soulstone_plinths/soulstone_plinth_001/animations/motion/02.webp",
+                "soulstone_plinths/soulstone_plinth_001/animations/motion/03.webp",
+                "soulstone_plinths/soulstone_plinth_001/animations/motion/04.webp"
+              ],
+              "strip": "soulstone_plinths/soulstone_plinth_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:04+00:00",
+              "brief": "R44"
+            }
+          },
           "art_hash": "b938db71fe76a5dd"
         },
         "NOT_LIT_2": {
@@ -45083,6 +45821,29 @@
             "south-west": "stone_fountains/stone_fountain_001/lit_1/rotations/south-west.webp",
             "south": "stone_fountains/stone_fountain_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "f15e9b5b-d2c5-407e-8c80-5365f4fe69a6",
+              "description": "This is the same picture in every frame. ONLY the falling jet of water moves, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_001/lit_1/animations/motion/00.webp",
+                "stone_fountains/stone_fountain_001/lit_1/animations/motion/01.webp",
+                "stone_fountains/stone_fountain_001/lit_1/animations/motion/02.webp",
+                "stone_fountains/stone_fountain_001/lit_1/animations/motion/03.webp",
+                "stone_fountains/stone_fountain_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:40+00:00",
+              "brief": "R5"
+            }
+          },
           "art_hash": "36bd998d33df13f7"
         },
         "LIT_2": {
@@ -45144,6 +45905,29 @@
             "south-east": "stone_fountains/stone_fountain_001/not_lit_3/rotations/south-east.webp",
             "south-west": "stone_fountains/stone_fountain_001/not_lit_3/rotations/south-west.webp",
             "south": "stone_fountains/stone_fountain_001/not_lit_3/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "bd93566c-6b97-4b4d-9ecf-364c4bc04301",
+              "description": "This is the same picture in every frame. ONLY the falling jets of water move, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_001/not_lit_3/animations/motion/00.webp",
+                "stone_fountains/stone_fountain_001/not_lit_3/animations/motion/01.webp",
+                "stone_fountains/stone_fountain_001/not_lit_3/animations/motion/02.webp",
+                "stone_fountains/stone_fountain_001/not_lit_3/animations/motion/03.webp",
+                "stone_fountains/stone_fountain_001/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_001/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:39:23+00:00",
+              "brief": "R4"
+            }
           },
           "art_hash": "d73a50c860be0f23"
         },
@@ -48928,6 +49712,27 @@
                 }
               },
               "generated_at": "2026-08-29T08:27:23+00:00"
+            },
+            "motion": {
+              "group_id": "dbf439d7-135e-47c1-bb9f-efe593b152fe",
+              "description": "This is the same picture in every frame. ONLY the blue light inside the lamp head brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "streetlights/streetlight_007/lit_1/animations/motion/00.webp",
+                "streetlights/streetlight_007/lit_1/animations/motion/01.webp",
+                "streetlights/streetlight_007/lit_1/animations/motion/02.webp",
+                "streetlights/streetlight_007/lit_1/animations/motion/03.webp",
+                "streetlights/streetlight_007/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "streetlights/streetlight_007/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:04+00:00",
+              "brief": "R34"
             }
           },
           "rotations": {
@@ -88658,6 +89463,29 @@
             "south-east": "wayside_shrines/wayside_shrine_010/rotations/south-east.webp",
             "south-west": "wayside_shrines/wayside_shrine_010/rotations/south-west.webp",
             "south": "wayside_shrines/wayside_shrine_010/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "a1fe409f-1ce0-44f1-a758-d5cc56a26838",
+              "description": "This is the same picture in every frame. ONLY the small candle flame inside the shrine flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_010/animations/motion/00.webp",
+                "wayside_shrines/wayside_shrine_010/animations/motion/01.webp",
+                "wayside_shrines/wayside_shrine_010/animations/motion/02.webp",
+                "wayside_shrines/wayside_shrine_010/animations/motion/03.webp",
+                "wayside_shrines/wayside_shrine_010/animations/motion/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_010/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T12:41:26+00:00",
+              "brief": "R23"
+            }
           },
           "art_hash": "d659966fc4ea3578"
         },

@@ -37,7 +37,30 @@
       "generated_at": "2026-08-16T20:02:15+00:00",
       "glow_concept": "ring of glowing freckles around the middle",
       "difference_from_source": 0.2167,
-      "glow_score": 0.3089
+      "glow_score": 0.3089,
+      "animations": {
+        "motion": {
+          "group_id": "52ed755f-e877-46f1-a7d1-05270693fc9b",
+          "description": "This is the same picture in every frame. ONLY the glowing freckles brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "puffballs/puffball_001/lit_1/animations/motion/00.webp",
+            "puffballs/puffball_001/lit_1/animations/motion/01.webp",
+            "puffballs/puffball_001/lit_1/animations/motion/02.webp",
+            "puffballs/puffball_001/lit_1/animations/motion/03.webp",
+            "puffballs/puffball_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "puffballs/puffball_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:42:01+00:00",
+          "brief": "R19"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "puffballs/puffball_001/sprite.webp",
@@ -73,7 +96,30 @@
       "generated_at": "2026-08-16T19:57:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2873,
-      "glow_score": 0.2534
+      "glow_score": 0.2534,
+      "animations": {
+        "motion": {
+          "group_id": "efb783bc-027e-4dcd-ba71-04f20e2c5f70",
+          "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "puffballs/puffball_001/not_lit_2/animations/motion/00.webp",
+            "puffballs/puffball_001/not_lit_2/animations/motion/01.webp",
+            "puffballs/puffball_001/not_lit_2/animations/motion/02.webp",
+            "puffballs/puffball_001/not_lit_2/animations/motion/03.webp",
+            "puffballs/puffball_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "puffballs/puffball_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:42:46+00:00",
+          "brief": "R9"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "puffballs/puffball_001/not_lit_3/sprite.webp",

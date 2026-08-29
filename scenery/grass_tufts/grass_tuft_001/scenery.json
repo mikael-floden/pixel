@@ -81,7 +81,30 @@
       "generated_at": "2026-08-16T14:33:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6798,
-      "glow_score": 0.126
+      "glow_score": 0.126,
+      "animations": {
+        "motion": {
+          "group_id": "06e1af10-916e-48a8-bc2a-71ef4fc95987",
+          "description": "This is the same picture in every frame. ONLY the grass blades move, bending in a faint breeze and springing back. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/00.webp",
+            "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/01.webp",
+            "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/02.webp",
+            "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/03.webp",
+            "grass_tufts/grass_tuft_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "grass_tufts/grass_tuft_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:42:44+00:00",
+          "brief": "R39"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "grass_tufts/grass_tuft_001/not_lit_3/sprite.webp",
