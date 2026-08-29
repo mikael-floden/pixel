@@ -155,6 +155,29 @@
         "south-east": "flame_niches/flame_niche_007/lit_3/rotations/south-east.webp",
         "south-west": "flame_niches/flame_niche_007/lit_3/rotations/south-west.webp",
         "south": "flame_niches/flame_niche_007/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "23b7dcb1-43d6-4bf9-86a8-446244a9fbc2",
+          "description": "This is the same picture in every frame. ONLY the three candle flames flicker. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_007/lit_3/animations/motion/00.webp",
+            "flame_niches/flame_niche_007/lit_3/animations/motion/01.webp",
+            "flame_niches/flame_niche_007/lit_3/animations/motion/02.webp",
+            "flame_niches/flame_niche_007/lit_3/animations/motion/03.webp",
+            "flame_niches/flame_niche_007/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_007/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:35:46+00:00",
+          "brief": "X16"
+        }
       }
     },
     "NOT_LIT_1": {

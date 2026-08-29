@@ -207,6 +207,29 @@
         "south-east": "hearths/hearth_008/not_lit_1/rotations/south-east.webp",
         "south-west": "hearths/hearth_008/not_lit_1/rotations/south-west.webp",
         "south": "hearths/hearth_008/not_lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "cbd3d9a6-5117-4ccc-9a88-7f63ca132b5d",
+          "description": "This is the same picture in every frame. ONLY the bundles on the mantel move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hearths/hearth_008/not_lit_1/animations/motion/00.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/01.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/02.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/03.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "hearths/hearth_008/not_lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:36:53+00:00",
+          "brief": "X25"
+        }
       }
     },
     "NOT_LIT_2": {

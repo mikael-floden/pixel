@@ -42,6 +42,29 @@
         "south-east": "market_stalls/market_stall_003/not_lit_3/rotations/south-east.webp",
         "south-west": "market_stalls/market_stall_003/not_lit_3/rotations/south-west.webp",
         "south": "market_stalls/market_stall_003/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "db871734-fc66-4a8d-8292-d7caa045c302",
+          "description": "This is the same picture in every frame. ONLY the herb bundles hanging at the side move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/00.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/01.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/02.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/03.webp",
+            "market_stalls/market_stall_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_003/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:36:46+00:00",
+          "brief": "X24"
+        }
       }
     },
     "NOT_LIT_4": {

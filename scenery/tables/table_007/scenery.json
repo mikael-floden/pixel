@@ -42,6 +42,29 @@
         "south-east": "tables/table_007/lit_2/rotations/south-east.webp",
         "south-west": "tables/table_007/lit_2/rotations/south-west.webp",
         "south": "tables/table_007/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "1445d277-c649-419f-896f-f21de59937e3",
+          "description": "This is the same picture in every frame. ONLY the lamp flame on the table flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_007/lit_2/animations/motion/00.webp",
+            "tables/table_007/lit_2/animations/motion/01.webp",
+            "tables/table_007/lit_2/animations/motion/02.webp",
+            "tables/table_007/lit_2/animations/motion/03.webp",
+            "tables/table_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "tables/table_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:34:39+00:00",
+          "brief": "X10"
+        }
       }
     },
     "NOT_LIT_1": {
