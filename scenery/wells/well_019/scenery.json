@@ -82,8 +82,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "2d0467ae-a589-4d3f-bee8-f2159265578e",
-          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "group_id": "6b17f15f-57e1-492c-b654-f4e096d4dac2",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -99,7 +99,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T18:31:02+00:00",
+          "generated_at": "2026-08-29T18:48:59+00:00",
           "brief": "B1"
         }
       }

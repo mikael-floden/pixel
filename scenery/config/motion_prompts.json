@@ -3900,13 +3900,14 @@
   "B1": {
    "group": "wells",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The lantern burns.",
    "seen_in_art": "a well under a lantern burning on its frame",
    "example": {
     "piece": "wells/well_019",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1: the flame BALLOONED -- by the last frames it was a glare lighting the whole well. Size pinned."
   },
   "B2": {
    "group": "wells",
@@ -3933,13 +3934,14 @@
   "B4": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the four flames on the frame flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the four flames on the frame flicker. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "All four burn.",
    "seen_in_art": "a lashed wooden frame carrying four burning torches",
    "example": {
     "piece": "torch_posts/torch_post_014",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1: 16.5% blowout, the flames went white and the frame itself changed. Cap plus size plus no-add."
   },
   "B5": {
    "group": "torch_posts",
@@ -4087,13 +4089,14 @@
   "B18": {
    "group": "fish_drying_racks",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The fish sway.",
    "seen_in_art": "a rack strung with rows of split fish",
    "example": {
     "piece": "fish_drying_racks/fish_drying_rack_005",
     "state": "NOT_LIT_2"
-   }
+   },
+   "redo": "Round 1: the fish swung but the grass at the base VANISHED in the middle frames and the posts shifted. The copy tail alone did not hold the surroundings."
   },
   "B20": {
    "group": "lantern_posts",
@@ -4197,13 +4200,14 @@
   "B34": {
    "group": "fallen_logs",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the glowing green fungi along the log brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the glowing green fungi along the log brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The fungi pulse.",
    "seen_in_art": "a log grown with glowing green shelf fungi",
    "example": {
     "piece": "fallen_logs/fallen_log_011",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1: a new green blob appeared at the top and the fungi MULTIPLIED -- more of them at the end than the start. This is the quantity escape; no-add clause added."
   },
   "B35": {
    "group": "fallen_logs",
@@ -4329,13 +4333,14 @@
   "B46": {
    "group": "offering_tables",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the gold crystal on the table brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the gold crystal on the table brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The crystal pulses.",
    "seen_in_art": "a table of gold coins around a burning gold crystal",
    "example": {
     "piece": "offering_tables/offering_table_003",
     "state": "LIT_1"
-   }
+   },
+   "redo": "Round 1: the crystal shrank, the coins changed and the table darkened by the last frame."
   },
   "B50": {
    "group": "offering_tables",
@@ -4923,5 +4928,7 @@
  "_asking_for_more_note": "ASKING FOR MORE MOVEMENT MOSTLY DOES NOT WORK. U25 (puffball) improved 1.4%->10.8% when asked for a clearly visible puff, but Z45 (stall awning) went 5.5%->4.3% under the same treatment. A piece that measures near zero is usually one where the named part is small and surrounded by busier detail; the generator ignores it. Prefer to drop rather than re-prompt a third time.",
  "_peak_cap_note": "CAPPING THE PEAK ('It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment.') MEASURED over 20 glows in batch AB: it FIXES BLOWOUT -- median 1.4%, against three pieces washing out entirely in AA -- and does NOT fix drift (21.4% vs 18.5% before). These are two separate faults; the cap solves one. THE ESCAPE PROBLEM, seen twice now: constrain brightness and the generator changes something else instead. A39 grew horns on a stump; B33/B34 MULTIPLIED the glowing fungi, more of them at the end than the start. Always pair a cap with the copy tail, and expect the next fault to appear in whatever degree of freedom is left open.",
  "_mover_copy_note": "A COPY INSTRUCTION FOR THE MOVING OBJECT ITSELF ('The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places.'). The standard copy tail protects everything AROUND the named part and says nothing about the part, so the generator redraws the very thing it was told to move. MEASURED 2026-08-29: A15 fish rack 18.6->7.2 motion and 31.6->8.9 drift, the biggest single improvement any prompt change has produced; A24 swing 25.8->16.5. A16 did not take. Now standard on every hanging brief.",
- "_smoke_note": "SMOKE IS A WORKING FAMILY, proven 2026-08-29 on B50 (offering_table_002, a coffee pot with steam drawn into the sprite): 4.9% motion, 5.0% drift, 0.9% blowout -- the steam thread curls and reshapes while the table under it does not move. Prompt was the plain narrowing form, 'the thread of steam above the pot rises and curls', plus the standard copy tail. REQUIREMENT: the smoke must already be DRAWN in the sprite. An earlier candidate (an incense stick, batch Z) was passed over and never tested. Opens up chimneys, censers, kilns, cooking pots."
+ "_smoke_note": "SMOKE IS A WORKING FAMILY, proven 2026-08-29 on B50 (offering_table_002, a coffee pot with steam drawn into the sprite): 4.9% motion, 5.0% drift, 0.9% blowout -- the steam thread curls and reshapes while the table under it does not move. Prompt was the plain narrowing form, 'the thread of steam above the pot rises and curls', plus the standard copy tail. REQUIREMENT: the smoke must already be DRAWN in the sprite. An earlier candidate (an incense stick, batch Z) was passed over and never tested. Opens up chimneys, censers, kilns, cooking pots.",
+ "_no_add_note": "CLOSING THE QUANTITY ESCAPE. Seen three times now: constrain brightness and the generator changes HOW MANY things there are instead -- A39 grew horns on a stump, B33/B34 multiplied the glowing fungi and grew a new blob, B18 deleted the grass at the base of a rack. The copy tail says everything else is 'copied exactly' but that is evidently read as a style note, not a count. Added 2026-08-29: 'Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size.' Judge on the B1/B4/B18/B34/B46 results.",
+ "_size_note": "PINNING THE SIZE OF A FLAME. B1's lantern flame BALLOONED into a glare lighting the whole well -- flicker was read as grow. Added 2026-08-29: 'It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts.'"
 }
