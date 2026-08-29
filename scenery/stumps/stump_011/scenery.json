@@ -100,7 +100,30 @@
       "glow_concept": "ring of glowing mushrooms around the base",
       "difference_from_source": 0.7897,
       "glow_score": 0.0677,
-      "generated_at": "2026-08-15T16:37:29+00:00"
+      "generated_at": "2026-08-15T16:37:29+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "8cc9152e-37b3-4347-b8be-368b406ce9b6",
+          "description": "This is the same picture in every frame. ONLY the cyan light on the mushrooms brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_011/lit_4/animations/motion/00.webp",
+            "stumps/stump_011/lit_4/animations/motion/01.webp",
+            "stumps/stump_011/lit_4/animations/motion/02.webp",
+            "stumps/stump_011/lit_4/animations/motion/03.webp",
+            "stumps/stump_011/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_011/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:18:22+00:00",
+          "brief": "D37"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_011/sprite.webp",

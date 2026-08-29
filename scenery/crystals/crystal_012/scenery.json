@@ -73,7 +73,30 @@
       "generated_at": "2026-08-16T11:16:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6667,
-      "glow_score": 0.1851
+      "glow_score": 0.1851,
+      "animations": {
+        "motion": {
+          "group_id": "ca1b53b3-4ae3-4882-af78-87d81844c117",
+          "description": "This is the same picture in every frame. ONLY the cyan light on the crystals brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_012/lit_3/animations/motion/00.webp",
+            "crystals/crystal_012/lit_3/animations/motion/01.webp",
+            "crystals/crystal_012/lit_3/animations/motion/02.webp",
+            "crystals/crystal_012/lit_3/animations/motion/03.webp",
+            "crystals/crystal_012/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_012/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:18:32+00:00",
+          "brief": "D41"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "crystals/crystal_012/lit_4/sprite.webp",

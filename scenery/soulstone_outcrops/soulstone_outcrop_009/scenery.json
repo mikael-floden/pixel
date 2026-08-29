@@ -137,7 +137,30 @@
       "generated_at": "2026-08-16T21:01:10+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6567,
-      "glow_score": 0.2346
+      "glow_score": 0.2346,
+      "animations": {
+        "motion": {
+          "group_id": "a5557d6f-3950-45cf-9092-1b2176ba8a0a",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_009/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:18:23+00:00",
+          "brief": "D35"
+        }
+      }
     }
   }
 }

@@ -161,6 +161,29 @@
         "south-east": "soulstone_plinths/soulstone_plinth_001/not_lit_3/rotations/south-east.webp",
         "south-west": "soulstone_plinths/soulstone_plinth_001/not_lit_3/rotations/south-west.webp",
         "south": "soulstone_plinths/soulstone_plinth_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "ec8fa5d1-68ff-422b-b5bf-5947726db0b1",
+          "description": "This is the same picture in every frame. ONLY the green light on the crystals brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/00.webp",
+            "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/01.webp",
+            "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/02.webp",
+            "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/03.webp",
+            "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:18:36+00:00",
+          "brief": "D38"
+        }
       }
     },
     "NOT_LIT_4": {

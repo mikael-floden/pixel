@@ -43,7 +43,30 @@
       "generated_at": "2026-08-16T19:40:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4178,
-      "glow_score": 0.1084
+      "glow_score": 0.1084,
+      "animations": {
+        "motion": {
+          "group_id": "e6a39dd2-c8fa-46c8-9db0-bd2a7bd0c4aa",
+          "description": "This is the same picture in every frame. ONLY the yellow light under the caps brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_016/lit_4/animations/motion/00.webp",
+            "mushrooms/mushroom_016/lit_4/animations/motion/01.webp",
+            "mushrooms/mushroom_016/lit_4/animations/motion/02.webp",
+            "mushrooms/mushroom_016/lit_4/animations/motion/03.webp",
+            "mushrooms/mushroom_016/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_016/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:17:40+00:00",
+          "brief": "D32"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "mushrooms/mushroom_016/not_lit_3/sprite.webp",

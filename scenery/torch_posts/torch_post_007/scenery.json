@@ -78,6 +78,29 @@
         "south-east": "torch_posts/torch_post_007/lit_2/rotations/south-east.webp",
         "south-west": "torch_posts/torch_post_007/lit_2/rotations/south-west.webp",
         "south": "torch_posts/torch_post_007/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9befc27d-367a-4ec0-90be-3a4ea963ca20",
+          "description": "This is the same picture in every frame. ONLY the moths around the staff move, circling it. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_007/lit_2/animations/motion/00.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/01.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/02.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/03.webp",
+            "torch_posts/torch_post_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:16:57+00:00",
+          "brief": "D25"
+        }
       }
     },
     "NOT_LIT_1": {
