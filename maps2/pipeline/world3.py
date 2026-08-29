@@ -253,8 +253,8 @@ def _scenery(doc):
     is not one tree stamped; the bonfire A/B fixture -> the campfire piece; the
     chess tables -> their own scenery ids. Placement keeps the prop's cell
     (centre), fractional coords allowed by the format."""
-    trees = sorted(d for d in os.listdir(os.path.join(REPO, "scenery", "trees"))
-                   if os.path.isdir(os.path.join(REPO, "scenery", "trees", d)))
+    species = _tree_species()
+    spnames = sorted(species)
     ancient = sorted(d for d in os.listdir(os.path.join(REPO, "scenery", "ancient_trees"))
                      if os.path.isdir(os.path.join(REPO, "scenery", "ancient_trees", d)))
     out = []
@@ -277,9 +277,15 @@ def _scenery(doc):
                 pool2 = sorted(d for d in os.listdir(os.path.join(REPO, "scenery", grp))
                                if os.path.isdir(os.path.join(REPO, "scenery", grp, d)))
                 pick = pool2[ti % len(pool2)]
+            elif "base_x_5" in path:
+                grp = "ancient_trees"
+                pick = ancient[ti % len(ancient)]
             else:
-                pool = ancient if ("base_x_5" in path) else trees
-                grp = "ancient_trees" if pool is ancient else "trees"
+                # prop trees obey the SAME zone-species rule as the forests
+                # (cycling the full tree list here was the fruit salad)
+                grp = "trees"
+                prim, _acc = _zone_species(spnames, p["x"], p["y"])
+                pool = species[prim]
                 pick = pool[ti % len(pool)]
             out.append({"piece": f"{grp}/{pick}", "x": x, "y": y,
                         "hflip": bool(ti % 2)})
@@ -324,6 +330,24 @@ def _tree_species():
     out = {k: v for k, v in sp.items() if len(v) >= 3 and k != "wild"}
     assert len(out) >= 6, f"species clustering collapsed: {list(out)}"
     return out
+
+
+ZONE = 36     # cells; every ZONE x ZONE area speaks ONE tree species (36 so
+              # a whole WOOD_R-12 wood fits inside one zone — 24 measured a
+              # species seam cutting through continuous woods)
+
+
+def _zone_species(spnames, x, y):
+    """THE LOCALITY RULE for trees (maintainer 2026-08-29: "stick to one or
+    two tree types... don't just throw different trees around — it looks
+    like shit"): the map is cut into ZONE-sized areas and each area is
+    assigned ONE species (plus a fixed accent neighbour) by hash. EVERY tree
+    placer — the forest grower AND the v2 prop translation — asks this one
+    function, so a grove and the wood beside it can never clash."""
+    h = ((x // ZONE) * 2654435761 ^ (y // ZONE) * 40503 ^ 0x9e33) & 0xffffffff
+    prim = spnames[h % len(spnames)]
+    acc = spnames[(h % len(spnames) + 1 + (h >> 8) % 3) % len(spnames)]
+    return prim, acc
 
 
 def _forests(W, H, mat, lvl, scen, spawn):
@@ -395,24 +419,14 @@ def _forests(W, H, mat, lvl, scen, spawn):
         if len(hearts) >= 5:
             break
     seeds += hearts
-    # seeds within 14 cells are ONE wood; the wood's hash picks its species
-    woods = []
-    for s in seeds:
-        for wd in woods:
-            if any(abs(s[0] - m[0]) + abs(s[1] - m[1]) <= 14 for m in wd):
-                wd.append(s)
-                break
-        else:
-            woods.append([s])
-    wood_of = {m: wi for wi, wd in enumerate(woods) for m in wd}
     WOOD_R = 12       # real woods, not groves (maintainer 2026-08-29: "don't
                       # be shy... I'm looking forward to see hundreds of trees")
     out, taken = [], {(int(p["x"]), int(p["y"])) for p in scen}
     for y in range(0, H, 2):
         for x in range(0, W, 2):
             r = _rng32((x * 2654435761) ^ (y * 40503) ^ 0x5eed)
-            d2, near = min((((x - ax) ** 2 + (y - ay) ** 2, (ax, ay))
-                            for ax, ay in seeds), default=(10 ** 9, None))
+            d2 = min(((x - ax) ** 2 + (y - ay) ** 2 for ax, ay in seeds),
+                     default=10 ** 9)
             if d2 > WOOD_R * WOOD_R:
                 continue
             edge = d2 > (WOOD_R - 3) ** 2
@@ -422,9 +436,9 @@ def _forests(W, H, mat, lvl, scen, spawn):
             if not grass_flat(jx, jy) or not clear(jx, jy) or (jx, jy) in taken:
                 continue
             taken.add((jx, jy))
-            wh = (wood_of[near] * 2654435761 ^ 0x9e33) & 0xffffffff
-            prim = spnames[wh % len(spnames)]
-            acc = spnames[(wh // 97 + 1 + wh % 7) % len(spnames)]
+            # species come from the ZONE, not the wood — one function for
+            # every tree placer, so neighbours can never clash
+            prim, acc = _zone_species(spnames, jx, jy)
             u = r()
             if edge and u < 0.30:
                 grp, pool = "bushes", bushes
@@ -432,7 +446,7 @@ def _forests(W, H, mat, lvl, scen, spawn):
                 grp, pool = "ancient_trees", ancients
             else:
                 grp = "trees"
-                pool = species[acc] if r() < 0.25 else species[prim]
+                pool = species[acc] if r() < 0.15 else species[prim]
             pick = pool[int(r() * len(pool)) % len(pool)]
             out.append({"piece": f"{grp}/{pick}",
                         "x": jx + 0.25 + round(r() * 0.5, 2),

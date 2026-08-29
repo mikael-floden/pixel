@@ -408,10 +408,11 @@ class Grow:
         self.placed += [("town road cells", n)]
 
     def isthmus(self):
-        """ONE ISLAND: a grassy land bridge fuses the new land to the
-        original — new SE shore to original NW shore, ~5 wide, beach-fringed.
-        Carves 0 cells when the coasts already fused; the road still finds
-        its way across either way."""
+        """ONE ISLAND, VISUALLY (maintainer 2026-08-29: "the islands should
+        be connected and LOOK like a single island"): not a string bridge — a
+        BROAD NECK, 22-32 cells wide with an fbm-wobbled coast, flaring wider
+        where it meets each shore, so the silhouette reads as one landmass
+        pinched at the waist. Beach-fringed like every other coast."""
         gi = self.gi
         tgt = (OFF[0] + 24, OFF[1] + 29)
         A = min(((x, y) for y in range(300) for x in range(300)
@@ -425,23 +426,28 @@ class Grow:
         steps = int(max(1.0, math.hypot(bx - ax, by - ay)) * 3)
         n = 0
         for t in range(steps + 1):
-            fx = ax + (bx - ax) * t / steps
-            fy = ay + (by - ay) * t / steps
-            for dx in range(-3, 4):
-                for dy in range(-3, 4):
+            u = t / steps
+            fx = ax + (bx - ax) * u
+            fy = ay + (by - ay) * u
+            wob = _fbm(3 + u * 6, 1.7, 91)
+            wide = 11 + 5 * wob + (4 if u < 0.18 or u > 0.82 else 0)
+            W = int(wide) + 1
+            for dx in range(-W, W + 1):
+                for dy in range(-W, W + 1):
                     x, y = int(fx) + dx, int(fy) + dy
-                    if math.hypot(x - fx, y - fy) <= 2.6 \
+                    if math.hypot(x - fx, y - fy) <= wide \
                             and 0 <= x < NEW and 0 <= y < NEW \
                             and self.liquid(x, y):
                         self.grd[y][x] = gi["grass"]; self.lvl[y][x] = 0
                         n += 1
-        for y in range(min(ay, by) - 6, max(ay, by) + 7):
-            for x in range(min(ax, bx) - 6, max(ax, bx) + 7):
+        for y in range(min(ay, by) - 22, max(ay, by) + 23):
+            for x in range(min(ax, bx) - 22, max(ax, bx) + 23):
                 if 0 <= x < NEW and 0 <= y < NEW and self.g(x, y) == "grass" \
                         and self.lvl[y][x] == 0 \
                         and any(self.liquid(x + dx, y + dy)
                                 for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
                     self.grd[y][x] = gi["light_beach"]
+        assert n > 400, f"the neck must be LAND, not a string: {n} cells"
         self.bridgeA = A
         self.bridgeB = B
         self.placed += [("isthmus cells", n)]
