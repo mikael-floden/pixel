@@ -7270,7 +7270,7 @@ function cellReview(cell) {
  * different sets, and the second pass is about the first of those. */
 const WORLD_STAR_KEY = "wiki-world-stars";       // the key predates the modes
 const WORLD_STARS = {
-  all: { label: "all", title: "Every tile, however you have marked it" },
+  all: { label: "all", title: "Every tile still in play — the ones you rejected sit behind the rejected chip, so a verdict you have already given never costs you the same glance twice" },
   unrated: { label: "no stars", title: "Only tiles you have neither starred nor judged — your actual inbox. A rejected tile is the AGENT's queue, not yours, so it does not show here" },
   rejected: { label: "rejected", title: "Only tiles you rejected — the ones the agent owes you a replacement for" },
   approved: { label: "approved", title: "Only tiles you approved — the set as it will ship" },
@@ -7278,7 +7278,16 @@ const WORLD_STARS = {
 };
 /** What each mode asks of ONE tile's feedback entry. */
 const TILE_MATCH = {
-  all: () => true,
+  /* "ALL" IS EVERY TILE STILL IN PLAY, NOT EVERY TILE (maintainer 2026-08-29,
+   * on a tile he threw out on the 23rd and kept meeting: "Why is this tile
+   * visible in the wiki? ... I CAN STILL SEE THIS STUPID TILE!!!!"). His
+   * rejection is recorded; the tiles agent has not carried it out, and 94 of
+   * that day's rejections are in the same state — so the art is still in
+   * their manifest and the wiki was dutifully listing it. A verdict he has
+   * already given should not cost him the same glance twice: rejected tiles
+   * live behind their own chip now, which is where he goes to see what the
+   * agent owes him. */
+  all: (e) => e.status !== "rejected",
   // NOT just "no star" (maintainer 2026-08-21, seeing a set of 7 tiles he had
   // rejected sitting in his no-stars inbox as "7 of 7 without a star": "Why
   // don't you maintain and remove old reviews I have already rejected?").
@@ -9054,7 +9063,9 @@ function viewWorldPair(top, side) {
     // mark — the list shrinking IS the progress bar, and what is left is
     // always exactly what is left to do.
     if (crossGroup) return c.candidates.filter((x) => tileHit(x, mode));
-    return c.candidates;
+    // ...and under "all" too, which no longer means "including the ones he
+    // threw out" (2026-08-29): the rejected chip is where those live.
+    return c.candidates.filter((x) => tileHit(x, "all"));
   };
   // A mark both removes its tile from the list AND can finish the whole set —
   // and "finished" is a fact the HEADER carries (the pill, the "press ›"
@@ -9096,7 +9107,8 @@ function viewWorldPair(top, side) {
         // heading now, not a thing to judge — which also means one place to
         // cast a verdict instead of two that could disagree.
         h("p", { class: "muted" }, state.admin
-          ? `${c.candidates.length} tile${c.candidates.length === 1 ? "" : "s"} in this set. Approve the ones to keep; reject the ones to regenerate.`
+          ? (() => { const n2 = pairHits(c, "all"); const gone = c.candidates.length - n2;
+            return `${n2} tile${n2 === 1 ? "" : "s"} in this set. Approve the ones to keep; reject the ones to regenerate.${gone ? ` ${gone} rejected — behind the rejected chip until the tiles agent removes them.` : ""}`; })()
           : `${typeLabelWorld(c.top)} you walk on, ${typeLabelWorld(c.side).toLowerCase()} in the cliff below it.`))),
     h("div", { class: "panel" },
       state.admin
@@ -9111,7 +9123,10 @@ function viewWorldPair(top, side) {
       // The inbox switch lives here too: the page it hides tiles on is a page
       // he must be able to un-hide them from, without walking back up.
       state.admin ? sortBar(WORLD_STAR_KEY, Object.entries(WORLD_STARS).map(([id, f]) => {
-        const n = id === "all" ? c.candidates.length : pairHits(c, id);
+        // "all" counts what the list SHOWS, which no longer includes the
+        // ones he rejected (2026-08-29) — a chip whose number disagrees with
+        // the cards under it is worse than no chip.
+        const n = pairHits(c, id);
         return [id, `${f.label} ${n}`, f.title];
       }), mode, () => route()) : null,
       h("p", { class: "muted", style: "margin:2px 0 0" }, state.admin

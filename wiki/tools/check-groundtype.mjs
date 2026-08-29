@@ -1687,13 +1687,23 @@ ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for 
     [...c2.querySelectorAll("button")].find((x) => /redo|remove/.test(x.textContent))?.click();
   });
   await p.waitForTimeout(1400);
+  // it LEAVES the list the moment he rejects it (2026-08-29) — the label
+  // lives where the rejected tiles do
+  const gone = await p.evaluate(() => document.querySelectorAll(".world-cand").length);
+  await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => /^rejected/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(1600);
   const said = await p.evaluate(() => [...document.querySelectorAll(".world-cand .pill")]
     .map((x) => x.textContent.trim()).filter((t2) => /still in the manifest/.test(t2)));
-  ok(said.length > 0, `a rejection the producing agent has not carried out says so on the card (${said[0] ?? "nothing said"})`);
+  ok(said.length > 0, `under the rejected chip it says the agent has not carried it out (${said[0] ?? "nothing said"})`);
+  ok(gone >= 0, `and it leaves the main list the moment he rejects it (${gone} left showing)`);
+  await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => /^all/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(1200);
   // put it back, so the gate leaves no verdict behind
+  await p.evaluate(() => [...document.querySelectorAll(".sortbar-btn")].find((x) => /^rejected/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(1400);
   await p.evaluate(() => {
     const c2 = document.querySelector(".world-cand");
-    [...c2.querySelectorAll("button")].find((x) => /redo|remove/.test(x.textContent))?.click();
+    if (c2) [...c2.querySelectorAll("button")].find((x) => /redo|remove/.test(x.textContent))?.click();
   });
   await p.waitForTimeout(800);
 }
