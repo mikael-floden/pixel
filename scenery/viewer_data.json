@@ -19243,6 +19243,11 @@
           "sprite": "cupboards_and_shelves/cupboard_001/sprite.webp",
           "pixellab_object_id": "22ab4e5a-7977-4e82-99d3-ed6a6b4687d7",
           "generated_at": "2026-08-13T20:45:50+00:00",
+          "rotations": {
+            "south-east": "cupboards_and_shelves/cupboard_001/rotations/south-east.webp",
+            "south-west": "cupboards_and_shelves/cupboard_001/rotations/south-west.webp",
+            "south": "cupboards_and_shelves/cupboard_001/sprite.webp"
+          },
           "art_hash": "5cc1b02d12099a10"
         },
         "NOT_LIT_2": {
@@ -24826,6 +24831,10 @@
           "sprite": "flower_trellises/flower_trellis_001/sprite.webp",
           "pixellab_object_id": "1d1228b2-e320-44b5-9035-46b9c4e30b75",
           "generated_at": "2026-08-13T01:48:01+00:00",
+          "rotations": {
+            "south-west": "flower_trellises/flower_trellis_001/rotations/south-west.webp",
+            "south": "flower_trellises/flower_trellis_001/sprite.webp"
+          },
           "art_hash": "28f5821b771c4999"
         },
         "NOT_LIT_2": {
