@@ -244,6 +244,23 @@ def textured_art(key):
     return _TEXTURED.get(key.strip("/"))
 
 
+def _as_surface_uncached(im):
+    out = im.crop((0, TOP_Y, TILE, min(im.height, TOP_Y + 46)))
+    if out.height < 46:
+        pad = Image.new("RGBA", (TILE, 46), (0, 0, 0, 0))
+        pad.alpha_composite(out, (0, 0))
+        out = pad
+    return out
+
+
+def _top_face_uncached(surf):
+    _sil, top, _wall = _plate_regions()
+    a = np.array(surf.convert("RGBA"))
+    out = np.zeros_like(a)
+    out[top] = a[top]
+    return Image.fromarray(out)
+
+
 def as_surface(im):
     """Any tile art -> plate geometry (64x46, art at row 0), so a fade or a
     detail can stand in for a base-tile-set plate anywhere the surface is
@@ -251,7 +268,16 @@ def as_surface(im):
     published transition geometry starts at row 0 (transition_plates.py)."""
     if im.height == 46:
         return im
-    ck = ("surf", im.info.get("k") or id(im))
+    k = im.info.get("k")
+    if k is None:
+        # NEVER KEY A CACHE ON id(). CPython reuses the id of a freed object,
+        # so in a long render a transient tile can inherit another tile's
+        # cached result - which is how grey paving slabs appeared on flat
+        # grass where no such ground exists, only ever in the FULL render and
+        # never in a window of the same cells (maintainer, 2026-08-30: "it
+        # looks like you pick a completely wrong tile!").
+        return _as_surface_uncached(im)
+    ck = ("surf", k)
     if ck in _tile_cache:
         return _tile_cache[ck]
     out = im.crop((0, TOP_Y, TILE, min(im.height, TOP_Y + 46)))
@@ -266,7 +292,10 @@ def as_surface(im):
 def top_face_only(surf):
     """The surface's TOP FACE alone — the wall region dropped so the cell's
     x-over-y wall art shows through. THE WALL IS NEVER THE SURFACE'S."""
-    ck = ("topface", surf.info.get("k") or id(surf))
+    k = surf.info.get("k")
+    if k is None:
+        return _top_face_uncached(surf)
+    ck = ("topface", k)
     if ck in _tile_cache:
         return _tile_cache[ck]
     _sil, top, _wall = _plate_regions()
