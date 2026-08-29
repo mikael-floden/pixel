@@ -31,6 +31,10 @@ import {
   shadowBodyRadius,
   shadowAnchorOf,
   startTrip,
+  startStickDetour,
+  bodyStalled,
+  slideAlong,
+  type SlideMemo,
   stepAutopilot,
   bodyStandoff,
   startBestTrip,
@@ -1178,6 +1182,15 @@ export class WorldScene extends Phaser.Scene {
   // stepAutopilot (headless-testable, see server/test/navigation.sim.test.ts);
   // the scene owns only the glue (tap picking, marker, keyboard-cancels).
   private trip: AutopilotTrip | null = null;
+  /** The short route round whatever the HELD STICK is jammed against, and the
+   *  stick direction that asked for it — see startStickDetour. Distinct from
+   *  `trip`, which is the player's own tap destination: this one is disposable,
+   *  never draws a marker, and dies the moment the stick moves or the way ahead
+   *  opens up. */
+  private stickTrip: AutopilotTrip | null = null;
+  private stickDir = { ax: 0, ay: 0 };
+  /** Which way the body is currently sliding along something — see slideAlong. */
+  private slideMemo: SlideMemo = { ax: 0, ay: 0 };
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
   // Hold-to-move: the one pointer allowed to steer (first touch down), the
@@ -8084,14 +8097,48 @@ export class WorldScene extends Phaser.Scene {
       if (this.terrain) {
         const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
         if (me) {
-          const assist = steerAssist(this.terrain, me.fx, me.fy, ax, ay);
-          if (assist) {
-            ax = assist.ax;
-            ay = assist.ay;
+          // The stick moved: whatever was being rounded is no longer the ask.
+          if (this.stickTrip && (ax !== this.stickDir.ax || ay !== this.stickDir.ay)) {
+            this.stickTrip = null;
+          }
+          // Rounding something: the route drives, exactly as a tap would.
+          if (this.stickTrip) {
+            const d = stepAutopilot(
+              this.terrain, this.stickTrip, me.fx, me.fy, performance.now(),
+              this.worldW, this.worldH, me.surfLevel ?? undefined,
+            );
+            if (d.done) this.stickTrip = null;
+            else { ax = d.ax; ay = d.ay; }
+          }
+          if (!this.stickTrip) {
+            const assist = steerAssist(this.terrain, me.fx, me.fy, ax, ay);
+            if (assist) {
+              ax = assist.ax;
+              ay = assist.ay;
+            } else if (bodyStalled(this.terrain, me.fx, me.fy, ax, ay)) {
+              /* STILL WEDGED. steerAssist is a local rule and cannot round a
+               * multi-cell footprint or escape the pocket between two of them,
+               * so the stall plans the short way round instead — the same
+               * findPath tap-to-move uses. Only reached where the player is
+               * otherwise stuck dead, so it can never make walking worse. */
+              this.stickTrip = startStickDetour(
+                this.terrain, me.fx, me.fy, ax, ay, performance.now(), me.surfLevel ?? undefined,
+              );
+              this.stickDir = { ax, ay };
+              if (this.stickTrip) {
+                const d = stepAutopilot(
+                  this.terrain, this.stickTrip, me.fx, me.fy, performance.now(),
+                  this.worldW, this.worldH, me.surfLevel ?? undefined,
+                );
+                if (d.done) this.stickTrip = null;
+                else { ax = d.ax; ay = d.ay; }
+              }
+            }
           }
         }
       }
     } else {
+      this.stickTrip = null; // stick released
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.
       this.holdRepath(performance.now());
@@ -8103,6 +8150,29 @@ export class WorldScene extends Phaser.Scene {
         ax = drive.ax;
         ay = drive.ay;
         running = drive.running;
+      }
+    }
+    /* NEVER MOTIONLESS WHILE THERE IS A WAY OUT. Whatever produced the heading
+     * — keys, the steer assist, a stick detour, a tap trip — it has to actually
+     * move the body; a route that has run into something is exactly as frozen as
+     * a raw input. Measured on the_game before this, holding a direction into a
+     * tree left the body dead still, with an escape available the whole time, in
+     * 87.4% of approaches and for as long as 13 seconds. With it: 0%, and the
+     * median approach travels 8.4 cells instead of 2.6. Sliding along the trunk
+     * is what a player expects from running into a tree (maintainer 2026-08-29:
+     * "why don't you just walk around the object?"). */
+    if (this.terrain && (ax !== 0 || ay !== 0)) {
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay)) {
+        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.slideMemo);
+        if (sl) {
+          ax = sl.ax;
+          ay = sl.ay;
+          this.stickTrip = null; // that route is wedged; plan again from here
+        }
+      } else if (this.slideMemo.ax !== 0 || this.slideMemo.ay !== 0) {
+        this.slideMemo.ax = 0;
+        this.slideMemo.ay = 0;
       }
     }
     // SOFT MONSTER COLLISION (maintainer 2026-07-30): monsters are not in the

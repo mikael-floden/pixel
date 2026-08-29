@@ -2362,6 +2362,153 @@ export function startBestTrip(
   return best;
 }
 
+/* -- THE STICK DETOUR -------------------------------------------------------
+ * Holding the stick into a tree used to leave the body wedged against the
+ * trunk (maintainer 2026-08-29: "run into a tree and the player is stuck 100%
+ * of the time", "I expect the player to move around much like how the player
+ * moves around NPCs"). `steerAssist` cannot answer that and no tuning made it:
+ * it is a LOCAL rule that looks one cell to each side of the first blocking
+ * cell, which is the right shape for a maps2 prop — exactly one cell — and the
+ * wrong shape for a scenery footprint, which is a 3-to-5 cell blob, and
+ * hopeless for the CONCAVE pockets that overlapping footprints make. A local
+ * rule cannot escape a pocket; only a search can. Worse, its deflection was
+ * chosen on the WORLD axis perpendicular to the intent, and world-perpendicular
+ * is not screen-perpendicular: run the stick straight down into a tree and it
+ * answered a heading whose forward dot was -0.71, so the body reversed out,
+ * un-stalled, walked back in, and repeated — traced on the_game, pinned at one
+ * x for all 260 ticks.
+ *
+ * So a stall hands the problem to the pathfinder that already works — the same
+ * `findPath` tap-to-move has always used, which routed cleanly round every one
+ * of these trees first try. The goal is only a few cells ahead and it FANS OUT:
+ * straight on, then rotated off the stick, then nearer. Without the fan a goal
+ * landing inside a footprint has no path at all, `startTrip` answers null, and
+ * the body just stands there — measured, that is most of what remained. */
+const STICK_DETOUR_NODES = 800; // a few cells of search, never a map crossing
+const Q = Math.PI / 4;
+/** Aim points for the detour, in (rotation off the stick, cells ahead) order:
+ *  straight on first, so a clear lane is taken as-is. */
+const STICK_DETOUR_GOALS: readonly [number, number][] = [
+  [0, 5], [Q, 5], [-Q, 5], [0, 3], [Q, 3], [-Q, 3], [2 * Q, 4], [-2 * Q, 4],
+];
+
+/** Is the body actually held by something, rather than merely slowed? One probe
+ *  step of the REAL movement tick, the same instrument steerAssist uses to
+ *  decide the identical question. */
+export function bodyStalled(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+): boolean {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const r = stepMovement(
+    x, y, ax, ay, false, dt,
+    makeBlocked(grid, walk), 1, true, worldWidthOf(grid), worldHeightOf(grid),
+    makeSideBlocked(grid, walk),
+  );
+  return Math.hypot(r.x - x, r.y - y) <= WALK_SPEED * dt * 0.35;
+}
+
+/** The side the body is currently sliding along, so a slide does not alternate
+ *  between two equally good ways round. Caller-owned; `slideAlong` is pure. */
+export interface SlideMemo {
+  ax: number;
+  ay: number;
+}
+
+/**
+ * LAST RESORT, AND THE ONE RULE THAT CANNOT FREEZE: if the body is held and ANY
+ * heading that is not backwards would move it, take the one closest to what the
+ * player asked for. Sliding along the trunk is what a player expects from
+ * running into a tree; standing dead still is not, and it was measured on
+ * the_game at 87.4% of held-stick approaches, freezing for up to 13 seconds
+ * with a way out the whole time (maintainer 2026-08-29: "run into a tree and
+ * the player is stuck 100% of the time... why don't you just walk around the
+ * object?").
+ *
+ * This does not replace the detour, it backstops it: the detour is what ROUNDS
+ * an obstacle deliberately, this is what guarantees the body is never motionless
+ * while motion exists — including when no route could be planned at all. Never
+ * backwards, because a retreat un-stalls the body, hands control back to the raw
+ * input, and walks it into the same trunk again; that limit cycle is what the
+ * old world-perpendicular deflection produced.
+ */
+export function slideAlong(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  memo?: SlideMemo,
+): { ax: number; ay: number } | null {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const worldW = worldWidthOf(grid);
+  const worldH = worldHeightOf(grid);
+  const w = screenToWorldVector(ax, ay);
+  const il = Math.hypot(w.x, w.y);
+  if (il < 1e-6) return null;
+  const moves = (cax: number, cay: number) => {
+    const r = stepMovement(
+      x, y, cax, cay, false, dt,
+      makeBlocked(grid, walk), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk),
+    );
+    return Math.hypot(r.x - x, r.y - y) > WALK_SPEED * dt * 0.35;
+  };
+  let best: { ax: number; ay: number } | null = null;
+  let bestDot = -Infinity;
+  for (const [cax, cay] of EIGHT_WAY) {
+    const cw = screenToWorldVector(cax, cay);
+    const cl = Math.hypot(cw.x, cw.y) || 1;
+    const dot = (cw.x * w.x + cw.y * w.y) / (cl * il);
+    if (dot < -1e-6) continue; // sideways is a slide; backwards is a surrender
+    // Hold the side already being slid along when it is just as good, so the
+    // body does not alternate between two symmetric ways round.
+    const sticky = memo && cax === memo.ax && cay === memo.ay ? 1e-6 : 0;
+    if (dot + sticky <= bestDot) continue;
+    if (!moves(cax, cay)) continue;
+    bestDot = dot + sticky;
+    best = { ax: cax, ay: cay };
+  }
+  if (memo) { memo.ax = best ? best.ax : 0; memo.ay = best ? best.ay : 0; }
+  return best;
+}
+
+/** Plan the short way round whatever the stick is jammed against. Null when
+ *  nothing within reach is walkable — a real dead end, and the body should stop
+ *  rather than wander. */
+export function startStickDetour(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  nowMs: number,
+  fromElev?: number,
+): AutopilotTrip | null {
+  const v = screenToWorldVector(ax, ay);
+  const l = Math.hypot(v.x, v.y);
+  if (l < 1e-6) return null;
+  const ux = v.x / l;
+  const uy = v.y / l;
+  for (const [rot, dist] of STICK_DETOUR_GOALS) {
+    const cs = Math.cos(rot);
+    const sn = Math.sin(rot);
+    const trip = startTrip(
+      grid, x, y,
+      x + (ux * cs - uy * sn) * dist * CELL_WU,
+      y + (ux * sn + uy * cs) * dist * CELL_WU,
+      false, nowMs, fromElev, undefined, STICK_DETOUR_NODES,
+    );
+    if (trip) return trip;
+  }
+  return null;
+}
+
 export function startTrip(
   grid: TerrainGrid | null,
   fromX: number,
