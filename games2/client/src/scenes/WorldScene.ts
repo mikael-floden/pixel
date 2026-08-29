@@ -12,6 +12,9 @@ import {
   vectorToDirection,
   TerrainGrid,
   buildTerrainGrid,
+  stampSceneryCollision,
+  ISO_GEOMETRY_MAPS3,
+  type SceneryBboxDoc,
   makeBlocked,
   makeBlockedElev,
   resolveElevAt,
@@ -1256,6 +1259,8 @@ export class WorldScene extends Phaser.Scene {
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
+  /** games2/config/scenery-bbox.json, or null until it lands. */
+  private sceneryBboxDoc: SceneryBboxDoc | null = null;
   /** live/tuning/scenery_hitbox.json `.overrides`, or null until it lands. */
   private sceneryHitboxDoc: Record<string, SceneryHitboxRec> | null = null;
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
@@ -1648,6 +1653,12 @@ export class WorldScene extends Phaser.Scene {
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
+      /* THE SAME SCENERY FOOTPRINTS THE SERVER STAMPS, from the same function
+       * and the same two documents. Prediction that disagreed with authority
+       * would rubber-band the player off every tree, so this is not a second
+       * implementation — it is the same one. The docs arrive asynchronously;
+       * `restampScenery` re-runs it when they land. */
+      this.restampScenery();
       // New grid ⇒ every cached indoor verdict is about a world that no longer
       // exists. Start outdoors and force the first recompute.
       this.indoorSpace = null;
@@ -11394,7 +11405,17 @@ export class WorldScene extends Phaser.Scene {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         this.sceneryHitboxDoc = (d?.overrides as Record<string, SceneryHitboxRec>) ?? null;
+        this.restampScenery();
         this.repaintWorld();
+      })
+      .catch(() => {});
+    /* The bbox table the footprint maths needs — the same file the server reads,
+     * so both sides place an ellipse identically. */
+    void fetch(docUrl("games2/config/scenery-bbox.json", this.t3route))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        this.sceneryBboxDoc = (d as SceneryBboxDoc) ?? null;
+        this.restampScenery();
       })
       .catch(() => {});
   }
@@ -11402,6 +11423,15 @@ export class WorldScene extends Phaser.Scene {
   /** The still's crop and canvas, measured ONCE per distinct art file. It is a
    *  full alpha scan of the source, so per placement would cost the_game 1,388
    *  scans for 205 answers — and per frame would cost that every frame. */
+  /** Re-apply scenery footprints to the prediction grid. Idempotent per grid:
+   *  the terrain is rebuilt from the world before this runs, and both documents
+   *  arrive asynchronously, so this is called again as each lands. */
+  private restampScenery(): void {
+    const w = this.world;
+    if (!w?.scenery?.length || !this.terrain || !this.sceneryBboxDoc || !this.sceneryHitboxDoc) return;
+    stampSceneryCollision(this.terrain, w.scenery, this.sceneryBboxDoc, this.sceneryHitboxDoc, ISO_GEOMETRY_MAPS3);
+  }
+
   private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
     const hit = this.sceneryFit.get(key);
     if (hit !== undefined) return hit as never;
@@ -11499,7 +11529,12 @@ export class WorldScene extends Phaser.Scene {
        * An auto record therefore falls back to the one-tile default at the
        * anchor, which is predictable. Accepting or editing a box in the wiki
        * drops the flag, and the game picks it up on the next fetch. */
-      const box0 = hb && !hb.auto ? hb.boxes[0] : undefined;
+      /* THE PUBLISHED BOX, auto or confirmed (maintainer 2026-08-29: "WE WANT
+       * THE DEFAULT HITBOX WITH COLLISION"). The wiki's alpha-placed default is
+       * the answer until he edits it, and editing one in the Scenery page
+       * rewrites the record without the flag — the game reads whatever is
+       * current, with no code change either way. */
+      const box0 = hb?.boxes[0];
       const hbX = box0
         ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -box0.ax : box0.ax) - fit.sx) * fit.kx
         : fit.x + fit.w / 2;

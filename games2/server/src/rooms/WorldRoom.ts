@@ -15,6 +15,9 @@ import {
   stepMovement,
   TerrainGrid,
   buildTerrainGrid,
+  stampSceneryCollision,
+  ISO_GEOMETRY_MAPS3,
+  type SceneryBboxDoc,
   parseWorld,
   makeBlockedElev,
   resolveElevAt,
@@ -95,7 +98,7 @@ import {
 import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
-import { onLiveChange, liveTuning } from "../live.js";
+import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
 import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -128,6 +131,27 @@ export function resetWorldClocks() {
  * they all see each other. The server is authoritative: clients send input, the
  * server integrates positions on a fixed tick and syncs state to everyone.
  */
+/** games2/config/scenery-bbox.json, read once. Built by
+ *  scripts/build-scenery-bbox.py; the server cannot measure art itself and a
+ *  scenery hitbox is in FRAME pixels, so the alpha bbox is what turns one into
+ *  world cells. Missing file = no scenery collision, never a crash. */
+let sceneryBboxCache: SceneryBboxDoc | null | undefined;
+function sceneryBbox(): SceneryBboxDoc | null {
+  if (sceneryBboxCache !== undefined) return sceneryBboxCache;
+  try {
+    // ESM: no __dirname. Same resolution `assetsRoot` uses, one level in —
+    // games2/config, which the image carries and the dev tree has in place.
+    const gameRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+    sceneryBboxCache = JSON.parse(
+      readFileSync(join(gameRoot, "config", "scenery-bbox.json"), "utf8"),
+    ) as SceneryBboxDoc;
+  } catch {
+    sceneryBboxCache = null;
+    console.warn("[scenery] config/scenery-bbox.json missing — scenery blocks nothing");
+  }
+  return sceneryBboxCache;
+}
+
 export class WorldRoom extends Room<WorldState> {
   // A generous cap; a real deployment can shard once this fills.
   maxClients = 200;
@@ -1970,8 +1994,27 @@ export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
     if (!doc) return open;
     const world = parseWorld(doc);
     if (!world) return open;
+    const terrain = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    /* SCENERY BLOCKS THE GROUND IT STANDS ON. world3.ts held this back — "no
+     * canonical field ships today" — and scenery now publishes one, so the
+     * precondition is met (maintainer 2026-08-29: "WE WANT THE DEFAULT HITBOX
+     * WITH COLLISION"). Default (auto) boxes count: measured on the_game, all
+     * 1,406 placements resolve and block 5,066 cells, 1.93% of the map.
+     * Server-authoritative; the client stamps the same grid with the same
+     * function so prediction cannot disagree. */
+    if (world.scenery?.length) {
+      const n = stampSceneryCollision(
+        terrain,
+        world.scenery,
+        sceneryBbox(),
+        sceneryHitboxOverrides(),
+        // Scenery is a maps3 thing, and maps3 draws on dy=14, not tiles2's 15.
+        ISO_GEOMETRY_MAPS3,
+      );
+      if (n) console.log(`[scenery] ${world.scenery.length} pieces block ${n} cells`);
+    }
     return {
-      terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks),
+      terrain,
       spawn: world.spawn
         ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
         : { x: (world.width * CELL_WU) / 2, y: (world.height * CELL_WU) / 2 },

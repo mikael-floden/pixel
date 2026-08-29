@@ -162,6 +162,14 @@ export const liveTuning = (): LiveTuning => ({
   constants: docs.get("tuning/constants") ?? emptyDoc("tuning/constants"),
 });
 
+/** live/tuning/scenery_hitbox.json `.overrides` — the ground each scenery piece
+ *  stands on. Not in the socket payload (1 MB across 3,704 records); the game
+ *  reads it as an asset, and the SERVER reads it here for collision. */
+export function sceneryHitboxOverrides(): Record<string, any> | null {
+  const d = docs.get("tuning/scenery_hitbox") as { overrides?: Record<string, any> } | undefined;
+  return d?.overrides ?? null;
+}
+
 /** Rooms subscribe here; returns an unsubscribe. */
 export function onLiveChange(cb: (tuning: LiveTuning) => void): () => void {
   listeners.add(cb);

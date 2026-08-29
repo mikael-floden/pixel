@@ -2988,3 +2988,114 @@ export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRu
   return out;
 }
 export * from "./chess";
+
+/* -- SCENERY COLLISION ------------------------------------------------------
+ * The precondition world3.ts named — "collision stays off until scenery
+ * publishes a hitbox" — is met: live/tuning/scenery_hitbox.json ships a
+ * footprint ellipse per piece, and the maintainer's call is to use it,
+ * default (auto) boxes included.
+ *
+ * ONE DEFINITION, both sides. The server is the authority and the client
+ * predicts against the same grid, so this lives here and both call it — a
+ * client that computed its own footprints would rubber-band the player off
+ * every tree.
+ */
+
+/** games2/config/scenery-bbox.json — built by scripts/build-scenery-bbox.py. */
+export type SceneryBboxDoc = {
+  pieces?: Record<string, { wph?: number | null; sprite?: string | null; states?: Record<string, string> }>;
+  boxes?: Record<string, [number, number, number, number, number, number]>;
+};
+/** live/tuning/scenery_hitbox.json `.overrides`. */
+export type SceneryHitboxDoc = Record<
+  string,
+  { boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number }[]; auto?: boolean }
+>;
+
+/**
+ * Block the ground every scenery piece stands on.
+ *
+ * THE ARITHMETIC, which is the whole of it. A hitbox is an ellipse in FRAME
+ * pixels measured from the frame's CENTRE; the art is drawn scaled so its
+ * VISIBLE height (the alpha bbox, not the frame) equals the piece's
+ * `world_px_height`, anchored at the bbox's bottom-centre. So:
+ *
+ *   k        = wph / bboxHeight                  frame px -> screen px
+ *   anchor   = (bboxX0 + bboxW/2, bboxY1)        in frame px
+ *   centre   = (frameW/2 + ax, frameH/2 + ay)    ax mirrored when hflip
+ *   screen   = (centre - anchor) * k             offset from where it stands
+ *
+ * and a screen offset comes back to world cells through the projection itself
+ * — sx = (wx-wy)*dx, sy = (wx+wy)*dy invert to wx = (sx/dx + sy/dy)/2,
+ * wy = (sy/dy - sx/dx)/2. The ellipse is a world CIRCLE seen in iso (the
+ * published rx/ry ratios sit on dx/dy, ~2.29, which is what confirms the
+ * reading), so its radius in CELLS is rx*k/dx.
+ *
+ * Returns the number of cells blocked, so a caller can log it and a gate can
+ * assert it is neither zero nor the whole map.
+ */
+export function stampSceneryCollision(
+  grid: TerrainGrid,
+  scenery: readonly { piece: string; x: number; y: number; hflip?: boolean; lit?: boolean }[],
+  bbox: SceneryBboxDoc | null | undefined,
+  hitbox: SceneryHitboxDoc | null | undefined,
+  geom: { dx: number; dy: number },
+): number {
+  if (!bbox?.boxes || !bbox.pieces || !hitbox) return 0;
+  let blocked = 0;
+  for (const pl of scenery) {
+    const facts = bbox.pieces[pl.piece];
+    const wph = facts?.wph;
+    if (!facts || !wph || wph <= 0) continue;
+    /* THE PIECE'S RECORD. Keyed per variation ("<path>#<state>"); collision does
+     * not resolve which variation is drawn — they differ by a pixel or two of
+     * footprint — so the piece-level record answers first and any variation's
+     * does otherwise. */
+    let rec = hitbox[`scenery/${pl.piece}`];
+    if (!rec) {
+      const pfx = `scenery/${pl.piece}#`;
+      for (const k in hitbox) {
+        if (k.startsWith(pfx)) {
+          rec = hitbox[k];
+          break;
+        }
+      }
+    }
+    const boxes = rec?.boxes;
+    if (!boxes?.length) continue; // no record, or a decided "this piece needs none"
+    const spr = facts.sprite;
+    const bb = spr ? bbox.boxes[spr] : undefined;
+    if (!bb) continue;
+    const [bx0, , bx1, by1, fw, fh] = bb;
+    const sw = Math.max(1, bx1 - bx0);
+    const sh = Math.max(1, by1 - bb[1]);
+    const k = wph / sh;
+    const anchorFx = bx0 + sw / 2;
+    const anchorFy = by1;
+    for (const b of boxes) {
+      const cx = fw / 2 + (pl.hflip ? -b.ax : b.ax);
+      const cy = fh / 2 + b.ay;
+      const sx = (cx - anchorFx) * k;
+      const sy = (cy - anchorFy) * k;
+      const wx = pl.x + (sx / geom.dx + sy / geom.dy) / 2;
+      const wy = pl.y + (sy / geom.dy - sx / geom.dx) / 2;
+      const R = (b.rx * k) / geom.dx;
+      if (!(R > 0) || !isFinite(wx) || !isFinite(wy)) continue;
+      for (let r = Math.floor(wy - R); r <= Math.ceil(wy + R); r++) {
+        if (r < 0 || r >= grid.height) continue;
+        for (let c = Math.floor(wx - R); c <= Math.ceil(wx + R); c++) {
+          if (c < 0 || c >= grid.width) continue;
+          const ddx = c + 0.5 - wx;
+          const ddy = r + 0.5 - wy;
+          if (ddx * ddx + ddy * ddy > R * R) continue;
+          const i = r * grid.width + c;
+          if (!grid.blocked[i]) {
+            grid.blocked[i] = true;
+            blocked++;
+          }
+        }
+      }
+    }
+  }
+  return blocked;
+}
