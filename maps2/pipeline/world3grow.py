@@ -1166,6 +1166,116 @@ class Grow:
                 if g and self.grd[y][x] != self.gi[g]:
                     self.grd[y][x] = self.gi[g]
 
+
+    # -- ramps ----------------------------------------------------------------
+    def ramps(self):
+        """RAMPS: the authored way up (maintainer 2026-08-30, "slope for
+        making it look better when building ramps/paths that go up hill").
+
+        A road crossing a bench changes level in ONE step - 22 of the 41 road
+        level changes on this map were 4-bench jumps, a 68px cliff the player
+        was expected to walk up. The fix is a MAX-SLOPE RELAXATION over the
+        road graph alone: while any two adjacent road cells differ by more
+        than one level, move both toward each other by one. It converges to a
+        road every step of which is walkable, cut into the hill where it must
+        be and banked up where it must be, and it never touches a cell that
+        is not road.
+
+        Then every maximal run of road cells whose level actually changes is
+        published in the world's `ramps` channel, so the game can make the
+        climb walkable without inferring where a climb is legal."""
+        gi, lvl = self.gi, self.lvl
+        soil = gi["light_soil"]
+        road = [(x, y) for y in range(NEW) for x in range(NEW)
+                if self.grd[y][x] == soil]
+        roadset = set(road)
+        moved = 0
+        for _ in range(64):
+            changed = 0
+            for (x, y) in road:
+                for dx, dy in ((1, 0), (0, 1)):
+                    n = (x + dx, y + dy)
+                    if n not in roadset:
+                        continue
+                    a, b = lvl[y][x], lvl[n[1]][n[0]]
+                    if abs(a - b) <= 1:
+                        continue
+                    if a > b:
+                        lvl[y][x] -= 1
+                        lvl[n[1]][n[0]] += 1
+                    else:
+                        lvl[y][x] += 1
+                        lvl[n[1]][n[0]] -= 1
+                    changed += 2
+            moved += changed
+            if not changed:
+                break
+        # the runs: maximal 4-connected chains of road cells that change level
+        seen, runs = set(), []
+        for (x, y) in road:
+            if (x, y) in seen:
+                continue
+            climb = [n for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
+                     if n in roadset and lvl[n[1]][n[0]] != lvl[y][x]]
+            if not climb:
+                continue
+            # walk the chain in both directions while the level keeps changing
+            chain = [(x, y)]
+            for step in (0, 1):
+                cur = (x, y)
+                while True:
+                    nxt = None
+                    for n in ((cur[0] + 1, cur[1]), (cur[0] - 1, cur[1]),
+                              (cur[0], cur[1] + 1), (cur[0], cur[1] - 1)):
+                        if n in roadset and n not in chain \
+                                and abs(lvl[n[1]][n[0]] - lvl[cur[1]][cur[0]]) == 1:
+                            nxt = n
+                            break
+                    if not nxt:
+                        break
+                    chain.append(nxt) if step else chain.insert(0, nxt)
+                    cur = nxt
+            if len(chain) < 2:
+                continue
+            seen.update(chain)
+            # SPLIT AT TURNING POINTS: a run must be a monotone climb, or the
+            # published from/to lie about what is between them (a chain that
+            # rose 9->6 via 3 up-steps and 3 down-steps was one "ramp")
+            ls = [lvl[c[1]][c[0]] for c in chain]
+            cut = [0]
+            for i in range(1, len(ls) - 1):
+                if (ls[i] - ls[i - 1]) * (ls[i + 1] - ls[i]) < 0:
+                    cut.append(i)
+            cut.append(len(chain) - 1)
+            for a, b in zip(cut, cut[1:]):
+                seg = chain[a:b + 1]
+                if len(seg) < 2:
+                    continue
+                runs.append({
+                    "from": lvl[seg[0][1]][seg[0][0]],
+                    "to": lvl[seg[-1][1]][seg[-1][0]],
+                    "ground": "light_soil",
+                    "cells": [{"x": c[0], "y": c[1]} for c in seg],
+                })
+        self.doc["ramps"] = runs
+        # THE CONTRACT IS BUILD-ASSERTED, because the game implements
+        # walkability from it: every run is 4-connected, monotone, and every
+        # step is exactly one level.
+        for r in runs:
+            cs = r["cells"]
+            assert len(cs) >= 2, "a ramp run needs at least two cells"
+            d0 = None
+            for a, b in zip(cs, cs[1:]):
+                assert abs(a["x"] - b["x"]) + abs(a["y"] - b["y"]) == 1, \
+                    f"ramp run not 4-connected at {a}"
+                d = lvl[b["y"]][b["x"]] - lvl[a["y"]][a["x"]]
+                assert abs(d) == 1, f"ramp step of {d} levels at {a}"
+                assert d0 is None or d == d0, f"ramp run not monotone at {a}"
+                d0 = d
+            assert r["from"] == lvl[cs[0]["y"]][cs[0]["x"]]
+            assert r["to"] == lvl[cs[-1]["y"]][cs[-1]["x"]]
+        self.placed += [("ramps", len(runs)), ("ramp level moves", moved)]
+
     # -- run ------------------------------------------------------------------
     def run(self):
         import time
@@ -1181,7 +1291,7 @@ class Grow:
                      self.archipelago, self.pier, self.houses, self.town,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
-                     self.retype, self.spawns):
+                     self.retype, self.ramps, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
