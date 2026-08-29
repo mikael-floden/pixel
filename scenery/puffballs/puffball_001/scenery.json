@@ -135,7 +135,30 @@
       "generated_at": "2026-08-16T19:59:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4095,
-      "glow_score": 0.1907
+      "glow_score": 0.1907,
+      "animations": {
+        "motion": {
+          "group_id": "ab511ca6-ab40-4b72-9c15-8da1962df5a7",
+          "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "puffballs/puffball_001/not_lit_4/animations/motion/00.webp",
+            "puffballs/puffball_001/not_lit_4/animations/motion/01.webp",
+            "puffballs/puffball_001/not_lit_4/animations/motion/02.webp",
+            "puffballs/puffball_001/not_lit_4/animations/motion/03.webp",
+            "puffballs/puffball_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "puffballs/puffball_001/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:26:42+00:00",
+          "brief": "U25"
+        }
+      }
     }
   }
 }

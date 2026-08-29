@@ -90,7 +90,30 @@
       "glow_concept": "caps speckled with glowing spore freckles",
       "difference_from_source": 0.6288,
       "glow_score": 0.144,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "animations": {
+        "motion": {
+          "group_id": "7b2ed5bc-a688-4ed0-b34a-c7b0705324ee",
+          "description": "This is the same picture in every frame. ONLY the glowing freckles on the caps brighten a little and return. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/00.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/01.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/02.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/03.webp",
+            "mushrooms/mushroom_001/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:27:14+00:00",
+          "brief": "U26"
+        }
+      }
     }
   }
 }

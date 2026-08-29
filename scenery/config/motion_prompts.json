@@ -1442,6 +1442,331 @@
         "state": "LIT_2"
       },
       "approved": "2026-08-29 round 7"
+    },
+    "U1": {
+      "group": "story_posts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hooked lantern swings.",
+      "seen_in_art": "a totem post with an oil lantern hooked below the finial",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "story_posts/story_post_009",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U2": {
+      "group": "moss_clumps",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the one bright green point inside the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The single green point pulses.",
+      "seen_in_art": "a moss cushion with one bright green point deep inside it",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "moss_clumps/moss_clump_009",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U3": {
+      "group": "cairns",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the single topmost stone brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The top stone alone brightens.",
+      "seen_in_art": "a stone stack whose topmost stone glows like a lantern",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "cairns/cairn_009",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U4": {
+      "group": "petrified_stumps",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small cyan flames at the branch stubs flicker. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The little ghost-flames flicker.",
+      "seen_in_art": "a stone stump with small cyan ghost-flames at the branch stubs",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "petrified_stumps/petrified_stump_002",
+        "state": "LIT_3"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U5": {
+      "group": "fences",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the two pale post caps brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The two post caps brighten.",
+      "seen_in_art": "a fence with a pale soulstone cap on each post",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "fences/fence_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U7": {
+      "group": "wayside_shrines",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the warm light in the doorway brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The doorway light breathes.",
+      "seen_in_art": "a small stone shrine with warm light in its doorway",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "wayside_shrines/wayside_shrine_015",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U8": {
+      "group": "overgrown_archways",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the small sign at the top of the arch brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hung sign brightens.",
+      "seen_in_art": "a brick arch with one small lit sign hung at its apex",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "overgrown_archways/overgrown_archway_002",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U9": {
+      "group": "haystacks",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light showing through the gaps brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light in the gaps breathes.",
+      "seen_in_art": "a straw stack with light leaking out of two gaps",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "haystacks/haystack_013",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U11": {
+      "group": "barrels",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light in the pale hoops brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hoops brighten.",
+      "seen_in_art": "a barrel bound with pale glowing hoops instead of iron",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "barrels/barrel_003",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U13": {
+      "group": "toadstool_rings",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the caps brightens a little and returns, one after another. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The caps brighten in turn.",
+      "seen_in_art": "a fairy ring of caps each lit from inside",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "toadstool_rings/toadstool_ring_009",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U14": {
+      "group": "briar_thickets",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small green lights on the canes brighten a little and return, one after another. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The glowworms blink.",
+      "seen_in_art": "a bramble mound with glowworms strung along the canes",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "briar_thickets/briar_thicket_015",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U15": {
+      "group": "geodes",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one small highlight moves, sliding slowly across the crystals inside. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A glint crosses the crystals.",
+      "seen_in_art": "a split stone showing purple crystals inside",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "geodes/geode_001",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U16": {
+      "group": "crystals",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the crystals brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cluster brightens.",
+      "seen_in_art": "a small cluster of violet and amber crystals on a base",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "crystals/crystal_901",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U18": {
+      "group": "carts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The moss breathes.",
+      "seen_in_art": "a wrecked cart blanketed in cyan phosphorescent moss",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "carts/cart_011",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U19": {
+      "group": "cliff_features",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the green light of the lichen brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The lichen breathes.",
+      "seen_in_art": "a rock shelf carrying bright green glow-lichen",
+      "share_of_sprite": "medium",
+      "example": {
+        "piece": "cliff_features/cliff_feature_007",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U26": {
+      "group": "mushrooms",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the glowing freckles on the caps brighten a little and return. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The freckles brighten.",
+      "seen_in_art": "small pale caps speckled with glowing freckles",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "mushrooms/mushroom_001",
+        "state": "NOT_LIT_5"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U24": {
+      "group": "cup_fungi",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY a faint drift of spores rises out of the cups and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Spores lift from the cups.",
+      "seen_in_art": "two small scarlet cups nested in moss",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "cup_fungi/cup_fungus_001",
+        "state": "NOT_LIT_4"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U25": {
+      "group": "puffballs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A puff lifts off it.",
+      "seen_in_art": "a round tan puffball on bare earth",
+      "share_of_sprite": "tiny",
+      "example": {
+        "piece": "puffballs/puffball_001",
+        "state": "NOT_LIT_4"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U20": {
+      "group": "overgrown_archways",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the long hanging trails move, swaying. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The trails sway.",
+      "seen_in_art": "a stone arch hung with long pink wisteria trails",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "overgrown_archways/overgrown_archway_001",
+        "state": "NOT_LIT_4"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U21": {
+      "group": "maypoles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging garlands move, swaying. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The garlands sway.",
+      "seen_in_art": "a maypole with straw garlands hanging from the crossarm",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "maypoles/maypole_002",
+        "state": "LIT_4"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U22": {
+      "group": "hop_poles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hop leaves move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The leaves stir.",
+      "seen_in_art": "a tall pole with hop leaves climbing it",
+      "share_of_sprite": "medium",
+      "example": {
+        "piece": "hop_poles/hop_pole_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U23": {
+      "group": "cattail_clumps",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the brown seed heads move, nodding very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The heads nod.",
+      "seen_in_art": "a cattail clump with brown velvet heads on thin stems",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "cattail_clumps/cattail_clump_005",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U28": {
+      "group": "hop_poles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The bines stir.",
+      "seen_in_art": "a pole thick with dry hop bines",
+      "share_of_sprite": "medium",
+      "example": {
+        "piece": "hop_poles/hop_pole_001",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U10": {
+      "group": "gravel_piles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the golden trickle moves, running slowly down the slope. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The trickle runs.",
+      "seen_in_art": "a gravel heap with a golden trickle running down one side",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "gravel_piles/gravel_pile_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
+    },
+    "U17": {
+      "group": "dock_pilings",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the lit water around the posts moves, rippling very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The lit water ripples.",
+      "seen_in_art": "pilings standing in shallow water lit ghost-blue",
+      "share_of_sprite": "small",
+      "example": {
+        "piece": "dock_pilings/dock_piling_011",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 8"
     }
   },
   "declined": {
@@ -1734,5 +2059,6 @@
   },
   "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked.",
   "_loop_note": "From 2026-08-29 every revised prompt closes the loop explicitly \u2014 the last frame returns to the first, and nothing may darken below frame one. Added after he reported 'dark paint entering the animation at the end' on R27, where the final frame drained to brown instead of coming back to gold.",
-  "_scale_note": "2026-08-29: the three worst results all showed the WHOLE OBJECT rescaling between frames, and in each the moving thing WAS the subject, filling the sprite. Every success so far moves a small fraction of the image instead \u2014 a lantern on a post, a bird on a totem. Revised prompts now add 'Nothing in the picture may change size, shape or position' and prefer a subject that occupies little of the frame."
+  "_scale_note": "2026-08-29: the three worst results all showed the WHOLE OBJECT rescaling between frames, and in each the moving thing WAS the subject, filling the sprite. Every success so far moves a small fraction of the image instead \u2014 a lantern on a post, a bird on a totem. Revised prompts now add 'Nothing in the picture may change size, shape or position' and prefer a subject that occupies little of the frame.",
+  "_sundial_note": "The sundial shadow (N19, U6, U27) has been offered in three separate lists and passed over every time. Not proposing it again."
 }

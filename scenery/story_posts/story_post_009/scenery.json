@@ -42,6 +42,29 @@
         "south-east": "story_posts/story_post_009/lit_2/rotations/south-east.webp",
         "south-west": "story_posts/story_post_009/lit_2/rotations/south-west.webp",
         "south": "story_posts/story_post_009/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "2c8cee65-8043-4c79-86e9-962e25895cc4",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "story_posts/story_post_009/lit_2/animations/motion/00.webp",
+            "story_posts/story_post_009/lit_2/animations/motion/01.webp",
+            "story_posts/story_post_009/lit_2/animations/motion/02.webp",
+            "story_posts/story_post_009/lit_2/animations/motion/03.webp",
+            "story_posts/story_post_009/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "story_posts/story_post_009/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:24:59+00:00",
+          "brief": "U1"
+        }
       }
     },
     "NOT_LIT_1": {

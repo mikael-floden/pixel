@@ -88,6 +88,27 @@
             "south"
           ],
           "generated_at": "2026-08-29T07:07:10+00:00"
+        },
+        "motion": {
+          "group_id": "ae66cb1a-c7dc-401f-8e4c-37f411b1ca00",
+          "description": "This is the same picture in every frame. ONLY the small cyan flames at the branch stubs flicker. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "petrified_stumps/petrified_stump_002/lit_3/animations/motion/00.webp",
+            "petrified_stumps/petrified_stump_002/lit_3/animations/motion/01.webp",
+            "petrified_stumps/petrified_stump_002/lit_3/animations/motion/02.webp",
+            "petrified_stumps/petrified_stump_002/lit_3/animations/motion/03.webp",
+            "petrified_stumps/petrified_stump_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "petrified_stumps/petrified_stump_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:25:00+00:00",
+          "brief": "U4"
         }
       }
     },

@@ -42,6 +42,29 @@
         "south-east": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-east.webp",
         "south-west": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-west.webp",
         "south": "wayside_shrines/wayside_shrine_015/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4fd779b8-f468-4a80-b622-dcad6c08dfdd",
+          "description": "This is the same picture in every frame. ONLY the warm light in the doorway brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/00.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/01.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/02.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/03.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:25:34+00:00",
+          "brief": "U7"
+        }
       }
     },
     "NOT_LIT_1": {
