@@ -5,26 +5,44 @@ semantics only — see world3.py):
 
   * iso: tile_px 64, dx 32, DY=14 (GEOMETRY.md: the pitch at which the v3
     lattice closes; 15 leaks a 1px wall band per boundary), wall_px 17/level.
-  * fields: ground_types.json — flat base_color until the maintainer promotes
-    base tiles (live/tuning/base_tiles.json weighted groups). THE LAW: no
-    texture the maintainer did not promote.
+  * fields: THE MAINTAINER'S BASE TILE SETS (live/tuning/base_tile_sets.json)
+    on EVERY cell — land, liquid, deck and raised alike. A SET per region (a
+    24-cell chunk of one ground), a MEMBER per cell, his weights throughout,
+    clean as a member. A member draws ITS OWN ART: the published `textured`
+    pass for a review key, the file itself for a tops/base_candidates path,
+    conformed into plate geometry. NEVER tiles/plates/<g>/<key8>.webp — that
+    is the same tile flattened to the clean colour, and reading it painted
+    236 of his 340 members flat. (live/tuning/base_tiles.json is the
+    superseded one-tile-per-ground channel and is empty.)
   * walls: THE X-OVER-Y MATRIX ONLY (tiles/review). A rim cell draws its
     over-tile (top ground OVER the ground at the face's foot — the cell's
     down-screen lower neighbour), then one same-over-same band per extra
     exposed level, 17px apart — the wiki isoScene stacking model.
-  * boundaries: transition sets on the CORNER LATTICE (TRANSITIONS.md), one
-    set per pair, composed through the lab's own compose_transition (surface
-    taxonomy: own/base/flat), index = 8*NW+4*NE+2*SW+1*SE with bit = the
-    UPPER material of the set. Pairs with no committed set fall back to the
-    pair's flat colours through a borrowed mask set (grass__to__water's
-    geometry) — the FADE, flagged in the build log for review.
-  * details: NOT a separate system. The maintainer's "once in a while a
-    detail" IS a base-tile-set member drawn from a tiles/tops *_detail_*
-    sheet, carrying its own weight beside the subtle members and the clean
-    weight — so he tunes how often a detail lands, per set, in his own file.
-    (A separate pool keyed on live/feedback '#top' approvals was WRONG: #top
-    rates a review candidate's top face, and drawing those raw put bright
-    lime diamonds with foreign lava/ice walls in a dark field.)
+  * boundaries: patterns x plates on the CORNER LATTICE — tiles/patterns
+    publishes the material-independent Wang boundary and nothing else, and
+    the two grounds it divides come from their own set members, so EVERY
+    pair is covered including roads (light_soil over grass, the second most
+    common boundary on the_game). index = 8*NW+4*NE+2*SW+1*SE; each half
+    asks for its OWN ground's region.
+  * fades: tiles/fades (tiles3/fade-tiles@1) — top-only mix tiles that warm
+    the player up for a ground change before the switch. Placed BY
+    edge_ground, never by area majority; rejected tiles are not candidates
+    and his ratings weight the rest; a SCATTERED event over a real Chebyshev
+    distance band, never a coat of one tile.
+  * details: HIS 478 '#top' APPROVALS. The wiki's roof glyph is "rating the
+    TOP as a once-in-a-while ground detail", and a tile rejected AS A PAIR
+    can still be a top-approved detail — the two reviews are independent.
+    Drawn at DETAIL_FREQ from the `textured` pass and conformed, so a
+    detail's foreign lava/ice/sand wall can never leak into a field.
+  * slopes: tiles3/slopes@1 — a Wang set on ELEVATION (bit = that corner is
+    raised) in the same 64x46 frame as a plate. A cell takes the graded tile
+    when its OWN ground rises beside it. Every published set is a 4px
+    sub-storey grade: it softens the foot of a rise, it cannot bridge a 17px
+    storey (storey-height sets requested from tiles).
+  * toggles: live/tuning/tile_walls.json `top_only` (this tile's wall is
+    unusable) PAIRED WITH live/tuning/top_walls.json `wall` (the wall it
+    borrows instead), and live/tuning/tile_tops.json `own_top` (keep the
+    x-over-y tile's own top; do not paint the set surface over it).
   * scenery: sprite scaled so height == placement.world_px_height, feet at
     the piece's (x,y) cell front vertex, hflip honoured, painter-ordered
     with the terrain.
