@@ -150,9 +150,26 @@ class Grow:
         for dk in self.doc["decks"]:
             if dk["kind"] != "roof":
                 continue
-            wl = max(self.lvl[c["y"]][c["x"]] for c in dk["cells"])
+            # THE ROOF RIDES THE WALL TOP, AND THE DECK NO LONGER COVERS THE
+            # WALL. A roof deck spans the INTERIOR only (that is what tells
+            # the game you are indoors without roofing the walls as well), so
+            # taking the max over the deck's own cells reads the FLOOR - and
+            # dropped the spawn cottage's roof to level 0, leaving the room
+            # open to the sky and the player drawn over his own wall, live
+            # (maintainer 2026-08-30: "THIS WORKED IN V2! DON'T DESTROY THE
+            # GAME!"). The wall is one cell outside the deck, so the ring is
+            # measured too.
+            wl = 0
+            for c in dk["cells"]:
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        x, y = c["x"] + dx, c["y"] + dy
+                        if 0 <= x < NEW and 0 <= y < NEW:
+                            wl = max(wl, self.lvl[y][x])
             dk["level"] = wl
             dk["thickness"] = 0
+            assert wl > min(self.lvl[c["y"]][c["x"]] for c in dk["cells"]), \
+                "a roof deck must ride ABOVE the floor it covers"
 
     # -- helpers --------------------------------------------------------------
     def g(self, x, y):
