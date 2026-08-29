@@ -1129,18 +1129,29 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             if (x, y) not in wall_over and (side in INDOOR_GROUNDS or side in liq):
                 side = gr                    # stone over its own body; water is
                                              # never a wall material either
-            cap = over_tile(gr, side) if front_low < zl else flat_tile(gr)
-            # the repeated course is the WALL's own material in every case —
-            # keying it on the top ground drew 407 cells whose courses were a
-            # different material from their own cap
-            mid = storey_tile(side)
-            for f in range(max(0, front_low), zl + 1):
-                t = cap if f == zl else mid
-                img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
+            # NO EXPOSED FACE, NO WALL. A raised cell whose down-screen
+            # neighbours sit at its own level shows no cliff, so drawing the
+            # whole 64x64 x-over-x tile painted its WALL BAND onto flat
+            # ground with nothing in front to cover it. That is the row of
+            # ticks along every road and field edge on a plateau - dark brown
+            # where the ground is light_soil, light green where it is grass,
+            # one per tile. The surface below supplies the top face; the wall
+            # is drawn only where a face is actually exposed.
+            exposed = front_low < zl
+            if exposed:
+                cap = over_tile(gr, side)
+                # the repeated course is the WALL's own material in every
+                # case - keying it on the top ground drew 407 cells whose
+                # courses were a different material from their own cap
+                mid = storey_tile(side)
+                for f in range(max(0, front_low), zl + 1):
+                    t = cap if f == zl else mid
+                    img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # ...and the SURFACE goes on the cap: the wall is x-over-y art,
             # the top is the maintainer's set. Only the top face is painted,
             # so the cap's own wall — the only lawful wall source — survives.
-            if not own_top(over_candidate(gr, side)["key"].strip("/")):
+            if not exposed or not own_top(
+                    over_candidate(gr, side)["key"].strip("/")):
                 img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
 
