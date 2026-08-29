@@ -3079,15 +3079,31 @@ export function stampSceneryCollision(
       const sy = (cy - anchorFy) * k;
       const wx = pl.x + (sx / geom.dx + sy / geom.dy) / 2;
       const wy = pl.y + (sy / geom.dy - sx / geom.dx) / 2;
-      const R = (b.rx * k) / geom.dx;
-      if (!(R > 0) || !isFinite(wx) || !isFinite(wy)) continue;
-      for (let r = Math.floor(wy - R); r <= Math.ceil(wy + R); r++) {
+      /* TEST THE ELLIPSE WHERE IT IS DRAWN — on SCREEN — instead of turning it
+       * into a world-space disc. The iso map sends a world circle of radius R
+       * to semi-axes R*dx*SQRT2 and R*dy*SQRT2 (the singular values of
+       * [[dx,-dx],[dy,dy]]), so reading rx as R*dx made every footprint SQRT2
+       * too big in radius and twice too big in area — the enforced gap the
+       * maintainer measured against his own wiki box. Projecting each candidate
+       * cell back onto the ellipse drops the factor entirely AND honours a box
+       * that is not a circle: a fallen log is long, and a disc could never be.
+       *
+       * The iteration bound is exact rather than generous: over the ellipse
+       * |sx| <= rx and |sy| <= ry, and the inverse map is
+       * wx = (sx/dx + sy/dy)/2, so |wx| and |wy| are both <= that half-sum. */
+      const rx = b.rx * k;
+      const ry = b.ry * k;
+      if (!(rx > 0) || !(ry > 0) || !isFinite(wx) || !isFinite(wy)) continue;
+      const bound = (rx / geom.dx + ry / geom.dy) / 2;
+      for (let r = Math.floor(wy - bound); r <= Math.ceil(wy + bound); r++) {
         if (r < 0 || r >= grid.height) continue;
-        for (let c = Math.floor(wx - R); c <= Math.ceil(wx + R); c++) {
+        for (let c = Math.floor(wx - bound); c <= Math.ceil(wx + bound); c++) {
           if (c < 0 || c >= grid.width) continue;
-          const ddx = c + 0.5 - wx;
-          const ddy = r + 0.5 - wy;
-          if (ddx * ddx + ddy * ddy > R * R) continue;
+          const ox = c + 0.5 - wx;
+          const oy = r + 0.5 - wy;
+          const sxc = (ox - oy) * geom.dx;
+          const syc = (ox + oy) * geom.dy;
+          if ((sxc * sxc) / (rx * rx) + (syc * syc) / (ry * ry) > 1) continue;
           const i = r * grid.width + c;
           if (!grid.blocked[i]) {
             grid.blocked[i] = true;
