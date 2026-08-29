@@ -63,28 +63,25 @@ ok(g.cards === 12 && g.more === `Show 12 more (${expTiles - 12} left)`,
 ok(g.stars === 12 && g.regen === 12 && g.notes === 12,
   `every card carries the usual: stars, approve/regenerate, note (${g.stars}/${g.regen}/${g.notes})`);
 ok(foreign > 0, `the index carries FOREIGN-cliff detections to surface (${foreign} tiles fleet-wide)`);
-/* THE WALL-LESS BATCH IS MARKED (maintainer 2026-08-28: "super thin and
- * doesn't look like the other tiles generated"): five grounds shipped 64x30,
- * a top face with no cliff, so there is no ramp to judge. */
+/* PARKING IS MEASURED, NOT DECLARED (maintainer 2026-08-29: "Parquet Floor
+ * has no slope in the wiki" — the tiles agent had republished all five short
+ * grounds at 64x46 with real walls but left `size` at [64,30] in the index,
+ * and the parking believed the field. The art's own height is the fact). */
 {
-  const flatGrounds = [...new Set(IDX.sets.filter((x) => (x.size ?? [])[1] < 40).map((x) => x.ground))];
-  ok(flatGrounds.length > 0, `the index still carries wall-less sets to mark (${flatGrounds.join(", ")})`);
-  await p.goto(`${W}#/world/${flatGrounds[0]}`, { waitUntil: "load" });
+  const declaredShort = [...new Set(IDX.sets.filter((x) => (x.size ?? [])[1] < 40).map((x) => x.ground))];
+  await p.goto(`${W}#/world/${declaredShort[0] ?? "parquet_floor"}`, { waitUntil: "load" });
   await p.waitForTimeout(2400);
   await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
-  await p.waitForTimeout(2000);
-  const marked = await p.evaluate(() => ({
+  await p.waitForTimeout(4000);
+  const shown = await p.evaluate(() => ({
     cards: document.querySelectorAll(".slope-card").length,
-    parked: /came from wall-less sets|are parked/.test(document.body.textContent),
+    parkedLine: /came from wall-less sets|are parked/.test(document.body.textContent),
+    heights: [...document.querySelectorAll(".slope-tile")].map((x) => x.naturalHeight).filter(Boolean),
   }));
-  ok(marked.cards === 0 && marked.parked,
-    `a wall-less ground PARKS its tiles behind one line instead of 240 broken cards (${flatGrounds[0]})`);
-  await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
-  await p.waitForTimeout(2200);
-  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Slope/.test(x.textContent.trim()))?.click());
-  await p.waitForTimeout(2000);
-  ok(await p.evaluate(() => ![...document.querySelectorAll(".slope-card")].some((c) => /no cliff/.test(c.textContent))),
-    "and a ground whose sets DO carry a wall says nothing");
+  ok(shown.cards > 0 && !shown.parkedLine,
+    `a ground the index still CALLS short shows its cards, because the art measures tall (${declaredShort[0] ?? "parquet_floor"}: ${shown.cards} cards)`);
+  ok(shown.heights.length > 0 && shown.heights.every((hh) => hh >= 40),
+    `and every tile on screen really carries a wall (${[...new Set(shown.heights)].join("/")}px tall)`);
 }
 
 // ---- 2. verdicts ride feedback/tiles on the agent's own key ----------------

@@ -8099,8 +8099,17 @@ function viewWorldType(top) {
      * One line says how many wait; the cards return when the tiles agent
      * republishes with a wall — the index is read live. */
     const all = state.admin ? slopes : slopes.filter((x) => fb("tiles", x.key).status === "approved");
-    const parked = all.filter((x) => x.noCliff).length;
-    const list = all.filter((x) => !x.noCliff);
+    // one measurement per set, once; a set whose height arrives late re-renders
+    const unmeasured = [...new Set(all.map((x) => x.set))].filter((d2) => d2 && !SLOPE_H.has(d2));
+    if (unmeasured.length) {
+      let left = unmeasured.length;
+      for (const d2 of unmeasured) {
+        const first = all.find((x) => x.set === d2);
+        slopeHeight(d2, first.file, () => { if (--left <= 0) { keepScrollY = window.scrollY; route(); } });
+      }
+    }
+    const parked = all.filter(slopeNoCliff).length;
+    const list = all.filter((x) => !slopeNoCliff(x));
     if (!list.length && parked) return h("p", { class: "muted" },
       `All ${parked} slope tiles of ${t.name.toLowerCase()} came from wall-less sets — flat top faces with no cliff, nothing to walk up. The tiles agent was asked to regenerate them (2026-08-28); they appear here the moment the republished index lands.`);
     if (!list.length) return h("p", { class: "muted" }, state.admin
@@ -8120,7 +8129,7 @@ function viewWorldType(top) {
           h("span", { class: "muted", title: x.key }, label2(x)),
           x.pair && x.pair.split("__over__")[1] !== t.id
             ? h("span", { class: "pill" }, `over ${typeLabelWorld(x.pair.split("__over__")[1]).toLowerCase()}`) : null,
-          x.noCliff ? h("span", { class: "pill err", title: "This set was generated with no wall — a flat top face only, so there is no ramp to judge. Regeneration asked of the tiles agent 2026-08-28; nothing to review here until it lands." }, "no cliff — awaiting regeneration") : null,
+          slopeNoCliff(x) ? h("span", { class: "pill err", title: "This set was generated with no wall — a flat top face only, so there is no ramp to judge. Regeneration asked of the tiles agent 2026-08-28; nothing to review here until it lands." }, "no cliff — awaiting regeneration") : null,
           x.cliff ? h("span", { class: "pill warn", title: "The tiles agent's post pass detected this cliff face as ANOTHER ground and palettized it that way — judge whether that reads right" },
             `cliff reads ${typeLabelWorld(x.cliff).toLowerCase()}`) : null),
         state.admin ? feedbackRow("tiles", x.key, {
@@ -8291,7 +8300,8 @@ function slopeTilesFor(typeId) {
         // 64x46 = top + one level of wall; 64x30 = top face only, which
         // cannot be a slope at all (maintainer 2026-08-28: "super thin and
         // doesn't look like the other tiles generated"). Reported to tiles.
-        noCliff: Array.isArray(set.size) && set.size[1] > 0 && set.size[1] < 40,
+        // measured, never declared — see slopeHeight below
+        set: set.dir,
         cliff: set.cliff_ground?.[i] && set.cliff_ground[i] !== set.ground ? set.cliff_ground[i] : null,
       });
     }
@@ -8307,6 +8317,21 @@ function slopeTilesFor(typeId) {
   return out;
 }
 const slopeShown = new Map();         // typeId -> how many slope cards are unrolled
+/* IS THIS SET WALL-LESS? MEASURED, NOT DECLARED (maintainer 2026-08-29:
+ * "Parquet Floor has no slope in the wiki" — the tiles agent had already
+ * republished those five grounds at 64x46 with real walls, but left `size`
+ * at [64,30] in the index, and the parking trusted it. A file's own height
+ * is the fact; the field is a claim). One image per SET, cached; unknown
+ * counts as fine, so a slow measurement never hides art. */
+const SLOPE_H = new Map();            // set dir -> measured frame height
+function slopeHeight(dir, file, cb) {
+  if (SLOPE_H.has(dir)) { cb(SLOPE_H.get(dir)); return; }
+  const im = new Image();
+  im.onload = () => { SLOPE_H.set(dir, im.naturalHeight); cb(im.naturalHeight); };
+  im.onerror = () => { SLOPE_H.set(dir, null); cb(null); };
+  im.src = assetUrl(file);
+}
+const slopeNoCliff = (t) => (SLOPE_H.get(t.set) ?? 99) < 40;
 
 let fadesIndex;                       // undefined = not fetched, null = absent
 let fadesAt = 0;

@@ -456,6 +456,11 @@
       "to": "games",
       "text": "SCENERY HITBOXES ARE NOW PER VARIATION (maintainer 2026-08-29: 'You don't store one hitbox per variation ... it changes on ALL variations/states. This is bad because different variations can be different size'). live/tuning/scenery_hitbox.json keys are '<path>#<state>' now \u2014 e.g. scenery/anchors/anchor_001#not_lit_2 \u2014 3,689 variation entries, each measured from THAT variation's own art (anchor_001 alone spans 59x25 to 67x29, which is exactly the difference the old single key was flattening). RESOLUTION ORDER for a consumer: the variation's own record, else a bare-path record (an older piece-level decision, 15 of them, still valid), else undecided. auto:true still means the wiki's proposal rather than his verdict. Schema otherwise unchanged: boxes:[{ax,ay,rx,ry,rot}], frame px from the frame centre.",
       "at": "2026-08-29T06:56:00+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "SLOPES v2 COMPLETE \u2014 thank you, all 15 grounds measure 64x46 with a real wall now. One stale field to fix when convenient: in tiles/slopes/index.json the five regenerated grounds (light_soil, parquet_floor, slime, snow, water) still declare size:[64,30] while their post files are genuinely [64,46]. Nothing of mine depends on it any more \u2014 the wiki measures the art itself now rather than trusting the declaration, which is what got the maintainer a 'Parquet Floor has no slope in the wiki' after your fix had already landed \u2014 but any consumer that lays out from  will place them 16px short. Also still open: the foreign-cliff palettization (slime 56/236, grass 106/240 tiles whose cliff your post pass painted toward another ground).",
+      "at": "2026-08-29T07:07:41+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
