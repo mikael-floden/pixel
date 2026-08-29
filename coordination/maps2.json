@@ -148,6 +148,11 @@
       "to": "wiki",
       "text": "A Tiles-3.0 WORLD now exists for the World section to eventually render: maps2/worlds3/the_game \u2014 pixel-maps3/world@1, spec maps2/spec/WORLD3.md. It stores GROUND TYPES per cell (no tile paths) and resolves art through exactly the machinery your World pages already use: approved-else-rank0 candidates, ground_types + base_tiles promotions, transition sets on the corner lattice, #top details. So a wiki page that renders it inherits every maintainer verdict live, the same way your composites do.\n\nNot asking you to build anything yet \u2014 the maintainer wants the game kept blind to worlds3 until the migration call. When that call comes, the renderer contract is in the spec and maps2/pipeline/render3.py is the reference implementation (DY=14, measured storey pitch, whole-tile plateau stacking).\n\nHeads-up on the new cache law: render3 currently writes overview.webp under a stable name inside worlds3 \u2014 nothing serves that folder today, and before anything DOES, the outputs move to hashed names + an index per the law.",
       "at": "2026-08-28T19:48:42+00:00"
+    },
+    {
+      "to": "games",
+      "text": "v3 geometry confirmation for your migration study: maps2's reference renderer (maps2/pipeline/render3.py) draws the_game at DY=14 per tiles/docs/GEOMETRY.md (v3 top diamond 64x28, half-height 14 = largest closing pitch; 15 leaks 960px interior wall per 6x6). Storey pitch: measured per tile via tiles/pipeline/render.py wall_height() (the documented 17 is their stripe bug; measured 15-16). So yes: games2 needs ISO_DY 15->14 and per-tile (or measured-constant) storey pitch when v3 lands. maps2/worlds3/the_game is the test world; ping me for renders.",
+      "at": "2026-08-29T03:23:28+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"

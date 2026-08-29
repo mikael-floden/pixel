@@ -48,18 +48,19 @@ OUT = os.path.join(MAPS2, "worlds3", "the_game")
 
 NEW = 512
 OFF = (240, 244)          # the tuned island rides FRONT (down-screen); the
-                          # new land grows BEHIND it and FUSES with it — ONE
-                          # island (maintainer 2026-08-29: "I kinda don't
-                          # like it being two separate islands... a single
-                          # island, but design the map so the player can't
-                          # and don't want to explore the backside of a
-                          # mountain — A Link to the Past made it impossible
-                          # to explore areas like this")
-ISL2 = (168, 168)         # new landmass centre (close enough to fuse)
-ISL2_R = 96               # its coast radius (the original spans ~196 cells)
-TOWN_AT = (178, 216)      # the town seeks its plaza near here (S shelf,
-                          # camera-facing; maintainer: "build a town or city
-                          # on the new area — we have NPCs and tiles for it")
+                          # map GROWS OUT OF IT (maintainer 2026-08-30, the
+                          # architecture, verbatim: "skip the second island
+                          # and extend the first island upwards. Extend the
+                          # mountain top in that same height/elevation. Make
+                          # it go down a bit in elevation and create the
+                          # city in the valley. In the valley you can use
+                          # grass again. Then continue and make the island
+                          # at least twice as big")
+EXT_C = (205, 215)        # the extension blob centre (up-screen of the
+                          # original); its far NW rim stays sealed cliff
+EXT_R = 118
+TOWN_AT = (168, 176)      # fallback town target; the real one derives from
+                          # where the ridge ends and the valley opens
 
 import world3
 
@@ -294,104 +295,136 @@ class Grow:
 
     # -- the second island ----------------------------------------------------
     def island2(self):
-        """A WHOLE SECOND ISLAND behind the first (maintainer 2026-08-29),
-        synthesized by rule in v3 vocabulary: fbm coastline (same character as
-        the islets), fbm elevation falling to the coast, a snow-capped
-        grey_stone massif, black_rock crags, a river walked downhill from the
-        peak. Everything downstream (deep water, fen banks, terrain walls,
-        forests) comes from the SAME rule functions the first island uses."""
+        """EXTEND THE MAP, NOT A NEW ISLAND (maintainer 2026-08-30, after
+        three blob attempts all read as two islands: "just extend the
+        current map, with the same look and feel. You should NOT create a
+        new island!"). The island's own coastline is pushed up-screen:
+        every new cell INHERITS ground and level from its nearest existing
+        land cell (Dijkstra src over the sea), so the terrain continues —
+        the massif shoulder elongates at its own height, then decays one
+        bench per ~7 cells into the grass VALLEY that holds the city, and
+        the frontier falls to a new shore. The far up-screen rim is sealed
+        bench-6 cliff (the Zelda rule). Old beach lines that end up inland
+        are erased to grass — no ghost coastlines."""
+        import heapq
         gi, grd, lvl = self.gi, self.grd, self.lvl
-        cx, cy = ISL2
-        R = ISL2_R
-        # BENCHED terraces, the real generator's own trick (islandworld2
-        # BENCHES): raw elevation snaps DOWN to a bench, so the land is broad
-        # plateaus with clean multi-storey rims — a continuous field int()'d
-        # measured as unreadable 1-step scribble across the whole island
-        # benches to 40 with BIG JUMPS — island 1's drama, not a smooth dome
-        # (maintainer 2026-08-30: "the second island doesn't have the same
-        # height differences. We need a way way more extreme map. Look at
-        # the first island for inspiration"). Adjacent benches sit 4-8
-        # levels apart, so every rim is a real multi-storey cliff.
-        BENCH = (0, 2, 6, 12, 20, 28, 34, 40)
-        ccx, ccy = cx - 0.13 * R, cy - 0.10 * R    # the massif rides NW
-        zmap, beach = {}, []
-        for y in range(max(1, cy - R - 4), min(NEW - 1, cy + R + 5)):
-            for x in range(max(1, cx - R - 4), min(NEW - 1, cx + R + 5)):
-                if not self.liquid(x, y):
-                    continue          # never touch the original island
-                ang = math.atan2(y - cy, x - cx)
-                wob = _fbm(math.cos(ang) * 2.3 + 7, math.sin(ang) * 2.3 + 7, 81)
-                rr = R * (0.60 + 0.52 * wob)
-                d = math.hypot(x - cx, y - cy)
-                # THE SEALED BACKSIDE (the Zelda rule): on the NW-facing
-                # half — the side the camera can never see well — the land
-                # meets the sea as bench-6+ cliff with NO beach: there is
-                # nothing to walk behind the mountain, naturally.
-                back = math.cos(ang) + math.sin(ang) < -0.35
-                if d <= rr:
-                    fall = 1 - d / rr
-                    core = max(0.0, 1 - math.hypot(x - ccx, y - ccy) / (R * 0.72))
-                    e = _fbm(x * 0.030, y * 0.030, 83, 4)
-                    # ridged noise: knife crests and deep clefts, not a dome
-                    ridge = 1 - abs(2 * _fbm(x * 0.05 + 17, y * 0.05 + 17, 89) - 1)
-                    h = 0.50 * core ** 1.5 + 0.35 * e * fall ** 0.5 \
-                        + 0.45 * ridge * core * fall
-                    zr = h * 44
-                    z = max(b for b in BENCH if zr >= b)
-                    if back and d >= rr - 4:
-                        z = max(z, 12)   # the sealed backside is SHEER
-                    zmap[(x, y)] = z
-                elif d <= rr + 2.2 and not back:
-                    beach.append((x, y))
-        # two mode-filter passes kill lone-cell speckle on the benches
-        for _ in range(2):
-            nz = {}
-            for (x, y), z in zmap.items():
-                votes = [zmap.get((x + dx, y + dy))
-                         for dx in (-1, 0, 1) for dy in (-1, 0, 1)]
-                votes = [v for v in votes if v is not None]
-                nz[(x, y)] = sorted(votes, key=lambda v: (votes.count(v), -v)
-                                    )[-1] if votes else z
-            zmap = nz
-        for (x, y), z in zmap.items():
-            g = "snow" if z >= 28 else "grey_stone" if z >= 14 else "grass"
-            grd[y][x] = gi[g]; lvl[y][x] = z
-        for (x, y) in beach:
-            if (x, y) not in zmap:
-                grd[y][x] = gi["light_beach"]; lvl[y][x] = 0
-        land = [(x, y, z) for (x, y), z in zmap.items()]
-        assert len(land) > 15000, f"island 2 came out small: {len(land)} cells"
-        peak = max(z for _, _, z in land)
-        assert peak >= 28, f"the mountain must be a MOUNTAIN: peak bench {peak}"
-        # river: walk downhill from the peak to the sea, water riding its own
-        # level (the renderer's liquids-ride-own-level rule, already proven)
-        px, py, pz = max(land, key=lambda c: c[2])
-        seen, steps, riv = set(), 0, []
-        x, y = px, py
-        while steps < 500:
-            steps += 1
+        BENCH = (0, 2, 6, 10, 14, 16, 20, 24, 28, 32, 36, 40)
+        land = [(x, y) for y in range(NEW) for x in range(NEW)
+                if not self.liquid(x, y) and self.g(x, y)]
+        cx0 = sum(c[0] for c in land) / len(land)
+        cy0 = sum(c[1] for c in land) / len(land)
+        INF = 1 << 30
+        dist = [[INF] * NEW for _ in range(NEW)]
+        srcc = [[None] * NEW for _ in range(NEW)]
+        pq = []
+        STEP = ((1, 0, 10), (-1, 0, 10), (0, 1, 10), (0, -1, 10),
+                (1, 1, 14), (1, -1, 14), (-1, 1, 14), (-1, -1, 14))
+        for (x, y) in land:
+            for dx, dy, c in STEP:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < NEW and 0 <= ny < NEW and self.liquid(nx, ny) \
+                        and dist[ny][nx] > c:
+                    dist[ny][nx] = c
+                    srcc[ny][nx] = (x, y)
+                    heapq.heappush(pq, (c, nx, ny))
+        while pq:
+            d, x, y = heapq.heappop(pq)
+            if d > dist[y][x] or d > 1200:
+                continue
+            for dx, dy, c in STEP:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < NEW and 0 <= ny < NEW and self.liquid(nx, ny) \
+                        and dist[ny][nx] > d + c:
+                    dist[ny][nx] = d + c
+                    srcc[ny][nx] = srcc[y][x]
+                    heapq.heappush(pq, (d + c, nx, ny))
+        new, sealed = [], 0
+        for y in range(NEW):
+            for x in range(NEW):
+                if not self.liquid(x, y) or dist[y][x] >= INF:
+                    continue
+                # up-screen gate: full reach to the NW, nothing to the SE —
+                # the tuned south/east coasts keep their exact silhouette
+                w = ((cx0 + cy0) - (x + y)) / 150 + 0.15
+                if w <= 0.03:
+                    continue
+                wob = 0.75 + 0.5 * _fbm(x * 0.03, y * 0.03, 95)
+                reach = 950 * min(1.0, w) * wob
+                d = dist[y][x]
+                if d > reach:
+                    continue
+                sx_, sy_ = srcc[y][x]
+                z0 = lvl[sy_][sx_]
+                over = max(0.0, d / 10 - 18)
+                z = max(0, int(z0 - (over / 7) * 4))
+                z = max(b for b in BENCH if z >= b)
+                rem = reach - d
+                far = w > 0.85          # the sealed far rim sector
+                if rem < 300:
+                    z = min(z, 6 if far else 2)
+                if rem < 120 and not far:
+                    z = 0
+                if far and rem < 200:
+                    z = max(z, 6); sealed += 1
+                grd[y][x] = gi["snow" if z >= 20 else
+                               "grey_stone" if z >= 14 else "grass"]
+                lvl[y][x] = z
+                new.append((x, y))
+        assert len(new) > 22000, f"extension too small: {len(new)}"
+        assert sealed > 200, "the far rim must be sealed cliff"
+        newset = set(new)
+        # beach ring on the OPEN frontier only (never the sealed rim)
+        for (x, y) in new:
+            if lvl[y][x] == 0 and self.g(x, y) == "grass" \
+                    and any(self.liquid(x + dx, y + dy)
+                            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                grd[y][x] = gi["light_beach"]
+        # ghost coastlines: old beach with no water near it becomes grass
+        ghosts = 0
+        for y in range(NEW):
+            for x in range(NEW):
+                if (x, y) not in newset and self.g(x, y) == "light_beach" \
+                        and not any(self.liquid(x + dx, y + dy)
+                                    for dx in (-2, -1, 0, 1, 2)
+                                    for dy in (-2, -1, 0, 1, 2)):
+                    grd[y][x] = gi["grass"]
+                    ghosts += 1
+        # a stream off the extended highland into the valley
+        top = max(new, key=lambda c: lvl[c[1]][c[0]])
+        seen, riv, (x, y) = set(), [], top
+        for _ in range(400):
             seen.add((x, y))
             if self.liquid(x, y):
                 break
-            grd[y][x] = gi["water"]
-            riv.append((x, y))
-            opts = [(self.lvl[y + dy][x + dx], x + dx, y + dy)
+            if (x, y) in newset:
+                grd[y][x] = gi["water"]
+                riv.append((x, y))
+            opts = [(lvl[y + dy][x + dx], x + dx, y + dy)
                     for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))
                     if (x + dx, y + dy) not in seen]
             if not opts:
-                break                  # a bowl: the river ends in a tarn
+                break
             _, x, y = min(opts)
-        for (rx, ry) in riv:           # the river runs in a GORGE: sunk 4
+        for (rx, ry) in riv:
             lvl[ry][rx] = max(0, lvl[ry][rx] - 4)
-        self.i2_land = len(land)
-        self.placed += [("island2 land", len(land)), ("river steps", steps)]
+        self.ext_cells = newset
+        nw = min(new, key=lambda c: c[0] + c[1])
+        self.town_target = (nw[0] + 26, nw[1] + 22)
+        self.i2_land = len(new)
+        self.placed += [("extension land", len(new)),
+                        ("ghost beach erased", ghosts)]
 
     def i2_road(self):
-        """The town's south-gate road: down the shelf, over the isthmus, onto
-        the original island — one island, one walk. Carved BEFORE forests so
-        the wood keeps off it."""
+        """The town's south-gate road: out of the valley, along the ridge
+        flank, onto the original island's shore — one island, one walk.
+        Carved BEFORE forests so the wood keeps off it."""
         gi = self.gi
-        fx, fy = self.bridgeB
+        ox, oy = OFF
+        cx0, _ = self.plaza
+        fx, fy = min(((x, y) for y in range(oy, NEW) for x in range(ox, NEW)
+                      if not self.liquid(x, y) and self.g(x, y)
+                      and (x, y) not in self.ext_cells),
+                     key=lambda c: (c[0] - cx0) ** 2 + (c[1] - self.plaza[1]) ** 2)
         cx, _ = self.plaza
         x0t, y0t, TW, TH = self.town
         x, y, n = cx, y0t + TH, 0
@@ -413,113 +446,6 @@ class Grow:
             _, x, y = min(opts)
         self.placed += [("town road cells", n)]
 
-    def isthmus(self):
-        """ONE BIG ISLAND (maintainer 2026-08-30, after a waist-neck still
-        read as two islands: "the island should just be one big island"):
-        the WHOLE CHANNEL between the two landmasses is filled. Two water
-        BFS fields measure each sea cell's distance to either landmass;
-        every cell whose summed distance sits within closest-approach + 26
-        (fbm-wobbled) becomes lowland grass. The coasts fuse along their
-        entire facing front; the flanks stay concave bays."""
-        from collections import deque
-        gi = self.gi
-
-        def landcomp(seed):
-            comp, q = {seed}, deque([seed])
-            while q:
-                x, y = q.popleft()
-                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    n_ = (x + dx, y + dy)
-                    if 0 <= n_[0] < NEW and 0 <= n_[1] < NEW \
-                            and n_ not in comp and not self.liquid(*n_) \
-                            and self.g(*n_):
-                        comp.add(n_)
-                        q.append(n_)
-            return comp
-
-        c1 = landcomp(tuple(self.doc["spawn"]))
-        # island 2 = the landmass around ITS OWN massif centre. NOT "all land
-        # not in c1": island 1's gorge splits it into fragments, and a fill
-        # aimed at "the other land" patched a river bank while the strait
-        # stayed open (measured: the fuse assert passed, the map still
-        # showed two islands).
-        assert not self.liquid(*ISL2) and self.g(*ISL2), "ISL2 centre not land"
-        c2 = landcomp(ISL2)
-        assert not (c1 & c2), "already one landmass — fill rule needs review"
-
-        import heapq
-
-        def waterdist(comp):
-            """EUCLIDEAN-ish water distance (Dijkstra, 10/14 costs, tenths of
-            a cell): Manhattan BFS gave diamond contours and the fill came
-            out as a straight-edged plate — measured, ugly."""
-            INF = 1 << 30
-            dist = [[INF] * NEW for _ in range(NEW)]
-            pq = []
-            STEP = ((1, 0, 10), (-1, 0, 10), (0, 1, 10), (0, -1, 10),
-                    (1, 1, 14), (1, -1, 14), (-1, 1, 14), (-1, -1, 14))
-            for (x, y) in comp:
-                for dx, dy, c in STEP:
-                    nx, ny = x + dx, y + dy
-                    if 0 <= nx < NEW and 0 <= ny < NEW \
-                            and self.liquid(nx, ny) and dist[ny][nx] > c:
-                        dist[ny][nx] = c
-                        heapq.heappush(pq, (c, nx, ny))
-            while pq:
-                d, x, y = heapq.heappop(pq)
-                if d > dist[y][x] or d > 1600:
-                    continue
-                for dx, dy, c in STEP:
-                    nx, ny = x + dx, y + dy
-                    if 0 <= nx < NEW and 0 <= ny < NEW \
-                            and self.liquid(nx, ny) and dist[ny][nx] > d + c:
-                        dist[ny][nx] = d + c
-                        heapq.heappush(pq, (d + c, nx, ny))
-            return dist
-
-        dA, dB = waterdist(c2), waterdist(c1)
-        BIG = 1 << 29
-        closest = min(dA[y][x] + dB[y][x] for y in range(NEW)
-                      for x in range(NEW)
-                      if self.liquid(x, y) and dA[y][x] < BIG and dB[y][x] < BIG)
-        filled, extra = [], 0
-        while True:
-            for y in range(NEW):
-                for x in range(NEW):
-                    if not self.liquid(x, y) or dA[y][x] >= BIG \
-                            or dB[y][x] >= BIG:
-                        continue
-                    T = closest + 260 + extra \
-                        + 240 * (_fbm(x * 0.045, y * 0.045, 93) - 0.5)
-                    if dA[y][x] + dB[y][x] <= T:
-                        self.grd[y][x] = gi["grass"]
-                        self.lvl[y][x] = 0
-                        filled.append((x, y))
-            if landcomp(tuple(self.doc["spawn"])) & c2:
-                break                  # ONE island, proven on the real grid
-            extra += 80
-            assert extra <= 400, "fill cannot fuse the islands"
-        assert len(filled) > 800, f"the channel fill collapsed: {len(filled)}"
-        xs = [c[0] for c in filled]
-        ys = [c[1] for c in filled]
-        for y in range(min(ys) - 6, max(ys) + 7):
-            for x in range(min(xs) - 6, max(xs) + 7):
-                if 0 <= x < NEW and 0 <= y < NEW and self.g(x, y) == "grass" \
-                        and self.lvl[y][x] == 0 \
-                        and any(self.liquid(x + dx, y + dy)
-                                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                    self.grd[y][x] = gi["light_beach"]
-        tgt = (OFF[0] + 24, OFF[1] + 29)
-        A = min(((x, y) for y in range(300) for x in range(300)
-                 if not self.liquid(x, y) and self.g(x, y)),
-                key=lambda c: (c[0] - tgt[0]) ** 2 + (c[1] - tgt[1]) ** 2)
-        B = min(((x, y) for y in range(OFF[1], NEW) for x in range(OFF[0], NEW)
-                 if not self.liquid(x, y) and self.g(x, y)),
-                key=lambda c: (c[0] - A[0]) ** 2 + (c[1] - A[1]) ** 2)
-        self.bridgeA = A
-        self.bridgeB = B
-        self.placed += [("channel fill cells", len(filled))]
-
     def town_ground(self):
         """THE TOWN takes the camera-facing south shelf: ground levelled to
         bench 2, a grey-paving plaza, two brown-paving streets crossing at
@@ -527,7 +453,7 @@ class Grow:
         maximizes flat grass and flees water."""
         gi = self.gi
         TW, TH = 36, 26
-        tx, ty = TOWN_AT
+        tx, ty = getattr(self, "town_target", TOWN_AT)
         best = None
         for cy in range(ty - 18, ty + 19, 2):
             for cx in range(tx - 18, tx + 19, 2):
@@ -633,10 +559,12 @@ class Grow:
         sunk into the rock under a kind-'cave' lid deck that keeps the
         mountain top, the mouth opening the south rim at outside grade."""
         gi, grd, lvl = self.gi, self.grd, self.lvl
-        MASS = 16
-        mass = {(x, y) for y in range(256) for x in range(256)
+        MASS = 14   # the ridge tops at 24; 14+ is its rock body
+        mass = {(x, y) for (x, y) in self.ext_cells
                 if self.g(x, y) in ("grey_stone", "snow") and lvl[y][x] >= MASS}
-        assert len(mass) > 300, f"massif too small for a cave: {len(mass)}"
+        if len(mass) <= 140:
+            self.placed += [("cave", "skipped: shoulder too thin")]
+            return
         core = {c for c in mass
                 if all((c[0] + dx, c[1] + dy) in mass
                        for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
@@ -653,7 +581,9 @@ class Grow:
                     if dx * dx + dy * dy <= rr * rr and c in core \
                             and self.g(*c) != "water":
                         floor.add(c)
-        assert len(floor) >= 30, f"cave rooms collapsed: {len(floor)} cells"
+        if len(floor) < 30:
+            self.placed += [("cave", f"skipped: rooms {len(floor)}")]
+            return
         def corridor(a, b):
             x, y = a
             while x != b[0]:
@@ -679,81 +609,19 @@ class Grow:
             lvl[c[1]][c[0]] = FL
             floor.discard(c)
         lid = max(lidlv.values())
-        self.doc["decks"].append({
+        self.new_cave = {
             "kind": "cave", "level": lid, "thickness": 2, "ground": "grey_stone",
-            "cells": [{"x": c[0], "y": c[1]} for c in sorted(floor)]})
+            "cells": [{"x": c[0], "y": c[1]} for c in sorted(floor)]}
+        self.doc["decks"].append(self.new_cave)
         self.placed += [("island2 cave floor", len(floor) + 2)]
-
-    def i2_tunnel(self):
-        """AN UNDERSEA TUNNEL joining the two dungeons (maintainer
-        2026-08-29): island 1's cave floor to island 2's — a black_rock floor
-        line ramping one level per cell down under the channel and back up,
-        covered by segmented cave lids riding 4 levels over the floor (one
-        deck per floor-level run; a deck holds a single level). On the open
-        sea it reads as a dark stone spine; inside, it is dungeon."""
-        gi, grd, lvl = self.gi, self.grd, self.lvl
-        caves = [dk for dk in self.doc["decks"] if dk["kind"] == "cave"]
-        c1 = next((dk for dk in caves if dk["cells"][0]["x"] >= 256), None)
-        c2 = next((dk for dk in caves if dk["cells"][0]["x"] < 256), None)
-        assert c1 and c2, "tunnel needs both islands' caves"
-        a = min(((c["x"], c["y"]) for c in c1["cells"]), key=lambda c: c[0] + c[1])
-        b = max(((c["x"], c["y"]) for c in c2["cells"]), key=lambda c: c[0] + c[1])
-        la, lb = lvl[a[1]][a[0]], lvl[b[1]][b[0]]
-        # route via the ISTHMUS midpoint: the crossing happens at grade 0 on
-        # the land bridge (a straight sea-crossing rendered as a huge black
-        # spine wall — measured, deleted)
-        W = ((self.bridgeA[0] + self.bridgeB[0]) // 2,
-             (self.bridgeA[1] + self.bridgeB[1]) // 2)
-        path = []
-        for (p, q) in ((a, W), (W, b)):
-            x, y = p
-            while (x, y) != q:
-                if abs(q[0] - x) >= abs(q[1] - y):
-                    x += 1 if q[0] > x else -1
-                else:
-                    y += 1 if q[1] > y else -1
-                path.append((x, y))
-        assert 40 <= len(path) <= 420, f"tunnel length {len(path)} out of taste"
-        cave_cells = {(c["x"], c["y"]) for dk in caves for c in dk["cells"]}
-        cur, runs, opencells = la, [], 0
-        for i, (px, py) in enumerate(path):
-            rem = len(path) - 1 - i
-            if rem <= abs(lb - cur):
-                cur += 1 if lb > cur else (-1 if lb < cur else 0)
-            elif cur > 0:
-                cur -= 1
-            if (px, py) in cave_cells:
-                continue              # never rewrite the dungeons themselves
-            pre = lvl[py][px]
-            cur = min(cur, pre + 2)   # the floor HUGS the terrain: never more
-                                      # than 2 benches proud of the ground
-            grd[py][px] = gi["black_rock"]
-            lvl[py][px] = cur
-            # where the mountain stands OVER the floor, the lid keeps the
-            # mountain top (island 1's cave model); over low ground the way
-            # runs open — an old black road surfacing between the dungeons
-            if pre > cur + 3:
-                if runs and runs[-1][0] == pre:
-                    runs[-1][1].append((px, py))
-                else:
-                    runs.append([pre, [(px, py)]])
-            else:
-                opencells += 1
-        for lv, cells in runs:
-            self.doc["decks"].append({
-                "kind": "cave", "level": lv, "thickness": 2,
-                "ground": "grey_stone",
-                "cells": [{"x": c[0], "y": c[1]} for c in cells]})
-        self.placed += [("tunnel cells", len(path)),
-                        ("tunnel lids", len(runs)), ("tunnel open", opencells)]
 
     def i2_systems(self):
         """The first island's own rule functions, re-run scoped to island 2's
         quarter of the canvas (it fits entirely in x,y < 256; the original
         starts past 264, so the crop can never touch it): fen riverbanks,
         x-over-y terrain wall bodies, species-clustered forests."""
-        S = 304          # covers the fused land + isthmus; the original's NW
-                         # corner cells it grazes re-derive the SAME walls
+        S = 336          # covers the whole extension + join; the original's
+                         # NW corner cells it grazes re-derive the SAME walls
         smat = [[(self.G[self.grd[y][x]] if self.grd[y][x] >= 0 else "")
                  for x in range(S)] for y in range(S)]
         slvl = [row[0:S] for row in self.lvl[0:S]]
@@ -777,7 +645,7 @@ class Grow:
                 break
         fake = [{"piece": "trees/tree_001", "x": float(a), "y": float(b)}
                 for a, b in seeds]
-        ham = (ISL2[0], ISL2[1] + 44)
+        ham = getattr(self, "town_target", TOWN_AT)
         trees = world3._forests(S, S, smat, slvl, fake, ham)
         self.doc["scenery"] += trees
         for y in range(S):          # write the fen's mutations back
@@ -865,11 +733,8 @@ class Grow:
                             "area": rect(x - 7, y - 5, 14, 10),
                             "elev": el, "num": 2})
             ni += len(picked)
-        caves2 = sorted((dk for dk in self.doc["decks"]
-                         if dk["kind"] == "cave" and len(dk["cells"]) >= 12
-                         and dk["cells"][0]["x"] < 256),
-                        key=lambda dk: -len(dk["cells"]))
-        for j, dk in enumerate(caves2[:2]):
+        caves2 = [dk for dk in [getattr(self, "new_cave", None)] if dk]
+        for j, dk in enumerate(caves2):
             xs = [c["x"] for c in dk["cells"]]
             ys = [c["y"] for c in dk["cells"]]
             fl = min(self.lvl[c["y"]][c["x"]] for c in dk["cells"])
@@ -1307,7 +1172,7 @@ class Grow:
     def run(self):
         import time
         t0 = time.time()
-        for step in (self.grow_canvas, self.island2, self.isthmus, self.deepen,
+        for step in (self.grow_canvas, self.island2, self.deepen,
                      # no cross-country tunnel: over the sea it rendered a
                      # 300-cell black spine, along the isthmus a black scar
                      # (both measured). A buried tunnel needs an underground

@@ -312,48 +312,45 @@ def _rng32(seed):
 
 
 TREE_TYPES = {
-    # Curated tree types — every list reads as VARIATIONS OF ONE TREE
-    # (that's what makes a wood look intentional instead of thrown together):
-    "birch": ["tree_001", "tree_008", "tree_016", "tree_058"],
-    "pine": ["tree_006", "tree_024", "tree_066", "tree_069", "tree_075"],
-    "oak": ["tree_039", "tree_047"],
-    "hawthorn": ["tree_005", "tree_011", "tree_053"],      # white blossom
-    "gold_beech": ["tree_013", "tree_040", "tree_055", "tree_082"],
+    # Sets grouped by LOOK from a rendered contact sheet — NOT by species
+    # name (the name lists mixed white-blossom pieces into "birch" and
+    # gnarled broadleafs into "pine"; the maintainer counted 4-5 looks in
+    # one wood and called it "how NOT to build a forest"). Every list below
+    # reads as variations of ONE tree:
+    "hawthorn": ["tree_005", "tree_011", "tree_053"],   # white blossom trio
+    "conifer": ["tree_069", "tree_006"],                # true pine pair
+    "green_oak": ["tree_047", "tree_024", "tree_075"],  # big green gnarled
+    "birch": ["tree_001", "tree_008"],                  # white-trunk pair
 }
 
-# a WOOD speaks one primary + one secondary type — different woods across
-# the map may differ (maintainer 2026-08-30: "max 2-3 different trees — I'm
-# talking about the forest. You can add another tree on the other side of
-# the map"). Highland woods always speak pine.
-WOOD_PALETTES = [
-    ("birch", "oak"),
-    ("pine", "birch"),
-    ("hawthorn", "birch"),
-    ("gold_beech", "oak"),
-]
+# a WOOD speaks exactly ONE set (maintainer: "maybe two, absolutely max 3
+# different trees" per forest — one set of 2-3 look-alike pieces IS that).
+# Different woods across the map may differ. Highland woods are conifer.
+WOOD_PALETTES = ["hawthorn", "conifer", "green_oak", "birch"]
+FOREST_BUSHES = ["bush_001", "bush_011", "bush_017"]   # matching blueberry
 
 
 def _tree_pick(mat, lvl, W, H, x, y, u):
-    """Placement-time pick — a placeholder species; retype_woods() makes the
+    """Placement-time pick — a placeholder look; retype_woods() makes the
     final per-wood call over every tree at the end of the build."""
-    if u < 0.05:
-        return "oak"
     highish = lvl[y][x] >= 6 or any(
         0 <= x + dx < W and 0 <= y + dy < H
         and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
         for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
-    return "pine" if highish else "birch"
+    return "conifer" if highish else "birch"
 
 
 def retype_woods(scen, is_high):
     """THE FOREST COHERENCE PASS — the LAST word on tree species. All placed
-    trees cluster into WOODS (link distance 8); each wood is retyped to ONE
-    primary + ONE secondary type (~15%) from WOOD_PALETTES by centroid hash
-    (pine forced on highland woods). It runs over EVERY tree from EVERY
-    placer after all placement, so no code path can leak a stray species
-    into a wood — two earlier per-placer attempts both leaked (measured:
-    "it looks like shit")."""
-    trees = [p for p in scen if p["piece"].startswith("trees/")]
+    trees AND forest ancients cluster into WOODS (link distance 8); every
+    wood of 2+ retypes to exactly ONE look-alike set from WOOD_PALETTES by
+    centroid hash (conifer forced on highland woods). Ancients inside a
+    wood become the wood's own trees — giant brown canopies inside a pine
+    wood read as a fifth tree type (maintainer screenshot, 2026-08-30);
+    a SOLITARY ancient stays a landmark. Runs after all placement, so no
+    code path can leak a stray look into a wood."""
+    trees = [p for p in scen
+             if p["piece"].startswith(("trees/", "ancient_trees/"))]
     if not trees:
         return 0
     buckets = {}
@@ -379,23 +376,25 @@ def retype_woods(scen, is_high):
     for i in range(len(trees)):
         woods.setdefault(find(i), []).append(i)
     for members in woods.values():
+        if len(members) < 2:
+            continue                   # a lone specimen may be anything
         cx = sum(trees[i]["x"] for i in members) / len(members)
         cy = sum(trees[i]["y"] for i in members) / len(members)
         h = (int(cx) * 2654435761 ^ int(cy) * 40503 ^ 0xd00d) & 0xffffffff
-        prim, sec = ("pine", "birch") if is_high(int(cx), int(cy)) else \
+        ty = "conifer" if is_high(int(cx), int(cy)) else \
             WOOD_PALETTES[h % len(WOOD_PALETTES)]
+        pool = TREE_TYPES[ty]
         for k, i in enumerate(sorted(members)):
             th = (h ^ (k * 40503) ^ 0x7ee5) & 0xffffffff
-            ty = sec if th % 100 < 15 else prim
-            pool = TREE_TYPES[ty]
             trees[i]["piece"] = "trees/" + pool[th % len(pool)]
     return len(woods)
 
 
-for _ty, _pieces in TREE_TYPES.items():
+for _ty, _pieces in list(TREE_TYPES.items()) + [("bush", FOREST_BUSHES)]:
+    _grp = "bushes" if _ty == "bush" else "trees"
     for _p in _pieces:
-        assert os.path.isdir(os.path.join(REPO, "scenery", "trees", _p)), \
-            f"palette piece missing: trees/{_p} ({_ty})"
+        assert os.path.isdir(os.path.join(REPO, "scenery", _grp, _p)), \
+            f"palette piece missing: {_grp}/{_p} ({_ty})"
 
 
 def _forests(W, H, mat, lvl, scen, spawn):
@@ -416,11 +415,6 @@ def _forests(W, H, mat, lvl, scen, spawn):
                 lights per camera window (games2 check-light-budget) and the
                 forest must cost ZERO of them.
     """
-    import os as _os
-    ancients = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "ancient_trees"))
-                      if _os.path.isdir(_os.path.join(REPO, "scenery", "ancient_trees", d)))
-    bushes = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "bushes"))
-                    if _os.path.isdir(_os.path.join(REPO, "scenery", "bushes", d)))
     sx, sy = spawn
 
     def grass_flat(x, y):
@@ -482,10 +476,8 @@ def _forests(W, H, mat, lvl, scen, spawn):
                 continue
             taken.add((jx, jy))
             u = r()
-            if edge and u < 0.30:
-                grp, pool = "bushes", bushes
-            elif u < 0.03:
-                grp, pool = "ancient_trees", ancients
+            if edge and u < 0.12:
+                grp, pool = "bushes", FOREST_BUSHES
             else:
                 grp = "trees"
                 pool = TREE_TYPES[_tree_pick(mat, lvl, W, H, jx, jy, r())]
