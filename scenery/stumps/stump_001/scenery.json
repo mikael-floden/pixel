@@ -50,7 +50,30 @@
       "sprite": "stumps/stump_001/sprite.webp",
       "pixellab_object_id": "70b6c22d-3046-4d04-82b4-5e3935efedc4",
       "glow_score": 0.1315,
-      "generated_at": "2026-08-13T00:55:11+00:00"
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "cc7f4466-f4a9-4cea-b630-b3e48c6a5d32",
+          "description": "This is the same picture in every frame. ONLY the small growth on the cut face moves, stirring a pixel or two. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/animations/motion/00.webp",
+            "stumps/stump_001/animations/motion/01.webp",
+            "stumps/stump_001/animations/motion/02.webp",
+            "stumps/stump_001/animations/motion/03.webp",
+            "stumps/stump_001/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:08:49+00:00",
+          "brief": "N35"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "stumps/stump_001/not_lit_4/sprite.webp",

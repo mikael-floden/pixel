@@ -41,6 +41,29 @@
         "south-east": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-east.webp",
         "south-west": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-west.webp",
         "south": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "3f24c8cd-21ce-4da8-8010-593a36b542c8",
+          "description": "This is the same picture in every frame. ONLY the grass around the bell moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "giant_fallen_bells/giant_fallen_bell_002/animations/motion/00.webp",
+            "giant_fallen_bells/giant_fallen_bell_002/animations/motion/01.webp",
+            "giant_fallen_bells/giant_fallen_bell_002/animations/motion/02.webp",
+            "giant_fallen_bells/giant_fallen_bell_002/animations/motion/03.webp",
+            "giant_fallen_bells/giant_fallen_bell_002/animations/motion/04.webp"
+          ],
+          "strip": "giant_fallen_bells/giant_fallen_bell_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:08:40+00:00",
+          "brief": "N36"
+        }
       }
     },
     "NOT_LIT_4": {

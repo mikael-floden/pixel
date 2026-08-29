@@ -2576,6 +2576,29 @@
           "sprite": "ant_hills/ant_hill_001/sprite.webp",
           "pixellab_object_id": "3cf24983-766f-4b5b-bdf7-ad8505a26f89",
           "generated_at": "2026-08-13T02:26:03+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "78236f05-7cb7-44b4-8a7a-821953084be7",
+              "description": "This is the same picture in every frame. ONLY a few tiny dark specks move, crawling slowly over the mound. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "ant_hills/ant_hill_001/animations/motion/00.webp",
+                "ant_hills/ant_hill_001/animations/motion/01.webp",
+                "ant_hills/ant_hill_001/animations/motion/02.webp",
+                "ant_hills/ant_hill_001/animations/motion/03.webp",
+                "ant_hills/ant_hill_001/animations/motion/04.webp"
+              ],
+              "strip": "ant_hills/ant_hill_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:15+00:00",
+              "brief": "N12"
+            }
+          },
           "art_hash": "28ce12b22d6887f3"
         },
         "NOT_LIT_3": {
@@ -3639,6 +3662,29 @@
             "south-east": "beached_rowboats/beached_rowboat_001/rotations/south-east.webp",
             "south-west": "beached_rowboats/beached_rowboat_001/rotations/south-west.webp",
             "south": "beached_rowboats/beached_rowboat_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "41cb192f-0016-4f59-8f8f-b63c68af4983",
+              "description": "This is the same picture in every frame. ONLY the boat rocks very slightly where it rests, tilting a pixel and back. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_001/animations/motion/00.webp",
+                "beached_rowboats/beached_rowboat_001/animations/motion/01.webp",
+                "beached_rowboats/beached_rowboat_001/animations/motion/02.webp",
+                "beached_rowboats/beached_rowboat_001/animations/motion/03.webp",
+                "beached_rowboats/beached_rowboat_001/animations/motion/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:25+00:00",
+              "brief": "N22"
+            }
           },
           "art_hash": "6c2bbbacbb0a0a80"
         },
@@ -11354,6 +11400,29 @@
             "south-west": "carts/cart_004/rotations/south-west.webp",
             "south": "carts/cart_004/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "42a6e57b-cdec-47af-af25-13d71632116b",
+              "description": "This is the same picture in every frame. ONLY the loose cloth over the load moves, lifting a pixel or two and settling. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "carts/cart_004/animations/motion/00.webp",
+                "carts/cart_004/animations/motion/01.webp",
+                "carts/cart_004/animations/motion/02.webp",
+                "carts/cart_004/animations/motion/03.webp",
+                "carts/cart_004/animations/motion/04.webp"
+              ],
+              "strip": "carts/cart_004/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:08:47+00:00",
+              "brief": "N40"
+            }
+          },
           "art_hash": "0a8b797e6e7d7173"
         },
         "NOT_LIT_4": {
@@ -13804,6 +13873,29 @@
           "sprite": "cliff_features/cliff_feature_002/sprite.webp",
           "pixellab_object_id": "a7c6e716-a4af-465e-b747-e480f706f54f",
           "generated_at": "2026-08-13T19:54:37+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "832265f8-75e8-43fe-b8a0-1d04d60ca01d",
+              "description": "This is the same picture in every frame. ONLY a thin trickle of grit falls from the underside of the ledge and fades. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_features/cliff_feature_002/animations/motion/00.webp",
+                "cliff_features/cliff_feature_002/animations/motion/01.webp",
+                "cliff_features/cliff_feature_002/animations/motion/02.webp",
+                "cliff_features/cliff_feature_002/animations/motion/03.webp",
+                "cliff_features/cliff_feature_002/animations/motion/04.webp"
+              ],
+              "strip": "cliff_features/cliff_feature_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:40+00:00",
+              "brief": "N37"
+            }
+          },
           "art_hash": "a128f31bce5b1dd2"
         },
         "LIT_3": {
@@ -18976,6 +19068,27 @@
               ],
               "strip": "crystal_trees/crystal_tree_002/animations/wind__strip.webp",
               "generated_at": "2026-08-28T11:45:58+00:00"
+            },
+            "motion": {
+              "group_id": "a5e8b9b3-2cce-4ce4-b7cb-425eace60e18",
+              "description": "This is the same picture in every frame. ONLY small highlights move across the crystal shards, like light catching them. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystal_trees/crystal_tree_002/animations/motion/00.webp",
+                "crystal_trees/crystal_tree_002/animations/motion/01.webp",
+                "crystal_trees/crystal_tree_002/animations/motion/02.webp",
+                "crystal_trees/crystal_tree_002/animations/motion/03.webp",
+                "crystal_trees/crystal_tree_002/animations/motion/04.webp"
+              ],
+              "strip": "crystal_trees/crystal_tree_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:08:24+00:00",
+              "brief": "N15"
             }
           },
           "art_hash": "de2a06175766b0f0"
@@ -19966,6 +20079,29 @@
           "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
           "pixellab_object_id": "3f265ead-fd37-467e-a00f-934e6cced4f5",
           "generated_at": "2026-08-13T01:36:03+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "b77fda23-17c6-414b-94d8-13c24780989a",
+              "description": "This is the same picture in every frame. ONLY a faint drift of spores rises out of the cups and thins away. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cup_fungi/cup_fungus_001/animations/motion/00.webp",
+                "cup_fungi/cup_fungus_001/animations/motion/01.webp",
+                "cup_fungi/cup_fungus_001/animations/motion/02.webp",
+                "cup_fungi/cup_fungus_001/animations/motion/03.webp",
+                "cup_fungi/cup_fungus_001/animations/motion/04.webp"
+              ],
+              "strip": "cup_fungi/cup_fungus_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:33+00:00",
+              "brief": "N5"
+            }
+          },
           "art_hash": "8a9b3887aba6365b"
         },
         "NOT_LIT_2": {
@@ -20779,6 +20915,29 @@
             "south-east": "dock_pilings/dock_piling_001/rotations/south-east.webp",
             "south-west": "dock_pilings/dock_piling_001/rotations/south-west.webp",
             "south": "dock_pilings/dock_piling_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "b75bfa3f-7b47-4a09-a033-6e71f7c699e8",
+              "description": "This is the same picture in every frame. ONLY the water around the base moves, lapping gently against the posts. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "dock_pilings/dock_piling_001/animations/motion/00.webp",
+                "dock_pilings/dock_piling_001/animations/motion/01.webp",
+                "dock_pilings/dock_piling_001/animations/motion/02.webp",
+                "dock_pilings/dock_piling_001/animations/motion/03.webp",
+                "dock_pilings/dock_piling_001/animations/motion/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:24+00:00",
+              "brief": "N7"
+            }
           },
           "art_hash": "aaa5895be6b11de5"
         },
@@ -26410,6 +26569,29 @@
           "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
           "generated_at": "2026-08-14T01:11:58+00:00",
           "relit_from": "LIT_1",
+          "animations": {
+            "motion": {
+              "group_id": "4abe558d-6fe9-4663-a00f-4b78c9f7ca9d",
+              "description": "This is the same picture in every frame. ONLY a small highlight moves slowly across the ice, like light catching it. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "frozen_springs/frozen_spring_002/animations/motion/00.webp",
+                "frozen_springs/frozen_spring_002/animations/motion/01.webp",
+                "frozen_springs/frozen_spring_002/animations/motion/02.webp",
+                "frozen_springs/frozen_spring_002/animations/motion/03.webp",
+                "frozen_springs/frozen_spring_002/animations/motion/04.webp"
+              ],
+              "strip": "frozen_springs/frozen_spring_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:32+00:00",
+              "brief": "N9"
+            }
+          },
           "art_hash": "4b0dbb596fd3c9da"
         },
         "NOT_LIT_4": {
@@ -26565,6 +26747,29 @@
             "south-west": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-west.webp",
             "south": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "3f24c8cd-21ce-4da8-8010-593a36b542c8",
+              "description": "This is the same picture in every frame. ONLY the grass around the bell moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/00.webp",
+                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/01.webp",
+                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/02.webp",
+                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/03.webp",
+                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/04.webp"
+              ],
+              "strip": "giant_fallen_bells/giant_fallen_bell_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:08:40+00:00",
+              "brief": "N36"
+            }
+          },
           "art_hash": "f583ed6250b03567"
         },
         "NOT_LIT_4": {
@@ -26647,27 +26852,7 @@
           "glow_concept": "glowing sap veins climbing the thick stalk",
           "difference_from_source": 0.8381,
           "glow_score": 0.0603,
-          "animations": {
-            "motion": {
-              "group_id": "a156597c-60af-4887-a183-659f0a1ee22e",
-              "description": "This is the same picture in every frame. ONLY the brightness of the glow already on the cap changes, dimming and lifting very slightly like slow breathing. The colours stay exactly as they are. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/00.webp",
-                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/01.webp",
-                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/02.webp",
-                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/03.webp",
-                "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion/04.webp"
-              ],
-              "strip": "giant_mushrooms/giant_mushroom_001/lit_1/animations/motion__strip.webp",
-              "directions": null,
-              "generated_at": "2026-08-29T10:34:10+00:00",
-              "brief": "L6"
-            }
-          },
+          "animations": {},
           "art_hash": "e901201666d7e46a"
         },
         "NOT_LIT_1": {
@@ -28835,25 +29020,6 @@
               ],
               "strip": "hanging_willows/hanging_willow_001/animations/wind__strip.webp",
               "generated_at": "2026-08-28T11:48:20+00:00"
-            },
-            "motion": {
-              "group_id": "e3df3bea-29f6-41f5-9464-0e8ba078028b",
-              "description": "This is the same picture in every frame. ONLY the very tips of the hanging strands sway, a few pixels sideways and very slowly. The rest of the tree is completely still. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "hanging_willows/hanging_willow_001/animations/motion/00.webp",
-                "hanging_willows/hanging_willow_001/animations/motion/01.webp",
-                "hanging_willows/hanging_willow_001/animations/motion/02.webp",
-                "hanging_willows/hanging_willow_001/animations/motion/03.webp",
-                "hanging_willows/hanging_willow_001/animations/motion/04.webp"
-              ],
-              "strip": "hanging_willows/hanging_willow_001/animations/motion__strip.webp",
-              "directions": null,
-              "generated_at": "2026-08-29T10:34:27+00:00",
-              "brief": "G13"
             }
           },
           "art_hash": "ff61dd2c22930668"
@@ -29649,6 +29815,29 @@
             "south-east": "haystacks/haystack_008/rotations/south-east.webp",
             "south-west": "haystacks/haystack_008/rotations/south-west.webp",
             "south": "haystacks/haystack_008/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "f73cd814-ef6f-4ff2-becc-1137dff95157",
+              "description": "This is the same picture in every frame. ONLY a few loose strands of straw move, lifting and settling in a faint breeze. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "haystacks/haystack_008/animations/motion/00.webp",
+                "haystacks/haystack_008/animations/motion/01.webp",
+                "haystacks/haystack_008/animations/motion/02.webp",
+                "haystacks/haystack_008/animations/motion/03.webp",
+                "haystacks/haystack_008/animations/motion/04.webp"
+              ],
+              "strip": "haystacks/haystack_008/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:06:52+00:00",
+              "brief": "N11"
+            }
           },
           "art_hash": "ecfa990428e5a7aa"
         },
@@ -37013,6 +37202,29 @@
           "sprite": "moss_clumps/moss_clump_008/sprite.webp",
           "pixellab_object_id": "bce1ab6f-7d23-49f5-810d-d50fcb82cd70",
           "generated_at": "2026-08-13T19:54:36+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "db4a54c5-9056-4fa6-9c35-0273772a9932",
+              "description": "This is the same picture in every frame. ONLY the moss moves, shifting a pixel or two as if a breath passed over it. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moss_clumps/moss_clump_008/animations/motion/00.webp",
+                "moss_clumps/moss_clump_008/animations/motion/01.webp",
+                "moss_clumps/moss_clump_008/animations/motion/02.webp",
+                "moss_clumps/moss_clump_008/animations/motion/03.webp",
+                "moss_clumps/moss_clump_008/animations/motion/04.webp"
+              ],
+              "strip": "moss_clumps/moss_clump_008/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:24+00:00",
+              "brief": "N17"
+            }
+          },
           "art_hash": "fe60ff7605af0755"
         },
         "LIT_2": {
@@ -37270,6 +37482,29 @@
           "sprite": "mushrooms/mushroom_001/sprite.webp",
           "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
           "generated_at": "2026-08-13T00:55:11+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "94b71838-48bf-42ac-8963-b8deb6e43349",
+              "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "mushrooms/mushroom_001/animations/motion/00.webp",
+                "mushrooms/mushroom_001/animations/motion/01.webp",
+                "mushrooms/mushroom_001/animations/motion/02.webp",
+                "mushrooms/mushroom_001/animations/motion/03.webp",
+                "mushrooms/mushroom_001/animations/motion/04.webp"
+              ],
+              "strip": "mushrooms/mushroom_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:06:59+00:00",
+              "brief": "N6"
+            }
+          },
           "art_hash": "1998adf74f12b47a"
         },
         "NOT_LIT_2": {
@@ -40431,6 +40666,29 @@
           "sprite": "puffballs/puffball_001/sprite.webp",
           "pixellab_object_id": "40d750ec-561c-4772-9913-bffa8d12b9ef",
           "generated_at": "2026-08-13T01:28:54+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "4c85b327-62f2-4115-b6c2-d9c2fbdb3360",
+              "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "puffballs/puffball_001/animations/motion/00.webp",
+                "puffballs/puffball_001/animations/motion/01.webp",
+                "puffballs/puffball_001/animations/motion/02.webp",
+                "puffballs/puffball_001/animations/motion/03.webp",
+                "puffballs/puffball_001/animations/motion/04.webp"
+              ],
+              "strip": "puffballs/puffball_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:16+00:00",
+              "brief": "N4"
+            }
+          },
           "art_hash": "d181eea4e9fd977a"
         },
         "NOT_LIT_2": {
@@ -41655,6 +41913,29 @@
             "south-east": "ruined_arches/ruined_arch_001/rotations/south-east.webp",
             "south-west": "ruined_arches/ruined_arch_001/rotations/south-west.webp",
             "south": "ruined_arches/ruined_arch_001/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "ca261ba0-fb7d-4540-b59a-5c3020627623",
+              "description": "This is the same picture in every frame. ONLY a thin trickle of dust falls from the broken upper edge and fades. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/animations/motion/00.webp",
+                "ruined_arches/ruined_arch_001/animations/motion/01.webp",
+                "ruined_arches/ruined_arch_001/animations/motion/02.webp",
+                "ruined_arches/ruined_arch_001/animations/motion/03.webp",
+                "ruined_arches/ruined_arch_001/animations/motion/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:07:24+00:00",
+              "brief": "N27"
+            }
           },
           "art_hash": "e22edfb6a853df03"
         },
@@ -49075,6 +49356,29 @@
           "pixellab_object_id": "70b6c22d-3046-4d04-82b4-5e3935efedc4",
           "glow_score": 0.1315,
           "generated_at": "2026-08-13T00:55:11+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "cc7f4466-f4a9-4cea-b630-b3e48c6a5d32",
+              "description": "This is the same picture in every frame. ONLY the small growth on the cut face moves, stirring a pixel or two. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stumps/stump_001/animations/motion/00.webp",
+                "stumps/stump_001/animations/motion/01.webp",
+                "stumps/stump_001/animations/motion/02.webp",
+                "stumps/stump_001/animations/motion/03.webp",
+                "stumps/stump_001/animations/motion/04.webp"
+              ],
+              "strip": "stumps/stump_001/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:08:49+00:00",
+              "brief": "N35"
+            }
+          },
           "art_hash": "37f906ec1aabf5f3"
         },
         "NOT_LIT_4": {
@@ -90778,6 +91082,27 @@
           "sprite": "whale_bones/whale_bone_001/sprite.webp",
           "pixellab_object_id": "260c65b5-441e-45d9-abdd-07b5d80aeb66",
           "generated_at": "2026-08-14T04:37:11+00:00",
+          "animations": {
+            "motion": {
+              "group_id": "09a8fe0b-b58e-4aa1-a406-a3ef12905401",
+              "description": "This is the same picture in every frame. ONLY the grass between and around the bones moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "whale_bones/whale_bone_001/animations/motion/00.webp",
+                "whale_bones/whale_bone_001/animations/motion/01.webp",
+                "whale_bones/whale_bone_001/animations/motion/02.webp",
+                "whale_bones/whale_bone_001/animations/motion/03.webp",
+                "whale_bones/whale_bone_001/animations/motion/04.webp"
+              ],
+              "strip": "whale_bones/whale_bone_001/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T11:08:39+00:00",
+              "brief": "N31"
+            }
+          },
           "art_hash": "9ea36c9aaa21b197"
         },
         "NOT_LIT_2": {
@@ -94988,29 +95313,7 @@
             "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
             "south": "witch_rings/witch_ring_002/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "e8eb04dd-7cb5-4f85-8266-1a00264b4bd8",
-              "description": "This is the same picture in every frame. ONLY the small flames that are already there flicker, very gently. No new flame appears anywhere. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "witch_rings/witch_ring_002/animations/motion/00.webp",
-                "witch_rings/witch_ring_002/animations/motion/01.webp",
-                "witch_rings/witch_ring_002/animations/motion/02.webp",
-                "witch_rings/witch_ring_002/animations/motion/03.webp",
-                "witch_rings/witch_ring_002/animations/motion/04.webp"
-              ],
-              "strip": "witch_rings/witch_ring_002/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T10:34:02+00:00",
-              "brief": "L4"
-            }
-          },
+          "animations": {},
           "art_hash": "1b39ffedb96e378b"
         },
         "NOT_LIT_4": {

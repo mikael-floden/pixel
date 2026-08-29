@@ -34,7 +34,30 @@
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_001/sprite.webp",
       "pixellab_object_id": "81cc2d5b-1a09-4dff-b501-30b2d0f77b2e",
-      "generated_at": "2026-08-13T00:55:11+00:00"
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "94b71838-48bf-42ac-8963-b8deb6e43349",
+          "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/animations/motion/00.webp",
+            "mushrooms/mushroom_001/animations/motion/01.webp",
+            "mushrooms/mushroom_001/animations/motion/02.webp",
+            "mushrooms/mushroom_001/animations/motion/03.webp",
+            "mushrooms/mushroom_001/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:06:59+00:00",
+          "brief": "N6"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "mushrooms/mushroom_001/not_lit_2/sprite.webp",

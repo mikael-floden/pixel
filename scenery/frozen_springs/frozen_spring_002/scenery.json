@@ -36,7 +36,30 @@
       "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
       "pixellab_object_id": "a004e9bd-083b-49c4-b2a2-15ba6d13ee15",
       "generated_at": "2026-08-14T01:11:58+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "4abe558d-6fe9-4663-a00f-4b78c9f7ca9d",
+          "description": "This is the same picture in every frame. ONLY a small highlight moves slowly across the ice, like light catching it. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:07:32+00:00",
+          "brief": "N9"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "frozen_springs/frozen_spring_002/not_lit_4/sprite.webp",
