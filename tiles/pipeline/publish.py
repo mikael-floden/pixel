@@ -854,6 +854,15 @@ def main():
     # their real texture"). Derived from before+after on disk, so it needs no matrix.
     import textured_pass
     textured_pass.write_textured(os.path.join(REVIEW, "manifest.json"))
+
+    # FOLD THE WIKI'S PER-TILE REVIEW STATE INTO THE TILE (game agent, 2026-08-28):
+    # top_only / own_top / borrow_wall arrive as live/tuning documents keyed by this
+    # manifest's own key, and a consumer should read one source - the tile - rather than
+    # re-deriving the wiki's logic. One-way, exactly like rejections: the wiki keeps
+    # writing his verdicts to live/, this folds them in on every publish. Runs AFTER the
+    # textured pass because the wall matcher measures textured tops.
+    import tile_states
+    tile_states.build()
     # THE CACHE-SAFETY GATE rides every publish. "The next time I see a cache bug I
     # delete the entire project." - a violation must never ride a green build.
     import check_immutable
