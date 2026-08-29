@@ -34,7 +34,29 @@
     "LIT_1": {
       "sprite": "torch_posts/torch_post_006/sprite.webp",
       "pixellab_object_id": "539bd21f-b7ff-48ac-8126-adb82410704e",
-      "generated_at": "2026-08-13T12:04:09+00:00"
+      "generated_at": "2026-08-13T12:04:09+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "f400a8d0-05f3-444c-a245-72347fd0feaf",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_006/animations/flame/00.webp",
+            "torch_posts/torch_post_006/animations/flame/01.webp",
+            "torch_posts/torch_post_006/animations/flame/02.webp",
+            "torch_posts/torch_post_006/animations/flame/03.webp",
+            "torch_posts/torch_post_006/animations/flame/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_006/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:11:03+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "torch_posts/torch_post_006/lit_2/sprite.webp",
@@ -42,7 +64,29 @@
       "generated_at": "2026-08-17T11:20:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9266,
-      "glow_score": 0.1253
+      "glow_score": 0.1253,
+      "animations": {
+        "flame": {
+          "group_id": "3358331d-e670-4250-806e-cc5554b77e5d",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_006/lit_2/animations/flame/00.webp",
+            "torch_posts/torch_post_006/lit_2/animations/flame/01.webp",
+            "torch_posts/torch_post_006/lit_2/animations/flame/02.webp",
+            "torch_posts/torch_post_006/lit_2/animations/flame/03.webp",
+            "torch_posts/torch_post_006/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_006/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:11:22+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "torch_posts/torch_post_006/lit_3/sprite.webp",
@@ -50,7 +94,29 @@
       "generated_at": "2026-08-17T11:19:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8935,
-      "glow_score": 0.2628
+      "glow_score": 0.2628,
+      "animations": {
+        "flame": {
+          "group_id": "86de3b6e-c779-4113-bdda-f28d2e43bdc4",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_006/lit_3/animations/flame/00.webp",
+            "torch_posts/torch_post_006/lit_3/animations/flame/01.webp",
+            "torch_posts/torch_post_006/lit_3/animations/flame/02.webp",
+            "torch_posts/torch_post_006/lit_3/animations/flame/03.webp",
+            "torch_posts/torch_post_006/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_006/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:11:07+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "torch_posts/torch_post_006/lit_4/sprite.webp",
@@ -58,7 +124,29 @@
       "generated_at": "2026-08-17T11:19:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7933,
-      "glow_score": 0.1715
+      "glow_score": 0.1715,
+      "animations": {
+        "flame": {
+          "group_id": "d33ced4d-4796-4c72-a21f-a9aa57775ee5",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_006/lit_4/animations/flame/00.webp",
+            "torch_posts/torch_post_006/lit_4/animations/flame/01.webp",
+            "torch_posts/torch_post_006/lit_4/animations/flame/02.webp",
+            "torch_posts/torch_post_006/lit_4/animations/flame/03.webp",
+            "torch_posts/torch_post_006/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_006/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:11:20+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_006/not_lit_1/sprite.webp",
