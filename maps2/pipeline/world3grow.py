@@ -102,10 +102,15 @@ class Grow:
             "grow always starts from the fresh base build")
         self.G = d["grounds"]
         self.gi = {g: i for i, g in enumerate(self.G)}
+        # THE LEGEND GROWS WITH THE MAP. A ground the base build never used
+        # (the town's paving, a new roof material) is appended rather than
+        # asserted: the base is the island, this pass adds a town.
         for g in ("grass", "light_beach", "dark_mud", "grey_stone", "water",
                   "deep_water", "parquet_floor", "brown_paving_stone",
-                  "grey_paving_stone", "light_soil"):
-            assert g in self.gi, f"base build missing ground {g}"
+                  "grey_paving_stone", "light_soil", "black_rock", "snow"):
+            if g not in self.gi:
+                self.gi[g] = len(self.G)
+                self.G.append(g)
         self.placed = []          # (label, count) build log
         self.fail = 0
 
@@ -504,12 +509,13 @@ class Grow:
         cx, cy = self.plaza
         x0, y0, TW, TH = self.town
         # wall material, then the thin roof course above it
-        specs = [(cx - 13, cy - 8, 6, 5, "brown_paving_stone", "grey_paving_stone"),
-                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "light_soil"),
-                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "light_soil"),
-                 (cx + 9, cy + 2, 6, 5, "brown_paving_stone", "grey_paving_stone"),
-                 (cx - 4, cy - 12, 8, 6, "grey_paving_stone", "brown_paving_stone"),
-                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "light_soil")]
+        # WOOD WALLS, THIN BLACK ROCK ROOF (his call, 2026-08-30)
+        specs = [(cx - 13, cy - 8, 6, 5, "parquet_floor", "black_rock"),
+                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "black_rock"),
+                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "black_rock"),
+                 (cx + 9, cy + 2, 6, 5, "parquet_floor", "black_rock"),
+                 (cx - 4, cy - 12, 8, 6, "parquet_floor", "black_rock"),
+                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "black_rock")]
         built = 0
         for (hx, hy, w, h, wall, roof) in specs:
             try:
@@ -959,7 +965,7 @@ class Grow:
         top course), so with none present the house is three storeys tall."""
         roofs = [dk for dk in self.doc["decks"] if dk["kind"] == "roof"]
         if not roofs:
-            return 0, 0, 3, 0
+            return 0, 0, self.HOUSE_RISE, 0
         return self._roof_ref_from(roofs)
 
     def _roof_ref_from(self, roofs):
@@ -971,6 +977,7 @@ class Grow:
         return lv, th, wl, fl
 
     WALL_MATERIALS = ("parquet_floor", "brown_paving_stone", "grey_paving_stone")
+    HOUSE_RISE = 8            # levels; 8 x 15px = 120px against a 64px hero
 
     def house(self, x0, y0, w, h, wall, roof):
         """A house is a RING OF X-OVER-Y WALLS, and the roof is the thin band
@@ -987,11 +994,13 @@ class Grow:
         whole cells. There is no roof deck any more - a deck is a full cell
         of roof, which is exactly what he does not want."""
         assert wall in self.WALL_MATERIALS, f"{wall} is not a wall material"
-        lv, th, wl, fl = self._roof_ref()
-        rise = max(3, wl - fl)   # storey count is RELATIVE: a house on the
-                                 # bench-2 town plaza measured 40% shorter and
-                                 # dug its floor 2 below the street when it
-                                 # borrowed the meadow house's absolute levels
+        # A HOUSE IS TALLER THAN THE PLAYER (maintainer 2026-08-30: "this
+        # house is not tall enough!"). The hero is 64px
+        # (scenery placement.character_height_px) and a storey is 15px, so the
+        # old 3-level wall stood 45px - SHORTER than the man walking past it,
+        # which is why it read as a bunker. 8 levels is 120px: a wall almost
+        # two heads over him, which is a house.
+        rise = self.HOUSE_RISE
         gi, grd, lvl = self.gi, self.grd, self.lvl
         base = self.lvl[y0][x0]
         rect = [(x, y) for y in range(y0, y0 + h) for x in range(x0, x0 + w)]
@@ -1081,7 +1090,7 @@ class Grow:
         # ABOVE the pier landing, never on the sand itself
         lx, ly = self.landing
         hx, hy = self.find_pad(lx - 6, ly - 6, 6, 5)
-        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "light_soil")
+        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "black_rock")
         # woodcutter's cabin: timber, at the forest edge — the grass cell with
         # the most trees within 12, at least 50 from spawn
         best = None
@@ -1097,11 +1106,10 @@ class Grow:
             if best is None or n > best[0]:
                 best = (n, x, y)
         wx, wy = self.find_pad(best[1], best[2], 7, 5)
-        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "light_soil")
+        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "black_rock")
         # the smithy: stone (slate over cobble), in the village near spawn
         mx, my = self.find_pad(sx + 8, sy - 6, 6, 5)
-        self.int_smith = self.house(mx, my, 6, 5, "brown_paving_stone",
-                                    "grey_paving_stone")
+        self.int_smith = self.house(mx, my, 6, 5, "parquet_floor", "black_rock")
         self.smithy = (mx, my)
         self.woodcutter = (wx, wy)
         self.fisher = (hx, hy)

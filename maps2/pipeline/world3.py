@@ -166,9 +166,12 @@ def _houses(doc, mat):
         # (maintainer 2026-08-30): the ring cell's TOP is the roof material
         # and its FACE is the wall, so the roof reads as a band. Wall
         # materials are his three: parquet, brown paving, grey paving.
+        # WOOD WALLS, THIN BLACK ROCK ROOF (maintainer 2026-08-30: "try wood
+        # and maybe black_rock as a thin roof"). The roof is thin because it
+        # is only the TOP of the pair - black_rock over parquet_floor.
         stone = hi == 0                       # smallest roof = the spawn cottage
-        wallmat = "brown_paving_stone" if stone else "parquet_floor"
-        topmat = "grey_paving_stone" if stone else "light_soil"
+        wallmat = "parquet_floor"
+        topmat = "black_rock"
         wcells = []
         for c in dk["cells"]:
             x, y = int(c["x"]), int(c["y"])
@@ -677,9 +680,7 @@ def build():
         # is v3's patterned always-own-texture surface with a published base
         # tile — it reads as shingles. A taste call, flagged in the build log.
         if kind == "roof":
-            small = len(dk["cells"]) <= min(len(d2["cells"]) for d2 in src["decks"]
-                                            if d2.get("kind") == "roof")
-            ground = "grey_paving_stone" if small else "grass"
+            ground = "black_rock"     # thin roof: black rock over the timber
         cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]
         if kind == "roof":
             # INTERIOR ONLY. The deck is what tells the game you are indoors
@@ -697,7 +698,7 @@ def build():
         if kind == "roof":
             # roof OVER the wall material: the roof is then only the top face,
             # the thin look he asked for
-            entry["side"] = "brown_paving_stone" if small else "parquet_floor"
+            entry["side"] = "parquet_floor"
         decks.append(entry)
 
     doc = {
