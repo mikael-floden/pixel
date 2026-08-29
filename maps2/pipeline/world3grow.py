@@ -1007,6 +1007,20 @@ class Grow:
             else:
                 grd[y][x] = gi["parquet_floor"]; lvl[y][x] = base
         self.doc["walls"].append({"side": wall, "cells": wcells})
+        # THE ROOF DECK IS WHAT MAKES A HOUSE INDOORS. The game's indoor
+        # system keys on a kind:"roof" deck over the player - it is what
+        # blacks out the world outside and fixes the draw order. Dropping the
+        # decks to make the roof thin broke every interior in the live game
+        # (2026-08-30). The deck now covers the INTERIOR ONLY, so the roof is
+        # still not a slab over the walls: the wall ring keeps its thin
+        # roof-over-wall course and the deck roofs the room it encloses.
+        inner = [(x, y) for (x, y) in rect
+                 if not (x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1))]
+        if inner:
+            self.doc["decks"].append(
+                {"kind": "roof", "level": base + rise, "thickness": 0,
+                 "ground": roof,
+                 "cells": [{"x": x, "y": y} for (x, y) in inner]})
         # doorstep
         dx, dy = door[0], door[1] + 1
         if self.g(dx, dy) == "grass":

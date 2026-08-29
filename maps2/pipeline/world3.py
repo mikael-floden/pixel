@@ -669,8 +669,6 @@ def build():
     gi = {g: i for i, g in enumerate(grounds)}
     decks = []
     for dk in src.get("decks", []):
-        if dk.get("kind") == "roof":
-            continue          # a roof is the wall's top course now, not a deck
         kind = dk.get("kind", "deck")
         ground = V2_TO_V3.get(src["materials"][dk["mat"]], "grey_stone") \
             if isinstance(dk.get("mat"), int) else "grey_stone"
@@ -682,9 +680,20 @@ def build():
             small = len(dk["cells"]) <= min(len(d2["cells"]) for d2 in src["decks"]
                                             if d2.get("kind") == "roof")
             ground = "grey_paving_stone" if small else "grass"
+        cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]
+        if kind == "roof":
+            # INTERIOR ONLY. The deck is what tells the game you are indoors
+            # (it blacks out the world and fixes the draw order); the wall
+            # ring keeps its own thin roof-over-wall course, so the roof is
+            # not a slab lying over the walls as well.
+            top_lv = max(lvl[c["y"]][c["x"]] for c in dk["cells"])
+            cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]
+                     if lvl[c["y"]][c["x"]] < top_lv]
+            if not cells:
+                continue
         decks.append({"kind": kind, "level": dk["level"],
                       "thickness": dk.get("thickness", 1), "ground": ground,
-                      "cells": [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]})
+                      "cells": cells})
 
     doc = {
         "schema": SCHEMA,
