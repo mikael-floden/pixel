@@ -138,8 +138,8 @@
       "glow_score": 0.1907,
       "animations": {
         "motion": {
-          "group_id": "ab511ca6-ab40-4b72-9c15-8da1962df5a7",
-          "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "00d8e360-4c89-4e62-bbd2-6c2ee35b9f40",
+          "description": "This is the same picture in every frame. ONLY a small cloud of spores moves, rising from the top of the ball. It must be clearly visible as it lifts, then thin away. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -155,7 +155,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T14:26:42+00:00",
+          "generated_at": "2026-08-29T15:11:56+00:00",
           "brief": "U25"
         }
       }

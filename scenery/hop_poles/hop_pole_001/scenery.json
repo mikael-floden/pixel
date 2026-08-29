@@ -133,8 +133,8 @@
       "glow_score": 0.0484,
       "animations": {
         "motion": {
-          "group_id": "46d42445-4947-4b49-82b8-21e5a65c4e90",
-          "description": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "0c3f91ce-039a-4581-9c28-15a132822324",
+          "description": "This is the same picture in every frame. ONLY the small leaves move, each shifting by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -148,7 +148,7 @@
           ],
           "strip": "hop_poles/hop_pole_001/not_lit_3/animations/motion__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T14:27:14+00:00",
+          "generated_at": "2026-08-29T15:11:31+00:00",
           "brief": "U28"
         }
       }

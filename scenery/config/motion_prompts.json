@@ -1615,15 +1615,17 @@
     "U18": {
       "group": "carts",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The moss breathes.",
+      "prompt": "This is the same picture in every frame. ONLY the brightness of the cyan moss changes, growing a little stronger and returning. Nothing moves at all. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Only the moss brightness changes.",
       "seen_in_art": "a wrecked cart blanketed in cyan phosphorescent moss",
       "share_of_sprite": "small",
       "example": {
         "piece": "carts/cart_011",
         "state": "LIT_1"
       },
-      "approved": "2026-08-29 round 8"
+      "approved": "2026-08-29 round 8",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "27.2%, and the cart body and wheels shifted with the glow. Now explicitly a brightness change with no movement of any kind."
     },
     "U19": {
       "group": "cliff_features",
@@ -1667,15 +1669,17 @@
     "U25": {
       "group": "puffballs",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "A puff lifts off it.",
+      "prompt": "This is the same picture in every frame. ONLY a small cloud of spores moves, rising from the top of the ball. It must be clearly visible as it lifts, then thin away. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A visible puff of spores lifts off.",
       "seen_in_art": "a round tan puffball on bare earth",
       "share_of_sprite": "tiny",
       "example": {
         "piece": "puffballs/puffball_001",
         "state": "NOT_LIT_4"
       },
-      "approved": "2026-08-29 round 8"
+      "approved": "2026-08-29 round 8",
+      "superseded_prompt": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "1.4% \u2014 the calmest number in the project and, looking at the frames, almost nothing happens: one speck in frame two and gone. Too timid, not too strong. This asks for a puff that is CLEARLY VISIBLE, the first time I have asked for more instead of less."
     },
     "U20": {
       "group": "overgrown_archways",
@@ -1732,15 +1736,17 @@
     "U28": {
       "group": "hop_poles",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The bines stir.",
+      "prompt": "This is the same picture in every frame. ONLY the small leaves move, each shifting by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Only the leaves shift a pixel.",
       "seen_in_art": "a pole thick with dry hop bines",
       "share_of_sprite": "medium",
       "example": {
         "piece": "hop_poles/hop_pole_001",
         "state": "NOT_LIT_3"
       },
-      "approved": "2026-08-29 round 8"
+      "approved": "2026-08-29 round 8",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "11.7%, and the whole pole leaned side to side. The leaves are now the only subject and are capped at one pixel each. The word 'calmer' is deliberately not used: asking S1 to be calmer took it from 4.5% to 19.5%."
     },
     "U10": {
       "group": "gravel_piles",
@@ -2060,5 +2066,6 @@
   "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked.",
   "_loop_note": "From 2026-08-29 every revised prompt closes the loop explicitly \u2014 the last frame returns to the first, and nothing may darken below frame one. Added after he reported 'dark paint entering the animation at the end' on R27, where the final frame drained to brown instead of coming back to gold.",
   "_scale_note": "2026-08-29: the three worst results all showed the WHOLE OBJECT rescaling between frames, and in each the moving thing WAS the subject, filling the sprite. Every success so far moves a small fraction of the image instead \u2014 a lantern on a post, a bird on a totem. Revised prompts now add 'Nothing in the picture may change size, shape or position' and prefer a subject that occupies little of the frame.",
-  "_sundial_note": "The sundial shadow (N19, U6, U27) has been offered in three separate lists and passed over every time. Not proposing it again."
+  "_sundial_note": "The sundial shadow (N19, U6, U27) has been offered in three separate lists and passed over every time. Not proposing it again.",
+  "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead \u2014 'each shifting by a single pixel' \u2014 and say what does not move."
 }

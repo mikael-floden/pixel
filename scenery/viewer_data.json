@@ -11818,8 +11818,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "ddb41af8-9b9e-496b-8bf3-09542a0d4ce2",
-              "description": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "b7015068-b832-4664-85bd-757a66601b1f",
+              "description": "This is the same picture in every frame. ONLY the brightness of the cyan moss changes, growing a little stronger and returning. Nothing moves at all. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -11835,7 +11835,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T14:26:25+00:00",
+              "generated_at": "2026-08-29T15:12:02+00:00",
               "brief": "U18"
             }
           },
@@ -33314,8 +33314,8 @@
           "glow_score": 0.0484,
           "animations": {
             "motion": {
-              "group_id": "46d42445-4947-4b49-82b8-21e5a65c4e90",
-              "description": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "0c3f91ce-039a-4581-9c28-15a132822324",
+              "description": "This is the same picture in every frame. ONLY the small leaves move, each shifting by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -33329,7 +33329,7 @@
               ],
               "strip": "hop_poles/hop_pole_001/not_lit_3/animations/motion__strip.webp",
               "directions": null,
-              "generated_at": "2026-08-29T14:27:14+00:00",
+              "generated_at": "2026-08-29T15:11:31+00:00",
               "brief": "U28"
             }
           },
@@ -42408,8 +42408,8 @@
           "glow_score": 0.1907,
           "animations": {
             "motion": {
-              "group_id": "ab511ca6-ab40-4b72-9c15-8da1962df5a7",
-              "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "00d8e360-4c89-4e62-bbd2-6c2ee35b9f40",
+              "description": "This is the same picture in every frame. ONLY a small cloud of spores moves, rising from the top of the ball. It must be clearly visible as it lifts, then thin away. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -42425,7 +42425,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T14:26:42+00:00",
+              "generated_at": "2026-08-29T15:11:56+00:00",
               "brief": "U25"
             }
           },

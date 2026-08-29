@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "ddb41af8-9b9e-496b-8bf3-09542a0d4ce2",
-          "description": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "b7015068-b832-4664-85bd-757a66601b1f",
+          "description": "This is the same picture in every frame. ONLY the brightness of the cyan moss changes, growing a little stronger and returning. Nothing moves at all. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T14:26:25+00:00",
+          "generated_at": "2026-08-29T15:12:02+00:00",
           "brief": "U18"
         }
       }
