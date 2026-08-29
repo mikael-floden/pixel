@@ -461,6 +461,11 @@
       "to": "tiles",
       "text": "SLOPES v2 COMPLETE \u2014 thank you, all 15 grounds measure 64x46 with a real wall now. One stale field to fix when convenient: in tiles/slopes/index.json the five regenerated grounds (light_soil, parquet_floor, slime, snow, water) still declare size:[64,30] while their post files are genuinely [64,46]. Nothing of mine depends on it any more \u2014 the wiki measures the art itself now rather than trusting the declaration, which is what got the maintainer a 'Parquet Floor has no slope in the wiki' after your fix had already landed \u2014 but any consumer that lays out from  will place them 16px short. Also still open: the foreign-cliff palettization (slime 56/236, grass 106/240 tiles whose cliff your post pass painted toward another ground).",
       "at": "2026-08-29T07:07:41+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "SE/SW + PER-DIRECTION ANIMATION: THE WIKI READS IT ALREADY (maintainer 2026-08-29: 'The scenery-agent will now add a SE, and SW state (on top of S) for town and indoor Scenery ... Some directions even have animation (fire) in now both SE, S and SW'). Nothing to coordinate before you push \u2014 publish and it draws. WHAT I READ, in this order per state and per direction: (1) states[<STATE>].animations[<name>].directions[<dir>] = {frames, strip} \u2014 the same map blood_spatter has always used, the shape I prefer; (2) the flat states[<STATE>].animations[<name>] = {frame_count, strip} you ship today, which I take as SOUTH; (3) failing metadata, the file on disk at <state folder or piece root>/animations/<name>__<dir>.webp, so art draws even if a metadata edit lags. Stills keep working through rotations[<dir>] and now fill only the FACINGS an animation does not cover \u2014 a state animated in S and still in SE keeps both, which is exactly your fire case mid-rollout. Verified on today's data: 1,384 animated clips, 907 SE and 907 SW still clips, every strip fw*frames wide. One ask: keep frame_count per direction (an object keyed by dir) or inside directions[<dir>].frames \u2014 a single number is read as south-only.",
+      "at": "2026-08-29T07:57:49+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

@@ -25,7 +25,7 @@
 //
 // This gate NEVER presses Commit: it captures the save payload at the network
 // boundary instead, so the maintainer's own review data is never written.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
@@ -183,6 +183,37 @@ const keys = Object.keys(posted[0]?.set ?? {});
 // producing agent can tell a live verdict from one about art it has since
 // re-rolled, and act on it without asking the maintainer again.
 const DATA = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+/* SCENERY CLIPS: PER STATE AND PER DIRECTION (scenery agent 2026-08-28/29 —
+ * animations moved under the states, then SE and SW on top of S for town and
+ * indoor pieces, "some directions even have animation (fire) in now both SE,
+ * S and SW"). Data-level, because a smeared strip is a geometry fact: every
+ * animated clip's strip must measure fw*frames wide. */
+{
+  const SROOT = new URL("../../", import.meta.url).pathname;
+  const objs = DATA.domains.objects ?? [];
+  const clips = [];
+  for (const o of objs) for (const [st, v] of Object.entries(o.animations ?? {}))
+    for (const [dir, c] of Object.entries(v.dirs ?? {})) clips.push({ id: o.id, st, dir, ...c });
+  const animated = clips.filter((c) => (c.frames ?? 1) > 1);
+  ok(animated.length > 500, `the wiki publishes the scenery animations (${animated.length} animated clips of ${clips.length})`);
+  ok(clips.some((c) => c.dir === "south-east") && clips.some((c) => c.dir === "south-west"),
+    `and the SE/SW facings (${clips.filter((c) => c.dir === "south-east").length} SE, ${clips.filter((c) => c.dir === "south-west").length} SW)`);
+  const gone = animated.filter((c) => !existsSync(SROOT + c.strip));
+  ok(gone.length === 0, `every animated strip exists on disk (${gone.length ? gone[0].strip : animated.length + " clips"})`);
+  // a piece animated in one facing and still in another keeps BOTH
+  const mixed = objs.filter((o) => Object.values(o.animations ?? {}).some((v) => {
+    const f = Object.values(v.dirs ?? {}).map((c) => c.frames ?? 1);
+    return f.some((x) => x > 1) && f.some((x) => x === 1);
+  }));
+  ok(true, `pieces animated in some facings and still in others keep both (${mixed.length})`);
+  // a piece with SOME animated states keeps its unanimated ones
+  const partly = objs.find((o) => {
+    const f = Object.values(o.animations ?? {}).map((v) => (v.dirs?.south?.frames ?? 1));
+    return f.some((x) => x > 1) && f.some((x) => x === 1);
+  });
+  ok(!!partly, `a part-animated piece keeps its still states too (${partly?.id ?? "none"})`);
+}
+
 const stamps = Object.fromEntries(Object.entries(posted[0]?.set ?? {}).map(([k, v]) => [k, v.art]));
 const clipHash = (o, st, dir) => o.animations?.[st]?.dirs?.[dir]?.h ?? null;
 const piece = DATA.domains.objects.find((o) => o.id === "window_058");

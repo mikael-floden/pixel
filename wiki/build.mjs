@@ -1169,19 +1169,40 @@ function buildObjects() {
      *
      * Frames come from the STRIP, one row of frame_count cells — the same
      * shape the top-level animations used, so the player is untouched. */
+    /* PER DIRECTION AS WELL AS PER STATE (scenery agent, 2026-08-29: SE and
+     * SW on top of S for town and indoor pieces, "some directions even have
+     * animation (fire) in now both SE, S and SW"). Two published shapes, both
+     * read: `directions: {<dir>: {frames, strip}}` — the map blood_spatter
+     * has used all along — and the flat `{frame_count, strip}` the per-state
+     * animations ship today, which means south. A direction the metadata does
+     * not name is still found on disk under the domain's own naming
+     * (`<name>__<dir>.webp`), so the art draws the day it lands rather than
+     * waiting on another agent's metadata edit. */
+    const dirClip = (rel2, name, a, dir) => {
+      const d = a.directions?.[dir];
+      const declared = d?.strip ? `scenery/${d.strip}`
+        : (dir === "south" && a.strip) ? `scenery/${a.strip}`
+          : `scenery/${rel2}/animations/${name}__${dir}`;
+      const strip = art(String(declared).replace(/\.(png|webp)$/i, ""));
+      const frames = d?.frames ?? d?.frame_count
+        ?? (typeof a.frame_count === "object" ? a.frame_count?.[dir] : (dir === "south" ? a.frame_count : null))
+        ?? (dir === "south" ? (a.frame_paths ?? []).length : 0);
+      if (!strip || !frames) return null;
+      const dims = imageSize(join(ROOT, strip));
+      return { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size };
+    };
     for (const [sk, sv] of Object.entries(oj.states ?? {})) {
       for (const [name, a] of Object.entries(sv.animations ?? {})) {
-        const declared = a.strip ? `scenery/${a.strip}` : null;
-        const strip = declared ? art(declared.replace(/\.(png|webp)$/i, "")) : null;
-        const frames = a.frame_count ?? (a.frame_paths ?? []).length ?? 0;
-        if (!strip || !frames) continue;
-        const dims = imageSize(join(ROOT, strip));
-        // one clip per state, keyed the way the still states are (lower case)
-        anims[sk.toLowerCase()] = {
-          description: a.description ?? "",
-          anim: name,
-          dirs: { south: { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size } },
-        };
+        const dirs = {};
+        // a state's own folder holds its strips; the base state uses the piece root
+        const stateRel = sv.sprite ? String(sv.sprite).replace(/\/[^/]+$/, "") : rel;
+        for (const dir of DIRS) {
+          const clip = dirClip(stateRel, name, a, dir) ?? dirClip(rel, name, a, dir);
+          if (clip) dirs[dir] = clip;
+        }
+        if (!Object.keys(dirs).length) continue;
+        const key = sk.toLowerCase();
+        anims[key] = { description: a.description ?? "", anim: name, dirs: { ...(anims[key]?.dirs ?? {}), ...dirs } };
       }
     }
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
@@ -1300,12 +1321,16 @@ function buildObjects() {
         if (Object.keys(dirs).length) anims.base = { description: "", dirs };
       }
       for (const [name, st] of ordered) {
-        // NEVER over an animated state (2026-08-29): a still would replace the
-        // clip that state exists to show.
-        if (anims[name.toLowerCase()]) continue;
+        const key = name.toLowerCase();
         const dirs = dirsFrom(st.rotations, st.sprite);
-        // The UI title-cases this; the CAPS key is the scenery domain's.
-        if (Object.keys(dirs).length) anims[name.toLowerCase()] = { description: st.edit_description ?? "", dirs };
+        if (!Object.keys(dirs).length) continue;
+        /* PER DIRECTION, NEVER OVER A CLIP (2026-08-29): a piece can be
+         * animated facing south and still facing south-east, so a still fills
+         * the facings the animation does not cover and never replaces one. */
+        const had = anims[key];
+        anims[key] = had
+          ? { ...had, dirs: { ...dirs, ...had.dirs } }
+          : { description: st.edit_description ?? "", dirs };
       }
       if (!Object.keys(anims).length) {
         const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
