@@ -36,7 +36,29 @@
       "glow_concept": "ember-orange glow inside the hollow end",
       "difference_from_source": 0.9087,
       "glow_score": 0.089,
-      "generated_at": "2026-08-15T15:11:06+00:00"
+      "generated_at": "2026-08-15T15:11:06+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "3728580a-039f-4c3d-a801-ab18112abf04",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_006/lit_2/animations/flame/00.webp",
+            "fallen_logs/fallen_log_006/lit_2/animations/flame/01.webp",
+            "fallen_logs/fallen_log_006/lit_2/animations/flame/02.webp",
+            "fallen_logs/fallen_log_006/lit_2/animations/flame/03.webp",
+            "fallen_logs/fallen_log_006/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_006/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:57:44+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "fallen_logs/fallen_log_006/lit_3/sprite.webp",

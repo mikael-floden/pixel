@@ -46,7 +46,29 @@
       "generated_at": "2026-08-16T09:02:30+00:00",
       "glow_concept": "fire burning low and warm beneath",
       "difference_from_source": 0.6415,
-      "glow_score": 0.2675
+      "glow_score": 0.2675,
+      "animations": {
+        "flame": {
+          "group_id": "b19a422a-07c6-4b3c-b405-a8335ce7fb5c",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/00.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/01.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/02.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/03.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "cauldron_camps/cauldron_camp_001/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:57:48+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cauldron_camps/cauldron_camp_001/sprite.webp",

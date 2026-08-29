@@ -64,7 +64,29 @@
       "generated_at": "2026-08-15T20:38:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7896,
-      "glow_score": 0.0729
+      "glow_score": 0.0729,
+      "animations": {
+        "flame": {
+          "group_id": "b76a460a-3009-4fb4-b2f1-40f400612884",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_008/lit_4/animations/flame/00.webp",
+            "braziers/brazier_008/lit_4/animations/flame/01.webp",
+            "braziers/brazier_008/lit_4/animations/flame/02.webp",
+            "braziers/brazier_008/lit_4/animations/flame/03.webp",
+            "braziers/brazier_008/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "braziers/brazier_008/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:56:19+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_008/not_lit_1/sprite.webp",

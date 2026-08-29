@@ -35,7 +35,29 @@
     "LIT_1": {
       "sprite": "braziers/brazier_014/sprite.webp",
       "pixellab_object_id": "674545b9-6d65-4d0e-9175-3adb0314a817",
-      "generated_at": "2026-08-14T01:34:48+00:00"
+      "generated_at": "2026-08-14T01:34:48+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "04c54d9e-79ce-45cb-aecd-a4c66732a923",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_014/animations/flame/00.webp",
+            "braziers/brazier_014/animations/flame/01.webp",
+            "braziers/brazier_014/animations/flame/02.webp",
+            "braziers/brazier_014/animations/flame/03.webp",
+            "braziers/brazier_014/animations/flame/04.webp"
+          ],
+          "strip": "braziers/brazier_014/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:56:52+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "braziers/brazier_014/lit_2/sprite.webp",
@@ -43,7 +65,29 @@
       "generated_at": "2026-08-15T20:42:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5812,
-      "glow_score": 0.0123
+      "glow_score": 0.0123,
+      "animations": {
+        "flame": {
+          "group_id": "d07d5454-f7da-4349-bbfd-9f931c3e8d0a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_014/lit_2/animations/flame/00.webp",
+            "braziers/brazier_014/lit_2/animations/flame/01.webp",
+            "braziers/brazier_014/lit_2/animations/flame/02.webp",
+            "braziers/brazier_014/lit_2/animations/flame/03.webp",
+            "braziers/brazier_014/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "braziers/brazier_014/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:56:19+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "braziers/brazier_014/lit_3/sprite.webp",
@@ -51,7 +95,29 @@
       "generated_at": "2026-08-15T20:42:34+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6077,
-      "glow_score": 0.0447
+      "glow_score": 0.0447,
+      "animations": {
+        "flame": {
+          "group_id": "94698988-b122-42e2-b52d-5ef8993bacee",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_014/lit_3/animations/flame/00.webp",
+            "braziers/brazier_014/lit_3/animations/flame/01.webp",
+            "braziers/brazier_014/lit_3/animations/flame/02.webp",
+            "braziers/brazier_014/lit_3/animations/flame/03.webp",
+            "braziers/brazier_014/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "braziers/brazier_014/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:56:52+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_014/not_lit_1/sprite.webp",

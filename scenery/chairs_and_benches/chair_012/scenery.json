@@ -42,7 +42,29 @@
       "generated_at": "2026-08-16T09:04:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8008,
-      "glow_score": 0.0222
+      "glow_score": 0.0222,
+      "animations": {
+        "flame": {
+          "group_id": "7c55fafb-5f9e-4c57-966e-29febe190106",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_2/animations/flame/00.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/01.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/02.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/03.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:57:28+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "chairs_and_benches/chair_012/lit_3/sprite.webp",
@@ -50,7 +72,29 @@
       "generated_at": "2026-08-16T09:04:27+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7524,
-      "glow_score": 0.0172
+      "glow_score": 0.0172,
+      "animations": {
+        "flame": {
+          "group_id": "603b0b92-a7b1-42ed-bb86-b453ec42455a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_3/animations/flame/00.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/01.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/02.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/03.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:57:37+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "chairs_and_benches/chair_012/lit_4/sprite.webp",
@@ -58,7 +102,29 @@
       "generated_at": "2026-08-16T09:04:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8176,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "flame": {
+          "group_id": "2ed4aa6b-8e0f-41d5-829d-4c78411ac11e",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_4/animations/flame/00.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/01.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/02.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/03.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:57:58+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "chairs_and_benches/chair_012/not_lit_1/sprite.webp",
