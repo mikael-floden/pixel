@@ -1,0 +1,426 @@
+{
+  "format": "scenery-motion@1",
+  "_comment": "Per-group animation briefs the maintainer approved by ID on 2026-08-28 from the Scenery Motion Candidates artifact. Each prompt names ONLY the moving part and ends with 'Nothing else moves.' \u2014 naming what should stay still backfires, because the model treats those nouns as things to paint (the window-prompt lesson). `example` is the state shown in the artifact and is the pilot subject for that id. DECLINED and deliberately absent: A3 sleeping_giants, C8 signposts, G4 ferns, G5 cliff_vines, L5 toadstool_rings, L9 frost_flowers, W2 cliff_falls.",
+  "animations": {
+    "W1": {
+      "group": "waterwheels",
+      "name": "motion",
+      "prompt": "Animate the wheel only, turning slowly. Nothing else moves.",
+      "moves": "The wheel turns slowly in the current.",
+      "example": {
+        "piece": "waterwheels/waterwheel_003",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "W3": {
+      "group": "stone_fountains",
+      "name": "motion",
+      "prompt": "Animate the running water only. Nothing else moves.",
+      "moves": "Water spouts and the basin surface ripples.",
+      "example": {
+        "piece": "stone_fountains/stone_fountain_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "W4": {
+      "group": "spring_basins",
+      "name": "motion",
+      "prompt": "Animate the water surface only. Nothing else moves.",
+      "moves": "The spring wells up and the surface moves.",
+      "example": {
+        "piece": "spring_basins/spring_basin_003",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "W5": {
+      "group": "hot_springs",
+      "name": "motion",
+      "prompt": "Animate the rising steam only. Nothing else moves.",
+      "moves": "Steam drifts up off the pool.",
+      "example": {
+        "piece": "hot_springs/hot_spring_002",
+        "state": "LIT_1"
+      }
+    },
+    "W6": {
+      "group": "moon_pools",
+      "name": "motion",
+      "prompt": "Animate the reflection on the water only. Nothing else moves.",
+      "moves": "The reflection ripples across the still water.",
+      "example": {
+        "piece": "moon_pools/moon_pool_002",
+        "state": "LIT_1"
+      }
+    },
+    "W7": {
+      "group": "water_lily_clumps",
+      "name": "motion",
+      "prompt": "Animate the lily pads only, rocking very gently. Nothing else moves.",
+      "moves": "The pads rock gently on the water.",
+      "example": {
+        "piece": "water_lily_clumps/water_lily_clump_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "W8": {
+      "group": "water_pumps",
+      "name": "motion",
+      "prompt": "Animate a slow drip falling from the spout only. Nothing else moves.",
+      "moves": "A drip falls from the spout.",
+      "example": {
+        "piece": "water_pumps/water_pump_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C1": {
+      "group": "washing_lines",
+      "name": "motion",
+      "prompt": "Animate the hanging cloth only, billowing in a breeze. Nothing else moves.",
+      "moves": "The sheets billow and snap on the line.",
+      "example": {
+        "piece": "washing_lines/washing_line_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C2": {
+      "group": "market_stalls",
+      "name": "motion",
+      "prompt": "Animate the cloth canopy only, rippling in a breeze. Nothing else moves.",
+      "moves": "The canopy ripples.",
+      "example": {
+        "piece": "market_stalls/market_stall_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C3": {
+      "group": "scarecrows",
+      "name": "motion",
+      "prompt": "Animate the loose clothing only, flapping in a breeze. Nothing else moves.",
+      "moves": "The clothes flap while the frame stays fixed.",
+      "example": {
+        "piece": "scarecrows/scarecrow_005",
+        "state": "NOT_LIT_4"
+      }
+    },
+    "C4": {
+      "group": "fish_drying_racks",
+      "name": "motion",
+      "prompt": "Animate the hanging fish only, swaying gently. Nothing else moves.",
+      "moves": "The hanging fish sway on their lines.",
+      "example": {
+        "piece": "fish_drying_racks/fish_drying_rack_002",
+        "state": "LIT_1"
+      }
+    },
+    "C5": {
+      "group": "maypoles",
+      "name": "motion",
+      "prompt": "Animate the ribbons only, streaming in a breeze. Nothing else moves.",
+      "moves": "The ribbons stream and twist.",
+      "example": {
+        "piece": "maypoles/maypole_002",
+        "state": "LIT_1"
+      }
+    },
+    "C6": {
+      "group": "rope_swings",
+      "name": "motion",
+      "prompt": "Animate the swinging seat and its ropes only. Nothing else moves.",
+      "moves": "The seat swings back and forth.",
+      "example": {
+        "piece": "rope_swings/rope_swing_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C7": {
+      "group": "bell_posts",
+      "name": "motion",
+      "prompt": "Animate the bell only, rocking slowly. Nothing else moves.",
+      "moves": "The bell rocks in its arm.",
+      "example": {
+        "piece": "bell_posts/bell_post_004",
+        "state": "LIT_1"
+      }
+    },
+    "C9": {
+      "group": "hanging_baskets",
+      "name": "motion",
+      "prompt": "Animate the trailing flowers only, swaying gently. Nothing else moves.",
+      "moves": "The trailing blooms sway under the basket.",
+      "example": {
+        "piece": "hanging_baskets/hanging_basket_005",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C10": {
+      "group": "trailing_planters",
+      "name": "motion",
+      "prompt": "Animate the cascading vines only, swaying gently. Nothing else moves.",
+      "moves": "The cascading vines sway.",
+      "example": {
+        "piece": "trailing_planters/trailing_planter_003",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "C11": {
+      "group": "sheaf_poles",
+      "name": "motion",
+      "prompt": "Animate the grain heads only, nodding gently. Nothing else moves.",
+      "moves": "The grain heads nod at the top.",
+      "example": {
+        "piece": "sheaf_poles/sheaf_pole_002",
+        "state": "LIT_1"
+      }
+    },
+    "G1": {
+      "group": "reed_beds",
+      "name": "motion",
+      "prompt": "Animate the reeds only, bending in a gentle breeze. Nothing else moves.",
+      "moves": "The reeds and seed plumes bend.",
+      "example": {
+        "piece": "reed_beds/reed_bed_005",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G2": {
+      "group": "cattail_clumps",
+      "name": "motion",
+      "prompt": "Animate the leaves and seed heads only, in a gentle breeze. Nothing else moves.",
+      "moves": "The leaves arch and the heads nod.",
+      "example": {
+        "piece": "cattail_clumps/cattail_clump_005",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G3": {
+      "group": "grass_tufts",
+      "name": "motion",
+      "prompt": "Animate the grass blades only, bending in a gentle breeze. Nothing else moves.",
+      "moves": "The blades bend and spring back.",
+      "example": {
+        "piece": "grass_tufts/grass_tuft_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G6": {
+      "group": "cliff_shrubs",
+      "name": "motion",
+      "prompt": "Animate the foliage only, shivering in a gentle breeze. Nothing else moves.",
+      "moves": "The windbent foliage shivers.",
+      "example": {
+        "piece": "cliff_shrubs/cliff_shrub_002",
+        "state": "NOT_LIT_3"
+      }
+    },
+    "G7": {
+      "group": "bushes",
+      "name": "motion",
+      "prompt": "Animate the leaves only, shivering in a gentle breeze. Nothing else moves.",
+      "moves": "The leaves shiver.",
+      "example": {
+        "piece": "bushes/bush_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G8": {
+      "group": "flower_stands",
+      "name": "motion",
+      "prompt": "Animate the flower heads only, nodding gently. Nothing else moves.",
+      "moves": "The flower heads nod on their stems.",
+      "example": {
+        "piece": "flower_stands/flower_stand_002",
+        "state": "NOT_LIT_3"
+      }
+    },
+    "G9": {
+      "group": "hop_poles",
+      "name": "motion",
+      "prompt": "Animate the hanging bines only, swaying gently. Nothing else moves.",
+      "moves": "The bines and cones sway on the pole.",
+      "example": {
+        "piece": "hop_poles/hop_pole_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G10": {
+      "group": "ivy_posts",
+      "name": "motion",
+      "prompt": "Animate the loose ivy trails only, stirring gently. Nothing else moves.",
+      "moves": "The loose ivy trails stir.",
+      "example": {
+        "piece": "ivy_posts/ivy_post_005",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G11": {
+      "group": "overgrown_archways",
+      "name": "motion",
+      "prompt": "Animate the hanging vines only, swaying gently. Nothing else moves.",
+      "moves": "The vines hanging through the arch sway.",
+      "example": {
+        "piece": "overgrown_archways/overgrown_archway_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G12": {
+      "group": "wisteria_snags",
+      "name": "motion",
+      "prompt": "Animate the hanging wisteria only, swaying gently. Nothing else moves.",
+      "moves": "The long hanging racemes sway.",
+      "example": {
+        "piece": "wisteria_snags/wisteria_snag_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "G13": {
+      "group": "hanging_willows",
+      "name": "motion",
+      "prompt": "Animate the trailing willow branches only, drifting in a breeze. Nothing else moves.",
+      "moves": "The willow curtain drifts sideways.",
+      "example": {
+        "piece": "hanging_willows/hanging_willow_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "L1": {
+      "group": "crystals",
+      "name": "motion",
+      "prompt": "Animate the glow inside the crystals only, pulsing slowly. Nothing else moves.",
+      "moves": "The crystals pulse with inner light.",
+      "example": {
+        "piece": "crystals/crystal_005",
+        "state": "LIT_1"
+      }
+    },
+    "L2": {
+      "group": "soulstone_outcrops",
+      "name": "motion",
+      "prompt": "Animate the glowing veins only, brightening and dimming slowly. Nothing else moves.",
+      "moves": "The veins brighten and dim.",
+      "example": {
+        "piece": "soulstone_outcrops/soulstone_outcrop_009",
+        "state": "LIT_1"
+      }
+    },
+    "L3": {
+      "group": "soulstone_plinths",
+      "name": "motion",
+      "prompt": "Animate the glow of the stone only, pulsing slowly. Nothing else moves.",
+      "moves": "The stone pulses on its plinth.",
+      "example": {
+        "piece": "soulstone_plinths/soulstone_plinth_001",
+        "state": "LIT_1"
+      }
+    },
+    "L4": {
+      "group": "witch_rings",
+      "name": "motion",
+      "prompt": "Animate the candle flames only. Nothing else moves.",
+      "moves": "The candles gutter and the ring shimmers.",
+      "example": {
+        "piece": "witch_rings/witch_ring_002",
+        "state": "NOT_LIT_3"
+      }
+    },
+    "L6": {
+      "group": "giant_mushrooms",
+      "name": "motion",
+      "prompt": "Animate the glow on the cap only, breathing slowly. Nothing else moves.",
+      "moves": "The cap glow breathes.",
+      "example": {
+        "piece": "giant_mushrooms/giant_mushroom_001",
+        "state": "LIT_1"
+      }
+    },
+    "L7": {
+      "group": "meteor_stones",
+      "name": "motion",
+      "prompt": "Animate the ember glow in the cracks only, pulsing slowly. Nothing else moves.",
+      "moves": "The cracks pulse like cooling embers.",
+      "example": {
+        "piece": "meteor_stones/meteor_stone_002",
+        "state": "LIT_1"
+      }
+    },
+    "L8": {
+      "group": "geodes",
+      "name": "motion",
+      "prompt": "Animate the glint inside the geode only. Nothing else moves.",
+      "moves": "Light glints across the crystal interior.",
+      "example": {
+        "piece": "geodes/geode_001",
+        "state": "LIT_3"
+      }
+    },
+    "S1": {
+      "group": "charcoal_kilns",
+      "name": "motion",
+      "prompt": "Animate the smoke leaking from the vents only. Nothing else moves.",
+      "moves": "Smoke leaks from the vent holes.",
+      "example": {
+        "piece": "charcoal_kilns/charcoal_kiln_002",
+        "state": "LIT_1"
+      }
+    },
+    "S2": {
+      "group": "cauldron_camps",
+      "name": "motion",
+      "prompt": "Animate the bubbling surface and its steam only. Nothing else moves.",
+      "moves": "The brew bubbles and steams.",
+      "example": {
+        "piece": "cauldron_camps/cauldron_camp_001",
+        "state": "LIT_1"
+      }
+    },
+    "A1": {
+      "group": "beehives",
+      "name": "motion",
+      "prompt": "Animate a few bees at the entrance hole only. Nothing else moves.",
+      "moves": "Bees come and go at the entrance.",
+      "example": {
+        "piece": "beehives/beehive_003",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "M1": {
+      "group": "windmills",
+      "name": "motion",
+      "prompt": "Animate the sails only, turning slowly. Nothing else moves.",
+      "moves": "The sails turn.",
+      "example": {
+        "piece": "windmills/windmill_009",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "M2": {
+      "group": "rusted_machines",
+      "name": "motion",
+      "prompt": "Animate the flywheel only, turning very slowly. Nothing else moves.",
+      "moves": "The flywheel creeps round.",
+      "example": {
+        "piece": "rusted_machines/rusted_machine_001",
+        "state": "NOT_LIT_1"
+      }
+    },
+    "M3": {
+      "group": "wells",
+      "name": "motion",
+      "prompt": "Animate the hanging bucket and rope only, swaying gently. Nothing else moves.",
+      "moves": "The bucket sways on its rope.",
+      "example": {
+        "piece": "wells/well_002",
+        "state": "LIT_1"
+      }
+    },
+    "M4": {
+      "group": "telegraph_poles",
+      "name": "motion",
+      "prompt": "Animate the wires only, swaying gently. Nothing else moves.",
+      "moves": "The wires sway between poles.",
+      "example": {
+        "piece": "telegraph_poles/telegraph_pole_003",
+        "state": "NOT_LIT_1"
+      }
+    }
+  }
+}
