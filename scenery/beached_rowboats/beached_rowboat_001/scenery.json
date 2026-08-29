@@ -42,6 +42,29 @@
         "south-east": "beached_rowboats/beached_rowboat_001/lit_1/rotations/south-east.webp",
         "south-west": "beached_rowboats/beached_rowboat_001/lit_1/rotations/south-west.webp",
         "south": "beached_rowboats/beached_rowboat_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "81b184c0-fabd-4a7d-b134-9e1abb589a54",
+          "description": "This is the same picture in every frame. ONLY the warm light showing between the planks brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/00.webp",
+            "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/01.webp",
+            "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/02.webp",
+            "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/03.webp",
+            "beached_rowboats/beached_rowboat_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:39:58+00:00",
+          "brief": "R26"
+        }
       }
     },
     "LIT_2": {

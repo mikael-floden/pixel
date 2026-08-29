@@ -103,6 +103,27 @@
           ],
           "strip": "crystal_trees/crystal_tree_002/lit_2/animations/wind__strip.webp",
           "generated_at": "2026-08-28T11:45:34+00:00"
+        },
+        "motion": {
+          "group_id": "507f66ea-af3d-4f55-837d-50d51998036f",
+          "description": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly from one shard to another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/00.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/01.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/02.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/03.webp",
+            "crystal_trees/crystal_tree_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:40:21+00:00",
+          "brief": "R21"
         }
       }
     },
@@ -130,6 +151,27 @@
           ],
           "strip": "crystal_trees/crystal_tree_002/lit_3/animations/wind__strip.webp",
           "generated_at": "2026-08-28T11:45:58+00:00"
+        },
+        "motion": {
+          "group_id": "4c88960a-8943-4849-b70e-554413d1c485",
+          "description": "This is the same picture in every frame. ONLY the light of the single blazing shard brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/00.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/01.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/02.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/03.webp",
+            "crystal_trees/crystal_tree_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "crystal_trees/crystal_tree_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T12:39:24+00:00",
+          "brief": "R20"
         }
       }
     },

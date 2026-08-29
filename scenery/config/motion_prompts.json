@@ -688,6 +688,450 @@
       "superseded_prompt": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Do not redraw anything else, and do not add or remove anything.",
       "frame_count": 8,
       "revised": "maintainer: 'the bed must be 100% not moving'. Says frozen and pixel-for-pixel identical rather than naming the furniture, which would invite repainting it."
+    },
+    "R3": {
+      "group": "frozen_springs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the surface of the water in the basin moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The water in the basin moves.",
+      "seen_in_art": "a stone basin with a spout and pale blue water, ice at its foot",
+      "example": {
+        "piece": "frozen_springs/frozen_spring_002",
+        "state": "NOT_LIT_4"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R4": {
+      "group": "stone_fountains",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the falling jets of water move, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The three jets pour.",
+      "seen_in_art": "three jets pouring from a wall into a long trough",
+      "example": {
+        "piece": "stone_fountains/stone_fountain_001",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R5": {
+      "group": "stone_fountains",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the falling jet of water moves, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The bright jet pours.",
+      "seen_in_art": "a beast-head spout with one bright blue jet into a pool",
+      "example": {
+        "piece": "stone_fountains/stone_fountain_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R7": {
+      "group": "moon_pools",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the surface of the dark water moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The dark water stirs.",
+      "seen_in_art": "a stone ring holding perfectly still dark water",
+      "example": {
+        "piece": "moon_pools/moon_pool_002",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R20": {
+      "group": "crystal_trees",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the single blazing shard brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blazing shard pulses.",
+      "seen_in_art": "a crystal tree with one shard blazing white",
+      "example": {
+        "piece": "crystal_trees/crystal_tree_002",
+        "state": "LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R21": {
+      "group": "crystal_trees",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly from one shard to another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A glint travels the shards.",
+      "seen_in_art": "a small tree of pale pink crystal shards",
+      "example": {
+        "piece": "crystal_trees/crystal_tree_002",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R22": {
+      "group": "cliff_features",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the two openings brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light in the openings breathes.",
+      "seen_in_art": "a rock face with two tall keyhole openings full of white light",
+      "example": {
+        "piece": "cliff_features/cliff_feature_002",
+        "state": "LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R26": {
+      "group": "beached_rowboats",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the warm light showing between the planks brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light between the planks breathes.",
+      "seen_in_art": "a beached rowboat with warm light seeping between its planks",
+      "example": {
+        "piece": "beached_rowboats/beached_rowboat_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R27": {
+      "group": "dock_pilings",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the glowing marks brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The tally marks brighten in turn.",
+      "seen_in_art": "bound pilings carved with glowing amber tally marks",
+      "example": {
+        "piece": "dock_pilings/dock_piling_005",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R28": {
+      "group": "giant_skulls",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the green light inside the jaw brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light in the jaw breathes.",
+      "seen_in_art": "a horned skull with green light held inside the open jaw",
+      "example": {
+        "piece": "giant_skulls/giant_skull_002",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R29": {
+      "group": "driftwood_logs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cyan light breathes at the base.",
+      "seen_in_art": "a pale stump standing in bright cyan light at its foot",
+      "example": {
+        "piece": "driftwood_logs/driftwood_log_901",
+        "state": "LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R30": {
+      "group": "bushes",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the single golden light inside the bush brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light in the bush breathes.",
+      "seen_in_art": "a small bush with a single golden light burning at its heart",
+      "example": {
+        "piece": "bushes/bush_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R31": {
+      "group": "moss_clumps",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the golden light in the middle of the moss brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The glow in the moss breathes.",
+      "seen_in_art": "a moss cushion with a warm golden glow in its centre",
+      "example": {
+        "piece": "moss_clumps/moss_clump_008",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R32": {
+      "group": "ferns",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light in the single curled frond brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The glowing frond breathes.",
+      "seen_in_art": "a potted fern with one bright green frond curled at the top",
+      "example": {
+        "piece": "ferns/fern_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R33": {
+      "group": "meteor_stones",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the orange light at the base of the stones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light under the stones breathes.",
+      "seen_in_art": "stacked stones with orange light burning at their base",
+      "example": {
+        "piece": "meteor_stones/meteor_stone_002",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R34": {
+      "group": "streetlights",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the blue light inside the lamp head brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blue pane breathes.",
+      "seen_in_art": "a lamp head holding a still blue pane of light",
+      "example": {
+        "piece": "streetlights/streetlight_007",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R35": {
+      "group": "cliff_roots",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the teal light among the twigs brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The teal light breathes in the knot.",
+      "seen_in_art": "a knot of dark twigs threaded with bright teal light",
+      "example": {
+        "piece": "cliff_roots/cliff_root_013",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R42": {
+      "group": "giant_mushrooms",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the glowing sap in the stalk brightens and dims, moving slowly upward. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The sap veins brighten upward.",
+      "seen_in_art": "a tall mushroom with glowing sap veins climbing the stalk",
+      "example": {
+        "piece": "giant_mushrooms/giant_mushroom_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R44": {
+      "group": "soulstone_plinths",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly across the face of the crystal. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A glint crosses the dark crystal.",
+      "seen_in_art": "a dark crystal on a carved plinth with offerings at its foot",
+      "example": {
+        "piece": "soulstone_plinths/soulstone_plinth_001",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R13": {
+      "group": "beehives",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the single tiny dark speck beside the opening moves, drifting slowly in the air. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The bee moves at the entrance.",
+      "seen_in_art": "an ivy-grown skep with one tiny bee beside the entrance",
+      "example": {
+        "piece": "beehives/beehive_003",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R16": {
+      "group": "offering_tables",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the pale wisps above the table move, drifting slowly and fading. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The wisps drift above the food.",
+      "seen_in_art": "a laid table with pale cyan wisps hanging over the food",
+      "example": {
+        "piece": "offering_tables/offering_table_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R17": {
+      "group": "fences",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small green lights along the rail move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The little green lights drift.",
+      "seen_in_art": "a rough fence with small green lights along the lower rail",
+      "example": {
+        "piece": "fences/fence_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R18": {
+      "group": "cliff_vines",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small green points of light move, blinking slowly one after another. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The glowworms blink along the twigs.",
+      "seen_in_art": "a mass of thin twigs strung with green glowworm dots",
+      "example": {
+        "piece": "cliff_vines/cliff_vine_021",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R19": {
+      "group": "puffballs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the glowing freckles brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The freckles blink around it.",
+      "seen_in_art": "a puffball ringed with glowing freckles",
+      "example": {
+        "piece": "puffballs/puffball_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R23": {
+      "group": "wayside_shrines",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small candle flame inside the shrine flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The shrine candle flickers.",
+      "seen_in_art": "a small stone shrine with a red candle burning inside",
+      "example": {
+        "piece": "wayside_shrines/wayside_shrine_010",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R24": {
+      "group": "lantern_posts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small candle flame inside the lantern flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The flame moves behind the panes.",
+      "seen_in_art": "a hanging lantern with a candle burning behind horn panes",
+      "example": {
+        "piece": "lantern_posts/lantern_post_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R25": {
+      "group": "beds",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the small candle flame on the headboard flickers, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Only the candle flame moves.",
+      "seen_in_art": "a bed with a lit candle standing on the headboard shelf",
+      "example": {
+        "piece": "beds/bed_005",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R36": {
+      "group": "hop_poles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging bines move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hanging bines sway.",
+      "seen_in_art": "a pole hung with heavy golden hop bines",
+      "example": {
+        "piece": "hop_poles/hop_pole_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R37": {
+      "group": "overgrown_archways",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the long hanging flower trails move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hanging trails sway.",
+      "seen_in_art": "a stone arch with long pale flower trails hanging through it",
+      "example": {
+        "piece": "overgrown_archways/overgrown_archway_001",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R39": {
+      "group": "grass_tufts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the grass blades move, bending in a faint breeze and springing back. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blades bend and spring back.",
+      "seen_in_art": "a tuft of dry golden grass with thin seed stems",
+      "example": {
+        "piece": "grass_tufts/grass_tuft_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R40": {
+      "group": "briar_thickets",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the outermost flowers move, stirring very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The outer flowers stir.",
+      "seen_in_art": "a bramble mound with white flowers and red berries",
+      "example": {
+        "piece": "briar_thickets/briar_thicket_010",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R41": {
+      "group": "bushes",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the leaves move, shivering very slightly in a faint breeze. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The leaves shiver.",
+      "seen_in_art": "a low teal-leaved bush studded with dark berries",
+      "example": {
+        "piece": "bushes/bush_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R9": {
+      "group": "puffballs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A puff of spores lifts off it.",
+      "seen_in_art": "a plump tan puffball sitting on bare earth",
+      "example": {
+        "piece": "puffballs/puffball_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R10": {
+      "group": "cup_fungi",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY a faint drift of spores rises out of the cups and thins away. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Spores drift out of the cups.",
+      "seen_in_art": "two small scarlet cups nested in moss",
+      "example": {
+        "piece": "cup_fungi/cup_fungus_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R8": {
+      "group": "honey_trees",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the glowing honey moves, running slowly down and dripping. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The honey runs and drips.",
+      "seen_in_art": "a split stump with glowing orange honey running from the break",
+      "example": {
+        "piece": "honey_trees/honey_tree_002",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R11": {
+      "group": "charcoal_kilns",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the thread of smoke above the dome moves, rising and thinning. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The smoke keeps rising.",
+      "seen_in_art": "a clay dome already trailing smoke, its openings glowing",
+      "example": {
+        "piece": "charcoal_kilns/charcoal_kiln_002",
+        "state": "LIT_3"
+      },
+      "approved": "2026-08-29 round 5"
+    },
+    "R38": {
+      "group": "hanging_baskets",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the two small hanging lanterns move, swinging very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The two lanterns swing.",
+      "seen_in_art": "a flower basket with two small lanterns hung off its rim",
+      "example": {
+        "piece": "hanging_baskets/hanging_basket_006",
+        "state": "LIT_4"
+      },
+      "approved": "2026-08-29 round 5"
     }
   },
   "declined": {
