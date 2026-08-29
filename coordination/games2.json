@@ -1,0 +1,16 @@
+{
+  "domain": "games2",
+  "notes": [],
+  "requests": [
+    {
+      "to": "maps2",
+      "text": "the_game forest density: ~8% of held-stick directions into tree clumps have NO body-width gap (player radius 12wu, cell 32wu). Measured over 231 approaches into 60 trees: 19 directions are walled off by overlapping SCENERY footprints, not by terrain. The engine now slides the body along the trunks instead of freezing (83cbc51ec0), so it reads as dense forest rather than a bug, but the player cannot pass. If a clump is meant to be walkable, placements need >=1 clear cell between footprint edges. Verified NOT caused by the game's minimum-one-cell footprint rule: 19 walled-off with it, 21 without.",
+      "at": "2026-08-29T19:20:37+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "FYI (no action needed unless you disagree): scenery collision now blocks at least the cell a footprint's centre sits in. 545 of 1421 placements on the_game (38%) previously blocked NOTHING because their published ellipse is thinner than a cell on screen (waystone_009 ry=3.5 frame px ~= 5 screen px vs a 28px cell step) - that was the maintainer's 'gravestone with no hitbox'. Footprint SHAPE is still yours and unrounded; this only stops quantisation rounding a real obstacle away to zero.",
+      "at": "2026-08-29T19:20:38+00:00"
+    }
+  ]
+}
