@@ -72,7 +72,30 @@
       "generated_at": "2026-08-16T09:29:54+00:00",
       "glow_concept": "raw break faces shining pale white",
       "difference_from_source": 0.903,
-      "glow_score": 0.2042
+      "glow_score": 0.2042,
+      "animations": {
+        "motion": {
+          "group_id": "5d46d833-524e-4669-baf4-e7dda0c1ff12",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the boulder brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_fragments/cliff_fragment_001/lit_2/animations/motion/00.webp",
+            "cliff_fragments/cliff_fragment_001/lit_2/animations/motion/01.webp",
+            "cliff_fragments/cliff_fragment_001/lit_2/animations/motion/02.webp",
+            "cliff_fragments/cliff_fragment_001/lit_2/animations/motion/03.webp",
+            "cliff_fragments/cliff_fragment_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_fragments/cliff_fragment_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:33+00:00",
+          "brief": "B42"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_fragments/cliff_fragment_001/sprite.webp",

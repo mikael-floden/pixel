@@ -42,6 +42,29 @@
         "south-east": "offering_tables/offering_table_002/lit_3/rotations/south-east.webp",
         "south-west": "offering_tables/offering_table_002/lit_3/rotations/south-west.webp",
         "south": "offering_tables/offering_table_002/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5f61cff0-4df2-48f3-8188-9b3b0c3e24f0",
+          "description": "This is the same picture in every frame. ONLY the thread of steam above the pot rises and curls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "offering_tables/offering_table_002/lit_3/animations/motion/00.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/01.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/02.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/03.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:35:24+00:00",
+          "brief": "B50"
+        }
       }
     },
     "LIT_4": {

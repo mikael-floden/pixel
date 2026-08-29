@@ -67,7 +67,30 @@
       "glow_concept": "soulstone core shining in the heartwood",
       "difference_from_source": 0.9643,
       "glow_score": 0.2032,
-      "generated_at": "2026-08-15T16:13:33+00:00"
+      "generated_at": "2026-08-15T16:13:33+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "66e01afb-d062-4a56-9341-1da11843c400",
+          "description": "This is the same picture in every frame. ONLY the blue light above the stump brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/lit_4/animations/motion/00.webp",
+            "stumps/stump_001/lit_4/animations/motion/01.webp",
+            "stumps/stump_001/lit_4/animations/motion/02.webp",
+            "stumps/stump_001/lit_4/animations/motion/03.webp",
+            "stumps/stump_001/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:50+00:00",
+          "brief": "B37"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_001/sprite.webp",

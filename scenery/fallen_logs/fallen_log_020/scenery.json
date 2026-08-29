@@ -56,7 +56,30 @@
       "generated_at": "2026-08-15T19:51:41+00:00",
       "glow_concept": "blue foxfire glowing in the bark cracks",
       "difference_from_source": 0.8288,
-      "glow_score": 0.0048
+      "glow_score": 0.0048,
+      "animations": {
+        "motion": {
+          "group_id": "3167007e-eb35-4f71-a10a-b05ee3b83ce6",
+          "description": "This is the same picture in every frame. ONLY the cyan crystals inside the opening brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fallen_logs/fallen_log_020/lit_2/animations/motion/00.webp",
+            "fallen_logs/fallen_log_020/lit_2/animations/motion/01.webp",
+            "fallen_logs/fallen_log_020/lit_2/animations/motion/02.webp",
+            "fallen_logs/fallen_log_020/lit_2/animations/motion/03.webp",
+            "fallen_logs/fallen_log_020/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "fallen_logs/fallen_log_020/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:34:25+00:00",
+          "brief": "B36"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "fallen_logs/fallen_log_020/lit_3/sprite.webp",
