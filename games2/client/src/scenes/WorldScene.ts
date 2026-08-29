@@ -11419,7 +11419,7 @@ export class WorldScene extends Phaser.Scene {
     const pieces = this.sceneryPieces;
     const world = this.world;
     if (!idx || !pieces || !world) return;
-    const { dy, lh } = this.geom;
+    const { dy, lh, tile: tileSize } = this.geom;
     const pad = 200;
     const view = cam.worldView;
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
@@ -11519,8 +11519,16 @@ export class WorldScene extends Phaser.Scene {
         top: (world.rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
         solid: true,
         depth: this.iso.oy + (p.x + p.y) * dy,
-        x0: fit.x,
-        x1: fit.x + fit.w,
+        /* THE BOX IS A FOOTPRINT, NOT THE DRAWN ART — the props' own rule
+         * (`x0: bx, x1: bx + tileSize`), which never uses the art's width
+         * either. A tree's crop is its CANOPY: metres of leaves that a body
+         * should walk straight under, and using it made everything beneath the
+         * branches count as behind the trunk. One tile wide at the anchor, and
+         * never wider than the art itself so a lamp post does not claim a whole
+         * cell. Still a default: the moment scenery publishes a real
+         * ground-contact box, this reads it instead. */
+        x0: fit.x + fit.w / 2 - Math.min(tileSize, fit.w) / 2,
+        x1: fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
         y0: fit.y,
         y1: fit.y + fit.h,
       });
