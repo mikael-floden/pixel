@@ -34,7 +34,29 @@
     "LIT_1": {
       "sprite": "graves/grave_004/sprite.webp",
       "pixellab_object_id": "82a7fc26-6609-49ae-985c-aae8b39f995c",
-      "generated_at": "2026-08-13T08:45:01+00:00"
+      "generated_at": "2026-08-13T08:45:01+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "ab97c109-3453-429c-9fab-499faeb17068",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_004/animations/flame/00.webp",
+            "graves/grave_004/animations/flame/01.webp",
+            "graves/grave_004/animations/flame/02.webp",
+            "graves/grave_004/animations/flame/03.webp",
+            "graves/grave_004/animations/flame/04.webp"
+          ],
+          "strip": "graves/grave_004/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:32+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "graves/grave_004/lit_2/sprite.webp",
@@ -42,7 +64,29 @@
       "generated_at": "2026-08-16T14:48:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2803,
-      "glow_score": 0.0247
+      "glow_score": 0.0247,
+      "animations": {
+        "flame": {
+          "group_id": "bb8c17b3-938a-48f7-9243-a69c4ae5c34d",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_004/lit_2/animations/flame/00.webp",
+            "graves/grave_004/lit_2/animations/flame/01.webp",
+            "graves/grave_004/lit_2/animations/flame/02.webp",
+            "graves/grave_004/lit_2/animations/flame/03.webp",
+            "graves/grave_004/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "graves/grave_004/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:24+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "graves/grave_004/lit_3/sprite.webp",
@@ -50,7 +94,29 @@
       "generated_at": "2026-08-16T14:49:27+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3248,
-      "glow_score": 0.0194
+      "glow_score": 0.0194,
+      "animations": {
+        "flame": {
+          "group_id": "f68fa10d-3ee4-420a-8b59-53ef7ab63d41",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_004/lit_3/animations/flame/00.webp",
+            "graves/grave_004/lit_3/animations/flame/01.webp",
+            "graves/grave_004/lit_3/animations/flame/02.webp",
+            "graves/grave_004/lit_3/animations/flame/03.webp",
+            "graves/grave_004/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "graves/grave_004/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:55+00:00"
+        }
+      }
     }
   }
 }

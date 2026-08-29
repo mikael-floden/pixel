@@ -36,7 +36,29 @@
     "LIT_1": {
       "sprite": "flame_niches/flame_niche_900/sprite.webp",
       "pixellab_object_id": "3fa021ad-35b6-4be4-a5ea-74f02f78d5c3",
-      "generated_at": "2026-08-13T23:02:36+00:00"
+      "generated_at": "2026-08-13T23:02:36+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "24e6065b-29f7-4707-ba69-a698bef0f3c8",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_900/animations/flame/00.webp",
+            "flame_niches/flame_niche_900/animations/flame/01.webp",
+            "flame_niches/flame_niche_900/animations/flame/02.webp",
+            "flame_niches/flame_niche_900/animations/flame/03.webp",
+            "flame_niches/flame_niche_900/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:57+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "flame_niches/flame_niche_900/lit_2/sprite.webp",
@@ -44,7 +66,29 @@
       "generated_at": "2026-08-16T14:03:21+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7765,
-      "glow_score": 0.0142
+      "glow_score": 0.0142,
+      "animations": {
+        "flame": {
+          "group_id": "960fcf7d-4c2c-4e79-afd5-9a87264b206a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_2/animations/flame/00.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/01.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/02.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/03.webp",
+            "flame_niches/flame_niche_900/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:40+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "flame_niches/flame_niche_900/lit_3/sprite.webp",
@@ -52,7 +96,29 @@
       "generated_at": "2026-08-16T14:03:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8556,
-      "glow_score": 0.0239
+      "glow_score": 0.0239,
+      "animations": {
+        "flame": {
+          "group_id": "424f66c3-ff29-44f8-9f0a-bab748541865",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_3/animations/flame/00.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/01.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/02.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/03.webp",
+            "flame_niches/flame_niche_900/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:26+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "flame_niches/flame_niche_900/lit_4/sprite.webp",
@@ -60,7 +126,29 @@
       "generated_at": "2026-08-16T14:03:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8601,
-      "glow_score": 0.0218
+      "glow_score": 0.0218,
+      "animations": {
+        "flame": {
+          "group_id": "afed278e-ec15-45e6-9ce1-e0398ba7f405",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_900/lit_4/animations/flame/00.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/01.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/02.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/03.webp",
+            "flame_niches/flame_niche_900/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_900/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:00:41+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "flame_niches/flame_niche_900/not_lit_1/sprite.webp",
