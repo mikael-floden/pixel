@@ -725,18 +725,6 @@
       },
       "approved": "2026-08-29 round 5"
     },
-    "R7": {
-      "group": "moon_pools",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the surface of the dark water moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The dark water stirs.",
-      "seen_in_art": "a stone ring holding perfectly still dark water",
-      "example": {
-        "piece": "moon_pools/moon_pool_002",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 5"
-    },
     "R20": {
       "group": "crystal_trees",
       "name": "motion",
@@ -770,18 +758,6 @@
       "example": {
         "piece": "cliff_features/cliff_feature_002",
         "state": "LIT_3"
-      },
-      "approved": "2026-08-29 round 5"
-    },
-    "R26": {
-      "group": "beached_rowboats",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the warm light showing between the planks brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The light between the planks breathes.",
-      "seen_in_art": "a beached rowboat with warm light seeping between its planks",
-      "example": {
-        "piece": "beached_rowboats/beached_rowboat_001",
-        "state": "LIT_1"
       },
       "approved": "2026-08-29 round 5"
     },
@@ -869,18 +845,6 @@
       },
       "approved": "2026-08-29 round 5"
     },
-    "R34": {
-      "group": "streetlights",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the blue light inside the lamp head brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The blue pane breathes.",
-      "seen_in_art": "a lamp head holding a still blue pane of light",
-      "example": {
-        "piece": "streetlights/streetlight_007",
-        "state": "LIT_1"
-      },
-      "approved": "2026-08-29 round 5"
-    },
     "R35": {
       "group": "cliff_roots",
       "name": "motion",
@@ -902,30 +866,6 @@
       "example": {
         "piece": "giant_mushrooms/giant_mushroom_001",
         "state": "LIT_1"
-      },
-      "approved": "2026-08-29 round 5"
-    },
-    "R44": {
-      "group": "soulstone_plinths",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly across the face of the crystal. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "A glint crosses the dark crystal.",
-      "seen_in_art": "a dark crystal on a carved plinth with offerings at its foot",
-      "example": {
-        "piece": "soulstone_plinths/soulstone_plinth_001",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 5"
-    },
-    "R13": {
-      "group": "beehives",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the single tiny dark speck beside the opening moves, drifting slowly in the air. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The bee moves at the entrance.",
-      "seen_in_art": "an ivy-grown skep with one tiny bee beside the entrance",
-      "example": {
-        "piece": "beehives/beehive_003",
-        "state": "NOT_LIT_2"
       },
       "approved": "2026-08-29 round 5"
     },
@@ -1013,18 +953,6 @@
       },
       "approved": "2026-08-29 round 5"
     },
-    "R36": {
-      "group": "hop_poles",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the hanging bines move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The hanging bines sway.",
-      "seen_in_art": "a pole hung with heavy golden hop bines",
-      "example": {
-        "piece": "hop_poles/hop_pole_001",
-        "state": "LIT_1"
-      },
-      "approved": "2026-08-29 round 5"
-    },
     "R37": {
       "group": "overgrown_archways",
       "name": "motion",
@@ -1046,18 +974,6 @@
       "example": {
         "piece": "grass_tufts/grass_tuft_001",
         "state": "NOT_LIT_2"
-      },
-      "approved": "2026-08-29 round 5"
-    },
-    "R40": {
-      "group": "briar_thickets",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the outermost flowers move, stirring very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The outer flowers stir.",
-      "seen_in_art": "a bramble mound with white flowers and red berries",
-      "example": {
-        "piece": "briar_thickets/briar_thicket_010",
-        "state": "LIT_1"
       },
       "approved": "2026-08-29 round 5"
     },
@@ -1303,6 +1219,97 @@
       },
       "approved": "2026-08-29 round 4",
       "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "R34": {
+      "group": "streetlights",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the blue light inside the lamp head brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blue pane breathes.",
+      "seen_in_art": "a lamp head holding a still blue pane of light",
+      "example": {
+        "piece": "streetlights/streetlight_007",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R44": {
+      "group": "soulstone_plinths",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one small bright glint moves, sliding slowly across the face of the crystal. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A glint crosses the dark crystal.",
+      "seen_in_art": "a dark crystal on a carved plinth with offerings at its foot",
+      "example": {
+        "piece": "soulstone_plinths/soulstone_plinth_001",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R36": {
+      "group": "hop_poles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging bines move, swaying very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hanging bines sway.",
+      "seen_in_art": "a pole hung with heavy golden hop bines",
+      "example": {
+        "piece": "hop_poles/hop_pole_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R40": {
+      "group": "briar_thickets",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the outermost flowers move, stirring very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The outer flowers stir.",
+      "seen_in_art": "a bramble mound with white flowers and red berries",
+      "example": {
+        "piece": "briar_thickets/briar_thicket_010",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R13": {
+      "group": "beehives",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the single tiny dark speck beside the opening moves, drifting slowly in the air. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The bee moves at the entrance.",
+      "seen_in_art": "an ivy-grown skep with one tiny bee beside the entrance",
+      "example": {
+        "piece": "beehives/beehive_003",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R26": {
+      "group": "beached_rowboats",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the warm light showing between the planks brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light between the planks breathes.",
+      "seen_in_art": "a beached rowboat with warm light seeping between its planks",
+      "example": {
+        "piece": "beached_rowboats/beached_rowboat_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "R7": {
+      "group": "moon_pools",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the surface of the dark water moves, rippling very slightly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The dark water stirs.",
+      "seen_in_art": "a stone ring holding perfectly still dark water",
+      "example": {
+        "piece": "moon_pools/moon_pool_002",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 5",
+      "why": "maintainer 2026-08-29 round 5 review."
     }
   },
   "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked."
