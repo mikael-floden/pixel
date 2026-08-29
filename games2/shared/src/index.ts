@@ -3124,3 +3124,95 @@ export function stampSceneryCollision(
   }
   return blocked;
 }
+
+/* -- THE DEEP-SEA CURRENT ----------------------------------------------------
+ * Deep water is the END OF THE WORLD, and the maintainer's call (2026-08-29) is
+ * that it must not read as a wall: "let's not make a wall, but a force that
+ * pushes the player towards the center of the map that increases the further
+ * you swim in deep water... you will read it more like a current you can't
+ * escape". In practice it bounds the map; in play it is weather.
+ */
+
+/** The open sea. Only this ground carries the current. */
+export const DEEP_WATER_GROUND = "deep_water";
+/** Cells of open sea that stay free, so the shoreline is swimmable. */
+export const DEEP_CURRENT_FREE_CELLS = 1.5;
+/** Cells from the shore at which the current is at full strength. */
+export const DEEP_CURRENT_RAMP_CELLS = 7;
+/** Full-strength drift, world units per second. A RUNNING swim is
+ *  RUN_SPEED * deep_water.speed = 175 * 0.55 = 96.25 wu/s, so this outruns the
+ *  strongest stroke in the game and the far sea is unreachable — without ever
+ *  refusing a move, which is what makes it read as water and not as a wall. */
+export const DEEP_CURRENT_MAX = 120;
+
+/** Cells from the nearest non-deep cell, per cell; 0 for anything not deep.
+ *  Built once per grid (multi-source BFS out of the shore) and cached, because
+ *  "how far have you swum out" is exactly a distance-to-shore. */
+const deepDepthCache = new WeakMap<TerrainGrid, Uint16Array>();
+function deepDepth(grid: TerrainGrid): Uint16Array {
+  const hit = deepDepthCache.get(grid);
+  if (hit) return hit;
+  const w = grid.width;
+  const h = grid.height;
+  const n = w * h;
+  const dist = new Uint16Array(n);
+  const queue = new Int32Array(n);
+  let head = 0;
+  let tail = 0;
+  // Sources: every cell that is NOT open sea. Their deep neighbours are depth 1.
+  for (let i = 0; i < n; i++) {
+    if (grid.type[i] !== DEEP_WATER_GROUND) {
+      dist[i] = 0;
+      queue[tail++] = i;
+    } else {
+      dist[i] = 0xffff;
+    }
+  }
+  while (head < tail) {
+    const i = queue[head++];
+    const c = i % w;
+    const r = (i - c) / w;
+    const d = dist[i] + 1;
+    if (c + 1 < w) { const j = i + 1; if (dist[j] === 0xffff) { dist[j] = d; queue[tail++] = j; } }
+    if (c > 0) { const j = i - 1; if (dist[j] === 0xffff) { dist[j] = d; queue[tail++] = j; } }
+    if (r + 1 < h) { const j = i + w; if (dist[j] === 0xffff) { dist[j] = d; queue[tail++] = j; } }
+    if (r > 0) { const j = i - w; if (dist[j] === 0xffff) { dist[j] = d; queue[tail++] = j; } }
+  }
+  // An all-sea world would leave 0xffff behind; treat unreached as deepest.
+  for (let i = 0; i < n; i++) if (dist[i] === 0xffff) dist[i] = DEEP_CURRENT_RAMP_CELLS;
+  deepDepthCache.set(grid, dist);
+  return dist;
+}
+
+/**
+ * The current acting on a body at a world position, or null on land and in the
+ * shallows. WORLD-space unit direction plus a speed in wu/s — the caller
+ * integrates it through the ordinary movement step so terrain still collides
+ * and nothing can be pushed through a wall.
+ *
+ * Direction is toward the MAP CENTRE, as asked, rather than the nearest shore:
+ * a swimmer rounding a headland is carried the same way as one straight out,
+ * which reads as one ocean-wide current instead of a per-cell nudge.
+ */
+export function deepCurrentAt(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+): { dx: number; dy: number; speed: number } | null {
+  const c = Math.floor(x / CELL_WU);
+  const r = Math.floor(y / CELL_WU);
+  if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return null;
+  const i = r * grid.width + c;
+  if (grid.type[i] !== DEEP_WATER_GROUND) return null;
+  const depth = deepDepth(grid)[i];
+  const t = (depth - DEEP_CURRENT_FREE_CELLS) / (DEEP_CURRENT_RAMP_CELLS - DEEP_CURRENT_FREE_CELLS);
+  if (!(t > 0)) return null;
+  const speed = Math.min(1, t) * DEEP_CURRENT_MAX;
+  const cx = (grid.width * CELL_WU) / 2;
+  const cy = (grid.height * CELL_WU) / 2;
+  const vx = cx - x;
+  const vy = cy - y;
+  const len = Math.hypot(vx, vy);
+  if (len < 1e-6) return null;
+  return { dx: vx / len, dy: vy / len, speed };
+}

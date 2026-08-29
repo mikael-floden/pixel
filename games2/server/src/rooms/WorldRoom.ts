@@ -15,6 +15,7 @@ import {
   stepMovement,
   TerrainGrid,
   buildTerrainGrid,
+  deepCurrentAt,
   stampSceneryCollision,
   ISO_GEOMETRY_MAPS3,
   type SceneryBboxDoc,
@@ -913,6 +914,26 @@ export class WorldRoom extends Room<WorldState> {
           );
         } else {
           r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);
+        }
+        /* THE DEEP-SEA CURRENT. Integrated as a SECOND ordinary move rather
+         * than added to the position, so terrain still collides and the sea can
+         * never push a body through a wall or onto a cliff. `speed` here is a
+         * scale on WALK_SPEED, which is how stepMovement takes it. The client
+         * predicts with the identical call — a current only one side applied
+         * would rubber-band every swimmer. */
+        if (terrain) {
+          const cur = deepCurrentAt(terrain, r.x, r.y);
+          if (cur) {
+            const ctxC = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+            r = stepMovement(
+              r.x, r.y, cur.dx, cur.dy, false, eff,
+              makeBlockedElev(terrain, ctxC, () => player.elev),
+              cur.speed / WALK_SPEED,
+              false, // already a WORLD-space direction, not screen-relative
+              this.worldW, this.worldH,
+              makeSideBlocked(terrain, ctxC),
+            );
+          }
         }
         player.x = r.x;
         player.y = r.y;

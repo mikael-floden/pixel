@@ -9,6 +9,7 @@ import {
   InputMessage,
   ChatBroadcast,
   stepMovement,
+  deepCurrentAt,
   vectorToDirection,
   TerrainGrid,
   buildTerrainGrid,
@@ -160,6 +161,7 @@ import {
   type Pixels as T3Pixels,
   type TextureManagerLike,
   type UrlRoute,
+  assetPath,
 } from "../tiles3draw";
 import {
   Tiles3Loader,
@@ -6747,6 +6749,22 @@ export class WorldScene extends Phaser.Scene {
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
           rx = r.x;
           ry = r.y;
+          /* THE DEEP-SEA CURRENT — the SAME second move the server integrates
+           * (WorldRoom), from the same shared function. Predicting it here is
+           * what keeps a swimmer from rubber-banding: the server will apply it
+           * whether or not we do. */
+          if (this.terrain) {
+            const cur = deepCurrentAt(this.terrain, rx, ry);
+            if (cur) {
+              const d = stepMovement(
+                rx, ry, cur.dx, cur.dy, false, sdt, blocked,
+                cur.speed / WALK_SPEED,
+                false, this.worldW, this.worldH, sideBlocked,
+              );
+              rx = d.x;
+              ry = d.y;
+            }
+          }
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
@@ -11418,7 +11436,17 @@ export class WorldScene extends Phaser.Scene {
      * join and every save. Big live docs go the way tiles3's do, through
      * `gameUrl` so a staging world reads the repo's copy. Failure is soft: no
      * doc means every piece falls back to its anchor and a one-tile box. */
-    void fetch(docUrl("live/tuning/scenery_hitbox.json", this.t3route))
+    /* COLLISION DATA COMES FROM THE SERVER'S OWN COPY, never the staging CDN.
+     * `docUrl` routes a staging world's assets to cdn.jsdelivr at the sha this
+     * TAB pinned when it opened, while the server stamps footprints from the
+     * copies baked beside it. Two players who opened at different times — or a
+     * player and the server — then disagree about where a tree stands, and the
+     * prediction fights the correction every frame. Art may drift like that and
+     * only look different (the maintainer already caught two clients drawing
+     * different trees); COLLISION may not, because it decides where a body can
+     * be. `assetPath` alone keeps these two documents on the game server's
+     * origin, which is the same file the authority read. */
+    void fetch(assetPath("live/tuning/scenery_hitbox.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         this.sceneryHitboxDoc = (d?.overrides as Record<string, SceneryHitboxRec>) ?? null;
@@ -11428,7 +11456,7 @@ export class WorldScene extends Phaser.Scene {
       .catch(() => {});
     /* The bbox table the footprint maths needs — the same file the server reads,
      * so both sides place an ellipse identically. */
-    void fetch(docUrl("games2/config/scenery-bbox.json", this.t3route))
+    void fetch(assetPath("games2/config/scenery-bbox.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         this.sceneryBboxDoc = (d as SceneryBboxDoc) ?? null;
