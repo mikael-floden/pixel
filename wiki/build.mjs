@@ -1158,6 +1158,32 @@ function buildObjects() {
   for (const [rel, group, oj] of entries) {
     const id = rel.split("/").pop();
     const anims = {};
+    /* ANIMATIONS MOVED UNDER THE STATES (scenery agent, 2026-08-28: "wind
+     * animation for trees/tree_004 (14 state(s))" — 179 pieces, 1,368
+     * animated states, wind and flame). scenery.json's top-level
+     * `animations` is now an empty object on those pieces, so the wiki went
+     * on publishing every state as a one-frame still and the maintainer saw
+     * no movement at all ("I can't see the tree and fire animation in the
+     * wiki"). Each STATE carries its own strip and frame_count; a state is a
+     * clip, which is exactly what the viewer's state segment already drives.
+     *
+     * Frames come from the STRIP, one row of frame_count cells — the same
+     * shape the top-level animations used, so the player is untouched. */
+    for (const [sk, sv] of Object.entries(oj.states ?? {})) {
+      for (const [name, a] of Object.entries(sv.animations ?? {})) {
+        const declared = a.strip ? `scenery/${a.strip}` : null;
+        const strip = declared ? art(declared.replace(/\.(png|webp)$/i, "")) : null;
+        const frames = a.frame_count ?? (a.frame_paths ?? []).length ?? 0;
+        if (!strip || !frames) continue;
+        const dims = imageSize(join(ROOT, strip));
+        // one clip per state, keyed the way the still states are (lower case)
+        anims[sk.toLowerCase()] = {
+          description: a.description ?? "",
+          anim: name,
+          dirs: { south: { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size } },
+        };
+      }
+    }
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
       const dirs = {};
       for (const dir of DIRS) {
@@ -1186,8 +1212,14 @@ function buildObjects() {
     // unreachable for all but three of them. Synthesised only when nothing
     // real exists, and never overwriting a generated animation.
     const preview = art(`scenery/${rel}/sprite`);
+    /* A PIECE CAN BE PART ANIMATED (2026-08-29): a beacon's lit states carry
+     * flame, its unlit ones nothing. Synthesising stills only when NOTHING is
+     * animated dropped those unlit states off the card entirely — the states
+     * a still branch exists to show. So the branch runs whenever a state is
+     * still missing a clip, and never overwrites an animated one. */
     const stillOnly = !Object.keys(anims).length && !!preview;
-    if (stillOnly) {
+    const someStill = Object.keys(oj.states ?? {}).some((sk) => !anims[sk.toLowerCase()]);
+    if (stillOnly || (someStill && !!preview)) {
       // A still can face more than one way. Since 2026-08-14 the scenery domain
       // ships a `rotations` map (south / south-east / south-west so far) beside
       // the sprite, and the maintainer reviews the DIRECTIONS a piece has, not
@@ -1263,11 +1295,14 @@ function buildObjects() {
       // from, and the one the GAME still places. It leads the row as "Base" so
       // the canonical art is reviewable at all; without it the viewer opened on
       // variant #1 while the card, the queue and the game showed something else.
-      if (states.length && !base.length && preview) {
+      if (states.length && !base.length && preview && !Object.keys(anims).length) {
         const dirs = dirsFrom(oj.rotations, `${rel}/sprite`);
         if (Object.keys(dirs).length) anims.base = { description: "", dirs };
       }
       for (const [name, st] of ordered) {
+        // NEVER over an animated state (2026-08-29): a still would replace the
+        // clip that state exists to show.
+        if (anims[name.toLowerCase()]) continue;
         const dirs = dirsFrom(st.rotations, st.sprite);
         // The UI title-cases this; the CAPS key is the scenery domain's.
         if (Object.keys(dirs).length) anims[name.toLowerCase()] = { description: st.edit_description ?? "", dirs };
