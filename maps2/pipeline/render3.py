@@ -990,6 +990,17 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 INSTEAD of the plate, never over it."""
                 quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
                 gs = [g(*c) for c in quad]
+                # A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back
+                # to the pure plate there drew the cell's raw diamond edge -
+                # a hard straight segment sitting in the middle of an
+                # otherwise organic coastline, which is what he kept marking.
+                # The rarest of the three is folded into whichever of the two
+                # majorities it already touches, so the tile still blends.
+                if gs.count(None) == 0 and "" not in gs and len(set(gs)) == 3:
+                    cnt = Counter(gs)
+                    keep = [t for t, _n in cnt.most_common(2)]
+                    odd = next(t for t in cnt if t not in keep)
+                    gs = [keep[0] if t == odd else t for t in gs]
                 if None not in gs and "" not in gs and len(set(gs)) == 2 \
                         and len({L(*c) for c in quad}) == 1 \
                         and not any(q in liq for q in gs):
