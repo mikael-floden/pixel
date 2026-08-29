@@ -318,7 +318,11 @@ FOREST_SETS = {
     # silver birches). Each set is internally ONE tree, and every set is
     # visibly DIFFERENT from every other — that is what lets one region's
     # wood look nothing like the next region's.
-    "birch_pale":    ["tree_001", "tree_058", "tree_074"],
+    # NO GLOWING TRUNKS in a forest set: tree_058 and tree_074 carry a
+    # cyan-glowing trunk, and an independent visual audit read them as a
+    # "corrupted species" wherever they appeared. Loud magic is a landmark,
+    # never a forest's building block.
+    "birch_pale":    ["tree_001", "tree_083", "tree_045"],
     "conifer_dark":  ["tree_069", "tree_063"],
     "conifer_snow":  ["tree_031", "tree_065", "tree_017"],
     "oak_green":     ["tree_047", "tree_077", "tree_059", "tree_035"],
@@ -326,7 +330,9 @@ FOREST_SETS = {
     "autumn_red":    ["tree_015", "tree_029", "tree_057", "tree_071"],
     "autumn_gold":   ["tree_003", "tree_021", "tree_052", "tree_067"],
     "blossom_white": ["tree_005", "tree_011", "tree_053"],
-    "willow_grey":   ["tree_043", "tree_012", "tree_054", "tree_085"],
+    # tree_012/tree_054 are white-and-yellow FLOWERING trees on orange
+    # trunks — a different tree from the grey weeping willows, audit-caught
+    "willow_grey":   ["tree_043", "tree_085"],
     "dead_bare":     ["tree_009", "tree_028", "tree_051", "tree_070"],
     "windswept":     ["tree_075", "tree_079", "tree_024"],
 }
@@ -458,13 +464,27 @@ def retype_woods(scen, ctx):
     feathered = list(ident)
     for i in range(len(trees)):
         other = [ident[j] for j in neighbours(i, 81) if ident[j] != ident[i]]
-        if not other:
-            continue
-        h = (int(trees[i]["x"] * 4) * 2246822519
-             ^ int(trees[i]["y"] * 4) * 3266489917) & 0xffffffff
-        if h % 100 < 34:
+        if len(other) < 2:
+            continue        # a lone dissenter is not a boundary
+        # feather in PATCHES, not per tree: the hash is on a 4-cell block, so
+        # neighbouring trees flip together and the band interleaves in
+        # tongues. Per-tree flipping stranded single loud trees inside a
+        # foreign wood — three independent judges each caught one.
+        h = ((int(trees[i]["x"]) // 4) * 2246822519
+             ^ (int(trees[i]["y"]) // 4) * 3266489917) & 0xffffffff
+        if h % 100 < 40:
             feathered[i] = max(set(other), key=other.count)
     ident = feathered
+    # MINIMUM STAND SIZE: a tree whose own identity has fewer than 3 members
+    # within reach reverts to the local majority. A one-off tree of a strong
+    # species does not read as variation, it reads as a placement mistake.
+    for _ in range(2):
+        fixed = list(ident)
+        for i in range(len(trees)):
+            near = [ident[j] for j in neighbours(i, 100)]
+            if near.count(ident[i]) < 3:
+                fixed[i] = max(set(near), key=near.count)
+        ident = fixed
     tally = {}
     for i, t in enumerate(trees):
         canopy = FOREST_SETS[ident[i]]
