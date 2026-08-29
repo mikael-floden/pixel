@@ -163,8 +163,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "896a4d4b-82ec-4907-a51e-36c926d88ee4",
-          "description": "This is the same picture in every frame. ONLY each hanging fish turns very slightly where it hangs, by a single pixel. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, the same parts in the same places, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "f121e28d-a961-4533-922b-aaa30b9e0f73",
+          "description": "This is the same picture in every frame. ONLY the hanging fish turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -180,7 +180,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T19:14:36+00:00",
+          "generated_at": "2026-08-29T19:40:41+00:00",
           "brief": "D12"
         }
       }

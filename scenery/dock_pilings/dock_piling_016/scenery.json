@@ -92,8 +92,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "869adc10-1289-4bfa-8bbb-9d4026dd3e58",
-          "description": "This is the same picture in every frame. ONLY the cyan light on the crystals brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "c5382d14-ecdb-4a66-9915-ab87231bde11",
+          "description": "This is the same picture in every frame. ONLY the cyan light on the crystals at the waterline brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -109,7 +109,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T19:16:32+00:00",
+          "generated_at": "2026-08-29T19:39:52+00:00",
           "brief": "D24"
         }
       }
