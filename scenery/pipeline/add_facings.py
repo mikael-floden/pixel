@@ -31,6 +31,8 @@ import glob
 import json
 import os
 import sys
+import threading
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import factory
@@ -42,6 +44,15 @@ TYPES = ("INDOOR", "TOWN")
 WANT = ("south-east", "south-west")     # SOUTH is already the stored sprite
 EIGHT_DIR_MAX = 168
 PARALLEL = 12
+
+# ONE LOCK PER PIECE. Every state of a piece writes the SAME scenery.json, so
+# a read-modify-write from two workers interleaves and the later write drops
+# the earlier one's rotations. Re-reading before writing is not enough — the
+# gap between read and write is the race. Measured: 15 states across 10 pieces
+# silently lost their entries on the 2026-08-28 run, all on pieces with many
+# states (tables, cupboards). The .webp files survived; only the manifest
+# forgot them, which is exactly the kind of loss that looks like nothing.
+_LOCKS = defaultdict(threading.Lock)
 
 
 def _types():
@@ -96,18 +107,17 @@ def one(client, rel, state, oid, size):
             factory.save_webp(factory._normalize(im.convert("RGBA"), size),
                               os.path.join(factory.ROOT, out))
             saved[d] = out
-        # Re-read before writing: workers finish out of order across states of
-        # the same piece and must not clobber each other.
-        man = factory.read_manifest(rel) or {}
-        states = dict(man.get("states") or {})
-        ent = dict(states.get(state) or {})
-        rot = dict(ent.get("rotations") or {})
-        rot.update(saved)
-        rot["south"] = ent.get("sprite")     # so a consumer iterates all three
-        ent["rotations"] = rot
-        states[state] = ent
-        man["states"] = states
-        factory.write_manifest(rel, man)
+        with _LOCKS[rel]:
+            man = factory.read_manifest(rel) or {}
+            states = dict(man.get("states") or {})
+            ent = dict(states.get(state) or {})
+            rot = dict(ent.get("rotations") or {})
+            rot.update(saved)
+            rot["south"] = ent.get("sprite")   # so a consumer iterates all three
+            ent["rotations"] = rot
+            states[state] = ent
+            man["states"] = states
+            factory.write_manifest(rel, man)
         return (rel, state, len(saved), "ok")
     except PixelLabError as e:
         return (rel, state, 0, f"FAILED: {str(e)[:90]}")

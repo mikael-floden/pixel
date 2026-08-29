@@ -12425,6 +12425,10 @@
           "glow_concept": null,
           "difference_from_source": 0.802,
           "glow_score": 0.1335,
+          "rotations": {
+            "south-east": "charcoal_kilns/charcoal_kiln_002/lit_4/rotations/south-east.webp",
+            "south": "charcoal_kilns/charcoal_kiln_002/lit_4/sprite.webp"
+          },
           "art_hash": "7276aa107adefdea"
         },
         "NOT_LIT_1": {
@@ -19389,6 +19393,11 @@
           "difference_from_source": 0.7467,
           "glow_score": 0.0385,
           "relit_from": "LIT_4",
+          "rotations": {
+            "south-east": "cupboards_and_shelves/cupboard_002/not_lit_6/rotations/south-east.webp",
+            "south-west": "cupboards_and_shelves/cupboard_002/not_lit_6/rotations/south-west.webp",
+            "south": "cupboards_and_shelves/cupboard_002/not_lit_6/sprite.webp"
+          },
           "art_hash": "c94e499e5e055e88"
         }
       },
@@ -47565,6 +47574,11 @@
           "glow_concept": null,
           "difference_from_source": 0.4542,
           "glow_score": 0.0392,
+          "rotations": {
+            "south-east": "tables/table_007/not_lit_2/rotations/south-east.webp",
+            "south-west": "tables/table_007/not_lit_2/rotations/south-west.webp",
+            "south": "tables/table_007/not_lit_2/sprite.webp"
+          },
           "art_hash": "0a038eca737b295a"
         },
         "NOT_LIT_3": {
@@ -47574,6 +47588,11 @@
           "glow_concept": null,
           "difference_from_source": 0.7399,
           "glow_score": 0.0473,
+          "rotations": {
+            "south-east": "tables/table_007/not_lit_3/rotations/south-east.webp",
+            "south-west": "tables/table_007/not_lit_3/rotations/south-west.webp",
+            "south": "tables/table_007/not_lit_3/sprite.webp"
+          },
           "art_hash": "7445759ec8839b0a"
         },
         "NOT_LIT_4": {
@@ -47583,6 +47602,11 @@
           "glow_concept": null,
           "difference_from_source": 0.6098,
           "glow_score": 0.1947,
+          "rotations": {
+            "south-east": "tables/table_007/not_lit_4/rotations/south-east.webp",
+            "south-west": "tables/table_007/not_lit_4/rotations/south-west.webp",
+            "south": "tables/table_007/not_lit_4/sprite.webp"
+          },
           "art_hash": "d8faa30199f6ee2c"
         }
       },
@@ -47639,6 +47663,11 @@
               "generated_at": "2026-08-29T07:09:04+00:00"
             }
           },
+          "rotations": {
+            "south-east": "tables/table_008/rotations/south-east.webp",
+            "south-west": "tables/table_008/rotations/south-west.webp",
+            "south": "tables/table_008/sprite.webp"
+          },
           "art_hash": "def48d389b0b6980"
         },
         "LIT_2": {
@@ -47670,6 +47699,11 @@
               "generated_at": "2026-08-29T07:09:25+00:00"
             }
           },
+          "rotations": {
+            "south-east": "tables/table_008/lit_2/rotations/south-east.webp",
+            "south-west": "tables/table_008/lit_2/rotations/south-west.webp",
+            "south": "tables/table_008/lit_2/sprite.webp"
+          },
           "art_hash": "045a62fc4a0420f8"
         },
         "LIT_3": {
@@ -47700,6 +47734,11 @@
               ],
               "generated_at": "2026-08-29T07:09:41+00:00"
             }
+          },
+          "rotations": {
+            "south-east": "tables/table_008/lit_3/rotations/south-east.webp",
+            "south-west": "tables/table_008/lit_3/rotations/south-west.webp",
+            "south": "tables/table_008/lit_3/sprite.webp"
           },
           "art_hash": "b21b3cf6bbedf9ba"
         },
@@ -47746,6 +47785,11 @@
           "glow_concept": null,
           "difference_from_source": 0.6555,
           "glow_score": 0.0,
+          "rotations": {
+            "south-east": "tables/table_008/not_lit_2/rotations/south-east.webp",
+            "south-west": "tables/table_008/not_lit_2/rotations/south-west.webp",
+            "south": "tables/table_008/not_lit_2/sprite.webp"
+          },
           "art_hash": "9d0188d1ecd33d75"
         }
       },
@@ -85165,6 +85209,11 @@
           "sprite": "waystones/waystone_019/sprite.webp",
           "pixellab_object_id": "195f9a55-5bf6-44c3-bce5-f740cbd8c81f",
           "generated_at": "2026-08-14T01:24:27+00:00",
+          "rotations": {
+            "south-east": "waystones/waystone_019/rotations/south-east.webp",
+            "south-west": "waystones/waystone_019/rotations/south-west.webp",
+            "south": "waystones/waystone_019/sprite.webp"
+          },
           "art_hash": "1b40991b4d584293"
         },
         "NOT_LIT_2": {
@@ -86242,6 +86291,11 @@
           "sprite": "wells/well_016/sprite.webp",
           "pixellab_object_id": "cb4c2d5f-bcee-4f89-8af6-58bf77e82b08",
           "generated_at": "2026-08-14T01:51:10+00:00",
+          "rotations": {
+            "south-east": "wells/well_016/rotations/south-east.webp",
+            "south-west": "wells/well_016/rotations/south-west.webp",
+            "south": "wells/well_016/sprite.webp"
+          },
           "art_hash": "659c4a9bccc8526b"
         },
         "LIT_4": {
