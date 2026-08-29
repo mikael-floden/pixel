@@ -1040,13 +1040,18 @@ class Grow:
         # (2026-08-30). The deck now covers the INTERIOR ONLY, so the roof is
         # still not a slab over the walls: the wall ring keeps its thin
         # roof-over-wall course and the deck roofs the room it encloses.
-        inner = [(x, y) for (x, y) in rect
-                 if not (x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1))]
-        if inner:
-            self.doc["decks"].append(
-                {"kind": "roof", "level": base + rise, "thickness": 0,
-                 "ground": roof, "side": wall,
-                 "cells": [{"x": x, "y": y} for (x, y) in inner]})
+        # THE ROOF COVERS THE WHOLE FOOTPRINT, exactly as v2 did
+        # (islandworld2._house_near_spawn: cells = list(foot)). Narrowing it to
+        # the interior left the DOORWAY unroofed - the door is a gap in the
+        # wall ring, so with no wall there is no roof course there either, and
+        # the house got a notch cut out of its roof and a full-height hole
+        # (maintainer 2026-08-30: "the door on this house look fucked up! You
+        # did it the entire V2!"). The roof is still THIN because thin is
+        # about x-over-y, not about footprint: black_rock over parquet_floor.
+        self.doc["decks"].append(
+            {"kind": "roof", "level": base + rise, "thickness": 0,
+             "ground": roof, "side": wall,
+             "cells": [{"x": x, "y": y} for (x, y) in rect]})
         # doorstep
         dx, dy = door[0], door[1] + 1
         if self.g(dx, dy) == "grass":

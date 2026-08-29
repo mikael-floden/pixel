@@ -682,16 +682,9 @@ def build():
         if kind == "roof":
             ground = "black_rock"     # thin roof: black rock over the timber
         cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]]
-        if kind == "roof":
-            # INTERIOR ONLY. The deck is what tells the game you are indoors
-            # (it blacks out the world and fixes the draw order); the wall
-            # ring keeps its own thin roof-over-wall course, so the roof is
-            # not a slab lying over the walls as well.
-            top_lv = max(lvl[c["y"]][c["x"]] for c in dk["cells"])
-            cells = [{"x": c["x"], "y": c["y"]} for c in dk["cells"]
-                     if lvl[c["y"]][c["x"]] < top_lv]
-            if not cells:
-                continue
+        # THE ROOF COVERS THE WHOLE FOOTPRINT, as it did in v2 — the doorway
+        # is a gap in the wall ring, and an interior-only deck leaves it
+        # unroofed: a notch in the roof and a full-height hole in the house.
         entry = {"kind": kind, "level": dk["level"],
                  "thickness": dk.get("thickness", 1), "ground": ground,
                  "cells": cells}
