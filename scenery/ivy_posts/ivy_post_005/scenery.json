@@ -37,7 +37,29 @@
       "generated_at": "2026-08-16T17:07:48+00:00",
       "glow_concept": "ivy berries lit like tiny coals",
       "difference_from_source": 0.7279,
-      "glow_score": 0.0479
+      "glow_score": 0.0479,
+      "animations": {
+        "flame": {
+          "group_id": "1430484e-28f3-4c3a-a24a-0d6f703c3b4b",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/00.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/01.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/02.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/03.webp",
+            "ivy_posts/ivy_post_005/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:04:13+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "ivy_posts/ivy_post_005/sprite.webp",

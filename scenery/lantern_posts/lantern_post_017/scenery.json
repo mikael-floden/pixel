@@ -46,7 +46,29 @@
       "generated_at": "2026-08-16T17:24:19+00:00",
       "glow_concept": "thread of woven light burning like a wick",
       "difference_from_source": 0.9179,
-      "glow_score": 0.1463
+      "glow_score": 0.1463,
+      "animations": {
+        "flame": {
+          "group_id": "7c7a4fcf-11c6-4ba3-b0c0-82a2ca271d31",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_017/lit_2/animations/flame/00.webp",
+            "lantern_posts/lantern_post_017/lit_2/animations/flame/01.webp",
+            "lantern_posts/lantern_post_017/lit_2/animations/flame/02.webp",
+            "lantern_posts/lantern_post_017/lit_2/animations/flame/03.webp",
+            "lantern_posts/lantern_post_017/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_017/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:05:54+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "lantern_posts/lantern_post_017/lit_3/sprite.webp",

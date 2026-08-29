@@ -64,7 +64,29 @@
       "generated_at": "2026-08-16T16:56:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.933,
-      "glow_score": 0.2199
+      "glow_score": 0.2199,
+      "animations": {
+        "flame": {
+          "group_id": "3eba64d1-f561-42ae-b128-a3eb158396a9",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "house_clutter/clutter_008/lit_2/animations/flame/00.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/01.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/02.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/03.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "house_clutter/clutter_008/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:04:09+00:00"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "house_clutter/clutter_008/not_lit_3/sprite.webp",

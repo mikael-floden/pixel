@@ -46,7 +46,29 @@
       "generated_at": "2026-08-16T16:55:16+00:00",
       "glow_concept": "a little oil lamp burning beside the basket",
       "difference_from_source": 0.4061,
-      "glow_score": 0.031
+      "glow_score": 0.031,
+      "animations": {
+        "flame": {
+          "group_id": "7903cc6d-f771-4fde-b97e-4cad0ebc2071",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "house_clutter/clutter_007/lit_2/animations/flame/00.webp",
+            "house_clutter/clutter_007/lit_2/animations/flame/01.webp",
+            "house_clutter/clutter_007/lit_2/animations/flame/02.webp",
+            "house_clutter/clutter_007/lit_2/animations/flame/03.webp",
+            "house_clutter/clutter_007/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "house_clutter/clutter_007/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:04:15+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "house_clutter/clutter_007/sprite.webp",
