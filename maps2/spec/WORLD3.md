@@ -49,6 +49,12 @@ decoration, it breaks every interior in the running game — measured
 * Every enclosed room carries a roof deck over its **interior cells only**, at
   the wall-top level. The wall ring keeps its own thin roof-over-wall course,
   so the roof is never a slab lying over the walls as well.
+* A deck may carry a **`side`**, and is then drawn `ground` OVER `side`. That
+  is what makes a roof THIN: a material is thin when it is only the TOP of an
+  x-over-y pair (grass over black_rock is a skin of grass; grass over grass
+  fills the cell and reads as a slab — the maintainer's own two reference
+  tiles, 2026-08-30). House roofs are `light_soil` over `parquet_floor`. With
+  no `side` a deck draws same-over-same, which is the thick look.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 
 ### `ramps` — the contract with the game
