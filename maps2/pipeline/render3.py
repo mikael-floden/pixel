@@ -131,13 +131,30 @@ def _lab_hash(r, cc, k, salt=1):
     return ((h ^ (h >> 16)) & 0xffffffff) / 4294967296
 
 
-def mask_for(index, x, y):
+# A ROAD EDGE IS ALLOWED TO BE STRAIGHT; A COASTLINE IS NOT. His pools were
+# tuned in the Pair Lab on brown_paving_stone <-> light_soil - a made road -
+# and two of the X pool's five masks (a00_s3, a00_s5) cut a PERFECTLY
+# STRAIGHT line, which is exactly right for a kerb and reads as a ruled facet
+# on a sand/grass edge. So the pools are used verbatim where the pair is a
+# made surface, and the straight cuts are dropped where it is natural.
+MADE_GROUND = {"light_soil", "brown_paving_stone", "grey_paving_stone",
+               "parquet_floor"}
+
+
+def _amp(pid):
+    return int(pid[1:3])
+
+
+def mask_for(index, x, y, natural=False):
     """THE MASK THIS BOUNDARY CELL WEARS. One default everywhere was the
     reason roads read as a single repeated squiggle: every spoke direction
     got the shape he had tuned for the vertical one. NO FLIPPING — he traced
     "the chevrons of stray dots running through open ground" to mirrored
     tiles meeting unmirrored neighbours along a seam neither was drawn for."""
     pool = MASK_POOLS[POOL_OF.get(index, "horiz")]
+    if natural:
+        wob = [p for p in pool if _amp(p) >= 12]
+        pool = wob or pool
     return pool[int(_lab_hash(y, x, 1) * len(pool)) % len(pool)]
 
 
@@ -358,7 +375,8 @@ def composed_boundary(ga, gb, index, pa, pb, x=0, y=0):
     patterns/plates contract, three draws, no geometry knowledge. The MASK
     comes from the spoke pool (his Pair Lab), not from one global default."""
     a = np.array(pa); b = np.array(pb)
-    mk = _mask(index, mask_for(index, x, y))
+    natural = not (ga in MADE_GROUND or gb in MADE_GROUND)
+    mk = _mask(index, mask_for(index, x, y, natural))
     out = np.where(mk[..., None], b, a)
     out[..., 3] = _silhouette()
     return Image.fromarray(out.astype(np.uint8))
