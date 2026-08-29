@@ -39,7 +39,29 @@
       "generated_at": "2026-08-16T15:24:23+00:00",
       "glow_concept": "fire burning warm in the hearth mouth",
       "difference_from_source": 0.5327,
-      "glow_score": 0.1434
+      "glow_score": 0.1434,
+      "animations": {
+        "flame": {
+          "group_id": "870b6aff-f114-4999-9762-270901d96639",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hearths/hearth_901/lit_1/animations/flame/00.webp",
+            "hearths/hearth_901/lit_1/animations/flame/01.webp",
+            "hearths/hearth_901/lit_1/animations/flame/02.webp",
+            "hearths/hearth_901/lit_1/animations/flame/03.webp",
+            "hearths/hearth_901/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "hearths/hearth_901/lit_1/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:02:35+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "hearths/hearth_901/lit_2/sprite.webp",
@@ -47,7 +69,29 @@
       "generated_at": "2026-08-16T15:24:24+00:00",
       "glow_concept": "embers breathing orange under the cook pot",
       "difference_from_source": 0.3806,
-      "glow_score": 0.0502
+      "glow_score": 0.0502,
+      "animations": {
+        "flame": {
+          "group_id": "5d5ee3fb-327a-4188-a73d-80d6c3c02bbc",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hearths/hearth_901/lit_2/animations/flame/00.webp",
+            "hearths/hearth_901/lit_2/animations/flame/01.webp",
+            "hearths/hearth_901/lit_2/animations/flame/02.webp",
+            "hearths/hearth_901/lit_2/animations/flame/03.webp",
+            "hearths/hearth_901/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "hearths/hearth_901/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:03:14+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "hearths/hearth_901/sprite.webp",
