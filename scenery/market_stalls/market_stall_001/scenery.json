@@ -147,6 +147,29 @@
         "south-east": "market_stalls/market_stall_001/not_lit_3/rotations/south-east.webp",
         "south-west": "market_stalls/market_stall_001/not_lit_3/rotations/south-west.webp",
         "south": "market_stalls/market_stall_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7782439c-f6fc-4836-a37b-0d7f6bd12122",
+          "description": "This is the same picture in every frame. ONLY the striped cloth roof at the very top moves: a clearly visible ripple travels along it, so its lower edge lifts and falls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/00.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/01.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/02.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/03.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:57:36+00:00",
+          "brief": "A48"
+        }
       }
     },
     "NOT_LIT_4": {

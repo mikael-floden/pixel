@@ -38,7 +38,30 @@
       "generated_at": "2026-08-16T19:40:30+00:00",
       "glow_concept": "bioluminescent gills casting light from under the caps",
       "difference_from_source": 0.7654,
-      "glow_score": 0.1593
+      "glow_score": 0.1593,
+      "animations": {
+        "motion": {
+          "group_id": "43088b2d-491d-464d-8451-a26d842e59a7",
+          "description": "This is the same picture in every frame. ONLY the cyan light under the caps brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_013/lit_1/animations/motion/00.webp",
+            "mushrooms/mushroom_013/lit_1/animations/motion/01.webp",
+            "mushrooms/mushroom_013/lit_1/animations/motion/02.webp",
+            "mushrooms/mushroom_013/lit_1/animations/motion/03.webp",
+            "mushrooms/mushroom_013/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_013/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T17:57:42+00:00",
+          "brief": "A45"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "mushrooms/mushroom_013/sprite.webp",
