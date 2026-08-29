@@ -9012,7 +9012,15 @@ export class WorldScene extends Phaser.Scene {
         // (a) Wall genuinely between the camera and the feet point.
         const t0 = Math.max(o.col - colf, o.row - rowf);
         const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
-        const rayBlocked = higher && t1 > Math.max(t0, 0);
+        /* TERRAIN ONLY. This is a CELL test — does the ray from the camera to
+         * the feet cross this column — and it is right for a wall, whose art
+         * fills its cell and which you can never stand inside. A SOLID
+         * billboard is point-anchored and walkable-through: scenery sitting in
+         * the very cell the player stands in made the ray "blocked" and clamped
+         * him BEHIND it, so an anvil 0.4 cells behind him drew over him and he
+         * wore the hidden-behind-terrain outline in open ground. A billboard's
+         * question is the DIAGONAL one, which is what solidArtOver below asks. */
+        const rayBlocked = higher && !o.solid && t1 > Math.max(t0, 0);
         // (b) A higher column whose LIFTED TOP FACE overlaps the feet band
         // (the sprite is a billboard — raised corners of side/front
         // neighbours pass in front of its lower pixels even when the feet
@@ -11411,7 +11419,7 @@ export class WorldScene extends Phaser.Scene {
     const pieces = this.sceneryPieces;
     const world = this.world;
     if (!idx || !pieces || !world) return;
-    const { dy } = this.geom;
+    const { dy, lh } = this.geom;
     const pad = 200;
     const view = cam.worldView;
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
@@ -11449,10 +11457,15 @@ export class WorldScene extends Phaser.Scene {
           // or more the other way, tree_021 by 16. setFlipX on an origin-(0,0)
           // image mirrors within its own displayed box, which IS the crop.
           .setFlipX(fit.flipX)
-          // The UNLIFTED painter line, the same key render3 sorts on (x+y) and
-          // the same one props and terrain occluders use — so a character walks
-          // in front of a tree exactly when it should.
-          .setDepth(this.iso.oy + (p.x + p.y) * dy + dy),
+          /* THE UNLIFTED PAINTER LINE AT THE ANCHOR — and NO cell-front `+dy`.
+           * A terrain occluder adds it because a tile fills a whole cell and
+           * must cover a body standing in that cell. Scenery is anchored at a
+           * POINT, so the same offset let a piece BEHIND the player win by up
+           * to a full cell: measured, anvil_003 at x+y 802.1 drew over a body
+           * at 802.5, four tenths of a cell in front of it (maintainer
+           * 2026-08-29: "I'm standing under the scenery, but the scenery is
+           * still rendered on top of me"). */
+          .setDepth(this.iso.oy + (p.x + p.y) * dy),
       );
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -11486,7 +11499,7 @@ export class WorldScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setDisplaySize(fit.w, fit.h)
             .setFlipX(fit.flipX)
-            .setDepth(litDepth(this.iso.oy + (p.x + p.y) * dy + dy)),
+            .setDepth(litDepth(this.iso.oy + (p.x + p.y) * dy)),
           col: p.x,
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
@@ -11496,9 +11509,16 @@ export class WorldScene extends Phaser.Scene {
       this.occluderMeta.push({
         col: scol,
         row: srow,
-        top: (world.rows[srow]?.[scol]?.l ?? 0) + 1,
+        /* ITS OWN HEIGHT, from the piece's published `world_px_height`. A
+         * blanket +1 made every rug, chair and table a one-level billboard, and
+         * `higher` is what gates solidArtOver — so a RUG on the floor claimed to
+         * cover the player and painted the "hidden behind terrain" outline on
+         * him in open ground (maintainer: "the player get a wall hack border
+         * even if it's obvious here that the Scenery is behind the player").
+         * A rug rounds to 0 levels and can never occlude; a tree is several. */
+        top: (world.rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
         solid: true,
-        depth: this.iso.oy + (p.x + p.y) * dy + dy,
+        depth: this.iso.oy + (p.x + p.y) * dy,
         x0: fit.x,
         x1: fit.x + fit.w,
         y0: fit.y,
