@@ -1167,6 +1167,69 @@ class Grow:
                     self.grd[y][x] = self.gi[g]
 
 
+    def widen_roads(self):
+        """A ROAD NARROWER THAN THREE CELLS CANNOT RENDER AS A ROAD.
+
+        The boundary system is corner-Wang: a drawn tile blends the four
+        cells at its corners, so only a cell whose whole 2x2 quad is road
+        comes out SOLID. A one-cell-wide road has no such quad anywhere - it
+        is blend tiles end to end, and the mask eats it from both sides into
+        disconnected blobs (maintainer, 2026-08-30: "why is this so ugly?").
+        Measured before this pass: 54 road runs one cell wide, 34 two cells,
+        and only 29% of the road area rendered solid.
+
+        So every road cell that is narrow on BOTH axes is dilated onto the
+        grass beside it, at its own level, never over paving, water, mud or a
+        building floor."""
+        gi, grd, lvl = self.gi, self.grd, self.lvl
+        soil = gi["light_soil"]
+        KEEP = {gi[g] for g in ("grass",) if g in gi}
+        total = 0
+        for _ in range(4):
+            road = [(x, y) for y in range(NEW) for x in range(NEW)
+                    if grd[y][x] == soil]
+            roadset = set(road)
+
+            def run(x, y, dx, dy):
+                n = 1
+                for s_ in (1, -1):
+                    k = 1
+                    while (x + dx * k * s_, y + dy * k * s_) in roadset:
+                        n += 1
+                        k += 1
+                return n
+
+            # WIDTH IS THE SMALLER RUN, not both. A road running north has an
+            # x-run of 1 and a y-run of twenty - it is one cell WIDE, and
+            # requiring both runs to be short skipped every straight road on
+            # the map (45 of them).
+            narrow = [c for c in road
+                      if min(run(c[0], c[1], 1, 0), run(c[0], c[1], 0, 1)) < 3]
+            if not narrow:
+                break
+            added = 0
+            for (x, y) in narrow:
+                z = lvl[y][x]
+                got = 0
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = x + dx, y + dy
+                    if not (0 <= nx < NEW and 0 <= ny < NEW):
+                        continue
+                    # grass beside the road becomes road, and takes the ROAD's
+                    # level: a widened lane at the neighbour's height would
+                    # just add another wall across the way
+                    if grd[ny][nx] in KEEP and abs(lvl[ny][nx] - z) <= 2:
+                        grd[ny][nx] = soil
+                        lvl[ny][nx] = z
+                        added += 1
+                        got += 1
+                        if got == 2:
+                            break
+            total += added
+            if not added:
+                break
+        self.placed += [("road cells widened", total)]
+
     # -- ramps ----------------------------------------------------------------
     def ramps(self):
         """RAMPS: the authored way up (maintainer 2026-08-30, "slope for
@@ -1335,7 +1398,8 @@ class Grow:
                      self.archipelago, self.pier, self.houses, self.town,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
-                     self.retype, self.ramps, self.spawns):
+                     self.retype, self.widen_roads, self.ramps,
+                     self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
