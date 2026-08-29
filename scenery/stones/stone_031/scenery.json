@@ -51,7 +51,29 @@
       "generated_at": "2026-08-16T22:03:52+00:00",
       "glow_concept": "ember light leaking from a hollow beneath",
       "difference_from_source": 0.513,
-      "glow_score": 0.0723
+      "glow_score": 0.0723,
+      "animations": {
+        "flame": {
+          "group_id": "e1de870a-38c8-4cac-b60c-0a2fa6092ea2",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_031/lit_1/animations/flame/00.webp",
+            "stones/stone_031/lit_1/animations/flame/01.webp",
+            "stones/stone_031/lit_1/animations/flame/02.webp",
+            "stones/stone_031/lit_1/animations/flame/03.webp",
+            "stones/stone_031/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "stones/stone_031/lit_1/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:28+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_031/sprite.webp",

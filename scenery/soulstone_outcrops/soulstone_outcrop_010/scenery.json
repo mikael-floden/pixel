@@ -37,7 +37,29 @@
       "generated_at": "2026-08-16T21:01:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.925,
-      "glow_score": 0.0165
+      "glow_score": 0.0165,
+      "animations": {
+        "flame": {
+          "group_id": "88bdb31c-344b-4e95-819a-abd8084923d1",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:16+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_010/sprite.webp",
@@ -46,7 +68,29 @@
       "glow_concept": null,
       "difference_from_source": 0.8884,
       "glow_score": 0.0528,
-      "replaced_anchor": "LIT_1"
+      "replaced_anchor": "LIT_1",
+      "animations": {
+        "flame": {
+          "group_id": "a860a445-6f2a-443e-81fc-c71dddb93c14",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:25+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_010/lit_4/sprite.webp",
@@ -54,7 +98,29 @@
       "generated_at": "2026-08-16T21:03:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8488,
-      "glow_score": 0.1147
+      "glow_score": 0.1147,
+      "animations": {
+        "flame": {
+          "group_id": "66fc2d0d-a752-42d6-8c9f-690e740f1415",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_010/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:08:46+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_010/not_lit_1/sprite.webp",

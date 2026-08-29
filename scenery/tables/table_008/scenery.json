@@ -34,7 +34,29 @@
     "LIT_1": {
       "sprite": "tables/table_008/sprite.webp",
       "pixellab_object_id": "4596bf64-013d-4521-9ccb-7bc1579676dd",
-      "generated_at": "2026-08-13T21:32:57+00:00"
+      "generated_at": "2026-08-13T21:32:57+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "e903e969-f212-47d3-b63b-97a77dda12b0",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_008/animations/flame/00.webp",
+            "tables/table_008/animations/flame/01.webp",
+            "tables/table_008/animations/flame/02.webp",
+            "tables/table_008/animations/flame/03.webp",
+            "tables/table_008/animations/flame/04.webp"
+          ],
+          "strip": "tables/table_008/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:09:04+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "tables/table_008/lit_2/sprite.webp",
@@ -42,7 +64,29 @@
       "generated_at": "2026-08-16T22:53:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4535,
-      "glow_score": 0.0331
+      "glow_score": 0.0331,
+      "animations": {
+        "flame": {
+          "group_id": "66bb726c-4d19-434c-9a99-5d3ef8f4b72f",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_008/lit_2/animations/flame/00.webp",
+            "tables/table_008/lit_2/animations/flame/01.webp",
+            "tables/table_008/lit_2/animations/flame/02.webp",
+            "tables/table_008/lit_2/animations/flame/03.webp",
+            "tables/table_008/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "tables/table_008/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:09:25+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "tables/table_008/lit_3/sprite.webp",
@@ -58,7 +102,29 @@
       "generated_at": "2026-08-16T22:53:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3429,
-      "glow_score": 0.0193
+      "glow_score": 0.0193,
+      "animations": {
+        "flame": {
+          "group_id": "66767174-71db-4b3d-bc36-45a0ba8ab4da",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_008/lit_4/animations/flame/00.webp",
+            "tables/table_008/lit_4/animations/flame/01.webp",
+            "tables/table_008/lit_4/animations/flame/02.webp",
+            "tables/table_008/lit_4/animations/flame/03.webp",
+            "tables/table_008/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "tables/table_008/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:09:16+00:00"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "tables/table_008/not_lit_2/sprite.webp",
