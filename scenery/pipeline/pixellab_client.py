@@ -338,6 +338,12 @@ class PixelLabClient:
                 return out
             time.sleep(poll)
 
+    # PixelLab caps animation_description at 1000 characters and answers a longer
+    # one with a 422 the runner reports as a bare FAILED line. Clause-stacked motion
+    # prompts crossed it at batch AB (B4 1009 chars, B46 1033) and two states were
+    # silently skipped. Fail here instead, naming the overrun.
+    DESCRIPTION_MAX = 1000
+
     def animate_object(self, object_id, animation_description, frame_count=4,
                        directions=None, display_name=None, replace_existing=True,
                        job_timeout=900, mode="v3", keep_first_frame=True,
@@ -358,6 +364,10 @@ class PixelLabClient:
         so frame_count=4 yields FIVE frames and costs three generations, the
         original being free. enhance_prompt is deliberately left off: he writes
         the motion himself and an auto-expanded prompt would not be his."""
+        if len(animation_description) > self.DESCRIPTION_MAX:
+            raise PixelLabError(
+                f"animation_description is {len(animation_description)} characters; "
+                f"PixelLab rejects anything over {self.DESCRIPTION_MAX}. Shorten the brief.")
         payload = {"animation_description": animation_description,
                    "frame_count": int(frame_count),
                    "replace_existing": replace_existing,

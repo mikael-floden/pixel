@@ -42456,7 +42456,29 @@
             "south-west": "offering_tables/offering_table_003/lit_1/rotations/south-west.webp",
             "south": "offering_tables/offering_table_003/lit_1/sprite.webp"
           },
-          "animations": {},
+          "animations": {
+            "motion": {
+              "group_id": "6b132d45-f354-4c9c-a9f7-9ecf88240400",
+              "description": "This is the same picture in every frame. ONLY the gold crystal on the table brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "offering_tables/offering_table_003/lit_1/animations/motion/00.webp",
+                "offering_tables/offering_table_003/lit_1/animations/motion/01.webp",
+                "offering_tables/offering_table_003/lit_1/animations/motion/02.webp",
+                "offering_tables/offering_table_003/lit_1/animations/motion/03.webp",
+                "offering_tables/offering_table_003/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_003/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T18:55:53+00:00",
+              "brief": "B46"
+            }
+          },
           "art_hash": "e135fa7f69b32943"
         },
         "LIT_2": {
@@ -60433,7 +60455,29 @@
             "south-west": "torch_posts/torch_post_014/lit_3/rotations/south-west.webp",
             "south": "torch_posts/torch_post_014/lit_3/sprite.webp"
           },
-          "animations": {},
+          "animations": {
+            "motion": {
+              "group_id": "7d35fe87-b333-4021-9524-7ff506f6dc17",
+              "description": "This is the same picture in every frame. ONLY the four flames on the frame flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "torch_posts/torch_post_014/lit_3/animations/motion/00.webp",
+                "torch_posts/torch_post_014/lit_3/animations/motion/01.webp",
+                "torch_posts/torch_post_014/lit_3/animations/motion/02.webp",
+                "torch_posts/torch_post_014/lit_3/animations/motion/03.webp",
+                "torch_posts/torch_post_014/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_014/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T18:56:49+00:00",
+              "brief": "B4"
+            }
+          },
           "art_hash": "18fd7e5a418ce6be"
         },
         "LIT_4": {
