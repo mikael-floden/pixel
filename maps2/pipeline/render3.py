@@ -168,6 +168,52 @@ def textured_art(key):
     return _TEXTURED.get(key.strip("/"))
 
 
+# -- slopes (tiles3/slopes@1) --------------------------------------------------
+# "One ground raised into a plateau with a graded edge down to ITSELF. NOT a
+# transition between two materials - the Wang bit means a corner is RAISED.
+# Index 0 flat, index 15 full plateau top." 15 grounds x 15 seeds, 64x46 -
+# the SAME frame as a plate, and index 15's alpha is the published silhouette
+# byte for byte, so a slope drops straight into the surface slot. The height
+# lives INSIDE the art: every published set is elevation 4px, a sub-storey
+# grade, which is what softens the foot of a rise.
+SLOPES = json.load(open(os.path.join(REPO, "tiles", "slopes", "index.json")))
+_SLOPE_BY_GROUND = {}
+for _s in SLOPES["sets"]:
+    # ONLY COMPLETE SETS. Measured over the published library: 9 of the 225
+    # sets ship fewer than 16 post files (7-15), and 122 of 3,553 files are
+    # 64x30 instead of the 64x46 the frame requires (slime and water worst).
+    # A short set indexed by a Wang bitmask is an IndexError; a 30-row tile
+    # cannot be masked by the 46-row silhouette. Reported to the tiles agent.
+    if _s.get("complete") and len(_s.get("post_files") or []) == 16:
+        _SLOPE_BY_GROUND.setdefault(_s["ground"], []).append(_s)
+for _g in _SLOPE_BY_GROUND:
+    _SLOPE_BY_GROUND[_g].sort(key=lambda s: s["dir"])
+
+
+def slope_tile(ground, index, x, y):
+    """The slope tile for this corner bitmask, seed chosen per AREA so a
+    hillside keeps one boundary character (same reasoning as a base set's
+    region)."""
+    sets = _SLOPE_BY_GROUND.get(ground)
+    if not sets or not (0 < index < 16):
+        return None
+    si = (fnv1a(f"slope|{ground}|{x // 24}|{y // 24}") % len(sets))
+    st = sets[si]
+    rel = os.path.join(st["dir"], "post", st["post_files"][index])
+    ck = ("slope", rel)
+    if ck not in _tile_cache:
+        f = os.path.join(REPO, rel)
+        if not os.path.isfile(f):
+            return None
+        im = Image.open(f).convert("RGBA")
+        if im.size != (TILE, 46):
+            _tile_cache[ck] = None     # a mis-sized publication: fall back
+            return None                # to the flat plate, never crash
+        im.info["k"] = ck
+        _tile_cache[ck] = im
+    return _tile_cache[ck]
+
+
 def as_surface(im):
     """Any tile art -> plate geometry (64x46, art at row 0), so a fade or a
     detail can stand in for a base-tile-set plate anywhere the surface is
@@ -797,6 +843,27 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 plain x-over-x review tile and ignored the sets he tunes.
                 'I kinda expected everything from using the base tile sets.'"""
                 t = plate_img(gr, region_at(x, y, gr), x, y)
+                # SLOPE: where this ground rises to ITSELF beside the cell,
+                # the surface takes the graded Wang tile instead of the flat
+                # plate — the corner bit is set when a cell touching that
+                # corner is higher and made of the same ground. This is what
+                # makes a path uphill read as a climb instead of a stack of
+                # flat diamonds (maintainer 2026-08-30).
+                sidx = 0
+                for bit, (cxx, cyy) in enumerate(((x, y), (x + 1, y),
+                                                  (x, y + 1), (x + 1, y + 1))):
+                    hi = False
+                    for ax, ay in ((cxx - 1, cyy - 1), (cxx, cyy - 1),
+                                   (cxx - 1, cyy), (cxx, cyy)):
+                        if L(ax, ay) > zl and g(ax, ay) == gr:
+                            hi = True
+                            break
+                    if hi:
+                        sidx |= 8 >> bit
+                if sidx:
+                    sl = slope_tile(gr, sidx, x, y)
+                    if sl is not None:
+                        t = sl
                 # FADE BAND: within FADE_BAND cells of a different SOLID
                 # ground at the same level, ease the change with the fades
                 # product (top-only, placed by edge_ground). Deterministic.
@@ -818,10 +885,14 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                         hi = len(pool) - 1          # nearer the edge -> stronger
                         band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
                         idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
-                        f = Image.open(os.path.join(REPO,
-                                       pool[max(0, idx)][0])).convert("RGBA")
-                        f.info["k"] = ("fade", pool[max(0, idx)][0])
-                        return as_surface(f)
+                        # a fade is TOP-ONLY art (its wall is meaningless by
+                        # the producer's own index), so it conforms exactly
+                        # like any other surface: top face kept, wall filled
+                        # from the ground's palette, alpha = the published
+                        # silhouette. Hand-cropping it to 40 rows produced a
+                        # 30-row surface that the top-face mask could not
+                        # index — and shipped a garbage wall besides.
+                        return conformed_plate(pool[max(0, idx)][0], gr)
                 # DETAILS: once in a while, one of his top-approved tops
                 dp = detail_pool(gr)
                 if dp:
