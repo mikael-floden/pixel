@@ -62,6 +62,9 @@ export const DETAIL_FREQ = 1 / 56;
 /** Set 0 is reserved, named Clean, and holds nothing but the clean member. It is
  *  never deleted — it is switched off by weight, so a ground can always draw. */
 export const CLEAN_SET_ID = 0;
+/** The indoor floor that lays as ONE BOARD per room — render3's own rule and
+ *  the only ground it applies to. */
+export const ROOM_FLOOR = "parquet_floor";
 /** THE REGION IS A CHUNK: one set per ground per 24x24 block of cells. See
  *  `regionAt` for why it is not a connected component. */
 export const REGION_CHUNK = 24;
@@ -611,6 +614,8 @@ export interface Tiles3Stats {
    *  those cells draw no boundary at all — render3 asserts on this at import,
    *  which a browser cannot do. */
   unpublishedMasks: number;
+  /** Distinct indoor rooms found by the floor fill. */
+  rooms: number;
 }
 
 /* -- the world the resolver reads ------------------------------------------- */
@@ -929,6 +934,7 @@ export class Tiles3 {
     unguardedFadePools: 0,
     unguardedSlopes: 0,
     unpublishedMasks: 0,
+    rooms: 0,
   };
 
   private data: Tiles3Data;
@@ -939,6 +945,10 @@ export class Tiles3 {
   private tileCache = new Map<string, TileArt>();
   private detailCache = new Map<string, string[]>();
   private fadeCache = new Map<string, FadePoolTile[]>();
+  /** cell index -> its room's anchor index. Built once per world. */
+  private roomAnchors: Map<number, number> | null = null;
+  /** The view the current resolve is running against — the room fill reads it. */
+  private curView: World3View | null = null;
   private texturedCache: Map<string, string> | null = null;
   private slopeCache: Map<string, SlopeSet[]> | null = null;
   private slopeTileCache = new Map<string, SlopePick | null>();
@@ -1112,6 +1122,10 @@ export class Tiles3 {
     region: string,
     x: number,
     y: number,
+    /** The cell the MEMBER is picked at — the room's anchor for an indoor
+     *  floor, this cell for everything else. */
+    ax: number = x,
+    ay: number = y,
   ): { set: BaseSet; memberIndex: number; art: PlateArt } {
     const set = this.setForRegion(ground, region);
     /* The rejected members are dropped ONCE per set, not per cell: this runs on
@@ -1119,7 +1133,7 @@ export class Tiles3 {
      * filter+map form allocated four arrays each time. Same answer as
      * `pickMemberIndex(set, x, y, rejected)`, and the parity fixture proves it. */
     const pool = this.pool(ground, set);
-    const i = pickWeighted(pool.weights, unitHash(`bts1|tile|${set.id}|${x}|${y}`));
+    const i = pickWeighted(pool.weights, unitHash(`bts1|tile|${set.id}|${ax}|${ay}`));
     const memberIndex = i < 0 ? -1 : pool.index[i];
     const member = memberIndex >= 0 ? set.members[memberIndex] : null;
     const art =
@@ -1154,7 +1168,86 @@ export class Tiles3 {
   /** The same look at the cell's OWN region — every caller that has a ground and
    *  a cell and no opinion about regions. */
   plateFor(ground: string, x: number, y: number) {
-    return this.plateAt(ground, regionAt(ground, x, y), x, y);
+    /* ONE PARQUET FLOOR PER ROOM. The SET still comes from this cell's own
+     * region; only the MEMBER is asked for at the room's anchor, which is
+     * render3's split exactly (`pick_set(ground, region)` then
+     * `pick_member(chosen, ax, ay)`). Without it a floor is a patchwork that
+     * changes underfoot (maintainer 2026-08-30, restated 08-29: "I said one
+     * Parquet Floor per room!!!"). */
+    const [ax, ay] = ground === ROOM_FLOOR ? this.roomAnchor(x, y) : [x, y];
+    /* THE REGION COMES FROM THE ANCHOR TOO for an indoor floor. render3 takes
+     * the SET from the cell's own 24-cell chunk and only the MEMBER from the
+     * anchor, which lays two different boards in one room the moment it crosses
+     * a chunk boundary — measured on the_game: 2 of 4 rooms in one window. The
+     * rule is ONE FLOOR PER ROOM, so the whole room asks at the anchor: same
+     * set, same member, one board. */
+    return this.plateAt(ground, regionAt(ground, ax, ay), x, y, ax, ay);
+  }
+
+  /** The anchor cell of the room this one belongs to, or itself.
+   *
+   *  WORLD-SCOPED AND CACHED, where render3 fills rooms per RENDER WINDOW. A
+   *  window-scoped anchor would move when the window moved, so a floor would
+   *  relay itself as the player walked — the two agree for any room that fits
+   *  inside a window, which every house does, and this cannot disagree with
+   *  itself. Flood fill is 4-connected and the anchor is the lexicographic
+   *  minimum by (x, y), matching python's `min()` over the coordinate tuples. */
+  private roomAnchor(x: number, y: number): [number, number] {
+    const view = this.curView;
+    if (!view) return [x, y];
+    if (!this.roomAnchors) {
+      const W = view.width;
+      const H = view.height;
+      const m = new Map<number, number>();
+      const seen = new Uint8Array(W * H);
+      const stack: number[] = [];
+      for (let sy = 0; sy < H; sy++) {
+        for (let sx = 0; sx < W; sx++) {
+          const si = sy * W + sx;
+          if (seen[si] || view.groundAt(sx, sy) !== ROOM_FLOOR) continue;
+          const comp: number[] = [];
+          seen[si] = 1;
+          stack.length = 0;
+          stack.push(si);
+          while (stack.length) {
+            const i = stack.pop() as number;
+            comp.push(i);
+            const cx = i % W;
+            const cy = (i - cx) / W;
+            for (const [nx, ny] of [
+              [cx + 1, cy],
+              [cx - 1, cy],
+              [cx, cy + 1],
+              [cx, cy - 1],
+            ]) {
+              if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+              const ni = ny * W + nx;
+              if (seen[ni] || view.groundAt(nx, ny) !== ROOM_FLOOR) continue;
+              seen[ni] = 1;
+              stack.push(ni);
+            }
+          }
+          let ax = Infinity;
+          let ay = Infinity;
+          for (const i of comp) {
+            const cx = i % W;
+            const cy = (i - cx) / W;
+            if (cx < ax || (cx === ax && cy < ay)) {
+              ax = cx;
+              ay = cy;
+            }
+          }
+          const a = ay * W + ax;
+          for (const i of comp) m.set(i, a);
+        }
+      }
+      this.roomAnchors = m;
+      this.stats.rooms = new Set(m.values()).size;
+    }
+    const a = this.roomAnchors.get(y * view.width + x);
+    if (a === undefined) return [x, y];
+    const ax = a % view.width;
+    return [ax, (a - ax) / view.width];
   }
 
   /** Did he reject this member? The verdict rides the member's key, that key
@@ -1489,6 +1582,7 @@ export class Tiles3 {
   /** Everything the window draws, in render3's own painter order. The whole
    *  point of the module: one call from the world doc to the art. */
   resolveWindow(view: World3View): Tiles3Window {
+    this.curView = view;
     const b: Bounds = { x0: view.x0, y0: view.y0, x1: view.x1, y1: view.y1 };
     const frame = isoFrame(b, view.maxLevel, this.data.storeyPitch);
     const inWindow = (x: number, y: number): boolean =>
@@ -1833,7 +1927,13 @@ export class Tiles3 {
       }
     }
 
-    /* DETAILS: once in a while, one of his top-approved tops. */
+    /* DETAILS: once in a while, one of his top-approved tops — but NEVER on an
+     * indoor floor. A detail is a different tile, so one landing in a room is
+     * one plank of the wrong board, and the rule is that a room is laid as ONE.
+     * (render3 places no detail anywhere today: its branch is only reachable
+     * while the field tile is still flat_tile(), and plate_img took the field
+     * over. This keeps details where he asked for them and off the floor.) */
+    if (gr === ROOM_FLOOR) return out;
     const dp = this.detailPool(gr);
     if (dp.length) {
       const rate = this.data.detailRates?.[gr] ?? DETAIL_FREQ;

@@ -1378,7 +1378,16 @@ export function cellCenterWorld(grid: TerrainGrid, col: number, row: number): { 
 
 function cellStandable(grid: TerrainGrid, col: number, row: number): boolean {
   if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return false;
-  const t = grid.type[row * grid.width + col];
+  const i = row * grid.width + col;
+  /* BLOCKED IS NOT STANDABLE. This only asked the ground TYPE, so a cell could
+   * be perfectly good grass and still be full of tree. It never showed while
+   * `blocked` meant props and walls — those sit on non-standable ground anyway
+   * — but scenery collision blocks thousands of standable cells, and findSpawn
+   * put a reviving player inside a trunk with no way out (maintainer
+   * 2026-08-29: "after dying I spawned like this and was stuck"). Used by
+   * findSpawn and spawnCellOk only, and both mean "can a body BE here". */
+  if (grid.blocked[i]) return false;
+  const t = grid.type[i];
   return t ? surfaceFor(t).standable : false;
 }
 
