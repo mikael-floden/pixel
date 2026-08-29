@@ -37,7 +37,28 @@
       "generated_at": "2026-08-15T19:52:45+00:00",
       "glow_concept": "pillar of pale soul-light rising skyward",
       "difference_from_source": 0.627,
-      "glow_score": 0.0954
+      "glow_score": 0.0954,
+      "animations": {
+        "motion": {
+          "group_id": "7d3e4270-d4bf-4c1e-b429-118ab45f27c8",
+          "description": "This is the same picture in every frame. ONLY the green light inside the lantern glass brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_007/lit_1/animations/motion/00.webp",
+            "beacons/beacon_007/lit_1/animations/motion/01.webp",
+            "beacons/beacon_007/lit_1/animations/motion/02.webp",
+            "beacons/beacon_007/lit_1/animations/motion/03.webp",
+            "beacons/beacon_007/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_007/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T15:38:43+00:00",
+          "brief": "X42"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "beacons/beacon_007/lit_2/sprite.webp",

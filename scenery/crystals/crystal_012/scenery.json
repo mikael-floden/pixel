@@ -42,7 +42,30 @@
       "generated_at": "2026-08-16T11:16:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8022,
-      "glow_score": 0.1769
+      "glow_score": 0.1769,
+      "animations": {
+        "motion": {
+          "group_id": "c61aeb3e-0279-42b6-a2e3-7df282502776",
+          "description": "This is the same picture in every frame. ONLY the tips of the crystals brighten a little and return. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_012/lit_2/animations/motion/00.webp",
+            "crystals/crystal_012/lit_2/animations/motion/01.webp",
+            "crystals/crystal_012/lit_2/animations/motion/02.webp",
+            "crystals/crystal_012/lit_2/animations/motion/03.webp",
+            "crystals/crystal_012/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_012/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:37:54+00:00",
+          "brief": "X36"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "crystals/crystal_012/lit_3/sprite.webp",

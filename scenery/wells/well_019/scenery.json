@@ -43,6 +43,29 @@
         "south-east": "wells/well_019/lit_1/rotations/south-east.webp",
         "south-west": "wells/well_019/lit_1/rotations/south-west.webp",
         "south": "wells/well_019/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7990498b-8a02-4101-ad9e-c2251fabd3a8",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_019/lit_1/animations/motion/00.webp",
+            "wells/well_019/lit_1/animations/motion/01.webp",
+            "wells/well_019/lit_1/animations/motion/02.webp",
+            "wells/well_019/lit_1/animations/motion/03.webp",
+            "wells/well_019/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_019/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:36:54+00:00",
+          "brief": "X30"
+        }
       }
     },
     "LIT_2": {

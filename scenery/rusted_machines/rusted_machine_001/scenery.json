@@ -42,6 +42,29 @@
         "south-east": "rusted_machines/rusted_machine_001/lit_1/rotations/south-east.webp",
         "south-west": "rusted_machines/rusted_machine_001/lit_1/rotations/south-west.webp",
         "south": "rusted_machines/rusted_machine_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "36fb2222-e6b4-481b-846f-2684ddd6c455",
+          "description": "This is the same picture in every frame. ONLY the blue sparks arcing between the two rods jump and change shape. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/00.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/01.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/02.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/03.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:38:25+00:00",
+          "brief": "X41"
+        }
       }
     },
     "LIT_2": {

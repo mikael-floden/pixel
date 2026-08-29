@@ -78,6 +78,29 @@
         "south-east": "story_posts/story_post_001/lit_2/rotations/south-east.webp",
         "south-west": "story_posts/story_post_001/lit_2/rotations/south-west.webp",
         "south": "story_posts/story_post_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "121baa4b-d986-4f13-b6a9-8611cd831f7b",
+          "description": "This is the same picture in every frame. ONLY the cyan glow around the base brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "story_posts/story_post_001/lit_2/animations/motion/00.webp",
+            "story_posts/story_post_001/lit_2/animations/motion/01.webp",
+            "story_posts/story_post_001/lit_2/animations/motion/02.webp",
+            "story_posts/story_post_001/lit_2/animations/motion/03.webp",
+            "story_posts/story_post_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "story_posts/story_post_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:38:28+00:00",
+          "brief": "X31"
+        }
       }
     },
     "NOT_LIT_1": {
