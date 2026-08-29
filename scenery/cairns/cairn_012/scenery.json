@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "cairns/cairn_012/sprite.webp",
       "pixellab_object_id": "ef45a715-1e05-4e5d-a524-cebdabe43aac",
-      "generated_at": "2026-08-13T21:38:02+00:00"
+      "generated_at": "2026-08-13T21:38:02+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_012/rotations/south-east.webp",
+        "south-west": "cairns/cairn_012/rotations/south-west.webp",
+        "south": "cairns/cairn_012/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "cairns/cairn_012/lit_3/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-15T21:23:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4821,
-      "glow_score": 0.085
+      "glow_score": 0.085,
+      "rotations": {
+        "south-east": "cairns/cairn_012/lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_012/lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_012/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cairns/cairn_012/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6581,
       "glow_score": 0.0007,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "cairns/cairn_012/not_lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_012/not_lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_012/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cairns/cairn_012/not_lit_4/sprite.webp",
@@ -60,7 +75,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8112,
       "glow_score": 0.0,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "cairns/cairn_012/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_012/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_012/not_lit_4/sprite.webp"
+      }
     }
   }
 }

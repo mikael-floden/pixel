@@ -59,12 +59,22 @@
           ],
           "generated_at": "2026-08-29T06:55:19+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "beds/bed_005/lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_005/lit_2/rotations/south-west.webp",
+        "south": "beds/bed_005/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "beds/bed_005/sprite.webp",
       "pixellab_object_id": "89329afb-778a-439c-adc2-f91104af3a6a",
-      "generated_at": "2026-08-13T22:17:18+00:00"
+      "generated_at": "2026-08-13T22:17:18+00:00",
+      "rotations": {
+        "south-east": "beds/bed_005/rotations/south-east.webp",
+        "south-west": "beds/bed_005/rotations/south-west.webp",
+        "south": "beds/bed_005/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "beds/bed_005/not_lit_2/sprite.webp",
@@ -72,7 +82,12 @@
       "generated_at": "2026-08-15T20:09:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5564,
-      "glow_score": 0.2585
+      "glow_score": 0.2585,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_2/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "beds/bed_005/not_lit_3/sprite.webp",
@@ -80,7 +95,12 @@
       "generated_at": "2026-08-15T20:08:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7827,
-      "glow_score": 0.2821
+      "glow_score": 0.2821,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_3/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "beds/bed_005/not_lit_4/sprite.webp",
@@ -88,7 +108,12 @@
       "generated_at": "2026-08-15T20:09:13+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9029,
-      "glow_score": 0.109
+      "glow_score": 0.109,
+      "rotations": {
+        "south-east": "beds/bed_005/not_lit_4/rotations/south-east.webp",
+        "south-west": "beds/bed_005/not_lit_4/rotations/south-west.webp",
+        "south": "beds/bed_005/not_lit_4/sprite.webp"
+      }
     }
   }
 }

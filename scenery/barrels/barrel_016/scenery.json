@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "barrels/barrel_016/sprite.webp",
       "pixellab_object_id": "6095a411-4673-4e3c-b493-c28d5be0a452",
-      "generated_at": "2026-08-14T02:38:53+00:00"
+      "generated_at": "2026-08-14T02:38:53+00:00",
+      "rotations": {
+        "south-east": "barrels/barrel_016/rotations/south-east.webp",
+        "south-west": "barrels/barrel_016/rotations/south-west.webp",
+        "south": "barrels/barrel_016/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "barrels/barrel_016/lit_4/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-15T19:46:13+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6914,
-      "glow_score": 0.0202
+      "glow_score": 0.0202,
+      "rotations": {
+        "south-east": "barrels/barrel_016/lit_4/rotations/south-east.webp",
+        "south-west": "barrels/barrel_016/lit_4/rotations/south-west.webp",
+        "south": "barrels/barrel_016/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "barrels/barrel_016/not_lit_1/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-15T19:46:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8617,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_016/not_lit_1/rotations/south-east.webp",
+        "south-west": "barrels/barrel_016/not_lit_1/rotations/south-west.webp",
+        "south": "barrels/barrel_016/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "barrels/barrel_016/not_lit_2/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-15T19:46:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8054,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_016/not_lit_2/rotations/south-east.webp",
+        "south-west": "barrels/barrel_016/not_lit_2/rotations/south-west.webp",
+        "south": "barrels/barrel_016/not_lit_2/sprite.webp"
+      }
     }
   }
 }

@@ -37,12 +37,22 @@
       "generated_at": "2026-08-15T21:26:22+00:00",
       "glow_concept": "chalk name-marks shining white on each stone",
       "difference_from_source": 0.7956,
-      "glow_score": 0.0279
+      "glow_score": 0.0279,
+      "rotations": {
+        "south-east": "cairns/cairn_013/lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_013/lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_013/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_013/sprite.webp",
       "pixellab_object_id": "40ecef11-4ce7-43f7-b23d-d121b154921f",
-      "generated_at": "2026-08-13T23:47:28+00:00"
+      "generated_at": "2026-08-13T23:47:28+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_013/rotations/south-east.webp",
+        "south-west": "cairns/cairn_013/rotations/south-west.webp",
+        "south": "cairns/cairn_013/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cairns/cairn_013/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-15T21:24:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3089,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_013/not_lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_013/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cairns/cairn_013/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-15T21:25:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4181,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_013/not_lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_013/not_lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_013/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cairns/cairn_013/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-15T21:25:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.331,
-      "glow_score": 0.0406
+      "glow_score": 0.0406,
+      "rotations": {
+        "south-east": "cairns/cairn_013/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_013/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_013/not_lit_4/sprite.webp"
+      }
     }
   }
 }

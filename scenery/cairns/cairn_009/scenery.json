@@ -39,7 +39,12 @@
       "generated_at": "2026-08-15T21:21:28+00:00",
       "glow_concept": "cold blue soul-light seeping from under the base",
       "difference_from_source": 0.2183,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_009/lit_1/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/lit_1/rotations/south-west.webp",
+        "south": "cairns/cairn_009/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "cairns/cairn_009/lit_2/sprite.webp",
@@ -47,12 +52,22 @@
       "generated_at": "2026-08-15T21:21:06+00:00",
       "glow_concept": "topmost stone glowing like a lantern",
       "difference_from_source": 0.8563,
-      "glow_score": 0.1738
+      "glow_score": 0.1738,
+      "rotations": {
+        "south-east": "cairns/cairn_009/lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_009/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_009/sprite.webp",
       "pixellab_object_id": "dbee4c90-9c34-451b-9255-6768aa18b8c2",
-      "generated_at": "2026-08-13T19:23:23+00:00"
+      "generated_at": "2026-08-13T19:23:23+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_009/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/rotations/south-west.webp",
+        "south": "cairns/cairn_009/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cairns/cairn_009/not_lit_2/sprite.webp",
@@ -60,7 +75,12 @@
       "generated_at": "2026-08-15T21:21:39+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6201,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/not_lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_009/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cairns/cairn_009/not_lit_3/sprite.webp",
@@ -68,7 +88,12 @@
       "generated_at": "2026-08-15T21:20:51+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6049,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/not_lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_009/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cairns/cairn_009/not_lit_4/sprite.webp",
@@ -76,7 +101,12 @@
       "generated_at": "2026-08-15T21:20:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6721,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_009/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_009/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_009/not_lit_4/sprite.webp"
+      }
     }
   }
 }

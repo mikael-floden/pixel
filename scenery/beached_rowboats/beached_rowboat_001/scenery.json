@@ -37,7 +37,12 @@
       "generated_at": "2026-08-15T19:49:05+00:00",
       "glow_concept": "warm soul-light seeping between the planks",
       "difference_from_source": 0.3984,
-      "glow_score": 0.0609
+      "glow_score": 0.0609,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_001/lit_1/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_001/lit_1/rotations/south-west.webp",
+        "south": "beached_rowboats/beached_rowboat_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "beached_rowboats/beached_rowboat_001/lit_2/sprite.webp",
@@ -67,12 +72,22 @@
           ],
           "generated_at": "2026-08-29T06:40:16+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_001/lit_2/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_001/lit_2/rotations/south-west.webp",
+        "south": "beached_rowboats/beached_rowboat_001/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "beached_rowboats/beached_rowboat_001/sprite.webp",
       "pixellab_object_id": "a9d52ab0-bbb4-407e-b3b6-75ca621574d1",
-      "generated_at": "2026-08-13T02:28:49+00:00"
+      "generated_at": "2026-08-13T02:28:49+00:00",
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_001/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_001/rotations/south-west.webp",
+        "south": "beached_rowboats/beached_rowboat_001/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "beached_rowboats/beached_rowboat_001/not_lit_3/sprite.webp",
@@ -80,7 +95,12 @@
       "generated_at": "2026-08-15T19:47:41+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6648,
-      "glow_score": 0.0013
+      "glow_score": 0.0013,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_001/not_lit_3/rotations/south-west.webp",
+        "south": "beached_rowboats/beached_rowboat_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "beached_rowboats/beached_rowboat_001/not_lit_4/sprite.webp",
@@ -88,7 +108,12 @@
       "generated_at": "2026-08-15T19:48:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4927,
-      "glow_score": 0.0023
+      "glow_score": 0.0023,
+      "rotations": {
+        "south-east": "beached_rowboats/beached_rowboat_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "beached_rowboats/beached_rowboat_001/not_lit_4/rotations/south-west.webp",
+        "south": "beached_rowboats/beached_rowboat_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

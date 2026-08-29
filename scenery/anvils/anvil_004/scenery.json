@@ -56,6 +56,11 @@
           ],
           "generated_at": "2026-08-29T06:21:16+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "anvils/anvil_004/rotations/south-east.webp",
+        "south-west": "anvils/anvil_004/rotations/south-west.webp",
+        "south": "anvils/anvil_004/sprite.webp"
       }
     },
     "LIT_2": {
@@ -86,6 +91,11 @@
           ],
           "generated_at": "2026-08-29T06:37:50+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "anvils/anvil_004/lit_2/rotations/south-east.webp",
+        "south-west": "anvils/anvil_004/lit_2/rotations/south-west.webp",
+        "south": "anvils/anvil_004/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -116,6 +126,11 @@
           ],
           "generated_at": "2026-08-29T06:37:19+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "anvils/anvil_004/lit_3/rotations/south-east.webp",
+        "south-west": "anvils/anvil_004/lit_3/rotations/south-west.webp",
+        "south": "anvils/anvil_004/lit_3/sprite.webp"
       }
     },
     "LIT_4": {
@@ -146,6 +161,11 @@
           ],
           "generated_at": "2026-08-29T06:37:26+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "anvils/anvil_004/lit_4/rotations/south-east.webp",
+        "south-west": "anvils/anvil_004/lit_4/rotations/south-west.webp",
+        "south": "anvils/anvil_004/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -154,7 +174,12 @@
       "generated_at": "2026-08-15T19:35:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.1784,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "anvils/anvil_004/not_lit_1/rotations/south-east.webp",
+        "south-west": "anvils/anvil_004/not_lit_1/rotations/south-west.webp",
+        "south": "anvils/anvil_004/not_lit_1/sprite.webp"
+      }
     }
   }
 }

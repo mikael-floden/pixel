@@ -38,7 +38,12 @@
       "generated_at": "2026-08-15T20:41:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.653,
-      "glow_score": 0.1872
+      "glow_score": 0.1872,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "braziers/brazier_012/lit_3/sprite.webp",
@@ -46,7 +51,12 @@
       "generated_at": "2026-08-15T20:41:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8652,
-      "glow_score": 0.0245
+      "glow_score": 0.0245,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_3/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_3/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "braziers/brazier_012/lit_4/sprite.webp",
@@ -54,7 +64,12 @@
       "generated_at": "2026-08-15T20:41:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6371,
-      "glow_score": 0.0105
+      "glow_score": 0.0105,
+      "rotations": {
+        "south-east": "braziers/brazier_012/lit_4/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/lit_4/rotations/south-west.webp",
+        "south": "braziers/brazier_012/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_012/not_lit_1/sprite.webp",
@@ -62,7 +77,12 @@
       "generated_at": "2026-08-15T20:41:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2412,
-      "glow_score": 0.0043
+      "glow_score": 0.0043,
+      "rotations": {
+        "south-east": "braziers/brazier_012/not_lit_1/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/not_lit_1/rotations/south-west.webp",
+        "south": "braziers/brazier_012/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "braziers/brazier_012/not_lit_2/sprite.webp",
@@ -70,13 +90,23 @@
       "generated_at": "2026-08-15T20:42:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5945,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "braziers/brazier_012/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_012/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "braziers/brazier_012/sprite.webp",
       "pixellab_object_id": "2a6bd1fd-50bf-4962-b0ad-b9e3a3c8e017",
       "generated_at": "2026-08-14T00:47:18+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "braziers/brazier_012/rotations/south-east.webp",
+        "south-west": "braziers/brazier_012/rotations/south-west.webp",
+        "south": "braziers/brazier_012/sprite.webp"
+      }
     }
   }
 }

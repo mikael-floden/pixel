@@ -37,7 +37,12 @@
       "generated_at": "2026-08-15T19:22:30+00:00",
       "glow_concept": "pale soulstone hoops instead of iron",
       "difference_from_source": 0.8219,
-      "glow_score": 0.1394
+      "glow_score": 0.1394,
+      "rotations": {
+        "south-east": "barrels/barrel_003/lit_2/rotations/south-east.webp",
+        "south-west": "barrels/barrel_003/lit_2/rotations/south-west.webp",
+        "south": "barrels/barrel_003/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "barrels/barrel_003/not_lit_2/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-15T19:20:39+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5879,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_003/not_lit_2/rotations/south-east.webp",
+        "south-west": "barrels/barrel_003/not_lit_2/rotations/south-west.webp",
+        "south": "barrels/barrel_003/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "barrels/barrel_003/not_lit_3/sprite.webp",
@@ -53,7 +63,12 @@
       "generated_at": "2026-08-15T19:20:40+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2302,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "barrels/barrel_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "barrels/barrel_003/not_lit_3/rotations/south-west.webp",
+        "south": "barrels/barrel_003/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "barrels/barrel_003/not_lit_4/sprite.webp",
@@ -61,7 +76,12 @@
       "generated_at": "2026-08-15T19:20:41+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2153,
-      "glow_score": 0.007
+      "glow_score": 0.007,
+      "rotations": {
+        "south-east": "barrels/barrel_003/not_lit_4/rotations/south-east.webp",
+        "south-west": "barrels/barrel_003/not_lit_4/rotations/south-west.webp",
+        "south": "barrels/barrel_003/not_lit_4/sprite.webp"
+      }
     }
   }
 }

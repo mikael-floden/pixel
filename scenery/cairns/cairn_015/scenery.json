@@ -38,7 +38,12 @@
       "generated_at": "2026-08-15T21:28:09+00:00",
       "glow_concept": "chalk name-marks shining white on each stone",
       "difference_from_source": 0.6705,
-      "glow_score": 0.0368
+      "glow_score": 0.0368,
+      "rotations": {
+        "south-east": "cairns/cairn_015/lit_1/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/lit_1/rotations/south-west.webp",
+        "south": "cairns/cairn_015/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "cairns/cairn_015/lit_2/sprite.webp",
@@ -59,7 +64,12 @@
       "generated_at": "2026-08-15T21:27:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6642,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_015/not_lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/not_lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_015/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cairns/cairn_015/not_lit_3/sprite.webp",

@@ -37,7 +37,12 @@
       "generated_at": "2026-08-15T20:29:08+00:00",
       "glow_concept": "molten soulstone shards glowing among coals",
       "difference_from_source": 0.6846,
-      "glow_score": 0.0967
+      "glow_score": 0.0967,
+      "rotations": {
+        "south-east": "braziers/brazier_001/lit_1/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/lit_1/rotations/south-west.webp",
+        "south": "braziers/brazier_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "braziers/brazier_001/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-15T20:29:29+00:00",
       "glow_concept": "column of drifting gold sparks",
       "difference_from_source": 0.7971,
-      "glow_score": 0.078
+      "glow_score": 0.078,
+      "rotations": {
+        "south-east": "braziers/brazier_001/lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_001/sprite.webp",
       "pixellab_object_id": "7b85014c-6e95-4f4b-9d5d-d1addf2bc632",
-      "generated_at": "2026-08-12T23:44:09+00:00"
+      "generated_at": "2026-08-12T23:44:09+00:00",
+      "rotations": {
+        "south-east": "braziers/brazier_001/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/rotations/south-west.webp",
+        "south": "braziers/brazier_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "braziers/brazier_001/not_lit_2/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-15T20:27:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7376,
-      "glow_score": 0.2628
+      "glow_score": 0.2628,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "braziers/brazier_001/not_lit_3/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-15T20:27:44+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7856,
-      "glow_score": 0.0423
+      "glow_score": 0.0423,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_3/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "braziers/brazier_001/not_lit_4/sprite.webp",
@@ -74,7 +99,12 @@
       "generated_at": "2026-08-15T20:28:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8359,
-      "glow_score": 0.0466
+      "glow_score": 0.0466,
+      "rotations": {
+        "south-east": "braziers/brazier_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "braziers/brazier_001/not_lit_4/rotations/south-west.webp",
+        "south": "braziers/brazier_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

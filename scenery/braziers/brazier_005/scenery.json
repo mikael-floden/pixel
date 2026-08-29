@@ -59,12 +59,22 @@
           ],
           "generated_at": "2026-08-29T06:55:28+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "braziers/brazier_005/lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_005/lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_005/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_005/sprite.webp",
       "pixellab_object_id": "26c3cad8-f3be-4dd5-9955-c6237ae6148b",
-      "generated_at": "2026-08-13T09:57:07+00:00"
+      "generated_at": "2026-08-13T09:57:07+00:00",
+      "rotations": {
+        "south-east": "braziers/brazier_005/rotations/south-east.webp",
+        "south-west": "braziers/brazier_005/rotations/south-west.webp",
+        "south": "braziers/brazier_005/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "braziers/brazier_005/not_lit_2/sprite.webp",
@@ -72,7 +82,12 @@
       "generated_at": "2026-08-15T20:33:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8693,
-      "glow_score": 0.2008
+      "glow_score": 0.2008,
+      "rotations": {
+        "south-east": "braziers/brazier_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_005/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_005/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "braziers/brazier_005/not_lit_3/sprite.webp",
@@ -80,7 +95,12 @@
       "generated_at": "2026-08-15T20:33:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5833,
-      "glow_score": 0.0035
+      "glow_score": 0.0035,
+      "rotations": {
+        "south-east": "braziers/brazier_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "braziers/brazier_005/not_lit_3/rotations/south-west.webp",
+        "south": "braziers/brazier_005/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "braziers/brazier_005/not_lit_4/sprite.webp",
@@ -88,7 +108,12 @@
       "generated_at": "2026-08-15T20:34:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8201,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "braziers/brazier_005/not_lit_4/rotations/south-east.webp",
+        "south-west": "braziers/brazier_005/not_lit_4/rotations/south-west.webp",
+        "south": "braziers/brazier_005/not_lit_4/sprite.webp"
+      }
     }
   }
 }
