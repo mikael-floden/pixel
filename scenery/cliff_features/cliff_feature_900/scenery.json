@@ -44,7 +44,30 @@
       "generated_at": "2026-08-16T09:22:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3485,
-      "glow_score": 0.0186
+      "glow_score": 0.0186,
+      "animations": {
+        "motion": {
+          "group_id": "7464257d-198c-4a5f-a686-a63e6bfc9fda",
+          "description": "This is the same picture in every frame. ONLY the green light on the patches brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_features/cliff_feature_900/lit_2/animations/motion/00.webp",
+            "cliff_features/cliff_feature_900/lit_2/animations/motion/01.webp",
+            "cliff_features/cliff_feature_900/lit_2/animations/motion/02.webp",
+            "cliff_features/cliff_feature_900/lit_2/animations/motion/03.webp",
+            "cliff_features/cliff_feature_900/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_features/cliff_feature_900/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:16:00+00:00",
+          "brief": "D21"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "cliff_features/cliff_feature_900/lit_3/sprite.webp",
