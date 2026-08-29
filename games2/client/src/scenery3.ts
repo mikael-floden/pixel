@@ -808,6 +808,12 @@ export class SceneryPieces {
 
   /** Start a load if this piece has never been asked for. Safe to call every
    *  frame for every visible placement. */
+  /** No manifest fetch outstanding. The loading screen waits on this so a
+   *  market stall does not pop in after the player is already standing there. */
+  get idle(): boolean {
+    return this.inflight.size === 0;
+  }
+
   request(id: string): Promise<void> {
     const done = this.inflight.get(id);
     if (done) return done;

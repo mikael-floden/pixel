@@ -1253,6 +1253,7 @@ export class WorldScene extends Phaser.Scene {
   private sceneryFit = new Map<string, SceneryFit | null>(); // per piece+state, measured once
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
+  private sceneryRebuilds = 0; // the boot hold waits for the first one
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
   // ---- INDOOR MODE (see the constants block above) ------------------------
@@ -1672,8 +1673,17 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Drive the post-"Enter world" loading overlay with real asset progress
     // (characters + tiles are hundreds of small PNGs — slow on mobile).
+    /* THE BAR MUST SPEND ITS LENGTH WHERE THE TIME GOES. For a tiles2 world
+     * that is this batch — hundreds of small images out of the deployed image —
+     * so it keeps 0.05..0.90. A maps3 world's terrain and scenery are NOT in the
+     * image at all and stream from the CDN afterwards, which is much the longer
+     * half; giving this batch the whole bar is what parked it at "100%" while
+     * the real work had not started (maintainer 2026-08-29: "the loading freezes
+     * on 100% for a long time"). It gets a third, and the streaming stage owns
+     * the rest. */
+    const artSpan = this.maps3 ? 0.3 : 0.85;
     this.load.on("progress", (f: number) => {
-      if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * 0.85, "Loading art…");
+      if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * artSpan, "Loading art…");
     });
     // The world's NPCs stand there from the first frame: their standing art
     // joins THIS batch (one small image per distinct character) instead of
@@ -2120,7 +2130,7 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(this.zoomFor());
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
-    setLoadingProgress(0.95, "Connecting…");
+    setLoadingProgress(this.maps3 ? 0.38 : 0.95, "Connecting…");
     try {
       this.bindRoom(
         await joinWorld(
@@ -10977,7 +10987,11 @@ export class WorldScene extends Phaser.Scene {
     }
     const DEADLINE_MS = 20000;
     const t0 = performance.now();
-    setLoadingProgress(0.96, "Streaming terrain…");
+    /* MONOTONIC. The denominator GROWS as the window discovers art — a scenery
+     * manifest arrives and queues its sprites — so the raw fraction can fall,
+     * and a bar that walks backwards reads as a fault. It only ever advances. */
+    let shown = 0.4;
+    setLoadingProgress(shown, "Streaming the world…");
     const tick = this.time.addEvent({
       delay: 100,
       loop: true,
@@ -10987,17 +11001,37 @@ export class WorldScene extends Phaser.Scene {
         // PAINTED, not merely "nothing pending": a pass that drew zero blits
         // has requested nothing yet, so pending is legitimately 0 on the very
         // first frame and would release onto the same empty ground.
-        const painted = this.t3stats.blits > 0 && (!load || load.idle);
+        /* TERRAIN **AND** SCENERY. Holding for terrain alone still let the
+         * market stall and its trader appear after the player was already
+         * standing next to them (maintainer 2026-08-29: "some objects pop into
+         * existence after the game has already started"). Scenery does not ride
+         * the terrain loader's queue: placements are bucketed per screen anchor,
+         * each piece's MANIFEST is fetched lazily on the first rebuild that sees
+         * it (205 fetches for 1,388 placements) and only then is its art queued.
+         * So the wait is: the first rebuild has run, no manifest is in flight,
+         * nothing is queued, and the shared Phaser loader is quiet. */
+        const scenery =
+          this.sceneryRebuilds > 0 &&
+          this.sceneryQueue.length === 0 &&
+          (!this.sceneryPieces || this.sceneryPieces.idle) &&
+          !this.tiles3Loader().isLoading();
+        const painted = this.t3stats.blits > 0 && (!load || load.idle) && scenery;
         if (!painted && waited < DEADLINE_MS && !this.unloading) {
-          const st = load?.stats;
-          if (st && st.requested > 0)
-            setLoadingProgress(
-              0.96 + 0.03 * Math.min(1, (st.requested - st.pending) / st.requested),
-              "Streaming terrain…",
-            );
+          /* REAL WORK, REAL BAR: terrain files plus scenery manifests plus the
+           * sprite queue those manifests open, counted together — this stage is
+           * most of a maps3 join and now owns most of the bar (0.40 -> 0.98). */
+          const t = load?.stats;
+          const sp = this.sceneryPieces?.stats;
+          const want = (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryQueue.length;
+          const have = (t ? t.requested - t.pending : 0) + (sp ? sp.loaded + sp.failed : 0);
+          if (want > 0) {
+            shown = Math.max(shown, 0.4 + 0.58 * Math.min(1, have / want));
+            setLoadingProgress(shown, "Streaming the world…");
+          }
           return;
         }
         tick.remove();
+        setLoadingProgress(1, "Ready");
         hideLoading();
       },
     });
@@ -11333,6 +11367,11 @@ export class WorldScene extends Phaser.Scene {
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
     for (const im of this.sceneryImgs) im.destroy();
     this.sceneryImgs = [];
+    /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
+     * and a world with no scenery index runs it and finds nothing. Counting
+     * after the early return would make every such join sit out the hold's full
+     * deadline instead of starting immediately. */
+    this.sceneryRebuilds++;
     const idx = this.scenery;
     const pieces = this.sceneryPieces;
     const world = this.world;
