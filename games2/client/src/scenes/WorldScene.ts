@@ -12117,6 +12117,15 @@ export class WorldScene extends Phaser.Scene {
       // references none of it. An empty stamp list is what the night pipeline
       // already does for a world with no emissive art.
       this.glowStamps = [];
+      /* THE COVER INDEX, which this early return skipped on EVERY maps3 world.
+       * It is the last line of the maps2 path for a reason: the occluder images
+       * have just been destroyed and recreated, so this is the one moment their
+       * broad-phase index can go stale. Returning before it left `coverBuckets`
+       * empty, so `coverCandidates` found nothing for any body, nothing was ever
+       * COVERED, and the pixel-exact lit copy drew over every wall and roof in
+       * the world — the player standing on top of a house he was behind. The
+       * depth sort was right the whole time; the second copy was not. */
+      this.rebuildCoverIndex();
       return;
     }
     for (let v = v0; v <= v1; v++) {
