@@ -606,6 +606,11 @@ export interface Tiles3Stats {
   unguardedFadePools: number;
   /** Slope tiles taken without `slopeGuard`. */
   unguardedSlopes: number;
+  /** Boundary cells whose Pair Lab pattern is not in tiles/patterns/index.json.
+   *  Nonzero means the tiles agent has unpublished one of his pool shapes and
+   *  those cells draw no boundary at all — render3 asserts on this at import,
+   *  which a browser cannot do. */
+  unpublishedMasks: number;
 }
 
 /* -- the world the resolver reads ------------------------------------------- */
@@ -923,6 +928,7 @@ export class Tiles3 {
     unresolvedMembers: 0,
     unguardedFadePools: 0,
     unguardedSlopes: 0,
+    unpublishedMasks: 0,
   };
 
   private data: Tiles3Data;
@@ -1685,8 +1691,8 @@ export class Tiles3 {
         index,
         a: sa,
         b: sb,
-        maskFrame: this.maskFrame(index),
-        pattern: this.data.patterns.selection?.default_pattern ?? null,
+        maskFrame: this.maskFrame(index, x, y, Tiles3.naturalPair(sa, sb)),
+        pattern: Tiles3.maskFor(index, x, y, Tiles3.naturalPair(sa, sb)),
         plateA: pa.art,
         plateB: pb.art,
         setA: pa.set.id,
@@ -1850,13 +1856,75 @@ export class Tiles3 {
     return ia <= ib ? [a, b] : [b, a];
   }
 
-  /** The frame of tiles/patterns/masks.webp a Wang index blends through, for the
-   *  library's default pattern (a consumer with no maintainer preference draws
-   *  that one). Null when the pattern is not in the doc. */
-  maskFrame(index: number): number | null {
-    const id = this.data.patterns.selection?.default_pattern;
+  /** THE MASK THIS BOUNDARY CELL WEARS — the maintainer's Pair Lab rule, which
+   *  is what makes a road read as a road. Drawing ONE default everywhere is the
+   *  reason roads came out as a single repeated squiggle: the library default is
+   *  `a18_s4`, which sits in the VERTICAL pool, so every spoke direction wore
+   *  the shape he tuned for the vertical one. render3 fixed exactly this
+   *  (`mask_for`), and this is that function.
+   *
+   *  1. The pool is chosen by the DIRECTION the boundary runs ON SCREEN. His
+   *     words: "0 deg -> the horizontal spoke; 24 deg -> the four diagonal
+   *     spokes (the X); 88 deg -> the vertical spoke. 6 and 9 are saddles, two
+   *     curves crossing in one tile, which is the crossing case and goes with
+   *     the X."
+   *  2. The pools are his, "arrived at by playing with this page".
+   *  3. NO FLIPPING, ever: he traced the chevrons of stray dots running through
+   *     open ground to mirrored tiles meeting unmirrored neighbours along a seam
+   *     neither was drawn for.
+   *  4. A ROAD EDGE MAY BE STRAIGHT; A COASTLINE MAY NOT. The pools were tuned
+   *     on brown_paving_stone~light_soil — a made road — and two of the X pool's
+   *     five masks cut a perfectly straight line. That is a kerb, and it reads
+   *     as a ruled facet on a sand/grass edge, so the low-amplitude cuts are
+   *     dropped when NEITHER ground is a made surface. */
+  private static readonly POOL_OF: Record<number, "horiz" | "vert" | "x"> = {
+    1: "horiz", 7: "horiz", 8: "horiz", 14: "horiz",
+    2: "vert", 4: "vert", 11: "vert", 13: "vert",
+    3: "x", 5: "x", 10: "x", 12: "x", 6: "x", 9: "x",
+  };
+  private static readonly MASK_POOLS: Record<string, string[]> = {
+    x: ["a00_s3", "a00_s5", "a03_s5", "a21_s5", "a30_s1"],
+    vert: ["a12_s4", "a18_s4", "a21_s4", "a23_s4"],
+    horiz: ["a14_s5", "a15_s2", "a15_s6", "a18_s6", "a21_s2", "a24_s6"],
+  };
+  private static readonly MADE_GROUND = ["light_soil", "brown_paving_stone", "grey_paving_stone", "parquet_floor"];
+
+  /** Is this pair NATURAL — neither side a made surface? */
+  static naturalPair(ga: string, gb: string): boolean {
+    return !(Tiles3.MADE_GROUND.includes(ga) || Tiles3.MADE_GROUND.includes(gb));
+  }
+
+  /** HIS OWN HASH, bit for bit, so a boundary lands where he saw it in the lab.
+   *  Every product is reduced mod 2^32 before the xor because JS coerces xor
+   *  operands to SIGNED int32 while Python xors the full integers and masks
+   *  after — `>>> 0` on each term is what keeps the two identical. */
+  static labHash(r: number, cc: number, k: number, salt = 1): number {
+    const m = (a: number, b: number) => (a * b) % 4294967296;
+    let h = ((m(r, 73856093) >>> 0) ^ (m(cc, 19349663) >>> 0) ^ (m(k, 83492791) >>> 0) ^ (m(salt, 2654435761) >>> 0)) >>> 0;
+    h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0;
+    h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0;
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+
+  /** The pattern id this cell's mask comes from. `render3.mask_for`. */
+  static maskFor(index: number, x: number, y: number, natural = false): string {
+    const full = Tiles3.MASK_POOLS[Tiles3.POOL_OF[index] ?? "horiz"];
+    const wob = natural ? full.filter((pid) => Number(pid.slice(1, 3)) >= 12) : full;
+    const pool = wob.length ? wob : full;
+    return pool[Math.trunc(Tiles3.labHash(y, x, 1) * pool.length) % pool.length];
+  }
+
+  /** The frame of tiles/patterns/masks.webp this boundary blends through: the
+   *  spoke pool's row for this cell, times the sheet width, plus the Wang index.
+   *  Null when the chosen pattern is not published — the caller then draws no
+   *  boundary rather than a wrong one. */
+  maskFrame(index: number, x = 0, y = 0, natural = false): number | null {
+    const id = Tiles3.maskFor(index, x, y, natural);
     const row = this.data.patterns.patterns?.find((p) => p.id === id)?.row;
-    if (row === undefined) return null;
+    if (row === undefined) {
+      this.stats.unpublishedMasks++;
+      return null;
+    }
     return row * (this.data.patterns.masks?.cols ?? 16) + index;
   }
 

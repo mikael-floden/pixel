@@ -573,7 +573,14 @@ def build_window(doc, w):
                                                    brec[own + "p"])
                 rec["srf"] = "boundary"
                 rec["b"] = len(bnds)
+                # HIS PAIR LAB MASK, per cell. Recorded because a Wang index
+                # alone does not say which SHAPE the cell wears: render3 picks
+                # from a spoke-direction pool, and a consumer drawing one global
+                # default matches every index while drawing the wrong road.
                 bnds.append({"x": x, "y": y, "i": idx, "a": sa, "b": sb,
+                             "m": R3.mask_for(idx, x, y,
+                                              not (sa in R3.MADE_GROUND
+                                                   or sb in R3.MADE_GROUND)),
                              "folded": folded,
                              "pa": brec["ap"], "pb": brec["bp"],
                              "seta": brec["aset"], "mia": brec["ami"],
