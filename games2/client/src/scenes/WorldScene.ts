@@ -11023,7 +11023,15 @@ export class WorldScene extends Phaser.Scene {
       hideLoading(); // image art: the avatar arriving IS the world being up
       return;
     }
-    const DEADLINE_MS = 20000;
+    /* TWO DEADLINES, because releasing onto a BLACK world is the one outcome
+     * worse than waiting. The soft one gives up on the trimmings — scenery
+     * still streaming, a manifest still in flight — and shows a world that has
+     * at least drawn its ground. The hard one is the true backstop and only it
+     * may release with NOTHING painted, which on a phone streaming a staging
+     * world from the CDN is exactly the case the soft deadline used to hit
+     * (maintainer 2026-08-29: "the game started without texture again"). */
+    const SOFT_DEADLINE_MS = 20000;
+    const HARD_DEADLINE_MS = 60000;
     const t0 = performance.now();
     /* MONOTONIC. The denominator GROWS as the window discovers art — a scenery
      * manifest arrives and queues its sprites — so the raw fraction can fall,
@@ -11054,7 +11062,11 @@ export class WorldScene extends Phaser.Scene {
           (!this.sceneryPieces || this.sceneryPieces.idle) &&
           !this.tiles3Loader().isLoading();
         const painted = this.t3stats.blits > 0 && (!load || load.idle) && scenery;
-        if (!painted && waited < DEADLINE_MS && !this.unloading) {
+        // The ground has drawn SOMETHING — the only fact that makes giving up
+        // on the rest reasonable.
+        const anyGround = this.t3stats.blits > 0;
+        const done = painted || this.unloading || waited >= (anyGround ? SOFT_DEADLINE_MS : HARD_DEADLINE_MS);
+        if (!done) {
           /* REAL WORK, REAL BAR: terrain files plus scenery manifests plus the
            * sprite queue those manifests open, counted together — this stage is
            * most of a maps3 join and now owns most of the bar (0.40 -> 0.98). */
@@ -11069,6 +11081,11 @@ export class WorldScene extends Phaser.Scene {
           return;
         }
         tick.remove();
+        if (!painted && !this.unloading)
+          console.warn(
+            `[nangijala] loading released after ${Math.round(waited)}ms without a finished world` +
+              ` (blits=${this.t3stats.blits}, scenery=${scenery})`,
+          );
         setLoadingProgress(1, "Ready");
         hideLoading();
       },
