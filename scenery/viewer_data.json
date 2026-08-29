@@ -87970,6 +87970,29 @@
             "south-west": "water_pumps/water_pump_001/lit_1/rotations/south-west.webp",
             "south": "water_pumps/water_pump_001/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "6a4a2a35-832b-4443-9232-6c7ee80f7b49",
+              "description": "This is the same picture in every frame. ONLY the small hanging cup moves, swinging very gently on its hook. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "water_pumps/water_pump_001/lit_1/animations/motion/00.webp",
+                "water_pumps/water_pump_001/lit_1/animations/motion/01.webp",
+                "water_pumps/water_pump_001/lit_1/animations/motion/02.webp",
+                "water_pumps/water_pump_001/lit_1/animations/motion/03.webp",
+                "water_pumps/water_pump_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T11:10:21+00:00",
+              "brief": "N16"
+            }
+          },
           "art_hash": "decfa8ee31105a18"
         },
         "NOT_LIT_1": {
