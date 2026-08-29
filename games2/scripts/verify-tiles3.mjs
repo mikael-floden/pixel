@@ -78,13 +78,17 @@ const COAST_WATER = [416, 208];
 // The beach STRIP itself is one cell wide, so it can never be "clean" — it is
 // sampled as the third colour only, never as a plain plate.
 const COAST_BEACH = [413, 211];
-// FADE. fadeAt scans ring 2 on the four axes (ring 1 belongs to the composed
-// boundary tile) and takes the first hit: from (410,208) that is (412,208),
-// light_beach, non-liquid, same level. The grass|light_beach pool is non-empty
-// in tiles/fades/index.json, so this cell MUST resolve to fade art rather than
-// its region's plate.
-const FADE_CELL = [410, 208];
-const FADE_OTHER = "light_beach";
+/* FADE — and it is NOT on the coast. The band is a probabilistic CHEBYSHEV scan
+ * from RING 1, and the pool is APPROVED ONLY: he has approved 480 of the 3,575
+ * fade tiles, and grass<->light_beach is one of the pairs with NOTHING approved,
+ * so no cell of this coastline can ever fade. Over the whole world 249 cells
+ * do, on 8 pairs. (293,331) is snow on the level-32 snow line with black_rock at
+ * RING 1 — the ring the old axis-from-2 scan skipped, which is exactly the
+ * behaviour this pins. Its 7x7 is flat, deckless and free of scenery, so the
+ * pixel under it is the fade tile and nothing else. */
+const FADE_CELL = [293, 331];
+const FADE_OTHER = "black_rock";
+const FADE_RING = 1;
 // BOUNDARY. The lattice corner anchored at (411,208) spans (411,208) grass,
 // (412,208) light_beach, (411,209) grass, (412,209) light_beach — exactly two
 // grounds, all four at level 0, which is the whole condition for a composed
@@ -98,8 +102,9 @@ const BOUNDARY_INDEX = [5, 10];
 /* TWO MORE GROUNDS, from the other side of the island, so five distinct plates
  * are proven and not just one coastline. Both are level-0 cells whose 3x3 is
  * one ground at one level, with no scenery within ±3 and no deck: a stone shelf
- * on the south cape, and open sea (which takes the LIQUID branch — a flat
- * colour diamond, no plate at all). */
+ * on the south cape, and open sea. A liquid is a ground with a base tile set
+ * like any other now — the maintainer chose all 16 water members — and draws
+ * its surface's TOP FACE, never a flat painted diamond and never a wall. */
 const STONE_CELL = [445, 453];
 const SEA_CELL = [455, 405];
 
@@ -456,27 +461,10 @@ try {
   }
 
   /* ======================================================================== */
-  /* 3. A FADE CELL AND A COMPOSED BOUNDARY                                   */
+  /* 3. A COMPOSED BOUNDARY AND A FADE CELL                                   */
   /* ======================================================================== */
   await look(COAST.at[0], COAST.at[1], "the coast frame (transitions)");
-  const transShot = await shoot("transitions");
-
-  const fade = await t3at(FADE_CELL[0], FADE_CELL[1]);
-  if (fade.cell?.art?.kind !== "fade")
-    fail(
-      `${FADE_CELL} resolved to "${fade.cell?.art?.kind}" art, not a fade — the ring-2 band scan is not running ` +
-        `(its ring-2 axis neighbour (412,208) is ${FADE_OTHER} at the same level)`,
-    );
-  if (fade.cell.fade?.other !== FADE_OTHER || fade.cell.fade.dist !== 2)
-    fail(`the fade at ${FADE_CELL} blends toward ${JSON.stringify(fade.cell.fade)} — expected ${FADE_OTHER} at ring 2`);
-  if (!fade.blits.length) fail(`the fade tile at ${FADE_CELL} produced no blit — ${fade.cell.fade.file} never loaded`);
-  {
-    const p = await cellCentre(FADE_CELL[0], FADE_CELL[1]);
-    const c = patch(transShot, p.x, p.y);
-    if (!c) fail(`the fade cell ${FADE_CELL} is off the screenshot`);
-    notVoid(`the fade cell ${FADE_CELL}`, c, await lightAt(FADE_CELL[0], FADE_CELL[1]));
-    ok(`fade at ${FADE_CELL}: grass -> ${FADE_OTHER} at ring 2, ${fade.cell.fade.file.split("/").pop()}, drew ${rgb(c)}`);
-  }
+  await shoot("transitions");
 
   const bnd = await t3at(BOUNDARY_CELL[0], BOUNDARY_CELL[1]);
   if (!bnd.boundary)
@@ -504,6 +492,39 @@ try {
     `composed boundary at ${BOUNDARY_CELL}: ${bnd.boundary.a}|${bnd.boundary.b} index ${bnd.boundary.index} ` +
       `mask ${bnd.boundary.maskFrame}, composed; ${boundariesDrew} boundaries in this frame`,
   );
+
+  // THE FADE BAND, on its own frame: the only pairs with approved art are up on
+  // the massif, so the coast frame cannot show one.
+  await look(FADE_CELL[0], FADE_CELL[1], "the snow-line frame (fade band)");
+  const fadeShot = await shoot("fade");
+  const fade = await t3at(FADE_CELL[0], FADE_CELL[1]);
+  if (!fade.cell?.fade)
+    fail(
+      `${FADE_CELL} resolved to "${fade.cell?.art?.kind}" art with no fade — the Chebyshev band scan is not ` +
+        `running (its ring-${FADE_RING} neighbour is ${FADE_OTHER} at the same level)`,
+    );
+  if (fade.cell.fade.other !== FADE_OTHER || fade.cell.fade.dist !== FADE_RING)
+    fail(
+      `the fade at ${FADE_CELL} blends toward ${JSON.stringify(fade.cell.fade)} — expected ${FADE_OTHER} at ` +
+        `ring ${FADE_RING}. Ring 1 is the one an axis-only scan from ring 2 could never see.`,
+    );
+  // A fade is CONFORMED into plate geometry, not cropped: its wall is
+  // meaningless by the producer's own index, and hand-cropping it shipped a
+  // 30-row surface the top-face mask could not index.
+  if (fade.cell.art?.kind !== "conform")
+    fail(`the fade at ${FADE_CELL} draws "${fade.cell.art?.kind}" art — a fade must be conformed`);
+  if (!fade.blits.length) fail(`the fade tile at ${FADE_CELL} produced no blit — ${fade.cell.fade.file} never loaded`);
+  {
+    const p = await cellCentre(FADE_CELL[0], FADE_CELL[1]);
+    const c = patch(fadeShot, p.x, p.y);
+    if (!c) fail(`the fade cell ${FADE_CELL} is off the screenshot`);
+    notVoid(`the fade cell ${FADE_CELL}`, c, await lightAt(FADE_CELL[0], FADE_CELL[1]));
+    ok(
+      `fade at ${FADE_CELL}: ${fade.cell.ground} -> ${FADE_OTHER} at ring ${FADE_RING}, ` +
+        `${fade.cell.fade.file.split("/").pop()}, drew ${rgb(c)}`,
+    );
+  }
+
 
   /* ======================================================================== */
   /* 4. A CLIFF DRAWS ITS WHOLE STACK                                         */

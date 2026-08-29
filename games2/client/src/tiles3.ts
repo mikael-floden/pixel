@@ -374,27 +374,15 @@ export function pickSet(sets: BaseSet[], ground: string, region: string): BaseSe
  *  repaint a field nobody touched. -1 is the sentinel for "no member has
  *  weight"; the caller draws clean.
  *
- *  HIS REJECTION OUTRANKS HIS SET. `rejected` drops a member the maintainer put
- *  in a set and later rejected BEFORE the weighted pick, so the remaining
- *  members share its weight rather than the field keeping a tile he threw out
- *  (one such member was measured drawing on the map). The returned index is into
- *  the FULL `members` array either way. Omit `rejected` for the pure reference
- *  pick — that is the form wiki/lib/basesets.mjs publishes and the test
- *  cross-checks. */
-export function pickMemberIndex(
-  set: BaseSet | null | undefined,
-  x: number,
-  y: number,
-  rejected?: (m: BaseMember) => boolean,
-): number {
+ *  THE PURE REFERENCE PICK, the form wiki/lib/basesets.mjs publishes and the
+ *  test cross-checks against it. The resolver picks over the same weights with
+ *  the maintainer's REJECTED members already dropped — see `Tiles3.pool`. */
+export function pickMemberIndex(set: BaseSet | null | undefined, x: number, y: number): number {
   if (!set || !set.members.length) return -1;
-  const pool = rejected ? set.members.filter((m) => m.kind === "clean" || !rejected(m)) : set.members;
-  if (!pool.length) return -1;
-  const i = pickWeighted(
-    pool.map((m) => m.weight),
+  return pickWeighted(
+    set.members.map((m) => m.weight),
     unitHash(`bts1|tile|${set.id}|${x}|${y}`),
   );
-  return i < 0 ? -1 : set.members.indexOf(pool[i]);
 }
 
 /** A MEMBER'S VERDICT KEY. A review member is keyed by its review key; a `tops`
@@ -1135,8 +1123,13 @@ export class Tiles3 {
     return { set, memberIndex, art };
   }
 
-  /** One set's members with his rejections already applied: the weights to pick
-   *  over, and where each lands in the set's full `members`. */
+  /** One set's members with HIS REJECTIONS ALREADY APPLIED: the weights to pick
+   *  over, and where each lands in the set's full `members`.
+   *
+   *  His rejection outranks his set — a tile he put in a set and later rejected
+   *  was still being drawn, and one such member was measured on the map. It is
+   *  dropped BEFORE the weighted pick, so the survivors share its weight. Clean
+   *  is never dropped: it is the member every set can always fall back to. */
   private pool(ground: string, set: BaseSet): { weights: number[]; index: number[] } {
     const k = `${ground}|${set.id}`;
     let p = this.livePool.get(k);

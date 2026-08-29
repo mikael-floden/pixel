@@ -238,11 +238,22 @@ def over_ident(top, side):
     key = ("over", top, side)
     if key in TILE_IX:
         return TILE_IX[key]
-    c = R3.approved_candidate(top, side) or R3.approved_candidate(top, top)
+    c = R3.over_candidate(top, side)
     im = R3.over_tile(top, side)
+    e = {"role": "over", "top": top, "side": side, "key": c["key"],
+         "path": path_ix(c["file"]), "w": im.width, "h": im.height}
+    # THE BORROWED WALL. He marks a tile top_only (its own face is unusable) in
+    # tile_walls.json and names the face it wears instead in top_walls.json; the
+    # two files only mean anything together. The over tile is then `path`'s art
+    # with THIS candidate's band pasted over rows TOP_Y+2*DY.., which is a raster
+    # the resolver NAMES and the draw layer builds — so the fixture pins which
+    # wall, not just that there is one. 181 cells of the_game wear one today.
+    if R3.top_only(c["key"].strip("/")):
+        lend = R3.borrowed_wall(c["key"].strip("/")) or R3.approved_candidate(side, side)
+        if lend:
+            e["borrowed"] = {"key": lend["key"], "path": path_ix(lend["file"])}
     TILE_IX[key] = len(TILES)
-    TILES.append({"role": "over", "top": top, "side": side, "key": c["key"],
-                  "path": path_ix(c["file"]), "w": im.width, "h": im.height})
+    TILES.append(e)
     return TILE_IX[key]
 
 
@@ -352,7 +363,13 @@ _real_ac = PIL.Image.Image.alpha_composite
 
 
 def _watch_ac(self, im, dest=(0, 0), source=(0, 0)):
-    _DRAWS.append((im.width, im.height, int(dest[0]), int(dest[1]), ident(im)))
+    # ONLY COMPOSITES ONTO THE CANVAS ARE DRAWS. render3 also composites while
+    # BUILDING art — over_tile() pastes a borrowed wall band onto a 64px tile
+    # when the maintainer marks the tile top_only — and the target there is the
+    # tile, not the map. The canvas is (x1-x0+y1-y0)*DX+16 wide, thousands of px;
+    # every piece of art is at most TILE.
+    if self.width > R3.TILE:
+        _DRAWS.append((im.width, im.height, int(dest[0]), int(dest[1]), ident(im)))
     return _real_ac(self, im, dest, source)
 
 
@@ -698,10 +715,19 @@ def build_window(doc, w):
     # game; and because the identity is the resolution and not the size, a fade
     # swapped for a detail (both 64x46) cannot slip through.
     got = list(draws)
-    assert len(got) == len(pred), \
-        f"{w['name']}: render3 drew {len(got)} tiles, fixture predicts {len(pred)}"
+    # Report the FIRST divergence, with its neighbours: "4862 against 4861" says
+    # a line drifted and nothing about which.
     for i, (gt, pt) in enumerate(zip(got, pred)):
-        assert gt == pt, f"{w['name']}: draw #{i} render3={gt} fixture={pt}"
+        if gt == pt:
+            continue
+        lo, hi = max(0, i - 2), i + 3
+        raise AssertionError(
+            f"{w['name']}: draw #{i} diverges.\n  render3 " +
+            "\n          ".join(str(d) for d in got[lo:hi]) +
+            "\n  fixture " + "\n          ".join(str(d) for d in pred[lo:hi]))
+    assert len(got) == len(pred), \
+        f"{w['name']}: render3 drew {len(got)} tiles, fixture predicts {len(pred)} " \
+        f"(the streams agree up to #{min(len(got), len(pred))})"
     assert sum(1 for d in got if d[4] is None) == len(scen), \
         f"{w['name']}: {sum(1 for d in got if d[4] is None)} unidentifiable " \
         f"draws but {len(scen)} scenery pieces — a TERRAIN art source stopped " \
