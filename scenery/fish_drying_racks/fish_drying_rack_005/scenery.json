@@ -124,6 +124,29 @@
         "south-east": "fish_drying_racks/fish_drying_rack_005/not_lit_3/rotations/south-east.webp",
         "south-west": "fish_drying_racks/fish_drying_rack_005/not_lit_3/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_005/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "85ac0cf9-dd43-45cf-876a-007fb96e31df",
+          "description": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, the same parts in the same places, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_005/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:03:13+00:00",
+          "brief": "C19"
+        }
       }
     },
     "NOT_LIT_4": {

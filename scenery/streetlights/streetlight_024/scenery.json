@@ -89,6 +89,29 @@
         "south-east": "streetlights/streetlight_024/lit_3/rotations/south-east.webp",
         "south-west": "streetlights/streetlight_024/lit_3/rotations/south-west.webp",
         "south": "streetlights/streetlight_024/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6bc393ba-6c6e-4de1-8fad-d31d4468865e",
+          "description": "This is the same picture in every frame. ONLY the light inside the lamp glass flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "streetlights/streetlight_024/lit_3/animations/motion/00.webp",
+            "streetlights/streetlight_024/lit_3/animations/motion/01.webp",
+            "streetlights/streetlight_024/lit_3/animations/motion/02.webp",
+            "streetlights/streetlight_024/lit_3/animations/motion/03.webp",
+            "streetlights/streetlight_024/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "streetlights/streetlight_024/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:01:46+00:00",
+          "brief": "C12"
+        }
       }
     },
     "LIT_4": {
