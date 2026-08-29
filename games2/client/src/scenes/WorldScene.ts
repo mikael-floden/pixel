@@ -4624,6 +4624,9 @@ export class WorldScene extends Phaser.Scene {
     };
     for (const im of this.occluders) add(im);
     for (const im of this.propImgs) add(im);
+    /* SCENERY TOO. A tree is a prop that happens to sit off the grid, and a
+     * body walking behind one must be covered by it exactly as by a boulder. */
+    for (const im of this.sceneryImgs) add(im);
   }
 
   /** Everything drawn IN FRONT of this body that overlaps its padded frame box.
@@ -11451,6 +11454,56 @@ export class WorldScene extends Phaser.Scene {
           // in front of a tree exactly when it should.
           .setDepth(this.iso.oy + (p.x + p.y) * dy + dy),
       );
+      /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
+       * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
+       * only ever looked right by luck of raw painter order. This is the props'
+       * record: `solid` marks bottom-anchored BILLBOARD art, which is what
+       * makes the solidArtOver branch fire (written for "128px spires" — tall
+       * art that covers anything behind its diagonal however far its top rises
+       * above the feet). `top` is the ground plus one level, the same "a solid
+       * structure visually stands ~1 level tall" the maps2 props use.
+       *
+       * THE BOX IS THE ART's, not the piece's own footprint: nothing in
+       * scenery.json publishes one yet (it carries world_px_height but no
+       * occluder/footprint), so this is the drawn crop. That reads a tree's
+       * CANOPY where a player should be able to stand under it — asked scenery
+       * for a published box so the maintainer can tune it in the wiki. */
+      const scol = Math.floor(p.x);
+      const srow = Math.floor(p.y);
+      /* THE LIT COPY — the black-silhouette effect, which scenery never had.
+       * A piece draws BELOW the darkness overlay, so zero ambient blacks it
+       * out; the copy above the band is then tinted by the piece's OWN cell.
+       * That is what makes an NPC outdoors read as a silhouette from inside a
+       * house, and a tree must do the same (maintainer 2026-08-29: "my hope was
+       * that Scenery worked the same way in every aspect and I would be able to
+       * see a black silhouette of the tree"). Same construction as the props'
+       * copy — same crop, same flip, same displayed box, same depth band, no
+       * new ordering rules. */
+      if (this.night) {
+        this.litOccluders.push({
+          img: this.add
+            .image(fit.x, fit.y, key, name)
+            .setOrigin(0, 0)
+            .setDisplaySize(fit.w, fit.h)
+            .setFlipX(fit.flipX)
+            .setDepth(litDepth(this.iso.oy + (p.x + p.y) * dy + dy)),
+          col: p.x,
+          row: p.y,
+          z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
+          phase: ((((scol * 73856093) ^ (srow * 19349663)) >>> 0) % 628) / 100,
+        });
+      }
+      this.occluderMeta.push({
+        col: scol,
+        row: srow,
+        top: (world.rows[srow]?.[scol]?.l ?? 0) + 1,
+        solid: true,
+        depth: this.iso.oy + (p.x + p.y) * dy + dy,
+        x0: fit.x,
+        x1: fit.x + fit.w,
+        y0: fit.y,
+        y1: fit.y + fit.h,
+      });
       drawn++;
     }
     this.t3stats.scenery = drawn;
