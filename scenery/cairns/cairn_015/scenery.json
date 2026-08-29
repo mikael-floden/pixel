@@ -51,12 +51,22 @@
       "generated_at": "2026-08-15T21:28:49+00:00",
       "glow_concept": "wisps of soul-light circling the peak",
       "difference_from_source": 0.657,
-      "glow_score": 0.1797
+      "glow_score": 0.1797,
+      "rotations": {
+        "south-east": "cairns/cairn_015/lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_015/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_015/sprite.webp",
       "pixellab_object_id": "f35d740b-ffb2-411c-ad04-11dcf2b21e49",
-      "generated_at": "2026-08-14T00:46:51+00:00"
+      "generated_at": "2026-08-14T00:46:51+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_015/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/rotations/south-west.webp",
+        "south": "cairns/cairn_015/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cairns/cairn_015/not_lit_2/sprite.webp",
@@ -77,7 +87,12 @@
       "generated_at": "2026-08-15T21:29:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2884,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_015/not_lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/not_lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_015/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cairns/cairn_015/not_lit_4/sprite.webp",
@@ -85,7 +100,12 @@
       "generated_at": "2026-08-15T21:28:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2353,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cairns/cairn_015/not_lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_015/not_lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_015/not_lit_4/sprite.webp"
+      }
     }
   }
 }

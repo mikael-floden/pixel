@@ -37,13 +37,23 @@
       "generated_at": "2026-08-16T11:41:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8337,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_006/not_lit_1/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_006/not_lit_1/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_006/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "dock_pilings/dock_piling_006/sprite.webp",
       "pixellab_object_id": "f01f85a7-ab7c-4cd4-829f-40f7bff3f44b",
       "generated_at": "2026-08-13T13:18:30+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_006/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_006/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_006/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "dock_pilings/dock_piling_006/not_lit_4/sprite.webp",
@@ -52,7 +62,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3921,
       "glow_score": 0.0091,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_006/not_lit_4/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_006/not_lit_4/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_006/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "dock_pilings/dock_piling_006/not_lit_5/sprite.webp",
@@ -61,7 +76,12 @@
       "glow_concept": null,
       "difference_from_source": 0.391,
       "glow_score": 0.0126,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_006/not_lit_5/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_006/not_lit_5/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_006/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "dock_pilings/dock_piling_006/not_lit_6/sprite.webp",
@@ -70,7 +90,12 @@
       "glow_concept": null,
       "difference_from_source": 0.4807,
       "glow_score": 0.0077,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_006/not_lit_6/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_006/not_lit_6/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_006/not_lit_6/sprite.webp"
+      }
     }
   }
 }

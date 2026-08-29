@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "cairns/cairn_026/sprite.webp",
       "pixellab_object_id": "5dd72d05-5f13-429d-a840-d7e01130f443",
-      "generated_at": "2026-08-14T01:48:07+00:00"
+      "generated_at": "2026-08-14T01:48:07+00:00",
+      "rotations": {
+        "south-east": "cairns/cairn_026/rotations/south-east.webp",
+        "south-west": "cairns/cairn_026/rotations/south-west.webp",
+        "south": "cairns/cairn_026/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "cairns/cairn_026/lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-15T21:38:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7875,
-      "glow_score": 0.075
+      "glow_score": 0.075,
+      "rotations": {
+        "south-east": "cairns/cairn_026/lit_2/rotations/south-east.webp",
+        "south-west": "cairns/cairn_026/lit_2/rotations/south-west.webp",
+        "south": "cairns/cairn_026/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "cairns/cairn_026/lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-15T21:38:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8526,
-      "glow_score": 0.0529
+      "glow_score": 0.0529,
+      "rotations": {
+        "south-east": "cairns/cairn_026/lit_3/rotations/south-east.webp",
+        "south-west": "cairns/cairn_026/lit_3/rotations/south-west.webp",
+        "south": "cairns/cairn_026/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "cairns/cairn_026/lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-15T21:39:06+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6846,
-      "glow_score": 0.0311
+      "glow_score": 0.0311,
+      "rotations": {
+        "south-east": "cairns/cairn_026/lit_4/rotations/south-east.webp",
+        "south-west": "cairns/cairn_026/lit_4/rotations/south-west.webp",
+        "south": "cairns/cairn_026/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cairns/cairn_026/not_lit_1/sprite.webp",
@@ -67,7 +87,12 @@
       "generated_at": "2026-08-15T21:47:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5389,
-      "glow_score": 0.0183
+      "glow_score": 0.0183,
+      "rotations": {
+        "south-east": "cairns/cairn_026/not_lit_1/rotations/south-east.webp",
+        "south-west": "cairns/cairn_026/not_lit_1/rotations/south-west.webp",
+        "south": "cairns/cairn_026/not_lit_1/sprite.webp"
+      }
     }
   }
 }

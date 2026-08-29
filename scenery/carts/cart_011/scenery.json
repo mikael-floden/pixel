@@ -37,12 +37,22 @@
       "generated_at": "2026-08-15T21:50:57+00:00",
       "glow_concept": "phosphorescent moss blanketing a wrecked cart",
       "difference_from_source": 0.6392,
-      "glow_score": 0.1352
+      "glow_score": 0.1352,
+      "rotations": {
+        "south-east": "carts/cart_011/lit_1/rotations/south-east.webp",
+        "south-west": "carts/cart_011/lit_1/rotations/south-west.webp",
+        "south": "carts/cart_011/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "carts/cart_011/sprite.webp",
       "pixellab_object_id": "1efb1c12-22b6-4733-afc3-ca34f24e5a46",
-      "generated_at": "2026-08-13T23:57:13+00:00"
+      "generated_at": "2026-08-13T23:57:13+00:00",
+      "rotations": {
+        "south-east": "carts/cart_011/rotations/south-east.webp",
+        "south-west": "carts/cart_011/rotations/south-west.webp",
+        "south": "carts/cart_011/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "carts/cart_011/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-15T21:50:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4168,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "carts/cart_011/not_lit_2/rotations/south-east.webp",
+        "south-west": "carts/cart_011/not_lit_2/rotations/south-west.webp",
+        "south": "carts/cart_011/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "carts/cart_011/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-15T21:50:07+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8627,
-      "glow_score": 0.0014
+      "glow_score": 0.0014,
+      "rotations": {
+        "south-east": "carts/cart_011/not_lit_3/rotations/south-east.webp",
+        "south-west": "carts/cart_011/not_lit_3/rotations/south-west.webp",
+        "south": "carts/cart_011/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "carts/cart_011/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-15T21:50:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6069,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "carts/cart_011/not_lit_4/rotations/south-east.webp",
+        "south-west": "carts/cart_011/not_lit_4/rotations/south-west.webp",
+        "south": "carts/cart_011/not_lit_4/sprite.webp"
+      }
     }
   }
 }

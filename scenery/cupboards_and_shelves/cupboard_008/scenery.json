@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T11:35:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8147,
-      "glow_score": 0.0323
+      "glow_score": 0.0323,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/lit_4/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cupboards_and_shelves/cupboard_008/not_lit_2/sprite.webp",
@@ -45,13 +50,23 @@
       "generated_at": "2026-08-16T11:35:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4059,
-      "glow_score": 0.0039
+      "glow_score": 0.0039,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/not_lit_2/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/not_lit_2/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
       "pixellab_object_id": "dade316b-1b0e-4d90-89dd-cbc9bc3d4698",
       "generated_at": "2026-08-13T23:45:49+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cupboards_and_shelves/cupboard_008/not_lit_4/sprite.webp",
@@ -60,7 +75,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7877,
       "glow_score": 0.0618,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_008/not_lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_008/not_lit_4/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_008/not_lit_4/sprite.webp"
+      }
     }
   }
 }

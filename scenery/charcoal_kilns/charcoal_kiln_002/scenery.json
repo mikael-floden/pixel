@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "charcoal_kilns/charcoal_kiln_002/sprite.webp",
       "pixellab_object_id": "9547dd87-d9de-4bd9-9484-5a5c9d6b454e",
-      "generated_at": "2026-08-13T06:12:49+00:00"
+      "generated_at": "2026-08-13T06:12:49+00:00",
+      "rotations": {
+        "south-east": "charcoal_kilns/charcoal_kiln_002/rotations/south-east.webp",
+        "south-west": "charcoal_kilns/charcoal_kiln_002/rotations/south-west.webp",
+        "south": "charcoal_kilns/charcoal_kiln_002/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "charcoal_kilns/charcoal_kiln_002/lit_3/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T09:08:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4037,
-      "glow_score": 0.0667
+      "glow_score": 0.0667,
+      "rotations": {
+        "south-east": "charcoal_kilns/charcoal_kiln_002/lit_3/rotations/south-east.webp",
+        "south-west": "charcoal_kilns/charcoal_kiln_002/lit_3/rotations/south-west.webp",
+        "south": "charcoal_kilns/charcoal_kiln_002/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "charcoal_kilns/charcoal_kiln_002/lit_4/sprite.webp",
@@ -58,7 +68,12 @@
       "generated_at": "2026-08-16T09:08:13+00:00",
       "glow_concept": null,
       "difference_from_source": 0.358,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "charcoal_kilns/charcoal_kiln_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "charcoal_kilns/charcoal_kiln_002/not_lit_1/rotations/south-west.webp",
+        "south": "charcoal_kilns/charcoal_kiln_002/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp",
@@ -66,7 +81,12 @@
       "generated_at": "2026-08-16T09:08:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4556,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-east.webp",
+        "south-west": "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-west.webp",
+        "south": "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "charcoal_kilns/charcoal_kiln_002/not_lit_3/sprite.webp",
@@ -75,7 +95,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7387,
       "glow_score": 0.225,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "charcoal_kilns/charcoal_kiln_002/not_lit_3/rotations/south-east.webp",
+        "south-west": "charcoal_kilns/charcoal_kiln_002/not_lit_3/rotations/south-west.webp",
+        "south": "charcoal_kilns/charcoal_kiln_002/not_lit_3/sprite.webp"
+      }
     }
   }
 }

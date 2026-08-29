@@ -48,7 +48,12 @@
     "LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_010/sprite.webp",
       "pixellab_object_id": "3cdbdb5a-98f0-4b25-8c31-92a4fe4f1670",
-      "generated_at": "2026-08-15T18:12:16+00:00"
+      "generated_at": "2026-08-15T18:12:16+00:00",
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "cupboards_and_shelves/cupboard_010/lit_2/sprite.webp",
@@ -56,7 +61,12 @@
       "generated_at": "2026-08-16T11:35:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3965,
-      "glow_score": 0.0517
+      "glow_score": 0.0517,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/lit_2/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/lit_2/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "cupboards_and_shelves/cupboard_010/lit_3/sprite.webp",
@@ -64,7 +74,12 @@
       "generated_at": "2026-08-16T11:37:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.716,
-      "glow_score": 0.0608
+      "glow_score": 0.0608,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/lit_3/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/lit_3/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "cupboards_and_shelves/cupboard_010/lit_4/sprite.webp",
@@ -72,7 +87,12 @@
       "generated_at": "2026-08-16T11:37:21+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3399,
-      "glow_score": 0.0062
+      "glow_score": 0.0062,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/lit_4/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/lit_4/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cupboards_and_shelves/cupboard_010/not_lit_1/sprite.webp",
@@ -80,7 +100,12 @@
       "generated_at": "2026-08-16T11:37:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.485,
-      "glow_score": 0.0003
+      "glow_score": 0.0003,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/not_lit_1/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/not_lit_1/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cupboards_and_shelves/cupboard_010/not_lit_2/sprite.webp",
@@ -88,7 +113,12 @@
       "generated_at": "2026-08-16T11:37:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8704,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "cupboards_and_shelves/cupboard_010/not_lit_2/rotations/south-east.webp",
+        "south-west": "cupboards_and_shelves/cupboard_010/not_lit_2/rotations/south-west.webp",
+        "south": "cupboards_and_shelves/cupboard_010/not_lit_2/sprite.webp"
+      }
     }
   }
 }

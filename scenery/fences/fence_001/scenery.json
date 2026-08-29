@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T11:57:44+00:00",
       "glow_concept": "glowworms dotted along the lower rail",
       "difference_from_source": 0.8754,
-      "glow_score": 0.0118
+      "glow_score": 0.0118,
+      "rotations": {
+        "south-east": "fences/fence_001/lit_1/rotations/south-east.webp",
+        "south-west": "fences/fence_001/lit_1/rotations/south-west.webp",
+        "south": "fences/fence_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "fences/fence_001/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-16T11:57:55+00:00",
       "glow_concept": "pale soulstone cap stones on the posts",
       "difference_from_source": 0.7581,
-      "glow_score": 0.0437
+      "glow_score": 0.0437,
+      "rotations": {
+        "south-east": "fences/fence_001/lit_2/rotations/south-east.webp",
+        "south-west": "fences/fence_001/lit_2/rotations/south-west.webp",
+        "south": "fences/fence_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "fences/fence_001/sprite.webp",
       "pixellab_object_id": "6dbd0a38-80d9-47e1-b981-e125d7ebfc7d",
-      "generated_at": "2026-08-12T23:56:00+00:00"
+      "generated_at": "2026-08-12T23:56:00+00:00",
+      "rotations": {
+        "south-east": "fences/fence_001/rotations/south-east.webp",
+        "south-west": "fences/fence_001/rotations/south-west.webp",
+        "south": "fences/fence_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "fences/fence_001/not_lit_2/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T11:56:51+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6735,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "fences/fence_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "fences/fence_001/not_lit_2/rotations/south-west.webp",
+        "south": "fences/fence_001/not_lit_2/sprite.webp"
+      }
     }
   }
 }

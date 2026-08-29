@@ -36,7 +36,12 @@
       "sprite": "chairs_and_benches/chair_014/sprite.webp",
       "pixellab_object_id": "7b6e0c28-1c02-4afe-bd15-190c5b2f7567",
       "generated_at": "2026-08-14T01:53:52+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_014/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_014/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_014/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "chairs_and_benches/chair_014/not_lit_4/sprite.webp",
@@ -45,7 +50,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7662,
       "glow_score": 0.0161,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_014/not_lit_4/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_014/not_lit_4/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_014/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "chairs_and_benches/chair_014/not_lit_5/sprite.webp",
@@ -54,7 +64,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6588,
       "glow_score": 0.0777,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_014/not_lit_5/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_014/not_lit_5/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_014/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "chairs_and_benches/chair_014/not_lit_6/sprite.webp",
@@ -63,7 +78,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6862,
       "glow_score": 0.0703,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "chairs_and_benches/chair_014/not_lit_6/rotations/south-east.webp",
+        "south-west": "chairs_and_benches/chair_014/not_lit_6/rotations/south-west.webp",
+        "south": "chairs_and_benches/chair_014/not_lit_6/sprite.webp"
+      }
     }
   }
 }

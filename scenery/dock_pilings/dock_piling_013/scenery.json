@@ -38,12 +38,22 @@
       "generated_at": "2026-08-16T11:49:19+00:00",
       "glow_concept": "a wisp of soul-light perched on the tallest post",
       "difference_from_source": 0.2269,
-      "glow_score": 0.0701
+      "glow_score": 0.0701,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/lit_2/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/lit_2/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "dock_pilings/dock_piling_013/sprite.webp",
       "pixellab_object_id": "5fa02842-7b92-48e8-989f-1f290e319459",
-      "generated_at": "2026-08-14T01:53:44+00:00"
+      "generated_at": "2026-08-14T01:53:44+00:00",
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "dock_pilings/dock_piling_013/not_lit_2/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T11:48:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2663,
-      "glow_score": 0.0252
+      "glow_score": 0.0252,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_2/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "dock_pilings/dock_piling_013/not_lit_3/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T11:49:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8213,
-      "glow_score": 0.0065
+      "glow_score": 0.0065,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_3/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_3/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "dock_pilings/dock_piling_013/not_lit_4/sprite.webp",
@@ -67,7 +87,12 @@
       "generated_at": "2026-08-16T11:49:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.711,
-      "glow_score": 0.0026
+      "glow_score": 0.0026,
+      "rotations": {
+        "south-east": "dock_pilings/dock_piling_013/not_lit_4/rotations/south-east.webp",
+        "south-west": "dock_pilings/dock_piling_013/not_lit_4/rotations/south-west.webp",
+        "south": "dock_pilings/dock_piling_013/not_lit_4/sprite.webp"
+      }
     }
   }
 }

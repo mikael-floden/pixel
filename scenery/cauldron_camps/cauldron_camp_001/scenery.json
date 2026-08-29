@@ -60,6 +60,11 @@
           ],
           "generated_at": "2026-08-29T06:58:55+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/lit_1/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/lit_1/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/lit_1/sprite.webp"
       }
     },
     "LIT_2": {
@@ -90,12 +95,22 @@
           ],
           "generated_at": "2026-08-29T06:57:48+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/lit_2/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/lit_2/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "cauldron_camps/cauldron_camp_001/sprite.webp",
       "pixellab_object_id": "715ec3d3-68bf-43b0-9eb5-5ca6e04c7d46",
-      "generated_at": "2026-08-14T02:22:26+00:00"
+      "generated_at": "2026-08-14T02:22:26+00:00",
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cauldron_camps/cauldron_camp_001/not_lit_2/sprite.webp",
@@ -103,7 +118,12 @@
       "generated_at": "2026-08-16T08:56:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8018,
-      "glow_score": 0.0499
+      "glow_score": 0.0499,
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/not_lit_2/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cauldron_camps/cauldron_camp_001/not_lit_3/sprite.webp",
@@ -111,7 +131,12 @@
       "generated_at": "2026-08-16T08:56:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8311,
-      "glow_score": 0.0393
+      "glow_score": 0.0393,
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/not_lit_3/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cauldron_camps/cauldron_camp_001/not_lit_4/sprite.webp",
@@ -119,7 +144,12 @@
       "generated_at": "2026-08-16T08:57:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4545,
-      "glow_score": 0.0184
+      "glow_score": 0.0184,
+      "rotations": {
+        "south-east": "cauldron_camps/cauldron_camp_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "cauldron_camps/cauldron_camp_001/not_lit_4/rotations/south-west.webp",
+        "south": "cauldron_camps/cauldron_camp_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }
