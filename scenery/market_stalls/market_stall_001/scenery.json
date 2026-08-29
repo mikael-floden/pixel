@@ -114,8 +114,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "6bedd0cf-1045-46a8-8e99-c30232ff3f31",
-          "description": "This is the same picture in every frame. ONLY the cloth awning ripples. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "group_id": "941fe59e-b854-4f39-badf-f35631eec4dd",
+          "description": "This is the same picture in every frame. ONLY the cloth roof at the very top moves: a clearly visible ripple travels along it from one side to the other, so its lower edge lifts and falls. The movement is easy to see. Everything below the cloth roof is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -131,7 +131,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T16:58:49+00:00",
+          "generated_at": "2026-08-29T17:17:23+00:00",
           "brief": "Z45"
         }
       }
