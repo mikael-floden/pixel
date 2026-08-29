@@ -50,6 +50,7 @@ PAINT changes — plus the new ground types v2 could not express:
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 from collections import deque
@@ -286,8 +287,8 @@ def _scenery(doc):
                 # (cycling the full tree list here was the fruit salad)
                 grp = "trees"
                 u = ((ti * 2654435761) & 0xffff) / 65536
-                pool = TREE_TYPES[_tree_pick(v3mat, doc["level"], W2, H2,
-                                             p["x"], p["y"], u)]
+                pool = FOREST_SETS[_tree_pick(v3mat, doc["level"], W2, H2,
+                                              p["x"], p["y"], u)]
                 pick = pool[ti % len(pool)]
             out.append({"piece": f"{grp}/{pick}", "x": x, "y": y,
                         "hflip": bool(ti % 2)})
@@ -311,90 +312,180 @@ def _rng32(seed):
     return r
 
 
-TREE_TYPES = {
-    # Sets grouped by LOOK from a rendered contact sheet — NOT by species
-    # name (the name lists mixed white-blossom pieces into "birch" and
-    # gnarled broadleafs into "pine"; the maintainer counted 4-5 looks in
-    # one wood and called it "how NOT to build a forest"). Every list below
-    # reads as variations of ONE tree:
-    "hawthorn": ["tree_005", "tree_011", "tree_053"],   # white blossom trio
-    "conifer": ["tree_069", "tree_006"],                # true pine pair
-    "green_oak": ["tree_047", "tree_024", "tree_075"],  # big green gnarled
-    "birch": ["tree_001", "tree_008"],                  # white-trunk pair
+FOREST_SETS = {
+    # Look-clusters read off a rendered contact sheet of all 71 tree pieces
+    # (names lie: the "birch" name list mixed white-blossom crowns into the
+    # silver birches). Each set is internally ONE tree, and every set is
+    # visibly DIFFERENT from every other — that is what lets one region's
+    # wood look nothing like the next region's.
+    "birch_pale":    ["tree_001", "tree_058", "tree_074"],
+    "conifer_dark":  ["tree_069", "tree_063"],
+    "conifer_snow":  ["tree_031", "tree_065", "tree_017"],
+    "oak_green":     ["tree_047", "tree_077", "tree_059", "tree_035"],
+    "oak_dark":      ["tree_046", "tree_066", "tree_034"],
+    "autumn_red":    ["tree_015", "tree_029", "tree_057", "tree_071"],
+    "autumn_gold":   ["tree_003", "tree_021", "tree_052", "tree_067"],
+    "blossom_white": ["tree_005", "tree_011", "tree_053"],
+    "willow_grey":   ["tree_043", "tree_012", "tree_054", "tree_085"],
+    "dead_bare":     ["tree_009", "tree_028", "tree_051", "tree_070"],
+    "windswept":     ["tree_075", "tree_079", "tree_024"],
 }
 
-# a WOOD speaks exactly ONE set (maintainer: "maybe two, absolutely max 3
-# different trees" per forest — one set of 2-3 look-alike pieces IS that).
-# Different woods across the map may differ. Highland woods are conifer.
-WOOD_PALETTES = ["hawthorn", "conifer", "green_oak", "birch"]
-FOREST_BUSHES = ["bush_001", "bush_011", "bush_017"]   # matching blueberry
+# the understory that belongs with each canopy — a wood's bushes are retyped
+# with its trees, so the floor never fights the crown
+FOREST_UNDER = {
+    "birch_pale": ["bush_001", "bush_011"], "conifer_dark": ["bush_017"],
+    "conifer_snow": ["bush_008"], "oak_green": ["bush_015", "bush_001"],
+    "oak_dark": ["bush_017", "bush_011"], "autumn_red": ["bush_016"],
+    "autumn_gold": ["bush_016", "bush_900"], "blossom_white": ["bush_007"],
+    "willow_grey": ["bush_008"], "dead_bare": ["bush_008"],
+    "windswept": ["bush_015"],
+}
+
+# THE FOREST MAP (maintainer 2026-08-30: "why do you use the same trees on
+# the west, east, north and south side? Can't you change how the forest look
+# at different locations?"). Region decides identity, exactly like the
+# maintainer's base-tile-set system decides a ground's look per region:
+#   * TERRAIN first — snowline, highland, bog, and the wind-blasted coast
+#     each speak their own tree wherever they occur;
+#   * otherwise the COMPASS wedge around the island centroid, in SCREEN
+#     space (iso: east = x-y, south = x+y), with the outer ring shifted
+#     half a turn — so N/E/S/W differ, and each has an inner and an outer
+#     wood that differ too. 8 wedges x 2 rings = 16 forest areas.
+COMPASS_FORESTS = ["oak_green", "autumn_red", "birch_pale", "oak_dark",
+                   "blossom_white", "autumn_gold", "conifer_dark",
+                   "willow_grey"]   # ordered so NEIGHBOURING wedges contrast
+
+
+class ForestCtx:
+    """Where a wood stands decides what it is. ground_at/level_at are the
+    caller's own grid probes, so world3 and world3grow share one rule."""
+
+    def __init__(self, W, H, ground_at, level_at):
+        self.W, self.H = W, H
+        self.g, self.z = ground_at, level_at
+        pts = [(x, y) for y in range(0, H, 3) for x in range(0, W, 3)
+               if (ground_at(x, y) or "") not in ("", "water", "deep_water")]
+        assert pts, "no land to build a forest map on"
+        self.cx = sum(p[0] for p in pts) / len(pts)
+        self.cy = sum(p[1] for p in pts) / len(pts)
+        self.rmax = max(math.hypot(p[0] - self.cx, p[1] - self.cy)
+                        for p in pts) or 1.0
+
+    def near(self, x, y, grounds, r):
+        for dx in range(-r, r + 1, max(1, r // 2)):
+            for dy in range(-r, r + 1, max(1, r // 2)):
+                if (self.g(x + dx, y + dy) or "") in grounds:
+                    return True
+        return False
+
+    def identity(self, x, y):
+        z = self.z(x, y)
+        if z >= 18 or self.near(x, y, ("snow", "ice"), 4):
+            return "conifer_snow"
+        if self.near(x, y, ("dark_mud",), 4):
+            return "dead_bare"
+        if z >= 13 or self.near(x, y, ("grey_stone", "black_rock"), 3):
+            return "conifer_dark"    # tight: at radius 6 the mountain ate
+                                     # 356 of 802 trees and the map went one
+                                     # colour again
+        if z <= 2 and self.near(x, y, ("light_beach",), 4):
+            return "windswept"
+        if self.near(x, y, ("water",), 3):
+            return "willow_grey"
+        u = (x - y) - (self.cx - self.cy)          # screen east
+        v = (x + y) - (self.cx + self.cy)          # screen south
+        sector = int((math.atan2(v, u) + math.pi) / (2 * math.pi) * 8) % 8
+        ring = 4 if math.hypot(x - self.cx, y - self.cy) > 0.55 * self.rmax \
+            else 0
+        return COMPASS_FORESTS[(sector + ring) % len(COMPASS_FORESTS)]
 
 
 def _tree_pick(mat, lvl, W, H, x, y, u):
-    """Placement-time pick — a placeholder look; retype_woods() makes the
-    final per-wood call over every tree at the end of the build."""
+    """Placement-time placeholder — retype_woods() makes the final call."""
     highish = lvl[y][x] >= 6 or any(
         0 <= x + dx < W and 0 <= y + dy < H
         and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
         for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
-    return "conifer" if highish else "birch"
+    return "conifer_dark" if highish else "birch_pale"
 
 
-def retype_woods(scen, is_high):
-    """THE FOREST COHERENCE PASS — the LAST word on tree species. All placed
-    trees AND forest ancients cluster into WOODS (link distance 8); every
-    wood of 2+ retypes to exactly ONE look-alike set from WOOD_PALETTES by
-    centroid hash (conifer forced on highland woods). Ancients inside a
-    wood become the wood's own trees — giant brown canopies inside a pine
-    wood read as a fifth tree type (maintainer screenshot, 2026-08-30);
-    a SOLITARY ancient stays a landmark. Runs after all placement, so no
-    code path can leak a stray look into a wood."""
-    trees = [p for p in scen
+def retype_woods(scen, ctx):
+    """THE FOREST PASS — the LAST word on what a wood is made of. Every
+    placed tree, forest ancient and bush clusters into WOODS (link 8); each
+    tree asks the FOREST MAP where it stands, the answer is mode-smoothed
+    over its neighbours, and it is retyped to that identity's canopy set
+    (bushes follow the nearest tree). Runs after all placement, so no placer
+    can leak a foreign look in; and because identity is geographic, the
+    north wood, the east wood and the shore wood are different forests.
+    Returns {identity: n_trees}."""
+    items = [p for p in scen
+             if p["piece"].startswith(("trees/", "ancient_trees/", "bushes/"))]
+    trees = [p for p in items
              if p["piece"].startswith(("trees/", "ancient_trees/"))]
     if not trees:
-        return 0
+        return {}
+    # 1) every tree asks the FOREST MAP where IT stands. Identity per tree,
+    #    not per cluster: link-8 clustering merged the whole southern belt
+    #    into one 300-tree "wood" and painted a quarter of the island one
+    #    colour (measured). The region is what is spatially coherent.
+    ident = [ctx.identity(int(t["x"]), int(t["y"])) for t in trees]
     buckets = {}
     for i, t in enumerate(trees):
         buckets.setdefault((int(t["x"]) // 8, int(t["y"]) // 8), []).append(i)
-    parent = list(range(len(trees)))
 
-    def find(i):
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-
-    for i, t in enumerate(trees):
-        bx, by = int(t["x"]) // 8, int(t["y"]) // 8
+    def neighbours(i, r2=49):
+        bx, by = int(trees[i]["x"]) // 8, int(trees[i]["y"]) // 8
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
                 for j in buckets.get((bx + dx, by + dy), ()):
-                    if j < i and (trees[i]["x"] - trees[j]["x"]) ** 2 + \
-                            (trees[i]["y"] - trees[j]["y"]) ** 2 <= 64:
-                        parent[find(i)] = find(j)
-    woods = {}
-    for i in range(len(trees)):
-        woods.setdefault(find(i), []).append(i)
-    for members in woods.values():
-        if len(members) < 2:
-            continue                   # a lone specimen may be anything
-        cx = sum(trees[i]["x"] for i in members) / len(members)
-        cy = sum(trees[i]["y"] for i in members) / len(members)
-        h = (int(cx) * 2654435761 ^ int(cy) * 40503 ^ 0xd00d) & 0xffffffff
-        ty = "conifer" if is_high(int(cx), int(cy)) else \
-            WOOD_PALETTES[h % len(WOOD_PALETTES)]
-        pool = TREE_TYPES[ty]
-        for k, i in enumerate(sorted(members)):
-            th = (h ^ (k * 40503) ^ 0x7ee5) & 0xffffffff
-            trees[i]["piece"] = "trees/" + pool[th % len(pool)]
-    return len(woods)
+                    if (trees[i]["x"] - trees[j]["x"]) ** 2 + \
+                            (trees[i]["y"] - trees[j]["y"]) ** 2 <= r2:
+                        yield j
+
+    # 2) two mode-smoothing passes: a tree adopts the identity most of its
+    #    neighbours have, so a stand never checkerboards at a region seam —
+    #    the boundary moves to where the trees thin out, which is where a
+    #    real forest changes.
+    for _ in range(2):
+        ident = [max(set(v := [ident[j] for j in neighbours(i)]), key=v.count)
+                 for i in range(len(trees))]
+    tally = {}
+    for i, t in enumerate(trees):
+        canopy = FOREST_SETS[ident[i]]
+        h = (int(t["x"] * 4) * 2654435761 ^ int(t["y"] * 4) * 40503
+             ^ 0xd00d) & 0xffffffff
+        t["piece"] = "trees/" + canopy[h % len(canopy)]
+        tally[ident[i]] = tally.get(ident[i], 0) + 1
+    # 3) understory follows the nearest tree's identity
+    for b in items:
+        if not b["piece"].startswith("bushes/"):
+            continue
+        bx, by = int(b["x"]) // 8, int(b["y"]) // 8
+        near = [j for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                for j in buckets.get((bx + dx, by + dy), ())]
+        if not near:
+            continue
+        j = min(near, key=lambda j: (trees[j]["x"] - b["x"]) ** 2
+                + (trees[j]["y"] - b["y"]) ** 2)
+        if (trees[j]["x"] - b["x"]) ** 2 + (trees[j]["y"] - b["y"]) ** 2 > 64:
+            continue
+        under = FOREST_UNDER[ident[j]]
+        h = (int(b["x"] * 4) * 40503 ^ int(b["y"] * 4) * 2654435761) & 0xffffffff
+        b["piece"] = "bushes/" + under[h % len(under)]
+    return tally
 
 
-for _ty, _pieces in list(TREE_TYPES.items()) + [("bush", FOREST_BUSHES)]:
-    _grp = "bushes" if _ty == "bush" else "trees"
+for _ty, _pieces in list(FOREST_SETS.items()):
     for _p in _pieces:
-        assert os.path.isdir(os.path.join(REPO, "scenery", _grp, _p)), \
-            f"palette piece missing: {_grp}/{_p} ({_ty})"
+        assert os.path.isdir(os.path.join(REPO, "scenery", "trees", _p)), \
+            f"canopy piece missing: trees/{_p} ({_ty})"
+assert set(FOREST_UNDER) == set(FOREST_SETS), "every canopy needs understory"
+for _ty, _pieces in FOREST_UNDER.items():
+    for _p in _pieces:
+        assert os.path.isdir(os.path.join(REPO, "scenery", "bushes", _p)), \
+            f"understory piece missing: bushes/{_p} ({_ty})"
+
 
 
 def _forests(W, H, mat, lvl, scen, spawn):
@@ -477,10 +568,10 @@ def _forests(W, H, mat, lvl, scen, spawn):
             taken.add((jx, jy))
             u = r()
             if edge and u < 0.12:
-                grp, pool = "bushes", FOREST_BUSHES
+                grp, pool = "bushes", FOREST_UNDER["birch_pale"]
             else:
                 grp = "trees"
-                pool = TREE_TYPES[_tree_pick(mat, lvl, W, H, jx, jy, r())]
+                pool = FOREST_SETS[_tree_pick(mat, lvl, W, H, jx, jy, r())]
             pick = pool[int(r() * len(pool)) % len(pool)]
             out.append({"piece": f"{grp}/{pick}",
                         "x": jx + 0.25 + round(r() * 0.5, 2),
@@ -529,14 +620,10 @@ def build():
     scen = _scenery(src)
     scen += _forests(W, H, mat, lvl, scen, (int(src["spawn"][0]), int(src["spawn"][1])))
 
-    def _is_high(x, y):
-        if not (0 <= x < W and 0 <= y < H):
-            return False
-        return lvl[y][x] >= 6 or any(
-            0 <= x + dx < W and 0 <= y + dy < H
-            and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
-            for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
-    retype_woods(scen, _is_high)
+    ctx = ForestCtx(W, H,
+                    lambda x, y: mat[y][x] if 0 <= x < W and 0 <= y < H else "",
+                    lambda x, y: lvl[y][x] if 0 <= x < W and 0 <= y < H else 0)
+    retype_woods(scen, ctx)
     nlit, worst = _light_audit(scen)
 
     grounds = sorted({m for row in mat for m in row if m})

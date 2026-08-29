@@ -658,16 +658,14 @@ class Grow:
                         ("island2 trees", len(trees))]
 
     def retype(self):
-        """world3.retype_woods over the WHOLE grown map — the final word on
-        which species each wood speaks (per-forest rule)."""
-        def is_high(x, y):
-            if not (0 <= x < NEW and 0 <= y < NEW):
-                return False
-            return self.lvl[y][x] >= 6 or any(
-                self.g(x + dx, y + dy) in ("grey_stone", "snow", "black_rock")
-                for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
-        n = world3.retype_woods(self.doc["scenery"], is_high)
-        self.placed += [("woods retyped", n)]
+        """world3.retype_woods over the WHOLE grown map — every wood asks the
+        FOREST MAP where it stands, so north/east/south/west woods and the
+        snowline/bog/coast woods are all different forests."""
+        ctx = world3.ForestCtx(
+            NEW, NEW, self.g,
+            lambda x, y: self.lvl[y][x] if 0 <= x < NEW and 0 <= y < NEW else 0)
+        tally = world3.retype_woods(self.doc["scenery"], ctx)
+        self.placed += [(f"forest {k}", v) for k, v in sorted(tally.items())]
 
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
