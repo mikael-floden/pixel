@@ -1,7 +1,7 @@
 {
   "title": "Nangijala Scenery",
   "scenery_count": 710,
-  "target_count": 2121,
+  "target_count": 2116,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
     "character_height_px": 64,
@@ -1253,7 +1253,7 @@
       "id": "cliff_falls",
       "name": "Cliff Fall",
       "type": "MOUNTAIN_WALL",
-      "quota": 5,
+      "quota": 0,
       "done": 0
     },
     {
@@ -4178,6 +4178,27 @@
           "glow_concept": "burning soulstone shining like a fixed star",
           "difference_from_source": 0.7775,
           "glow_score": 0.0786,
+          "animations": {
+            "motion": {
+              "group_id": "65cfcd43-6620-4c5d-a4bf-2d6945fb70a9",
+              "description": "This is the same picture in every frame. ONLY the gem at the top of the staff brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beacons/beacon_003/lit_2/animations/motion/00.webp",
+                "beacons/beacon_003/lit_2/animations/motion/01.webp",
+                "beacons/beacon_003/lit_2/animations/motion/02.webp",
+                "beacons/beacon_003/lit_2/animations/motion/03.webp",
+                "beacons/beacon_003/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "beacons/beacon_003/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T15:54:18+00:00",
+              "brief": "X29"
+            }
+          },
           "art_hash": "e009a38f1f475c9c"
         },
         "NOT_LIT_1": {
