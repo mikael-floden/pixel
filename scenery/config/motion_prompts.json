@@ -278,18 +278,6 @@
         "state": "NOT_LIT_1"
       }
     },
-    "G13": {
-      "group": "hanging_willows",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the very tips of the hanging strands sway, a few pixels sideways and very slowly. The rest of the tree is completely still. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Only the tips of the hanging strands stir.",
-      "example": {
-        "piece": "hanging_willows/hanging_willow_001",
-        "state": "NOT_LIT_1"
-      },
-      "superseded_prompt": "Animate the trailing willow branches only, drifting in a breeze. Nothing else moves.",
-      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
-    },
     "L1": {
       "group": "crystals",
       "name": "motion",
@@ -319,30 +307,6 @@
         "piece": "soulstone_plinths/soulstone_plinth_001",
         "state": "LIT_1"
       }
-    },
-    "L4": {
-      "group": "witch_rings",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the small flames that are already there flicker, very gently. No new flame appears anywhere. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The existing flames flicker; no new ones appear.",
-      "example": {
-        "piece": "witch_rings/witch_ring_002",
-        "state": "NOT_LIT_3"
-      },
-      "superseded_prompt": "Animate the candle flames only. Nothing else moves.",
-      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
-    },
-    "L6": {
-      "group": "giant_mushrooms",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the brightness of the glow already on the cap changes, dimming and lifting very slightly like slow breathing. The colours stay exactly as they are. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The existing glow breathes; the colours do not change.",
-      "example": {
-        "piece": "giant_mushrooms/giant_mushroom_001",
-        "state": "LIT_1"
-      },
-      "superseded_prompt": "Animate the glow on the cap only, breathing slowly. Nothing else moves.",
-      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "L7": {
       "group": "meteor_stones",
@@ -436,5 +400,26 @@
         "state": "NOT_LIT_1"
       }
     }
-  }
+  },
+  "declined": {
+    "L4": {
+      "group": "witch_rings",
+      "moves": "The existing flames flicker; no new ones appear.",
+      "prompt": "This is the same picture in every frame. ONLY the small flames that are already there flicker, very gently. No new flame appears anywhere. Do not redraw anything else, and do not add or remove anything.",
+      "why": "maintainer 2026-08-29, after two attempts: the object kept being reinterpreted rather than moved. witch_ring stones shifted, the mushroom cap recoloured instead of brightening, and the willow's fine strands boiled at 44.8% even calmed. Do not regenerate."
+    },
+    "L6": {
+      "group": "giant_mushrooms",
+      "moves": "The existing glow breathes; the colours do not change.",
+      "prompt": "This is the same picture in every frame. ONLY the brightness of the glow already on the cap changes, dimming and lifting very slightly like slow breathing. The colours stay exactly as they are. Do not redraw anything else, and do not add or remove anything.",
+      "why": "maintainer 2026-08-29, after two attempts: the object kept being reinterpreted rather than moved. witch_ring stones shifted, the mushroom cap recoloured instead of brightening, and the willow's fine strands boiled at 44.8% even calmed. Do not regenerate."
+    },
+    "G13": {
+      "group": "hanging_willows",
+      "moves": "Only the tips of the hanging strands stir.",
+      "prompt": "This is the same picture in every frame. ONLY the very tips of the hanging strands sway, a few pixels sideways and very slowly. The rest of the tree is completely still. Do not redraw anything else, and do not add or remove anything.",
+      "why": "maintainer 2026-08-29, after two attempts: the object kept being reinterpreted rather than moved. witch_ring stones shifted, the mushroom cap recoloured instead of brightening, and the willow's fine strands boiled at 44.8% even calmed. Do not regenerate."
+    }
+  },
+  "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked."
 }

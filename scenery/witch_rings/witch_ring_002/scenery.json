@@ -55,29 +55,7 @@
         "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
         "south": "witch_rings/witch_ring_002/sprite.webp"
       },
-      "animations": {
-        "motion": {
-          "group_id": "e8eb04dd-7cb5-4f85-8266-1a00264b4bd8",
-          "description": "This is the same picture in every frame. ONLY the small flames that are already there flicker, very gently. No new flame appears anywhere. Do not redraw anything else, and do not add or remove anything.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "witch_rings/witch_ring_002/animations/motion/00.webp",
-            "witch_rings/witch_ring_002/animations/motion/01.webp",
-            "witch_rings/witch_ring_002/animations/motion/02.webp",
-            "witch_rings/witch_ring_002/animations/motion/03.webp",
-            "witch_rings/witch_ring_002/animations/motion/04.webp"
-          ],
-          "strip": "witch_rings/witch_ring_002/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T10:34:02+00:00",
-          "brief": "L4"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_4": {
       "sprite": "witch_rings/witch_ring_002/not_lit_4/sprite.webp",
