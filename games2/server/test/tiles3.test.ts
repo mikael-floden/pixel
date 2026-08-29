@@ -283,6 +283,17 @@ function assertTile(e: any, mine: TileArt, where: string): void {
   if (e.side !== undefined) assert.equal(mine.side, e.side, `${where} side`);
   if (e.ground !== undefined) assert.equal(mine.ground, e.ground, `${where} ground`);
   if (e.path !== undefined) assert.equal(mine.path, paths(e.path), `${where} path`);
+  /* THE BORROWED WALL. `top_only` in tile_walls.json and `wall` in
+   * top_walls.json only mean anything together: the tile keeps its top and wears
+   * the face he named. Naming the wrong one is invisible to a path check —
+   * `path` is still the tile's own art — so it is pinned separately. */
+  if (e.borrowed) {
+    assert.ok(mine.borrowedWall, `${where} must borrow a wall`);
+    assert.equal(mine.borrowedWall.key, e.borrowed.key, `${where} borrowed wall key`);
+    assert.equal(mine.borrowedWall.path, paths(e.borrowed.path), `${where} borrowed wall art`);
+  } else {
+    assert.equal(mine.borrowedWall, undefined, `${where} borrows a wall render3 does not`);
+  }
   if (e.painted !== undefined) {
     assert.equal(mine.painted, e.painted, `${where} painted`);
     assert.deepEqual(mine.topRGB, e.top_rgb, `${where} top colour`);
