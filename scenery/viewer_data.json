@@ -24163,8 +24163,8 @@
           "glow_score": 0.1352,
           "animations": {
             "motion": {
-              "group_id": "2f795594-12d1-457c-91a1-eb12e9c97f64",
-              "description": "This is the same picture in every frame. ONLY the glowing green fungi along the log brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "group_id": "cd6afb38-00f4-43d2-8070-359af39b69fd",
+              "description": "This is the same picture in every frame. ONLY the green light on the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -24180,7 +24180,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T18:49:07+00:00",
+              "generated_at": "2026-08-29T19:11:57+00:00",
               "brief": "B34"
             }
           },
@@ -26614,8 +26614,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "b2466814-1241-4819-a3ac-99ba15f9278a",
-              "description": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "group_id": "d795e6a4-cfa3-4799-acff-d511603e58d1",
+              "description": "This is the same picture in every frame. ONLY each hanging fish turns very slightly where it hangs, by a single pixel, without leaving its own spot. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -26631,7 +26631,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T18:49:15+00:00",
+              "generated_at": "2026-08-29T19:10:59+00:00",
               "brief": "B18"
             }
           },
