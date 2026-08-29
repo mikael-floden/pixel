@@ -1210,6 +1210,50 @@ class Grow:
             moved += changed
             if not changed:
                 break
+        # SMOOTH THE PROFILE, THEN RE-ENFORCE THE SLOPE. The pairwise
+        # relaxation alone converges to "no step over one level" but leaves a
+        # SAWTOOTH: a road that goes up-down-up-down is walkable and looks
+        # terrible, because every one of those steps draws a wall and chops
+        # the road into stepped slabs (maintainer, 2026-08-30: "why is this
+        # so ugly?" - 11 overlapping ramps, some 3->6 and some 6->3, over the
+        # same four cells). A median over each cell's road neighbourhood
+        # removes the local pits and spikes; the slope pass then runs again
+        # because smoothing can reintroduce a jump.
+        for _ in range(8):
+            changed = 0
+            for (x, y) in road:
+                nb = [lvl[y + dy][x + dx]
+                      for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                      if (x + dx, y + dy) in roadset]
+                if len(nb) < 2:
+                    continue
+                nb.sort()
+                med = nb[len(nb) // 2]
+                if lvl[y][x] != med and abs(lvl[y][x] - med) <= 2:
+                    lvl[y][x] = med
+                    changed += 1
+            if not changed:
+                break
+        for _ in range(64):
+            changed = 0
+            for (x, y) in road:
+                for dx, dy in ((1, 0), (0, 1)):
+                    n = (x + dx, y + dy)
+                    if n not in roadset:
+                        continue
+                    a, b = lvl[y][x], lvl[n[1]][n[0]]
+                    if abs(a - b) <= 1:
+                        continue
+                    if a > b:
+                        lvl[y][x] -= 1
+                        lvl[n[1]][n[0]] += 1
+                    else:
+                        lvl[y][x] += 1
+                        lvl[n[1]][n[0]] -= 1
+                    changed += 2
+            if not changed:
+                break
+
         # the runs: maximal 4-connected chains of road cells that change level
         seen, runs = set(), []
         for (x, y) in road:
